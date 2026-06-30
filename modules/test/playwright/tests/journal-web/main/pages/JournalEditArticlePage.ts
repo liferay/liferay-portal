@@ -498,26 +498,24 @@ export class JournalEditArticlePage {
 		await this.page.getByLabel('File', {exact: true}).click();
 
 		const selectDocumentIframe = this.page.frameLocator(
-			'iframe[title="Select Document"]'
+			'iframe[id$="selectDocumentLibrary_iframe_"]'
 		);
 
-		await selectDocumentIframe
-			.getByRole('link', {name: 'Sites and Libraries'})
-			.click();
+		await selectDocumentIframe.locator('.breadcrumb-link').first().click();
 
 		await selectDocumentIframe
 			.getByRole('link', {name: /^Liferay DXP( Site)?$/})
 			.click();
 
+		const searchBox = selectDocumentIframe.getByRole('searchbox');
+
+		await searchBox.fill(fileName);
+		await searchBox.press('Enter');
+
 		await selectDocumentIframe
-			.getByRole('link', {name: 'Provided by Liferay'})
-			.click();
-
-		await expect(
-			selectDocumentIframe.getByLabel('Search for', {exact: true})
-		).toBeEnabled();
-
-		await selectDocumentIframe.getByText(fileName).dblclick();
+			.getByTestId('row')
+			.getByText(fileName)
+			.dblclick();
 	}
 
 	async selectCategories(vocabulary: string, categories: string[]) {
