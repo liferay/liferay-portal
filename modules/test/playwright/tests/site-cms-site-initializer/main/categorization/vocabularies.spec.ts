@@ -44,6 +44,17 @@ test.afterEach(async ({vocabulariesPage}) => {
 	createdVocabularyNames.length = 0;
 });
 
+const projectVocabularyTest = mergeTests(
+	categorizationPagesTest,
+	cmsPagesTest,
+	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+		'LPD-92636': {enabled: true},
+	}),
+	loginTest()
+);
+
 const systemVocabularyTest = mergeTests(
 	categorizationPagesTest,
 	cmsPagesTest,
@@ -766,6 +777,106 @@ test(
 		});
 	}
 );
+
+projectVocabularyTest.describe('Project selection tests', () => {
+	const createdProjectVocabularyNames: string[] = [];
+
+	projectVocabularyTest.afterEach(async ({vocabulariesPage}) => {
+		if (!createdProjectVocabularyNames.length) {
+			return;
+		}
+
+		await vocabulariesPage.goto();
+
+		for (const name of createdProjectVocabularyNames) {
+			await vocabulariesPage.deleteVocabulary(name);
+		}
+
+		createdProjectVocabularyNames.length = 0;
+	});
+
+	projectVocabularyTest(
+		'Validate change projects when saving',
+		{tag: '@LPD-96114'},
+		async ({apiHelpers, editVocabularyPage, page, vocabulariesPage}) => {
+			const projectName = getRandomString();
+
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: projectName,
+				settings: {},
+				type: 'Project',
+			});
+
+			const name = `Vocabulary${getRandomInt()}`;
+
+			createdProjectVocabularyNames.push(name);
+
+			editVocabularyPage.goto();
+
+			await editVocabularyPage.changeGeneralInfo({
+				description: getRandomString(),
+				name,
+			});
+
+			await clickAndExpectToBeVisible({
+				target: page.getByText(
+					`Success:${name} was published successfully.`
+				),
+				trigger: editVocabularyPage.saveButton,
+			});
+
+			const newVocabRow = vocabulariesPage.getItem(name);
+			await expect(newVocabRow).toBeVisible();
+
+			await page.getByRole('link', {name}).click();
+
+			await expect(page.getByText(`Edit ${name}`)).toBeVisible();
+
+			await editVocabularyPage.selectProjects(projectName);
+
+			await clickAndExpectToBeVisible({
+				target: page.getByText('Confirm Project Change'),
+				trigger: editVocabularyPage.saveButton,
+			});
+
+			const modalSaveButton = page.locator('.modal .btn-primary');
+
+			await clickAndExpectToBeVisible({
+				target: page.getByText(
+					`Success:${name} was updated successfully.`
+				),
+				trigger: modalSaveButton,
+			});
+		}
+	);
+
+	projectVocabularyTest(
+		'Validate a project must be selected to publish',
+		{tag: '@LPD-96114'},
+		async ({editVocabularyPage}) => {
+			editVocabularyPage.goto();
+
+			const name = `Vocabulary${getRandomInt()}`;
+
+			await editVocabularyPage.changeGeneralInfo({
+				description: getRandomString(),
+				name,
+			});
+
+			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
+
+			// Unselecting every project blocks publishing
+
+			await editVocabularyPage.projectCheckbox.click();
+
+			await expect(editVocabularyPage.saveButton).toBeDisabled();
+
+			await editVocabularyPage.projectCheckbox.click();
+
+			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
+		}
+	);
+});
 
 systemVocabularyTest.describe('System vocabulary tests', () => {
 	let systemVocabularyId: number | undefined;
