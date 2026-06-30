@@ -47,6 +47,88 @@ public class Choice implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getAdditionCount() {
+		if (_additionCountSupplier != null) {
+			additionCount = _additionCountSupplier.get();
+
+			_additionCountSupplier = null;
+		}
+
+		return additionCount;
+	}
+
+	public void setAdditionCount(Long additionCount) {
+		this.additionCount = additionCount;
+
+		_additionCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAdditionCount(
+		UnsafeSupplier<Long, Exception> additionCountUnsafeSupplier) {
+
+		_additionCountSupplier = () -> {
+			try {
+				return additionCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long additionCount;
+
+	@JsonIgnore
+	private Supplier<Long> _additionCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getDeletionCount() {
+		if (_deletionCountSupplier != null) {
+			deletionCount = _deletionCountSupplier.get();
+
+			_deletionCountSupplier = null;
+		}
+
+		return deletionCount;
+	}
+
+	public void setDeletionCount(Long deletionCount) {
+		this.deletionCount = deletionCount;
+
+		_deletionCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDeletionCount(
+		UnsafeSupplier<Long, Exception> deletionCountUnsafeSupplier) {
+
+		_deletionCountSupplier = () -> {
+			try {
+				return deletionCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long deletionCount;
+
+	@JsonIgnore
+	private Supplier<Long> _deletionCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -152,6 +234,30 @@ public class Choice implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		Long additionCount = getAdditionCount();
+
+		if (additionCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"additionCount\": ");
+
+			sb.append(additionCount);
+		}
+
+		Long deletionCount = getDeletionCount();
+
+		if (deletionCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"deletionCount\": ");
+
+			sb.append(deletionCount);
+		}
 
 		String label = getLabel();
 
@@ -286,4 +392,4 @@ public class Choice implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-74624559
+// LIFERAY-REST-BUILDER-HASH:-103211983

@@ -44,6 +44,26 @@ public class ChoiceSerDes {
 
 		sb.append("{");
 
+		if (choice.getAdditionCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"additionCount\": ");
+
+			sb.append(choice.getAdditionCount());
+		}
+
+		if (choice.getDeletionCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"deletionCount\": ");
+
+			sb.append(choice.getDeletionCount());
+		}
+
 		if (choice.getLabel() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -90,6 +110,20 @@ public class ChoiceSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (choice.getAdditionCount() == null) {
+			map.put("additionCount", null);
+		}
+		else {
+			map.put("additionCount", String.valueOf(choice.getAdditionCount()));
+		}
+
+		if (choice.getDeletionCount() == null) {
+			map.put("deletionCount", null);
+		}
+		else {
+			map.put("deletionCount", String.valueOf(choice.getDeletionCount()));
+		}
+
 		if (choice.getLabel() == null) {
 			map.put("label", null);
 		}
@@ -121,7 +155,13 @@ public class ChoiceSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "label")) {
+			if (Objects.equals(jsonParserFieldName, "additionCount")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "deletionCount")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "label")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
@@ -136,7 +176,19 @@ public class ChoiceSerDes {
 			Choice choice, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "label")) {
+			if (Objects.equals(jsonParserFieldName, "additionCount")) {
+				if (jsonParserFieldValue != null) {
+					choice.setAdditionCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "deletionCount")) {
+				if (jsonParserFieldValue != null) {
+					choice.setDeletionCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "label")) {
 				if (jsonParserFieldValue != null) {
 					choice.setLabel((String)jsonParserFieldValue);
 				}
@@ -227,4 +279,4 @@ public class ChoiceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1193362731
+// LIFERAY-REST-BUILDER-HASH:-1549071689
