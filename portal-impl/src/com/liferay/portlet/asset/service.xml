@@ -29,6 +29,7 @@
 		<column localized="true" name="title" type="String" />
 		<column localized="true" name="description" type="String" />
 		<column name="vocabularyId" type="long" />
+		<column name="system" type="boolean" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
 
@@ -384,6 +385,7 @@
 		<exception>DuplicateVocabulary</exception>
 		<exception>DuplicateVocabularyExternalReferenceCode</exception>
 		<exception>InvalidAssetCategory</exception>
+		<exception>SystemCategory</exception>
 		<exception>SystemVocabulary</exception>
 		<exception>VocabularyExternalReferenceCode</exception>
 		<exception>VocabularyName</exception>

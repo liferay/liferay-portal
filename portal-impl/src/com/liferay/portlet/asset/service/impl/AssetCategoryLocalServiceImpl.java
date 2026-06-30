@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.exception.DuplicateCategoryExternalReferenceCode
 import com.liferay.asset.kernel.exception.InvalidAssetCategoryException;
 import com.liferay.asset.kernel.exception.NoSuchCategoryException;
 import com.liferay.asset.kernel.exception.NoSuchVocabularyException;
+import com.liferay.asset.kernel.exception.SystemCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
@@ -25,6 +26,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -52,6 +54,7 @@ import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -70,6 +73,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides the local service for accessing, adding, deleting, merging, moving,
@@ -109,7 +113,8 @@ public class AssetCategoryLocalServiceImpl
 			String externalReferenceCode, long userId, long groupId,
 			long parentCategoryId, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, long vocabularyId,
-			String[] categoryProperties, ServiceContext serviceContext)
+			boolean system, String[] categoryProperties,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Category
@@ -165,6 +170,7 @@ public class AssetCategoryLocalServiceImpl
 		category.setTitleMap(trimmedTitleMap);
 		category.setDescriptionMap(descriptionMap);
 		category.setVocabularyId(vocabularyId);
+		category.setSystem(system);
 
 		if (EmptyModelManagerUtil.isEmptyModel()) {
 			category.setStatus(WorkflowConstants.STATUS_EMPTY);
@@ -252,6 +258,14 @@ public class AssetCategoryLocalServiceImpl
 	public AssetCategory deleteCategory(
 			AssetCategory category, boolean skipRebuildTree)
 		throws PortalException {
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				category.getCompanyId(), "LPD-86291") &&
+			!GroupThreadLocal.isDeleteInProcess() && category.isSystem()) {
+
+			throw new SystemCategoryException.MustNotDelete(
+				category.getCategoryId());
+		}
 
 		// Categories
 
@@ -652,6 +666,11 @@ public class AssetCategoryLocalServiceImpl
 		AssetCategory category = assetCategoryPersistence.findByPrimaryKey(
 			categoryId);
 
+		_checkSystemCategory(
+			category.getExternalReferenceCode(), category.getTitleMap(),
+			category.getDescriptionMap(), parentCategoryId, vocabularyId,
+			category);
+
 		return _moveCategory(category, parentCategoryId, vocabularyId);
 	}
 
@@ -727,14 +746,18 @@ public class AssetCategoryLocalServiceImpl
 		AssetCategory category = assetCategoryPersistence.findByPrimaryKey(
 			categoryId);
 
+		Map<Locale, String> trimmedTitleMap = _getTrimmedTitleMap(titleMap);
+
+		_checkSystemCategory(
+			externalReferenceCode, trimmedTitleMap, descriptionMap,
+			parentCategoryId, vocabularyId, category);
+
 		if (Validator.isNotNull(externalReferenceCode)) {
 			_validateExternalReferenceCode(
 				externalReferenceCode, category.getGroupId(), categoryId);
 
 			category.setExternalReferenceCode(externalReferenceCode);
 		}
-
-		Map<Locale, String> trimmedTitleMap = _getTrimmedTitleMap(titleMap);
 
 		Locale defaultLocale = PortalUtil.getSiteDefaultLocale(
 			category.getGroupId());
@@ -874,6 +897,37 @@ public class AssetCategoryLocalServiceImpl
 						"Category ", parentCategoryId,
 						" does not exist in group ", groupId));
 			}
+		}
+	}
+
+	private void _checkSystemCategory(
+			String externalReferenceCode, Map<Locale, String> trimmedTitleMap,
+			Map<Locale, String> descriptionMap, long parentCategoryId,
+			long vocabularyId, AssetCategory category)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				category.getCompanyId(), "LPD-86291") ||
+			!category.isSystem()) {
+
+			return;
+		}
+
+		if ((Validator.isNotNull(externalReferenceCode) &&
+			 !externalReferenceCode.equals(
+				 category.getExternalReferenceCode())) ||
+			!trimmedTitleMap.equals(category.getTitleMap())) {
+
+			throw new SystemCategoryException.MustNotRename(
+				category.getCategoryId());
+		}
+
+		if (!Objects.equals(descriptionMap, category.getDescriptionMap()) ||
+			(parentCategoryId != category.getParentCategoryId()) ||
+			(vocabularyId != category.getVocabularyId())) {
+
+			throw new SystemCategoryException.MustNotModify(
+				category.getCategoryId());
 		}
 	}
 

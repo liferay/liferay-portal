@@ -85,7 +85,7 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 	public AssetCategory addCategory(
 			String externalReferenceCode, long groupId, long parentCategoryId,
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
-			long vocabularyId, String[] categoryProperties,
+			long vocabularyId, boolean system, String[] categoryProperties,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -95,7 +95,7 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 
 		return assetCategoryLocalService.addCategory(
 			externalReferenceCode, getUserId(), groupId, parentCategoryId,
-			titleMap, descriptionMap, vocabularyId, categoryProperties,
+			titleMap, descriptionMap, vocabularyId, system, categoryProperties,
 			serviceContext);
 	}
 

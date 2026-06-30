@@ -783,6 +783,11 @@ public class PortalUpgradeProcessRegistryImpl
 				"AssetVocabularyGroupRel", "depotEntryType INTEGER"),
 			UpgradeProcessFactory.runSQL(
 				"update AssetVocabularyGroupRel set depotEntryType = 1"));
+
+		upgradeVersionTreeMap.put(
+			new Version(38, 7, 0),
+			UpgradeProcessFactory.addColumns(
+				"AssetCategory", "system_ BOOLEAN"));
 	}
 
 }
