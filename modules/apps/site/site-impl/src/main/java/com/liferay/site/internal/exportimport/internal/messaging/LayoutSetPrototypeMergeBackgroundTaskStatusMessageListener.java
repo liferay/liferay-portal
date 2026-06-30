@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -216,6 +217,10 @@ public class LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener
 	}
 
 	private void _deleteCacheFile(String sessionId) {
+		if (!PropsValues.LAYOUT_SET_PROTOTYPE_MERGE_DELETE_CACHE_FILE_ENABLED) {
+			return;
+		}
+
 		File file = new File(_TEMP_DIR + sessionId + ".lar");
 
 		if ((file != null) && file.exists()) {

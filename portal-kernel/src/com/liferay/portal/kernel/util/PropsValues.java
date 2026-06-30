@@ -1134,6 +1134,13 @@ public class PropsValues {
 		GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.LAYOUT_SCOPE_GROUP_FINDER_THRESHOLD));
 
+	public static final boolean
+		LAYOUT_SET_PROTOTYPE_MERGE_DELETE_CACHE_FILE_ENABLED =
+			GetterUtil.getBoolean(
+				PropsUtil.get(
+					PropsKeys.
+						LAYOUT_SET_PROTOTYPE_MERGE_DELETE_CACHE_FILE_ENABLED));
+
 	public static final int LAYOUT_SET_PROTOTYPE_MERGE_FAIL_THRESHOLD =
 		GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.LAYOUT_SET_PROTOTYPE_MERGE_FAIL_THRESHOLD));

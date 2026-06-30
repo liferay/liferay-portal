@@ -1414,6 +1414,10 @@ public interface PropsKeys {
 	public static final String LAYOUT_SET_FORM_UPDATE =
 		"layout.set.form.update";
 
+	public static final String
+		LAYOUT_SET_PROTOTYPE_MERGE_DELETE_CACHE_FILE_ENABLED =
+			"layout.set.prototype.merge.delete.cache.file.enabled";
+
 	public static final String LAYOUT_SET_PROTOTYPE_MERGE_FAIL_THRESHOLD =
 		"layout.set.prototype.merge.fail.threshold";
 
