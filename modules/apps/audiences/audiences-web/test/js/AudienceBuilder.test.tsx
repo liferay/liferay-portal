@@ -10,6 +10,12 @@ import React from 'react';
 import AudienceBuilder from '../../src/main/resources/META-INF/resources/js/AudienceBuilder';
 
 describe('AudienceBuilder', () => {
+	beforeAll(() => {
+		(Liferay.Language as {direction: Record<string, string>}).direction = {
+			en_US: 'ltr',
+		};
+	});
+
 	it('renders editor, updates name, back and cancel link to backURL', async () => {
 		const {getByLabelText, getByText, queryByText} = render(
 			<AudienceBuilder backURL="/back" namespace="_test_" />

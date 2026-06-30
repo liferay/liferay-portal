@@ -6,9 +6,15 @@
 import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import AttributesSidebar from '../../../src/main/resources/META-INF/resources/js/components/AttributesSidebar';
 import {AudiencesCriteriaType} from '../../../src/main/resources/META-INF/resources/js/types';
+
+const DragAndDropProvider = DndProvider as unknown as React.FC<
+	React.PropsWithChildren<{backend: typeof HTML5Backend}>
+>;
 
 const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 	{
@@ -50,9 +56,11 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 describe('AttributesSidebar', () => {
 	it('lists and filters the attributes', async () => {
 		render(
-			<AttributesSidebar
-				audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-			/>
+			<DragAndDropProvider backend={HTML5Backend}>
+				<AttributesSidebar
+					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+				/>
+			</DragAndDropProvider>
 		);
 
 		expect(screen.getByText('Age')).toBeTruthy();
