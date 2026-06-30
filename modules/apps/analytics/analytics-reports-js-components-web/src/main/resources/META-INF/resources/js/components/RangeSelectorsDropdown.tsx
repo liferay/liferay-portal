@@ -44,6 +44,7 @@ export type RangeSelector = {
 export interface IRangeSelectorsDropdown {
 	activeRangeSelector: RangeSelector;
 	availableRangeKeys: RangeSelectors[];
+	borderless?: boolean;
 	className?: string;
 	onChange: (rangeSelector: RangeSelector) => void;
 	showDescription?: boolean;
@@ -359,6 +360,7 @@ const Views = {
 const RangeSelectorsDropdown: React.FC<IRangeSelectorsDropdown> = ({
 	activeRangeSelector,
 	availableRangeKeys,
+	borderless = true,
 	className,
 	onChange,
 	showDescription = true,
@@ -402,7 +404,7 @@ const RangeSelectorsDropdown: React.FC<IRangeSelectorsDropdown> = ({
 			trigger={
 				<ClayButton
 					aria-label={triggerLabel()}
-					borderless
+					borderless={borderless}
 					data-testid="rangeSelectors"
 					displayType="secondary"
 					ref={(node: HTMLButtonElement) => {
