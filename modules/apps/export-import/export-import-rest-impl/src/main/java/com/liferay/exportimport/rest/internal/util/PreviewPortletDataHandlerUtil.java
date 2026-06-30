@@ -38,6 +38,11 @@ import java.util.Map;
  */
 public class PreviewPortletDataHandlerUtil {
 
+	public static final String PRIVATE_PAGES_CONTROL_NAME =
+		"privateLayoutPages";
+
+	public static final String PUBLIC_PAGES_CONTROL_NAME = "publicLayoutPages";
+
 	public static void addConfigurationPreviewPortletDataHandler(
 		Locale locale, Portlet portlet,
 		PortletDataHandlerControl[] portletDataHandlerControls,
@@ -68,6 +73,88 @@ public class PreviewPortletDataHandlerUtil {
 						() -> _toPreviewPortletDataHandlerControls(
 							locale, portletDataHandlerControls,
 							portlet.getRootPortletId()));
+				}
+			});
+	}
+
+	public static void addLayoutSetPreviewPortletDataHandler(
+		long companyId, Locale locale, Portlet portlet,
+		PortletDataHandler portletDataHandler,
+		Map<String, List<PreviewPortletDataHandler>>
+			previewPortletDataHandlersMap,
+		long privateLayoutDeletionCount, ManifestSummary privateManifestSummary,
+		long publicLayoutDeletionCount, ManifestSummary publicManifestSummary) {
+
+		if ((portletDataHandler == null) ||
+			!portletDataHandler.isEnabled(companyId)) {
+
+			return;
+		}
+
+		long publicLayoutAdditionCount = Math.max(
+			0L, portletDataHandler.getExportModelCount(publicManifestSummary));
+
+		long privateLayoutAdditionCount = 0;
+
+		if (privateManifestSummary != null) {
+			privateLayoutAdditionCount = Math.max(
+				0L,
+				portletDataHandler.getExportModelCount(privateManifestSummary));
+		}
+
+		if ((privateLayoutAdditionCount == 0) &&
+			(privateLayoutDeletionCount == 0) &&
+			(publicLayoutAdditionCount == 0) &&
+			(publicLayoutDeletionCount == 0)) {
+
+			return;
+		}
+
+		long finalPrivateLayoutAdditionCount = privateLayoutAdditionCount;
+
+		String sectionKey = portletDataHandler.getSectionKey();
+
+		if (sectionKey == null) {
+			sectionKey = ExportImportConstants.SECTION_KEY_OTHER;
+		}
+
+		List<PreviewPortletDataHandler> previewPortletDataHandlers =
+			previewPortletDataHandlersMap.computeIfAbsent(
+				sectionKey, key -> new ArrayList<>());
+
+		previewPortletDataHandlers.add(
+			new PreviewPortletDataHandler() {
+				{
+					setAdditionCount(() -> publicLayoutAdditionCount);
+					setDeletionCount(() -> publicLayoutDeletionCount);
+					setDescription(
+						() -> portletDataHandler.getDescription(locale));
+					setLabel(
+						() -> {
+							String portletTitle = portletDataHandler.getTitle(
+								locale);
+
+							if (portletTitle != null) {
+								return portletTitle;
+							}
+
+							return PortalUtil.getPortletTitle(portlet, locale);
+						});
+					setName(
+						() ->
+							PortletDataHandlerKeys.PORTLET_DATA + "_" +
+								portlet.getPortletId());
+					setPreviewPortletDataHandlerControls(
+						() -> new PreviewPortletDataHandlerControl[] {
+							_toPreviewPortletDataHandlerChoice(
+								locale, portlet,
+								finalPrivateLayoutAdditionCount,
+								privateLayoutDeletionCount,
+								privateManifestSummary != null,
+								publicLayoutAdditionCount,
+								publicLayoutDeletionCount)
+						});
+					setTag(() -> portletDataHandler.getTag(locale));
 				}
 			});
 	}
@@ -234,6 +321,59 @@ public class PreviewPortletDataHandlerUtil {
 						locale, manifestSummary,
 						sourcePortletDataHandlerControls));
 				setTag(() -> portletDataHandler.getTag(locale));
+			}
+		};
+	}
+
+	private static PreviewPortletDataHandlerChoice
+		_toPreviewPortletDataHandlerChoice(
+			Locale locale, Portlet portlet, long privateLayoutAdditionCount,
+			long privateLayoutDeletionCount, boolean privateLayoutsEnabled,
+			long publicLayoutAdditionCount, long publicLayoutDeletionCount) {
+
+		return new PreviewPortletDataHandlerChoice() {
+			{
+				setChoices(
+					() -> {
+						List<Choice> choices = new ArrayList<>();
+
+						choices.add(
+							new Choice() {
+								{
+									setAdditionCount(
+										() -> publicLayoutAdditionCount);
+									setDeletionCount(
+										() -> publicLayoutDeletionCount);
+									setLabel(
+										() -> LanguageUtil.get(
+											locale, "public-pages"));
+									setName(() -> PUBLIC_PAGES_CONTROL_NAME);
+								}
+							});
+
+						if (privateLayoutsEnabled) {
+							choices.add(
+								new Choice() {
+									{
+										setAdditionCount(
+											() -> privateLayoutAdditionCount);
+										setDeletionCount(
+											() -> privateLayoutDeletionCount);
+										setLabel(
+											() -> LanguageUtil.get(
+												locale, "private-pages"));
+										setName(
+											() -> PRIVATE_PAGES_CONTROL_NAME);
+									}
+								});
+						}
+
+						return choices.toArray(new Choice[0]);
+					});
+				setDefaultChoice(() -> PUBLIC_PAGES_CONTROL_NAME);
+				setLabel(() -> PortalUtil.getPortletTitle(portlet, locale));
+				setName(() -> "layoutSet");
+				setType(() -> PreviewPortletDataHandlerControl.Type.CHOICE);
 			}
 		};
 	}

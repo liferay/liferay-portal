@@ -7,9 +7,11 @@ package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
+import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactory;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
+import com.liferay.exportimport.lar.DeletionSystemEventExporter;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
 import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
@@ -17,6 +19,7 @@ import com.liferay.exportimport.rest.internal.util.DateRangeUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -55,8 +58,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
 
-		return _getExportPreview(
-			endDate, group.getGroupId(), 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, false, startDate);
 	}
 
 	@Override
@@ -68,8 +70,8 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
 
 		return _getExportPreview(
-			endDate, group.getGroupId(), GetterUtil.getLong(plid), portletId,
-			false, startDate);
+			endDate, group, GetterUtil.getLong(plid), portletId, false,
+			startDate);
 	}
 
 	@Override
@@ -83,8 +85,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 			throw new NotFoundException();
 		}
 
-		return _getExportPreview(
-			endDate, group.getGroupId(), 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, false, startDate);
 	}
 
 	@Override
@@ -94,8 +95,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Group group = _getSiteGroup(siteExternalReferenceCode);
 
-		return _getExportPreview(
-			endDate, group.getGroupId(), 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, false, startDate);
 	}
 
 	@Override
@@ -107,8 +107,8 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		Group group = _getSiteGroup(siteExternalReferenceCode);
 
 		return _getExportPreview(
-			endDate, group.getGroupId(), GetterUtil.getLong(plid), portletId,
-			false, startDate);
+			endDate, group, GetterUtil.getLong(plid), portletId, false,
+			startDate);
 	}
 
 	private Group _getAssetLibraryGroup(String externalReferenceCode) {
@@ -123,9 +123,11 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 	}
 
 	private ExportPreview _getExportPreview(
-			Date endDate, long groupId, long plid, String portletId,
+			Date endDate, Group group, long plid, String portletId,
 			boolean privateLayout, Date startDate)
 		throws Exception {
+
+		long groupId = group.getGroupId();
 
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), groupId);
@@ -172,24 +174,75 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 					contextCompany.getCompanyId(), groupId, range, startDate,
 					endDate);
 
+			portletDataContext.setPrivateLayout(privateLayout);
+
 			portletDataHandler.prepareManifestSummary(portletDataContext);
 
-			PreviewPortletDataHandlerUtil.addPreviewPortletDataHandler(
-				contextCompany.getCompanyId(), locale,
-				portletDataContext.getManifestSummary(), portlet,
-				portletDataHandler,
-				PortletDataHandler::getExportPortletDataHandlerControls,
-				portletScoped, previewPortletDataHandlersMap);
+			if (LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS.equals(
+					portlet.getPortletId())) {
 
-			if (portletScoped) {
+				portletDataContext.addDeletionSystemEventStagedModelTypes(
+					portletDataHandler.
+						getDeletionSystemEventStagedModelTypes());
+
+				long publicDeletionSystemEventsCount =
+					_deletionSystemEventExporter.getDeletionSystemEventsCount(
+						portletDataContext);
+
+				ManifestSummary privateManifestSummary = null;
+				long privateDeletionSystemEventsCount = 0;
+
+				if (!portletScoped && group.isPrivateLayoutsEnabled()) {
+					PortletDataContext privatePortletDataContext =
+						_portletDataContextFactory.
+							createPreparePortletDataContext(
+								contextCompany.getCompanyId(), groupId, range,
+								startDate, endDate);
+
+					privatePortletDataContext.setPrivateLayout(true);
+
+					portletDataHandler.prepareManifestSummary(
+						privatePortletDataContext);
+
+					privatePortletDataContext.
+						addDeletionSystemEventStagedModelTypes(
+							portletDataHandler.
+								getDeletionSystemEventStagedModelTypes());
+
+					privateManifestSummary =
+						privatePortletDataContext.getManifestSummary();
+					privateDeletionSystemEventsCount =
+						_deletionSystemEventExporter.
+							getDeletionSystemEventsCount(
+								privatePortletDataContext);
+				}
+
 				PreviewPortletDataHandlerUtil.
-					addConfigurationPreviewPortletDataHandler(
-						locale, portlet,
-						portletDataHandler.
-							getExportConfigurationPortletDataHandlerControls(
-								contextCompany.getCompanyId(), groupId, portlet,
-								plid, privateLayout),
-						previewPortletDataHandlersMap);
+					addLayoutSetPreviewPortletDataHandler(
+						contextCompany.getCompanyId(), locale, portlet,
+						portletDataHandler, previewPortletDataHandlersMap,
+						privateDeletionSystemEventsCount,
+						privateManifestSummary, publicDeletionSystemEventsCount,
+						portletDataContext.getManifestSummary());
+			}
+			else {
+				PreviewPortletDataHandlerUtil.addPreviewPortletDataHandler(
+					contextCompany.getCompanyId(), locale,
+					portletDataContext.getManifestSummary(), portlet,
+					portletDataHandler,
+					PortletDataHandler::getExportPortletDataHandlerControls,
+					portletScoped, previewPortletDataHandlersMap);
+
+				if (portletScoped) {
+					PreviewPortletDataHandlerUtil.
+						addConfigurationPreviewPortletDataHandler(
+							locale, portlet,
+							portletDataHandler.
+								getExportConfigurationPortletDataHandlerControls(
+									contextCompany.getCompanyId(), groupId,
+									portlet, plid, privateLayout),
+							previewPortletDataHandlersMap);
+				}
 			}
 		}
 
@@ -220,6 +273,9 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		return group;
 	}
+
+	@Reference
+	private DeletionSystemEventExporter _deletionSystemEventExporter;
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;
