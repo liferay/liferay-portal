@@ -12,6 +12,11 @@ export interface AudiencesCriteria {
 	type: 'boolean' | 'number' | 'set' | 'string';
 }
 
+export interface AudiencesCriteriaJSON {
+	conjunction?: string;
+	rules?: Array<{attribute: string; operator: string; value: string}>;
+}
+
 export interface AudiencesCriteriaType {
 	audiencesCriterias: AudiencesCriteria[];
 	label: string;

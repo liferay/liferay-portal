@@ -12,6 +12,8 @@ import com.liferay.audiences.service.AudiencesEntryServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -51,6 +53,24 @@ public class EditAudiencesEntryDisplayContext {
 			_httpServletRequest, "audiencesEntryId");
 
 		return _audiencesEntryId;
+	}
+
+	public JSONObject getAudiencesEntryJSONObject() {
+		try {
+			AudiencesEntry audiencesEntry = _getAudiencesEntry();
+
+			if (audiencesEntry != null) {
+				return JSONFactoryUtil.createJSONObject(
+					audiencesEntry.getJSON());
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return JSONFactoryUtil.createJSONObject();
 	}
 
 	public String getBackURL() {
@@ -127,7 +147,7 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"backURL", getBackURL()
 		).put(
-			"json", _getJSON()
+			"json", getAudiencesEntryJSONObject()
 		).put(
 			"name", _getName()
 		).put(
@@ -183,23 +203,6 @@ public class EditAudiencesEntryDisplayContext {
 		}
 
 		return null;
-	}
-
-	private String _getJSON() {
-		try {
-			AudiencesEntry audiencesEntry = _getAudiencesEntry();
-
-			if (audiencesEntry != null) {
-				return audiencesEntry.getJSON();
-			}
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		return StringPool.BLANK;
 	}
 
 	private String _getName() {

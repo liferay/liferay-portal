@@ -40,12 +40,12 @@ const AUDIENCES_CRITERIA_TYPES = [
 	},
 ];
 
-const JSON_WITH_RULES = JSON.stringify({
+const JSON_WITH_RULES = {
 	conjunction: 'AND',
 	rules: [{attribute: 'age', operator: 'gt', value: '18'}],
-});
+};
 
-function renderConditionsPanel(json?: string) {
+function renderConditionsPanel(json?: typeof JSON_WITH_RULES) {
 	return render(
 		<DragAndDropProvider backend={HTML5Backend}>
 			<ScreenReaderAnnouncerContextProvider>

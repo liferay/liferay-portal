@@ -12,12 +12,17 @@ import {useDrop} from 'react-dnd';
 import {v4 as uuidv4} from 'uuid';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
-import {AudiencesCriteria, AudiencesCriteriaType, Rule} from '../types';
+import {
+	AudiencesCriteria,
+	AudiencesCriteriaJSON,
+	AudiencesCriteriaType,
+	Rule,
+} from '../types';
 import RuleRow from './RuleRow';
 
 interface IProps {
 	audiencesCriteriaTypes: AudiencesCriteriaType[];
-	json?: string;
+	json?: AudiencesCriteriaJSON;
 	namespace: string;
 }
 
@@ -35,36 +40,21 @@ function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 	};
 }
 
-function parseCriteria(json?: string): {conjunction: string; rules: Rule[]} {
-	if (!json) {
-		return {conjunction: 'and', rules: []};
-	}
-
-	try {
-		const parsed: {
-			conjunction?: string;
-			rules?: Array<{
-				attribute: string;
-				operator: string;
-				value: string;
-			}>;
-		} = JSON.parse(json);
-
-		return {
-			conjunction: (parsed.conjunction ?? 'AND').toLowerCase(),
-			rules: (parsed.rules ?? [])
-				.filter((rule) => Boolean(rule.attribute))
-				.map((rule) => ({
-					attribute: rule.attribute,
-					id: `rule-${uuidv4()}`,
-					operator: rule.operator,
-					value: rule.value,
-				})),
-		};
-	}
-	catch {
-		return {conjunction: 'and', rules: []};
-	}
+function parseCriteria(json?: AudiencesCriteriaJSON): {
+	conjunction: string;
+	rules: Rule[];
+} {
+	return {
+		conjunction: json?.conjunction ?? 'AND',
+		rules: (json?.rules ?? [])
+			.filter((rule) => Boolean(rule.attribute))
+			.map((rule) => ({
+				attribute: rule.attribute,
+				id: `rule-${uuidv4()}`,
+				operator: rule.operator,
+				value: rule.value,
+			})),
+	};
 }
 
 export default function ConditionsPanel({
@@ -91,7 +81,7 @@ export default function ConditionsPanel({
 	const [rules, setRules] = useState<Rule[]>(initialCriteria.rules);
 
 	const serializedJSON = JSON.stringify({
-		conjunction: conjunction.toUpperCase(),
+		conjunction,
 		rules: rules.map((rule) => ({
 			attribute: rule.attribute,
 			operator: rule.operator,
@@ -205,11 +195,11 @@ export default function ConditionsPanel({
 								items={[
 									{
 										label: Liferay.Language.get('and'),
-										value: 'and',
+										value: 'AND',
 									},
 									{
 										label: Liferay.Language.get('or'),
-										value: 'or',
+										value: 'OR',
 									},
 								]}
 								onSelectionChange={(key) =>
@@ -226,7 +216,7 @@ export default function ConditionsPanel({
 						</div>
 
 						<span className="text-2 text-secondary">
-							{conjunction === 'or'
+							{conjunction === 'OR'
 								? Liferay.Language.get('any-rule-must-match')
 								: Liferay.Language.get('all-rule-must-match')}
 
@@ -250,7 +240,7 @@ export default function ConditionsPanel({
 										<span className="audience-builder-conjunction-line border-top" />
 
 										<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
-											{conjunction === 'or'
+											{conjunction === 'OR'
 												? Liferay.Language.get('or')
 												: Liferay.Language.get('and')}
 										</span>

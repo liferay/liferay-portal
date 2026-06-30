@@ -19,7 +19,7 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import AttributesSidebar from './components/AttributesSidebar';
 import ConditionsPanel from './components/ConditionsPanel';
-import {AudiencesCriteriaType} from './types';
+import {AudiencesCriteriaJSON, AudiencesCriteriaType} from './types';
 
 import './AudienceBuilder.scss';
 
@@ -32,7 +32,7 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
 	backURL?: string;
-	json?: string;
+	json?: AudiencesCriteriaJSON;
 	name?: string;
 	namespace?: string;
 }
