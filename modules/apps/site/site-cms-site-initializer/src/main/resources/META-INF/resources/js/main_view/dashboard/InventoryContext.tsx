@@ -52,9 +52,9 @@ const initialState: State = {
 	},
 };
 
-export const DashboardsContext = createContext(initialState);
+export const InventoryContext = createContext(initialState);
 
-DashboardsContext.displayName = 'DashboardsContext';
+InventoryContext.displayName = 'InventoryContext';
 
 const reducer = (state: State, action: Action): State => {
 	switch (action.type) {
@@ -84,11 +84,11 @@ const reducer = (state: State, action: Action): State => {
 	}
 };
 
-interface IDashboardsContextProvider extends React.HTMLAttributes<HTMLElement> {
+interface IInventoryContextProvider extends React.HTMLAttributes<HTMLElement> {
 	value: Partial<State>;
 }
 
-const DashboardsContextProvider: React.FC<IDashboardsContextProvider> = ({
+const InventoryContextProvider: React.FC<IInventoryContextProvider> = ({
 	children,
 	value,
 }) => {
@@ -109,7 +109,7 @@ const DashboardsContextProvider: React.FC<IDashboardsContextProvider> = ({
 	}, []);
 
 	return (
-		<DashboardsContext.Provider
+		<InventoryContext.Provider
 			value={{
 				...state,
 				...value,
@@ -118,8 +118,8 @@ const DashboardsContextProvider: React.FC<IDashboardsContextProvider> = ({
 			}}
 		>
 			{children}
-		</DashboardsContext.Provider>
+		</InventoryContext.Provider>
 	);
 };
 
-export {DashboardsContextProvider};
+export {InventoryContextProvider};

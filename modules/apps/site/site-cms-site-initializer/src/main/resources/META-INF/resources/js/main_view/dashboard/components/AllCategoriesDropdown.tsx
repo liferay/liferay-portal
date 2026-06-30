@@ -7,7 +7,7 @@ import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
 import React, {useContext, useState} from 'react';
 
 import ApiHelper from '../../../common/services/ApiHelper';
-import {DashboardsContext} from '../DashboardsContext';
+import {InventoryContext} from '../InventoryContext';
 import {FilterDropdown} from './FilterDropdown';
 import {
 	IAllFiltersDropdown,
@@ -48,7 +48,7 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 	const {
 		constants: {cmsGroupId},
 		filters: {space},
-	} = useContext(DashboardsContext);
+	} = useContext(InventoryContext);
 
 	const [categories, setCategories] = useState([initialFilters.category]);
 	const [vocabularies, setVocabularies] = useState([initialFilters.category]);

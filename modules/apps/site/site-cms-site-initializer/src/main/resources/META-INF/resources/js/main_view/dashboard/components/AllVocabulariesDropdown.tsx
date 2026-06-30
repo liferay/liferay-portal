@@ -7,7 +7,7 @@ import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import VocabularyService from '../../../common/services/VocabularyService';
-import {DashboardsContext} from '../DashboardsContext';
+import {InventoryContext} from '../InventoryContext';
 import {Item} from './FilterDropdown';
 import {
 	IAllFiltersDropdown,
@@ -26,7 +26,7 @@ const AllVocabulariesDropdown: React.FC<IAllFiltersDropdown> = ({
 	const {
 		constants: {cmsGroupId},
 		filters: {space},
-	} = useContext(DashboardsContext);
+	} = useContext(InventoryContext);
 
 	const [rawVocabularies, setRawVocabularies] = useState<Vocabulary[]>([]);
 

@@ -7,7 +7,7 @@ import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useState} from 'react';
 
 import SpaceService from '../../../common/services/SpaceService';
-import {DashboardsContext, initialSpace} from '../DashboardsContext';
+import {InventoryContext, initialSpace} from '../InventoryContext';
 import PickerTrigger from './PickerTrigger';
 
 type SpaceOption = {
@@ -22,7 +22,7 @@ const SpacesDropdown: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 	const {
 		changeSpace,
 		filters: {space},
-	} = useContext(DashboardsContext);
+	} = useContext(InventoryContext);
 
 	const [spaces, setSpaces] = useState<SpaceOption[]>([initialSpace]);
 

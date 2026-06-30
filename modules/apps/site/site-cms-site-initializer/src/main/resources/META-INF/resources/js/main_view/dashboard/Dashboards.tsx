@@ -8,7 +8,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
-import {DashboardsContextProvider} from './DashboardsContext';
+import {InventoryContextProvider} from './InventoryContext';
 import {ContentCard} from './components/ContentCard';
 import {ExpiredAssetsCard} from './components/ExpiredAssetsCard';
 import {FilesCard} from './components/FilesCard';
@@ -45,7 +45,7 @@ const Dashboards: React.FC<IDashboards> = ({
 			/>
 
 			<ClayTooltipProvider>
-				<DashboardsContextProvider value={{constants}}>
+				<InventoryContextProvider value={{constants}}>
 					<ClayLayout.Container className="px-4" fluid>
 						{freeTier ? (
 							<EnterpriseOnlyPlaceholder
@@ -134,7 +134,7 @@ const Dashboards: React.FC<IDashboards> = ({
 							</>
 						)}
 					</ClayLayout.Container>
-				</DashboardsContextProvider>
+				</InventoryContextProvider>
 			</ClayTooltipProvider>
 		</>
 	);
