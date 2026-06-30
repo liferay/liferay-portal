@@ -2020,35 +2020,56 @@ assetPublisherDeprecationTest(
 		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
 		await widgetPagePage.addPortlet('Asset Publisher');
+
 		await page
 			.locator('.portlet-asset-publisher')
 			.first()
 			.getByLabel('Options')
 			.click();
+
 		await page
 			.getByRole('menuitem', {exact: true, name: 'Configuration'})
 			.click();
+
 		const configurationFrame = page.frameLocator(
 			'iframe[id="modalIframe"]'
 		);
+
 		await configurationFrame
 			.getByRole('tab', {name: 'Asset Selection'})
 			.click();
+
 		await configurationFrame.getByText('Dynamic', {exact: true}).click();
-		await configurationFrame
-			.getByRole('tab', {name: 'Display Settings'})
-			.click();
-		await configurationFrame.getByLabel('Display Template').click();
-		await configurationFrame
-			.getByRole('option', {name: 'Full Content'})
-			.click();
+
+		await expect(async () => {
+			await configurationFrame
+				.getByRole('tab', {name: 'Display Settings'})
+				.click({timeout: 2000});
+
+			await configurationFrame
+				.getByLabel('Display Template')
+				.click({timeout: 2000});
+
+			await configurationFrame
+				.getByRole('option', {name: 'Full Content'})
+				.click({timeout: 2000});
+		}).toPass();
+
 		await configurationFrame.getByRole('button', {name: 'Save'}).click();
+
 		await page
 			.locator('.modal-header')
 			.getByLabel('Close', {exact: true})
 			.click();
 
-		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
+		await expect(async () => {
+			await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
+
+			await expect(page.getByText('page1')).toBeVisible({timeout: 2000});
+			await expect(page.getByLabel('Go to page, 2')).toBeVisible({
+				timeout: 2000,
+			});
+		}).toPass();
 
 		await page.getByLabel('Go to page, 2').click();
 
