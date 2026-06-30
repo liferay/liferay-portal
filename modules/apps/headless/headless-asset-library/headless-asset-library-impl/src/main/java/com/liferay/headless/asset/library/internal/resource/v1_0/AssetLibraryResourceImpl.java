@@ -70,6 +70,8 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -830,9 +832,12 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		new AssetLibraryEntityModel();
 
 	@Reference(
-		target = "(component.name=com.liferay.headless.asset.library.internal.dto.v1_0.converter.AssetLibraryDTOConverter)"
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		target = "(dto.class.name=com.liferay.depot.model.DepotEntry)"
 	)
-	private DTOConverter<DepotEntry, AssetLibrary> _assetLibraryDTOConverter;
+	private volatile DTOConverter<DepotEntry, AssetLibrary>
+		_assetLibraryDTOConverter;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
