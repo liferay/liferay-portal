@@ -2755,11 +2755,9 @@ baseTest(
 
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 
-		baseTest.step(
+		await baseTest.step(
 			'Change language without filling title for default language',
 			async () => {
-				await journalEditArticlePage.fillTitle('');
-
 				const translationButton = page.getByRole('combobox', {
 					name: 'Select a language',
 				});
@@ -2780,7 +2778,7 @@ baseTest(
 			}
 		);
 
-		baseTest.step('Cannot Publish With Permissions', async () => {
+		await baseTest.step('Cannot Publish With Permissions', async () => {
 			await clickAndExpectToBeVisible({
 				autoClick: true,
 				target: page.getByRole('menuitem', {
@@ -2798,10 +2796,13 @@ baseTest(
 
 			await expect(page.locator('.modal-dialog')).not.toBeVisible();
 
-			await page.getByLabel('Close').click();
+			await page
+				.locator('.alert-danger')
+				.getByRole('button', {name: 'Close'})
+				.click();
 		});
 
-		baseTest.step('Cannot Schedule Publication', async () => {
+		await baseTest.step('Cannot Schedule Publication', async () => {
 			await clickAndExpectToBeVisible({
 				autoClick: true,
 				target: page.getByRole('menuitem', {
@@ -2818,16 +2819,20 @@ baseTest(
 				.waitFor();
 
 			await expect(page.locator('.modal-dialog')).not.toBeVisible();
-			await page.getByLabel('Close').click();
+
+			await page
+				.locator('.alert-danger')
+				.getByRole('button', {name: 'Close'})
+				.click();
 		});
 
-		baseTest.step('Cannot Save as Draft', async () => {
+		await baseTest.step('Cannot Save as Draft', async () => {
 			await page.getByRole('button', {name: 'Save as Draft'}).click();
 
 			await expect(page.locator('.modal-dialog')).not.toBeVisible();
 		});
 
-		baseTest.step(
+		await baseTest.step(
 			'Can Save as Draft if default language title is filled',
 			async () => {
 				const translationButton = page.getByRole('combobox', {
@@ -2852,13 +2857,13 @@ baseTest(
 					trigger: translationButton,
 				});
 
-				await expect(page.locator('.modal-dialog')).toBeVisible();
-
-				await expect(async () => {
-					page.getByRole('heading', {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('heading', {
 						name: 'Save as Draft With Permissions',
-					});
-				}).toPass();
+					}),
+					trigger: page.getByRole('button', {name: 'Save as Draft'}),
+				});
 			}
 		);
 	}
