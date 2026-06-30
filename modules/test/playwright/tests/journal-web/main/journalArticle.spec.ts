@@ -1786,20 +1786,26 @@ baseTest(
 
 			await translationButton.click();
 
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: page.getByRole('option', {
+			await expect(
+				page.getByRole('option', {
 					name: 'Catalan Language: Translating 1/',
-				}),
-				trigger: translationButton,
-			});
+				})
+			).toBeVisible({timeout: 2000});
+
+			await page.keyboard.press('Escape');
 		}).toPass();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'English Language: Default',
+			}),
+			trigger: translationButton,
+		});
 
 		await journalEditArticlePage.publishArticle();
 
 		await waitForAlert(page, `Success:${title} was created successfully.`);
-
-		await page.getByLabel('Fin', {exact: true});
 
 		await journalPage.goToJournalArticleAction(
 			'Delete Translations',
