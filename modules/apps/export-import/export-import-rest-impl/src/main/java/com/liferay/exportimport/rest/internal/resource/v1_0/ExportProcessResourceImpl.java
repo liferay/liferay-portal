@@ -21,9 +21,9 @@ import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.DateRangeUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
+import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ExportProcessResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
-import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateRange;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -52,6 +51,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.staging.StagingGroupHelper;
 
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
@@ -439,18 +439,35 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
 			exportProcessRequest, false);
 
-		long[] layoutIds = GetterUtil.getLongValues(
-			parameterMap.get("layoutIds"));
-		boolean privateLayout = MapUtil.getBoolean(
-			parameterMap, "privateLayout");
+		boolean privateLayout = parameterMap.containsKey(
+			PreviewPortletDataHandlerUtil.PRIVATE_PAGES_CONTROL_NAME);
+		boolean publicLayout = parameterMap.containsKey(
+			PreviewPortletDataHandlerUtil.PUBLIC_PAGES_CONTROL_NAME);
 
-		if (ArrayUtil.isEmpty(layoutIds) &&
-			MapUtil.getBoolean(
-				parameterMap,
-				"PORTLET_DATA_" + LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS)) {
+		if (privateLayout && publicLayout) {
+			throw new BadRequestException(
+				"Cannot request both private and public pages");
+		}
 
-			layoutIds = _exportImportHelper.getAllLayoutIds(
-				groupId, privateLayout);
+		if (privateLayout && !group.isPrivateLayoutsEnabled()) {
+			throw new BadRequestException("Private pages are not enabled");
+		}
+
+		String[] values = parameterMap.get(
+			privateLayout ?
+				PreviewPortletDataHandlerUtil.PRIVATE_PAGES_CONTROL_NAME :
+					PreviewPortletDataHandlerUtil.PUBLIC_PAGES_CONTROL_NAME);
+
+		long[] layoutIds = new long[0];
+
+		if (values != null) {
+			if (Boolean.parseBoolean(values[0])) {
+				layoutIds = _exportImportHelper.getAllLayoutIds(
+					groupId, privateLayout);
+			}
+			else {
+				layoutIds = GetterUtil.getLongValues(values);
+			}
 		}
 
 		Map<String, Serializable> settingsMap =
