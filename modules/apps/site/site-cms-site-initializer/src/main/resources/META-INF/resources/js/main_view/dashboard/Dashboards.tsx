@@ -4,11 +4,14 @@
  */
 
 import ClayLayout from '@clayui/layout';
+import ClayLink from '@clayui/link';
+import ClayNavigationBar from '@clayui/navigation-bar';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import React from 'react';
+import React, {useState} from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
 import InventoryDashboard from './inventory/InventoryDashboard';
+import PerformanceDashboard from './performance/PerformanceDashboard';
 
 import '../../../css/dashboard/Dashboard.scss';
 
@@ -16,19 +19,22 @@ import {ILearnResourceContext} from 'frontend-js-components-web';
 
 import EnterpriseOnlyPlaceholder from '../../common/components/EnterpriseOnlyPlaceholder';
 
-interface IDashboards {
-	constants: {
-		[key: string]: string;
-	};
-	freeTier: boolean;
-	learnResources: ILearnResourceContext;
-}
+const TABS = {
+	inventory: Liferay.Language.get('inventory'),
+	performance: Liferay.Language.get('performance'),
+} as const;
 
-const Dashboards: React.FC<IDashboards> = ({
+type TabId = keyof typeof TABS;
+
+function Wrapper({
 	constants,
 	freeTier,
 	learnResources,
-}) => {
+}: {
+	constants: {[key: string]: string};
+	freeTier: boolean;
+	learnResources: ILearnResourceContext;
+}) {
 	return (
 		<>
 			<Breadcrumb
@@ -38,18 +44,87 @@ const Dashboards: React.FC<IDashboards> = ({
 			/>
 
 			<ClayTooltipProvider>
-				<ClayLayout.Container className="px-4" fluid>
-					{freeTier ? (
-						<EnterpriseOnlyPlaceholder
-							learnResources={learnResources}
-						/>
-					) : (
-						<InventoryDashboard constants={constants} />
-					)}
-				</ClayLayout.Container>
+				<Dashboards
+					constants={constants}
+					freeTier={freeTier}
+					learnResources={learnResources}
+				/>
 			</ClayTooltipProvider>
 		</>
 	);
-};
+}
 
-export default Dashboards;
+function Dashboards({
+	constants,
+	freeTier,
+	learnResources,
+}: {
+	constants: {[key: string]: string};
+	freeTier: boolean;
+	learnResources: ILearnResourceContext;
+}) {
+	const [tabId, setTabId] = useState<TabId>('inventory');
+
+	if (freeTier) {
+		return (
+			<ClayLayout.Container className="px-4" fluid>
+				<EnterpriseOnlyPlaceholder learnResources={learnResources} />
+			</ClayLayout.Container>
+		);
+	}
+
+	if (!Liferay.FeatureFlags['LPD-58315']) {
+		return (
+			<ClayLayout.Container className="px-4" fluid>
+				<InventoryDashboard constants={constants} />
+			</ClayLayout.Container>
+		);
+	}
+
+	return (
+		<>
+			<Tabs setTabId={setTabId} tabId={tabId} />
+
+			<ClayLayout.Container className="px-4" fluid>
+				{tabId === 'inventory' ? (
+					<InventoryDashboard constants={constants} />
+				) : null}
+
+				{tabId === 'performance' ? <PerformanceDashboard /> : null}
+			</ClayLayout.Container>
+		</>
+	);
+}
+
+function Tabs({
+	setTabId,
+	tabId,
+}: {
+	setTabId: (id: TabId) => void;
+	tabId: TabId;
+}) {
+	return (
+		<ClayNavigationBar
+			className="mb-4"
+			fluidSize={false}
+			triggerLabel={TABS[tabId]}
+		>
+			{(Object.keys(TABS) as TabId[]).map((id) => (
+				<ClayNavigationBar.Item active={id === tabId} key={id}>
+					<ClayLink
+						onClick={(event) => {
+							event.preventDefault();
+
+							setTabId(id);
+						}}
+						role="tab"
+					>
+						{TABS[id]}
+					</ClayLink>
+				</ClayNavigationBar.Item>
+			))}
+		</ClayNavigationBar>
+	);
+}
+
+export default Wrapper;
