@@ -138,7 +138,10 @@ function getDropPosition(
 
 	const clientOffset = monitor.getClientOffset()!;
 	const dropItemBoundingRect = ref.current.getBoundingClientRect();
-	const hoverBottomLimit = dropItemBoundingRect.height - hoverLimit;
+	const hoverBottomLimit = Math.max(
+		dropItemBoundingRect.height / 2,
+		dropItemBoundingRect.height - hoverLimit
+	);
 	const hoverClientY = clientOffset.y - dropItemBoundingRect.top;
 
 	return hoverClientY > hoverBottomLimit ? 'bottom' : 'top';

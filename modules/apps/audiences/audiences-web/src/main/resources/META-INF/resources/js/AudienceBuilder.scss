@@ -7,12 +7,51 @@ $toolbar-height: 55px;
 	height: calc(100vh - #{$toolbar-height});
 }
 
+.audience-builder-attribute {
+	border-radius: 4px;
+	cursor: grab;
+
+	&:hover {
+		background-color: $light;
+	}
+
+	&--dragging {
+		opacity: 0.5;
+	}
+}
+
 .audience-builder-conjunction-line {
 	width: 20px;
 }
 
+.audience-builder-drop-zone {
+	min-height: 240px;
+	transition: background-color 0.1s ease-in-out;
+
+	&--over {
+		background-color: rgba($primary, 0.06);
+		box-shadow: inset 0 0 0 2px $primary;
+	}
+}
+
+.audience-builder-grip {
+	cursor: grab;
+}
+
 .audience-builder-rule {
 	border-left: 4px solid $teal-l2;
+
+	&--dragging {
+		opacity: 0.5;
+	}
+
+	&--drop-bottom {
+		box-shadow: inset 0 -4px 0 0 $primary;
+	}
+
+	&--drop-top {
+		box-shadow: 0 -4px 0 0 $primary;
+	}
 }
 
 .audience-builder-sidebar {

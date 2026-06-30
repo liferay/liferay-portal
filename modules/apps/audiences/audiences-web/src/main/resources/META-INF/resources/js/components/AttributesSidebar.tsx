@@ -5,12 +5,11 @@
 
 import ClayEmptyState from '@clayui/empty-state';
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
-import ClayList from '@clayui/list';
 import {SearchForm} from '@liferay/layout-js-components-web';
 import React, {useState} from 'react';
 
 import {AudiencesCriteriaType} from '../types';
+import AttributeListItem from './AttributeListItem';
 
 interface IProps {
 	audiencesCriteriaTypes: AudiencesCriteriaType[];
@@ -60,23 +59,12 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 
 			{audiencesCriterias.length ? (
 				<div className="overflow-auto">
-					<ClayList>
-						{audiencesCriterias.map((audiencesCriteria) => (
-							<ClayList.Item
-								className="align-items-center border-0"
-								flex
-								key={audiencesCriteria.key}
-							>
-								<ClayList.ItemField>
-									<ClayIcon symbol={audiencesCriteria.icon} />
-								</ClayList.ItemField>
-
-								<ClayList.ItemField className="text-3" expand>
-									{audiencesCriteria.label}
-								</ClayList.ItemField>
-							</ClayList.Item>
-						))}
-					</ClayList>
+					{audiencesCriterias.map((audiencesCriteria) => (
+						<AttributeListItem
+							audiencesCriteria={audiencesCriteria}
+							key={audiencesCriteria.key}
+						/>
+					))}
 				</div>
 			) : (
 				<ClayEmptyState
