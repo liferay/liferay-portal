@@ -10,7 +10,7 @@ dependencies {
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5", version: "5.3.2"
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5-h2", version: "5.3.4"
 	compileInclude group: "org.joda", name: "joda-convert", version: "2.2.1"
-	compileInclude group: "org.springframework", name: "spring-web", version: "6.2.11"
+	compileInclude group: "org.springframework", name: "spring-web", version: "6.2.18"
 	compileInclude group: "org.springframework.boot", name: "spring-boot", version: "2.7.18"
 	compileInclude group: "org.springframework.hateoas", name: "spring-hateoas", version: "2.4.0"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
