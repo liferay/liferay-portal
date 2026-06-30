@@ -14,6 +14,8 @@ export class CommerceWishListPage {
 	readonly saveButton: Locator;
 	readonly wishListContentPortlet: Locator;
 	readonly wishListHeading: (wishListName: string) => Locator;
+	readonly wishListItem: (productName: string) => Locator;
+	readonly wishListItemDeleteButton: (productName: string) => Locator;
 	readonly wishListLink: (wishListName: string) => Locator;
 
 	constructor(page: Page) {
@@ -36,6 +38,13 @@ export class CommerceWishListPage {
 			this.wishListContentPortlet.getByRole('heading', {
 				exact: true,
 				name: wishListName,
+			});
+		this.wishListItem = (productName: string) =>
+			page.locator('tr').filter({hasText: productName});
+		this.wishListItemDeleteButton = (productName: string) =>
+			this.wishListItem(productName).getByRole('link', {
+				exact: true,
+				name: 'Delete',
 			});
 		this.wishListLink = (wishListName: string) =>
 			page.getByRole('link', {exact: true, name: wishListName});
