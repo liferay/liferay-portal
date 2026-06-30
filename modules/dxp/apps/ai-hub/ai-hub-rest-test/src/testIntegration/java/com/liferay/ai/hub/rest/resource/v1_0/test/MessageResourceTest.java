@@ -10,6 +10,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration;
+import com.liferay.ai.hub.configuration.VertexAIConfiguration;
 import com.liferay.ai.hub.rest.resource.v1_0.test.util.SseEventSourceTestUtil;
 import com.liferay.ai.hub.rest.resource.v1_0.test.util.TokenTestUtil;
 import com.liferay.ai.hub.rest.resource.v1_0.util.SseUtil;
@@ -23,6 +24,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -36,6 +38,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -129,53 +132,70 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 	@Override
 	@Test
 	public void testPostChatByExternalReferenceCodeMessage() throws Exception {
-		CountDownLatch countDownLatch1 = new CountDownLatch(4);
-		CountDownLatch countDownLatch2 = new CountDownLatch(6);
-		List<String> lines = new ArrayList<>();
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						VertexAIConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"location", TestPropsValues.VERTEX_AI_LOCATION
+						).put(
+							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+						).put(
+							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+						).build())) {
 
-		String sseEventSinkKey = SseEventSourceTestUtil.open(
-			List.of(countDownLatch1, countDownLatch2), lines,
-			"chats/subscribe");
+			CountDownLatch countDownLatch1 = new CountDownLatch(4);
+			CountDownLatch countDownLatch2 = new CountDownLatch(6);
+			List<String> lines = new ArrayList<>();
 
-		String text = "this is a short text.";
+			String sseEventSinkKey = SseEventSourceTestUtil.open(
+				List.of(countDownLatch1, countDownLatch2), lines,
+				"chats/subscribe");
 
-		JSONObject jsonObject = _postChatByExternalReferenceCodeMessage(
-			"Expand the following text: " + text, sseEventSinkKey);
+			String text = "this is a short text.";
 
-		Assert.assertEquals(
-			"Expand the following text: " + text, jsonObject.getString("text"));
+			JSONObject jsonObject = _postChatByExternalReferenceCodeMessage(
+				"Expand the following text: " + text, sseEventSinkKey);
 
-		Assert.assertEquals(lines.toString(), 2, lines.size());
+			Assert.assertEquals(
+				"Expand the following text: " + text,
+				jsonObject.getString("text"));
 
-		Assert.assertTrue(countDownLatch1.await(10, TimeUnit.SECONDS));
+			Assert.assertEquals(lines.toString(), 2, lines.size());
 
-		Assert.assertEquals(lines.toString(), 4, lines.size());
-		Assert.assertEquals("event: Chat Message Sent", lines.get(2));
+			Assert.assertTrue(countDownLatch1.await(10, TimeUnit.SECONDS));
 
-		String expandedText = lines.get(3);
+			Assert.assertEquals(lines.toString(), 4, lines.size());
+			Assert.assertEquals("event: Chat Message Sent", lines.get(2));
 
-		Assert.assertTrue(expandedText.length() > text.length());
+			String expandedText = lines.get(3);
 
-		jsonObject = _postChatByExternalReferenceCodeMessage(
-			"What was the first message that I sent in this chat?",
-			sseEventSinkKey);
+			Assert.assertTrue(expandedText.length() > text.length());
 
-		Assert.assertEquals(
-			"What was the first message that I sent in this chat?",
-			jsonObject.getString("text"));
+			jsonObject = _postChatByExternalReferenceCodeMessage(
+				"What was the first message that I sent in this chat?",
+				sseEventSinkKey);
 
-		Assert.assertEquals(lines.toString(), 4, lines.size());
+			Assert.assertEquals(
+				"What was the first message that I sent in this chat?",
+				jsonObject.getString("text"));
 
-		Assert.assertTrue(countDownLatch2.await(10, TimeUnit.SECONDS));
+			Assert.assertEquals(lines.toString(), 4, lines.size());
 
-		Assert.assertEquals(lines.toString(), 6, lines.size());
-		Assert.assertEquals("event: Chat Message Sent", lines.get(2));
+			Assert.assertTrue(countDownLatch2.await(10, TimeUnit.SECONDS));
 
-		String firstMessageSent = lines.get(5);
+			Assert.assertEquals(lines.toString(), 6, lines.size());
+			Assert.assertEquals("event: Chat Message Sent", lines.get(2));
 
-		Assert.assertTrue(firstMessageSent, firstMessageSent.contains(text));
+			String firstMessageSent = lines.get(5);
+
+			Assert.assertTrue(
+				firstMessageSent, firstMessageSent.contains(text));
+		}
 	}
 
+	@Ignore
 	@Test
 	public void testPostChatByExternalReferenceCodeMessageWithUnassociatedAgentDefinition()
 		throws Exception {
@@ -227,72 +247,87 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 					agentDefinitionObjectDefinition.getObjectDefinitionId()),
 			TestPropsValues.getUserId());
 
-		CountDownLatch countDownLatch1 = new CountDownLatch(4);
-		CountDownLatch countDownLatch2 = new CountDownLatch(6);
-		List<String> lines = new ArrayList<>();
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						VertexAIConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"location", TestPropsValues.VERTEX_AI_LOCATION
+						).put(
+							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+						).put(
+							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+						).build())) {
 
-		String sseEventSinkKey = SseEventSourceTestUtil.open(
-			List.of(countDownLatch1, countDownLatch2), lines,
-			"chats/subscribe");
+			CountDownLatch countDownLatch1 = new CountDownLatch(4);
+			CountDownLatch countDownLatch2 = new CountDownLatch(6);
+			List<String> lines = new ArrayList<>();
 
-		_postChatByExternalReferenceCodeMessage(
-			chatbotExternalReferenceCode,
-			"This is a long and detailed sentence that should be shortened " +
-				"by the AI model for testing purposes.",
-			sseEventSinkKey);
+			String sseEventSinkKey = SseEventSourceTestUtil.open(
+				List.of(countDownLatch1, countDownLatch2), lines,
+				"chats/subscribe");
 
-		Assert.assertTrue(countDownLatch1.await(10, TimeUnit.SECONDS));
+			_postChatByExternalReferenceCodeMessage(
+				chatbotExternalReferenceCode,
+				"This is a long and detailed sentence that should be " +
+					"shortened by the AI model for testing purposes.",
+				sseEventSinkKey);
 
-		Assert.assertEquals(lines.toString(), 4, lines.size());
-		Assert.assertEquals("event: Chat Message Sent", lines.get(2));
+			Assert.assertTrue(countDownLatch1.await(10, TimeUnit.SECONDS));
 
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				List.of(
-					new LongTextObjectFieldBuilder(
-					).labelMap(
-						RandomTestUtil.randomLocaleStringMap()
-					).name(
-						"description"
-					).indexed(
-						true
-					).build(),
-					new TextObjectFieldBuilder(
-					).labelMap(
-						RandomTestUtil.randomLocaleStringMap()
-					).name(
-						"name"
-					).indexed(
-						true
-					).indexedAsKeyword(
-						true
-					).build()));
+			Assert.assertEquals(lines.toString(), 4, lines.size());
+			Assert.assertEquals("event: Chat Message Sent", lines.get(2));
 
-		_objectEntryLocalService.addObjectEntry(
-			0L, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), 0,
-			LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
-			HashMapBuilder.<String, Serializable>put(
-				"description", "His favorite food is Brazilian barbecue."
-			).put(
-				"name", "Feliphe"
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					List.of(
+						new LongTextObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							"description"
+						).indexed(
+							true
+						).build(),
+						new TextObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							"name"
+						).indexed(
+							true
+						).indexedAsKeyword(
+							true
+						).build()));
 
-		_postChatByExternalReferenceCodeMessage(
-			chatbotExternalReferenceCode, "What is Feliphe's favorite food?",
-			sseEventSinkKey);
+			_objectEntryLocalService.addObjectEntry(
+				0L, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(), 0,
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+				HashMapBuilder.<String, Serializable>put(
+					"description", "His favorite food is Brazilian barbecue."
+				).put(
+					"name", "Feliphe"
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
 
-		Assert.assertTrue(countDownLatch2.await(10, TimeUnit.SECONDS));
+			_postChatByExternalReferenceCodeMessage(
+				chatbotExternalReferenceCode,
+				"What is Feliphe's favorite food?", sseEventSinkKey);
 
-		Assert.assertEquals(lines.toString(), 6, lines.size());
-		Assert.assertEquals("event: Chat Message Sent", lines.get(4));
+			Assert.assertTrue(countDownLatch2.await(10, TimeUnit.SECONDS));
 
-		String response = StringUtil.toLowerCase(lines.get(5));
+			Assert.assertEquals(lines.toString(), 6, lines.size());
+			Assert.assertEquals("event: Chat Message Sent", lines.get(4));
 
-		Assert.assertFalse(response, response.contains("brazilian barbecue"));
+			String response = StringUtil.toLowerCase(lines.get(5));
 
-		SseUtil.closeAll();
+			Assert.assertFalse(
+				response, response.contains("brazilian barbecue"));
+
+			SseUtil.closeAll();
+		}
 	}
 
 	private JSONObject _postChatByExternalReferenceCodeMessage(

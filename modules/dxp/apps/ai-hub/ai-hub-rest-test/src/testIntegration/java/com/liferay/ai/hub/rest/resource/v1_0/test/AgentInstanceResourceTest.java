@@ -10,6 +10,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration;
+import com.liferay.ai.hub.configuration.VertexAIConfiguration;
 import com.liferay.ai.hub.rest.dto.v1_0.Guardrail;
 import com.liferay.ai.hub.rest.manager.v1_0.GuardrailManager;
 import com.liferay.ai.hub.rest.resource.v1_0.test.util.SseEventSourceTestUtil;
@@ -25,6 +26,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -293,19 +295,33 @@ public class AgentInstanceResourceTest
 	@Override
 	@Test
 	public void testPostAgentInstance() throws Exception {
-		_testPostAgentInstance();
-		_testPostAgentInstanceWithTypeAIDecisionNodeWithToolWorkflowDefinition();
-		_testPostAgentInstanceWithTypeAIDecisionNodeWorkflowDefinition();
-		_testPostAgentInstanceWithTypeAutoCategorize();
-		_testPostAgentInstanceWithTypeFixSpellingAndGrammarWithInstruction();
-		_testPostAgentInstanceWithTypeGenerateTags();
-		_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinition();
-		_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinitionWithRestrictedUser();
-		_testPostAgentInstanceWithTypeLLMNodeWithToolWorkflowDefinition();
-		_testPostAgentInstanceWithTypeMakeShorter();
-		_testPostAgentInstanceWithTypeMakeShorterAndExhaustedQuota();
-		_testPostAgentInstanceWithTypeMakeShorterWithGuardrail();
-		_testPostAgentInstanceWithTypePageBuilder();
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						VertexAIConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"location", TestPropsValues.VERTEX_AI_LOCATION
+						).put(
+							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+						).put(
+							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+						).build())) {
+
+			_testPostAgentInstance();
+			_testPostAgentInstanceWithTypeAIDecisionNodeWithToolWorkflowDefinition();
+			_testPostAgentInstanceWithTypeAIDecisionNodeWorkflowDefinition();
+			_testPostAgentInstanceWithTypeAutoCategorize();
+			_testPostAgentInstanceWithTypeFixSpellingAndGrammarWithInstruction();
+			_testPostAgentInstanceWithTypeGenerateTags();
+			_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinition();
+			_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinitionWithRestrictedUser();
+			_testPostAgentInstanceWithTypeLLMNodeWithToolWorkflowDefinition();
+			_testPostAgentInstanceWithTypeMakeShorter();
+			_testPostAgentInstanceWithTypeMakeShorterAndExhaustedQuota();
+			_testPostAgentInstanceWithTypeMakeShorterWithGuardrail();
+			_testPostAgentInstanceWithTypePageBuilder();
+		}
 	}
 
 	private static void _addAgentDefinitionObjectEntry(
