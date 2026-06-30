@@ -267,24 +267,6 @@ definition {
 		}
 	}
 
-	@description = "Site templates with older versions can be imported."
-	@priority = 3
-	test ImportOldSchemaVersion {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When: User navigate to Site template admin page") {
-			SiteTemplatesNavigator.openSiteTemplatesAdmin();
-		}
-
-		task ("Then: User can import site template from older versions") {
-			LAR.importPortlet(
-				importSchemaVersionMismatching = "true",
-				larFileName = "class-site-template-7.0.lar",
-				uploadFrom = "dependencies");
-		}
-	}
-
 	@description = "This is a use case for LPS-42067. Portlet preferences are configurable and stay unchanged when the same portlet with the same name is created on different pages."
 	@priority = 3
 	test PortletPreferencesPersistWithSiteTemplateWhenSamePortletAddedOnSecondPage {

@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-
-<portlet old-plid="20223" portlet-id="com_liferay_layout_set_prototype_web_portlet_LayoutSetPrototypePortlet" private-layout="true" root-portlet-id="com_liferay_layout_set_prototype_web_portlet_LayoutSetPrototypePortlet" scope-group-id="20219" scope-layout-type="" scope-layout-uuid="">
-	<portlet-data path="/group/20219/portlet/com_liferay_layout_set_prototype_web_portlet_LayoutSetPrototypePortlet/20223/portlet-data.xml" />
-	<permissions/>
-</portlet>
