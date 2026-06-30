@@ -225,19 +225,9 @@
 							/>
 
 							<execute-analytics-cloud dir="${analytics.cloud.faro.dir}" timeout="${analytics.cloud.faro.timeout}">
-								${portal.gradlew} prepareAppDockerImageInputDir -Pcom.liferay.osb.faro.environment.name=local -Dliferay.ci=true
+								export FARO_ENVIRONMENT_NAME=local
 
-								cp -R ${app.server.parent.dir} ./build/docker/bundles
-
-								mv ./build/docker/bundles/tomcat-${app.server.tomcat.version} ./build/docker/bundles/tomcat
-
-								if [ -f ./build/docker/bundles/tomcat/webapps/ROOT/WEB-INF/classes/portal-ext.properties ]; then
-									rm ./build/docker/bundles/tomcat/webapps/ROOT/WEB-INF/classes/portal-ext.properties
-								fi
-
-								cd ./build/docker
-
-								docker build . -t ${analytics.cloud.faro.image.name}
+								./gradlew buildDockerImage
 
 								docker tag ${analytics.cloud.faro.image.name} ${analytics.cloud.faro.tag.name}
 
@@ -561,30 +551,6 @@
 				]]>
 			</beanshell>
 
-			<local name="analytics.cloud.faro.build.gradle" />
-
-			<condition else="${analytics.cloud.faro.dir}/build.gradle" property="analytics.cloud.faro.build.gradle" value="${analytics.cloud.faro.dir}/build-ext.gradle">
-				<available file="${analytics.cloud.faro.dir}/build-ext.gradle" />
-			</condition>
-
-			<replaceregexp
-				file="${analytics.cloud.faro.build.gradle}"
-				match="def dockerContainerId = \&quot;([^\&quot;]+)\&quot;"
-				replace="def dockerContainerId = \&quot;${analytics.cloud.faro.container.name}\&quot;"
-			/>
-
-			<replaceregexp
-				file="${analytics.cloud.faro.build.gradle}"
-				match="network \&quot;([^\&quot;]+)\&quot;"
-				replace="network \&quot;${analytics.cloud.project.name}_default\&quot;"
-			/>
-
-			<replaceregexp
-				file="${analytics.cloud.faro.dir}/osb-faro-docker/local/test/Dockerfile"
-				match="FARO_URL=http://localhost:8080"
-				replace="FARO_URL=${analytics.cloud.faro.frontend.url}"
-			/>
-
 			<echo file="${analytics.cloud.asah.dir}/local.env">OSB_ASAH_BACKEND_URL=${analytics.cloud.asah.backend.url}
 OSB_ASAH_POSTGRESQL_ENABLED=false
 OSB_ASAH_PUBLISHER_URL=${analytics.cloud.asah.publisher.url}
@@ -593,10 +559,10 @@ OSB_FARO_FRONTEND_URL=${analytics.cloud.faro.frontend.url}</echo>
 			<if>
 				<isset property="test.portal.license.url" />
 				<then>
-					<mkdir dir="${analytics.cloud.faro.dir}/osb-faro-docker/common/license/" />
+					<mkdir dir="${analytics.cloud.faro.dir}/build/docker/deploy/" />
 
 					<mirrors-get
-						dest="${analytics.cloud.faro.dir}/osb-faro-docker/common/license/"
+						dest="${analytics.cloud.faro.dir}/build/docker/deploy/"
 						src="${test.portal.license.url}"
 					/>
 				</then>
