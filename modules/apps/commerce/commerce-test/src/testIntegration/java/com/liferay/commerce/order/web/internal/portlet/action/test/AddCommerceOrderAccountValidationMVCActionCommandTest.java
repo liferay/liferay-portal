@@ -196,7 +196,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				testAccountEntryValidator.getClass(
 				).getName()
 			).put(
-				"classPK", testAccountEntryValidator.getKey(_accountEntry, null)
+				"classPK",
+				testAccountEntryValidator.getClassPK(_accountEntry, null)
 			).put(
 				"r_accountToAccountValidatorResults_accountEntryId",
 				_accountEntry.getAccountEntryId()
@@ -297,8 +298,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		implements AccountEntryValidator {
 
 		@Override
-		public AccountEntryValidatorConfiguration getConfiguration(
-				long companyId)
+		public AccountEntryValidatorConfiguration
+				getAccountEntryValidatorConfiguration(long companyId)
 			throws ConfigurationException {
 
 			return new AccountEntryValidatorConfiguration() {
@@ -321,7 +322,9 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		}
 
 		@Override
-		public String getKey(AccountEntry accountEntry, JSONObject jsonObject) {
+		public String getClassPK(
+			AccountEntry accountEntry, JSONObject jsonObject) {
+
 			_jsonObject = jsonObject;
 
 			return _key;
