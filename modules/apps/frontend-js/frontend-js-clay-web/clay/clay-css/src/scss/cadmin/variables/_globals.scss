@@ -413,17 +413,30 @@ $cadmin-component-transition:
 	border-color 0.15s ease-in-out,
 	box-shadow 0.15s ease-in-out !default;
 
-$cadmin-component-focus-box-shadow: unquote(
-	'0 0 0 2px #{$cadmin-white}, 0 0 0 4px #{$cadmin-primary-l0}'
+$cadmin-component-focus-box-shadow: var(
+	--cadmin-component-focus-box-shadow,
+	unquote('0 0 0 2px #{$cadmin-white}, 0 0 0 4px #{$cadmin-primary-l0}')
 ) !default;
-$cadmin-component-focus-inset-box-shadow: unquote(
-	'inset 0 0 0 2px #{$cadmin-primary-l0}, inset 0 0 0 4px #{$cadmin-white}'
+$cadmin-component-focus-inset-box-shadow: var(
+	--cadmin-component-focus-inset-box-shadow,
+	unquote(
+		'inset 0 0 0 2px #{$cadmin-primary-l0}, inset 0 0 0 4px #{$cadmin-white}'
+	)
 ) !default;
 
-$cadmin-component-active-bg: $cadmin-primary !default;
-$cadmin-component-active-color: $cadmin-white !default;
+$cadmin-component-active-bg: var(
+	--cadmin-component-active-bg,
+	$cadmin-primary
+) !default;
+$cadmin-component-active-color: var(
+	--cadmin-component-active-color,
+	$cadmin-white
+) !default;
 
-$cadmin-component-disabled-opacity: 0.4 !default;
+$cadmin-component-disabled-opacity: var(
+	--cadmin-component-disabled-opacity,
+	0.4
+) !default;
 
 // Cursors
 

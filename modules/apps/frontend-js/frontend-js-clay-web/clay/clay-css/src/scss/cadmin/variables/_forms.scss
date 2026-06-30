@@ -1,6 +1,9 @@
-$cadmin-input-bg: $cadmin-gray-200 !default;
+$cadmin-input-bg: var(--cadmin-input-bg, $cadmin-gray-200) !default;
 
-$cadmin-input-border-color: $cadmin-gray-300 !default;
+$cadmin-input-border-color: var(
+	--cadmin-input-border-color,
+	$cadmin-gray-300
+) !default;
 $cadmin-input-border-style: solid !default;
 $cadmin-input-border-width: 1px !default;
 
@@ -9,9 +12,12 @@ $cadmin-input-border-left-width: $cadmin-input-border-width !default;
 $cadmin-input-border-right-width: $cadmin-input-border-width !default;
 $cadmin-input-border-top-width: $cadmin-input-border-width !default;
 
-$cadmin-input-border-radius: $cadmin-border-radius !default;
-$cadmin-input-box-shadow: null !default;
-$cadmin-input-color: $cadmin-gray-900 !default;
+$cadmin-input-border-radius: var(
+	--cadmin-input-border-radius,
+	$cadmin-border-radius
+) !default;
+$cadmin-input-box-shadow: var(--cadmin-input-box-shadow) !default;
+$cadmin-input-color: var(--cadmin-input-color, $cadmin-gray-900) !default;
 $cadmin-input-font-family: $cadmin-input-btn-font-family !default;
 $cadmin-input-font-size: $cadmin-input-btn-font-size !default;
 $cadmin-input-font-weight: $cadmin-font-weight-base !default;
@@ -28,21 +34,43 @@ $cadmin-input-height-mobile: null !default;
 
 // Input Focus
 
-$cadmin-input-focus-bg: $cadmin-primary-l3 !default;
-$cadmin-input-focus-border-color: unquote(
-	'hsl(from #{$cadmin-component-active-bg} h s calc(l + 22.9))'
+$cadmin-input-focus-bg: var(
+	--cadmin-input-focus-bg,
+	$cadmin-primary-l3
 ) !default;
-$cadmin-input-focus-box-shadow: $cadmin-component-focus-box-shadow !default;
-$cadmin-input-focus-color: $cadmin-input-color !default;
+$cadmin-input-focus-border-color: var(
+	--cadmin-input-focus-border-color,
+	unquote('hsl(from #{$cadmin-component-active-bg} h s calc(l + 22.9))')
+) !default;
+$cadmin-input-focus-box-shadow: var(
+	--cadmin-input-focus-box-shadow,
+	$cadmin-component-focus-box-shadow
+) !default;
+$cadmin-input-focus-color: var(
+	--cadmin-input-focus-color,
+	$cadmin-input-color
+) !default;
 $cadmin-input-focus-width: $cadmin-input-btn-focus-width !default;
 
 // Input Disabled
 
-$cadmin-input-disabled-bg: $cadmin-input-bg !default;
-$cadmin-input-disabled-border-color: $cadmin-input-bg !default;
-$cadmin-input-disabled-color: $cadmin-gray-500 !default;
+$cadmin-input-disabled-bg: var(
+	--cadmin-input-disabled-bg,
+	$cadmin-input-bg
+) !default;
+$cadmin-input-disabled-border-color: var(
+	--cadmin-input-disabled-border-color,
+	$cadmin-input-bg
+) !default;
+$cadmin-input-disabled-color: var(
+	--cadmin-input-disabled-color,
+	$cadmin-gray-500
+) !default;
 $cadmin-input-disabled-cursor: $cadmin-disabled-cursor !default;
-$cadmin-input-disabled-opacity: 1 !default;
+$cadmin-input-disabled-opacity: var(
+	--cadmin-input-disabled-opacity,
+	1
+) !default;
 
 // Input Placeholder
 
@@ -331,15 +359,21 @@ $cadmin-form-control-label-text: map-merge(
 
 // @deprecated after v2.18.0 use the Sass map `$cadmin-input-readonly` instead
 
-$cadmin-input-readonly-bg: $cadmin-white !default;
+$cadmin-input-readonly-bg: var(
+	--cadmin-input-readonly-bg,
+	$cadmin-white
+) !default;
 
 // @deprecated after v2.18.0 use the Sass map `$cadmin-input-readonly` instead
 
-$cadmin-input-readonly-border-color: $cadmin-input-border-color !default;
+$cadmin-input-readonly-border-color: var(
+	--cadmin-input-readonly-border-color,
+	$cadmin-input-border-color
+) !default;
 
 // @deprecated after v2.18.0 use the Sass map `$cadmin-input-readonly` instead
 
-$cadmin-input-readonly-color: null !default;
+$cadmin-input-readonly-color: var(--cadmin-input-readonly-color) !default;
 
 // @deprecated after v2.18.0 use the Sass map `$cadmin-input-readonly` instead
 
