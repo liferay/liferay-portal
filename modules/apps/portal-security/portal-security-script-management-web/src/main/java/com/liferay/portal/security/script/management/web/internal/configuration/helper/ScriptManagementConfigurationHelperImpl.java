@@ -7,13 +7,11 @@ package com.liferay.portal.security.script.management.web.internal.configuration
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -24,13 +22,8 @@ import com.liferay.portal.security.script.management.configuration.helper.Script
 import jakarta.portlet.PortletMode;
 import jakarta.portlet.WindowState;
 
-import java.io.IOException;
-
 import java.util.Map;
 
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -71,11 +64,16 @@ public class ScriptManagementConfigurationHelperImpl
 			ConfigurationAdminPortletKeys.SYSTEM_SETTINGS);
 
 		url = HttpComponentsUtil.addParameter(
-			url, namespace + "configurationScreenKey", "script-management");
+			url, namespace + "factoryPid",
+			ScriptManagementConfiguration.class.getName());
+
+		url = HttpComponentsUtil.addParameter(
+			url, namespace + "mvcRenderCommandName",
+			"/configuration_admin/edit_configuration");
 
 		return HttpComponentsUtil.addParameter(
-			url, namespace + "mvcRenderCommandName",
-			"/configuration_admin/view_configuration_screen");
+			url, namespace + "pid",
+			ScriptManagementConfiguration.class.getName());
 	}
 
 	@Override
@@ -88,26 +86,6 @@ public class ScriptManagementConfigurationHelperImpl
 			allowScriptContentToBeExecutedOrIncluded();
 	}
 
-	@Override
-	public boolean isScriptManagementConfigurationDefined()
-		throws ConfigurationException {
-
-		try {
-			String filterString = StringBundler.concat(
-				"(", Constants.SERVICE_PID, StringPool.EQUAL,
-				ScriptManagementConfiguration.class.getName(), ")");
-
-			if (_configurationAdmin.listConfigurations(filterString) != null) {
-				return true;
-			}
-
-			return false;
-		}
-		catch (InvalidSyntaxException | IOException exception) {
-			throw new ConfigurationException(exception);
-		}
-	}
-
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
@@ -118,9 +96,6 @@ public class ScriptManagementConfigurationHelperImpl
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
-
-	@Reference
-	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private Portal _portal;
