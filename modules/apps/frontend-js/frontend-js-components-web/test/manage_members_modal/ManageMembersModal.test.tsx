@@ -29,7 +29,7 @@ jest.mock(
 );
 
 const ROLES: Role[] = [
-	{externalReferenceCode: 'r-member', id: 10, name: 'Member'},
+	{externalReferenceCode: 'L_ASSET_LIBRARY_MEMBER', id: 10, name: 'Member'},
 	{externalReferenceCode: 'r-editor', id: 11, name: 'Editor'},
 	{externalReferenceCode: 'L_ASSET_LIBRARY_OWNER', id: 12, name: 'Owner'},
 ];
@@ -78,7 +78,7 @@ const CANDIDATE_GROUP: UserGroup = {
 };
 
 const CONFIG: MembersConfig = {
-	defaultRoleName: 'Member',
+	defaultRoleExternalReferenceCode: 'L_ASSET_LIBRARY_MEMBER',
 	excludedRoleExternalReferenceCodes: ['L_ASSET_LIBRARY_OWNER'],
 	messages: {
 		addGroupError: 'add-group-error {0}',

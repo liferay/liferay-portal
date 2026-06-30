@@ -148,7 +148,9 @@ export function ManageMembersList({
 						{selectedOption === MemberType.USERS ? (
 							<MemberListItem
 								currentUserId={currentUserId}
-								defaultRoleName={config.defaultRoleName}
+								defaultRoleExternalReferenceCode={
+									config.defaultRoleExternalReferenceCode
+								}
 								hasAssignMembersPermission={
 									hasAssignMembersPermission
 								}
@@ -170,7 +172,9 @@ export function ManageMembersList({
 							/>
 						) : (
 							<MemberListItem
-								defaultRoleName={config.defaultRoleName}
+								defaultRoleExternalReferenceCode={
+									config.defaultRoleExternalReferenceCode
+								}
 								hasAssignMembersPermission={
 									hasAssignMembersPermission
 								}

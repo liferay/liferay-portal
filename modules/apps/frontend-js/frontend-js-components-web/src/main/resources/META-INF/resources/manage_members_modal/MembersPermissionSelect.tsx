@@ -12,7 +12,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {Role, RoleExternalReferenceCode} from './types';
 
 interface MembersPermissionSelectProps {
-	defaultRoleName: string;
+	defaultRoleExternalReferenceCode: RoleExternalReferenceCode;
 	disabled?: boolean;
 	onChange: (selectedRoles: string[]) => void;
 	roleNames?: Partial<Record<RoleExternalReferenceCode, string>>;
@@ -21,7 +21,7 @@ interface MembersPermissionSelectProps {
 }
 
 export function MembersPermissionSelect({
-	defaultRoleName,
+	defaultRoleExternalReferenceCode,
 	disabled = false,
 	onChange,
 	roleNames,
@@ -101,7 +101,10 @@ export function MembersPermissionSelect({
 					<ClayDropDown.Item key={role.id}>
 						<ClayCheckbox
 							checked={selectedRoles.includes(role.name)}
-							disabled={role.name === defaultRoleName}
+							disabled={
+								role.externalReferenceCode ===
+								defaultRoleExternalReferenceCode
+							}
 							label={getRoleName(role)}
 							onChange={() => handleCheckboxChange(role.name)}
 						/>

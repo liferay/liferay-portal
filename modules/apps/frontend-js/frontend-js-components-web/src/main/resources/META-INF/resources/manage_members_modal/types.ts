@@ -78,7 +78,7 @@ interface MembersFeedbackMessages {
 }
 
 export interface MembersConfig {
-	defaultRoleName: string;
+	defaultRoleExternalReferenceCode: RoleExternalReferenceCode;
 	excludedRoleExternalReferenceCodes?: RoleExternalReferenceCode[];
 	messages: MembersFeedbackMessages;
 	roleNames?: Partial<Record<RoleExternalReferenceCode, string>>;

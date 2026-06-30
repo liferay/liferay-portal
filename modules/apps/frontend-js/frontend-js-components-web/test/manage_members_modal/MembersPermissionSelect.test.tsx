@@ -34,7 +34,7 @@ describe('MembersPermissionSelect', () => {
 	) {
 		render(
 			<MembersPermissionSelect
-				defaultRoleName="Member"
+				defaultRoleExternalReferenceCode="L_ASSET_LIBRARY_MEMBER"
 				onChange={() => {}}
 				roles={ROLES}
 				selectedRoles={['Member']}
@@ -52,7 +52,7 @@ describe('MembersPermissionSelect', () => {
 		expect(screen.getByLabelText('Editor')).toBeInTheDocument();
 	});
 
-	it('disables the defaultRoleName checkbox so it cannot be unchecked', () => {
+	it('disables the default role checkbox so it cannot be unchecked', () => {
 		renderOpened();
 
 		expect(screen.getByLabelText('Member')).toBeDisabled();

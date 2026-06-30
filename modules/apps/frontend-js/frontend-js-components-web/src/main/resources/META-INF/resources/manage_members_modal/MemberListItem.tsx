@@ -15,7 +15,7 @@ import {Role, RoleExternalReferenceCode, UserAccount, UserGroup} from './types';
 
 interface MemberListItemProps {
 	currentUserId?: string;
-	defaultRoleName: string;
+	defaultRoleExternalReferenceCode: RoleExternalReferenceCode;
 	hasAssignMembersPermission: boolean;
 	itemType: 'group' | 'user';
 	items: (UserAccount | UserGroup)[];
@@ -28,7 +28,7 @@ interface MemberListItemProps {
 
 export function MemberListItem({
 	currentUserId,
-	defaultRoleName,
+	defaultRoleExternalReferenceCode,
 	hasAssignMembersPermission,
 	itemType,
 	items,
@@ -46,10 +46,17 @@ export function MemberListItem({
 					isUser && currentUserId === String(item.id);
 				const isOwner = isUser && String(ownerId) === String(item.id);
 
+				const defaultRole = roles.find(
+					(role) =>
+						role.externalReferenceCode ===
+						defaultRoleExternalReferenceCode
+				);
 				const memberRoles = item.roles.map((role) => role.name);
 				const selectedRoles = memberRoles.length
 					? memberRoles
-					: [defaultRoleName];
+					: defaultRole
+						? [defaultRole.name]
+						: [];
 				const classes = cx(
 					'align-items-center d-flex justify-content-between',
 					{
@@ -116,7 +123,9 @@ export function MemberListItem({
 						) : hasAssignMembersPermission ? (
 							<div className="align-items-center c-gap-2 d-flex">
 								<MembersPermissionSelect
-									defaultRoleName={defaultRoleName}
+									defaultRoleExternalReferenceCode={
+										defaultRoleExternalReferenceCode
+									}
 									disabled={isCurrentUser}
 									onChange={(newRoles) => {
 										onUpdateItemRoles(item, newRoles);
