@@ -6,7 +6,7 @@
 import {MembersConfig} from 'frontend-js-components-web';
 
 export const SPACE_MEMBERS_CONFIG: MembersConfig = {
-	defaultRoleName: 'Asset Library Member',
+	defaultRoleExternalReferenceCode: 'L_ASSET_LIBRARY_MEMBER',
 	excludedRoleExternalReferenceCodes: [
 		'L_ASSET_LIBRARY_CONNECTED_SITE_MEMBER',
 		'L_ASSET_LIBRARY_OWNER',
