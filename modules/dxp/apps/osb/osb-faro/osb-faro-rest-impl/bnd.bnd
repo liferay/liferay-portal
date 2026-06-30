@@ -1,4 +1,0 @@
-Bundle-Name: Liferay OSB Faro REST Implementation
-Bundle-SymbolicName: com.liferay.osb.faro.rest.impl
-Bundle-Version: 1.0.0
--dsannotations-options: inherit

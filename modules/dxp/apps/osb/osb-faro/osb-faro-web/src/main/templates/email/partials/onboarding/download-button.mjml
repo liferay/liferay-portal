@@ -1,3 +1,0 @@
-<mj-button background-color="#0B5FFF" href="[$DOWNLOAD_URL$]" target="_blank" align="center" font-size="16px" font-weight="500">
-	<img width="16px" style="margin-right: 8px;" src="[$BUTTON_URL$]" /> [$BUTTON_TEXT$]
-</mj-button>

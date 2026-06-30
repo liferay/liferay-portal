@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ItemTitle should render 1`] = `
-<div>
-  <div
-    class="h4 list-group-title"
-  />
-</div>
-`;

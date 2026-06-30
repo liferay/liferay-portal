@@ -1,6 +1,0 @@
-<FindBugsFilter>
-	<Match>
-		<Bug pattern="PREDICTABLE_RANDOM" />
-		<Class name="com.liferay.osb.faro.contacts.demo.internal.data.creator.DataCreator" />
-	</Match>
-</FindBugsFilter>

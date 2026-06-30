@@ -1,6 +1,0 @@
-<Context>
-	<Valve className="org.apache.catalina.valves.rewrite.RewriteValve" />
-	<WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
-	<WatchedResource>WEB-INF/tomcat-web.xml</WatchedResource>
-	<WatchedResource>WEB-INF/web.xml</WatchedResource>
-</Context>

@@ -1,9 +1,0 @@
-<mj-title>[$EMAIL_TITLE$]</mj-title>
-
-<mj-attributes>
-	<mj-all font-family="Source Sans Pro, system-ui, Segoe UI,  Ubuntu, Cantarell, Helvetica Neue, Arial, sans-serif" />
-
-	<mj-body background-color="white" />
-</mj-attributes>
-
-<mj-font href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400" name="Source Sans Pro" />

@@ -1,9 +1,0 @@
-dependencies {
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.springframework", name: "spring-core", version: "5.3.39"
-	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-api")
-	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-contacts-api")
-	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-engine-client")
-}

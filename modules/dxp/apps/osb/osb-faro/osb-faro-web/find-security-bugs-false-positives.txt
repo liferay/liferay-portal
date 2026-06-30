@@ -1,1 +1,0 @@
-com/liferay/osb/faro/web/internal/servlet/ProxyDownloadAsahServlet.buildURI(Ljavax/servlet/http/HttpServletRequest;Ljava/lang/String;)Ljava/net/URI;:SAFE

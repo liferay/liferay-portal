@@ -1,6 +1,0 @@
-*.java    @marcellustavares @matthewkong
-Language*.properties    @kienD
-osb-faro-web/src/main/css/**/*    @interaminense @kienD
-osb-faro-web/src/main/js/**/*    @interaminense @kienD
-package.json    @interaminense @kienD
-yarn.lock    @interaminense @kienD

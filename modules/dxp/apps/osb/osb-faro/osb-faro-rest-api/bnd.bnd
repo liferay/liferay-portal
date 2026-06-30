@@ -1,6 +1,0 @@
-Bundle-Name: Liferay OSB Faro REST API
-Bundle-SymbolicName: com.liferay.osb.faro.rest.api
-Bundle-Version: 1.0.0
-Export-Package:\
-	com.liferay.osb.faro.rest.dto.v1_0,\
-	com.liferay.osb.faro.rest.resource.v1_0

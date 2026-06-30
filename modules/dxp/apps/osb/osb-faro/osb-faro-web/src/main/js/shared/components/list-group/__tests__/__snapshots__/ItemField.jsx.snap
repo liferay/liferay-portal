@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ItemField should render 1`] = `
-<div>
-  <div
-    class="autofit-col"
-  />
-</div>
-`;

@@ -1,5 +1,0 @@
-<mj-section>
-	<mj-column>
-		<mj-image src="[$EMAIL_HEADER_URL$]" width="684px" />
-	</mj-column>
-</mj-section>

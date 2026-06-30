@@ -1,4 +1,0 @@
-Employee Name,Email Address,Supervisor Name,Supervisor Email,Employment Status,Job,City,Country,Division,Department,Sub-Department,Entity,Region
-"Name 1, Employee",employee.name.1@liferay.com,"Groma, Séupervisor Náameó 1",supervisor.name.1@liferay.com,Active,Customer Support Engineer,City 1,Country 1,Subscription Services,Customer Care,Customer Support,Liferay Country 1,Region 1
-"Žname 2, Employee",employee.name.2@liferay.com,"Superšvisorý, Nášme 2",supervisor.name.2@liferay.com,Active,Software Architect,City 2,Country 2,DevSecOps,Information Security,Not Applicable,Liferay International,Region 2
-"Name 3, Eámplóyee",employee.name.3@liferay.com,"Supervisor, Naéme 3",supervisor.name.3@liferay.com,Active,Software Engineer,City 3,Country 3,Operations,Information Services,IS Support,Liferay Country 3,Region 3

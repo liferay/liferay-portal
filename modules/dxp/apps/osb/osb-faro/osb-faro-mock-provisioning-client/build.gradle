@@ -1,8 +1,0 @@
-dependencies {
-	compileInclude group: "commons-codec", name: "commons-codec", version: "1.15"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly project(":core:petra:petra-string")
-	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-api")
-	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-provisioning-client")
-}

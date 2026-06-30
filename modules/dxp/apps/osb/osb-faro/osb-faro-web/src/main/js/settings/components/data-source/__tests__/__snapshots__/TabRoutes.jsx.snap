@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`TabRoutes should render 1`] = `
-<div>
-  <div>
-    Foo Bar
-  </div>
-</div>
-`;
