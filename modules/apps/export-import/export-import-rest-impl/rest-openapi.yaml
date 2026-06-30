@@ -276,6 +276,14 @@ components:
                         choices:
                             items:
                                 properties:
+                                    additionCount:
+                                        format: int64
+                                        readOnly: true
+                                        type: integer
+                                    deletionCount:
+                                        format: int64
+                                        readOnly: true
+                                        type: integer
                                     label:
                                         readOnly: true
                                         type: string
