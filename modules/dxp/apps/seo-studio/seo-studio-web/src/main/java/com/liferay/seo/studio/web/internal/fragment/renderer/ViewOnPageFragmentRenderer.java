@@ -8,6 +8,7 @@ package com.liferay.seo.studio.web.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -19,7 +20,6 @@ import com.liferay.seo.studio.web.internal.display.context.ViewOnPageDisplayCont
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -89,13 +89,11 @@ public class ViewOnPageFragmentRenderer
 				"state eq 'completed'", Pagination.of(1, 1), null,
 				new Sort[] {new Sort("requestDate", true)});
 
-			if (page != null) {
-				for (ObjectEntry objectEntry : page.getItems()) {
-					return objectEntry;
-				}
+			if (page == null) {
+				return null;
 			}
 
-			return null;
+			return page.fetchFirstItem();
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -136,13 +134,7 @@ public class ViewOnPageFragmentRenderer
 				return Collections.emptyList();
 			}
 
-			List<Long> seoStudioScanIds = new ArrayList<>();
-
-			for (ObjectEntry seoStudioScanObjectEntry : page.getItems()) {
-				seoStudioScanIds.add(seoStudioScanObjectEntry.getId());
-			}
-
-			return seoStudioScanIds;
+			return TransformUtil.transform(page.getItems(), ObjectEntry::getId);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
