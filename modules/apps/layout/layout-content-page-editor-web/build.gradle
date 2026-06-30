@@ -21,6 +21,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:audiences:audiences-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:fragment:fragment-api")
