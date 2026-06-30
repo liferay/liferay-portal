@@ -3308,35 +3308,51 @@ public class ObjectEntryLocalServiceImpl
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
 			(ObjectEntry objectEntry) -> {
-				JSONObject payloadJSONObject = JSONUtil.put(
-					"classPK", objectEntry.getObjectEntryId()
-				).put(
-					"notificationMessageArg", objectEntry.getTitleValue()
-				).put(
-					"notificationMessageKey", "x-has-reached-its-review-date"
-				);
+				try {
+					JSONObject payloadJSONObject = JSONUtil.put(
+						"classPK", objectEntry.getObjectEntryId()
+					).put(
+						"notificationMessageArg", objectEntry.getTitleValue()
+					).put(
+						"notificationMessageKey",
+						"x-has-reached-its-review-date"
+					);
 
-				for (ObjectEntryReviewNotificationContributor
-						objectEntryReviewNotificationContributor :
-							_objectEntryReviewNotificationContributors) {
+					for (ObjectEntryReviewNotificationContributor
+							objectEntryReviewNotificationContributor :
+								_objectEntryReviewNotificationContributors) {
 
-					if (objectEntryReviewNotificationContributor.isApplicable(
-							objectEntry)) {
+						if (objectEntryReviewNotificationContributor.
+								isApplicable(objectEntry)) {
 
-						objectEntryReviewNotificationContributor.contribute(
-							objectEntry, payloadJSONObject);
+							objectEntryReviewNotificationContributor.contribute(
+								objectEntry, payloadJSONObject);
+						}
+					}
+
+					ObjectDefinition objectDefinition =
+						_objectDefinitionPersistence.fetchByPrimaryKey(
+							objectEntry.getObjectDefinitionId());
+
+					_userNotificationEventLocalService.
+						sendUserNotificationEvents(
+							objectEntry.getUserId(),
+							objectDefinition.getPortletId(),
+							UserNotificationDeliveryConstants.TYPE_WEBSITE,
+							false, payloadJSONObject);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to send user notification events for " +
+								"object entry " +
+									objectEntry.getObjectEntryId(),
+							portalException);
 					}
 				}
-
-				ObjectDefinition objectDefinition =
-					_objectDefinitionPersistence.fetchByPrimaryKey(
-						objectEntry.getObjectDefinitionId());
-
-				_userNotificationEventLocalService.sendUserNotificationEvents(
-					objectEntry.getUserId(), objectDefinition.getPortletId(),
-					UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-					payloadJSONObject);
 			});
+		actionableDynamicQuery.setTransactionConfig(
+			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
 
 		actionableDynamicQuery.performActions();
 	}
