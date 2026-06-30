@@ -11,6 +11,7 @@ import com.liferay.change.tracking.constants.PublicationRoleConstants;
 import com.liferay.change.tracking.exception.CTPublishConflictException;
 import com.liferay.change.tracking.internal.CTServiceRegistry;
 import com.liferay.change.tracking.internal.background.task.display.CTPublishBackgroundTaskDisplay;
+import com.liferay.change.tracking.internal.configuration.CTEntityCacheConfiguration;
 import com.liferay.change.tracking.internal.helper.CTTableMapperHelper;
 import com.liferay.change.tracking.internal.notification.CTUserNotificationSender;
 import com.liferay.change.tracking.model.CTCollection;
@@ -18,10 +19,12 @@ import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
+import com.liferay.change.tracking.service.persistence.CTEntryPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
@@ -31,7 +34,9 @@ import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.cache.SkipReplicationThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,6 +48,7 @@ import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
+import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -61,7 +67,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -69,6 +77,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Daniel Kocsis
  */
 @Component(
+	configurationPid = "com.liferay.change.tracking.internal.configuration.CTEntityCacheConfiguration",
 	property = "background.task.executor.class.name=com.liferay.change.tracking.internal.background.task.CTPublishBackgroundTaskExecutor",
 	service = AopService.class
 )
@@ -180,15 +189,49 @@ public class CTPublishBackgroundTaskExecutor
 			_backgroundTaskStatusRegistry.getBackgroundTaskStatus(
 				backgroundTask.getBackgroundTaskId());
 
-		int i = 0;
+		boolean skipReplication = false;
 
-		for (CTServicePublisher<?> ctServicePublisher :
-				ctServicePublishers.values()) {
+		if (ClusterExecutorUtil.isEnabled() && (_entityCacheThreshold > 0) &&
+			(ctEntries.size() > _entityCacheThreshold)) {
 
-			ctServicePublisher.publish();
+			skipReplication = true;
+		}
 
-			backgroundTaskStatus.setAttribute(
-				"percentage", ++i / ctServicePublishers.size());
+		try (SafeCloseable safeCloseable =
+				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
+					skipReplication)) {
+
+			int i = 0;
+
+			for (CTServicePublisher<?> ctServicePublisher :
+					ctServicePublishers.values()) {
+
+				ctServicePublisher.publish();
+
+				backgroundTaskStatus.setAttribute(
+					"percentage", ++i / ctServicePublishers.size());
+			}
+		}
+
+		if (skipReplication) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Clearing the entity cache because ", ctEntries.size(),
+						" change tracking entries exceed the threshold of ",
+						_entityCacheThreshold));
+			}
+
+			_ctEntryPersistence.clearCache();
+
+			for (long modelClassNameId : ctServicePublishers.keySet()) {
+				CTService<?> ctService = _ctServiceRegistry.getCTService(
+					modelClassNameId);
+
+				CTPersistence<?> ctPersistence = ctService.getCTPersistence();
+
+				ctPersistence.clearCache();
+			}
 		}
 
 		for (CTTableMapperHelper ctTableMapperHelper :
@@ -275,6 +318,17 @@ public class CTPublishBackgroundTaskExecutor
 		_backgroundTaskExecutor = (BackgroundTaskExecutor)aopProxy;
 	}
 
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		CTEntityCacheConfiguration ctEntityCacheConfiguration =
+			ConfigurableUtil.createConfigurable(
+				CTEntityCacheConfiguration.class, properties);
+
+		_entityCacheThreshold =
+			ctEntityCacheConfiguration.entityCacheThreshold();
+	}
+
 	private long[] _getPublicationRolesUserIds(
 		CTCollection ctCollection, boolean showConflicts) {
 
@@ -313,6 +367,9 @@ public class CTPublishBackgroundTaskExecutor
 	private CTEntryLocalService _ctEntryLocalService;
 
 	@Reference
+	private CTEntryPersistence _ctEntryPersistence;
+
+	@Reference
 	private CTSchemaVersionLocalService _ctSchemaVersionLocalService;
 
 	@Reference
@@ -320,6 +377,8 @@ public class CTPublishBackgroundTaskExecutor
 
 	@Reference
 	private CTUserNotificationSender _ctUserNotificationSender;
+
+	private volatile int _entityCacheThreshold;
 
 	@Reference
 	private MultiVMPool _multiVMPool;

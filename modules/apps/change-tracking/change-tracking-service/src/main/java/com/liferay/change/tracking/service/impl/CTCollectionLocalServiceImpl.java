@@ -20,6 +20,7 @@ import com.liferay.change.tracking.exception.CTPublishConflictException;
 import com.liferay.change.tracking.internal.CTEnclosureUtil;
 import com.liferay.change.tracking.internal.CTServiceCopier;
 import com.liferay.change.tracking.internal.CTServiceRegistry;
+import com.liferay.change.tracking.internal.configuration.CTEntityCacheConfiguration;
 import com.liferay.change.tracking.internal.conflict.CTConflictChecker;
 import com.liferay.change.tracking.internal.conflict.ConstraintResolverConflictInfo;
 import com.liferay.change.tracking.internal.conflict.ModificationConflictInfo;
@@ -58,9 +59,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.SkipReplicationThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.change.tracking.sql.CTSQLModeThreadLocal;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -77,6 +80,7 @@ import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.model.WorkflowInstanceLinkTable;
 import com.liferay.portal.kernel.model.WorkflowedModel;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -90,14 +94,18 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
+import com.liferay.portal.kernel.service.persistence.BasePersistence;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.model.uid.UIDFactory;
+
+import java.io.Serializable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -539,9 +547,24 @@ public class CTCollectionLocalServiceImpl
 		_ctCommentPersistence.removeByCtCollectionId(
 			ctCollection.getCtCollectionId());
 
-		for (CTEntry ctEntry : ctEntries) {
-			_ctEntryPersistence.remove(ctEntry);
+		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
+
+		int entityCacheThreshold = _getEntityCacheThreshold();
+
+		try (SafeCloseable safeCloseable =
+				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
+					_isAboveThreshold(
+						ctEntries.size(), entityCacheThreshold))) {
+
+			for (CTEntry ctEntry : ctEntries) {
+				ctEntryPrimaryKeys.add(ctEntry.getCtEntryId());
+
+				_ctEntryPersistence.remove(ctEntry);
+			}
 		}
+
+		_clearEntityCache(
+			_ctEntryPersistence, ctEntryPrimaryKeys, entityCacheThreshold);
 
 		_ctMessagePersistence.removeByCtCollectionId(
 			ctCollection.getCtCollectionId());
@@ -1295,6 +1318,32 @@ public class CTCollectionLocalServiceImpl
 		_ctEntryConflictHelperServiceTrackerMap.close();
 	}
 
+	private void _clearEntityCache(
+		BasePersistence<?> basePersistence, Set<Serializable> primaryKeys,
+		int threshold) {
+
+		if (SetUtil.isEmpty(primaryKeys)) {
+			return;
+		}
+
+		if (_isAboveThreshold(primaryKeys.size(), threshold)) {
+			if (_log.isDebugEnabled()) {
+				Class<?> modelClass = basePersistence.getModelClass();
+
+				_log.debug(
+					StringBundler.concat(
+						"Clearing the entity cache for ", modelClass.getName(),
+						" because ", primaryKeys.size(),
+						" primary keys exceed the threshold of ", threshold));
+			}
+
+			basePersistence.clearCache();
+		}
+		else {
+			basePersistence.clearCache(primaryKeys);
+		}
+	}
+
 	private void _discardCTEntries(
 			CTCollection ctCollection, long classNameId,
 			List<CTEntry> ctEntries, boolean force)
@@ -1332,20 +1381,33 @@ public class CTCollectionLocalServiceImpl
 			});
 
 		List<Long> modelClassPKs = new ArrayList<>(ctEntries.size());
+		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
 
-		for (CTEntry ctEntry : ctEntries) {
-			modelClassPKs.add(ctEntry.getModelClassPK());
+		int entityCacheThreshold = _getEntityCacheThreshold();
 
-			_ctEntryLocalService.deleteCTEntry(ctEntry, force);
+		try (SafeCloseable safeCloseable =
+				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
+					_isAboveThreshold(
+						ctEntries.size(), entityCacheThreshold))) {
+
+			for (CTEntry ctEntry : ctEntries) {
+				ctEntryPrimaryKeys.add(ctEntry.getCtEntryId());
+				modelClassPKs.add(ctEntry.getModelClassPK());
+
+				_ctEntryLocalService.deleteCTEntry(ctEntry, force);
+			}
 		}
+
+		_clearEntityCache(
+			_ctEntryPersistence, ctEntryPrimaryKeys, entityCacheThreshold);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					ctCollection.getCtCollectionId())) {
 
-			CTPersistence<?> ctPersistence = ctService.getCTPersistence();
-
-			ctPersistence.clearCache(new HashSet<>(modelClassPKs));
+			_clearEntityCache(
+				ctService.getCTPersistence(), new HashSet<>(modelClassPKs),
+				entityCacheThreshold);
 		}
 
 		int processedClassPKs = 0;
@@ -1394,6 +1456,14 @@ public class CTCollectionLocalServiceImpl
 					return null;
 				});
 		}
+	}
+
+	private int _getEntityCacheThreshold() throws ConfigurationException {
+		CTEntityCacheConfiguration ctEntityCacheConfiguration =
+			_configurationProvider.getSystemConfiguration(
+				CTEntityCacheConfiguration.class);
+
+		return ctEntityCacheConfiguration.entityCacheThreshold();
 	}
 
 	private Map<Long, List<CTEntry>> _getRelatedCTEntriesMap(
@@ -1476,9 +1546,20 @@ public class CTCollectionLocalServiceImpl
 		};
 	}
 
+	private boolean _isAboveThreshold(int count, int threshold) {
+		if (ClusterExecutorUtil.isEnabled() && (threshold > 0) &&
+			(count > threshold)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _moveCTEntries(
-		long companyId, long fromCTCollectionId, long toCTCollectionId,
-		long classNameId, List<CTEntry> ctEntries) {
+			long companyId, long fromCTCollectionId, long toCTCollectionId,
+			long classNameId, List<CTEntry> ctEntries)
+		throws ConfigurationException {
 
 		if (ListUtil.isEmpty(ctEntries)) {
 			return;
@@ -1510,14 +1591,27 @@ public class CTCollectionLocalServiceImpl
 			});
 
 		List<Long> modelClassPKs = new ArrayList<>(ctEntries.size());
+		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
 
-		for (CTEntry ctEntry : ctEntries) {
-			modelClassPKs.add(ctEntry.getModelClassPK());
+		int entityCacheThreshold = _getEntityCacheThreshold();
 
-			ctEntry.setCtCollectionId(toCTCollectionId);
+		try (SafeCloseable safeCloseable =
+				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
+					_isAboveThreshold(
+						ctEntries.size(), entityCacheThreshold))) {
 
-			_ctEntryPersistence.update(ctEntry);
+			for (CTEntry ctEntry : ctEntries) {
+				ctEntryPrimaryKeys.add(ctEntry.getCtEntryId());
+				modelClassPKs.add(ctEntry.getModelClassPK());
+
+				ctEntry.setCtCollectionId(toCTCollectionId);
+
+				_ctEntryPersistence.update(ctEntry);
+			}
 		}
+
+		_clearEntityCache(
+			_ctEntryPersistence, ctEntryPrimaryKeys, entityCacheThreshold);
 
 		CTPersistence<?> ctPersistence = ctService.getCTPersistence();
 
@@ -1525,14 +1619,18 @@ public class CTCollectionLocalServiceImpl
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					fromCTCollectionId)) {
 
-			ctPersistence.clearCache(new HashSet<>(modelClassPKs));
+			_clearEntityCache(
+				ctPersistence, new HashSet<>(modelClassPKs),
+				entityCacheThreshold);
 		}
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					toCTCollectionId)) {
 
-			ctPersistence.clearCache(new HashSet<>(modelClassPKs));
+			_clearEntityCache(
+				ctPersistence, new HashSet<>(modelClassPKs),
+				entityCacheThreshold);
 		}
 
 		int processedClassPKs = 0;
