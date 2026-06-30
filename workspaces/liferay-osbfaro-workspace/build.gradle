@@ -136,6 +136,12 @@ subprojects {
 	}
 }
 
+project(":modules:osb-faro-contacts-demo") {
+	tasks.all {
+		enabled = (faroEnvironmentName == "local")
+	}
+}
+
 project(":modules:osb-faro-dependencies") {
 	tasks.all {
 		enabled = false
