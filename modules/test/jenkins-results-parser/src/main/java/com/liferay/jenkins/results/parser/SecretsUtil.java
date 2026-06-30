@@ -263,7 +263,7 @@ public abstract class SecretsUtil {
 					properties.load(new StringReader(content));
 				}
 			}
-			catch (IOException ioException) {
+			catch (IllegalArgumentException | IOException exception) {
 				continue;
 			}
 
