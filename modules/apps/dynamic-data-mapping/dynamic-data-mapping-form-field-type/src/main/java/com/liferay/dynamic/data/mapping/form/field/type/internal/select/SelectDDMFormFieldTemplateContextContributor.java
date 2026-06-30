@@ -34,8 +34,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.CollatorUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -273,15 +271,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 			ddmFormField, ddmFormFieldOptions, objectField);
 
 		if (ListUtil.isNotEmpty(objectFieldOptions)) {
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			Locale serviceContextLocale = LocaleUtil.fromLanguageId(
-				serviceContext.getLanguageId());
-
-			if (alphabeticalOrder && (locale != serviceContextLocale)) {
-				return _getSortedOptions(
-					serviceContextLocale, objectFieldOptions);
+			if (alphabeticalOrder) {
+				return _getSortedOptions(locale, objectFieldOptions);
 			}
 
 			return objectFieldOptions;
