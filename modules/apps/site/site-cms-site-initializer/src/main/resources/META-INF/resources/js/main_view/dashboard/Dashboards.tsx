@@ -27,10 +27,14 @@ const TABS = {
 type TabId = keyof typeof TABS;
 
 function Wrapper({
+	admin,
+	analyticsEnabled,
 	constants,
 	freeTier,
 	learnResources,
 }: {
+	admin: boolean;
+	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
@@ -45,6 +49,8 @@ function Wrapper({
 
 			<ClayTooltipProvider>
 				<Dashboards
+					admin={admin}
+					analyticsEnabled={analyticsEnabled}
 					constants={constants}
 					freeTier={freeTier}
 					learnResources={learnResources}
@@ -55,10 +61,14 @@ function Wrapper({
 }
 
 function Dashboards({
+	admin,
+	analyticsEnabled,
 	constants,
 	freeTier,
 	learnResources,
 }: {
+	admin: boolean;
+	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
@@ -90,7 +100,12 @@ function Dashboards({
 					<InventoryDashboard constants={constants} />
 				) : null}
 
-				{tabId === 'performance' ? <PerformanceDashboard /> : null}
+				{tabId === 'performance' ? (
+					<PerformanceDashboard
+						admin={admin}
+						analyticsEnabled={analyticsEnabled}
+					/>
+				) : null}
 			</ClayLayout.Container>
 		</>
 	);

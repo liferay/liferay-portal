@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -13,8 +14,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -27,9 +30,13 @@ import java.util.Map;
 public class ViewDashboardDisplayContext {
 
 	public ViewDashboardDisplayContext(
-		GroupLocalService groupLocalService, ThemeDisplay themeDisplay) {
+		AnalyticsSettingsManager analyticsSettingsManager,
+		GroupLocalService groupLocalService, RoleLocalService roleLocalService,
+		ThemeDisplay themeDisplay) {
 
+		_analyticsSettingsManager = analyticsSettingsManager;
 		_groupLocalService = groupLocalService;
+		_roleLocalService = roleLocalService;
 		_themeDisplay = themeDisplay;
 	}
 
@@ -60,6 +67,24 @@ public class ViewDashboardDisplayContext {
 
 	public Map<String, Object> getReactData() throws PortalException {
 		return HashMapBuilder.<String, Object>put(
+			"admin",
+			() -> _roleLocalService.hasUserRole(
+				_themeDisplay.getUserId(), _themeDisplay.getCompanyId(),
+				RoleConstants.ADMINISTRATOR, true)
+		).put(
+			"analyticsEnabled",
+			() -> {
+				try {
+					return _analyticsSettingsManager.isAnalyticsEnabled(
+						_themeDisplay.getCompanyId());
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+
+					return false;
+				}
+			}
+		).put(
 			"constants", getConstants()
 		).put(
 			"dashboard",
@@ -78,7 +103,9 @@ public class ViewDashboardDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewDashboardDisplayContext.class);
 
+	private final AnalyticsSettingsManager _analyticsSettingsManager;
 	private final GroupLocalService _groupLocalService;
+	private final RoleLocalService _roleLocalService;
 	private final ThemeDisplay _themeDisplay;
 
 }

@@ -5,7 +5,9 @@
 
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
+import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewDashboardDisplayContext;
@@ -13,6 +15,7 @@ import com.liferay.site.cms.site.initializer.internal.display.context.ViewDashbo
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adriano Interaminense
@@ -31,7 +34,7 @@ public class ViewDashboardJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new ViewDashboardDisplayContext(
-			groupLocalService,
+			_analyticsSettingsManager, groupLocalService, _roleLocalService,
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
@@ -40,5 +43,11 @@ public class ViewDashboardJSPSectionFragmentRenderer
 	protected String getJSPPath() {
 		return "/view_dashboard.jsp";
 	}
+
+	@Reference
+	private AnalyticsSettingsManager _analyticsSettingsManager;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
