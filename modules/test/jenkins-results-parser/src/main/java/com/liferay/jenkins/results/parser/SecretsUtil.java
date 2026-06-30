@@ -457,11 +457,11 @@ public abstract class SecretsUtil {
 		try {
 			String content;
 
-			String fileSuffix = "file://";
+			String filePrefix = "file://";
 
-			if (secretsCacheURL.startsWith(fileSuffix)) {
+			if (secretsCacheURL.startsWith(filePrefix)) {
 				File file = new File(
-					secretsCacheURL.substring(fileSuffix.length()));
+					secretsCacheURL.substring(filePrefix.length()));
 
 				if (!file.exists()) {
 					return;
