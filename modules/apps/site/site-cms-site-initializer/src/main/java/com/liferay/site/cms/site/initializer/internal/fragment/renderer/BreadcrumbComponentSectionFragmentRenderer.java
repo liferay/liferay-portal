@@ -5,10 +5,10 @@
 
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryPinLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -53,7 +53,7 @@ public class BreadcrumbComponentSectionFragmentRenderer
 
 		BreadcrumbDisplayContext breadcrumbDisplayContext =
 			new BreadcrumbDisplayContext(
-				_depotEntryModelResourcePermission, _depotEntryPinLocalService,
+				_assetLibraryResourceFactory, _depotEntryPinLocalService,
 				InfoItemUtil.getGroupId(httpServletRequest), _groupLocalService,
 				_groupModelResourcePermission, httpServletRequest,
 				CMSSpaceConstants.SPACE_STICKER_MD);
@@ -61,9 +61,8 @@ public class BreadcrumbComponentSectionFragmentRenderer
 		return breadcrumbDisplayContext.getProps();
 	}
 
-	@Reference(target = "(model.class.name=com.liferay.depot.model.DepotEntry)")
-	private ModelResourcePermission<DepotEntry>
-		_depotEntryModelResourcePermission;
+	@Reference
+	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
 
 	@Reference
 	private DepotEntryPinLocalService _depotEntryPinLocalService;

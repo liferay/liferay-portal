@@ -9,6 +9,8 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryPin;
 import com.liferay.depot.service.DepotEntryPinLocalService;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
+import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
+import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -41,6 +43,7 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -50,13 +53,13 @@ import java.util.Map;
 public class BreadcrumbDisplayContext {
 
 	public BreadcrumbDisplayContext(
-		ModelResourcePermission<DepotEntry> depotEntryModelResourcePermission,
+		AssetLibraryResource.Factory assetLibraryResourceFactory,
 		DepotEntryPinLocalService depotEntryPinLocalService, long groupId,
 		GroupLocalService groupLocalService,
 		ModelResourcePermission<Group> groupModelResourcePermission,
 		HttpServletRequest httpServletRequest, String size) {
 
-		_depotEntryModelResourcePermission = depotEntryModelResourcePermission;
+		_assetLibraryResourceFactory = assetLibraryResourceFactory;
 		_depotEntryPinLocalService = depotEntryPinLocalService;
 		_groupId = groupId;
 		_groupLocalService = groupLocalService;
@@ -223,31 +226,38 @@ public class BreadcrumbDisplayContext {
 							).put(
 								"target", "manageMembersModal"
 							));
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href", StringPool.BLANK
-							).put(
-								"label",
-								LanguageUtil.get(
-									_httpServletRequest, "view-connected-sites")
-							).put(
-								"manageConnectedSitesData",
-								HashMapBuilder.<String, Object>put(
-									"externalReferenceCode",
-									group.getExternalReferenceCode()
+
+						Map<String, Map<String, String>> actions =
+							_getAssetLibraryActions(group);
+
+						if (actions.containsKey("connect-sites") ||
+							actions.containsKey("view-connected-sites")) {
+
+							unsafeConsumer.accept(
+								JSONUtil.put(
+									"href", StringPool.BLANK
 								).put(
-									"hasConnectSitesPermission",
-									_depotEntryModelResourcePermission.contains(
-										permissionChecker, group.getClassPK(),
-										ActionKeys.UPDATE)
-								).build()
-							).put(
-								"redirect", _themeDisplay.getURLCurrent()
-							).put(
-								"symbolLeft", "globe"
-							).put(
-								"target", "manageConnectedSitesModal"
-							));
+									"label",
+									LanguageUtil.get(
+										_httpServletRequest,
+										"view-connected-sites")
+								).put(
+									"manageConnectedSitesData",
+									HashMapBuilder.<String, Object>put(
+										"externalReferenceCode",
+										group.getExternalReferenceCode()
+									).put(
+										"hasConnectSitesPermission",
+										actions.containsKey("connect-sites")
+									).build()
+								).put(
+									"redirect", _themeDisplay.getURLCurrent()
+								).put(
+									"symbolLeft", "globe"
+								).put(
+									"target", "manageConnectedSitesModal"
+								));
+						}
 					}
 
 					if (permissionChecker.hasPermission(
@@ -393,6 +403,32 @@ public class BreadcrumbDisplayContext {
 		).build();
 	}
 
+	private Map<String, Map<String, String>> _getAssetLibraryActions(
+			Group group)
+		throws Exception {
+
+		AssetLibraryResource assetLibraryResource =
+			_assetLibraryResourceFactory.create(
+			).httpServletRequest(
+				_httpServletRequest
+			).preferredLocale(
+				_themeDisplay.getLocale()
+			).user(
+				_themeDisplay.getUser()
+			).build();
+
+		AssetLibrary assetLibrary = assetLibraryResource.getAssetLibrary(
+			group.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions = assetLibrary.getActions();
+
+		if (actions == null) {
+			return Collections.emptyMap();
+		}
+
+		return actions;
+	}
+
 	private String _getControlPanelPortletURL(String portletId)
 		throws Exception {
 
@@ -426,8 +462,7 @@ public class BreadcrumbDisplayContext {
 		return jsonArray;
 	}
 
-	private final ModelResourcePermission<DepotEntry>
-		_depotEntryModelResourcePermission;
+	private final AssetLibraryResource.Factory _assetLibraryResourceFactory;
 	private final DepotEntryPinLocalService _depotEntryPinLocalService;
 	private final long _groupId;
 	private final GroupLocalService _groupLocalService;
