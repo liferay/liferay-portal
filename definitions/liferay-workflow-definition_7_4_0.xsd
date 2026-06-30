@@ -305,6 +305,8 @@
 					<xs:sequence>
 						<xs:element minOccurs="0" ref="labels" />
 						<xs:element minOccurs="0" name="input-variables" type="xs:string" />
+						<xs:element minOccurs="0" name="model-location" type="xs:string" />
+						<xs:element minOccurs="0" name="model-name" type="xs:string" />
 						<xs:element minOccurs="0" name="output-variables" type="xs:string" />
 						<xs:element name="prompt" type="xs:string" />
 						<xs:element minOccurs="0" name="rag" type="xs:string" />
