@@ -58,6 +58,15 @@ public class TestPropsValues {
 	public static final String USER_PASSWORD = TestPropsUtil.get(
 		"user.password");
 
+	public static final String VERTEX_AI_LOCATION = TestPropsUtil.get(
+		"vertex.ai.location");
+
+	public static final String VERTEX_AI_MODEL_NAME = TestPropsUtil.get(
+		"vertex.ai.model.name");
+
+	public static final String VERTEX_AI_PROJECT_ID = TestPropsUtil.get(
+		"vertex.ai.project.id");
+
 	static {
 		String companyWebId = TestPropsUtil.get("company.web.id");
 
