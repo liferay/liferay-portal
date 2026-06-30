@@ -408,6 +408,72 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		_testPutCartByExternalReferenceCodeWithMoreExternalReferenceCodes();
 	}
 
+	public class TestAccountEntryValidator implements AccountEntryValidator {
+
+		public TestAccountEntryValidator(
+			String classPK, String resultMessage, String resultStatus) {
+
+			_classPK = classPK;
+			_resultMessage = resultMessage;
+			_resultStatus = resultStatus;
+		}
+
+		@Override
+		public AccountEntryValidatorConfiguration
+			getAccountEntryValidatorConfiguration(long companyId) {
+
+			return new AccountEntryValidatorConfiguration() {
+
+				@Override
+				public int checkInterval() {
+					return 0;
+				}
+
+				@Override
+				public boolean enabled() {
+					return true;
+				}
+
+			};
+		}
+
+		@Override
+		public String getClassPK(
+			AccountEntry accountEntry, JSONObject jsonObject) {
+
+			return _classPK;
+		}
+
+		public JSONObject getJSONObject() {
+			return _jsonObject;
+		}
+
+		public void setResultStatus(String resultStatus) {
+			_resultStatus = resultStatus;
+		}
+
+		@Override
+		public AccountEntryValidatorResult validate(
+			AccountEntry accountEntry, JSONObject jsonObject) {
+
+			_jsonObject = jsonObject;
+
+			return AccountEntryValidatorResult.builder(
+				_classPK
+			).resultMessage(
+				_resultMessage
+			).resultStatus(
+				_resultStatus
+			).build();
+		}
+
+		private final String _classPK;
+		private volatile JSONObject _jsonObject;
+		private final String _resultMessage;
+		private String _resultStatus;
+
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
@@ -1437,65 +1503,4 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@DeleteAfterTestRun
 	private User _user;
 
-	public class TestAccountEntryValidator implements AccountEntryValidator {
-
-		public TestAccountEntryValidator(
-			String key, String resultMessage, String resultStatus) {
-
-			_key = key;
-			_resultMessage = resultMessage;
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorConfiguration getConfiguration(long companyId) {
-			return new AccountEntryValidatorConfiguration() {
-
-				@Override
-				public int checkInterval() {
-					return 0;
-				}
-
-				@Override
-				public boolean enabled() {
-					return true;
-				}
-
-			};
-		}
-
-		public JSONObject getJSONObject() {
-			return _jsonObject;
-		}
-
-		@Override
-		public String getKey(AccountEntry accountEntry, JSONObject jsonObject) {
-			return _key;
-		}
-
-		public void setResultStatus(String resultStatus) {
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorResult validate(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			_jsonObject = jsonObject;
-
-			return AccountEntryValidatorResult.builder(
-				_key
-			).resultMessage(
-				_resultMessage
-			).resultStatus(
-				_resultStatus
-			).build();
-		}
-
-		private volatile JSONObject _jsonObject;
-		private final String _key;
-		private final String _resultMessage;
-		private String _resultStatus;
-
-	}
 }
