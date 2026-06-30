@@ -11,13 +11,8 @@ $toolbar-height: 55px;
 	width: 20px;
 }
 
-.audience-builder-rule.layout__row-builder-item {
-	border: 0;
+.audience-builder-rule {
 	border-left: 4px solid $teal-l2;
-
-	.layout__row-builder-delete-button {
-		opacity: 1;
-	}
 }
 
 .audience-builder-sidebar {

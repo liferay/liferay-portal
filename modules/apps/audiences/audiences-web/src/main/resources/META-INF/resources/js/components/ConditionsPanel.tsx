@@ -3,13 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayButtonWithIcon} from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
-import {
-	RowBuilder,
-	useScreenReaderAnnounce,
-} from '@liferay/layout-js-components-web';
-import React, {useState} from 'react';
+import {useScreenReaderAnnounce} from '@liferay/layout-js-components-web';
+import React, {Fragment, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
 import {AudiencesCriteria, AudiencesCriteriaType, Rule} from '../types';
@@ -48,15 +44,33 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 		(audiencesCriteriaTypes[0]?.audiencesCriterias ?? []).map(createRule)
 	);
 
+	const handleChange = (index: number, newRule: Rule) => {
+		setRules((currentRules) =>
+			currentRules.map((rule, currentIndex) =>
+				currentIndex === index ? newRule : rule
+			)
+		);
+	};
+
+	const handleDelete = (index: number) => {
+		setRules((currentRules) =>
+			currentRules.filter((rule, currentIndex) => currentIndex !== index)
+		);
+
+		announce(Liferay.Language.get('a-condition-was-removed'));
+	};
+
 	const handleDuplicate = (index: number) => {
-		const newRules = [...rules];
+		setRules((currentRules) => {
+			const newRules = [...currentRules];
 
-		newRules.splice(index + 1, 0, {
-			...rules[index],
-			id: `rule-${uuidv4()}`,
+			newRules.splice(index + 1, 0, {
+				...currentRules[index],
+				id: `rule-${uuidv4()}`,
+			});
+
+			return newRules;
 		});
-
-		setRules(newRules);
 
 		announce(Liferay.Language.get('a-condition-was-duplicated'));
 	};
@@ -75,14 +89,8 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 						aria-label={Liferay.Language.get('conjunction')}
 						className="form-control-sm w-auto"
 						items={[
-							{
-								label: Liferay.Language.get('and'),
-								value: 'and',
-							},
-							{
-								label: Liferay.Language.get('or'),
-								value: 'or',
-							},
+							{label: Liferay.Language.get('and'), value: 'and'},
+							{label: Liferay.Language.get('or'), value: 'or'},
 						]}
 						onSelectionChange={(key) =>
 							setConjunction(key as string)
@@ -109,63 +117,37 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 				</span>
 			</div>
 
-			<div className="py-2">
-				<RowBuilder<Rule>
-					allowEmpty
-					createItem={() => createRule(audiencesCriterias[0])}
-					hideAddButton
-					itemClassName="audience-builder-rule pr-4 py-3"
-					items={rules}
-					labels={{
-						add: Liferay.Language.get('add-condition'),
-						addedAnnouncement: Liferay.Language.get(
-							'a-condition-was-added'
-						),
-						delete: Liferay.Language.get('delete'),
-						deletedAnnouncement: Liferay.Language.get(
-							'a-condition-was-removed'
-						),
-						list: Liferay.Language.get('conditions'),
-					}}
-					renderItem={({item, onChange}) => (
+			<div className="px-3 py-2">
+				{rules.map((rule, index) => (
+					<Fragment key={rule.id}>
+						{index > 0 ? (
+							<div
+								aria-hidden="true"
+								className="align-items-center d-flex mb-3"
+							>
+								<span className="audience-builder-conjunction-line border-top" />
+
+								<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
+									{conjunction === 'or'
+										? Liferay.Language.get('or')
+										: Liferay.Language.get('and')}
+								</span>
+
+								<span className="border-top flex-grow-1" />
+							</div>
+						) : null}
+
 						<RuleRow
 							audiencesCriteria={
-								audiencesCriteriasByKey[item.attribute]
+								audiencesCriteriasByKey[rule.attribute]
 							}
-							onChange={onChange}
-							rule={item}
+							onChange={(newRule) => handleChange(index, newRule)}
+							onDelete={() => handleDelete(index)}
+							onDuplicate={() => handleDuplicate(index)}
+							rule={rule}
 						/>
-					)}
-					renderItemActions={({index}) => (
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('duplicate')}
-							borderless
-							className="align-self-baseline"
-							displayType="secondary"
-							onClick={() => handleDuplicate(index)}
-							size="sm"
-							symbol="copy"
-							title={Liferay.Language.get('duplicate')}
-						/>
-					)}
-					renderItemSeparator={() => (
-						<div
-							aria-hidden="true"
-							className="align-items-center d-flex mb-3"
-						>
-							<span className="audience-builder-conjunction-line border-top" />
-
-							<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
-								{conjunction === 'or'
-									? Liferay.Language.get('or')
-									: Liferay.Language.get('and')}
-							</span>
-
-							<span className="border-top flex-grow-1" />
-						</div>
-					)}
-					setItems={setRules}
-				/>
+					</Fragment>
+				))}
 			</div>
 		</div>
 	);
