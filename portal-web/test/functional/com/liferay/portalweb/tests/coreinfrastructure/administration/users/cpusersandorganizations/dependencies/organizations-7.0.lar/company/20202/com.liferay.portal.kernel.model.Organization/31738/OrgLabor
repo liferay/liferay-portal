@@ -1,4 +1,0 @@
-<java.util.Collections_-UnmodifiableRandomAccessList resolves-to="java.util.Collections$UnmodifiableList">
-  <c class="list"/>
-  <list reference="../c"/>
-</java.util.Collections_-UnmodifiableRandomAccessList>
