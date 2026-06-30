@@ -241,6 +241,35 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 		Assert.assertEquals(scope, scopeConfigJSONObject.getString("scope"));
 	}
 
+	@Test
+	public void testExecuteWithNoEnabledEngines() throws Exception {
+		AccountEntry accountEntry = _addAccountEntry();
+
+		_seoStudioInstanceObjectEntry = _addSEOStudioInstanceObjectEntry(
+			accountEntry);
+
+		_seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry(
+			accountEntry, RandomTestUtil.randomString(),
+			JSONUtil.put(
+				"engines",
+				JSONUtil.put(
+					"aiGenerated", JSONUtil.put("enabled", false)
+				).put(
+					"crawler", JSONUtil.put("enabled", false)
+				).put(
+					"gsc", JSONUtil.put("enabled", false)
+				).put(
+					"pageSpeed", JSONUtil.put("enabled", false)
+				)
+			).toString(),
+			_seoStudioInstanceObjectEntry);
+
+		_executeCreateScans(_seoStudioDomainObjectEntry);
+
+		Assert.assertNull(
+			_getSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry));
+	}
+
 	private AccountEntry _addAccountEntry() throws Exception {
 		return _accountEntryLocalService.addAccountEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
