@@ -11,8 +11,9 @@ import {dmSettingsPagesTest} from './fixtures/dmSettingsPagesTest';
 
 const test = mergeTests(dmSettingsPagesTest, isolatedSiteTest, loginTest());
 
-const INVALID_MIME_TYPE_OR_SIZE_ERROR = 'Mime type or size limit is not valid.';
+const INVALID_MIME_TYPE_ERROR = 'does not contain a valid mime type name';
 const INVALID_NUMBER_ERROR = 'Please enter a valid number.';
+const INVALID_SIZE_LIMIT_ERROR = 'does not contain a valid size limit value';
 
 test.describe('configuration form validation', () => {
 	test(
@@ -32,7 +33,7 @@ test.describe('configuration form validation', () => {
 
 				await expect(
 					page.locator('.alert-danger', {
-						hasText: INVALID_MIME_TYPE_OR_SIZE_ERROR,
+						hasText: INVALID_MIME_TYPE_ERROR,
 					})
 				).toBeVisible();
 			});
@@ -50,7 +51,7 @@ test.describe('configuration form validation', () => {
 
 				await expect(
 					page.locator('.alert-danger', {
-						hasText: INVALID_MIME_TYPE_OR_SIZE_ERROR,
+						hasText: INVALID_SIZE_LIMIT_ERROR,
 					})
 				).toBeVisible();
 			});
@@ -74,7 +75,7 @@ test.describe('configuration form validation', () => {
 
 				await expect(
 					page.locator('.alert-danger', {
-						hasText: INVALID_MIME_TYPE_OR_SIZE_ERROR,
+						hasText: INVALID_MIME_TYPE_ERROR,
 					})
 				).toBeVisible();
 			});
@@ -124,7 +125,7 @@ test.describe('configuration form validation', () => {
 
 				await expect(
 					page.locator('.alert-danger', {
-						hasText: INVALID_MIME_TYPE_OR_SIZE_ERROR,
+						hasText: INVALID_MIME_TYPE_ERROR,
 					})
 				).toBeVisible();
 			});

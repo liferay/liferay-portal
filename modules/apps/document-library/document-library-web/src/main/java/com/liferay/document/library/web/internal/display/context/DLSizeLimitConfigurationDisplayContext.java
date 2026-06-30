@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -39,20 +38,6 @@ public class DLSizeLimitConfigurationDisplayContext {
 		_liferayPortletResponse = liferayPortletResponse;
 		_scope = scope;
 		_scopePK = scopePK;
-	}
-
-	public String getEditDLSizeLimitConfigurationURL() {
-		return PortletURLBuilder.createActionURL(
-			_liferayPortletResponse
-		).setActionName(
-			"/instance_settings/edit_size_limits"
-		).setRedirect(
-			PortalUtil.getCurrentURL(_httpServletRequest)
-		).setParameter(
-			"scope", _scope
-		).setParameter(
-			"scopePK", _scopePK
-		).buildString();
 	}
 
 	public long getFileMaxSize() {

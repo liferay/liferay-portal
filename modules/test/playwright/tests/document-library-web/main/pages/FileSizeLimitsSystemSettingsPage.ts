@@ -18,7 +18,7 @@ export class FileSizeLimitsSystemSettingsPage {
 	constructor(page: Page) {
 		this.mimeTypes = new FileSizeMimetypesForm(page);
 		this.page = page;
-		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.saveButton = page.getByTestId('submitConfiguration');
 		this.systemSettingsPage = new SystemSettingsPage(page);
 	}
 
