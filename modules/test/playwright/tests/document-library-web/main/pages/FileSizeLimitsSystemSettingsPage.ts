@@ -31,6 +31,10 @@ export class FileSizeLimitsSystemSettingsPage {
 		await inputField.click();
 		await inputField.fill(value);
 
+		await this.save();
+	}
+
+	async save() {
 		await this.saveButton.click();
 		await waitForAlert(this.page);
 	}
