@@ -19,6 +19,7 @@ export class CommerceThemeClassicCatalogPage {
 	readonly ordersTab: (orderTabName: string) => Locator;
 	readonly page: Page;
 	readonly productCard: (productName: string) => Locator;
+	readonly productCardAvailabilityLabel: (productName: string) => Locator;
 	readonly productCardImage: (productName: string) => Locator;
 	readonly productCardPrice: (
 		productName: string,
@@ -60,6 +61,10 @@ export class CommerceThemeClassicCatalogPage {
 		this.page = page;
 		this.productCard = (productName: string) =>
 			this.page.locator('.product-card').filter({hasText: productName});
+		this.productCardAvailabilityLabel = (productName: string) =>
+			this.productCard(productName).locator(
+				'[class*="availability-label"]'
+			);
 		this.productCardImage = (productName: string) =>
 			this.productCard(productName).locator('img.product-card-picture');
 		this.productCardPrice = (productName, productPrice) =>

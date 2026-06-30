@@ -886,6 +886,7 @@ test(
 				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 					'demo.unprivileged@liferay.com'
 				);
+
 			const rolesResponse =
 				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
 
@@ -898,6 +899,7 @@ test(
 				accountRoleBuyer[0].id,
 				user.emailAddress
 			);
+
 			const siteRole =
 				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
 			await apiHelpers.headlessAdminUser.assignUserToSite(
@@ -915,9 +917,7 @@ test(
 			await performLogout(page);
 			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
-			await page.goto(
-				`/web/${site.name}/${layout.friendlyUrlPath}`
-			);
+			await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
 			await commerceThemeClassicCatalogPage
 				.productCardAddToWishListButton(product1Name)
@@ -951,6 +951,164 @@ test(
 			await expect(
 				commerceWishListPage.wishListItem(product2Name)
 			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'View product availability on the product card',
+	{tag: ['@COMMERCE-5871', '@COMMERCE-5872', '@LPD-96522']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeClassicCatalogPage,
+		page,
+	}) => {
+		test.setTimeout(180000);
+
+		const availableProductName = 'Available Product ' + getRandomString();
+		const unavailableProductName =
+			'Unavailable Product ' + getRandomString();
+
+		let channel;
+		let layout;
+		let site;
+
+		await test.step('Create a commerce site and a catalog page', async () => {
+			site = await apiHelpers.headlessAdminSite.postSite({
+				name: getRandomString(),
+			});
+
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+		});
+
+		await test.step('Create a channel, catalog and two products with availability display', async () => {
+			channel = await apiHelpers.headlessCommerceAdminChannel.postChannel(
+				{
+					siteGroupId: site.id,
+				}
+			);
+
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const availableProduct =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: availableProductName},
+				});
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				String(availableProduct.productId),
+				{
+					name: {en_US: availableProductName},
+					productConfiguration: {
+						displayAvailability: true,
+					},
+				}
+			);
+
+			const unavailableProduct =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: unavailableProductName},
+				});
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				String(unavailableProduct.productId),
+				{
+					name: {en_US: unavailableProductName},
+					productConfiguration: {
+						allowBackOrder: false,
+						displayAvailability: true,
+					},
+				}
+			);
+
+			const warehouse =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+					{active: true, latitude: 40, longitude: -74}
+				);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+				warehouse.id,
+				channel.id
+			);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesWarehouseItems(
+				warehouse.id,
+				{quantity: 100, sku: availableProduct.skus[0].sku}
+			);
+		});
+
+		await test.step('Set the channel site type to B2B', async () => {
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+		});
+
+		await test.step('Create a buyer for the account', async () => {
+			const account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'business',
+			});
+
+			const user =
+				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+					'demo.unprivileged@liferay.com'
+				);
+
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
+
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				[user.emailAddress]
+			);
+		});
+
+		await test.step('As a buyer, each product card shows its availability', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCardAvailabilityLabel(
+					availableProductName
+				)
+			).toHaveText('Available');
+			await expect(
+				commerceThemeClassicCatalogPage.productCardAvailabilityLabel(
+					unavailableProductName
+				)
+			).toHaveText('Unavailable');
 		});
 	}
 );
