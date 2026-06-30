@@ -13,7 +13,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
@@ -107,19 +106,6 @@ public class StyleBookEntryUtil {
 			styleBookEntry -> _getStyleBookEntryMap(
 				frontendTokenDefinition, includeTokenValues, groupId,
 				scopeGroups, styleBookEntry, themeDisplay));
-	}
-
-	public static JSONArray getStyleBookEntriesJSONArray(
-			FrontendTokenDefinition frontendTokenDefinition,
-			boolean includeTokenValues, Layout layout,
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		return JSONUtil.toJSONArray(
-			getStyleBookEntries(
-				frontendTokenDefinition, includeTokenValues, layout,
-				themeDisplay),
-			map -> JSONFactoryUtil.createJSONObject(map));
 	}
 
 	private static JSONObject _getFrontendTokenValuesJSONObject(
