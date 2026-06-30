@@ -222,16 +222,12 @@ public class ChangeMasterLayoutMVCActionCommand
 					defaultStyleBookEntry)
 			));
 
-		JSONArray styleBookEntriesJSONArray = JSONUtil.toJSONArray(
-			StyleBookEntryUtil.getStyleBookEntries(
-				frontendTokenDefinition, true, layout, themeDisplay),
-			map -> _jsonFactory.createJSONObject(map));
-
-		for (int i = 0; i < styleBookEntriesJSONArray.length(); i++) {
-			styleBooksJSONArray.put(styleBookEntriesJSONArray.getJSONObject(i));
-		}
-
-		return styleBooksJSONArray;
+		return JSONUtil.concat(
+			styleBooksJSONArray,
+			JSONUtil.toJSONArray(
+				StyleBookEntryUtil.getStyleBookEntries(
+					frontendTokenDefinition, true, layout, themeDisplay),
+				map -> _jsonFactory.createJSONObject(map)));
 	}
 
 	@Reference
