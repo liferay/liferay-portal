@@ -58,7 +58,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
 
-		return _getExportPreview(endDate, group, 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, startDate);
 	}
 
 	@Override
@@ -70,8 +70,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
 
 		return _getExportPreview(
-			endDate, group, GetterUtil.getLong(plid), portletId, false,
-			startDate);
+			endDate, group, GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 			throw new NotFoundException();
 		}
 
-		return _getExportPreview(endDate, group, 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, startDate);
 	}
 
 	@Override
@@ -95,7 +94,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Group group = _getSiteGroup(siteExternalReferenceCode);
 
-		return _getExportPreview(endDate, group, 0, null, false, startDate);
+		return _getExportPreview(endDate, group, 0, null, startDate);
 	}
 
 	@Override
@@ -107,8 +106,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		Group group = _getSiteGroup(siteExternalReferenceCode);
 
 		return _getExportPreview(
-			endDate, group, GetterUtil.getLong(plid), portletId, false,
-			startDate);
+			endDate, group, GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	private Group _getAssetLibraryGroup(String externalReferenceCode) {
@@ -124,7 +122,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	private ExportPreview _getExportPreview(
 			Date endDate, Group group, long plid, String portletId,
-			boolean privateLayout, Date startDate)
+			Date startDate)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -173,8 +171,6 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 				_portletDataContextFactory.createPreparePortletDataContext(
 					contextCompany.getCompanyId(), groupId, range, startDate,
 					endDate);
-
-			portletDataContext.setPrivateLayout(privateLayout);
 
 			portletDataHandler.prepareManifestSummary(portletDataContext);
 
@@ -240,7 +236,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 							portletDataHandler.
 								getExportConfigurationPortletDataHandlerControls(
 									contextCompany.getCompanyId(), groupId,
-									portlet, plid, privateLayout),
+									portlet, plid, false),
 							previewPortletDataHandlersMap);
 				}
 			}
