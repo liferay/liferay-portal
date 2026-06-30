@@ -106,27 +106,23 @@ test.describe('Related Asset Fragment', () => {
 
 			await journalEditArticlePage.editArticle(journalArticleTitle1);
 
-			const row = page
-				.frameLocator('iframe[title="Select Basic Web Content"]')
-				.locator('.list-group-item', {hasText: journalArticleTitle2});
+			const itemCheckbox = page
+				.locator('.modal-dialog')
+				.getByLabel(`Select ${journalArticleTitle2}`);
 
 			await expect(async () => {
-				await journalEditArticlePage.openRelatedAsset(
-					'Basic Web Content'
-				);
+				await journalEditArticlePage.openRelatedAsset();
 
-				await expect(
-					page.getByText('Select Basic Web Content')
-				).toBeVisible({timeout: 3000});
+				await expect(itemCheckbox).toBeVisible({timeout: 3000});
 			}).toPass();
 
-			await row.getByRole('checkbox').check({trial: true});
-
-			await row.getByRole('checkbox').check();
+			await itemCheckbox.check();
 
 			await clickAndExpectToBeHidden({
 				target: page.locator('.modal-dialog'),
-				trigger: page.getByRole('button', {name: 'Done'}),
+				trigger: page
+					.locator('.modal-dialog')
+					.getByRole('button', {exact: true, name: 'Select'}),
 			});
 
 			await journalEditArticlePage.publishArticle(true);

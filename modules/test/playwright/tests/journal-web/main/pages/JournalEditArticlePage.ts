@@ -370,10 +370,9 @@ export class JournalEditArticlePage {
 		}
 	}
 
-	async openRelatedAsset(assetType: string) {
+	async openRelatedAsset() {
 		await this.openFieldSet('Related Assets', 'relatedAssets');
 		await this.page.getByLabel('Select Items').click();
-		await this.page.getByRole('menuitem', {name: assetType}).click();
 	}
 
 	async publishArticle(

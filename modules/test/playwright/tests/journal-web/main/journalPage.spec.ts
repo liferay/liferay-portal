@@ -238,22 +238,21 @@ test(
 
 		await page.getByRole('link', {name: 'First Web Content'}).click();
 
-		await journalEditArticlePage.openRelatedAsset('Basic Web Content');
+		const modal = page.locator('.modal-dialog');
 
-		await journalEditArticlePage.changeViewInRelatedAssetPopUp(
-			'Basic Web Content',
-			'list'
-		);
+		await expect(async () => {
+			await journalEditArticlePage.openRelatedAsset();
 
-		const relatedAssetsFrame = page.frameLocator(
-			`iframe[title="Select Basic Web Content"]`
-		);
+			await expect(
+				modal.getByLabel('Select Second Web Content')
+			).toBeVisible({timeout: 3000});
+		}).toPass();
 
-		const relatedAssetItems = relatedAssetsFrame.locator(
-			'dd:has(input[type="checkbox"]:not([disabled]))'
-		);
+		await expect(modal.getByLabel('Select First Web Content')).toBeHidden();
 
-		await expect(relatedAssetItems).toHaveCount(2);
+		await expect(
+			modal.locator('.cell-select-item input:not([disabled])')
+		).toHaveCount(2);
 	}
 );
 
@@ -315,38 +314,42 @@ test(
 		const basicWebContentStructureId =
 			await getBasicWebContentStructureId(apiHelpers);
 
+		const folder = await apiHelpers.jsonWebServicesJournal.addFolder({
+			groupId: site.id,
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: basicWebContentStructureId,
+			folderId: folder.folderId,
+			groupId: site.id,
+			titleMap: {en_US: 'Related Web Content'},
+		});
+
 		await apiHelpers.jsonWebServicesJournal.addWebContent({
 			ddmStructureId: basicWebContentStructureId,
 			groupId: site.id,
 			titleMap: {en_US: 'Basic Web content'},
 		});
 
-		await apiHelpers.jsonWebServicesJournal.addFolder({
-			groupId: site.id,
-		});
-
 		await journalPage.goto(site.friendlyUrlPath);
 
 		await page.getByRole('link', {name: 'Basic Web content'}).click();
 
-		await journalEditArticlePage.openRelatedAsset('Basic Web Content');
+		const itemCheckbox = page
+			.locator('.modal-dialog')
+			.getByLabel('Select Related Web Content');
 
-		await journalEditArticlePage.changeViewInRelatedAssetPopUp(
-			'Basic Web Content',
-			'list'
-		);
+		await expect(async () => {
+			await journalEditArticlePage.openRelatedAsset();
 
-		const relatedAssetsFrame = page.frameLocator(
-			`iframe[title="Select Basic Web Content"]`
-		);
+			await expect(itemCheckbox).toBeVisible({timeout: 3000});
+		}).toPass();
 
-		const inputValue = await relatedAssetsFrame
-			.locator(
-				'#_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_articlesPrimaryKeys'
-			)
-			.getAttribute('value');
+		// The selector item's checkbox holds the related asset's primary key.
 
-		expect(/[[{]/.test(inputValue || '')).toBeFalsy();
+		const primaryKey = await itemCheckbox.getAttribute('value');
+
+		expect(/[[{]/.test(primaryKey || '')).toBeFalsy();
 	}
 );
 

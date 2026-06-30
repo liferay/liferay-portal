@@ -875,7 +875,7 @@ privateContentIconTest(
 
 		await journalEditArticlePage.editArticle(title);
 
-		await journalEditArticlePage.openRelatedAsset('Basic Web Content');
+		await journalEditArticlePage.openRelatedAsset();
 
 		await journalEditArticlePage.assertPrivateContentIconInRelatedAssetPopUp(
 			'Basic Web Content'
