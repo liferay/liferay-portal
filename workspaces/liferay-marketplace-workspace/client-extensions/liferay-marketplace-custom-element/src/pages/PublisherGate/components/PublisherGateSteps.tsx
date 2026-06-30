@@ -95,10 +95,27 @@ const PublisherGateSteps = () => {
 										flag: userInfo?.phone?.flag as string,
 									},
 									publisherType: userInfo.publisherType.map(
-										(type) =>
-											data?.listTypeEntries.find(
-												({key}) => type === key
-											)?.name || type
+										(type) => {
+											const entry =
+												data?.listTypeEntries?.find(
+													({key}) => type === key
+												);
+											if (entry) {
+												return entry.name;
+											}
+											if (type === 'appPublisher') {
+												return i18n.translate(
+													'app-publisher'
+												);
+											}
+											if (type === 'solutionPublisher') {
+												return i18n.translate(
+													'solution-publisher'
+												);
+											}
+
+											return type;
+										}
 									),
 								} as any
 							}

@@ -41,7 +41,20 @@ const PublisherGateForm: React.FC<PublisherGateFormProps> = ({
 	const [currentPhonesFlags, setCurrentPhonesFlags] = useState(phone);
 	const navigate = useNavigate();
 
-	const listTypeEntries = listTypeDefinition?.listTypeEntries ?? [];
+	const listTypeEntries =
+		listTypeDefinition?.listTypeEntries &&
+		!!listTypeDefinition.listTypeEntries.length
+			? listTypeDefinition.listTypeEntries
+			: [
+					{
+						key: 'appPublisher',
+						name: i18n.translate('app-publisher'),
+					},
+					{
+						key: 'solutionPublisher',
+						name: i18n.translate('solution-publisher'),
+					},
+				];
 
 	const inputProps = {
 		errors: form.formState.errors,
