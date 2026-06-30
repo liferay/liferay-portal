@@ -5,12 +5,10 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
-import {CommerceIframeDNDTablePage} from '../../commerce/commerceIframeDNDTablePage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 
-export class UserAssociatedDataEditMessageBoardThreadPage extends CommerceIframeDNDTablePage {
-	readonly basicDocumentMenuItem: Locator;
-	readonly blogEntryMenuItem: Locator;
-	readonly doneButton: Locator;
+export class UserAssociatedDataEditMessageBoardThreadPage {
+	readonly confirmSelectionButton: Locator;
 	readonly editorFrame: FrameLocator;
 	readonly editorFrameTextInput: Locator;
 	readonly page: Page;
@@ -19,21 +17,11 @@ export class UserAssociatedDataEditMessageBoardThreadPage extends CommerceIframe
 	readonly relatedAssetsButton: Locator;
 	readonly selectButton: Locator;
 	readonly subjectInput: Locator;
-	readonly tableRowCheckBox: (rowValue: string) => Promise<Locator>;
 
 	constructor(page: Page) {
-		super(
-			page,
-			'iframe[title="Select Blogs Entry"], iframe[title="Select Basic Document"]',
-			'#_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_entries'
-		);
-		this.basicDocumentMenuItem = page.getByRole('menuitem', {
-			name: 'Basic Document',
-		});
-		this.blogEntryMenuItem = page.getByRole('menuitem', {
-			name: 'Blogs Entry',
-		});
-		this.doneButton = page.getByRole('button', {name: 'Done'});
+		this.confirmSelectionButton = page
+			.getByRole('dialog')
+			.getByRole('button', {exact: true, name: 'Select'});
 		this.editorFrame = page.frameLocator(
 			'iframe[title="Editor\\, _com_liferay_message_boards_web_portlet_MBAdminPortlet_bodyEditor"]'
 		);
@@ -47,14 +35,22 @@ export class UserAssociatedDataEditMessageBoardThreadPage extends CommerceIframe
 		});
 		this.selectButton = page.getByLabel('Select Items');
 		this.subjectInput = page.getByLabel('Subject Required');
-		this.tableRowCheckBox = async (rowValue: string) => {
-			const tableRow = await this.tableRow(1, rowValue, true);
+	}
 
-			if (tableRow && tableRow.row) {
-				return tableRow.row.getByRole('checkbox');
-			}
+	async selectRelatedAssets(assetTitles: string[]) {
+		await this.relatedAssetsButton.click();
 
-			throw new Error(`Cannot locate row with rowValue: ${rowValue}`);
-		};
+		await clickAndExpectToBeVisible({
+			target: this.confirmSelectionButton,
+			trigger: this.selectButton,
+		});
+
+		for (const assetTitle of assetTitles) {
+			await this.page
+				.getByRole('checkbox', {name: `Select ${assetTitle}`})
+				.check();
+		}
+
+		await this.confirmSelectionButton.click();
 	}
 }
