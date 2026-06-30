@@ -14,12 +14,12 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -76,7 +76,7 @@ public class AssetVocabularyLocalServiceTest {
 	@Test
 	public void testDeleteVocabulary() throws Exception {
 		_testDeleteVocabularySystem();
-		_testDeleteVocabularySystemWhenDeletingGroup();
+		_testDeleteVocabularySystemWhenImporting();
 	}
 
 	@Test
@@ -93,6 +93,8 @@ public class AssetVocabularyLocalServiceTest {
 		_testUpdateVocabularySystemMultiValued();
 		_testUpdateVocabularySystemRename();
 		_testUpdateVocabularySystemVisibilityType();
+		_testUpdateVocabularySystemWhenImporting();
+		_testUpdateVocabularySystemWithNullDescription();
 		_testUpdateVocabularyWithInvalidVisibilityType();
 		_testUpdateVocabularyWithLazyReferencingEnabled();
 	}
@@ -163,14 +165,18 @@ public class AssetVocabularyLocalServiceTest {
 				vocabulary.getVocabularyId()));
 	}
 
-	private void _testDeleteVocabularySystemWhenDeletingGroup()
-		throws Exception {
+	private void _testDeleteVocabularySystemWhenImporting() throws Exception {
+		AssetVocabulary vocabulary = _addSystemVocabulary();
 
-		Group group = GroupTestUtil.addGroup();
+		ExportImportThreadLocal.setPortletImportInProcess(true);
 
-		AssetVocabulary vocabulary = _addSystemVocabulary(group.getGroupId());
-
-		_groupLocalService.deleteGroup(group);
+		try {
+			_assetVocabularyLocalService.deleteVocabulary(
+				vocabulary.getVocabularyId());
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
 
 		Assert.assertNull(
 			_assetVocabularyLocalService.fetchAssetVocabulary(
@@ -300,6 +306,42 @@ public class AssetVocabularyLocalServiceTest {
 				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL));
 	}
 
+	private void _testUpdateVocabularySystemWhenImporting() throws Exception {
+		AssetVocabulary vocabulary = _addSystemVocabulary();
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			vocabulary = _assetVocabularyLocalService.updateVocabulary(
+				vocabulary.getExternalReferenceCode(),
+				vocabulary.getVocabularyId(),
+				HashMapBuilder.put(
+					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+				).build(),
+				vocabulary.getDescriptionMap(), vocabulary.getSettings(),
+				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		Assert.assertTrue(vocabulary.isSystem());
+		Assert.assertEquals(
+			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
+			vocabulary.getVisibilityType());
+	}
+
+	private void _testUpdateVocabularySystemWithNullDescription()
+		throws Exception {
+
+		AssetVocabulary vocabulary = _addSystemVocabulary();
+
+		_assetVocabularyLocalService.updateVocabulary(
+			vocabulary.getExternalReferenceCode(), vocabulary.getVocabularyId(),
+			vocabulary.getTitleMap(), null, vocabulary.getSettings(),
+			vocabulary.getVisibilityType());
+	}
+
 	private void _testUpdateVocabularyWithInvalidVisibilityType()
 		throws Exception {
 
@@ -362,8 +404,5 @@ public class AssetVocabularyLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 }

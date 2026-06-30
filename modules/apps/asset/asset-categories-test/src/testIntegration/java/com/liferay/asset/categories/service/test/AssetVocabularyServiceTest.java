@@ -67,6 +67,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.List;
@@ -129,6 +130,8 @@ public class AssetVocabularyServiceTest {
 		_testAddVocabulary(
 			String.valueOf(vocabulary.getPrimaryKey()),
 			RoleConstants.SITE_MEMBER);
+
+		_testAddVocabularySystem();
 	}
 
 	@Test
@@ -684,6 +687,44 @@ public class AssetVocabularyServiceTest {
 	}
 
 	@Test
+	public void testUpdateVocabulary() throws Exception {
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			new AssetVocabularySettingsHelper();
+
+		assetVocabularySettingsHelper.setSystem(true);
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_ADMINISTRATOR);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			AssetVocabulary vocabulary = _assetVocabularyService.addVocabulary(
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+				).build(),
+				null, null, AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+
+			try {
+				_assetVocabularyService.updateVocabulary(
+					vocabulary.getExternalReferenceCode(),
+					vocabulary.getVocabularyId(), vocabulary.getTitleMap(),
+					vocabulary.getDescriptionMap(),
+					assetVocabularySettingsHelper.toString(),
+					vocabulary.getVisibilityType());
+
+				Assert.fail();
+			}
+			catch (PrincipalException.MustBeCompanyAdmin principalException) {
+				Assert.assertNotNull(principalException);
+			}
+		}
+	}
+
+	@Test
 	public void testUpdateVocabularyLongTitlesAreTrimmed() throws Exception {
 		String name = RandomTestUtil.randomString();
 
@@ -750,6 +791,49 @@ public class AssetVocabularyServiceTest {
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey, role.getRoleId());
 
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
+	}
+
+	private void _testAddVocabularySystem() throws Exception {
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			new AssetVocabularySettingsHelper();
+
+		assetVocabularySettingsHelper.setSystem(true);
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_ADMINISTRATOR);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertNotNull(
+				_assetVocabularyService.addVocabulary(
+					_group.getGroupId(), RandomTestUtil.randomString(),
+					HashMapBuilder.put(
+						LocaleUtil.getSiteDefault(),
+						RandomTestUtil.randomString()
+					).build(),
+					null, null, AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), user.getUserId())));
+
+			try {
+				_assetVocabularyService.addVocabulary(
+					_group.getGroupId(), RandomTestUtil.randomString(),
+					HashMapBuilder.put(
+						LocaleUtil.getSiteDefault(),
+						RandomTestUtil.randomString()
+					).build(),
+					null, assetVocabularySettingsHelper.toString(),
+					AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), user.getUserId()));
+
+				Assert.fail();
+			}
+			catch (PrincipalException.MustBeCompanyAdmin principalException) {
+				Assert.assertNotNull(principalException);
+			}
+		}
 	}
 
 	@Inject

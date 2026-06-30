@@ -99,6 +99,8 @@ public class AssetCategoryServiceTest {
 		_testAddCategory(
 			String.valueOf(assetCategory.getPrimaryKey()),
 			RoleConstants.SITE_MEMBER);
+
+		_testAddCategorySystem();
 	}
 
 	@Test
@@ -330,6 +332,49 @@ public class AssetCategoryServiceTest {
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey, role.getRoleId());
 
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
+	}
+
+	private void _testAddCategorySystem() throws Exception {
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_ADMINISTRATOR);
+
+		PermissionThreadLocal.setPermissionChecker(
+			_permissionCheckerFactory.create(user));
+
+		Assert.assertNotNull(
+			_assetCategoryService.addCategory(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				_assetVocabulary.getVocabularyId(), false, null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId())));
+
+		try {
+			_assetCategoryService.addCategory(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				_assetVocabulary.getVocabularyId(), true, null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustBeCompanyAdmin principalException) {
+			Assert.assertNotNull(principalException);
+		}
+
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Inject

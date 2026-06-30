@@ -6,6 +6,12 @@
 package com.liferay.site.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -37,6 +43,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
 import java.util.List;
 
@@ -189,6 +196,52 @@ public class GroupLocalServiceTest {
 		finally {
 			_companyLocalService.deleteCompany(company);
 		}
+	}
+
+	@FeatureFlag("LPD-86291")
+	@Test
+	public void testDeleteGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			new AssetVocabularySettingsHelper();
+
+		assetVocabularySettingsHelper.setMultiValued(true);
+		assetVocabularySettingsHelper.setSystem(true);
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				null, TestPropsValues.getUserId(), group.getGroupId(),
+				RandomTestUtil.randomString(), null,
+				HashMapBuilder.put(
+					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+				).build(),
+				null, assetVocabularySettingsHelper.toString(),
+				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC,
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId()));
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), StringPool.BLANK
+			).build(),
+			assetVocabulary.getVocabularyId(), true, null,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		_groupLocalService.deleteGroup(group);
+
+		Assert.assertNull(
+			_assetVocabularyLocalService.fetchAssetVocabulary(
+				assetVocabulary.getVocabularyId()));
+		Assert.assertNull(
+			_assetCategoryLocalService.fetchAssetCategory(
+				assetCategory.getCategoryId()));
 	}
 
 	@FeatureFlag("LPD-82960")
@@ -344,6 +397,12 @@ public class GroupLocalServiceTest {
 		"/api", "/c", "/combo", "/documents", "/group", "/html", "/image",
 		"/layouttpl", "/o", "/web", "/webdav"
 	};
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
