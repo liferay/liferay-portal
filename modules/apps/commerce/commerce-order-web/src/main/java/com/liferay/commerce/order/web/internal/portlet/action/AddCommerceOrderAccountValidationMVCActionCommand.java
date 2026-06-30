@@ -107,7 +107,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 
 			AccountEntryValidatorConfiguration
 				accountEntryValidatorConfiguration =
-					accountEntryValidator.getConfiguration(
+					accountEntryValidator.getAccountEntryValidatorConfiguration(
 						accountEntry.getCompanyId());
 
 			if (!accountEntryValidatorConfiguration.enabled()) {
@@ -127,7 +127,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 					"className", accountEntryValidatorClass.getName()
 				).put(
 					"classPK",
-					accountEntryValidator.getKey(accountEntry, jsonObject)
+					accountEntryValidator.getClassPK(accountEntry, jsonObject)
 				).put(
 					"r_accountToAccountValidatorResults_accountEntryId",
 					accountEntry.getAccountEntryId()

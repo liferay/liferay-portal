@@ -83,8 +83,9 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 
 					AccountEntryValidatorConfiguration
 						accountEntryValidatorConfiguration =
-							accountEntryValidator.getConfiguration(
-								accountEntry.getCompanyId());
+							accountEntryValidator.
+								getAccountEntryValidatorConfiguration(
+									accountEntry.getCompanyId());
 
 					if (!accountEntryValidatorConfiguration.enabled()) {
 						continue;
@@ -99,7 +100,7 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 							"((className eq '",
 							accountEntryValidatorClass.getName(),
 							"') and (classPK eq '",
-							accountEntryValidator.getKey(
+							accountEntryValidator.getClassPK(
 								accountEntry, jsonObject),
 							"'))"));
 				}
