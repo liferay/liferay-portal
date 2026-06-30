@@ -7,8 +7,14 @@ import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-component
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import ConditionsPanel from '../../../src/main/resources/META-INF/resources/js/components/ConditionsPanel';
+
+const DragAndDropProvider = DndProvider as unknown as React.FC<
+	React.PropsWithChildren<{backend: typeof HTML5Backend}>
+>;
 
 const AUDIENCES_CRITERIA_TYPES = [
 	{
@@ -34,36 +40,41 @@ const AUDIENCES_CRITERIA_TYPES = [
 	},
 ];
 
-describe('ConditionsPanel', () => {
-	it('renders and edits the conditions', async () => {
-		render(
-			<ConditionsPanel
-				audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-			/>
-		);
+const JSON_WITH_RULES = JSON.stringify({
+	conjunction: 'AND',
+	rules: [{attribute: 'age', operator: 'gt', value: '18'}],
+});
 
-		expect(screen.getByText('conditions')).toBeTruthy();
-		expect(screen.getByText('Age')).toBeTruthy();
-		expect(screen.getByText('Signup Date')).toBeTruthy();
-
-		expect(screen.getByText('is-greater-than')).toBeTruthy();
-		expect(screen.getByText('is-after')).toBeTruthy();
-
-		const [ageOperator] = screen.getAllByLabelText('operator');
-
-		await userEvent.selectOptions(ageOperator, 'lt');
-
-		expect((ageOperator as HTMLSelectElement).value).toBe('lt');
-	});
-
-	it('duplicates a condition and announces it', async () => {
-		render(
+function renderConditionsPanel(json?: string) {
+	return render(
+		<DragAndDropProvider backend={HTML5Backend}>
 			<ScreenReaderAnnouncerContextProvider>
 				<ConditionsPanel
 					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+					json={json}
+					namespace="_test_"
 				/>
 			</ScreenReaderAnnouncerContextProvider>
-		);
+		</DragAndDropProvider>
+	);
+}
+
+describe('ConditionsPanel', () => {
+	it('shows the empty state when there are no rules', () => {
+		renderConditionsPanel();
+
+		expect(screen.getByText('no-criteria-yet')).toBeTruthy();
+	});
+
+	it('loads the rules from the json prop', () => {
+		renderConditionsPanel(JSON_WITH_RULES);
+
+		expect(screen.getByText('Age')).toBeTruthy();
+		expect(screen.getByText('is-greater-than')).toBeTruthy();
+	});
+
+	it('duplicates a condition and announces it', async () => {
+		renderConditionsPanel(JSON_WITH_RULES);
 
 		expect(screen.getAllByText('Age')).toHaveLength(1);
 

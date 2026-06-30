@@ -32,6 +32,7 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
 	backURL?: string;
+	json?: string;
 	name?: string;
 	namespace?: string;
 }
@@ -39,6 +40,7 @@ interface IProps {
 export default function AudienceBuilder({
 	audiencesCriteriaTypes = [],
 	backURL,
+	json,
 	name,
 	namespace = '',
 }: IProps) {
@@ -141,6 +143,8 @@ export default function AudienceBuilder({
 
 							<ConditionsPanel
 								audiencesCriteriaTypes={audiencesCriteriaTypes}
+								json={json}
+								namespace={namespace}
 							/>
 						</div>
 					</div>

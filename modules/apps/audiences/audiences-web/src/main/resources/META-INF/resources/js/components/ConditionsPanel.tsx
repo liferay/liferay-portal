@@ -17,6 +17,8 @@ import RuleRow from './RuleRow';
 
 interface IProps {
 	audiencesCriteriaTypes: AudiencesCriteriaType[];
+	json?: string;
+	namespace: string;
 }
 
 interface AttributeDragItem {
@@ -33,7 +35,43 @@ function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 	};
 }
 
-export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
+function parseCriteria(json?: string): {conjunction: string; rules: Rule[]} {
+	if (!json) {
+		return {conjunction: 'and', rules: []};
+	}
+
+	try {
+		const parsed: {
+			conjunction?: string;
+			rules?: Array<{
+				attribute: string;
+				operator: string;
+				value: string;
+			}>;
+		} = JSON.parse(json);
+
+		return {
+			conjunction: (parsed.conjunction ?? 'AND').toLowerCase(),
+			rules: (parsed.rules ?? [])
+				.filter((rule) => Boolean(rule.attribute))
+				.map((rule) => ({
+					attribute: rule.attribute,
+					id: `rule-${uuidv4()}`,
+					operator: rule.operator,
+					value: rule.value,
+				})),
+		};
+	}
+	catch {
+		return {conjunction: 'and', rules: []};
+	}
+}
+
+export default function ConditionsPanel({
+	audiencesCriteriaTypes,
+	json,
+	namespace,
+}: IProps) {
 	const audiencesCriterias = audiencesCriteriaTypes.flatMap(
 		(audiencesCriteriaType) => audiencesCriteriaType.audiencesCriterias
 	);
@@ -48,8 +86,18 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 
 	const announce = useScreenReaderAnnounce();
 
-	const [conjunction, setConjunction] = useState('and');
-	const [rules, setRules] = useState<Rule[]>([]);
+	const [initialCriteria] = useState(() => parseCriteria(json));
+	const [conjunction, setConjunction] = useState(initialCriteria.conjunction);
+	const [rules, setRules] = useState<Rule[]>(initialCriteria.rules);
+
+	const serializedJSON = JSON.stringify({
+		conjunction: conjunction.toUpperCase(),
+		rules: rules.map((rule) => ({
+			attribute: rule.attribute,
+			operator: rule.operator,
+			value: rule.value,
+		})),
+	});
 
 	const dndItems = rules.map((rule) => {
 		const audiencesCriteria = audiencesCriteriasByKey[rule.attribute];
@@ -135,6 +183,12 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 
 	return (
 		<div className="border mt-4 rounded">
+			<input
+				name={`${namespace}json`}
+				type="hidden"
+				value={serializedJSON}
+			/>
+
 			<div className="px-4 py-3">
 				<p className="font-weight-bold mb-0 text-6">
 					{Liferay.Language.get('conditions')}
