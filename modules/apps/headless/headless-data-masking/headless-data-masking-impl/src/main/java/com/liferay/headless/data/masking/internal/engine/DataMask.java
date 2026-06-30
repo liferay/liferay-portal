@@ -38,14 +38,14 @@ public class DataMask {
 					sb, Matcher.quoteReplacement(_replacementValue));
 			}
 			else {
-				String replaced = _replacementPattern.matcher(
-					matcher.group()
-				).replaceAll(
-					_replacementValue
-				);
-
 				matcher.appendReplacement(
-					sb, Matcher.quoteReplacement(replaced));
+					sb,
+					Matcher.quoteReplacement(
+						_replacementPattern.matcher(
+							matcher.group()
+						).replaceAll(
+							_replacementValue
+						)));
 			}
 		}
 

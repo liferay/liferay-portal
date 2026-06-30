@@ -56,7 +56,12 @@ public class DataMaskingWriterInterceptor implements WriterInterceptor {
 	public void aroundWriteTo(WriterInterceptorContext writerInterceptorContext)
 		throws IOException {
 
-		if (!_isRedactableMediaType(writerInterceptorContext.getMediaType())) {
+		MediaType mediaType = writerInterceptorContext.getMediaType();
+
+		if ((mediaType == null) ||
+			(!mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE) &&
+			 !mediaType.isCompatible(MediaType.TEXT_PLAIN_TYPE))) {
+
 			writerInterceptorContext.proceed();
 
 			return;
@@ -134,17 +139,6 @@ public class DataMaskingWriterInterceptor implements WriterInterceptor {
 
 				return trimmedString;
 			});
-	}
-
-	private boolean _isRedactableMediaType(MediaType mediaType) {
-		if ((mediaType != null) &&
-			(mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE) ||
-			 mediaType.isCompatible(MediaType.TEXT_PLAIN_TYPE))) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	@Reference

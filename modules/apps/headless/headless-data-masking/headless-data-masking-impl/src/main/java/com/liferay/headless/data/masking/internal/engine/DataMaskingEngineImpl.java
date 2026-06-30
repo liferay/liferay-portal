@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -46,9 +47,9 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 	public String redact(
 		long companyId, List<String> maskExternalReferenceCodes, String text) {
 
-		if (Validator.isNull(text) ||
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-90204") ||
 			ListUtil.isEmpty(maskExternalReferenceCodes) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-90204")) {
+			Validator.isNull(text)) {
 
 			return text;
 		}
@@ -64,14 +65,14 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 
 		List<DataMask> dataMasks = new ArrayList<>();
 
-		for (String externalReferenceCode : maskExternalReferenceCodes) {
-			if (Validator.isNull(externalReferenceCode)) {
+		for (String maskExternalReferenceCode : maskExternalReferenceCodes) {
+			if (Validator.isNull(maskExternalReferenceCode)) {
 				continue;
 			}
 
 			ObjectEntry maskObjectEntry =
 				_objectEntryLocalService.fetchObjectEntry(
-					externalReferenceCode, 0,
+					maskExternalReferenceCode, 0,
 					maskObjectDefinition.getObjectDefinitionId());
 
 			if (maskObjectEntry == null) {
@@ -79,7 +80,7 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 					_log.warn(
 						StringBundler.concat(
 							"No data mask was resolved for external reference ",
-							"code \"", externalReferenceCode, "\""));
+							"code \"", maskExternalReferenceCode, "\""));
 				}
 
 				continue;
@@ -96,11 +97,9 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 			return text;
 		}
 
-		String redactedText = text;
-
 		for (DataMask dataMask : dataMasks) {
 			try {
-				redactedText = dataMask.apply(redactedText);
+				text = dataMask.apply(text);
 			}
 			catch (RuntimeException runtimeException) {
 				if (_log.isWarnEnabled()) {
@@ -113,16 +112,14 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 			}
 		}
 
-		return redactedText;
+		return text;
 	}
 
 	private DataMask _buildDataMask(ObjectEntry maskObjectEntry) {
 		Map<String, Serializable> values = maskObjectEntry.getValues();
 
-		String detectionRegex = (String)values.get("detectionRegex");
-		String name = (String)values.get("name");
-		String replacementRegex = (String)values.get("replacementRegex");
-		String replacementValue = (String)values.get("replacementValue");
+		String detectionRegex = MapUtil.getString(values, "detectionRegex");
+		String replacementValue = MapUtil.getString(values, "replacementValue");
 
 		if (Validator.isNull(detectionRegex) ||
 			Validator.isNull(replacementValue)) {
@@ -130,17 +127,13 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 			return null;
 		}
 
+		String name = MapUtil.getString(values, "name");
+
 		try {
-			Pattern detectionPattern = _getPattern(detectionRegex);
-
-			Pattern replacementPattern = null;
-
-			if (Validator.isNotNull(replacementRegex)) {
-				replacementPattern = _getPattern(replacementRegex);
-			}
-
 			return new DataMask(
-				detectionPattern, name, replacementPattern, replacementValue);
+				_getPattern(detectionRegex), name,
+				_getPattern(MapUtil.getString(values, "replacementRegex")),
+				replacementValue);
 		}
 		catch (PatternSyntaxException patternSyntaxException) {
 			if (_log.isWarnEnabled()) {
@@ -156,6 +149,10 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 	}
 
 	private Pattern _getPattern(String regex) {
+		if (Validator.isNull(regex)) {
+			return null;
+		}
+
 		return _patterns.computeIfAbsent(regex, Pattern::compile);
 	}
 

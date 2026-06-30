@@ -12,7 +12,6 @@ import com.liferay.headless.data.masking.resource.v1_0.DataMaskResource;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -30,15 +29,14 @@ public class DataMaskResourceImpl extends BaseDataMaskResourceImpl {
 	public DataMaskPreviewResult postDataMaskPreview(
 		DataMaskPreviewRequest dataMaskPreviewRequest) {
 
+		String detectionRegex = dataMaskPreviewRequest.getDetectionRegex();
+		String replacementValue = dataMaskPreviewRequest.getReplacementValue();
+		String sampleText = dataMaskPreviewRequest.getSampleText();
+
 		DataMaskPreviewResult dataMaskPreviewResult =
 			new DataMaskPreviewResult();
 
-		String sampleText = dataMaskPreviewRequest.getSampleText();
-
 		dataMaskPreviewResult.setOutput(() -> sampleText);
-
-		String detectionRegex = dataMaskPreviewRequest.getDetectionRegex();
-		String replacementValue = dataMaskPreviewRequest.getReplacementValue();
 
 		if (Validator.isNull(detectionRegex) ||
 			Validator.isNull(replacementValue) ||
@@ -55,8 +53,12 @@ public class DataMaskResourceImpl extends BaseDataMaskResourceImpl {
 		try {
 			Pattern detectionPattern = Pattern.compile(detectionRegex);
 
-			Pattern replacementPattern = _getReplacementPattern(
-				dataMaskPreviewRequest);
+			String replacementRegex =
+				dataMaskPreviewRequest.getReplacementRegex();
+
+			Pattern replacementPattern =
+				Validator.isNull(replacementRegex) ? null :
+					Pattern.compile(replacementRegex);
 
 			dataMaskPreviewResult.setOutput(
 				() -> {
@@ -67,26 +69,11 @@ public class DataMaskResourceImpl extends BaseDataMaskResourceImpl {
 					return dataMask.apply(sampleText);
 				});
 		}
-		catch (PatternSyntaxException patternSyntaxException) {
-			dataMaskPreviewResult.setError(patternSyntaxException::getMessage);
-		}
 		catch (RuntimeException runtimeException) {
 			dataMaskPreviewResult.setError(runtimeException::getMessage);
 		}
 
 		return dataMaskPreviewResult;
-	}
-
-	private Pattern _getReplacementPattern(
-		DataMaskPreviewRequest dataMaskPreviewRequest) {
-
-		String replacementRegex = dataMaskPreviewRequest.getReplacementRegex();
-
-		if (Validator.isNull(replacementRegex)) {
-			return null;
-		}
-
-		return Pattern.compile(replacementRegex);
 	}
 
 }

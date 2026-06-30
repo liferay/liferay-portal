@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -42,7 +43,7 @@ public class DataMaskRelevantObjectEntryModelListener
 	public void onAfterRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_evictPatterns(objectEntry);
+		_evictPatterns(objectEntry.getValues());
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class DataMaskRelevantObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_evictPatterns(originalObjectEntry);
+		_evictPatterns(originalObjectEntry.getValues());
 	}
 
 	@Override
@@ -106,11 +107,11 @@ public class DataMaskRelevantObjectEntryModelListener
 		_validateRegexes(objectEntry.getValues());
 	}
 
-	private void _evictPatterns(ObjectEntry objectEntry) {
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		_dataMaskingEngine.evictPattern((String)values.get("detectionRegex"));
-		_dataMaskingEngine.evictPattern((String)values.get("replacementRegex"));
+	private void _evictPatterns(Map<String, Serializable> values) {
+		_dataMaskingEngine.evictPattern(
+			MapUtil.getString(values, "detectionRegex"));
+		_dataMaskingEngine.evictPattern(
+			MapUtil.getString(values, "replacementRegex"));
 	}
 
 	private boolean _isDataMaskingSeedImport() {
@@ -140,13 +141,13 @@ public class DataMaskRelevantObjectEntryModelListener
 	private void _validateRegexes(Map<String, Serializable> values)
 		throws ModelListenerException {
 
-		String detectionRegex = (String)values.get("detectionRegex");
+		String detectionRegex = MapUtil.getString(values, "detectionRegex");
 
 		if (Validator.isNotNull(detectionRegex)) {
 			_validateRegex("detectionRegex", detectionRegex);
 		}
 
-		String replacementRegex = (String)values.get("replacementRegex");
+		String replacementRegex = MapUtil.getString(values, "replacementRegex");
 
 		if (Validator.isNotNull(replacementRegex)) {
 			_validateRegex("replacementRegex", replacementRegex);
