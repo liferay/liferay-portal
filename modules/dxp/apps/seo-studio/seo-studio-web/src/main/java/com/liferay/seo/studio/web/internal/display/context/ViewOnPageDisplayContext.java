@@ -8,6 +8,7 @@ package com.liferay.seo.studio.web.internal.display.context;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -20,7 +21,9 @@ import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.seo.studio.web.internal.constants.SEOStudioFDSNames;
@@ -124,25 +127,22 @@ public class ViewOnPageDisplayContext {
 	private String _getAPIURL() {
 		List<Long> seoStudioScanIds = _seoStudioScanIds;
 
-		if (seoStudioScanIds.isEmpty()) {
+		if (ListUtil.isEmpty(seoStudioScanIds)) {
 			seoStudioScanIds = Collections.singletonList(-1L);
 		}
 
-		StringBundler sb = new StringBundler();
-
-		for (Long seoStudioScanId : seoStudioScanIds) {
-			if (sb.length() > 0) {
-				sb.append(" or ");
-			}
-
-			sb.append(
-				"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId eq '");
-			sb.append(seoStudioScanId);
-			sb.append("'");
-		}
+		String filterString = StringBundler.concat(
+			"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId in (",
+			StringUtil.merge(
+				TransformUtil.transform(
+					seoStudioScanIds,
+					seoStudioScanId -> StringUtil.quote(
+						String.valueOf(seoStudioScanId))),
+				StringPool.COMMA_AND_SPACE),
+			")");
 
 		return "/o/seo-studio/insight-types?filter=" +
-			URLCodec.encodeURL(sb.toString(), true) + "&sort=severity:desc";
+			URLCodec.encodeURL(filterString, true) + "&sort=severity:desc";
 	}
 
 	private Map<String, Object> _getEmptyState() {
