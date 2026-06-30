@@ -322,6 +322,43 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 			expectedOptions,
 			_getActualOptions(
 				ddmFormField, ddmFormFieldOptions, LocaleUtil.US));
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		long listTypeDefinitionId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			listTypeDefinitionId
+		);
+
+		List<ListTypeEntry> listTypeEntries = Arrays.asList(
+			_getListTypeEntry("Reference 3", "Label 3"),
+			_getListTypeEntry("Reference 1", "Label 1"),
+			_getListTypeEntry("Reference 2", "Label 2"));
+
+		Mockito.when(
+			_listTypeEntryLocalService.getListTypeEntries(
+				Mockito.eq(listTypeDefinitionId), Mockito.eq(QueryUtil.ALL_POS),
+				Mockito.eq(QueryUtil.ALL_POS), Mockito.any())
+		).thenReturn(
+			listTypeEntries
+		);
+
+		ddmFormField.setProperty("alphabeticalOrder", "false");
+
+		Assert.assertNotEquals(
+			expectedOptions,
+			_selectDDMFormFieldTemplateContextContributor.getOptions(
+				ddmFormField, ddmFormFieldOptions, LocaleUtil.US, objectField));
+
+		ddmFormField.setProperty("alphabeticalOrder", "true");
+
+		Assert.assertEquals(
+			expectedOptions,
+			_selectDDMFormFieldTemplateContextContributor.getOptions(
+				ddmFormField, ddmFormFieldOptions, LocaleUtil.US, objectField));
 	}
 
 	@Test
@@ -610,12 +647,17 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 	}
 
 	private ListTypeEntry _getListTypeEntry(String name) {
+		return _getListTypeEntry(
+			StringUtil.removeChars(name, CharPool.SPACE), name);
+	}
+
+	private ListTypeEntry _getListTypeEntry(String key, String name) {
 		ListTypeEntry listTypeEntry = Mockito.mock(ListTypeEntry.class);
 
 		Mockito.when(
 			listTypeEntry.getKey()
 		).thenReturn(
-			StringUtil.removeChars(name, CharPool.SPACE)
+			key
 		);
 
 		Mockito.when(
