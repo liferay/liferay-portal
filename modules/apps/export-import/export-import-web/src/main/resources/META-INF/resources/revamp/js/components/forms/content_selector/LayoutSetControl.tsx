@@ -58,17 +58,15 @@ function SelectPagesButton({
 
 function LayoutVisibilitySelector({
 	label,
-	onSelectPages,
 	onSetMode,
 	privateLayout,
 }: {
 	label: string;
-	onSelectPages: () => void;
 	onSetMode: (mode: boolean) => void;
 	privateLayout: boolean;
 }) {
 	return (
-		<div aria-label={label} className="pl-4" role="radiogroup">
+		<div aria-label={label} className="mt-2 pl-4" role="radiogroup">
 			<div className="align-items-center d-flex">
 				<ClayRadio
 					checked={!privateLayout}
@@ -78,13 +76,6 @@ function LayoutVisibilitySelector({
 					onChange={() => onSetMode(false)}
 					value="false"
 				/>
-
-				{!privateLayout && (
-					<SelectPagesButton
-						onClick={onSelectPages}
-						privateLayout={false}
-					/>
-				)}
 			</div>
 
 			<div className="align-items-center d-flex mb-1">
@@ -96,10 +87,6 @@ function LayoutVisibilitySelector({
 					onChange={() => onSetMode(true)}
 					value="true"
 				/>
-
-				{privateLayout && (
-					<SelectPagesButton onClick={onSelectPages} privateLayout />
-				)}
 			</div>
 		</div>
 	);
@@ -132,7 +119,7 @@ export default function LayoutSetControl({
 
 	return (
 		<div className="p-3">
-			<ClayLayout.ContentRow className="align-items-center mb-2">
+			<ClayLayout.ContentRow className="align-items-center">
 				<ClayLayout.ContentCol className="pr-2" expand={false}>
 					<ClayCheckbox
 						checked={isAll}
@@ -160,9 +147,10 @@ export default function LayoutSetControl({
 							/>
 						</div>
 
-						{!privateLayoutsEnabled && (
-							<SelectPagesButton onClick={openModal} />
-						)}
+						<SelectPagesButton
+							onClick={openModal}
+							privateLayout={privateLayout}
+						/>
 					</div>
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
@@ -170,7 +158,6 @@ export default function LayoutSetControl({
 			{privateLayoutsEnabled && selected && (
 				<LayoutVisibilitySelector
 					label={label}
-					onSelectPages={openModal}
 					onSetMode={(next) => onChange({privateLayout: next})}
 					privateLayout={privateLayout}
 				/>

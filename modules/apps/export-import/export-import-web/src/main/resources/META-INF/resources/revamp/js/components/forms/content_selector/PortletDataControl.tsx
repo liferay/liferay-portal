@@ -180,7 +180,12 @@ function PortletDataHandlerPanel({
 	rowProps: React.ComponentProps<typeof ControlRow>;
 }) {
 	return (
-		<div className={classnames('px-3', compact ? 'py-2' : 'py-3')}>
+		<div
+			className={classnames({
+				[`p-3`]: !compact,
+				[`py-2 py-3`]: compact,
+			})}
+		>
 			{expandable ? (
 				<CollapsibleGroup
 					{...rowProps}
