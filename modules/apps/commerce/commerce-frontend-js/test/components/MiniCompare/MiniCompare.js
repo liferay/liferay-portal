@@ -4,10 +4,11 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, waitFor} from '@testing-library/react';
+import {act, render, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import MiniCompare from '../../../src/main/resources/META-INF/resources/components/mini_compare/MiniCompare';
+import {TOGGLE_ITEM_IN_PRODUCT_COMPARISON} from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
 
 const PRODUCT_COMPARISON_COOKIES_TITLE_KEY = 'product-comparison-cookies-title';
 const PRODUCT_COMPARISON_COOKIES_ALERT_KEY = 'product-comparison-cookies-alert';
@@ -213,6 +214,77 @@ describe('MiniCompare', () => {
 					customTitle: PRODUCT_COMPARISON_COOKIES_TITLE_KEY,
 				})
 			);
+		});
+	});
+
+	it('adds the product to the compare bar when a product that is not being compared is toggled from its card', async () => {
+		mockGetCookie.mockReturnValue('1');
+		mockCheckConsent.mockReturnValue(true);
+
+		let toggleItemTrigger;
+
+		window.Liferay.on = jest.fn((eventName, callback) => {
+			if (eventName === TOGGLE_ITEM_IN_PRODUCT_COMPARISON) {
+				toggleItemTrigger = callback;
+			}
+		});
+
+		const {container} = render(
+			<MiniCompare
+				{...BASE_PROPS}
+				items={[{id: '1', thumbnail: 'thumb1.png'}]}
+			/>
+		);
+
+		expect(
+			container.querySelectorAll('.mini-compare-item.active')
+		).toHaveLength(1);
+
+		await act(async () => {
+			toggleItemTrigger({id: '2', thumbnail: 'thumb2.png'});
+		});
+
+		await waitFor(() => {
+			expect(
+				container.querySelectorAll('.mini-compare-item.active')
+			).toHaveLength(2);
+		});
+	});
+
+	it('removes the product from the compare bar when a product that is already being compared is toggled from its card', async () => {
+		mockGetCookie.mockReturnValue('1:2');
+		mockCheckConsent.mockReturnValue(true);
+
+		let toggleItemTrigger;
+
+		window.Liferay.on = jest.fn((eventName, callback) => {
+			if (eventName === TOGGLE_ITEM_IN_PRODUCT_COMPARISON) {
+				toggleItemTrigger = callback;
+			}
+		});
+
+		const {container} = render(
+			<MiniCompare
+				{...BASE_PROPS}
+				items={[
+					{id: '1', thumbnail: 'thumb1.png'},
+					{id: '2', thumbnail: 'thumb2.png'},
+				]}
+			/>
+		);
+
+		expect(
+			container.querySelectorAll('.mini-compare-item.active')
+		).toHaveLength(2);
+
+		await act(async () => {
+			toggleItemTrigger({id: '1', thumbnail: 'thumb1.png'});
+		});
+
+		await waitFor(() => {
+			expect(
+				container.querySelectorAll('.mini-compare-item.active')
+			).toHaveLength(1);
 		});
 	});
 });
