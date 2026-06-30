@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {searchTableRowByValue} from '../commerceDNDTablePage';
 
@@ -80,5 +80,21 @@ export class CommerceAdminChannelDetailsCurrenciesPage {
 			return this.addCurrencyFrame.getByLabel(currencyName);
 		};
 		this.page = page;
+	}
+
+	async addCurrencies(currencyNames: string[]) {
+		await this.addCurrencyButton.click();
+
+		for (const currencyName of currencyNames) {
+			await (await this.currencyFrameCurrency(currencyName)).check();
+		}
+
+		await this.addCurrencyAddButton.click();
+
+		for (const currencyName of currencyNames) {
+			await expect(
+				(await this.currenciesTableRow(0, currencyName, true)).row
+			).toBeVisible();
+		}
 	}
 }

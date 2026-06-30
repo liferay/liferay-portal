@@ -13,7 +13,10 @@ import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
-import {classicCommerceSetUp} from '../../utils/commerce';
+import {
+	classicCommerceSetUp,
+	configureBuyerUserForSite,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -30,7 +33,6 @@ test(
 		commerceAdminChannelDetailsPage,
 		commerceAdminChannelsPage,
 		commerceThemeClassicCatalogPage,
-		commerceThemeMiniumCatalogPage,
 		page,
 	}) => {
 		test.setTimeout(90000);
@@ -42,47 +44,12 @@ test(
 			type: 'business',
 		});
 
-		const user =
-			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-				'demo.unprivileged@liferay.com'
-			);
-
-		const rolesResponse =
-			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
-
-		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-			return role.name === 'Buyer';
-		});
-
-		await apiHelpers.headlessAdminUser.assignAccountRoles(
-			account.externalReferenceCode,
-			accountRoleBuyer[0].id,
-			user.emailAddress
+		await configureBuyerUserForSite(
+			account,
+			apiHelpers,
+			site,
+			'demo.unprivileged@liferay.com'
 		);
-
-		const siteRole =
-			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-
-		await apiHelpers.headlessAdminUser.assignUserToSite(
-			siteRole.id,
-			site.id,
-			user.id
-		);
-
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			[user.emailAddress]
-		);
-
-		await commerceAdminChannelsPage.goto();
-
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
-
-		await commerceAdminChannelDetailsPage.goToCurrencies();
-
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyButton.click();
 
 		const currencies =
 			await apiHelpers.headlessCommerceAdminCatalog.getCurrenciesPage('');
@@ -97,309 +64,103 @@ test(
 			(item) => item.name['en_US'] === 'Euro'
 		);
 
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency1.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency2.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency3.name['en_US']
-			)
-		).check();
+		await test.step('Add three currencies to the channel as admin', async () => {
+			await commerceAdminChannelsPage.goto();
 
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyAddButton.click();
-
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency1.name['en_US'],
-					true
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
 				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency2.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency3.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
+			).click();
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+			await commerceAdminChannelDetailsPage.goToCurrencies();
 
-		await page.goto(`/web/${site.name}`);
-
-		await commerceThemeClassicCatalogPage
-			.currencySelectorButton(currency1.code, currency1.symbol)
-			.click();
-
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency2.code)
-		).toBeVisible();
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency3.code)
-		).toBeVisible();
-
-		await commerceThemeClassicCatalogPage
-			.currencyListItem(currency3.code)
-			.click();
-		await commerceThemeClassicCatalogPage
-			.currencySelectorButton(currency3.code, currency3.symbol)
-			.click();
-
-		expect(
-			await commerceThemeMiniumCatalogPage.firstCardItem.innerText()
-		).toContain(`${currency3.symbol}`);
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
-
-		await commerceAdminChannelsPage.goto();
-
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
-
-		await commerceAdminChannelDetailsPage.goToCurrencies();
-
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRowAction(
+			await commerceAdminChannelDetailsCurrenciesPage.addCurrencies([
+				currency1.name['en_US'],
 				currency2.name['en_US'],
-				'Remove'
-			)
-		).click();
-
-		await page.reload();
-
-		expect(
-			await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRows()
-		).toHaveLength(2);
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
-
-		await page.goto(`/web/${site.name}`);
-
-		expect(
-			await commerceThemeMiniumCatalogPage.firstCardItem.innerText()
-		).toContain(`${currency3.symbol}`);
-
-		await commerceThemeClassicCatalogPage
-			.currencySelectorButton(currency3.code, currency3.symbol)
-			.click();
-
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency1.code)
-		).toBeVisible();
-	}
-);
-
-test(
-	'Buyer can change currency with active order',
-	{tag: ['@LPD-48196']},
-	async ({
-		apiHelpers,
-		commerceAdminChannelDetailsCurrenciesPage,
-		commerceAdminChannelDetailsPage,
-		commerceAdminChannelsPage,
-		commerceThemeClassicCatalogPage,
-		commerceThemeMiniumCatalogPage,
-		page,
-	}) => {
-		test.setTimeout(90000);
-
-		const {channel, site} = await classicCommerceSetUp(apiHelpers);
-
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'business',
+				currency3.name['en_US'],
+			]);
 		});
 
-		const user =
-			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-				'demo.unprivileged@liferay.com'
-			);
+		await test.step('Switch currency from the storefront selector as the buyer', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
-		const rolesResponse =
-			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+			await page.goto(`/web/${site.name}`);
 
-		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-			return role.name === 'Buyer';
-		});
+			await commerceThemeClassicCatalogPage
+				.currencySelectorButton(currency1.code, currency1.symbol)
+				.click();
 
-		await apiHelpers.headlessAdminUser.assignAccountRoles(
-			account.externalReferenceCode,
-			accountRoleBuyer[0].id,
-			user.emailAddress
-		);
-
-		const siteRole =
-			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-
-		await apiHelpers.headlessAdminUser.assignUserToSite(
-			siteRole.id,
-			site.id,
-			user.id
-		);
-
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			[user.emailAddress]
-		);
-
-		await commerceAdminChannelsPage.goto();
-
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
-
-		await commerceAdminChannelDetailsPage.goToCurrencies();
-
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyButton.click();
-
-		const currencies =
-			await apiHelpers.headlessCommerceAdminCatalog.getCurrenciesPage();
-
-		const currency1 = currencies.items.find(
-			(item) => item.name['en_US'] === 'US Dollar'
-		);
-		const currency2 = currencies.items.find(
-			(item) => item.name['en_US'] === 'Australian Dollar'
-		);
-		const currency3 = currencies.items.find(
-			(item) => item.name['en_US'] === 'Euro'
-		);
-
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency1.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency2.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency3.name['en_US']
-			)
-		).check();
-
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyAddButton.click();
-
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency1.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency2.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency3.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
-
-		const product = (
-			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
-				new URLSearchParams({
-					filter: `name eq 'U-Joint'`,
-					nestedFields: `skus`,
-				})
-			)
-		).items[0];
-
-		await apiHelpers.headlessCommerceDeliveryCart.postCart(
-			{
-				accountId: account.id,
-				cartItems: [
-					{
-						quantity: 1,
-						skuId: product.skus[0].id,
-					},
-				],
-			},
-			channel.id
-		);
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
-
-		await page.goto(`/web/${site.name}`);
-
-		await commerceThemeClassicCatalogPage
-			.currencySelectorButton(currency1.code, currency1.symbol)
-			.click();
-
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency2.code)
-		).toBeVisible();
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency3.code)
-		).toBeVisible();
-
-		await commerceThemeClassicCatalogPage
-			.currencyListItem(currency3.code)
-			.click();
-
-		try {
 			await expect(
-				commerceThemeClassicCatalogPage.changeCurrencyModalHeading
+				commerceThemeClassicCatalogPage.currencyListItem(currency2.code)
+			).toBeVisible();
+			await expect(
+				commerceThemeClassicCatalogPage.currencyListItem(currency3.code)
 			).toBeVisible();
 
-			await expect(async () => {
-				await commerceThemeClassicCatalogPage.changeCurrencyModalProceedButton.click();
+			await commerceThemeClassicCatalogPage
+				.currencyListItem(currency3.code)
+				.click();
+			await commerceThemeClassicCatalogPage
+				.currencySelectorButton(currency3.code, currency3.symbol)
+				.click();
 
-				await page.waitForURL('**/order/**');
-			}).toPass();
+			expect(
+				await commerceThemeClassicCatalogPage.firstCardItem.innerText()
+			).toContain(`${currency3.symbol}`);
+		});
+
+		await test.step('Remove the Australian Dollar from the channel as admin', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceAdminChannelsPage.goto();
+
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
+				)
+			).click();
+
+			await commerceAdminChannelDetailsPage.goToCurrencies();
+
+			await expect(
+				commerceAdminChannelDetailsCurrenciesPage.currenciesTable
+			).toHaveCount(1);
+
+			await (
+				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRowAction(
+					currency2.name['en_US'],
+					'Remove'
+				)
+			).click();
+
+			await page.reload();
+
+			expect(
+				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRows()
+			).toHaveLength(2);
+		});
+
+		await test.step('Confirm the removed currency is no longer offered to the buyer', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
 			await page.goto(`/web/${site.name}`);
 
 			expect(
-				await commerceThemeMiniumCatalogPage.firstCardItem.innerText()
+				await commerceThemeClassicCatalogPage.firstCardItem.innerText()
 			).toContain(`${currency3.symbol}`);
-		}
-		finally {
-			const orders =
-				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
 
-			apiHelpers.data.push({id: orders.items[0].id, type: 'order'});
-		}
+			await commerceThemeClassicCatalogPage
+				.currencySelectorButton(currency3.code, currency3.symbol)
+				.click();
+
+			await expect(
+				commerceThemeClassicCatalogPage.currencyListItem(currency1.code)
+			).toBeVisible();
+		});
 	}
 );
 
@@ -426,36 +187,11 @@ test(
 			type: 'business',
 		});
 
-		const user =
-			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-				'demo.unprivileged@liferay.com'
-			);
-
-		const rolesResponse =
-			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
-
-		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-			return role.name === 'Buyer';
-		});
-
-		await apiHelpers.headlessAdminUser.assignAccountRoles(
-			account.externalReferenceCode,
-			accountRoleBuyer[0].id,
-			user.emailAddress
-		);
-
-		const siteRole =
-			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-
-		await apiHelpers.headlessAdminUser.assignUserToSite(
-			siteRole.id,
-			site.id,
-			user.id
-		);
-
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			[user.emailAddress]
+		await configureBuyerUserForSite(
+			account,
+			apiHelpers,
+			site,
+			'demo.unprivileged@liferay.com'
 		);
 
 		const currencies =
@@ -518,149 +254,134 @@ test(
 			channel.id
 		);
 
-		await commerceAdminChannelsPage.goto();
+		await test.step('Add three currencies to the channel as admin', async () => {
+			await commerceAdminChannelsPage.goto();
 
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
-
-		await commerceAdminChannelDetailsPage.goToCurrencies();
-
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyButton.click();
-
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency1.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency2.name['en_US']
-			)
-		).check();
-		await (
-			await commerceAdminChannelDetailsCurrenciesPage.currencyFrameCurrency(
-				currency3.name['en_US']
-			)
-		).check();
-
-		await commerceAdminChannelDetailsCurrenciesPage.addCurrencyAddButton.click();
-
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency1.name['en_US'],
-					true
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
 				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency2.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
-		await expect(
-			(
-				await commerceAdminChannelDetailsCurrenciesPage.currenciesTableRow(
-					0,
-					currency3.name['en_US'],
-					true
-				)
-			).row
-		).toBeVisible();
+			).click();
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+			await commerceAdminChannelDetailsPage.goToCurrencies();
 
-		await page.goto(`/web/${site.name}`);
+			await commerceAdminChannelDetailsCurrenciesPage.addCurrencies([
+				currency1.name['en_US'],
+				currency2.name['en_US'],
+				currency3.name['en_US'],
+			]);
+		});
 
-		await commerceThemeClassicCatalogPage
-			.currencySelectorButton(currency1.code, currency1.symbol)
-			.click();
-
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency2.code)
-		).toBeVisible();
-		await expect(
-			commerceThemeClassicCatalogPage.currencyListItem(currency3.code)
-		).toBeVisible();
-
-		await commerceThemeClassicCatalogPage
-			.currencyListItem(currency3.code)
-			.click();
-
-		try {
-			await expect(
-				commerceThemeClassicCatalogPage.changeCurrencyModalHeading
-			).toBeVisible();
-
-			await expect(async () => {
-				await commerceThemeClassicCatalogPage.changeCurrencyModalProceedButton.click();
-
-				await page.waitForURL('**/order/**');
-			}).toPass();
+		await test.step('Select Euro from the storefront currency selector as the buyer', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
 			await page.goto(`/web/${site.name}`);
 
-			expect(
-				await commerceThemeClassicCatalogPage
-					.productCard(product.name['en_US'])
-					.innerText()
-			).toContain(`${currency3.symbol}`);
+			await commerceThemeClassicCatalogPage
+				.currencySelectorButton(currency1.code, currency1.symbol)
+				.click();
+
 			await expect(
-				commerceThemeClassicCatalogPage.productCardPrice(
-					product.name['en_US'],
-					priceEntry.priceFormatted
-				)
+				commerceThemeClassicCatalogPage.currencyListItem(currency2.code)
+			).toBeVisible();
+			await expect(
+				commerceThemeClassicCatalogPage.currencyListItem(currency3.code)
 			).toBeVisible();
 
-			await page.goto(`/web/${site.name}/p/` + product.name['en_US'], {
-				waitUntil: 'networkidle',
+			await commerceThemeClassicCatalogPage
+				.currencyListItem(currency3.code)
+				.click();
+		});
+
+		try {
+			await test.step('Confirm the currency change with the active order and verify base prices are converted', async () => {
+				await expect(
+					commerceThemeClassicCatalogPage.changeCurrencyModalHeading
+				).toBeVisible();
+
+				await expect(async () => {
+					await commerceThemeClassicCatalogPage.changeCurrencyModalProceedButton.click();
+
+					await page.waitForURL('**/order/**');
+				}).toPass();
+
+				await page.goto(`/web/${site.name}`);
+
+				expect(
+					await commerceThemeClassicCatalogPage.firstCardItem.innerText()
+				).toContain(`${currency3.symbol}`);
 			});
 
-			await expect(
-				await productDetailsPage.priceField(
-					priceEntry.priceFormatted,
-					productDetailsPage.priceContainer
-				)
-			).toBeVisible();
-
-			await productDetailsPage.addToCartButton.click();
-
-			await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
-				'has-badge mini-cart-opener'
-			);
-
-			await commerceMiniCartPage.miniCartButton.click();
-
-			await expect(
-				commerceMiniCartPage.miniCartItem(product.name['en_US'])
-			).toBeVisible();
-			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
-				priceEntry.priceFormatted
-			);
-
-			await commerceThemeClassicCatalogPage.ordersTab.click();
-
-			await (
-				await commerceThemeClassicOrdersPage.tableRowButton({
-					rowValue: cart.id,
-				})
-			).click();
-			await expect(
-				(
-					await commerceThemeClassicOrdersPage.orderItemsTableRow(
-						10,
-						productSku.price.priceFormatted,
-						true
+			await test.step('Verify the converted price-list price on the catalog', async () => {
+				expect(
+					await commerceThemeClassicCatalogPage
+						.productCard(product.name['en_US'])
+						.innerText()
+				).toContain(`${currency3.symbol}`);
+				await expect(
+					commerceThemeClassicCatalogPage.productCardPrice(
+						product.name['en_US'],
+						priceEntry.priceFormatted
 					)
-				).column.getByText(productSku.price.priceFormatted)
-			).toBeVisible();
+				).toBeVisible();
+			});
+
+			await test.step('Verify the converted price on the product details page', async () => {
+				await page.goto(
+					`/web/${site.name}/p/` + product.name['en_US'],
+					{
+						waitUntil: 'networkidle',
+					}
+				);
+
+				await expect(
+					await productDetailsPage.priceField(
+						priceEntry.priceFormatted,
+						productDetailsPage.priceContainer
+					)
+				).toBeVisible();
+			});
+
+			await test.step('Add the product to the cart and verify the mini cart total', async () => {
+				await productDetailsPage.addToCartButton.click();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener'
+				);
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItem(product.name['en_US'])
+				).toBeVisible();
+				await expect(
+					commerceMiniCartPage.miniCartTotalPrice
+				).toHaveText(priceEntry.priceFormatted);
+
+				await commerceMiniCartPage.miniCartButtonClose.click();
+			});
+
+			await test.step('Verify the converted price on the pending order', async () => {
+				await commerceThemeClassicCatalogPage.goToOrderPages(
+					'Pending Orders'
+				);
+
+				await (
+					await commerceThemeClassicOrdersPage.tableRowButton({
+						rowValue: cart.id,
+					})
+				).click();
+				await expect(
+					(
+						await commerceThemeClassicOrdersPage.orderItemsTableRow(
+							10,
+							productSku.price.priceFormatted,
+							true
+						)
+					).column.getByText(productSku.price.priceFormatted)
+				).toBeVisible();
+			});
 		}
 		finally {
 			const orders =

@@ -14,8 +14,9 @@ export class CommerceThemeClassicCatalogPage {
 		currencyCode: string,
 		currencySymbol: string
 	) => Locator;
+	readonly firstCardItem: Locator;
 	readonly orderByButton: Locator;
-	readonly ordersTab: Locator;
+	readonly ordersTab: (orderTabName: string) => Locator;
 	readonly page: Page;
 	readonly productCard: (productName: string) => Locator;
 	readonly productCardImage: (productName: string) => Locator;
@@ -49,11 +50,13 @@ export class CommerceThemeClassicCatalogPage {
 				exact: true,
 				name: `${currencySymbol} ${currencyCode}`,
 			});
+		this.firstCardItem = page.locator('.product-card').first();
 		this.orderByButton = page.locator('#commerce-order-by');
-		this.ordersTab = page.getByRole('menuitem', {
-			exact: true,
-			name: 'Orders',
-		});
+		this.ordersTab = (orderTabName: string) =>
+			page.getByRole('menuitem', {
+				exact: true,
+				name: orderTabName,
+			});
 		this.page = page;
 		this.productCard = (productName: string) =>
 			this.page.locator('.product-card').filter({hasText: productName});
@@ -86,5 +89,10 @@ export class CommerceThemeClassicCatalogPage {
 		const orderByLink = this.page.getByText(orderByText);
 		await orderByLink.click();
 		await this.page.waitForLoadState('networkidle');
+	}
+
+	async goToOrderPages(orderTabName: string) {
+		await this.ordersTab('Orders').click();
+		await this.ordersTab(orderTabName).click();
 	}
 }
