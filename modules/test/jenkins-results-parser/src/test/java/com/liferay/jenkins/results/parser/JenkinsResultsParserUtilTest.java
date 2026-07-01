@@ -282,6 +282,31 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testGetPropertyNameWithWildcards() {
+		Properties properties = new Properties();
+
+		properties.setProperty("build.caching.enabled", "false");
+		properties.setProperty(
+			"build.caching.enabled[test-portal-acceptance-pullrequest(*)]",
+			"true");
+		properties.setProperty(
+			"build.caching.enabled[test-portal-acceptance-pullrequest(master)]",
+			"false");
+
+		_testGetPropertyName(
+			"build.caching.enabled", "false", properties,
+			"build.caching.enabled", "test-portal-source-format");
+		_testGetPropertyName(
+			"build.caching.enabled[test-portal-acceptance-pullrequest(*)]",
+			"true", properties, "build.caching.enabled",
+			"test-portal-acceptance-pullrequest(ee-7.4.x)");
+		_testGetPropertyName(
+			"build.caching.enabled[test-portal-acceptance-pullrequest(master)]",
+			"false", properties, "build.caching.enabled",
+			"test-portal-acceptance-pullrequest(master)");
+	}
+
+	@Test
 	public void testGetRemoteURL() {
 		testEquals(
 			"https://test-1-20.liferay.com/ABC?123=456&xyz=abc",
