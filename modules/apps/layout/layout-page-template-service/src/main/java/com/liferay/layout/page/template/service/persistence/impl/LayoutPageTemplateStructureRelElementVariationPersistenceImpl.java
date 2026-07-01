@@ -1132,7 +1132,6 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 		ctStrictColumnNames.add("userName");
 		ctStrictColumnNames.add("createDate");
 		ctIgnoreColumnNames.add("modifiedDate");
-		ctMergeColumnNames.add("audienceEntryERC");
 		ctMergeColumnNames.add("hide");
 		ctMergeColumnNames.add("html");
 		ctMergeColumnNames.add("js");
@@ -1438,4 +1437,4 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-941394124
+// LIFERAY-SERVICE-BUILDER-HASH:867617760

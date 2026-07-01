@@ -155,9 +155,6 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceTest {
 		newLayoutPageTemplateStructureRelElementVariation.setModifiedDate(
 			RandomTestUtil.nextDate());
 
-		newLayoutPageTemplateStructureRelElementVariation.setAudienceEntryERC(
-			RandomTestUtil.randomString());
-
 		newLayoutPageTemplateStructureRelElementVariation.setHide(
 			RandomTestUtil.randomString());
 
@@ -241,11 +238,6 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceTest {
 			Time.getShortTimestamp(
 				newLayoutPageTemplateStructureRelElementVariation.
 					getModifiedDate()));
-		Assert.assertEquals(
-			existingLayoutPageTemplateStructureRelElementVariation.
-				getAudienceEntryERC(),
-			newLayoutPageTemplateStructureRelElementVariation.
-				getAudienceEntryERC());
 		Assert.assertEquals(
 			existingLayoutPageTemplateStructureRelElementVariation.getHide(),
 			newLayoutPageTemplateStructureRelElementVariation.getHide());
@@ -404,8 +396,8 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceTest {
 			true, "uuid", true, "externalReferenceCode", true,
 			"layoutPageTemplateStructureRelElementVariationId", true, "groupId",
 			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "audienceEntryERC", true,
-			"hide", true, "html", true, "js", true, "name", true, "plid", true,
+			"createDate", true, "modifiedDate", true, "hide", true, "html",
+			true, "js", true, "name", true, "plid", true,
 			"segmentsExperienceERC", true, "targetElement", true);
 	}
 
@@ -824,9 +816,6 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceTest {
 		layoutPageTemplateStructureRelElementVariation.setModifiedDate(
 			RandomTestUtil.nextDate());
 
-		layoutPageTemplateStructureRelElementVariation.setAudienceEntryERC(
-			RandomTestUtil.randomString());
-
 		layoutPageTemplateStructureRelElementVariation.setHide(
 			RandomTestUtil.randomString());
 
@@ -863,4 +852,4 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-389629694
+// LIFERAY-SERVICE-BUILDER-HASH:-1881622989

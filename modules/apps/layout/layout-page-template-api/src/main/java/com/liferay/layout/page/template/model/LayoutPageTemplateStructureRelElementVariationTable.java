@@ -74,11 +74,6 @@ public class LayoutPageTemplateStructureRelElementVariationTable
 				"modifiedDate", Date.class, Types.TIMESTAMP,
 				Column.FLAG_DEFAULT);
 	public final Column
-		<LayoutPageTemplateStructureRelElementVariationTable, String>
-			audienceEntryERC = createColumn(
-				"audienceEntryERC", String.class, Types.VARCHAR,
-				Column.FLAG_DEFAULT);
-	public final Column
 		<LayoutPageTemplateStructureRelElementVariationTable, String> hide =
 			createColumn(
 				"hide", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
@@ -115,4 +110,4 @@ public class LayoutPageTemplateStructureRelElementVariationTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1881588054
+// LIFERAY-SERVICE-BUILDER-HASH:647063486

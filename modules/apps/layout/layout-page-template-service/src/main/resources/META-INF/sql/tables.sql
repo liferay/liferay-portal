@@ -27,7 +27,6 @@ create table LPTSRelElementVariation (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	audienceEntryERC VARCHAR(75) null,
 	hide STRING null,
 	html STRING null,
 	js STRING null,

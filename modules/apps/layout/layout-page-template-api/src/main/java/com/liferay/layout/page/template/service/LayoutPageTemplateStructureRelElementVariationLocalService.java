@@ -84,7 +84,7 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String audienceEntryERC, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, Map<Locale, String> hideMap,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -393,4 +393,4 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:302590000
+// LIFERAY-SERVICE-BUILDER-HASH:-734232431

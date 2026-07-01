@@ -34,7 +34,8 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 	public static LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId,
-				String audienceEntryERC, Map<java.util.Locale, String> hideMap,
+				String[] audienceEntryERCs,
+				Map<java.util.Locale, String> hideMap,
 				Map<java.util.Locale, String> htmlMap,
 				Map<java.util.Locale, String> jsMap, String name, long plid,
 				String segmentsExperienceERC, String targetElement,
@@ -43,7 +44,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 
 		return getService().
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, groupId, audienceEntryERC, hideMap,
+				externalReferenceCode, groupId, audienceEntryERCs, hideMap,
 				htmlMap, jsMap, name, plid, segmentsExperienceERC,
 				targetElement, serviceContext);
 	}
@@ -86,4 +87,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 				LayoutPageTemplateStructureRelElementVariationService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1077885661
+// LIFERAY-SERVICE-BUILDER-HASH:2068769419

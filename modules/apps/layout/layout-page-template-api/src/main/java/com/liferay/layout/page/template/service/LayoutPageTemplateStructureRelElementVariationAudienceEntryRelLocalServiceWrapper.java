@@ -57,6 +57,21 @@ public class
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRel);
 	}
 
+	@Override
+	public LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+				long userId, long groupId, String audienceEntryERC,
+				String layoutPageTemplateStructureRelElementVariationERC,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+				userId, groupId, audienceEntryERC,
+				layoutPageTemplateStructureRelElementVariationERC,
+				serviceContext);
+	}
+
 	/**
 	 * Creates a new layout page template structure rel element variation audience entry rel with the primary key. Does not add the layout page template structure rel element variation audience entry rel to the database.
 	 *
@@ -128,6 +143,16 @@ public class
 		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRelId);
+	}
+
+	@Override
+	public void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			String layoutPageTemplateStructureRelElementVariationERC) {
+
+		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	/**
@@ -385,6 +410,17 @@ public class
 				start, end);
 	}
 
+	@Override
+	public java.util.List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				String layoutPageTemplateStructureRelElementVariationERC) {
+
+		return _layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				layoutPageTemplateStructureRelElementVariationERC);
+	}
+
 	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels matching the UUID and company.
 	 *
@@ -541,4 +577,4 @@ public class
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-489171970
+// LIFERAY-SERVICE-BUILDER-HASH:1708431927

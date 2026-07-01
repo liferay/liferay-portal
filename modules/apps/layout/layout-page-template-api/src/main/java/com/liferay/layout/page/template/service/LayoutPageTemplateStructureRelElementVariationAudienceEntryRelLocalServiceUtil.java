@@ -58,6 +58,20 @@ public class
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRel);
 	}
 
+	public static LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+				long userId, long groupId, String audienceEntryERC,
+				String layoutPageTemplateStructureRelElementVariationERC,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().
+			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+				userId, groupId, audienceEntryERC,
+				layoutPageTemplateStructureRelElementVariationERC,
+				serviceContext);
+	}
+
 	/**
 	 * Creates a new layout page template structure rel element variation audience entry rel with the primary key. Does not add the layout page template structure rel element variation audience entry rel to the database.
 	 *
@@ -124,6 +138,15 @@ public class
 		return getService().
 			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRelId);
+	}
+
+	public static void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			String layoutPageTemplateStructureRelElementVariationERC) {
+
+		getService().
+			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	/**
@@ -344,6 +367,16 @@ public class
 				start, end);
 	}
 
+	public static List
+		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				String layoutPageTemplateStructureRelElementVariationERC) {
+
+		return getService().
+			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				layoutPageTemplateStructureRelElementVariationERC);
+	}
+
 	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels matching the UUID and company.
 	 *
@@ -448,4 +481,4 @@ public class
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1523546470
+// LIFERAY-SERVICE-BUILDER-HASH:2034933066

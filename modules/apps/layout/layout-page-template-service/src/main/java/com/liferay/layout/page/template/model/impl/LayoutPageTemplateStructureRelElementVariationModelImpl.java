@@ -77,10 +77,9 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		{"lptsRelElementVariationId", Types.BIGINT}, {"groupId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"audienceEntryERC", Types.VARCHAR},
-		{"hide", Types.VARCHAR}, {"html", Types.VARCHAR}, {"js", Types.VARCHAR},
-		{"name", Types.VARCHAR}, {"plid", Types.BIGINT},
-		{"segmentsExperienceERC", Types.VARCHAR},
+		{"modifiedDate", Types.TIMESTAMP}, {"hide", Types.VARCHAR},
+		{"html", Types.VARCHAR}, {"js", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"plid", Types.BIGINT}, {"segmentsExperienceERC", Types.VARCHAR},
 		{"targetElement", Types.VARCHAR}
 	};
 
@@ -99,7 +98,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("audienceEntryERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("hide", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("html", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("js", Types.VARCHAR);
@@ -110,7 +108,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LPTSRelElementVariation (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,lptsRelElementVariationId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,audienceEntryERC VARCHAR(75) null,hide STRING null,html STRING null,js STRING null,name VARCHAR(75) null,plid LONG,segmentsExperienceERC VARCHAR(75) null,targetElement VARCHAR(1000) null,primary key (lptsRelElementVariationId, ctCollectionId))";
+		"create table LPTSRelElementVariation (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,lptsRelElementVariationId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,hide STRING null,html STRING null,js STRING null,name VARCHAR(75) null,plid LONG,segmentsExperienceERC VARCHAR(75) null,targetElement VARCHAR(1000) null,primary key (lptsRelElementVariationId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LPTSRelElementVariation";
@@ -344,10 +342,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 				LayoutPageTemplateStructureRelElementVariation::
 					getModifiedDate);
 			attributeGetterFunctions.put(
-				"audienceEntryERC",
-				LayoutPageTemplateStructureRelElementVariation::
-					getAudienceEntryERC);
-			attributeGetterFunctions.put(
 				"hide",
 				LayoutPageTemplateStructureRelElementVariation::getHide);
 			attributeGetterFunctions.put(
@@ -460,12 +454,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 					<LayoutPageTemplateStructureRelElementVariation, Date>)
 						LayoutPageTemplateStructureRelElementVariation::
 							setModifiedDate);
-			attributeSetterBiConsumers.put(
-				"audienceEntryERC",
-				(BiConsumer
-					<LayoutPageTemplateStructureRelElementVariation, String>)
-						LayoutPageTemplateStructureRelElementVariation::
-							setAudienceEntryERC);
 			attributeSetterBiConsumers.put(
 				"hide",
 				(BiConsumer
@@ -754,26 +742,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		}
 
 		_modifiedDate = modifiedDate;
-	}
-
-	@JSON
-	@Override
-	public String getAudienceEntryERC() {
-		if (_audienceEntryERC == null) {
-			return "";
-		}
-		else {
-			return _audienceEntryERC;
-		}
-	}
-
-	@Override
-	public void setAudienceEntryERC(String audienceEntryERC) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_audienceEntryERC = audienceEntryERC;
 	}
 
 	@JSON
@@ -1386,8 +1354,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 			getCreateDate());
 		layoutPageTemplateStructureRelElementVariationImpl.setModifiedDate(
 			getModifiedDate());
-		layoutPageTemplateStructureRelElementVariationImpl.setAudienceEntryERC(
-			getAudienceEntryERC());
 		layoutPageTemplateStructureRelElementVariationImpl.setHide(getHide());
 		layoutPageTemplateStructureRelElementVariationImpl.setHtml(getHtml());
 		layoutPageTemplateStructureRelElementVariationImpl.setJs(getJs());
@@ -1436,8 +1402,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		layoutPageTemplateStructureRelElementVariationImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
-		layoutPageTemplateStructureRelElementVariationImpl.setAudienceEntryERC(
-			this.<String>getColumnOriginalValue("audienceEntryERC"));
 		layoutPageTemplateStructureRelElementVariationImpl.setHide(
 			this.<String>getColumnOriginalValue("hide"));
 		layoutPageTemplateStructureRelElementVariationImpl.setHtml(
@@ -1620,18 +1584,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 				modifiedDate = Long.MIN_VALUE;
 		}
 
-		layoutPageTemplateStructureRelElementVariationCacheModel.
-			audienceEntryERC = getAudienceEntryERC();
-
-		String audienceEntryERC =
-			layoutPageTemplateStructureRelElementVariationCacheModel.
-				audienceEntryERC;
-
-		if ((audienceEntryERC != null) && (audienceEntryERC.length() == 0)) {
-			layoutPageTemplateStructureRelElementVariationCacheModel.
-				audienceEntryERC = null;
-		}
-
 		layoutPageTemplateStructureRelElementVariationCacheModel.hide =
 			getHide();
 
@@ -1783,7 +1735,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private String _audienceEntryERC;
 	private String _hide;
 	private String _hideCurrentLanguageId;
 	private String _html;
@@ -1841,7 +1792,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
-		_columnOriginalValues.put("audienceEntryERC", _audienceEntryERC);
 		_columnOriginalValues.put("hide", _hide);
 		_columnOriginalValues.put("html", _html);
 		_columnOriginalValues.put("js", _js);
@@ -1898,21 +1848,19 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 
 		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("audienceEntryERC", 2048L);
+		columnBitmasks.put("hide", 2048L);
 
-		columnBitmasks.put("hide", 4096L);
+		columnBitmasks.put("html", 4096L);
 
-		columnBitmasks.put("html", 8192L);
+		columnBitmasks.put("js", 8192L);
 
-		columnBitmasks.put("js", 16384L);
+		columnBitmasks.put("name", 16384L);
 
-		columnBitmasks.put("name", 32768L);
+		columnBitmasks.put("plid", 32768L);
 
-		columnBitmasks.put("plid", 65536L);
+		columnBitmasks.put("segmentsExperienceERC", 65536L);
 
-		columnBitmasks.put("segmentsExperienceERC", 131072L);
-
-		columnBitmasks.put("targetElement", 262144L);
+		columnBitmasks.put("targetElement", 131072L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1921,4 +1869,4 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	private LayoutPageTemplateStructureRelElementVariation _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:709803567
+// LIFERAY-SERVICE-BUILDER-HASH:1030817281

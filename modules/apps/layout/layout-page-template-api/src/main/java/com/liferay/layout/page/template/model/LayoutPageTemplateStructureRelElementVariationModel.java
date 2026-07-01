@@ -257,21 +257,6 @@ public interface LayoutPageTemplateStructureRelElementVariationModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the audience entry erc of this layout page template structure rel element variation.
-	 *
-	 * @return the audience entry erc of this layout page template structure rel element variation
-	 */
-	@AutoEscape
-	public String getAudienceEntryERC();
-
-	/**
-	 * Sets the audience entry erc of this layout page template structure rel element variation.
-	 *
-	 * @param audienceEntryERC the audience entry erc of this layout page template structure rel element variation
-	 */
-	public void setAudienceEntryERC(String audienceEntryERC);
-
-	/**
 	 * Returns the hide of this layout page template structure rel element variation.
 	 *
 	 * @return the hide of this layout page template structure rel element variation
@@ -649,4 +634,4 @@ public interface LayoutPageTemplateStructureRelElementVariationModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1461842433
+// LIFERAY-SERVICE-BUILDER-HASH:-1774816791

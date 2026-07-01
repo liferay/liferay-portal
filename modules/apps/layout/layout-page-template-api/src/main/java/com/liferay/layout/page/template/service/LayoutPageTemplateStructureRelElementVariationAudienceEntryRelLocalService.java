@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -80,6 +81,13 @@ public interface
 			LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRel);
 
+	public LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+				long userId, long groupId, String audienceEntryERC,
+				String layoutPageTemplateStructureRelElementVariationERC,
+				ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Creates a new layout page template structure rel element variation audience entry rel with the primary key. Does not add the layout page template structure rel element variation audience entry rel to the database.
 	 *
@@ -131,6 +139,10 @@ public interface
 				long
 					layoutPageTemplateStructureRelElementVariationAudienceEntryRelId)
 		throws PortalException;
+
+	public void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			String layoutPageTemplateStructureRelElementVariationERC);
 
 	/**
 	 * @throws PortalException
@@ -294,6 +306,11 @@ public interface
 		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			String layoutPageTemplateStructureRelElementVariationERC);
+
 	/**
 	 * Returns all the layout page template structure rel element variation audience entry rels matching the UUID and company.
 	 *
@@ -385,4 +402,4 @@ public interface
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2006019107
+// LIFERAY-SERVICE-BUILDER-HASH:-651643994

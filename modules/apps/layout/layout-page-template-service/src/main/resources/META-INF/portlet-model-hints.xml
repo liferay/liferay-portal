@@ -100,7 +100,6 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="audienceEntryERC" type="String" />
 		<field localized="true" name="hide" type="String" />
 		<field localized="true" name="html" type="String" />
 		<field localized="true" name="js" type="String" />
