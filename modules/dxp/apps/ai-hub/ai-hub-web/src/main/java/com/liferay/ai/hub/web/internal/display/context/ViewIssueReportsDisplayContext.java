@@ -74,13 +74,10 @@ public class ViewIssueReportsDisplayContext {
 					_themeDisplay.getLocale(), null, _themeDisplay.getUser()),
 				null, Pagination.of(1, 1), null, null);
 
-			total = page.getTotalCount();
-
 			criticalCount = _getFacetCount(page, "level", "critical");
-
 			negativeCount = _getFacetCount(page, "feedback", "negative");
-
 			positiveCount = _getFacetCount(page, "feedback", "positive");
+			total = page.getTotalCount();
 		}
 
 		int dislikeRatingPercent = 0;
