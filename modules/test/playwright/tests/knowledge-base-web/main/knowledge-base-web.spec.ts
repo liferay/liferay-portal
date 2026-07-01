@@ -16,6 +16,8 @@ import getLoggedInPage from '../../../utils/getLoggedInPage';
 import getRandomString from '../../../utils/getRandomString';
 import {performLogout} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {KnowledgeBaseUrls} from './utils/knowledgeBaseUrls';
 
 const test = mergeTests(
@@ -41,7 +43,20 @@ test('LPD-27537: Article should be shown to guest users', async ({
 			articleBody: content,
 			siteId: site.id,
 			title,
+			viewableBy: 'Anyone',
 		});
+
+	await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_knowledge_base_web_portlet_DisplayPortlet',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
 
 	await performLogout(page);
 
@@ -55,7 +70,7 @@ test('LPD-27537: Article should be shown to guest users', async ({
 		page.getByText('Error:Your request failed to complete.')
 	).toBeHidden();
 
-	await expect(page.getByText('Knowledge Base Article')).toBeVisible();
+	await expect(page.getByRole('heading', {name: title})).toBeVisible();
 });
 
 test('LPD-23801 error message is shown when an admin user tries to publish an article that an admin is currently editing', async ({

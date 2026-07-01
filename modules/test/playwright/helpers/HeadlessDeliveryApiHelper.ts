@@ -204,10 +204,12 @@ export class HeadlessDeliveryApiHelper {
 		articleBody,
 		siteId,
 		title,
+		viewableBy,
 	}: {
 		articleBody: string;
 		siteId: string;
 		title: string;
+		viewableBy?: string;
 	}): Promise<KnowledgeBaseArticle> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/knowledge-base-articles`,
@@ -215,6 +217,7 @@ export class HeadlessDeliveryApiHelper {
 				data: {
 					articleBody,
 					title,
+					viewableBy,
 				},
 				failOnStatusCode: true,
 			}
