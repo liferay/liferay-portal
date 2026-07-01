@@ -1933,6 +1933,13 @@ test(
 
 			await assetsPage.execBulkItemAction('Expire');
 
+			await waitForModal({page});
+
+			await page
+				.locator('.modal')
+				.getByRole('button', {name: 'Expire'})
+				.click();
+
 			await waitForAlert(
 				page,
 				`Info:Expire action started for ${basicDocumentTitle} asset.`,
@@ -1969,6 +1976,13 @@ test(
 			await assetsPage.selectItems([basicWebContentTitle, blogTitle]);
 
 			await assetsPage.execBulkItemAction('Expire');
+
+			await waitForModal({page});
+
+			await page
+				.locator('.modal')
+				.getByRole('button', {name: 'Expire'})
+				.click();
 
 			await waitForAlert(
 				page,
@@ -2039,6 +2053,13 @@ test(
 		await expect(page.getByText('All Selected')).toBeVisible();
 
 		await assetsPage.execBulkItemAction('Expire');
+
+		await waitForModal({page});
+
+		await page
+			.locator('.modal')
+			.getByRole('button', {name: 'Expire'})
+			.click();
 
 		await waitForAlert(page, 'Info:Expire action started', {
 			type: 'info',
@@ -3112,6 +3133,13 @@ test(
 			await assetsPage.selectItems(contentTitles);
 
 			await assetsPage.execBulkItemAction('Duplicate');
+
+			await waitForModal({page});
+
+			await page
+				.locator('.modal')
+				.getByRole('button', {name: 'Duplicate'})
+				.click();
 		});
 
 		await test.step('Info alert for the bulk duplicate is displayed', async () => {
@@ -3191,6 +3219,13 @@ test(
 			await assetsPage.selectItems([contentTitle, folderTitle]);
 
 			await assetsPage.execBulkItemAction('Duplicate');
+
+			await waitForModal({page});
+
+			await page
+				.locator('.modal')
+				.getByRole('button', {name: 'Duplicate'})
+				.click();
 		});
 
 		await test.step('Info alert for the bulk duplicate is displayed', async () => {
