@@ -414,12 +414,14 @@ public class MCPServerServletTest {
 		String authorizationURL = HttpComponentsUtil.addParameter(
 			authorizationEndpoint, "client_id", clientId);
 
+		String codeVerifier = RandomTestUtil.randomString(50);
+
 		authorizationURL = HttpComponentsUtil.addParameter(
 			authorizationURL, "code_challenge",
 			StringUtil.removeChar(
 				StringUtil.replace(
 					DigesterUtil.digestBase64(
-						DigesterUtil.SHA_256, RandomTestUtil.randomString()),
+						DigesterUtil.SHA_256, codeVerifier),
 					new char[] {CharPool.PLUS, CharPool.SLASH},
 					new char[] {CharPool.MINUS, CharPool.UNDERLINE}),
 				CharPool.EQUAL));
@@ -497,8 +499,7 @@ public class MCPServerServletTest {
 			StringBundler.concat(
 				"client_id=", URLCodec.encodeURL(clientId), "&code=",
 				URLCodec.encodeURL(code), "&code_verifier=",
-				URLCodec.encodeURL(
-					"mcpServerTestCodeVerifier1234567890123456789012345"),
+				URLCodec.encodeURL(codeVerifier),
 				"&grant_type=authorization_code&redirect_uri=",
 				URLCodec.encodeURL(redirectURI), "&resource=",
 				URLCodec.encodeURL(
