@@ -7,14 +7,18 @@ package com.liferay.osb.faro.web.internal.controller.contacts;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
+import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.FieldMapping;
+import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.Results;
+import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMappingDisplay;
+import com.liferay.osb.faro.web.internal.param.FaroParam;
 import com.liferay.osb.faro.web.internal.util.ContactsCSVHelper;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -45,6 +49,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.AdditionalAnswers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -188,6 +193,80 @@ public class DataSourceFaroControllerTest {
 	}
 
 	@Test
+	public void testCreateTypeSalesforce() throws Exception {
+		DataSource dataSource = Mockito.mock(DataSource.class);
+
+		Mockito.when(
+			dataSource.getProvider()
+		).thenReturn(
+			new SalesforceProvider()
+		);
+
+		Mockito.when(
+			_contactsEngineClient.addDataSource(
+				Mockito.eq(_faroProject), Mockito.isNull(), Mockito.anyLong(),
+				Mockito.eq("Salesforce"), Mockito.isNull(),
+				Mockito.any(Provider.class), Mockito.isNull(),
+				Mockito.eq("ACTIVE"))
+		).thenReturn(
+			dataSource
+		);
+
+		SalesforceProvider.CampaignsConfiguration campaignsConfiguration =
+			new SalesforceProvider.CampaignsConfiguration();
+
+		campaignsConfiguration.setEnableAllCampaigns(true);
+
+		SalesforceProvider.OpportunitiesConfiguration
+			opportunitiesConfiguration =
+				new SalesforceProvider.OpportunitiesConfiguration();
+
+		opportunitiesConfiguration.setEnableAllOpportunities(true);
+
+		try (MockedStatic<PermissionThreadLocal>
+				permissionThreadLocalMockedStatic = Mockito.mockStatic(
+					PermissionThreadLocal.class)) {
+
+			permissionThreadLocalMockedStatic.when(
+				PermissionThreadLocal::getPermissionChecker
+			).thenReturn(
+				Mockito.mock(PermissionChecker.class)
+			);
+
+			_dataSourceFaroController.createTypeSalesforce(
+				32719L, new FaroParam<>(),
+				new FaroParam<>(campaignsConfiguration), new FaroParam<>(),
+				new FaroParam<>(), null, "Salesforce",
+				new FaroParam<>(opportunitiesConfiguration), "ACTIVE", null);
+		}
+
+		ArgumentCaptor<Provider> providerArgumentCaptor =
+			ArgumentCaptor.forClass(Provider.class);
+
+		Mockito.verify(
+			_contactsEngineClient
+		).addDataSource(
+			Mockito.eq(_faroProject), Mockito.isNull(), Mockito.anyLong(),
+			Mockito.eq("Salesforce"), Mockito.isNull(),
+			providerArgumentCaptor.capture(), Mockito.isNull(),
+			Mockito.eq("ACTIVE")
+		);
+
+		SalesforceProvider salesforceProvider =
+			(SalesforceProvider)providerArgumentCaptor.getValue();
+
+		campaignsConfiguration = salesforceProvider.getCampaignsConfiguration();
+
+		Assert.assertTrue(campaignsConfiguration.isEnableAllCampaigns());
+
+		opportunitiesConfiguration =
+			salesforceProvider.getOpportunitiesConfiguration();
+
+		Assert.assertTrue(
+			opportunitiesConfiguration.isEnableAllOpportunities());
+	}
+
+	@Test
 	public void testGenerateDataSourceAccessToken() throws Exception {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
@@ -262,6 +341,108 @@ public class DataSourceFaroControllerTest {
 		Assert.assertEquals(
 			dataSourceMappingDisplays.toString(), 13,
 			dataSourceMappingDisplays.size());
+	}
+
+	@Test
+	public void testPatchTypeSalesforce() throws Exception {
+		SalesforceProvider existingSalesforceProvider =
+			new SalesforceProvider();
+
+		SalesforceProvider.AccountsConfiguration accountsConfiguration =
+			new SalesforceProvider.AccountsConfiguration();
+
+		accountsConfiguration.setEnableAllAccounts(true);
+
+		existingSalesforceProvider.setAccountsConfiguration(
+			accountsConfiguration);
+
+		DataSource existingDataSource = Mockito.mock(DataSource.class);
+
+		Mockito.when(
+			existingDataSource.getProvider()
+		).thenReturn(
+			existingSalesforceProvider
+		);
+
+		Mockito.when(
+			_contactsEngineClient.getDataSource(_faroProject, "32720")
+		).thenReturn(
+			existingDataSource
+		);
+
+		DataSource dataSource = Mockito.mock(DataSource.class);
+
+		Mockito.when(
+			dataSource.getProvider()
+		).thenReturn(
+			new SalesforceProvider()
+		);
+
+		Mockito.when(
+			_contactsEngineClient.patchDataSource(
+				Mockito.eq(_faroProject), Mockito.eq("32720"), Mockito.isNull(),
+				Mockito.isNull(), Mockito.isNull(), Mockito.any(Provider.class),
+				Mockito.isNull(), Mockito.isNull(), Mockito.anyLong())
+		).thenReturn(
+			dataSource
+		);
+
+		SalesforceProvider.CampaignsConfiguration campaignsConfiguration =
+			new SalesforceProvider.CampaignsConfiguration();
+
+		campaignsConfiguration.setEnableAllCampaigns(true);
+
+		SalesforceProvider.OpportunitiesConfiguration
+			opportunitiesConfiguration =
+				new SalesforceProvider.OpportunitiesConfiguration();
+
+		opportunitiesConfiguration.setEnableAllOpportunities(true);
+
+		try (MockedStatic<PermissionThreadLocal>
+				permissionThreadLocalMockedStatic = Mockito.mockStatic(
+					PermissionThreadLocal.class)) {
+
+			permissionThreadLocalMockedStatic.when(
+				PermissionThreadLocal::getPermissionChecker
+			).thenReturn(
+				Mockito.mock(PermissionChecker.class)
+			);
+
+			_dataSourceFaroController.patchTypeSalesforce(
+				32719L, "32720", new FaroParam<>(),
+				new FaroParam<>(campaignsConfiguration), new FaroParam<>(),
+				new FaroParam<>(), null, null,
+				new FaroParam<>(opportunitiesConfiguration), null, null);
+		}
+
+		ArgumentCaptor<Provider> providerArgumentCaptor =
+			ArgumentCaptor.forClass(Provider.class);
+
+		Mockito.verify(
+			_contactsEngineClient
+		).patchDataSource(
+			Mockito.eq(_faroProject), Mockito.eq("32720"), Mockito.isNull(),
+			Mockito.isNull(), Mockito.isNull(),
+			providerArgumentCaptor.capture(), Mockito.isNull(),
+			Mockito.isNull(), Mockito.anyLong()
+		);
+
+		SalesforceProvider salesforceProvider =
+			(SalesforceProvider)providerArgumentCaptor.getValue();
+
+		accountsConfiguration = salesforceProvider.getAccountsConfiguration();
+
+		Assert.assertTrue(accountsConfiguration.isEnableAllAccounts());
+
+		campaignsConfiguration = salesforceProvider.getCampaignsConfiguration();
+
+		Assert.assertTrue(campaignsConfiguration.isEnableAllCampaigns());
+
+		opportunitiesConfiguration =
+			salesforceProvider.getOpportunitiesConfiguration();
+
+		Assert.assertTrue(
+			opportunitiesConfiguration.isEnableAllOpportunities());
 	}
 
 	private Field _createField(String name, String sourceName, String value) {
