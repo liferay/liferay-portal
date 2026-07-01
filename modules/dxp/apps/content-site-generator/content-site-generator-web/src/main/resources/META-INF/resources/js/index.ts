@@ -6,3 +6,4 @@
 export {default as CSGGenerationLanguagesDataRenderer} from './CSGGenerationLanguagesDataRenderer';
 export {default as CSGGenerationStatusDataRenderer} from './CSGGenerationStatusDataRenderer';
 export {default as ContentSiteGenerator} from './ContentSiteGenerator';
+export {default as ContentSiteGeneratorWizard} from './ContentSiteGeneratorWizard';

@@ -9,10 +9,12 @@
 
 <%@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
+taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%@ page import="com.liferay.content.site.generator.web.internal.constants.ContentSiteGeneratorFDSNames" %><%@
-page import="com.liferay.content.site.generator.web.internal.display.context.ViewGenerationsDisplayContext" %>
+page import="com.liferay.content.site.generator.web.internal.display.context.ViewGenerationsDisplayContext" %><%@
+page import="com.liferay.portal.kernel.util.WebKeys" %>
 
 <liferay-frontend:defineObjects />
 

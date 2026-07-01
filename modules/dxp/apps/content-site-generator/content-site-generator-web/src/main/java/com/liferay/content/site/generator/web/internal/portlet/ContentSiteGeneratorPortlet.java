@@ -9,6 +9,7 @@ import com.liferay.content.site.generator.web.internal.constants.ContentSiteGene
 import com.liferay.content.site.generator.web.internal.display.context.ViewGenerationsDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
@@ -30,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-content-site-generator",
 		"com.liferay.portlet.display-category=category.hidden",
+		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.instanceable=false",
 		"com.liferay.portlet.system=true",
 		"jakarta.portlet.display-name=Content Site Generator",
@@ -51,7 +53,7 @@ public class ContentSiteGeneratorPortlet extends MVCPortlet {
 			renderRequest);
 
 		renderRequest.setAttribute(
-			ViewGenerationsDisplayContext.class.getName(),
+			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			new ViewGenerationsDisplayContext(
 				httpServletRequest,
 				_portal.getLiferayPortletResponse(renderResponse)));

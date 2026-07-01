@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewGenerationsDisplayContext viewGenerationsDisplayContext = (ViewGenerationsDisplayContext)request.getAttribute(ViewGenerationsDisplayContext.class.getName());
+ViewGenerationsDisplayContext viewGenerationsDisplayContext = (ViewGenerationsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
 <frontend-data-set:headless-display
