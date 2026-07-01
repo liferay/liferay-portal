@@ -7,6 +7,7 @@ package com.liferay.audiences.internal.criteria;
 
 import com.liferay.audiences.constants.AudiencesCriteriaKeys;
 import com.liferay.audiences.criteria.AudiencesCriteria;
+import com.liferay.audiences.criteria.AudiencesCriteriaBuilder;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.criteria.AudiencesCriteriaType;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
@@ -66,80 +67,175 @@ public class AudiencesCriteriaProviderImpl
 
 		return new AudiencesCriteriaType(
 			Arrays.asList(
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.BROWSER_NAME,
-					_language.get(locale, "browser-name"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.BROWSER_VERSION,
-					_language.get(locale, "browser-version"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"fieldset", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.COOKIES,
-					_language.get(locale, "cookies"),
-					AudiencesCriteria.Type.SET),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.DEVICE_TYPE,
-					_language.get(locale, "device-type"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.GEOLOCATION,
-					_language.get(locale, "geolocation"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.HOSTNAME,
-					_language.get(locale, "hostname"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.SELECT,
-					AudiencesCriteriaKeys.LANGUAGE,
-					_language.get(locale, "language"),
-					_getLanguageOptions(locale), AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"date", AudiencesCriteria.InputType.DATE,
-					AudiencesCriteriaKeys.LOCAL_DATE,
-					_language.get(locale, "local-date"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"time", AudiencesCriteria.InputType.SELECT,
-					AudiencesCriteriaKeys.LOCAL_HOUR,
-					_language.get(locale, "local-hour"), _getLocalHourOptions(),
-					AudiencesCriteria.Type.NUMBER),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.PATHNAME,
-					_language.get(locale, "pathname"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.REFERRER,
-					_language.get(locale, "referrer-url"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"fieldset", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.REQUEST_PARAMETERS,
-					_language.get(locale, "request-parameters"),
-					AudiencesCriteria.Type.SET),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.TIMEZONE,
-					_language.get(locale, "time-zone"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.URL, _language.get(locale, "url"),
-					AudiencesCriteria.Type.STRING),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.TEXT,
-					AudiencesCriteriaKeys.USER_AGENT,
-					_language.get(locale, "user-agent"),
-					AudiencesCriteria.Type.STRING)),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.BROWSER_NAME
+				).setLabel(
+					_language.get(locale, "browser-name")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.BROWSER_VERSION
+				).setLabel(
+					_language.get(locale, "browser-version")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"fieldset"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.COOKIES
+				).setLabel(
+					_language.get(locale, "cookies")
+				).setType(
+					AudiencesCriteria.Type.SET
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.DEVICE_TYPE
+				).setLabel(
+					_language.get(locale, "device-type")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.GEOLOCATION
+				).setLabel(
+					_language.get(locale, "geolocation")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.HOSTNAME
+				).setLabel(
+					_language.get(locale, "hostname")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.SELECT
+				).setKey(
+					AudiencesCriteriaKeys.LANGUAGE
+				).setLabel(
+					_language.get(locale, "language")
+				).setOptions(
+					_getLanguageOptions(locale)
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"date"
+				).setInputType(
+					AudiencesCriteria.InputType.DATE
+				).setKey(
+					AudiencesCriteriaKeys.LOCAL_DATE
+				).setLabel(
+					_language.get(locale, "local-date")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"time"
+				).setInputType(
+					AudiencesCriteria.InputType.SELECT
+				).setKey(
+					AudiencesCriteriaKeys.LOCAL_HOUR
+				).setLabel(
+					_language.get(locale, "local-hour")
+				).setOptions(
+					_getLocalHourOptions()
+				).setType(
+					AudiencesCriteria.Type.NUMBER
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.PATHNAME
+				).setLabel(
+					_language.get(locale, "pathname")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.REFERRER
+				).setLabel(
+					_language.get(locale, "referrer-url")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"fieldset"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.REQUEST_PARAMETERS
+				).setLabel(
+					_language.get(locale, "request-parameters")
+				).setType(
+					AudiencesCriteria.Type.SET
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.TIMEZONE
+				).setLabel(
+					_language.get(locale, "time-zone")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.URL
+				).setLabel(
+					_language.get(locale, "url")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.TEXT
+				).setKey(
+					AudiencesCriteriaKeys.USER_AGENT
+				).setLabel(
+					_language.get(locale, "user-agent")
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build()),
 			_language.get(locale, "browser-attributes"));
 	}
 
@@ -175,13 +271,20 @@ public class AudiencesCriteriaProviderImpl
 						types[i]);
 
 					audiencesCriterias.add(
-						new AudiencesCriteria(
-							"cog", _getInputType(type),
+						AudiencesCriteriaBuilder.setIcon(
+							"cog"
+						).setInputType(
+							_getInputType(type)
+						).setKey(
 							StringBundler.concat(
 								"custom:",
 								audiencesCustomAttributesCET.getURL(),
-								StringPool.POUND, symbols[i]),
-							names[i], type));
+								StringPool.POUND, symbols[i])
+						).setLabel(
+							names[i]
+						).setType(
+							type
+						).build());
 				}
 			}
 
@@ -202,17 +305,30 @@ public class AudiencesCriteriaProviderImpl
 
 		return new AudiencesCriteriaType(
 			Arrays.asList(
-				new AudiencesCriteria(
-					"check", AudiencesCriteria.InputType.BOOLEAN,
-					AudiencesCriteriaKeys.USER_AUTHENTICATION,
-					_language.get(locale, "user-authentication"),
-					AudiencesCriteria.Type.BOOLEAN),
-				new AudiencesCriteria(
-					"text", AudiencesCriteria.InputType.SELECT,
-					AudiencesCriteriaKeys.USER_LANGUAGE,
-					_language.get(locale, "user-language"),
-					_getLanguageOptions(locale),
-					AudiencesCriteria.Type.STRING)),
+				AudiencesCriteriaBuilder.setIcon(
+					"check"
+				).setInputType(
+					AudiencesCriteria.InputType.BOOLEAN
+				).setKey(
+					AudiencesCriteriaKeys.USER_AUTHENTICATION
+				).setLabel(
+					_language.get(locale, "user-authentication")
+				).setType(
+					AudiencesCriteria.Type.BOOLEAN
+				).build(),
+				AudiencesCriteriaBuilder.setIcon(
+					"text"
+				).setInputType(
+					AudiencesCriteria.InputType.SELECT
+				).setKey(
+					AudiencesCriteriaKeys.USER_LANGUAGE
+				).setLabel(
+					_language.get(locale, "user-language")
+				).setOptions(
+					_getLanguageOptions(locale)
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build()),
 			_language.get(locale, "general"));
 	}
 
