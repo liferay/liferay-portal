@@ -1016,7 +1016,7 @@ definition {
 			key_title = "Shipments",
 			locator1 = "Header#H2_TITLE");
 
-		for (var currentRow : list "1;Delivered,3;Test Carrier,4;Test Tracking Number") {
+		for (var currentRow : list "1;Delivered,5;Test Carrier,6;Test Tracking Number") {
 			var column = StringUtil.extractFirst(${currentRow}, ";");
 			var value = StringUtil.extractLast(${currentRow}, ";");
 
