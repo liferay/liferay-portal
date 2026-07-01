@@ -1,0 +1,162 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+.chart-pie {
+	display: block;
+	margin: 0;
+
+	.chart-pie-caption {
+		font-weight: 600;
+		margin-block-end: 0.5rem;
+		text-align: start;
+	}
+
+	.chart-pie-body {
+		position: relative;
+	}
+
+	.chart-pie-svg {
+		block-size: auto;
+		display: block;
+		inline-size: 100%;
+
+		path {
+			cursor: pointer;
+			outline: none;
+			transition: transform 150ms ease;
+
+			&:focus-visible {
+				stroke: var(--brand-color, #0b5fff);
+				stroke-width: 3;
+			}
+		}
+	}
+
+	.chart-pie-center-label {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		inset-block-start: 50%;
+		inset-inline-start: 50%;
+		pointer-events: none;
+		position: absolute;
+		transform: translate(-50%, -50%);
+	}
+
+	.chart-pie-center-label-title {
+		font-size: 0.875rem;
+	}
+
+	.chart-pie-center-label-percent {
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+
+	.chart-pie-center-label-value {
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	.chart-pie-legend {
+		list-style: none;
+		margin: 0.5rem 0 0;
+		padding: 0;
+	}
+
+	.chart-pie-legend-item {
+		align-items: center;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		display: flex;
+		gap: 0.5rem;
+		padding-block: 0.25rem;
+		padding-inline: 0.5rem;
+
+		&.is-active {
+			background: var(--primary);
+			color: var(--white);
+		}
+	}
+
+	.chart-pie-legend-label {
+		flex: 1;
+	}
+
+	.chart-pie-legend-percent {
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+	}
+
+	.chart-pie-legend-swatch {
+		block-size: 0.75rem;
+		border-radius: 0.125rem;
+		display: inline-block;
+		flex-shrink: 0;
+		inline-size: 0.75rem;
+	}
+}
+
+.chart-pie-slice {
+	&.is-hover {
+		filter: brightness(1.08);
+	}
+}
+
+.chart-pie-legend-table {
+	border-collapse: collapse;
+	inline-size: 100%;
+	margin-block-start: 0.75rem;
+
+	th,
+	td {
+		padding-block: 0.25rem;
+		padding-inline: 0.5rem;
+		text-align: start;
+	}
+
+	tbody tr {
+		cursor: pointer;
+
+		&.is-active {
+			background: var(--primary);
+			color: var(--white);
+		}
+	}
+
+	.chart-pie-legend-swatch {
+		block-size: 0.75rem;
+		border-radius: 0.125rem;
+		display: inline-block;
+		inline-size: 0.75rem;
+	}
+}
+
+.chart-pie-revealed {
+	.chart-pie-svg path {
+		animation: chart-pie-reveal 400ms ease both;
+	}
+}
+
+@keyframes chart-pie-reveal {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chart-pie-revealed .chart-pie-svg path {
+		animation: none;
+		transition: none;
+	}
+}
+
+body.c-prefers-reduced-motion .chart-pie-revealed .chart-pie-svg path {
+	animation: none;
+	transition: none;
+}

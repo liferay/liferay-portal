@@ -1,0 +1,65 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import React from 'react';
+
+import {PieDatum} from '../types/PieDatum';
+import {toPercent} from '../utils/percent';
+
+interface PieChartLegendListProps {
+	activeIndex: number | null;
+	colors: string[];
+	data: PieDatum[];
+	onFocus: (index: number) => void;
+	onHover: (index: number) => void;
+	onHoverEnd: () => void;
+	total: number;
+}
+
+export default function PieChartLegendList({
+	activeIndex,
+	colors,
+	data,
+	onFocus,
+	onHover,
+	onHoverEnd,
+	total,
+}: PieChartLegendListProps) {
+	return (
+		<ul aria-hidden="true" className="chart-pie-legend">
+			{data.map((datum, index) => {
+				const itemClassName = [
+					'chart-pie-legend-item',
+					activeIndex === index ? 'is-active' : '',
+				]
+					.filter(Boolean)
+					.join(' ');
+
+				return (
+					<li
+						className={itemClassName}
+						key={index}
+						onClick={() => onFocus(index)}
+						onMouseEnter={() => onHover(index)}
+						onMouseLeave={onHoverEnd}
+					>
+						<span
+							className="chart-pie-legend-swatch"
+							style={{background: colors[index]}}
+						/>
+
+						<span className="chart-pie-legend-label">
+							{datum.label}
+						</span>
+
+						<span className="chart-pie-legend-percent">
+							{toPercent(datum.value, total)}%
+						</span>
+					</li>
+				);
+			})}
+		</ul>
+	);
+}
