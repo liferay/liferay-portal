@@ -240,15 +240,15 @@ public class AuthorizeNetCommercePaymentMethod
 			Collections.emptyList(), false);
 	}
 
-	private void _addSetting(
-		List<SettingType> settings, String name, String value) {
+	private void _addSettingType(
+		List<SettingType> settingTypes, String name, String value) {
 
-		SettingType billingAddress = new SettingType();
+		SettingType settingType = new SettingType();
 
-		billingAddress.setSettingName(name);
-		billingAddress.setSettingValue(value);
+		settingType.setSettingName(name);
+		settingType.setSettingValue(value);
 
-		settings.add(billingAddress);
+		settingTypes.add(settingType);
 	}
 
 	private String _fixURL(String url) {
@@ -268,11 +268,7 @@ public class AuthorizeNetCommercePaymentMethod
 
 		ArrayOfSetting arrayOfSetting = new ArrayOfSetting();
 
-		List<SettingType> settings = arrayOfSetting.getSetting();
-
-		AuthorizeNetGroupServiceConfiguration
-			authorizeNetGroupServiceConfiguration =
-				_getAuthorizeNetGroupServiceConfiguration(groupId);
+		List<SettingType> settingTypes = arrayOfSetting.getSetting();
 
 		JSONObject hostedPaymentReturnOptionsJSONObject =
 			_jsonFactory.createJSONObject();
@@ -289,12 +285,16 @@ public class AuthorizeNetCommercePaymentMethod
 			"urlText", "Continue"
 		);
 
-		_addSetting(
-			settings, "hostedPaymentReturnOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentReturnOptions",
 			hostedPaymentReturnOptionsJSONObject.toString());
 
 		JSONObject hostedPaymentPaymentOptionsJSONObject =
 			_jsonFactory.createJSONObject();
+
+		AuthorizeNetGroupServiceConfiguration
+			authorizeNetGroupServiceConfiguration =
+				_getAuthorizeNetGroupServiceConfiguration(groupId);
 
 		hostedPaymentPaymentOptionsJSONObject.put(
 			"cardCodeRequired",
@@ -307,8 +307,8 @@ public class AuthorizeNetCommercePaymentMethod
 			authorizeNetGroupServiceConfiguration.showCreditCard()
 		);
 
-		_addSetting(
-			settings, "hostedPaymentPaymentOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentPaymentOptions",
 			hostedPaymentPaymentOptionsJSONObject.toString());
 
 		JSONObject hostedPaymentSecurityOptionsJSONObject =
@@ -317,8 +317,8 @@ public class AuthorizeNetCommercePaymentMethod
 		hostedPaymentSecurityOptionsJSONObject.put(
 			"captcha", authorizeNetGroupServiceConfiguration.requireCaptcha());
 
-		_addSetting(
-			settings, "hostedPaymentSecurityOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentSecurityOptions",
 			hostedPaymentSecurityOptionsJSONObject.toString());
 
 		JSONObject hostedPaymentShippingAddressOptionsJSONObject =
@@ -330,8 +330,8 @@ public class AuthorizeNetCommercePaymentMethod
 			"show", false
 		);
 
-		_addSetting(
-			settings, "hostedPaymentShippingAddressOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentShippingAddressOptions",
 			hostedPaymentShippingAddressOptionsJSONObject.toString());
 
 		JSONObject hostedPaymentBillingAddressOptionsJSONObject =
@@ -343,8 +343,8 @@ public class AuthorizeNetCommercePaymentMethod
 			"show", false
 		);
 
-		_addSetting(
-			settings, "hostedPaymentBillingAddressOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentBillingAddressOptions",
 			hostedPaymentBillingAddressOptionsJSONObject.toString());
 
 		JSONObject hostedPaymentCustomerOptionsJSJSONObject =
@@ -358,8 +358,8 @@ public class AuthorizeNetCommercePaymentMethod
 			"showEmail", false
 		);
 
-		_addSetting(
-			settings, "hostedPaymentCustomerOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentCustomerOptions",
 			hostedPaymentCustomerOptionsJSJSONObject.toString());
 
 		JSONObject hostedPaymentOrderOptionsJSONObject =
@@ -374,8 +374,8 @@ public class AuthorizeNetCommercePaymentMethod
 			"show", authorizeNetGroupServiceConfiguration.showStoreName()
 		);
 
-		_addSetting(
-			settings, "hostedPaymentOrderOptions",
+		_addSettingType(
+			settingTypes, "hostedPaymentOrderOptions",
 			hostedPaymentOrderOptionsJSONObject.toString());
 
 		return arrayOfSetting;
@@ -445,9 +445,6 @@ public class AuthorizeNetCommercePaymentMethod
 		TransactionRequestType transactionRequestType =
 			new TransactionRequestType();
 
-		transactionRequestType.setTransactionType(
-			TransactionTypeEnum.AUTH_CAPTURE_TRANSACTION.value());
-
 		BigDecimal amount = commerceOrder.getTotal();
 
 		CommerceCurrency commerceCurrency = commerceOrder.getCommerceCurrency();
@@ -471,6 +468,9 @@ public class AuthorizeNetCommercePaymentMethod
 			String.valueOf(commerceOrder.getCommerceOrderId()));
 
 		transactionRequestType.setOrder(orderType);
+
+		transactionRequestType.setTransactionType(
+			TransactionTypeEnum.AUTH_CAPTURE_TRANSACTION.value());
 
 		CommerceAddress billingCommerceAddress =
 			commerceOrder.getBillingAddress();
@@ -510,6 +510,15 @@ public class AuthorizeNetCommercePaymentMethod
 			NameAndAddressType nameAndAddressType)
 		throws Exception {
 
+		nameAndAddressType.setAddress(commerceAddress.getStreet1());
+		nameAndAddressType.setCity(commerceAddress.getCity());
+
+		Country country = commerceAddress.fetchCountry();
+
+		if (country != null) {
+			nameAndAddressType.setCountry(country.getA2());
+		}
+
 		String name = commerceAddress.getName();
 
 		if (Validator.isNotNull(name)) {
@@ -527,21 +536,13 @@ public class AuthorizeNetCommercePaymentMethod
 			}
 		}
 
-		nameAndAddressType.setAddress(commerceAddress.getStreet1());
-		nameAndAddressType.setCity(commerceAddress.getCity());
-		nameAndAddressType.setZip(commerceAddress.getZip());
-
-		Country country = commerceAddress.fetchCountry();
-
-		if (country != null) {
-			nameAndAddressType.setCountry(country.getA2());
-		}
-
 		Region region = commerceAddress.getRegion();
 
 		if (region != null) {
 			nameAndAddressType.setState(region.getRegionCode());
 		}
+
+		nameAndAddressType.setZip(commerceAddress.getZip());
 	}
 
 	@Reference
