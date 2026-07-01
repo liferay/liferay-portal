@@ -8,6 +8,7 @@ package com.liferay.account.validator;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -72,7 +73,7 @@ public final class AccountEntryValidatorResult implements Serializable {
 		}
 
 		public AccountEntryValidatorResult build() {
-			if ((_resultMessage == null) &&
+			if (Validator.isNull(_resultMessage) &&
 				Objects.equals(
 					_resultStatus,
 					AccountEntryValidatorConstants.RESULT_FAILURE)) {

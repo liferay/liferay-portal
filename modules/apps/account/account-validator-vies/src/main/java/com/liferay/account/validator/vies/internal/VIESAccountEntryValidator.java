@@ -119,7 +119,7 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 			return AccountEntryValidatorResult.builder(
 				classPK
 			).resultMessage(
-				"the-account-is-missing-a-vat-code"
+				"the-account-is-missing-a-vat-number"
 			).resultStatus(
 				AccountEntryValidatorConstants.RESULT_FAILURE
 			).build();
@@ -214,31 +214,30 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 		return viesAccountEntryValidatorConfiguration;
 	}
 
-	private static final Map<String, String> _resultMessages =
-		HashMapBuilder.put(
-			"GLOBAL_MAX_CONCURRENT_REQ", "vies-unexpected-error"
-		).put(
-			"INVALID_INPUT", "vies-invalid-input-error"
-		).put(
-			"IO_ERROR", "vies-unexpected-error"
-		).put(
-			"IP_BLOCKED", "vies-unexpected-error"
-		).put(
-			"MS_MAX_CONCURRENT_REQ", "vies-unexpected-error"
-		).put(
-			"MS_UNAVAILABLE", "vies-unexpected-error"
-		).put(
-			"TECHNICAL_ERROR", "vies-unexpected-error"
-		).put(
-			"TIMEOUT", "vies-unexpected-error"
-		).put(
-			"VAT_BLOCKED", "vies-vat-blocked-error"
-		).build();
-
 	@Reference
 	private AddressLocalService _addressLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	private final Map<String, String> _resultMessages = HashMapBuilder.put(
+		"GLOBAL_MAX_CONCURRENT_REQ", "vies-unexpected-error"
+	).put(
+		"INVALID_INPUT", "vies-invalid-input-error"
+	).put(
+		"IO_ERROR", "vies-unexpected-error"
+	).put(
+		"IP_BLOCKED", "vies-unexpected-error"
+	).put(
+		"MS_MAX_CONCURRENT_REQ", "vies-unexpected-error"
+	).put(
+		"MS_UNAVAILABLE", "vies-unexpected-error"
+	).put(
+		"TECHNICAL_ERROR", "vies-unexpected-error"
+	).put(
+		"TIMEOUT", "vies-unexpected-error"
+	).put(
+		"VAT_BLOCKED", "vies-vat-blocked-error"
+	).build();
 
 }

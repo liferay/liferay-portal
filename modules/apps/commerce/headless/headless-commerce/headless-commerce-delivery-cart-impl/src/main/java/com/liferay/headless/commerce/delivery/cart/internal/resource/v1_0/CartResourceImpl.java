@@ -846,13 +846,12 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 				cart.setValid(() -> false);
 
-				String resultMessage =
-					accountEntryValidatorResult.getResultMessage();
+				if (Validator.isNotNull(
+						accountEntryValidatorResult.getResultMessage())) {
 
-				if (Validator.isNotNull(resultMessage)) {
 					String errorMessage = _language.get(
 						contextAcceptLanguage.getPreferredLocale(),
-						resultMessage);
+						accountEntryValidatorResult.getResultMessage());
 
 					cart.setErrorMessages(() -> new String[] {errorMessage});
 				}
