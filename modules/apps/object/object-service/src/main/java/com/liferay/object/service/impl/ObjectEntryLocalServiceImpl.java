@@ -176,12 +176,10 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -723,18 +721,27 @@ public class ObjectEntryLocalServiceImpl
 
 		Date date = new Date();
 
-		Date previousCheckDate = _companyIdPreviousCheckDate.computeIfAbsent(
-			companyId,
-			key -> new Date(
-				date.getTime() - _getObjectEntryCheckInterval(companyId)));
+		ObjectEntryScheduleConfiguration objectEntryScheduleConfiguration =
+			configurationProvider.getCompanyConfiguration(
+				ObjectEntryScheduleConfiguration.class, companyId);
 
-		_checkObjectEntriesByDisplayDate(companyId, date);
+		long checkInterval =
+			objectEntryScheduleConfiguration.checkInterval() * Time.MINUTE;
 
-		_checkObjectEntriesByExpirationDate(companyId, date);
+		int checkBatchSize = objectEntryScheduleConfiguration.checkBatchSize();
 
-		_checkObjectEntriesByReviewDate(companyId, date, previousCheckDate);
+		_checkObjectEntriesByDisplayDate(companyId, date, checkBatchSize);
 
-		_companyIdPreviousCheckDate.put(companyId, date);
+		_checkObjectEntriesByExpirationDate(companyId, date, checkBatchSize);
+
+		ReviewCheckpoint reviewCheckpoint =
+			_companyIdReviewCheckpoint.computeIfAbsent(
+				companyId,
+				key -> new ReviewCheckpoint(
+					new Date(date.getTime() - checkInterval), 0));
+
+		_checkObjectEntriesByReviewDate(
+			companyId, date, checkBatchSize, reviewCheckpoint);
 	}
 
 	@Override
@@ -3204,157 +3211,189 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	private void _checkObjectEntriesByDisplayDate(long companyId, Date date)
-		throws PortalException {
+	private void _checkObjectEntriesByDisplayDate(
+		long companyId, Date date, int checkBatchSize) {
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
+		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				ObjectEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					ObjectEntryTable.INSTANCE.displayDate.lte(date)
+				).and(
+					Predicate.withParentheses(
+						ObjectEntryTable.INSTANCE.expirationDate.isNull(
+						).or(
+							ObjectEntryTable.INSTANCE.expirationDate.gt(date)
+						))
+				).and(
+					ObjectEntryTable.INSTANCE.status.eq(
+						WorkflowConstants.STATUS_SCHEDULED)
+				)
+			).limit(
+				0, checkBatchSize
+			),
+			false);
 
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.le("displayDate", date));
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.or(
-						RestrictionsFactoryUtil.isNull("expirationDate"),
-						RestrictionsFactoryUtil.gt("expirationDate", date)));
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.eq(
-						"status", WorkflowConstants.STATUS_SCHEDULED));
-			});
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			(ObjectEntry objectEntry) -> {
-				try {
-					updateStatus(
-						objectEntry.getUserId(), objectEntry,
-						WorkflowConstants.STATUS_APPROVED,
-						new ServiceContext());
+		for (ObjectEntry objectEntry : objectEntries) {
+			try {
+				updateStatus(
+					objectEntry.getUserId(), objectEntry,
+					WorkflowConstants.STATUS_APPROVED, new ServiceContext());
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to publish object entry " +
+							objectEntry.getObjectEntryId(),
+						exception);
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to publish object entry " +
-								objectEntry.getObjectEntryId(),
-							portalException);
-					}
-				}
-			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
-
-		actionableDynamicQuery.performActions();
+			}
+		}
 	}
 
-	private void _checkObjectEntriesByExpirationDate(long companyId, Date date)
-		throws PortalException {
+	private void _checkObjectEntriesByExpirationDate(
+		long companyId, Date date, int checkBatchSize) {
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
+		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				ObjectEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					ObjectEntryTable.INSTANCE.expirationDate.lte(date)
+				).and(
+					ObjectEntryTable.INSTANCE.status.notIn(
+						new Integer[] {
+							WorkflowConstants.STATUS_DRAFT,
+							WorkflowConstants.STATUS_EXPIRED,
+							WorkflowConstants.STATUS_IN_TRASH,
+							WorkflowConstants.STATUS_PENDING
+						})
+				)
+			).limit(
+				0, checkBatchSize
+			),
+			false);
 
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.le("expirationDate", date));
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.not(
-						RestrictionsFactoryUtil.in(
-							"status",
-							new Integer[] {
-								WorkflowConstants.STATUS_DRAFT,
-								WorkflowConstants.STATUS_EXPIRED,
-								WorkflowConstants.STATUS_IN_TRASH,
-								WorkflowConstants.STATUS_PENDING
-							})));
-			});
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			(ObjectEntry objectEntry) -> {
-				try {
-					expireObjectEntry(
-						objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-						new ServiceContext());
+		for (ObjectEntry objectEntry : objectEntries) {
+			try {
+				expireObjectEntry(
+					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+					new ServiceContext());
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to expire object entry " +
+							objectEntry.getObjectEntryId(),
+						exception);
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to expire object entry " +
-								objectEntry.getObjectEntryId(),
-							portalException);
-					}
-				}
-			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
-
-		actionableDynamicQuery.performActions();
+			}
+		}
 	}
 
 	private void _checkObjectEntriesByReviewDate(
-			long companyId, Date date, Date previousCheckDate)
-		throws PortalException {
+		long companyId, Date date, int checkBatchSize,
+		ReviewCheckpoint reviewCheckpoint) {
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
+		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				ObjectEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					ObjectEntryTable.INSTANCE.reviewDate.lte(date)
+				).and(
+					Predicate.withParentheses(
+						ObjectEntryTable.INSTANCE.reviewDate.gt(
+							reviewCheckpoint._reviewDate
+						).or(
+							Predicate.withParentheses(
+								ObjectEntryTable.INSTANCE.reviewDate.eq(
+									reviewCheckpoint._reviewDate
+								).and(
+									ObjectEntryTable.INSTANCE.objectEntryId.gt(
+										reviewCheckpoint._objectEntryId)
+								))
+						))
+				)
+			).orderBy(
+				ObjectEntryTable.INSTANCE.reviewDate.ascending(),
+				ObjectEntryTable.INSTANCE.objectEntryId.ascending()
+			).limit(
+				0, checkBatchSize
+			),
+			false);
 
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.ge(
-						"reviewDate", previousCheckDate));
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.le("reviewDate", date));
-			});
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			(ObjectEntry objectEntry) -> {
-				try {
-					JSONObject payloadJSONObject = JSONUtil.put(
-						"classPK", objectEntry.getObjectEntryId()
-					).put(
-						"notificationMessageArg", objectEntry.getTitleValue()
-					).put(
-						"notificationMessageKey",
-						"x-has-reached-its-review-date"
-					);
+		if (objectEntries.isEmpty()) {
+			return;
+		}
 
-					for (ObjectEntryReviewNotificationContributor
-							objectEntryReviewNotificationContributor :
-								_objectEntryReviewNotificationContributors) {
+		for (ObjectEntry objectEntry : objectEntries) {
+			try {
+				JSONObject payloadJSONObject = JSONUtil.put(
+					"classPK", objectEntry.getObjectEntryId()
+				).put(
+					"notificationMessageArg", objectEntry.getTitleValue()
+				).put(
+					"notificationMessageKey", "x-has-reached-its-review-date"
+				);
 
-						if (objectEntryReviewNotificationContributor.
-								isApplicable(objectEntry)) {
+				for (ObjectEntryReviewNotificationContributor
+						objectEntryReviewNotificationContributor :
+							_objectEntryReviewNotificationContributors) {
 
-							objectEntryReviewNotificationContributor.contribute(
-								objectEntry, payloadJSONObject);
-						}
+					if (objectEntryReviewNotificationContributor.isApplicable(
+							objectEntry)) {
+
+						objectEntryReviewNotificationContributor.contribute(
+							objectEntry, payloadJSONObject);
 					}
-
-					ObjectDefinition objectDefinition =
-						_objectDefinitionPersistence.fetchByPrimaryKey(
-							objectEntry.getObjectDefinitionId());
-
-					_userNotificationEventLocalService.
-						sendUserNotificationEvents(
-							objectEntry.getUserId(),
-							objectDefinition.getPortletId(),
-							UserNotificationDeliveryConstants.TYPE_WEBSITE,
-							false, payloadJSONObject);
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to send user notification events for " +
-								"object entry " +
-									objectEntry.getObjectEntryId(),
-							portalException);
-					}
+
+				ObjectDefinition objectDefinition =
+					_objectDefinitionPersistence.fetchByPrimaryKey(
+						objectEntry.getObjectDefinitionId());
+
+				_userNotificationEventLocalService.sendUserNotificationEvents(
+					objectEntry.getUserId(), objectDefinition.getPortletId(),
+					UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
+					payloadJSONObject);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to send user notification events for object " +
+							"entry " + objectEntry.getObjectEntryId(),
+						exception);
 				}
+			}
+		}
+
+		ObjectEntry lastObjectEntry = objectEntries.get(
+			objectEntries.size() - 1);
+
+		ReviewCheckpoint nextReviewCheckpoint = new ReviewCheckpoint(
+			lastObjectEntry.getReviewDate(),
+			lastObjectEntry.getObjectEntryId());
+
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> {
+				_companyIdReviewCheckpoint.put(companyId, nextReviewCheckpoint);
+
+				return null;
 			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
-
-		actionableDynamicQuery.performActions();
 	}
 
 	private void _contributeValues(
@@ -4863,20 +4902,6 @@ public class ObjectEntryLocalServiceImpl
 					dynamicObjectDefinitionTable, groupIds)
 			)
 		);
-	}
-
-	private long _getObjectEntryCheckInterval(long companyId) {
-		try {
-			ObjectEntryScheduleConfiguration objectEntryScheduleConfiguration =
-				configurationProvider.getCompanyConfiguration(
-					ObjectEntryScheduleConfiguration.class, companyId);
-
-			return objectEntryScheduleConfiguration.checkInterval() *
-				Time.MINUTE;
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
 	}
 
 	private Predicate _getObjectFieldPredicate(
@@ -8588,7 +8613,7 @@ public class ObjectEntryLocalServiceImpl
 	@Reference
 	private CommentManager _commentManager;
 
-	private final Map<Long, Date> _companyIdPreviousCheckDate =
+	private final Map<Long, ReviewCheckpoint> _companyIdReviewCheckpoint =
 		new ConcurrentHashMap<>();
 
 	@Reference
@@ -8757,5 +8782,17 @@ public class ObjectEntryLocalServiceImpl
 
 	@Reference
 	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
+
+	private static class ReviewCheckpoint {
+
+		private ReviewCheckpoint(Date reviewDate, long objectEntryId) {
+			_reviewDate = reviewDate;
+			_objectEntryId = objectEntryId;
+		}
+
+		private final long _objectEntryId;
+		private final Date _reviewDate;
+
+	}
 
 }
