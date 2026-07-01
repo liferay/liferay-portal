@@ -132,8 +132,8 @@ export class WorkflowTasksPage {
 		await waitForAlert(this.page);
 	}
 
-	async resubmit(articleTitle: string) {
-		await this.goto();
+	async resubmit(articleTitle: string, siteUrl?: Site['friendlyUrlPath']) {
+		await this.goto(siteUrl);
 
 		await this.page.reload();
 

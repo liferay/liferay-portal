@@ -23,6 +23,7 @@ export class WebContentTranslationPage {
 	readonly journalPage: JournalPage;
 	readonly publishButton: Locator;
 	readonly saveAsDraftButton: Locator;
+	readonly submitForWorkflowButton: Locator;
 	readonly targetLocaleToggle: Locator;
 	readonly titleInput: Locator;
 
@@ -45,6 +46,9 @@ export class WebContentTranslationPage {
 		this.publishButton = page.getByRole('button', {name: 'Publish'});
 		this.saveAsDraftButton = page.getByRole('button', {
 			name: 'Save as Draft',
+		});
+		this.submitForWorkflowButton = page.getByRole('button', {
+			name: 'Submit for Workflow',
 		});
 		this.targetLocaleToggle = page
 			.locator('button.dropdown-toggle')
@@ -131,6 +135,12 @@ export class WebContentTranslationPage {
 
 	async saveAsDraft() {
 		await this.saveAsDraftButton.click();
+
+		await waitForAlert(this.page);
+	}
+
+	async submitForWorkflow() {
+		await this.submitForWorkflowButton.click();
 
 		await waitForAlert(this.page);
 	}
