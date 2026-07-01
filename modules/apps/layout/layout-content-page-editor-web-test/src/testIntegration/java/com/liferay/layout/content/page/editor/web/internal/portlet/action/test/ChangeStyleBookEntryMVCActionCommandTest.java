@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -81,15 +80,6 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		_processAction(
 			depotStyleBookEntry.getExternalReferenceCode(),
 			depotGroup.getExternalReferenceCode());
-
-		Layout updatedLayout = _layoutLocalService.getLayout(_layout.getPlid());
-
-		Assert.assertEquals(
-			depotGroup.getExternalReferenceCode(),
-			updatedLayout.getStyleBookEntryScopeERC());
-		Assert.assertEquals(
-			depotStyleBookEntry.getExternalReferenceCode(),
-			updatedLayout.getStyleBookEntryERC());
 	}
 
 	@Test
@@ -101,14 +91,6 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 			_group.getGroupId());
 
 		_processAction(siteStyleBookEntry.getExternalReferenceCode(), "");
-
-		Layout updatedLayout = _layoutLocalService.getLayout(_layout.getPlid());
-
-		Assert.assertEquals(
-			siteStyleBookEntry.getExternalReferenceCode(),
-			updatedLayout.getStyleBookEntryERC());
-		Assert.assertTrue(
-			Validator.isNull(updatedLayout.getStyleBookEntryScopeERC()));
 	}
 
 	@Test
@@ -154,6 +136,13 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		_mvcActionCommand.processAction(
 			mockLiferayPortletActionRequest,
 			new MockLiferayPortletActionResponse());
+
+		Layout updatedLayout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertEquals(
+			styleBookEntryERC, updatedLayout.getStyleBookEntryERC());
+		Assert.assertEquals(
+			styleBookEntryScopeERC, updatedLayout.getStyleBookEntryScopeERC());
 	}
 
 	private Company _company;
