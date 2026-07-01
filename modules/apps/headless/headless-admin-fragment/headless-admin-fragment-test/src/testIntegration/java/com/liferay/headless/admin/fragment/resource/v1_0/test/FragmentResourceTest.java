@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -162,6 +163,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
 
@@ -170,6 +172,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testDeleteSiteFragment() throws Exception {
 		super.testDeleteSiteFragment();
 
@@ -182,6 +185,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testGetSiteFragment() throws Exception {
 		super.testGetSiteFragment();
 
@@ -212,6 +216,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testPostSiteFragment() throws Exception {
 		super.testPostSiteFragment();
 
@@ -243,6 +248,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testPostSiteFragmentSetFragment() throws Exception {
 		super.testPostSiteFragmentSetFragment();
 
@@ -261,6 +267,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-95281")
 	public void testPutSiteFragment() throws Exception {
 		_testPutSiteFragmentBatch();
 		_testPutSiteFragmentCreateApproved();
