@@ -91,21 +91,21 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 								<div class="align-items-center d-flex">
 									<p class="mb-0" data-qa-id="commerceOrderAccountEntryName"><%= HtmlUtil.escape(accountEntry.getName()) %></p>
 
-									<c:if test="<%= commerceOrderEditDisplayContext.showValidationButton() %>">
+									<c:if test="<%= commerceOrderEditDisplayContext.isValidationButtonVisible() %>">
 
 										<%
-										String validationButtonStatus = commerceOrderEditDisplayContext.getValidationButtonStatus();
+										String validationButtonClass = commerceOrderEditDisplayContext.getValidationButtonClass();
 
 										String validationButtonIcon = "check-circle-full";
 										String validationButtonLabel = "all-account-validations-have-succeeded";
 										String validationButtonTextClass = "text-success";
 
-										if (validationButtonStatus.equals("failure")) {
+										if (validationButtonClass.equals("failure")) {
 											validationButtonIcon = "warning-full";
 											validationButtonLabel = "one-or-more-validations-have-failed-for-this-account";
 											validationButtonTextClass = "text-warning";
 										}
-										else if (validationButtonStatus.equals("pending")) {
+										else if (validationButtonClass.equals("pending")) {
 											validationButtonIcon = "time";
 											validationButtonLabel = "one-or-more-account-validations-are-pending";
 											validationButtonTextClass = "text-secondary";
@@ -124,7 +124,7 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 										<liferay-frontend:component
 											context='<%=
 												HashMapBuilder.<String, Object>put(
-													"title", LanguageUtil.get(request, "account-validation-results-history")
+													"title", LanguageUtil.get(request, "account-validation-results")
 												).put(
 													"url", viewAccountValidationsURL
 												).put(

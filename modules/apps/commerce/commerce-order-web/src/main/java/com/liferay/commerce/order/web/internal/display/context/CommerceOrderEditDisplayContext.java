@@ -684,7 +684,7 @@ public class CommerceOrderEditDisplayContext {
 		).buildPortletURL();
 	}
 
-	public String getValidationButtonStatus() throws PortalException {
+	public String getValidationButtonClass() throws PortalException {
 		if (_commerceOrder == null) {
 			return "success";
 		}
@@ -713,10 +713,10 @@ public class CommerceOrderEditDisplayContext {
 			String resultStatus = accountEntryValidatorResult.getResultStatus();
 
 			if (!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_SUCCESS,
+					AccountEntryValidatorConstants.RESULT_MANUAL,
 					resultStatus) &&
 				!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_MANUAL,
+					AccountEntryValidatorConstants.RESULT_SUCCESS,
 					resultStatus)) {
 
 				return "failure";
@@ -786,7 +786,7 @@ public class CommerceOrderEditDisplayContext {
 			themeDisplay.getPermissionChecker(), commerceOrder, actionId);
 	}
 
-	public boolean showValidationButton() throws PortalException {
+	public boolean isValidationButtonVisible() throws PortalException {
 		if (_commerceOrder == null) {
 			return false;
 		}
@@ -811,22 +811,22 @@ public class CommerceOrderEditDisplayContext {
 			_getAccountEntryValidatorResultsMap(AccountEntry accountEntry)
 		throws PortalException {
 
-		if (_accountEntryValidatorResultsMap == null) {
-			_accountEntryValidatorResultsMap =
-				_accountEntryValidatorRegistry.
-					getLastAccountEntryValidatorResultsMap(
-						accountEntry,
-						JSONUtil.put(
-							"billingAddressId",
-							_commerceOrder.getBillingAddressId()
-						).put(
-							"commerceOrderId",
-							_commerceOrder.getCommerceOrderId()
-						).put(
-							"shippingAddressId",
-							_commerceOrder.getShippingAddressId()
-						));
+		if (_accountEntryValidatorResultsMap != null) {
+			return _accountEntryValidatorResultsMap;
 		}
+
+		_accountEntryValidatorResultsMap =
+			_accountEntryValidatorRegistry.
+				getLastAccountEntryValidatorResultsMap(
+					accountEntry,
+					JSONUtil.put(
+						"billingAddressId", _commerceOrder.getBillingAddressId()
+					).put(
+						"commerceOrderId", _commerceOrder.getCommerceOrderId()
+					).put(
+						"shippingAddressId",
+						_commerceOrder.getShippingAddressId()
+					));
 
 		return _accountEntryValidatorResultsMap;
 	}

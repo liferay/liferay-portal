@@ -94,13 +94,14 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 			return;
 		}
 
-		String validationMessage = HtmlUtil.escape(
-			ParamUtil.getString(actionRequest, "validationMessage"));
-
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		String validationMessage = HtmlUtil.escape(
+			ParamUtil.getString(actionRequest, "validationMessage"));
 
 		for (AccountEntryValidator accountEntryValidator :
 				_accountEntryValidatorRegistry.getAccountEntryValidators()) {
@@ -154,10 +155,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 
 			if ((accountEntryValidatorResult == null) ||
 				(!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_SUCCESS,
+					AccountEntryValidatorConstants.RESULT_MANUAL,
 					accountEntryValidatorResult.getResultStatus()) &&
 				 !Objects.equals(
-					 AccountEntryValidatorConstants.RESULT_MANUAL,
+					 AccountEntryValidatorConstants.RESULT_SUCCESS,
 					 accountEntryValidatorResult.getResultStatus()))) {
 
 				return false;

@@ -66,6 +66,10 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 
 			AccountEntry accountEntry = commerceOrder.getAccountEntry();
 
+			if (accountEntry == null) {
+				return "/error.jsp";
+			}
+
 			List<String> validatorClauses = new ArrayList<>();
 
 			JSONObject jsonObject = JSONUtil.put(
@@ -76,44 +80,42 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 				"shippingAddressId", commerceOrder.getShippingAddressId()
 			);
 
-			if (accountEntry != null) {
-				for (AccountEntryValidator accountEntryValidator :
-						_accountEntryValidatorRegistry.
-							getAccountEntryValidators()) {
+			for (AccountEntryValidator accountEntryValidator :
+					_accountEntryValidatorRegistry.
+						getAccountEntryValidators()) {
 
-					AccountEntryValidatorConfiguration
-						accountEntryValidatorConfiguration =
-							accountEntryValidator.
-								getAccountEntryValidatorConfiguration(
-									accountEntry.getCompanyId());
+				AccountEntryValidatorConfiguration
+					accountEntryValidatorConfiguration =
+						accountEntryValidator.
+							getAccountEntryValidatorConfiguration(
+								accountEntry.getCompanyId());
 
-					if (!accountEntryValidatorConfiguration.enabled()) {
-						continue;
-					}
-
-					Class<? extends AccountEntryValidator>
-						accountEntryValidatorClass =
-							accountEntryValidator.getClass();
-
-					validatorClauses.add(
-						StringBundler.concat(
-							"((className eq '",
-							accountEntryValidatorClass.getName(),
-							"') and (classPK eq '",
-							accountEntryValidator.getClassPK(
-								accountEntry, jsonObject),
-							"'))"));
+				if (!accountEntryValidatorConfiguration.enabled()) {
+					continue;
 				}
+
+				Class<? extends AccountEntryValidator>
+					accountEntryValidatorClass =
+						accountEntryValidator.getClass();
+
+				validatorClauses.add(
+					StringBundler.concat(
+						"((className eq '",
+						accountEntryValidatorClass.getName(),
+						"') and (classPK eq '",
+						accountEntryValidator.getClassPK(
+							accountEntry, jsonObject),
+						"'))"));
 			}
 
-			String filterString = "(className eq '')";
-
-			if (!validatorClauses.isEmpty()) {
-				filterString = StringBundler.concat(
-					"(", StringUtil.merge(validatorClauses, " or "), ") and ",
-					"(r_accountToAccountValidatorResults_accountEntryId eq '",
-					accountEntry.getAccountEntryId(), "')");
+			if (validatorClauses.isEmpty()) {
+				return "/error.jsp";
 			}
+
+			String filterString = StringBundler.concat(
+				"(", StringUtil.merge(validatorClauses, " or "), ") and ",
+				"(r_accountToAccountValidatorResults_accountEntryId eq '",
+				accountEntry.getAccountEntryId(), "')");
 
 			renderRequest.setAttribute(
 				"accountValidationsURL",
@@ -131,28 +133,26 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 
 			boolean showValidationForm = false;
 
-			if (accountEntry != null) {
-				Map<String, AccountEntryValidatorResult>
-					accountEntryValidatorResultMap =
-						_accountEntryValidatorRegistry.
-							getLastAccountEntryValidatorResultsMap(
-								accountEntry, jsonObject);
+			Map<String, AccountEntryValidatorResult>
+				accountEntryValidatorResultMap =
+					_accountEntryValidatorRegistry.
+						getLastAccountEntryValidatorResultsMap(
+							accountEntry, jsonObject);
 
-				for (AccountEntryValidatorResult accountEntryValidatorResult :
-						accountEntryValidatorResultMap.values()) {
+			for (AccountEntryValidatorResult accountEntryValidatorResult :
+					accountEntryValidatorResultMap.values()) {
 
-					if ((accountEntryValidatorResult == null) ||
-						(!Objects.equals(
-							AccountEntryValidatorConstants.RESULT_SUCCESS,
-							accountEntryValidatorResult.getResultStatus()) &&
-						 !Objects.equals(
-							 AccountEntryValidatorConstants.RESULT_MANUAL,
-							 accountEntryValidatorResult.getResultStatus()))) {
+				if ((accountEntryValidatorResult == null) ||
+					(!Objects.equals(
+						AccountEntryValidatorConstants.RESULT_MANUAL,
+						accountEntryValidatorResult.getResultStatus()) &&
+					 !Objects.equals(
+						 AccountEntryValidatorConstants.RESULT_SUCCESS,
+						 accountEntryValidatorResult.getResultStatus()))) {
 
-						showValidationForm = true;
+					showValidationForm = true;
 
-						break;
-					}
+					break;
 				}
 			}
 
