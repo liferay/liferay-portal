@@ -2536,4 +2536,4 @@ public class ERCCompanyEntryPersistenceImpl
 		new String[] {"uuid"});
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1123869233
+// LIFERAY-SERVICE-BUILDER-HASH:-1487798927

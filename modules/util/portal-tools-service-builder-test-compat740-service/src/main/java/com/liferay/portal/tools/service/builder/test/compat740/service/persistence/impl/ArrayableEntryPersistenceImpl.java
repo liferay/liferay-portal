@@ -5,7 +5,6 @@
 
 package com.liferay.portal.tools.service.builder.test.compat740.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
@@ -117,23 +116,9 @@ public class ArrayableEntryPersistenceImpl
 			long groupId, OrderByComparator<ArrayableEntry> orderByComparator)
 		throws NoSuchArrayableEntryException {
 
-		ArrayableEntry arrayableEntry = fetchByGroupId_First(
-			groupId, orderByComparator);
-
-		if (arrayableEntry != null) {
-			return arrayableEntry;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append("}");
-
-		throw new NoSuchArrayableEntryException(sb.toString());
+		return _collectionPersistenceFinderByGroupId.findFirst(
+			finderCache, new Object[] {new long[] {groupId}},
+			orderByComparator);
 	}
 
 	/**
@@ -478,9 +463,6 @@ public class ArrayableEntryPersistenceImpl
 	private static final String _SQL_COUNT_ARRAYABLEENTRY_WHERE =
 		"SELECT COUNT(arrayableEntry) FROM ArrayableEntry arrayableEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ArrayableEntry exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"integer", "type"});
 
@@ -490,4 +472,4 @@ public class ArrayableEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1288095205
+// LIFERAY-SERVICE-BUILDER-HASH:2142806340

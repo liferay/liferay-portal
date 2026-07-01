@@ -680,4 +680,4 @@ public class TrashEntryPersistenceImpl
 		TrashEntryPersistenceImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:881236802
+// LIFERAY-SERVICE-BUILDER-HASH:1980572098

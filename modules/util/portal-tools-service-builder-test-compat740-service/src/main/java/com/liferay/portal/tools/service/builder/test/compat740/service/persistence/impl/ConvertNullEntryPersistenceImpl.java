@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
@@ -355,16 +353,10 @@ public class ConvertNullEntryPersistenceImpl
 	private static final String _SQL_SELECT_CONVERTNULLENTRY_WHERE =
 		"SELECT convertNullEntry FROM ConvertNullEntry convertNullEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ConvertNullEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ConvertNullEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return dummyFinderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-538455801
+// LIFERAY-SERVICE-BUILDER-HASH:171278252

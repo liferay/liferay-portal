@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
@@ -359,16 +357,10 @@ public class CacheDisabledEntryPersistenceImpl
 	private static final String _SQL_SELECT_CACHEDISABLEDENTRY_WHERE =
 		"SELECT cacheDisabledEntry FROM CacheDisabledEntry cacheDisabledEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CacheDisabledEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CacheDisabledEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return dummyFinderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2094945149
+// LIFERAY-SERVICE-BUILDER-HASH:1836619830

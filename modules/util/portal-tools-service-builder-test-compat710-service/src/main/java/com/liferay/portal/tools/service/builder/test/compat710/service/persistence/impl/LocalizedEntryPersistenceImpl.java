@@ -804,4 +804,4 @@ public class LocalizedEntryPersistenceImpl
 		LocalizedEntryPersistenceImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:850475950
+// LIFERAY-SERVICE-BUILDER-HASH:-939677202

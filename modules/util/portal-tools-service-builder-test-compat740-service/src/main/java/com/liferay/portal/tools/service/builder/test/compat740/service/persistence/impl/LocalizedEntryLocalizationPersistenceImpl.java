@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -525,16 +523,10 @@ public class LocalizedEntryLocalizationPersistenceImpl
 	private static final String _SQL_COUNT_LOCALIZEDENTRYLOCALIZATION_WHERE =
 		"SELECT COUNT(localizedEntryLocalization) FROM LocalizedEntryLocalization localizedEntryLocalization WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LocalizedEntryLocalization exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LocalizedEntryLocalizationPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:121910852
+// LIFERAY-SERVICE-BUILDER-HASH:139627070

@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -720,12 +718,6 @@ public class ERCCompanyEntryPersistenceImpl
 	private static final String _SQL_COUNT_ERCCOMPANYENTRY_WHERE =
 		"SELECT COUNT(ercCompanyEntry) FROM ERCCompanyEntry ercCompanyEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ERCCompanyEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ERCCompanyEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -735,4 +727,4 @@ public class ERCCompanyEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1761861915
+// LIFERAY-SERVICE-BUILDER-HASH:1845037457

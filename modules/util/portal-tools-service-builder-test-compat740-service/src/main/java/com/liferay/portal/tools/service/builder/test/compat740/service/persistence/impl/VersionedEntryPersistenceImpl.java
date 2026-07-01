@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -608,16 +606,10 @@ public class VersionedEntryPersistenceImpl
 	private static final String _SQL_COUNT_VERSIONEDENTRY_WHERE =
 		"SELECT COUNT(versionedEntry) FROM VersionedEntry versionedEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No VersionedEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		VersionedEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-708848786
+// LIFERAY-SERVICE-BUILDER-HASH:-1545611030

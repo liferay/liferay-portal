@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -509,12 +507,6 @@ public class EagerBlobEntryPersistenceImpl
 	private static final String _SQL_COUNT_EAGERBLOBENTRY_WHERE =
 		"SELECT COUNT(eagerBlobEntry) FROM EagerBlobEntry eagerBlobEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No EagerBlobEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		EagerBlobEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "blob"});
 
@@ -524,4 +516,4 @@ public class EagerBlobEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1547389084
+// LIFERAY-SERVICE-BUILDER-HASH:1489121936
