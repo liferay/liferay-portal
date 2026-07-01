@@ -99,15 +99,15 @@ export default function PageSpeedCharts({initialResult}: Props) {
 
 					const item = data.items[0] as ScanResult;
 
+					if (item.pagesScanned > 0) {
+						setResult(item);
+					}
+
 					if (isInProgress(item) && !isStale(item)) {
 						scheduleNext();
 					}
 					else {
 						stopPolling();
-
-						if (item.pagesScanned > 0) {
-							setResult(item);
-						}
 					}
 				})
 				.catch((error) => {
