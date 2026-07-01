@@ -3,5 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export {default as BarChart} from './bar_chart/BarChart';
+export {BarChartProps, BarDatum} from './bar_chart/types';
 export {default as ChartState} from './chart_state_wrapper/ChartState';
 export {ChartStateProps} from './chart_state_wrapper/ChartState';
+export {default as TrendIndicator} from './trend_indicator/TrendIndicator';
+export {TrendIndicatorProps} from './trend_indicator/TrendIndicator';
