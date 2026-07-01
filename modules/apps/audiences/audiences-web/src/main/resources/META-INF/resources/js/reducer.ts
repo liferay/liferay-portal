@@ -17,7 +17,7 @@ export interface State {
 export type Action =
 	| {audiencesCriteria: AudiencesCriteria; index?: number; type: 'ADD_RULE'}
 	| {conjunction: string; type: 'SET_CONJUNCTION'}
-	| {index: number; rule: Rule; type: 'CHANGE_RULE'}
+	| {index: number; rule: Rule; type: 'UPDATE_RULE'}
 	| {index: number; type: 'DELETE_RULE'}
 	| {index: number; type: 'DUPLICATE_RULE'}
 	| {name: string; type: 'SET_NAME'}
@@ -70,13 +70,6 @@ export function reducer(state: State, action: Action): State {
 
 			return {...state, rules};
 		}
-		case 'CHANGE_RULE':
-			return {
-				...state,
-				rules: state.rules.map((rule, index) =>
-					index === action.index ? action.rule : rule
-				),
-			};
 		case 'DELETE_RULE':
 			return {
 				...state,
@@ -100,6 +93,13 @@ export function reducer(state: State, action: Action): State {
 			return {...state, conjunction: action.conjunction};
 		case 'SET_NAME':
 			return {...state, name: action.name};
+		case 'UPDATE_RULE':
+			return {
+				...state,
+				rules: state.rules.map((rule, index) =>
+					index === action.index ? action.rule : rule
+				),
+			};
 		default:
 			return state;
 	}

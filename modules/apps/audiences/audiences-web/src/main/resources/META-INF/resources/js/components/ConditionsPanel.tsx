@@ -160,7 +160,7 @@ export default function ConditionsPanel({
 										dispatch({
 											index,
 											rule: newRule,
-											type: 'CHANGE_RULE',
+											type: 'UPDATE_RULE',
 										})
 									}
 									onDelete={() => {
