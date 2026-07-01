@@ -5,20 +5,19 @@
 
 package com.liferay.object.service.impl;
 
+import com.liferay.object.configuration.ObjectEntryScheduleConfiguration;
 import com.liferay.object.configuration.ObjectEntryVersionConfiguration;
 import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
 import com.liferay.object.exception.RequiredObjectEntryVersionException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryVersion;
+import com.liferay.object.model.ObjectEntryVersionTable;
 import com.liferay.object.service.base.ObjectEntryVersionLocalServiceBaseImpl;
 import com.liferay.object.util.comparator.ObjectEntryVersionCreateDateComparator;
 import com.liferay.object.util.comparator.ObjectEntryVersionVersionComparator;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -102,47 +101,63 @@ public class ObjectEntryVersionLocalServiceImpl
 				ZoneId.systemDefault()
 			).toInstant());
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
+		ObjectEntryScheduleConfiguration objectEntryScheduleConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				ObjectEntryScheduleConfiguration.class, companyId);
 
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				Property companyIdProperty = PropertyFactoryUtil.forName(
-					"companyId");
+		// Fetch only the primary keys of versions that have a newer sibling,
+		// since each object entry's latest version must be retained. Selecting
+		// the primary key alone keeps the row's CLOB column out of the
+		// DISTINCT, which Oracle and DB2 reject, and avoids loading each
+		// version's content only to delete it.
 
-				dynamicQuery.add(companyIdProperty.eq(companyId));
+		ObjectEntryVersionTable aliasObjectEntryVersionTable =
+			ObjectEntryVersionTable.INSTANCE.as("aliasObjectEntryVersion");
 
-				Property createDateProperty = PropertyFactoryUtil.forName(
-					"createDate");
+		List<Long> objectEntryVersionIds =
+			objectEntryVersionPersistence.dslQuery(
+				DSLQueryFactoryUtil.selectDistinct(
+					ObjectEntryVersionTable.INSTANCE.objectEntryVersionId
+				).from(
+					ObjectEntryVersionTable.INSTANCE
+				).innerJoinON(
+					aliasObjectEntryVersionTable,
+					aliasObjectEntryVersionTable.objectEntryId.eq(
+						ObjectEntryVersionTable.INSTANCE.objectEntryId
+					).and(
+						aliasObjectEntryVersionTable.version.gt(
+							ObjectEntryVersionTable.INSTANCE.version)
+					)
+				).where(
+					ObjectEntryVersionTable.INSTANCE.companyId.eq(
+						companyId
+					).and(
+						ObjectEntryVersionTable.INSTANCE.createDate.lt(endDate)
+					)
+				).limit(
+					0, objectEntryScheduleConfiguration.checkBatchSize()
+				),
+				false);
 
-				dynamicQuery.add(createDateProperty.lt(endDate));
-			});
-		actionableDynamicQuery.setPerformActionMethod(
-			(ObjectEntryVersion objectEntryVersion) -> {
-				try {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Deleting object entry version " +
-								objectEntryVersion.getObjectEntryVersionId());
-					}
-
-					deleteObjectEntryVersion(
-						objectEntryVersion.getObjectEntryId(),
-						objectEntryVersion.getVersion());
+		for (long objectEntryVersionId : objectEntryVersionIds) {
+			try {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Deleting object entry version " +
+							objectEntryVersionId);
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to delete object entry version " +
-								objectEntryVersion.getObjectEntryVersionId(),
-							portalException);
-					}
-				}
-			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
 
-		actionableDynamicQuery.performActions();
+				objectEntryVersionPersistence.remove(objectEntryVersionId);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to delete object entry version " +
+							objectEntryVersionId,
+						exception);
+				}
+			}
+		}
 	}
 
 	@Override
