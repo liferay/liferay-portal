@@ -23,7 +23,7 @@ export class GogoShellPage {
 	}
 
 	async goto() {
-		this.globalMenuPage.goToControlPanel('Gogo Shell');
+		await this.globalMenuPage.goToControlPanel('Gogo Shell');
 	}
 
 	async addCommand(command: string) {
