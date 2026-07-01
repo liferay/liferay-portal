@@ -34,7 +34,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId,
-				String audienceEntryERC, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, Map<Locale, String> hideMap,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -45,7 +45,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 		return layoutPageTemplateStructureRelElementVariationLocalService.
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, getUserId(), groupId, audienceEntryERC,
+				externalReferenceCode, getUserId(), groupId, audienceEntryERCs,
 				hideMap, htmlMap, jsMap, name, plid, segmentsExperienceERC,
 				targetElement, serviceContext);
 	}

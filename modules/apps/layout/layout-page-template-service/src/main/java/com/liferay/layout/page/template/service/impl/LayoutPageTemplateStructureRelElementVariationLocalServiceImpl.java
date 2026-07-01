@@ -6,12 +6,14 @@
 package com.liferay.layout.page.template.service.impl;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateStructureRelElementVariationLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -34,7 +36,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String audienceEntryERC, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, Map<Locale, String> hideMap,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -69,8 +71,6 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 
 		layoutPageTemplateStructureRelElementVariation.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
-		layoutPageTemplateStructureRelElementVariation.setAudienceEntryERC(
-			audienceEntryERC);
 		layoutPageTemplateStructureRelElementVariation.setHideMap(hideMap);
 		layoutPageTemplateStructureRelElementVariation.setHtmlMap(htmlMap);
 		layoutPageTemplateStructureRelElementVariation.setJsMap(jsMap);
@@ -81,8 +81,26 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		layoutPageTemplateStructureRelElementVariation.setTargetElement(
 			targetElement);
 
-		return layoutPageTemplateStructureRelElementVariationPersistence.update(
-			layoutPageTemplateStructureRelElementVariation);
+		layoutPageTemplateStructureRelElementVariation =
+			layoutPageTemplateStructureRelElementVariationPersistence.update(
+				layoutPageTemplateStructureRelElementVariation);
+
+		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				externalReferenceCode);
+
+		for (String audienceEntryERC : audienceEntryERCs) {
+			if (Validator.isNull(audienceEntryERC)) {
+				continue;
+			}
+
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+				addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
+					userId, groupId, audienceEntryERC, externalReferenceCode,
+					serviceContext);
+		}
+
+		return layoutPageTemplateStructureRelElementVariation;
 	}
 
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
@@ -96,6 +114,10 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		if (layoutPageTemplateStructureRelElementVariation != null) {
 			layoutPageTemplateStructureRelElementVariationPersistence.remove(
 				layoutPageTemplateStructureRelElementVariation);
+
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+					externalReferenceCode);
 		}
 	}
 
@@ -105,6 +127,11 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		return layoutPageTemplateStructureRelElementVariationPersistence.
 			findByPlid(plid);
 	}
+
+	@Reference
+	private
+		LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
