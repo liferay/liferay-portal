@@ -742,6 +742,24 @@ describe('Field DocumentLibrary', () => {
 			expectNoDeletes();
 		});
 
+		it('does not delete the uploaded file when the guest clicks the field before submitting (LPP-64664)', () => {
+			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
+
+			renderField({allowGuestUsers: true, value: '{}'});
+
+			triggerGuestUpload();
+
+			completeUpload(99);
+
+			act(() => {
+				fireEvent.click(document.getElementById('uploadField'));
+			});
+
+			fireGlobal('paginationControlsSubmitButtonClicked');
+
+			expectNoDeletes();
+		});
+
 		it('does not delete when Clear is followed by Cancel (LPP-63917)', () => {
 			renderField({value: valueWithFileEntry(42)});
 
