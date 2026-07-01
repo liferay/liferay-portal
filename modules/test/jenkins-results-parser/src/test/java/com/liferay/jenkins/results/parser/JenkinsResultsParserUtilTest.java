@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -384,6 +385,23 @@ public class JenkinsResultsParserUtilTest
 								duration))));
 			}
 		}
+	}
+
+	@Test
+	public void testIsBuildCachingEnabledNonCINode() {
+		Environment environment = mockEnvironment();
+
+		JenkinsResultsParserUtil.clearCache();
+
+		Mockito.when(
+			environment.doGet("BUILD_CACHING_ENABLED")
+		).thenReturn(
+			"true"
+		);
+
+		Assert.assertFalse(
+			JenkinsResultsParserUtil.isBuildCachingEnabled(
+				"test-portal-release", "default"));
 	}
 
 	@Test
