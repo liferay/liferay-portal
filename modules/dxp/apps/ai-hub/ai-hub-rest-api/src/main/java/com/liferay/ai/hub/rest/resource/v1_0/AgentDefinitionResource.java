@@ -66,6 +66,8 @@ public interface AgentDefinitionResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public AgentDefinition postAgentDefinitionDraft() throws Exception;
+
 	public Response postAgentDefinitionsPageExportBatch(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -169,4 +171,4 @@ public interface AgentDefinitionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:909710946
+// LIFERAY-REST-BUILDER-HASH:-2115452187

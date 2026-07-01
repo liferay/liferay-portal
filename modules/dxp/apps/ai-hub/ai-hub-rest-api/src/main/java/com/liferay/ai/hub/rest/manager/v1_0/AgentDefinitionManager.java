@@ -44,4 +44,8 @@ public interface AgentDefinitionManager {
 			String externalReferenceCode)
 		throws Exception;
 
+	public AgentDefinition postAgentDefinitionDraft(
+			long companyId, DTOConverterContext dtoConverterContext)
+		throws Exception;
+
 }

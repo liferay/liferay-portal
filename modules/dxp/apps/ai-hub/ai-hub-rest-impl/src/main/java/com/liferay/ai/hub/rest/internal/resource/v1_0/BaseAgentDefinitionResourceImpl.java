@@ -231,6 +231,24 @@ public abstract class BaseAgentDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/ai-hub/v1.0/agent-definitions/draft'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "AgentDefinition")
+		}
+	)
+	@jakarta.ws.rs.Path("/agent-definitions/draft")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public AgentDefinition postAgentDefinitionDraft() throws Exception {
+		return new AgentDefinition();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/ai-hub/v1.0/agent-definitions/export-batch'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -994,4 +1012,4 @@ public abstract class BaseAgentDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseAgentDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1557361672
+// LIFERAY-REST-BUILDER-HASH:1504049273

@@ -631,6 +631,26 @@ public abstract class BaseAgentDefinitionResourceTestCase {
 	}
 
 	@Test
+	public void testPostAgentDefinitionDraft() throws Exception {
+		AgentDefinition randomAgentDefinition = randomAgentDefinition();
+
+		AgentDefinition postAgentDefinition =
+			testPostAgentDefinitionDraft_addAgentDefinition(
+				randomAgentDefinition);
+
+		assertEquals(randomAgentDefinition, postAgentDefinition);
+		assertValid(postAgentDefinition);
+	}
+
+	protected AgentDefinition testPostAgentDefinitionDraft_addAgentDefinition(
+			AgentDefinition agentDefinition)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		AgentDefinition agentDefinition1 =
 			testBatchEngineDeleteImportTask_addAgentDefinition();
@@ -1782,4 +1802,4 @@ public abstract class BaseAgentDefinitionResourceTestCase {
 		_agentDefinitionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-357511421
+// LIFERAY-REST-BUILDER-HASH:-1610169972
