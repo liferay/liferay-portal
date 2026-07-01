@@ -17,27 +17,27 @@
 		<http-method>PATCH</http-method>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "aiHubCellLiferayDXPURL",
-		"type": "string"
-	},
-	{
-		"name": "generationExternalReferenceCode",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "aiHubCellLiferayDXPURL",
+						"type": "string"
+					},
+					{
+						"name": "generationExternalReferenceCode",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "output",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "output",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<request-body>
 			<![CDATA[
@@ -74,23 +74,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "request",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "request",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "sitePlan",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "sitePlan",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are a Liferay site architect. You analyze a website use case description and produce a complete site plan as a single JSON object. No markdown, no prose — raw JSON only.
@@ -220,23 +220,23 @@ f. Before finalizing, mentally parse the entire output as JSON to confirm every 
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "sitePlan",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "sitePlan",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "response",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "response",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are a Liferay fragment developer. You receive a site plan JSON and generate production-quality HTML, CSS, and JS for every custom fragment defined in the `customFragments` array. ALL fragments must share a single, cohesive visual identity — they belong to the same site and must look like they were designed together. Output the complete enriched site plan as raw JSON — no markdown, no prose.
@@ -410,23 +410,23 @@ SELF-CHECK: Before returning, mentally walk through every `html`, `css`, and `js
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "request",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "request",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "blogEntries",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "blogEntries",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[# Role
@@ -529,24 +529,24 @@ Output:
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "sitePlan",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "sitePlan",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#jsonRepair</java-delegate>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "sitePlan",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "sitePlan",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<transitions>
 			<transition>
@@ -565,13 +565,13 @@ Output:
 		<java-delegate>javaDelegate#acknowledgeAgent</java-delegate>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "output",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "output",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<transitions>
 			<transition>
@@ -589,24 +589,24 @@ Output:
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "response",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "response",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#jsonRepair</java-delegate>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "enrichedSitePlan",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "enrichedSitePlan",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<transitions>
 			<transition>
@@ -624,32 +624,32 @@ Output:
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "enrichedSitePlan",
-		"type": "string"
-	},
-	{
-		"name": "blogEntries",
-		"type": "string"
-	},
-	{
-		"name": "generationExternalReferenceCode",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "enrichedSitePlan",
+						"type": "string"
+					},
+					{
+						"name": "blogEntries",
+						"type": "string"
+					},
+					{
+						"name": "generationExternalReferenceCode",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#writeCSGGenerationItems</java-delegate>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "itemsResult",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "itemsResult",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<transitions>
 			<transition>

@@ -26,23 +26,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "pageContent",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "pageContent",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "titleTag",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "titleTag",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are an expert SEO Specialist. Your task is to analyze the raw content of a webpage and generate a perfectly optimized HTML <title> tag to fix a missing or empty title.

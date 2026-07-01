@@ -26,27 +26,27 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "instruction",
-		"type": "string"
-	},
-	{
-		"name": "currentPage",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "instruction",
+						"type": "string"
+					},
+					{
+						"name": "currentPage",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "response",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "response",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[# Role

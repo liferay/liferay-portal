@@ -26,31 +26,31 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "content",
-		"type": "string"
-	},
-	{
-		"name": "count",
-		"type": "string"
-	},
-	{
-		"name": "existingTags",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "content",
+						"type": "string"
+					},
+					{
+						"name": "count",
+						"type": "string"
+					},
+					{
+						"name": "existingTags",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "suggestedTags",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "suggestedTags",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[# Role

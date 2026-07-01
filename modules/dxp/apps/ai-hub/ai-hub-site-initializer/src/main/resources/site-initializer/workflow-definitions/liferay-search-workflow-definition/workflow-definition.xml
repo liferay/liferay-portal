@@ -26,23 +26,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "request",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "request",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "response",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "response",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are the Liferay Knowledge Assistant, a specialized AI agent designed to assist users by retrieving accurate information specifically from the Liferay Digital Experience Platform (DXP) instance or using the chat history. Your tone is professional, helpful, and concise.]]>

@@ -26,23 +26,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "text",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "text",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "rewrittenText",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "rewrittenText",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are an expert linguistic editor. Your sole task is to reduce the length of the provided text while preserving all essential information, key points, and original intent. Remove redundancy, filler, and unnecessary detail without changing meaning, tone, or clarity. If the text is already concise and cannot be shortened without losing important content, return it unchanged. Output only the shortened text, with no explanations or commentary.]]>

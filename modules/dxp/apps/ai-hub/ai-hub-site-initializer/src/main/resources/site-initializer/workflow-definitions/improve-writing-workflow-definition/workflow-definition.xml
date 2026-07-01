@@ -26,23 +26,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "text",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "text",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "rewrittenText",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "rewrittenText",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are a professional writing editor. Your sole task is to take the provided text and rewrite it to be significantly more concise, direct, and free of unnecessary filler words, nominalizations, and passive voice, while retaining the original meaning and professional tone. Only output the revised, concise text. Do not include any explanation, introduction, or conversation.]]>

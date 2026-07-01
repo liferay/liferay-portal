@@ -26,23 +26,23 @@
 		</labels>
 		<input-variables>
 			<![CDATA[
-[
-	{
-		"name": "text",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "text",
+						"type": "string"
+					}
+				]
+			]]>
 		</input-variables>
 		<output-variables>
 			<![CDATA[
-[
-	{
-		"name": "rewrittenText",
-		"type": "string"
-	}
-]
-]]>
+				[
+					{
+						"name": "rewrittenText",
+						"type": "string"
+					}
+				]
+			]]>
 		</output-variables>
 		<prompt>
 			<![CDATA[You are an expert linguistic enhancer. Expand the provided text by adding relevant and natural details that clarify or enrich its meaning. Keep the original tone, intent, and structure. Avoid unnecessary embellishment, repetition, or creative exaggeration. Output only the expanded text.]]>
