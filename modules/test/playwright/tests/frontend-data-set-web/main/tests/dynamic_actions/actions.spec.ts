@@ -178,6 +178,8 @@ test('Dynamic Actions', async ({
 		await expect(
 			fdsSamplePage.dropdownMenu.getByRole('menuitem')
 		).toHaveText(['Approve', 'Reject']);
+
+		await page.keyboard.press('Escape');
 	});
 
 	await test.step('Can Reject the pending task with a comment', async () => {
