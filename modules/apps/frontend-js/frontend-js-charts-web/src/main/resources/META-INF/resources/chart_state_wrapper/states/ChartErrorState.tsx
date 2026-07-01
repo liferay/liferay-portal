@@ -6,27 +6,23 @@
 import ClayAlert from '@clayui/alert';
 import React from 'react';
 
-function messageFromError(error: Error | string): string {
-	const message = typeof error === 'string' ? error : error.message;
-
-	return message || Liferay.Language.get('an-error-occurred');
-}
-
 interface Props {
 	error?: Error | string;
 	style?: React.CSSProperties;
 }
 
 export default function ChartErrorState({error, style}: Props) {
+	const errorMessage = typeof error === 'string' ? error : error?.message;
+	const safeMessage =
+		errorMessage || Liferay.Language.get('an-error-occurred');
+
 	return (
 		<div style={style}>
 			<ClayAlert
 				displayType="danger"
 				title={Liferay.Language.get('error')}
 			>
-				{error
-					? messageFromError(error)
-					: Liferay.Language.get('an-error-occurred')}
+				{safeMessage}
 			</ClayAlert>
 		</div>
 	);
