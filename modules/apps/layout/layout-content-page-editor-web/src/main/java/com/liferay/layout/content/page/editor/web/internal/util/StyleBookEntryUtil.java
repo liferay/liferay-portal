@@ -89,7 +89,7 @@ public class StyleBookEntryUtil {
 		return frontendTokensValues;
 	}
 
-	public static List<Map<String, Object>> getStyleBookEntries(
+	public static List<Map<String, Object>> getStyleBookEntryMaps(
 			FrontendTokenDefinition frontendTokenDefinition,
 			boolean includeFrontendTokensValues, Layout layout,
 			ThemeDisplay themeDisplay)
