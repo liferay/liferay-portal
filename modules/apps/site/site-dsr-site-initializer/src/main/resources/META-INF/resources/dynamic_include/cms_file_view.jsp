@@ -7,6 +7,14 @@
 
 <%@ include file="/dynamic_include/init.jsp" %>
 
+<c:if test="<%= DSRRoomUtil.isReadOnly(themeDisplay.getScopeGroupId(), themeDisplay.getPermissionChecker()) %>">
+	<aui:style>
+		.portlet-document-library [data-qa-id="creationMenuNewButton"] {
+			display: none !important;
+		}
+	</aui:style>
+</c:if>
+
 <aui:script type="module">
 	import(
 		'<%= FrontendESMUtil.buildURL(themeDisplay, "site-dsr-site-initializer") %>'

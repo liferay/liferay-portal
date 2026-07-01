@@ -7,4 +7,5 @@
 
 <%@ include file="/init.jsp" %>
 
-<%@ page import="com.liferay.portal.kernel.frontend.esm.FrontendESMUtil" %>
+<%@ page import="com.liferay.portal.kernel.frontend.esm.FrontendESMUtil" %><%@
+page import="com.liferay.site.dsr.site.initializer.util.DSRRoomUtil" %>
