@@ -346,7 +346,6 @@
 
 		<!-- Other fields -->
 
-		<column name="audienceEntryERC" type="String" />
 		<column localized="true" name="hide" type="String" />
 		<column localized="true" name="html" type="String" />
 		<column localized="true" name="js" type="String" />
