@@ -4,7 +4,7 @@
  */
 
 import {openSelectionModal} from 'frontend-js-components-web';
-import {fetch, objectToFormData} from 'frontend-js-web';
+import {fetch, objectToFormData, setCSPNonce} from 'frontend-js-web';
 
 export default function ({
 	changeThemeButtonId,
@@ -49,6 +49,8 @@ export default function ({
 					})
 						.then((response) => response.text())
 						.then((response) => {
+							response = setCSPNonce(response);
+
 							const range = document.createRange();
 							const fragment =
 								range.createContextualFragment(response);

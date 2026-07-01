@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {setCSPNonce} from 'frontend-js-web';
 import React, {useEffect, useRef} from 'react';
 
 import Sidebar from './Sidebar';
@@ -11,7 +12,9 @@ const SidebarPanelMetricsView = ({html}) => {
 	const elementRef = useRef();
 
 	useEffect(() => {
-		const fragment = document.createRange().createContextualFragment(html);
+		const fragment = document
+			.createRange()
+			.createContextualFragment(setCSPNonce(html));
 
 		elementRef.current.innerHTML = '';
 

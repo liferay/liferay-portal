@@ -4,7 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
-import {addParams, fetch, navigate} from 'frontend-js-web';
+import {addParams, fetch, navigate, setCSPNonce} from 'frontend-js-web';
 
 export function signInButtonPropsTransformer({
 	additionalProps: {redirect: initialRedirect, signInURL},
@@ -20,6 +20,8 @@ export function signInButtonPropsTransformer({
 	const updateModalContent = (html) => {
 		const modalBody = document.querySelector('.liferay-modal-body');
 		if (modalBody) {
+			html = setCSPNonce(html);
+
 			const fragment = document
 				.createRange()
 				.createContextualFragment(html);

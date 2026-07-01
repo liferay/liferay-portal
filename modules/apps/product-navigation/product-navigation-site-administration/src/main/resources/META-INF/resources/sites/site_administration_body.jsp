@@ -135,6 +135,8 @@ SiteAdministrationPanelCategoryDisplayContext siteAdministrationPanelCategoryDis
 
 						sidebar.innerHTML = '';
 
+						response = Liferay.Util.setCSPNonce(response);
+
 						var range = document.createRange();
 						range.selectNode(sidebar);
 

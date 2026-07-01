@@ -329,6 +329,8 @@ if (portletTitleBasedNavigation) {
 					);
 
 					if (messageContainer) {
+						response = Liferay.Util.setCSPNonce(response);
+
 						messageContainer.appendChild(
 							document
 								.createRange()

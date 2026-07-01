@@ -777,6 +777,9 @@ export function sub(
 /* Returns the stored value of a cookie, undefined if not present */
 export function getCookie(name: string, type: TYPE_VALUES): string | undefined;
 
+/* Rewrites the inline script/style nonces in the given markup to the document nonce */
+export function setCSPNonce(html: string): string;
+
 /* Sets a cookie of a specific type if user has consented */
 export function setCookie(
 	name: string,

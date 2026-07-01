@@ -112,6 +112,7 @@ import runScriptsInElement from './util/run_scripts_in_element.es';
 import selectFolder from './util/select_folder';
 import {getSessionValue, setSessionValue} from './util/session.es';
 import sessionStorage from './util/session_storage';
+import setCSPNonce from './util/set_csp_nonce';
 import showCapsLock from './util/show_caps_lock';
 import sub from './util/sub';
 import toCharCode from './util/to_char_code.es';
@@ -333,6 +334,7 @@ Liferay.Util.openWindow = openWindow;
 Liferay.Util.openInDialog = openInDialog;
 Liferay.Util.removeEntitySelection = removeEntitySelection;
 Liferay.Util.selectFolder = selectFolder;
+Liferay.Util.setCSPNonce = setCSPNonce;
 Liferay.Util.setPortletConfigurationIconAction =
 	setPortletConfigurationIconAction;
 Liferay.Util.showCapsLock = showCapsLock;
@@ -440,6 +442,7 @@ Liferay.__INTERNALS = {
 	runScriptsInElement,
 	selectFolder,
 	sessionStorage,
+	setCSPNonce,
 	setCookie,
 	setFormValues,
 	setSessionValue,

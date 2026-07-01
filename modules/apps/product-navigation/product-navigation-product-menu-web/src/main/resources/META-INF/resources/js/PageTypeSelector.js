@@ -9,7 +9,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import {openToast} from 'frontend-js-components-web';
-import {fetch, navigate, setSessionValue} from 'frontend-js-web';
+import {fetch, navigate, setCSPNonce, setSessionValue} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useState} from 'react';
 
@@ -43,6 +43,8 @@ function PageTypeSelector({
 						);
 
 						sidebar.innerHTML = '';
+
+						productMenuContent = setCSPNonce(productMenuContent);
 
 						const range = document.createRange();
 						range.selectNode(sidebar);

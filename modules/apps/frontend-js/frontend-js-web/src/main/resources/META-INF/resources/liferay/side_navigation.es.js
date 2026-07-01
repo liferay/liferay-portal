@@ -6,6 +6,7 @@
 import EventEmitter from './events/EventEmitter';
 import throttle from './throttle.es';
 import fetch from './util/fetch.es';
+import setCSPNonce from './util/set_csp_nonce';
 
 const SCRIPT_URL = document.currentScript.src;
 
@@ -454,6 +455,8 @@ SideNavigation.prototype = {
 					return response.text();
 				})
 				.then((text) => {
+					text = setCSPNonce(text);
+
 					const range = document.createRange();
 
 					range.selectNode(sidebar);

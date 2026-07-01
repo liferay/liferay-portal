@@ -7,6 +7,7 @@ import fetch from '../util/fetch.es';
 import objectToFormData from '../util/form/object_to_form_data.es';
 import getPortletId from '../util/get_portlet_id';
 import createPortletURL from '../util/portlet_url/create_portlet_url.es';
+import setCSPNonce from '../util/set_csp_nonce';
 import register from './register.es';
 
 /**
@@ -102,6 +103,8 @@ export function minimizePortlet(portletSelector, trigger, options) {
 						)
 							.then((response) => response.text())
 							.then((response) => {
+								response = setCSPNonce(response);
+
 								const range = document.createRange();
 
 								range.selectNode(portlet);

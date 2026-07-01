@@ -64,6 +64,7 @@ export const {
 	runScriptsInElement,
 	selectFolder,
 	sessionStorage,
+	setCSPNonce,
 	setCookie,
 	setFormValues,
 	setSessionValue,
