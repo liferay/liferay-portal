@@ -12,6 +12,7 @@ import com.liferay.object.web.internal.object.definitions.constants.ObjectDefini
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.script.management.groovy.script.use.GroovyScriptUse;
 import com.liferay.portal.security.script.management.groovy.script.uses.factory.GroovyScriptUsesFactory;
@@ -47,6 +48,13 @@ public class ObjectActionGroovyScriptUsesFactory
 						ObjectDefinitionsScreenNavigationEntryConstants.
 							CATEGORY_KEY_ACTIONS));
 			});
+	}
+
+	@Override
+	public boolean hasUses() {
+		return ListUtil.isNotEmpty(
+			_objectActionLocalService.getObjectActions(
+				true, ObjectActionExecutorConstants.KEY_GROOVY));
 	}
 
 	@Reference

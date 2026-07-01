@@ -19,4 +19,6 @@ public interface GroovyScriptUsesFactory {
 	public List<GroovyScriptUse> create(ResourceRequest resourceRequest)
 		throws Exception;
 
+	public boolean hasUses() throws Exception;
+
 }
