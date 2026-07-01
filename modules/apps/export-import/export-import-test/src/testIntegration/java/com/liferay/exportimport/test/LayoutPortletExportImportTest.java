@@ -10,13 +10,16 @@ import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -28,6 +31,8 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
+
+import jakarta.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -138,6 +143,37 @@ public class LayoutPortletExportImportTest extends BaseExportImportTestCase {
 		}
 	}
 
+	@Test
+	public void testExportImportPortletPreferencesPreserved() throws Exception {
+		String columnCountValue = "3";
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			layout, DLPortletKeys.DOCUMENT_LIBRARY,
+			HashMapBuilder.put(
+				"displayViews", new String[] {"list"}
+			).put(
+				"entryColumns", new String[] {columnCountValue}
+			).build());
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		Layout importedLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), importedGroup.getGroupId(), false);
+
+		Assert.assertNotNull(importedLayout);
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+		Assert.assertEquals(
+			"list",
+			portletPreferences.getValue("displayViews", StringPool.BLANK));
+		Assert.assertEquals(
+			columnCountValue,
+			portletPreferences.getValue("entryColumns", StringPool.BLANK));
+	}
+
 	private void _addResources(long companyId, long groupId, String name)
 		throws Exception {
 
@@ -165,6 +201,9 @@ public class LayoutPortletExportImportTest extends BaseExportImportTestCase {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private ResourceLocalService _resourceLocalService;
