@@ -78,7 +78,7 @@ definition {
 
 			var stagingLayoutNames = JSONCurlUtil.post(${stagingLayoutsCurl}, "$.[?(@['nameCurrentValue'] != '')]['nameCurrentValue']");
 
-			while (${stagingLayoutNames} != ${liveLayoutNames}) {
+			while ((${stagingLayoutNames} != ${liveLayoutNames}) && (maxIterations = "100")) {
 				var stagingLayoutNames = JSONCurlUtil.post(${stagingLayoutsCurl}, "$.[?(@['nameCurrentValue'] != '')]['nameCurrentValue']");
 			}
 		}
