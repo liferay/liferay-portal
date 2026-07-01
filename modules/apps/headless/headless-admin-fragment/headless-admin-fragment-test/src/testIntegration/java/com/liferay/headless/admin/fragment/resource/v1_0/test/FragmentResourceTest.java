@@ -31,6 +31,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -232,6 +233,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentThumbnailURLReferenceURL();
 		_testPostSiteFragmentThumbnailURLReferenceURLUnreachableProblemException();
 		_testPostSiteFragmentThumbnailURLReferenceURLUnsupportedProtocolProblemException();
+		_testPostSiteFragmentWithFormFragment();
 	}
 
 	@Override
@@ -249,6 +251,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentSetFragmentFragmentSetInPathNonexistingProblemException();
 		_testPostSiteFragmentSetFragmentFragmentSetNonexisting();
 		_testPostSiteFragmentSetFragmentFragmentSetNull();
+		_testPostSiteFragmentSetFragmentWithFormFragment();
 	}
 
 	@Override
@@ -500,6 +503,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					LocaleUtil.getDefault(), "html-content-must-not-be-empty"),
 				throwable.getMessage());
 		}
+	}
+
+	private void _assertFormFragment(
+		FieldType[] expectedFieldTypes, Fragment fragment) {
+
+		FormFragment formFragment = (FormFragment)fragment;
+
+		Assert.assertArrayEquals(
+			expectedFieldTypes, formFragment.getFieldTypes());
+
+		Assert.assertEquals(Fragment.Type.FORM_FRAGMENT, fragment.getType());
 	}
 
 	private void _assertFragmentEntry(Fragment fragment, Group group)
@@ -864,6 +878,26 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				setType(Fragment.Type.BASIC_FRAGMENT);
 			}
 		};
+	}
+
+	private FormFragment _randomFormFragment(FieldType[] fieldTypes) {
+		FormFragment formFragment = new FormFragment() {
+			{
+				setFragmentSet(_toFragmentSet(_fragmentCollection));
+				setFragmentVersions(
+					new FragmentVersion[] {
+						_randomFragmentVersion(FragmentVersion.Status.APPROVED)
+					});
+				setKey(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setMarketplace(false);
+				setName(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setType(Fragment.Type.FORM_FRAGMENT);
+			}
+		};
+
+		formFragment.setFieldTypes(fieldTypes);
+
+		return formFragment;
 	}
 
 	private Fragment _randomFragment(boolean approved, boolean draft)
@@ -1660,6 +1694,16 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_assertFragmentSet(_fragmentCollection, postFragment.getFragmentSet());
 	}
 
+	private void _testPostSiteFragmentSetFragmentWithFormFragment()
+		throws Exception {
+
+		FieldType[] fieldTypes = {FieldType.NUMBER, FieldType.TEXT};
+
+		_assertFormFragment(
+			fieldTypes,
+			_postSiteFragmentSetFragment(_randomFormFragment(fieldTypes)));
+	}
+
 	private void _testPostSiteFragmentThumbnailURLReferenceExternalReferenceCode()
 		throws Exception {
 
@@ -1810,6 +1854,65 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"Unable to download file from " + url +
 				" because of unsupported protocol ftp",
 			RandomTestUtil.randomString(), url);
+	}
+
+	private void _testPostSiteFragmentWithFormFragment() throws Exception {
+		_testPostSiteFragmentWithFormFragmentFieldTypes();
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidJsonMappingException();
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException();
+	}
+
+	private void _testPostSiteFragmentWithFormFragmentFieldTypes()
+		throws Exception {
+
+		for (FieldType fieldType : FieldType.values()) {
+			FieldType[] fieldTypes = {fieldType};
+
+			_assertFormFragment(
+				fieldTypes, _postSiteFragment(_randomFormFragment(fieldTypes)));
+		}
+	}
+
+	private void _testPostSiteFragmentWithFormFragmentFieldTypesInvalidJsonMappingException()
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"fieldTypes", JSONUtil.putAll(RandomTestUtil.randomString())
+			).put(
+				"type", "FormFragment"
+			).toString(),
+			"headless-admin-fragment/v1.0/sites/" +
+				testGroup.getExternalReferenceCode() + "/fragments",
+			Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.getString("status"));
+		Assert.assertEquals(
+			"Unable to map JSON path: fieldTypes.null",
+			jsonObject.getString("title"));
+	}
+
+	private void _testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException()
+		throws Exception {
+
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			null);
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[0]);
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[] {FieldType.CAPTCHA, FieldType.TEXT});
+		_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[] {FieldType.STEPPER, FieldType.TEXT});
+	}
+
+	private void
+			_testPostSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+				FieldType[] fieldTypes)
+		throws Exception {
+
+		_assertProblemException(
+			"the-form-fragment-field-types-are-invalid",
+			() -> _postSiteFragment(_randomFormFragment(fieldTypes)));
 	}
 
 	private void _testPutFragment(
