@@ -76,6 +76,7 @@ public class KubernetesJobService {
 				_createEnvVar(
 					"CRAWLER_DOMAIN_URL",
 					uri.getScheme() + "://" + uri.getAuthority()),
+				_createEnvVar("CRAWLER_LOG_LEVEL", _crawlerLogLevel),
 				_createEnvVar("CRAWLER_OUTPUT_INDEX", indexName),
 				_createEnvVar("CRAWLER_SEED_URL", url),
 				_createEnvVar("ELASTICSEARCH_HOST", _elasticsearchHost),
@@ -154,6 +155,9 @@ public class KubernetesJobService {
 
 	private static final Log _log = LogFactory.getLog(
 		KubernetesJobService.class);
+
+	@Value("${liferay.ai.hub.crawler.log.level}")
+	private String _crawlerLogLevel;
 
 	@Value("${liferay.ai.hub.crawler.elasticsearch.host}")
 	private String _elasticsearchHost;
