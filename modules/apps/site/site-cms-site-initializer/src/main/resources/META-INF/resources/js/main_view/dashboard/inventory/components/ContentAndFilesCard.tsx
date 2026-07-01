@@ -10,16 +10,13 @@ import {
 	RangeSelector,
 	TrendClassification,
 	buildQueryString,
-	getPercentage,
 	getSafeRangeSelector,
-	getStatsColor,
-	getStatsIcon,
 	toThousands,
 } from '@liferay/analytics-reports-js-components-web';
-import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import ApiHelper from '../../../../common/services/ApiHelper';
+import {MetricValue} from '../../common/MetricValue';
 import {InventoryContext} from '../InventoryContext';
 
 export interface IMetricsProps {
@@ -84,13 +81,7 @@ const ContentAndFilesCard: React.FC<IContentAndFilesCard> = ({
 		getMetrics();
 	}, [endpointURL, queryParams]);
 
-	const {
-		breakdown,
-		percentage,
-		statsColor,
-		statsIcon,
-		title: formattedTitle,
-	} = useMemo(
+	const {breakdown, title: formattedTitle} = useMemo(
 		() => ({
 			breakdown: [
 				{
@@ -118,11 +109,6 @@ const ContentAndFilesCard: React.FC<IContentAndFilesCard> = ({
 					value: metrics?.tagsCount ?? 0,
 				},
 			],
-			percentage: getPercentage(metrics?.trend.percentage ?? 0),
-			statsColor: getStatsColor(
-				metrics?.trend.classification ?? TrendClassification.Neutral
-			),
-			statsIcon: getStatsIcon(metrics?.trend?.percentage ?? 0),
 			title: title(metrics?.totalCount ?? 0),
 		}),
 		[metrics, title]
@@ -144,40 +130,16 @@ const ContentAndFilesCard: React.FC<IContentAndFilesCard> = ({
 				</div>
 			) : (
 				<>
-					<div className="text-lowercase">
-						<Text size={7} weight="semi-bold">
-							{formattedTitle}
-						</Text>
-					</div>
-
-					<div>
-						<Text color={statsColor} size={3}>
-							{statsIcon && (
-								<span className="mr-1">
-									<ClayIcon
-										aria-label={statsIcon}
-										symbol={statsIcon}
-									/>
-								</span>
-							)}
-
-							<span>{percentage}%</span>
-						</Text>
-
-						<Text color="secondary" size={3}>
-							<span
-								className="text-lowercase"
-								dangerouslySetInnerHTML={{
-									__html: sub(
-										Liferay.Language.get(
-											'x-vs-previous-period'
-										),
-										`<span class='hide'>${percentage}</span>`
-									),
-								}}
-							/>
-						</Text>
-					</div>
+					<MetricValue
+						trend={{
+							classification:
+								metrics?.trend.classification ??
+								TrendClassification.Neutral,
+							percentage: metrics?.trend.percentage ?? 0,
+						}}
+						value={formattedTitle}
+						valueClassName="text-lowercase"
+					/>
 
 					<div className="d-flex flex-wrap mt-3">
 						{breakdown.map(({icon, label, value}) => (
