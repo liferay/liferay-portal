@@ -56,11 +56,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.NamingException;
@@ -779,6 +783,10 @@ public abstract class BaseDBProcess implements DBProcess {
 			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
 			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
+			AtomicBoolean atomicBoolean = new AtomicBoolean();
+			BlockingQueue<T> blockingQueue = new ArrayBlockingQueue<>(
+				fixedThreadPoolSize);
+
 			Callable<Void> callable = () -> {
 				NotificationThreadLocal.setEnabled(notificationEnabled);
 				WorkflowThreadLocal.setEnabled(workflowEnabled);
@@ -789,14 +797,14 @@ public abstract class BaseDBProcess implements DBProcess {
 					PreparedStatement preparedStatement = null;
 
 					while (true) {
-						T current = null;
-
-						synchronized (unsafeSupplier) {
-							current = unsafeSupplier.get();
-						}
+						T current = blockingQueue.poll(1, TimeUnit.SECONDS);
 
 						if (current == null) {
-							break;
+							if (atomicBoolean.get()) {
+								break;
+							}
+
+							continue;
 						}
 
 						if (Validator.isNull(updateSQL)) {
@@ -830,6 +838,22 @@ public abstract class BaseDBProcess implements DBProcess {
 				futures.add(
 					executorService.submit(
 						new CompanyInheritableThreadLocalCallable<>(callable)));
+			}
+
+			try {
+				T current = unsafeSupplier.get();
+
+				while (current != null) {
+					if (blockingQueue.offer(current, 1, TimeUnit.SECONDS)) {
+						current = unsafeSupplier.get();
+					}
+					else if (throwableCollector.getThrowable() != null) {
+						return;
+					}
+				}
+			}
+			finally {
+				atomicBoolean.set(true);
 			}
 		}
 		finally {
