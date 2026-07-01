@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -70,16 +72,26 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 			companyId, dtoConverterContext, externalReferenceCode,
 			_getObjectDefinition(companyId), null);
 
+		String workflowDefinitionName = GetterUtil.getString(
+			objectEntry.getPropertyValue("workflowDefinitionName"));
+
 		_objectEntryManager.deleteObjectEntry(
 			companyId, dtoConverterContext,
 			objectEntry.getExternalReferenceCode(),
 			_getObjectDefinition(companyId), null);
 
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.getLatestWorkflowDefinition(
-				companyId,
-				GetterUtil.getString(
-					objectEntry.getPropertyValue("workflowDefinitionName")));
+		if (_hasAgentDefinitionWithWorkflowDefinitionName(
+				companyId, dtoConverterContext, workflowDefinitionName)) {
+
+			return;
+		}
+
+		WorkflowDefinition workflowDefinition = _fetchLatestWorkflowDefinition(
+			companyId, workflowDefinitionName);
+
+		if (workflowDefinition == null) {
+			return;
+		}
 
 		_workflowDefinitionManager.updateActive(
 			false, workflowDefinition.getCompanyId(),
@@ -290,6 +302,29 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 			dtoConverterContext.getUriInfo());
 	}
 
+	private WorkflowDefinition _fetchLatestWorkflowDefinition(
+		long companyId, String workflowDefinitionName) {
+
+		if (Validator.isNull(workflowDefinitionName)) {
+			return null;
+		}
+
+		try {
+			return _workflowDefinitionManager.getLatestWorkflowDefinition(
+				companyId, workflowDefinitionName);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to get the latest workflow definition with name " +
+						workflowDefinitionName,
+					exception);
+			}
+
+			return null;
+		}
+	}
+
 	private String _getFilterString(String filterString) {
 		if (Validator.isNull(filterString)) {
 			return "externalReferenceCode ne 'L_PAGE_BUILDER'";
@@ -316,11 +351,36 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 
 		Locale locale = dtoConverterContext.getLocale();
 
-		if (workflowDefinition.isActive()) {
+		if ((workflowDefinition != null) && workflowDefinition.isActive()) {
 			return _toStatus("active", locale);
 		}
 
 		return _toStatus("inactive", locale);
+	}
+
+	private boolean _hasAgentDefinitionWithWorkflowDefinitionName(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String workflowDefinitionName)
+		throws Exception {
+
+		if (Validator.isNull(workflowDefinitionName)) {
+			return false;
+		}
+
+		Page<ObjectEntry> objectEntriesPage =
+			_objectEntryManager.getObjectEntries(
+				companyId, _getObjectDefinition(companyId), null, null,
+				dtoConverterContext,
+				"workflowDefinitionName eq '" +
+					StringUtil.replace(workflowDefinitionName, '\'', "''") +
+						"'",
+				Pagination.of(1, 1), null, null);
+
+		if (objectEntriesPage.getTotalCount() > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private AgentDefinition _toAgentDefinition(
@@ -328,17 +388,19 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 			ObjectEntry objectEntry)
 		throws PortalException {
 
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.getLatestWorkflowDefinition(
-				companyId,
-				GetterUtil.getString(
-					objectEntry.getPropertyValue("workflowDefinitionName")));
+		String workflowDefinitionName = GetterUtil.getString(
+			objectEntry.getPropertyValue("workflowDefinitionName"));
+
+		WorkflowDefinition workflowDefinition = _fetchLatestWorkflowDefinition(
+			companyId, workflowDefinitionName);
 
 		return new AgentDefinition() {
 			{
 				setActions(
 					() -> {
-						if (dtoConverterContext == null) {
+						if ((dtoConverterContext == null) ||
+							(workflowDefinition == null)) {
+
 							return null;
 						}
 
@@ -428,8 +490,22 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 				setTitle(
 					() -> GetterUtil.getString(
 						objectEntry.getPropertyValue("title")));
-				setVersion(workflowDefinition::getVersion);
-				setWorkflowDefinitionName(workflowDefinition::getName);
+				setVersion(
+					() -> {
+						if (workflowDefinition == null) {
+							return null;
+						}
+
+						return workflowDefinition.getVersion();
+					});
+				setWorkflowDefinitionName(
+					() -> {
+						if (workflowDefinition == null) {
+							return workflowDefinitionName;
+						}
+
+						return workflowDefinition.getName();
+					});
 			}
 		};
 	}
@@ -473,6 +549,9 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 			}
 		};
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AgentDefinitionManagerImpl.class);
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
