@@ -186,7 +186,7 @@ function deploy_osgi_modules {
 
 		for osgi_module_name in $(cat ${osgi_modules_list_file})
 		do
-			local osgi_module_dir=$(find ${_PORTAL_PROJECT_DIR}/modules/apps -type d -name "${osgi_module_name}" | grep -v .releng | grep -v .npmscripts | grep -v node_modules)
+			local osgi_module_dir=$(find ${_PORTAL_PROJECT_DIR}/modules/apps ${_PORTAL_PROJECT_DIR}/modules/dxp/apps -type d -name "${osgi_module_name}" | grep -v .releng | grep -v .npmscripts | grep -v node_modules)
 
 			if [[ $(echo ${osgi_module_dir} | wc -w | grep -o -E '[0-9]+') > 1 ]]
 			then
