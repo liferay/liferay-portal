@@ -9,6 +9,8 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
@@ -17,7 +19,8 @@ const test = mergeTests(
 	apiHelpersTest,
 	documentLibraryPagesTest,
 	loginTest(),
-	isolatedSiteTest
+	isolatedSiteTest,
+	usersAndOrganizationsPagesTest
 );
 
 test(
@@ -57,76 +60,125 @@ test(
 		documentLibraryPage,
 		page,
 		site,
+		usersAndOrganizationsPage,
 	}) => {
 		const testUser = await apiHelpers.headlessAdminUser.postUserAccount();
 
-		const role =
-			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-
-		await apiHelpers.headlessAdminUser.assignUserToSite(
-			String(role.id),
-			site.id,
-			testUser.id
-		);
-
-		await documentLibraryPage.goto(site.friendlyUrlPath);
-		await documentLibraryPage.goToCreateNewFolder();
-
 		const title = getRandomString();
 
-		await documentLibraryEditFolderPage.fillTitle(title);
+		let doAsUserIdURL = '';
 
-		await openFieldset(page, 'Permissions');
+		await test.step('Assign the test user to the site as a Site Member', async () => {
+			const role =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
 
-		await page
-			.getByLabel(
-				'Give Update permission to users with role Site Member.'
-			)
-			.uncheck();
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				String(role.id),
+				site.id,
+				testUser.id
+			);
+		});
 
-		await page
-			.getByLabel(
-				'Give Advanced Update permission to users with role Site Member.'
-			)
-			.check();
+		await test.step('Create a folder granting Site Member only Advanced Update permission', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.goToCreateNewFolder();
 
-		await page.getByRole('button', {name: 'Save'}).click();
+			await documentLibraryEditFolderPage.fillTitle(title);
 
-		await documentLibraryPage.goToEditFolder(title);
+			await openFieldset(page, 'Permissions');
 
-		await page.waitForURL(/edit_folder/);
+			await page
+				.getByLabel(
+					'Give Update permission to users with role Site Member.'
+				)
+				.uncheck();
 
-		const doAsUserIdURL = `${page.url()}&doAsUserId=${testUser.id}`;
+			await page
+				.getByLabel(
+					'Give Advanced Update permission to users with role Site Member.'
+				)
+				.check();
 
-		await page.goto(doAsUserIdURL);
+			await page.getByRole('button', {name: 'Save'}).click();
 
-		await expect(documentLibraryEditFolderPage.title).toBeDisabled();
-		await expect(
-			page.getByRole('button', {name: 'Document Type Restrictions'})
-		).toBeVisible();
+			await documentLibraryPage.waitForSuccessAlert();
+		});
 
-		await documentLibraryPage.goto(site.friendlyUrlPath);
-		await documentLibraryPage.goToFolderAction('Permissions', title);
+		await test.step('Build the edit folder URL impersonating the test user', async () => {
+			await documentLibraryPage.goToEditFolder(title);
 
-		const permissionIframe = page.frameLocator(
-			'iframe[title="Permissions"]'
-		);
+			await expect(documentLibraryEditFolderPage.title).toBeEnabled();
 
-		await permissionIframe.locator('#site-member_ACTION_UPDATE').check();
+			const editFolderURL = page.url();
 
-		await permissionIframe
-			.locator('#site-member_ACTION_ADVANCED_UPDATE')
-			.uncheck();
+			await usersAndOrganizationsPage.goto();
 
-		await permissionIframe.getByRole('button', {name: 'Save'}).click();
+			await usersAndOrganizationsPage.usersSearchBar.fill(
+				testUser.alternateName
+			);
 
-		await page.locator('.modal').getByLabel('Close', {exact: true}).click();
+			await usersAndOrganizationsPage.usersSearchBar.press('Enter');
 
-		await page.goto(doAsUserIdURL);
+			const impersonateLink = page.locator('a[href*="doAsUserId"]');
 
-		await expect(documentLibraryEditFolderPage.title).toBeEnabled();
-		await expect(
-			page.getByRole('button', {name: 'Document Type Restrictions'})
-		).toBeHidden();
+			await expect(impersonateLink).toHaveCount(1);
+
+			const impersonateURL = new URL(
+				await impersonateLink.getAttribute('href'),
+				page.url()
+			);
+
+			doAsUserIdURL = `${editFolderURL}&doAsUserId=${impersonateURL.searchParams.get(
+				'doAsUserId'
+			)}`;
+		});
+
+		await test.step('Verify Advanced Update disables the folder name', async () => {
+			await page.goto(doAsUserIdURL);
+
+			await expect(documentLibraryEditFolderPage.title).toBeDisabled();
+
+			await expect(
+				page.getByRole('button', {
+					name: 'Document Type Restrictions',
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Grant Update and remove Advanced Update permission', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.goToFolderAction('Permissions', title);
+
+			await documentLibraryPage.permissionsFrameLocator
+				.locator('#site-member_ACTION_UPDATE')
+				.check();
+
+			await documentLibraryPage.permissionsFrameLocator
+				.locator('#site-member_ACTION_ADVANCED_UPDATE')
+				.uncheck();
+
+			await documentLibraryPage.permissionsFrameLocator
+				.getByRole('button', {name: 'Save'})
+				.click();
+
+			await clickAndExpectToBeHidden({
+				target: page.locator('.modal'),
+				trigger: page
+					.locator('.modal')
+					.getByLabel('Close', {exact: true}),
+			});
+		});
+
+		await test.step('Verify Update enables the folder name', async () => {
+			await page.goto(doAsUserIdURL);
+
+			await expect(documentLibraryEditFolderPage.title).toBeEnabled();
+
+			await expect(
+				page.getByRole('button', {
+					name: 'Document Type Restrictions',
+				})
+			).toBeHidden();
+		});
 	}
 );
