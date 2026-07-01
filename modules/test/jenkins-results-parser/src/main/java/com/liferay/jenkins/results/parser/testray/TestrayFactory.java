@@ -100,7 +100,7 @@ public class TestrayFactory {
 				axisTestClassGroup, testrayBuild, topLevelBuildReport);
 		}
 
-		return new BatchBuildTestrayCaseResult<>(
+		return new DownstreamBatchBuildTestrayCaseResult(
 			axisTestClassGroup, testrayBuild, topLevelBuildReport);
 	}
 
