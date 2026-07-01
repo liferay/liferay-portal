@@ -5515,6 +5515,14 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("system", additionalAssertFieldName)) {
+				if (taxonomyCategory.getSystem() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"taxonomyCategoryProperties", additionalAssertFieldName)) {
 
@@ -5879,6 +5887,17 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				if (!Objects.deepEquals(
 						taxonomyCategory1.getSiteExternalReferenceCode(),
 						taxonomyCategory2.getSiteExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("system", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taxonomyCategory1.getSystem(),
+						taxonomyCategory2.getSystem())) {
 
 					return false;
 				}
@@ -6488,6 +6507,11 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("system")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("taxonomyCategoryProperties")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -6619,6 +6643,7 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				siteExternalReferenceCode =
 					testGroup.getExternalReferenceCode();
 				siteId = testGroup.getGroupId();
+				system = RandomTestUtil.randomBoolean();
 				taxonomyCategoryUsageCount = RandomTestUtil.randomInt();
 				taxonomyVocabularyId = RandomTestUtil.randomLong();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -6908,4 +6933,4 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			TaxonomyCategoryResource _taxonomyCategoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1286625270
+// LIFERAY-REST-BUILDER-HASH:1689225875

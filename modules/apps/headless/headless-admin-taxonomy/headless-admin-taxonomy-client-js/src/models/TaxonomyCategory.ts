@@ -35,6 +35,7 @@
 			"permissions"?: Array<Permission>;
 			"siteExternalReferenceCode"?: string;
 			"siteId"?: number;
+			"system"?: boolean;
 			"taxonomyCategoryProperties"?: Array<TaxonomyCategoryProperty>;
 			"taxonomyCategoryUsageCount"?: number;
 			"taxonomyVocabularyId"?: number;
@@ -142,6 +143,11 @@
 			baseName: "siteId",
 			name: "siteId",
 			type: "number",
+		},
+		{
+			baseName: "system",
+			name: "system",
+			type: "boolean",
 		},
 		{
 			baseName: "taxonomyCategoryProperties",

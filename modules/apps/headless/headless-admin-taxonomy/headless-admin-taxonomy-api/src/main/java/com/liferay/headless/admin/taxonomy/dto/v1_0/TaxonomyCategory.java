@@ -904,6 +904,51 @@ public class TaxonomyCategory implements Serializable {
 	private Supplier<Long> _siteIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Whether this is a system category, which cannot be renamed, modified, or deleted."
+	)
+	public Boolean getSystem() {
+		if (_systemSupplier != null) {
+			system = _systemSupplier.get();
+
+			_systemSupplier = null;
+		}
+
+		return system;
+	}
+
+	public void setSystem(Boolean system) {
+		this.system = system;
+
+		_systemSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSystem(
+		UnsafeSupplier<Boolean, Exception> systemUnsafeSupplier) {
+
+		_systemSupplier = () -> {
+			try {
+				return systemUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Whether this is a system category, which cannot be renamed, modified, or deleted."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean system;
+
+	@JsonIgnore
+	private Supplier<Boolean> _systemSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The category's properties."
 	)
 	@Valid
@@ -1462,6 +1507,18 @@ public class TaxonomyCategory implements Serializable {
 			sb.append(siteId);
 		}
 
+		Boolean system = getSystem();
+
+		if (system != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"system\": ");
+
+			sb.append(system);
+		}
+
 		TaxonomyCategoryProperty[] taxonomyCategoryProperties =
 			getTaxonomyCategoryProperties();
 
@@ -1678,4 +1735,4 @@ public class TaxonomyCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-512318802
+// LIFERAY-REST-BUILDER-HASH:-1233568492

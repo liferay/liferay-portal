@@ -307,6 +307,16 @@ public class TaxonomyCategorySerDes {
 			sb.append(taxonomyCategory.getSiteId());
 		}
 
+		if (taxonomyCategory.getSystem() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"system\": ");
+
+			sb.append(taxonomyCategory.getSystem());
+		}
+
 		if (taxonomyCategory.getTaxonomyCategoryProperties() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -565,6 +575,13 @@ public class TaxonomyCategorySerDes {
 			map.put("siteId", String.valueOf(taxonomyCategory.getSiteId()));
 		}
 
+		if (taxonomyCategory.getSystem() == null) {
+			map.put("system", null);
+		}
+		else {
+			map.put("system", String.valueOf(taxonomyCategory.getSystem()));
+		}
+
 		if (taxonomyCategory.getTaxonomyCategoryProperties() == null) {
 			map.put("taxonomyCategoryProperties", null);
 		}
@@ -694,6 +711,9 @@ public class TaxonomyCategorySerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "siteId")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "system")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -865,6 +885,11 @@ public class TaxonomyCategorySerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "system")) {
+				if (jsonParserFieldValue != null) {
+					taxonomyCategory.setSystem((Boolean)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "taxonomyCategoryProperties")) {
 
@@ -997,4 +1022,4 @@ public class TaxonomyCategorySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1370171060
+// LIFERAY-REST-BUILDER-HASH:642282218
