@@ -33,7 +33,7 @@ export default function ManageMembersModal({
 	renderAddMembersInput,
 }: ManageMembersModalProps) {
 	return (
-		<div className="manage-member-modal">
+		<div>
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
