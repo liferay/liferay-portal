@@ -91,8 +91,7 @@ public class SiteInitializerRegistryImpl implements SiteInitializerRegistry {
 		"com.liferay.seo.studio.site.initializer",
 		"com.liferay.site.initializer.cmp", "com.liferay.site.initializer.cms",
 		"com.liferay.site.initializer.cms.standalone",
-		"com.liferay.site.initializer.dsr",
-		"com.liferay.site.initializer.pim");
+		"com.liferay.site.initializer.dsr", "com.liferay.site.initializer.pim");
 
 	private ServiceTrackerMap<String, SiteInitializer> _serviceTrackerMap;
 
