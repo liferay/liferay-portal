@@ -491,11 +491,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 
 		for (Fragment fragment : notExpectedFragments) {
-			Assert.assertNull(
-				_fragmentEntryLocalService.
-					fetchFragmentEntryByExternalReferenceCode(
-						fragment.getExternalReferenceCode(),
-						group.getGroupId()));
+			_assertNullFragmentEntry(fragment, group);
 		}
 	}
 
@@ -1502,16 +1498,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				fetchFragmentCollectionByExternalReferenceCode(
 					_fragmentCollection.getExternalReferenceCode(),
 					irrelevantGroup.getGroupId()));
-		Assert.assertNull(
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragment1.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId()));
-		Assert.assertNull(
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragment2.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId()));
+		_assertNullFragmentEntry(fragment1, irrelevantGroup);
+		_assertNullFragmentEntry(fragment2, irrelevantGroup);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.batch.engine.internal." +
@@ -1552,16 +1540,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				fetchFragmentCollectionByExternalReferenceCode(
 					_fragmentCollection.getExternalReferenceCode(),
 					irrelevantGroup.getGroupId()));
-		Assert.assertNull(
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragment1.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId()));
-		Assert.assertNull(
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragment2.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId()));
+		_assertNullFragmentEntry(fragment1, irrelevantGroup);
+		_assertNullFragmentEntry(fragment2, irrelevantGroup);
 	}
 
 	private void _testPostSiteFragmentBatchWithLazyReferencingEnabled()
