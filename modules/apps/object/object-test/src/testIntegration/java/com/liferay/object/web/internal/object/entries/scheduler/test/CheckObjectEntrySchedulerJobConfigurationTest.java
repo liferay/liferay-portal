@@ -6,6 +6,7 @@
 package com.liferay.object.web.internal.object.entries.scheduler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.configuration.ObjectEntryScheduleConfiguration;
 import com.liferay.object.configuration.ObjectEntryVersionConfiguration;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.exception.ObjectEntryExpirationDateException;
@@ -20,6 +21,8 @@ import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
@@ -39,6 +42,10 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -171,6 +178,59 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 	}
 
 	@Test
+	public void testCheckObjectEntryDisplayDateWithCheckBatchSize()
+		throws Exception {
+
+		try (AutoCloseable autoCloseable = _setCheckBatchSize(1)) {
+			Date date = new Date();
+
+			ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).put(
+					"displayDate", new Date(date.getTime() + Time.DAY)
+				).build());
+			ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).put(
+					"displayDate", new Date(date.getTime() + Time.DAY)
+				).build());
+
+			Assert.assertTrue(objectEntry1.isScheduled());
+			Assert.assertTrue(objectEntry2.isScheduled());
+
+			_updateDisplayDate(
+				new Date(date.getTime() - Time.DAY), objectEntry1);
+			_updateDisplayDate(
+				new Date(date.getTime() - Time.DAY), objectEntry2);
+
+			_jobExecutorUnsafeRunnable.run();
+
+			objectEntry1 = _objectEntryLocalService.getObjectEntry(
+				objectEntry1.getObjectEntryId());
+			objectEntry2 = _objectEntryLocalService.getObjectEntry(
+				objectEntry2.getObjectEntryId());
+
+			Assert.assertTrue(
+				"Only one object entry must be published per run",
+				objectEntry1.isApproved() != objectEntry2.isApproved());
+
+			_jobExecutorUnsafeRunnable.run();
+
+			objectEntry1 = _objectEntryLocalService.getObjectEntry(
+				objectEntry1.getObjectEntryId());
+			objectEntry2 = _objectEntryLocalService.getObjectEntry(
+				objectEntry2.getObjectEntryId());
+
+			Assert.assertTrue(objectEntry1.isApproved());
+			Assert.assertTrue(objectEntry2.isApproved());
+		}
+	}
+
+	@Test
 	public void testCheckObjectEntryExpirationDate() throws Exception {
 		Date date = new Date();
 
@@ -268,6 +328,55 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 	}
 
 	@Test
+	public void testCheckObjectEntryExpirationDateWithCheckBatchSize()
+		throws Exception {
+
+		try (AutoCloseable autoCloseable = _setCheckBatchSize(1)) {
+			Date date = new Date();
+
+			ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).build());
+			ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).build());
+
+			Assert.assertTrue(objectEntry1.isApproved());
+			Assert.assertTrue(objectEntry2.isApproved());
+
+			_updateExpirationDate(
+				new Date(date.getTime() - Time.DAY), objectEntry1);
+			_updateExpirationDate(
+				new Date(date.getTime() - Time.DAY), objectEntry2);
+
+			_jobExecutorUnsafeRunnable.run();
+
+			objectEntry1 = _objectEntryLocalService.getObjectEntry(
+				objectEntry1.getObjectEntryId());
+			objectEntry2 = _objectEntryLocalService.getObjectEntry(
+				objectEntry2.getObjectEntryId());
+
+			Assert.assertTrue(
+				"Only one object entry must be expired per run",
+				objectEntry1.isExpired() != objectEntry2.isExpired());
+
+			_jobExecutorUnsafeRunnable.run();
+
+			objectEntry1 = _objectEntryLocalService.getObjectEntry(
+				objectEntry1.getObjectEntryId());
+			objectEntry2 = _objectEntryLocalService.getObjectEntry(
+				objectEntry2.getObjectEntryId());
+
+			Assert.assertTrue(objectEntry1.isExpired());
+			Assert.assertTrue(objectEntry2.isExpired());
+		}
+	}
+
+	@Test
 	public void testCheckObjectEntryReviewDate() throws Exception {
 		Date date = new Date();
 
@@ -324,6 +433,122 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 		Assert.assertEquals(
 			"x-has-reached-its-review-date",
 			payloadJSONObject.getString("notificationMessageKey"));
+	}
+
+	@Test
+	public void testCheckObjectEntryReviewDateWithCheckBatchSize()
+		throws Exception {
+
+		try (AutoCloseable autoCloseable = _setCheckBatchSize(1)) {
+			Date reviewDate = new Date();
+
+			ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).put(
+					"reviewDate", reviewDate
+				).build());
+			ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+				).put(
+					"reviewDate", reviewDate
+				).build());
+
+			// Two entries share a review date; the limit notifies one per run
+
+			_jobExecutorUnsafeRunnable.run();
+
+			Assert.assertEquals(
+				1,
+				_getReviewNotificationCount(objectEntry1) +
+					_getReviewNotificationCount(objectEntry2));
+
+			_jobExecutorUnsafeRunnable.run();
+
+			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry1));
+			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry2));
+
+			// A further run must not re-notify
+
+			_jobExecutorUnsafeRunnable.run();
+
+			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry1));
+			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry2));
+		}
+	}
+
+	@Test
+	public void testCheckObjectEntryReviewDateWithFailedNotification()
+		throws Exception {
+
+		Date reviewDate = new Date();
+
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+			).put(
+				"reviewDate", reviewDate
+			).build());
+
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+			).put(
+				"reviewDate", reviewDate
+			).build());
+
+		// Fail the second entry's notification with a nonexistent user
+
+		long userId = objectEntry2.getUserId();
+
+		objectEntry2.setUserId(-1);
+
+		objectEntry2 = _objectEntryLocalService.updateObjectEntry(objectEntry2);
+
+		// The failure is logged and does not halt the run
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.service.impl.ObjectEntryLocalServiceImpl",
+				LoggerTestUtil.WARN)) {
+
+			_jobExecutorUnsafeRunnable.run();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to send user notification events for object entry " +
+					objectEntry2.getObjectEntryId(),
+				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(NoSuchUserException.class, throwable.getClass());
+		}
+
+		Assert.assertEquals(1, _getReviewNotificationCount(objectEntry1));
+		Assert.assertEquals(0, _getReviewNotificationCount(objectEntry2));
+
+		objectEntry2.setUserId(userId);
+
+		objectEntry2 = _objectEntryLocalService.updateObjectEntry(objectEntry2);
+
+		// The checkpoint advanced past the failed entry, so it is skipped
+		// rather than retried
+
+		_jobExecutorUnsafeRunnable.run();
+
+		Assert.assertEquals(1, _getReviewNotificationCount(objectEntry1));
+		Assert.assertEquals(0, _getReviewNotificationCount(objectEntry2));
 	}
 
 	@Test
@@ -414,6 +639,44 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			).minusMonths(
 				months
 			));
+	}
+
+	private int _getReviewNotificationCount(ObjectEntry objectEntry)
+		throws Exception {
+
+		int count = 0;
+
+		for (UserNotificationEvent userNotificationEvent :
+				_userNotificationEventLocalService.getUserNotificationEvents(
+					objectEntry.getUserId())) {
+
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+				userNotificationEvent.getPayload());
+
+			if (jsonObject.getLong("classPK") ==
+					objectEntry.getObjectEntryId()) {
+
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	private AutoCloseable _setCheckBatchSize(int checkBatchSize)
+		throws Exception {
+
+		String pid = ConfigurationTestUtil.createFactoryConfiguration(
+			ObjectEntryScheduleConfiguration.class.getName() + ".scoped",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"checkBatchSize", checkBatchSize
+			).put(
+				"checkInterval", 15
+			).put(
+				"companyId", TestPropsValues.getCompanyId()
+			).build());
+
+		return () -> ConfigurationTestUtil.deleteConfiguration(pid);
 	}
 
 	private void _updateDisplayDate(Date displayDate, ObjectEntry objectEntry) {
