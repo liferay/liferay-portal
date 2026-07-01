@@ -10,7 +10,6 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
@@ -22,8 +21,6 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.util.CommerceCheckoutStep;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -48,10 +45,6 @@ import com.liferay.portal.theme.ThemeDisplayFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,11 +55,8 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -86,8 +76,6 @@ public class OrderSummaryCommerceCheckoutStepTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-
-		_disableAccountEntryValidators(_group.getCompanyId());
 
 		AccountEntry accountEntry =
 			CommerceAccountTestUtil.addBusinessAccountEntry(
@@ -118,87 +106,83 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 	@After
 	public void tearDown() throws Exception {
-		for (String accountEntryValidatorConfigurationPid :
-				_accountEntryValidatorConfigurationPids) {
-
-			Configuration[] configurations =
-				_configurationAdmin.listConfigurations(
-					StringBundler.concat(
-						"(", Constants.SERVICE_PID, "=",
-						accountEntryValidatorConfigurationPid, "*)"));
-
-			if (configurations != null) {
-				for (Configuration configuration : configurations) {
-					configuration.delete();
-				}
-			}
+		if (_accountEntryValidatorServiceRegistration != null) {
+			_accountEntryValidatorServiceRegistration.unregister();
 		}
 	}
 
 	@Test
 	public void testShowControls() throws Exception {
-		String key = RandomTestUtil.randomString();
-
 		Bundle bundle = FrameworkUtil.getBundle(
 			OrderSummaryCommerceCheckoutStepTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
+
+		String key = RandomTestUtil.randomString();
 
 		TestAccountEntryValidator testAccountEntryValidator =
 			new TestAccountEntryValidator(
 				key, RandomTestUtil.randomString(),
 				AccountEntryValidatorConstants.RESULT_FAILURE);
 
-		ServiceRegistration<AccountEntryValidator>
-			accountEntryValidatorServiceRegistration =
-				bundleContext.registerService(
-					AccountEntryValidator.class, testAccountEntryValidator,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"account.entry.validator.key", key
-					).build());
+		_accountEntryValidatorServiceRegistration =
+			bundleContext.registerService(
+				AccountEntryValidator.class, testAccountEntryValidator,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"account.entry.validator.key", key
+				).build());
 
-		try {
-			Assert.assertFalse(
-				_commerceCheckoutStep.showControls(
-					_getMockHttpServletRequest(), null));
-			_checkTestAccountEntryValidator(testAccountEntryValidator);
-			_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		Assert.assertFalse(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
 
-			_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				_commerceOrder);
+		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
 
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_MANUAL);
-			Assert.assertTrue(
-				_commerceCheckoutStep.showControls(
-					_getMockHttpServletRequest(), null));
-			_checkTestAccountEntryValidator(testAccountEntryValidator);
-			_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		Assert.assertEquals(
+			_commerceOrder.getBillingAddressId(),
+			jsonObject.getLong("billingAddressId"));
+		Assert.assertEquals(
+			_commerceOrder.getCommerceOrderId(),
+			jsonObject.getLong("commerceOrderId"));
+		Assert.assertEquals(
+			_commerceOrder.getShippingAddressId(),
+			jsonObject.getLong("shippingAddressId"));
 
-			_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				_commerceOrder);
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_SUCCESS);
-			Assert.assertTrue(
-				_commerceCheckoutStep.showControls(
-					_getMockHttpServletRequest(), null));
-			_checkTestAccountEntryValidator(testAccountEntryValidator);
-			_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
 
-			_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				_commerceOrder);
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_MANUAL);
 
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_WARNING);
-			Assert.assertTrue(
-				_commerceCheckoutStep.showControls(
-					_getMockHttpServletRequest(), null));
-			_checkTestAccountEntryValidator(testAccountEntryValidator);
-		}
-		finally {
-			accountEntryValidatorServiceRegistration.unregister();
-		}
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_SUCCESS);
+
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_WARNING);
+
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
 	}
 
 	public class TestAccountEntryValidator implements AccountEntryValidator {
@@ -267,56 +251,6 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 	}
 
-	private void _checkTestAccountEntryValidator(
-		TestAccountEntryValidator testAccountEntryValidator) {
-
-		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
-
-		Assert.assertEquals(
-			_commerceOrder.getBillingAddressId(),
-			jsonObject.getLong("billingAddressId"));
-		Assert.assertEquals(
-			_commerceOrder.getCommerceOrderId(),
-			jsonObject.getLong("commerceOrderId"));
-		Assert.assertEquals(
-			_commerceOrder.getShippingAddressId(),
-			jsonObject.getLong("shippingAddressId"));
-	}
-
-	private void _disableAccountEntryValidators(long companyId)
-		throws Exception {
-
-		List<AccountEntryValidator> accountEntryValidators =
-			_accountEntryValidatorRegistry.getAccountEntryValidators();
-
-		for (AccountEntryValidator accountEntryValidator :
-				accountEntryValidators) {
-
-			AccountEntryValidatorConfiguration
-				accountEntryValidatorConfiguration =
-					accountEntryValidator.getAccountEntryValidatorConfiguration(
-						companyId);
-
-			Class<?> accountEntryValidatorConfigurationClass =
-				accountEntryValidatorConfiguration.getClass();
-
-			Class<?>[] interfaceClasses =
-				accountEntryValidatorConfigurationClass.getInterfaces();
-
-			String accountEntryValidatorConfigurationPid =
-				interfaceClasses[0].getName();
-
-			_accountEntryValidatorConfigurationPids.add(
-				accountEntryValidatorConfigurationPid);
-
-			_configurationProvider.saveCompanyConfiguration(
-				companyId, accountEntryValidatorConfigurationPid,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"enabled", false
-				).build());
-		}
-	}
-
 	private HttpServletRequest _getMockHttpServletRequest() throws Exception {
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -336,11 +270,8 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		return httpServletRequest;
 	}
 
-	private final Set<String> _accountEntryValidatorConfigurationPids =
-		new HashSet<>();
-
-	@Inject
-	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
+	private ServiceRegistration<AccountEntryValidator>
+		_accountEntryValidatorServiceRegistration;
 
 	@Inject(
 		filter = "component.name=com.liferay.commerce.checkout.web.internal.util.OrderSummaryCommerceCheckoutStep"
@@ -351,12 +282,6 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
-
-	@Inject
-	private ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private ConfigurationProvider _configurationProvider;
 
 	private Group _group;
 

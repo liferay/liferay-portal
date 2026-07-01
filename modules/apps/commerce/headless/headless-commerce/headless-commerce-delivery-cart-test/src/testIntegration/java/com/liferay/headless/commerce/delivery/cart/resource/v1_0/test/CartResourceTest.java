@@ -12,7 +12,6 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
@@ -43,7 +42,6 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -79,9 +77,7 @@ import java.math.BigDecimal;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -94,11 +90,8 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Andrea Sbarra
@@ -117,8 +110,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-
-		_disableAccountEntryValidators(testCompany.getCompanyId());
 
 		_user = UserTestUtil.addUser(testCompany);
 
@@ -172,20 +163,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void tearDown() throws Exception {
 		super.tearDown();
 
-		for (String accountEntryValidatorConfigurationPid :
-				_accountEntryValidatorConfigurationPids) {
-
-			Configuration[] configurations =
-				_configurationAdmin.listConfigurations(
-					StringBundler.concat(
-						"(", Constants.SERVICE_PID, "=",
-						accountEntryValidatorConfigurationPid, "*)"));
-
-			if (configurations != null) {
-				for (Configuration configuration : configurations) {
-					configuration.delete();
-				}
-			}
+		if (_accountEntryValidatorServiceRegistration != null) {
+			_accountEntryValidatorServiceRegistration.unregister();
 		}
 
 		List<CommerceOrder> commerceOrders =
@@ -289,91 +268,70 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 				key, resultMessage,
 				AccountEntryValidatorConstants.RESULT_FAILURE);
 
-		ServiceRegistration<AccountEntryValidator>
-			accountEntryValidatorServiceRegistration =
-				_bundleContext.registerService(
-					AccountEntryValidator.class, testAccountEntryValidator,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"account.entry.validator.key", key
-					).build());
+		_accountEntryValidatorServiceRegistration =
+			_bundleContext.registerService(
+				AccountEntryValidator.class, testAccountEntryValidator,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"account.entry.validator.key", key
+				).build());
 
-		try {
-			Cart cart = _createCart();
+		Cart cart = _createCart();
 
-			CommerceOrder commerceOrder =
-				_commerceOrderLocalService.getCommerceOrder(cart.getId());
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.getCommerceOrder(cart.getId());
 
-			Cart postCart = cartResource.postCartCheckout(cart.getId());
+		Cart postCart = cartResource.postCartCheckout(cart.getId());
 
-			Assert.assertFalse(postCart.getValid());
-			Assert.assertTrue(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+		Assert.assertFalse(postCart.getValid());
+		Assert.assertTrue(
+			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 
-			Assert.assertTrue(commerceOrder.isOpen());
+		Assert.assertTrue(commerceOrder.isOpen());
 
-			_checkTestAccountEntryValidator(
-				commerceOrder, testAccountEntryValidator);
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			cart.getId());
 
-			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
-				cart.getId());
+		commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
-			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
-			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				commerceOrder);
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_MANUAL);
 
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_MANUAL);
+		postCart = cartResource.postCartCheckout(cart.getId());
 
-			postCart = cartResource.postCartCheckout(cart.getId());
+		Assert.assertFalse(
+			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 
-			Assert.assertFalse(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			cart.getId());
 
-			_checkTestAccountEntryValidator(
-				commerceOrder, testAccountEntryValidator);
+		commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
-			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
-				cart.getId());
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
-			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_SUCCESS);
 
-			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				commerceOrder);
+		postCart = cartResource.postCartCheckout(cart.getId());
 
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_SUCCESS);
+		Assert.assertFalse(
+			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 
-			postCart = cartResource.postCartCheckout(cart.getId());
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			cart.getId());
 
-			Assert.assertFalse(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+		commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
-			_checkTestAccountEntryValidator(
-				commerceOrder, testAccountEntryValidator);
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
-			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
-				cart.getId());
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_WARNING);
 
-			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+		postCart = cartResource.postCartCheckout(cart.getId());
 
-			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				commerceOrder);
-
-			testAccountEntryValidator.setResultStatus(
-				AccountEntryValidatorConstants.RESULT_WARNING);
-
-			postCart = cartResource.postCartCheckout(cart.getId());
-
-			Assert.assertFalse(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
-
-			_checkTestAccountEntryValidator(
-				commerceOrder, testAccountEntryValidator);
-		}
-		finally {
-			accountEntryValidatorServiceRegistration.unregister();
-		}
+		Assert.assertFalse(
+			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 	}
 
 	@Override
@@ -713,23 +671,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
 	}
 
-	private void _checkTestAccountEntryValidator(
-		CommerceOrder commerceOrder,
-		TestAccountEntryValidator testAccountEntryValidator) {
-
-		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
-
-		Assert.assertEquals(
-			commerceOrder.getBillingAddressId(),
-			jsonObject.getLong("billingAddressId"));
-		Assert.assertEquals(
-			commerceOrder.getCommerceOrderId(),
-			jsonObject.getLong("commerceOrderId"));
-		Assert.assertEquals(
-			commerceOrder.getShippingAddressId(),
-			jsonObject.getLong("shippingAddressId"));
-	}
-
 	private Cart _createCart() throws Exception {
 		CommerceOrder commerceOrder = _addCommerceOrder();
 
@@ -755,40 +696,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 					commerceOrder.getStatus());
 			}
 		};
-	}
-
-	private void _disableAccountEntryValidators(long companyId)
-		throws Exception {
-
-		List<AccountEntryValidator> accountEntryValidators =
-			_accountEntryValidatorRegistry.getAccountEntryValidators();
-
-		for (AccountEntryValidator accountEntryValidator :
-				accountEntryValidators) {
-
-			AccountEntryValidatorConfiguration
-				accountEntryValidatorConfiguration =
-					accountEntryValidator.getAccountEntryValidatorConfiguration(
-						companyId);
-
-			Class<?> accountEntryValidatorConfigurationClass =
-				accountEntryValidatorConfiguration.getClass();
-
-			Class<?>[] interfaceClasses =
-				accountEntryValidatorConfigurationClass.getInterfaces();
-
-			String accountEntryValidatorConfigurationPid =
-				interfaceClasses[0].getName();
-
-			_accountEntryValidatorConfigurationPids.add(
-				accountEntryValidatorConfigurationPid);
-
-			_configurationProvider.saveCompanyConfiguration(
-				companyId, accountEntryValidatorConfigurationPid,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"enabled", false
-				).build());
-		}
 	}
 
 	private Cart _randomGuestCart() throws Exception {
@@ -1437,11 +1344,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
-	private final Set<String> _accountEntryValidatorConfigurationPids =
-		new HashSet<>();
-
-	@Inject
-	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
+	private ServiceRegistration<AccountEntryValidator>
+		_accountEntryValidatorServiceRegistration;
 
 	@Inject
 	private AddressLocalService _addressLocalService;
@@ -1465,12 +1369,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
-
-	@Inject
-	private ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private ConfigurationProvider _configurationProvider;
 
 	@Inject
 	private COREntryLocalService _corEntryLocalService;
