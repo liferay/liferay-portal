@@ -64,9 +64,7 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		_layout = LayoutTestUtil.addTypeContentLayout(_group);
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
-	)
+	@FeatureFlag("LPD-57283")
 	@Test
 	@TestInfo("LPD-89205")
 	public void testChangeStyleBookEntry() throws Exception {
