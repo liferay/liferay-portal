@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -683,6 +684,16 @@ public class AssetVocabularyLocalServiceImpl
 		}
 	}
 
+	private boolean _equals(
+		Map<Locale, String> map1, Map<Locale, String> map2) {
+
+		if (MapUtil.isEmpty(map1) && MapUtil.isEmpty(map2)) {
+			return true;
+		}
+
+		return Objects.equals(map1, map2);
+	}
+
 	private String _generateVocabularyName(long groupId, String name) {
 		String vocabularyName = _getVocabularyName(name);
 
@@ -818,7 +829,7 @@ public class AssetVocabularyLocalServiceImpl
 				vocabulary.getVocabularyId());
 		}
 
-		if (!Objects.equals(descriptionMap, vocabulary.getDescriptionMap()) ||
+		if (!_equals(descriptionMap, vocabulary.getDescriptionMap()) ||
 			(visibilityType != vocabulary.getVisibilityType()) ||
 			!_isValidSystemVocabularySettings(
 				vocabulary.getSettings(), settings)) {
