@@ -8,7 +8,7 @@ import {sub} from 'frontend-js-web';
 import SpaceService from '../../../common/services/SpaceService';
 import {IBulkActionFDSData} from '../../../common/types/BulkActionTask';
 import {getScopeExternalReferenceCode} from '../../../common/utils/getScopeExternalReferenceCode';
-import {openCMSModal} from '../../../common/utils/openCMSModal';
+import {openBulkActionConfirmationModal} from '../../../common/utils/openBulkActionConfirmationModal';
 import {triggerAssetBulkAction} from './triggerAssetBulkAction';
 
 /**
@@ -43,12 +43,12 @@ function getBulkDeleteMessage(
 	selectedData: any,
 	isMixedDeleteStrategy: boolean
 ): {
-	confirmationMessage: string;
+	messages: string[];
 	title: string;
 } {
 	if (isMixedDeleteStrategy) {
 		return {
-			confirmationMessage: getBodyHTML([
+			messages: [
 				Liferay.Language.get(
 					'you-are-about-to-delete-the-selected-items-from-multiple-spaces'
 				),
@@ -56,7 +56,7 @@ function getBulkDeleteMessage(
 					'bulk-delete-from-multiple-spaces-warning'
 				),
 				Liferay.Language.get('are-you-sure-you-want-to-continue'),
-			]),
+			],
 			title: selectedData.items.length
 				? sub(Liferay.Language.get('delete-x-items'), [
 						selectedData.items.length,
@@ -67,20 +67,18 @@ function getBulkDeleteMessage(
 
 	if (selectedData.selectAll) {
 		return {
-			confirmationMessage: getBodyHTML([
-				Liferay.Language.get('delete-all-items-confirmation'),
-			]),
+			messages: [Liferay.Language.get('delete-all-items-confirmation')],
 			title: Liferay.Language.get('delete-all-items'),
 		};
 	}
 
 	if (selectedData.items.length > 1) {
 		return {
-			confirmationMessage: getBodyHTML([
+			messages: [
 				sub(Liferay.Language.get('delete-x-items-confirmation'), [
 					selectedData.items.length,
 				]),
-			]),
+			],
 			title: sub(Liferay.Language.get('delete-x-items'), [
 				selectedData.items.length,
 			]),
@@ -88,19 +86,9 @@ function getBulkDeleteMessage(
 	}
 
 	return {
-		confirmationMessage: getBodyHTML([
-			Liferay.Language.get('delete-item-confirmation'),
-		]),
+		messages: [Liferay.Language.get('delete-item-confirmation')],
 		title: Liferay.Language.get('delete-item'),
 	};
-}
-
-function getBodyHTML(lines: string[]): string {
-	return `
-    	<div>
-    		${lines.map((line) => `<p>${line}</p>`).join('')}
-		</div>
-  	`;
 }
 
 /**
@@ -163,14 +151,14 @@ async function handleBulkDeletion({
 			(space) => space.settings.trashEnabled
 		);
 
-		const {confirmationMessage, title} = bulkDeleteMessage(
+		const {messages, title} = bulkDeleteMessage(
 			selectedData,
 			!isRecycleBinView &&
 				isMultipleSpacesView &&
 				(selectedData.selectAll || someEntriesHaveTrashEnabled)
 		);
 
-		showModal(apiURL, confirmationMessage, dataSetId, title, selectedData);
+		showModal(apiURL, messages, dataSetId, title, selectedData);
 	}
 	else {
 		executeBulkDeleteAction(apiURL, dataSetId, selectedData);
@@ -180,40 +168,20 @@ async function handleBulkDeletion({
 /**
  * Shows the bulk delete confirmation modal.
  */
-async function showModal(
+function showModal(
 	apiURL: string,
-	confirmationMessage: string,
+	messages: string[],
 	dataSetId: string,
 	title: string,
 	selectedData: any
-): Promise<void> {
-	openCMSModal({
-		bodyHTML: confirmationMessage,
-		buttons: [
-			{
-				displayType: 'secondary',
-				label: Liferay.Language.get('cancel'),
-				onClick: ({processClose}: {processClose: () => void}) => {
-					processClose();
-				},
-				type: 'cancel',
-			},
-			{
-				displayType: 'danger',
-				label: Liferay.Language.get('delete'),
-				onClick: async ({processClose}: {processClose: () => void}) => {
-					processClose();
-
-					executeBulkDeleteAction(
-						apiURL,
-						dataSetId,
-						selectedData,
-						processClose
-					);
-				},
-			},
-		],
-		center: true,
+): void {
+	openBulkActionConfirmationModal({
+		confirmDisplayType: 'danger',
+		confirmLabel: Liferay.Language.get('delete'),
+		message: messages,
+		onConfirm: () => {
+			executeBulkDeleteAction(apiURL, dataSetId, selectedData);
+		},
 		status: 'danger',
 		title,
 	});

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {openModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 
 import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
 import {IBulkActionFDSData} from '../../../common/types/BulkActionTask';
+import {openBulkActionConfirmationModal} from '../../../common/utils/openBulkActionConfirmationModal';
 import {displayCreateTaskSuccessToast} from '../../../common/utils/toastUtil';
 import {getBulkActionTaskMessage} from '../../bulk_actions_monitor/util/notifications';
 import {triggerAssetBulkAction} from './triggerAssetBulkAction';
@@ -105,76 +105,53 @@ export default function deleteAssetVersionBulkAction({
 		versions
 	);
 
-	openModal({
-		bodyHTML: `
-                <div>
-                    <p>
-                        ${confirmationMessage}
-                    </p>
-                </div>
-			`,
-		buttons: [
-			{
-				displayType: 'secondary',
-				label: Liferay.Language.get('cancel'),
-				onClick: ({processClose}) => {
-					processClose();
+	openBulkActionConfirmationModal({
+		confirmDisplayType: isNotDeletableVersion ? 'info' : 'danger',
+		confirmLabel: isNotDeletableVersion
+			? Liferay.Language.get('ok')
+			: Liferay.Language.get('delete'),
+		message: confirmationMessage,
+		onConfirm: () => {
+			if (isNotDeletableVersion) {
+				return;
+			}
+
+			const type = 'DeleteObjectAssetVersionBulkSelectionAction';
+
+			triggerAssetBulkAction({
+				apiURL,
+				dataSetId,
+				keyValues: {
+					className,
+					classPK: parseInt(classPK, 10),
+					versions,
 				},
-				type: 'cancel',
-			},
-			{
-				displayType: isNotDeletableVersion ? 'info' : 'danger',
-				label: isNotDeletableVersion
-					? Liferay.Language.get('ok')
-					: Liferay.Language.get('delete'),
-				onClick: async ({processClose}) => {
-					const type = 'DeleteObjectAssetVersionBulkSelectionAction';
-
-					if (isNotDeletableVersion) {
-						processClose();
-
-						return;
-					}
-
-					triggerAssetBulkAction({
-						apiURL,
-						dataSetId,
-						keyValues: {
-							className,
-							classPK: parseInt(classPK, 10),
-							versions,
-						},
-						onCreateSuccess: () => {
-							const message = getBulkActionTaskMessage(
-								type,
-								'info',
-								selectedData
-							);
-
-							displayCreateTaskSuccessToast(
-								selectedData.selectAll
-									? message
-									: sub(message, [versions.length || 0])
-							);
-						},
-						overrideDefaultSuccessToast: true,
-						selectedData: {
-							items: [
-								{
-									embedded: selectedData.items[0],
-									entryClassName,
-								} as ISearchAssetObjectEntry,
-							],
-							selectAll: selectedData.selectAll,
-						},
+				onCreateSuccess: () => {
+					const message = getBulkActionTaskMessage(
 						type,
-					});
+						'info',
+						selectedData
+					);
 
-					processClose();
+					displayCreateTaskSuccessToast(
+						selectedData.selectAll
+							? message
+							: sub(message, [versions.length || 0])
+					);
 				},
-			},
-		],
-		center: true,
+				overrideDefaultSuccessToast: true,
+				selectedData: {
+					items: [
+						{
+							embedded: selectedData.items[0],
+							entryClassName,
+						} as ISearchAssetObjectEntry,
+					],
+					selectAll: selectedData.selectAll,
+				},
+				type,
+			});
+		},
 		status: isNotDeletableVersion ? 'info' : 'danger',
 		title,
 	});
