@@ -6,8 +6,14 @@
 package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.lar.PermissionImporter;
+import com.liferay.exportimport.test.util.TestReaderWriter;
+import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -21,6 +27,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
@@ -31,9 +38,11 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -45,6 +54,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -142,6 +152,95 @@ public class PermissionExportImportTest {
 	}
 
 	@Test
+	public void testExportImportDocumentLibraryFolderPermissionsForSiteRole()
+		throws Exception {
+
+		Group exportGroup = GroupTestUtil.addGroup();
+		Group importGroup = GroupTestUtil.addGroup();
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_SITE);
+
+		try {
+			String resourceName = DLFolder.class.getName();
+
+			DLFolder exportDLFolder = DLTestUtil.addDLFolder(
+				exportGroup.getGroupId());
+
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				exportGroup.getCompanyId(), resourceName,
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(exportDLFolder.getFolderId()), role.getRoleId(),
+				_DL_FOLDER_ACTION_IDS);
+
+			// Export
+
+			TestReaderWriter testReaderWriter = _createTestReaderWriter();
+
+			PortletDataContext exportPortletDataContext =
+				PortletDataContextFactoryUtil.createExportPortletDataContext(
+					exportGroup.getCompanyId(), exportGroup.getGroupId(),
+					HashMapBuilder.put(
+						PortletDataHandlerKeys.PERMISSIONS,
+						new String[] {Boolean.TRUE.toString()}
+					).build(),
+					null, null, testReaderWriter);
+
+			exportPortletDataContext.addPermissions(
+				DLFolder.class, exportDLFolder.getFolderId());
+
+			exportPortletDataPermissions(exportPortletDataContext);
+
+			// Import
+
+			DLFolder importDLFolder = DLTestUtil.addDLFolder(
+				importGroup.getGroupId());
+
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				importGroup.getCompanyId(), resourceName,
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(importDLFolder.getFolderId()), role.getRoleId(),
+				new String[] {ActionKeys.DELETE});
+
+			PortletDataContext importPortletDataContext =
+				PortletDataContextFactoryUtil.createImportPortletDataContext(
+					importGroup.getCompanyId(), importGroup.getGroupId(),
+					HashMapBuilder.put(
+						PortletDataHandlerKeys.PERMISSIONS,
+						new String[] {Boolean.TRUE.toString()}
+					).build(),
+					new TestUserIdStrategy(), testReaderWriter);
+
+			importPortletDataContext.setSourceGroupId(exportGroup.getGroupId());
+
+			_permissionImporter.readPortletDataPermissions(
+				importPortletDataContext);
+
+			importPortletDataContext.importPermissions(
+				DLFolder.class, exportDLFolder.getFolderId(),
+				importDLFolder.getFolderId());
+
+			Assert.assertEquals(
+				Arrays.asList(_DL_FOLDER_ACTION_IDS),
+				ResourcePermissionLocalServiceUtil.
+					getAvailableResourcePermissionActionIds(
+						importGroup.getCompanyId(), resourceName,
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(importDLFolder.getFolderId()),
+						role.getRoleId(),
+						Arrays.asList(
+							ArrayUtil.append(
+								_DL_FOLDER_ACTION_IDS, ActionKeys.DELETE))));
+		}
+		finally {
+			RoleLocalServiceUtil.deleteRole(role);
+
+			GroupTestUtil.deleteGroup(exportGroup);
+			GroupTestUtil.deleteGroup(importGroup);
+		}
+	}
+
+	@Test
 	public void testPortletGuestPermissionsExportImportToGroup()
 		throws Exception {
 
@@ -201,6 +300,26 @@ public class PermissionExportImportTest {
 			HashMapBuilder.put(
 				role.getRoleId(), actionIds
 			).build());
+	}
+
+	protected void exportPortletDataPermissions(
+			PortletDataContext portletDataContext)
+		throws Exception {
+
+		Class<?> clazz = _permissionImporter.getClass();
+
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		clazz = classLoader.loadClass(
+			"com.liferay.exportimport.internal.lar.PermissionExporter");
+
+		Field field = clazz.getDeclaredField("_permissionExporter");
+
+		field.setAccessible(true);
+
+		ReflectionTestUtil.invoke(
+			field.get(null), "exportPortletDataPermissions",
+			new Class<?>[] {PortletDataContext.class}, portletDataContext);
 	}
 
 	protected Element exportPortletPermissions(
@@ -312,6 +431,20 @@ public class PermissionExportImportTest {
 		}
 	}
 
+	private TestReaderWriter _createTestReaderWriter() {
+		TestReaderWriter testReaderWriter = new TestReaderWriter();
+
+		Document document = SAXReaderUtil.createDocument();
+
+		Element rootElement = document.addElement("root");
+
+		rootElement.addElement("header");
+
+		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+
+		return testReaderWriter;
+	}
+
 	private void _testPortletGuestPermissionsExportImport(
 			Group exportGroup, Group importGroup)
 		throws Exception {
@@ -348,6 +481,10 @@ public class PermissionExportImportTest {
 
 	private static final String[] _ACTION_IDS = {
 		ActionKeys.ADD_TO_PAGE, ActionKeys.VIEW
+	};
+
+	private static final String[] _DL_FOLDER_ACTION_IDS = {
+		ActionKeys.UPDATE, ActionKeys.VIEW
 	};
 
 	private static final String _PORTLET_ID = PortletKeys.EXPORT_IMPORT;
