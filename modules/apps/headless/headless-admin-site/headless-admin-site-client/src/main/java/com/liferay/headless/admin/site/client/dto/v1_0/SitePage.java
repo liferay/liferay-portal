@@ -263,6 +263,31 @@ public class SitePage implements Cloneable, Serializable {
 
 	protected PageSettings pageSettings;
 
+	public PageSpecificationVersion[] getPageSpecificationVersions() {
+		return pageSpecificationVersions;
+	}
+
+	public void setPageSpecificationVersions(
+		PageSpecificationVersion[] pageSpecificationVersions) {
+
+		this.pageSpecificationVersions = pageSpecificationVersions;
+	}
+
+	public void setPageSpecificationVersions(
+		UnsafeSupplier<PageSpecificationVersion[], Exception>
+			pageSpecificationVersionsUnsafeSupplier) {
+
+		try {
+			pageSpecificationVersions =
+				pageSpecificationVersionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected PageSpecificationVersion[] pageSpecificationVersions;
+
 	public PageSpecification[] getPageSpecifications() {
 		return pageSpecifications;
 	}
@@ -539,4 +564,4 @@ public class SitePage implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:982788856
+// LIFERAY-REST-BUILDER-HASH:1299706233

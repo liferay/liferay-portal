@@ -649,6 +649,55 @@ public abstract class BasePageSpecificationResourceTestCase {
 	}
 
 	@Test
+	public void testGetSiteSitePagePageSpecificationVersionPageSpecification()
+		throws Exception {
+
+		PageSpecification postPageSpecification =
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_addPageSpecification();
+
+		PageSpecification getPageSpecification =
+			pageSpecificationResource.
+				getSiteSitePagePageSpecificationVersionPageSpecification(
+					testGetSiteSitePagePageSpecificationVersionPageSpecification_getSiteExternalReferenceCode(),
+					testGetSiteSitePagePageSpecificationVersionPageSpecification_getSitePageExternalReferenceCode(),
+					testGetSiteSitePagePageSpecificationVersionPageSpecification_getPageSpecificationVersionExternalReferenceCode());
+
+		assertEquals(postPageSpecification, getPageSpecification);
+		assertValid(getPageSpecification);
+	}
+
+	protected PageSpecification
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_addPageSpecification()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_getSiteExternalReferenceCode()
+		throws Exception {
+
+		return testGroup.getExternalReferenceCode();
+	}
+
+	protected String
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_getPageSpecificationVersionExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetSiteSitePagePageSpecificationsPage() throws Exception {
 		String siteExternalReferenceCode =
 			testGetSiteSitePagePageSpecificationsPage_getSiteExternalReferenceCode();
@@ -2262,4 +2311,4 @@ public abstract class BasePageSpecificationResourceTestCase {
 			_pageSpecificationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-612524761
+// LIFERAY-REST-BUILDER-HASH:1693648751

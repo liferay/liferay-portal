@@ -558,6 +558,57 @@ public class SitePage implements Serializable {
 	private Supplier<PageSettings> _pageSettingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The page's page specification versions. This field is not returned by default. It can be requested via nestedFields."
+	)
+	@Valid
+	public PageSpecificationVersion[] getPageSpecificationVersions() {
+		if (_pageSpecificationVersionsSupplier != null) {
+			pageSpecificationVersions =
+				_pageSpecificationVersionsSupplier.get();
+
+			_pageSpecificationVersionsSupplier = null;
+		}
+
+		return pageSpecificationVersions;
+	}
+
+	public void setPageSpecificationVersions(
+		PageSpecificationVersion[] pageSpecificationVersions) {
+
+		this.pageSpecificationVersions = pageSpecificationVersions;
+
+		_pageSpecificationVersionsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPageSpecificationVersions(
+		UnsafeSupplier<PageSpecificationVersion[], Exception>
+			pageSpecificationVersionsUnsafeSupplier) {
+
+		_pageSpecificationVersionsSupplier = () -> {
+			try {
+				return pageSpecificationVersionsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The page's page specification versions. This field is not returned by default. It can be requested via nestedFields."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PageSpecificationVersion[] pageSpecificationVersions;
+
+	@JsonIgnore
+	private Supplier<PageSpecificationVersion[]>
+		_pageSpecificationVersionsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page's specifications. A page of type content will contain 1 page specification for its draft layout and 1 page specification for its published layout. A page of type widget contains only 1 page specification for its published layout. A page of type content may also be created by sending a single content page specification. This field is not returned by default. It can be requested via nestedFields."
 	)
 	@Valid
@@ -1113,6 +1164,29 @@ public class SitePage implements Serializable {
 			sb.append(String.valueOf(pageSettings));
 		}
 
+		PageSpecificationVersion[] pageSpecificationVersions =
+			getPageSpecificationVersions();
+
+		if (pageSpecificationVersions != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"pageSpecificationVersions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < pageSpecificationVersions.length; i++) {
+				sb.append(String.valueOf(pageSpecificationVersions[i]));
+
+				if ((i + 1) < pageSpecificationVersions.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		PageSpecification[] pageSpecifications = getPageSpecifications();
 
 		if (pageSpecifications != null) {
@@ -1421,4 +1495,4 @@ public class SitePage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:918417531
+// LIFERAY-REST-BUILDER-HASH:-1642070978

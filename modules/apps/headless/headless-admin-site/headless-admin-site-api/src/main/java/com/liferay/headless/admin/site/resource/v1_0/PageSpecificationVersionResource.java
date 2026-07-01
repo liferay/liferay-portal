@@ -1,11 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.admin.site.resource.v1_0;
 
-import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
+import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -42,66 +42,18 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface PageSpecificationResource {
+public interface PageSpecificationVersionResource {
 
-	public void deleteSitePageSpecification(
+	public PageSpecificationVersion getSiteSitePagePageSpecificationVersion(
 			String siteExternalReferenceCode,
-			String pageSpecificationExternalReferenceCode)
+			String sitePageExternalReferenceCode,
+			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception;
 
-	public Page<PageSpecification>
-			getSiteDisplayPageTemplatePageSpecificationsPage(
+	public Page<PageSpecificationVersion>
+			getSiteSitePagePageSpecificationVersionsPage(
 				String siteExternalReferenceCode,
-				String displayPageTemplateExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification> getSiteMasterPagePageSpecificationsPage(
-			String siteExternalReferenceCode,
-			String masterPageExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification getSitePageSpecification(
-			String siteExternalReferenceCode,
-			String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification> getSitePageTemplatePageSpecificationsPage(
-			String siteExternalReferenceCode,
-			String pageTemplateExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification
-			getSiteSitePagePageSpecificationVersionPageSpecification(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				String pageSpecificationVersionExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
-			String siteExternalReferenceCode,
-			String sitePageExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification> getSiteUtilityPagePageSpecificationsPage(
-			String siteExternalReferenceCode,
-			String utilityPageExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification patchSitePageSpecification(
-			String siteExternalReferenceCode,
-			String pageSpecificationExternalReferenceCode,
-			PageSpecification pageSpecification)
-		throws Exception;
-
-	public PageSpecification postSitePageSpecificationPublish(
-			String siteExternalReferenceCode,
-			String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification putSitePageSpecification(
-			String siteExternalReferenceCode,
-			String pageSpecificationExternalReferenceCode,
-			PageSpecification pageSpecification)
+				String sitePageExternalReferenceCode)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -174,7 +126,7 @@ public interface PageSpecificationResource {
 	@ProviderType
 	public interface Builder {
 
-		public PageSpecificationResource build();
+		public PageSpecificationVersionResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -200,4 +152,4 @@ public interface PageSpecificationResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:735240647
+// LIFERAY-REST-BUILDER-HASH:-1909812915
