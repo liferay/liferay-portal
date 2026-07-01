@@ -57,13 +57,14 @@ public class AssetCategoryServiceUtil {
 			String externalReferenceCode, long groupId, long parentCategoryId,
 			Map<java.util.Locale, String> titleMap,
 			Map<java.util.Locale, String> descriptionMap, long vocabularyId,
-			String[] categoryProperties,
+			boolean system, String[] categoryProperties,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCategory(
 			externalReferenceCode, groupId, parentCategoryId, titleMap,
-			descriptionMap, vocabularyId, categoryProperties, serviceContext);
+			descriptionMap, vocabularyId, system, categoryProperties,
+			serviceContext);
 	}
 
 	public static void deleteCategories(long[] categoryIds)
@@ -430,4 +431,4 @@ public class AssetCategoryServiceUtil {
 	private static volatile AssetCategoryService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1607392872
+// LIFERAY-SERVICE-BUILDER-HASH:-1564060164

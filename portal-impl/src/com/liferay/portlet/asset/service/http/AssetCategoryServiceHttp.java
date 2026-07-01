@@ -133,7 +133,7 @@ public class AssetCategoryServiceHttp {
 			long groupId, long parentCategoryId,
 			java.util.Map<java.util.Locale, String> titleMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
-			long vocabularyId, String[] categoryProperties,
+			long vocabularyId, boolean system, String[] categoryProperties,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -144,8 +144,8 @@ public class AssetCategoryServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId, parentCategoryId,
-				titleMap, descriptionMap, vocabularyId, categoryProperties,
-				serviceContext);
+				titleMap, descriptionMap, vocabularyId, system,
+				categoryProperties, serviceContext);
 
 			Object returnObj = null;
 
@@ -1747,7 +1747,7 @@ public class AssetCategoryServiceHttp {
 	};
 	private static final Class<?>[] _addCategoryParameterTypes2 = new Class[] {
 		String.class, long.class, long.class, java.util.Map.class,
-		java.util.Map.class, long.class, String[].class,
+		java.util.Map.class, long.class, boolean.class, String[].class,
 		com.liferay.portal.kernel.service.ServiceContext.class
 	};
 	private static final Class<?>[] _deleteCategoriesParameterTypes3 =
@@ -1896,4 +1896,4 @@ public class AssetCategoryServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-146585217
+// LIFERAY-SERVICE-BUILDER-HASH:1262342086

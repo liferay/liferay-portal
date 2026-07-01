@@ -108,6 +108,7 @@
 			<hint name="display-width">350</hint>
 		</field>
 		<field name="vocabularyId" type="long" />
+		<field name="system" type="boolean" />
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />
 	</model>

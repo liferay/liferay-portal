@@ -2299,6 +2299,7 @@ public class AssetCategoryPersistenceImpl
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
 		dbColumnNames.put("uuid", "uuid_");
+		dbColumnNames.put("system", "system_");
 
 		setDBColumnNames(dbColumnNames);
 
@@ -2639,6 +2640,7 @@ public class AssetCategoryPersistenceImpl
 		ctMergeColumnNames.add("title");
 		ctMergeColumnNames.add("description");
 		ctMergeColumnNames.add("vocabularyId");
+		ctMergeColumnNames.add("system_");
 		ctMergeColumnNames.add("lastPublishDate");
 		ctMergeColumnNames.add("status");
 
@@ -3138,7 +3140,7 @@ public class AssetCategoryPersistenceImpl
 		"SELECT COUNT(assetCategory) FROM AssetCategory assetCategory WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
-		new String[] {"uuid"});
+		new String[] {"uuid", "system"});
 
 	@Override
 	protected FinderCache getFinderCache() {
@@ -3146,4 +3148,4 @@ public class AssetCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:31394165
+// LIFERAY-SERVICE-BUILDER-HASH:-992189092

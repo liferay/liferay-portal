@@ -148,6 +148,8 @@ public class AssetCategoryPersistenceTest {
 
 		newAssetCategory.setVocabularyId(RandomTestUtil.nextLong());
 
+		newAssetCategory.setSystem(RandomTestUtil.randomBoolean());
+
 		newAssetCategory.setLastPublishDate(RandomTestUtil.nextDate());
 
 		newAssetCategory.setStatus(RandomTestUtil.nextInt());
@@ -205,6 +207,8 @@ public class AssetCategoryPersistenceTest {
 		Assert.assertEquals(
 			existingAssetCategory.getVocabularyId(),
 			newAssetCategory.getVocabularyId());
+		Assert.assertEquals(
+			existingAssetCategory.isSystem(), newAssetCategory.isSystem());
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingAssetCategory.getLastPublishDate()),
 			Time.getShortTimestamp(newAssetCategory.getLastPublishDate()));
@@ -439,7 +443,7 @@ public class AssetCategoryPersistenceTest {
 			"groupId", true, "companyId", true, "userId", true, "userName",
 			true, "createDate", true, "modifiedDate", true, "parentCategoryId",
 			true, "treePath", true, "name", true, "vocabularyId", true,
-			"lastPublishDate", true, "status", true);
+			"system", true, "lastPublishDate", true, "status", true);
 	}
 
 	@Test
@@ -780,6 +784,8 @@ public class AssetCategoryPersistenceTest {
 
 		assetCategory.setVocabularyId(RandomTestUtil.nextLong());
 
+		assetCategory.setSystem(RandomTestUtil.randomBoolean());
+
 		assetCategory.setLastPublishDate(RandomTestUtil.nextDate());
 
 		assetCategory.setStatus(RandomTestUtil.nextInt());
@@ -795,4 +801,4 @@ public class AssetCategoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1772366963
+// LIFERAY-SERVICE-BUILDER-HASH:563891789
