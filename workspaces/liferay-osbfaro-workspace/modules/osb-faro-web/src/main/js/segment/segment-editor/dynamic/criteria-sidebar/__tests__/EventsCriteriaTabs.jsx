@@ -203,7 +203,7 @@ describe('EventsCriteriaTabs', () => {
 		expect(screen.queryByText('Submitted Form')).not.toBeInTheDocument();
 	});
 
-	it('renders no custom items and no empty state when there are no custom events', () => {
+	it('shows the no-entries empty state when there are no custom events', () => {
 		useQuery.mockReturnValue(customEventsResult(0, 0));
 
 		const {container} = renderTabs();
@@ -213,6 +213,13 @@ describe('EventsCriteriaTabs', () => {
 		expect(
 			container.querySelectorAll('[data-testid^="criteria-item-"]')
 		).toHaveLength(0);
+		expect(screen.getByText('no-custom-events-yet')).toBeInTheDocument();
+		expect(
+			screen.getByText('learn-more-about-events').closest('a')
+		).toHaveAttribute(
+			'href',
+			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/events-analytics/tracking-events'
+		);
 	});
 
 	it('shows an empty state when a search yields no custom events', async () => {

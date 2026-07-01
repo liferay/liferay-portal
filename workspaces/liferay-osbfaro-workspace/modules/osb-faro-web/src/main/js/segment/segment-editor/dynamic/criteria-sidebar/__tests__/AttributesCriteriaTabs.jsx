@@ -103,4 +103,18 @@ describe('AttributesCriteriaTabs', () => {
 			propertySubgroupsList.querySelector('.criteria-sidebar-item-root')
 		).toBeInTheDocument();
 	});
+
+	it('shows the no-entries empty state when there are no custom properties', () => {
+		renderTabs({customProperties: new List()});
+
+		fireEvent.click(screen.getByText('Custom'));
+
+		expect(screen.getByText('no-custom-fields-yet')).toBeInTheDocument();
+		expect(
+			screen.getByText('learn-more-about-fields').closest('a')
+		).toHaveAttribute(
+			'href',
+			'https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/adding-custom-fields'
+		);
+	});
 });
