@@ -12,7 +12,7 @@ export interface AudiencesCriteria {
 	type: 'boolean' | 'number' | 'set' | 'string';
 }
 
-export interface AudiencesCriteriaJSON {
+export interface AudiencesCriteriaRulesGroup {
 	conjunction?: string;
 	rules?: Array<{attribute: string; operator: string; value: string}>;
 }

@@ -147,11 +147,11 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"backURL", getBackURL()
 		).put(
-			"json", getAudiencesEntryJSONObject()
-		).put(
 			"name", _getName()
 		).put(
 			"namespace", _renderResponse.getNamespace()
+		).put(
+			"rulesGroup", getAudiencesEntryJSONObject()
 		).build();
 	}
 

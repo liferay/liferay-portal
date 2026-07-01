@@ -6,7 +6,7 @@
 import {v4 as uuidv4} from 'uuid';
 
 import {getOperators} from './constants/operators';
-import {AudiencesCriteria, AudiencesCriteriaJSON, Rule} from './types';
+import {AudiencesCriteria, AudiencesCriteriaRulesGroup, Rule} from './types';
 
 export interface State {
 	conjunction: string;
@@ -37,16 +37,16 @@ export function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 }
 
 export function initState({
-	json,
 	name = '',
+	rulesGroup,
 }: {
-	json?: AudiencesCriteriaJSON;
 	name?: string;
+	rulesGroup?: AudiencesCriteriaRulesGroup;
 }): State {
 	return {
-		conjunction: json?.conjunction ?? 'AND',
+		conjunction: rulesGroup?.conjunction ?? 'AND',
 		name,
-		rules: (json?.rules ?? [])
+		rules: (rulesGroup?.rules ?? [])
 			.filter((rule) => Boolean(rule.attribute))
 			.map((rule) => ({
 				attribute: rule.attribute,

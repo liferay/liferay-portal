@@ -20,7 +20,7 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 import AttributesSidebar from './components/AttributesSidebar';
 import ConditionsPanel from './components/ConditionsPanel';
 import {initState, reducer, serializeCriteria} from './reducer';
-import {AudiencesCriteriaJSON, AudiencesCriteriaType} from './types';
+import {AudiencesCriteriaRulesGroup, AudiencesCriteriaType} from './types';
 
 import './AudienceBuilder.scss';
 
@@ -33,19 +33,23 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
 	backURL?: string;
-	json?: AudiencesCriteriaJSON;
 	name?: string;
 	namespace?: string;
+	rulesGroup?: AudiencesCriteriaRulesGroup;
 }
 
 export default function AudienceBuilder({
 	audiencesCriteriaTypes = [],
 	backURL,
-	json,
 	name,
 	namespace = '',
+	rulesGroup,
 }: IProps) {
-	const [state, dispatch] = useReducer(reducer, {json, name}, initState);
+	const [state, dispatch] = useReducer(
+		reducer,
+		{name, rulesGroup},
+		initState
+	);
 
 	return (
 		<ScreenReaderAnnouncerContextProvider>
