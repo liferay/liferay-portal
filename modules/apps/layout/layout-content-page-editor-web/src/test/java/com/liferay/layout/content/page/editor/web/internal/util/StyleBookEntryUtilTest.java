@@ -154,7 +154,7 @@ public class StyleBookEntryUtilTest {
 		StyleBookEntry orphanScopeStyleBookEntry = _mockStyleBookEntry(
 			RandomTestUtil.randomLong());
 
-		Group otherScopeGroup = _getGroup();
+		Group otherScopeGroup = _mockGroup();
 
 		StyleBookEntry otherScopeStyleBookEntry1 = _mockStyleBookEntry(
 			otherScopeGroup.getGroupId());
@@ -267,36 +267,6 @@ public class StyleBookEntryUtilTest {
 		return frontendTokenValue.get("value");
 	}
 
-	private Group _getGroup() throws Exception {
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getDescriptiveName(LocaleUtil.getDefault())
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			group.getExternalReferenceCode()
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			group.getGroupId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		_groupLocalServiceUtilMockedStatic.when(
-			() -> GroupLocalServiceUtil.fetchGroup(group.getGroupId())
-		).thenReturn(
-			group
-		);
-
-		return group;
-	}
-
 	private FrontendTokenDefinition _mockFrontendTokenDefinition(String themeId)
 		throws Exception {
 
@@ -349,6 +319,36 @@ public class StyleBookEntryUtilTest {
 		);
 
 		return frontendTokenDefinition;
+	}
+
+	private Group _mockGroup() throws Exception {
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getDescriptiveName(LocaleUtil.getDefault())
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			group.getExternalReferenceCode()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		_groupLocalServiceUtilMockedStatic.when(
+			() -> GroupLocalServiceUtil.fetchGroup(group.getGroupId())
+		).thenReturn(
+			group
+		);
+
+		return group;
 	}
 
 	private Layout _mockLayout(long companyId, long groupId) {
