@@ -310,6 +310,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 
 			Assert.assertTrue(commerceOrder.isOpen());
+
 			_checkTestAccountEntryValidator(
 				commerceOrder, testAccountEntryValidator);
 
