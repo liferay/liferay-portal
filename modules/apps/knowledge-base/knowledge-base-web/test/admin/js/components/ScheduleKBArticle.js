@@ -85,7 +85,7 @@ describe('ScheduleKBArticle', () => {
 			});
 
 			const cancelButton = await result.getByText('cancel');
-			const scheduleButton = await result.getByText('schedule');
+			const scheduleButton = await result.getByText('schedule[verb]');
 
 			expect(cancelButton).toBeInTheDocument();
 			expect(scheduleButton).toBeInTheDocument();
@@ -149,7 +149,7 @@ describe('ScheduleKBArticle', () => {
 			act(() => {
 				jest.runAllTimers();
 			});
-			const scheduleButton = await result.getByText('schedule');
+			const scheduleButton = await result.getByText('schedule[verb]');
 
 			expect(scheduleButton).not.toBeDisabled();
 		});
@@ -158,7 +158,7 @@ describe('ScheduleKBArticle', () => {
 			act(() => {
 				jest.runAllTimers();
 			});
-			const scheduleButton = await result.getByText('schedule');
+			const scheduleButton = await result.getByText('schedule[verb]');
 
 			act(() => {
 				fireEvent.click(scheduleButton);
