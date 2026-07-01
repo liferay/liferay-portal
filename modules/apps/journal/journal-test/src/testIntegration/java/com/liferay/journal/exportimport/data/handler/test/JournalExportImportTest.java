@@ -420,6 +420,142 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
+	public void testExportImportWebContentCircularReference() throws Exception {
+		String ddmStructureKey = _addDataDefinition(group.getGroupId());
+
+		JournalArticle article1 = JournalTestUtil.addArticleWithXMLContent(
+			group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			_buildXMLContent("{}"), ddmStructureKey, null, LocaleUtil.US);
+
+		JournalArticle article2 = JournalTestUtil.addArticleWithXMLContent(
+			group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			_buildXMLContent(_getArticleReferenceJSON(article1)),
+			ddmStructureKey, null, LocaleUtil.US);
+
+		article1 = JournalTestUtil.updateArticle(
+			article1, RandomTestUtil.randomString(),
+			_buildXMLContent(_getArticleReferenceJSON(article2)));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.journal.internal.dynamic.data.mapping.util." +
+					"JournalArticleImportDDMFormFieldValueTransformer",
+				LoggerTestUtil.WARN)) {
+
+			exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			int count = 0;
+
+			for (LogEntry logEntry : logEntries) {
+				String message = logEntry.getMessage();
+
+				if (message.startsWith(
+						"Unable to get journal article with primary key")) {
+
+					count++;
+				}
+			}
+
+			Assert.assertTrue("Unexpected log messages: " + count, count <= 2);
+		}
+
+		JournalArticle importedArticle1 =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article1.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedArticle1);
+
+		JournalArticle importedArticle2 =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article2.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedArticle2);
+
+		_assertContains(
+			importedArticle1.getContent(),
+			"\"classPK\":\"" + importedArticle2.getResourcePrimKey() + "\"");
+		_assertContains(
+			importedArticle2.getContent(),
+			"\"classPK\":\"" + importedArticle1.getResourcePrimKey() + "\"");
+	}
+
+	@Test
+	public void testExportImportWebContentWithNestedWebContentStructure()
+		throws Exception {
+
+		String ddmStructureKey = _addDataDefinition(group.getGroupId());
+
+		JournalArticle referencedArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				_buildXMLContent("{}"), ddmStructureKey, null, LocaleUtil.US);
+
+		JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
+			group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			_buildXMLContent(_getArticleReferenceJSON(referencedArticle)),
+			ddmStructureKey, null, LocaleUtil.US);
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		JournalArticle importedReferencedArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				referencedArticle.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedReferencedArticle);
+
+		JournalArticle importedArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedArticle);
+
+		_assertContains(
+			importedArticle.getContent(),
+			"\"classPK\":\"" + importedReferencedArticle.getResourcePrimKey() +
+				"\"");
+	}
+
+	@Test
+	public void testExportImportWebContentWithSameTitleInTargetGroup()
+		throws Exception {
+
+		String title = RandomTestUtil.randomString();
+
+		JournalArticle importedGroupArticle = JournalTestUtil.addArticle(
+			importedGroup.getGroupId(), title, RandomTestUtil.randomString());
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), title, RandomTestUtil.randomString());
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		JournalArticle importedArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedArticle);
+		Assert.assertEquals(title, importedArticle.getTitle());
+
+		JournalArticle existingArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				importedGroupArticle.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(existingArticle);
+		Assert.assertEquals(title, existingArticle.getTitle());
+
+		Assert.assertEquals(
+			2,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				importedGroup.getGroupId()));
+	}
+
+	@Test
 	public void testExportImportWithAssetCategory() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(group.getGroupId());
@@ -562,21 +698,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildParameterMap());
 
-		DataDefinitionResource dataDefinitionResource =
-			_dataDefinitionResourceFactory.create(
-			).user(
-				TestPropsValues.getUser()
-			).build();
-
-		String dataDefinitionJSON = _read(
-			"repeatable_journal_article_field_data_definition.json");
-
-		DataDefinition dataDefinition =
-			dataDefinitionResource.postSiteDataDefinitionByContentType(
-				stagingGroup.getGroupId(), "journal",
-				DataDefinition.toDTO(dataDefinitionJSON));
-
-		String ddmStructureKey = dataDefinition.getDataDefinitionKey();
+		String ddmStructureKey = _addDataDefinition(stagingGroup.getGroupId());
 
 		JournalArticle article1 = JournalTestUtil.addArticleWithXMLContent(
 			stagingGroup.getGroupId(),
@@ -966,6 +1088,24 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 			validateImportedStagedModel(article, importedArticle);
 		}
+	}
+
+	private String _addDataDefinition(long groupId) throws Exception {
+		DataDefinitionResource dataDefinitionResource =
+			_dataDefinitionResourceFactory.create(
+			).user(
+				TestPropsValues.getUser()
+			).build();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				groupId, "journal",
+				DataDefinition.toDTO(
+					_read(
+						"repeatable_journal_article_field_data_definition." +
+							"json")));
+
+		return dataDefinition.getDataDefinitionKey();
 	}
 
 	private void _assertAssetCategory(
