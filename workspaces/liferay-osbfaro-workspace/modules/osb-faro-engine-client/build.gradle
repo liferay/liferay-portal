@@ -10,15 +10,15 @@ dependencies {
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5", version: "5.3.2"
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5-h2", version: "5.3.4"
 	compileInclude group: "org.joda", name: "joda-convert", version: "2.2.1"
-	compileInclude group: "org.springframework", name: "spring-web", version: "6.2.18"
+	compileInclude group: "org.springframework", name: "spring-web", version: "6.2.19"
 	compileInclude group: "org.springframework.boot", name: "spring-boot", version: "2.7.18"
 	compileInclude group: "org.springframework.hateoas", name: "spring-hateoas", version: "2.4.0"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
-	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.11"
-	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.11"
+	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.19"
+	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.19"
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-contacts-api")
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
