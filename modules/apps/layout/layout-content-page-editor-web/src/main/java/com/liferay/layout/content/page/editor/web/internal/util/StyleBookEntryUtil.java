@@ -96,7 +96,6 @@ public class StyleBookEntryUtil {
 		throws Exception {
 
 		long groupId = StagingUtil.getLiveGroupId(layout.getGroupId());
-
 		Map<Long, Group> scopeGroups = new HashMap<>();
 
 		return TransformUtil.transform(

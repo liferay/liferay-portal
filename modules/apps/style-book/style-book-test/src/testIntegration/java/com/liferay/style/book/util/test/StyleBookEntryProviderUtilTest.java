@@ -63,13 +63,11 @@ public class StyleBookEntryProviderUtilTest {
 	@Test
 	@TestInfo("LPD-88081")
 	public void testGetStyleBookEntries() throws Exception {
-		StyleBookEntry styleBookEntry = _addStyleBookEntry(_group.getGroupId());
-
-		StyleBookEntry otherThemeStyleBookEntry = _addStyleBookEntry(
-			_group.getGroupId(), _THEME_ID_OTHER);
-
 		StyleBookEntry depotEntryStyleBookEntry =
 			_addDepotEntryStyleBookEntry();
+		StyleBookEntry otherThemeStyleBookEntry = _addStyleBookEntry(
+			_group.getGroupId(), _THEME_ID_OTHER);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(_group.getGroupId());
 
 		_testGetStyleBookEntries(
 			false, depotEntryStyleBookEntry, otherThemeStyleBookEntry,
