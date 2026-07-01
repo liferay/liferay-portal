@@ -520,6 +520,18 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Assert.assertEquals(Fragment.Type.FORM_FRAGMENT, fragment.getType());
 	}
 
+	private void _assertFormFragmentEntry(
+			FieldType[] expectedFieldTypes, Fragment fragment, Group group)
+		throws Exception {
+
+		_assertFormFragment(
+			expectedFieldTypes,
+			fragmentResource.getSiteFragment(
+				group.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode()));
+		_assertFragmentEntry(fragment, group);
+	}
+
 	private void _assertFragmentEntry(Fragment fragment, Group group)
 		throws Exception {
 
@@ -889,6 +901,12 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	}
 
 	private FormFragment _randomFormFragment(FieldType[] fieldTypes) {
+		return _randomFormFragment(null, fieldTypes);
+	}
+
+	private FormFragment _randomFormFragment(
+		String externalReferenceCode, FieldType[] fieldTypes) {
+
 		FormFragment formFragment = new FormFragment() {
 			{
 				setFragmentSet(_toFragmentSet(_fragmentCollection));
@@ -903,6 +921,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			}
 		};
 
+		formFragment.setExternalReferenceCode(externalReferenceCode);
 		formFragment.setFieldTypes(fieldTypes);
 
 		return formFragment;
@@ -1979,8 +1998,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	}
 
 	private void _testPutSiteFragmentBatch() throws Exception {
-		Fragment fragment1 = _postSiteFragmentSetFragment(randomFragment());
-		Fragment fragment2 = _postSiteFragmentSetFragment(randomFragment());
+		BasicFragment basicFragment1 =
+			(BasicFragment)_postSiteFragmentSetFragment(randomFragment());
+		BasicFragment basicFragment2 =
+			(BasicFragment)_postSiteFragmentSetFragment(randomFragment());
+		FormFragment formFragment1 = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
+		FormFragment formFragment2 = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
 
 		try (SafeCloseable safeCloseable =
 				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
@@ -1997,11 +2022,21 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					Http.Method.POST));
 		}
 
-		Fragment putFragment = fragmentResource.putSiteFragment(
-			testGroup.getExternalReferenceCode(),
-			fragment2.getExternalReferenceCode(),
-			_randomFragment(
-				true, true, fragment2.getExternalReferenceCode(), null));
+		BasicFragment putBasicFragment1 =
+			(BasicFragment)fragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				basicFragment1.getExternalReferenceCode(),
+				_randomFragment(
+					true, true, basicFragment1.getExternalReferenceCode(),
+					null));
+
+		FormFragment putFormFragment1 =
+			(FormFragment)fragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				formFragment1.getExternalReferenceCode(),
+				_randomFormFragment(
+					formFragment1.getExternalReferenceCode(),
+					new FieldType[] {FieldType.NUMBER, FieldType.TEXT}));
 
 		try (SafeCloseable safeCloseable =
 				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
@@ -2018,15 +2053,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					Http.Method.POST));
 		}
 
-		_assertFragmentEntry(fragment1, irrelevantGroup);
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					putFragment.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId());
-
-		Assert.assertEquals(putFragment.getName(), fragmentEntry.getName());
+		_assertFragmentEntry(putBasicFragment1, irrelevantGroup);
+		_assertFragmentEntry(basicFragment2, irrelevantGroup);
+		_assertFormFragmentEntry(
+			putFormFragment1.getFieldTypes(), putFormFragment1,
+			irrelevantGroup);
+		_assertFormFragmentEntry(
+			formFragment2.getFieldTypes(), formFragment2, irrelevantGroup);
 	}
 
 	private void _testPutSiteFragmentCreateApproved() throws Exception {
