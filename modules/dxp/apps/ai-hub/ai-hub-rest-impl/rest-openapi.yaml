@@ -68,6 +68,31 @@ components:
                 externalReferenceCode:
                     type: string
             type: object
+        Chatbot:
+            properties:
+                active:
+                    type: boolean
+                avatar:
+                    readOnly: true
+                    type: string
+                disclaimerMessage:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    type: string
+                introMessage:
+                    readOnly: true
+                    type: string
+                notificationMessage:
+                    readOnly: true
+                    type: string
+                placeholderMessage:
+                    readOnly: true
+                    type: string
+                title:
+                    readOnly: true
+                    type: string
+            type: object
         ContentRetriever:
             properties:
                 crawlDate:
@@ -432,6 +457,25 @@ paths:
                     content:
                         text/event-stream: {}
             tags: ["AgentInstance"]
+    "/chatbots/by-external-reference-code/{externalReferenceCode}":
+        get:
+            operationId: getChatbotByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Chatbot"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Chatbot"
+            tags: ["Chatbot"]
     "/chats/by-external-reference-code/{externalReferenceCode}/messages":
         post:
             operationId: postChatByExternalReferenceCodeMessage

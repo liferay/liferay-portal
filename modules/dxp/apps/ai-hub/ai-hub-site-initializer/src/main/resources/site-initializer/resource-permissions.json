@@ -237,14 +237,5 @@
 		"resourceName": "com.liferay.object#[$OBJECT_DEFINITION_ID:AIHubReport$]",
 		"roleName": "Guest",
 		"scope": "3"
-	},
-	{
-		"actionIds": [
-			"VIEW"
-		],
-		"primKey": "0",
-		"resourceName": "com.liferay.object.model.ObjectDefinition#S4K8",
-		"roleName": "Guest",
-		"scope": "1"
 	}
 ]
