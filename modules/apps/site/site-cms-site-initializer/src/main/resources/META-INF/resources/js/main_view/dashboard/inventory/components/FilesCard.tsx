@@ -11,7 +11,7 @@ import {
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
-import {BaseCard} from './BaseCard';
+import {BaseCard} from '../../common/BaseCard';
 import {ContentAndFilesCard} from './ContentAndFilesCard';
 
 export function FilesCard() {

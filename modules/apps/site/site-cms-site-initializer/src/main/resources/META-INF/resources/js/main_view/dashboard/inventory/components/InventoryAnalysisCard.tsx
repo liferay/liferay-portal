@@ -10,6 +10,7 @@ import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
 import React, {useContext, useEffect, useState} from 'react';
 
 import ApiHelper from '../../../../common/services/ApiHelper';
+import {BaseCard} from '../../common/BaseCard';
 import PickerTrigger from '../../common/PickerTrigger';
 import {InventoryContext} from '../InventoryContext';
 import usePagination from '../utils/usePagination';
@@ -17,7 +18,6 @@ import {AllCategoriesDropdown} from './AllCategoriesDropdown';
 import {AllStructureTypesDropdown} from './AllStructureTypesDropdown';
 import {AllTagsDropdown} from './AllTagsDropdown';
 import {AllVocabulariesDropdown} from './AllVocabulariesDropdown';
-import {BaseCard} from './BaseCard';
 import {Item} from './FilterDropdown';
 import {GroupByDropdown} from './GroupByDropdown';
 import PaginatedTable from './PaginatedTable';

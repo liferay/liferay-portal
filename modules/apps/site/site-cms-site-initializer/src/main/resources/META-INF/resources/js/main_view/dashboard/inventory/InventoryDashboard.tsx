@@ -6,6 +6,7 @@
 import ClayLayout from '@clayui/layout';
 import React, {useContext} from 'react';
 
+import {SectionHeader} from '../common/SectionHeader';
 import {SpacesDropdown} from '../common/SpacesDropdown';
 import {InventoryContext, InventoryContextProvider} from './InventoryContext';
 import {ContentCard} from './components/ContentCard';
@@ -13,7 +14,6 @@ import {ExpiredAssetsCard} from './components/ExpiredAssetsCard';
 import {FilesCard} from './components/FilesCard';
 import {InventoryAnalysisCard} from './components/InventoryAnalysisCard';
 import {LanguagesDropdown} from './components/LanguagesDropdown';
-import {SectionHeader} from './components/SectionHeader';
 
 export default function InventoryDashboard({
 	constants,

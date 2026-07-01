@@ -14,6 +14,7 @@ export interface IBaseCard extends React.HTMLAttributes<HTMLElement> {
 	description?: string;
 	role?: string;
 	title: string;
+	uppercaseTitle?: boolean;
 }
 
 const BaseCard: React.FC<IBaseCard> = ({
@@ -24,6 +25,7 @@ const BaseCard: React.FC<IBaseCard> = ({
 	description,
 	role,
 	title,
+	uppercaseTitle = true,
 }) => {
 	return (
 		<div className="cms-dashboard__base-card p-3 rounded-lg sheet">
@@ -34,7 +36,7 @@ const BaseCard: React.FC<IBaseCard> = ({
 					role={role}
 				>
 					<Text size={4} weight="semi-bold">
-						{title.toUpperCase()}
+						{uppercaseTitle ? title.toUpperCase() : title}
 					</Text>
 				</div>
 
