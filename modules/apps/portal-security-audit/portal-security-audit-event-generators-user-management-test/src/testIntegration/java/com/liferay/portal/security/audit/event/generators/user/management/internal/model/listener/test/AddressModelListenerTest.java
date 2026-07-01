@@ -8,15 +8,16 @@ package com.liferay.portal.security.audit.event.generators.user.management.inter
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
@@ -44,10 +45,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * @author Ivica Cardic
+ * @author Christian Moura
  */
 @RunWith(Arquillian.class)
-public class UserModelListenerTest {
+public class AddressModelListenerTest {
 
 	@ClassRule
 	@Rule
@@ -60,7 +61,7 @@ public class UserModelListenerTest {
 	public void setUp() throws Exception {
 		_auditMessages = new ArrayList<>();
 
-		Bundle bundle = FrameworkUtil.getBundle(UserModelListenerTest.class);
+		Bundle bundle = FrameworkUtil.getBundle(AddressModelListenerTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
@@ -86,59 +87,47 @@ public class UserModelListenerTest {
 
 		_company = CompanyTestUtil.addCompany();
 
-		Assert.assertFalse(_user.isAgreedToTermsOfUse());
+		_address = _addressLocalService.addAddress(
+			null, _user.getUserId(), User.class.getName(), _user.getUserId(), 0,
+			0, 0, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			false, RandomTestUtil.randomString(), false,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			null, ServiceContextTestUtil.getServiceContext());
 
 		_auditMessages.clear();
+
+		_address.setStreet1(RandomTestUtil.randomString());
 
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					_company.getCompanyId())) {
 
-			_userLocalService.updateAgreedToTermsOfUse(_user.getUserId(), true);
+			_addressLocalService.updateAddress(_address);
 		}
 
-		AuditMessage agreedToTermsOfUseAuditMessage = null;
+		AuditMessage updateAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.AGREED_TO_TERMS_OF_USE.equals(
-					auditMessage.getEventType()) &&
+			if (EventTypes.UPDATE.equals(auditMessage.getEventType()) &&
 				Objects.equals(
 					User.class.getName(), auditMessage.getClassName())) {
 
-				agreedToTermsOfUseAuditMessage = auditMessage;
+				updateAuditMessage = auditMessage;
 
 				break;
 			}
 		}
 
-		JSONObject additionalInfoJSONObject =
-			agreedToTermsOfUseAuditMessage.getAdditionalInfo();
-
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleGroupId"));
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleId"));
-
 		Assert.assertEquals(
-			String.valueOf(_user.getUserId()),
-			agreedToTermsOfUseAuditMessage.getClassPK());
-		Assert.assertEquals(
-			_user.getCompanyId(),
-			agreedToTermsOfUseAuditMessage.getCompanyId());
-
-		_auditMessages.clear();
-
-		_user = _userLocalService.getUser(_user.getUserId());
-
-		_user.setComments(RandomTestUtil.randomString());
-
-		_user = _userLocalService.updateUser(_user);
-
-		for (AuditMessage auditMessage : _auditMessages) {
-			Assert.assertNotEquals(
-				EventTypes.AGREED_TO_TERMS_OF_USE, auditMessage.getEventType());
-		}
+			_user.getCompanyId(), updateAuditMessage.getCompanyId());
 	}
+
+	@DeleteAfterTestRun
+	private Address _address;
+
+	@Inject
+	private AddressLocalService _addressLocalService;
 
 	private List<AuditMessage> _auditMessages;
 
@@ -149,8 +138,5 @@ public class UserModelListenerTest {
 
 	@DeleteAfterTestRun
 	private User _user;
-
-	@Inject
-	private UserLocalService _userLocalService;
 
 }

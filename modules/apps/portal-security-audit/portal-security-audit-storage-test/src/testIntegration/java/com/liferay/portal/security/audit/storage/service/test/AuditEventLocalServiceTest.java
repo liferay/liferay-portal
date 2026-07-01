@@ -41,6 +41,10 @@ public class AuditEventLocalServiceTest {
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), new ArrayList<>());
 
+		long companyId = RandomTestUtil.randomLong();
+
+		auditMessage.setCompanyId(companyId);
+
 		AuditEvent auditEvent = _auditEventLocalService.addAuditEvent(
 			auditMessage);
 
@@ -48,6 +52,12 @@ public class AuditEventLocalServiceTest {
 			auditEvent.getAccountEntryId(), auditMessage.getAccountEntryId());
 		Assert.assertEquals(
 			auditEvent.getContextName(), auditMessage.getContextName());
+
+		AuditEvent persistedAuditEvent =
+			_auditEventLocalService.fetchAuditEvent(
+				auditEvent.getAuditEventId());
+
+		Assert.assertEquals(companyId, persistedAuditEvent.getCompanyId());
 	}
 
 	@Inject

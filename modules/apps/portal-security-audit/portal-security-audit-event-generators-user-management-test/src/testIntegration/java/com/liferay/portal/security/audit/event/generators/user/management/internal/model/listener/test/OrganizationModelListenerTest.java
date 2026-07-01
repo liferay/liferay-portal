@@ -8,14 +8,16 @@ package com.liferay.portal.security.audit.event.generators.user.management.inter
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
@@ -44,10 +46,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * @author Ivica Cardic
+ * @author Christian Moura
  */
 @RunWith(Arquillian.class)
-public class UserModelListenerTest {
+public class OrganizationModelListenerTest {
 
 	@ClassRule
 	@Rule
@@ -60,7 +62,8 @@ public class UserModelListenerTest {
 	public void setUp() throws Exception {
 		_auditMessages = new ArrayList<>();
 
-		Bundle bundle = FrameworkUtil.getBundle(UserModelListenerTest.class);
+		Bundle bundle = FrameworkUtil.getBundle(
+			OrganizationModelListenerTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
@@ -81,12 +84,12 @@ public class UserModelListenerTest {
 	}
 
 	@Test
-	public void testOnBeforeUpdate() throws Exception {
+	public void testOnBeforeAddAssociation() throws Exception {
 		_user = UserTestUtil.addUser();
 
-		_company = CompanyTestUtil.addCompany();
+		_organization = OrganizationTestUtil.addOrganization();
 
-		Assert.assertFalse(_user.isAgreedToTermsOfUse());
+		_company = CompanyTestUtil.addCompany();
 
 		_auditMessages.clear();
 
@@ -94,56 +97,74 @@ public class UserModelListenerTest {
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					_company.getCompanyId())) {
 
-			_userLocalService.updateAgreedToTermsOfUse(_user.getUserId(), true);
+			_userLocalService.addOrganizationUsers(
+				_organization.getOrganizationId(),
+				new long[] {_user.getUserId()});
 		}
 
-		AuditMessage agreedToTermsOfUseAuditMessage = null;
+		AuditMessage assignAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.AGREED_TO_TERMS_OF_USE.equals(
-					auditMessage.getEventType()) &&
+			if (EventTypes.ASSIGN.equals(auditMessage.getEventType()) &&
 				Objects.equals(
 					User.class.getName(), auditMessage.getClassName())) {
 
-				agreedToTermsOfUseAuditMessage = auditMessage;
+				assignAuditMessage = auditMessage;
 
 				break;
 			}
 		}
 
-		JSONObject additionalInfoJSONObject =
-			agreedToTermsOfUseAuditMessage.getAdditionalInfo();
-
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleGroupId"));
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleId"));
-
 		Assert.assertEquals(
-			String.valueOf(_user.getUserId()),
-			agreedToTermsOfUseAuditMessage.getClassPK());
-		Assert.assertEquals(
-			_user.getCompanyId(),
-			agreedToTermsOfUseAuditMessage.getCompanyId());
+			_user.getCompanyId(), assignAuditMessage.getCompanyId());
+	}
+
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+		_organization = OrganizationTestUtil.addOrganization();
+
+		_company = CompanyTestUtil.addCompany();
 
 		_auditMessages.clear();
 
-		_user = _userLocalService.getUser(_user.getUserId());
+		_organization.setName(RandomTestUtil.randomString());
 
-		_user.setComments(RandomTestUtil.randomString());
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
 
-		_user = _userLocalService.updateUser(_user);
+			_organization = _organizationLocalService.updateOrganization(
+				_organization);
+		}
+
+		AuditMessage updateAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			Assert.assertNotEquals(
-				EventTypes.AGREED_TO_TERMS_OF_USE, auditMessage.getEventType());
+			if (EventTypes.UPDATE.equals(auditMessage.getEventType()) &&
+				Objects.equals(
+					Organization.class.getName(),
+					auditMessage.getClassName())) {
+
+				updateAuditMessage = auditMessage;
+
+				break;
+			}
 		}
+
+		Assert.assertEquals(
+			_organization.getCompanyId(), updateAuditMessage.getCompanyId());
 	}
 
 	private List<AuditMessage> _auditMessages;
 
 	@DeleteAfterTestRun
 	private Company _company;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
+
+	@Inject
+	private OrganizationLocalService _organizationLocalService;
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 

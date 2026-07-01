@@ -8,15 +8,17 @@ package com.liferay.portal.security.audit.event.generators.user.management.inter
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
@@ -44,10 +46,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * @author Ivica Cardic
+ * @author Christian Moura
  */
 @RunWith(Arquillian.class)
-public class UserModelListenerTest {
+public class UserGroupModelListenerTest {
 
 	@ClassRule
 	@Rule
@@ -60,7 +62,8 @@ public class UserModelListenerTest {
 	public void setUp() throws Exception {
 		_auditMessages = new ArrayList<>();
 
-		Bundle bundle = FrameworkUtil.getBundle(UserModelListenerTest.class);
+		Bundle bundle = FrameworkUtil.getBundle(
+			UserGroupModelListenerTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
@@ -81,12 +84,12 @@ public class UserModelListenerTest {
 	}
 
 	@Test
-	public void testOnBeforeUpdate() throws Exception {
+	public void testOnBeforeAddAssociation() throws Exception {
 		_user = UserTestUtil.addUser();
 
-		_company = CompanyTestUtil.addCompany();
+		_userGroup = UserGroupTestUtil.addUserGroup();
 
-		Assert.assertFalse(_user.isAgreedToTermsOfUse());
+		_company = CompanyTestUtil.addCompany();
 
 		_auditMessages.clear();
 
@@ -94,50 +97,59 @@ public class UserModelListenerTest {
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					_company.getCompanyId())) {
 
-			_userLocalService.updateAgreedToTermsOfUse(_user.getUserId(), true);
+			_userLocalService.addUserGroupUsers(
+				_userGroup.getUserGroupId(), new long[] {_user.getUserId()});
 		}
 
-		AuditMessage agreedToTermsOfUseAuditMessage = null;
+		AuditMessage assignAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.AGREED_TO_TERMS_OF_USE.equals(
-					auditMessage.getEventType()) &&
+			if (EventTypes.ASSIGN.equals(auditMessage.getEventType()) &&
 				Objects.equals(
 					User.class.getName(), auditMessage.getClassName())) {
 
-				agreedToTermsOfUseAuditMessage = auditMessage;
+				assignAuditMessage = auditMessage;
 
 				break;
 			}
 		}
 
-		JSONObject additionalInfoJSONObject =
-			agreedToTermsOfUseAuditMessage.getAdditionalInfo();
-
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleGroupId"));
-		Assert.assertTrue(
-			additionalInfoJSONObject.has("termsOfUseJournalArticleId"));
-
 		Assert.assertEquals(
-			String.valueOf(_user.getUserId()),
-			agreedToTermsOfUseAuditMessage.getClassPK());
-		Assert.assertEquals(
-			_user.getCompanyId(),
-			agreedToTermsOfUseAuditMessage.getCompanyId());
+			_user.getCompanyId(), assignAuditMessage.getCompanyId());
+	}
+
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+		_userGroup = UserGroupTestUtil.addUserGroup();
+
+		_company = CompanyTestUtil.addCompany();
 
 		_auditMessages.clear();
 
-		_user = _userLocalService.getUser(_user.getUserId());
+		_userGroup.setName(RandomTestUtil.randomString());
 
-		_user.setComments(RandomTestUtil.randomString());
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
 
-		_user = _userLocalService.updateUser(_user);
+			_userGroup = _userGroupLocalService.updateUserGroup(_userGroup);
+		}
+
+		AuditMessage updateAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			Assert.assertNotEquals(
-				EventTypes.AGREED_TO_TERMS_OF_USE, auditMessage.getEventType());
+			if (EventTypes.UPDATE.equals(auditMessage.getEventType()) &&
+				Objects.equals(
+					UserGroup.class.getName(), auditMessage.getClassName())) {
+
+				updateAuditMessage = auditMessage;
+
+				break;
+			}
 		}
+
+		Assert.assertEquals(
+			_userGroup.getCompanyId(), updateAuditMessage.getCompanyId());
 	}
 
 	private List<AuditMessage> _auditMessages;
@@ -149,6 +161,12 @@ public class UserModelListenerTest {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@DeleteAfterTestRun
+	private UserGroup _userGroup;
+
+	@Inject
+	private UserGroupLocalService _userGroupLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
