@@ -22,12 +22,12 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Eudaldo Alonso
@@ -97,7 +97,7 @@ public class StyleBookEntryUtil {
 
 		long groupId = StagingUtil.getLiveGroupId(layout.getGroupId());
 
-		Map<Long, Group> scopeGroups = new ConcurrentHashMap<>();
+		Map<Long, Group> scopeGroups = new HashMap<>();
 
 		return TransformUtil.transform(
 			StyleBookEntryProviderUtil.getStyleBookEntries(
