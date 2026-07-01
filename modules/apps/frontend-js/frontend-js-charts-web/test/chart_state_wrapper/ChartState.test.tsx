@@ -11,7 +11,7 @@ import '@testing-library/jest-dom';
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 
-import {ChartState} from '../../src/main/resources/META-INF/resources';
+import {ChartState} from '../../src/main/resources/META-INF/resources/js';
 
 interface DummyChartProps {
 	className?: string;

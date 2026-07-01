@@ -12,7 +12,7 @@
 			"<rootDir>/jest-setup.config.ts"
 		]
 	},
-	"main": "index.ts",
+	"main": "js/index.ts",
 	"name": "@liferay/frontend-js-charts-web",
 	"scripts": {
 		"build": "node-scripts build",
