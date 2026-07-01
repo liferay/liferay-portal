@@ -94,16 +94,31 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 									<c:if test="<%= commerceOrderEditDisplayContext.showValidationButton() %>">
 
 										<%
-										boolean warning = commerceOrderEditDisplayContext.isWarningValidationButton();
+										String validationButtonStatus = commerceOrderEditDisplayContext.getValidationButtonStatus();
+
+										String validationButtonIcon = "check-circle-full";
+										String validationButtonLabel = "all-account-validations-have-succeeded";
+										String validationButtonTextClass = "text-success";
+
+										if (validationButtonStatus.equals("failure")) {
+											validationButtonIcon = "warning-full";
+											validationButtonLabel = "one-or-more-validations-have-failed-for-this-account";
+											validationButtonTextClass = "text-warning";
+										}
+										else if (validationButtonStatus.equals("pending")) {
+											validationButtonIcon = "time";
+											validationButtonLabel = "one-or-more-account-validations-are-pending";
+											validationButtonTextClass = "text-secondary";
+										}
 										%>
 
 										<clay:button
-											aria-label='<%= LanguageUtil.get(request, warning ? "one-or-more-validations-have-failed-for-this-account" : "all-account-validations-have-succeeded") %>'
-											cssClass='<%= "ml-2 p-0 " + (warning ? "text-warning" : "text-success") %>'
+											aria-label="<%= LanguageUtil.get(request, validationButtonLabel) %>"
+											cssClass='<%= "ml-2 p-0 " + validationButtonTextClass %>'
 											displayType="unstyled"
-											icon='<%= warning ? "warning-full" : "check-circle-full" %>'
+											icon="<%= validationButtonIcon %>"
 											id='<%= liferayPortletResponse.getNamespace() + "accountValidationsWarning" %>'
-											title='<%= LanguageUtil.get(request, warning ? "one-or-more-validations-have-failed-for-this-account" : "all-account-validations-have-succeeded") %>'
+											title="<%= LanguageUtil.get(request, validationButtonLabel) %>"
 										/>
 
 										<liferay-frontend:component

@@ -684,6 +684,52 @@ public class CommerceOrderEditDisplayContext {
 		).buildPortletURL();
 	}
 
+	public String getValidationButtonStatus() throws PortalException {
+		if (_commerceOrder == null) {
+			return "success";
+		}
+
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
+		if (accountEntry == null) {
+			return "success";
+		}
+
+		Map<String, AccountEntryValidatorResult>
+			accountEntryValidatorResultsMap =
+				_getAccountEntryValidatorResultsMap(accountEntry);
+
+		boolean pending = false;
+
+		for (AccountEntryValidatorResult accountEntryValidatorResult :
+				accountEntryValidatorResultsMap.values()) {
+
+			if (accountEntryValidatorResult == null) {
+				pending = true;
+
+				continue;
+			}
+
+			String resultStatus = accountEntryValidatorResult.getResultStatus();
+
+			if (!Objects.equals(
+					AccountEntryValidatorConstants.RESULT_SUCCESS,
+					resultStatus) &&
+				!Objects.equals(
+					AccountEntryValidatorConstants.RESULT_MANUAL,
+					resultStatus)) {
+
+				return "failure";
+			}
+		}
+
+		if (pending) {
+			return "pending";
+		}
+
+		return "success";
+	}
+
 	public boolean hasManageCommerceOrderDeliveryTermsPermission() {
 		ThemeDisplay themeDisplay =
 			_commerceOrderRequestHelper.getThemeDisplay();
@@ -738,37 +784,6 @@ public class CommerceOrderEditDisplayContext {
 
 		return _modelResourcePermission.contains(
 			themeDisplay.getPermissionChecker(), commerceOrder, actionId);
-	}
-
-	public boolean isWarningValidationButton() throws PortalException {
-		if (_commerceOrder == null) {
-			return false;
-		}
-
-		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
-
-		if (accountEntry == null) {
-			return false;
-		}
-
-		_getAccountEntryValidatorResultsMap(accountEntry);
-
-		for (AccountEntryValidatorResult accountEntryValidatorResult :
-				_accountEntryValidatorResultsMap.values()) {
-
-			if ((accountEntryValidatorResult == null) ||
-				(!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_SUCCESS,
-					accountEntryValidatorResult.getResultStatus()) &&
-				 !Objects.equals(
-					 AccountEntryValidatorConstants.RESULT_MANUAL,
-					 accountEntryValidatorResult.getResultStatus()))) {
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public boolean showValidationButton() throws PortalException {
