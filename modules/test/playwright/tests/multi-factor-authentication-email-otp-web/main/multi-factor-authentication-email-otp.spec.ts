@@ -220,3 +220,79 @@ test(
 		}
 	}
 );
+
+test(
+	'LPD-96858 removes the sent-by-email message once the resend countdown finishes',
+	{tag: '@LPD-96858'},
+	async ({
+		apiHelpers,
+		browser,
+		multiFactorAuthenticationConfigurationPage,
+	}) => {
+		test.setTimeout(60000);
+
+		// Enable email OTP with a short resend cooldown so the countdown
+		// finishes quickly within the test.
+
+		await multiFactorAuthenticationConfigurationPage.goto();
+
+		await multiFactorAuthenticationConfigurationPage.enable({
+			resendEmailTimeout: 5,
+		});
+
+		// Create a user that will be challenged with email OTP when signing in
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		// Reach the MFA stage in a clean context, leaving the admin signed in
+
+		const userContext = await browser.newContext();
+		const userPage = await userContext.newPage();
+
+		try {
+			await userPage.goto('/');
+
+			await userPage
+				.getByRole('button', {name: 'Sign In'})
+				.last()
+				.click();
+
+			await userPage.getByLabel('Email Address').fill(user.emailAddress);
+			await userPage.getByLabel('Password').fill('test');
+
+			await userPage
+				.getByRole('button', {name: 'Sign In'})
+				.last()
+				.click();
+
+			const sendEmailButton = userPage.locator('[id$="sendEmailButton"]');
+
+			const sentMessage = userPage.getByText(
+				'Your one-time password has been sent by email.'
+			);
+
+			// Request a code: the confirmation message appears and the send
+			// button starts its cooldown countdown.
+
+			await clickAndExpectToBeVisible({
+				target: sentMessage,
+				trigger: sendEmailButton,
+			});
+
+			// When the cooldown ends the send button returns to "Send" and the
+			// confirmation message must be removed entirely, not just shortened
+			// to the version without the "please wait" notice.
+
+			await expect(sendEmailButton).toBeEnabled({timeout: 15000});
+
+			await expect(sentMessage).toBeHidden();
+		}
+		finally {
+			await userContext.close();
+
+			await multiFactorAuthenticationConfigurationPage.goto();
+
+			await multiFactorAuthenticationConfigurationPage.resetConfiguration();
+		}
+	}
+);
