@@ -1,0 +1,88 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#P4R4",
+	"enableCategorization": true,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": true,
+	"enableLocalization": true,
+	"enableObjectEntryDraft": true,
+	"enableObjectEntryHistory": true,
+	"enableObjectEntrySchedule": true,
+	"enableObjectEntrySubscription": false,
+	"externalReferenceCode": "L_PIM_BASE_SKU",
+	"label": {
+		"en_US": "PIM Base SKU"
+	},
+	"modifiable": true,
+	"name": "PIMBaseSku",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+		{
+			"name": "acceptAllGroups",
+			"value": "true"
+		},
+		{
+			"name": "domain",
+			"value": "catalog"
+		},
+		{
+			"name": "visible",
+			"value": "true"
+		}
+	],
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CODE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Code"
+			},
+			"name": "code",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "RichText",
+			"externalReferenceCode": "DESCRIPTION",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Description"
+			},
+			"name": "description",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "NAME",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Name"
+			},
+			"name": "name",
+			"required": true,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_PIM_PRODUCT_TYPES",
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "PIM Base SKUs"
+	},
+	"scope": "depot",
+	"system": true,
+	"titleObjectFieldName": "name"
+}

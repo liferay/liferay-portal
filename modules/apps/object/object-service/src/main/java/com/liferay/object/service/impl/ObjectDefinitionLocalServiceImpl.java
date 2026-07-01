@@ -3747,6 +3747,8 @@ public class ObjectDefinitionLocalServiceImpl
 				String domain = objectDefinitionSettingsValue.getValue();
 
 				if (!StringUtil.equals(
+						domain, DepotRolesConstants.SUBTYPE_CATALOG) &&
+					!StringUtil.equals(
 						domain, DepotRolesConstants.SUBTYPE_PROJECT) &&
 					!StringUtil.equals(
 						domain, DepotRolesConstants.SUBTYPE_SPACE)) {

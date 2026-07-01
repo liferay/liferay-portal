@@ -175,7 +175,7 @@ public class ObjectDefinitionUtil {
 		"com.liferay.notification.service", "com.liferay.object.service",
 		"com.liferay.seo.studio.site.initializer",
 		"com.liferay.site.initializer.cmp", "com.liferay.site.initializer.cms",
-		"com.liferay.site.initializer.dsr"
+		"com.liferay.site.initializer.dsr", "com.liferay.site.initializer.pim"
 	};
 
 	private static final Map<String, String>
@@ -282,6 +282,10 @@ public class ObjectDefinitionUtil {
 			"PerformanceCookieEntry", "/performance-cookies-entries"
 		).put(
 			"PersonalizationCookieEntry", "/personalization-cookies-entries"
+		).put(
+			"PIMBaseSku", "/pim/base-skus"
+		).put(
+			"PIMCatalog", "/pim/catalogs"
 		).put(
 			"SEOStudioDomain", "/seo-studio/domains"
 		).put(
