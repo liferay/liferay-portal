@@ -37,21 +37,11 @@ public interface Sites {
 	public static final int CONTENT_SHARING_WITH_CHILDREN_ENABLED_BY_DEFAULT =
 		2;
 
-	public static final String LAST_MERGE_LAYOUT_MODIFIED_TIME =
-		"last-merge-layout-modified-time";
-
 	public static final String LAST_MERGE_TIME = "last-merge-time";
-
-	public static final String LAST_MERGE_VERSION = "last-merge-version";
-
-	public static final String LAST_RESET_TIME = "last-reset-time";
 
 	public static final String LAYOUT_UPDATEABLE = "layoutUpdateable";
 
 	public static final String MERGE_FAIL_COUNT = "merge-fail-count";
-
-	public static final String MERGE_FAIL_FRIENDLY_URL_LAYOUTS =
-		"merge-fail-friendly-url-layouts";
 
 	public static final String SHOW_SITE_NAME = "showSiteName";
 
