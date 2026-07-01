@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -130,7 +130,7 @@ test(
 
 					await expect(
 						guestPage.getByText(fileTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					const image = guestPage
 						.locator('img[src*="/documents/"]')
@@ -158,7 +158,7 @@ test(
 
 					await expect(
 						guestPage.getByText(updatedTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					const image = guestPage
 						.locator('img[src*="/documents/"]')
@@ -208,7 +208,7 @@ test(
 
 					await expect(
 						userPage.getByText(updatedTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					expect(
 						await isImageLoaded(
@@ -306,13 +306,14 @@ test(
 
 					await expect(
 						guestPage.getByText(fileTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 
-				// Use redirect: 'manual' so a login redirect is not silently
-				// followed into a 200. A guest without DOWNLOAD_FILE cannot
-				// fetch the file (the object-entry download answers 404), so the
-				// requirement is simply that it is never a successful download.
+				// Use redirect: 'manual' so an authentication redirect is
+				// not silently followed into a 200. A guest without
+				// DOWNLOAD_FILE cannot fetch the file (the object-entry
+				// download answers 404), so the requirement is simply that
+				// it is never a successful download.
 
 				const guestDownloadStatus = await guestPage.evaluate(
 					async (href) =>
@@ -359,7 +360,7 @@ test(
 
 					await expect(
 						userPage.getByText(fileTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 
 				const download = await userPage.evaluate(async (href) => {
@@ -464,7 +465,7 @@ test(
 
 					await expect(
 						guestPage.getByText(fileTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 
 				const download = await guestPage.evaluate(async (href) => {

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -196,17 +196,17 @@ test(
 
 					await expect(
 						guestPage.getByText(titleValue, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					await expect(
 						guestPage.getByText(bodyValue, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					await expect(
 						guestPage.getByText(String(numericValue), {
 							exact: true,
 						})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 
 				await apiHelpers.objectEntry.putObjectEntry(
@@ -224,17 +224,17 @@ test(
 
 					await expect(
 						guestPage.getByText(updatedTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					await expect(
 						guestPage.getByText(updatedBody, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					await expect(
 						guestPage.getByText(String(updatedNumeric), {
 							exact: true,
 						})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 			}
 			finally {
@@ -274,11 +274,11 @@ test(
 
 					await expect(
 						userPage.getByText(updatedTitle, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 
 					await expect(
 						userPage.getByText(updatedBody, {exact: true})
-					).toBeVisible({timeout: 10000});
+					).toBeVisible({timeout: 2000});
 				}).toPass({timeout: 30000});
 			}
 			finally {
