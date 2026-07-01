@@ -46,13 +46,14 @@ public abstract class BaseFilter implements LiferayFilter {
 		catch (IOException ioException) {
 			throw ioException;
 		}
+		catch (RuntimeException runtimeException) {
+			throw runtimeException;
+		}
 		catch (ServletException servletException) {
 			throw servletException;
 		}
 		catch (Exception exception) {
-			Log log = getLog();
-
-			log.error(exception, exception);
+			throw new ServletException(exception);
 		}
 	}
 
