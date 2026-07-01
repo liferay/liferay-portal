@@ -20,6 +20,7 @@ import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategoryProperty;
 import com.liferay.headless.admin.taxonomy.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -38,6 +39,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -82,6 +85,27 @@ public class TaxonomyCategoryDTOConverter
 		return _toTaxonomyCategory(dtoConverterContext, assetCategory);
 	}
 
+	private Map<String, Map<String, String>> _getActions(
+		AssetCategory assetCategory, DTOConverterContext dtoConverterContext) {
+
+		Map<String, Map<String, String>> actions =
+			_dtoActionProvider.getActions(
+				assetCategory.getGroupId(), assetCategory.getCategoryId(),
+				dtoConverterContext.getUriInfo(),
+				dtoConverterContext.getUserId());
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				assetCategory.getCompanyId(), "LPD-86291") &&
+			assetCategory.isSystem()) {
+
+			actions.remove("delete");
+			actions.remove("replace");
+			actions.remove("update");
+		}
+
+		return actions;
+	}
+
 	private ParentTaxonomyCategory _toParentTaxonomyCategory(
 		AssetCategory parentAssetCategory,
 		DTOConverterContext dtoConverterContext) {
@@ -110,11 +134,7 @@ public class TaxonomyCategoryDTOConverter
 		return new TaxonomyCategory() {
 			{
 				setActions(
-					() -> _dtoActionProvider.getActions(
-						assetCategory.getGroupId(),
-						assetCategory.getCategoryId(),
-						dtoConverterContext.getUriInfo(),
-						dtoConverterContext.getUserId()));
+					() -> _getActions(assetCategory, dtoConverterContext));
 				setAssetLibraryKey(
 					() -> {
 						Group group = _groupLocalService.fetchGroup(
@@ -211,6 +231,7 @@ public class TaxonomyCategoryDTOConverter
 						}
 					});
 				setSiteId(assetCategory::getGroupId);
+				setSystem(assetCategory::isSystem);
 				setTaxonomyCategoryProperties(
 					() -> TransformUtil.transformToArray(
 						_assetCategoryPropertyLocalService.

@@ -338,6 +338,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                system:
+                    description:
+                        Whether this is a system category, which cannot be renamed, modified, or deleted.
+                    type: boolean
                 taxonomyCategoryProperties:
                     # @review
                     description:
