@@ -126,7 +126,7 @@ public class AccountEntryValidatorRegistryImpl
 				"') and (r_accountToAccountValidatorResults_accountEntryId eq ",
 				"'", accountEntry.getAccountEntryId(), "')");
 
-			List<Map<String, Serializable>> values =
+			List<Map<String, Serializable>> valuesList =
 				_objectEntryLocalService.getValuesList(
 					0, accountEntry.getCompanyId(), accountEntry.getUserId(),
 					objectDefinition.getObjectDefinitionId(),
@@ -136,13 +136,13 @@ public class AccountEntryValidatorRegistryImpl
 						new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, true)
 					});
 
-			if (values.isEmpty()) {
+			if (valuesList.isEmpty()) {
 				accountEntryValidatorResults.put(className, null);
 
 				continue;
 			}
 
-			Map<String, Serializable> valuesMap = values.get(0);
+			Map<String, Serializable> valuesMap = valuesList.get(0);
 
 			accountEntryValidatorResults.put(
 				className,
