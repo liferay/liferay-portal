@@ -1,6 +1,0 @@
-dependencies {
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.metatype", version: "1.3.0"
-	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
-	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
-}

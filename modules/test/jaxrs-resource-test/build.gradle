@@ -1,4 +1,0 @@
-dependencies {
-	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
-}

@@ -1,3 +1,0 @@
-dependencies {
-	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
-}

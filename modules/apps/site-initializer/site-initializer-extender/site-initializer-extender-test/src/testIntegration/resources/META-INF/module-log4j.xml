@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<Configuration strict="true">
-	<Loggers>
-		<Logger level="INFO" name="com.liferay.site.initializer.extender.internal.test.BundleSiteInitializerTest" />
-	</Loggers>
-</Configuration>

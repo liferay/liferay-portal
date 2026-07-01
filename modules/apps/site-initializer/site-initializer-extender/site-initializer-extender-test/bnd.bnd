@@ -1,6 +1,0 @@
-Bundle-Name: Liferay Site Initializer Extender Test
-Bundle-SymbolicName: com.liferay.site.initializer.extender.test
-Bundle-Version: 1.0.0
--includeresource:\
-	com.liferay.site.initializer.extender.test.bundle.1.jar=com.liferay.site.initializer.extender.test.bundle.1-*.jar,\
-	com.liferay.site.initializer.extender.test.bundle.2.jar=com.liferay.site.initializer.extender.test.bundle.2-*.jar
