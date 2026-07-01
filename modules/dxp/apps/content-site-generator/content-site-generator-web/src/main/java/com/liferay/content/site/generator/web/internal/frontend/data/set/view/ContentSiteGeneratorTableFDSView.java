@@ -13,6 +13,9 @@ import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
 import java.util.Locale;
 
@@ -33,21 +36,50 @@ public class ContentSiteGeneratorTableFDSView extends BaseTableFDSView {
 		FDSTableSchemaBuilder fdsTableSchemaBuilder =
 			_fdsTableSchemaBuilderFactory.create();
 
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		String moduleURL = null;
+
+		if ((serviceContext != null) && (serviceContext.getRequest() != null)) {
+			moduleURL =
+				_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
+					serviceContext.getRequest()
+				).forESModule(
+					"content-site-generator-web", "index.js"
+				).build();
+		}
+
+		String finalModuleURL = moduleURL;
+
 		return fdsTableSchemaBuilder.add(
-			"title", "title",
+			"title", "name",
 			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
 				"view"
 			).setContentRenderer(
 				"actionLink"
 			)
 		).add(
-			"prompt", "prompt",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"label")
+			"itemCount", "items"
 		).add(
-			_dateTimeField("dateCreated", "created")
+			"targetLanguages", "languages",
+			fdsTableSchemaField -> {
+				fdsTableSchemaField.setContentRendererClientExtension(true);
+				fdsTableSchemaField.setContentRendererModuleURL(
+					"{CSGGenerationLanguagesDataRenderer} from " +
+						finalModuleURL);
+			}
 		).add(
-			_dateTimeField("commitDate", "committed")
+			"creator.name", "created-by"
+		).add(
+			"generationStatus", "status",
+			fdsTableSchemaField -> {
+				fdsTableSchemaField.setContentRendererClientExtension(true);
+				fdsTableSchemaField.setContentRendererModuleURL(
+					"{CSGGenerationStatusDataRenderer} from " + finalModuleURL);
+			}
+		).add(
+			_dateTimeField("dateModified", "modified")
 		).build();
 	}
 
@@ -75,6 +107,9 @@ public class ContentSiteGeneratorTableFDSView extends BaseTableFDSView {
 
 		return dateTimeFDSTableSchemaField;
 	}
+
+	@Reference
+	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
 	@Reference
 	private FDSTableSchemaBuilderFactory _fdsTableSchemaBuilderFactory;
