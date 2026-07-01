@@ -69,11 +69,11 @@ renderResponse.setTitle(title);
 			collapsible="<%= true %>"
 			label="details"
 		>
-			<aui:input label="name" localized="<%= true %>" name="title" placeholder="name" required="<%= true %>" type="text" value="<%= (category == null) ? StringPool.BLANK : assetCategoriesDisplayContext.getCategoryLocalizationXML(category) %>">
+			<aui:input disabled="<%= assetCategoriesDisplayContext.isSystemCategory(category) %>" label="name" localized="<%= true %>" name="title" placeholder="name" required="<%= true %>" type="text" value="<%= (category == null) ? StringPool.BLANK : assetCategoriesDisplayContext.getCategoryLocalizationXML(category) %>">
 				<aui:validator name="maxLength"><%= ModelHintsUtil.getMaxLength(AssetCategory.class.getName(), "name") %></aui:validator>
 			</aui:input>
 
-			<aui:input label="external-reference-code" name="externalReferenceCode" placeholder="external-reference-code" />
+			<aui:input disabled="<%= assetCategoriesDisplayContext.isSystemCategory(category) %>" label="external-reference-code" name="externalReferenceCode" placeholder="external-reference-code" />
 
 			<div>
 				<label for="<portlet:namespace />description"><liferay-ui:message key="description" /></label>
@@ -82,6 +82,7 @@ renderResponse.setTitle(title);
 					availableLocales="<%= assetCategoriesDisplayContext.getAvailableLocales() %>"
 					cssClass="form-control"
 					defaultLanguageId="<%= assetCategoriesDisplayContext.getDefaultLanguageId(category) %>"
+					disabled="<%= assetCategoriesDisplayContext.isSystemCategory(category) %>"
 					editorName="ckeditor"
 					formName="fm"
 					name="description"

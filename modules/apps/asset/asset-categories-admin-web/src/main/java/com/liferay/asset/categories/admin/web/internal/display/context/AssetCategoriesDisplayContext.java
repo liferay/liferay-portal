@@ -971,6 +971,17 @@ public class AssetCategoriesDisplayContext {
 		return _showSelectAssetDisplayPage;
 	}
 
+	public boolean isSystemCategory(AssetCategory category) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-86291") ||
+			(category == null)) {
+
+			return false;
+		}
+
+		return category.isSystem();
+	}
+
 	public boolean isSystemVocabulary(AssetVocabulary vocabulary) {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-86291") ||

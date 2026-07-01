@@ -75,6 +75,14 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 
 						<h2 class="h5">
 							<aui:a href="<%= rowURL.toString() %>"><%= HtmlUtil.escape(curCategory.getTitle(locale)) %></aui:a>
+
+							<c:if test="<%= assetCategoriesDisplayContext.isSystemCategory(curCategory) %>">
+								<span aria-label="<%= LanguageUtil.get(request, "system-category") %>" class="lfr-portal-tooltip" tabindex="0" title="<%= LanguageUtil.get(request, "system-category") %>">
+									<clay:icon
+										symbol="lock"
+									/>
+								</span>
+							</c:if>
 						</h2>
 
 						<span class="text-default">
@@ -102,8 +110,17 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand table-cell-minw-200 table-title"
 								name="category"
-								value="<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>"
-							/>
+							>
+								<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>
+
+								<c:if test="<%= assetCategoriesDisplayContext.isSystemCategory(curCategory) %>">
+									<span aria-label="<%= LanguageUtil.get(request, "system-category") %>" class="lfr-portal-tooltip" tabindex="0" title="<%= LanguageUtil.get(request, "system-category") %>">
+										<clay:icon
+											symbol="lock"
+										/>
+									</span>
+								</c:if>
+							</liferay-ui:search-container-column-text>
 
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand table-cell-minw-200"
@@ -121,10 +138,18 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 						<c:otherwise>
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand table-cell-minw-200 table-title"
-								href="<%= rowURL %>"
 								name="category"
-								value="<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>"
-							/>
+							>
+								<aui:a href="<%= rowURL.toString() %>"><%= HtmlUtil.escape(curCategory.getTitle(locale)) %></aui:a>
+
+								<c:if test="<%= assetCategoriesDisplayContext.isSystemCategory(curCategory) %>">
+									<span aria-label="<%= LanguageUtil.get(request, "system-category") %>" class="lfr-portal-tooltip" tabindex="0" title="<%= LanguageUtil.get(request, "system-category") %>">
+										<clay:icon
+											symbol="lock"
+										/>
+									</span>
+								</c:if>
+							</liferay-ui:search-container-column-text>
 
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand table-cell-minw-200"
