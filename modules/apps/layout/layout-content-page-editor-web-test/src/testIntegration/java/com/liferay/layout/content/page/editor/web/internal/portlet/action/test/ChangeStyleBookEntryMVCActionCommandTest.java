@@ -69,9 +69,7 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 	)
 	@Test
 	@TestInfo("LPD-89205")
-	public void testChangeStyleBookEntryPersistsStyleBookEntryScopeERC()
-		throws Exception {
-
+	public void testChangeStyleBookEntry() throws Exception {
 		Group depotGroup = _addConnectedDepotGroup();
 
 		StyleBookEntry depotStyleBookEntry = _addStyleBookEntry(
@@ -80,12 +78,6 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		_testChangeStyleBookEntry(
 			depotStyleBookEntry.getExternalReferenceCode(),
 			depotGroup.getExternalReferenceCode());
-	}
-
-	@Test
-	@TestInfo("LPD-89205")
-	public void testChangeStyleBookEntryWithoutStyleBookEntryScopeERCStoresNull()
-		throws Exception {
 
 		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
 			_group.getGroupId());
