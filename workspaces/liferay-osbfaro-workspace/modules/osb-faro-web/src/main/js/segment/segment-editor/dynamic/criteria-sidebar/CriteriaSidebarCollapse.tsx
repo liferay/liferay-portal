@@ -279,7 +279,7 @@ const CriteriaSidebarCollapse: React.FC<ICriteriaSidebarCollapseProps> = ({
 
 	if (propertyKey === FieldOwnerTypes.Account && !searchValue && noResults) {
 		return (
-			<div className="empty-message mt-10 text-center">
+			<div className="align-items-center d-flex empty-message h-100 justify-content-center">
 				<EmptyState
 					className="text-center"
 					description={Liferay.Language.get(
