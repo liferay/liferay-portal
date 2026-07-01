@@ -388,6 +388,39 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testIsBuildCachingEnabledCloudCINode() {
+		Environment environment = mockEnvironment();
+
+		JenkinsResultsParserUtil.clearCache();
+
+		Mockito.when(
+			environment.doGet("BUILD_CACHING_ENABLED")
+		).thenReturn(
+			"true"
+		);
+
+		Mockito.when(
+			environment.doGet("MASTER_NETWORK_NAME")
+		).thenReturn(
+			"aws-network"
+		);
+
+		Assert.assertTrue(
+			JenkinsResultsParserUtil.isBuildCachingEnabled(
+				"test-portal-release", "default"));
+
+		Mockito.when(
+			environment.doGet("BUILD_CACHING_ENABLED")
+		).thenReturn(
+			"false"
+		);
+
+		Assert.assertFalse(
+			JenkinsResultsParserUtil.isBuildCachingEnabled(
+				"test-portal-release", "default"));
+	}
+
+	@Test
 	public void testIsBuildCachingEnabledNonCINode() {
 		Environment environment = mockEnvironment();
 
