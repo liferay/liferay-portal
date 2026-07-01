@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.workflow.kaleo.definition.AIDecision;
+import com.liferay.portal.workflow.kaleo.definition.AIHubAgent;
 import com.liferay.portal.workflow.kaleo.definition.Action;
 import com.liferay.portal.workflow.kaleo.definition.ActionAware;
 import com.liferay.portal.workflow.kaleo.definition.AddressRecipient;
@@ -141,6 +142,12 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			definition.addNode(_parseAIDecision(aiDecisionElement));
 		}
 
+		List<Element> aiHubAgentElements = rootElement.elements("ai-hub-agent");
+
+		for (Element aiHubAgentElement : aiHubAgentElements) {
+			definition.addNode(_parseAIHubAgent(aiHubAgentElement));
+		}
+
 		List<Element> conditionElements = rootElement.elements("condition");
 
 		for (Element conditionElement : conditionElements) {
@@ -197,9 +204,10 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		}
 
 		_parseTransitions(
-			definition, aiDecisionElements, conditionElements, forkElements,
-			httpRequestElements, joinElements, joinXorElements, llmElements,
-			serviceElements, stateElements, taskElements);
+			definition, aiDecisionElements, aiHubAgentElements,
+			conditionElements, forkElements, httpRequestElements, joinElements,
+			joinXorElements, llmElements, serviceElements, stateElements,
+			taskElements);
 
 		return definition;
 	}
@@ -317,6 +325,41 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		aiDecision.setSettings(settings);
 
 		return aiDecision;
+	}
+
+	private AIHubAgent _parseAIHubAgent(Element aiHubAgentElement)
+		throws Exception {
+
+		AIHubAgent aiHubAgent = new AIHubAgent(
+			StringUtil.trim(aiHubAgentElement.elementText("description")),
+			aiHubAgentElement.elementTextTrim("name"));
+
+		aiHubAgent.setLabelMap(
+			_parseLabels(aiHubAgentElement.element("labels")));
+		aiHubAgent.setMetadata(aiHubAgentElement.elementTextTrim("metadata"));
+
+		Set<Setting> settings = new HashSet<>();
+
+		String agentDefinitionExternalReferenceCode =
+			aiHubAgentElement.elementTextTrim(
+				"agent-definition-external-reference-code");
+
+		if (agentDefinitionExternalReferenceCode != null) {
+			settings.add(
+				new Setting(
+					"agentDefinitionExternalReferenceCode",
+					agentDefinitionExternalReferenceCode));
+		}
+
+		String timeout = aiHubAgentElement.elementTextTrim("timeout");
+
+		if (timeout != null) {
+			settings.add(new Setting("timeout", timeout));
+		}
+
+		aiHubAgent.setSettings(settings);
+
+		return aiHubAgent;
 	}
 
 	private Set<Assignment> _parseAssignments(Element assignmentsElement)
@@ -1130,15 +1173,19 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 	private void _parseTransitions(
 			Definition definition, List<Element> aiDecisionElements,
-			List<Element> conditionElements, List<Element> forkElements,
-			List<Element> httpRequestElements, List<Element> joinElements,
-			List<Element> joinXorElements, List<Element> llmElements,
-			List<Element> serviceElements, List<Element> stateElements,
-			List<Element> taskElements)
+			List<Element> aiHubAgentElements, List<Element> conditionElements,
+			List<Element> forkElements, List<Element> httpRequestElements,
+			List<Element> joinElements, List<Element> joinXorElements,
+			List<Element> llmElements, List<Element> serviceElements,
+			List<Element> stateElements, List<Element> taskElements)
 		throws Exception {
 
 		for (Element aiDecisionElement : aiDecisionElements) {
 			_parseTransition(definition, aiDecisionElement);
+		}
+
+		for (Element aiHubAgentElement : aiHubAgentElements) {
+			_parseTransition(definition, aiHubAgentElement);
 		}
 
 		for (Element conditionElement : conditionElements) {
