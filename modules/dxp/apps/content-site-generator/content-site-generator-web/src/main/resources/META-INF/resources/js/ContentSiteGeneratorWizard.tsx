@@ -4,16 +4,19 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {openToast} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import StepLayout from './components/StepLayout';
 import {
+	commitGeneration,
 	createGeneration,
 	getGeneration,
 	getGenerationItems,
 } from './services/generations';
 import IdeateStep from './steps/IdeateStep';
 import RefineStep from './steps/RefineStep';
+import ReviewStep from './steps/ReviewStep';
 
 import type {Generation} from './types/Generation';
 import type {GenerationItem} from './types/GenerationItem';
@@ -42,6 +45,7 @@ export default function ContentSiteGeneratorWizard({
 	const [generation, setGeneration] = useState<Generation>();
 	const [items, setItems] = useState<GenerationItem[]>([]);
 	const [loading, setLoading] = useState(!!generationId);
+	const [publishing, setPublishing] = useState(false);
 
 	const pollAttemptsRef = useRef(0);
 
@@ -74,7 +78,9 @@ export default function ContentSiteGeneratorWizard({
 				const statusKey = newGeneration.generationStatus.key;
 
 				setActiveStep(
-					statusKey === 'committed' || statusKey === 'ready'
+					statusKey === 'committed' ||
+						statusKey === 'generating' ||
+						statusKey === 'ready'
 						? STEP_REVIEW
 						: STEP_REFINE
 				);
@@ -167,6 +173,36 @@ export default function ContentSiteGeneratorWizard({
 		}
 	};
 
+	const handlePublish = async () => {
+		if (!generation) {
+			return;
+		}
+
+		setError(undefined);
+		setPublishing(true);
+
+		try {
+			await commitGeneration(apiURL, generation.id);
+
+			openToast({
+				message: Liferay.Language.get(
+					'the-generated-content-was-published'
+				),
+				type: 'success',
+			});
+
+			Liferay.Util.navigate(generationsURL);
+		}
+		catch (newError) {
+			setError(
+				newError instanceof Error ? newError.message : String(newError)
+			);
+		}
+		finally {
+			setPublishing(false);
+		}
+	};
+
 	if (loading && !generation) {
 		return <ClayLoadingIndicator displayType="secondary" size="md" />;
 	}
@@ -191,6 +227,20 @@ export default function ContentSiteGeneratorWizard({
 						onBack={() => setActiveStep(STEP_IDEATE)}
 						onCancel={handleCancel}
 						onContinue={() => setActiveStep(STEP_REVIEW)}
+					/>
+				</StepLayout>
+			)}
+
+			{activeStep === STEP_REVIEW && generation && (
+				<StepLayout activeStep={STEP_REVIEW}>
+					<ReviewStep
+						error={error}
+						generation={generation}
+						items={items}
+						onBack={() => setActiveStep(STEP_REFINE)}
+						onCancel={handleCancel}
+						onPublish={handlePublish}
+						publishing={publishing}
 					/>
 				</StepLayout>
 			)}
