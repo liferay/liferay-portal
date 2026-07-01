@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -1869,7 +1870,7 @@ public class LayoutSetPrototypePropagationTest
 	private class TestMessageListener extends BaseMessageListener {
 
 		@Override
-		protected void doReceive(Message message) {
+		protected void doReceive(Message message) throws PortalException {
 			if (!Objects.equals(
 					message.getString("taskExecutorClassName"),
 					BackgroundTaskExecutorNames.
@@ -1893,9 +1894,8 @@ public class LayoutSetPrototypePropagationTest
 			}
 
 			com.liferay.portal.background.task.model.BackgroundTask
-				backgroundTask =
-					_backgroundTaskLocalService.fetchBackgroundTask(
-						message.getLong("backgroundTaskId"));
+				backgroundTask = _backgroundTaskLocalService.getBackgroundTask(
+					message.getLong("backgroundTaskId"));
 
 			String sessionId = MapUtil.getString(
 				backgroundTask.getTaskContextMap(),
