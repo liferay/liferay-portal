@@ -236,6 +236,16 @@ public class LayoutsAdminManagementToolbarDisplayContext
 
 	@Override
 	public String getSortingURL() {
+		if (_layoutsAdminDisplayContext.isFirstColumn() ||
+			Objects.equals(getOrderByCol(), "relevance")) {
+
+			return null;
+		}
+
+		if (_layoutsAdminDisplayContext.isSearch()) {
+			return super.getSortingURL();
+		}
+
 		return null;
 	}
 
