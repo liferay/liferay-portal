@@ -336,6 +336,9 @@ public class DataSourceFaroController extends BaseFaroController {
 			@DefaultValue(StringPool.BLANK) @FormParam("accountsConfiguration")
 				FaroParam<SalesforceProvider.AccountsConfiguration>
 					accountsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("campaignsConfiguration")
+				FaroParam<SalesforceProvider.CampaignsConfiguration>
+					campaignsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
@@ -343,6 +346,11 @@ public class DataSourceFaroController extends BaseFaroController {
 					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
 			@FormParam("name") String name,
+			@DefaultValue(StringPool.BLANK)
+			@FormParam("opportunitiesConfiguration")
+			FaroParam
+				<SalesforceProvider.OpportunitiesConfiguration>
+					opportunitiesConfigurationFaroParam,
 			@DefaultValue("INACTIVE") @FormParam("status") String status,
 			@FormParam("url") String url)
 		throws Exception {
@@ -351,10 +359,14 @@ public class DataSourceFaroController extends BaseFaroController {
 
 		salesforceProvider.setAccountsConfiguration(
 			accountsConfigurationFaroParam.getValue());
+		salesforceProvider.setCampaignsConfiguration(
+			campaignsConfigurationFaroParam.getValue());
 		salesforceProvider.setChannelsConfiguration(
 			channelsConfigurationFaroParam.getValue());
 		salesforceProvider.setContactsConfiguration(
 			contactsConfigurationFaroParam.getValue());
+		salesforceProvider.setOpportunitiesConfiguration(
+			opportunitiesConfigurationFaroParam.getValue());
 
 		return create(
 			groupId, credentials, salesforceProvider, name, url, null, status);
@@ -1319,38 +1331,59 @@ public class DataSourceFaroController extends BaseFaroController {
 			@DefaultValue(StringPool.BLANK) @FormParam("accountsConfiguration")
 				FaroParam<SalesforceProvider.AccountsConfiguration>
 					accountsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("campaignsConfiguration")
+				FaroParam<SalesforceProvider.CampaignsConfiguration>
+					campaignsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
 				FaroParam<SalesforceProvider.ContactsConfiguration>
 					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
-			@FormParam("name") String name, @FormParam("status") String status,
-			@FormParam("url") String url)
+			@FormParam("name") String name,
+			@DefaultValue(StringPool.BLANK)
+			@FormParam("opportunitiesConfiguration")
+			FaroParam
+				<SalesforceProvider.OpportunitiesConfiguration>
+					opportunitiesConfigurationFaroParam,
+			@FormParam("status") String status, @FormParam("url") String url)
 		throws Exception {
 
 		SalesforceProvider salesforceProvider = null;
 
 		SalesforceProvider.AccountsConfiguration accountsConfiguration =
 			accountsConfigurationFaroParam.getValue();
+		SalesforceProvider.CampaignsConfiguration campaignsConfiguration =
+			campaignsConfigurationFaroParam.getValue();
 		ChannelsConfiguration channelsConfiguration =
 			channelsConfigurationFaroParam.getValue();
 		SalesforceProvider.ContactsConfiguration contactsConfiguration =
 			contactsConfigurationFaroParam.getValue();
+		SalesforceProvider.OpportunitiesConfiguration
+			opportunitiesConfiguration =
+				opportunitiesConfigurationFaroParam.getValue();
 
 		if ((accountsConfiguration != null) &&
+			(campaignsConfiguration != null) &&
 			(channelsConfiguration != null) &&
-			(contactsConfiguration != null)) {
+			(contactsConfiguration != null) &&
+			(opportunitiesConfiguration != null)) {
 
 			salesforceProvider = new SalesforceProvider();
 
 			salesforceProvider.setAccountsConfiguration(accountsConfiguration);
+			salesforceProvider.setCampaignsConfiguration(
+				campaignsConfiguration);
 			salesforceProvider.setChannelsConfiguration(channelsConfiguration);
 			salesforceProvider.setContactsConfiguration(contactsConfiguration);
+			salesforceProvider.setOpportunitiesConfiguration(
+				opportunitiesConfiguration);
 		}
 		else if ((accountsConfiguration != null) ||
+				 (campaignsConfiguration != null) ||
 				 (channelsConfiguration != null) ||
-				 (contactsConfiguration != null)) {
+				 (contactsConfiguration != null) ||
+				 (opportunitiesConfiguration != null)) {
 
 			DataSource dataSource = contactsEngineClient.getDataSource(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
@@ -1362,6 +1395,11 @@ public class DataSourceFaroController extends BaseFaroController {
 					accountsConfiguration);
 			}
 
+			if (campaignsConfiguration != null) {
+				salesforceProvider.setCampaignsConfiguration(
+					campaignsConfiguration);
+			}
+
 			if (channelsConfiguration != null) {
 				salesforceProvider.setChannelsConfiguration(
 					channelsConfiguration);
@@ -1370,6 +1408,11 @@ public class DataSourceFaroController extends BaseFaroController {
 			if (contactsConfiguration != null) {
 				salesforceProvider.setContactsConfiguration(
 					contactsConfiguration);
+			}
+
+			if (opportunitiesConfiguration != null) {
+				salesforceProvider.setOpportunitiesConfiguration(
+					opportunitiesConfiguration);
 			}
 		}
 
@@ -1626,24 +1669,36 @@ public class DataSourceFaroController extends BaseFaroController {
 			@DefaultValue(StringPool.BLANK) @FormParam("accountsConfiguration")
 				FaroParam<SalesforceProvider.AccountsConfiguration>
 					accountsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("campaignsConfiguration")
+				FaroParam<SalesforceProvider.CampaignsConfiguration>
+					campaignsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
 			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
 				FaroParam<SalesforceProvider.ContactsConfiguration>
 					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
-			@FormParam("name") String name, @FormParam("status") String status,
-			@FormParam("url") String url)
+			@FormParam("name") String name,
+			@DefaultValue(StringPool.BLANK)
+			@FormParam("opportunitiesConfiguration")
+			FaroParam
+				<SalesforceProvider.OpportunitiesConfiguration>
+					opportunitiesConfigurationFaroParam,
+			@FormParam("status") String status, @FormParam("url") String url)
 		throws Exception {
 
 		SalesforceProvider salesforceProvider = new SalesforceProvider();
 
 		salesforceProvider.setAccountsConfiguration(
 			accountsConfigurationFaroParam.getValue());
+		salesforceProvider.setCampaignsConfiguration(
+			campaignsConfigurationFaroParam.getValue());
 		salesforceProvider.setChannelsConfiguration(
 			channelsConfigurationFaroParam.getValue());
 		salesforceProvider.setContactsConfiguration(
 			contactsConfigurationFaroParam.getValue());
+		salesforceProvider.setOpportunitiesConfiguration(
+			opportunitiesConfigurationFaroParam.getValue());
 
 		return update(
 			groupId, id, credentials, null, null, 0, name, false,
