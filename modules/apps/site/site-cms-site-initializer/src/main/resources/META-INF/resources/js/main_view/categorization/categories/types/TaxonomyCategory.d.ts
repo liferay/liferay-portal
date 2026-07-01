@@ -37,6 +37,7 @@ interface TaxonomyCategory {
 	};
 	siteExternalReferenceCode?: string;
 	siteId?: number;
+	system?: boolean;
 	taxonomyCategoryProperties?: TaxonomyCategoryProperty[];
 	taxonomyCategoryUsageCount?: number;
 	taxonomyVocabularyId?: number;

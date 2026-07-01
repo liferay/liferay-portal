@@ -139,10 +139,12 @@ export default function SimpleActionLinkRenderer({
 	}
 
 	if (!formattedHref) {
-		if (trailingIcon) {
+		if (systemIcon || trailingIcon) {
 			return (
 				<div className="align-items-center d-flex table-list-title">
 					<span>{title}</span>
+
+					{systemIcon}
 
 					{trailingIcon}
 				</div>

@@ -181,7 +181,7 @@ public class ViewCategoriesDisplayContext {
 							"{taxonomyVocabularyId}"),
 						null, "add-subcategory",
 						_language.get(_httpServletRequest, "add-subcategory"),
-						"get", "update", null),
+						"get", "add-category", null),
 					new FDSActionDropdownItem(
 						HttpComponentsUtil.addParameters(
 							PortalUtil.getLayoutFullURL(

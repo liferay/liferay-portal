@@ -37,7 +37,7 @@ public class CategoriesCMSTableFDSView extends BaseCMSTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
 				"edit"
 			).setContentRenderer(
-				"actionLink"
+				"simpleActionLinkTableCellRenderer"
 			).setSortable(
 				true
 			)

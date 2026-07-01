@@ -143,6 +143,7 @@ const EditCategoryGeneralInfoTab = ({
 						<ClayInput
 							aria-label={Liferay.Language.get('name')}
 							data-testid="name-input"
+							disabled={category.system}
 							id="name"
 							onBlur={handleNameBlur}
 							onChange={({target: {value}}) =>
@@ -171,6 +172,7 @@ const EditCategoryGeneralInfoTab = ({
 							aria-label={Liferay.Language.get('description')}
 							component="textarea"
 							data-testid="description-input"
+							disabled={category.system}
 							id="description"
 							onChange={({target: {value}}) =>
 								onChangeDescription(value)
