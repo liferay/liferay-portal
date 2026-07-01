@@ -1,0 +1,41 @@
+@import 'atlas-variables';
+
+.cms-dashboard__interactive-card {
+	border-color: $secondary-l2;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease-in-out,
+		border-color 0.15s ease-in-out;
+
+	&:hover {
+		background-color: $light-l1;
+		border-color: $secondary-l0;
+	}
+
+	&.active {
+		background-color: $primary-l3;
+		border-color: $primary;
+	}
+
+	&__sticker {
+		&--green {
+			background-color: $green-l5;
+			color: $green;
+		}
+
+		&--info {
+			background-color: $info-l2;
+			color: $info;
+		}
+
+		&--orange {
+			background-color: $orange-l5;
+			color: $orange;
+		}
+
+		&--purple {
+			background-color: $purple-l5;
+			color: $purple;
+		}
+	}
+}
