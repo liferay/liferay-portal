@@ -103,9 +103,9 @@ public class PerformanceOverviewMetricResourceTest
 							).put(
 								"trend",
 								JSONUtil.put(
-									"classification", "POSITIVE"
-								).put(
 									"percentage", 50
+								).put(
+									"trendClassification", "POSITIVE"
 								)
 							).put(
 								"value", 6
@@ -117,9 +117,9 @@ public class PerformanceOverviewMetricResourceTest
 							).put(
 								"trend",
 								JSONUtil.put(
-									"classification", "NEGATIVE"
-								).put(
 									"percentage", 25
+								).put(
+									"trendClassification", "NEGATIVE"
 								)
 							).put(
 								"value", 3
@@ -131,9 +131,9 @@ public class PerformanceOverviewMetricResourceTest
 							).put(
 								"trend",
 								JSONUtil.put(
-									"classification", "NEUTRAL"
-								).put(
 									"percentage", 0
+								).put(
+									"trendClassification", "NEUTRAL"
 								)
 							).put(
 								"value", 5
@@ -145,9 +145,9 @@ public class PerformanceOverviewMetricResourceTest
 							).put(
 								"trend",
 								JSONUtil.put(
-									"classification", "POSITIVE"
-								).put(
 									"percentage", 100
+								).put(
+									"trendClassification", "POSITIVE"
 								)
 							).put(
 								"value", 2
