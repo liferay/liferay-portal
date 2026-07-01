@@ -17,6 +17,7 @@ const mockPostAgentDefinition = jest.fn();
 const mockPutAgentDefinition = jest.fn();
 const mockPutAgentDefinitionToContentRetrievers = jest.fn();
 const mockPutAgentDefinitionToGuardrails = jest.fn();
+const mockPutAgentDefinitionDraft = jest.fn();
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/AgentDefinitionService',
@@ -29,6 +30,8 @@ jest.mock(
 		postAgentDefinition: (...args: any[]) =>
 			mockPostAgentDefinition(...args),
 		putAgentDefinition: (...args: any[]) => mockPutAgentDefinition(...args),
+		putAgentDefinitionDraft: (...args: any[]) =>
+			mockPutAgentDefinitionDraft(...args),
 		putAgentDefinitionToContentRetrievers: (...args: any[]) =>
 			mockPutAgentDefinitionToContentRetrievers(...args),
 		putAgentDefinitionToGuardrails: (...args: any[]) =>
@@ -65,16 +68,19 @@ jest.mock('uuid', () => ({v4: () => 'GENERATED_UUID'}));
 
 function renderAgentHook({
 	accountEntryExternalReferenceCode = 'ACCOUNT',
+	editAgentDefinitionURL = '/agent',
 	externalReferenceCode = '',
 	readOnly = false,
 }: {
 	accountEntryExternalReferenceCode?: string;
+	editAgentDefinitionURL?: string;
 	externalReferenceCode?: string;
 	readOnly?: boolean;
 } = {}) {
 	return renderHook(() =>
 		useAgentDefinitionForm({
 			accountEntryExternalReferenceCode,
+			editAgentDefinitionURL,
 			externalReferenceCode,
 			readOnly,
 		})
@@ -104,6 +110,7 @@ describe('useAgentDefinitionForm', () => {
 		mockPutAgentDefinition.mockReset();
 		mockPutAgentDefinitionToContentRetrievers.mockReset();
 		mockPutAgentDefinitionToGuardrails.mockReset();
+		mockPutAgentDefinitionDraft.mockReset();
 
 		mockGetContentRetrievers.mockResolvedValue({items: []});
 		mockGetGuardrails.mockResolvedValue({items: []});
@@ -250,6 +257,40 @@ describe('useAgentDefinitionForm', () => {
 			});
 
 			expect(mockGetAgentDefinition).not.toHaveBeenCalled();
+		});
+
+		it('reports the agent as published when the loaded status is approved', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'approved'},
+				title_i18n: {en_US: 'Loaded'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() => expect(result.current.published).toBe(true));
+		});
+
+		it('reports the agent as not published when the loaded status is draft', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'draft'},
+				title_i18n: {en_US: 'Loaded'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.externalReferenceCode).toBe(
+					'AGENT_X'
+				)
+			);
+
+			expect(result.current.published).toBe(false);
 		});
 	});
 
@@ -520,6 +561,181 @@ describe('useAgentDefinitionForm', () => {
 		});
 	});
 
+	describe('save as draft and publish', () => {
+		it('saves a draft without requiring all fields to be filled', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				title_i18n: {},
+			});
+			mockPutAgentDefinitionDraft.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'draft'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.externalReferenceCode).toBe(
+					'AGENT_X'
+				)
+			);
+
+			await act(async () => {
+				result.current.handleSaveAsDraft();
+			});
+
+			await waitFor(() =>
+				expect(mockPutAgentDefinitionDraft).toHaveBeenCalledWith(
+					expect.objectContaining({externalReferenceCode: 'AGENT_X'})
+				)
+			);
+
+			expect(mockPutAgentDefinition).not.toHaveBeenCalled();
+		});
+
+		it('shows the success toast when a draft save returns a draft status', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				title_i18n: {},
+			});
+			mockPutAgentDefinitionDraft.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'draft'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.externalReferenceCode).toBe(
+					'AGENT_X'
+				)
+			);
+
+			await act(async () => {
+				result.current.handleSaveAsDraft();
+			});
+
+			await waitFor(() =>
+				expect(mockOpenToast).toHaveBeenCalledWith(
+					expect.objectContaining({
+						message: 'agent-saved-successfully',
+						type: 'success',
+					})
+				)
+			);
+		});
+
+		it('shows the danger toast when a draft save does not return a draft status', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				title_i18n: {},
+			});
+			mockPutAgentDefinitionDraft.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'approved'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.externalReferenceCode).toBe(
+					'AGENT_X'
+				)
+			);
+
+			await act(async () => {
+				result.current.handleSaveAsDraft();
+			});
+
+			await waitFor(() =>
+				expect(mockOpenToast).toHaveBeenCalledWith(
+					expect.objectContaining({
+						message: 'failed-to-save-agent',
+						type: 'danger',
+					})
+				)
+			);
+		});
+
+		it('publishes through putAgentDefinition when the form is submitted', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				description: 'desc',
+				externalReferenceCode: 'AGENT_X',
+				inputVariables: 'a',
+				outputVariable: 'b',
+				title_i18n: {en_US: 'My Agent'},
+				workflowDefinitionName: 'wf-1',
+			});
+			mockPutAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'approved'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.workflowDefinitionName).toBe(
+					'wf-1'
+				)
+			);
+
+			await act(async () => {
+				result.current.handleSubmit();
+			});
+
+			await waitFor(() =>
+				expect(mockPutAgentDefinition).toHaveBeenCalled()
+			);
+
+			expect(mockPutAgentDefinitionDraft).not.toHaveBeenCalled();
+		});
+
+		it('clears the validation errors when saving as a draft', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				title_i18n: {},
+			});
+			mockPutAgentDefinitionDraft.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'draft'},
+			});
+
+			const {result} = renderAgentHook({
+				externalReferenceCode: 'AGENT_X',
+			});
+
+			await waitFor(() =>
+				expect(result.current.values.externalReferenceCode).toBe(
+					'AGENT_X'
+				)
+			);
+
+			await act(async () => {
+				result.current.handleSubmit();
+			});
+
+			await waitFor(() =>
+				expect(result.current.errors.description).toBe('required')
+			);
+
+			await act(async () => {
+				await result.current.handleSaveAsDraft();
+			});
+
+			await waitFor(() =>
+				expect(result.current.errors.description).toBeUndefined()
+			);
+		});
+	});
+
 	describe('validate', () => {
 		it('clears errors once required fields are filled', async () => {
 			mockPostAgentDefinition.mockResolvedValueOnce({
@@ -570,10 +786,25 @@ describe('useAgentDefinitionForm', () => {
 			expect(result.current.errors.description).toBe('required');
 			expect(result.current.errors.inputVariables).toBe('required');
 			expect(result.current.errors.outputVariable).toBe('required');
-			expect(result.current.errors.workflowDefinitionName).toBe(
-				'required'
-			);
 			expect(mockPostAgentDefinition).not.toHaveBeenCalled();
+		});
+
+		it('does not flag a mandatory field as required until a publish is attempted', async () => {
+			const {result} = renderAgentHook();
+
+			await act(async () => {
+				result.current.setFieldTouched('description', true);
+			});
+
+			expect(result.current.errors.description).toBeUndefined();
+
+			await act(async () => {
+				result.current.handleSubmit();
+			});
+
+			await waitFor(() =>
+				expect(result.current.errors.description).toBe('required')
+			);
 		});
 	});
 });

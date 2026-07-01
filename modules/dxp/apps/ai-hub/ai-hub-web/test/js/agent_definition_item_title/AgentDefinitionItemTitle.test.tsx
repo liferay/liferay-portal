@@ -21,14 +21,17 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 };
 
 function renderItemTitle(
-	itemData: React.ComponentProps<typeof AgentDefinitionItemTitle>['itemData']
+	itemData: React.ComponentProps<typeof AgentDefinitionItemTitle>['itemData'],
+	value: React.ComponentProps<
+		typeof AgentDefinitionItemTitle
+	>['value'] = 'Agent'
 ) {
 	render(
 		<AgentDefinitionItemTitle
 			actions={[]}
 			itemData={itemData}
 			itemId="itemId"
-			value="Agent"
+			value={value}
 		/>
 	);
 }
@@ -76,6 +79,50 @@ describe('AgentDefinitionItemTitle', () => {
 
 		expect(screen.getByText('stopped')).toBeVisible();
 		expect(screen.queryByText('running')).not.toBeInTheDocument();
+	});
+
+	it('renders a draft label and no running or stopped label when the agent is a draft', () => {
+		renderItemTitle({
+			active: false,
+			status: {label: 'draft'},
+		});
+
+		expect(screen.getByText('draft')).toBeVisible();
+		expect(screen.queryByText('running')).not.toBeInTheDocument();
+		expect(screen.queryByText('stopped')).not.toBeInTheDocument();
+	});
+
+	it('renders the draft label in place of running even when the agent is active', () => {
+		renderItemTitle({
+			active: true,
+			status: {label: 'draft'},
+		});
+
+		expect(screen.getByText('draft')).toBeVisible();
+		expect(screen.queryByText('running')).not.toBeInTheDocument();
+	});
+
+	it('renders the running label for a non-draft status when the agent is active', () => {
+		renderItemTitle({
+			active: true,
+			status: {label: 'approved'},
+		});
+
+		expect(screen.getByText('running')).toBeVisible();
+		expect(screen.queryByText('draft')).not.toBeInTheDocument();
+	});
+
+	it('renders the untitled-agent fallback when the title is empty', () => {
+		renderItemTitle({active: false}, '');
+
+		expect(screen.getByText('untitled-agent')).toBeVisible();
+	});
+
+	it('renders the provided title without the untitled-agent fallback', () => {
+		renderItemTitle({active: false}, 'My Agent');
+
+		expect(screen.getByText('My Agent')).toBeVisible();
+		expect(screen.queryByText('untitled-agent')).not.toBeInTheDocument();
 	});
 
 	it('renders the provided-by-liferay and minimum-risk labels for a system agent', () => {

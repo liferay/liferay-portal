@@ -4,13 +4,8 @@
  */
 
 import '@testing-library/jest-dom';
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-} from '@testing-library/react';
+import {cleanup, render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import AgentDefinitionForm from '../../../src/main/resources/META-INF/resources/js/agent_definition_form/AgentDefinitionForm';
@@ -20,13 +15,13 @@ const mockDisassociateAgentDefinitionFromGuardrail = jest.fn();
 const mockGetAgentDefinition = jest.fn();
 const mockGetContentRetrievers = jest.fn();
 const mockGetGuardrails = jest.fn();
-const mockGetWorkflowDefinition = jest.fn();
-const mockGetWorkflowDefinitions = jest.fn();
 const mockOpenToast = jest.fn();
 const mockPostAgentDefinition = jest.fn();
+const mockPostAgentDefinitionDraft = jest.fn();
 const mockPutAgentDefinition = jest.fn();
 const mockPutAgentDefinitionToContentRetrievers = jest.fn();
 const mockPutAgentDefinitionToGuardrails = jest.fn();
+const mockPutAgentDefinitionDraft = jest.fn();
 
 jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/AgentDefinitionService',
@@ -38,7 +33,11 @@ jest.mock(
 		getAgentDefinition: (...args: any[]) => mockGetAgentDefinition(...args),
 		postAgentDefinition: (...args: any[]) =>
 			mockPostAgentDefinition(...args),
+		postAgentDefinitionDraft: (...args: any[]) =>
+			mockPostAgentDefinitionDraft(...args),
 		putAgentDefinition: (...args: any[]) => mockPutAgentDefinition(...args),
+		putAgentDefinitionDraft: (...args: any[]) =>
+			mockPutAgentDefinitionDraft(...args),
 		putAgentDefinitionToContentRetrievers: (...args: any[]) =>
 			mockPutAgentDefinitionToContentRetrievers(...args),
 		putAgentDefinitionToGuardrails: (...args: any[]) =>
@@ -61,48 +60,11 @@ jest.mock(
 	})
 );
 
-jest.mock(
-	'../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/WorkflowDefinitionService',
-	() => ({
-		getWorkflowDefinition: (...args: any[]) =>
-			mockGetWorkflowDefinition(...args),
-		getWorkflowDefinitions: (...args: any[]) =>
-			mockGetWorkflowDefinitions(...args),
-	})
-);
-
 jest.mock('@liferay/object-js-components-web', () => ({
 	openToast: (...args: any[]) => mockOpenToast(...args),
 }));
 
 jest.mock('uuid', () => ({v4: () => 'GENERATED_UUID'}));
-
-jest.mock('@clayui/core', () => {
-	const React = require('react');
-
-	return {
-		Option: ({children}: any) =>
-			React.createElement(React.Fragment, null, children),
-		Picker: ({id, items, onSelectionChange, selectedKey}: any) =>
-			React.createElement(
-				'select',
-				{
-					'data-testid': id,
-					id,
-					'onChange': (event: any) =>
-						onSelectionChange(event.target.value),
-					'value': selectedKey || '',
-				},
-				items.map((item: any) =>
-					React.createElement(
-						'option',
-						{key: item.value, value: item.value},
-						item.label
-					)
-				)
-			),
-	};
-});
 
 jest.mock('@clayui/multi-select', () => {
 	const React = require('react');
@@ -160,9 +122,24 @@ jest.mock('frontend-js-components-web', () => {
 const defaultProps = {
 	accountEntryExternalReferenceCode: 'ACCOUNT',
 	backURL: '/back',
+	editAgentDefinitionURL: '/agent',
 	externalReferenceCode: '',
+	kaleoDesignerNamespace: '_NS_',
 	readOnly: false,
-	workflowDefinitionURL: '/workflow-url',
+	workflowDefinitionURL: 'http://localhost/workflow-url',
+};
+
+const draftAgentDefinition = {
+	active: false,
+	agentDefinitionsToContentRetrievers: [],
+	aiHubAgentDefinitionsToAIHubGuardrails: [],
+	description: 'A description',
+	externalReferenceCode: 'AGENT_X',
+	inputVariables: 'a,b',
+	outputVariable: 'out',
+	r_accountToAIHubAgentDefinitions_accountEntryERC: 'ACCOUNT',
+	title_i18n: {en_US: 'My Agent'},
+	workflowDefinitionName: 'wf-1',
 };
 
 describe('AgentDefinitionForm', () => {
@@ -172,35 +149,163 @@ describe('AgentDefinitionForm', () => {
 		mockGetAgentDefinition.mockReset();
 		mockGetContentRetrievers.mockReset();
 		mockGetGuardrails.mockReset();
-		mockGetWorkflowDefinition.mockReset();
-		mockGetWorkflowDefinitions.mockReset();
 		mockOpenToast.mockReset();
 		mockPostAgentDefinition.mockReset();
+		mockPostAgentDefinitionDraft.mockReset();
 		mockPutAgentDefinition.mockReset();
 		mockPutAgentDefinitionToContentRetrievers.mockReset();
 		mockPutAgentDefinitionToGuardrails.mockReset();
+		mockPutAgentDefinitionDraft.mockReset();
 
 		mockGetContentRetrievers.mockResolvedValue({items: []});
 		mockGetGuardrails.mockResolvedValue({items: []});
-		mockGetWorkflowDefinitions.mockResolvedValue({items: []});
 	});
 
 	afterEach(() => {
 		cleanup();
 	});
 
-	describe('panels', () => {
-		it('hydrates panel inputs after the fetch resolves', async () => {
-			mockGetAgentDefinition.mockResolvedValueOnce({
-				active: true,
-				agentDefinitionsToContentRetrievers: [],
-				aiHubAgentDefinitionsToAIHubGuardrails: [],
-				description: 'Loaded',
+	describe('draft creation', () => {
+		it('creates a draft and redirects to its edit URL on mount', async () => {
+			const originalLocation = window.location;
+			const replace = jest.fn();
+
+			Object.defineProperty(window, 'location', {
+				configurable: true,
+				value: {origin: 'http://localhost', replace},
+				writable: true,
+			});
+
+			mockPostAgentDefinitionDraft.mockResolvedValueOnce({
 				externalReferenceCode: 'AGENT_X',
-				inputVariables: 'in',
-				outputVariable: 'out',
-				title_i18n: {en_US: 'Loaded From API'},
-				workflowDefinitionName: '',
+				workflowDefinitionName: 'wf-1',
+			});
+
+			render(<AgentDefinitionForm {...defaultProps} />);
+
+			await waitFor(() =>
+				expect(mockPostAgentDefinitionDraft).toHaveBeenCalled()
+			);
+
+			await waitFor(() =>
+				expect(replace).toHaveBeenCalledWith(
+					expect.stringContaining('externalReferenceCode=AGENT_X')
+				)
+			);
+
+			expect(replace).toHaveBeenCalledWith(
+				expect.stringContaining('workflowDefinitionName=wf-1')
+			);
+
+			Object.defineProperty(window, 'location', {
+				configurable: true,
+				value: originalLocation,
+				writable: true,
+			});
+		});
+	});
+
+	describe('panels', () => {
+		it('hydrates panel inputs from the loaded draft', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce(draftAgentDefinition);
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() => {
+				expect(
+					screen.getByDisplayValue('My Agent')
+				).toBeInTheDocument();
+			});
+
+			expect(screen.getByText('details')).toBeInTheDocument();
+			expect(screen.getByText('workflow')).toBeInTheDocument();
+			expect(screen.getByText('variables')).toBeInTheDocument();
+			expect(screen.getByText('data-sources')).toBeInTheDocument();
+			expect(screen.getByText('guardrails')).toBeInTheDocument();
+		});
+	});
+
+	describe('save', () => {
+		it('blocks publishing and surfaces required-field errors when fields are empty', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				...draftAgentDefinition,
+				description: '',
+				inputVariables: '',
+				outputVariable: '',
+				title_i18n: {},
+			});
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() =>
+				expect(mockGetAgentDefinition).toHaveBeenCalled()
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'publish'})
+			);
+
+			await waitFor(() => {
+				expect(screen.getAllByText('required').length).toBeGreaterThan(
+					0
+				);
+			});
+
+			expect(mockPutAgentDefinition).not.toHaveBeenCalled();
+		});
+
+		it('saves a draft without requiring fields to be filled', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				...draftAgentDefinition,
+				description: '',
+				inputVariables: '',
+				outputVariable: '',
+			});
+			mockPutAgentDefinitionDraft.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'draft'},
+			});
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() =>
+				expect(screen.getByDisplayValue('My Agent')).toBeInTheDocument()
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'save-as-draft'})
+			);
+
+			await waitFor(() => {
+				expect(mockPutAgentDefinitionDraft).toHaveBeenCalledWith(
+					expect.objectContaining({externalReferenceCode: 'AGENT_X'})
+				);
+			});
+
+			expect(screen.queryByText('required')).not.toBeInTheDocument();
+			expect(mockPutAgentDefinition).not.toHaveBeenCalled();
+		});
+
+		it('publishes an edited draft and shows the success toast', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce(draftAgentDefinition);
+			mockPutAgentDefinition.mockResolvedValueOnce({
+				externalReferenceCode: 'AGENT_X',
+				status: {label: 'approved'},
 			});
 
 			render(
@@ -212,90 +317,21 @@ describe('AgentDefinitionForm', () => {
 
 			await waitFor(() => {
 				expect(
-					screen.getByDisplayValue('Loaded From API')
+					screen.getByDisplayValue('My Agent')
 				).toBeInTheDocument();
 			});
-		});
 
-		it('renders every panel for a fresh form', () => {
-			render(<AgentDefinitionForm {...defaultProps} />);
-
-			expect(screen.getByText('details')).toBeInTheDocument();
-			expect(screen.getByText('workflow')).toBeInTheDocument();
-			expect(screen.getByText('variables')).toBeInTheDocument();
-			expect(screen.getByText('data-sources')).toBeInTheDocument();
-			expect(screen.getByText('guardrails')).toBeInTheDocument();
-		});
-	});
-
-	describe('save', () => {
-		it('blocks the submit and surfaces required-field errors when all fields are empty', async () => {
-			render(<AgentDefinitionForm {...defaultProps} />);
-
-			fireEvent.click(screen.getByRole('button', {name: 'save'}));
-
-			await waitFor(() => {
-				expect(screen.getAllByText('required').length).toBeGreaterThan(
-					0
-				);
-			});
-
-			expect(mockPostAgentDefinition).not.toHaveBeenCalled();
-		});
-
-		it('submits filled values and shows the success toast', async () => {
-			mockGetWorkflowDefinitions.mockResolvedValue({
-				items: [
-					{
-						name: 'wf-1',
-						title: 'Workflow 1',
-					},
-				],
-			});
-			mockPostAgentDefinition.mockResolvedValueOnce({
-				externalReferenceCode: 'AGENT_X',
-				status: {label: 'approved'},
-			});
-
-			render(<AgentDefinitionForm {...defaultProps} />);
-
-			fireEvent.change(screen.getByLabelText(/^title/i), {
-				target: {value: 'My Agent'},
-			});
-			fireEvent.change(
-				screen.getByLabelText(/^external-reference-code/i),
-				{target: {value: 'AGENT_X'}}
+			await userEvent.click(
+				screen.getByRole('button', {name: 'publish'})
 			);
-			fireEvent.change(screen.getByLabelText(/^description/i), {
-				target: {value: 'A description'},
-			});
-			fireEvent.change(screen.getByLabelText(/^input-variables/i), {
-				target: {value: 'a,b'},
-			});
-			fireEvent.change(screen.getByLabelText(/^output-variable/i), {
-				target: {value: 'out'},
-			});
 
 			await waitFor(() => {
-				expect(screen.getByText('Workflow 1')).toBeInTheDocument();
-			});
-
-			fireEvent.change(screen.getByTestId('workflowDefinitionName'), {
-				target: {value: 'wf-1'},
-			});
-
-			fireEvent.click(screen.getByRole('button', {name: 'save'}));
-
-			await waitFor(() => {
-				expect(mockPostAgentDefinition).toHaveBeenCalledWith(
+				expect(mockPutAgentDefinition).toHaveBeenCalledWith(
 					expect.objectContaining({
-						description: 'A description',
 						externalReferenceCode: 'AGENT_X',
-						inputVariables: 'a,b',
-						outputVariable: 'out',
-						title_i18n: {en_US: 'My Agent'},
 						workflowDefinitionName: 'wf-1',
-					})
+					}),
+					'AGENT_X'
 				);
 			});
 
@@ -308,46 +344,8 @@ describe('AgentDefinitionForm', () => {
 	});
 
 	describe('toolbar', () => {
-		it('disables the save button when readOnly is true', () => {
-			render(<AgentDefinitionForm {...defaultProps} readOnly={true} />);
-
-			expect(screen.getByRole('button', {name: 'save'})).toBeDisabled();
-		});
-
-		it('exposes a Cancel link that points at backURL', () => {
-			render(
-				<AgentDefinitionForm {...defaultProps} backURL="/back-here" />
-			);
-
-			const cancel = screen.getByRole('link', {name: 'cancel'});
-
-			expect(cancel).toHaveAttribute('href', '/back-here');
-		});
-	});
-
-	describe('workflow fetching', () => {
-		it('fetches the full workflow list when readOnly is false', async () => {
-			render(<AgentDefinitionForm {...defaultProps} readOnly={false} />);
-
-			await waitFor(() => {
-				expect(mockGetWorkflowDefinitions).toHaveBeenCalled();
-			});
-
-			expect(mockGetWorkflowDefinition).not.toHaveBeenCalled();
-		});
-
-		it('fetches the single workflow by name when readOnly is true and the name is set', async () => {
-			mockGetAgentDefinition.mockResolvedValueOnce({
-				agentDefinitionsToContentRetrievers: [],
-				aiHubAgentDefinitionsToAIHubGuardrails: [],
-				externalReferenceCode: 'AGENT_X',
-				title_i18n: {en_US: 'Loaded'},
-				workflowDefinitionName: 'wf-1',
-			});
-			mockGetWorkflowDefinition.mockResolvedValueOnce({
-				name: 'wf-1',
-				title: 'Workflow 1',
-			});
+		it('disables the save-as-draft and publish buttons when readOnly is true', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce(draftAgentDefinition);
 
 			render(
 				<AgentDefinitionForm
@@ -358,10 +356,93 @@ describe('AgentDefinitionForm', () => {
 			);
 
 			await waitFor(() => {
-				expect(mockGetWorkflowDefinition).toHaveBeenCalledWith('wf-1');
+				expect(
+					screen.getByDisplayValue('My Agent')
+				).toBeInTheDocument();
 			});
 
-			expect(mockGetWorkflowDefinitions).not.toHaveBeenCalled();
+			expect(
+				screen.getByRole('button', {name: 'save-as-draft'})
+			).toBeDisabled();
+			expect(
+				screen.getByRole('button', {name: 'publish'})
+			).toBeDisabled();
+		});
+
+		it('exposes a Cancel link that points at backURL', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce(draftAgentDefinition);
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					backURL="/back-here"
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() => {
+				expect(
+					screen.getByDisplayValue('My Agent')
+				).toBeInTheDocument();
+			});
+
+			const cancel = screen.getByRole('link', {name: 'cancel'});
+
+			expect(cancel).toHaveAttribute('href', '/back-here');
+		});
+
+		it('shows a single Save action when the agent is already published', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				...draftAgentDefinition,
+				status: {label: 'approved'},
+			});
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() => {
+				expect(
+					screen.getByDisplayValue('My Agent')
+				).toBeInTheDocument();
+			});
+
+			expect(
+				screen.getByRole('button', {name: 'save'})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('button', {name: 'save-as-draft'})
+			).not.toBeInTheDocument();
+			expect(
+				screen.queryByRole('button', {name: 'publish'})
+			).not.toBeInTheDocument();
+		});
+
+		it('keeps the save-as-draft button for a draft agent', async () => {
+			mockGetAgentDefinition.mockResolvedValueOnce({
+				...draftAgentDefinition,
+				status: {label: 'draft'},
+			});
+
+			render(
+				<AgentDefinitionForm
+					{...defaultProps}
+					externalReferenceCode="AGENT_X"
+				/>
+			);
+
+			await waitFor(() => {
+				expect(
+					screen.getByDisplayValue('My Agent')
+				).toBeInTheDocument();
+			});
+
+			expect(
+				screen.getByRole('button', {name: 'save-as-draft'})
+			).toBeInTheDocument();
 		});
 	});
 });
