@@ -71,6 +71,7 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -150,41 +151,8 @@ public class AgentDefinitionResourceTest
 	public void testDeleteAgentDefinitionByExternalReferenceCode()
 		throws Exception {
 
-		AgentDefinition agentDefinition = _addAgentDefinition();
-
-		ObjectDefinition objectDefinition = _getObjectDefinition();
-
-		ObjectEntry objectEntry = _objectEntryManager.getObjectEntry(
-			TestPropsValues.getCompanyId(), _dtoConverterContext,
-			agentDefinition.getExternalReferenceCode(), objectDefinition, null);
-
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.getWorkflowDefinition(
-				TestPropsValues.getCompanyId(),
-				agentDefinition.getWorkflowDefinitionName(), 1);
-
-		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
-			agentDefinition.getExternalReferenceCode());
-
-		AssertUtils.assertFailure(
-			NoSuchObjectEntryException.class,
-			StringBundler.concat(
-				"No ObjectEntry exists with the key {externalReferenceCode=",
-				objectEntry.getExternalReferenceCode(),
-				", groupId=0, companyId=", TestPropsValues.getCompanyId(),
-				", objectDefinitionId=",
-				objectDefinition.getObjectDefinitionId(), "}"),
-			() -> _objectEntryManager.getObjectEntry(
-				TestPropsValues.getCompanyId(), _dtoConverterContext,
-				agentDefinition.getExternalReferenceCode(), objectDefinition,
-				null));
-		AssertUtils.assertFailure(
-			NoSuchWorkflowDefinitionException.class,
-			NoSuchDefinitionException.class.getName() +
-				": No KaleoDefinition exists with the primary key " +
-					workflowDefinition.getWorkflowDefinitionId(),
-			() -> _workflowDefinitionManager.getWorkflowDefinition(
-				workflowDefinition.getWorkflowDefinitionId()));
+		_testDeleteAgentDefinitionByExternalReferenceCode();
+		_testDeleteAgentDefinitionByExternalReferenceCodeWithSharedWorkflowDefinition();
 	}
 
 	@Override
@@ -192,6 +160,7 @@ public class AgentDefinitionResourceTest
 	public void testGetAgentDefinitionsPage() throws Exception {
 		_testGetAgentDefinitionsPage();
 		_testGetAgentDefinitionsPageWithFilter();
+		_testGetAgentDefinitionsPageWithMissingWorkflowDefinition();
 		_testGetAgentDefinitionsPageWithModel();
 		_testGetAgentDefinitionsPageWithPermissions();
 	}
@@ -443,6 +412,38 @@ public class AgentDefinitionResourceTest
 					EXTERNAL_REFERENCE_CODE_CHANGE_TONE);
 	}
 
+	private ObjectEntry _addAgentDefinitionObjectEntry(
+			String workflowDefinitionName)
+		throws Exception {
+
+		return _objectEntryManager.addObjectEntry(
+			_dtoConverterContext, _getObjectDefinition(),
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"active", true
+					).put(
+						"description", RandomTestUtil.randomString()
+					).put(
+						"inputVariables", "text"
+					).put(
+						"outputVariable", "rewrittenText"
+					).put(
+						"r_accountToAIHubAgentDefinitions_accountEntryId",
+						_aiHubAccountEntry.getAccountEntryId()
+					).put(
+						"title_i18n",
+						HashMapBuilder.put(
+							"en_US", RandomTestUtil.randomString()
+						).build()
+					).put(
+						"workflowDefinitionName", workflowDefinitionName
+					).build();
+				}
+			},
+			null);
+	}
+
 	private void _assertAgentDefinitionModel(
 		String expectedLabel, String expectedName, String expectedProviderLabel,
 		AgentDefinition agentDefinition) {
@@ -477,6 +478,82 @@ public class AgentDefinitionResourceTest
 			TestPropsValues.getCompanyId(), "AIHubAgentDefinition");
 	}
 
+	private void _testDeleteAgentDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		AgentDefinition agentDefinition = _addAgentDefinition();
+
+		ObjectDefinition objectDefinition = _getObjectDefinition();
+
+		ObjectEntry objectEntry = _objectEntryManager.getObjectEntry(
+			TestPropsValues.getCompanyId(), _dtoConverterContext,
+			agentDefinition.getExternalReferenceCode(), objectDefinition, null);
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getWorkflowDefinition(
+				TestPropsValues.getCompanyId(),
+				agentDefinition.getWorkflowDefinitionName(), 1);
+
+		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
+			agentDefinition.getExternalReferenceCode());
+
+		AssertUtils.assertFailure(
+			NoSuchObjectEntryException.class,
+			StringBundler.concat(
+				"No ObjectEntry exists with the key {externalReferenceCode=",
+				objectEntry.getExternalReferenceCode(),
+				", groupId=0, companyId=", TestPropsValues.getCompanyId(),
+				", objectDefinitionId=",
+				objectDefinition.getObjectDefinitionId(), "}"),
+			() -> _objectEntryManager.getObjectEntry(
+				TestPropsValues.getCompanyId(), _dtoConverterContext,
+				agentDefinition.getExternalReferenceCode(), objectDefinition,
+				null));
+		AssertUtils.assertFailure(
+			NoSuchWorkflowDefinitionException.class,
+			NoSuchDefinitionException.class.getName() +
+				": No KaleoDefinition exists with the primary key " +
+					workflowDefinition.getWorkflowDefinitionId(),
+			() -> _workflowDefinitionManager.getWorkflowDefinition(
+				workflowDefinition.getWorkflowDefinitionId()));
+	}
+
+	private void _testDeleteAgentDefinitionByExternalReferenceCodeWithSharedWorkflowDefinition()
+		throws Exception {
+
+		AgentDefinition agentDefinition = _addAgentDefinition();
+
+		String workflowDefinitionName =
+			agentDefinition.getWorkflowDefinitionName();
+
+		ObjectEntry objectEntry = _addAgentDefinitionObjectEntry(
+			workflowDefinitionName);
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getWorkflowDefinition(
+				TestPropsValues.getCompanyId(), workflowDefinitionName, 1);
+
+		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
+			agentDefinition.getExternalReferenceCode());
+
+		WorkflowDefinition latestWorkflowDefinition =
+			_workflowDefinitionManager.getLatestWorkflowDefinition(
+				TestPropsValues.getCompanyId(), workflowDefinitionName);
+
+		Assert.assertTrue(latestWorkflowDefinition.isActive());
+
+		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
+			objectEntry.getExternalReferenceCode());
+
+		AssertUtils.assertFailure(
+			NoSuchWorkflowDefinitionException.class,
+			NoSuchDefinitionException.class.getName() +
+				": No KaleoDefinition exists with the primary key " +
+					workflowDefinition.getWorkflowDefinitionId(),
+			() -> _workflowDefinitionManager.getWorkflowDefinition(
+				workflowDefinition.getWorkflowDefinitionId()));
+	}
+
 	private void _testGetAgentDefinitionsPage() throws Exception {
 		Page<AgentDefinition> page =
 			agentDefinitionResource.getAgentDefinitionsPage(
@@ -503,6 +580,36 @@ public class AgentDefinitionResourceTest
 
 		assertEquals(
 			_systemAgentDefinitions, (List<AgentDefinition>)page.getItems());
+	}
+
+	private void _testGetAgentDefinitionsPageWithMissingWorkflowDefinition()
+		throws Exception {
+
+		ObjectEntry objectEntry = _addAgentDefinitionObjectEntry(
+			RandomTestUtil.randomString());
+
+		Page<AgentDefinition> page =
+			agentDefinitionResource.getAgentDefinitionsPage(
+				null, null, Pagination.of(1, 20), null);
+
+		AgentDefinition agentDefinition = null;
+
+		for (AgentDefinition curAgentDefinition : page.getItems()) {
+			if (Objects.equals(
+					curAgentDefinition.getExternalReferenceCode(),
+					objectEntry.getExternalReferenceCode())) {
+
+				agentDefinition = curAgentDefinition;
+
+				break;
+			}
+		}
+
+		Assert.assertNotNull(agentDefinition);
+		Assert.assertNull(agentDefinition.getVersion());
+
+		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
+			objectEntry.getExternalReferenceCode());
 	}
 
 	private void _testGetAgentDefinitionsPageWithModel() throws Exception {
