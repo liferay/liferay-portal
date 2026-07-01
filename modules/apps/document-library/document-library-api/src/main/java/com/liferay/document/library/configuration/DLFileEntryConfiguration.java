@@ -13,7 +13,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Drew Brokke
  */
 @ExtendedObjectClassDefinition(
-	category = "documents-and-media", generateUI = false,
+	category = "documents-and-media",
 	scope = ExtendedObjectClassDefinition.Scope.GROUP
 )
 @Meta.OCD(

@@ -11,9 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,28 +22,12 @@ public class DLFileEntryConfigurationDisplayContext {
 	public DLFileEntryConfigurationDisplayContext(
 		DLFileEntryConfigurationProvider dlFileEntryConfigurationProvider,
 		HttpServletRequest httpServletRequest,
-		LiferayPortletResponse liferayPortletResponse,
 		ExtendedObjectClassDefinition.Scope scope, long scopePK) {
 
 		_dlFileEntryConfigurationProvider = dlFileEntryConfigurationProvider;
 		_httpServletRequest = httpServletRequest;
-		_liferayPortletResponse = liferayPortletResponse;
 		_scope = scope;
 		_scopePK = scopePK;
-	}
-
-	public String getEditDLFileEntryConfigurationURL() {
-		return PortletURLBuilder.createActionURL(
-			_liferayPortletResponse
-		).setActionName(
-			"/instance_settings/edit_dl_file_entry_configuration"
-		).setRedirect(
-			PortalUtil.getCurrentURL(_httpServletRequest)
-		).setParameter(
-			"scope", _scope
-		).setParameter(
-			"scopePK", _scopePK
-		).buildString();
 	}
 
 	public int getMaxNumberOfPages() throws PortalException {
@@ -114,7 +95,6 @@ public class DLFileEntryConfigurationDisplayContext {
 	private final DLFileEntryConfigurationProvider
 		_dlFileEntryConfigurationProvider;
 	private final HttpServletRequest _httpServletRequest;
-	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ExtendedObjectClassDefinition.Scope _scope;
 	private final long _scopePK;
 
