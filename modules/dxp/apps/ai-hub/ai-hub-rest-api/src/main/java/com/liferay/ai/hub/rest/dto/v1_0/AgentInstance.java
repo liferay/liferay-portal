@@ -98,6 +98,47 @@ public class AgentInstance implements Serializable {
 	private Supplier<String> _agentDefinitionExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getAsynchronous() {
+		if (_asynchronousSupplier != null) {
+			asynchronous = _asynchronousSupplier.get();
+
+			_asynchronousSupplier = null;
+		}
+
+		return asynchronous;
+	}
+
+	public void setAsynchronous(Boolean asynchronous) {
+		this.asynchronous = asynchronous;
+
+		_asynchronousSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAsynchronous(
+		UnsafeSupplier<Boolean, Exception> asynchronousUnsafeSupplier) {
+
+		_asynchronousSupplier = () -> {
+			try {
+				return asynchronousUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected Boolean asynchronous;
+
+	@JsonIgnore
+	private Supplier<Boolean> _asynchronousSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public Map<String, ?> getContext() {
 		if (_contextSupplier != null) {
@@ -241,6 +282,47 @@ public class AgentInstance implements Serializable {
 		_instructionDefinitionScopeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getOutput() {
+		if (_outputSupplier != null) {
+			output = _outputSupplier.get();
+
+			_outputSupplier = null;
+		}
+
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+
+		_outputSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOutput(
+		UnsafeSupplier<String, Exception> outputUnsafeSupplier) {
+
+		_outputSupplier = () -> {
+			try {
+				return outputUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String output;
+
+	@JsonIgnore
+	private Supplier<String> _outputSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getSseEventSinkKey() {
 		if (_sseEventSinkKeySupplier != null) {
 			sseEventSinkKey = _sseEventSinkKeySupplier.get();
@@ -325,6 +407,18 @@ public class AgentInstance implements Serializable {
 			sb.append("\"");
 		}
 
+		Boolean asynchronous = getAsynchronous();
+
+		if (asynchronous != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"asynchronous\": ");
+
+			sb.append(asynchronous);
+		}
+
 		Map<String, ?> context = getContext();
 
 		if (context != null) {
@@ -365,6 +459,22 @@ public class AgentInstance implements Serializable {
 
 			sb.append("\"");
 			sb.append(instructionDefinitionScope);
+			sb.append("\"");
+		}
+
+		String output = getOutput();
+
+		if (output != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"output\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(output));
+
 			sb.append("\"");
 		}
 
@@ -527,4 +637,4 @@ public class AgentInstance implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1041246383
+// LIFERAY-REST-BUILDER-HASH:-1009062540

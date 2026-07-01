@@ -92,7 +92,7 @@ public abstract class BaseAgentInstanceResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/ai-hub/v1.0/agent-instances' -d $'{"agentDefinitionExternalReferenceCode": ___, "context": ___, "instructionDefinitionScope": ___, "sseEventSinkKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/ai-hub/v1.0/agent-instances' -d $'{"agentDefinitionExternalReferenceCode": ___, "asynchronous": ___, "context": ___, "instructionDefinitionScope": ___, "sseEventSinkKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -844,4 +844,4 @@ public abstract class BaseAgentInstanceResourceImpl
 		LogFactoryUtil.getLog(BaseAgentInstanceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1377275483
+// LIFERAY-REST-BUILDER-HASH:-713241632

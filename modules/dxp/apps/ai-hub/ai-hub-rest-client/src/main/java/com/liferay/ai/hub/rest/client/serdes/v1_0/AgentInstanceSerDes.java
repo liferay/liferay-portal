@@ -62,6 +62,16 @@ public class AgentInstanceSerDes {
 			sb.append("\"");
 		}
 
+		if (agentInstance.getAsynchronous() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"asynchronous\": ");
+
+			sb.append(agentInstance.getAsynchronous());
+		}
+
 		if (agentInstance.getContext() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -95,6 +105,20 @@ public class AgentInstanceSerDes {
 
 			sb.append("\"");
 			sb.append(agentInstance.getInstructionDefinitionScope());
+			sb.append("\"");
+		}
+
+		if (agentInstance.getOutput() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"output\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(agentInstance.getOutput()));
+
 			sb.append("\"");
 		}
 
@@ -141,6 +165,15 @@ public class AgentInstanceSerDes {
 					agentInstance.getAgentDefinitionExternalReferenceCode()));
 		}
 
+		if (agentInstance.getAsynchronous() == null) {
+			map.put("asynchronous", null);
+		}
+		else {
+			map.put(
+				"asynchronous",
+				String.valueOf(agentInstance.getAsynchronous()));
+		}
+
 		if (agentInstance.getContext() == null) {
 			map.put("context", null);
 		}
@@ -164,6 +197,13 @@ public class AgentInstanceSerDes {
 			map.put(
 				"instructionDefinitionScope",
 				String.valueOf(agentInstance.getInstructionDefinitionScope()));
+		}
+
+		if (agentInstance.getOutput() == null) {
+			map.put("output", null);
+		}
+		else {
+			map.put("output", String.valueOf(agentInstance.getOutput()));
 		}
 
 		if (agentInstance.getSseEventSinkKey() == null) {
@@ -199,6 +239,9 @@ public class AgentInstanceSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "asynchronous")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "context")) {
 				return true;
 			}
@@ -210,6 +253,9 @@ public class AgentInstanceSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "instructionDefinitionScope")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "output")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "sseEventSinkKey")) {
@@ -233,6 +279,12 @@ public class AgentInstanceSerDes {
 						(String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "asynchronous")) {
+				if (jsonParserFieldValue != null) {
+					agentInstance.setAsynchronous(
+						(Boolean)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "context")) {
 				if (jsonParserFieldValue != null) {
 					agentInstance.setContext(
@@ -254,6 +306,11 @@ public class AgentInstanceSerDes {
 					agentInstance.setInstructionDefinitionScope(
 						AgentInstance.InstructionDefinitionScope.create(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "output")) {
+				if (jsonParserFieldValue != null) {
+					agentInstance.setOutput((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "sseEventSinkKey")) {
@@ -343,4 +400,4 @@ public class AgentInstanceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1699398654
+// LIFERAY-REST-BUILDER-HASH:1937200539

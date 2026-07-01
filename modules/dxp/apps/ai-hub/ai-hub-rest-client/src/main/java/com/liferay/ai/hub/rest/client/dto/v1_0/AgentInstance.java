@@ -52,6 +52,27 @@ public class AgentInstance implements Cloneable, Serializable {
 
 	protected String agentDefinitionExternalReferenceCode;
 
+	public Boolean getAsynchronous() {
+		return asynchronous;
+	}
+
+	public void setAsynchronous(Boolean asynchronous) {
+		this.asynchronous = asynchronous;
+	}
+
+	public void setAsynchronous(
+		UnsafeSupplier<Boolean, Exception> asynchronousUnsafeSupplier) {
+
+		try {
+			asynchronous = asynchronousUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean asynchronous;
+
 	public Map<String, ?> getContext() {
 		return context;
 	}
@@ -126,6 +147,27 @@ public class AgentInstance implements Cloneable, Serializable {
 	}
 
 	protected InstructionDefinitionScope instructionDefinitionScope;
+
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	public void setOutput(
+		UnsafeSupplier<String, Exception> outputUnsafeSupplier) {
+
+		try {
+			output = outputUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String output;
 
 	public String getSseEventSinkKey() {
 		return sseEventSinkKey;
@@ -216,4 +258,4 @@ public class AgentInstance implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-716583452
+// LIFERAY-REST-BUILDER-HASH:624860553

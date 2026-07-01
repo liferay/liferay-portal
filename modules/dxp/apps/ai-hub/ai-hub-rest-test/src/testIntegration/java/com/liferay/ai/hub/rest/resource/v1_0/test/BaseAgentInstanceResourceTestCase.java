@@ -169,6 +169,7 @@ public abstract class BaseAgentInstanceResourceTestCase {
 
 		agentInstance.setAgentDefinitionExternalReferenceCode(regex);
 		agentInstance.setExternalReferenceCode(regex);
+		agentInstance.setOutput(regex);
 		agentInstance.setSseEventSinkKey(regex);
 
 		String json = AgentInstanceSerDes.toJSON(agentInstance);
@@ -180,6 +181,7 @@ public abstract class BaseAgentInstanceResourceTestCase {
 		Assert.assertEquals(
 			regex, agentInstance.getAgentDefinitionExternalReferenceCode());
 		Assert.assertEquals(regex, agentInstance.getExternalReferenceCode());
+		Assert.assertEquals(regex, agentInstance.getOutput());
 		Assert.assertEquals(regex, agentInstance.getSseEventSinkKey());
 	}
 
@@ -318,6 +320,14 @@ public abstract class BaseAgentInstanceResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("asynchronous", additionalAssertFieldName)) {
+				if (agentInstance.getAsynchronous() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("context", additionalAssertFieldName)) {
 				if (agentInstance.getContext() == null) {
 					valid = false;
@@ -340,6 +350,14 @@ public abstract class BaseAgentInstanceResourceTestCase {
 					"instructionDefinitionScope", additionalAssertFieldName)) {
 
 				if (agentInstance.getInstructionDefinitionScope() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("output", additionalAssertFieldName)) {
+				if (agentInstance.getOutput() == null) {
 					valid = false;
 				}
 
@@ -490,6 +508,17 @@ public abstract class BaseAgentInstanceResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("asynchronous", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						agentInstance1.getAsynchronous(),
+						agentInstance2.getAsynchronous())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("context", additionalAssertFieldName)) {
 				if (!equals(
 						(Map)agentInstance1.getContext(),
@@ -520,6 +549,17 @@ public abstract class BaseAgentInstanceResourceTestCase {
 				if (!Objects.deepEquals(
 						agentInstance1.getInstructionDefinitionScope(),
 						agentInstance2.getInstructionDefinitionScope())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("output", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						agentInstance1.getOutput(),
+						agentInstance2.getOutput())) {
 
 					return false;
 				}
@@ -692,6 +732,11 @@ public abstract class BaseAgentInstanceResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("asynchronous")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("context")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -746,6 +791,52 @@ public abstract class BaseAgentInstanceResourceTestCase {
 		if (entityFieldName.equals("instructionDefinitionScope")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("output")) {
+			Object object = agentInstance.getOutput();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("sseEventSinkKey")) {
@@ -843,8 +934,10 @@ public abstract class BaseAgentInstanceResourceTestCase {
 			{
 				agentDefinitionExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				asynchronous = RandomTestUtil.randomBoolean();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				output = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				sseEventSinkKey = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
@@ -1071,4 +1164,4 @@ public abstract class BaseAgentInstanceResourceTestCase {
 		_agentInstanceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:594446351
+// LIFERAY-REST-BUILDER-HASH:517036902
