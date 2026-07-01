@@ -11,6 +11,8 @@ import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
@@ -36,20 +38,13 @@ public class CheckObjectEntrySchedulerJobConfiguration
 	public UnsafeConsumer<Long, Exception>
 		getCompanyJobExecutorUnsafeConsumer() {
 
-		return companyId -> {
-			_objectEntryLocalService.checkObjectEntries(companyId);
-			_objectEntryVersionLocalService.checkObjectEntryVersions(companyId);
-		};
+		return companyId -> _checkObjectEntries(companyId);
 	}
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> _companyLocalService.forEachCompanyId(
-			companyId -> {
-				_objectEntryLocalService.checkObjectEntries(companyId);
-				_objectEntryVersionLocalService.checkObjectEntryVersions(
-					companyId);
-			});
+			companyId -> _checkObjectEntries(companyId));
 	}
 
 	@Override
@@ -65,6 +60,24 @@ public class CheckObjectEntrySchedulerJobConfiguration
 		_triggerConfiguration = TriggerConfiguration.createTriggerConfiguration(
 			_objectEntryScheduleConfiguration.checkInterval(), TimeUnit.MINUTE);
 	}
+
+	private void _checkObjectEntries(long companyId) {
+		try {
+			_objectEntryLocalService.checkObjectEntries(companyId);
+
+			_objectEntryVersionLocalService.checkObjectEntryVersions(companyId);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to check object entries for company " + companyId,
+					exception);
+			}
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CheckObjectEntrySchedulerJobConfiguration.class);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
