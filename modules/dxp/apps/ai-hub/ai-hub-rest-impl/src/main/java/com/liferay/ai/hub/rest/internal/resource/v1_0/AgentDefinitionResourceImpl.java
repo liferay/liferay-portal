@@ -106,6 +106,18 @@ public class AgentDefinitionResourceImpl
 			externalReferenceCode);
 	}
 
+	@Override
+	public AgentDefinition postAgentDefinitionDraft() throws Exception {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-62272")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		return _agentDefinitionManager.postAgentDefinitionDraft(
+			contextCompany.getCompanyId(), _createDTOConverterContext());
+	}
+
 	private DTOConverterContext _createDTOConverterContext() {
 		return new DefaultDTOConverterContext(
 			contextAcceptLanguage.isAcceptAllLanguages(), null,

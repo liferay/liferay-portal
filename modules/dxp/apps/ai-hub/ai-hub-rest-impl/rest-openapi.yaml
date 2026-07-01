@@ -423,6 +423,19 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/AgentDefinition"
             tags: ["AgentDefinition"]
+    "/agent-definitions/draft":
+        post:
+            operationId: postAgentDefinitionDraft
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AgentDefinition"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AgentDefinition"
+            tags: ["AgentDefinition"]
     "/agent-instances":
         post:
             operationId: postAgentInstance
