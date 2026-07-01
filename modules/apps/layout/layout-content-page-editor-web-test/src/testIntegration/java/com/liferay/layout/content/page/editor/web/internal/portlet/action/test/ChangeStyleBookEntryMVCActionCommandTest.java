@@ -77,7 +77,7 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		StyleBookEntry depotStyleBookEntry = _addStyleBookEntry(
 			depotGroup.getGroupId());
 
-		_processAction(
+		_testChangeStyleBookEntry(
 			depotStyleBookEntry.getExternalReferenceCode(),
 			depotGroup.getExternalReferenceCode());
 	}
@@ -90,7 +90,8 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
 			_group.getGroupId());
 
-		_processAction(siteStyleBookEntry.getExternalReferenceCode(), "");
+		_testChangeStyleBookEntry(
+			siteStyleBookEntry.getExternalReferenceCode(), "");
 	}
 
 	@Test
@@ -120,7 +121,7 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 			RandomTestUtil.randomString(), null);
 	}
 
-	private void _processAction(
+	private void _testChangeStyleBookEntry(
 			String styleBookEntryERC, String styleBookEntryScopeERC)
 		throws Exception {
 
