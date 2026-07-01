@@ -14,24 +14,6 @@ import java.util.List;
  */
 public class AudiencesCriteria {
 
-	public AudiencesCriteria(
-		String icon, InputType inputType, String key, String label,
-		List<Option> options, Type type) {
-
-		_icon = icon;
-		_inputType = inputType;
-		_key = key;
-		_label = label;
-		_options = options;
-		_type = type;
-	}
-
-	public AudiencesCriteria(
-		String icon, InputType inputType, String key, String label, Type type) {
-
-		this(icon, inputType, key, label, null, type);
-	}
-
 	public String getIcon() {
 		return _icon;
 	}
@@ -54,6 +36,30 @@ public class AudiencesCriteria {
 
 	public Type getType() {
 		return _type;
+	}
+
+	public void setIcon(String icon) {
+		_icon = icon;
+	}
+
+	public void setInputType(InputType inputType) {
+		_inputType = inputType;
+	}
+
+	public void setKey(String key) {
+		_key = key;
+	}
+
+	public void setLabel(String label) {
+		_label = label;
+	}
+
+	public void setOptions(List<Option> options) {
+		_options = options;
+	}
+
+	public void setType(Type type) {
+		_type = type;
 	}
 
 	public static class Option {
@@ -112,11 +118,11 @@ public class AudiencesCriteria {
 
 	}
 
-	private final String _icon;
-	private final InputType _inputType;
-	private final String _key;
-	private final String _label;
-	private final List<Option> _options;
-	private final Type _type;
+	private String _icon;
+	private InputType _inputType;
+	private String _key;
+	private String _label;
+	private List<Option> _options;
+	private Type _type;
 
 }
