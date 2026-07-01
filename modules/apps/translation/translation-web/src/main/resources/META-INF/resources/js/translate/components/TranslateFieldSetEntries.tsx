@@ -37,6 +37,10 @@ const getISO639LanguageCode = (localeId: string): string => {
 	return localeId;
 };
 
+const getSourceEditingArea = (editor: TEditor): HTMLElement | null =>
+	editor.ui?.element?.querySelector<HTMLElement>('.ck-source-editing-area') ??
+	null;
+
 const TranslateAutoTranslateRow = ({
 	autoTranslateEnabled,
 	children,
@@ -148,7 +152,9 @@ const TranslateFieldEditor = ({
 	const [content, setContent] = useState(targetContent);
 
 	const editorRef = useRef<any>();
+	const ckeditor5Ref = useRef<TEditor>();
 	const internalUpdateRef = useRef(true);
+	const lastSourceInputRef = useRef('');
 
 	const handleOnChange = (data: string) => {
 		setContent(data);
@@ -157,6 +163,8 @@ const TranslateFieldEditor = ({
 	};
 
 	const handleOnReady = (editor: TEditor) => {
+		ckeditor5Ref.current = editor;
+
 		const sourceEditingPlugin: SourceEditing =
 			editor.plugins.get('SourceEditing');
 
@@ -169,27 +177,16 @@ const TranslateFieldEditor = ({
 				return;
 			}
 
-			for (const [rootName] of editor.editing.view.domRoots) {
-				const replacedRoot =
+			const textarea =
+				getSourceEditingArea(editor)?.querySelector('textarea');
 
-					// @ts-ignore
+			textarea?.addEventListener('input', () => {
+				const data = editor.getData();
 
-					sourceEditingPlugin._replacedRoots?.get(rootName);
+				lastSourceInputRef.current = data;
 
-				if (!replacedRoot) {
-					continue;
-				}
-
-				const textarea = replacedRoot.querySelector('textarea');
-
-				if (!textarea) {
-					continue;
-				}
-
-				textarea.addEventListener('input', () => {
-					handleOnChange(editor.getData());
-				});
-			}
+				handleOnChange(data);
+			});
 		});
 	};
 
@@ -199,6 +196,26 @@ const TranslateFieldEditor = ({
 		}
 		else {
 			internalUpdateRef.current = false;
+		}
+
+		const editor = ckeditor5Ref.current;
+
+		const sourceEditingPlugin: SourceEditing | undefined =
+			editor?.plugins.get('SourceEditing');
+
+		if (
+			sourceEditingPlugin?.isSourceEditingMode &&
+			targetContent !== lastSourceInputRef.current
+		) {
+			const sourceEditingArea = getSourceEditingArea(editor!);
+
+			const textarea = sourceEditingArea?.querySelector('textarea');
+
+			if (textarea && textarea.value !== targetContent) {
+				textarea.value = targetContent;
+
+				sourceEditingArea!.dataset.value = targetContent;
+			}
 		}
 
 		setContent(targetContent);
