@@ -11,20 +11,23 @@ import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import ConditionsPanel from '../../../src/main/resources/META-INF/resources/js/components/ConditionsPanel';
-import {Rule} from '../../../src/main/resources/META-INF/resources/js/types';
+import {
+	AudiencesCriteriaType,
+	Rule,
+} from '../../../src/main/resources/META-INF/resources/js/types';
 
 const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;
 
-const AUDIENCES_CRITERIA_TYPES = [
+const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 	{
 		audiencesCriterias: [
 			{
 				icon: 'user',
+				inputType: 'text',
 				key: 'age',
 				label: 'Age',
-				operators: ['eq', 'gt', 'lt'],
 				options: [],
 				type: 'number',
 			},

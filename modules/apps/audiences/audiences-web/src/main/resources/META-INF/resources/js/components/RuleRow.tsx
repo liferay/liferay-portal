@@ -14,7 +14,7 @@ import React, {useRef, useState} from 'react';
 import {DropTargetMonitor, useDrop} from 'react-dnd';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
-import {getOperatorLabel} from '../constants/operators';
+import {getOperatorLabel, getOperators} from '../constants/operators';
 import {AudiencesCriteria, Rule} from '../types';
 
 type DropPosition = 'bottom' | 'top' | null;
@@ -114,7 +114,9 @@ export default function RuleRow({
 		return null;
 	}
 
-	const {label, operators, options, type} = audiencesCriteria;
+	const {inputType, label, options, type} = audiencesCriteria;
+
+	const operators = getOperators(inputType, type);
 
 	return (
 		<div className="mb-3" ref={attributeDrop}>
@@ -157,7 +159,7 @@ export default function RuleRow({
 						aria-label={Liferay.Language.get('operator')}
 						className="flex-shrink-0 form-control-sm w-auto"
 						items={operators.map((operator) => ({
-							label: getOperatorLabel(operator, type),
+							label: getOperatorLabel(operator, inputType),
 							value: operator,
 						}))}
 						onSelectionChange={(key) =>
@@ -192,7 +194,7 @@ export default function RuleRow({
 								onChange({...rule, value: event.target.value})
 							}
 							placeholder={
-								type === 'date' ? 'YYYY-MM-DD' : undefined
+								inputType === 'date' ? 'YYYY-MM-DD' : undefined
 							}
 							type={type === 'number' ? 'number' : 'text'}
 							value={rule.value}

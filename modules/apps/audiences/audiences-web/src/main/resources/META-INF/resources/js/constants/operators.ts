@@ -24,12 +24,44 @@ const SHARED_OPERATOR_LANGUAGE_KEYS: Record<string, string> = {
 	not_includes: 'does-not-contain',
 };
 
-export function getOperatorLabel(operator: string, type: string): string {
+const EQUALITY_OPERATORS = ['eq', 'not_eq'];
+
+const ORDERED_OPERATORS = ['eq', 'gt', 'gte', 'lt', 'lte', 'not_eq'];
+
+const SET_OPERATORS = ['includes', 'not_includes'];
+
+const TEXT_OPERATORS = ['eq', 'includes', 'not_eq', 'not_includes'];
+
+export function getOperatorLabel(operator: string, inputType: string): string {
 	const languageKey =
 		SHARED_OPERATOR_LANGUAGE_KEYS[operator] ||
-		(type === 'date'
+		(inputType === 'date'
 			? DATE_OPERATOR_LANGUAGE_KEYS[operator]
 			: NUMBER_OPERATOR_LANGUAGE_KEYS[operator]);
 
 	return languageKey ? Liferay.Language.get(languageKey) : operator;
+}
+
+export function getOperators(inputType: string, type: string): string[] {
+	if (inputType === 'date') {
+		return ORDERED_OPERATORS;
+	}
+
+	if (type === 'boolean') {
+		return EQUALITY_OPERATORS;
+	}
+
+	if (type === 'set') {
+		return SET_OPERATORS;
+	}
+
+	if (type === 'number') {
+		return ORDERED_OPERATORS;
+	}
+
+	if (inputType === 'select') {
+		return EQUALITY_OPERATORS;
+	}
+
+	return TEXT_OPERATORS;
 }

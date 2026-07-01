@@ -5,6 +5,7 @@
 
 import {v4 as uuidv4} from 'uuid';
 
+import {getOperators} from './constants/operators';
 import {AudiencesCriteria, AudiencesCriteriaJSON, Rule} from './types';
 
 export interface State {
@@ -26,7 +27,11 @@ export function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 	return {
 		attribute: audiencesCriteria.key,
 		id: `rule-${uuidv4()}`,
-		operator: audiencesCriteria.operators[0] || '',
+		operator:
+			getOperators(
+				audiencesCriteria.inputType,
+				audiencesCriteria.type
+			)[0] || '',
 		value: audiencesCriteria.options[0]?.value || '',
 	};
 }
