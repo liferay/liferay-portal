@@ -24,12 +24,15 @@ import com.liferay.headless.admin.fragment.client.pagination.Page;
 import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.FragmentResource;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -310,6 +313,24 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		fragment.setFragmentVersions(_randomFragmentVersions());
 
 		return fragment;
+	}
+
+	@Override
+	protected void testBatchEngineDeleteImportTask_deleteFragment(
+			int expectedStatusCode, String externalReferenceCode,
+			String... parameters)
+		throws Exception {
+
+		_testBatchEngineDeleteImportTask_deleteFragments(
+			expectedStatusCode,
+			new JSONObject[] {
+				JSONUtil.put(
+					"externalReferenceCode", () -> externalReferenceCode
+				).put(
+					"type", "BasicFragment"
+				)
+			},
+			parameters);
 	}
 
 	@Override
@@ -596,6 +617,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 
 		Assert.assertFalse(fragments + " contains " + fragment, contains);
+	}
+
+	private void _assertNullFragmentEntry(Fragment fragment, Group group) {
+		Assert.assertNull(
+			_fragmentEntryLocalService.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragment.getExternalReferenceCode(), group.getGroupId()));
 	}
 
 	private void _assertProblemException(
@@ -1021,8 +1049,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	}
 
 	private void _testBatchEngineDeleteImportTask() throws Exception {
-		Fragment fragment1 = _postSiteFragmentSetFragment(randomFragment());
-		Fragment fragment2 = _postSiteFragmentSetFragment(randomFragment());
+		BasicFragment basicFragment1 =
+			(BasicFragment)_postSiteFragmentSetFragment(randomFragment());
+		BasicFragment basicFragment2 =
+			(BasicFragment)_postSiteFragmentSetFragment(randomFragment());
+		FormFragment formFragment1 = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
+		FormFragment formFragment2 = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
 
 		try (SafeCloseable safeCloseable =
 				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
@@ -1039,18 +1073,68 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					Http.Method.POST));
 		}
 
-		testBatchEngineDeleteImportTask_deleteFragment(
-			200, fragment2.getExternalReferenceCode(),
+		_assertFragmentEntry(basicFragment1, irrelevantGroup);
+		_assertFragmentEntry(basicFragment2, irrelevantGroup);
+		_assertFormFragmentEntry(
+			new FieldType[] {FieldType.TEXT}, formFragment1, irrelevantGroup);
+		_assertFormFragmentEntry(
+			new FieldType[] {FieldType.TEXT}, formFragment2, irrelevantGroup);
+
+		_testBatchEngineDeleteImportTask_deleteFragments(
+			200,
+			new JSONObject[] {
+				JSONUtil.put(
+					"externalReferenceCode",
+					basicFragment1.getExternalReferenceCode()
+				).put(
+					"type", "BasicFragment"
+				),
+				JSONUtil.put(
+					"externalReferenceCode",
+					formFragment1.getExternalReferenceCode()
+				).put(
+					"type", "FormFragment"
+				)
+			},
 			"siteExternalReferenceCode",
 			irrelevantGroup.getExternalReferenceCode());
 
-		_assertFragmentEntry(fragment1, irrelevantGroup);
+		_assertNullFragmentEntry(basicFragment1, irrelevantGroup);
+		_assertFragmentEntry(basicFragment2, irrelevantGroup);
+		_assertNullFragmentEntry(formFragment1, irrelevantGroup);
+		_assertFormFragmentEntry(
+			new FieldType[] {FieldType.TEXT}, formFragment2, irrelevantGroup);
+	}
 
-		Assert.assertNull(
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragment2.getExternalReferenceCode(),
-					irrelevantGroup.getGroupId()));
+	private void _testBatchEngineDeleteImportTask_deleteFragments(
+			int expectedStatusCode, JSONObject[] jsonObjects,
+			String... parameters)
+		throws Exception {
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpInvoker.HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.admin.fragment.dto.v1_0.Fragment", null,
+				null, null, null, JSONUtil.putAll((Object[])jsonObjects));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	private void _testDeleteSiteFragment(boolean approved, boolean draft)
