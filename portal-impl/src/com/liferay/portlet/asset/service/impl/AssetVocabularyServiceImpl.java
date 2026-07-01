@@ -14,7 +14,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.asset.service.base.AssetVocabularyServiceBaseImpl;
 import com.liferay.portlet.asset.service.permission.AssetCategoriesPermission;
 import com.liferay.portlet.asset.service.permission.AssetVocabularyPermission;
+import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
@@ -51,6 +54,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetCategoriesPermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_VOCABULARY);
 
+		_checkSystemVocabulary(settings);
+
 		return assetVocabularyLocalService.addVocabulary(
 			getUserId(), groupId, title, titleMap, descriptionMap, settings,
 			visibilityType, serviceContext);
@@ -65,6 +70,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 
 		AssetCategoriesPermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_VOCABULARY);
+
+		_checkSystemVocabulary(settings);
 
 		return assetVocabularyLocalService.addVocabulary(
 			getUserId(), groupId, title, titleMap, descriptionMap, settings,
@@ -93,6 +100,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetCategoriesPermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_VOCABULARY);
 
+		_checkSystemVocabulary(settings);
+
 		return assetVocabularyLocalService.addVocabulary(
 			getUserId(), groupId, name, title, titleMap, descriptionMap,
 			settings, serviceContext);
@@ -108,6 +117,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 
 		AssetCategoriesPermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_VOCABULARY);
+
+		_checkSystemVocabulary(settings);
 
 		return assetVocabularyLocalService.addVocabulary(
 			externalReferenceCode, getUserId(), groupId, name, title, titleMap,
@@ -492,6 +503,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabularyId, ActionKeys.UPDATE);
 
+		_checkSystemVocabulary(settings);
+
 		return assetVocabularyLocalService.updateVocabulary(
 			externalReferenceCode, vocabularyId, titleMap, descriptionMap,
 			settings);
@@ -506,6 +519,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabularyId, ActionKeys.UPDATE);
+
+		_checkSystemVocabulary(settings);
 
 		return assetVocabularyLocalService.updateVocabulary(
 			externalReferenceCode, vocabularyId, titleMap, descriptionMap,
@@ -522,9 +537,26 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabularyId, ActionKeys.UPDATE);
 
+		_checkSystemVocabulary(settings);
+
 		return assetVocabularyLocalService.updateVocabulary(
 			externalReferenceCode, vocabularyId, title, titleMap,
 			descriptionMap, settings, visibilityType, serviceContext);
+	}
+
+	private void _checkSystemVocabulary(String settings)
+		throws PortalException {
+
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			new AssetVocabularySettingsHelper(settings);
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (assetVocabularySettingsHelper.isSystem() &&
+			!permissionChecker.isCompanyAdmin()) {
+
+			throw new PrincipalException.MustBeCompanyAdmin(getUserId());
+		}
 	}
 
 	@BeanReference(type = ClassNameLocalService.class)

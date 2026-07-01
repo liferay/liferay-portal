@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -89,9 +90,15 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		PermissionChecker permissionChecker = getPermissionChecker();
+
 		AssetCategoryPermission.check(
-			getPermissionChecker(), groupId, parentCategoryId,
+			permissionChecker, groupId, parentCategoryId,
 			ActionKeys.ADD_CATEGORY);
+
+		if (system && !permissionChecker.isCompanyAdmin()) {
+			throw new PrincipalException.MustBeCompanyAdmin(getUserId());
+		}
 
 		return assetCategoryLocalService.addCategory(
 			externalReferenceCode, getUserId(), groupId, parentCategoryId,
