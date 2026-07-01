@@ -28,7 +28,6 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -68,6 +67,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -88,11 +88,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_group = GroupTestUtil.addGroup();
-
-		_company = _companyLocalService.getCompany(_group.getCompanyId());
+		_user = UserTestUtil.addUser();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -148,9 +145,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		TestAccountEntryValidator testAccountEntryValidator =
 			new TestAccountEntryValidator();
 
-		BundleContext bundleContext = FrameworkUtil.getBundle(
-			AddCommerceOrderAccountValidationMVCActionCommandTest.class
-		).getBundleContext();
+		Bundle bundle = FrameworkUtil.getBundle(
+			AddCommerceOrderAccountValidationMVCActionCommandTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
 
 		_serviceRegistration = bundleContext.registerService(
 			AccountEntryValidator.class, testAccountEntryValidator,
@@ -169,7 +167,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				mockLiferayPortletActionRequest,
 				"accountValidationsAlreadySucceeded"));
 
-		Assert.assertEquals(1, _getEntriesPKWithManualResult().size());
+		List<Long> primaryKeysList = _getPrimaryKeys();
+
+		Assert.assertEquals(
+			primaryKeysList.toString(), 1, primaryKeysList.size());
 
 		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
 
@@ -183,7 +184,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			_commerceOrder.getShippingAddressId(),
 			jsonObject.getLong("shippingAddressId"));
 
-		for (long objectEntryId : _getEntriesPKWithManualResult()) {
+		for (long objectEntryId : primaryKeysList) {
 			_objectEntryLocalService.deleteObjectEntry(objectEntryId);
 		}
 
@@ -192,9 +193,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
-				"className",
-				testAccountEntryValidator.getClass(
-				).getName()
+				"className", TestAccountEntryValidator.class.getName()
 			).put(
 				"classPK",
 				testAccountEntryValidator.getClassPK(_accountEntry, null)
@@ -218,21 +217,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				mockLiferayPortletActionRequest,
 				"accountValidationsAlreadySucceeded"));
 
-		Assert.assertEquals(0, _getEntriesPKWithManualResult().size());
-	}
+		primaryKeysList = _getPrimaryKeys();
 
-	private List<Long> _getEntriesPKWithManualResult() throws Exception {
-		String filterString = StringBundler.concat(
-			"(resultStatus eq '", AccountEntryValidatorConstants.RESULT_MANUAL,
-			"') and (r_accountToAccountValidatorResults_accountEntryId eq '",
-			_accountEntry.getAccountEntryId(), "')");
-
-		return _objectEntryLocalService.getPrimaryKeys(
-			new Long[] {0L}, _accountEntry.getCompanyId(),
-			_accountEntry.getUserId(),
-			_objectDefinition.getObjectDefinitionId(),
-			_filterFactory.create(filterString, _objectDefinition), false, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		Assert.assertEquals(
+			primaryKeysList.toString(), 0, primaryKeysList.size());
 	}
 
 	private MockLiferayPortletActionRequest
@@ -244,7 +232,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(_company);
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(_group.getCompanyId()));
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
@@ -265,9 +254,22 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		return mockLiferayPortletActionRequest;
 	}
 
+	private List<Long> _getPrimaryKeys() throws Exception {
+		String filterString = StringBundler.concat(
+			"(resultStatus eq '", AccountEntryValidatorConstants.RESULT_MANUAL,
+			"') and (r_accountToAccountValidatorResults_accountEntryId eq '",
+			_accountEntry.getAccountEntryId(), "')");
+
+		return _objectEntryLocalService.getPrimaryKeys(
+			new Long[] {0L}, _accountEntry.getCompanyId(),
+			_accountEntry.getUserId(),
+			_objectDefinition.getObjectDefinitionId(),
+			_filterFactory.create(filterString, _objectDefinition), false, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
 	private AccountEntry _accountEntry;
 	private CommerceOrder _commerceOrder;
-	private Company _company;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
@@ -317,10 +319,6 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			};
 		}
 
-		public JSONObject getJSONObject() {
-			return _jsonObject;
-		}
-
 		@Override
 		public String getClassPK(
 			AccountEntry accountEntry, JSONObject jsonObject) {
@@ -328,6 +326,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			_jsonObject = jsonObject;
 
 			return _key;
+		}
+
+		public JSONObject getJSONObject() {
+			return _jsonObject;
 		}
 
 		@Override
