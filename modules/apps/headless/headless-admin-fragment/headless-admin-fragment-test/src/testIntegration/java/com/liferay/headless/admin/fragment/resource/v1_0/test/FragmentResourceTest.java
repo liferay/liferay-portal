@@ -185,6 +185,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentApproved();
 		_testGetSiteFragmentDraft();
 		_testGetSiteFragmentThumbnailURLReference();
+		_testGetSiteFragmentWithFormFragment();
 	}
 
 	@Override
@@ -1227,6 +1228,19 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			fragmentResource.getSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				postFragment.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteFragmentWithFormFragment() throws Exception {
+		FieldType[] fieldTypes = {RandomTestUtil.randomEnum(FieldType.class)};
+
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFormFragment(fieldTypes));
+
+		_assertFormFragment(
+			fieldTypes,
+			fragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode()));
 	}
 
 	private void _testPostFragmentApproved(
