@@ -783,8 +783,8 @@ public abstract class BaseDBProcess implements DBProcess {
 			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
 			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
-			AtomicBoolean atomicBoolean = new AtomicBoolean();
-			BlockingQueue<T> blockingQueue = new ArrayBlockingQueue<>(
+			AtomicBoolean producerFinished = new AtomicBoolean();
+			BlockingQueue<T> queue = new ArrayBlockingQueue<>(
 				fixedThreadPoolSize);
 
 			Callable<Void> callable = () -> {
@@ -796,14 +796,10 @@ public abstract class BaseDBProcess implements DBProcess {
 				try {
 					PreparedStatement preparedStatement = null;
 
-					while (true) {
-						T current = blockingQueue.poll(1, TimeUnit.SECONDS);
+					while (!producerFinished.get() || !queue.isEmpty()) {
+						T current = queue.poll(1, TimeUnit.SECONDS);
 
 						if (current == null) {
-							if (atomicBoolean.get()) {
-								break;
-							}
-
 							continue;
 						}
 
@@ -844,7 +840,7 @@ public abstract class BaseDBProcess implements DBProcess {
 				T current = unsafeSupplier.get();
 
 				while (current != null) {
-					if (blockingQueue.offer(current, 1, TimeUnit.SECONDS)) {
+					if (queue.offer(current, 1, TimeUnit.SECONDS)) {
 						current = unsafeSupplier.get();
 					}
 					else if (throwableCollector.getThrowable() != null) {
@@ -853,7 +849,7 @@ public abstract class BaseDBProcess implements DBProcess {
 				}
 			}
 			finally {
-				atomicBoolean.set(true);
+				producerFinished.set(true);
 			}
 		}
 		finally {
