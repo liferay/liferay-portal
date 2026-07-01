@@ -10,19 +10,17 @@ import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.Query;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.persistence.impl.ArrayableFinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
+import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.service.builder.test.compat740.exception.NoSuchArrayableEntryException;
 import com.liferay.portal.tools.service.builder.test.compat740.model.ArrayableEntry;
 import com.liferay.portal.tools.service.builder.test.compat740.model.ArrayableEntryTable;
@@ -36,8 +34,6 @@ import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +75,15 @@ public class ArrayableEntryPersistenceImpl
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
-	private FinderPath _finderPathWithPaginationFindByGroupId;
-	private FinderPath _finderPathWithoutPaginationFindByGroupId;
-	private FinderPath _finderPathCountByGroupId;
-	private FinderPath _finderPathWithPaginationCountByGroupId;
+	private CollectionPersistenceFinder
+		<ArrayableEntry, NoSuchArrayableEntryException>
+			_collectionPersistenceFinderByGroupId;
 
 	/**
 	 * Returns an ordered range of all the arrayable entries where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -104,93 +99,9 @@ public class ArrayableEntryPersistenceImpl
 		OrderByComparator<ArrayableEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByGroupId;
-				finderArgs = new Object[] {groupId};
-			}
-		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByGroupId;
-			finderArgs = new Object[] {groupId, start, end, orderByComparator};
-		}
-
-		List<ArrayableEntry> list = null;
-
-		if (useFinderCache) {
-			list = (List<ArrayableEntry>)finderCache.getResult(
-				finderPath, finderArgs, this);
-
-			if ((list != null) && !list.isEmpty()) {
-				for (ArrayableEntry arrayableEntry : list) {
-					if (groupId != arrayableEntry.getGroupId()) {
-						list = null;
-
-						break;
-					}
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler sb = null;
-
-			if (orderByComparator != null) {
-				sb = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
-			}
-			else {
-				sb = new StringBundler(3);
-			}
-
-			sb.append(_SQL_SELECT_ARRAYABLEENTRY_WHERE);
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(
-					sb, _ENTITY_ALIAS_PREFIX, orderByComparator);
-			}
-			else {
-				sb.append(ArrayableEntryModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				queryPos.add(groupId);
-
-				list = (List<ArrayableEntry>)QueryUtil.list(
-					query, getDialect(), start, end);
-
-				cacheResult(list);
-
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
+		return _collectionPersistenceFinderByGroupId.find(
+			finderCache, new Object[] {new long[] {groupId}}, start, end,
+			orderByComparator, useFinderCache);
 	}
 
 	/**
@@ -236,77 +147,16 @@ public class ArrayableEntryPersistenceImpl
 	public ArrayableEntry fetchByGroupId_First(
 		long groupId, OrderByComparator<ArrayableEntry> orderByComparator) {
 
-		List<ArrayableEntry> list = findByGroupId(
-			groupId, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns all the arrayable entries where groupId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @return the matching arrayable entries
-	 */
-	@Override
-	public List<ArrayableEntry> findByGroupId(long[] groupIds) {
-		return findByGroupId(
-			groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the arrayable entries where groupId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param start the lower bound of the range of arrayable entries
-	 * @param end the upper bound of the range of arrayable entries (not inclusive)
-	 * @return the range of matching arrayable entries
-	 */
-	@Override
-	public List<ArrayableEntry> findByGroupId(
-		long[] groupIds, int start, int end) {
-
-		return findByGroupId(groupIds, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the arrayable entries where groupId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param start the lower bound of the range of arrayable entries
-	 * @param end the upper bound of the range of arrayable entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching arrayable entries
-	 */
-	@Override
-	public List<ArrayableEntry> findByGroupId(
-		long[] groupIds, int start, int end,
-		OrderByComparator<ArrayableEntry> orderByComparator) {
-
-		return findByGroupId(groupIds, start, end, orderByComparator, true);
+		return _collectionPersistenceFinderByGroupId.fetchFirst(
+			finderCache, new Object[] {new long[] {groupId}},
+			orderByComparator);
 	}
 
 	/**
 	 * Returns an ordered range of all the arrayable entries where groupId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ArrayableEntryModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupIds the group IDs
@@ -322,149 +172,9 @@ public class ArrayableEntryPersistenceImpl
 		OrderByComparator<ArrayableEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		if (groupIds == null) {
-			groupIds = new long[0];
-		}
-		else if (groupIds.length > 1) {
-			groupIds = ArrayUtil.sortedUnique(groupIds);
-		}
-
-		if (groupIds.length == 1) {
-			return findByGroupId(groupIds[0], start, end, orderByComparator);
-		}
-
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderArgs = new Object[] {StringUtil.merge(groupIds)};
-			}
-		}
-		else if (useFinderCache) {
-			finderArgs = new Object[] {
-				StringUtil.merge(groupIds), start, end, orderByComparator
-			};
-		}
-
-		List<ArrayableEntry> list = null;
-
-		if (useFinderCache) {
-			list = (List<ArrayableEntry>)finderCache.getResult(
-				_finderPathWithPaginationFindByGroupId, finderArgs, this);
-
-			if ((list != null) && !list.isEmpty()) {
-				for (ArrayableEntry arrayableEntry : list) {
-					if (!ArrayUtil.contains(
-							groupIds, arrayableEntry.getGroupId())) {
-
-						list = null;
-
-						break;
-					}
-				}
-			}
-		}
-
-		if (list == null) {
-			try {
-				if ((databaseInMaxParameters > 0) &&
-					(groupIds.length > databaseInMaxParameters)) {
-
-					list = new ArrayList<ArrayableEntry>();
-
-					long[][] groupIdsPages = (long[][])ArrayUtil.split(
-						groupIds, databaseInMaxParameters);
-
-					for (long[] groupIdsPage : groupIdsPages) {
-						list.addAll(
-							_findByGroupId(
-								groupIdsPage, QueryUtil.ALL_POS,
-								QueryUtil.ALL_POS, orderByComparator));
-					}
-
-					Collections.sort(list, orderByComparator);
-
-					cacheResult(list);
-
-					list = Collections.unmodifiableList(
-						ListUtil.subList(list, start, end));
-				}
-				else {
-					list = _findByGroupId(
-						groupIds, start, end, orderByComparator);
-
-					cacheResult(list);
-				}
-
-				if (useFinderCache) {
-					finderCache.putResult(
-						_finderPathWithPaginationFindByGroupId, finderArgs,
-						list);
-				}
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-		}
-
-		return list;
-	}
-
-	private List<ArrayableEntry> _findByGroupId(
-		long[] groupIds, int start, int end,
-		OrderByComparator<ArrayableEntry> orderByComparator) {
-
-		List<ArrayableEntry> list = null;
-
-		StringBundler sb = new StringBundler();
-
-		sb.append(_SQL_SELECT_ARRAYABLEENTRY_WHERE);
-
-		if (groupIds.length > 0) {
-			sb.append("(");
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_7);
-
-			sb.append(StringUtil.merge(groupIds));
-
-			sb.append(")");
-
-			sb.append(")");
-		}
-
-		sb.setStringAt(
-			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
-
-		if (orderByComparator != null) {
-			appendOrderByComparator(
-				sb, _ENTITY_ALIAS_PREFIX, orderByComparator);
-		}
-		else {
-			sb.append(ArrayableEntryModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = sb.toString();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query query = session.createQuery(sql);
-
-			list = (List<ArrayableEntry>)QueryUtil.list(
-				query, getDialect(), start, end);
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		return list;
+		return _collectionPersistenceFinderByGroupId.find(
+			finderCache, new Object[] {ArrayUtil.sortedUnique(groupIds)}, start,
+			end, orderByComparator, useFinderCache);
 	}
 
 	/**
@@ -474,12 +184,8 @@ public class ArrayableEntryPersistenceImpl
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
-		for (ArrayableEntry arrayableEntry :
-				findByGroupId(
-					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-			remove(arrayableEntry);
-		}
+		_collectionPersistenceFinderByGroupId.remove(
+			finderCache, new Object[] {new long[] {groupId}});
 	}
 
 	/**
@@ -490,45 +196,8 @@ public class ArrayableEntryPersistenceImpl
 	 */
 	@Override
 	public int countByGroupId(long groupId) {
-		FinderPath finderPath = _finderPathCountByGroupId;
-
-		Object[] finderArgs = new Object[] {groupId};
-
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
-
-		if (count == null) {
-			StringBundler sb = new StringBundler(2);
-
-			sb.append(_SQL_COUNT_ARRAYABLEENTRY_WHERE);
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				queryPos.add(groupId);
-
-				count = (Long)query.uniqueResult();
-
-				finderCache.putResult(finderPath, finderArgs, count);
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
+		return _collectionPersistenceFinderByGroupId.count(
+			finderCache, new Object[] {new long[] {groupId}});
 	}
 
 	/**
@@ -539,95 +208,9 @@ public class ArrayableEntryPersistenceImpl
 	 */
 	@Override
 	public int countByGroupId(long[] groupIds) {
-		if (groupIds == null) {
-			groupIds = new long[0];
-		}
-		else if (groupIds.length > 1) {
-			groupIds = ArrayUtil.sortedUnique(groupIds);
-		}
-
-		Object[] finderArgs = new Object[] {StringUtil.merge(groupIds)};
-
-		Long count = (Long)finderCache.getResult(
-			_finderPathWithPaginationCountByGroupId, finderArgs, this);
-
-		if (count == null) {
-			try {
-				if ((databaseInMaxParameters > 0) &&
-					(groupIds.length > databaseInMaxParameters)) {
-
-					count = Long.valueOf(0);
-
-					long[][] groupIdsPages = (long[][])ArrayUtil.split(
-						groupIds, databaseInMaxParameters);
-
-					for (long[] groupIdsPage : groupIdsPages) {
-						count += Long.valueOf(_countByGroupId(groupIdsPage));
-					}
-				}
-				else {
-					count = Long.valueOf(_countByGroupId(groupIds));
-				}
-
-				finderCache.putResult(
-					_finderPathWithPaginationCountByGroupId, finderArgs, count);
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-		}
-
-		return count.intValue();
+		return _collectionPersistenceFinderByGroupId.count(
+			finderCache, new Object[] {ArrayUtil.sortedUnique(groupIds)});
 	}
-
-	private int _countByGroupId(long[] groupIds) {
-		Long count = null;
-
-		StringBundler sb = new StringBundler();
-
-		sb.append(_SQL_COUNT_ARRAYABLEENTRY_WHERE);
-
-		if (groupIds.length > 0) {
-			sb.append("(");
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_7);
-
-			sb.append(StringUtil.merge(groupIds));
-
-			sb.append(")");
-
-			sb.append(")");
-		}
-
-		sb.setStringAt(
-			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
-
-		String sql = sb.toString();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query query = session.createQuery(sql);
-
-			count = (Long)query.uniqueResult();
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		return count.intValue();
-	}
-
-	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 =
-		"arrayableEntry.groupId = ?";
-
-	private static final String _FINDER_COLUMN_GROUPID_GROUPID_7 =
-		"arrayableEntry.groupId IN (";
 
 	public ArrayableEntryPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -817,28 +400,29 @@ public class ArrayableEntryPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_finderPathWithPaginationFindByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			},
-			new String[] {"groupId"}, true);
-
-		_finderPathWithoutPaginationFindByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-			new String[] {Long.class.getName()}, new String[] {"groupId"},
-			true);
-
-		_finderPathCountByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-			new String[] {Long.class.getName()}, new String[] {"groupId"},
-			false);
-
-		_finderPathWithPaginationCountByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-			new String[] {Long.class.getName()}, new String[] {"groupId"},
-			false);
+		_collectionPersistenceFinderByGroupId =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
+					new String[] {
+						Long.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId"}, true),
+				null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				_SQL_SELECT_ARRAYABLEENTRY_WHERE,
+				_SQL_COUNT_ARRAYABLEENTRY_WHERE,
+				ArrayableEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
+				"", null,
+				new ArrayableFinderColumn<>(
+					"arrayableEntry.", "groupId", FinderColumn.Type.LONG, "=",
+					false, true, true, ArrayableEntry::getGroupId));
 
 		ArrayableEntryUtil.setPersistence(this);
 	}
@@ -906,4 +490,4 @@ public class ArrayableEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1179752810
+// LIFERAY-SERVICE-BUILDER-HASH:1288095205

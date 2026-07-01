@@ -782,6 +782,7 @@ public class BasicEntryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_BASICENTRY_WHERE, _SQL_COUNT_BASICENTRY_WHERE,
 				BasicEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"basicEntry.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, BasicEntry::getGroupId));
@@ -874,4 +875,4 @@ public class BasicEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:500698858
+// LIFERAY-SERVICE-BUILDER-HASH:1827408232

@@ -479,6 +479,7 @@ public class CTEntryPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CTENTRY_WHERE, _SQL_COUNT_CTENTRY_WHERE,
 				CTEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, CTEntry::getCompanyId));
@@ -561,4 +562,4 @@ public class CTEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-322835890
+// LIFERAY-SERVICE-BUILDER-HASH:-1562328602

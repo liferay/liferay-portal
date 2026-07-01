@@ -557,7 +557,7 @@ public class LikeFinderEntryPersistenceImpl
 				_SQL_SELECT_LIKEFINDERENTRY_WHERE,
 				_SQL_COUNT_LIKEFINDERENTRY_WHERE,
 				LikeFinderEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"likeFinderEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LikeFinderEntry::getCompanyId),
@@ -637,4 +637,4 @@ public class LikeFinderEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1856254154
+// LIFERAY-SERVICE-BUILDER-HASH:-1017047786

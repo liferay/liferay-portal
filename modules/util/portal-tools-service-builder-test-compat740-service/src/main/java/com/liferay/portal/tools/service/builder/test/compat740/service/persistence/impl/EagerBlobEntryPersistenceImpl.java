@@ -440,6 +440,7 @@ public class EagerBlobEntryPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_EAGERBLOBENTRY_WHERE, _SQL_COUNT_EAGERBLOBENTRY_WHERE,
 			EagerBlobEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"eagerBlobEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, EagerBlobEntry::getUuid));
@@ -523,4 +524,4 @@ public class EagerBlobEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1452897314
+// LIFERAY-SERVICE-BUILDER-HASH:1547389084
