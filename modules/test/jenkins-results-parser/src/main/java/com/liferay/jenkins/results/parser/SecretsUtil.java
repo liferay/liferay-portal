@@ -178,14 +178,14 @@ public abstract class SecretsUtil {
 		String connectURL;
 
 		try {
-			String connectURLToken = JenkinsResultsParserUtil.getBuildProperty(
+			String connectURLKey = JenkinsResultsParserUtil.getBuildProperty(
 				"one.password.connect.url.key");
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(connectURLToken)) {
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(connectURLKey)) {
 				Process process = JenkinsResultsParserUtil.executeBashCommands(
 					new File("."), true, false, 60000,
 					JenkinsResultsParserUtil.combine(
-						"aws ssm get-parameter --name \"", connectURLToken,
+						"aws ssm get-parameter --name \"", connectURLKey,
 						"\" --with-decryption | jq -r .Parameter.Value"));
 
 				connectURL = JenkinsResultsParserUtil.readInputStream(
