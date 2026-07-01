@@ -1,8 +1,37 @@
 components:
     schemas:
+        BasicFragment:
+            allOf:
+                -   $ref: "#/components/schemas/Fragment"
+            description:
+                A basic fragment entry.
+            type: object
+        FieldType:
+            description:
+                A form fragment's input field type.
+            enum: [Boolean, CAPTCHA, Date, DateTime, Email, File, FormButton, FriendlyURL, HTML, LocalizationSelect, LongText, Multiselect, Number, PhoneNumber, Relationship, Select, Stepper, Text]
+            type: string
+        FormFragment:
+            allOf:
+                -   $ref: "#/components/schemas/Fragment"
+                -   properties:
+                        fieldTypes:
+                            description:
+                                The input field types the form fragment supports.
+                            items:
+                                $ref: "#/components/schemas/FieldType"
+                            type: array
+            description:
+                A form fragment entry.
+            type: object
         Fragment:
             description:
                 A fragment entry.
+            discriminator:
+                mapping:
+                    BasicFragment: "#/components/schemas/BasicFragment"
+                    FormFragment: "#/components/schemas/FormFragment"
+                propertyName: type
             properties:
                 cacheable:
                     description:
@@ -64,7 +93,7 @@ components:
                 type:
                     description:
                         The fragment's type.
-                    enum: [Component]
+                    enum: [BasicFragment, FormFragment]
                     type: string
             type: object
         FragmentSet:
