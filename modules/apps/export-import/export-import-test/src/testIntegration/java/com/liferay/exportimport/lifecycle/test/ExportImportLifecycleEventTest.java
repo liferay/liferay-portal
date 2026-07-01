@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutSetException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -311,6 +312,54 @@ public class ExportImportLifecycleEventTest {
 			_firedExportImportLifecycleEventsMap.containsKey(
 				ExportImportLifecycleConstants.
 					EVENT_PUBLICATION_PORTLET_LOCAL_FAILED));
+	}
+
+	@Test
+	public void testSuccessfulLayoutExportImport() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group, false);
+
+		Map<String, Serializable> exportLayoutSettingsMap =
+			ExportImportConfigurationSettingsMapFactoryUtil.
+				buildExportLayoutSettingsMap(
+					TestPropsValues.getUserId(), _group.getGroupId(), false,
+					new long[] {layout.getLayoutId()}, _parameterMap,
+					LocaleUtil.US, TimeZoneUtil.GMT);
+
+		File larFile = ExportImportLocalServiceUtil.exportLayoutsAsFile(
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+					exportLayoutSettingsMap));
+
+		Assert.assertTrue(
+			_firedExportImportLifecycleEventsMap.containsKey(
+				ExportImportLifecycleConstants.EVENT_LAYOUT_EXPORT_STARTED));
+		Assert.assertTrue(
+			_firedExportImportLifecycleEventsMap.containsKey(
+				ExportImportLifecycleConstants.EVENT_LAYOUT_EXPORT_SUCCEEDED));
+
+		Map<String, Serializable> importLayoutSettingsMap =
+			ExportImportConfigurationSettingsMapFactoryUtil.
+				buildImportLayoutSettingsMap(
+					TestPropsValues.getUserId(), _liveGroup.getGroupId(), false,
+					new long[0], _parameterMap, LocaleUtil.US,
+					TimeZoneUtil.GMT);
+
+		ExportImportLocalServiceUtil.importLayouts(
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+					importLayoutSettingsMap),
+			larFile);
+
+		Assert.assertTrue(
+			_firedExportImportLifecycleEventsMap.containsKey(
+				ExportImportLifecycleConstants.EVENT_LAYOUT_IMPORT_STARTED));
+		Assert.assertTrue(
+			_firedExportImportLifecycleEventsMap.containsKey(
+				ExportImportLifecycleConstants.EVENT_LAYOUT_IMPORT_SUCCEEDED));
 	}
 
 	@Test
