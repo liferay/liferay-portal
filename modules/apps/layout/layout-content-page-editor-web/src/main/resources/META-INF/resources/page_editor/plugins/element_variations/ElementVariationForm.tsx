@@ -15,7 +15,7 @@ import {ElementVariation} from './elementVariationsReducer';
 
 type ElementVariationFormData = Pick<
 	ElementVariation,
-	'audienceEntryERC' | 'hide' | 'html' | 'js' | 'name' | 'targetElement'
+	'audienceEntryERCs' | 'hide' | 'html' | 'js' | 'name' | 'targetElement'
 >;
 
 interface Props {
@@ -143,10 +143,10 @@ export default function ElementVariationForm({
 
 					<ClayMultiSelect
 						id={audienceId}
-						items={audiences.filter(
-							(audience) =>
-								audience.value ===
-								elementVariation.audienceEntryERC
+						items={audiences.filter((audience) =>
+							elementVariation.audienceEntryERCs.includes(
+								audience.value
+							)
 						)}
 						onItemsChange={(
 							items: Array<{label: string; value: string}>
@@ -168,11 +168,9 @@ export default function ElementVariationForm({
 								);
 
 							onChange({
-								audienceEntryERC: existingAudiences.length
-									? existingAudiences[
-											existingAudiences.length - 1
-										].value
-									: '',
+								audienceEntryERCs: existingAudiences.map(
+									(audience) => audience.value
+								),
 							});
 						}}
 						sourceItems={audiences}

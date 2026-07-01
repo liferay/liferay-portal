@@ -58,11 +58,17 @@ export default function ElementVariationsList({
 											</ClayList.ItemTitle>
 
 											<ClayList.ItemText>
-												{audiences.find(
-													(audience) =>
-														audience.value ===
-														elementVariation.audienceEntryERC
-												)?.label ?? ''}
+												{elementVariation.audienceEntryERCs
+													.map(
+														(audienceEntryERC) =>
+															audiences.find(
+																(audience) =>
+																	audience.value ===
+																	audienceEntryERC
+															)?.label
+													)
+													.filter(Boolean)
+													.join(', ')}
 											</ClayList.ItemText>
 
 											<ClayList.ItemText>

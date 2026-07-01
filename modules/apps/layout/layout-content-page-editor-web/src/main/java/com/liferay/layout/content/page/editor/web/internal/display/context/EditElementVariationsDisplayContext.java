@@ -184,9 +184,9 @@ public class EditElementVariationsDisplayContext {
 						_getPlid()),
 				layoutPageTemplateStructureRelElementVariation ->
 					HashMapBuilder.<String, Object>put(
-						"audienceEntryERC",
+						"audienceEntryERCs",
 						layoutPageTemplateStructureRelElementVariation.
-							getAudienceEntryERC()
+							getAudienceEntryERCs()
 					).put(
 						"externalReferenceCode",
 						layoutPageTemplateStructureRelElementVariation.

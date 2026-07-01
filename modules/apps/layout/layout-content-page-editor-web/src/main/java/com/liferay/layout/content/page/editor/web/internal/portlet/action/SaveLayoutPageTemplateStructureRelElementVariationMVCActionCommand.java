@@ -9,6 +9,7 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -54,7 +55,8 @@ public class SaveLayoutPageTemplateStructureRelElementVariationMVCActionCommand
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				jsonObject.getString("externalReferenceCode"),
 				themeDisplay.getScopeGroupId(),
-				jsonObject.getString("audienceEntryERC"),
+				JSONUtil.toStringArray(
+					jsonObject.getJSONArray("audienceEntryERCs")),
 				_toLocalizedMap(jsonObject.getJSONObject("hideMap")),
 				_toLocalizedMap(jsonObject.getJSONObject("htmlMap")),
 				_toLocalizedMap(jsonObject.getJSONObject("jsMap")),

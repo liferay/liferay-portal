@@ -15,7 +15,7 @@ function buildElementVariation(
 	properties: Partial<ElementVariation> = {}
 ): ElementVariation {
 	return {
-		audienceEntryERC: '',
+		audienceEntryERCs: [],
 		externalReferenceCode: '',
 		hide: {},
 		html: {},
@@ -75,7 +75,7 @@ describe('elementVariationsReducer', () => {
 					defaultLanguageId: 'en_US',
 					elementVariations: [
 						{
-							audienceEntryERC: '',
+							audienceEntryERCs: [],
 							externalReferenceCode: 'erc-1',
 							hide: {en_US: 'true'},
 							html: {},

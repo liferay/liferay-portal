@@ -6,7 +6,7 @@
 import {v4 as uuidv4} from 'uuid';
 
 export interface ElementVariation {
-	audienceEntryERC: string;
+	audienceEntryERCs: string[];
 	externalReferenceCode: string;
 	hide: Record<string, boolean>;
 	html: Record<string, string>;
@@ -42,7 +42,7 @@ export function createElementVariation(
 	segmentsExperienceERC: string
 ): ElementVariation {
 	return {
-		audienceEntryERC: '',
+		audienceEntryERCs: [],
 		externalReferenceCode: uuidv4(),
 		hide: {},
 		html: {},

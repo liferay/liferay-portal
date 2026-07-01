@@ -27,7 +27,7 @@ export default {
 		return serviceFetch<void>(addElementVariationURL, {
 			body: {
 				elementVariation: JSON.stringify({
-					audienceEntryERC: elementVariation.audienceEntryERC,
+					audienceEntryERCs: elementVariation.audienceEntryERCs,
 					externalReferenceCode:
 						elementVariation.externalReferenceCode,
 					hideMap: elementVariation.hide,
