@@ -1,0 +1,14 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
+	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:object:object-api")
+	compileOnly project(":apps:site:site-api")
+	compileOnly project(":apps:site:site-cms-site-initializer-test-util")
+	compileOnly project(":core:petra:petra-lang")
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/test")
+}

@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Site Initializer PIM
+Bundle-SymbolicName: com.liferay.site.initializer.pim
+Bundle-Version: 1.0.0
+Liferay-Site-Initializer-Feature-Flag: LPD-96666
+Liferay-Site-Initializer-Name: PIM
+Provide-Capability: liferay.site.initializer
+Web-ContextPath: /site-initializer-pim
