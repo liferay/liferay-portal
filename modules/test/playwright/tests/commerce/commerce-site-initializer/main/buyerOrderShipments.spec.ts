@@ -10,6 +10,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {liferayConfig} from '../../../../liferay.config';
+import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
@@ -25,14 +26,14 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-10562': {enabled: true},
-		'LPD-20379': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest()
 );
 
 test(
-	'Buyer can view a placed order shipment in the shipments tab',
-	{tag: '@LPD-95980'},
+	'View shipments in the placed order details page',
+	{tag: ['@COMMERCE-6382', '@LPD-95980']},
 	async ({apiHelpers, commerceThemeClassicOrdersPage, page}) => {
 		test.setTimeout(180000);
 
@@ -96,8 +97,12 @@ test(
 			orderStatus: ORDER_WORKFLOW_STATUS_CODE.PROCESSING,
 		});
 
+		const carrier = 'Test Carrier';
+		const trackingNumber = getRandomString();
+
 		const shipment =
 			await apiHelpers.headlessCommerceAdminShipment.postShipment({
+				carrier,
 				orderId: checkoutCart.id,
 				shipmentItems: [
 					{
@@ -107,6 +112,7 @@ test(
 					},
 				],
 				shippingAddressId: address.id,
+				trackingNumber,
 			});
 
 		await apiHelpers.headlessCommerceAdminShipment.postShipmentStatusDelivered(
@@ -124,6 +130,38 @@ test(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${checkoutCart.id}`
 		);
+
+		await (
+			await commerceThemeClassicOrdersPage.orderItemsTableRow(2, sku.sku)
+		).row
+			.getByRole('button', {name: 'Actions'})
+			.click();
+
+		await expect(
+			commerceThemeClassicOrdersPage.orderTableMenuItem('Shipments')
+		).toBeVisible();
+
+		await commerceThemeClassicOrdersPage
+			.orderTableMenuItem('Shipments')
+			.click();
+
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				'Delivered'
+			)
+		).toBeVisible();
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				carrier
+			)
+		).toBeVisible();
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				trackingNumber
+			)
+		).toBeVisible();
+
+		await page.keyboard.press('Escape');
 
 		await commerceThemeClassicOrdersPage.orderTabs('Shipments').click();
 
