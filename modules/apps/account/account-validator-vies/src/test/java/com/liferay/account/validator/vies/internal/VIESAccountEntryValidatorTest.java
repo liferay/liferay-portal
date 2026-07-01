@@ -276,7 +276,7 @@ public class VIESAccountEntryValidatorTest {
 				invalidInputVatNumber);
 
 			Assert.assertEquals(
-				"vies-error-invalid-input",
+				"vies-invalid-input-error",
 				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_FAILURE,
@@ -288,7 +288,7 @@ public class VIESAccountEntryValidatorTest {
 				vatBlockedVatNumber);
 
 			Assert.assertEquals(
-				"vies-error-vat-blocked",
+				"vies-vat-blocked-error",
 				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_FAILURE,
@@ -300,7 +300,7 @@ public class VIESAccountEntryValidatorTest {
 				unavailableVatNumber);
 
 			Assert.assertEquals(
-				"vies-error-unexpected-error",
+				"vies-unexpected-error",
 				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_WARNING,
@@ -312,7 +312,7 @@ public class VIESAccountEntryValidatorTest {
 				unexpectedVatNumber);
 
 			Assert.assertEquals(
-				"vies-error-unexpected-error",
+				"vies-unexpected-error",
 				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_WARNING,
