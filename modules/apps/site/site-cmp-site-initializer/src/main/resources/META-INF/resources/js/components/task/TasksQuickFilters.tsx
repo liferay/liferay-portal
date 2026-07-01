@@ -101,9 +101,14 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 	const [visible, setVisible] = useState(true);
 
 	const isQuickFilterChangeRef = useRef(false);
+	const activeQuickFilterSelectionsRef = useRef<Record<
+		string,
+		IBaseFilterState['selectedData']
+	> | null>(null);
 
 	const handleTotalTasksClick = useCallback(() => {
 		setActiveQuickFilter(TASK_QUICK_FILTER_TYPES.TOTAL);
+		activeQuickFilterSelectionsRef.current = null;
 
 		setTasksFDSState({
 			...tasksFDSState,
@@ -125,6 +130,35 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 	const handleOverdueClick = useCallback(() => {
 		setActiveQuickFilter(TASK_QUICK_FILTER_TYPES.OVERDUE);
 
+		const cmpStateSelectedData: IBaseFilterState['selectedData'] = {
+			exclude: true,
+			selectedItems: [
+				{
+					label: Liferay.Language.get('done'),
+					value: 'done',
+				},
+			],
+		};
+
+		const currentDate = new Date();
+
+		currentDate.setDate(currentDate.getDate() - 1);
+
+		const cmpDueDateSelectedData: IBaseFilterState['selectedData'] = {
+			exclude: false,
+			from: null,
+			to: {
+				day: currentDate.getDate(),
+				month: currentDate.getMonth() + 1,
+				year: currentDate.getFullYear(),
+			},
+		};
+
+		activeQuickFilterSelectionsRef.current = {
+			cmpDueDate: cmpDueDateSelectedData,
+			cmpState: cmpStateSelectedData,
+		};
+
 		setTasksFDSState({
 			...tasksFDSState,
 			filters: tasksFDSState.filters.map((filter: IBaseFilterState) => {
@@ -132,35 +166,15 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 					return {
 						...filter,
 						active: true,
-						selectedData: {
-							exclude: true,
-							selectedItems: [
-								{
-									label: Liferay.Language.get('done'),
-									value: 'done',
-								},
-							],
-						},
+						selectedData: cmpStateSelectedData,
 					};
 				}
 
 				if (filter.id === 'cmpDueDate') {
-					const currentDate = new Date();
-
-					currentDate.setDate(currentDate.getDate() - 1);
-
 					return {
 						...filter,
 						active: true,
-						selectedData: {
-							exclude: false,
-							from: null,
-							to: {
-								day: currentDate.getDate(),
-								month: currentDate.getMonth() + 1,
-								year: currentDate.getFullYear(),
-							},
-						},
+						selectedData: cmpDueDateSelectedData,
 					};
 				}
 
@@ -181,6 +195,20 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 	const handleBlockedClick = useCallback(() => {
 		setActiveQuickFilter(TASK_QUICK_FILTER_TYPES.BLOCKED);
 
+		const cmpStateSelectedData: IBaseFilterState['selectedData'] = {
+			exclude: false,
+			selectedItems: [
+				{
+					label: Liferay.Language.get('blocked'),
+					value: 'blocked',
+				},
+			],
+		};
+
+		activeQuickFilterSelectionsRef.current = {
+			cmpState: cmpStateSelectedData,
+		};
+
 		setTasksFDSState({
 			...tasksFDSState,
 			filters: tasksFDSState.filters.map((filter: IBaseFilterState) => {
@@ -188,15 +216,7 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 					return {
 						...filter,
 						active: true,
-						selectedData: {
-							exclude: false,
-							selectedItems: [
-								{
-									label: Liferay.Language.get('blocked'),
-									value: 'blocked',
-								},
-							],
-						},
+						selectedData: cmpStateSelectedData,
 					};
 				}
 
@@ -217,6 +237,20 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 	const handleInProgressClick = useCallback(() => {
 		setActiveQuickFilter(TASK_QUICK_FILTER_TYPES.IN_PROGRESS);
 
+		const cmpStateSelectedData: IBaseFilterState['selectedData'] = {
+			exclude: false,
+			selectedItems: [
+				{
+					label: Liferay.Language.get('in-progress'),
+					value: 'inProgress',
+				},
+			],
+		};
+
+		activeQuickFilterSelectionsRef.current = {
+			cmpState: cmpStateSelectedData,
+		};
+
 		setTasksFDSState({
 			...tasksFDSState,
 			filters: tasksFDSState.filters.map((filter: IBaseFilterState) => {
@@ -224,15 +258,7 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 					return {
 						...filter,
 						active: true,
-						selectedData: {
-							exclude: false,
-							selectedItems: [
-								{
-									label: Liferay.Language.get('in-progress'),
-									value: 'inProgress',
-								},
-							],
-						},
+						selectedData: cmpStateSelectedData,
 					};
 				}
 
@@ -278,6 +304,10 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 	 * Clear the active quick filter if the filters in the FDS changes.
 	 * `isQuickFilterChangeRef` is used to prevent the active quick filter from
 	 * immediately clearing when one of the quick filters are clicked.
+	 * `activeQuickFilterSelectionsRef` tracks the exact `selectedData` the
+	 * active quick filter set for each filter ID, so unrelated filter changes
+	 * (e.g. a text search) do not reset it, but changing the selection within
+	 * a tracked filter (e.g. adding "Done" to the State dropdown) does.
 	 */
 	useEffect(() => {
 		if (isQuickFilterChangeRef.current) {
@@ -286,7 +316,37 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 			return;
 		}
 
-		setActiveQuickFilter(null);
+		// null = TOTAL: valid while all quick-filter dimensions remain inactive
+
+		const isFilterActive = (filterId: string) =>
+			tasksFDSState.filters.some(
+				(filter: IBaseFilterState) =>
+					filter.id === filterId && filter.active
+			);
+
+		const isFilterMatchingSelection = (filterId: string) => {
+			const expectedSelectedData =
+				activeQuickFilterSelectionsRef.current?.[filterId];
+
+			return tasksFDSState.filters.some(
+				(filter: IBaseFilterState) =>
+					filter.id === filterId &&
+					filter.active &&
+					JSON.stringify(filter.selectedData) ===
+						JSON.stringify(expectedSelectedData)
+			);
+		};
+
+		const quickFilterStillActive =
+			activeQuickFilterSelectionsRef.current === null
+				? !isFilterActive('cmpState') && !isFilterActive('cmpDueDate')
+				: Object.keys(activeQuickFilterSelectionsRef.current).every(
+						isFilterMatchingSelection
+					);
+
+		if (!quickFilterStillActive) {
+			setActiveQuickFilter(null);
+		}
 	}, [tasksFDSState.filters]);
 
 	/**
