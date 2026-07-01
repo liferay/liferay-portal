@@ -96,11 +96,11 @@ public class StyleBookEntryUtil {
 			ThemeDisplay themeDisplay)
 		throws Exception {
 
-		long liveGroupId = StagingUtil.getLiveGroupId(layout.getGroupId());
+		long groupId = StagingUtil.getLiveGroupId(layout.getGroupId());
 
 		List<StyleBookEntry> styleBookEntries =
 			StyleBookEntryProviderUtil.getStyleBookEntries(
-				layout.getCompanyId(), liveGroupId,
+				layout.getCompanyId(), groupId,
 				frontendTokenDefinition.getThemeId());
 
 		Map<Long, Group> scopeGroups = new HashMap<>();
@@ -108,7 +108,7 @@ public class StyleBookEntryUtil {
 		return TransformUtil.transform(
 			styleBookEntries,
 			styleBookEntry -> _getStyleBookEntryMap(
-				frontendTokenDefinition, includeTokenValues, liveGroupId,
+				frontendTokenDefinition, includeTokenValues, groupId,
 				scopeGroups, styleBookEntry, themeDisplay));
 	}
 
@@ -201,7 +201,7 @@ public class StyleBookEntryUtil {
 
 	private static Map<String, Object> _getStyleBookEntryMap(
 			FrontendTokenDefinition frontendTokenDefinition,
-			boolean includeTokenValues, long liveGroupId,
+			boolean includeTokenValues, long groupId,
 			Map<Long, Group> scopeGroups, StyleBookEntry styleBookEntry,
 			ThemeDisplay themeDisplay)
 		throws Exception {
@@ -216,7 +216,7 @@ public class StyleBookEntryUtil {
 
 		long entryGroupId = styleBookEntry.getGroupId();
 
-		if (entryGroupId != liveGroupId) {
+		if (entryGroupId != groupId) {
 			Group scopeGroup = scopeGroups.computeIfAbsent(
 				entryGroupId, GroupLocalServiceUtil::fetchGroup);
 
