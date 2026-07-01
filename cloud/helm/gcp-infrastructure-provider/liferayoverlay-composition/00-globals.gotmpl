@@ -4,8 +4,11 @@
 {{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
 {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
 {{- $projectId := $xr.spec.projectId -}}
+
+{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
+{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
+
 {{- $region := $xr.spec.region -}}
 
 {{- $labels := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "project-id" $projectId) -}}
-
-{{- include "gcp-infrastructure-provider.overlayBucketName" . }}

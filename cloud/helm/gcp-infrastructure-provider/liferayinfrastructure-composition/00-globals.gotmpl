@@ -30,6 +30,11 @@
 {{- $gsaEmail := printf "%s@%s.iam.gserviceaccount.com" $gsaName $env.projectId -}}
 {{- $hash := printf "%s-%s" $databaseName $env.projectId | sha256sum | trunc 7 -}}
 {{- $labels := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) -}}
+
+{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
+{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
+
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
 {{- $region := $databaseSpec.region | default $xr.spec.region -}}
 {{- $searchNamespace := printf "%s-elasticsearch" $namespace -}}
@@ -49,5 +54,3 @@
 {{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
 
 {{- $cmkKeyName := printf "projects/%s/locations/%s/keyRings/%s-keyring/cryptoKeys/%s-key" $env.projectId $region $baseName $baseName -}}
-
-{{- include "gcp-infrastructure-provider.overlayBucketName" . }}

@@ -1335,9 +1335,9 @@ spec:
                         {{- $uidHash := printf "%s-%s-%s" $accountId $deploymentName $projectIdFull | sha256sum | trunc 6 -}}
                         {{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
 
-                        `}}
-                        {{- include "aws-infrastructure-provider.overlayBucketName" . | nindent 24 }}
-                        {{`
+                        {{- $overlayUidHash := printf "%s-%s-%s" $accountId $deploymentName $projectId | sha256sum | trunc 6 -}}
+                        {{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
+                        {{- $overlayBucketName := printf "%s-overlay-%s" $deploymentName $overlayBaseName -}}
 
                         {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
                         {{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}

@@ -82,9 +82,9 @@ spec:
                         {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
                         {{- $namespace := $xr.metadata.namespace -}}
 
-                        `}}
-                        {{- include "aws-infrastructure-provider.overlayBucketName" . | nindent 24 }}
-                        {{`
+                        {{- $overlayUidHash := printf "%s-%s-%s" $accountId $deploymentName $projectId | sha256sum | trunc 6 -}}
+                        {{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
+                        {{- $overlayBucketName := printf "%s-overlay-%s" $deploymentName $overlayBaseName -}}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
                         kind: Bucket
