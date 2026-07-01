@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.ldap.SafePortalLDAP;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
+import com.liferay.portal.security.ldap.constants.LDAPReferralModes;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -118,11 +119,11 @@ public class LDAPReferralUpgradeProcessTest {
 	public void testUpgradeThrowsReferral() throws Exception {
 		long followCompanyId = RandomTestUtil.randomLong();
 
-		_createConfiguration(followCompanyId, LDAPConstants.REFERRAL_FOLLOW);
+		_createConfiguration(followCompanyId, LDAPReferralModes.FOLLOW);
 
 		long ignoreCompanyId = RandomTestUtil.randomLong();
 
-		_createConfiguration(ignoreCompanyId, LDAPConstants.REFERRAL_IGNORE);
+		_createConfiguration(ignoreCompanyId, LDAPReferralModes.IGNORE);
 
 		long legacyThrowsCompanyId = RandomTestUtil.randomLong();
 
@@ -130,18 +131,18 @@ public class LDAPReferralUpgradeProcessTest {
 
 		long throwCompanyId = RandomTestUtil.randomLong();
 
-		_createConfiguration(throwCompanyId, LDAPConstants.REFERRAL_THROW);
+		_createConfiguration(throwCompanyId, LDAPReferralModes.THROW);
 
 		_upgradeProcess.upgrade();
 
 		Assert.assertEquals(
-			LDAPConstants.REFERRAL_FOLLOW, _getReferral(followCompanyId));
+			LDAPReferralModes.FOLLOW, _getReferral(followCompanyId));
 		Assert.assertEquals(
-			LDAPConstants.REFERRAL_IGNORE, _getReferral(ignoreCompanyId));
+			LDAPReferralModes.IGNORE, _getReferral(ignoreCompanyId));
 		Assert.assertEquals(
-			LDAPConstants.REFERRAL_THROW, _getReferral(legacyThrowsCompanyId));
+			LDAPReferralModes.THROW, _getReferral(legacyThrowsCompanyId));
 		Assert.assertEquals(
-			LDAPConstants.REFERRAL_THROW, _getReferral(throwCompanyId));
+			LDAPReferralModes.THROW, _getReferral(throwCompanyId));
 	}
 
 	private void _createConfiguration(long companyId, String referral)

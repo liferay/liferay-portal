@@ -7,7 +7,7 @@ package com.liferay.portal.security.ldap.internal.util;
 
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.ldap.constants.LDAPConstants;
+import com.liferay.portal.security.ldap.constants.LDAPReferralModes;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -110,8 +110,8 @@ public class SafeLdapReferralUtil {
 		environment.put("com.sun.jndi.ldap.object.trustURLCodebase", "false");
 		environment.put("com.sun.jndi.rmi.object.trustURLCodebase", "false");
 
-		if (Objects.equals(referral, LDAPConstants.REFERRAL_FOLLOW)) {
-			environment.put(Context.REFERRAL, LDAPConstants.REFERRAL_THROW);
+		if (Objects.equals(referral, LDAPReferralModes.FOLLOW)) {
+			environment.put(Context.REFERRAL, LDAPReferralModes.THROW);
 		}
 		else {
 			environment.put(Context.REFERRAL, referral);

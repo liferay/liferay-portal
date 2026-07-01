@@ -8,6 +8,7 @@ package com.liferay.portal.security.ldap.internal.upgrade.v1_0_1;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
+import com.liferay.portal.security.ldap.constants.LDAPReferralModes;
 
 import java.util.Dictionary;
 import java.util.Objects;
@@ -45,8 +46,7 @@ public class LDAPReferralUpgradeProcess extends UpgradeProcess {
 			if (Objects.equals(
 					properties.get(LDAPConstants.REFERRAL), "throws")) {
 
-				properties.put(
-					LDAPConstants.REFERRAL, LDAPConstants.REFERRAL_THROW);
+				properties.put(LDAPConstants.REFERRAL, LDAPReferralModes.THROW);
 
 				configuration.update(properties);
 			}

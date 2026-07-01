@@ -33,7 +33,7 @@ import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
-import com.liferay.portal.security.ldap.constants.LDAPConstants;
+import com.liferay.portal.security.ldap.constants.LDAPReferralModes;
 import com.liferay.portal.security.ldap.internal.util.SafeLdapReferralUtil;
 import com.liferay.portal.security.ldap.internal.validator.SafeLdapContextImpl;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
@@ -470,7 +470,7 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 				new InitialLdapContext(environmentProperties, null),
 				Objects.equals(
 					systemLDAPConfiguration.referral(),
-					LDAPConstants.REFERRAL_FOLLOW));
+					LDAPReferralModes.FOLLOW));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
