@@ -12,6 +12,7 @@ import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.ai.hub.configuration.VertexAIConfiguration;
 import com.liferay.ai.hub.rest.client.dto.v1_0.AgentDefinition;
 import com.liferay.ai.hub.rest.client.dto.v1_0.Model;
+import com.liferay.ai.hub.rest.client.dto.v1_0.Status;
 import com.liferay.ai.hub.rest.client.dto.v1_0.Variable;
 import com.liferay.ai.hub.rest.client.pagination.Page;
 import com.liferay.ai.hub.rest.client.pagination.Pagination;
@@ -23,7 +24,6 @@ import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -372,6 +372,85 @@ public class AgentDefinitionResourceTest
 			NestedFieldsContextThreadLocal.setNestedFieldsContext(
 				nestedFieldsContext);
 		}
+	}
+
+	@Override
+	@Test
+	public void testPostAgentDefinitionDraft() throws Exception {
+		AgentDefinition agentDefinition =
+			agentDefinitionResource.postAgentDefinitionDraft();
+
+		Assert.assertFalse(agentDefinition.getActive());
+
+		Status status = agentDefinition.getStatus();
+
+		Assert.assertEquals("draft", status.getLabel());
+
+		String workflowDefinitionName =
+			agentDefinition.getWorkflowDefinitionName();
+
+		Assert.assertNotNull(workflowDefinitionName);
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getWorkflowDefinition(
+				TestPropsValues.getCompanyId(), workflowDefinitionName, 1);
+
+		Assert.assertEquals(
+			_accountEntry.getAccountEntryGroupId(),
+			workflowDefinition.getGroupId());
+
+		ObjectEntry objectEntry = _objectEntryManager.getObjectEntry(
+			TestPropsValues.getCompanyId(), _dtoConverterContext,
+			agentDefinition.getExternalReferenceCode(), _getObjectDefinition(),
+			null);
+
+		com.liferay.object.rest.dto.v1_0.Status objectEntryStatus =
+			objectEntry.getStatus();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, (int)objectEntryStatus.getCode());
+
+		_objectEntryManager.updateObjectEntry(
+			TestPropsValues.getCompanyId(), _dtoConverterContext,
+			agentDefinition.getExternalReferenceCode(), _getObjectDefinition(),
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"active", true
+					).put(
+						"description", RandomTestUtil.randomString()
+					).put(
+						"inputVariables", "text"
+					).put(
+						"outputVariable", "result"
+					).put(
+						"r_accountToAIHubAgentDefinitions_accountEntryId",
+						_accountEntry.getAccountEntryId()
+					).put(
+						"title_i18n",
+						HashMapBuilder.put(
+							"en_US", RandomTestUtil.randomString()
+						).build()
+					).put(
+						"workflowDefinitionName", workflowDefinitionName
+					).build();
+				}
+			},
+			null);
+
+		objectEntry = _objectEntryManager.getObjectEntry(
+			TestPropsValues.getCompanyId(), _dtoConverterContext,
+			agentDefinition.getExternalReferenceCode(), _getObjectDefinition(),
+			null);
+
+		objectEntryStatus = objectEntry.getStatus();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			(int)objectEntryStatus.getCode());
+
+		agentDefinitionResource.deleteAgentDefinitionByExternalReferenceCode(
+			agentDefinition.getExternalReferenceCode());
 	}
 
 	@Override
@@ -890,9 +969,6 @@ public class AgentDefinitionResourceTest
 
 	@Inject(filter = "object.entry.manager.storage.type=default")
 	private ObjectEntryManager _objectEntryManager;
-
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
