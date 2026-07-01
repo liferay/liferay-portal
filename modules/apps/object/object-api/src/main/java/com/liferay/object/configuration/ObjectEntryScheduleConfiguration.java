@@ -26,6 +26,13 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ObjectEntryScheduleConfiguration {
 
 	@Meta.AD(
+		deflt = "100",
+		description = "object-entry-check-batch-size-description", min = "1",
+		name = "object-entry-check-batch-size", required = false
+	)
+	public int checkBatchSize();
+
+	@Meta.AD(
 		deflt = "15", description = "object-entry-check-interval-description",
 		min = "1", name = "object-entry-check-interval", required = false
 	)
