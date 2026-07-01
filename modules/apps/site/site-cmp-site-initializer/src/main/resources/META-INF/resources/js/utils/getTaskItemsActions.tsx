@@ -37,21 +37,10 @@ export default function getTaskItemsActions(
 		embedded: Immutable<ITaskObjectEntry> | ITaskObjectEntry;
 	}
 ) {
-	const items = [];
-
-	const hasBottomItems = Boolean(task.actions?.delete);
-
-	const hasMiddleItems = Boolean(
-		task.actions?.assignToMe ||
-			task.actions?.subscribe ||
-			task.actions?.unsubscribe ||
-			task.actions?.update
-	);
-
-	const hasTopItems = Boolean(task.actions?.update || task.actions?.get);
+	const topItems = [];
 
 	if (task.actions?.update) {
-		items.push({
+		topItems.push({
 			label: Liferay.Language.get('edit'),
 			onClick: () => {
 				const editURL = getActionURL({
@@ -68,7 +57,7 @@ export default function getTaskItemsActions(
 	}
 
 	if (task.actions?.get) {
-		items.push({
+		topItems.push({
 			label: Liferay.Language.get('view'),
 			onClick: () => {
 				const viewURL = getActionURL({
@@ -84,14 +73,10 @@ export default function getTaskItemsActions(
 		});
 	}
 
-	if (hasTopItems && hasMiddleItems) {
-		items.push({
-			type: 'divider' as const,
-		});
-	}
+	const middleItems = [];
 
 	if (task.actions?.subscribe) {
-		items.push({
+		middleItems.push({
 			label: Liferay.Language.get('watch-task'),
 			onClick: async () => {
 				const {error} = await postSubscribeTaskByExternalReferenceCode({
@@ -112,7 +97,7 @@ export default function getTaskItemsActions(
 	}
 
 	if (task.actions?.unsubscribe) {
-		items.push({
+		middleItems.push({
 			label: Liferay.Language.get('stop-watching-task'),
 			onClick: async () => {
 				const {error} =
@@ -135,7 +120,7 @@ export default function getTaskItemsActions(
 	}
 
 	if (task.actions?.assignToMe) {
-		items.push({
+		middleItems.push({
 			label: Liferay.Language.get('assign-to-me'),
 			onClick: async () => {
 				const user = (await getUserAccount(
@@ -168,7 +153,7 @@ export default function getTaskItemsActions(
 	}
 
 	if (task.actions?.update) {
-		items.push({
+		middleItems.push({
 			label: Liferay.Language.get('assign-to-...'),
 			onClick: async () => {
 				await openCMPModal({
@@ -192,14 +177,10 @@ export default function getTaskItemsActions(
 		});
 	}
 
-	if (hasBottomItems) {
-		if (hasTopItems || hasMiddleItems) {
-			items.push({
-				type: 'divider' as const,
-			});
-		}
+	const bottomItems = [];
 
-		items.push({
+	if (task.actions?.delete) {
+		bottomItems.push({
 
 			// @ts-ignore
 
@@ -240,6 +221,22 @@ export default function getTaskItemsActions(
 			},
 			symbolLeft: 'trash',
 		});
+	}
+
+	const items = [];
+
+	for (const section of [topItems, middleItems, bottomItems]) {
+		if (!section.length) {
+			continue;
+		}
+
+		if (items.length) {
+			items.push({type: 'divider' as const});
+		}
+
+		for (const item of section) {
+			items.push(item);
+		}
 	}
 
 	return items;
