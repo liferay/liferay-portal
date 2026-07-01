@@ -6,6 +6,7 @@
 package com.liferay.frontend.data.set.internal.sharing.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.frontend.data.set.test.util.FrontendDataSetTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -62,6 +63,9 @@ public class DataSetSnapshotSharingEntryInterpreterTest {
 
 	@Before
 	public void setUp() throws Exception {
+		FrontendDataSetTestUtil.initialize(
+			DataSetSnapshotSharingEntryInterpreterTest.class);
+
 		_objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
