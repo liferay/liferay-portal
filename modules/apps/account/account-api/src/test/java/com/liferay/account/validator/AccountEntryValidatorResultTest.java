@@ -29,9 +29,11 @@ public class AccountEntryValidatorResultTest {
 
 	@Test
 	public void testBuilder() {
+		String classPK = RandomTestUtil.randomString();
+
 		AccountEntryValidatorResult accountEntryValidatorResult =
 			AccountEntryValidatorResult.builder(
-				"key"
+				classPK
 			).build();
 
 		Assert.assertEquals(
@@ -39,7 +41,7 @@ public class AccountEntryValidatorResultTest {
 		Assert.assertEquals(
 			StringPool.BLANK, accountEntryValidatorResult.getActionURL());
 		Assert.assertNull(accountEntryValidatorResult.getAdditionalProps());
-		Assert.assertEquals("key", accountEntryValidatorResult.getClassPK());
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			StringPool.BLANK, accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(
@@ -51,7 +53,7 @@ public class AccountEntryValidatorResultTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		accountEntryValidatorResult = AccountEntryValidatorResult.builder(
-			"key"
+			classPK
 		).actionLabel(
 			"actionLabel"
 		).actionURL(
@@ -70,7 +72,7 @@ public class AccountEntryValidatorResultTest {
 			"actionURL", accountEntryValidatorResult.getActionURL());
 		Assert.assertEquals(
 			jsonObject, accountEntryValidatorResult.getAdditionalProps());
-		Assert.assertEquals("key", accountEntryValidatorResult.getClassPK());
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			"resultMessage", accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(

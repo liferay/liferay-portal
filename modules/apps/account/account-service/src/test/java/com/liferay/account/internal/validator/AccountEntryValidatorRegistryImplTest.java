@@ -121,23 +121,13 @@ public class AccountEntryValidatorRegistryImplTest {
 		Mockito.verifyNoInteractions(_serviceTrackerMap);
 
 		AccountEntryValidatorConfiguration
-			enabledAccountEntryValidatorConfiguration = Mockito.mock(
+			enabledAccountEntryValidatorConfiguration1 = Mockito.mock(
 				AccountEntryValidatorConfiguration.class);
 
 		Mockito.when(
-			enabledAccountEntryValidatorConfiguration.enabled()
+			enabledAccountEntryValidatorConfiguration1.enabled()
 		).thenReturn(
 			true
-		);
-
-		AccountEntryValidatorConfiguration
-			disabledAccountEntryValidatorConfiguration = Mockito.mock(
-				AccountEntryValidatorConfiguration.class);
-
-		Mockito.when(
-			disabledAccountEntryValidatorConfiguration.enabled()
-		).thenReturn(
-			false
 		);
 
 		AccountEntryValidator accountEntryValidator1 = Mockito.mock(
@@ -151,7 +141,7 @@ public class AccountEntryValidatorRegistryImplTest {
 			accountEntryValidator1.getAccountEntryValidatorConfiguration(
 				companyId)
 		).thenReturn(
-			enabledAccountEntryValidatorConfiguration
+			enabledAccountEntryValidatorConfiguration1
 		);
 
 		JSONObject jsonObject = JSONUtil.put(
@@ -175,7 +165,7 @@ public class AccountEntryValidatorRegistryImplTest {
 			accountEntryValidator2.getAccountEntryValidatorConfiguration(
 				companyId)
 		).thenReturn(
-			enabledAccountEntryValidatorConfiguration
+			enabledAccountEntryValidatorConfiguration1
 		);
 
 		AccountEntryValidatorResult accountEntryValidatorResult2 =
@@ -194,11 +184,20 @@ public class AccountEntryValidatorRegistryImplTest {
 		AccountEntryValidator accountEntryValidator3 = Mockito.mock(
 			AccountEntryValidator.class);
 
+		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration2 =
+			Mockito.mock(AccountEntryValidatorConfiguration.class);
+
+		Mockito.when(
+			accountEntryValidatorConfiguration2.enabled()
+		).thenReturn(
+			false
+		);
+
 		Mockito.when(
 			accountEntryValidator3.getAccountEntryValidatorConfiguration(
 				companyId)
 		).thenReturn(
-			disabledAccountEntryValidatorConfiguration
+			accountEntryValidatorConfiguration2
 		);
 
 		List<ServiceWrapper<AccountEntryValidator>> serviceWrappers =

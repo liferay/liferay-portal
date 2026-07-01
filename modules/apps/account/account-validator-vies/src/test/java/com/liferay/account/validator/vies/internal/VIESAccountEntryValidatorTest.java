@@ -216,15 +216,21 @@ public class VIESAccountEntryValidatorTest {
 				accountEntryValidatorResult.getResultStatus());
 			Assert.assertFalse(accountEntryValidatorResult.isValid());
 
+			String blockedVatNumber = RandomTestUtil.randomString();
 			String invalidInputVatNumber = RandomTestUtil.randomString();
 			String invalidVatNumber = RandomTestUtil.randomString();
 			String unavailableVatNumber = RandomTestUtil.randomString();
 			String unexpectedVatNumber = RandomTestUtil.randomString();
 			String validVatNumber = RandomTestUtil.randomString();
-			String vatBlockedVatNumber = RandomTestUtil.randomString();
 
 			_startHttpServer(
 				HashMapBuilder.put(
+					blockedVatNumber,
+					JSONUtil.put(
+						"errorWrappers",
+						JSONUtil.putAll(JSONUtil.put("error", "VAT_BLOCKED"))
+					).toString()
+				).put(
 					invalidInputVatNumber,
 					JSONUtil.put(
 						"errorWrappers",
@@ -254,18 +260,15 @@ public class VIESAccountEntryValidatorTest {
 					JSONUtil.put(
 						"valid", true
 					).toString()
-				).put(
-					vatBlockedVatNumber,
-					JSONUtil.put(
-						"errorWrappers",
-						JSONUtil.putAll(JSONUtil.put("error", "VAT_BLOCKED"))
-					).toString()
 				).build());
 
 			accountEntryValidatorResult = _validate(
 				billingAddressId, RandomTestUtil.randomLong(),
-				invalidVatNumber);
+				blockedVatNumber);
 
+			Assert.assertEquals(
+				"vies-vat-blocked-error",
+				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_FAILURE,
 				accountEntryValidatorResult.getResultStatus());
@@ -285,11 +288,8 @@ public class VIESAccountEntryValidatorTest {
 
 			accountEntryValidatorResult = _validate(
 				billingAddressId, RandomTestUtil.randomLong(),
-				vatBlockedVatNumber);
+				invalidVatNumber);
 
-			Assert.assertEquals(
-				"vies-vat-blocked-error",
-				accountEntryValidatorResult.getResultMessage());
 			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_FAILURE,
 				accountEntryValidatorResult.getResultStatus());
