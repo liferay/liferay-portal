@@ -133,11 +133,12 @@ public class AccountEntryValidatorRegistryImplTest {
 
 	@Test
 	public void testGetLastAccountEntryValidatorResultsMap() throws Exception {
-		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
-			_accountEntryValidatorRegistryImpl.
-				getLastAccountEntryValidatorResultsMap(null, null);
+		Map<String, AccountEntryValidatorResult>
+			accountEntryValidatorResultsMap =
+				_accountEntryValidatorRegistryImpl.
+					getLastAccountEntryValidatorResultsMap(null, null);
 
-		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
+		Assert.assertTrue(accountEntryValidatorResultsMap.isEmpty());
 
 		Mockito.verifyNoInteractions(_objectDefinitionLocalService);
 		Mockito.verifyNoInteractions(_objectEntryLocalService);
@@ -164,11 +165,11 @@ public class AccountEntryValidatorRegistryImplTest {
 			Collections.emptyList()
 		);
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
+		Assert.assertTrue(accountEntryValidatorResultsMap.isEmpty());
 
 		AccountEntryValidator accountEntryValidator = Mockito.mock(
 			AccountEntryValidator.class);
@@ -227,11 +228,11 @@ public class AccountEntryValidatorRegistryImplTest {
 
 		String className = accountEntryValidatorClass.getName();
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
+		Assert.assertTrue(accountEntryValidatorResultsMap.isEmpty());
 
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
@@ -259,11 +260,11 @@ public class AccountEntryValidatorRegistryImplTest {
 			Collections.emptyList()
 		);
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
+		Assert.assertTrue(accountEntryValidatorResultsMap.isEmpty());
 
 		Mockito.verify(
 			accountEntryValidator, Mockito.times(0)
@@ -277,15 +278,16 @@ public class AccountEntryValidatorRegistryImplTest {
 			true
 		);
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
 		Assert.assertEquals(
-			accountEntryValidatorResults.toString(), 1,
-			accountEntryValidatorResults.size());
-		Assert.assertTrue(accountEntryValidatorResults.containsKey(className));
-		Assert.assertNull(accountEntryValidatorResults.get(className));
+			accountEntryValidatorResultsMap.toString(), 1,
+			accountEntryValidatorResultsMap.size());
+		Assert.assertTrue(
+			accountEntryValidatorResultsMap.containsKey(className));
+		Assert.assertNull(accountEntryValidatorResultsMap.get(className));
 
 		String resultMessage = RandomTestUtil.randomString();
 
@@ -302,12 +304,12 @@ public class AccountEntryValidatorRegistryImplTest {
 				).build())
 		);
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
 		AccountEntryValidatorResult accountEntryValidatorResult =
-			accountEntryValidatorResults.get(className);
+			accountEntryValidatorResultsMap.get(className);
 
 		Assert.assertEquals(
 			AccountEntryValidatorConstants.RESULT_FAILURE,
@@ -328,11 +330,11 @@ public class AccountEntryValidatorRegistryImplTest {
 				).build())
 		);
 
-		accountEntryValidatorResults =
+		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		accountEntryValidatorResult = accountEntryValidatorResults.get(
+		accountEntryValidatorResult = accountEntryValidatorResultsMap.get(
 			className);
 
 		Assert.assertEquals(classPK, accountEntryValidatorResult.getKey());
