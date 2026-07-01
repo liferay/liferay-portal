@@ -11,6 +11,7 @@ import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -37,6 +38,12 @@ public class AssetCategoryModelListener
 	public void onAfterCreate(AssetCategory assetCategory)
 		throws ModelListenerException {
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				assetCategory.getCompanyId(), "LPD-70396")) {
+
+			return;
+		}
+
 		try {
 			_friendlyURLEntryLocalService.addFriendlyURLEntry(
 				assetCategory.getGroupId(),
@@ -60,10 +67,14 @@ public class AssetCategoryModelListener
 			_cpDisplayLayoutLocalService.deleteCPDisplayLayouts(
 				AssetCategory.class, assetCategory.getCategoryId());
 
-			_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
-				assetCategory.getGroupId(),
-				_portal.getClassNameId(AssetCategory.class),
-				assetCategory.getCategoryId());
+			if (!FeatureFlagManagerUtil.isEnabled(
+					assetCategory.getCompanyId(), "LPD-70396")) {
+
+				_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
+					assetCategory.getGroupId(),
+					_portal.getClassNameId(AssetCategory.class),
+					assetCategory.getCategoryId());
+			}
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
