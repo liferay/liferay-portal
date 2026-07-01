@@ -27,6 +27,7 @@ import {
 } from '../../common/utils/constants';
 import {getFormattedLabel} from '../../common/utils/getFormattedText';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
+import {openBulkActionConfirmationModal} from '../../common/utils/openBulkActionConfirmationModal';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import EditAssetCategoriesModalContent from '../categorization/modal/EditAssetCategoriesModalContent';
 import EditAssetTagsModalContent from '../categorization/modal/EditAssetTagsModalContent';
@@ -814,13 +815,22 @@ export default function AssetsFDSPropsTransformer({
 				});
 			}
 			else if (action?.data?.id === 'reset-to-default-permissions') {
-				openResetAssetPermissionModal({
-					loadData: () => {
+				openBulkActionConfirmationModal({
+					confirmDisplayType: 'warning',
+					confirmLabel: Liferay.Language.get('confirm'),
+					message: Liferay.Language.get(
+						'are-you-sure-you-want-to-reset-the-permissions-to-the-default-values'
+					),
+					onConfirm: () => {
 						executeResetPermissionObjectBulkSelectionAction({
 							apiURL: bulkActionAPIURL,
 							selectedData,
 						});
 					},
+					status: 'warning',
+					title: Liferay.Language.get(
+						'confirm-reset-to-default-permissions'
+					),
 				});
 			}
 			else if (
