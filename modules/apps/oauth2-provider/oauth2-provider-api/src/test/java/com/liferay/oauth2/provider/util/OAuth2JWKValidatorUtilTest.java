@@ -68,12 +68,12 @@ public class OAuth2JWKValidatorUtilTest {
 
 	@Test
 	public void testValidateJWKS() throws Exception {
-		JSONObject jwkJSONObject = JSONFactoryUtil.createJSONObject(
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			_generateRsaJWK(2048, "RS256"));
 
 		OAuth2JWKValidatorUtil.validateJWKS(
 			JSONUtil.put(
-				"keys", JSONUtil.putAll(jwkJSONObject)
+				"keys", JSONUtil.putAll(jsonObject)
 			).toString());
 		Assert.assertThrows(
 			SecurityException.class,
@@ -81,7 +81,7 @@ public class OAuth2JWKValidatorUtilTest {
 				JSONUtil.put(
 					"keys",
 					JSONUtil.putAll(
-						jwkJSONObject,
+						jsonObject,
 						JSONFactoryUtil.createJSONObject(
 							_generateRsaJWK(1024, "RS256")))
 				).toString()));

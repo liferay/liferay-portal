@@ -80,9 +80,8 @@ public class OAuth2JWKValidatorUtil {
 
 	private static int _decodeBase64URLBitLength(String value) {
 		try {
-			byte[] bytes = Base64.decodeFromURL(value);
-
-			BigInteger bigInteger = new BigInteger(1, bytes);
+			BigInteger bigInteger = new BigInteger(
+				1, Base64.decodeFromURL(value));
 
 			return bigInteger.bitLength();
 		}
