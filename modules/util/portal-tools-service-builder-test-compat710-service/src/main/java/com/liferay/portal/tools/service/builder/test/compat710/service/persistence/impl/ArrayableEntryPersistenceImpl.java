@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -637,9 +638,7 @@ public class ArrayableEntryPersistenceImpl
 
 		if (list == null) {
 			try {
-				if ((start == QueryUtil.ALL_POS) &&
-					(end == QueryUtil.ALL_POS) &&
-					(databaseInMaxParameters > 0) &&
+				if ((databaseInMaxParameters > 0) &&
 					(groupIds.length > databaseInMaxParameters)) {
 
 					list = new ArrayList<ArrayableEntry>();
@@ -650,19 +649,23 @@ public class ArrayableEntryPersistenceImpl
 					for (long[] groupIdsPage : groupIdsPages) {
 						list.addAll(
 							_findByGroupId(
-								groupIdsPage, start, end, orderByComparator));
+								groupIdsPage, QueryUtil.ALL_POS,
+								QueryUtil.ALL_POS, orderByComparator));
 					}
 
 					Collections.sort(list, orderByComparator);
 
-					list = Collections.unmodifiableList(list);
+					cacheResult(list);
+
+					list = Collections.unmodifiableList(
+						ListUtil.subList(list, start, end));
 				}
 				else {
 					list = _findByGroupId(
 						groupIds, start, end, orderByComparator);
-				}
 
-				cacheResult(list);
+					cacheResult(list);
+				}
 
 				if (useFinderCache) {
 					finderCache.putResult(
@@ -1751,4 +1754,4 @@ public class ArrayableEntryPersistenceImpl
 		new String[] {"integer", "type"});
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1324830879
+// LIFERAY-SERVICE-BUILDER-HASH:1178518685
