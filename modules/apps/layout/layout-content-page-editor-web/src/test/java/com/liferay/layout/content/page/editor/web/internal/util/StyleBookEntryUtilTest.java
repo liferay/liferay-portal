@@ -143,7 +143,7 @@ public class StyleBookEntryUtilTest {
 
 	@Test
 	@TestInfo("LPD-89205")
-	public void testGetStyleBookEntries() throws Exception {
+	public void testGetStyleBookEntryMaps() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 
 		long groupId = RandomTestUtil.randomLong();
