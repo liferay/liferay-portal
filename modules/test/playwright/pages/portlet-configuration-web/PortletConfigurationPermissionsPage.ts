@@ -52,9 +52,11 @@ export class PortletConfigurationPermissionsPage {
 			name: 'Save',
 		});
 		this.searchBar = this.permissionsFrame.getByPlaceholder('Search for');
-		this.siteMemberRoleCell = this.permissionsFrame.getByRole('cell', {
-			name: 'Site Member',
-		});
+		this.siteMemberRoleCell = this.permissionsFrame
+			.getByRole('cell', {
+				name: 'Site Member',
+			})
+			.first();
 		this.successMessage = this.permissionsFrame.getByText(
 			'Success:Your request completed successfully.'
 		);
