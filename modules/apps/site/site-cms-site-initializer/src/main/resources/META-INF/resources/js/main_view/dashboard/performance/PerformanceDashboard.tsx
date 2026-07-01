@@ -36,7 +36,14 @@ export default function PerformanceDashboard({
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
 	if (!analyticsEnabled) {
-		return <ConnectToAnalyticsCloud admin={admin} />;
+		return (
+			<div
+				className="align-items-center d-flex justify-content-center"
+				style={{minHeight: '50vh'}}
+			>
+				<ConnectToAnalyticsCloud admin={admin} />
+			</div>
+		);
 	}
 
 	return (
