@@ -23,15 +23,14 @@ test(
 	{tag: '@LPD-11235'},
 	async ({classicPage}) => {
 		const expectedButtons = [
-			'Accessibility help',
 			'Undo',
 			'Redo',
-			'Text alignment',
-			'Text formatting',
-			'Lists',
+			'Bold',
+			'Italic',
 			'Bookmark',
-			'Enter fullscreen mode',
-			'Hello',
+			'Image',
+			'Video',
+			'Styles',
 			'Timestamp',
 		];
 
