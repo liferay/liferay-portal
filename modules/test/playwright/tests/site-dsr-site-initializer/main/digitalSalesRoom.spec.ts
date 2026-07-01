@@ -11,6 +11,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {digitalSalesRoomPagesTest} from '../../../fixtures/digitalSalesRoomPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {liferayConfig} from '../../../liferay.config';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
@@ -918,6 +919,88 @@ test(
 		await page.goto(`/web/${roomName}`);
 
 		await expect(page).toHaveURL(new RegExp(roomName, 'i'));
+
+		await performUserSwitch(page, 'test');
+	}
+);
+
+test(
+	'An owner does not see the upload button in an archived room',
+	{tag: '@LPD-92367'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomsPage,
+		editDigitalSalesRoomPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+
+		const roomName = `A${getRandomInt()}`;
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await expect(
+			digitalSalesRoomsPage.digitalSalesRoomsTable.searchInput
+		).toBeVisible();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			accountName: account.name,
+			roomName,
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		const rooms = await apiHelpers.headlessDigitalSalesRoom.getRooms();
+
+		const room = rooms.items.find(
+			(item: {name: string}) => item.name === roomName
+		);
+
+		const siteOwnerRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Site Owner');
+
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('userId', String(userAccount.id));
+		urlSearchParams.append('groupId', String(room.siteId));
+		urlSearchParams.append('roleIds', JSON.stringify([siteOwnerRole.id]));
+
+		await apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}/api/jsonws/usergrouprole/add-user-group-roles`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+
+		await digitalSalesRoomsPage.archiveRoom(roomName);
+
+		await performUserSwitch(page, userAccount.alternateName);
+
+		await page.goto(`/web/${roomName}`);
+
+		await expect(page).toHaveURL(new RegExp(roomName, 'i'));
+
+		await editDigitalSalesRoomPage.documentsMenuItem.click();
+
+		await expect(page.getByRole('searchbox')).toBeVisible();
+		await expect(
+			page.getByTestId('creationMenuNewButton').filter({hasText: 'New'})
+		).not.toBeVisible();
 
 		await performUserSwitch(page, 'test');
 	}
