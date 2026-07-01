@@ -38,18 +38,6 @@ public class DataMaskResourceImpl extends BaseDataMaskResourceImpl {
 
 		dataMaskPreviewResult.setOutput(() -> sampleText);
 
-		if (Validator.isNull(detectionRegex) ||
-			Validator.isNull(replacementValue) ||
-			Validator.isNull(sampleText)) {
-
-			dataMaskPreviewResult.setError(
-				() ->
-					"\"detectionRegex\", \"replacementValue\", and " +
-						"\"sampleText\" are required");
-
-			return dataMaskPreviewResult;
-		}
-
 		try {
 			Pattern detectionPattern = Pattern.compile(detectionRegex);
 
