@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.headless.admin.site.dto.v1_0.ThumbnailURLReference;
@@ -47,8 +49,18 @@ import java.util.function.Supplier;
 @GraphQLName(description = "A fragment entry.", value = "Fragment")
 @io.swagger.v3.oas.annotations.media.Schema(description = "A fragment entry.")
 @JsonFilter("Liferay.Vulcan")
+@JsonSubTypes(
+	{
+		@JsonSubTypes.Type(name = "BasicFragment", value = BasicFragment.class),
+		@JsonSubTypes.Type(name = "FormFragment", value = FormFragment.class)
+	}
+)
+@JsonTypeInfo(
+	include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type",
+	use = JsonTypeInfo.Id.NAME, visible = true
+)
 @XmlRootElement(name = "Fragment")
-public class Fragment implements Serializable {
+public abstract class Fragment implements Serializable {
 
 	public static Fragment toDTO(String json) {
 		return ObjectMapperUtil.readValue(Fragment.class, json);
@@ -933,7 +945,7 @@ public class Fragment implements Serializable {
 	@GraphQLName("Type")
 	public static enum Type {
 
-		COMPONENT("Component");
+		BASIC_FRAGMENT("BasicFragment"), FORM_FRAGMENT("FormFragment");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -1057,4 +1069,4 @@ public class Fragment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1023024022
+// LIFERAY-REST-BUILDER-HASH:-1466352401

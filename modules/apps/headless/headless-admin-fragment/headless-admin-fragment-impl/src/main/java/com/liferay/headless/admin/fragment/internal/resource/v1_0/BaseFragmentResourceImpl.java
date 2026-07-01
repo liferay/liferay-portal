@@ -158,7 +158,7 @@ public abstract class BaseFragmentResourceImpl
 			String fragmentExternalReferenceCode)
 		throws Exception {
 
-		return new Fragment();
+		return null;
 	}
 
 	/**
@@ -309,7 +309,7 @@ public abstract class BaseFragmentResourceImpl
 			Fragment fragment)
 		throws Exception {
 
-		return new Fragment();
+		return null;
 	}
 
 	/**
@@ -406,7 +406,7 @@ public abstract class BaseFragmentResourceImpl
 			Fragment fragment)
 		throws Exception {
 
-		return new Fragment();
+		return null;
 	}
 
 	/**
@@ -535,7 +535,7 @@ public abstract class BaseFragmentResourceImpl
 			Fragment fragment)
 		throws Exception {
 
-		return new Fragment();
+		return null;
 	}
 
 	@Override
@@ -1286,4 +1286,4 @@ public abstract class BaseFragmentResourceImpl
 		LogFactoryUtil.getLog(BaseFragmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1164969154
+// LIFERAY-REST-BUILDER-HASH:1455275466

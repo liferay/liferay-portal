@@ -6,8 +6,6 @@
 package com.liferay.headless.admin.fragment.client.serdes.v1_0;
 
 import com.liferay.headless.admin.fragment.client.dto.v1_0.BasicFragment;
-import com.liferay.headless.admin.fragment.client.dto.v1_0.FormFragment;
-import com.liferay.headless.admin.fragment.client.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentVersion;
 import com.liferay.headless.admin.fragment.client.json.BaseJSONParser;
 
@@ -27,53 +25,230 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class FragmentSerDes {
+public class BasicFragmentSerDes {
 
-	public static Fragment toDTO(String json) {
-		FragmentJSONParser fragmentJSONParser = new FragmentJSONParser();
+	public static BasicFragment toDTO(String json) {
+		BasicFragmentJSONParser basicFragmentJSONParser =
+			new BasicFragmentJSONParser();
 
-		return fragmentJSONParser.parseToDTO(json);
+		return basicFragmentJSONParser.parseToDTO(json);
 	}
 
-	public static Fragment[] toDTOs(String json) {
-		FragmentJSONParser fragmentJSONParser = new FragmentJSONParser();
+	public static BasicFragment[] toDTOs(String json) {
+		BasicFragmentJSONParser basicFragmentJSONParser =
+			new BasicFragmentJSONParser();
 
-		return fragmentJSONParser.parseToDTOs(json);
+		return basicFragmentJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(Fragment fragment) {
-		if (fragment == null) {
+	public static String toJSON(BasicFragment basicFragment) {
+		if (basicFragment == null) {
 			return "null";
 		}
 
-		Fragment.Type type = fragment.getType();
+		StringBuilder sb = new StringBuilder();
 
-		if (type != null) {
-			String typeString = type.toString();
+		sb.append("{");
 
-			if (typeString.equals("BasicFragment")) {
-				return BasicFragmentSerDes.toJSON((BasicFragment)fragment);
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (basicFragment.getCacheable() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
 			}
 
-			if (typeString.equals("FormFragment")) {
-				return FormFragmentSerDes.toJSON((FormFragment)fragment);
+			sb.append("\"cacheable\": ");
+
+			sb.append(basicFragment.getCacheable());
+		}
+
+		if (basicFragment.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
 			}
 
-			throw new IllegalArgumentException("Unknown type " + typeString);
+			sb.append("\"creator\": ");
+
+			sb.append(basicFragment.getCreator());
 		}
-		else {
-			throw new IllegalArgumentException("Missing type parameter");
+
+		if (basicFragment.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(basicFragment.getDateCreated()));
+
+			sb.append("\"");
 		}
+
+		if (basicFragment.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(
+					basicFragment.getDateModified()));
+
+			sb.append("\"");
+		}
+
+		if (basicFragment.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(basicFragment.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
+		if (basicFragment.getFragmentSet() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentSet\": ");
+
+			sb.append(String.valueOf(basicFragment.getFragmentSet()));
+		}
+
+		if (basicFragment.getFragmentVersions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentVersions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < basicFragment.getFragmentVersions().length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(basicFragment.getFragmentVersions()[i]));
+
+				if ((i + 1) < basicFragment.getFragmentVersions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (basicFragment.getIcon() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"icon\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(basicFragment.getIcon()));
+
+			sb.append("\"");
+		}
+
+		if (basicFragment.getKey() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"key\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(basicFragment.getKey()));
+
+			sb.append("\"");
+		}
+
+		if (basicFragment.getMarketplace() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"marketplace\": ");
+
+			sb.append(basicFragment.getMarketplace());
+		}
+
+		if (basicFragment.getName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"name\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(basicFragment.getName()));
+
+			sb.append("\"");
+		}
+
+		if (basicFragment.getReadOnly() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(basicFragment.getReadOnly());
+		}
+
+		if (basicFragment.getThumbnailURLReference() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"thumbnailURLReference\": ");
+
+			sb.append(basicFragment.getThumbnailURLReference());
+		}
+
+		if (basicFragment.getType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+			sb.append(basicFragment.getType());
+			sb.append("\"");
+		}
+
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		FragmentJSONParser fragmentJSONParser = new FragmentJSONParser();
+		BasicFragmentJSONParser basicFragmentJSONParser =
+			new BasicFragmentJSONParser();
 
-		return fragmentJSONParser.parseToMap(json);
+		return basicFragmentJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(Fragment fragment) {
-		if (fragment == null) {
+	public static Map<String, String> toMap(BasicFragment basicFragment) {
+		if (basicFragment == null) {
 			return null;
 		}
 
@@ -82,127 +257,131 @@ public class FragmentSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
-		if (fragment.getCacheable() == null) {
+		if (basicFragment.getCacheable() == null) {
 			map.put("cacheable", null);
 		}
 		else {
-			map.put("cacheable", String.valueOf(fragment.getCacheable()));
+			map.put("cacheable", String.valueOf(basicFragment.getCacheable()));
 		}
 
-		if (fragment.getCreator() == null) {
+		if (basicFragment.getCreator() == null) {
 			map.put("creator", null);
 		}
 		else {
-			map.put("creator", String.valueOf(fragment.getCreator()));
+			map.put("creator", String.valueOf(basicFragment.getCreator()));
 		}
 
-		if (fragment.getDateCreated() == null) {
+		if (basicFragment.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
 		else {
 			map.put(
 				"dateCreated",
-				liferayToJSONDateFormat.format(fragment.getDateCreated()));
+				liferayToJSONDateFormat.format(basicFragment.getDateCreated()));
 		}
 
-		if (fragment.getDateModified() == null) {
+		if (basicFragment.getDateModified() == null) {
 			map.put("dateModified", null);
 		}
 		else {
 			map.put(
 				"dateModified",
-				liferayToJSONDateFormat.format(fragment.getDateModified()));
+				liferayToJSONDateFormat.format(
+					basicFragment.getDateModified()));
 		}
 
-		if (fragment.getExternalReferenceCode() == null) {
+		if (basicFragment.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
-				String.valueOf(fragment.getExternalReferenceCode()));
+				String.valueOf(basicFragment.getExternalReferenceCode()));
 		}
 
-		if (fragment.getFragmentSet() == null) {
+		if (basicFragment.getFragmentSet() == null) {
 			map.put("fragmentSet", null);
 		}
 		else {
-			map.put("fragmentSet", String.valueOf(fragment.getFragmentSet()));
+			map.put(
+				"fragmentSet", String.valueOf(basicFragment.getFragmentSet()));
 		}
 
-		if (fragment.getFragmentVersions() == null) {
+		if (basicFragment.getFragmentVersions() == null) {
 			map.put("fragmentVersions", null);
 		}
 		else {
 			map.put(
 				"fragmentVersions",
-				String.valueOf(fragment.getFragmentVersions()));
+				String.valueOf(basicFragment.getFragmentVersions()));
 		}
 
-		if (fragment.getIcon() == null) {
+		if (basicFragment.getIcon() == null) {
 			map.put("icon", null);
 		}
 		else {
-			map.put("icon", String.valueOf(fragment.getIcon()));
+			map.put("icon", String.valueOf(basicFragment.getIcon()));
 		}
 
-		if (fragment.getKey() == null) {
+		if (basicFragment.getKey() == null) {
 			map.put("key", null);
 		}
 		else {
-			map.put("key", String.valueOf(fragment.getKey()));
+			map.put("key", String.valueOf(basicFragment.getKey()));
 		}
 
-		if (fragment.getMarketplace() == null) {
+		if (basicFragment.getMarketplace() == null) {
 			map.put("marketplace", null);
 		}
 		else {
-			map.put("marketplace", String.valueOf(fragment.getMarketplace()));
+			map.put(
+				"marketplace", String.valueOf(basicFragment.getMarketplace()));
 		}
 
-		if (fragment.getName() == null) {
+		if (basicFragment.getName() == null) {
 			map.put("name", null);
 		}
 		else {
-			map.put("name", String.valueOf(fragment.getName()));
+			map.put("name", String.valueOf(basicFragment.getName()));
 		}
 
-		if (fragment.getReadOnly() == null) {
+		if (basicFragment.getReadOnly() == null) {
 			map.put("readOnly", null);
 		}
 		else {
-			map.put("readOnly", String.valueOf(fragment.getReadOnly()));
+			map.put("readOnly", String.valueOf(basicFragment.getReadOnly()));
 		}
 
-		if (fragment.getThumbnailURLReference() == null) {
+		if (basicFragment.getThumbnailURLReference() == null) {
 			map.put("thumbnailURLReference", null);
 		}
 		else {
 			map.put(
 				"thumbnailURLReference",
-				String.valueOf(fragment.getThumbnailURLReference()));
+				String.valueOf(basicFragment.getThumbnailURLReference()));
 		}
 
-		if (fragment.getType() == null) {
+		if (basicFragment.getType() == null) {
 			map.put("type", null);
 		}
 		else {
-			map.put("type", String.valueOf(fragment.getType()));
+			map.put("type", String.valueOf(basicFragment.getType()));
 		}
 
 		return map;
 	}
 
-	public static class FragmentJSONParser extends BaseJSONParser<Fragment> {
+	public static class BasicFragmentJSONParser
+		extends BaseJSONParser<BasicFragment> {
 
 		@Override
-		protected Fragment createDTO() {
-			return null;
+		protected BasicFragment createDTO() {
+			return new BasicFragment();
 		}
 
 		@Override
-		protected Fragment[] createDTOArray(int size) {
-			return new Fragment[size];
+		protected BasicFragment[] createDTOArray(int size) {
+			return new BasicFragment[size];
 		}
 
 		@Override
@@ -258,55 +437,30 @@ public class FragmentSerDes {
 		}
 
 		@Override
-		public Fragment parseToDTO(String json) {
-			Map<String, Object> jsonMap = parseToMap(json);
-
-			Object type = jsonMap.get("type");
-
-			if (type != null) {
-				String typeString = type.toString();
-
-				if (typeString.equals("BasicFragment")) {
-					return BasicFragment.toDTO(json);
-				}
-
-				if (typeString.equals("FormFragment")) {
-					return FormFragment.toDTO(json);
-				}
-
-				throw new IllegalArgumentException(
-					"Unknown type " + typeString);
-			}
-			else {
-				throw new IllegalArgumentException("Missing type parameter");
-			}
-		}
-
-		@Override
 		protected void setField(
-			Fragment fragment, String jsonParserFieldName,
+			BasicFragment basicFragment, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "cacheable")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setCacheable((Boolean)jsonParserFieldValue);
+					basicFragment.setCacheable((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setCreator(
+					basicFragment.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setDateCreated(
+					basicFragment.setDateCreated(
 						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setDateModified(
+					basicFragment.setDateModified(
 						toDate((String)jsonParserFieldValue));
 				}
 			}
@@ -314,13 +468,13 @@ public class FragmentSerDes {
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
-					fragment.setExternalReferenceCode(
+					basicFragment.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "fragmentSet")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setFragmentSet(
+					basicFragment.setFragmentSet(
 						FragmentSetSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
@@ -337,47 +491,48 @@ public class FragmentSerDes {
 							(String)jsonParserFieldValues[i]);
 					}
 
-					fragment.setFragmentVersions(fragmentVersionsArray);
+					basicFragment.setFragmentVersions(fragmentVersionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "icon")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setIcon((String)jsonParserFieldValue);
+					basicFragment.setIcon((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "key")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setKey((String)jsonParserFieldValue);
+					basicFragment.setKey((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "marketplace")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setMarketplace((Boolean)jsonParserFieldValue);
+					basicFragment.setMarketplace((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setName((String)jsonParserFieldValue);
+					basicFragment.setName((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setReadOnly((Boolean)jsonParserFieldValue);
+					basicFragment.setReadOnly((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
 						jsonParserFieldName, "thumbnailURLReference")) {
 
 				if (jsonParserFieldValue != null) {
-					fragment.setThumbnailURLReference(
+					basicFragment.setThumbnailURLReference(
 						ThumbnailURLReferenceSerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					fragment.setType(
-						Fragment.Type.create((String)jsonParserFieldValue));
+					basicFragment.setType(
+						BasicFragment.Type.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -461,4 +616,4 @@ public class FragmentSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-282516193
+// LIFERAY-REST-BUILDER-HASH:951801515

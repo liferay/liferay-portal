@@ -20,7 +20,7 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class Fragment implements Cloneable, Serializable {
+public abstract class Fragment implements Cloneable, Serializable {
 
 	public static Fragment toDTO(String json) {
 		return FragmentSerDes.toDTO(json);
@@ -357,7 +357,7 @@ public class Fragment implements Cloneable, Serializable {
 
 	public static enum Type {
 
-		COMPONENT("Component");
+		BASIC_FRAGMENT("BasicFragment"), FORM_FRAGMENT("FormFragment");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -389,4 +389,4 @@ public class Fragment implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:276754114
+// LIFERAY-REST-BUILDER-HASH:1777192526
