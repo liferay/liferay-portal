@@ -2,5 +2,6 @@ Bundle-Name: Liferay Headless Admin Fragment API
 Bundle-SymbolicName: com.liferay.headless.admin.fragment.api
 Bundle-Version: 2.1.1
 Export-Package:\
+	com.liferay.headless.admin.fragment.constant.v1_0,\
 	com.liferay.headless.admin.fragment.dto.v1_0,\
 	com.liferay.headless.admin.fragment.resource.v1_0
