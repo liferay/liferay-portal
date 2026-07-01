@@ -4,6 +4,7 @@
 	"className": "com.liferay.object.model.ObjectDefinition#P8M2",
 	"enableFormContainer": false,
 	"enableIndexSearch": true,
+	"enableObjectEntryDraft": true,
 	"enableObjectEntryHistory": true,
 	"externalReferenceCode": "L_AI_HUB_AGENT_DEFINITION",
 	"friendlyURLSeparator": "l",
