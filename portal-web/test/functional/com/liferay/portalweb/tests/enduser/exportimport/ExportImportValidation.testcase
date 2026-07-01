@@ -3,7 +3,7 @@ definition {
 
 	property browser.chrome.version = "139.0";
 	property ci.retries.disabled = "true";
-	property custom.properties = "virtual.hosts.default.site.name=Guest";
+	property custom.properties = "feature.flag.LPD-57655=false${line.separator}virtual.hosts.default.site.name=Guest";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Export/Import";

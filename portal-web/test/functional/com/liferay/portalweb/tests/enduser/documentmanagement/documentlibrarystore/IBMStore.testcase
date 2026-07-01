@@ -1,6 +1,7 @@
 @component-name = "portal-core-infra"
 definition {
 
+	property custom.properties = "feature.flag.LPD-57655=false";
 	property ibm.store.enabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";

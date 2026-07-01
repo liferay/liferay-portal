@@ -2,6 +2,7 @@
 definition {
 
 	property browser.chrome.version = "139.0";
+	property custom.properties = "feature.flag.LPD-57655=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Documents and Media";

@@ -1,6 +1,7 @@
 @component-name = "portal-publications"
 definition {
 
+	property custom.properties = "feature.flag.LPD-57655=false";
 	property osgi.module.configuration.file.names = "com.liferay.change.tracking.configuration.CTSettingsConfiguration.config";
 	property osgi.module.configurations = "enabled=B\"true\"";
 	property portal.release = "true";

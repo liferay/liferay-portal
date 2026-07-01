@@ -3,7 +3,7 @@ definition {
 
 	property browser.chrome.version = "139.0";
 	property ci.retries.disabled = "true";
-	property custom.properties = "passwords.encryption.algorithm.legacy=PBKDF2WithHmacSHA1/160/128000";
+	property custom.properties = "feature.flag.LPD-57655=false${line.separator}passwords.encryption.algorithm.legacy=PBKDF2WithHmacSHA1/160/128000";
 	property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
 	property portal.release = "true";
 	property portal.upstream = "true";

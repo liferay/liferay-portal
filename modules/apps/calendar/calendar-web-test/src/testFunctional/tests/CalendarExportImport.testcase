@@ -1,7 +1,7 @@
 @component-name = "portal-bpm"
 definition {
 
-	property custom.properties = "company.default.time.zone=America/Los_Angeles${line.separator}default.layout.template.id=1_column";
+	property custom.properties = "company.default.time.zone=America/Los_Angeles${line.separator}default.layout.template.id=1_column${line.separator}feature.flag.LPD-57655=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Calendar";

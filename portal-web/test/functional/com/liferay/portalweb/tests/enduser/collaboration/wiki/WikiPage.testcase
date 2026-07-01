@@ -2,7 +2,7 @@
 definition {
 
 	property browser.chrome.version = "139.0";
-	property custom.properties = "feature.flag.LPD-35013=false";
+	property custom.properties = "feature.flag.LPD-35013=false${line.separator}feature.flag.LPD-57655=false";
 	property osgi.modules.includes = "wiki";
 	property portal.acceptance = "true";
 	property portal.release = "false";
