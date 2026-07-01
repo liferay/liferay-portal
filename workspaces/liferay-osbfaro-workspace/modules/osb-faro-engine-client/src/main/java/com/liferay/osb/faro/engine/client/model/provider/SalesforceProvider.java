@@ -19,12 +19,20 @@ public class SalesforceProvider implements Provider {
 		return _accountsConfiguration;
 	}
 
+	public CampaignsConfiguration getCampaignsConfiguration() {
+		return _campaignsConfiguration;
+	}
+
 	public ChannelsConfiguration getChannelsConfiguration() {
 		return _channelsConfiguration;
 	}
 
 	public ContactsConfiguration getContactsConfiguration() {
 		return _contactsConfiguration;
+	}
+
+	public OpportunitiesConfiguration getOpportunitiesConfiguration() {
+		return _opportunitiesConfiguration;
 	}
 
 	@Override
@@ -36,6 +44,12 @@ public class SalesforceProvider implements Provider {
 		AccountsConfiguration accountsConfiguration) {
 
 		_accountsConfiguration = accountsConfiguration;
+	}
+
+	public void setCampaignsConfiguration(
+		CampaignsConfiguration campaignsConfiguration) {
+
+		_campaignsConfiguration = campaignsConfiguration;
 	}
 
 	public void setChannelsConfiguration(
@@ -50,6 +64,12 @@ public class SalesforceProvider implements Provider {
 		_contactsConfiguration = contactsConfiguration;
 	}
 
+	public void setOpportunitiesConfiguration(
+		OpportunitiesConfiguration opportunitiesConfiguration) {
+
+		_opportunitiesConfiguration = opportunitiesConfiguration;
+	}
+
 	public static class AccountsConfiguration {
 
 		public boolean isEnableAllAccounts() {
@@ -61,6 +81,20 @@ public class SalesforceProvider implements Provider {
 		}
 
 		private boolean _enableAllAccounts;
+
+	}
+
+	public static class CampaignsConfiguration {
+
+		public boolean isEnableAllCampaigns() {
+			return _enableAllCampaigns;
+		}
+
+		public void setEnableAllCampaigns(boolean enableAllCampaigns) {
+			_enableAllCampaigns = enableAllCampaigns;
+		}
+
+		private boolean _enableAllCampaigns;
 
 	}
 
@@ -87,8 +121,24 @@ public class SalesforceProvider implements Provider {
 
 	}
 
+	public static class OpportunitiesConfiguration {
+
+		public boolean isEnableAllOpportunities() {
+			return _enableAllOpportunities;
+		}
+
+		public void setEnableAllOpportunities(boolean enableAllOpportunities) {
+			_enableAllOpportunities = enableAllOpportunities;
+		}
+
+		private boolean _enableAllOpportunities;
+
+	}
+
 	private AccountsConfiguration _accountsConfiguration;
+	private CampaignsConfiguration _campaignsConfiguration;
 	private ChannelsConfiguration _channelsConfiguration;
 	private ContactsConfiguration _contactsConfiguration;
+	private OpportunitiesConfiguration _opportunitiesConfiguration;
 
 }
