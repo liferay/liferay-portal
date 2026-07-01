@@ -127,19 +127,6 @@ export default function ConditionsPanel({
 								)}
 							</Picker>
 						</div>
-
-						<span className="text-2 text-secondary">
-							{conjunction === 'OR'
-								? Liferay.Language.get('any-rule-must-match')
-								: Liferay.Language.get('all-rule-must-match')}
-
-							{' · '}
-
-							{Liferay.Util.sub(
-								Liferay.Language.get('x-criteria'),
-								rules.length
-							)}
-						</span>
 					</div>
 
 					<div className="px-3 py-2">
