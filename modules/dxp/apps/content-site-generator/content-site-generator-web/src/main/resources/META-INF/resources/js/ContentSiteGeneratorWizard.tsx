@@ -4,8 +4,12 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {
+	AIAssistantChat,
+	ChatContext,
+} from '@liferay/ai-hub-cell-js-components-web';
 import {openToast} from 'frontend-js-components-web';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import StepLayout from './components/StepLayout';
 import {
@@ -41,6 +45,7 @@ export default function ContentSiteGeneratorWizard({
 	generationsURL,
 }: IProps) {
 	const [activeStep, setActiveStep] = useState(STEP_IDEATE);
+	const [autoSendMessage, setAutoSendMessage] = useState<string>();
 	const [error, setError] = useState<string>();
 	const [generation, setGeneration] = useState<Generation>();
 	const [items, setItems] = useState<GenerationItem[]>([]);
@@ -48,6 +53,26 @@ export default function ContentSiteGeneratorWizard({
 	const [publishing, setPublishing] = useState(false);
 
 	const pollAttemptsRef = useRef(0);
+
+	const quickActions = useMemo(
+		() => [
+			Liferay.Language.get('assist-me-on-creating-pages'),
+			Liferay.Language.get('generate-content'),
+			Liferay.Language.get('translate-content'),
+		],
+		[]
+	);
+
+	const getChatContext = useCallback((): ChatContext => {
+		if (!generation) {
+			return {};
+		}
+
+		return {
+			generationExternalReferenceCode: generation.externalReferenceCode,
+			generationId: generation.id,
+		};
+	}, [generation]);
 
 	const handleCancel = useCallback(() => {
 		Liferay.Util.navigate(generationsURL);
@@ -161,6 +186,7 @@ export default function ContentSiteGeneratorWizard({
 
 			setGeneration(newGeneration);
 			setItems([]);
+			setAutoSendMessage(prompt);
 			setActiveStep(STEP_REFINE);
 		}
 		catch (newError) {
@@ -220,7 +246,18 @@ export default function ContentSiteGeneratorWizard({
 			)}
 
 			{activeStep === STEP_REFINE && generation && (
-				<StepLayout activeStep={STEP_REFINE}>
+				<StepLayout
+					activeStep={STEP_REFINE}
+					sidebar={
+						<AIAssistantChat
+							embedded
+							getContext={getChatContext}
+							initialMessage={autoSendMessage}
+							instructionDefinitionScope=""
+							quickActions={quickActions}
+						/>
+					}
+				>
 					<RefineStep
 						generation={generation}
 						items={items}

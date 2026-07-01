@@ -11,6 +11,7 @@
 		"@clayui/multi-step-nav": "^3.165.0",
 		"@clayui/pagination-bar": "^3.165.0",
 		"@clayui/table": "^3.165.0",
+		"@liferay/ai-hub-cell-js-components-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
