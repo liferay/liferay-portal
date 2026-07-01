@@ -289,6 +289,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateThumbnailURLReferenceFileBase64();
 		_testPutSiteFragmentUpdateThumbnailURLReferenceNull();
 		_testPutSiteFragmentUpdateThumbnailURLReferenceURL();
+		_testPutSiteFragmentUpdateTypeProblemException();
+		_testPutSiteFragmentWithFormFragment();
 	}
 
 	@Override
@@ -879,6 +881,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				setType(Fragment.Type.BASIC_FRAGMENT);
 			}
 		};
+	}
+
+	private FormFragment _randomFormFragment() {
+		return _randomFormFragment(new FieldType[] {FieldType.TEXT});
 	}
 
 	private FormFragment _randomFormFragment(FieldType[] fieldTypes) {
@@ -2561,6 +2567,82 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		_putSiteFragmentAndAssertThumbnailURLReference(
 			_thumbnail2Bytes, null, putFragment, thumbnailURLReference2);
+	}
+
+	private void _testPutSiteFragmentUpdateTypeProblemException()
+		throws Exception {
+
+		_testPutSiteFragmentUpdateTypeProblemException(
+			randomFragment(), _randomFormFragment());
+		_testPutSiteFragmentUpdateTypeProblemException(
+			_randomFormFragment(), randomFragment());
+	}
+
+	private void _testPutSiteFragmentUpdateTypeProblemException(
+			Fragment originalFragment, Fragment updatedFragment)
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(originalFragment);
+
+		updatedFragment.setExternalReferenceCode(
+			postFragment.getExternalReferenceCode());
+		updatedFragment.setKey(postFragment.getKey());
+
+		_testPutSiteFragmentProblemException(
+			postFragment.getExternalReferenceCode(), updatedFragment,
+			"the-fragment-type-cannot-be-changed");
+	}
+
+	private void _testPutSiteFragmentWithFormFragment() throws Exception {
+		_testPutSiteFragmentWithFormFragmentFieldTypes();
+		_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException();
+	}
+
+	private void _testPutSiteFragmentWithFormFragmentFieldTypes()
+		throws Exception {
+
+		FormFragment formFragment = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
+
+		FieldType[] fieldTypes = {FieldType.NUMBER, FieldType.TEXT};
+
+		formFragment.setFieldTypes(fieldTypes);
+
+		_assertFormFragment(
+			fieldTypes,
+			fragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				formFragment.getExternalReferenceCode(), formFragment));
+	}
+
+	private void _testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException()
+		throws Exception {
+
+		_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			null);
+		_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[0]);
+		_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[] {FieldType.CAPTCHA, FieldType.TEXT});
+		_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+			new FieldType[] {FieldType.STEPPER, FieldType.TEXT});
+	}
+
+	private void
+			_testPutSiteFragmentWithFormFragmentFieldTypesInvalidProblemException(
+				FieldType[] fieldTypes)
+		throws Exception {
+
+		FormFragment formFragment = (FormFragment)_postSiteFragmentSetFragment(
+			_randomFormFragment());
+
+		formFragment.setFieldTypes(fieldTypes);
+
+		_assertProblemException(
+			"the-form-fragment-field-types-are-invalid",
+			() -> fragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				formFragment.getExternalReferenceCode(), formFragment));
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection) {
