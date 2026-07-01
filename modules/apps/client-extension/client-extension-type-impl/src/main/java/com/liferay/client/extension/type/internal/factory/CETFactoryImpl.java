@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -66,8 +65,8 @@ public class CETFactoryImpl implements CETFactory {
 
 		// TODO Use AbsolutePortalURLBuilder
 
-		baseURL = baseURL.replaceAll(
-			Pattern.quote("${portalURL}"), _portal.getPathContext());
+		baseURL = StringUtil.replace(
+			baseURL, "${portalURL}", _portal.getPathContext());
 
 		if (baseURL.endsWith(StringPool.SLASH)) {
 			baseURL = baseURL.substring(0, baseURL.length() - 1);
@@ -136,7 +135,7 @@ public class CETFactoryImpl implements CETFactory {
 			status = clientExtensionEntry.getStatus();
 			typeSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
 				true
-			).load(
+			).fastLoad(
 				clientExtensionEntry.getTypeSettings()
 			).build();
 		}
@@ -291,8 +290,10 @@ public class CETFactoryImpl implements CETFactory {
 			if (cetImplFactory.isURLCETPropertyName(name)) {
 				value = _transformURL(baseURL, value);
 
-				value = value.replaceAll(StringPool.APOSTROPHE, "&#39;");
-				value = value.replaceAll(StringPool.QUOTE, "&#34;");
+				value = com.liferay.portal.kernel.util.StringUtil.replace(
+					value, CharPool.APOSTROPHE, "&#39;");
+				value = com.liferay.portal.kernel.util.StringUtil.replace(
+					value, CharPool.QUOTE, "&#34;");
 			}
 
 			transformedUnicodeProperties.put(name, value);
@@ -347,8 +348,8 @@ public class CETFactoryImpl implements CETFactory {
 			String value = entry.getValue();
 
 			if (cetImplFactory.isURLCETPropertyName(name)) {
-				value = value.replaceAll(
-					Pattern.quote("${modifiedTime}"), modifiedTime);
+				value = StringUtil.replace(
+					value, "${modifiedTime}", modifiedTime);
 			}
 
 			transformedUnicodeProperties.put(name, value);
