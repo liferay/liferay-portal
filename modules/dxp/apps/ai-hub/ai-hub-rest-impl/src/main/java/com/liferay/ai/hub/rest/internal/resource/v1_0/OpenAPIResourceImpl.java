@@ -91,6 +91,8 @@ public class OpenAPIResourceImpl {
 
 			add(ChatResourceImpl.class);
 
+			add(ChatbotResourceImpl.class);
+
 			add(ContentRetrieverResourceImpl.class);
 
 			add(CredentialResourceImpl.class);
@@ -110,4 +112,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:9810069
+// LIFERAY-REST-BUILDER-HASH:-329516948
