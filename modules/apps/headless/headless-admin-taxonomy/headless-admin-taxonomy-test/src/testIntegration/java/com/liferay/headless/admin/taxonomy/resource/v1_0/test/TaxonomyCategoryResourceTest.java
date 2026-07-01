@@ -139,6 +139,15 @@ public class TaxonomyCategoryResourceTest
 		super.testDeleteAssetLibraryTaxonomyCategoryByExternalReferenceCode();
 	}
 
+	@FeatureFlag("LPD-86291")
+	@Override
+	@Test
+	public void testDeleteTaxonomyCategory() throws Exception {
+		super.testDeleteTaxonomyCategory();
+
+		_testDeleteTaxonomyCategorySystem();
+	}
+
 	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
@@ -458,11 +467,13 @@ public class TaxonomyCategoryResourceTest
 		super.testGraphQLPostTaxonomyVocabularyTaxonomyCategory();
 	}
 
+	@FeatureFlag("LPD-86291")
 	@Override
 	@Test
 	public void testPatchTaxonomyCategory() throws Exception {
 		super.testPatchTaxonomyCategory();
 
+		_testPatchTaxonomyCategorySystem();
 		_testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
 			testPatchTaxonomyCategory_addTaxonomyCategory(),
 			_addAssetVocabulary());
@@ -615,6 +626,7 @@ public class TaxonomyCategoryResourceTest
 		TaxonomyCategory taxonomyCategory = super.randomTaxonomyCategory();
 
 		taxonomyCategory.setId(String.valueOf(RandomTestUtil.randomLong()));
+		taxonomyCategory.setSystem(false);
 
 		if (_scopeType.equals(Scope.Type.SITE)) {
 			taxonomyCategory.setTaxonomyVocabularyId(
@@ -924,6 +936,15 @@ public class TaxonomyCategoryResourceTest
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
 	}
 
+	private TaxonomyCategory _addSystemTaxonomyCategory() throws Exception {
+		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
+
+		randomTaxonomyCategory.setSystem(true);
+
+		return taxonomyCategoryResource.postSiteTaxonomyCategory(
+			testGroup.getGroupId(), randomTaxonomyCategory);
+	}
+
 	private TaxonomyCategory _addTaxonomyCategoryWithParentAssetVocabulary(
 			AssetVocabulary assetVocabulary)
 		throws Exception {
@@ -1003,6 +1024,22 @@ public class TaxonomyCategoryResourceTest
 				siteId = testGroup.getGroupId();
 			}
 		};
+	}
+
+	private void _testDeleteTaxonomyCategorySystem() throws Exception {
+		TaxonomyCategory postTaxonomyCategory = _addSystemTaxonomyCategory();
+
+		try {
+			taxonomyCategoryResource.deleteTaxonomyCategory(
+				postTaxonomyCategory.getId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testGetAssetLibraryTaxonomyCategoriesPage(int depotEntryType)
@@ -1374,6 +1411,24 @@ public class TaxonomyCategoryResourceTest
 
 		taxonomyCategoryResource.deleteTaxonomyCategory(
 			taxonomyCategory1.getId());
+	}
+
+	private void _testPatchTaxonomyCategorySystem() throws Exception {
+		TaxonomyCategory postTaxonomyCategory = _addSystemTaxonomyCategory();
+
+		postTaxonomyCategory.setName(RandomTestUtil.randomString());
+
+		try {
+			taxonomyCategoryResource.patchTaxonomyCategory(
+				postTaxonomyCategory.getId(), postTaxonomyCategory);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
