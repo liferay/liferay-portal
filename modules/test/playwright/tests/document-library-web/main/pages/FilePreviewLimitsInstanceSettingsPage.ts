@@ -28,6 +28,10 @@ export class FilePreviewLimitsInstanceSettingsPage {
 		);
 	}
 
+	async resetToDefaultValues() {
+		await this.instanceSettingsPage.resetInstanceSetting();
+	}
+
 	async save() {
 		await this.saveButton.click();
 

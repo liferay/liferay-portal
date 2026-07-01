@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import {filePreviewLimitsPagesTest} from './fixtures/filePreviewLimitsPagesTest';
 
 const test = mergeTests(
@@ -18,39 +19,32 @@ const test = mergeTests(
 const MAX_FILE_SIZE_LABEL = 'Maximum File Size';
 const MAX_NUMBER_OF_PAGES_LABEL = 'Maximum Number of Pages';
 
-const DEFAULT_MAX_FILE_SIZE = '20971520';
-const DEFAULT_MAX_NUMBER_OF_PAGES = '3';
+// The default system maximum file size. Random sizes are kept below it so that
+// every scope accepts them without hitting the cross-scope limit.
+
+const PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT = 20971520;
 
 test.describe('system scope', () => {
 	test.beforeEach(async ({filePreviewLimitsSystemSettingsPage}) => {
 		await filePreviewLimitsSystemSettingsPage.goto();
 	});
 
-	test.afterEach(async ({filePreviewLimitsSystemSettingsPage, page}) => {
+	test.afterEach(async ({filePreviewLimitsSystemSettingsPage}) => {
 		await filePreviewLimitsSystemSettingsPage.goto();
 
-		await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(DEFAULT_MAX_FILE_SIZE);
-		await page
-			.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			.fill(DEFAULT_MAX_NUMBER_OF_PAGES);
-
-		await filePreviewLimitsSystemSettingsPage.save();
+		await filePreviewLimitsSystemSettingsPage.resetToDefaultValues();
 	});
 
 	test(
 		'Persists file preview limit configuration changes',
 		{tag: '@LPD-93202'},
 		async ({filePreviewLimitsSystemSettingsPage, page}) => {
-
-			// The system scope has no parent, so any value is accepted
-
-			const newMaxFileSize = '30000000';
-			const newMaxNumberOfPages = '5';
+			const newMaxFileSize = String(
+				getRandomInt() % PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT
+			);
 
 			await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(newMaxFileSize);
-			await page
-				.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-				.fill(newMaxNumberOfPages);
+			await page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL).fill('2');
 
 			await filePreviewLimitsSystemSettingsPage.save();
 
@@ -61,7 +55,7 @@ test.describe('system scope', () => {
 			);
 			await expect(
 				page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			).toHaveValue(newMaxNumberOfPages);
+			).toHaveValue('2');
 		}
 	);
 });
@@ -71,31 +65,22 @@ test.describe('instance scope', () => {
 		await filePreviewLimitsInstanceSettingsPage.goto();
 	});
 
-	test.afterEach(async ({filePreviewLimitsInstanceSettingsPage, page}) => {
+	test.afterEach(async ({filePreviewLimitsInstanceSettingsPage}) => {
 		await filePreviewLimitsInstanceSettingsPage.goto();
 
-		await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(DEFAULT_MAX_FILE_SIZE);
-		await page
-			.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			.fill(DEFAULT_MAX_NUMBER_OF_PAGES);
-
-		await filePreviewLimitsInstanceSettingsPage.save();
+		await filePreviewLimitsInstanceSettingsPage.resetToDefaultValues();
 	});
 
 	test(
 		'Persists file preview limit configuration changes',
 		{tag: '@LPD-93202'},
 		async ({filePreviewLimitsInstanceSettingsPage, page}) => {
-
-			// Stay within the system limit so the values are accepted
-
-			const newMaxFileSize = '1000000';
-			const newMaxNumberOfPages = '2';
+			const newMaxFileSize = String(
+				getRandomInt() % PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT
+			);
 
 			await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(newMaxFileSize);
-			await page
-				.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-				.fill(newMaxNumberOfPages);
+			await page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL).fill('2');
 
 			await filePreviewLimitsInstanceSettingsPage.save();
 
@@ -106,7 +91,7 @@ test.describe('instance scope', () => {
 			);
 			await expect(
 				page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			).toHaveValue(newMaxNumberOfPages);
+			).toHaveValue('2');
 		}
 	);
 });
@@ -116,18 +101,14 @@ test.describe('site scope', () => {
 		'Persists file preview limit configuration changes',
 		{tag: '@LPD-93202'},
 		async ({filePreviewLimitsSiteSettingsPage, page, site}) => {
-
-			// Stay within the system limit so the values are accepted
-
-			const newMaxFileSize = '1000000';
-			const newMaxNumberOfPages = '2';
+			const newMaxFileSize = String(
+				getRandomInt() % PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT
+			);
 
 			await filePreviewLimitsSiteSettingsPage.goto(site.friendlyUrlPath);
 
 			await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(newMaxFileSize);
-			await page
-				.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-				.fill(newMaxNumberOfPages);
+			await page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL).fill('2');
 
 			await filePreviewLimitsSiteSettingsPage.save();
 
@@ -138,21 +119,16 @@ test.describe('site scope', () => {
 			);
 			await expect(
 				page.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			).toHaveValue(newMaxNumberOfPages);
+			).toHaveValue('2');
 		}
 	);
 });
 
 test.describe('cross-scope validation', () => {
-	test.afterEach(async ({filePreviewLimitsSystemSettingsPage, page}) => {
+	test.afterEach(async ({filePreviewLimitsSystemSettingsPage}) => {
 		await filePreviewLimitsSystemSettingsPage.goto();
 
-		await page.getByLabel(MAX_FILE_SIZE_LABEL).fill(DEFAULT_MAX_FILE_SIZE);
-		await page
-			.getByLabel(MAX_NUMBER_OF_PAGES_LABEL)
-			.fill(DEFAULT_MAX_NUMBER_OF_PAGES);
-
-		await filePreviewLimitsSystemSettingsPage.save();
+		await filePreviewLimitsSystemSettingsPage.resetToDefaultValues();
 	});
 
 	test(
@@ -194,12 +170,16 @@ test.describe('cross-scope validation', () => {
 			filePreviewLimitsSystemSettingsPage,
 			page,
 		}) => {
+			const systemMaxFileSize =
+				getRandomInt() % PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT;
 
 			// Establish a finite system limit to cap the instance scope
 
 			await filePreviewLimitsSystemSettingsPage.goto();
 
-			await page.getByLabel(MAX_FILE_SIZE_LABEL).fill('1000000');
+			await page
+				.getByLabel(MAX_FILE_SIZE_LABEL)
+				.fill(String(systemMaxFileSize));
 
 			await filePreviewLimitsSystemSettingsPage.save();
 
@@ -207,7 +187,9 @@ test.describe('cross-scope validation', () => {
 
 			await filePreviewLimitsInstanceSettingsPage.goto();
 
-			await page.getByLabel(MAX_FILE_SIZE_LABEL).fill('9000000');
+			await page
+				.getByLabel(MAX_FILE_SIZE_LABEL)
+				.fill(String(systemMaxFileSize + (getRandomInt() % 1000) + 1));
 
 			await filePreviewLimitsInstanceSettingsPage.saveButton.click();
 

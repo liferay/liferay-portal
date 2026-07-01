@@ -28,6 +28,10 @@ export class FilePreviewLimitsSystemSettingsPage {
 		);
 	}
 
+	async resetToDefaultValues() {
+		await this.systemSettingsPage.resetToDefaultValues();
+	}
+
 	async save() {
 		await this.saveButton.click();
 
