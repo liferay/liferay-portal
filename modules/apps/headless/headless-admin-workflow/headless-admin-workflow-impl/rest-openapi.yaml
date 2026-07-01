@@ -92,7 +92,7 @@ components:
                     # @review
                     description:
                         The workflow's node types.
-                    enum: [AI_DECISION, CONDITION, FORK, HTTP_REQUEST, INITIAL_STATE, JOIN, JOIN_XOR, LLM, SERVICE, STATE, TASK, TERMINAL_STATE]
+                    enum: [AI_DECISION, AI_HUB_AGENT, CONDITION, FORK, HTTP_REQUEST, INITIAL_STATE, JOIN, JOIN_XOR, LLM, SERVICE, STATE, TASK, TERMINAL_STATE]
                     readOnly: true
                     type: string
             type: object

@@ -214,6 +214,20 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="ai-hub-agent">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="abstract-workflow-node-complex-type">
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="labels" />
+						<xs:element name="agent-definition-external-reference-code" type="xs:string" />
+						<xs:element minOccurs="0" name="timeout" type="xs:int" />
+						<xs:element ref="transitions" />
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="condition">
 		<xs:complexType>
 			<xs:complexContent>
@@ -461,6 +475,7 @@
 	<xs:group name="nodes-group">
 		<xs:choice>
 			<xs:element ref="ai-decision" />
+			<xs:element ref="ai-hub-agent" />
 			<xs:element ref="condition" />
 			<xs:element ref="fork" />
 			<xs:element ref="http-request" />
