@@ -742,45 +742,9 @@ public class ContentPageEditorDisplayContext {
 				"siteNavigationMenuItemSelectorURL",
 				_getSiteNavigationMenuItemSelectorURL()
 			).put(
-				"styleBookEntryERC",
-				() -> {
-					Layout layout = themeDisplay.getLayout();
-
-					StyleBookEntry styleBookEntry =
-						StyleBookEntryProviderUtil.getStyleBookEntry(layout);
-
-					if (styleBookEntry == null) {
-						return StringPool.BLANK;
-					}
-
-					FrontendTokenDefinition frontendTokenDefinition =
-						_frontendTokenDefinitionRegistry.
-							getFrontendTokenDefinition(layout);
-
-					if (Objects.equals(
-							frontendTokenDefinition.getThemeId(),
-							styleBookEntry.getThemeId())) {
-
-						return styleBookEntry.getExternalReferenceCode();
-					}
-
-					return StringPool.BLANK;
-				}
+				"styleBookEntryERC", _getStyleBookEntryERC()
 			).put(
-				"styleBookEntryScopeERC",
-				() -> {
-					Layout layout = themeDisplay.getLayout();
-
-					StyleBookEntry styleBookEntry =
-						StyleBookEntryProviderUtil.getStyleBookEntry(layout);
-
-					if (styleBookEntry == null) {
-						return StringPool.BLANK;
-					}
-
-					return GetterUtil.getString(
-						layout.getStyleBookEntryScopeERC());
-				}
+				"styleBookEntryScopeERC", _getStyleBookEntryScopeERC()
 			).put(
 				"styleBooks", _getStyleBooks()
 			).put(
@@ -2069,6 +2033,46 @@ public class ContentPageEditorDisplayContext {
 				itemSelectorCriterion));
 	}
 
+	private String _getStyleBookEntryERC() throws Exception {
+		if (_styleBookEntryERC != null) {
+			return _styleBookEntryERC;
+		}
+
+		String styleBookEntryERC = StringPool.BLANK;
+
+		Layout layout = themeDisplay.getLayout();
+
+		StyleBookEntry styleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(layout);
+
+		if (styleBookEntry != null) {
+			FrontendTokenDefinition frontendTokenDefinition =
+				_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+					layout);
+
+			if (Objects.equals(
+					frontendTokenDefinition.getThemeId(),
+					styleBookEntry.getThemeId())) {
+
+				styleBookEntryERC = styleBookEntry.getExternalReferenceCode();
+			}
+		}
+
+		_styleBookEntryERC = styleBookEntryERC;
+
+		return _styleBookEntryERC;
+	}
+
+	private String _getStyleBookEntryScopeERC() throws Exception {
+		if (Validator.isNull(_getStyleBookEntryERC())) {
+			return StringPool.BLANK;
+		}
+
+		Layout layout = themeDisplay.getLayout();
+
+		return GetterUtil.getString(layout.getStyleBookEntryScopeERC());
+	}
+
 	private List<Map<String, Object>> _getStyleBooks() throws Exception {
 		ArrayList<Map<String, Object>> styleBooks = new ArrayList<>();
 
@@ -2307,6 +2311,7 @@ public class ContentPageEditorDisplayContext {
 		_segmentsExperimentRelLocalService;
 	private List<Map<String, Object>> _sidebarPanels;
 	private final Staging _staging;
+	private String _styleBookEntryERC;
 	private ItemSelectorCriterion _urlItemSelectorCriterion;
 	private final WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
