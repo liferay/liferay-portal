@@ -33,6 +33,7 @@ public abstract class BasePersistenceFinder
 			}
 
 			sb.append(value);
+
 			sb.append(", ");
 		}
 
