@@ -18,8 +18,8 @@ dependencies {
 	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.19.0"
 	testIntegrationImplementation project(":modules:osb-faro-api")
 	testModules group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge.connector", version: "1.0.1"
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.3-SNAPSHOT"
-	testModules group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.3-SNAPSHOT"
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
+	testModules group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 }
 
 deploy {

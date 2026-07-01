@@ -28,7 +28,7 @@ dependencies {
 	compileOnly project(":modules:osb-faro-contacts-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-provisioning-client")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.3-SNAPSHOT"
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
