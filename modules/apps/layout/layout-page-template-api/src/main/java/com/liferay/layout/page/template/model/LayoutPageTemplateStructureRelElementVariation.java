@@ -61,5 +61,7 @@ public interface LayoutPageTemplateStructureRelElementVariation
 
 				};
 
+	public java.util.List<String> getAudienceEntryERCs();
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-203147207
+// LIFERAY-SERVICE-BUILDER-HASH:1213896382

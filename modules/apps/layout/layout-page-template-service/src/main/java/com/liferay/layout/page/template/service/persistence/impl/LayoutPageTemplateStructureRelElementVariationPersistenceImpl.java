@@ -1437,4 +1437,4 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:867617760
+// LIFERAY-SERVICE-BUILDER-HASH:886004683

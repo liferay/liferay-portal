@@ -188,6 +188,11 @@ public class LayoutPageTemplateStructureRelElementVariationWrapper
 	}
 
 	@Override
+	public java.util.List<String> getAudienceEntryERCs() {
+		return model.getAudienceEntryERCs();
+	}
+
+	@Override
 	public String[] getAvailableLanguageIds() {
 		return model.getAvailableLanguageIds();
 	}
@@ -1015,4 +1020,4 @@ public class LayoutPageTemplateStructureRelElementVariationWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:360827116
+// LIFERAY-SERVICE-BUILDER-HASH:387626618

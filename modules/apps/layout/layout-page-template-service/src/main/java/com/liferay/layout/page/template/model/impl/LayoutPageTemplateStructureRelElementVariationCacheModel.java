@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.model.impl;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -233,11 +237,22 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		layoutPageTemplateStructureRelElementVariationImpl.
 			resetOriginalValues();
 
+		try {
+			_audienceEntryERCsMethodHandle.invokeExact(
+				layoutPageTemplateStructureRelElementVariationImpl,
+				audienceEntryERCs);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return layoutPageTemplateStructureRelElementVariationImpl;
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -263,6 +278,8 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		plid = objectInput.readLong();
 		segmentsExperienceERC = objectInput.readUTF();
 		targetElement = objectInput.readUTF();
+
+		audienceEntryERCs = (java.util.List)objectInput.readObject();
 	}
 
 	@Override
@@ -347,6 +364,8 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		else {
 			objectOutput.writeUTF(targetElement);
 		}
+
+		objectOutput.writeObject(audienceEntryERCs);
 	}
 
 	public long mvccVersion;
@@ -367,6 +386,22 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 	public long plid;
 	public String segmentsExperienceERC;
 	public String targetElement;
+	public volatile java.util.List audienceEntryERCs;
+
+	private static final MethodHandle _audienceEntryERCsMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_audienceEntryERCsMethodHandle = lookup.findSetter(
+				LayoutPageTemplateStructureRelElementVariationImpl.class,
+				"_audienceEntryERCs", java.util.List.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2003123989
+// LIFERAY-SERVICE-BUILDER-HASH:-2108233286
