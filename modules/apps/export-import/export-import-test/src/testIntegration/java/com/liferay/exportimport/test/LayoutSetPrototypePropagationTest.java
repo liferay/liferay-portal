@@ -12,6 +12,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
+import com.liferay.exportimport.kernel.background.task.constants.LayoutSetPrototypeBackgroundTaskConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
@@ -35,6 +36,7 @@ import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
@@ -47,6 +49,10 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.BaseMessageListener;
+import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -84,6 +90,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -92,7 +99,9 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -109,6 +118,8 @@ import jakarta.portlet.PortletPreferences;
 
 import java.awt.image.BufferedImage;
 
+import java.io.File;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
@@ -120,6 +131,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -144,6 +156,14 @@ public class LayoutSetPrototypePropagationTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() {
+		Bundle bundle = FrameworkUtil.getBundle(
+			LayoutSetPrototypePropagationTest.class);
+
+		_bundleContext = bundle.getBundleContext();
+	}
 
 	@Test
 	public void testAddChildLayoutWithLinkDisabled() throws Exception {
@@ -459,6 +479,13 @@ public class LayoutSetPrototypePropagationTest
 	}
 
 	@Test
+	public void testLayoutSetPrototypePropagationDeletesCacheFile()
+		throws Exception {
+
+		_testLayoutSetPrototypePropagation(true);
+	}
+
+	@Test
 	public void testLayoutSetPrototypePropagationDoesNotPropagateDeletions()
 		throws Exception {
 
@@ -499,6 +526,13 @@ public class LayoutSetPrototypePropagationTest
 			group.getGroupId(), false, layout2.getFriendlyURL());
 
 		Assert.assertNotNull(layout2.getLayoutSetPrototypeLayout());
+	}
+
+	@Test
+	public void testLayoutSetPrototypePropagationKeepsCacheFile()
+		throws Exception {
+
+		_testLayoutSetPrototypePropagation(false);
 	}
 
 	@Test
@@ -1496,6 +1530,12 @@ public class LayoutSetPrototypePropagationTest
 			});
 	}
 
+	private boolean _fileExists(String path) {
+		File file = new File(path);
+
+		return file.exists();
+	}
+
 	private String _getLatestMergeNotificationResult(
 			long timestamp, long userId)
 		throws Exception {
@@ -1527,6 +1567,19 @@ public class LayoutSetPrototypePropagationTest
 
 	private int _getRandomStatus(int... statuses) {
 		return statuses[RandomTestUtil.randomInt(0, statuses.length - 1)];
+	}
+
+	private SafeCloseable _registerMessageListenerWithSafeCloseable(
+		MessageListener messageListener) {
+
+		return _registerServiceWithSafeCloseable(
+			MessageListener.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"destination.name", DestinationNames.BACKGROUND_TASK_STATUS
+			).put(
+				"service.ranking", Integer.MAX_VALUE
+			).build(),
+			messageListener);
 	}
 
 	private <S> SafeCloseable _registerServiceWithSafeCloseable(
@@ -1589,6 +1642,42 @@ public class LayoutSetPrototypePropagationTest
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(layout.getPrimaryKey()), role.getRoleId(),
 				ActionKeys.CUSTOMIZE));
+	}
+
+	private void _testLayoutSetPrototypePropagation(boolean deleteCacheFile)
+		throws Exception {
+
+		TestMessageListener testMessageListener = new TestMessageListener();
+
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"LAYOUT_SET_PROTOTYPE_MERGE_DELETE_CACHE_FILE_ENABLED",
+					deleteCacheFile);
+			SafeCloseable safeCloseable2 =
+				_registerMessageListenerWithSafeCloseable(
+					testMessageListener)) {
+
+			LayoutTestUtil.addTypePortletLayout(_layoutSetPrototypeGroup, true);
+
+			long timestamp = System.currentTimeMillis();
+
+			propagateChanges(false, group);
+
+			Assert.assertTrue(testMessageListener._fileExists);
+
+			_assertNotification(
+				"successful", timestamp, TestPropsValues.getUserId());
+
+			Assert.assertEquals(
+				!deleteCacheFile, _fileExists(testMessageListener._path));
+		}
+		finally {
+			File file = new File(testMessageListener._path);
+
+			if (file.exists()) {
+				file.delete();
+			}
+		}
 	}
 
 	private void _testLayoutSetPrototypePropagationCheckNotification(
@@ -1679,10 +1768,19 @@ public class LayoutSetPrototypePropagationTest
 	private static final String _COLOR_SCHEME_ID =
 		RandomTestUtil.randomString();
 
+	private static final String _TEMP_DIR =
+		SystemProperties.get(SystemProperties.TMP_DIR) +
+			"/liferay/layout_set_prototype/";
+
 	private static final String _THEME_ID = "minium_WAR_miniumtheme";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutSetPrototypePropagationTest.class);
+
+	private static BundleContext _bundleContext;
+
+	@Inject
+	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
@@ -1776,6 +1874,51 @@ public class LayoutSetPrototypePropagationTest
 		}
 
 		private final Map<Long, Integer> _groupIdStatusMap;
+
+	}
+
+	private class TestMessageListener extends BaseMessageListener {
+
+		@Override
+		protected void doReceive(Message message) {
+			if (!Objects.equals(
+					message.getString("taskExecutorClassName"),
+					BackgroundTaskExecutorNames.
+						LAYOUT_SET_PROTOTYPE_MERGE_BACKGROUND_TASK_EXECUTOR)) {
+
+				return;
+			}
+
+			int backgroundTaskStatus = message.getInteger("status");
+
+			if ((backgroundTaskStatus !=
+					BackgroundTaskConstants.STATUS_CANCELLED) &&
+				(backgroundTaskStatus !=
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS) &&
+				(backgroundTaskStatus !=
+					BackgroundTaskConstants.STATUS_FAILED) &&
+				(backgroundTaskStatus !=
+					BackgroundTaskConstants.STATUS_SUCCESSFUL)) {
+
+				return;
+			}
+
+			com.liferay.portal.background.task.model.BackgroundTask
+				backgroundTask =
+					_backgroundTaskLocalService.fetchBackgroundTask(
+						message.getLong("backgroundTaskId"));
+
+			String sessionId = MapUtil.getString(
+				backgroundTask.getTaskContextMap(),
+				LayoutSetPrototypeBackgroundTaskConstants.SESSION_ID);
+
+			_path = _TEMP_DIR + sessionId + ".lar";
+
+			_fileExists = _fileExists(_path);
+		}
+
+		private boolean _fileExists;
+		private String _path;
 
 	}
 
