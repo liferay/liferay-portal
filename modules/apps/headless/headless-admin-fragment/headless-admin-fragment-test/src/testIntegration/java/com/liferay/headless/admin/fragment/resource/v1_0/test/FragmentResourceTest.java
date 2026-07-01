@@ -12,6 +12,7 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryVersion;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.BasicFragment;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Creator;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentSet;
@@ -293,31 +294,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	protected Fragment randomFragment() throws Exception {
-		Fragment fragment = super.randomFragment();
+		Fragment fragment = _randomBasicFragment();
 
 		fragment.setFragmentSet(_toFragmentSet(_fragmentCollection));
-		fragment.setFragmentVersions(
-			new FragmentVersion[] {
-				new FragmentVersion() {
-					{
-						configuration = RandomTestUtil.randomString();
-						css = RandomTestUtil.randomString();
-						html = RandomTestUtil.randomString();
-						js = RandomTestUtil.randomString();
-						status = FragmentVersion.Status.APPROVED;
-					}
-				},
-				new FragmentVersion() {
-					{
-						configuration = RandomTestUtil.randomString();
-						css = RandomTestUtil.randomString();
-						html = RandomTestUtil.randomString();
-						js = RandomTestUtil.randomString();
-						status = Status.DRAFT;
-					}
-				}
-			});
-		fragment.setMarketplace(false);
+		fragment.setFragmentVersions(_randomFragmentVersions());
 
 		return fragment;
 	}
@@ -843,6 +823,24 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		return putFragment;
 	}
 
+	private BasicFragment _randomBasicFragment() {
+		return new BasicFragment() {
+			{
+				setCacheable(RandomTestUtil.randomBoolean());
+				setDateCreated(RandomTestUtil.nextDate());
+				setDateModified(RandomTestUtil.nextDate());
+				setExternalReferenceCode(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setIcon(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setKey(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setMarketplace(false);
+				setName(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				setReadOnly(RandomTestUtil.randomBoolean());
+				setType(Fragment.Type.BASIC_FRAGMENT);
+			}
+		};
+	}
+
 	private Fragment _randomFragment(boolean approved, boolean draft)
 		throws Exception {
 
@@ -862,34 +860,18 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			FragmentCollection fragmentCollection, String key)
 		throws Exception {
 
-		Fragment fragment = super.randomFragment();
+		Fragment fragment = _randomBasicFragment();
 
 		List<FragmentVersion> fragmentVersions = new ArrayList<>();
 
 		if (approved) {
 			fragmentVersions.add(
-				new FragmentVersion() {
-					{
-						configuration = RandomTestUtil.randomString();
-						css = RandomTestUtil.randomString();
-						html = RandomTestUtil.randomString();
-						js = RandomTestUtil.randomString();
-						status = FragmentVersion.Status.APPROVED;
-					}
-				});
+				_randomFragmentVersion(FragmentVersion.Status.APPROVED));
 		}
 
 		if (draft) {
 			fragmentVersions.add(
-				new FragmentVersion() {
-					{
-						configuration = RandomTestUtil.randomString();
-						css = RandomTestUtil.randomString();
-						html = RandomTestUtil.randomString();
-						js = RandomTestUtil.randomString();
-						status = FragmentVersion.Status.DRAFT;
-					}
-				});
+				_randomFragmentVersion(FragmentVersion.Status.DRAFT));
 		}
 
 		fragment.setExternalReferenceCode(externalReferenceCode);
@@ -900,8 +882,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		if (key != null) {
 			fragment.setKey(key);
 		}
-
-		fragment.setMarketplace(false);
 
 		return fragment;
 	}
@@ -923,6 +903,27 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		fragmentSet.setName(RandomTestUtil.randomString());
 
 		return fragmentSet;
+	}
+
+	private FragmentVersion _randomFragmentVersion(
+		FragmentVersion.Status fragmentVersionStatus) {
+
+		return new FragmentVersion() {
+			{
+				configuration = RandomTestUtil.randomString();
+				css = RandomTestUtil.randomString();
+				html = RandomTestUtil.randomString();
+				js = RandomTestUtil.randomString();
+				status = fragmentVersionStatus;
+			}
+		};
+	}
+
+	private FragmentVersion[] _randomFragmentVersions() {
+		return new FragmentVersion[] {
+			_randomFragmentVersion(FragmentVersion.Status.APPROVED),
+			_randomFragmentVersion(FragmentVersion.Status.DRAFT)
+		};
 	}
 
 	private Fragment _randomMarketplaceFragment() throws Exception {
