@@ -109,8 +109,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.comment.CommentManager;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -960,7 +958,7 @@ public class JournalArticleLocalServiceImpl
 		checkArticlesByReviewDate(companyId, date);
 
 		checkArticlesByDisplayDate(
-			date, checkInterval, journalArticleCheckLimit);
+			companyId, date, checkInterval, journalArticleCheckLimit);
 
 		_companyIdPreviousCheckDate.put(companyId, date);
 	}
@@ -6137,11 +6135,11 @@ public class JournalArticleLocalServiceImpl
 						return indexer.getDocument(article);
 					}
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
 							"Unable to expire article " + article.getId(),
-							portalException);
+							exception);
 					}
 				}
 
@@ -6152,8 +6150,8 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	protected void checkArticlesByDisplayDate(
-			Date displayDate, long checkInterval, int journalArticleCheckLimit)
-		throws PortalException {
+		long companyId, Date displayDate, long checkInterval,
+		int journalArticleCheckLimit) {
 
 		Date nextExpirationDate = new Date(
 			displayDate.getTime() + checkInterval);
@@ -6166,61 +6164,57 @@ public class JournalArticleLocalServiceImpl
 					WorkflowConstants.STATUS_SCHEDULED));
 		}
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
+		List<JournalArticle> articles = journalArticlePersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				JournalArticleTable.INSTANCE
+			).from(
+				JournalArticleTable.INSTANCE
+			).where(
+				JournalArticleTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					JournalArticleTable.INSTANCE.displayDate.lt(displayDate)
+				).and(
+					JournalArticleTable.INSTANCE.expirationDate.isNull(
+					).or(
+						JournalArticleTable.INSTANCE.expirationDate.gte(
+							nextExpirationDate)
+					).withParentheses()
+				).and(
+					JournalArticleTable.INSTANCE.status.eq(
+						WorkflowConstants.STATUS_SCHEDULED)
+				)
+			).limit(
+				0, journalArticleCheckLimit
+			),
+			false);
 
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				Property displayDateProperty = PropertyFactoryUtil.forName(
-					"displayDate");
-
-				dynamicQuery.add(displayDateProperty.lt(displayDate));
-
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.or(
-						RestrictionsFactoryUtil.isNull("expirationDate"),
-						RestrictionsFactoryUtil.ge(
-							"expirationDate", nextExpirationDate)));
-
-				Property statusProperty = PropertyFactoryUtil.forName("status");
-
-				dynamicQuery.add(
-					statusProperty.eq(WorkflowConstants.STATUS_SCHEDULED));
-
-				dynamicQuery.setLimit(0, journalArticleCheckLimit);
-			});
-		actionableDynamicQuery.setPerformActionMethod(
-			(JournalArticle article) -> {
-				try {
-					if (_log.isDebugEnabled()) {
-						_log.debug("Publishing article " + article.getId());
-					}
-
-					long userId = _portal.getValidUserId(
-						article.getCompanyId(), article.getStatusByUserId());
-
-					ServiceContext serviceContext = new ServiceContext();
-
-					serviceContext.setCommand(Constants.UPDATE);
-					serviceContext.setScopeGroupId(article.getGroupId());
-
-					journalArticleLocalService.updateStatus(
-						userId, article.getId(),
-						WorkflowConstants.STATUS_APPROVED, new HashMap<>(),
-						serviceContext);
+		for (JournalArticle article : articles) {
+			try {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Publishing article " + article.getId());
 				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to publish article " + article.getId(),
-							portalException);
-					}
-				}
-			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
 
-		actionableDynamicQuery.performActions();
+				long userId = _portal.getValidUserId(
+					article.getCompanyId(), article.getStatusByUserId());
+
+				ServiceContext serviceContext = new ServiceContext();
+
+				serviceContext.setCommand(Constants.UPDATE);
+				serviceContext.setScopeGroupId(article.getGroupId());
+
+				journalArticleLocalService.updateStatus(
+					userId, article.getId(), WorkflowConstants.STATUS_APPROVED,
+					new HashMap<>(), serviceContext);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to publish article " + article.getId(),
+						exception);
+				}
+			}
+		}
 	}
 
 	protected void checkArticlesByExpirationDate(

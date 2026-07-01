@@ -10,6 +10,8 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
@@ -37,14 +39,13 @@ public class CheckArticleSchedulerJobConfiguration
 	public UnsafeConsumer<Long, Exception>
 		getCompanyJobExecutorUnsafeConsumer() {
 
-		return companyId -> _journalArticleLocalService.checkArticles(
-			companyId);
+		return companyId -> _checkArticles(companyId);
 	}
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> _companyLocalService.forEachCompanyId(
-			companyId -> _journalArticleLocalService.checkArticles(companyId));
+			companyId -> _checkArticles(companyId));
 	}
 
 	@Override
@@ -61,6 +62,22 @@ public class CheckArticleSchedulerJobConfiguration
 		_triggerConfiguration = TriggerConfiguration.createTriggerConfiguration(
 			journalServiceConfiguration.checkInterval(), TimeUnit.MINUTE);
 	}
+
+	private void _checkArticles(long companyId) {
+		try {
+			_journalArticleLocalService.checkArticles(companyId);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to check articles for company " + companyId,
+					exception);
+			}
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CheckArticleSchedulerJobConfiguration.class);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
