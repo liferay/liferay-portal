@@ -7,6 +7,7 @@ import {ConnectToAnalyticsCloud} from '@liferay/analytics-reports-js-components-
 import React from 'react';
 
 import {Filters} from './components/Filters';
+import {Overview} from './components/Overview';
 
 export default function PerformanceDashboard({
 	admin,
@@ -26,5 +27,11 @@ export default function PerformanceDashboard({
 		);
 	}
 
-	return <Filters />;
+	return (
+		<>
+			<Filters />
+
+			<Overview />
+		</>
+	);
 }
