@@ -17,6 +17,7 @@ import com.liferay.ai.hub.rest.resource.v1_0.util.SseUtil;
 import com.liferay.ai.hub.util.AccountEntryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
@@ -68,44 +69,59 @@ public class AgentInstanceResourceImpl extends BaseAgentInstanceResourceImpl {
 					contextUser),
 				agentInstance.getAgentDefinitionExternalReferenceCode());
 
-		long workflowInstanceId = _defaultAgent.invoke(
-			AgentContext.builder(
-			).agentDefinitionExternalReferenceCode(
-				agentDefinition.getExternalReferenceCode()
-			).companyId(
-				contextCompany.getCompanyId()
-			).groupId(
-				AccountEntryUtil.getUserAccountEntryGroupId(
-					contextUser.getUserId())
-			).input(
-				agentInstance.getContext()
-			).inputVariableNames(
-				transformToList(
-					agentDefinition.getInputVariables(), Variable::getName)
-			).instructionDefinitionScope(
-				agentInstance.getInstructionDefinitionScopeAsString()
-			).oAuth2ApplicationId(
-				OAuth2ApplicationIdResolverUtil.resolve(
-					contextHttpServletRequest)
-			).serviceContext(
-				ServiceContextFactory.getInstance(contextHttpServletRequest)
-			).sseEventSinkKey(
-				agentInstance.getSseEventSinkKey()
-			).userId(
-				contextUser.getUserId()
-			).userToken(
-				contextHttpServletRequest.getHeader(
-					"Liferay-AI-Hub-Cell-On-Behalf-Of")
-			).workflowDefinitionName(
-				agentDefinition.getWorkflowDefinitionName()
-			).build());
+		AgentContext agentContext = AgentContext.builder(
+		).agentDefinitionExternalReferenceCode(
+			agentDefinition.getExternalReferenceCode()
+		).asynchronous(
+			GetterUtil.getBoolean(agentInstance.getAsynchronous(), true)
+		).companyId(
+			contextCompany.getCompanyId()
+		).groupId(
+			AccountEntryUtil.getUserAccountEntryGroupId(contextUser.getUserId())
+		).input(
+			agentInstance.getContext()
+		).inputVariableNames(
+			transformToList(
+				agentDefinition.getInputVariables(), Variable::getName)
+		).instructionDefinitionScope(
+			agentInstance.getInstructionDefinitionScopeAsString()
+		).oAuth2ApplicationId(
+			OAuth2ApplicationIdResolverUtil.resolve(contextHttpServletRequest)
+		).serviceContext(
+			ServiceContextFactory.getInstance(contextHttpServletRequest)
+		).sseEventSinkKey(
+			agentInstance.getSseEventSinkKey()
+		).userId(
+			contextUser.getUserId()
+		).userToken(
+			contextHttpServletRequest.getHeader(
+				"Liferay-AI-Hub-Cell-On-Behalf-Of")
+		).workflowDefinitionName(
+			agentDefinition.getWorkflowDefinitionName()
+		).build();
+
+		Object result = _defaultAgent.invoke(agentContext);
 
 		return new AgentInstance() {
 			{
 				setAgentDefinitionExternalReferenceCode(
 					agentDefinition::getExternalReferenceCode);
 				setExternalReferenceCode(
-					() -> String.valueOf(workflowInstanceId));
+					() -> {
+						if (agentContext.isAsynchronous()) {
+							return String.valueOf(result);
+						}
+
+						return null;
+					});
+				setOutput(
+					() -> {
+						if (agentContext.isAsynchronous()) {
+							return null;
+						}
+
+						return String.valueOf(result);
+					});
 			}
 		};
 	}

@@ -10,6 +10,6 @@ package com.liferay.ai.hub.agent;
  */
 public interface DefaultAgent {
 
-	public long invoke(AgentContext agentContext);
+	public Object invoke(AgentContext agentContext);
 
 }

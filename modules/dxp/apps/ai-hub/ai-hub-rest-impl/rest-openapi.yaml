@@ -47,6 +47,9 @@ components:
             properties:
                 agentDefinitionExternalReferenceCode:
                     type: string
+                asynchronous:
+                    type: boolean
+                    writeOnly: true
                 context:
                     additionalProperties: true
                     type: object
@@ -59,6 +62,9 @@ components:
                         -   clickToChat
                         -   cms
                         -   everywhere
+                    type: string
+                output:
+                    readOnly: true
                     type: string
                 sseEventSinkKey:
                     type: string

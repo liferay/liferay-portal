@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public class DefaultAgentImpl implements DefaultAgent {
 
 	@Override
-	public long invoke(AgentContext agentContext) {
+	public Object invoke(AgentContext agentContext) {
 		InternalAgentImpl internalAgentImpl = new InternalAgentImpl(
 			agentContext, _quotaManager, _workflowDefinitionManager,
 			_workflowInstanceManager);
@@ -36,7 +36,7 @@ public class DefaultAgentImpl implements DefaultAgent {
 				agentContext.getInputVariableNames(),
 				inputVariableName -> new AgentArgument(
 					String.class, inputVariableName)));
-		internalAgentImpl.setAsync(true);
+		internalAgentImpl.setAsync(agentContext.isAsynchronous());
 		internalAgentImpl.setName(
 			agentContext.getAgentDefinitionExternalReferenceCode());
 		internalAgentImpl.setOutBoundEventName(
@@ -44,7 +44,7 @@ public class DefaultAgentImpl implements DefaultAgent {
 		internalAgentImpl.setWorkflowDefinitionName(
 			agentContext.getWorkflowDefinitionName());
 
-		return (Long)internalAgentImpl.invoke(agentContext.getInput());
+		return internalAgentImpl.invoke(agentContext.getInput());
 	}
 
 	@Reference(policyOption = ReferencePolicyOption.GREEDY)
