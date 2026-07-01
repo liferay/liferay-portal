@@ -6539,7 +6539,7 @@ ${custom.upgrade.properties}</echo>
 											<os family="windows" />
 											<then>
 												<exec executable="${oracle.sqlplus.executable}" failonerror="true">
-													<arg value="${oracle.admin.user}/${oracle.admin.password} as sysdba" />
+													<arg value="sys/${oracle.admin.password} as sysdba" />
 													<arg value="@create.sql" />
 													<arg value="${database.username}" />
 													<arg value="${database.password}" />
@@ -15715,7 +15715,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 
 									sqlplus /nolog <<-'EOF'
 									whenever sqlerror exit failure
-									connect ${oracle.admin.user}/"${oracle.admin.password}" as sysdba
+									connect sys/"${oracle.admin.password}" as sysdba
 									grant select on sys.v_$session to ${database.username};
 									grant select on sys.v_$sql to ${database.username};
 									exit
@@ -15902,7 +15902,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 					<elseif>
 						<equals arg1="${database.type}" arg2="oracle" />
 						<then>
-							<exec executable="${oracle.sqlplus.executable}" failonerror="true" inputstring="whenever sqlerror exit failure&#10;connect ${oracle.admin.user}/&quot;${oracle.admin.password}&quot; as sysdba&#10;whenever sqlerror continue&#10;set heading off&#10;set feedback off&#10;set pagesize 0&#10;set linesize 1000&#10;set trimspool on&#10;drop user lportal cascade;&#10;select directory_name || ',' || directory_path from dba_directories where directory_name='DATA_PUMP_DIR';&#10;exit&#10;" output="data.pump.log">
+							<exec executable="${oracle.sqlplus.executable}" failonerror="true" inputstring="whenever sqlerror exit failure&#10;connect sys/&quot;${oracle.admin.password}&quot; as sysdba&#10;whenever sqlerror continue&#10;set heading off&#10;set feedback off&#10;set pagesize 0&#10;set linesize 1000&#10;set trimspool on&#10;drop user lportal cascade;&#10;select directory_name || ',' || directory_path from dba_directories where directory_name='DATA_PUMP_DIR';&#10;exit&#10;" output="data.pump.log">
 								<arg value="/nolog" />
 							</exec>
 
@@ -15933,7 +15933,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 								<arg value="table_exists_action=replace" />
 							</exec>
 
-							<exec executable="${oracle.sqlplus.executable}" failonerror="true" inputstring="whenever sqlerror exit failure&#10;connect ${oracle.admin.user}/&quot;${oracle.admin.password}&quot; as sysdba&#10;grant select on sys.v_$session to lportal;&#10;grant select on sys.v_$sql to lportal;&#10;exit&#10;">
+							<exec executable="${oracle.sqlplus.executable}" failonerror="true" inputstring="whenever sqlerror exit failure&#10;connect sys/&quot;${oracle.admin.password}&quot; as sysdba&#10;grant select on sys.v_$session to lportal;&#10;grant select on sys.v_$sql to lportal;&#10;exit&#10;">
 								<arg value="/nolog" />
 							</exec>
 
