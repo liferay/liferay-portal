@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.data.masking.engine.DataMaskingEngine;
 import com.liferay.headless.data.masking.test.util.DataMaskTestUtil;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -19,6 +18,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
 
@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-90204"))
 @RunWith(Arquillian.class)
 public class DataMaskingEngineTest {
 
@@ -45,125 +46,105 @@ public class DataMaskingEngineTest {
 		DataMaskTestUtil.processBatchEngineUnits();
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-90204"))
 	@Test
-	public void testRedact() throws Exception {
-		long companyId = TestPropsValues.getCompanyId();
-
-		String redactedText = _dataMaskingEngine.redact(
-			companyId,
-			Arrays.asList(
-				"L_DATA_MASK_CREDIT_CARD_NUMBER", "L_DATA_MASK_EMAIL_ADDRESS",
-				"L_DATA_MASK_IBAN", "L_DATA_MASK_IPV4", "L_DATA_MASK_IPV6",
-				"L_DATA_MASK_NATIONAL_ID_BSN",
-				"L_DATA_MASK_NATIONAL_ID_DNI_NIF",
-				"L_DATA_MASK_NATIONAL_ID_SSN", "L_DATA_MASK_PHONE_NUMBER"),
-			StringBundler.concat(
-				"Credit card: ", _SAMPLE_CREDIT_CARD, ". Email: ",
-				_SAMPLE_EMAIL_ALT, ". IBAN: ", _SAMPLE_IBAN, ". IPv4: ",
-				_SAMPLE_IPV4, ". IPv6: ", _SAMPLE_IPV6, ". BSN: ", _SAMPLE_BSN,
-				". DNI: ", _SAMPLE_DNI, ". SSN: ", _SAMPLE_SSN, ". Phone: ",
-				_SAMPLE_PHONE_INTL, "."));
-
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[BANK_ACCOUNT_NUMBER]"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[CREDIT_CARD_NUMBER]"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[NATIONAL_ID]"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[PHONE_NUMBER]"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("192.168.1.0/24"));
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("2001:0db8:85a3::/48"));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_BSN)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_CREDIT_CARD)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_DNI)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL_ALT)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_IBAN)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_IPV4)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_IPV6)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_PHONE_INTL)));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_SSN)));
-
-		ObjectEntry domainMaskObjectEntry = DataMaskTestUtil.addCustomMask(
-			RandomTestUtil.randomString(), "example\\.com", "[DOMAIN]");
-
-		Assert.assertEquals(
-			"Contact: contact@[DOMAIN]",
-			_dataMaskingEngine.redact(
-				companyId,
-				Arrays.asList(
-					domainMaskObjectEntry.getExternalReferenceCode(),
-					"L_DATA_MASK_EMAIL_ADDRESS"),
-				"Contact: contact@example.com"));
-
-		ObjectEntry badMaskObjectEntry = DataMaskTestUtil.addCustomMask(
-			RandomTestUtil.randomString(), "Contact", "$5-no-such-group");
-
-		redactedText = _dataMaskingEngine.redact(
-			companyId,
-			Arrays.asList(
-				badMaskObjectEntry.getExternalReferenceCode(),
-				"L_DATA_MASK_EMAIL_ADDRESS"),
-			"Contact: " + _SAMPLE_EMAIL);
-
-		Assert.assertThat(
-			redactedText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-		Assert.assertThat(
-			redactedText,
-			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
-
-		String text = "Contact: " + _SAMPLE_EMAIL;
-
-		Assert.assertEquals(
-			text,
-			_dataMaskingEngine.redact(
-				companyId, Arrays.asList("L_UNKNOWN_DATA_MASK"), text));
-
-		Assert.assertEquals(
-			"Cards: [CREDIT_CARD_NUMBER], [CREDIT_CARD_NUMBER], " +
-				"[CREDIT_CARD_NUMBER].",
-			_dataMaskingEngine.redact(
-				companyId, Arrays.asList("L_DATA_MASK_CREDIT_CARD_NUMBER"),
-				"Cards: 4111111111111111, 4111 1111 1111 1111, " +
-					"4111-1111-1111-1111."));
-		Assert.assertEquals(
-			"Emails: [EMAIL_ADDRESS] and [EMAIL_ADDRESS].",
-			_dataMaskingEngine.redact(
-				companyId, Arrays.asList("L_DATA_MASK_EMAIL_ADDRESS"),
-				"Emails: a.b+tag@sub.example.co.uk and USER@EXAMPLE.COM."));
+	public void testRedactBankAccountNumbers() throws Exception {
 		Assert.assertEquals(
 			"IBANs: [BANK_ACCOUNT_NUMBER], [BANK_ACCOUNT_NUMBER], " +
 				"[BANK_ACCOUNT_NUMBER].",
-			_dataMaskingEngine.redact(
-				companyId, Arrays.asList("L_DATA_MASK_IBAN"),
+			_redact(
+				Arrays.asList("L_DATA_MASK_IBAN"),
 				"IBANs: DE89 3704 0044 0532 0130 00, NL91ABNA0417164300, " +
 					"GB29NWBK60161331926819."));
+	}
 
-		redactedText = _dataMaskingEngine.redact(
-			companyId, Arrays.asList("L_DATA_MASK_PHONE_NUMBER"),
+	@Test
+	public void testRedactComposedSystemMasks() throws Exception {
+		Assert.assertEquals(
+			"Email [EMAIL_ADDRESS], IBAN [BANK_ACCOUNT_NUMBER], SSN " +
+				"[NATIONAL_ID].",
+			_redact(
+				Arrays.asList(
+					"L_DATA_MASK_EMAIL_ADDRESS", "L_DATA_MASK_IBAN",
+					"L_DATA_MASK_NATIONAL_ID_SSN"),
+				"Email alice@example.com, IBAN DE89370400440532013000, SSN " +
+					"123-45-6789."));
+	}
+
+	@Test
+	public void testRedactCreditCardNumbers() throws Exception {
+		Assert.assertEquals(
+			"Cards: [CREDIT_CARD_NUMBER], [CREDIT_CARD_NUMBER], " +
+				"[CREDIT_CARD_NUMBER].",
+			_redact(
+				Arrays.asList("L_DATA_MASK_CREDIT_CARD_NUMBER"),
+				"Cards: 4111111111111111, 4111 1111 1111 1111, " +
+					"4111-1111-1111-1111."));
+	}
+
+	@Test
+	public void testRedactEmailAddresses() throws Exception {
+		Assert.assertEquals(
+			"Emails: [EMAIL_ADDRESS] and [EMAIL_ADDRESS].",
+			_redact(
+				Arrays.asList("L_DATA_MASK_EMAIL_ADDRESS"),
+				"Emails: a.b+tag@sub.example.co.uk and USER@EXAMPLE.COM."));
+	}
+
+	@Test
+	public void testRedactEscapesReplacementValue() throws Exception {
+		ObjectEntry escapedMaskObjectEntry = DataMaskTestUtil.addDataMask(
+			RandomTestUtil.randomString(), "secret", "[$1\\X]");
+
+		Assert.assertEquals(
+			"value: [$1\\X]",
+			_redact(
+				Arrays.asList(
+					escapedMaskObjectEntry.getExternalReferenceCode()),
+				"value: secret"));
+	}
+
+	@Test
+	public void testRedactIPv4Addresses() throws Exception {
+		Assert.assertEquals(
+			"Hosts: 10.0.0.0/24 and 192.168.1.0/24.",
+			_redact(
+				Arrays.asList("L_DATA_MASK_IPV4"),
+				"Hosts: 10.0.0.42 and 192.168.1.99."));
+	}
+
+	@Test
+	public void testRedactIPv6Addresses() throws Exception {
+		Assert.assertEquals(
+			"Hosts: 2001:db8::/48 and 2001:0db8:85a3::/48.",
+			_redact(
+				Arrays.asList("L_DATA_MASK_IPV6"),
+				"Hosts: 2001:db8::1 and " +
+					"2001:0db8:85a3:0000:0000:8a2e:0370:7334."));
+	}
+
+	@Test
+	public void testRedactNationalIds() throws Exception {
+		Assert.assertEquals(
+			"BSN: [NATIONAL_ID].",
+			_redact(
+				Arrays.asList("L_DATA_MASK_NATIONAL_ID_BSN"),
+				"BSN: 123456789."));
+		Assert.assertEquals(
+			"DNI: [NATIONAL_ID].",
+			_redact(
+				Arrays.asList("L_DATA_MASK_NATIONAL_ID_DNI_NIF"),
+				"DNI: 12345678A."));
+		Assert.assertEquals(
+			"SSN: [NATIONAL_ID].",
+			_redact(
+				Arrays.asList("L_DATA_MASK_NATIONAL_ID_SSN"),
+				"SSN: 123-45-6789."));
+	}
+
+	@Test
+	public void testRedactPhoneNumbers() throws Exception {
+		String redactedText = _redact(
+			Arrays.asList("L_DATA_MASK_PHONE_NUMBER"),
 			"Phones: +1 (202) 555-0199, +34600123456 and +44 20 7946 0958.");
 
 		Assert.assertThat(
@@ -187,32 +168,25 @@ public class DataMaskingEngineTest {
 		String text = "Contact: " + _SAMPLE_EMAIL;
 
 		Assert.assertEquals(
-			text,
-			_dataMaskingEngine.redact(
-				TestPropsValues.getCompanyId(),
-				Arrays.asList("L_DATA_MASK_EMAIL_ADDRESS"), text));
+			text, _redact(Arrays.asList("L_DATA_MASK_EMAIL_ADDRESS"), text));
 	}
 
-	private static final String _SAMPLE_BSN = "123456789";
+	@Test
+	public void testRedactWhenMaskCodeIsUnknown() throws Exception {
+		String text = "Contact: " + _SAMPLE_EMAIL;
 
-	private static final String _SAMPLE_CREDIT_CARD = "4111-1111-1111-1111";
+		Assert.assertEquals(
+			text, _redact(Arrays.asList("L_UNKNOWN_DATA_MASK"), text));
+	}
 
-	private static final String _SAMPLE_DNI = "12345678A";
+	private String _redact(List<String> maskExternalReferenceCodes, String text)
+		throws Exception {
+
+		return _dataMaskingEngine.redact(
+			TestPropsValues.getCompanyId(), maskExternalReferenceCodes, text);
+	}
 
 	private static final String _SAMPLE_EMAIL = "contact@example.com";
-
-	private static final String _SAMPLE_EMAIL_ALT = "alice@example.com";
-
-	private static final String _SAMPLE_IBAN = "DE89370400440532013000";
-
-	private static final String _SAMPLE_IPV4 = "192.168.1.42";
-
-	private static final String _SAMPLE_IPV6 =
-		"2001:0db8:85a3:0000:0000:8a2e:0370:7334";
-
-	private static final String _SAMPLE_PHONE_INTL = "+34-600-123-456";
-
-	private static final String _SAMPLE_SSN = "123-45-6789";
 
 	@Inject
 	private DataMaskingEngine _dataMaskingEngine;

@@ -25,55 +25,9 @@ public class DataMaskResourceTest extends BaseDataMaskResourceTestCase {
 	public void testPostDataMaskPreview() throws Exception {
 		super.testPostDataMaskPreview();
 
-		DataMaskPreviewResult dataMaskPreviewResult = _previewDataMask(
-			_EMAIL_DETECTION_REGEX, null, "[EMAIL]",
-			"From alice@example.com to bob@example.org");
-
-		Assert.assertNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals(
-			"From [EMAIL] to [EMAIL]", dataMaskPreviewResult.getOutput());
-
-		dataMaskPreviewResult = _previewDataMask(
-			"\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b",
-			"(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.\\d{1,3}", "$1.0/24",
-			"Connected from 192.168.1.42");
-
-		Assert.assertNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals(
-			"Connected from 192.168.1.0/24", dataMaskPreviewResult.getOutput());
-
-		dataMaskPreviewResult = _previewDataMask(
-			_EMAIL_DETECTION_REGEX, null, "[EMAIL]", "No email here at all.");
-
-		Assert.assertNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals(
-			"No email here at all.", dataMaskPreviewResult.getOutput());
-
-		dataMaskPreviewResult = _previewDataMask(
-			"[unclosed", null, "[REDACTED]", "anything");
-
-		Assert.assertNotNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals("anything", dataMaskPreviewResult.getOutput());
-
-		dataMaskPreviewResult = _previewDataMask(
-			_EMAIL_DETECTION_REGEX, "[unclosed", "[REDACTED]",
-			"alice@example.com");
-
-		Assert.assertNotNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals(
-			"alice@example.com", dataMaskPreviewResult.getOutput());
-
-		Assert.assertThrows(
-			Problem.ProblemException.class,
-			() -> _previewDataMask(null, null, "[REDACTED]", "anything"));
-		Assert.assertThrows(
-			Problem.ProblemException.class,
-			() -> _previewDataMask(
-				_EMAIL_DETECTION_REGEX, null, null, "anything"));
-		Assert.assertThrows(
-			Problem.ProblemException.class,
-			() -> _previewDataMask(
-				_EMAIL_DETECTION_REGEX, null, "[EMAIL]", null));
+		_testRedactsWithReplacementRegex();
+		_testReturnsErrorForInvalidRegex();
+		_testThrowsForMissingRequiredFields();
 	}
 
 	private DataMaskPreviewResult _previewDataMask(
@@ -90,6 +44,47 @@ public class DataMaskResourceTest extends BaseDataMaskResourceTestCase {
 		dataMaskPreviewRequest.setSampleText(sampleText);
 
 		return dataMaskResource.postDataMaskPreview(dataMaskPreviewRequest);
+	}
+
+	private void _testRedactsWithReplacementRegex() throws Exception {
+		DataMaskPreviewResult dataMaskPreviewResult = _previewDataMask(
+			"\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b",
+			"(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.\\d{1,3}", "$1.0/24",
+			"Connected from 192.168.1.42");
+
+		Assert.assertNull(dataMaskPreviewResult.getError());
+		Assert.assertEquals(
+			"Connected from 192.168.1.0/24", dataMaskPreviewResult.getOutput());
+	}
+
+	private void _testReturnsErrorForInvalidRegex() throws Exception {
+		DataMaskPreviewResult dataMaskPreviewResult = _previewDataMask(
+			"[unclosed", null, "[REDACTED]", "anything");
+
+		Assert.assertNotNull(dataMaskPreviewResult.getError());
+		Assert.assertEquals("anything", dataMaskPreviewResult.getOutput());
+
+		dataMaskPreviewResult = _previewDataMask(
+			_EMAIL_DETECTION_REGEX, "[unclosed", "[REDACTED]",
+			"alice@example.com");
+
+		Assert.assertNotNull(dataMaskPreviewResult.getError());
+		Assert.assertEquals(
+			"alice@example.com", dataMaskPreviewResult.getOutput());
+	}
+
+	private void _testThrowsForMissingRequiredFields() {
+		Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> _previewDataMask(null, null, "[REDACTED]", "anything"));
+		Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> _previewDataMask(
+				_EMAIL_DETECTION_REGEX, null, null, "anything"));
+		Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> _previewDataMask(
+				_EMAIL_DETECTION_REGEX, null, "[EMAIL]", null));
 	}
 
 	private static final String _EMAIL_DETECTION_REGEX =

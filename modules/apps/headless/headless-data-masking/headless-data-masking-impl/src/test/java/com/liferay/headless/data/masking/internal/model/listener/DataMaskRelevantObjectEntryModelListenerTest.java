@@ -30,71 +30,57 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testOnBeforeCreateWhenDetectionRegexIsInvalid()
-		throws Exception {
-
+	public void testOnBeforeCreateInvalidDetectionRegex() {
 		try {
-			_listener.onBeforeCreate(_mockCustomObjectEntry("[", null));
+			_listener.onBeforeCreate(_mockDataMaskObjectEntry("[", null));
 
 			Assert.fail();
 		}
 		catch (ModelListenerException modelListenerException) {
-			Assert.assertTrue(
-				modelListenerException.getMessage(),
-				modelListenerException.getMessage(
-				).contains(
-					"\"detectionRegex\""
-				));
+			String message = modelListenerException.getMessage();
+
+			Assert.assertTrue(message, message.contains("\"detectionRegex\""));
 		}
 	}
 
 	@Test
-	public void testOnBeforeCreateWhenRegexesAreValid() throws Exception {
+	public void testOnBeforeCreateInvalidReplacementRegex() {
+		try {
+			_listener.onBeforeCreate(_mockDataMaskObjectEntry("\\w+", "["));
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			String message = modelListenerException.getMessage();
+
+			Assert.assertTrue(
+				message, message.contains("\"replacementRegex\""));
+		}
+	}
+
+	@Test
+	public void testOnBeforeCreateValidRegexes() throws Exception {
 		_listener.onBeforeCreate(
-			_mockCustomObjectEntry("\\w+", "(\\w+)@(\\w+)"));
+			_mockDataMaskObjectEntry("\\w+", "(\\w+)@(\\w+)"));
 	}
 
 	@Test
-	public void testOnBeforeCreateWhenReplacementRegexIsInvalid()
-		throws Exception {
-
-		try {
-			_listener.onBeforeCreate(_mockCustomObjectEntry("\\w+", "["));
-
-			Assert.fail();
-		}
-		catch (ModelListenerException modelListenerException) {
-			Assert.assertTrue(
-				modelListenerException.getMessage(),
-				modelListenerException.getMessage(
-				).contains(
-					"\"replacementRegex\""
-				));
-		}
-	}
-
-	@Test
-	public void testOnBeforeUpdateWhenDetectionRegexIsInvalid()
-		throws Exception {
-
+	public void testOnBeforeUpdateInvalidDetectionRegex() {
 		try {
 			_listener.onBeforeUpdate(
-				_mockCustomObjectEntry(null, null),
-				_mockCustomObjectEntry("[", null));
+				_mockDataMaskObjectEntry(null, null),
+				_mockDataMaskObjectEntry("[", null));
 
 			Assert.fail();
 		}
 		catch (ModelListenerException modelListenerException) {
-			Assert.assertTrue(
-				modelListenerException.getMessage(),
-				modelListenerException.getMessage(
-				).contains(
-					"\"detectionRegex\""
-				));
+			String message = modelListenerException.getMessage();
+
+			Assert.assertTrue(message, message.contains("\"detectionRegex\""));
 		}
 	}
 
-	private ObjectEntry _mockCustomObjectEntry(
+	private ObjectEntry _mockDataMaskObjectEntry(
 		String detectionRegex, String replacementRegex) {
 
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);

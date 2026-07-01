@@ -22,7 +22,7 @@ import java.io.Serializable;
  */
 public class DataMaskTestUtil {
 
-	public static ObjectEntry addCustomMask(
+	public static ObjectEntry addDataMask(
 			String name, String detectionRegex, String replacementValue)
 		throws Exception {
 

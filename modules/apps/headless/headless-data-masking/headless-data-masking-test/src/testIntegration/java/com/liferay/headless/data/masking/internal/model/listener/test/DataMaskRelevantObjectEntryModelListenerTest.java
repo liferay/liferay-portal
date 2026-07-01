@@ -98,7 +98,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 	)
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addCustomMask(
+		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
@@ -133,7 +133,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 	)
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addCustomMask(
+		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
@@ -142,12 +142,10 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		ObjectEntry updatedCustomMaskObjectEntry = _updateReplacementValue(
 			customMaskObjectEntry, replacementValue);
 
-		Assert.assertEquals(
-			replacementValue,
-			updatedCustomMaskObjectEntry.getValues(
-			).get(
-				"replacementValue"
-			));
+		Map<String, Serializable> values =
+			updatedCustomMaskObjectEntry.getValues();
+
+		Assert.assertEquals(replacementValue, values.get("replacementValue"));
 
 		ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
 
@@ -212,7 +210,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 	)
 	@Test
 	public void testOnBeforeUpdateCustomMaskToSystem() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addCustomMask(
+		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
@@ -231,12 +229,10 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 			_objectEntryLocalService.getObjectEntry(
 				customMaskObjectEntry.getObjectEntryId());
 
-		Assert.assertEquals(
-			"custom",
-			reloadedCustomMaskObjectEntry.getValues(
-			).get(
-				"maskType"
-			));
+		Map<String, Serializable> values =
+			reloadedCustomMaskObjectEntry.getValues();
+
+		Assert.assertEquals("custom", values.get("maskType"));
 	}
 
 	private ObjectEntry _addSystemMask(ObjectDefinition objectDefinition)
