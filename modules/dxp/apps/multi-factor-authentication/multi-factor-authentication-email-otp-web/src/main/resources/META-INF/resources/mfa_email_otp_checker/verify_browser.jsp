@@ -123,9 +123,7 @@ if ((mfaEmailOTPResendEmailTimeout > 0) && (mfaEmailOTPSetAtTime > 0)) {
 
 			resendCountdown = null;
 
-			messageContainer.html(
-				'<span class="alert alert-success"><liferay-ui:message key="your-otp-has-been-sent-by-email" /></span>'
-			);
+			messageContainer.html('');
 		}
 		else {
 			sendEmailButton.text(resendDuration);
