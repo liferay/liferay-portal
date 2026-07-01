@@ -182,13 +182,14 @@ const List = () => {
 				type: 'selection',
 			},
 			{
-				apiURL: `/o/faro/contacts/${groupId}/individual_segment?channelId=${channelId}&${rangeSelectorParams}`,
+				apiURL: `/o/faro/contacts/${groupId}/individual_segment/search?channelId=${channelId}&${rangeSelectorParams}`,
 				entityFieldType: 'string',
 				id: 'segmentIds',
 				itemKey: 'id',
 				itemLabel: 'name',
 				label: Liferay.Language.get('segments'),
 				multiple: true,
+				searchable: true,
 				type: 'selection',
 			},
 			{
