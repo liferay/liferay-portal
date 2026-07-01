@@ -5,6 +5,22 @@
 
 export {default as AIAssistantChat} from './AIAssistantChat/AIAssistantChat';
 export type {ChatContext} from './AIAssistantChat/api';
+export {default as CategorizationSuggestions} from './Categorization/components/CategorizationSuggestions';
+export {CATEGORIZE_EVENT, COMMIT_EVENT} from './Categorization/events';
+export type {
+	CategorizeEventPayload,
+	CommitEventPayload,
+} from './Categorization/events';
+export {getCandidateCategories} from './Categorization/services/getCandidateCategories';
+export {getExistingTags} from './Categorization/services/getExistingTags';
+export {ECategorizationAgent} from './Categorization/types';
+export type {
+	CandidateCategory,
+	CategorizationContext,
+	CategorizationStatus,
+	Suggestion,
+} from './Categorization/types';
+export {default as useCategorizationAgent} from './Categorization/useCategorizationAgent';
 export {default as ReportFeedbackModal} from './ReportFeedback/ReportFeedbackModal';
 export type {
 	ReportFeedbackPayload,

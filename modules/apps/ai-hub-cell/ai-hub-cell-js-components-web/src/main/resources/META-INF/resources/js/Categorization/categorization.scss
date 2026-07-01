@@ -1,0 +1,16 @@
+.categorization-suggestions {
+	.categorization-suggestions__chips {
+		display: flex;
+		flex-wrap: wrap;
+	}
+}
+
+.categorization-suggestion-chip--new.label {
+	background-color: #f3effd;
+	border-color: #e3d9fb;
+	color: #6e3ad6;
+
+	.lexicon-icon {
+		color: #6e3ad6;
+	}
+}

@@ -12,6 +12,11 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {EventSource} from 'eventsource';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import {
+	CATEGORIZE_EVENT,
+	CategorizeEventPayload,
+} from '../Categorization/events';
+import {ECategorizationAgent} from '../Categorization/types';
 import ReportFeedbackModal from '../ReportFeedback/ReportFeedbackModal';
 import submitPositiveReportFeedback from '../ReportFeedback/submitPositiveReportFeedback';
 import {
@@ -21,12 +26,14 @@ import {
 } from './api';
 import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
 import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
+import CategorizationMessageBalloon from './components/CategorizationMessageBalloon';
 import UserMessageBalloon from './components/UserMessageBalloon';
 
 import './chat.scss';
 
 interface message {
 	agentDefinitionExternalReferenceCodes?: string[];
+	categorization?: CategorizeEventPayload;
 	error?: boolean;
 	sender: string;
 	text: string;
@@ -297,6 +304,39 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		};
 	}, [closeAIAssistantChatConnection, openAIAssistantChatConnection]);
 
+	useEffect(() => {
+		const handleCategorize = (payload: CategorizeEventPayload) => {
+			setActive(true);
+
+			setMessages((previousMessages) => {
+				setTimeout(() => {
+					messagesEndRef.current?.scrollIntoView({
+						behavior: 'smooth',
+					});
+				}, 0);
+
+				return [
+					...previousMessages,
+					{
+						sender: 'user',
+						text:
+							payload.agent ===
+							ECategorizationAgent.AUTO_CATEGORIZE
+								? Liferay.Language.get('add-categories')
+								: Liferay.Language.get('generate-tags'),
+					},
+					{categorization: payload, sender: 'assistant', text: ''},
+				];
+			});
+		};
+
+		Liferay.on(CATEGORIZE_EVENT, handleCategorize);
+
+		return () => {
+			Liferay.detach(CATEGORIZE_EVENT, handleCategorize);
+		};
+	}, []);
+
 	const chatSurface = (
 		<>
 			<div className="ai-assistant-chat__messages-container flex-grow-1 overflow-auto px-3">
@@ -308,10 +348,26 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 					/>
 				)}
 
-				{messages.map((item, index) =>
-					item.sender === 'user' ? (
-						<UserMessageBalloon key={index} message={item.text} />
-					) : (
+				{messages.map((item, index) => {
+					if (item.sender === 'user') {
+						return (
+							<UserMessageBalloon
+								key={index}
+								message={item.text}
+							/>
+						);
+					}
+
+					if (item.categorization) {
+						return (
+							<CategorizationMessageBalloon
+								key={index}
+								{...item.categorization}
+							/>
+						);
+					}
+
+					return (
 						<AIAssistantMessageBalloon
 							error={item.error ?? false}
 							feedbackGiven={Boolean(feedbackGiven[index])}
@@ -334,8 +390,8 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 									: undefined
 							}
 						/>
-					)
-				)}
+					);
+				})}
 
 				{isGenerating && (
 					<div className="ai-assistant-chat-balloon d-flex flex-row mb-2 rounded">

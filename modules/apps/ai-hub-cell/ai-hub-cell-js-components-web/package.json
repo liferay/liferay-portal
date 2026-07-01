@@ -9,6 +9,7 @@
 		"@clayui/drop-down": "^3.165.0",
 		"@clayui/form": "^3.165.0",
 		"@clayui/icon": "^3.165.0",
+		"@clayui/label": "^3.165.0",
 		"@clayui/layout": "^3.165.0",
 		"@clayui/link": "^3.165.0",
 		"@clayui/loading-indicator": "^3.165.0",
