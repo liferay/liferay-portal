@@ -2379,4 +2379,4 @@ public class LayoutPageTemplateCollectionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1859061749
+// LIFERAY-SERVICE-BUILDER-HASH:2113710077

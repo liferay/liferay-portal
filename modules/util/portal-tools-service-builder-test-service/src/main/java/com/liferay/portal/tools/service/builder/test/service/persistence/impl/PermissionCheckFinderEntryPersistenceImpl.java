@@ -550,4 +550,4 @@ public class PermissionCheckFinderEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1464679568
+// LIFERAY-SERVICE-BUILDER-HASH:-122918740

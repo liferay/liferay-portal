@@ -551,4 +551,4 @@ public class SharepointOAuth2TokenEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1438684869
+// LIFERAY-SERVICE-BUILDER-HASH:-1976381295

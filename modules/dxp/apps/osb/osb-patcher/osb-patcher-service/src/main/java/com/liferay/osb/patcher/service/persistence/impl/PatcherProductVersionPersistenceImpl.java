@@ -577,4 +577,4 @@ public class PatcherProductVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1390266226
+// LIFERAY-SERVICE-BUILDER-HASH:169272518

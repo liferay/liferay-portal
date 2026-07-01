@@ -473,4 +473,4 @@ public class BatchEngineImportTaskErrorPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-86689695
+// LIFERAY-SERVICE-BUILDER-HASH:554534659

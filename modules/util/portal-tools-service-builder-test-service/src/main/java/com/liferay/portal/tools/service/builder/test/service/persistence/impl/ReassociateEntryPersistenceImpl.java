@@ -229,4 +229,4 @@ public class ReassociateEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1802392094
+// LIFERAY-SERVICE-BUILDER-HASH:-463924526

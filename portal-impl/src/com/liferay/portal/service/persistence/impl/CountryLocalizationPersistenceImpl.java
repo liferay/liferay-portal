@@ -557,4 +557,4 @@ public class CountryLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-647290690
+// LIFERAY-SERVICE-BUILDER-HASH:406461770

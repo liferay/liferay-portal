@@ -2010,4 +2010,4 @@ public class FragmentCollectionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-957970868
+// LIFERAY-SERVICE-BUILDER-HASH:1187393580

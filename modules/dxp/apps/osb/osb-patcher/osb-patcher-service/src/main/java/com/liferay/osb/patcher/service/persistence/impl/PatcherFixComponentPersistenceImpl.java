@@ -410,4 +410,4 @@ public class PatcherFixComponentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1385925766
+// LIFERAY-SERVICE-BUILDER-HASH:-2119458626

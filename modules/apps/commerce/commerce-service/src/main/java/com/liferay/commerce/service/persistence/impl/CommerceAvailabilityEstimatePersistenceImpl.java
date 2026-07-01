@@ -846,4 +846,4 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-676071084
+// LIFERAY-SERVICE-BUILDER-HASH:-2063728786

@@ -686,4 +686,4 @@ public class AnnouncementsDeliveryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:491835773
+// LIFERAY-SERVICE-BUILDER-HASH:-1242801855

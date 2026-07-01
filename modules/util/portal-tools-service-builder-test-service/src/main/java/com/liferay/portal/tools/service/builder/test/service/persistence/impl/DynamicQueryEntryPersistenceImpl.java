@@ -282,4 +282,4 @@ public class DynamicQueryEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-290902313
+// LIFERAY-SERVICE-BUILDER-HASH:-855002623

@@ -1011,4 +1011,4 @@ public class CPConfigurationEntrySettingPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1955226523
+// LIFERAY-SERVICE-BUILDER-HASH:-2005921025

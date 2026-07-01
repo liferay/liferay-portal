@@ -601,4 +601,4 @@ public class PushNotificationsDevicePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1588971158
+// LIFERAY-SERVICE-BUILDER-HASH:-1444063332

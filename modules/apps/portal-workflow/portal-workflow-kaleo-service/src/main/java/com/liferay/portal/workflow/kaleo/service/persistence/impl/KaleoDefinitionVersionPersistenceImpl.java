@@ -779,4 +779,4 @@ public class KaleoDefinitionVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1867121205
+// LIFERAY-SERVICE-BUILDER-HASH:1851380465

@@ -446,4 +446,4 @@ public class ContactsCardTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:183948449
+// LIFERAY-SERVICE-BUILDER-HASH:2001086987

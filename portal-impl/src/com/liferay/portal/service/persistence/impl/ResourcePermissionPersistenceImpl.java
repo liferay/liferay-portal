@@ -3355,4 +3355,4 @@ public class ResourcePermissionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1965612231
+// LIFERAY-SERVICE-BUILDER-HASH:-76153255
