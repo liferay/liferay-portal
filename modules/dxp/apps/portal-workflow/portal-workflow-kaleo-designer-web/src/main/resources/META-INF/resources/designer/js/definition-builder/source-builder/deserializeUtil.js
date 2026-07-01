@@ -106,24 +106,7 @@ DeserializeUtil.prototype = {
 					script: node.script,
 				};
 
-				if (type === 'condition') {
-					data.scriptLanguage =
-						node.scriptLanguage || DEFAULT_LANGUAGE;
-				}
-
-				if (type === 'task') {
-					if (node.assignments) {
-						data.assignments = parseAssignments(node);
-					}
-					if (node.taskTimers) {
-						data.taskTimers = parseTimers(node);
-					}
-
-					data.scriptLanguage =
-						node.scriptLanguage || DEFAULT_LANGUAGE;
-				}
-
-				if (type === 'llm' || type === 'ai-decision') {
+				if (type === 'ai-decision' || type === 'llm') {
 					data.inputVariables = parseJSONArray(
 						node['input-variables']
 					);
@@ -139,6 +122,18 @@ DeserializeUtil.prototype = {
 					data.tools = parseJSONArray(node.tools);
 
 					data.userMessage = node['user-message'] || '';
+				}
+
+				if (type === 'ai-hub-agent') {
+					data.agentDefinitionExternalReferenceCode =
+						node['agent-definition-external-reference-code'] || '';
+
+					data.timeout = node.timeout || '';
+				}
+
+				if (type === 'condition') {
+					data.scriptLanguage =
+						node.scriptLanguage || DEFAULT_LANGUAGE;
 				}
 
 				if (type === 'http-request') {
@@ -161,6 +156,18 @@ DeserializeUtil.prototype = {
 
 				if (type === 'service') {
 					data.javaDelegate = node['java-delegate'] || '';
+				}
+
+				if (type === 'task') {
+					if (node.assignments) {
+						data.assignments = parseAssignments(node);
+					}
+					if (node.taskTimers) {
+						data.taskTimers = parseTimers(node);
+					}
+
+					data.scriptLanguage =
+						node.scriptLanguage || DEFAULT_LANGUAGE;
 				}
 
 				data.actions = node.actions?.length && parseActions(node);

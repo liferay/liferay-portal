@@ -8,6 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import {defaultLanguageId} from '../../../constants';
 import {insertNodeAt} from '../../util/insertNodeAt';
 import AIDecisionNode from './AIDecisionNode';
+import AIHubAgentNode from './AIHubAgentNode';
 import ConditionNode from './ConditionNode';
 import ForkNode from './ForkNode';
 import HTTPRequestNode from './HTTPRequestNode';
@@ -43,6 +44,7 @@ const defaultNodes = [
 
 const nodeDescription = {
 	'ai-decision': Liferay.Language.get('make-a-decision-using-llm-models'),
+	'ai-hub-agent': Liferay.Language.get('invoke-an-ai-hub-agent'),
 	'condition': Liferay.Language.get('execute-conditional-logic'),
 	'end': Liferay.Language.get('conclude-the-workflow'),
 	'fork': Liferay.Language.get('split-the-workflow-into-multiple-paths'),
@@ -74,10 +76,11 @@ let nodeTypes = {
 };
 
 if (Liferay.FeatureFlags['LPD-62272']) {
-	nodeTypes = insertNodeAt(nodeTypes, 'ai-decision', AIDecisionNode, 1);
-	nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 6);
-	nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 7);
-	nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 8);
+	nodeTypes = insertNodeAt(nodeTypes, 'ai-hub-agent', AIHubAgentNode, 1);
+	nodeTypes = insertNodeAt(nodeTypes, 'ai-decision', AIDecisionNode, 2);
+	nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 7);
+	nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 8);
+	nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 9);
 }
 
 export {defaultNodes, nodeDescription, nodeTypes};

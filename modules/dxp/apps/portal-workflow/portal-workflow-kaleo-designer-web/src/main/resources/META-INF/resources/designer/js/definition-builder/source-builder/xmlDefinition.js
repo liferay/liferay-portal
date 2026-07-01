@@ -358,6 +358,7 @@ XMLDefinition.prototype = {
 
 		const schema = {
 			resultFields: [
+				'agent-definition-external-reference-code',
 				'description',
 				'http-method',
 				'id',

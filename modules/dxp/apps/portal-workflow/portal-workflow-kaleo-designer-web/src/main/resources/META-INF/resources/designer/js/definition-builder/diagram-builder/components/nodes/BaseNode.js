@@ -20,6 +20,7 @@ let handleConnect = false;
 
 export default function BaseNode({
 	actions,
+	agentDefinitionExternalReferenceCode,
 	assignments,
 	className,
 	description,
@@ -144,6 +145,7 @@ export default function BaseNode({
 		setSelectedItem({
 			data: {
 				actions,
+				agentDefinitionExternalReferenceCode,
 				assignments,
 				description,
 				httpMethod,
@@ -223,6 +225,7 @@ export default function BaseNode({
 						setSelectedItem({
 							data: {
 								actions,
+								agentDefinitionExternalReferenceCode,
 								assignments,
 								description,
 								httpMethod,
@@ -281,6 +284,7 @@ export default function BaseNode({
 }
 
 BaseNode.propTypes = {
+	agentDefinitionExternalReferenceCode: PropTypes.string,
 	className: PropTypes.string,
 	description: PropTypes.string,
 	descriptionSidebar: PropTypes.string,

@@ -28,10 +28,11 @@ const COL_TYPES_FIELD = [
 ];
 
 if (Liferay.FeatureFlags['LPD-62272'] === true) {
-	COL_TYPES_FIELD.splice(0, 0, 'ai-decision');
-	COL_TYPES_FIELD.splice(4, 0, 'llm');
-	COL_TYPES_FIELD.splice(5, 0, 'http-request');
-	COL_TYPES_FIELD.splice(6, 0, 'service');
+	COL_TYPES_FIELD.splice(0, 0, 'ai-hub-agent');
+	COL_TYPES_FIELD.splice(1, 0, 'ai-decision');
+	COL_TYPES_FIELD.splice(5, 0, 'llm');
+	COL_TYPES_FIELD.splice(6, 0, 'http-request');
+	COL_TYPES_FIELD.splice(7, 0, 'service');
 }
 
 const DEFAULT_LANGUAGE = 'groovy';

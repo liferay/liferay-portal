@@ -682,16 +682,7 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 			buffer.push(XMLUtil.create('script', cdata(script)));
 		}
 
-		if (xmlType === 'condition') {
-			buffer.push(
-				createTagWithEscapedContent(
-					'scriptLanguage',
-					scriptLanguage || DEFAULT_LANGUAGE
-				)
-			);
-		}
-
-		if (item.type === 'llm' || item.type === 'ai-decision') {
+		if (item.type === 'ai-decision' || item.type === 'llm') {
 			buffer.push(
 				XMLUtil.create(
 					'input-variables',
@@ -710,6 +701,30 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 			);
 			buffer.push(
 				XMLUtil.create('tools', cdata(jsonStringify(item.data.tools)))
+			);
+		}
+
+		if (item.type === 'ai-hub-agent') {
+			buffer.push(
+				createTagWithEscapedContent(
+					'agent-definition-external-reference-code',
+					item.data.agentDefinitionExternalReferenceCode || ''
+				)
+			);
+
+			if (item.data.timeout) {
+				buffer.push(
+					createTagWithEscapedContent('timeout', item.data.timeout)
+				);
+			}
+		}
+
+		if (xmlType === 'condition') {
+			buffer.push(
+				createTagWithEscapedContent(
+					'scriptLanguage',
+					scriptLanguage || DEFAULT_LANGUAGE
+				)
 			);
 		}
 
