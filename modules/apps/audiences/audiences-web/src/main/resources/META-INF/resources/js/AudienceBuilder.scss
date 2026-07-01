@@ -8,8 +8,8 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-attribute {
-	border-radius: 4px;
 	cursor: grab;
+	height: 55px;
 
 	&:hover {
 		background-color: $light;
