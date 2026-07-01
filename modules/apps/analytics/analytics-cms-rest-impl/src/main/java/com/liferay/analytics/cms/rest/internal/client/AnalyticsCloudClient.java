@@ -535,6 +535,9 @@ public class AnalyticsCloudClient {
 					content);
 
 				if (jsonNode != null) {
+					_renameKey(
+						jsonNode, "classification", "trendClassification");
+
 					TypeFactory typeFactory = TypeFactory.defaultInstance();
 
 					ObjectReader objectReader =
