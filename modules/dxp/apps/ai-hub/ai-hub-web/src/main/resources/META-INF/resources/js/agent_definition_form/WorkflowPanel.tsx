@@ -4,43 +4,48 @@
  */
 
 import Button from '@clayui/button';
-import {Option, Picker} from '@clayui/core';
 import Icon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
 import {Provider} from '@clayui/provider';
-import {FormikErrors, FormikTouched} from 'formik';
-import {FieldBase} from 'frontend-js-components-web';
 import React from 'react';
 
 import {AgentDefinition} from './types/AgentDefinition';
-import {WorkflowDefinition} from './types/WorkflowDefinition';
 
 interface IProps {
-	errors: FormikErrors<AgentDefinition>;
+	editAgentDefinitionURL: string;
+	kaleoDesignerNamespace: string;
 	readOnly: boolean;
-	setField: <K extends keyof AgentDefinition>(
-		field: K,
-		value: AgentDefinition[K]
-	) => void;
-	setFieldTouched: (field: string, isTouched?: boolean) => void;
-	touched: FormikTouched<AgentDefinition>;
 	values: AgentDefinition;
 	workflowDefinitionURL: string;
-	workflowDefinitions: WorkflowDefinition[];
 }
 
 const WorkflowPanel: React.FC<IProps> = ({
-	errors,
+	editAgentDefinitionURL,
+	kaleoDesignerNamespace,
 	readOnly,
-	setField,
-	setFieldTouched,
-	touched,
 	values,
 	workflowDefinitionURL,
-	workflowDefinitions,
 }) => {
-	const handleViewWorkflow = () => {
-		window.location.href = workflowDefinitionURL;
+	const handleWorkflow = () => {
+		if (!values.workflowDefinitionName) {
+			return;
+		}
+
+		const url = new URL(workflowDefinitionURL, window.location.origin);
+
+		url.searchParams.set(
+			`${kaleoDesignerNamespace}name`,
+			values.workflowDefinitionName
+		);
+		url.searchParams.set(
+			`${kaleoDesignerNamespace}redirect`,
+			`${editAgentDefinitionURL}?externalReferenceCode=` +
+				`${encodeURIComponent(values.externalReferenceCode)}` +
+				`&workflowDefinitionName=` +
+				`${encodeURIComponent(values.workflowDefinitionName)}`
+		);
+
+		window.location.href = url.toString();
 	};
 
 	return (
@@ -54,52 +59,24 @@ const WorkflowPanel: React.FC<IProps> = ({
 
 					<Provider spritemap={Liferay.Icons.spritemap}>
 						<Button
+							disabled={!values.workflowDefinitionName}
 							displayType="secondary"
-							onClick={handleViewWorkflow}
+							onClick={handleWorkflow}
 						>
 							<span className="inline-item inline-item-before">
 								<Icon symbol="icon-rule-builder" />
 							</span>
 
-							{Liferay.Language.get('view-workflow')}
+							{readOnly
+								? Liferay.Language.get('view-workflow')
+								: Liferay.Language.get('edit-workflow')}
 						</Button>
 					</Provider>
 				</div>
 
-				<FieldBase
-					errorMessage={
-						touched.workflowDefinitionName
-							? errors.workflowDefinitionName
-							: undefined
-					}
-					id="workflowDefinitionName"
-					label={Liferay.Language.get('workflow-definition')}
-					required
-				>
-					<Picker
-						className="agent-definition-form-picker"
-						disabled={readOnly}
-						id="workflowDefinitionName"
-						items={workflowDefinitions.map(
-							(workflowDefinition) => ({
-								label: workflowDefinition.title,
-								value: workflowDefinition.name,
-							})
-						)}
-						onSelectionChange={(value) => {
-							setFieldTouched('workflowDefinitionName', true);
-							setField('workflowDefinitionName', value as string);
-						}}
-						placeholder={Liferay.Language.get(
-							'workflow-definition'
-						)}
-						selectedKey={values.workflowDefinitionName}
-					>
-						{({label, value}) => (
-							<Option key={value}>{label}</Option>
-						)}
-					</Picker>
-				</FieldBase>
+				<p className="text-secondary">
+					{Liferay.Language.get('every-agent-runs-its-own-workflow')}
+				</p>
 			</ClayPanel.Body>
 		</ClayPanel>
 	);

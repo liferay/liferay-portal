@@ -5,6 +5,12 @@
 
 import {AgentDefinition} from './types/AgentDefinition';
 
+// Mirrors com.liferay.portal.kernel.workflow.WorkflowConstants.STATUS_DRAFT.
+// Sending it as the object entry status drives ACTION_SAVE_DRAFT, which keeps
+// the entry a draft and skips required-field validation.
+
+export const WORKFLOW_STATUS_DRAFT = 2;
+
 export const DEFAULT_AGENT_DEFINITION: Omit<
 	AgentDefinition,
 	'r_accountToAIHubAgentDefinitions_accountEntryERC'

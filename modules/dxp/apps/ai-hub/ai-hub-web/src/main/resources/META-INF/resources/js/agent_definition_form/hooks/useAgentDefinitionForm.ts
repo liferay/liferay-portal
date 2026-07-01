@@ -5,7 +5,7 @@
 
 import {openToast} from '@liferay/object-js-components-web';
 import {useFormik} from 'formik';
-import {useCallback, useEffect, useMemo} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {generateExternalReferenceCode} from '../../utils/externalReferenceCode';
 import {required, requiredLocalized, validate} from '../../utils/validations';
@@ -15,7 +15,9 @@ import {
 	disassociateAgentDefinitionFromGuardrail,
 	getAgentDefinition,
 	postAgentDefinition,
+	postAgentDefinitionDraft,
 	putAgentDefinition,
+	putAgentDefinitionDraft,
 	putAgentDefinitionToContentRetrievers,
 	putAgentDefinitionToGuardrails,
 } from '../services/AgentDefinitionService';
@@ -28,14 +30,20 @@ import {useRelationshipPicker} from './useRelationshipPicker';
 
 interface UseAgentDefinitionFormProps {
 	accountEntryExternalReferenceCode: string;
+	editAgentDefinitionURL: string;
 	externalReferenceCode: string;
 	readOnly: boolean;
 }
 
 export function useAgentDefinitionForm({
 	accountEntryExternalReferenceCode,
+	editAgentDefinitionURL,
 	externalReferenceCode,
 }: UseAgentDefinitionFormProps) {
+	const draftRequestedRef = useRef(false);
+
+	const [published, setPublished] = useState(false);
+
 	const generatedExternalReferenceCode = useMemo(
 		() => generateExternalReferenceCode(),
 		[]
@@ -52,13 +60,71 @@ export function useAgentDefinitionForm({
 		putRelationship: putAgentDefinitionToGuardrails,
 	});
 
+	const submitAgentDefinition = async (
+		formValues: AgentDefinition,
+		draft: boolean
+	) => {
+		try {
+			let response;
+
+			if (!externalReferenceCode) {
+				response = await postAgentDefinition(formValues);
+			}
+			else if (draft) {
+				response = await putAgentDefinitionDraft(formValues);
+			}
+			else {
+				response = await putAgentDefinition(
+					formValues,
+					externalReferenceCode
+				);
+			}
+
+			if (formValues.externalReferenceCode) {
+				await Promise.all([
+					contentRetrievers.sync(formValues.externalReferenceCode),
+					guardrails.sync(formValues.externalReferenceCode),
+				]);
+			}
+
+			if (response?.status?.label === (draft ? 'draft' : 'approved')) {
+				setPublished(!draft);
+
+				openToast({
+					message: Liferay.Language.get('agent-saved-successfully'),
+					type: 'success',
+				});
+			}
+			else {
+				openToast({
+					message: Liferay.Language.get('failed-to-save-agent'),
+					type: 'danger',
+				});
+			}
+		}
+		catch (error) {
+			console.error(error);
+
+			openToast({
+				message:
+					error instanceof Error && error.message
+						? error.message
+						: Liferay.Language.get('an-unexpected-error-occurred'),
+				type: 'danger',
+			});
+		}
+	};
+
 	const {
 		errors,
 		handleBlur,
 		handleSubmit,
 		isSubmitting,
+		setErrors,
 		setFieldTouched,
 		setFieldValue,
+		setSubmitting,
+		setTouched,
 		setValues,
 		touched,
 		values,
@@ -69,53 +135,7 @@ export function useAgentDefinitionForm({
 			r_accountToAIHubAgentDefinitions_accountEntryERC:
 				accountEntryExternalReferenceCode,
 		},
-		onSubmit: async (formValues) => {
-			try {
-				const response = externalReferenceCode
-					? await putAgentDefinition(
-							formValues,
-							externalReferenceCode
-						)
-					: await postAgentDefinition(formValues);
-
-				if (formValues.externalReferenceCode) {
-					await Promise.all([
-						contentRetrievers.sync(
-							formValues.externalReferenceCode
-						),
-						guardrails.sync(formValues.externalReferenceCode),
-					]);
-				}
-
-				if (response?.status?.label === 'approved') {
-					openToast({
-						message: Liferay.Language.get(
-							'agent-saved-successfully'
-						),
-						type: 'success',
-					});
-				}
-				else {
-					openToast({
-						message: Liferay.Language.get('failed-to-save-agent'),
-						type: 'danger',
-					});
-				}
-			}
-			catch (error) {
-				console.error(error);
-
-				openToast({
-					message:
-						error instanceof Error && error.message
-							? error.message
-							: Liferay.Language.get(
-									'an-unexpected-error-occurred'
-								),
-					type: 'danger',
-				});
-			}
-		},
+		onSubmit: (formValues) => submitAgentDefinition(formValues, false),
 		validate: (formValues) =>
 			validate(
 				{
@@ -124,10 +144,17 @@ export function useAgentDefinitionForm({
 					inputVariables: [required],
 					outputVariable: [required],
 					title_i18n: [requiredLocalized],
-					workflowDefinitionName: [required],
 				},
 				formValues
 			),
+
+		// Only validate when the user attempts to publish. Validating on
+		// every change or blur would flag the mandatory fields as required
+		// while the user is still filling in a draft, even though Save as
+		// Draft never requires them.
+
+		validateOnBlur: false,
+		validateOnChange: false,
 	});
 
 	const setField = useCallback(
@@ -140,12 +167,54 @@ export function useAgentDefinitionForm({
 		[setFieldValue]
 	);
 
+	const handleSaveAsDraft = async () => {
+		setErrors({});
+		setTouched({}, false);
+
+		setSubmitting(true);
+
+		try {
+			await submitAgentDefinition(values, true);
+		}
+		finally {
+			setSubmitting(false);
+		}
+	};
+
 	const {reset: resetContentRetrievers} = contentRetrievers;
 	const {reset: resetGuardrails} = guardrails;
 
 	useEffect(() => {
-		async function fetchFormData() {
+		async function loadOrCreateDraft() {
 			if (!externalReferenceCode) {
+				if (draftRequestedRef.current) {
+					return;
+				}
+
+				draftRequestedRef.current = true;
+
+				try {
+					const agentDefinition = await postAgentDefinitionDraft();
+
+					window.location.replace(
+						`${editAgentDefinitionURL}?externalReferenceCode=` +
+							`${encodeURIComponent(
+								agentDefinition.externalReferenceCode
+							)}&workflowDefinitionName=` +
+							`${encodeURIComponent(
+								agentDefinition.workflowDefinitionName
+							)}`
+					);
+				}
+				catch (error) {
+					openToast({
+						message: Liferay.Language.get(
+							'an-unexpected-error-occurred'
+						),
+						type: 'danger',
+					});
+				}
+
 				return;
 			}
 
@@ -168,6 +237,8 @@ export function useAgentDefinitionForm({
 						agentDefinition.workflowDefinitionName,
 				});
 
+				setPublished(agentDefinition.status?.label === 'approved');
+
 				resetContentRetrievers(
 					agentDefinition.agentDefinitionsToContentRetrievers || []
 				);
@@ -183,8 +254,9 @@ export function useAgentDefinitionForm({
 			}
 		}
 
-		fetchFormData();
+		loadOrCreateDraft();
 	}, [
+		editAgentDefinitionURL,
 		externalReferenceCode,
 		resetContentRetrievers,
 		resetGuardrails,
@@ -196,8 +268,10 @@ export function useAgentDefinitionForm({
 		errors,
 		guardrails,
 		handleBlur,
+		handleSaveAsDraft,
 		handleSubmit,
 		isSubmitting,
+		published,
 		setField,
 		setFieldTouched,
 		touched,

@@ -22,6 +22,9 @@ interface IProps {
 			name?: string;
 			providerLabel?: string;
 		};
+		status?: {
+			label?: string;
+		};
 		system?: boolean;
 	};
 	itemId: unknown;
@@ -34,7 +37,9 @@ const AgentDefinitionItemTitle = ({
 	itemId,
 	value,
 }: IProps) => {
-	const {active, description, model, system} = itemData ?? {};
+	const {active, description, model, status, system} = itemData ?? {};
+
+	const draft = status?.label === 'draft';
 
 	return (
 		<div className="agent-definition-item">
@@ -43,7 +48,7 @@ const AgentDefinitionItemTitle = ({
 					actions={actions}
 					itemData={itemData}
 					itemId={itemId}
-					value={value}
+					value={value || Liferay.Language.get('untitled-agent')}
 				/>
 			</div>
 
@@ -77,7 +82,11 @@ const AgentDefinitionItemTitle = ({
 						</ClayLabel>
 					)}
 
-					{active ? (
+					{draft ? (
+						<ClayLabel displayType="secondary">
+							{Liferay.Language.get('draft')}
+						</ClayLabel>
+					) : active ? (
 						<ClayLabel displayType="success">
 							{Liferay.Language.get('running')}
 						</ClayLabel>

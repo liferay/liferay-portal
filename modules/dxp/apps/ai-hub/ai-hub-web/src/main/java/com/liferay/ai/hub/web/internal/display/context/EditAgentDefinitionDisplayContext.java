@@ -82,8 +82,13 @@ public class EditAgentDefinitionDisplayContext {
 				return aiHubURL + "/agent-builder";
 			}
 		).put(
+			"editAgentDefinitionURL", aiHubURL + "/agent"
+		).put(
 			"externalReferenceCode",
 			_httpServletRequest.getParameter("externalReferenceCode")
+		).put(
+			"kaleoDesignerNamespace",
+			_portal.getPortletNamespace(WorkflowPortletKeys.KALEO_DESIGNER)
 		).put(
 			"readOnly",
 			DisplayContextUtil.isReadOnly(

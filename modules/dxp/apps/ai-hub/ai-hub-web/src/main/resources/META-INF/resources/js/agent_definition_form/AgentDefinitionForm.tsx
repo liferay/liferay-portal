@@ -18,14 +18,15 @@ import GuardrailsPanel from './GuardrailsPanel';
 import VariablesPanel from './VariablesPanel';
 import WorkflowPanel from './WorkflowPanel';
 import {useAgentDefinitionForm} from './hooks/useAgentDefinitionForm';
-import {useWorkflowDefinitions} from './hooks/useWorkflowDefinitions';
 
 const FORM_ID = 'agentDefinitionForm';
 
 interface IProps {
 	accountEntryExternalReferenceCode: string;
 	backURL: string;
+	editAgentDefinitionURL: string;
 	externalReferenceCode: string;
+	kaleoDesignerNamespace: string;
 	readOnly: boolean;
 	workflowDefinitionURL: string;
 }
@@ -33,7 +34,9 @@ interface IProps {
 export default function AgentDefinitionForm({
 	accountEntryExternalReferenceCode,
 	backURL,
+	editAgentDefinitionURL,
 	externalReferenceCode,
+	kaleoDesignerNamespace,
 	readOnly,
 	workflowDefinitionURL,
 }: IProps) {
@@ -42,21 +45,19 @@ export default function AgentDefinitionForm({
 		errors,
 		guardrails,
 		handleBlur,
+		handleSaveAsDraft,
 		handleSubmit,
 		isSubmitting,
+		published,
 		setField,
 		setFieldTouched,
 		touched,
 		values,
 	} = useAgentDefinitionForm({
 		accountEntryExternalReferenceCode,
+		editAgentDefinitionURL,
 		externalReferenceCode,
 		readOnly,
-	});
-
-	const workflowDefinitions = useWorkflowDefinitions({
-		readOnly,
-		workflowDefinitionName: values.workflowDefinitionName,
 	});
 
 	return (
@@ -78,15 +79,32 @@ export default function AgentDefinitionForm({
 					</Link>
 				</Toolbar.Item>
 
+				{!published && (
+					<Toolbar.Item>
+						<Button
+							aria-label={Liferay.Language.get('save-as-draft')}
+							disabled={readOnly || isSubmitting}
+							displayType="secondary"
+							onClick={handleSaveAsDraft}
+							size="sm"
+							type="button"
+						>
+							{Liferay.Language.get('save-as-draft')}
+						</Button>
+					</Toolbar.Item>
+				)}
+
 				<Toolbar.Item>
 					<Button
-						aria-label={Liferay.Language.get('save')}
+						aria-label={Liferay.Language.get(
+							published ? 'save' : 'publish'
+						)}
 						disabled={readOnly || isSubmitting}
 						form={FORM_ID}
 						size="sm"
 						type="submit"
 					>
-						{Liferay.Language.get('save')}
+						{Liferay.Language.get(published ? 'save' : 'publish')}
 					</Button>
 				</Toolbar.Item>
 			</Toolbar>
@@ -106,14 +124,11 @@ export default function AgentDefinitionForm({
 							/>
 
 							<WorkflowPanel
-								errors={errors}
+								editAgentDefinitionURL={editAgentDefinitionURL}
+								kaleoDesignerNamespace={kaleoDesignerNamespace}
 								readOnly={readOnly}
-								setField={setField}
-								setFieldTouched={setFieldTouched}
-								touched={touched}
 								values={values}
 								workflowDefinitionURL={workflowDefinitionURL}
-								workflowDefinitions={workflowDefinitions}
 							/>
 
 							<VariablesPanel
