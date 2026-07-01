@@ -104,7 +104,7 @@ public class StyleBookEntryUtil {
 				layout.getCompanyId(), groupId,
 				frontendTokenDefinition.getThemeId()),
 			styleBookEntry -> _getStyleBookEntryMap(
-				frontendTokenDefinition, includeFrontendTokensValues, groupId,
+				frontendTokenDefinition, groupId, includeFrontendTokensValues,
 				scopeGroups, styleBookEntry, themeDisplay));
 	}
 
@@ -195,10 +195,9 @@ public class StyleBookEntryUtil {
 	}
 
 	private static Map<String, Object> _getStyleBookEntryMap(
-		FrontendTokenDefinition frontendTokenDefinition,
-		boolean includeFrontendTokensValues, long groupId,
-		Map<Long, Group> scopeGroups, StyleBookEntry styleBookEntry,
-		ThemeDisplay themeDisplay) {
+		FrontendTokenDefinition frontendTokenDefinition, long groupId,
+		boolean includeFrontendTokensValues, Map<Long, Group> scopeGroups,
+		StyleBookEntry styleBookEntry, ThemeDisplay themeDisplay) {
 
 		Group scopeGroup = _getScopeGroup(groupId, scopeGroups, styleBookEntry);
 
