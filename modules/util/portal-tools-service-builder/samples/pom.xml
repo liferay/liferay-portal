@@ -16,7 +16,7 @@
 			<plugin>
 				<groupId>com.liferay</groupId>
 				<artifactId>com.liferay.portal.tools.service.builder</artifactId>
-				<version>1.0.551</version>
+				<version>1.0.552</version>
 				<configuration>
 					<apiDirName>../tmp/api</apiDirName>
 					<beanLocatorUtil>com.liferay.util.bean.PortletBeanLocatorUtil</beanLocatorUtil>
