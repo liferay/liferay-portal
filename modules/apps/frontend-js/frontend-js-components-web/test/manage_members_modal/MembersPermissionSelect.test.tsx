@@ -34,7 +34,7 @@ describe('MembersPermissionSelect', () => {
 	) {
 		render(
 			<MembersPermissionSelect
-				defaultRoleExternalReferenceCode="L_ASSET_LIBRARY_MEMBER"
+				defaultRole={ROLES[0]}
 				onChange={() => {}}
 				roles={ROLES}
 				selectedRoles={['Member']}

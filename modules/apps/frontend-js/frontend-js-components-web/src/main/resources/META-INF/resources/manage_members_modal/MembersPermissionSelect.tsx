@@ -12,7 +12,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {Role, RoleExternalReferenceCode} from './types';
 
 interface MembersPermissionSelectProps {
-	defaultRoleExternalReferenceCode: RoleExternalReferenceCode;
+	defaultRole?: Role;
 	disabled?: boolean;
 	onChange: (selectedRoles: string[]) => void;
 	roleNames?: Partial<Record<RoleExternalReferenceCode, string>>;
@@ -21,7 +21,7 @@ interface MembersPermissionSelectProps {
 }
 
 export function MembersPermissionSelect({
-	defaultRoleExternalReferenceCode,
+	defaultRole,
 	disabled = false,
 	onChange,
 	roleNames,
@@ -103,7 +103,7 @@ export function MembersPermissionSelect({
 							checked={selectedRoles.includes(role.name)}
 							disabled={
 								role.externalReferenceCode ===
-								defaultRoleExternalReferenceCode
+								defaultRole?.externalReferenceCode
 							}
 							label={getRoleName(role)}
 							onChange={() => handleCheckboxChange(role.name)}

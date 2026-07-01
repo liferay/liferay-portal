@@ -98,6 +98,14 @@ export function ManageMembersList({
 		return groups.items.length;
 	}, [selectedOption, users.items, groups.items]);
 
+	const defaultRole = useMemo(() => {
+		return roles.find(
+			(role) =>
+				role.externalReferenceCode ===
+				config.defaultRoleExternalReferenceCode
+		);
+	}, [config.defaultRoleExternalReferenceCode, roles]);
+
 	const excludeMembers = useMemo(() => {
 		if (selectedOption === MemberType.USERS) {
 			return users.items;
@@ -148,9 +156,7 @@ export function ManageMembersList({
 						{selectedOption === MemberType.USERS ? (
 							<MemberListItem
 								currentUserId={currentUserId}
-								defaultRoleExternalReferenceCode={
-									config.defaultRoleExternalReferenceCode
-								}
+								defaultRole={defaultRole}
 								hasAssignMembersPermission={
 									hasAssignMembersPermission
 								}
@@ -172,9 +178,7 @@ export function ManageMembersList({
 							/>
 						) : (
 							<MemberListItem
-								defaultRoleExternalReferenceCode={
-									config.defaultRoleExternalReferenceCode
-								}
+								defaultRole={defaultRole}
 								hasAssignMembersPermission={
 									hasAssignMembersPermission
 								}
