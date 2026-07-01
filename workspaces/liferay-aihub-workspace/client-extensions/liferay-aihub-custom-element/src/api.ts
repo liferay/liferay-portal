@@ -78,7 +78,7 @@ export async function getChatbotConfiguration(
 	chatbotExternalReferenceCode: string
 ): Promise<ChatbotConfiguration> {
 	const response = await fetch(
-		`${aiHubURL}/o/ai-hub/chatbots/by-external-reference-code/${chatbotExternalReferenceCode}`,
+		`${aiHubURL}${AI_HUB_ENDPOINT}/chatbots/by-external-reference-code/${chatbotExternalReferenceCode}`,
 		{
 			headers: new Headers({
 				Accept: 'application/json',

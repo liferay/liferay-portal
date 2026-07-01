@@ -13,7 +13,6 @@ import {
 	postChatMessage,
 } from '../api';
 import {submitPositiveFeedback} from '../feedback';
-import {getLanguageId, getLocalizedValue} from '../locale';
 import AssistantMessage from './AssistantMessage';
 import ChatbotFooter from './ChatbotFooter';
 import ChatbotHeader from './ChatbotHeader';
@@ -300,23 +299,12 @@ export default function ChatbotWidget({
 			return null;
 		}
 
-		const pick = getLocalizedValue({
-			defaultLanguageId: chatbotConfiguration.defaultLanguageId,
-			editingLanguageId: getLanguageId(),
-		});
-
 		return {
-			disclaimerMessage: pick(
-				chatbotConfiguration.disclaimerMessage_i18n
-			),
-			introMessage: pick(chatbotConfiguration.introMessage_i18n),
-			notificationMessage: pick(
-				chatbotConfiguration.notificationMessage_i18n
-			),
-			placeholderMessage: pick(
-				chatbotConfiguration.placeholderMessage_i18n
-			),
-			title: pick(chatbotConfiguration.title_i18n),
+			disclaimerMessage: chatbotConfiguration.disclaimerMessage ?? '',
+			introMessage: chatbotConfiguration.introMessage ?? '',
+			notificationMessage: chatbotConfiguration.notificationMessage ?? '',
+			placeholderMessage: chatbotConfiguration.placeholderMessage ?? '',
+			title: chatbotConfiguration.title ?? '',
 		};
 	}, [chatbotConfiguration]);
 
