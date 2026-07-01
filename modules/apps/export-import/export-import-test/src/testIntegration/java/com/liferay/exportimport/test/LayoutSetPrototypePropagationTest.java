@@ -96,6 +96,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -117,8 +118,6 @@ import com.liferay.sites.kernel.util.Sites;
 import jakarta.portlet.PortletPreferences;
 
 import java.awt.image.BufferedImage;
-
-import java.io.File;
 
 import java.util.Collections;
 import java.util.Date;
@@ -1530,12 +1529,6 @@ public class LayoutSetPrototypePropagationTest
 			});
 	}
 
-	private boolean _fileExists(String path) {
-		File file = new File(path);
-
-		return file.exists();
-	}
-
 	private String _getLatestMergeNotificationResult(
 			long timestamp, long userId)
 		throws Exception {
@@ -1669,14 +1662,10 @@ public class LayoutSetPrototypePropagationTest
 				"successful", timestamp, TestPropsValues.getUserId());
 
 			Assert.assertEquals(
-				!deleteCacheFile, _fileExists(testMessageListener._path));
+				!deleteCacheFile, FileUtil.exists(testMessageListener._path));
 		}
 		finally {
-			File file = new File(testMessageListener._path);
-
-			if (file.exists()) {
-				file.delete();
-			}
+			FileUtil.delete(testMessageListener._path);
 		}
 	}
 
@@ -1914,7 +1903,7 @@ public class LayoutSetPrototypePropagationTest
 
 			_path = _TEMP_DIR + sessionId + ".lar";
 
-			_fileExists = _fileExists(_path);
+			_fileExists = FileUtil.exists(_path);
 		}
 
 		private boolean _fileExists;
