@@ -119,7 +119,7 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 			return AccountEntryValidatorResult.builder(
 				classPK
 			).resultMessage(
-				"account-missing-vat-code"
+				"the-account-is-missing-a-vat-code"
 			).resultStatus(
 				AccountEntryValidatorConstants.RESULT_FAILURE
 			).build();
@@ -159,7 +159,7 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 		return AccountEntryValidatorResult.builder(
 			classPK
 		).resultMessage(
-			"vies-error-unexpected-error"
+			"vies-unexpected-error"
 		).resultStatus(
 			AccountEntryValidatorConstants.RESULT_FAILURE
 		).build();
@@ -169,7 +169,7 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 		String classPK, String error) {
 
 		String resultMessage = _resultMessages.getOrDefault(
-			error, "vies-error-unexpected-error");
+			error, "vies-unexpected-error");
 
 		String resultStatus = AccountEntryValidatorConstants.RESULT_WARNING;
 
@@ -216,23 +216,23 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 
 	private static final Map<String, String> _resultMessages =
 		HashMapBuilder.put(
-			"GLOBAL_MAX_CONCURRENT_REQ", "vies-error-unexpected-error"
+			"GLOBAL_MAX_CONCURRENT_REQ", "vies-unexpected-error"
 		).put(
-			"INVALID_INPUT", "vies-error-invalid-input"
+			"INVALID_INPUT", "vies-invalid-input-error"
 		).put(
-			"IO_ERROR", "vies-error-unexpected-error"
+			"IO_ERROR", "vies-unexpected-error"
 		).put(
-			"IP_BLOCKED", "vies-error-unexpected-error"
+			"IP_BLOCKED", "vies-unexpected-error"
 		).put(
-			"MS_MAX_CONCURRENT_REQ", "vies-error-unexpected-error"
+			"MS_MAX_CONCURRENT_REQ", "vies-unexpected-error"
 		).put(
-			"MS_UNAVAILABLE", "vies-error-unexpected-error"
+			"MS_UNAVAILABLE", "vies-unexpected-error"
 		).put(
-			"TECHNICAL_ERROR", "vies-error-unexpected-error"
+			"TECHNICAL_ERROR", "vies-unexpected-error"
 		).put(
-			"TIMEOUT", "vies-error-unexpected-error"
+			"TIMEOUT", "vies-unexpected-error"
 		).put(
-			"VAT_BLOCKED", "vies-error-vat-blocked"
+			"VAT_BLOCKED", "vies-vat-blocked-error"
 		).build();
 
 	@Reference
