@@ -1,5 +1,6 @@
 import ClayTabs from '@clayui/tabs';
 import React, {useMemo, useState} from 'react';
+import URLConstants from 'shared/util/url-constants';
 import {filterPropertiesByLabel, renderProperties} from './criteriaProperties';
 import {List} from 'immutable';
 import {Property} from 'shared/util/records';
@@ -36,7 +37,26 @@ const AttributesCriteriaTabs: React.FC<IAttributesCriteriaTabsProps> = ({
 			</ClayTabs>
 
 			<div className="events-criteria-tabs-content mt-3">
-				{renderProperties(filteredProperties, searchValue)}
+				{renderProperties(
+					filteredProperties,
+					searchValue,
+					activeTab === DEFAULT_TAB
+						? undefined
+						: {
+								description: Liferay.Language.get(
+									'create-a-custom-field-to-get-started'
+								),
+								link: {
+									href: URLConstants.CustomFieldsDocumentation,
+									label: Liferay.Language.get(
+										'learn-more-about-fields'
+									),
+								},
+								title: Liferay.Language.get(
+									'no-custom-fields-yet'
+								),
+							}
+				)}
 			</div>
 		</div>
 	);

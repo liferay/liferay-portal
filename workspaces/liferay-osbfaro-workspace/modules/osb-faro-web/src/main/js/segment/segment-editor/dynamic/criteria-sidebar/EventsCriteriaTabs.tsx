@@ -5,6 +5,7 @@ import EventDefinitionsQuery, {
 } from 'event-analysis/queries/EventDefinitionsQuery';
 import Loading from 'shared/components/Loading';
 import React, {useEffect, useMemo, useState} from 'react';
+import URLConstants from 'shared/util/url-constants';
 import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {convertEventToProperty} from '../utils/utils';
 import {EventTypes} from 'event-analysis/utils/types';
@@ -86,7 +87,16 @@ const EventsCriteriaTabs: React.FC<IEventsCriteriaTabsProps> = ({
 			return <Loading />;
 		}
 
-		return renderProperties(customEvents, debouncedSearchValue);
+		return renderProperties(customEvents, debouncedSearchValue, {
+			description: Liferay.Language.get(
+				'create-a-custom-event-to-get-started'
+			),
+			link: {
+				href: URLConstants.CustomEventsDocumentation,
+				label: Liferay.Language.get('learn-more-about-events'),
+			},
+			title: Liferay.Language.get('no-custom-events-yet'),
+		});
 	};
 
 	return (

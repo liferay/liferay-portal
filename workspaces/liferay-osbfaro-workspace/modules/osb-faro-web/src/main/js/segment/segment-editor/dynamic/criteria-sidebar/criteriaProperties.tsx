@@ -1,3 +1,5 @@
+import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import CriteriaSidebarItem from './CriteriaSidebarItem';
 import EmptyState from '@clayui/empty-state';
 import React from 'react';
@@ -17,22 +19,50 @@ export const filterPropertiesByLabel = (
 			) as List<Property>)
 		: properties;
 
+interface IEmptyState {
+	description: string;
+	link?: {href: string; label: string};
+	title: string;
+}
+
 export const renderProperties = (
 	properties: List<Property>,
-	searchValue = ''
+	searchValue = '',
+	emptyState?: IEmptyState
 ) => {
-	if (searchValue && properties.isEmpty()) {
-		return (
-			<div className="empty-message">
-				<EmptyState
-					className="text-center"
-					description={Liferay.Language.get(
+	if (properties.isEmpty()) {
+		const emptyStateProps: IEmptyState | undefined = searchValue
+			? {
+					description: Liferay.Language.get(
 						'review-your-search-and-try-again'
-					)}
-					title={Liferay.Language.get('no-results-found')}
-				/>
-			</div>
-		);
+					),
+					title: Liferay.Language.get('no-results-found'),
+				}
+			: emptyState;
+
+		if (emptyStateProps) {
+			const {description, link, title} = emptyStateProps;
+
+			return (
+				<div className="align-items-center d-flex empty-message h-100 justify-content-center">
+					<EmptyState
+						className="text-center"
+						description={description}
+						title={title}
+					>
+						{link && (
+							<ClayLink href={link.href} target="_blank">
+								{link.label}
+
+								<span className="inline-item inline-item-after">
+									<ClayIcon fontSize={10} symbol="shortcut" />
+								</span>
+							</ClayLink>
+						)}
+					</EmptyState>
+				</div>
+			);
+		}
 	}
 
 	return (
