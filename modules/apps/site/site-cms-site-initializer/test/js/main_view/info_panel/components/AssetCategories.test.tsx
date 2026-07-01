@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, within} from '@testing-library/react';
+import {fireEvent, render, screen, within} from '@testing-library/react';
 import React from 'react';
 
 import AssetCategories from '../../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/components/AssetCategories';
@@ -326,5 +326,28 @@ describe('AssetCategories', () => {
 		).not.toBeInTheDocument();
 
 		expect(screen.getByText('categories')).toBeInTheDocument();
+	});
+
+	it('fires the categorize event when the sparkle is clicked', () => {
+		const fire = jest.fn();
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({classNameId: 1, cmsGroupId: 456, scopeId: 123});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		);
+
+		expect(fire).toHaveBeenCalledWith(
+			'cms:aiAssistant:categorize',
+			expect.objectContaining({
+				agent: 'L_AUTO_CATEGORIZE',
+				classNameId: 1,
+				cmsGroupId: 456,
+				scopeId: 123,
+			})
+		);
 	});
 });

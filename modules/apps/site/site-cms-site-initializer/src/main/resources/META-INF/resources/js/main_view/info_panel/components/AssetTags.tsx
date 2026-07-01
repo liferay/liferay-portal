@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import Label from '@clayui/label';
 import ClayPanel from '@clayui/panel';
 import {ItemSelector} from '@liferay/frontend-js-item-selector-web';
@@ -15,6 +16,10 @@ import TagService from '../../../common/services/TagService';
 import {IAssetObjectEntry} from '../../../common/types/AssetType';
 import {EntryCategorizationDTO} from '../services/ObjectEntryService';
 import {CategorizationInputSize} from './AssetCategorization';
+import {
+	CATEGORIZE_EVENT,
+	GENERATE_TAGS_AGENT,
+} from './categorizationAgentEvents';
 
 type TKeyword = {
 	name: string;
@@ -133,6 +138,15 @@ const AssetTags = ({
 		[objectEntry, updateObjectEntry]
 	);
 
+	const handleGenerateTags = useCallback(() => {
+		Liferay.fire(CATEGORIZE_EVENT, {
+			agent: GENERATE_TAGS_AGENT,
+			cmsGroupId,
+			content: (objectEntry as IAssetObjectEntry).contentRawText ?? '',
+			scopeId,
+		});
+	}, [cmsGroupId, objectEntry, scopeId]);
+
 	return (
 		<ClayPanel
 			collapsable={collapsable}
@@ -151,52 +165,76 @@ const AssetTags = ({
 			showCollapseIcon={collapsable}
 		>
 			<ClayPanel.Body>
-				<ItemSelector<TKeyword>
-					apiURL={apiURL}
-					disabled={!hasUpdatePermission}
-					items={selectedKeywords}
-					locator={{
-						id: 'id',
-						label: 'name',
-						value: 'name',
-					}}
-					onChange={setValue}
-					onItemsChange={(newItems: TKeyword[]) => {
-						if (newItems[0]) {
-							addKeyword(newItems[0]);
+				<div className="align-items-end d-flex">
+					<div className="flex-grow-1">
+						<ItemSelector<TKeyword>
+							apiURL={apiURL}
+							disabled={!hasUpdatePermission}
+							items={selectedKeywords}
+							locator={{
+								id: 'id',
+								label: 'name',
+								value: 'name',
+							}}
+							onChange={setValue}
+							onItemsChange={(newItems: TKeyword[]) => {
+								if (newItems[0]) {
+									addKeyword(newItems[0]);
 
-							// The reason for this timeout is because of react's
-							// batch rendering. Clay internals set the value of
-							// the input, but we need to wait for the next 'tick' to set the value.
+									// The reason for this timeout is because of react's
+									// batch rendering. Clay internals set the value of
+									// the input, but we need to wait for the next 'tick' to set the value.
 
-							setTimeout(() => setValue(''));
-						}
-					}}
-					placeholder={Liferay.Language.get('add-tag')}
-					primaryAction={
-						canCreate &&
-						!!value.length &&
-						!(objectEntry?.keywords || []).includes(value) && {
-							label: sub(
-								Liferay.Language.get('create-new-tag-x'),
-								value
-							),
-							onClick: createAndAddKeyword,
-						}
-					}
-					refetchOnActive
-					sizing={inputSize}
-					value={value}
-				>
-					{(item) => (
-						<ItemSelector.Item
-							key={item.name}
-							textValue={item.name}
+									setTimeout(() => setValue(''));
+								}
+							}}
+							placeholder={Liferay.Language.get('add-tag')}
+							primaryAction={
+								canCreate &&
+								!!value.length &&
+								!(objectEntry?.keywords || []).includes(
+									value
+								) && {
+									label: sub(
+										Liferay.Language.get(
+											'create-new-tag-x'
+										),
+										value
+									),
+									onClick: createAndAddKeyword,
+								}
+							}
+							refetchOnActive
+							sizing={inputSize}
+							value={value}
 						>
-							{item.name}
-						</ItemSelector.Item>
-					)}
-				</ItemSelector>
+							{(item) => (
+								<ItemSelector.Item
+									key={item.name}
+									textValue={item.name}
+								>
+									{item.name}
+								</ItemSelector.Item>
+							)}
+						</ItemSelector>
+					</div>
+
+					{Liferay.FeatureFlags?.['LPD-62272'] &&
+					hasUpdatePermission ? (
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'generate-tags-with-ai'
+							)}
+							className="ml-2"
+							displayType="unstyled"
+							onClick={handleGenerateTags}
+							symbol="stars"
+							title={Liferay.Language.get(
+								'generate-tags-with-ai'
+							)}
+						/>
+					) : null}
+				</div>
 
 				<div className="asset-tags mt-3">
 					{objectEntry?.keywords?.map((keyword, index) => {

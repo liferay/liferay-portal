@@ -218,4 +218,26 @@ describe('AssetTags', () => {
 		);
 		expect(apiURL).toContain("groupIds in ('-1')");
 	});
+
+	it('fires the categorize event when the sparkle is clicked', () => {
+		const fire = jest.fn();
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({cmsGroupId: 456, scopeId: 123});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		);
+
+		expect(fire).toHaveBeenCalledWith(
+			'cms:aiAssistant:categorize',
+			expect.objectContaining({
+				agent: 'L_GENERATE_TAGS',
+				cmsGroupId: 456,
+				scopeId: 123,
+			})
+		);
+	});
 });

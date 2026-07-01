@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm from '@clayui/form';
 import Label from '@clayui/label';
 import ClayPanel from '@clayui/panel';
@@ -16,6 +17,10 @@ import {
 	ITaxonomyCategoryFacade,
 } from '../../../common/types/AssetType';
 import {CategorizationInputSize} from './AssetCategorization';
+import {
+	AUTO_CATEGORIZE_AGENT,
+	CATEGORIZE_EVENT,
+} from './categorizationAgentEvents';
 
 import type {EntryCategorizationDTO} from '../services/ObjectEntryService';
 
@@ -217,6 +222,21 @@ const AssetCategories = ({
 		[groupedTaxonomies.taxonomyVocabularies, isVisibleVocabulary]
 	);
 
+	const handleGenerateCategories = useCallback(() => {
+		const {
+			scopeId,
+			systemProperties: {objectDefinitionBrief: {classNameId = -1} = {}},
+		} = objectEntry;
+
+		Liferay.fire(CATEGORIZE_EVENT, {
+			agent: AUTO_CATEGORIZE_AGENT,
+			classNameId,
+			cmsGroupId,
+			content: (objectEntry as IAssetObjectEntry).contentRawText ?? '',
+			scopeId,
+		});
+	}, [cmsGroupId, objectEntry]);
+
 	return (
 		<ClayPanel
 			collapsable={collapsable}
@@ -230,76 +250,99 @@ const AssetCategories = ({
 			showCollapseIcon={collapsable}
 		>
 			<ClayPanel.Body>
-				<div
-					className={
-						errorMessage ? 'form-group has-error' : undefined
-					}
-				>
-					{apiURL ? (
-						<ItemSelector<any>
-							apiURL={apiURL}
-							aria-describedby={
-								errorMessage ? feedbackId : undefined
-							}
-							disabled={!hasUpdatePermission}
-							estimateSize={49}
-							items={selectedCategories}
-							itemsFilter={
-								vocabularyId ? undefined : filterDropdownItem
-							}
-							locator={{
-								id: 'id',
-								label: 'name',
-								value: 'id',
-							}}
-							onChange={setValue}
-							onItemsChange={(newItems: any) => {
-								if (newItems[0]) {
-									addCategory(newItems[0]);
-
-									// The reason for this timeout is because of react's
-									// batch rendering. Clay internals set the value of
-									// the input, but we need to wait for the next 'tick' to set the value.
-
-									setTimeout(() => setValue(''));
+				<div className="align-items-end d-flex">
+					<div
+						className={
+							errorMessage
+								? 'flex-grow-1 form-group has-error'
+								: 'flex-grow-1'
+						}
+					>
+						{apiURL ? (
+							<ItemSelector<any>
+								apiURL={apiURL}
+								aria-describedby={
+									errorMessage ? feedbackId : undefined
 								}
-							}}
-							placeholder={
-								placeholder ??
-								Liferay.Language.get('add-category')
-							}
-							refetchOnActive
-							sizing={inputSize}
-							value={value}
-						>
-							{(item) => (
-								<ItemSelector.Item
-									key={item.id}
-									textValue={item.name}
-								>
-									<div>
-										<span className="font-weight-bold text-truncate">
-											{item?.name}
-										</span>
+								disabled={!hasUpdatePermission}
+								estimateSize={49}
+								items={selectedCategories}
+								itemsFilter={
+									vocabularyId
+										? undefined
+										: filterDropdownItem
+								}
+								locator={{
+									id: 'id',
+									label: 'name',
+									value: 'id',
+								}}
+								onChange={setValue}
+								onItemsChange={(newItems: any) => {
+									if (newItems[0]) {
+										addCategory(newItems[0]);
 
-										<span
-											className="text-1 text-secondary text-truncate text-uppercase"
-											title={item?.path}
-										>
-											{item?.path}
-										</span>
-									</div>
-								</ItemSelector.Item>
+										// The reason for this timeout is because of react's
+										// batch rendering. Clay internals set the value of
+										// the input, but we need to wait for the next 'tick' to set the value.
+
+										setTimeout(() => setValue(''));
+									}
+								}}
+								placeholder={
+									placeholder ??
+									Liferay.Language.get('add-category')
+								}
+								refetchOnActive
+								sizing={inputSize}
+								value={value}
+							>
+								{(item) => (
+									<ItemSelector.Item
+										key={item.id}
+										textValue={item.name}
+									>
+										<div>
+											<span className="font-weight-bold text-truncate">
+												{item?.name}
+											</span>
+
+											<span
+												className="text-1 text-secondary text-truncate text-uppercase"
+												title={item?.path}
+											>
+												{item?.path}
+											</span>
+										</div>
+									</ItemSelector.Item>
+								)}
+							</ItemSelector>
+						) : null}
+					</div>
+
+					{!vocabularyId &&
+					Liferay.FeatureFlags?.['LPD-62272'] &&
+					hasUpdatePermission ? (
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'add-categories-with-ai'
 							)}
-						</ItemSelector>
+							className="ml-2"
+							displayType="unstyled"
+							onClick={handleGenerateCategories}
+							symbol="stars"
+							title={Liferay.Language.get(
+								'add-categories-with-ai'
+							)}
+						/>
 					) : null}
-
-					{errorMessage && (
-						<ClayForm.FeedbackGroup id={feedbackId} role="alert">
-							<ErrorFeedback message={errorMessage} />
-						</ClayForm.FeedbackGroup>
-					)}
 				</div>
+
+				{errorMessage && (
+					<ClayForm.FeedbackGroup id={feedbackId} role="alert">
+						<ErrorFeedback message={errorMessage} />
+					</ClayForm.FeedbackGroup>
+				)}
 
 				{groupedTaxonomies.taxonomyVocabularies &&
 					Object.entries(groupedTaxonomies?.taxonomyVocabularies).map(
