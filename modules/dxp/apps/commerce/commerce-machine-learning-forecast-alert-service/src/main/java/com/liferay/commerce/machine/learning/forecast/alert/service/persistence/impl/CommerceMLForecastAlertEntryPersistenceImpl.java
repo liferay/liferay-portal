@@ -13,7 +13,6 @@ import com.liferay.commerce.machine.learning.forecast.alert.model.impl.CommerceM
 import com.liferay.commerce.machine.learning.forecast.alert.service.persistence.CommerceMLForecastAlertEntryPersistence;
 import com.liferay.commerce.machine.learning.forecast.alert.service.persistence.CommerceMLForecastAlertEntryUtil;
 import com.liferay.commerce.machine.learning.forecast.alert.service.persistence.impl.constants.CommercePersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
@@ -21,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -388,30 +385,10 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 			OrderByComparator<CommerceMLForecastAlertEntry> orderByComparator)
 		throws NoSuchMLForecastAlertEntryException {
 
-		CommerceMLForecastAlertEntry commerceMLForecastAlertEntry =
-			fetchByC_C_S_First(
-				companyId, commerceAccountId, status, orderByComparator);
-
-		if (commerceMLForecastAlertEntry != null) {
-			return commerceMLForecastAlertEntry;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", commerceAccountId=");
-		sb.append(commerceAccountId);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchMLForecastAlertEntryException(sb.toString());
+		return _collectionPersistenceFinderByC_C_S.findFirst(
+			finderCache,
+			new Object[] {companyId, new long[] {commerceAccountId}, status},
+			orderByComparator);
 	}
 
 	/**
@@ -643,34 +620,13 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 			OrderByComparator<CommerceMLForecastAlertEntry> orderByComparator)
 		throws NoSuchMLForecastAlertEntryException {
 
-		CommerceMLForecastAlertEntry commerceMLForecastAlertEntry =
-			fetchByC_C_GtRc_S_First(
-				companyId, commerceAccountId, relativeChange, status,
-				orderByComparator);
-
-		if (commerceMLForecastAlertEntry != null) {
-			return commerceMLForecastAlertEntry;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", commerceAccountId=");
-		sb.append(commerceAccountId);
-
-		sb.append(", relativeChange>");
-		sb.append(relativeChange);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchMLForecastAlertEntryException(sb.toString());
+		return _collectionPersistenceFinderByC_C_GtRc_S.findFirst(
+			finderCache,
+			new Object[] {
+				companyId, new long[] {commerceAccountId}, relativeChange,
+				status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -997,34 +953,13 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 			OrderByComparator<CommerceMLForecastAlertEntry> orderByComparator)
 		throws NoSuchMLForecastAlertEntryException {
 
-		CommerceMLForecastAlertEntry commerceMLForecastAlertEntry =
-			fetchByC_C_LtRc_S_First(
-				companyId, commerceAccountId, relativeChange, status,
-				orderByComparator);
-
-		if (commerceMLForecastAlertEntry != null) {
-			return commerceMLForecastAlertEntry;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", commerceAccountId=");
-		sb.append(commerceAccountId);
-
-		sb.append(", relativeChange<");
-		sb.append(relativeChange);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchMLForecastAlertEntryException(sb.toString());
+		return _collectionPersistenceFinderByC_C_LtRc_S.findFirst(
+			finderCache,
+			new Object[] {
+				companyId, new long[] {commerceAccountId}, relativeChange,
+				status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1489,7 +1424,7 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 			_SQL_SELECT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 			_SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 			CommerceMLForecastAlertEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceMLForecastAlertEntry.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1517,7 +1452,7 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 				_SQL_SELECT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				_SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				CommerceMLForecastAlertEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceMLForecastAlertEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1584,7 +1519,7 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 			_SQL_SELECT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 			_SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 			CommerceMLForecastAlertEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceMLForecastAlertEntry.", "companyId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -1629,7 +1564,7 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 				_SQL_SELECT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				_SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				CommerceMLForecastAlertEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceMLForecastAlertEntry.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1678,7 +1613,7 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 				_SQL_SELECT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				_SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE,
 				CommerceMLForecastAlertEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceMLForecastAlertEntry.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1759,12 +1694,6 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEMLFORECASTALERTENTRY_WHERE =
 		"SELECT COUNT(commerceMLForecastAlertEntry) FROM CommerceMLForecastAlertEntry commerceMLForecastAlertEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceMLForecastAlertEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceMLForecastAlertEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1774,4 +1703,4 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1118407025
+// LIFERAY-SERVICE-BUILDER-HASH:-1791999306

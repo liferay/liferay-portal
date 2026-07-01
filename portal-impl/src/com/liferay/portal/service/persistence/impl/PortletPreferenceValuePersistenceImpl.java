@@ -13,8 +13,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPortletPreferenceValueException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PortletPreferenceValue;
 import com.liferay.portal.kernel.model.PortletPreferenceValueTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -839,7 +837,7 @@ public class PortletPreferenceValuePersistenceImpl
 				_SQL_SELECT_PORTLETPREFERENCEVALUE_WHERE,
 				_SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE,
 				PortletPreferenceValueModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"portletPreferenceValue.", "portletPreferencesId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -868,7 +866,7 @@ public class PortletPreferenceValuePersistenceImpl
 			_SQL_SELECT_PORTLETPREFERENCEVALUE_WHERE,
 			_SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE,
 			PortletPreferenceValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"portletPreferenceValue.", "portletPreferencesId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -908,7 +906,7 @@ public class PortletPreferenceValuePersistenceImpl
 				_SQL_SELECT_PORTLETPREFERENCEVALUE_WHERE,
 				_SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE,
 				PortletPreferenceValueModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"portletPreferenceValue.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -978,7 +976,7 @@ public class PortletPreferenceValuePersistenceImpl
 				_SQL_SELECT_PORTLETPREFERENCEVALUE_WHERE,
 				_SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE,
 				PortletPreferenceValueModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"portletPreferenceValue.", "portletPreferencesId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1012,12 +1010,6 @@ public class PortletPreferenceValuePersistenceImpl
 	private static final String _SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE =
 		"SELECT COUNT(portletPreferenceValue) FROM PortletPreferenceValue portletPreferenceValue WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PortletPreferenceValue exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PortletPreferenceValuePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"index"});
 
@@ -1027,4 +1019,4 @@ public class PortletPreferenceValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1054442588
+// LIFERAY-SERVICE-BUILDER-HASH:-1407170444

@@ -5,7 +5,6 @@
 
 package com.liferay.portal.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -15,8 +14,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchVirtualHostException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.model.VirtualHostTable;
 import com.liferay.portal.kernel.service.persistence.VirtualHostPersistence;
@@ -416,26 +413,10 @@ public class VirtualHostPersistenceImpl
 			OrderByComparator<VirtualHost> orderByComparator)
 		throws NoSuchVirtualHostException {
 
-		VirtualHost virtualHost = fetchByNotL_H_First(
-			layoutSetId, hostname, orderByComparator);
-
-		if (virtualHost != null) {
-			return virtualHost;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("layoutSetId!=");
-		sb.append(layoutSetId);
-
-		sb.append(", hostname=");
-		sb.append(hostname);
-
-		sb.append("}");
-
-		throw new NoSuchVirtualHostException(sb.toString());
+		return _collectionPersistenceFinderByNotL_H.findFirst(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {layoutSetId, new String[] {hostname}},
+			orderByComparator);
 	}
 
 	/**
@@ -846,7 +827,7 @@ public class VirtualHostPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_VIRTUALHOST_WHERE, _SQL_COUNT_VIRTUALHOST_WHERE,
 				VirtualHostModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"virtualHost.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, VirtualHost::getCompanyId));
@@ -883,6 +864,7 @@ public class VirtualHostPersistenceImpl
 				new String[] {"companyId", "layoutSetId"}, false),
 			_SQL_SELECT_VIRTUALHOST_WHERE, _SQL_COUNT_VIRTUALHOST_WHERE,
 			VirtualHostModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"virtualHost.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, VirtualHost::getCompanyId),
@@ -908,7 +890,7 @@ public class VirtualHostPersistenceImpl
 					new String[] {"layoutSetId", "hostname"}, false),
 				_SQL_SELECT_VIRTUALHOST_WHERE, _SQL_COUNT_VIRTUALHOST_WHERE,
 				VirtualHostModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"virtualHost.", "layoutSetId", FinderColumn.Type.LONG, "!=",
 					true, true, VirtualHost::getLayoutSetId),
@@ -937,16 +919,10 @@ public class VirtualHostPersistenceImpl
 	private static final String _SQL_COUNT_VIRTUALHOST_WHERE =
 		"SELECT COUNT(virtualHost) FROM VirtualHost virtualHost WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No VirtualHost exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		VirtualHostPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1019819958
+// LIFERAY-SERVICE-BUILDER-HASH:2086776316

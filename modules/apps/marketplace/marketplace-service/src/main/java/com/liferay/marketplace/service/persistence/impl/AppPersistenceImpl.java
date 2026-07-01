@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -698,7 +696,7 @@ public class AppPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_APP_WHERE, _SQL_COUNT_APP_WHERE,
-			AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"app.", "uuid", "uuid_", FinderColumn.Type.STRING, "=", true,
 				true, App::getUuid));
@@ -723,7 +721,7 @@ public class AppPersistenceImpl
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_APP_WHERE, _SQL_COUNT_APP_WHERE,
-				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"app.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, App::getUuid),
@@ -751,7 +749,7 @@ public class AppPersistenceImpl
 					"countByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_APP_WHERE, _SQL_COUNT_APP_WHERE,
-				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"app.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, App::getCompanyId));
@@ -787,7 +785,7 @@ public class AppPersistenceImpl
 					"countByCategory", new String[] {String.class.getName()},
 					new String[] {"category"}, 0, 1, false, null),
 				_SQL_SELECT_APP_WHERE, _SQL_COUNT_APP_WHERE,
-				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				AppModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"app.", "category", FinderColumn.Type.STRING, "=", true,
 					true, App::getCategory));
@@ -845,12 +843,6 @@ public class AppPersistenceImpl
 	private static final String _SQL_COUNT_APP_WHERE =
 		"SELECT COUNT(app) FROM App app WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No App exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AppPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -860,4 +852,4 @@ public class AppPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:14574391
+// LIFERAY-SERVICE-BUILDER-HASH:845528665

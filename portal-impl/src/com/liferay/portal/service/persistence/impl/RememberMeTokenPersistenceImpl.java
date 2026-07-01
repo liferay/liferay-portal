@@ -504,7 +504,7 @@ public class RememberMeTokenPersistenceImpl
 				_SQL_SELECT_REMEMBERMETOKEN_WHERE,
 				_SQL_COUNT_REMEMBERMETOKEN_WHERE,
 				RememberMeTokenModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"rememberMeToken.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, RememberMeToken::getUserId));
@@ -530,7 +530,7 @@ public class RememberMeTokenPersistenceImpl
 				_SQL_SELECT_REMEMBERMETOKEN_WHERE,
 				_SQL_COUNT_REMEMBERMETOKEN_WHERE,
 				RememberMeTokenModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"rememberMeToken.", "expirationDate",
 					FinderColumn.Type.DATE, "<=", true, true,
@@ -557,13 +557,10 @@ public class RememberMeTokenPersistenceImpl
 	private static final String _SQL_COUNT_REMEMBERMETOKEN_WHERE =
 		"SELECT COUNT(rememberMeToken) FROM RememberMeToken rememberMeToken WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No RememberMeToken exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1324463729
+// LIFERAY-SERVICE-BUILDER-HASH:-1561254256

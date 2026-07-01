@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchClassNameException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.ClassNameTable;
 import com.liferay.portal.kernel.service.persistence.ClassNamePersistence;
@@ -309,16 +307,10 @@ public class ClassNamePersistenceImpl
 	private static final String _SQL_SELECT_CLASSNAME_WHERE =
 		"SELECT className FROM ClassName className WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ClassName exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ClassNamePersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1456419362
+// LIFERAY-SERVICE-BUILDER-HASH:-889200233

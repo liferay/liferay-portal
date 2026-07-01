@@ -902,7 +902,7 @@ public class LayoutPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTPROTOTYPE_WHERE,
 				LayoutPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"layoutPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -930,7 +930,7 @@ public class LayoutPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTPROTOTYPE_WHERE,
 				LayoutPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"layoutPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -961,7 +961,7 @@ public class LayoutPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTPROTOTYPE_WHERE,
 				LayoutPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"layoutPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutPrototype::getCompanyId));
@@ -992,7 +992,7 @@ public class LayoutPrototypePersistenceImpl
 				_SQL_SELECT_LAYOUTPROTOTYPE_WHERE,
 				_SQL_COUNT_LAYOUTPROTOTYPE_WHERE,
 				LayoutPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"layoutPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutPrototype::getCompanyId),
@@ -1022,9 +1022,6 @@ public class LayoutPrototypePersistenceImpl
 	private static final String _SQL_COUNT_LAYOUTPROTOTYPE_WHERE =
 		"SELECT COUNT(layoutPrototype) FROM LayoutPrototype layoutPrototype WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LayoutPrototype exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "settings", "active"});
 
@@ -1034,4 +1031,4 @@ public class LayoutPrototypePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-673256965
+// LIFERAY-SERVICE-BUILDER-HASH:-1927535448

@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchBrowserTrackerException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BrowserTracker;
 import com.liferay.portal.kernel.model.BrowserTrackerTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -320,16 +318,10 @@ public class BrowserTrackerPersistenceImpl
 	private static final String _SQL_SELECT_BROWSERTRACKER_WHERE =
 		"SELECT browserTracker FROM BrowserTracker browserTracker WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No BrowserTracker exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		BrowserTrackerPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-346406725
+// LIFERAY-SERVICE-BUILDER-HASH:294667466

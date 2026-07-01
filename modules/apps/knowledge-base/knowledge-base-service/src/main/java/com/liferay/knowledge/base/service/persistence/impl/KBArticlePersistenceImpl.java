@@ -13,7 +13,6 @@ import com.liferay.knowledge.base.model.impl.KBArticleModelImpl;
 import com.liferay.knowledge.base.service.persistence.KBArticlePersistence;
 import com.liferay.knowledge.base.service.persistence.KBArticleUtil;
 import com.liferay.knowledge.base.service.persistence.impl.constants.KBPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -23,8 +22,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -658,26 +655,9 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_L_First(
-			resourcePrimKey, latest, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_L.findFirst(
+			finderCache, new Object[] {new long[] {resourcePrimKey}, latest},
+			orderByComparator);
 	}
 
 	/**
@@ -808,26 +788,9 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_M_First(
-			resourcePrimKey, main, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_M.findFirst(
+			finderCache, new Object[] {new long[] {resourcePrimKey}, main},
+			orderByComparator);
 	}
 
 	/**
@@ -959,26 +922,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_S_First(
-			resourcePrimKey, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_S.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, new int[] {status}},
+			orderByComparator);
 	}
 
 	/**
@@ -1900,26 +1847,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByP_L_First(
-			parentResourcePrimKey, latest, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByP_L.findFirst(
+			finderCache,
+			new Object[] {new long[] {parentResourcePrimKey}, latest},
+			orderByComparator);
 	}
 
 	/**
@@ -2058,26 +1989,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByP_M_First(
-			parentResourcePrimKey, main, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByP_M.findFirst(
+			finderCache,
+			new Object[] {new long[] {parentResourcePrimKey}, main},
+			orderByComparator);
 	}
 
 	/**
@@ -2214,26 +2129,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByP_S_First(
-			parentResourcePrimKey, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByP_S.findFirst(
+			finderCache,
+			new Object[] {new long[] {parentResourcePrimKey}, status},
+			orderByComparator);
 	}
 
 	/**
@@ -2592,29 +2491,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_G_L_First(
-			resourcePrimKey, groupId, latest, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", groupId=");
-		sb.append(groupId);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_G_L.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, groupId, latest},
+			orderByComparator);
 	}
 
 	/**
@@ -2858,29 +2738,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_G_M_First(
-			resourcePrimKey, groupId, main, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", groupId=");
-		sb.append(groupId);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_G_M.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, groupId, main},
+			orderByComparator);
 	}
 
 	/**
@@ -3122,29 +2983,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_G_S_First(
-			resourcePrimKey, groupId, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", groupId=");
-		sb.append(groupId);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_G_S.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, groupId, status},
+			orderByComparator);
 	}
 
 	/**
@@ -3690,29 +3532,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_L_NotS_First(
-			resourcePrimKey, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_L_NotS.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, latest, status},
+			orderByComparator);
 	}
 
 	/**
@@ -3995,29 +3818,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_M_NotS_First(
-			resourcePrimKey, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_M_NotS.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, main, status},
+			orderByComparator);
 	}
 
 	/**
@@ -4454,29 +4258,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_L_First(
-			groupId, parentResourcePrimKey, latest, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_L.findFirst(
+			finderCache,
+			new Object[] {groupId, new long[] {parentResourcePrimKey}, latest},
+			orderByComparator);
 	}
 
 	/**
@@ -4720,29 +4505,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_M_First(
-			groupId, parentResourcePrimKey, main, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_M.findFirst(
+			finderCache,
+			new Object[] {groupId, new long[] {parentResourcePrimKey}, main},
+			orderByComparator);
 	}
 
 	/**
@@ -4986,29 +4752,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_S_First(
-			groupId, parentResourcePrimKey, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_S.findFirst(
+			finderCache,
+			new Object[] {groupId, new long[] {parentResourcePrimKey}, status},
+			orderByComparator);
 	}
 
 	/**
@@ -5734,29 +5481,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_LikeS_L_First(
-			groupId, sections, latest, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", sectionsLIKE");
-		sb.append(sections);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeS_L.findFirst(
+			finderCache,
+			new Object[] {groupId, new String[] {sections}, latest},
+			orderByComparator);
 	}
 
 	/**
@@ -6194,29 +5922,9 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_LikeS_M_First(
-			groupId, sections, main, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", sectionsLIKE");
-		sb.append(sections);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeS_M.findFirst(
+			finderCache, new Object[] {groupId, new String[] {sections}, main},
+			orderByComparator);
 	}
 
 	/**
@@ -6648,29 +6356,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_LikeS_S_First(
-			groupId, sections, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", sectionsLIKE");
-		sb.append(sections);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeS_S.findFirst(
+			finderCache,
+			new Object[] {groupId, new String[] {sections}, status},
+			orderByComparator);
 	}
 
 	/**
@@ -7896,29 +7585,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByP_L_NotS_First(
-			parentResourcePrimKey, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByP_L_NotS.findFirst(
+			finderCache,
+			new Object[] {new long[] {parentResourcePrimKey}, latest, status},
+			orderByComparator);
 	}
 
 	/**
@@ -8204,29 +7874,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByP_M_NotS_First(
-			parentResourcePrimKey, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByP_M_NotS.findFirst(
+			finderCache,
+			new Object[] {new long[] {parentResourcePrimKey}, main, status},
+			orderByComparator);
 	}
 
 	/**
@@ -8519,32 +8170,12 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_G_L_NotS_First(
-			resourcePrimKey, groupId, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", groupId=");
-		sb.append(groupId);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_G_L_NotS.findFirst(
+			finderCache,
+			new Object[] {
+				new long[] {resourcePrimKey}, groupId, latest, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -9037,32 +8668,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByR_G_M_NotS_First(
-			resourcePrimKey, groupId, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("resourcePrimKey=");
-		sb.append(resourcePrimKey);
-
-		sb.append(", groupId=");
-		sb.append(groupId);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByR_G_M_NotS.findFirst(
+			finderCache,
+			new Object[] {new long[] {resourcePrimKey}, groupId, main, status},
+			orderByComparator);
 	}
 
 	/**
@@ -9475,32 +9084,12 @@ public class KBArticlePersistenceImpl
 			int status, OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_L_S_First(
-			groupId, parentResourcePrimKey, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_L_S.findFirst(
+			finderCache,
+			new Object[] {
+				groupId, new long[] {parentResourcePrimKey}, latest, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -9841,32 +9430,12 @@ public class KBArticlePersistenceImpl
 			int status, OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_L_NotS_First(
-			groupId, parentResourcePrimKey, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_L_NotS.findFirst(
+			finderCache,
+			new Object[] {
+				groupId, new long[] {parentResourcePrimKey}, latest, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -10297,32 +9866,12 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_M_S_First(
-			groupId, parentResourcePrimKey, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_M_S.findFirst(
+			finderCache,
+			new Object[] {
+				groupId, new long[] {parentResourcePrimKey}, main, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -10661,32 +10210,12 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_P_M_NotS_First(
-			groupId, parentResourcePrimKey, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", parentResourcePrimKey=");
-		sb.append(parentResourcePrimKey);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_P_M_NotS.findFirst(
+			finderCache,
+			new Object[] {
+				groupId, new long[] {parentResourcePrimKey}, main, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -11111,32 +10640,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_KBFI_UT_S_First(
-			groupId, kbFolderId, urlTitle, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", kbFolderId=");
-		sb.append(kbFolderId);
-
-		sb.append(", urlTitle=");
-		sb.append(urlTitle);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_KBFI_UT_S.findFirst(
+			finderCache,
+			new Object[] {groupId, kbFolderId, urlTitle, new int[] {status}},
+			orderByComparator);
 	}
 
 	/**
@@ -11979,32 +11486,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_LikeS_L_NotS_First(
-			groupId, sections, latest, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", sectionsLIKE");
-		sb.append(sections);
-
-		sb.append(", latest=");
-		sb.append(latest);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeS_L_NotS.findFirst(
+			finderCache,
+			new Object[] {groupId, new String[] {sections}, latest, status},
+			orderByComparator);
 	}
 
 	/**
@@ -12483,32 +11968,10 @@ public class KBArticlePersistenceImpl
 			OrderByComparator<KBArticle> orderByComparator)
 		throws NoSuchArticleException {
 
-		KBArticle kbArticle = fetchByG_LikeS_M_NotS_First(
-			groupId, sections, main, status, orderByComparator);
-
-		if (kbArticle != null) {
-			return kbArticle;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", sectionsLIKE");
-		sb.append(sections);
-
-		sb.append(", main=");
-		sb.append(main);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchArticleException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeS_M_NotS.findFirst(
+			finderCache,
+			new Object[] {groupId, new String[] {sections}, main, status},
+			orderByComparator);
 	}
 
 	/**
@@ -13277,6 +12740,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"resourcePrimKey"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", true, true, KBArticle::getResourcePrimKey));
@@ -13300,6 +12764,7 @@ public class KBArticlePersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kbArticle.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, KBArticle::getUuid));
@@ -13340,6 +12805,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, KBArticle::getUuid),
@@ -13368,6 +12834,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"resourcePrimKey", "groupId"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", true, true, KBArticle::getResourcePrimKey),
@@ -13410,6 +12877,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"resourcePrimKey", "latest"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				false, true, true, KBArticle::getResourcePrimKey),
@@ -13437,6 +12905,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"resourcePrimKey", "main"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				false, true, true, KBArticle::getResourcePrimKey),
@@ -13464,6 +12933,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"resourcePrimKey", "status"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				false, true, true, KBArticle::getResourcePrimKey),
@@ -13494,6 +12964,7 @@ public class KBArticlePersistenceImpl
 					false, null),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13527,6 +12998,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "latest"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13559,6 +13031,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "main"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13591,6 +13064,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13618,6 +13092,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"companyId", "latest"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kbArticle.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, KBArticle::getCompanyId),
@@ -13645,6 +13120,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"companyId", "main"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kbArticle.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, KBArticle::getCompanyId),
@@ -13672,6 +13148,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"companyId", "status"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kbArticle.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, KBArticle::getCompanyId),
@@ -13699,6 +13176,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"parentResourcePrimKey", "latest"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "parentResourcePrimKey", FinderColumn.Type.LONG,
 				"=", false, true, true, KBArticle::getParentResourcePrimKey),
@@ -13726,6 +13204,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"parentResourcePrimKey", "main"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "parentResourcePrimKey", FinderColumn.Type.LONG,
 				"=", false, true, true, KBArticle::getParentResourcePrimKey),
@@ -13753,6 +13232,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"parentResourcePrimKey", "status"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"kbArticle.", "parentResourcePrimKey", FinderColumn.Type.LONG,
 				"=", false, true, true, KBArticle::getParentResourcePrimKey),
@@ -13777,6 +13257,7 @@ public class KBArticlePersistenceImpl
 				new String[] {"displayDate", "status"}, false),
 			_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 			KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kbArticle.", "displayDate", FinderColumn.Type.DATE, "<", true,
 				true, KBArticle::getDisplayDate),
@@ -13837,6 +13318,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13875,6 +13357,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"resourcePrimKey", "groupId", "main"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13916,6 +13399,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13950,6 +13434,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", true, true, KBArticle::getResourcePrimKey),
@@ -13983,6 +13468,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14015,6 +13501,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"resourcePrimKey", "main", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14079,6 +13566,7 @@ public class KBArticlePersistenceImpl
 					0, 2, false, null),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14121,6 +13609,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14163,6 +13652,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14205,6 +13695,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14248,6 +13739,7 @@ public class KBArticlePersistenceImpl
 					false, null),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14287,6 +13779,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "kbFolderId", "latest"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14326,6 +13819,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "kbFolderId", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14358,6 +13852,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "sections", "latest"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14390,6 +13885,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "sections", "main"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14422,6 +13918,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "sections", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14454,6 +13951,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "latest", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14486,6 +13984,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"groupId", "main", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14518,6 +14017,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"companyId", "latest", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, KBArticle::getCompanyId),
@@ -14550,6 +14050,7 @@ public class KBArticlePersistenceImpl
 					new String[] {"companyId", "main", "status"}, false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, KBArticle::getCompanyId),
@@ -14584,6 +14085,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "parentResourcePrimKey",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -14619,6 +14121,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "parentResourcePrimKey",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -14658,6 +14161,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14699,6 +14203,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14749,6 +14254,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14791,6 +14297,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14842,6 +14349,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14884,6 +14392,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14937,6 +14446,7 @@ public class KBArticlePersistenceImpl
 					0, 4, false, null),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14980,6 +14490,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -15019,6 +14530,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -15058,6 +14570,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -15097,6 +14610,7 @@ public class KBArticlePersistenceImpl
 					false),
 				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
 				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -15167,12 +14681,6 @@ public class KBArticlePersistenceImpl
 	private static final String _SQL_COUNT_KBARTICLE_WHERE =
 		"SELECT COUNT(kbArticle) FROM KBArticle kbArticle WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No KBArticle exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		KBArticlePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -15182,4 +14690,4 @@ public class KBArticlePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1183409967
+// LIFERAY-SERVICE-BUILDER-HASH:-1245179503

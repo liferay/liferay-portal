@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -833,6 +831,7 @@ public class DEDataListViewPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_DEDATALISTVIEW_WHERE, _SQL_COUNT_DEDATALISTVIEW_WHERE,
 			DEDataListViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"deDataListView.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, DEDataListView::getUuid));
@@ -875,7 +874,7 @@ public class DEDataListViewPersistenceImpl
 				_SQL_SELECT_DEDATALISTVIEW_WHERE,
 				_SQL_COUNT_DEDATALISTVIEW_WHERE,
 				DEDataListViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"deDataListView.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -908,7 +907,7 @@ public class DEDataListViewPersistenceImpl
 				_SQL_SELECT_DEDATALISTVIEW_WHERE,
 				_SQL_COUNT_DEDATALISTVIEW_WHERE,
 				DEDataListViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"deDataListView.", "ddmStructureId", FinderColumn.Type.LONG,
 					"=", true, true, DEDataListView::getDdmStructureId));
@@ -947,7 +946,7 @@ public class DEDataListViewPersistenceImpl
 				_SQL_SELECT_DEDATALISTVIEW_WHERE,
 				_SQL_COUNT_DEDATALISTVIEW_WHERE,
 				DEDataListViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"deDataListView.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DEDataListView::getGroupId),
@@ -1015,12 +1014,6 @@ public class DEDataListViewPersistenceImpl
 	private static final String _SQL_COUNT_DEDATALISTVIEW_WHERE =
 		"SELECT COUNT(deDataListView) FROM DEDataListView deDataListView WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DEDataListView exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DEDataListViewPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1030,4 +1023,4 @@ public class DEDataListViewPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1780202892
+// LIFERAY-SERVICE-BUILDER-HASH:1630789316

@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPreferencesException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PortalPreferences;
 import com.liferay.portal.kernel.model.PortalPreferencesTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -418,7 +416,7 @@ public class PortalPreferencesPersistenceImpl
 				_SQL_SELECT_PORTALPREFERENCES_WHERE,
 				_SQL_COUNT_PORTALPREFERENCES_WHERE,
 				PortalPreferencesModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"portalPreferences.", "ownerType",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -460,16 +458,10 @@ public class PortalPreferencesPersistenceImpl
 	private static final String _SQL_COUNT_PORTALPREFERENCES_WHERE =
 		"SELECT COUNT(portalPreferences) FROM PortalPreferences portalPreferences WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PortalPreferences exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PortalPreferencesPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1996021193
+// LIFERAY-SERVICE-BUILDER-HASH:-1174953255

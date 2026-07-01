@@ -595,6 +595,7 @@ public class CTSChildPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CTSCHILD_WHERE, _SQL_COUNT_CTSCHILD_WHERE,
 				CTSChildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctsChild.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, CTSChild::getCompanyId));
@@ -618,7 +619,7 @@ public class CTSChildPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"companyId", "ctsGrandParentId"}, false),
 			_SQL_SELECT_CTSCHILD_WHERE, _SQL_COUNT_CTSCHILD_WHERE,
-			CTSChildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			CTSChildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"ctsChild.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, CTSChild::getCompanyId),
@@ -645,7 +646,7 @@ public class CTSChildPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"companyId", "parentCTSChildId"}, false),
 			_SQL_SELECT_CTSCHILD_WHERE, _SQL_COUNT_CTSCHILD_WHERE,
-			CTSChildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			CTSChildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"ctsChild.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, CTSChild::getCompanyId),
@@ -710,13 +711,10 @@ public class CTSChildPersistenceImpl
 	private static final String _SQL_COUNT_CTSCHILD_WHERE =
 		"SELECT COUNT(ctsChild) FROM CTSChild ctsChild WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTSChild exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-292165120
+// LIFERAY-SERVICE-BUILDER-HASH:-1622477492

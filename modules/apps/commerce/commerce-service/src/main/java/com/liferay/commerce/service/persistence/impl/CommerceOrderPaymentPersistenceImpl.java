@@ -391,7 +391,7 @@ public class CommerceOrderPaymentPersistenceImpl
 				_SQL_SELECT_COMMERCEORDERPAYMENT_WHERE,
 				_SQL_COUNT_COMMERCEORDERPAYMENT_WHERE,
 				CommerceOrderPaymentModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceOrderPayment.", "commerceOrderId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -451,13 +451,10 @@ public class CommerceOrderPaymentPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEORDERPAYMENT_WHERE =
 		"SELECT COUNT(commerceOrderPayment) FROM CommerceOrderPayment commerceOrderPayment WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceOrderPayment exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-598673207
+// LIFERAY-SERVICE-BUILDER-HASH:-72435322

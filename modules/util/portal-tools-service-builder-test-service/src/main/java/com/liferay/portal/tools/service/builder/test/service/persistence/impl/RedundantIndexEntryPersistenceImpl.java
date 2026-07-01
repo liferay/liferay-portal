@@ -8,8 +8,6 @@ package com.liferay.portal.tools.service.builder.test.service.persistence.impl;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -341,16 +339,10 @@ public class RedundantIndexEntryPersistenceImpl
 	private static final String _SQL_SELECT_REDUNDANTINDEXENTRY_WHERE =
 		"SELECT redundantIndexEntry FROM RedundantIndexEntry redundantIndexEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No RedundantIndexEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		RedundantIndexEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1537778752
+// LIFERAY-SERVICE-BUILDER-HASH:-2043332171

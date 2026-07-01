@@ -423,7 +423,7 @@ public class CTCollectionTemplatePersistenceImpl
 				_SQL_SELECT_CTCOLLECTIONTEMPLATE_WHERE,
 				_SQL_COUNT_CTCOLLECTIONTEMPLATE_WHERE,
 				CTCollectionTemplateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"ctCollectionTemplate.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -483,13 +483,10 @@ public class CTCollectionTemplatePersistenceImpl
 	private static final String _SQL_COUNT_CTCOLLECTIONTEMPLATE_WHERE =
 		"SELECT COUNT(ctCollectionTemplate) FROM CTCollectionTemplate ctCollectionTemplate WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTCollectionTemplate exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2069454046
+// LIFERAY-SERVICE-BUILDER-HASH:1123545161

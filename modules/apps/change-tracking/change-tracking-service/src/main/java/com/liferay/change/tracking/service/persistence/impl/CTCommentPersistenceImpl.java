@@ -455,6 +455,7 @@ public class CTCommentPersistenceImpl
 					new String[] {"ctCollectionId"}, false),
 				_SQL_SELECT_CTCOMMENT_WHERE, _SQL_COUNT_CTCOMMENT_WHERE,
 				CTCommentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctComment.", "ctCollectionId", FinderColumn.Type.LONG, "=",
 					true, true, CTComment::getCtCollectionId));
@@ -480,6 +481,7 @@ public class CTCommentPersistenceImpl
 					new String[] {"ctEntryId"}, false),
 				_SQL_SELECT_CTCOMMENT_WHERE, _SQL_COUNT_CTCOMMENT_WHERE,
 				CTCommentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctComment.", "ctEntryId", FinderColumn.Type.LONG, "=",
 					true, true, CTComment::getCtEntryId));
@@ -538,13 +540,10 @@ public class CTCommentPersistenceImpl
 	private static final String _SQL_COUNT_CTCOMMENT_WHERE =
 		"SELECT COUNT(ctComment) FROM CTComment ctComment WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTComment exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:528407118
+// LIFERAY-SERVICE-BUILDER-HASH:-396676477

@@ -337,6 +337,7 @@ public class OrgLaborPersistenceImpl
 					new String[] {"organizationId"}, false),
 				_SQL_SELECT_ORGLABOR_WHERE, _SQL_COUNT_ORGLABOR_WHERE,
 				OrgLaborModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"orgLabor.", "organizationId", FinderColumn.Type.LONG, "=",
 					true, true, OrgLabor::getOrganizationId));
@@ -362,13 +363,10 @@ public class OrgLaborPersistenceImpl
 	private static final String _SQL_COUNT_ORGLABOR_WHERE =
 		"SELECT COUNT(orgLabor) FROM OrgLabor orgLabor WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No OrgLabor exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2138524008
+// LIFERAY-SERVICE-BUILDER-HASH:422612602

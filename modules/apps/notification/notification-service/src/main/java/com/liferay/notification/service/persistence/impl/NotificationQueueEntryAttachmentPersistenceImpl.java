@@ -414,7 +414,7 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 				_SQL_SELECT_NOTIFICATIONQUEUEENTRYATTACHMENT_WHERE,
 				_SQL_COUNT_NOTIFICATIONQUEUEENTRYATTACHMENT_WHERE,
 				NotificationQueueEntryAttachmentModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"notificationQueueEntryAttachment.",
 					"notificationQueueEntryId", FinderColumn.Type.LONG, "=",
@@ -479,9 +479,6 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 		_SQL_COUNT_NOTIFICATIONQUEUEENTRYATTACHMENT_WHERE =
 			"SELECT COUNT(notificationQueueEntryAttachment) FROM NotificationQueueEntryAttachment notificationQueueEntryAttachment WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No NotificationQueueEntryAttachment exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"notificationQueueEntryAttachmentId"});
 
@@ -491,4 +488,4 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-682626341
+// LIFERAY-SERVICE-BUILDER-HASH:765278948

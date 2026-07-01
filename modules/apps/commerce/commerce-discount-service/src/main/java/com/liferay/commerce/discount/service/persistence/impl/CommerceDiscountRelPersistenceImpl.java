@@ -682,7 +682,7 @@ public class CommerceDiscountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTREL_WHERE,
 				CommerceDiscountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountRel.", "commerceDiscountId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -709,7 +709,7 @@ public class CommerceDiscountRelPersistenceImpl
 			_SQL_SELECT_COMMERCEDISCOUNTREL_WHERE,
 			_SQL_COUNT_COMMERCEDISCOUNTREL_WHERE,
 			CommerceDiscountRelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"commerceDiscountRel.", "commerceDiscountId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -740,7 +740,7 @@ public class CommerceDiscountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTREL_WHERE,
 				CommerceDiscountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountRel.", "classNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -789,7 +789,7 @@ public class CommerceDiscountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTREL_WHERE,
 				CommerceDiscountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountRel.", "commerceDiscountId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -856,13 +856,10 @@ public class CommerceDiscountRelPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEDISCOUNTREL_WHERE =
 		"SELECT COUNT(commerceDiscountRel) FROM CommerceDiscountRel commerceDiscountRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceDiscountRel exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:972364982
+// LIFERAY-SERVICE-BUILDER-HASH:2135550386

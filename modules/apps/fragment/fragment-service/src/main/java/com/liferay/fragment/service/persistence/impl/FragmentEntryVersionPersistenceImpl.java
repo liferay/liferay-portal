@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -3195,7 +3193,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "fragmentEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3242,7 +3240,7 @@ public class FragmentEntryVersionPersistenceImpl
 			_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 			_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 			FragmentEntryVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"fragmentEntryVersion.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -3277,7 +3275,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -3309,7 +3307,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -3366,7 +3364,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -3410,7 +3408,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -3446,7 +3444,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId));
@@ -3480,7 +3478,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3514,7 +3512,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "fragmentCollectionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3549,7 +3547,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "fragmentCollectionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3579,7 +3577,7 @@ public class FragmentEntryVersionPersistenceImpl
 			_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 			_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 			FragmentEntryVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"fragmentEntryVersion.", "type", "type_",
 				FinderColumn.Type.INTEGER, "=", true, true,
@@ -3614,7 +3612,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "type", "type_",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -3645,7 +3643,7 @@ public class FragmentEntryVersionPersistenceImpl
 			_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 			_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 			FragmentEntryVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, FragmentEntryVersion::getGroupId),
@@ -3689,7 +3687,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3724,7 +3722,7 @@ public class FragmentEntryVersionPersistenceImpl
 			_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 			_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 			FragmentEntryVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, FragmentEntryVersion::getGroupId),
@@ -3791,7 +3789,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3844,7 +3842,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3892,7 +3890,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3946,7 +3944,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -3995,7 +3993,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4049,7 +4047,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4107,7 +4105,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4170,7 +4168,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4230,7 +4228,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4294,7 +4292,7 @@ public class FragmentEntryVersionPersistenceImpl
 				_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE,
 				_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE,
 				FragmentEntryVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"fragmentEntryVersion.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryVersion::getGroupId),
@@ -4372,12 +4370,6 @@ public class FragmentEntryVersionPersistenceImpl
 	private static final String _SQL_COUNT_FRAGMENTENTRYVERSION_WHERE =
 		"SELECT COUNT(fragmentEntryVersion) FROM FragmentEntryVersion fragmentEntryVersion WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No FragmentEntryVersion exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentEntryVersionPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "type"});
 
@@ -4387,4 +4379,4 @@ public class FragmentEntryVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1555817517
+// LIFERAY-SERVICE-BUILDER-HASH:1497869728

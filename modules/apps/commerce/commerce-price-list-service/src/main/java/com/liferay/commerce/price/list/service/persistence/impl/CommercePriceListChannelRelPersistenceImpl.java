@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -765,7 +763,7 @@ public class CommercePriceListChannelRelPersistenceImpl
 			_SQL_SELECT_COMMERCEPRICELISTCHANNELREL_WHERE,
 			_SQL_COUNT_COMMERCEPRICELISTCHANNELREL_WHERE,
 			CommercePriceListChannelRelModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commercePriceListChannelRel.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -793,7 +791,7 @@ public class CommercePriceListChannelRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTCHANNELREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTCHANNELREL_WHERE,
 				CommercePriceListChannelRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListChannelRel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -828,7 +826,7 @@ public class CommercePriceListChannelRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTCHANNELREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTCHANNELREL_WHERE,
 				CommercePriceListChannelRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListChannelRel.", "commercePriceListId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -910,12 +908,6 @@ public class CommercePriceListChannelRelPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEPRICELISTCHANNELREL_WHERE =
 		"SELECT COUNT(commercePriceListChannelRel) FROM CommercePriceListChannelRel commercePriceListChannelRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommercePriceListChannelRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommercePriceListChannelRelPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "order"});
 
@@ -925,4 +917,4 @@ public class CommercePriceListChannelRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-590047925
+// LIFERAY-SERVICE-BUILDER-HASH:1685998144

@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -1590,7 +1588,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 			_SQL_SELECT_LAYOUTCLASSEDMODELUSAGE_WHERE,
 			_SQL_COUNT_LAYOUTCLASSEDMODELUSAGE_WHERE,
 			LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"layoutClassedModelUsage.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1635,7 +1633,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				_SQL_SELECT_LAYOUTCLASSEDMODELUSAGE_WHERE,
 				_SQL_COUNT_LAYOUTCLASSEDMODELUSAGE_WHERE,
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1667,7 +1665,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 			LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 			_ENTITY_ALIAS_PREFIX,
 			"layoutClassedModelUsage.containerKey IS NOT NULL",
-			"layoutClassedModelUsage.containerKey IS NOT NULL",
+			"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 			new FinderColumn<>(
 				"layoutClassedModelUsage.", "plid", FinderColumn.Type.LONG, "=",
 				true, true, LayoutClassedModelUsage::getPlid));
@@ -1695,7 +1693,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 			LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 			_ENTITY_ALIAS_PREFIX,
 			"layoutClassedModelUsage.containerKey IS NOT NULL",
-			"layoutClassedModelUsage.containerKey IS NOT NULL",
+			"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 			new FinderColumn<>(
 				"layoutClassedModelUsage.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, LayoutClassedModelUsage::getCompanyId),
@@ -1728,7 +1726,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "classNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1780,7 +1778,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1828,7 +1826,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1874,7 +1872,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "classNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1922,7 +1920,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "containerKey",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1980,7 +1978,7 @@ public class LayoutClassedModelUsagePersistenceImpl
 				LayoutClassedModelUsageModelImpl.ORDER_BY_JPQL,
 				_ENTITY_ALIAS_PREFIX,
 				"layoutClassedModelUsage.containerKey IS NOT NULL",
-				"layoutClassedModelUsage.containerKey IS NOT NULL",
+				"layoutClassedModelUsage.containerKey IS NOT NULL", null,
 				new FinderColumn<>(
 					"layoutClassedModelUsage.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2108,12 +2106,6 @@ public class LayoutClassedModelUsagePersistenceImpl
 	private static final String _SQL_COUNT_LAYOUTCLASSEDMODELUSAGE_WHERE =
 		"SELECT COUNT(layoutClassedModelUsage) FROM LayoutClassedModelUsage layoutClassedModelUsage WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LayoutClassedModelUsage exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutClassedModelUsagePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "type"});
 
@@ -2123,4 +2115,4 @@ public class LayoutClassedModelUsagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-953048551
+// LIFERAY-SERVICE-BUILDER-HASH:-1785630292

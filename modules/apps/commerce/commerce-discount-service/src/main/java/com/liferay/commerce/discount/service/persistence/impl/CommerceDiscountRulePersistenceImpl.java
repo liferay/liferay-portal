@@ -405,7 +405,7 @@ public class CommerceDiscountRulePersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTRULE_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTRULE_WHERE,
 				CommerceDiscountRuleModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountRule.", "commerceDiscountId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -465,9 +465,6 @@ public class CommerceDiscountRulePersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEDISCOUNTRULE_WHERE =
 		"SELECT COUNT(commerceDiscountRule) FROM CommerceDiscountRule commerceDiscountRule WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceDiscountRule exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -477,4 +474,4 @@ public class CommerceDiscountRulePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1422907270
+// LIFERAY-SERVICE-BUILDER-HASH:584126556

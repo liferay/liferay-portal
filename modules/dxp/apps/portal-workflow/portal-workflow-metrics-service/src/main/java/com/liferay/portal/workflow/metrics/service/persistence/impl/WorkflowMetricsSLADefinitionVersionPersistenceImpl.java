@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -797,7 +795,7 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 			_SQL_SELECT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 			_SQL_COUNT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 			WorkflowMetricsSLADefinitionVersionModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"workflowMetricsSLADefinitionVersion.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -844,7 +842,7 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 				_SQL_SELECT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 				_SQL_COUNT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 				WorkflowMetricsSLADefinitionVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"workflowMetricsSLADefinitionVersion.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -879,7 +877,7 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 				_SQL_SELECT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 				_SQL_COUNT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE,
 				WorkflowMetricsSLADefinitionVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"workflowMetricsSLADefinitionVersion.",
 					"workflowMetricsSLADefinitionId", "wmSLADefinitionId",
@@ -967,12 +965,6 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 		_SQL_COUNT_WORKFLOWMETRICSSLADEFINITIONVERSION_WHERE =
 			"SELECT COUNT(workflowMetricsSLADefinitionVersion) FROM WorkflowMetricsSLADefinitionVersion workflowMetricsSLADefinitionVersion WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No WorkflowMetricsSLADefinitionVersion exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		WorkflowMetricsSLADefinitionVersionPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {
 			"uuid", "workflowMetricsSLADefinitionVersionId", "active",
@@ -985,4 +977,4 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-855885717
+// LIFERAY-SERVICE-BUILDER-HASH:668944082

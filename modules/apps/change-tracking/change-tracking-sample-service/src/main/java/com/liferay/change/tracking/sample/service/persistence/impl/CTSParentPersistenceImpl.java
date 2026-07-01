@@ -506,6 +506,7 @@ public class CTSParentPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CTSPARENT_WHERE, _SQL_COUNT_CTSPARENT_WHERE,
 				CTSParentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctsParent.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CTSParent::getCompanyId));
@@ -530,6 +531,7 @@ public class CTSParentPersistenceImpl
 				new String[] {"companyId", "ctsGrandParentId"}, false),
 			_SQL_SELECT_CTSPARENT_WHERE, _SQL_COUNT_CTSPARENT_WHERE,
 			CTSParentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"ctsParent.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, CTSParent::getCompanyId),
@@ -594,13 +596,10 @@ public class CTSParentPersistenceImpl
 	private static final String _SQL_COUNT_CTSPARENT_WHERE =
 		"SELECT COUNT(ctsParent) FROM CTSParent ctsParent WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTSParent exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1541161440
+// LIFERAY-SERVICE-BUILDER-HASH:-1041992044

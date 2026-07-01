@@ -13,7 +13,6 @@ import com.liferay.dynamic.data.mapping.model.impl.DDMFieldAttributeModelImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributeUtil;
 import com.liferay.dynamic.data.mapping.service.persistence.impl.constants.DDMPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -21,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.ArrayableFinderColumn;
@@ -307,26 +304,9 @@ public class DDMFieldAttributePersistenceImpl
 			OrderByComparator<DDMFieldAttribute> orderByComparator)
 		throws NoSuchFieldAttributeException {
 
-		DDMFieldAttribute ddmFieldAttribute = fetchByS_L_First(
-			storageId, languageId, orderByComparator);
-
-		if (ddmFieldAttribute != null) {
-			return ddmFieldAttribute;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("storageId=");
-		sb.append(storageId);
-
-		sb.append(", languageId=");
-		sb.append(languageId);
-
-		sb.append("}");
-
-		throw new NoSuchFieldAttributeException(sb.toString());
+		return _collectionPersistenceFinderByS_L.findFirst(
+			finderCache, new Object[] {storageId, new String[] {languageId}},
+			orderByComparator);
 	}
 
 	/**
@@ -857,7 +837,7 @@ public class DDMFieldAttributePersistenceImpl
 				_SQL_SELECT_DDMFIELDATTRIBUTE_WHERE,
 				_SQL_COUNT_DDMFIELDATTRIBUTE_WHERE,
 				DDMFieldAttributeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ddmFieldAttribute.", "storageId", FinderColumn.Type.LONG,
 					"=", true, true, DDMFieldAttribute::getStorageId));
@@ -883,7 +863,7 @@ public class DDMFieldAttributePersistenceImpl
 			_SQL_SELECT_DDMFIELDATTRIBUTE_WHERE,
 			_SQL_COUNT_DDMFIELDATTRIBUTE_WHERE,
 			DDMFieldAttributeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"ddmFieldAttribute.", "storageId", FinderColumn.Type.LONG, "=",
 				true, true, DDMFieldAttribute::getStorageId),
@@ -912,7 +892,7 @@ public class DDMFieldAttributePersistenceImpl
 			_SQL_SELECT_DDMFIELDATTRIBUTE_WHERE,
 			_SQL_COUNT_DDMFIELDATTRIBUTE_WHERE,
 			DDMFieldAttributeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"ddmFieldAttribute.", "storageId", FinderColumn.Type.LONG, "=",
 				true, true, DDMFieldAttribute::getStorageId),
@@ -949,7 +929,7 @@ public class DDMFieldAttributePersistenceImpl
 				_SQL_SELECT_DDMFIELDATTRIBUTE_WHERE,
 				_SQL_COUNT_DDMFIELDATTRIBUTE_WHERE,
 				DDMFieldAttributeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ddmFieldAttribute.", "attributeName",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1039,16 +1019,10 @@ public class DDMFieldAttributePersistenceImpl
 	private static final String _SQL_COUNT_DDMFIELDATTRIBUTE_WHERE =
 		"SELECT COUNT(ddmFieldAttribute) FROM DDMFieldAttribute ddmFieldAttribute WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DDMFieldAttribute exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DDMFieldAttributePersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1095286178
+// LIFERAY-SERVICE-BUILDER-HASH:1024056831

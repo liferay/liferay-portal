@@ -22,8 +22,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -846,7 +844,7 @@ public class CProductPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_CPRODUCT_WHERE, _SQL_COUNT_CPRODUCT_WHERE,
-			CProductModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			CProductModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"cProduct.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, CProduct::getUuid));
@@ -887,6 +885,7 @@ public class CProductPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_CPRODUCT_WHERE, _SQL_COUNT_CPRODUCT_WHERE,
 				CProductModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"cProduct.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, CProduct::getUuid),
@@ -915,6 +914,7 @@ public class CProductPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_CPRODUCT_WHERE, _SQL_COUNT_CPRODUCT_WHERE,
 				CProductModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"cProduct.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, CProduct::getGroupId));
@@ -992,12 +992,6 @@ public class CProductPersistenceImpl
 	private static final String _SQL_COUNT_CPRODUCT_WHERE =
 		"SELECT COUNT(cProduct) FROM CProduct cProduct WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CProduct exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CProductPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1007,4 +1001,4 @@ public class CProductPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1289829730
+// LIFERAY-SERVICE-BUILDER-HASH:1146199667

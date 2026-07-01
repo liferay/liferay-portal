@@ -14,8 +14,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -4395,6 +4393,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"resourcePrimKey"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 					true, true, WikiPage::getResourcePrimKey));
@@ -4417,7 +4416,7 @@ public class WikiPagePersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, WikiPage::getUuid));
@@ -4458,6 +4457,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, WikiPage::getUuid),
@@ -4486,6 +4486,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getCompanyId));
@@ -4511,6 +4512,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"nodeId"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId));
@@ -4536,6 +4538,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"format"}, 0, 1, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "format", FinderColumn.Type.STRING, "=", true,
 					true, WikiPage::getFormat));
@@ -4559,7 +4562,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"resourcePrimKey", "nodeId"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				true, true, WikiPage::getResourcePrimKey),
@@ -4586,7 +4589,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), Integer.class.getName()},
 				new String[] {"resourcePrimKey", "status"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				true, true, WikiPage::getResourcePrimKey),
@@ -4617,6 +4620,7 @@ public class WikiPagePersistenceImpl
 					false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4644,7 +4648,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), String.class.getName()},
 				new String[] {"nodeId", "title"}, 2, 2, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -4671,7 +4675,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), Boolean.class.getName()},
 				new String[] {"nodeId", "head"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -4698,7 +4702,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), String.class.getName()},
 				new String[] {"nodeId", "parentTitle"}, 2, 2, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -4725,7 +4729,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), String.class.getName()},
 				new String[] {"nodeId", "redirectTitle"}, 2, 2, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -4752,7 +4756,7 @@ public class WikiPagePersistenceImpl
 				new String[] {Long.class.getName(), Integer.class.getName()},
 				new String[] {"nodeId", "status"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -4807,7 +4811,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"resourcePrimKey", "nodeId", "head"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				true, true, WikiPage::getResourcePrimKey),
@@ -4843,7 +4847,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"resourcePrimKey", "nodeId", "status"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "resourcePrimKey", FinderColumn.Type.LONG, "=",
 				true, true, WikiPage::getResourcePrimKey),
@@ -4905,6 +4909,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"groupId", "nodeId", "head"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4943,6 +4948,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"groupId", "nodeId", "status"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4978,7 +4984,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"userId", "nodeId", "status"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "userId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getUserId),
@@ -5036,7 +5042,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"nodeId", "title", "head"}, 2, 2, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -5072,7 +5078,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"nodeId", "title", "status"}, 2, 2, false, null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -5110,7 +5116,7 @@ public class WikiPagePersistenceImpl
 				new String[] {"nodeId", "head", "parentTitle"}, 4, 4, false,
 				null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -5148,7 +5154,7 @@ public class WikiPagePersistenceImpl
 				new String[] {"nodeId", "head", "redirectTitle"}, 4, 4, false,
 				null),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -5184,7 +5190,7 @@ public class WikiPagePersistenceImpl
 				},
 				new String[] {"nodeId", "head", "status"}, false),
 			_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true, true,
 				WikiPage::getNodeId),
@@ -5217,6 +5223,7 @@ public class WikiPagePersistenceImpl
 					new String[] {"nodeId", "head", "status"}, false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId),
@@ -5258,6 +5265,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5301,6 +5309,7 @@ public class WikiPagePersistenceImpl
 					false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5343,6 +5352,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5387,6 +5397,7 @@ public class WikiPagePersistenceImpl
 					4, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId),
@@ -5424,6 +5435,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId),
@@ -5468,6 +5480,7 @@ public class WikiPagePersistenceImpl
 					4, 4, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId),
@@ -5505,6 +5518,7 @@ public class WikiPagePersistenceImpl
 					false),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "nodeId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getNodeId),
@@ -5560,6 +5574,7 @@ public class WikiPagePersistenceImpl
 					8, 8, false, null),
 				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
 				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5633,12 +5648,6 @@ public class WikiPagePersistenceImpl
 	private static final String _SQL_COUNT_WIKIPAGE_WHERE =
 		"SELECT COUNT(wikiPage) FROM WikiPage wikiPage WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No WikiPage exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		WikiPagePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -5648,4 +5657,4 @@ public class WikiPagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-995768287
+// LIFERAY-SERVICE-BUILDER-HASH:1223465307

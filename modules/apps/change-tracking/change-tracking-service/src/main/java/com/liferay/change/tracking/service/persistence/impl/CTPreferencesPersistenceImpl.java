@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -508,7 +506,7 @@ public class CTPreferencesPersistenceImpl
 					new String[] {"ctCollectionId"}, false),
 				_SQL_SELECT_CTPREFERENCES_WHERE, _SQL_COUNT_CTPREFERENCES_WHERE,
 				CTPreferencesModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ctPreferences.", "ctCollectionId", FinderColumn.Type.LONG,
 					"=", true, true, CTPreferences::getCtCollectionId));
@@ -537,7 +535,7 @@ public class CTPreferencesPersistenceImpl
 					new String[] {"previousCtCollectionId"}, false),
 				_SQL_SELECT_CTPREFERENCES_WHERE, _SQL_COUNT_CTPREFERENCES_WHERE,
 				CTPreferencesModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ctPreferences.", "previousCtCollectionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -612,16 +610,10 @@ public class CTPreferencesPersistenceImpl
 	private static final String _SQL_COUNT_CTPREFERENCES_WHERE =
 		"SELECT COUNT(ctPreferences) FROM CTPreferences ctPreferences WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTPreferences exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CTPreferencesPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-884879570
+// LIFERAY-SERVICE-BUILDER-HASH:-1290673367

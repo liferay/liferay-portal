@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -536,7 +534,7 @@ public class AccountEntryOrganizationRelPersistenceImpl
 				_SQL_SELECT_ACCOUNTENTRYORGANIZATIONREL_WHERE,
 				_SQL_COUNT_ACCOUNTENTRYORGANIZATIONREL_WHERE,
 				AccountEntryOrganizationRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"accountEntryOrganizationRel.", "accountEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -566,7 +564,7 @@ public class AccountEntryOrganizationRelPersistenceImpl
 				_SQL_SELECT_ACCOUNTENTRYORGANIZATIONREL_WHERE,
 				_SQL_COUNT_ACCOUNTENTRYORGANIZATIONREL_WHERE,
 				AccountEntryOrganizationRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"accountEntryOrganizationRel.", "organizationId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -645,16 +643,10 @@ public class AccountEntryOrganizationRelPersistenceImpl
 	private static final String _SQL_COUNT_ACCOUNTENTRYORGANIZATIONREL_WHERE =
 		"SELECT COUNT(accountEntryOrganizationRel) FROM AccountEntryOrganizationRel accountEntryOrganizationRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AccountEntryOrganizationRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AccountEntryOrganizationRelPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-824652065
+// LIFERAY-SERVICE-BUILDER-HASH:1292532770

@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -767,7 +765,7 @@ public class CommercePriceListDiscountRelPersistenceImpl
 			_SQL_SELECT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 			_SQL_COUNT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 			CommercePriceListDiscountRelModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commercePriceListDiscountRel.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -795,7 +793,7 @@ public class CommercePriceListDiscountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 				CommercePriceListDiscountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListDiscountRel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -830,7 +828,7 @@ public class CommercePriceListDiscountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTDISCOUNTREL_WHERE,
 				CommercePriceListDiscountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListDiscountRel.", "commercePriceListId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -912,12 +910,6 @@ public class CommercePriceListDiscountRelPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEPRICELISTDISCOUNTREL_WHERE =
 		"SELECT COUNT(commercePriceListDiscountRel) FROM CommercePriceListDiscountRel commercePriceListDiscountRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommercePriceListDiscountRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommercePriceListDiscountRelPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "order"});
 
@@ -927,4 +919,4 @@ public class CommercePriceListDiscountRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1556834840
+// LIFERAY-SERVICE-BUILDER-HASH:-1354909749

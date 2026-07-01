@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -621,7 +619,7 @@ public class CookiesConsentPreferencePersistenceImpl
 				_SQL_SELECT_COOKIESCONSENTPREFERENCE_WHERE,
 				_SQL_COUNT_COOKIESCONSENTPREFERENCE_WHERE,
 				CookiesConsentPreferenceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cookiesConsentPreference.", "userId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -651,7 +649,7 @@ public class CookiesConsentPreferencePersistenceImpl
 				_SQL_SELECT_COOKIESCONSENTPREFERENCE_WHERE,
 				_SQL_COUNT_COOKIESCONSENTPREFERENCE_WHERE,
 				CookiesConsentPreferenceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cookiesConsentPreference.", "expirationDate",
 					FinderColumn.Type.DATE, "=", true, true,
@@ -678,7 +676,7 @@ public class CookiesConsentPreferencePersistenceImpl
 			_SQL_SELECT_COOKIESCONSENTPREFERENCE_WHERE,
 			_SQL_COUNT_COOKIESCONSENTPREFERENCE_WHERE,
 			CookiesConsentPreferenceModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"cookiesConsentPreference.", "userId", FinderColumn.Type.LONG,
 				"=", true, true, CookiesConsentPreference::getUserId),
@@ -763,16 +761,10 @@ public class CookiesConsentPreferencePersistenceImpl
 	private static final String _SQL_COUNT_COOKIESCONSENTPREFERENCE_WHERE =
 		"SELECT COUNT(cookiesConsentPreference) FROM CookiesConsentPreference cookiesConsentPreference WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CookiesConsentPreference exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CookiesConsentPreferencePersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1873963288
+// LIFERAY-SERVICE-BUILDER-HASH:-939239415

@@ -5,7 +5,6 @@
 
 package com.liferay.portal.tools.service.builder.test.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
@@ -109,23 +108,9 @@ public class PermissionCheckFinderEntryPersistenceImpl
 			OrderByComparator<PermissionCheckFinderEntry> orderByComparator)
 		throws NoSuchPermissionCheckFinderEntryException {
 
-		PermissionCheckFinderEntry permissionCheckFinderEntry =
-			fetchByGroupId_First(groupId, orderByComparator);
-
-		if (permissionCheckFinderEntry != null) {
-			return permissionCheckFinderEntry;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append("}");
-
-		throw new NoSuchPermissionCheckFinderEntryException(sb.toString());
+		return _collectionPersistenceFinderByGroupId.findFirst(
+			finderCache, new Object[] {new long[] {groupId}},
+			orderByComparator);
 	}
 
 	/**
@@ -505,7 +490,7 @@ public class PermissionCheckFinderEntryPersistenceImpl
 				_SQL_SELECT_PERMISSIONCHECKFINDERENTRY_WHERE,
 				_SQL_COUNT_PERMISSIONCHECKFINDERENTRY_WHERE,
 				PermissionCheckFinderEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new ArrayableFinderColumn<>(
 					"permissionCheckFinderEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -538,9 +523,6 @@ public class PermissionCheckFinderEntryPersistenceImpl
 	private static final String _SQL_COUNT_PERMISSIONCHECKFINDERENTRY_WHERE =
 		"SELECT COUNT(permissionCheckFinderEntry) FROM PermissionCheckFinderEntry permissionCheckFinderEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PermissionCheckFinderEntry exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"integer", "type"});
 
@@ -550,4 +532,4 @@ public class PermissionCheckFinderEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-122918740
+// LIFERAY-SERVICE-BUILDER-HASH:-1297583294

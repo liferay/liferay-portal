@@ -566,7 +566,7 @@ public class CommerceInventoryAuditPersistenceImpl
 				_SQL_SELECT_COMMERCEINVENTORYAUDIT_WHERE,
 				_SQL_COUNT_COMMERCEINVENTORYAUDIT_WHERE,
 				CommerceInventoryAuditModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceInventoryAudit.", "createDate",
 					FinderColumn.Type.DATE, "<", true, true,
@@ -601,7 +601,7 @@ public class CommerceInventoryAuditPersistenceImpl
 			_SQL_SELECT_COMMERCEINVENTORYAUDIT_WHERE,
 			_SQL_COUNT_COMMERCEINVENTORYAUDIT_WHERE,
 			CommerceInventoryAuditModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"commerceInventoryAudit.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, CommerceInventoryAudit::getCompanyId),
@@ -667,9 +667,6 @@ public class CommerceInventoryAuditPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEINVENTORYAUDIT_WHERE =
 		"SELECT COUNT(commerceInventoryAudit) FROM CommerceInventoryAudit commerceInventoryAudit WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceInventoryAudit exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"commerceInventoryAuditId"});
 
@@ -679,4 +676,4 @@ public class CommerceInventoryAuditPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:93549677
+// LIFERAY-SERVICE-BUILDER-HASH:1331837392

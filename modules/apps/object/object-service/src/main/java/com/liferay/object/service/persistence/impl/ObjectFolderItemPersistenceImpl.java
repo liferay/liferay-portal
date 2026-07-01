@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -740,7 +738,7 @@ public class ObjectFolderItemPersistenceImpl
 			_SQL_SELECT_OBJECTFOLDERITEM_WHERE,
 			_SQL_COUNT_OBJECTFOLDERITEM_WHERE,
 			ObjectFolderItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"objectFolderItem.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, ObjectFolderItem::getUuid));
@@ -767,7 +765,7 @@ public class ObjectFolderItemPersistenceImpl
 				_SQL_SELECT_OBJECTFOLDERITEM_WHERE,
 				_SQL_COUNT_OBJECTFOLDERITEM_WHERE,
 				ObjectFolderItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectFolderItem.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -801,7 +799,7 @@ public class ObjectFolderItemPersistenceImpl
 				_SQL_SELECT_OBJECTFOLDERITEM_WHERE,
 				_SQL_COUNT_OBJECTFOLDERITEM_WHERE,
 				ObjectFolderItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectFolderItem.", "objectDefinitionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -831,7 +829,7 @@ public class ObjectFolderItemPersistenceImpl
 				_SQL_SELECT_OBJECTFOLDERITEM_WHERE,
 				_SQL_COUNT_OBJECTFOLDERITEM_WHERE,
 				ObjectFolderItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectFolderItem.", "objectFolderId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -908,12 +906,6 @@ public class ObjectFolderItemPersistenceImpl
 	private static final String _SQL_COUNT_OBJECTFOLDERITEM_WHERE =
 		"SELECT COUNT(objectFolderItem) FROM ObjectFolderItem objectFolderItem WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ObjectFolderItem exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ObjectFolderItemPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -923,4 +915,4 @@ public class ObjectFolderItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-966042779
+// LIFERAY-SERVICE-BUILDER-HASH:180367187

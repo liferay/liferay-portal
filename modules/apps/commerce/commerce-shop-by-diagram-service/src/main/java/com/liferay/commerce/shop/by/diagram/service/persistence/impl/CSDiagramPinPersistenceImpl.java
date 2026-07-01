@@ -460,7 +460,7 @@ public class CSDiagramPinPersistenceImpl
 					new String[] {"CPDefinitionId"}, false),
 				_SQL_SELECT_CSDIAGRAMPIN_WHERE, _SQL_COUNT_CSDIAGRAMPIN_WHERE,
 				CSDiagramPinModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"csDiagramPin.", "CPDefinitionId", FinderColumn.Type.LONG,
 					"=", true, true, CSDiagramPin::getCPDefinitionId));
@@ -522,13 +522,10 @@ public class CSDiagramPinPersistenceImpl
 	private static final String _SQL_COUNT_CSDIAGRAMPIN_WHERE =
 		"SELECT COUNT(csDiagramPin) FROM CSDiagramPin csDiagramPin WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CSDiagramPin exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-108167520
+// LIFERAY-SERVICE-BUILDER-HASH:-1015049894

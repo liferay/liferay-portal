@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchUserIdMapperException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserIdMapper;
 import com.liferay.portal.kernel.model.UserIdMapperTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -490,7 +488,7 @@ public class UserIdMapperPersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_USERIDMAPPER_WHERE, _SQL_COUNT_USERIDMAPPER_WHERE,
 				UserIdMapperModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"userIdMapper.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, UserIdMapper::getUserId));
@@ -548,12 +546,6 @@ public class UserIdMapperPersistenceImpl
 	private static final String _SQL_COUNT_USERIDMAPPER_WHERE =
 		"SELECT COUNT(userIdMapper) FROM UserIdMapper userIdMapper WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No UserIdMapper exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		UserIdMapperPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -563,4 +555,4 @@ public class UserIdMapperPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1921313375
+// LIFERAY-SERVICE-BUILDER-HASH:919534693

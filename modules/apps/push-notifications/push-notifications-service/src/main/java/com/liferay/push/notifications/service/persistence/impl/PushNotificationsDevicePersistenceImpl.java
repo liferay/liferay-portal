@@ -5,15 +5,12 @@
 
 package com.liferay.push.notifications.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -184,26 +181,9 @@ public class PushNotificationsDevicePersistenceImpl
 			OrderByComparator<PushNotificationsDevice> orderByComparator)
 		throws NoSuchDeviceException {
 
-		PushNotificationsDevice pushNotificationsDevice = fetchByU_P_First(
-			userId, platform, orderByComparator);
-
-		if (pushNotificationsDevice != null) {
-			return pushNotificationsDevice;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("userId=");
-		sb.append(userId);
-
-		sb.append(", platform=");
-		sb.append(platform);
-
-		sb.append("}");
-
-		throw new NoSuchDeviceException(sb.toString());
+		return _collectionPersistenceFinderByU_P.findFirst(
+			finderCache, new Object[] {new long[] {userId}, platform},
+			orderByComparator);
 	}
 
 	/**
@@ -526,7 +506,7 @@ public class PushNotificationsDevicePersistenceImpl
 			_SQL_SELECT_PUSHNOTIFICATIONSDEVICE_WHERE,
 			_SQL_COUNT_PUSHNOTIFICATIONSDEVICE_WHERE,
 			PushNotificationsDeviceModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new ArrayableFinderColumn<>(
 				"pushNotificationsDevice.", "userId", FinderColumn.Type.LONG,
 				"=", false, true, true, PushNotificationsDevice::getUserId),
@@ -589,16 +569,10 @@ public class PushNotificationsDevicePersistenceImpl
 	private static final String _SQL_COUNT_PUSHNOTIFICATIONSDEVICE_WHERE =
 		"SELECT COUNT(pushNotificationsDevice) FROM PushNotificationsDevice pushNotificationsDevice WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PushNotificationsDevice exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PushNotificationsDevicePersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1444063332
+// LIFERAY-SERVICE-BUILDER-HASH:1130430525

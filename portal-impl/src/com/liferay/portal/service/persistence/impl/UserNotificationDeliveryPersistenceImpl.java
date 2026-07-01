@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchUserNotificationDeliveryException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationDelivery;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -459,7 +457,7 @@ public class UserNotificationDeliveryPersistenceImpl
 				_SQL_SELECT_USERNOTIFICATIONDELIVERY_WHERE,
 				_SQL_COUNT_USERNOTIFICATIONDELIVERY_WHERE,
 				UserNotificationDeliveryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"userNotificationDelivery.", "userId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -526,16 +524,10 @@ public class UserNotificationDeliveryPersistenceImpl
 	private static final String _SQL_COUNT_USERNOTIFICATIONDELIVERY_WHERE =
 		"SELECT COUNT(userNotificationDelivery) FROM UserNotificationDelivery userNotificationDelivery WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No UserNotificationDelivery exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		UserNotificationDeliveryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1143784113
+// LIFERAY-SERVICE-BUILDER-HASH:-1896710193

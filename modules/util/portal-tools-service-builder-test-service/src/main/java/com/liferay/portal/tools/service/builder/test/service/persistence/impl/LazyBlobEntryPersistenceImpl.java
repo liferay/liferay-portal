@@ -9,8 +9,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -429,6 +427,7 @@ public class LazyBlobEntryPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_LAZYBLOBENTRY_WHERE, _SQL_COUNT_LAZYBLOBENTRY_WHERE,
 			LazyBlobEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"lazyBlobEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, LazyBlobEntry::getUuid));
@@ -476,12 +475,6 @@ public class LazyBlobEntryPersistenceImpl
 	private static final String _SQL_COUNT_LAZYBLOBENTRY_WHERE =
 		"SELECT COUNT(lazyBlobEntry) FROM LazyBlobEntry lazyBlobEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LazyBlobEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LazyBlobEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -491,4 +484,4 @@ public class LazyBlobEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:916837428
+// LIFERAY-SERVICE-BUILDER-HASH:-398582712

@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -577,7 +575,7 @@ public class DepotAppCustomizationPersistenceImpl
 				_SQL_SELECT_DEPOTAPPCUSTOMIZATION_WHERE,
 				_SQL_COUNT_DEPOTAPPCUSTOMIZATION_WHERE,
 				DepotAppCustomizationModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"depotAppCustomization.", "depotEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -674,16 +672,10 @@ public class DepotAppCustomizationPersistenceImpl
 	private static final String _SQL_COUNT_DEPOTAPPCUSTOMIZATION_WHERE =
 		"SELECT COUNT(depotAppCustomization) FROM DepotAppCustomization depotAppCustomization WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DepotAppCustomization exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DepotAppCustomizationPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:186270773
+// LIFERAY-SERVICE-BUILDER-HASH:896640607

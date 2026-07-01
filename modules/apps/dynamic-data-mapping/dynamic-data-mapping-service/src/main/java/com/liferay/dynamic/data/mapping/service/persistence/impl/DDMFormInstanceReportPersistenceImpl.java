@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -500,12 +498,6 @@ public class DDMFormInstanceReportPersistenceImpl
 	private static final String _SQL_SELECT_DDMFORMINSTANCEREPORT_WHERE =
 		"SELECT ddmFormInstanceReport FROM DDMFormInstanceReport ddmFormInstanceReport WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DDMFormInstanceReport exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DDMFormInstanceReportPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"data"});
 
@@ -515,4 +507,4 @@ public class DDMFormInstanceReportPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:354323527
+// LIFERAY-SERVICE-BUILDER-HASH:-1709553128

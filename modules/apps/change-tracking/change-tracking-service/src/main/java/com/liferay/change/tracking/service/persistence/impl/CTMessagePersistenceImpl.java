@@ -346,6 +346,7 @@ public class CTMessagePersistenceImpl
 					new String[] {"ctCollectionId"}, false),
 				_SQL_SELECT_CTMESSAGE_WHERE, _SQL_COUNT_CTMESSAGE_WHERE,
 				CTMessageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctMessage.", "ctCollectionId", FinderColumn.Type.LONG, "=",
 					true, true, CTMessage::getCtCollectionId));
@@ -404,13 +405,10 @@ public class CTMessagePersistenceImpl
 	private static final String _SQL_COUNT_CTMESSAGE_WHERE =
 		"SELECT COUNT(ctMessage) FROM CTMessage ctMessage WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTMessage exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:109633437
+// LIFERAY-SERVICE-BUILDER-HASH:-1486607077

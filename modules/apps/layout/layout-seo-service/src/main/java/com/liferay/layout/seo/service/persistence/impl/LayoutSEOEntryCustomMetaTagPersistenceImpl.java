@@ -456,7 +456,7 @@ public class LayoutSEOEntryCustomMetaTagPersistenceImpl
 			_SQL_SELECT_LAYOUTSEOENTRYCUSTOMMETATAG_WHERE,
 			_SQL_COUNT_LAYOUTSEOENTRYCUSTOMMETATAG_WHERE,
 			LayoutSEOEntryCustomMetaTagModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"layoutSEOEntryCustomMetaTag.", "groupId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -524,13 +524,10 @@ public class LayoutSEOEntryCustomMetaTagPersistenceImpl
 	private static final String _SQL_COUNT_LAYOUTSEOENTRYCUSTOMMETATAG_WHERE =
 		"SELECT COUNT(layoutSEOEntryCustomMetaTag) FROM LayoutSEOEntryCustomMetaTag layoutSEOEntryCustomMetaTag WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LayoutSEOEntryCustomMetaTag exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-110500300
+// LIFERAY-SERVICE-BUILDER-HASH:-583380150

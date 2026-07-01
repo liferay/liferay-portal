@@ -776,7 +776,7 @@ public class AnalyticsDeleteMessagePersistenceImpl
 				_SQL_SELECT_ANALYTICSDELETEMESSAGE_WHERE,
 				_SQL_COUNT_ANALYTICSDELETEMESSAGE_WHERE,
 				AnalyticsDeleteMessageModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"analyticsDeleteMessage.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -800,7 +800,7 @@ public class AnalyticsDeleteMessagePersistenceImpl
 			_SQL_SELECT_ANALYTICSDELETEMESSAGE_WHERE,
 			_SQL_COUNT_ANALYTICSDELETEMESSAGE_WHERE,
 			AnalyticsDeleteMessageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"analyticsDeleteMessage.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, AnalyticsDeleteMessage::getCompanyId),
@@ -827,7 +827,7 @@ public class AnalyticsDeleteMessagePersistenceImpl
 			_SQL_SELECT_ANALYTICSDELETEMESSAGE_WHERE,
 			_SQL_COUNT_ANALYTICSDELETEMESSAGE_WHERE,
 			AnalyticsDeleteMessageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"analyticsDeleteMessage.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, AnalyticsDeleteMessage::getCompanyId),
@@ -893,13 +893,10 @@ public class AnalyticsDeleteMessagePersistenceImpl
 	private static final String _SQL_COUNT_ANALYTICSDELETEMESSAGE_WHERE =
 		"SELECT COUNT(analyticsDeleteMessage) FROM AnalyticsDeleteMessage analyticsDeleteMessage WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AnalyticsDeleteMessage exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1935620445
+// LIFERAY-SERVICE-BUILDER-HASH:-88108649

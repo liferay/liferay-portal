@@ -630,6 +630,7 @@ public class ContactPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CONTACT_WHERE, _SQL_COUNT_CONTACT_WHERE,
 				ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"contact.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Contact::getCompanyId));
@@ -655,6 +656,7 @@ public class ContactPersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_CONTACT_WHERE, _SQL_COUNT_CONTACT_WHERE,
 				ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"contact.", "userId", FinderColumn.Type.LONG, "=", true,
 					true, Contact::getUserId));
@@ -678,7 +680,7 @@ public class ContactPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"companyId", "userId"}, false),
 			_SQL_SELECT_CONTACT_WHERE, _SQL_COUNT_CONTACT_WHERE,
-			ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"contact.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, Contact::getCompanyId),
@@ -705,7 +707,7 @@ public class ContactPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"classNameId", "classPK"}, false),
 			_SQL_SELECT_CONTACT_WHERE, _SQL_COUNT_CONTACT_WHERE,
-			ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			ContactModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"contact.", "classNameId", FinderColumn.Type.LONG, "=", true,
 				true, Contact::getClassNameId),
@@ -734,13 +736,10 @@ public class ContactPersistenceImpl
 	private static final String _SQL_COUNT_CONTACT_WHERE =
 		"SELECT COUNT(contact) FROM Contact contact WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Contact exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2125933524
+// LIFERAY-SERVICE-BUILDER-HASH:1513400543

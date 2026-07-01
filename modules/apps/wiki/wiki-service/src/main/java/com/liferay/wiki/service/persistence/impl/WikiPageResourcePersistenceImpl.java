@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -677,7 +675,7 @@ public class WikiPageResourcePersistenceImpl
 			_SQL_SELECT_WIKIPAGERESOURCE_WHERE,
 			_SQL_COUNT_WIKIPAGERESOURCE_WHERE,
 			WikiPageResourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"wikiPageResource.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, WikiPageResource::getUuid));
@@ -720,7 +718,7 @@ public class WikiPageResourcePersistenceImpl
 				_SQL_SELECT_WIKIPAGERESOURCE_WHERE,
 				_SQL_COUNT_WIKIPAGERESOURCE_WHERE,
 				WikiPageResourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"wikiPageResource.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -802,12 +800,6 @@ public class WikiPageResourcePersistenceImpl
 	private static final String _SQL_COUNT_WIKIPAGERESOURCE_WHERE =
 		"SELECT COUNT(wikiPageResource) FROM WikiPageResource wikiPageResource WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No WikiPageResource exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		WikiPageResourcePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -817,4 +809,4 @@ public class WikiPageResourcePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1894906021
+// LIFERAY-SERVICE-BUILDER-HASH:-1254033631

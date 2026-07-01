@@ -404,6 +404,7 @@ public class CTRemotePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_CTREMOTE_WHERE, _SQL_COUNT_CTREMOTE_WHERE,
 				CTRemoteModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ctRemote.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, CTRemote::getCompanyId));
@@ -462,13 +463,10 @@ public class CTRemotePersistenceImpl
 	private static final String _SQL_COUNT_CTREMOTE_WHERE =
 		"SELECT COUNT(ctRemote) FROM CTRemote ctRemote WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTRemote exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-980463650
+// LIFERAY-SERVICE-BUILDER-HASH:-847778815

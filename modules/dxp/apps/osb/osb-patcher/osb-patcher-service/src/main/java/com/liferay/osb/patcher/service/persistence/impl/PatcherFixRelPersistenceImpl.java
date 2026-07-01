@@ -440,7 +440,7 @@ public class PatcherFixRelPersistenceImpl
 					new String[] {"childPatcherFixId"}, false),
 				_SQL_SELECT_PATCHERFIXREL_WHERE, _SQL_COUNT_PATCHERFIXREL_WHERE,
 				PatcherFixRelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"patcherFixRel.", "childPatcherFixId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -470,7 +470,7 @@ public class PatcherFixRelPersistenceImpl
 					new String[] {"parentPatcherFixId"}, false),
 				_SQL_SELECT_PATCHERFIXREL_WHERE, _SQL_COUNT_PATCHERFIXREL_WHERE,
 				PatcherFixRelModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"patcherFixRel.", "parentPatcherFixId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -530,13 +530,10 @@ public class PatcherFixRelPersistenceImpl
 	private static final String _SQL_COUNT_PATCHERFIXREL_WHERE =
 		"SELECT COUNT(patcherFixRel) FROM PatcherFixRel patcherFixRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PatcherFixRel exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-804563075
+// LIFERAY-SERVICE-BUILDER-HASH:-1976556813

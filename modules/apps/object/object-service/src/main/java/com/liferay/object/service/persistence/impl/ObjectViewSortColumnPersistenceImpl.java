@@ -682,7 +682,7 @@ public class ObjectViewSortColumnPersistenceImpl
 			_SQL_SELECT_OBJECTVIEWSORTCOLUMN_WHERE,
 			_SQL_COUNT_OBJECTVIEWSORTCOLUMN_WHERE,
 			ObjectViewSortColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"objectViewSortColumn.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -710,7 +710,7 @@ public class ObjectViewSortColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWSORTCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWSORTCOLUMN_WHERE,
 				ObjectViewSortColumnModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"objectViewSortColumn.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -743,7 +743,7 @@ public class ObjectViewSortColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWSORTCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWSORTCOLUMN_WHERE,
 				ObjectViewSortColumnModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"objectViewSortColumn.", "objectViewId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -773,7 +773,7 @@ public class ObjectViewSortColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWSORTCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWSORTCOLUMN_WHERE,
 				ObjectViewSortColumnModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"objectViewSortColumn.", "objectViewId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -837,9 +837,6 @@ public class ObjectViewSortColumnPersistenceImpl
 	private static final String _SQL_COUNT_OBJECTVIEWSORTCOLUMN_WHERE =
 		"SELECT COUNT(objectViewSortColumn) FROM ObjectViewSortColumn objectViewSortColumn WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ObjectViewSortColumn exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -849,4 +846,4 @@ public class ObjectViewSortColumnPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1889703215
+// LIFERAY-SERVICE-BUILDER-HASH:-709731140

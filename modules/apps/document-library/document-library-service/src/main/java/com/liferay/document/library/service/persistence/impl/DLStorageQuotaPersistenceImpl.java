@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -363,16 +361,10 @@ public class DLStorageQuotaPersistenceImpl
 	private static final String _SQL_SELECT_DLSTORAGEQUOTA_WHERE =
 		"SELECT dlStorageQuota FROM DLStorageQuota dlStorageQuota WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DLStorageQuota exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DLStorageQuotaPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1937904298
+// LIFERAY-SERVICE-BUILDER-HASH:-1038185721

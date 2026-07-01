@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1164,7 +1162,7 @@ public class OAuthClientEntryPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTENTRY_WHERE,
 				_SQL_COUNT_OAUTHCLIENTENTRY_WHERE,
 				OAuthClientEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"oAuthClientEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1192,7 +1190,7 @@ public class OAuthClientEntryPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTENTRY_WHERE,
 				_SQL_COUNT_OAUTHCLIENTENTRY_WHERE,
 				OAuthClientEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"oAuthClientEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1223,7 +1221,7 @@ public class OAuthClientEntryPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTENTRY_WHERE,
 				_SQL_COUNT_OAUTHCLIENTENTRY_WHERE,
 				OAuthClientEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"oAuthClientEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, OAuthClientEntry::getCompanyId));
@@ -1250,7 +1248,7 @@ public class OAuthClientEntryPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTENTRY_WHERE,
 				_SQL_COUNT_OAUTHCLIENTENTRY_WHERE,
 				OAuthClientEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"oAuthClientEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, OAuthClientEntry::getUserId));
@@ -1279,7 +1277,7 @@ public class OAuthClientEntryPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTENTRY_WHERE,
 				_SQL_COUNT_OAUTHCLIENTENTRY_WHERE,
 				OAuthClientEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"oAuthClientEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, OAuthClientEntry::getCompanyId),
@@ -1387,12 +1385,6 @@ public class OAuthClientEntryPersistenceImpl
 	private static final String _SQL_COUNT_OAUTHCLIENTENTRY_WHERE =
 		"SELECT COUNT(oAuthClientEntry) FROM OAuthClientEntry oAuthClientEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No OAuthClientEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		OAuthClientEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1402,4 +1394,4 @@ public class OAuthClientEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1523365615
+// LIFERAY-SERVICE-BUILDER-HASH:735667737

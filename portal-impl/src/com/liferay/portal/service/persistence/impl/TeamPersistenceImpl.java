@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchTeamException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.TeamTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -1563,7 +1561,7 @@ public class TeamPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_TEAM_WHERE, _SQL_COUNT_TEAM_WHERE,
-			TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"team.", "uuid", "uuid_", FinderColumn.Type.STRING, "=", true,
 				true, Team::getUuid));
@@ -1603,7 +1601,7 @@ public class TeamPersistenceImpl
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_TEAM_WHERE, _SQL_COUNT_TEAM_WHERE,
-				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"team.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Team::getUuid),
@@ -1631,7 +1629,7 @@ public class TeamPersistenceImpl
 					"countByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_TEAM_WHERE, _SQL_COUNT_TEAM_WHERE,
-				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"team.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Team::getCompanyId));
@@ -1656,7 +1654,7 @@ public class TeamPersistenceImpl
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_TEAM_WHERE, _SQL_COUNT_TEAM_WHERE,
-				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				TeamModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"team.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 					Team::getGroupId));
@@ -1711,12 +1709,6 @@ public class TeamPersistenceImpl
 	private static final String _SQL_COUNT_TEAM_WHERE =
 		"SELECT COUNT(team) FROM Team team WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Team exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		TeamPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1726,4 +1718,4 @@ public class TeamPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-838312667
+// LIFERAY-SERVICE-BUILDER-HASH:974543681

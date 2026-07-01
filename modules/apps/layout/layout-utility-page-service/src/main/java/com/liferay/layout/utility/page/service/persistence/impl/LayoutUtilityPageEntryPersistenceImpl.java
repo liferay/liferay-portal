@@ -14,7 +14,6 @@ import com.liferay.layout.utility.page.model.impl.LayoutUtilityPageEntryModelImp
 import com.liferay.layout.utility.page.service.persistence.LayoutUtilityPageEntryPersistence;
 import com.liferay.layout.utility.page.service.persistence.LayoutUtilityPageEntryUtil;
 import com.liferay.layout.utility.page.service.persistence.impl.constants.LayoutUtilityPagePersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -24,8 +23,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -571,26 +568,9 @@ public class LayoutUtilityPageEntryPersistenceImpl
 			OrderByComparator<LayoutUtilityPageEntry> orderByComparator)
 		throws NoSuchLayoutUtilityPageEntryException {
 
-		LayoutUtilityPageEntry layoutUtilityPageEntry = fetchByG_T_First(
-			groupId, type, orderByComparator);
-
-		if (layoutUtilityPageEntry != null) {
-			return layoutUtilityPageEntry;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", type=");
-		sb.append(type);
-
-		sb.append("}");
-
-		throw new NoSuchLayoutUtilityPageEntryException(sb.toString());
+		return _collectionPersistenceFinderByG_T.findFirst(
+			finderCache, new Object[] {groupId, new String[] {type}},
+			orderByComparator);
 	}
 
 	/**
@@ -1083,29 +1063,9 @@ public class LayoutUtilityPageEntryPersistenceImpl
 			OrderByComparator<LayoutUtilityPageEntry> orderByComparator)
 		throws NoSuchLayoutUtilityPageEntryException {
 
-		LayoutUtilityPageEntry layoutUtilityPageEntry = fetchByG_LikeN_T_First(
-			groupId, name, type, orderByComparator);
-
-		if (layoutUtilityPageEntry != null) {
-			return layoutUtilityPageEntry;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", nameLIKE");
-		sb.append(name);
-
-		sb.append(", type=");
-		sb.append(type);
-
-		sb.append("}");
-
-		throw new NoSuchLayoutUtilityPageEntryException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeN_T.findFirst(
+			finderCache, new Object[] {groupId, name, new String[] {type}},
+			orderByComparator);
 	}
 
 	/**
@@ -1901,7 +1861,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 			_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 			_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 			LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"layoutUtilityPageEntry.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1946,7 +1906,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1978,7 +1938,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2017,7 +1977,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2065,7 +2025,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2126,7 +2086,7 @@ public class LayoutUtilityPageEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				_SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE,
 				LayoutUtilityPageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"layoutUtilityPageEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2214,12 +2174,6 @@ public class LayoutUtilityPageEntryPersistenceImpl
 	private static final String _SQL_COUNT_LAYOUTUTILITYPAGEENTRY_WHERE =
 		"SELECT COUNT(layoutUtilityPageEntry) FROM LayoutUtilityPageEntry layoutUtilityPageEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LayoutUtilityPageEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutUtilityPageEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "type"});
 
@@ -2229,4 +2183,4 @@ public class LayoutUtilityPageEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2048396676
+// LIFERAY-SERVICE-BUILDER-HASH:464485241

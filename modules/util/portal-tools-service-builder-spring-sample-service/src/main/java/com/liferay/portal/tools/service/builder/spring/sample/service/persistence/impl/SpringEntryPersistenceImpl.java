@@ -550,6 +550,7 @@ public class SpringEntryPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_SPRINGENTRY_WHERE, _SQL_COUNT_SPRINGENTRY_WHERE,
 			SpringEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"springEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, SpringEntry::getUuid));
@@ -575,7 +576,7 @@ public class SpringEntryPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_SPRINGENTRY_WHERE, _SQL_COUNT_SPRINGENTRY_WHERE,
 				SpringEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"springEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, SpringEntry::getUuid),
@@ -604,7 +605,7 @@ public class SpringEntryPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_SPRINGENTRY_WHERE, _SQL_COUNT_SPRINGENTRY_WHERE,
 				SpringEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"springEntry.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, SpringEntry::getCompanyId));
@@ -636,9 +637,6 @@ public class SpringEntryPersistenceImpl
 	private static final String _SQL_COUNT_SPRINGENTRY_WHERE =
 		"SELECT COUNT(springEntry) FROM SpringEntry springEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SpringEntry exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -648,4 +646,4 @@ public class SpringEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:733895332
+// LIFERAY-SERVICE-BUILDER-HASH:782250726

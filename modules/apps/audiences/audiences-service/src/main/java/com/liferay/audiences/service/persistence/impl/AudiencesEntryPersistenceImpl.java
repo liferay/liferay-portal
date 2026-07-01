@@ -22,8 +22,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -675,7 +673,7 @@ public class AudiencesEntryPersistenceImpl
 				_SQL_SELECT_AUDIENCESENTRY_WHERE,
 				_SQL_COUNT_AUDIENCESENTRY_WHERE,
 				AudiencesEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"audiencesEntry.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AudiencesEntry::getCompanyId));
@@ -699,7 +697,7 @@ public class AudiencesEntryPersistenceImpl
 				_SQL_SELECT_AUDIENCESENTRY_WHERE,
 				_SQL_COUNT_AUDIENCESENTRY_WHERE,
 				AudiencesEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"audiencesEntry.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AudiencesEntry::getCompanyId),
@@ -779,16 +777,10 @@ public class AudiencesEntryPersistenceImpl
 	private static final String _SQL_COUNT_AUDIENCESENTRY_WHERE =
 		"SELECT COUNT(audiencesEntry) FROM AudiencesEntry audiencesEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AudiencesEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AudiencesEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-68102355
+// LIFERAY-SERVICE-BUILDER-HASH:-968481709

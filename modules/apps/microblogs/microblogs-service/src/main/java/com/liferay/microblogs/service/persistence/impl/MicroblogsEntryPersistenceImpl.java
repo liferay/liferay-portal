@@ -13,7 +13,6 @@ import com.liferay.microblogs.model.impl.MicroblogsEntryModelImpl;
 import com.liferay.microblogs.service.persistence.MicroblogsEntryPersistence;
 import com.liferay.microblogs.service.persistence.MicroblogsEntryUtil;
 import com.liferay.microblogs.service.persistence.impl.constants.MicroblogsPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
@@ -490,26 +489,10 @@ public class MicroblogsEntryPersistenceImpl
 			OrderByComparator<MicroblogsEntry> orderByComparator)
 		throws NoSuchEntryException {
 
-		MicroblogsEntry microblogsEntry = fetchByCCNI_CCPK_First(
-			creatorClassNameId, creatorClassPK, orderByComparator);
-
-		if (microblogsEntry != null) {
-			return microblogsEntry;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("creatorClassNameId=");
-		sb.append(creatorClassNameId);
-
-		sb.append(", creatorClassPK=");
-		sb.append(creatorClassPK);
-
-		sb.append("}");
-
-		throw new NoSuchEntryException(sb.toString());
+		return _collectionPersistenceFinderByCCNI_CCPK.findFirst(
+			finderCache,
+			new Object[] {creatorClassNameId, new long[] {creatorClassPK}},
+			orderByComparator);
 	}
 
 	/**
@@ -1003,29 +986,12 @@ public class MicroblogsEntryPersistenceImpl
 			OrderByComparator<MicroblogsEntry> orderByComparator)
 		throws NoSuchEntryException {
 
-		MicroblogsEntry microblogsEntry = fetchByC_CCNI_CCPK_First(
-			companyId, creatorClassNameId, creatorClassPK, orderByComparator);
-
-		if (microblogsEntry != null) {
-			return microblogsEntry;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", creatorClassNameId=");
-		sb.append(creatorClassNameId);
-
-		sb.append(", creatorClassPK=");
-		sb.append(creatorClassPK);
-
-		sb.append("}");
-
-		throw new NoSuchEntryException(sb.toString());
+		return _collectionPersistenceFinderByC_CCNI_CCPK.findFirst(
+			finderCache,
+			new Object[] {
+				companyId, creatorClassNameId, new long[] {creatorClassPK}
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1432,29 +1398,12 @@ public class MicroblogsEntryPersistenceImpl
 			OrderByComparator<MicroblogsEntry> orderByComparator)
 		throws NoSuchEntryException {
 
-		MicroblogsEntry microblogsEntry = fetchByCCNI_CCPK_T_First(
-			creatorClassNameId, creatorClassPK, type, orderByComparator);
-
-		if (microblogsEntry != null) {
-			return microblogsEntry;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("creatorClassNameId=");
-		sb.append(creatorClassNameId);
-
-		sb.append(", creatorClassPK=");
-		sb.append(creatorClassPK);
-
-		sb.append(", type=");
-		sb.append(type);
-
-		sb.append("}");
-
-		throw new NoSuchEntryException(sb.toString());
+		return _collectionPersistenceFinderByCCNI_CCPK_T.findFirst(
+			finderCache,
+			new Object[] {
+				creatorClassNameId, new long[] {creatorClassPK}, type
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1716,33 +1665,12 @@ public class MicroblogsEntryPersistenceImpl
 			int type, OrderByComparator<MicroblogsEntry> orderByComparator)
 		throws NoSuchEntryException {
 
-		MicroblogsEntry microblogsEntry = fetchByC_CCNI_CCPK_T_First(
-			companyId, creatorClassNameId, creatorClassPK, type,
+		return _collectionPersistenceFinderByC_CCNI_CCPK_T.findFirst(
+			finderCache,
+			new Object[] {
+				companyId, creatorClassNameId, new long[] {creatorClassPK}, type
+			},
 			orderByComparator);
-
-		if (microblogsEntry != null) {
-			return microblogsEntry;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", creatorClassNameId=");
-		sb.append(creatorClassNameId);
-
-		sb.append(", creatorClassPK=");
-		sb.append(creatorClassPK);
-
-		sb.append(", type=");
-		sb.append(type);
-
-		sb.append("}");
-
-		throw new NoSuchEntryException(sb.toString());
 	}
 
 	/**
@@ -2364,7 +2292,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId));
@@ -2391,7 +2319,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId));
@@ -2422,7 +2350,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId),
@@ -2457,7 +2385,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2493,7 +2421,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2529,7 +2457,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "type", "type_",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -2579,7 +2507,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2625,7 +2553,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2678,7 +2606,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2736,7 +2664,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2791,7 +2719,7 @@ public class MicroblogsEntryPersistenceImpl
 				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
 				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
 				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId),
@@ -2861,9 +2789,6 @@ public class MicroblogsEntryPersistenceImpl
 	private static final String _SQL_COUNT_MICROBLOGSENTRY_WHERE =
 		"SELECT COUNT(microblogsEntry) FROM MicroblogsEntry microblogsEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No MicroblogsEntry exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -2873,4 +2798,4 @@ public class MicroblogsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-173657304
+// LIFERAY-SERVICE-BUILDER-HASH:-1405982586

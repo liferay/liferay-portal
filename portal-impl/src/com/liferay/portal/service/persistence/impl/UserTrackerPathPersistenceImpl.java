@@ -361,7 +361,7 @@ public class UserTrackerPathPersistenceImpl
 				_SQL_SELECT_USERTRACKERPATH_WHERE,
 				_SQL_COUNT_USERTRACKERPATH_WHERE,
 				UserTrackerPathModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"userTrackerPath.", "userTrackerId", FinderColumn.Type.LONG,
 					"=", true, true, UserTrackerPath::getUserTrackerId));
@@ -387,9 +387,6 @@ public class UserTrackerPathPersistenceImpl
 	private static final String _SQL_COUNT_USERTRACKERPATH_WHERE =
 		"SELECT COUNT(userTrackerPath) FROM UserTrackerPath userTrackerPath WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No UserTrackerPath exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"path"});
 
@@ -399,4 +396,4 @@ public class UserTrackerPathPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:310839619
+// LIFERAY-SERVICE-BUILDER-HASH:-1950787791

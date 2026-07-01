@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -525,7 +523,7 @@ public class ExportImportReportEntryPersistenceImpl
 			_SQL_SELECT_EXPORTIMPORTREPORTENTRY_WHERE,
 			_SQL_COUNT_EXPORTIMPORTREPORTENTRY_WHERE,
 			ExportImportReportEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"exportImportReportEntry.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, ExportImportReportEntry::getCompanyId),
@@ -632,12 +630,6 @@ public class ExportImportReportEntryPersistenceImpl
 	private static final String _SQL_COUNT_EXPORTIMPORTREPORTENTRY_WHERE =
 		"SELECT COUNT(exportImportReportEntry) FROM ExportImportReportEntry exportImportReportEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ExportImportReportEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ExportImportReportEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -647,4 +639,4 @@ public class ExportImportReportEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2130745214
+// LIFERAY-SERVICE-BUILDER-HASH:348109357

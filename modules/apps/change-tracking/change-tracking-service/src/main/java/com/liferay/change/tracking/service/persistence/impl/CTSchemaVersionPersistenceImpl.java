@@ -353,7 +353,7 @@ public class CTSchemaVersionPersistenceImpl
 				_SQL_SELECT_CTSCHEMAVERSION_WHERE,
 				_SQL_COUNT_CTSCHEMAVERSION_WHERE,
 				CTSchemaVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ctSchemaVersion.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CTSchemaVersion::getCompanyId));
@@ -412,13 +412,10 @@ public class CTSchemaVersionPersistenceImpl
 	private static final String _SQL_COUNT_CTSCHEMAVERSION_WHERE =
 		"SELECT COUNT(ctSchemaVersion) FROM CTSchemaVersion ctSchemaVersion WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTSchemaVersion exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1273137720
+// LIFERAY-SERVICE-BUILDER-HASH:803332916

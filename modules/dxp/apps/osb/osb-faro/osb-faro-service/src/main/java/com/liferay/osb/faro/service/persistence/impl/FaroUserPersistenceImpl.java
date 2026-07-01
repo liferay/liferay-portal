@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -982,6 +980,7 @@ public class FaroUserPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
 				FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"faroUser.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, FaroUser::getGroupId));
@@ -1007,6 +1006,7 @@ public class FaroUserPersistenceImpl
 					new String[] {"liveUserId"}, false),
 				_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
 				FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"faroUser.", "liveUserId", FinderColumn.Type.LONG, "=",
 					true, true, FaroUser::getLiveUserId));
@@ -1056,7 +1056,7 @@ public class FaroUserPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"groupId", "roleId"}, false),
 			_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
-			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"faroUser.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 				FaroUser::getGroupId),
@@ -1099,7 +1099,7 @@ public class FaroUserPersistenceImpl
 				new String[] {Long.class.getName(), Integer.class.getName()},
 				new String[] {"groupId", "status"}, false),
 			_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
-			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"faroUser.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 				FaroUser::getGroupId),
@@ -1126,7 +1126,7 @@ public class FaroUserPersistenceImpl
 				new String[] {Long.class.getName(), Integer.class.getName()},
 				new String[] {"liveUserId", "status"}, false),
 			_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
-			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"faroUser.", "liveUserId", FinderColumn.Type.LONG, "=", true,
 				true, FaroUser::getLiveUserId),
@@ -1153,7 +1153,7 @@ public class FaroUserPersistenceImpl
 				new String[] {String.class.getName(), Integer.class.getName()},
 				new String[] {"emailAddress", "status"}, 0, 1, false, null),
 			_SQL_SELECT_FAROUSER_WHERE, _SQL_COUNT_FAROUSER_WHERE,
-			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			FaroUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"faroUser.", "emailAddress", FinderColumn.Type.STRING, "=",
 				true, true, FaroUser::getEmailAddress),
@@ -1215,12 +1215,6 @@ public class FaroUserPersistenceImpl
 	private static final String _SQL_COUNT_FAROUSER_WHERE =
 		"SELECT COUNT(faroUser) FROM FaroUser faroUser WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No FaroUser exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FaroUserPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"key"});
 
@@ -1230,4 +1224,4 @@ public class FaroUserPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1435248490
+// LIFERAY-SERVICE-BUILDER-HASH:1711082277

@@ -1085,7 +1085,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId));
@@ -1112,7 +1112,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1146,7 +1146,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1176,7 +1176,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1210,7 +1210,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1247,7 +1247,7 @@ public class BatchPlannerPlanPersistenceImpl
 				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
 				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
 				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1312,9 +1312,6 @@ public class BatchPlannerPlanPersistenceImpl
 	private static final String _SQL_COUNT_BATCHPLANNERPLAN_WHERE =
 		"SELECT COUNT(batchPlannerPlan) FROM BatchPlannerPlan batchPlannerPlan WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No BatchPlannerPlan exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"active", "size"});
 
@@ -1324,4 +1321,4 @@ public class BatchPlannerPlanPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-134734332
+// LIFERAY-SERVICE-BUILDER-HASH:1367692142

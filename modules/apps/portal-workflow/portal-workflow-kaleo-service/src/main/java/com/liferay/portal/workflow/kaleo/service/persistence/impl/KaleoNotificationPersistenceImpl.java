@@ -759,7 +759,7 @@ public class KaleoNotificationPersistenceImpl
 				_SQL_SELECT_KALEONOTIFICATION_WHERE,
 				_SQL_COUNT_KALEONOTIFICATION_WHERE,
 				KaleoNotificationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"kaleoNotification.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, KaleoNotification::getCompanyId));
@@ -789,7 +789,7 @@ public class KaleoNotificationPersistenceImpl
 				_SQL_SELECT_KALEONOTIFICATION_WHERE,
 				_SQL_COUNT_KALEONOTIFICATION_WHERE,
 				KaleoNotificationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"kaleoNotification.", "kaleoDefinitionVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -820,7 +820,7 @@ public class KaleoNotificationPersistenceImpl
 				_SQL_SELECT_KALEONOTIFICATION_WHERE,
 				_SQL_COUNT_KALEONOTIFICATION_WHERE,
 				KaleoNotificationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"kaleoNotification.", "kaleoClassName",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -856,7 +856,7 @@ public class KaleoNotificationPersistenceImpl
 				_SQL_SELECT_KALEONOTIFICATION_WHERE,
 				_SQL_COUNT_KALEONOTIFICATION_WHERE,
 				KaleoNotificationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"kaleoNotification.", "kaleoClassName",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -923,13 +923,10 @@ public class KaleoNotificationPersistenceImpl
 	private static final String _SQL_COUNT_KALEONOTIFICATION_WHERE =
 		"SELECT COUNT(kaleoNotification) FROM KaleoNotification kaleoNotification WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No KaleoNotification exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-885160823
+// LIFERAY-SERVICE-BUILDER-HASH:-777730649

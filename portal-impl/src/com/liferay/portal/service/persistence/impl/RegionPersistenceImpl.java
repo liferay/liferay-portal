@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.DuplicateRegionExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchRegionException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.RegionTable;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
@@ -1030,7 +1028,7 @@ public class RegionPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_REGION_WHERE, _SQL_COUNT_REGION_WHERE,
-			RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"region.", "uuid", "uuid_", FinderColumn.Type.STRING, "=", true,
 				true, Region::getUuid));
@@ -1056,6 +1054,7 @@ public class RegionPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_REGION_WHERE, _SQL_COUNT_REGION_WHERE,
 				RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"region.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Region::getUuid),
@@ -1084,6 +1083,7 @@ public class RegionPersistenceImpl
 					new String[] {"countryId"}, false),
 				_SQL_SELECT_REGION_WHERE, _SQL_COUNT_REGION_WHERE,
 				RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"region.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Region::getCountryId));
@@ -1109,6 +1109,7 @@ public class RegionPersistenceImpl
 					new String[] {"active_"}, false),
 				_SQL_SELECT_REGION_WHERE, _SQL_COUNT_REGION_WHERE,
 				RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"region.", "active", "active_", FinderColumn.Type.BOOLEAN,
 					"=", true, true, Region::isActive));
@@ -1132,7 +1133,7 @@ public class RegionPersistenceImpl
 				new String[] {Long.class.getName(), Boolean.class.getName()},
 				new String[] {"countryId", "active_"}, false),
 			_SQL_SELECT_REGION_WHERE, _SQL_COUNT_REGION_WHERE,
-			RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			RegionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"region.", "countryId", FinderColumn.Type.LONG, "=", true, true,
 				Region::getCountryId),
@@ -1196,12 +1197,6 @@ public class RegionPersistenceImpl
 	private static final String _SQL_COUNT_REGION_WHERE =
 		"SELECT COUNT(region) FROM Region region WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Region exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		RegionPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "active"});
 
@@ -1211,4 +1206,4 @@ public class RegionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:591462364
+// LIFERAY-SERVICE-BUILDER-HASH:-798716032

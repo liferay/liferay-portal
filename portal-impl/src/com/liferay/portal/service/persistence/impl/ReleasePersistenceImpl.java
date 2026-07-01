@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchReleaseException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseTable;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -357,12 +355,6 @@ public class ReleasePersistenceImpl
 	private static final String _SQL_SELECT_RELEASE__WHERE =
 		"SELECT release_ FROM Release release_ WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Release exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ReleasePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"state"});
 
@@ -372,4 +364,4 @@ public class ReleasePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1137971803
+// LIFERAY-SERVICE-BUILDER-HASH:842092672

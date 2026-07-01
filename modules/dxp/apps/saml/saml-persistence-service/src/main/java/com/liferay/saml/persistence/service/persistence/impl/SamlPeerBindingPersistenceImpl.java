@@ -513,7 +513,7 @@ public class SamlPeerBindingPersistenceImpl
 				_SQL_SELECT_SAMLPEERBINDING_WHERE,
 				_SQL_COUNT_SAMLPEERBINDING_WHERE,
 				SamlPeerBindingModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"samlPeerBinding.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, SamlPeerBinding::getCompanyId),
@@ -565,7 +565,7 @@ public class SamlPeerBindingPersistenceImpl
 				_SQL_SELECT_SAMLPEERBINDING_WHERE,
 				_SQL_COUNT_SAMLPEERBINDING_WHERE,
 				SamlPeerBindingModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"samlPeerBinding.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, SamlPeerBinding::getCompanyId),
@@ -634,13 +634,10 @@ public class SamlPeerBindingPersistenceImpl
 	private static final String _SQL_COUNT_SAMLPEERBINDING_WHERE =
 		"SELECT COUNT(samlPeerBinding) FROM SamlPeerBinding samlPeerBinding WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SamlPeerBinding exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1646543176
+// LIFERAY-SERVICE-BUILDER-HASH:-1672532580

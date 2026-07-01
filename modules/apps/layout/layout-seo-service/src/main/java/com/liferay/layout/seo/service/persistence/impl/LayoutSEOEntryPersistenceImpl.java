@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -730,6 +728,7 @@ public class LayoutSEOEntryPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_LAYOUTSEOENTRY_WHERE, _SQL_COUNT_LAYOUTSEOENTRY_WHERE,
 			LayoutSEOEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"layoutSEOEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, LayoutSEOEntry::getUuid));
@@ -772,7 +771,7 @@ public class LayoutSEOEntryPersistenceImpl
 				_SQL_SELECT_LAYOUTSEOENTRY_WHERE,
 				_SQL_COUNT_LAYOUTSEOENTRY_WHERE,
 				LayoutSEOEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"layoutSEOEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -860,12 +859,6 @@ public class LayoutSEOEntryPersistenceImpl
 	private static final String _SQL_COUNT_LAYOUTSEOENTRY_WHERE =
 		"SELECT COUNT(layoutSEOEntry) FROM LayoutSEOEntry layoutSEOEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No LayoutSEOEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutSEOEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "openGraphImageFileEntryScopeERC"});
 
@@ -875,4 +868,4 @@ public class LayoutSEOEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1290847667
+// LIFERAY-SERVICE-BUILDER-HASH:-15793261

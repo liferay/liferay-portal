@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -1142,7 +1140,7 @@ public class KaleoInstancePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 				KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"kaleoInstance.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, KaleoInstance::getCompanyId));
@@ -1171,7 +1169,7 @@ public class KaleoInstancePersistenceImpl
 					new String[] {"kaleoDefinitionVersionId"}, false),
 				_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 				KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"kaleoInstance.", "kaleoDefinitionVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1197,6 +1195,7 @@ public class KaleoInstancePersistenceImpl
 				new String[] {"companyId", "userId"}, false),
 			_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 			KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kaleoInstance.", "companyId", FinderColumn.Type.LONG, "=",
 				true, true, KaleoInstance::getCompanyId),
@@ -1224,6 +1223,7 @@ public class KaleoInstancePersistenceImpl
 				new String[] {"kaleoDefinitionId", "completed"}, false),
 			_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 			KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"kaleoInstance.", "kaleoDefinitionId", FinderColumn.Type.LONG,
 				"=", true, true, KaleoInstance::getKaleoDefinitionId),
@@ -1259,7 +1259,7 @@ public class KaleoInstancePersistenceImpl
 					false),
 				_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 				KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"kaleoInstance.", "kaleoDefinitionVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1289,7 +1289,7 @@ public class KaleoInstancePersistenceImpl
 					new String[] {"className", "classPK"}, 0, 1, false, null),
 				_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 				KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"kaleoInstance.", "className", FinderColumn.Type.STRING,
 					"=", true, true, KaleoInstance::getClassName),
@@ -1362,7 +1362,7 @@ public class KaleoInstancePersistenceImpl
 					0, 2, false, null),
 				_SQL_SELECT_KALEOINSTANCE_WHERE, _SQL_COUNT_KALEOINSTANCE_WHERE,
 				KaleoInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"kaleoInstance.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, KaleoInstance::getCompanyId),
@@ -1435,12 +1435,6 @@ public class KaleoInstancePersistenceImpl
 	private static final String _SQL_COUNT_KALEOINSTANCE_WHERE =
 		"SELECT COUNT(kaleoInstance) FROM KaleoInstance kaleoInstance WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No KaleoInstance exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		KaleoInstancePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"active"});
 
@@ -1450,4 +1444,4 @@ public class KaleoInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1768362675
+// LIFERAY-SERVICE-BUILDER-HASH:-1788952984

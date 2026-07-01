@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -765,7 +763,7 @@ public class CommercePriceListAccountRelPersistenceImpl
 			_SQL_SELECT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 			_SQL_COUNT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 			CommercePriceListAccountRelModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commercePriceListAccountRel.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -793,7 +791,7 @@ public class CommercePriceListAccountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 				CommercePriceListAccountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListAccountRel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -828,7 +826,7 @@ public class CommercePriceListAccountRelPersistenceImpl
 				_SQL_SELECT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 				_SQL_COUNT_COMMERCEPRICELISTACCOUNTREL_WHERE,
 				CommercePriceListAccountRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commercePriceListAccountRel.", "commercePriceListId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -910,12 +908,6 @@ public class CommercePriceListAccountRelPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEPRICELISTACCOUNTREL_WHERE =
 		"SELECT COUNT(commercePriceListAccountRel) FROM CommercePriceListAccountRel commercePriceListAccountRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommercePriceListAccountRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommercePriceListAccountRelPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "order"});
 
@@ -925,4 +917,4 @@ public class CommercePriceListAccountRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-306714975
+// LIFERAY-SERVICE-BUILDER-HASH:1735120858

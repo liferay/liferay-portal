@@ -675,7 +675,7 @@ public class ObjectViewColumnPersistenceImpl
 			_SQL_SELECT_OBJECTVIEWCOLUMN_WHERE,
 			_SQL_COUNT_OBJECTVIEWCOLUMN_WHERE,
 			ObjectViewColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"objectViewColumn.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, ObjectViewColumn::getUuid));
@@ -702,7 +702,7 @@ public class ObjectViewColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWCOLUMN_WHERE,
 				ObjectViewColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectViewColumn.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -734,7 +734,7 @@ public class ObjectViewColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWCOLUMN_WHERE,
 				ObjectViewColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectViewColumn.", "objectViewId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectViewColumn::getObjectViewId));
@@ -763,7 +763,7 @@ public class ObjectViewColumnPersistenceImpl
 				_SQL_SELECT_OBJECTVIEWCOLUMN_WHERE,
 				_SQL_COUNT_OBJECTVIEWCOLUMN_WHERE,
 				ObjectViewColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectViewColumn.", "objectViewId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectViewColumn::getObjectViewId),
@@ -826,9 +826,6 @@ public class ObjectViewColumnPersistenceImpl
 	private static final String _SQL_COUNT_OBJECTVIEWCOLUMN_WHERE =
 		"SELECT COUNT(objectViewColumn) FROM ObjectViewColumn objectViewColumn WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ObjectViewColumn exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -838,4 +835,4 @@ public class ObjectViewColumnPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-622014567
+// LIFERAY-SERVICE-BUILDER-HASH:1314259238

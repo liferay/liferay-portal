@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.DuplicatePhoneExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchPhoneException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Phone;
 import com.liferay.portal.kernel.model.PhoneTable;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
@@ -1169,7 +1167,7 @@ public class PhonePersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
-			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"phone.", "uuid", "uuid_", FinderColumn.Type.STRING, "=", true,
 				true, Phone::getUuid));
@@ -1195,6 +1193,7 @@ public class PhonePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
 				PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"phone.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Phone::getUuid),
@@ -1223,6 +1222,7 @@ public class PhonePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
 				PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"phone.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Phone::getCompanyId));
@@ -1248,6 +1248,7 @@ public class PhonePersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
 				PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"phone.", "userId", FinderColumn.Type.LONG, "=", true, true,
 					Phone::getUserId));
@@ -1271,7 +1272,7 @@ public class PhonePersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"companyId", "classNameId"}, false),
 			_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
-			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"phone.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				Phone::getCompanyId),
@@ -1304,7 +1305,7 @@ public class PhonePersistenceImpl
 				},
 				new String[] {"companyId", "classNameId", "classPK"}, false),
 			_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
-			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"phone.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				Phone::getCompanyId),
@@ -1352,6 +1353,7 @@ public class PhonePersistenceImpl
 					false),
 				_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
 				PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"phone.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Phone::getCompanyId),
@@ -1402,12 +1404,6 @@ public class PhonePersistenceImpl
 	private static final String _SQL_COUNT_PHONE_WHERE =
 		"SELECT COUNT(phone) FROM Phone phone WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Phone exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PhonePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "number", "primary"});
 
@@ -1417,4 +1413,4 @@ public class PhonePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1449384733
+// LIFERAY-SERVICE-BUILDER-HASH:-1816003822

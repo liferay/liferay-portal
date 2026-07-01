@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1251,7 +1249,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1279,7 +1277,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1311,7 +1309,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1339,7 +1337,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "userId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1371,7 +1369,7 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 				_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE,
 				OAuthClientPRLocalMetadataModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"oAuthClientPRLocalMetadata.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1493,12 +1491,6 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	private static final String _SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE =
 		"SELECT COUNT(oAuthClientPRLocalMetadata) FROM OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No OAuthClientPRLocalMetadata exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		OAuthClientPRLocalMetadataPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1508,4 +1500,4 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-147756541
+// LIFERAY-SERVICE-BUILDER-HASH:18110799

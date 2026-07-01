@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchTicketException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -762,7 +760,7 @@ public class TicketPersistenceImpl
 				},
 				new String[] {"companyId", "classNameId", "classPK"}, false),
 			_SQL_SELECT_TICKET_WHERE, _SQL_COUNT_TICKET_WHERE,
-			TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"ticket.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				Ticket::getCompanyId),
@@ -803,6 +801,7 @@ public class TicketPersistenceImpl
 					false, null),
 				_SQL_SELECT_TICKET_WHERE, _SQL_COUNT_TICKET_WHERE,
 				TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ticket.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Ticket::getCompanyId),
@@ -838,7 +837,7 @@ public class TicketPersistenceImpl
 				},
 				new String[] {"classNameId", "classPK", "type_"}, false),
 			_SQL_SELECT_TICKET_WHERE, _SQL_COUNT_TICKET_WHERE,
-			TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"ticket.", "classNameId", FinderColumn.Type.LONG, "=", true,
 				true, Ticket::getClassNameId),
@@ -886,6 +885,7 @@ public class TicketPersistenceImpl
 					false),
 				_SQL_SELECT_TICKET_WHERE, _SQL_COUNT_TICKET_WHERE,
 				TicketModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"ticket.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Ticket::getCompanyId),
@@ -920,12 +920,6 @@ public class TicketPersistenceImpl
 	private static final String _SQL_COUNT_TICKET_WHERE =
 		"SELECT COUNT(ticket) FROM Ticket ticket WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Ticket exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		TicketPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"key", "type"});
 
@@ -935,4 +929,4 @@ public class TicketPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1102707637
+// LIFERAY-SERVICE-BUILDER-HASH:1833938805

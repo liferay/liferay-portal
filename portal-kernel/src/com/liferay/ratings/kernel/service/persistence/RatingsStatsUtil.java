@@ -125,64 +125,6 @@ public class RatingsStatsUtil {
 	}
 
 	/**
-	 * Returns all the ratings statses where classNameId = &#63; and classPK = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPKs the class pks
-	 * @return the matching ratings statses
-	 */
-	public static List<RatingsStats> findByC_C(
-		long classNameId, long[] classPKs) {
-
-		return getPersistence().findByC_C(classNameId, classPKs);
-	}
-
-	/**
-	 * Returns a range of all the ratings statses where classNameId = &#63; and classPK = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPKs the class pks
-	 * @param start the lower bound of the range of ratings statses
-	 * @param end the upper bound of the range of ratings statses (not inclusive)
-	 * @return the range of matching ratings statses
-	 */
-	public static List<RatingsStats> findByC_C(
-		long classNameId, long[] classPKs, int start, int end) {
-
-		return getPersistence().findByC_C(classNameId, classPKs, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the ratings statses where classNameId = &#63; and classPK = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPKs the class pks
-	 * @param start the lower bound of the range of ratings statses
-	 * @param end the upper bound of the range of ratings statses (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ratings statses
-	 */
-	public static List<RatingsStats> findByC_C(
-		long classNameId, long[] classPKs, int start, int end,
-		OrderByComparator<RatingsStats> orderByComparator) {
-
-		return getPersistence().findByC_C(
-			classNameId, classPKs, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns an ordered range of all the ratings statses where classNameId = &#63; and classPK = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
@@ -332,6 +274,60 @@ public class RatingsStatsUtil {
 		return getPersistence().fetchByC_C(classNameId, classPK);
 	}
 
+	/**
+	 * Returns all the ratings statses where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @return the matching ratings statses
+	 */
+	public static List<RatingsStats> findByC_C(
+		long classNameId, long[] classPKs) {
+
+		return getPersistence().findByC_C(classNameId, classPKs);
+	}
+
+	/**
+	 * Returns a range of all the ratings statses where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param start the lower bound of the range of ratings statses
+	 * @param end the upper bound of the range of ratings statses (not inclusive)
+	 * @return the range of matching ratings statses
+	 */
+	public static List<RatingsStats> findByC_C(
+		long classNameId, long[] classPKs, int start, int end) {
+
+		return getPersistence().findByC_C(classNameId, classPKs, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the ratings statses where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsStatsModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param start the lower bound of the range of ratings statses
+	 * @param end the upper bound of the range of ratings statses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ratings statses
+	 */
+	public static List<RatingsStats> findByC_C(
+		long classNameId, long[] classPKs, int start, int end,
+		OrderByComparator<RatingsStats> orderByComparator) {
+
+		return getPersistence().findByC_C(
+			classNameId, classPKs, start, end, orderByComparator);
+	}
+
 	public static RatingsStatsPersistence getPersistence() {
 		return _persistence;
 	}
@@ -343,4 +339,4 @@ public class RatingsStatsUtil {
 	private static volatile RatingsStatsPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1167010224
+// LIFERAY-SERVICE-BUILDER-HASH:-1021069249

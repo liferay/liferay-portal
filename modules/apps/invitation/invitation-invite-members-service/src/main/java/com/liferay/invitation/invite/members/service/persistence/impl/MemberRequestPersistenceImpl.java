@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -631,7 +629,7 @@ public class MemberRequestPersistenceImpl
 					new String[] {"receiverUserId"}, false),
 				_SQL_SELECT_MEMBERREQUEST_WHERE, _SQL_COUNT_MEMBERREQUEST_WHERE,
 				MemberRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"memberRequest.", "receiverUserId", FinderColumn.Type.LONG,
 					"=", true, true, MemberRequest::getReceiverUserId));
@@ -656,6 +654,7 @@ public class MemberRequestPersistenceImpl
 				new String[] {"receiverUserId", "status"}, false),
 			_SQL_SELECT_MEMBERREQUEST_WHERE, _SQL_COUNT_MEMBERREQUEST_WHERE,
 			MemberRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"memberRequest.", "receiverUserId", FinderColumn.Type.LONG, "=",
 				true, true, MemberRequest::getReceiverUserId),
@@ -739,12 +738,6 @@ public class MemberRequestPersistenceImpl
 	private static final String _SQL_COUNT_MEMBERREQUEST_WHERE =
 		"SELECT COUNT(memberRequest) FROM MemberRequest memberRequest WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No MemberRequest exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MemberRequestPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"key"});
 
@@ -754,4 +747,4 @@ public class MemberRequestPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:664587651
+// LIFERAY-SERVICE-BUILDER-HASH:401410941

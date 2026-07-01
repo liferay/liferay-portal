@@ -338,7 +338,7 @@ public class CacheFieldEntryPersistenceImpl
 				_SQL_SELECT_CACHEFIELDENTRY_WHERE,
 				_SQL_COUNT_CACHEFIELDENTRY_WHERE,
 				CacheFieldEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"cacheFieldEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CacheFieldEntry::getGroupId));
@@ -370,13 +370,10 @@ public class CacheFieldEntryPersistenceImpl
 	private static final String _SQL_COUNT_CACHEFIELDENTRY_WHERE =
 		"SELECT COUNT(cacheFieldEntry) FROM CacheFieldEntry cacheFieldEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CacheFieldEntry exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1572352880
+// LIFERAY-SERVICE-BUILDER-HASH:-239303016

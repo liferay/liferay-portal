@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -452,7 +450,7 @@ public class OpenIdConnectUserPersistenceImpl
 			_SQL_SELECT_OPENIDCONNECTUSER_WHERE,
 			_SQL_COUNT_OPENIDCONNECTUSER_WHERE,
 			OpenIdConnectUserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"openIdConnectUser.", "companyId", FinderColumn.Type.LONG, "=",
 				true, true, OpenIdConnectUser::getCompanyId),
@@ -537,16 +535,10 @@ public class OpenIdConnectUserPersistenceImpl
 	private static final String _SQL_COUNT_OPENIDCONNECTUSER_WHERE =
 		"SELECT COUNT(openIdConnectUser) FROM OpenIdConnectUser openIdConnectUser WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No OpenIdConnectUser exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		OpenIdConnectUserPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1784818486
+// LIFERAY-SERVICE-BUILDER-HASH:1070655069

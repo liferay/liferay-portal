@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelperUtil;
@@ -1213,7 +1211,7 @@ public class ExpandoValuePersistenceImpl
 					new String[] {"tableId"}, false),
 				_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 				ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"expandoValue.", "tableId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoValue::getTableId));
@@ -1239,7 +1237,7 @@ public class ExpandoValuePersistenceImpl
 					new String[] {"columnId"}, false),
 				_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 				ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"expandoValue.", "columnId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoValue::getColumnId));
@@ -1263,6 +1261,7 @@ public class ExpandoValuePersistenceImpl
 				false),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "rowId", "rowId_", FinderColumn.Type.LONG, "=",
 				true, true, ExpandoValue::getRowId));
@@ -1287,6 +1286,7 @@ public class ExpandoValuePersistenceImpl
 				new String[] {"tableId", "columnId"}, false),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getTableId),
@@ -1314,6 +1314,7 @@ public class ExpandoValuePersistenceImpl
 				new String[] {"tableId", "rowId_"}, false),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getTableId),
@@ -1341,6 +1342,7 @@ public class ExpandoValuePersistenceImpl
 				new String[] {"tableId", "classPK"}, false),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getTableId),
@@ -1383,6 +1385,7 @@ public class ExpandoValuePersistenceImpl
 				new String[] {"classNameId", "classPK"}, false),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "classNameId", FinderColumn.Type.LONG, "=",
 				true, true, ExpandoValue::getClassNameId),
@@ -1440,6 +1443,7 @@ public class ExpandoValuePersistenceImpl
 				null),
 			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
 			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getTableId),
@@ -1471,12 +1475,6 @@ public class ExpandoValuePersistenceImpl
 	private static final String _SQL_COUNT_EXPANDOVALUE_WHERE =
 		"SELECT COUNT(expandoValue) FROM ExpandoValue expandoValue WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ExpandoValue exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ExpandoValuePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"rowId", "data"});
 
@@ -1486,4 +1484,4 @@ public class ExpandoValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1089400537
+// LIFERAY-SERVICE-BUILDER-HASH:-1817278950

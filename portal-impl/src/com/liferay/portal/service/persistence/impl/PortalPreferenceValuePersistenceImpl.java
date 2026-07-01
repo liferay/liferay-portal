@@ -5,14 +5,11 @@
 
 package com.liferay.portal.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPreferenceValueException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PortalPreferenceValue;
 import com.liferay.portal.kernel.model.PortalPreferenceValueTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -111,24 +108,9 @@ public class PortalPreferenceValuePersistenceImpl
 			OrderByComparator<PortalPreferenceValue> orderByComparator)
 		throws NoSuchPreferenceValueException {
 
-		PortalPreferenceValue portalPreferenceValue =
-			fetchByPortalPreferencesId_First(
-				portalPreferencesId, orderByComparator);
-
-		if (portalPreferenceValue != null) {
-			return portalPreferenceValue;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("portalPreferencesId=");
-		sb.append(portalPreferencesId);
-
-		sb.append("}");
-
-		throw new NoSuchPreferenceValueException(sb.toString());
+		return _collectionPersistenceFinderByPortalPreferencesId.findFirst(
+			dummyFinderCache, new Object[] {new long[] {portalPreferencesId}},
+			orderByComparator);
 	}
 
 	/**
@@ -832,7 +814,7 @@ public class PortalPreferenceValuePersistenceImpl
 				_SQL_SELECT_PORTALPREFERENCEVALUE_WHERE,
 				_SQL_COUNT_PORTALPREFERENCEVALUE_WHERE,
 				PortalPreferenceValueModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new ArrayableFinderColumn<>(
 					"portalPreferenceValue.", "portalPreferencesId",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -861,7 +843,7 @@ public class PortalPreferenceValuePersistenceImpl
 			_SQL_SELECT_PORTALPREFERENCEVALUE_WHERE,
 			_SQL_COUNT_PORTALPREFERENCEVALUE_WHERE,
 			PortalPreferenceValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"portalPreferenceValue.", "portalPreferencesId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -900,7 +882,7 @@ public class PortalPreferenceValuePersistenceImpl
 			_SQL_SELECT_PORTALPREFERENCEVALUE_WHERE,
 			_SQL_COUNT_PORTALPREFERENCEVALUE_WHERE,
 			PortalPreferenceValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"portalPreferenceValue.", "portalPreferencesId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -984,7 +966,7 @@ public class PortalPreferenceValuePersistenceImpl
 				_SQL_SELECT_PORTALPREFERENCEVALUE_WHERE,
 				_SQL_COUNT_PORTALPREFERENCEVALUE_WHERE,
 				PortalPreferenceValueModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"portalPreferenceValue.", "portalPreferencesId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1023,12 +1005,6 @@ public class PortalPreferenceValuePersistenceImpl
 	private static final String _SQL_COUNT_PORTALPREFERENCEVALUE_WHERE =
 		"SELECT COUNT(portalPreferenceValue) FROM PortalPreferenceValue portalPreferenceValue WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PortalPreferenceValue exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PortalPreferenceValuePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"index", "key"});
 
@@ -1038,4 +1014,4 @@ public class PortalPreferenceValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1359487562
+// LIFERAY-SERVICE-BUILDER-HASH:553219297

@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -1129,6 +1127,7 @@ public class AMImageEntryPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 			AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"amImageEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, AMImageEntry::getUuid));
@@ -1170,7 +1169,7 @@ public class AMImageEntryPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 				AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"amImageEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, AMImageEntry::getUuid),
@@ -1199,7 +1198,7 @@ public class AMImageEntryPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 				AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"amImageEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AMImageEntry::getGroupId));
@@ -1225,7 +1224,7 @@ public class AMImageEntryPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 				AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"amImageEntry.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AMImageEntry::getCompanyId));
@@ -1254,7 +1253,7 @@ public class AMImageEntryPersistenceImpl
 					new String[] {"configurationUuid"}, 0, 1, false, null),
 				_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 				AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"amImageEntry.", "configurationUuid",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1282,7 +1281,7 @@ public class AMImageEntryPersistenceImpl
 					new String[] {"fileVersionId"}, false),
 				_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 				AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"amImageEntry.", "fileVersionId", FinderColumn.Type.LONG,
 					"=", true, true, AMImageEntry::getFileVersionId));
@@ -1309,6 +1308,7 @@ public class AMImageEntryPersistenceImpl
 				null),
 			_SQL_SELECT_AMIMAGEENTRY_WHERE, _SQL_COUNT_AMIMAGEENTRY_WHERE,
 			AMImageEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"amImageEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, AMImageEntry::getCompanyId),
@@ -1389,12 +1389,6 @@ public class AMImageEntryPersistenceImpl
 	private static final String _SQL_COUNT_AMIMAGEENTRY_WHERE =
 		"SELECT COUNT(amImageEntry) FROM AMImageEntry amImageEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AMImageEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AMImageEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "size"});
 
@@ -1404,4 +1398,4 @@ public class AMImageEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1786981768
+// LIFERAY-SERVICE-BUILDER-HASH:2133670272

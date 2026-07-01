@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.model.AssetTagTable;
 import com.liferay.asset.kernel.service.persistence.AssetEntryPersistence;
 import com.liferay.asset.kernel.service.persistence.AssetTagPersistence;
 import com.liferay.asset.kernel.service.persistence.AssetTagUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -23,8 +22,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -377,22 +374,9 @@ public class AssetTagPersistenceImpl
 			long groupId, OrderByComparator<AssetTag> orderByComparator)
 		throws NoSuchTagException {
 
-		AssetTag assetTag = fetchByGroupId_First(groupId, orderByComparator);
-
-		if (assetTag != null) {
-			return assetTag;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append("}");
-
-		throw new NoSuchTagException(sb.toString());
+		return _collectionPersistenceFinderByGroupId.findFirst(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {new long[] {groupId}}, orderByComparator);
 	}
 
 	/**
@@ -515,22 +499,9 @@ public class AssetTagPersistenceImpl
 			String name, OrderByComparator<AssetTag> orderByComparator)
 		throws NoSuchTagException {
 
-		AssetTag assetTag = fetchByName_First(name, orderByComparator);
-
-		if (assetTag != null) {
-			return assetTag;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("name=");
-		sb.append(name);
-
-		sb.append("}");
-
-		throw new NoSuchTagException(sb.toString());
+		return _collectionPersistenceFinderByName.findFirst(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {new String[] {name}}, orderByComparator);
 	}
 
 	/**
@@ -803,26 +774,9 @@ public class AssetTagPersistenceImpl
 			OrderByComparator<AssetTag> orderByComparator)
 		throws NoSuchTagException {
 
-		AssetTag assetTag = fetchByG_LikeN_First(
-			groupId, name, orderByComparator);
-
-		if (assetTag != null) {
-			return assetTag;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", nameLIKE");
-		sb.append(name);
-
-		sb.append("}");
-
-		throw new NoSuchTagException(sb.toString());
+		return _collectionPersistenceFinderByG_LikeN.findFirst(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {new long[] {groupId}, name}, orderByComparator);
 	}
 
 	/**
@@ -1746,7 +1700,7 @@ public class AssetTagPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
-			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"assetTag.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, AssetTag::getUuid));
@@ -1787,6 +1741,7 @@ public class AssetTagPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
 				AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"assetTag.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, AssetTag::getUuid),
@@ -1815,6 +1770,7 @@ public class AssetTagPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
 				AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"assetTag.", "groupId", FinderColumn.Type.LONG, "=", false,
 					true, true, AssetTag::getGroupId));
@@ -1837,7 +1793,7 @@ public class AssetTagPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"name"}, 1,
 				1, false, null),
 			_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
-			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new ArrayableFinderColumn<>(
 				"assetTag.", "name", FinderColumn.Type.STRING, "=", false,
 				false, true, AssetTag::getName));
@@ -1861,7 +1817,7 @@ public class AssetTagPersistenceImpl
 				new String[] {Long.class.getName(), String.class.getName()},
 				new String[] {"groupId", "name"}, 2, 2, false, null),
 			_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
-			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"assetTag.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 				AssetTag::getGroupId),
@@ -1887,6 +1843,7 @@ public class AssetTagPersistenceImpl
 					new String[] {"groupId", "name"}, false),
 				_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
 				AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new ArrayableFinderColumn<>(
 					"assetTag.", "groupId", FinderColumn.Type.LONG, "=", false,
 					true, true, AssetTag::getGroupId),
@@ -1939,12 +1896,6 @@ public class AssetTagPersistenceImpl
 	private static final String _SQL_COUNT_ASSETTAG_WHERE =
 		"SELECT COUNT(assetTag) FROM AssetTag assetTag WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AssetTag exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetTagPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1954,4 +1905,4 @@ public class AssetTagPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2008529728
+// LIFERAY-SERVICE-BUILDER-HASH:-123491212

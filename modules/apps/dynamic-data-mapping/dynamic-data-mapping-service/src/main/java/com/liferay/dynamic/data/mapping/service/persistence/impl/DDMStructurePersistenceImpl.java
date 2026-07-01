@@ -13,7 +13,6 @@ import com.liferay.dynamic.data.mapping.model.impl.DDMStructureModelImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructurePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureUtil;
 import com.liferay.dynamic.data.mapping.service.persistence.impl.constants.DDMPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -22,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -377,23 +374,9 @@ public class DDMStructurePersistenceImpl
 			long groupId, OrderByComparator<DDMStructure> orderByComparator)
 		throws NoSuchStructureException {
 
-		DDMStructure ddmStructure = fetchByGroupId_First(
-			groupId, orderByComparator);
-
-		if (ddmStructure != null) {
-			return ddmStructure;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append("}");
-
-		throw new NoSuchStructureException(sb.toString());
+		return _collectionPersistenceFinderByGroupId.findFirst(
+			finderCache, new Object[] {new long[] {groupId}},
+			orderByComparator);
 	}
 
 	/**
@@ -891,26 +874,9 @@ public class DDMStructurePersistenceImpl
 			OrderByComparator<DDMStructure> orderByComparator)
 		throws NoSuchStructureException {
 
-		DDMStructure ddmStructure = fetchByG_C_First(
-			groupId, classNameId, orderByComparator);
-
-		if (ddmStructure != null) {
-			return ddmStructure;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", classNameId=");
-		sb.append(classNameId);
-
-		sb.append("}");
-
-		throw new NoSuchStructureException(sb.toString());
+		return _collectionPersistenceFinderByG_C.findFirst(
+			finderCache, new Object[] {new long[] {groupId}, classNameId},
+			orderByComparator);
 	}
 
 	/**
@@ -1510,32 +1476,10 @@ public class DDMStructurePersistenceImpl
 			OrderByComparator<DDMStructure> orderByComparator)
 		throws NoSuchStructureException {
 
-		DDMStructure ddmStructure = fetchByG_C_N_D_First(
-			groupId, classNameId, name, description, orderByComparator);
-
-		if (ddmStructure != null) {
-			return ddmStructure;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", classNameId=");
-		sb.append(classNameId);
-
-		sb.append(", name=");
-		sb.append(name);
-
-		sb.append(", description=");
-		sb.append(description);
-
-		sb.append("}");
-
-		throw new NoSuchStructureException(sb.toString());
+		return _collectionPersistenceFinderByG_C_N_D.findFirst(
+			finderCache,
+			new Object[] {new long[] {groupId}, classNameId, name, description},
+			orderByComparator);
 	}
 
 	/**
@@ -2114,6 +2058,7 @@ public class DDMStructurePersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 			DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"ddmStructure.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, DDMStructure::getUuid));
@@ -2155,7 +2100,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStructure.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, DDMStructure::getUuid),
@@ -2184,7 +2129,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId));
@@ -2213,7 +2158,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"parentStructureId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStructure.", "parentStructureId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2242,7 +2187,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"structureKey"}, 0, 1, false, null),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStructure.", "structureKey", FinderColumn.Type.STRING,
 					"=", true, true, DDMStructure::getStructureKey));
@@ -2268,7 +2213,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"groupId", "parentStructureId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMStructure::getGroupId),
@@ -2298,7 +2243,7 @@ public class DDMStructurePersistenceImpl
 					new String[] {"groupId", "classNameId"}, false),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId),
@@ -2326,6 +2271,7 @@ public class DDMStructurePersistenceImpl
 				new String[] {"companyId", "classNameId"}, false),
 			_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 			DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"ddmStructure.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, DDMStructure::getCompanyId),
@@ -2411,7 +2357,7 @@ public class DDMStructurePersistenceImpl
 					false, null),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMStructure::getGroupId),
@@ -2459,7 +2405,7 @@ public class DDMStructurePersistenceImpl
 					0, 12, false, null),
 				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
 				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId),
@@ -2530,12 +2476,6 @@ public class DDMStructurePersistenceImpl
 	private static final String _SQL_COUNT_DDMSTRUCTURE_WHERE =
 		"SELECT COUNT(ddmStructure) FROM DDMStructure ddmStructure WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DDMStructure exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DDMStructurePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "type"});
 
@@ -2545,4 +2485,4 @@ public class DDMStructurePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1683327874
+// LIFERAY-SERVICE-BUILDER-HASH:-1858720436

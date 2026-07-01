@@ -668,7 +668,7 @@ public class ObjectLayoutTabPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_OBJECTLAYOUTTAB_WHERE, _SQL_COUNT_OBJECTLAYOUTTAB_WHERE,
 			ObjectLayoutTabModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"objectLayoutTab.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, ObjectLayoutTab::getUuid));
@@ -695,7 +695,7 @@ public class ObjectLayoutTabPersistenceImpl
 				_SQL_SELECT_OBJECTLAYOUTTAB_WHERE,
 				_SQL_COUNT_OBJECTLAYOUTTAB_WHERE,
 				ObjectLayoutTabModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectLayoutTab.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -728,7 +728,7 @@ public class ObjectLayoutTabPersistenceImpl
 				_SQL_SELECT_OBJECTLAYOUTTAB_WHERE,
 				_SQL_COUNT_OBJECTLAYOUTTAB_WHERE,
 				ObjectLayoutTabModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectLayoutTab.", "objectLayoutId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -759,7 +759,7 @@ public class ObjectLayoutTabPersistenceImpl
 				_SQL_SELECT_OBJECTLAYOUTTAB_WHERE,
 				_SQL_COUNT_OBJECTLAYOUTTAB_WHERE,
 				ObjectLayoutTabModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"objectLayoutTab.", "objectRelationshipId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -819,9 +819,6 @@ public class ObjectLayoutTabPersistenceImpl
 	private static final String _SQL_COUNT_OBJECTLAYOUTTAB_WHERE =
 		"SELECT COUNT(objectLayoutTab) FROM ObjectLayoutTab objectLayoutTab WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ObjectLayoutTab exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -831,4 +828,4 @@ public class ObjectLayoutTabPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1107467076
+// LIFERAY-SERVICE-BUILDER-HASH:-1198324148

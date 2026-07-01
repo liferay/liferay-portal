@@ -527,7 +527,7 @@ public class UserTrackerPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_USERTRACKER_WHERE, _SQL_COUNT_USERTRACKER_WHERE,
 				UserTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"userTracker.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, UserTracker::getCompanyId));
@@ -553,7 +553,7 @@ public class UserTrackerPersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_USERTRACKER_WHERE, _SQL_COUNT_USERTRACKER_WHERE,
 				UserTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"userTracker.", "userId", FinderColumn.Type.LONG, "=", true,
 					true, UserTracker::getUserId));
@@ -579,7 +579,7 @@ public class UserTrackerPersistenceImpl
 					new String[] {"sessionId"}, 0, 1, false, null),
 				_SQL_SELECT_USERTRACKER_WHERE, _SQL_COUNT_USERTRACKER_WHERE,
 				UserTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"userTracker.", "sessionId", FinderColumn.Type.STRING, "=",
 					true, true, UserTracker::getSessionId));
@@ -605,13 +605,10 @@ public class UserTrackerPersistenceImpl
 	private static final String _SQL_COUNT_USERTRACKER_WHERE =
 		"SELECT COUNT(userTracker) FROM UserTracker userTracker WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No UserTracker exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-682367608
+// LIFERAY-SERVICE-BUILDER-HASH:1410262643

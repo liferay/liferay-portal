@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -875,6 +873,7 @@ public class AssetLinkPersistenceImpl
 					new String[] {"entryId1"}, false),
 				_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
 				AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"assetLink.", "entryId1", FinderColumn.Type.LONG, "=", true,
 					true, AssetLink::getEntryId1));
@@ -900,6 +899,7 @@ public class AssetLinkPersistenceImpl
 					new String[] {"entryId2"}, false),
 				_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
 				AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"assetLink.", "entryId2", FinderColumn.Type.LONG, "=", true,
 					true, AssetLink::getEntryId2));
@@ -924,6 +924,7 @@ public class AssetLinkPersistenceImpl
 				new String[] {"entryId1", "entryId2"}, false),
 			_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
 			AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"assetLink.", "entryId1", FinderColumn.Type.LONG, "=", true,
 				true, AssetLink::getEntryId1),
@@ -951,6 +952,7 @@ public class AssetLinkPersistenceImpl
 				new String[] {"entryId1", "type_"}, false),
 			_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
 			AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"assetLink.", "entryId1", FinderColumn.Type.LONG, "=", true,
 				true, AssetLink::getEntryId1),
@@ -978,6 +980,7 @@ public class AssetLinkPersistenceImpl
 				new String[] {"entryId2", "type_"}, false),
 			_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
 			AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"assetLink.", "entryId2", FinderColumn.Type.LONG, "=", true,
 				true, AssetLink::getEntryId2),
@@ -1064,12 +1067,6 @@ public class AssetLinkPersistenceImpl
 	private static final String _SQL_COUNT_ASSETLINK_WHERE =
 		"SELECT COUNT(assetLink) FROM AssetLink assetLink WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AssetLink exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetLinkPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -1079,4 +1076,4 @@ public class AssetLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1395856680
+// LIFERAY-SERVICE-BUILDER-HASH:260104277

@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -478,7 +476,7 @@ public class NotificationTemplateAttachmentPersistenceImpl
 				_SQL_SELECT_NOTIFICATIONTEMPLATEATTACHMENT_WHERE,
 				_SQL_COUNT_NOTIFICATIONTEMPLATEATTACHMENT_WHERE,
 				NotificationTemplateAttachmentModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"notificationTemplateAttachment.", "notificationTemplateId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -560,12 +558,6 @@ public class NotificationTemplateAttachmentPersistenceImpl
 		_SQL_COUNT_NOTIFICATIONTEMPLATEATTACHMENT_WHERE =
 			"SELECT COUNT(notificationTemplateAttachment) FROM NotificationTemplateAttachment notificationTemplateAttachment WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No NotificationTemplateAttachment exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		NotificationTemplateAttachmentPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"notificationTemplateAttachmentId"});
 
@@ -575,4 +567,4 @@ public class NotificationTemplateAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1415252225
+// LIFERAY-SERVICE-BUILDER-HASH:1520704601

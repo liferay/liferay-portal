@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -768,7 +766,7 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 			_SQL_SELECT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 			_SQL_COUNT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 			CommerceDiscountOrderTypeRelModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceDiscountOrderTypeRel.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -796,7 +794,7 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				CommerceDiscountOrderTypeRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountOrderTypeRel.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -831,7 +829,7 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				CommerceDiscountOrderTypeRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountOrderTypeRel.", "commerceDiscountId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -862,7 +860,7 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 				_SQL_SELECT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				_SQL_COUNT_COMMERCEDISCOUNTORDERTYPEREL_WHERE,
 				CommerceDiscountOrderTypeRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceDiscountOrderTypeRel.", "commerceOrderTypeId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -941,12 +939,6 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCEDISCOUNTORDERTYPEREL_WHERE =
 		"SELECT COUNT(commerceDiscountOrderTypeRel) FROM CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceDiscountOrderTypeRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountOrderTypeRelPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -956,4 +948,4 @@ public class CommerceDiscountOrderTypeRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1293699249
+// LIFERAY-SERVICE-BUILDER-HASH:1136793845

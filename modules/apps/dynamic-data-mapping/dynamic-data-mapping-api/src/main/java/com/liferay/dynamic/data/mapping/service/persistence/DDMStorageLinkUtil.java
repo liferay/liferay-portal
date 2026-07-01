@@ -456,62 +456,6 @@ public class DDMStorageLinkUtil {
 	}
 
 	/**
-	 * Returns all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @return the matching ddm storage links
-	 */
-	public static List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds) {
-
-		return getPersistence().findByStructureVersionId(structureVersionIds);
-	}
-
-	/**
-	 * Returns a range of all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @param start the lower bound of the range of ddm storage links
-	 * @param end the upper bound of the range of ddm storage links (not inclusive)
-	 * @return the range of matching ddm storage links
-	 */
-	public static List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds, int start, int end) {
-
-		return getPersistence().findByStructureVersionId(
-			structureVersionIds, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @param start the lower bound of the range of ddm storage links
-	 * @param end the upper bound of the range of ddm storage links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ddm storage links
-	 */
-	public static List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds, int start, int end,
-		OrderByComparator<DDMStorageLink> orderByComparator) {
-
-		return getPersistence().findByStructureVersionId(
-			structureVersionIds, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns an ordered range of all the ddm storage links where structureVersionId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
@@ -828,6 +772,58 @@ public class DDMStorageLinkUtil {
 			structureVersionId, start, end, orderByComparator);
 	}
 
+	/**
+	 * Returns all the ddm storage links where structureVersionId = any &#63;.
+	 *
+	 * @param structureVersionIds the structure version IDs
+	 * @return the matching ddm storage links
+	 */
+	public static List<DDMStorageLink> findByStructureVersionId(
+		long[] structureVersionIds) {
+
+		return getPersistence().findByStructureVersionId(structureVersionIds);
+	}
+
+	/**
+	 * Returns a range of all the ddm storage links where structureVersionId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl</code>.
+	 * </p>
+	 *
+	 * @param structureVersionIds the structure version IDs
+	 * @param start the lower bound of the range of ddm storage links
+	 * @param end the upper bound of the range of ddm storage links (not inclusive)
+	 * @return the range of matching ddm storage links
+	 */
+	public static List<DDMStorageLink> findByStructureVersionId(
+		long[] structureVersionIds, int start, int end) {
+
+		return getPersistence().findByStructureVersionId(
+			structureVersionIds, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the ddm storage links where structureVersionId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl</code>.
+	 * </p>
+	 *
+	 * @param structureVersionIds the structure version IDs
+	 * @param start the lower bound of the range of ddm storage links
+	 * @param end the upper bound of the range of ddm storage links (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ddm storage links
+	 */
+	public static List<DDMStorageLink> findByStructureVersionId(
+		long[] structureVersionIds, int start, int end,
+		OrderByComparator<DDMStorageLink> orderByComparator) {
+
+		return getPersistence().findByStructureVersionId(
+			structureVersionIds, start, end, orderByComparator);
+	}
+
 	public static DDMStorageLinkPersistence getPersistence() {
 		return _persistence;
 	}
@@ -839,4 +835,4 @@ public class DDMStorageLinkUtil {
 	private static volatile DDMStorageLinkPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:977617541
+// LIFERAY-SERVICE-BUILDER-HASH:46598112

@@ -14,7 +14,6 @@ import com.liferay.commerce.product.model.impl.CPConfigurationListModelImpl;
 import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.commerce.product.service.persistence.CPConfigurationListUtil;
 import com.liferay.commerce.product.service.persistence.impl.constants.CommercePersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -24,8 +23,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -566,26 +563,9 @@ public class CPConfigurationListPersistenceImpl
 			OrderByComparator<CPConfigurationList> orderByComparator)
 		throws NoSuchCPConfigurationListException {
 
-		CPConfigurationList cpConfigurationList = fetchByG_C_First(
-			groupId, companyId, orderByComparator);
-
-		if (cpConfigurationList != null) {
-			return cpConfigurationList;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", companyId=");
-		sb.append(companyId);
-
-		sb.append("}");
-
-		throw new NoSuchCPConfigurationListException(sb.toString());
+		return _collectionPersistenceFinderByG_C.findFirst(
+			finderCache, new Object[] {new long[] {groupId}, companyId},
+			orderByComparator);
 	}
 
 	/**
@@ -957,29 +937,9 @@ public class CPConfigurationListPersistenceImpl
 			OrderByComparator<CPConfigurationList> orderByComparator)
 		throws NoSuchCPConfigurationListException {
 
-		CPConfigurationList cpConfigurationList = fetchByG_C_S_First(
-			groupId, companyId, status, orderByComparator);
-
-		if (cpConfigurationList != null) {
-			return cpConfigurationList;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", companyId=");
-		sb.append(companyId);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchCPConfigurationListException(sb.toString());
+		return _collectionPersistenceFinderByG_C_S.findFirst(
+			finderCache, new Object[] {new long[] {groupId}, companyId, status},
+			orderByComparator);
 	}
 
 	/**
@@ -1182,29 +1142,9 @@ public class CPConfigurationListPersistenceImpl
 			OrderByComparator<CPConfigurationList> orderByComparator)
 		throws NoSuchCPConfigurationListException {
 
-		CPConfigurationList cpConfigurationList = fetchByG_C_NotS_First(
-			groupId, companyId, status, orderByComparator);
-
-		if (cpConfigurationList != null) {
-			return cpConfigurationList;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", companyId=");
-		sb.append(companyId);
-
-		sb.append(", status!=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchCPConfigurationListException(sb.toString());
+		return _collectionPersistenceFinderByG_C_NotS.findFirst(
+			finderCache, new Object[] {new long[] {groupId}, companyId, status},
+			orderByComparator);
 	}
 
 	/**
@@ -1835,7 +1775,7 @@ public class CPConfigurationListPersistenceImpl
 			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"cpConfigurationList.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1880,7 +1820,7 @@ public class CPConfigurationListPersistenceImpl
 				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cpConfigurationList.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1911,7 +1851,7 @@ public class CPConfigurationListPersistenceImpl
 				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cpConfigurationList.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CPConfigurationList::getCompanyId));
@@ -1941,7 +1881,7 @@ public class CPConfigurationListPersistenceImpl
 				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cpConfigurationList.", "parentCPConfigurationListId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1968,7 +1908,7 @@ public class CPConfigurationListPersistenceImpl
 			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new ArrayableFinderColumn<>(
 				"cpConfigurationList.", "groupId", FinderColumn.Type.LONG, "=",
 				false, true, true, CPConfigurationList::getGroupId),
@@ -1997,7 +1937,7 @@ public class CPConfigurationListPersistenceImpl
 			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"cpConfigurationList.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, CPConfigurationList::getGroupId),
@@ -2023,7 +1963,7 @@ public class CPConfigurationListPersistenceImpl
 			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"cpConfigurationList.", "displayDate", FinderColumn.Type.DATE,
 				"<", true, true, CPConfigurationList::getDisplayDate),
@@ -2058,7 +1998,7 @@ public class CPConfigurationListPersistenceImpl
 			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new ArrayableFinderColumn<>(
 				"cpConfigurationList.", "groupId", FinderColumn.Type.LONG, "=",
 				false, true, true, CPConfigurationList::getGroupId),
@@ -2092,7 +2032,7 @@ public class CPConfigurationListPersistenceImpl
 				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
 				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
 				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new ArrayableFinderColumn<>(
 					"cpConfigurationList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CPConfigurationList::getGroupId),
@@ -2179,12 +2119,6 @@ public class CPConfigurationListPersistenceImpl
 	private static final String _SQL_COUNT_CPCONFIGURATIONLIST_WHERE =
 		"SELECT COUNT(cpConfigurationList) FROM CPConfigurationList cpConfigurationList WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CPConfigurationList exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CPConfigurationListPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -2194,4 +2128,4 @@ public class CPConfigurationListPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1654067977
+// LIFERAY-SERVICE-BUILDER-HASH:1702901477

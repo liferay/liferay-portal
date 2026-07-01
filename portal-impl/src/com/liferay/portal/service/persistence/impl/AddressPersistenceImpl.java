@@ -5,7 +5,6 @@
 
 package com.liferay.portal.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -16,8 +15,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.DuplicateAddressExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchAddressException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.AddressTable;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
@@ -939,32 +936,12 @@ public class AddressPersistenceImpl
 			OrderByComparator<Address> orderByComparator)
 		throws NoSuchAddressException {
 
-		Address address = fetchByC_C_C_L_First(
-			companyId, classNameId, classPK, listTypeId, orderByComparator);
-
-		if (address != null) {
-			return address;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", classNameId=");
-		sb.append(classNameId);
-
-		sb.append(", classPK=");
-		sb.append(classPK);
-
-		sb.append(", listTypeId=");
-		sb.append(listTypeId);
-
-		sb.append("}");
-
-		throw new NoSuchAddressException(sb.toString());
+		return _collectionPersistenceFinderByC_C_C_L.findFirst(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {
+				companyId, classNameId, classPK, new long[] {listTypeId}
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1757,7 +1734,7 @@ public class AddressPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
-			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"address.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, Address::getUuid));
@@ -1783,6 +1760,7 @@ public class AddressPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Address::getUuid),
@@ -1811,6 +1789,7 @@ public class AddressPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getCompanyId));
@@ -1836,6 +1815,7 @@ public class AddressPersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "userId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getUserId));
@@ -1861,6 +1841,7 @@ public class AddressPersistenceImpl
 					new String[] {"countryId"}, false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getCountryId));
@@ -1886,6 +1867,7 @@ public class AddressPersistenceImpl
 					new String[] {"regionId"}, false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "regionId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getRegionId));
@@ -1909,7 +1891,7 @@ public class AddressPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"companyId", "classNameId"}, false),
 			_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
-			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, Address::getCompanyId),
@@ -1938,6 +1920,7 @@ public class AddressPersistenceImpl
 					new String[] {"classNameId", "classPK"}, false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "classNameId", FinderColumn.Type.LONG, "=",
 					true, true, Address::getClassNameId),
@@ -1970,7 +1953,7 @@ public class AddressPersistenceImpl
 				},
 				new String[] {"companyId", "classNameId", "classPK"}, false),
 			_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
-			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 				true, Address::getCompanyId),
@@ -2018,6 +2001,7 @@ public class AddressPersistenceImpl
 					false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getCompanyId),
@@ -2068,6 +2052,7 @@ public class AddressPersistenceImpl
 					false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getCompanyId),
@@ -2118,6 +2103,7 @@ public class AddressPersistenceImpl
 					false),
 				_SQL_SELECT_ADDRESS_WHERE, _SQL_COUNT_ADDRESS_WHERE,
 				AddressModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"address.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Address::getCompanyId),
@@ -2169,12 +2155,6 @@ public class AddressPersistenceImpl
 	private static final String _SQL_COUNT_ADDRESS_WHERE =
 		"SELECT COUNT(address) FROM Address address WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Address exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AddressPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "primary"});
 
@@ -2184,4 +2164,4 @@ public class AddressPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-973066251
+// LIFERAY-SERVICE-BUILDER-HASH:-358065422

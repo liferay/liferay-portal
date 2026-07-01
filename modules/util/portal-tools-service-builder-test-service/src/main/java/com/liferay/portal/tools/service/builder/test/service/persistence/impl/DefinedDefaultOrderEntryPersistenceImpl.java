@@ -9,8 +9,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -450,7 +448,7 @@ public class DefinedDefaultOrderEntryPersistenceImpl
 				_SQL_SELECT_DEFINEDDEFAULTORDERENTRY_WHERE,
 				_SQL_COUNT_DEFINEDDEFAULTORDERENTRY_WHERE,
 				DefinedDefaultOrderEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"definedDefaultOrderEntry.", "name",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -483,16 +481,10 @@ public class DefinedDefaultOrderEntryPersistenceImpl
 	private static final String _SQL_COUNT_DEFINEDDEFAULTORDERENTRY_WHERE =
 		"SELECT COUNT(definedDefaultOrderEntry) FROM DefinedDefaultOrderEntry definedDefaultOrderEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DefinedDefaultOrderEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DefinedDefaultOrderEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1999048616
+// LIFERAY-SERVICE-BUILDER-HASH:-637702866

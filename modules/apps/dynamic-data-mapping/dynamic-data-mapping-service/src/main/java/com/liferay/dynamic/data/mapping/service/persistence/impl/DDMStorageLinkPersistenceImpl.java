@@ -13,22 +13,16 @@ import com.liferay.dynamic.data.mapping.model.impl.DDMStorageLinkModelImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStorageLinkPersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStorageLinkUtil;
 import com.liferay.dynamic.data.mapping.service.persistence.impl.constants.DDMPersistenceConstants;
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.Query;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
+import com.liferay.portal.kernel.service.persistence.impl.ArrayableFinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
@@ -37,7 +31,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -98,7 +91,7 @@ public class DDMStorageLinkPersistenceImpl
 	 * Returns an ordered range of all the ddm storage links where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -182,7 +175,7 @@ public class DDMStorageLinkPersistenceImpl
 	 * Returns an ordered range of all the ddm storage links where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -331,7 +324,7 @@ public class DDMStorageLinkPersistenceImpl
 	 * Returns an ordered range of all the ddm storage links where structureId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
 	 * </p>
 	 *
 	 * @param structureId the structure ID
@@ -408,16 +401,15 @@ public class DDMStorageLinkPersistenceImpl
 			finderCache, new Object[] {structureId});
 	}
 
-	private FinderPath _finderPathWithPaginationFindByStructureVersionId;
-	private FinderPath _finderPathWithoutPaginationFindByStructureVersionId;
-	private FinderPath _finderPathCountByStructureVersionId;
-	private FinderPath _finderPathWithPaginationCountByStructureVersionId;
+	private CollectionPersistenceFinder
+		<DDMStorageLink, NoSuchStorageLinkException>
+			_collectionPersistenceFinderByStructureVersionId;
 
 	/**
 	 * Returns an ordered range of all the ddm storage links where structureVersionId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
 	 * </p>
 	 *
 	 * @param structureVersionId the structure version ID
@@ -433,104 +425,9 @@ public class DDMStorageLinkPersistenceImpl
 		OrderByComparator<DDMStorageLink> orderByComparator,
 		boolean useFinderCache) {
 
-		try (SafeCloseable safeCloseable =
-				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
-					DDMStorageLink.class)) {
-
-			FinderPath finderPath = null;
-			Object[] finderArgs = null;
-
-			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-
-				if (useFinderCache) {
-					finderPath =
-						_finderPathWithoutPaginationFindByStructureVersionId;
-					finderArgs = new Object[] {structureVersionId};
-				}
-			}
-			else if (useFinderCache) {
-				finderPath = _finderPathWithPaginationFindByStructureVersionId;
-				finderArgs = new Object[] {
-					structureVersionId, start, end, orderByComparator
-				};
-			}
-
-			List<DDMStorageLink> list = null;
-
-			if (useFinderCache) {
-				list = (List<DDMStorageLink>)finderCache.getResult(
-					finderPath, finderArgs, this);
-
-				if ((list != null) && !list.isEmpty()) {
-					for (DDMStorageLink ddmStorageLink : list) {
-						if (structureVersionId !=
-								ddmStorageLink.getStructureVersionId()) {
-
-							list = null;
-
-							break;
-						}
-					}
-				}
-			}
-
-			if (list == null) {
-				StringBundler sb = null;
-
-				if (orderByComparator != null) {
-					sb = new StringBundler(
-						3 + (orderByComparator.getOrderByFields().length * 2));
-				}
-				else {
-					sb = new StringBundler(3);
-				}
-
-				sb.append(_SQL_SELECT_DDMSTORAGELINK_WHERE);
-
-				sb.append(
-					_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_2);
-
-				if (orderByComparator != null) {
-					appendOrderByComparator(
-						sb, _ENTITY_ALIAS_PREFIX, orderByComparator);
-				}
-				else {
-					sb.append(DDMStorageLinkModelImpl.ORDER_BY_JPQL);
-				}
-
-				String sql = sb.toString();
-
-				Session session = null;
-
-				try {
-					session = openSession();
-
-					Query query = session.createQuery(sql);
-
-					QueryPos queryPos = QueryPos.getInstance(query);
-
-					queryPos.add(structureVersionId);
-
-					list = (List<DDMStorageLink>)QueryUtil.list(
-						query, getDialect(), start, end);
-
-					cacheResult(list);
-
-					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
-					}
-				}
-				catch (Exception exception) {
-					throw processException(exception);
-				}
-				finally {
-					closeSession(session);
-				}
-			}
-
-			return list;
-		}
+		return _collectionPersistenceFinderByStructureVersionId.find(
+			finderCache, new Object[] {new long[] {structureVersionId}}, start,
+			end, orderByComparator, useFinderCache);
 	}
 
 	/**
@@ -547,23 +444,9 @@ public class DDMStorageLinkPersistenceImpl
 			OrderByComparator<DDMStorageLink> orderByComparator)
 		throws NoSuchStorageLinkException {
 
-		DDMStorageLink ddmStorageLink = fetchByStructureVersionId_First(
-			structureVersionId, orderByComparator);
-
-		if (ddmStorageLink != null) {
-			return ddmStorageLink;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("structureVersionId=");
-		sb.append(structureVersionId);
-
-		sb.append("}");
-
-		throw new NoSuchStorageLinkException(sb.toString());
+		return _collectionPersistenceFinderByStructureVersionId.findFirst(
+			finderCache, new Object[] {new long[] {structureVersionId}},
+			orderByComparator);
 	}
 
 	/**
@@ -578,80 +461,16 @@ public class DDMStorageLinkPersistenceImpl
 		long structureVersionId,
 		OrderByComparator<DDMStorageLink> orderByComparator) {
 
-		List<DDMStorageLink> list = findByStructureVersionId(
-			structureVersionId, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @return the matching ddm storage links
-	 */
-	@Override
-	public List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds) {
-
-		return findByStructureVersionId(
-			structureVersionIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @param start the lower bound of the range of ddm storage links
-	 * @param end the upper bound of the range of ddm storage links (not inclusive)
-	 * @return the range of matching ddm storage links
-	 */
-	@Override
-	public List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds, int start, int end) {
-
-		return findByStructureVersionId(structureVersionIds, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the ddm storage links where structureVersionId = any &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param structureVersionIds the structure version IDs
-	 * @param start the lower bound of the range of ddm storage links
-	 * @param end the upper bound of the range of ddm storage links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ddm storage links
-	 */
-	@Override
-	public List<DDMStorageLink> findByStructureVersionId(
-		long[] structureVersionIds, int start, int end,
-		OrderByComparator<DDMStorageLink> orderByComparator) {
-
-		return findByStructureVersionId(
-			structureVersionIds, start, end, orderByComparator, true);
+		return _collectionPersistenceFinderByStructureVersionId.fetchFirst(
+			finderCache, new Object[] {new long[] {structureVersionId}},
+			orderByComparator);
 	}
 
 	/**
 	 * Returns an ordered range of all the ddm storage links where structureVersionId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMStorageLinkModelImpl</code>.
 	 * </p>
 	 *
 	 * @param structureVersionIds the structure version IDs
@@ -667,163 +486,10 @@ public class DDMStorageLinkPersistenceImpl
 		OrderByComparator<DDMStorageLink> orderByComparator,
 		boolean useFinderCache) {
 
-		if (structureVersionIds == null) {
-			structureVersionIds = new long[0];
-		}
-		else if (structureVersionIds.length > 1) {
-			structureVersionIds = ArrayUtil.sortedUnique(structureVersionIds);
-		}
-
-		if (structureVersionIds.length == 1) {
-			return findByStructureVersionId(
-				structureVersionIds[0], start, end, orderByComparator);
-		}
-
-		try (SafeCloseable safeCloseable =
-				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
-					DDMStorageLink.class)) {
-
-			Object[] finderArgs = null;
-
-			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-
-				if (useFinderCache) {
-					finderArgs = new Object[] {
-						StringUtil.merge(structureVersionIds)
-					};
-				}
-			}
-			else if (useFinderCache) {
-				finderArgs = new Object[] {
-					StringUtil.merge(structureVersionIds), start, end,
-					orderByComparator
-				};
-			}
-
-			List<DDMStorageLink> list = null;
-
-			if (useFinderCache) {
-				list = (List<DDMStorageLink>)finderCache.getResult(
-					_finderPathWithPaginationFindByStructureVersionId,
-					finderArgs, this);
-
-				if ((list != null) && !list.isEmpty()) {
-					for (DDMStorageLink ddmStorageLink : list) {
-						if (!ArrayUtil.contains(
-								structureVersionIds,
-								ddmStorageLink.getStructureVersionId())) {
-
-							list = null;
-
-							break;
-						}
-					}
-				}
-			}
-
-			if (list == null) {
-				try {
-					if ((start == QueryUtil.ALL_POS) &&
-						(end == QueryUtil.ALL_POS) &&
-						(databaseInMaxParameters > 0) &&
-						(structureVersionIds.length >
-							databaseInMaxParameters)) {
-
-						list = new ArrayList<DDMStorageLink>();
-
-						long[][] structureVersionIdsPages =
-							(long[][])ArrayUtil.split(
-								structureVersionIds, databaseInMaxParameters);
-
-						for (long[] structureVersionIdsPage :
-								structureVersionIdsPages) {
-
-							list.addAll(
-								_findByStructureVersionId(
-									structureVersionIdsPage, start, end,
-									orderByComparator));
-						}
-
-						Collections.sort(list, orderByComparator);
-
-						list = Collections.unmodifiableList(list);
-					}
-					else {
-						list = _findByStructureVersionId(
-							structureVersionIds, start, end, orderByComparator);
-					}
-
-					cacheResult(list);
-
-					if (useFinderCache) {
-						finderCache.putResult(
-							_finderPathWithPaginationFindByStructureVersionId,
-							finderArgs, list);
-					}
-				}
-				catch (Exception exception) {
-					throw processException(exception);
-				}
-			}
-
-			return list;
-		}
-	}
-
-	private List<DDMStorageLink> _findByStructureVersionId(
-		long[] structureVersionIds, int start, int end,
-		OrderByComparator<DDMStorageLink> orderByComparator) {
-
-		List<DDMStorageLink> list = null;
-
-		StringBundler sb = new StringBundler();
-
-		sb.append(_SQL_SELECT_DDMSTORAGELINK_WHERE);
-
-		if (structureVersionIds.length > 0) {
-			sb.append("(");
-
-			sb.append(_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_7);
-
-			sb.append(StringUtil.merge(structureVersionIds));
-
-			sb.append(")");
-
-			sb.append(")");
-		}
-
-		sb.setStringAt(
-			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
-
-		if (orderByComparator != null) {
-			appendOrderByComparator(
-				sb, _ENTITY_ALIAS_PREFIX, orderByComparator);
-		}
-		else {
-			sb.append(DDMStorageLinkModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = sb.toString();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query query = session.createQuery(sql);
-
-			list = (List<DDMStorageLink>)QueryUtil.list(
-				query, getDialect(), start, end);
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		return list;
+		return _collectionPersistenceFinderByStructureVersionId.find(
+			finderCache,
+			new Object[] {ArrayUtil.sortedUnique(structureVersionIds)}, start,
+			end, orderByComparator, useFinderCache);
 	}
 
 	/**
@@ -833,13 +499,8 @@ public class DDMStorageLinkPersistenceImpl
 	 */
 	@Override
 	public void removeByStructureVersionId(long structureVersionId) {
-		for (DDMStorageLink ddmStorageLink :
-				findByStructureVersionId(
-					structureVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null)) {
-
-			remove(ddmStorageLink);
-		}
+		_collectionPersistenceFinderByStructureVersionId.remove(
+			finderCache, new Object[] {new long[] {structureVersionId}});
 	}
 
 	/**
@@ -850,52 +511,8 @@ public class DDMStorageLinkPersistenceImpl
 	 */
 	@Override
 	public int countByStructureVersionId(long structureVersionId) {
-		try (SafeCloseable safeCloseable =
-				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
-					DDMStorageLink.class)) {
-
-			FinderPath finderPath = _finderPathCountByStructureVersionId;
-
-			Object[] finderArgs = new Object[] {structureVersionId};
-
-			Long count = (Long)finderCache.getResult(
-				finderPath, finderArgs, this);
-
-			if (count == null) {
-				StringBundler sb = new StringBundler(2);
-
-				sb.append(_SQL_COUNT_DDMSTORAGELINK_WHERE);
-
-				sb.append(
-					_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_2);
-
-				String sql = sb.toString();
-
-				Session session = null;
-
-				try {
-					session = openSession();
-
-					Query query = session.createQuery(sql);
-
-					QueryPos queryPos = QueryPos.getInstance(query);
-
-					queryPos.add(structureVersionId);
-
-					count = (Long)query.uniqueResult();
-
-					finderCache.putResult(finderPath, finderArgs, count);
-				}
-				catch (Exception exception) {
-					throw processException(exception);
-				}
-				finally {
-					closeSession(session);
-				}
-			}
-
-			return count.intValue();
-		}
+		return _collectionPersistenceFinderByStructureVersionId.count(
+			finderCache, new Object[] {new long[] {structureVersionId}});
 	}
 
 	/**
@@ -906,113 +523,10 @@ public class DDMStorageLinkPersistenceImpl
 	 */
 	@Override
 	public int countByStructureVersionId(long[] structureVersionIds) {
-		if (structureVersionIds == null) {
-			structureVersionIds = new long[0];
-		}
-		else if (structureVersionIds.length > 1) {
-			structureVersionIds = ArrayUtil.sortedUnique(structureVersionIds);
-		}
-
-		try (SafeCloseable safeCloseable =
-				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
-					DDMStorageLink.class)) {
-
-			Object[] finderArgs = new Object[] {
-				StringUtil.merge(structureVersionIds)
-			};
-
-			Long count = (Long)finderCache.getResult(
-				_finderPathWithPaginationCountByStructureVersionId, finderArgs,
-				this);
-
-			if (count == null) {
-				try {
-					if ((databaseInMaxParameters > 0) &&
-						(structureVersionIds.length >
-							databaseInMaxParameters)) {
-
-						count = Long.valueOf(0);
-
-						long[][] structureVersionIdsPages =
-							(long[][])ArrayUtil.split(
-								structureVersionIds, databaseInMaxParameters);
-
-						for (long[] structureVersionIdsPage :
-								structureVersionIdsPages) {
-
-							count += Long.valueOf(
-								_countByStructureVersionId(
-									structureVersionIdsPage));
-						}
-					}
-					else {
-						count = Long.valueOf(
-							_countByStructureVersionId(structureVersionIds));
-					}
-
-					finderCache.putResult(
-						_finderPathWithPaginationCountByStructureVersionId,
-						finderArgs, count);
-				}
-				catch (Exception exception) {
-					throw processException(exception);
-				}
-			}
-
-			return count.intValue();
-		}
+		return _collectionPersistenceFinderByStructureVersionId.count(
+			finderCache,
+			new Object[] {ArrayUtil.sortedUnique(structureVersionIds)});
 	}
-
-	private int _countByStructureVersionId(long[] structureVersionIds) {
-		Long count = null;
-
-		StringBundler sb = new StringBundler();
-
-		sb.append(_SQL_COUNT_DDMSTORAGELINK_WHERE);
-
-		if (structureVersionIds.length > 0) {
-			sb.append("(");
-
-			sb.append(_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_7);
-
-			sb.append(StringUtil.merge(structureVersionIds));
-
-			sb.append(")");
-
-			sb.append(")");
-		}
-
-		sb.setStringAt(
-			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
-
-		String sql = sb.toString();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			Query query = session.createQuery(sql);
-
-			count = (Long)query.uniqueResult();
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		return count.intValue();
-	}
-
-	private static final String
-		_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_2 =
-			"ddmStorageLink.structureVersionId = ?";
-
-	private static final String
-		_FINDER_COLUMN_STRUCTUREVERSIONID_STRUCTUREVERSIONID_7 =
-			"ddmStorageLink.structureVersionId IN (";
 
 	public DDMStorageLinkPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -1299,6 +813,7 @@ public class DDMStorageLinkPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_DDMSTORAGELINK_WHERE, _SQL_COUNT_DDMSTORAGELINK_WHERE,
 			DDMStorageLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"ddmStorageLink.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, DDMStorageLink::getUuid));
@@ -1325,7 +840,7 @@ public class DDMStorageLinkPersistenceImpl
 				_SQL_SELECT_DDMSTORAGELINK_WHERE,
 				_SQL_COUNT_DDMSTORAGELINK_WHERE,
 				DDMStorageLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStorageLink.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1367,33 +882,37 @@ public class DDMStorageLinkPersistenceImpl
 				_SQL_SELECT_DDMSTORAGELINK_WHERE,
 				_SQL_COUNT_DDMSTORAGELINK_WHERE,
 				DDMStorageLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ddmStorageLink.", "structureId", FinderColumn.Type.LONG,
 					"=", true, true, DDMStorageLink::getStructureId));
 
-		_finderPathWithPaginationFindByStructureVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByStructureVersionId",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			},
-			new String[] {"structureVersionId"}, true);
-
-		_finderPathWithoutPaginationFindByStructureVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-			"findByStructureVersionId", new String[] {Long.class.getName()},
-			new String[] {"structureVersionId"}, true);
-
-		_finderPathCountByStructureVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByStructureVersionId",
-			new String[] {Long.class.getName()},
-			new String[] {"structureVersionId"}, false);
-
-		_finderPathWithPaginationCountByStructureVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByStructureVersionId",
-			new String[] {Long.class.getName()},
-			new String[] {"structureVersionId"}, false);
+		_collectionPersistenceFinderByStructureVersionId =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"findByStructureVersionId",
+					new String[] {
+						Long.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"structureVersionId"}, true),
+				null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByStructureVersionId",
+					new String[] {Long.class.getName()},
+					new String[] {"structureVersionId"}, false),
+				_SQL_SELECT_DDMSTORAGELINK_WHERE,
+				_SQL_COUNT_DDMSTORAGELINK_WHERE,
+				DDMStorageLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
+				"", null,
+				new ArrayableFinderColumn<>(
+					"ddmStorageLink.", "structureVersionId",
+					FinderColumn.Type.LONG, "=", false, true, true,
+					DDMStorageLink::getStructureVersionId));
 
 		DDMStorageLinkUtil.setPersistence(this);
 	}
@@ -1452,12 +971,6 @@ public class DDMStorageLinkPersistenceImpl
 	private static final String _SQL_COUNT_DDMSTORAGELINK_WHERE =
 		"SELECT COUNT(ddmStorageLink) FROM DDMStorageLink ddmStorageLink WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DDMStorageLink exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DDMStorageLinkPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1467,4 +980,4 @@ public class DDMStorageLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1203531691
+// LIFERAY-SERVICE-BUILDER-HASH:1329297692

@@ -9,8 +9,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -413,7 +411,7 @@ public class CacheReplicatorEntryPersistenceImpl
 				_SQL_SELECT_CACHEREPLICATORENTRY_WHERE,
 				_SQL_COUNT_CACHEREPLICATORENTRY_WHERE,
 				CacheReplicatorEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"cacheReplicatorEntry.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -457,16 +455,10 @@ public class CacheReplicatorEntryPersistenceImpl
 	private static final String _SQL_COUNT_CACHEREPLICATORENTRY_WHERE =
 		"SELECT COUNT(cacheReplicatorEntry) FROM CacheReplicatorEntry cacheReplicatorEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CacheReplicatorEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CacheReplicatorEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1642268602
+// LIFERAY-SERVICE-BUILDER-HASH:-1084246024

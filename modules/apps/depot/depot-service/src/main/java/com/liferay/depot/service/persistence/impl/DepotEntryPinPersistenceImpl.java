@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -837,6 +835,7 @@ public class DepotEntryPinPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_DEPOTENTRYPIN_WHERE, _SQL_COUNT_DEPOTENTRYPIN_WHERE,
 			DepotEntryPinModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"depotEntryPin.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, DepotEntryPin::getUuid));
@@ -878,7 +877,7 @@ public class DepotEntryPinPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_DEPOTENTRYPIN_WHERE, _SQL_COUNT_DEPOTENTRYPIN_WHERE,
 				DepotEntryPinModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"depotEntryPin.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, DepotEntryPin::getUuid),
@@ -907,7 +906,7 @@ public class DepotEntryPinPersistenceImpl
 					new String[] {"userId"}, false),
 				_SQL_SELECT_DEPOTENTRYPIN_WHERE, _SQL_COUNT_DEPOTENTRYPIN_WHERE,
 				DepotEntryPinModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"depotEntryPin.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, DepotEntryPin::getUserId));
@@ -934,7 +933,7 @@ public class DepotEntryPinPersistenceImpl
 					new String[] {"depotEntryId"}, false),
 				_SQL_SELECT_DEPOTENTRYPIN_WHERE, _SQL_COUNT_DEPOTENTRYPIN_WHERE,
 				DepotEntryPinModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"depotEntryPin.", "depotEntryId", FinderColumn.Type.LONG,
 					"=", true, true, DepotEntryPin::getDepotEntryId));
@@ -1011,12 +1010,6 @@ public class DepotEntryPinPersistenceImpl
 	private static final String _SQL_COUNT_DEPOTENTRYPIN_WHERE =
 		"SELECT COUNT(depotEntryPin) FROM DepotEntryPin depotEntryPin WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DepotEntryPin exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DepotEntryPinPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1026,4 +1019,4 @@ public class DepotEntryPinPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-570678310
+// LIFERAY-SERVICE-BUILDER-HASH:-381652188

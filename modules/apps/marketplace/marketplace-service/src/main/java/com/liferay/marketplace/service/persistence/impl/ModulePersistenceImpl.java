@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
@@ -871,7 +869,7 @@ public class ModulePersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
-			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"module.", "uuid", "uuid_", FinderColumn.Type.STRING, "=", true,
 				true, Module::getUuid));
@@ -897,6 +895,7 @@ public class ModulePersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
 				ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"module.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Module::getUuid),
@@ -922,7 +921,7 @@ public class ModulePersistenceImpl
 				new String[] {Long.class.getName()}, new String[] {"appId"},
 				false),
 			_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
-			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"module.", "appId", FinderColumn.Type.LONG, "=", true, true,
 				Module::getAppId));
@@ -951,6 +950,7 @@ public class ModulePersistenceImpl
 					new String[] {"bundleSymbolicName"}, 0, 1, false, null),
 				_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
 				ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"module.", "bundleSymbolicName", FinderColumn.Type.STRING,
 					"=", true, true, Module::getBundleSymbolicName));
@@ -976,6 +976,7 @@ public class ModulePersistenceImpl
 					new String[] {"contextName"}, 0, 1, false, null),
 				_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
 				ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"module.", "contextName", FinderColumn.Type.STRING, "=",
 					true, true, Module::getContextName));
@@ -999,7 +1000,7 @@ public class ModulePersistenceImpl
 				new String[] {Long.class.getName(), String.class.getName()},
 				new String[] {"appId", "contextName"}, 0, 2, false, null),
 			_SQL_SELECT_MODULE_WHERE, _SQL_COUNT_MODULE_WHERE,
-			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			ModuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"module.", "appId", FinderColumn.Type.LONG, "=", true, true,
 				Module::getAppId),
@@ -1084,12 +1085,6 @@ public class ModulePersistenceImpl
 	private static final String _SQL_COUNT_MODULE_WHERE =
 		"SELECT COUNT(module) FROM Module module WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Module exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ModulePersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1099,4 +1094,4 @@ public class ModulePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1302906599
+// LIFERAY-SERVICE-BUILDER-HASH:489717026

@@ -375,7 +375,7 @@ public class ContactsCardTemplatePersistenceImpl
 				_SQL_SELECT_CONTACTSCARDTEMPLATE_WHERE,
 				_SQL_COUNT_CONTACTSCARDTEMPLATE_WHERE,
 				ContactsCardTemplateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"contactsCardTemplate.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ContactsCardTemplate::getGroupId));
@@ -434,9 +434,6 @@ public class ContactsCardTemplatePersistenceImpl
 	private static final String _SQL_COUNT_CONTACTSCARDTEMPLATE_WHERE =
 		"SELECT COUNT(contactsCardTemplate) FROM ContactsCardTemplate contactsCardTemplate WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ContactsCardTemplate exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"settings", "type"});
 
@@ -446,4 +443,4 @@ public class ContactsCardTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2001086987
+// LIFERAY-SERVICE-BUILDER-HASH:-973543632

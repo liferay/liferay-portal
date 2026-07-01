@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -652,7 +650,7 @@ public class KaleoDefinitionVersionPersistenceImpl
 				_SQL_SELECT_KALEODEFINITIONVERSION_WHERE,
 				_SQL_COUNT_KALEODEFINITIONVERSION_WHERE,
 				KaleoDefinitionVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoDefinitionVersion.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -679,7 +677,7 @@ public class KaleoDefinitionVersionPersistenceImpl
 			_SQL_SELECT_KALEODEFINITIONVERSION_WHERE,
 			_SQL_COUNT_KALEODEFINITIONVERSION_WHERE,
 			KaleoDefinitionVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"kaleoDefinitionVersion.", "companyId", FinderColumn.Type.LONG,
 				"=", true, true, KaleoDefinitionVersion::getCompanyId),
@@ -767,16 +765,10 @@ public class KaleoDefinitionVersionPersistenceImpl
 	private static final String _SQL_COUNT_KALEODEFINITIONVERSION_WHERE =
 		"SELECT COUNT(kaleoDefinitionVersion) FROM KaleoDefinitionVersion kaleoDefinitionVersion WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No KaleoDefinitionVersion exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		KaleoDefinitionVersionPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1851380465
+// LIFERAY-SERVICE-BUILDER-HASH:-1539895147

@@ -520,7 +520,7 @@ public class SamlIdpSpSessionPersistenceImpl
 				_SQL_SELECT_SAMLIDPSPSESSION_WHERE,
 				_SQL_COUNT_SAMLIDPSPSESSION_WHERE,
 				SamlIdpSpSessionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"samlIdpSpSession.", "createDate", FinderColumn.Type.DATE,
 					"<", true, true, SamlIdpSpSession::getCreateDate));
@@ -550,7 +550,7 @@ public class SamlIdpSpSessionPersistenceImpl
 				_SQL_SELECT_SAMLIDPSPSESSION_WHERE,
 				_SQL_COUNT_SAMLIDPSPSESSION_WHERE,
 				SamlIdpSpSessionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"samlIdpSpSession.", "samlIdpSsoSessionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -610,13 +610,10 @@ public class SamlIdpSpSessionPersistenceImpl
 	private static final String _SQL_COUNT_SAMLIDPSPSESSION_WHERE =
 		"SELECT COUNT(samlIdpSpSession) FROM SamlIdpSpSession samlIdpSpSession WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SamlIdpSpSession exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1261930590
+// LIFERAY-SERVICE-BUILDER-HASH:-1289992212

@@ -14,7 +14,6 @@ import com.liferay.account.model.impl.AccountRoleModelImpl;
 import com.liferay.account.service.persistence.AccountRolePersistence;
 import com.liferay.account.service.persistence.AccountRoleUtil;
 import com.liferay.account.service.persistence.impl.constants.AccountPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
@@ -22,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -245,23 +242,9 @@ public class AccountRolePersistenceImpl
 			OrderByComparator<AccountRole> orderByComparator)
 		throws NoSuchRoleException {
 
-		AccountRole accountRole = fetchByAccountEntryId_First(
-			accountEntryId, orderByComparator);
-
-		if (accountRole != null) {
-			return accountRole;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("accountEntryId=");
-		sb.append(accountEntryId);
-
-		sb.append("}");
-
-		throw new NoSuchRoleException(sb.toString());
+		return _collectionPersistenceFinderByAccountEntryId.findFirst(
+			finderCache, new Object[] {new long[] {accountEntryId}},
+			orderByComparator);
 	}
 
 	/**
@@ -510,26 +493,9 @@ public class AccountRolePersistenceImpl
 			OrderByComparator<AccountRole> orderByComparator)
 		throws NoSuchRoleException {
 
-		AccountRole accountRole = fetchByC_A_First(
-			companyId, accountEntryId, orderByComparator);
-
-		if (accountRole != null) {
-			return accountRole;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("companyId=");
-		sb.append(companyId);
-
-		sb.append(", accountEntryId=");
-		sb.append(accountEntryId);
-
-		sb.append("}");
-
-		throw new NoSuchRoleException(sb.toString());
+		return _collectionPersistenceFinderByC_A.findFirst(
+			finderCache, new Object[] {companyId, new long[] {accountEntryId}},
+			orderByComparator);
 	}
 
 	/**
@@ -1016,7 +982,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId));
@@ -1044,7 +1010,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"accountEntryId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new ArrayableFinderColumn<>(
 					"accountRole.", "accountEntryId", FinderColumn.Type.LONG,
 					"=", false, true, true, AccountRole::getAccountEntryId));
@@ -1081,7 +1047,7 @@ public class AccountRolePersistenceImpl
 					new String[] {"companyId", "accountEntryId"}, false),
 				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
 				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId),
@@ -1161,16 +1127,10 @@ public class AccountRolePersistenceImpl
 	private static final String _SQL_COUNT_ACCOUNTROLE_WHERE =
 		"SELECT COUNT(accountRole) FROM AccountRole accountRole WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AccountRole exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AccountRolePersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:108756624
+// LIFERAY-SERVICE-BUILDER-HASH:2133954621

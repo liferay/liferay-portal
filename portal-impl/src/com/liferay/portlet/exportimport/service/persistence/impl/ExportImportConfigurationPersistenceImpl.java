@@ -778,7 +778,7 @@ public class ExportImportConfigurationPersistenceImpl
 				_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
 				_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
 				ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"exportImportConfiguration.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -806,7 +806,7 @@ public class ExportImportConfigurationPersistenceImpl
 				_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
 				_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
 				ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"exportImportConfiguration.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -833,7 +833,7 @@ public class ExportImportConfigurationPersistenceImpl
 			_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
 			_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
 			ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"exportImportConfiguration.", "groupId", FinderColumn.Type.LONG,
 				"=", true, true, ExportImportConfiguration::getGroupId),
@@ -863,7 +863,7 @@ public class ExportImportConfigurationPersistenceImpl
 			_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
 			_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
 			ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"exportImportConfiguration.", "groupId", FinderColumn.Type.LONG,
 				"=", true, true, ExportImportConfiguration::getGroupId),
@@ -899,7 +899,7 @@ public class ExportImportConfigurationPersistenceImpl
 			_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
 			_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
 			ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"exportImportConfiguration.", "groupId", FinderColumn.Type.LONG,
 				"=", true, true, ExportImportConfiguration::getGroupId),
@@ -934,9 +934,6 @@ public class ExportImportConfigurationPersistenceImpl
 	private static final String _SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE =
 		"SELECT COUNT(exportImportConfiguration) FROM ExportImportConfiguration exportImportConfiguration WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ExportImportConfiguration exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type", "settings"});
 
@@ -946,4 +943,4 @@ public class ExportImportConfigurationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-978917097
+// LIFERAY-SERVICE-BUILDER-HASH:308211602

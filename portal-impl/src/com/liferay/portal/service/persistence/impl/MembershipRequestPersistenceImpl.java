@@ -646,7 +646,7 @@ public class MembershipRequestPersistenceImpl
 				_SQL_SELECT_MEMBERSHIPREQUEST_WHERE,
 				_SQL_COUNT_MEMBERSHIPREQUEST_WHERE,
 				MembershipRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"membershipRequest.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, MembershipRequest::getGroupId));
@@ -673,7 +673,7 @@ public class MembershipRequestPersistenceImpl
 				_SQL_SELECT_MEMBERSHIPREQUEST_WHERE,
 				_SQL_COUNT_MEMBERSHIPREQUEST_WHERE,
 				MembershipRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"membershipRequest.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MembershipRequest::getUserId));
@@ -699,7 +699,7 @@ public class MembershipRequestPersistenceImpl
 			_SQL_SELECT_MEMBERSHIPREQUEST_WHERE,
 			_SQL_COUNT_MEMBERSHIPREQUEST_WHERE,
 			MembershipRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"membershipRequest.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, MembershipRequest::getGroupId),
@@ -734,7 +734,7 @@ public class MembershipRequestPersistenceImpl
 			_SQL_SELECT_MEMBERSHIPREQUEST_WHERE,
 			_SQL_COUNT_MEMBERSHIPREQUEST_WHERE,
 			MembershipRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"membershipRequest.", "groupId", FinderColumn.Type.LONG, "=",
 				true, true, MembershipRequest::getGroupId),
@@ -766,13 +766,10 @@ public class MembershipRequestPersistenceImpl
 	private static final String _SQL_COUNT_MEMBERSHIPREQUEST_WHERE =
 		"SELECT COUNT(membershipRequest) FROM MembershipRequest membershipRequest WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No MembershipRequest exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-313673751
+// LIFERAY-SERVICE-BUILDER-HASH:-2121508116

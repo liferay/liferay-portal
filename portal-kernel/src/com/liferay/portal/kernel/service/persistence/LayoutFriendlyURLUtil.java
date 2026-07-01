@@ -712,64 +712,6 @@ public class LayoutFriendlyURLUtil {
 	}
 
 	/**
-	 * Returns all the layout friendly urls where plid = any &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutFriendlyURLModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plids the plids
-	 * @param languageId the language ID
-	 * @return the matching layout friendly urls
-	 */
-	public static List<LayoutFriendlyURL> findByP_L(
-		long[] plids, String languageId) {
-
-		return getPersistence().findByP_L(plids, languageId);
-	}
-
-	/**
-	 * Returns a range of all the layout friendly urls where plid = any &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutFriendlyURLModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plids the plids
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of layout friendly urls
-	 * @param end the upper bound of the range of layout friendly urls (not inclusive)
-	 * @return the range of matching layout friendly urls
-	 */
-	public static List<LayoutFriendlyURL> findByP_L(
-		long[] plids, String languageId, int start, int end) {
-
-		return getPersistence().findByP_L(plids, languageId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the layout friendly urls where plid = any &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutFriendlyURLModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plids the plids
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of layout friendly urls
-	 * @param end the upper bound of the range of layout friendly urls (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching layout friendly urls
-	 */
-	public static List<LayoutFriendlyURL> findByP_L(
-		long[] plids, String languageId, int start, int end,
-		OrderByComparator<LayoutFriendlyURL> orderByComparator) {
-
-		return getPersistence().findByP_L(
-			plids, languageId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns an ordered range of all the layout friendly urls where plid = &#63; and languageId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
@@ -1475,6 +1417,60 @@ public class LayoutFriendlyURLUtil {
 	}
 
 	/**
+	 * Returns all the layout friendly urls where plid = any &#63; and languageId = &#63;.
+	 *
+	 * @param plids the plids
+	 * @param languageId the language ID
+	 * @return the matching layout friendly urls
+	 */
+	public static List<LayoutFriendlyURL> findByP_L(
+		long[] plids, String languageId) {
+
+		return getPersistence().findByP_L(plids, languageId);
+	}
+
+	/**
+	 * Returns a range of all the layout friendly urls where plid = any &#63; and languageId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutFriendlyURLModelImpl</code>.
+	 * </p>
+	 *
+	 * @param plids the plids
+	 * @param languageId the language ID
+	 * @param start the lower bound of the range of layout friendly urls
+	 * @param end the upper bound of the range of layout friendly urls (not inclusive)
+	 * @return the range of matching layout friendly urls
+	 */
+	public static List<LayoutFriendlyURL> findByP_L(
+		long[] plids, String languageId, int start, int end) {
+
+		return getPersistence().findByP_L(plids, languageId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout friendly urls where plid = any &#63; and languageId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutFriendlyURLModelImpl</code>.
+	 * </p>
+	 *
+	 * @param plids the plids
+	 * @param languageId the language ID
+	 * @param start the lower bound of the range of layout friendly urls
+	 * @param end the upper bound of the range of layout friendly urls (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout friendly urls
+	 */
+	public static List<LayoutFriendlyURL> findByP_L(
+		long[] plids, String languageId, int start, int end,
+		OrderByComparator<LayoutFriendlyURL> orderByComparator) {
+
+		return getPersistence().findByP_L(
+			plids, languageId, start, end, orderByComparator);
+	}
+
+	/**
 	 * Returns all the layout friendly urls where groupId = &#63; and privateLayout = &#63; and friendlyURL = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -1547,4 +1543,4 @@ public class LayoutFriendlyURLUtil {
 	private static volatile LayoutFriendlyURLPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1326951346
+// LIFERAY-SERVICE-BUILDER-HASH:-184087854

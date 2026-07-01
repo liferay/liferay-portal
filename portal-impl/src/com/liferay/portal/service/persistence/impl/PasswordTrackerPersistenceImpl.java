@@ -376,7 +376,7 @@ public class PasswordTrackerPersistenceImpl
 				_SQL_SELECT_PASSWORDTRACKER_WHERE,
 				_SQL_COUNT_PASSWORDTRACKER_WHERE,
 				PasswordTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"passwordTracker.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, PasswordTracker::getUserId));
@@ -402,9 +402,6 @@ public class PasswordTrackerPersistenceImpl
 	private static final String _SQL_COUNT_PASSWORDTRACKER_WHERE =
 		"SELECT COUNT(passwordTracker) FROM PasswordTracker passwordTracker WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No PasswordTracker exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"password"});
 
@@ -414,4 +411,4 @@ public class PasswordTrackerPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:894141313
+// LIFERAY-SERVICE-BUILDER-HASH:-1022216538

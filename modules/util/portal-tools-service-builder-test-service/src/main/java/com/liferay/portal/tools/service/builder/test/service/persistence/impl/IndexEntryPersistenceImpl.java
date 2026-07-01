@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1455,6 +1453,7 @@ public class IndexEntryPersistenceImpl
 					new String[] {"ownerId"}, false),
 				_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 				IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"indexEntry.", "ownerId", FinderColumn.Type.LONG, "=", true,
 					true, IndexEntry::getOwnerId));
@@ -1478,6 +1477,7 @@ public class IndexEntryPersistenceImpl
 				false),
 			_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 			IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"indexEntry.", "plid", FinderColumn.Type.LONG, "=", true, true,
 				IndexEntry::getPlid));
@@ -1503,6 +1503,7 @@ public class IndexEntryPersistenceImpl
 					new String[] {"portletId"}, 0, 1, false, null),
 				_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 				IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"indexEntry.", "portletId", FinderColumn.Type.STRING, "=",
 					true, true, IndexEntry::getPortletId));
@@ -1527,6 +1528,7 @@ public class IndexEntryPersistenceImpl
 				new String[] {"ownerType", "portletId"}, 0, 2, false, null),
 			_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 			IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"indexEntry.", "ownerType", FinderColumn.Type.INTEGER, "=",
 				true, true, IndexEntry::getOwnerType),
@@ -1554,6 +1556,7 @@ public class IndexEntryPersistenceImpl
 				new String[] {"plid", "portletId"}, 0, 2, false, null),
 			_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 			IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"indexEntry.", "plid", FinderColumn.Type.LONG, "=", true, true,
 				IndexEntry::getPlid),
@@ -1587,6 +1590,7 @@ public class IndexEntryPersistenceImpl
 				new String[] {"ownerId", "ownerType", "plid"}, false),
 			_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 			IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"indexEntry.", "ownerId", FinderColumn.Type.LONG, "=", true,
 				true, IndexEntry::getOwnerId),
@@ -1627,6 +1631,7 @@ public class IndexEntryPersistenceImpl
 					false, null),
 				_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 				IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"indexEntry.", "ownerId", FinderColumn.Type.LONG, "=", true,
 					true, IndexEntry::getOwnerId),
@@ -1665,6 +1670,7 @@ public class IndexEntryPersistenceImpl
 				null),
 			_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 			IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"indexEntry.", "ownerType", FinderColumn.Type.INTEGER, "=",
 				true, true, IndexEntry::getOwnerType),
@@ -1704,6 +1710,7 @@ public class IndexEntryPersistenceImpl
 					false),
 				_SQL_SELECT_INDEXENTRY_WHERE, _SQL_COUNT_INDEXENTRY_WHERE,
 				IndexEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"indexEntry.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, IndexEntry::getCompanyId),
@@ -1791,16 +1798,10 @@ public class IndexEntryPersistenceImpl
 	private static final String _SQL_COUNT_INDEXENTRY_WHERE =
 		"SELECT COUNT(indexEntry) FROM IndexEntry indexEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No IndexEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		IndexEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-661372907
+// LIFERAY-SERVICE-BUILDER-HASH:617975574

@@ -365,6 +365,7 @@ public class ViewCountEntryPersistenceImpl
 				new String[] {"companyId", "classNameId"}, false),
 			_SQL_SELECT_VIEWCOUNTENTRY_WHERE, _SQL_COUNT_VIEWCOUNTENTRY_WHERE,
 			ViewCountEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"viewCountEntry.", "id.companyId", "companyId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -428,9 +429,6 @@ public class ViewCountEntryPersistenceImpl
 	private static final String _SQL_COUNT_VIEWCOUNTENTRY_WHERE =
 		"SELECT COUNT(viewCountEntry) FROM ViewCountEntry viewCountEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ViewCountEntry exists with the key {";
-
 	private static final Set<String> _compoundPKColumnNames = SetUtil.fromArray(
 		new String[] {"companyId", "classNameId", "classPK"});
 
@@ -440,4 +438,4 @@ public class ViewCountEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:636218225
+// LIFERAY-SERVICE-BUILDER-HASH:-1511552192

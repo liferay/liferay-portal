@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1117,7 +1115,7 @@ public class ERCVersionedEntryPersistenceImpl
 			_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 			_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 			ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"ercVersionedEntry.", "uuid", "uuid_", FinderColumn.Type.STRING,
 				"=", true, true, ERCVersionedEntry::getUuid));
@@ -1150,7 +1148,7 @@ public class ERCVersionedEntryPersistenceImpl
 				_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 				_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 				ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ercVersionedEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1181,7 +1179,7 @@ public class ERCVersionedEntryPersistenceImpl
 				_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 				_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 				ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ercVersionedEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1234,7 +1232,7 @@ public class ERCVersionedEntryPersistenceImpl
 				_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 				_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 				ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ercVersionedEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1276,7 +1274,7 @@ public class ERCVersionedEntryPersistenceImpl
 				_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 				_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 				ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"ercVersionedEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1311,7 +1309,7 @@ public class ERCVersionedEntryPersistenceImpl
 			_SQL_SELECT_ERCVERSIONEDENTRY_WHERE,
 			_SQL_COUNT_ERCVERSIONEDENTRY_WHERE,
 			ERCVersionedEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"",
+			"", null,
 			new FinderColumn<>(
 				"ercVersionedEntry.", "externalReferenceCode",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1383,12 +1381,6 @@ public class ERCVersionedEntryPersistenceImpl
 	private static final String _SQL_COUNT_ERCVERSIONEDENTRY_WHERE =
 		"SELECT COUNT(ercVersionedEntry) FROM ERCVersionedEntry ercVersionedEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ERCVersionedEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ERCVersionedEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1398,4 +1390,4 @@ public class ERCVersionedEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1115304809
+// LIFERAY-SERVICE-BUILDER-HASH:647812634

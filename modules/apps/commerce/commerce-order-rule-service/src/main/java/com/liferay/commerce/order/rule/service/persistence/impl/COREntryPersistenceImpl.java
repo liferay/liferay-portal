@@ -22,8 +22,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1710,6 +1708,7 @@ public class COREntryPersistenceImpl
 					new String[] {"uuid_"}, 0, 1, false, null),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, COREntry::getUuid));
@@ -1735,6 +1734,7 @@ public class COREntryPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, COREntry::getUuid),
@@ -1767,6 +1767,7 @@ public class COREntryPersistenceImpl
 					new String[] {"companyId", "active_"}, false),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1792,6 +1793,7 @@ public class COREntryPersistenceImpl
 					new String[] {"companyId", "type_"}, false),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1819,6 +1821,7 @@ public class COREntryPersistenceImpl
 					new String[] {"displayDate", "status"}, false),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "displayDate", FinderColumn.Type.DATE, "<",
 					true, true, COREntry::getDisplayDate),
@@ -1846,6 +1849,7 @@ public class COREntryPersistenceImpl
 					new String[] {"expirationDate", "status"}, false),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "expirationDate", FinderColumn.Type.DATE, "<",
 					true, true, COREntry::getExpirationDate),
@@ -1877,6 +1881,7 @@ public class COREntryPersistenceImpl
 					new String[] {"companyId", "active_", "type_"}, false),
 				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
 				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1957,12 +1962,6 @@ public class COREntryPersistenceImpl
 	private static final String _SQL_COUNT_CORENTRY_WHERE =
 		"SELECT COUNT(corEntry) FROM COREntry corEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No COREntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		COREntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "active", "type"});
 
@@ -1972,4 +1971,4 @@ public class COREntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1775736397
+// LIFERAY-SERVICE-BUILDER-HASH:-973017692

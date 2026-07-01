@@ -14,7 +14,6 @@ import com.liferay.dispatch.model.impl.DispatchTriggerModelImpl;
 import com.liferay.dispatch.service.persistence.DispatchTriggerPersistence;
 import com.liferay.dispatch.service.persistence.DispatchTriggerUtil;
 import com.liferay.dispatch.service.persistence.impl.constants.DispatchPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
@@ -22,8 +21,6 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -950,26 +947,10 @@ public class DispatchTriggerPersistenceImpl
 			OrderByComparator<DispatchTrigger> orderByComparator)
 		throws NoSuchTriggerException {
 
-		DispatchTrigger dispatchTrigger = fetchByA_DTCM_First(
-			active, dispatchTaskClusterMode, orderByComparator);
-
-		if (dispatchTrigger != null) {
-			return dispatchTrigger;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("active=");
-		sb.append(active);
-
-		sb.append(", dispatchTaskClusterMode=");
-		sb.append(dispatchTaskClusterMode);
-
-		sb.append("}");
-
-		throw new NoSuchTriggerException(sb.toString());
+		return _collectionPersistenceFinderByA_DTCM.findFirst(
+			finderCache,
+			new Object[] {active, new int[] {dispatchTaskClusterMode}},
+			orderByComparator);
 	}
 
 	/**
@@ -1529,7 +1510,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1557,7 +1538,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1588,7 +1569,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, DispatchTrigger::getCompanyId));
@@ -1615,7 +1596,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "active", "active_",
 					FinderColumn.Type.BOOLEAN, "=", true, true,
@@ -1643,7 +1624,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, DispatchTrigger::getCompanyId),
@@ -1676,7 +1657,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, DispatchTrigger::getCompanyId),
@@ -1727,7 +1708,7 @@ public class DispatchTriggerPersistenceImpl
 				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
 				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
 				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"dispatchTrigger.", "active", "active_",
 					FinderColumn.Type.BOOLEAN, "=", true, true,
@@ -1809,12 +1790,6 @@ public class DispatchTriggerPersistenceImpl
 	private static final String _SQL_COUNT_DISPATCHTRIGGER_WHERE =
 		"SELECT COUNT(dispatchTrigger) FROM DispatchTrigger dispatchTrigger WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No DispatchTrigger exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DispatchTriggerPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "active", "system"});
 
@@ -1824,4 +1799,4 @@ public class DispatchTriggerPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2140473569
+// LIFERAY-SERVICE-BUILDER-HASH:-629571282

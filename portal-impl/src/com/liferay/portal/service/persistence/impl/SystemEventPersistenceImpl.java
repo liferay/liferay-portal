@@ -757,7 +757,7 @@ public class SystemEventPersistenceImpl
 					new String[] {"groupId"}, false),
 				_SQL_SELECT_SYSTEMEVENT_WHERE, _SQL_COUNT_SYSTEMEVENT_WHERE,
 				SystemEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"systemEvent.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, SystemEvent::getGroupId));
@@ -782,6 +782,7 @@ public class SystemEventPersistenceImpl
 				new String[] {"groupId", "systemEventSetKey"}, false),
 			_SQL_SELECT_SYSTEMEVENT_WHERE, _SQL_COUNT_SYSTEMEVENT_WHERE,
 			SystemEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"systemEvent.", "groupId", FinderColumn.Type.LONG, "=", true,
 				true, SystemEvent::getGroupId),
@@ -815,6 +816,7 @@ public class SystemEventPersistenceImpl
 				new String[] {"groupId", "classNameId", "classPK"}, false),
 			_SQL_SELECT_SYSTEMEVENT_WHERE, _SQL_COUNT_SYSTEMEVENT_WHERE,
 			SystemEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"systemEvent.", "groupId", FinderColumn.Type.LONG, "=", true,
 				true, SystemEvent::getGroupId),
@@ -856,7 +858,7 @@ public class SystemEventPersistenceImpl
 					false),
 				_SQL_SELECT_SYSTEMEVENT_WHERE, _SQL_COUNT_SYSTEMEVENT_WHERE,
 				SystemEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"systemEvent.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, SystemEvent::getGroupId),
@@ -891,9 +893,6 @@ public class SystemEventPersistenceImpl
 	private static final String _SQL_COUNT_SYSTEMEVENT_WHERE =
 		"SELECT COUNT(systemEvent) FROM SystemEvent systemEvent WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SystemEvent exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
 
@@ -903,4 +902,4 @@ public class SystemEventPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2058368208
+// LIFERAY-SERVICE-BUILDER-HASH:1318106088

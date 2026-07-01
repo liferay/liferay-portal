@@ -990,7 +990,7 @@ public class BigDecimalEntryPersistenceImpl
 				_SQL_SELECT_BIGDECIMALENTRY_WHERE,
 				_SQL_COUNT_BIGDECIMALENTRY_WHERE,
 				BigDecimalEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"bigDecimalEntry.", "bigDecimalValue",
 					FinderColumn.Type.BIG_DECIMAL, "=", true, true,
@@ -1017,7 +1017,7 @@ public class BigDecimalEntryPersistenceImpl
 				_SQL_SELECT_BIGDECIMALENTRY_WHERE,
 				_SQL_COUNT_BIGDECIMALENTRY_WHERE,
 				BigDecimalEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"bigDecimalEntry.", "bigDecimalValue",
 					FinderColumn.Type.BIG_DECIMAL, ">", true, true,
@@ -1044,7 +1044,7 @@ public class BigDecimalEntryPersistenceImpl
 				_SQL_SELECT_BIGDECIMALENTRY_WHERE,
 				_SQL_COUNT_BIGDECIMALENTRY_WHERE,
 				BigDecimalEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "",
+				"", "", null,
 				new FinderColumn<>(
 					"bigDecimalEntry.", "bigDecimalValue",
 					FinderColumn.Type.BIG_DECIMAL, "<", true, true,
@@ -1087,13 +1087,10 @@ public class BigDecimalEntryPersistenceImpl
 	private static final String _SQL_COUNT_BIGDECIMALENTRY_WHERE =
 		"SELECT COUNT(bigDecimalEntry) FROM BigDecimalEntry bigDecimalEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No BigDecimalEntry exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-377309906
+// LIFERAY-SERVICE-BUILDER-HASH:1168908773

@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -552,7 +550,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 				_SQL_SELECT_MFAFIDO2CREDENTIALENTRY_WHERE,
 				_SQL_COUNT_MFAFIDO2CREDENTIALENTRY_WHERE,
 				MFAFIDO2CredentialEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"mfafido2CredentialEntry.", "userId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -583,7 +581,7 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 				_SQL_SELECT_MFAFIDO2CREDENTIALENTRY_WHERE,
 				_SQL_COUNT_MFAFIDO2CREDENTIALENTRY_WHERE,
 				MFAFIDO2CredentialEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"mfafido2CredentialEntry.", "credentialKeyHash",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -660,16 +658,10 @@ public class MFAFIDO2CredentialEntryPersistenceImpl
 	private static final String _SQL_COUNT_MFAFIDO2CREDENTIALENTRY_WHERE =
 		"SELECT COUNT(mfafido2CredentialEntry) FROM MFAFIDO2CredentialEntry mfafido2CredentialEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No MFAFIDO2CredentialEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MFAFIDO2CredentialEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:115393237
+// LIFERAY-SERVICE-BUILDER-HASH:1612585230

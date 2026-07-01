@@ -8,8 +8,6 @@ package com.liferay.portal.tools.service.builder.test.service.persistence.impl;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
@@ -341,16 +339,10 @@ public class RenameFinderColumnEntryPersistenceImpl
 	private static final String _SQL_SELECT_RENAMEFINDERCOLUMNENTRY_WHERE =
 		"SELECT renameFinderColumnEntry FROM RenameFinderColumnEntry renameFinderColumnEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No RenameFinderColumnEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		RenameFinderColumnEntryPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-599173820
+// LIFERAY-SERVICE-BUILDER-HASH:200666147

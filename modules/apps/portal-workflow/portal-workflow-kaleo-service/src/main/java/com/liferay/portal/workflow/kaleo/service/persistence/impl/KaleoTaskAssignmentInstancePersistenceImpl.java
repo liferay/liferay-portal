@@ -1138,7 +1138,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1169,7 +1169,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "kaleoDefinitionVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1200,7 +1200,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "kaleoInstanceId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1231,7 +1231,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "kaleoTaskInstanceTokenId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1262,7 +1262,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "assigneeClassName",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1290,7 +1290,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1333,7 +1333,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "kaleoTaskInstanceTokenId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1369,7 +1369,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				_SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				_SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE,
 				KaleoTaskAssignmentInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"kaleoTaskAssignmentInstance.", "assigneeClassName",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1437,13 +1437,10 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	private static final String _SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE_WHERE =
 		"SELECT COUNT(kaleoTaskAssignmentInstance) FROM KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No KaleoTaskAssignmentInstance exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-318162877
+// LIFERAY-SERVICE-BUILDER-HASH:-927428864

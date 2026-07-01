@@ -14,8 +14,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1432,7 +1430,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 			_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 			_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 			SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"siteNavigationMenuItem.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1477,7 +1475,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 				_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 				_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 				SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"siteNavigationMenuItem.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1509,7 +1507,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 				_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 				_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 				SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"siteNavigationMenuItem.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1540,7 +1538,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 				_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 				_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 				SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"siteNavigationMenuItem.", "siteNavigationMenuId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1571,7 +1569,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 				_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 				_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 				SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"siteNavigationMenuItem.", "parentSiteNavigationMenuItemId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1597,7 +1595,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 			_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 			_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 			SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"siteNavigationMenuItem.", "type", "type_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1633,7 +1631,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 			_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 			_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 			SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "",
+			"", "", null,
 			new FinderColumn<>(
 				"siteNavigationMenuItem.", "siteNavigationMenuId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -1662,7 +1660,7 @@ public class SiteNavigationMenuItemPersistenceImpl
 				_SQL_SELECT_SITENAVIGATIONMENUITEM_WHERE,
 				_SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE,
 				SiteNavigationMenuItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"siteNavigationMenuItem.", "siteNavigationMenuId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1746,12 +1744,6 @@ public class SiteNavigationMenuItemPersistenceImpl
 	private static final String _SQL_COUNT_SITENAVIGATIONMENUITEM_WHERE =
 		"SELECT COUNT(siteNavigationMenuItem) FROM SiteNavigationMenuItem siteNavigationMenuItem WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SiteNavigationMenuItem exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SiteNavigationMenuItemPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "type", "order"});
 
@@ -1761,4 +1753,4 @@ public class SiteNavigationMenuItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-113220304
+// LIFERAY-SERVICE-BUILDER-HASH:-424854888

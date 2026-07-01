@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -1172,7 +1170,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 			_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceSubscriptionEntry.", "uuid", "uuid_",
 				FinderColumn.Type.STRING, "=", true, true,
@@ -1217,7 +1215,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 				_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceSubscriptionEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1249,7 +1247,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 				_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceSubscriptionEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1277,7 +1275,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 				_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceSubscriptionEntry.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1322,7 +1320,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 				_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 				CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"commerceSubscriptionEntry.", "subscriptionStatus",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -1349,7 +1347,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 			_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceSubscriptionEntry.", "companyId",
 				FinderColumn.Type.LONG, "=", true, true,
@@ -1385,7 +1383,7 @@ public class CommerceSubscriptionEntryPersistenceImpl
 			_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
 			CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "",
+			_ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"commerceSubscriptionEntry.", "groupId", FinderColumn.Type.LONG,
 				"=", true, true, CommerceSubscriptionEntry::getGroupId),
@@ -1481,12 +1479,6 @@ public class CommerceSubscriptionEntryPersistenceImpl
 	private static final String _SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE =
 		"SELECT COUNT(commerceSubscriptionEntry) FROM CommerceSubscriptionEntry commerceSubscriptionEntry WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CommerceSubscriptionEntry exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceSubscriptionEntryPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid", "deliverySubscriptionTypeSettings"});
 
@@ -1496,4 +1488,4 @@ public class CommerceSubscriptionEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2118660283
+// LIFERAY-SERVICE-BUILDER-HASH:774014101

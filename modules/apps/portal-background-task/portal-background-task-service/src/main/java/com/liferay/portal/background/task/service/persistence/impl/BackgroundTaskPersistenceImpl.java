@@ -5,7 +5,6 @@
 
 package com.liferay.portal.background.task.service.persistence.impl;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.background.task.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.model.BackgroundTaskTable;
@@ -461,26 +460,12 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByG_T_First(
-			groupId, taskExecutorClassName, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByG_T.findFirst(
+			finderCache,
+			new Object[] {
+				new long[] {groupId}, new String[] {taskExecutorClassName}
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -719,26 +704,10 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByT_S_First(
-			taskExecutorClassName, status, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByT_S.findFirst(
+			finderCache,
+			new Object[] {new String[] {taskExecutorClassName}, status},
+			orderByComparator);
 	}
 
 	/**
@@ -882,29 +851,12 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByG_N_T_First(
-			groupId, name, taskExecutorClassName, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", name=");
-		sb.append(name);
-
-		sb.append(", taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByG_N_T.findFirst(
+			finderCache,
+			new Object[] {
+				new long[] {groupId}, name, new String[] {taskExecutorClassName}
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1068,29 +1020,13 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByG_T_C_First(
-			groupId, taskExecutorClassName, completed, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append(", completed=");
-		sb.append(completed);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByG_T_C.findFirst(
+			finderCache,
+			new Object[] {
+				new long[] {groupId}, new String[] {taskExecutorClassName},
+				completed
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1256,29 +1192,12 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByG_T_S_First(
-			groupId, taskExecutorClassName, status, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append(", status=");
-		sb.append(status);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByG_T_S.findFirst(
+			finderCache,
+			new Object[] {
+				groupId, new String[] {taskExecutorClassName}, status
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1443,32 +1362,12 @@ public class BackgroundTaskPersistenceImpl
 			OrderByComparator<BackgroundTask> orderByComparator)
 		throws NoSuchBackgroundTaskException {
 
-		BackgroundTask backgroundTask = fetchByG_N_T_C_First(
-			groupId, name, taskExecutorClassName, completed, orderByComparator);
-
-		if (backgroundTask != null) {
-			return backgroundTask;
-		}
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append(", name=");
-		sb.append(name);
-
-		sb.append(", taskExecutorClassName=");
-		sb.append(taskExecutorClassName);
-
-		sb.append(", completed=");
-		sb.append(completed);
-
-		sb.append("}");
-
-		throw new NoSuchBackgroundTaskException(sb.toString());
+		return _collectionPersistenceFinderByG_N_T_C.findFirst(
+			finderCache,
+			new Object[] {
+				new long[] {groupId}, name, taskExecutorClassName, completed
+			},
+			orderByComparator);
 	}
 
 	/**
@@ -1814,7 +1713,7 @@ public class BackgroundTaskPersistenceImpl
 				_SQL_SELECT_BACKGROUNDTASK_WHERE,
 				_SQL_COUNT_BACKGROUNDTASK_WHERE,
 				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BackgroundTask::getGroupId));
@@ -1841,7 +1740,7 @@ public class BackgroundTaskPersistenceImpl
 				_SQL_SELECT_BACKGROUNDTASK_WHERE,
 				_SQL_COUNT_BACKGROUNDTASK_WHERE,
 				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"backgroundTask.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, BackgroundTask::getCompanyId));
@@ -1868,7 +1767,7 @@ public class BackgroundTaskPersistenceImpl
 				_SQL_SELECT_BACKGROUNDTASK_WHERE,
 				_SQL_COUNT_BACKGROUNDTASK_WHERE,
 				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"backgroundTask.", "completed", FinderColumn.Type.BOOLEAN,
 					"=", true, true, BackgroundTask::isCompleted));
@@ -1895,7 +1794,7 @@ public class BackgroundTaskPersistenceImpl
 				_SQL_SELECT_BACKGROUNDTASK_WHERE,
 				_SQL_COUNT_BACKGROUNDTASK_WHERE,
 				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"backgroundTask.", "status", FinderColumn.Type.INTEGER, "=",
 					true, true, BackgroundTask::getStatus));
@@ -1922,6 +1821,7 @@ public class BackgroundTaskPersistenceImpl
 				null),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=",
 				false, true, true, BackgroundTask::getGroupId),
@@ -1950,6 +1850,7 @@ public class BackgroundTaskPersistenceImpl
 				new String[] {"groupId", "status"}, false),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=", true,
 				true, BackgroundTask::getGroupId),
@@ -1979,6 +1880,7 @@ public class BackgroundTaskPersistenceImpl
 				null),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"backgroundTask.", "taskExecutorClassName",
 				FinderColumn.Type.STRING, "=", false, true, true,
@@ -2016,6 +1918,7 @@ public class BackgroundTaskPersistenceImpl
 				false, null),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=",
 				false, true, true, BackgroundTask::getGroupId),
@@ -2056,6 +1959,7 @@ public class BackgroundTaskPersistenceImpl
 				0, 2, false, null),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new ArrayableFinderColumn<>(
 				"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=",
 				false, true, true, BackgroundTask::getGroupId),
@@ -2096,6 +2000,7 @@ public class BackgroundTaskPersistenceImpl
 				2, false, null),
 			_SQL_SELECT_BACKGROUNDTASK_WHERE, _SQL_COUNT_BACKGROUNDTASK_WHERE,
 			BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=", true,
 				true, BackgroundTask::getGroupId),
@@ -2145,7 +2050,7 @@ public class BackgroundTaskPersistenceImpl
 				_SQL_SELECT_BACKGROUNDTASK_WHERE,
 				_SQL_COUNT_BACKGROUNDTASK_WHERE,
 				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new ArrayableFinderColumn<>(
 					"backgroundTask.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, BackgroundTask::getGroupId),
@@ -2214,13 +2119,10 @@ public class BackgroundTaskPersistenceImpl
 	private static final String _SQL_COUNT_BACKGROUNDTASK_WHERE =
 		"SELECT COUNT(backgroundTask) FROM BackgroundTask backgroundTask WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No BackgroundTask exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1048191047
+// LIFERAY-SERVICE-BUILDER-HASH:-841838411

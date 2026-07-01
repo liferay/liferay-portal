@@ -362,6 +362,7 @@ public class AuditEventPersistenceImpl
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_AUDITEVENT_WHERE, _SQL_COUNT_AUDITEVENT_WHERE,
 				AuditEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"auditEvent.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AuditEvent::getCompanyId));
@@ -414,13 +415,10 @@ public class AuditEventPersistenceImpl
 	private static final String _SQL_COUNT_AUDITEVENT_WHERE =
 		"SELECT COUNT(auditEvent) FROM AuditEvent auditEvent WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No AuditEvent exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return dummyFinderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:612383318
+// LIFERAY-SERVICE-BUILDER-HASH:1911865743

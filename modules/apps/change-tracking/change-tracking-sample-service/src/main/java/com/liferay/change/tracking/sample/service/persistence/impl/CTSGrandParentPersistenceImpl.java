@@ -351,7 +351,7 @@ public class CTSGrandParentPersistenceImpl
 				_SQL_SELECT_CTSGRANDPARENT_WHERE,
 				_SQL_COUNT_CTSGRANDPARENT_WHERE,
 				CTSGrandParentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"",
+				"", null,
 				new FinderColumn<>(
 					"ctsGrandParent.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CTSGrandParent::getCompanyId));
@@ -410,13 +410,10 @@ public class CTSGrandParentPersistenceImpl
 	private static final String _SQL_COUNT_CTSGRANDPARENT_WHERE =
 		"SELECT COUNT(ctsGrandParent) FROM CTSGrandParent ctsGrandParent WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No CTSGrandParent exists with the key {";
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:275245146
+// LIFERAY-SERVICE-BUILDER-HASH:-1919650936

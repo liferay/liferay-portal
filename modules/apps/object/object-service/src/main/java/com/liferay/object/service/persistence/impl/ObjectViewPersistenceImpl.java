@@ -669,6 +669,7 @@ public class ObjectViewPersistenceImpl
 				0, 1, false, null),
 			_SQL_SELECT_OBJECTVIEW_WHERE, _SQL_COUNT_OBJECTVIEW_WHERE,
 			ObjectViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
 			new FinderColumn<>(
 				"objectView.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, ObjectView::getUuid));
@@ -694,6 +695,7 @@ public class ObjectViewPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_OBJECTVIEW_WHERE, _SQL_COUNT_OBJECTVIEW_WHERE,
 				ObjectViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"objectView.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, ObjectView::getUuid),
@@ -725,6 +727,7 @@ public class ObjectViewPersistenceImpl
 					new String[] {"objectDefinitionId"}, false),
 				_SQL_SELECT_OBJECTVIEW_WHERE, _SQL_COUNT_OBJECTVIEW_WHERE,
 				ObjectViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"objectView.", "objectDefinitionId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectView::getObjectDefinitionId));
@@ -757,6 +760,7 @@ public class ObjectViewPersistenceImpl
 					false),
 				_SQL_SELECT_OBJECTVIEW_WHERE, _SQL_COUNT_OBJECTVIEW_WHERE,
 				ObjectViewModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"objectView.", "objectDefinitionId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectView::getObjectDefinitionId),
@@ -819,9 +823,6 @@ public class ObjectViewPersistenceImpl
 	private static final String _SQL_COUNT_OBJECTVIEW_WHERE =
 		"SELECT COUNT(objectView) FROM ObjectView objectView WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ObjectView exists with the key {";
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -831,4 +832,4 @@ public class ObjectViewPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:88471042
+// LIFERAY-SERVICE-BUILDER-HASH:2038710955

@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -647,7 +645,7 @@ public class SegmentsExperimentRelPersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIMENTREL_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIMENTREL_WHERE,
 				SegmentsExperimentRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"segmentsExperimentRel.", "segmentsExperimentId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -678,7 +676,7 @@ public class SegmentsExperimentRelPersistenceImpl
 				_SQL_SELECT_SEGMENTSEXPERIMENTREL_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIMENTREL_WHERE,
 				SegmentsExperimentRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "",
+				_ENTITY_ALIAS_PREFIX, "", "", null,
 				new FinderColumn<>(
 					"segmentsExperimentRel.", "segmentsExperienceId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -759,16 +757,10 @@ public class SegmentsExperimentRelPersistenceImpl
 	private static final String _SQL_COUNT_SEGMENTSEXPERIMENTREL_WHERE =
 		"SELECT COUNT(segmentsExperimentRel) FROM SegmentsExperimentRel segmentsExperimentRel WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No SegmentsExperimentRel exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SegmentsExperimentRelPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return finderCache;
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:971725161
+// LIFERAY-SERVICE-BUILDER-HASH:1609627544

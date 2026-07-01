@@ -20,8 +20,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -912,7 +910,7 @@ public class CalendarPersistenceImpl
 				new String[] {String.class.getName()}, new String[] {"uuid_"},
 				0, 1, false, null),
 			_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
-			CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"calendar.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 				true, true, Calendar::getUuid));
@@ -953,6 +951,7 @@ public class CalendarPersistenceImpl
 					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
 				_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
 				CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"calendar.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Calendar::getUuid),
@@ -981,6 +980,7 @@ public class CalendarPersistenceImpl
 					new String[] {"groupId", "calendarResourceId"}, false),
 				_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
 				CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"calendar.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Calendar::getGroupId),
@@ -1025,6 +1025,7 @@ public class CalendarPersistenceImpl
 					false),
 				_SQL_SELECT_CALENDAR_WHERE, _SQL_COUNT_CALENDAR_WHERE,
 				CalendarModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
 				new FinderColumn<>(
 					"calendar.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, Calendar::getGroupId),
@@ -1092,12 +1093,6 @@ public class CalendarPersistenceImpl
 	private static final String _SQL_COUNT_CALENDAR_WHERE =
 		"SELECT COUNT(calendar) FROM Calendar calendar WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Calendar exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CalendarPersistenceImpl.class);
-
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"uuid"});
 
@@ -1107,4 +1102,4 @@ public class CalendarPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-101977283
+// LIFERAY-SERVICE-BUILDER-HASH:-996262708

@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchWebDAVPropsException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.WebDAVProps;
 import com.liferay.portal.kernel.model.WebDAVPropsTable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -356,16 +354,10 @@ public class WebDAVPropsPersistenceImpl
 	private static final String _SQL_SELECT_WEBDAVPROPS_WHERE =
 		"SELECT webDAVProps FROM WebDAVProps webDAVProps WHERE ";
 
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No WebDAVProps exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		WebDAVPropsPersistenceImpl.class);
-
 	@Override
 	protected FinderCache getFinderCache() {
 		return FinderCacheUtil.getFinderCache();
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1486304545
+// LIFERAY-SERVICE-BUILDER-HASH:2079980492
