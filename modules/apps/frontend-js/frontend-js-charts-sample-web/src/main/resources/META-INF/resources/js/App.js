@@ -7,17 +7,18 @@ import ClayTabs from '@clayui/tabs';
 import React, {useState} from 'react';
 
 import {BarChartSamples} from './BarChartSamples';
+import {PieChartSamples} from './PieChartSamples';
 import {StateWrapperSamples} from './StateWrapperSamples';
 
 // One tab per chart. Each chart's samples live in their own file and are
-// dropped in below; the remaining charts (LPD-95993/95994/95996) are
-// placeholders until they land.
+// dropped in below; the remaining charts (LPD-95993/95996) are placeholders
+// until they land.
 
 const TABS = [
 	{Samples: StateWrapperSamples, label: 'State wrapper'},
 	{Samples: BarChartSamples, label: 'Bar Chart'},
 	{label: 'Line Chart'},
-	{label: 'Pie Chart'},
+	{Samples: PieChartSamples, label: 'Pie Chart'},
 	{label: 'Map Chart'},
 ];
 
