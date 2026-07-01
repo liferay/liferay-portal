@@ -68,9 +68,7 @@ public class CTPublishBackgroundTaskExecutorTest {
 	}
 
 	@Test
-	public void testExecuteDoesNotClearEntityCacheWhenNotClustered()
-		throws Exception {
-
+	public void testExecute() throws Exception {
 		Assert.assertFalse(ClusterExecutorUtil.isEnabled());
 
 		_addDLFileEntries(5);

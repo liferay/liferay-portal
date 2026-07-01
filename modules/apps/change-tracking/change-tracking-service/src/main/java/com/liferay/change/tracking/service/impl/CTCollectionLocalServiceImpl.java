@@ -548,7 +548,6 @@ public class CTCollectionLocalServiceImpl
 			ctCollection.getCtCollectionId());
 
 		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
-
 		int entityCacheThreshold = _getEntityCacheThreshold();
 
 		try (SafeCloseable safeCloseable =
@@ -1380,10 +1379,9 @@ public class CTCollectionLocalServiceImpl
 				return null;
 			});
 
-		List<Long> modelClassPKs = new ArrayList<>(ctEntries.size());
 		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
-
 		int entityCacheThreshold = _getEntityCacheThreshold();
+		List<Long> modelClassPKs = new ArrayList<>(ctEntries.size());
 
 		try (SafeCloseable safeCloseable =
 				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
