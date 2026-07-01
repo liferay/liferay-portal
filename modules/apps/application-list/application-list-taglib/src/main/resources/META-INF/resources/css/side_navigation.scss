@@ -27,6 +27,7 @@
 			.side-navigation-skeleton {
 				aspect-ratio: 320 / 650;
 				color: $secondary-l3;
+				flex-shrink: 0;
 				width: 100%;
 			}
 
