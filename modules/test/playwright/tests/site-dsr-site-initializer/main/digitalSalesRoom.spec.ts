@@ -1057,6 +1057,11 @@ test(
 		);
 		await digitalSalesRoomUsersPage.userEmailAddressesInput.press('Enter');
 		await editDigitalSalesRoomPage.roleKeyButton.click();
+
+		await expect(
+			editDigitalSalesRoomPage.contributorRoleInputButton
+		).toBeVisible();
+
 		await editDigitalSalesRoomPage.contributorRoleInputButton.click();
 		await digitalSalesRoomUsersPage.inviteButton.click();
 
@@ -1078,7 +1083,7 @@ test(
 		).toBeVisible();
 
 		await digitalSalesRoomUsersPage.roleDropdown(email).click();
-		await editDigitalSalesRoomPage.contributorRoleButton.click();
+		await editDigitalSalesRoomPage.contributorRoleMenuItemButton.click();
 
 		await expect(
 			digitalSalesRoomUsersPage.roleText(email, 'Content Contributor')
@@ -1156,7 +1161,12 @@ test(
 		);
 		await digitalSalesRoomUsersPage.userEmailAddressesInput.press('Enter');
 		await editDigitalSalesRoomPage.roleKeyButton.click();
-		await editDigitalSalesRoomPage.contributorRoleButton.click();
+
+		await expect(
+			editDigitalSalesRoomPage.contributorRoleInputButton
+		).toBeVisible();
+
+		await editDigitalSalesRoomPage.contributorRoleInputButton.click();
 		await digitalSalesRoomUsersPage.inviteButton.click();
 
 		await waitForAlert(page, 'Success:User was invited successfully.');
@@ -1465,7 +1475,12 @@ test(
 		).toBeVisible();
 
 		await digitalSalesRoomUsersPage.roleDropdown(member.name).click();
-		await editDigitalSalesRoomPage.contributorRoleButton.click();
+
+		await expect(
+			editDigitalSalesRoomPage.contributorRoleMenuItemButton
+		).toBeVisible();
+
+		await editDigitalSalesRoomPage.contributorRoleMenuItemButton.click();
 
 		await expect(
 			digitalSalesRoomUsersPage.roleText(

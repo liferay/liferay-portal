@@ -157,7 +157,10 @@ function RoomShare({
 		(user) => user.id === currentUserId
 	)?.roleKey;
 
-	const assignableRoleKeys = canAssignAllRoles
+	const canManageAllRoles =
+		canAssignAllRoles || currentUserRoleKey === OWNER_ROLE_KEY;
+
+	const assignableRoleKeys = canManageAllRoles
 		? DSR_SITE_ROLES.map((role) => role.key)
 		: ASSIGNABLE_ROLE_KEYS_BY_ROLE_KEY[currentUserRoleKey ?? ''] ?? [];
 
@@ -373,7 +376,7 @@ function RoomShare({
 		}
 
 		if (
-			canAssignAllRoles ||
+			canManageAllRoles ||
 			(user.isInvitedMember && user.ownerId === currentUserId)
 		) {
 			return true;
@@ -738,6 +741,7 @@ function RoomShare({
 													>
 														{(item: any) => (
 															<DropDown.Item
+																data-testid={`memberRoleKeyItem_${item.label}`}
 																key={item.key}
 																onClick={() =>
 																	handleUpdateUser(

@@ -17,8 +17,8 @@ export class EditDigitalSalesRoomPage {
 	readonly commentSaveButton;
 	readonly commentsButton: Locator;
 	readonly commentTextarea: Locator;
-	readonly contributorRoleButton: Locator;
 	readonly contributorRoleInputButton: Locator;
+	readonly contributorRoleMenuItemButton: Locator;
 	readonly documentCard: (documentName: string) => Locator;
 	readonly documentGalleryCard: Locator;
 	readonly documentGalleryCardBadge: Locator;
@@ -68,11 +68,11 @@ export class EditDigitalSalesRoomPage {
 		this.commentTextarea = page.getByRole('textbox', {
 			name: 'Add comment.',
 		});
-		this.contributorRoleButton = page.getByRole('menuitem', {
-			name: 'Content Contributor',
-		});
 		this.contributorRoleInputButton = page.locator(
 			'[data-testid="roleKeyItem_Content Contributor"]'
+		);
+		this.contributorRoleMenuItemButton = page.locator(
+			'[data-testid="memberRoleKeyItem_Content Contributor"]'
 		);
 		this.documentCard = (documentName: string) =>
 			page.locator('.card-title', {hasText: documentName});
