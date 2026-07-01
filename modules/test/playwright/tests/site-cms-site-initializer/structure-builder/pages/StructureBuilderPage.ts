@@ -58,8 +58,8 @@ export class StructureBuilderPage {
 		this.customizeEditorButton = this.page.getByRole('button', {
 			name: 'Customize Editor',
 		});
-		this.labelInput = this.page.getByLabel('Structure Label');
-		this.nameInput = this.page.getByLabel('Structure Name');
+		this.labelInput = this.page.getByLabel('Content Structure Label');
+		this.nameInput = this.page.getByLabel('Content Structure Name');
 		this.publishButton = this.page.getByRole('button', {name: 'Publish'});
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 		this.spaceCheckbox = this.page.getByLabel(

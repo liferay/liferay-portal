@@ -34,7 +34,6 @@ test(
 	async ({
 		apiHelpers,
 		browser,
-		page,
 		pageEditorPage,
 		site,
 		structureBuilderPage,
@@ -46,6 +45,11 @@ test(
 		const structureName = `Event${getRandomInt()}`;
 		const titleValue = `Title ${getRandomString()}`;
 		const bodyValue = `Body ${getRandomString()}`;
+
+		// The Numeric field renders unformatted (no thousands separator), so the
+		// rendered text matches String(numericValue) exactly. Compare against the
+		// formatted value if the field is ever configured with a separator.
+
 		const numericValue = 100000 + (getRandomInt() % 800000);
 		const updatedTitle = `Title ${getRandomString()}`;
 		const updatedBody = `Body ${getRandomString()}`;
@@ -123,25 +127,14 @@ test(
 			spaceName
 		);
 
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			applicationName,
+			entry.id,
+			[
+				{actionIds: ['VIEW'], roleName: 'Guest'},
+				{actionIds: ['VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				['VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,
@@ -151,35 +144,43 @@ test(
 		});
 
 		await test.step('Map the Title, Body and Numeric fields into the page fragment and publish', async () => {
-			await pageEditorPage.selectEditable(fragmentId, 'title');
 
-			await pageEditorPage.setMappingConfiguration({
-				mapping: {
-					entity: entityLabel,
-					entry: titleValue,
-					field: 'Title',
-				},
-			});
+			// The entry is picked by title in the editor's mapping dialog, which
+			// depends on the search index. Retry until the entry is selectable.
 
-			await pageEditorPage.selectEditable(fragmentId, 'body');
+			await expect(async () => {
+				await pageEditorPage.selectEditable(fragmentId, 'title');
 
-			await pageEditorPage.setMappingConfiguration({
-				mapping: {
-					entity: entityLabel,
-					entry: titleValue,
-					field: 'Body',
-				},
-			});
+				await pageEditorPage.setMappingConfiguration({
+					mapping: {
+						entity: entityLabel,
+						entry: titleValue,
+						field: 'Title',
+					},
+				});
 
-			await pageEditorPage.selectEditable(fragmentId, 'numeric');
+				await pageEditorPage.selectEditable(fragmentId, 'body');
 
-			await pageEditorPage.setMappingConfiguration({
-				mapping: {
-					entity: entityLabel,
-					entry: titleValue,
-					field: 'Numeric',
-				},
-			});
+				await pageEditorPage.setMappingConfiguration({
+					mapping: {
+						entity: entityLabel,
+						entry: titleValue,
+						field: 'Body',
+					},
+				});
+
+				await pageEditorPage.selectEditable(fragmentId, 'numeric');
+
+				await pageEditorPage.setMappingConfiguration({
+					mapping: {
+						entity: entityLabel,
+						entry: titleValue,
+						field: 'Numeric',
+					},
+				});
+			}).toPass({timeout: 30000});
+
+			await pageEditorPage.waitForChangesSaved();
 
 			await pageEditorPage.publishPage();
 		});

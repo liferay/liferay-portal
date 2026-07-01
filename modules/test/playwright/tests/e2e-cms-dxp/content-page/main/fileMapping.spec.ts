@@ -14,6 +14,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import getRandomString from '../../../../utils/getRandomString';
+import {isImageLoaded} from '../../../../utils/isImageLoaded';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
 
 const test = mergeTests(
@@ -78,30 +79,14 @@ test(
 			spaceName
 		);
 
-		const objectDefinition =
-			await apiHelpers.objectAdmin.getObjectDefinitionByName(
-				'CMSBasicDocument'
-			);
-
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			APPLICATION_NAME,
+			entry.id,
+			[
+				{actionIds: ['VIEW'], roleName: 'Guest'},
+				{actionIds: ['VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				['VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,
@@ -151,11 +136,7 @@ test(
 						.locator('img[src*="/documents/"]')
 						.first();
 
-					expect(
-						await image.evaluate(
-							(element: HTMLImageElement) => element.naturalWidth
-						)
-					).toBeGreaterThan(0);
+					expect(await isImageLoaded(image)).toBe(true);
 
 					initialImageSrc = await image.getAttribute('src');
 				}).toPass({timeout: 30000});
@@ -183,11 +164,7 @@ test(
 						.locator('img[src*="/documents/"]')
 						.first();
 
-					expect(
-						await image.evaluate(
-							(element: HTMLImageElement) => element.naturalWidth
-						)
-					).toBeGreaterThan(0);
+					expect(await isImageLoaded(image)).toBe(true);
 
 					expect(await image.getAttribute('src')).not.toBe(
 						initialImageSrc
@@ -233,14 +210,11 @@ test(
 						userPage.getByText(updatedTitle, {exact: true})
 					).toBeVisible({timeout: 10000});
 
-					const naturalWidth = await userPage
-						.locator('img[src*="/documents/"]')
-						.first()
-						.evaluate(
-							(image: HTMLImageElement) => image.naturalWidth
-						);
-
-					expect(naturalWidth).toBeGreaterThan(0);
+					expect(
+						await isImageLoaded(
+							userPage.locator('img[src*="/documents/"]').first()
+						)
+					).toBe(true);
 				}).toPass({timeout: 30000});
 			}
 			finally {
@@ -279,30 +253,14 @@ test(
 			spaceName
 		);
 
-		const objectDefinition =
-			await apiHelpers.objectAdmin.getObjectDefinitionByName(
-				'CMSBasicDocument'
-			);
-
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			APPLICATION_NAME,
+			entry.id,
+			[
+				{actionIds: ['VIEW'], roleName: 'Guest'},
+				{actionIds: ['DOWNLOAD_FILE', 'VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				roleName === 'User' ? ['DOWNLOAD_FILE', 'VIEW'] : ['VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,
@@ -351,8 +309,14 @@ test(
 					).toBeVisible({timeout: 10000});
 				}).toPass({timeout: 30000});
 
+				// Use redirect: 'manual' so a login redirect is not silently
+				// followed into a 200. A guest without DOWNLOAD_FILE cannot
+				// fetch the file (the object-entry download answers 404), so the
+				// requirement is simply that it is never a successful download.
+
 				const guestDownloadStatus = await guestPage.evaluate(
-					async (href) => (await fetch(href)).status,
+					async (href) =>
+						(await fetch(href, {redirect: 'manual'})).status,
 					downloadHref
 				);
 
@@ -447,30 +411,14 @@ test(
 			spaceName
 		);
 
-		const objectDefinition =
-			await apiHelpers.objectAdmin.getObjectDefinitionByName(
-				'CMSBasicDocument'
-			);
-
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			APPLICATION_NAME,
+			entry.id,
+			[
+				{actionIds: ['DOWNLOAD_FILE', 'VIEW'], roleName: 'Guest'},
+				{actionIds: ['DOWNLOAD_FILE', 'VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				['DOWNLOAD_FILE', 'VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,

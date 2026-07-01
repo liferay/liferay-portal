@@ -32,7 +32,7 @@ const ENTITY = 'Basic Web Contents (CMS)';
 test(
 	'A Basic Web Content mapped to page fragments renders and live-updates for GUEST and USER',
 	{tag: ['@LPD-95525', '@LPD-95525/TC-2.a']},
-	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
+	async ({apiHelpers, browser, pageEditorPage, site}) => {
 		test.setTimeout(240000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -61,30 +61,14 @@ test(
 			spaceName
 		);
 
-		const objectDefinition =
-			await apiHelpers.objectAdmin.getObjectDefinitionByName(
-				'CMSBasicWebContent'
-			);
-
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			APPLICATION_NAME,
+			entry.id,
+			[
+				{actionIds: ['VIEW'], roleName: 'Guest'},
+				{actionIds: ['VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				['VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,
@@ -94,21 +78,33 @@ test(
 		});
 
 		await test.step('Map the entry Title and Content into the page fragment and publish', async () => {
-			await pageEditorPage.selectEditable(fragmentId, 'title');
 
-			await pageEditorPage.setMappingConfiguration({
-				mapping: {entity: ENTITY, entry: contentTitle, field: 'Title'},
-			});
+			// The entry is picked by title in the editor's mapping dialog, which
+			// depends on the search index. Retry until the entry is selectable.
 
-			await pageEditorPage.selectEditable(fragmentId, 'content');
+			await expect(async () => {
+				await pageEditorPage.selectEditable(fragmentId, 'title');
 
-			await pageEditorPage.setMappingConfiguration({
-				mapping: {
-					entity: ENTITY,
-					entry: contentTitle,
-					field: 'Content',
-				},
-			});
+				await pageEditorPage.setMappingConfiguration({
+					mapping: {
+						entity: ENTITY,
+						entry: contentTitle,
+						field: 'Title',
+					},
+				});
+
+				await pageEditorPage.selectEditable(fragmentId, 'content');
+
+				await pageEditorPage.setMappingConfiguration({
+					mapping: {
+						entity: ENTITY,
+						entry: contentTitle,
+						field: 'Content',
+					},
+				});
+			}).toPass({timeout: 30000});
+
+			await pageEditorPage.waitForChangesSaved();
 
 			await pageEditorPage.publishPage();
 		});

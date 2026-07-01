@@ -30,7 +30,7 @@ export async function addMappingFragment({
 	html: string;
 	pageEditorPage: PageEditorPage;
 	site: Site;
-}): Promise<{fragmentId: string; layout: any; viewUrl: string}> {
+}): Promise<{fragmentId: string; layout: Layout; viewUrl: string}> {
 	const fragmentCollectionName = `Collection ${getRandomString()}`;
 	const fragmentName = `Mapped ${getRandomString()}`;
 

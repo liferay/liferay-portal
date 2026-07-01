@@ -15,6 +15,7 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
+import {isImageLoaded} from '../../../../utils/isImageLoaded';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
 import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 
@@ -106,25 +107,14 @@ test(
 			spaceName
 		);
 
-		const companyId = String(
-			await page.evaluate(() => Liferay.ThemeDisplay.getCompanyId())
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			applicationName,
+			entry.id,
+			[
+				{actionIds: ['VIEW'], roleName: 'Guest'},
+				{actionIds: ['VIEW'], roleName: 'User'},
+			]
 		);
-
-		for (const roleName of ['Guest', 'User']) {
-			const role = await apiHelpers.jsonWebServicesRole.getRole(
-				companyId,
-				roleName
-			);
-
-			await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
-				['VIEW'],
-				companyId,
-				String(space.siteId),
-				objectDefinition.className,
-				String(entry.id),
-				String(role.roleId)
-			);
-		}
 
 		const {fragmentId, viewUrl} = await addMappingFragment({
 			apiHelpers,
@@ -172,14 +162,11 @@ test(
 						guestPage.getByText(titleValue, {exact: true})
 					).toBeVisible({timeout: 10000});
 
-					const naturalWidth = await guestPage
-						.locator('img[src*="/documents/"]')
-						.first()
-						.evaluate(
-							(image: HTMLImageElement) => image.naturalWidth
-						);
-
-					expect(naturalWidth).toBeGreaterThan(0);
+					expect(
+						await isImageLoaded(
+							guestPage.locator('img[src*="/documents/"]').first()
+						)
+					).toBe(true);
 				}).toPass({timeout: 30000});
 			}
 			finally {
@@ -221,14 +208,11 @@ test(
 						userPage.getByText(titleValue, {exact: true})
 					).toBeVisible({timeout: 10000});
 
-					const naturalWidth = await userPage
-						.locator('img[src*="/documents/"]')
-						.first()
-						.evaluate(
-							(image: HTMLImageElement) => image.naturalWidth
-						);
-
-					expect(naturalWidth).toBeGreaterThan(0);
+					expect(
+						await isImageLoaded(
+							userPage.locator('img[src*="/documents/"]').first()
+						)
+					).toBe(true);
 				}).toPass({timeout: 30000});
 			}
 			finally {

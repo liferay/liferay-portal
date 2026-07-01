@@ -212,4 +212,15 @@ export class ObjectEntryApiHelper {
 			{data}
 		);
 	}
+
+	async putObjectEntryPermissions(
+		applicationName: string,
+		objectEntryId: number,
+		permissions: Array<{actionIds: string[]; roleName: string}>
+	) {
+		return this.apiHelpers.put(
+			`${this.apiHelpers.baseUrl}${applicationName}/${objectEntryId}/permissions`,
+			{data: permissions}
+		);
+	}
 }
