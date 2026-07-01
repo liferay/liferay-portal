@@ -2121,7 +2121,7 @@ public class ContentPageEditorDisplayContext {
 			).build());
 
 		styleBooks.addAll(
-			StyleBookEntryUtil.getStyleBookEntries(
+			StyleBookEntryUtil.getStyleBookEntryMaps(
 				frontendTokenDefinition, false, themeDisplay.getLayout(),
 				themeDisplay));
 

@@ -176,7 +176,7 @@ public class StyleBookEntryUtilTest {
 		ThemeDisplay themeDisplay = _mockThemeDisplay();
 
 		List<Map<String, Object>> styleBookEntryMaps =
-			StyleBookEntryUtil.getStyleBookEntries(
+			StyleBookEntryUtil.getStyleBookEntryMaps(
 				frontendTokenDefinition, false, layout, themeDisplay);
 
 		_assertStyleBookEntryMap(
@@ -202,7 +202,7 @@ public class StyleBookEntryUtilTest {
 
 		_groupLocalServiceUtilMockedStatic.clearInvocations();
 
-		styleBookEntryMaps = StyleBookEntryUtil.getStyleBookEntries(
+		styleBookEntryMaps = StyleBookEntryUtil.getStyleBookEntryMaps(
 			frontendTokenDefinition, true, layout, themeDisplay);
 
 		_assertStyleBookEntryMap(

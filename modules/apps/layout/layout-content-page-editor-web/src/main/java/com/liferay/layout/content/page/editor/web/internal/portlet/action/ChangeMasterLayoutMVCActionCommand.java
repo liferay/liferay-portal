@@ -225,7 +225,7 @@ public class ChangeMasterLayoutMVCActionCommand
 		return JSONUtil.concat(
 			styleBooksJSONArray,
 			JSONUtil.toJSONArray(
-				StyleBookEntryUtil.getStyleBookEntries(
+				StyleBookEntryUtil.getStyleBookEntryMaps(
 					frontendTokenDefinition, true, layout, themeDisplay),
 				map -> _jsonFactory.createJSONObject(map)));
 	}
