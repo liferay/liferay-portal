@@ -110,7 +110,7 @@ test(
 		});
 
 		await test.step('Check Review and Run Test modal is being displayed', async () => {
-			const modalHeader = await page.getByRole('heading', {
+			const modalHeader = page.getByRole('heading', {
 				name: 'Review and Run Test',
 			});
 
@@ -363,7 +363,7 @@ test(
 		});
 
 		await test.step('Run AB Test', async () => {
-			const reviewButton = await page.getByText('Review and Run Test');
+			const reviewButton = page.getByText('Review and Run Test');
 
 			await reviewButton.click();
 
@@ -466,7 +466,7 @@ test(
 		});
 
 		await test.step('Run AB Test', async () => {
-			const reviewButton = await page.getByText('Review and Run Test');
+			const reviewButton = page.getByText('Review and Run Test');
 
 			await reviewButton.click();
 
@@ -550,7 +550,7 @@ test(
 		});
 
 		await test.step('Run AB Test', async () => {
-			const reviewButton = await page.getByText('Review and Run Test');
+			const reviewButton = page.getByText('Review and Run Test');
 
 			await reviewButton.click();
 

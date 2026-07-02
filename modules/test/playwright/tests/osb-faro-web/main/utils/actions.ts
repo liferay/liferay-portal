@@ -20,11 +20,9 @@ export async function clickOnLink({
 	name: string;
 	page: Page;
 }) {
-	const reviewTagA = await page.locator(
-		`xpath=//a[contains(text(),"${name}")]`
-	);
+	const linkLocator = page.locator(`xpath=//a[contains(text(),"${name}")]`);
 
-	const href = await reviewTagA.getAttribute('href');
+	const href = await linkLocator.getAttribute('href');
 
 	await page.goto(href.replace(liferayConfig.environment.baseUrl, baseUrl));
 }
