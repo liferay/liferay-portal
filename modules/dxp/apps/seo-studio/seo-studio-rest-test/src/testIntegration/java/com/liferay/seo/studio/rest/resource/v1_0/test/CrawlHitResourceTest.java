@@ -160,11 +160,10 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 
 		User user = UserTestUtil.getAdminUser(companyId);
 
-		long userId = user.getUserId();
-
 		if (_accountEntry == null) {
 			_accountEntry = _accountEntryLocalService.addAccountEntry(
-				null, userId, AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+				null, user.getUserId(),
+				AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
 				RandomTestUtil.randomString(), null, new String[0], null, null,
 				null, AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
 				WorkflowConstants.STATUS_APPROVED,
@@ -179,7 +178,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 
 			_seoStudioInstanceObjectEntry =
 				_objectEntryLocalService.addObjectEntry(
-					0L, userId,
+					0L, user.getUserId(),
 					instanceObjectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -205,7 +204,8 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 					"L_SEO_STUDIO_DOMAIN", companyId);
 
 		ObjectEntry domainObjectEntry = _objectEntryLocalService.addObjectEntry(
-			0L, userId, domainObjectDefinition.getObjectDefinitionId(),
+			0L, user.getUserId(),
+			domainObjectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
