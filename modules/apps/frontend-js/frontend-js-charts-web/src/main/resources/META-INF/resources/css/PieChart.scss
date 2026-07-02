@@ -77,6 +77,10 @@
 		&.is-active {
 			background: var(--primary);
 			color: var(--white);
+
+			.chart-pie-legend-swatch {
+				border-color: var(--white);
+			}
 		}
 	}
 
@@ -91,6 +95,7 @@
 
 	.chart-pie-legend-swatch {
 		block-size: 0.75rem;
+		border: 1px solid var(--dark-d1);
 		border-radius: 0.125rem;
 		display: inline-block;
 		flex-shrink: 0;
@@ -111,6 +116,7 @@
 
 	th,
 	td {
+		border-bottom: 1px solid var(--light-d1);
 		padding-block: 0.25rem;
 		padding-inline: 0.5rem;
 		text-align: start;
@@ -122,11 +128,16 @@
 		&.is-active {
 			background: var(--primary);
 			color: var(--white);
+
+			.chart-pie-legend-swatch {
+				border-color: var(--white);
+			}
 		}
 	}
 
 	.chart-pie-legend-swatch {
 		block-size: 0.75rem;
+		border: 1px solid var(--dark-d1);
 		border-radius: 0.125rem;
 		display: inline-block;
 		inline-size: 0.75rem;
