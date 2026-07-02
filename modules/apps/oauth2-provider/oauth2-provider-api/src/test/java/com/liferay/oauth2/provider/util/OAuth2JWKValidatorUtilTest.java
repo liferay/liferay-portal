@@ -100,15 +100,15 @@ public class OAuth2JWKValidatorUtilTest {
 	private String _generateRsaJWK(int bits, String algorithm)
 		throws Exception {
 
+		Base64.Encoder base64Encoder = Base64.getUrlEncoder();
+
+		Base64.Encoder encoder = base64Encoder.withoutPadding();
+
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 
 		keyPairGenerator.initialize(bits);
 
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-		Base64.Encoder base64Encoder = Base64.getUrlEncoder();
-
-		Base64.Encoder encoder = base64Encoder.withoutPadding();
 
 		RSAPublicKey rsaPublicKey = (RSAPublicKey)keyPair.getPublic();
 		RSAPrivateKey rsaPrivateKey = (RSAPrivateKey)keyPair.getPrivate();
