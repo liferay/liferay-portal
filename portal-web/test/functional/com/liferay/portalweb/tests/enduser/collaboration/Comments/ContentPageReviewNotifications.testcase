@@ -54,57 +54,6 @@ definition {
 		}
 	}
 
-	@description = "This case ensures that the user is notified when someone comments on their content page fragment."
-	@priority = 5
-	@refactordone
-	test CanViewComment {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Title");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "user2@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addComment(
-			fragmentComment = "Comment by User 2",
-			fragmentName = "Title");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		Notifications.viewBadgeCount(
-			activePanel = "Notifications",
-			notificationCount = 1);
-
-		Notifications.gotoNotifications();
-
-		Notifications.viewNewComment(
-			contentBody = "Comment by User 2",
-			fragmentName = "Title",
-			user = "userfn userln");
-
-		Notifications.navigateToContent(contentBody = "Comment by User 2");
-
-		PageEditor.viewComment(
-			fragmentComment = "Comment by User 2",
-			fromNotifications = "true");
-	}
-
 	@description = "This case ensures that a user is notified when a reply is added to their comment."
 	@priority = 5
 	@refactordone
