@@ -11,6 +11,7 @@ import React, {useReducer, useRef, useState} from 'react';
 
 import {initializeConfig} from '../../app/config/index';
 import {Config} from '../../types/config';
+import AudiencePriority from './AudiencePriority';
 import ElementVariationForm from './ElementVariationForm';
 import ElementVariationService from './ElementVariationService';
 import ElementVariationsList from './ElementVariationsList';
@@ -174,6 +175,8 @@ function ElementVariations({
 										)}
 									</Picker>
 								</div>
+
+								<AudiencePriority audiences={audiences} />
 
 								{experienceElementVariations.length ? (
 									<ElementVariationsList
