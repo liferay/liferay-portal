@@ -148,35 +148,35 @@ describe('PieChart', () => {
 		);
 	});
 
-	it('moves focus to the next slice on ArrowRight', () => {
+	it('moves focus to the next slice on ArrowRight', async () => {
 		render(<PieChart data={DATA} title="Sales" />);
 
 		const slices = screen.getAllByRole('img');
 
 		slices[0].focus();
-		fireKeyDown(slices[0], 'ArrowRight');
+		await userEvent.keyboard('{ArrowRight}');
 
 		expect(slices[1]).toHaveFocus();
 	});
 
-	it('moves focus to the first slice on Home', () => {
+	it('moves focus to the first slice on Home', async () => {
 		render(<PieChart data={DATA} title="Sales" />);
 
 		const slices = screen.getAllByRole('img');
 
 		slices[2].focus();
-		fireKeyDown(slices[2], 'Home');
+		await userEvent.keyboard('{Home}');
 
 		expect(slices[0]).toHaveFocus();
 	});
 
-	it('moves focus to the last slice on End', () => {
+	it('moves focus to the last slice on End', async () => {
 		render(<PieChart data={DATA} title="Sales" />);
 
 		const slices = screen.getAllByRole('img');
 
 		slices[0].focus();
-		fireKeyDown(slices[0], 'End');
+		await userEvent.keyboard('{End}');
 
 		expect(slices[slices.length - 1]).toHaveFocus();
 	});
@@ -320,7 +320,3 @@ describe('PieChart', () => {
 		await checkAccessibility({bestPractices: true, context: container});
 	});
 });
-
-function fireKeyDown(element: Element, key: string) {
-	element.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, key}));
-}
