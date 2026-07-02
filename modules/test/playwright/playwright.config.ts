@@ -21,6 +21,7 @@ import {config as applicationListTaglibConfig} from './tests/application-list-ta
 import {config as assetCategoriesAdminWebConfig} from './tests/asset-categories-admin-web/main/config';
 import {config as assetPublisherWebConfig} from './tests/asset-publisher-web/main/config';
 import {config as assetTagsAdminWebConfig} from './tests/asset-tags-admin-web/main/config';
+import {config as audiencesWebConfig} from './tests/audiences-web/main/config';
 import {config as batchPlannerConfig} from './tests/batch-planner/main/config';
 import {config as blogsWebConfig} from './tests/blogs-web/main/config';
 import {config as calendarWebConfig} from './tests/calendar-web/main/config';
@@ -259,6 +260,7 @@ export default defineConfig({
 		assetCategoriesAdminWebConfig,
 		assetPublisherWebConfig,
 		assetTagsAdminWebConfig,
+		audiencesWebConfig,
 		batchPlannerConfig,
 		blogsWebConfig,
 		calendarWebConfig,
