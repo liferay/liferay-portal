@@ -759,8 +759,7 @@ public class PredicateExpressionVisitorImpl
 
 			if (Objects.equals(
 					objectFieldBusinessType.getDBType(),
-					ObjectFieldConstants.DB_TYPE_LONG) &&
-				Validator.isNumber(String.valueOf(value))) {
+					ObjectFieldConstants.DB_TYPE_LONG)) {
 
 				return GetterUtil.getLong(value);
 			}
