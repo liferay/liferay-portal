@@ -540,3 +540,55 @@ test(
 		await pageEditorPage.viewFragmentCommentWithoutOptions(comment);
 	}
 );
+
+test(
+	'Views fragment comments scoped to their experience',
+	{tag: ['@LPD-96910', '@LPS-100024']},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Create a second experience and add a comment in it
+
+		const experienceName = getRandomString();
+
+		await pageEditorPage.createExperience(experienceName);
+
+		const comment = 'This is a fragment comment.';
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		await pageEditorPage.viewFragmentComment(comment);
+
+		// The comment does not appear in the default experience
+
+		await pageEditorPage.switchExperience('Default');
+
+		await pageEditorPage.goToSidebarTab('Comments');
+
+		await expect(pageEditorPage.getFragmentComment(comment)).toBeHidden();
+
+		// The comment reappears in its own experience
+
+		await pageEditorPage.switchExperience(experienceName);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		await pageEditorPage.viewFragmentComment(comment);
+	}
+);
