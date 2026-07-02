@@ -1,0 +1,13 @@
+{
+	"deletionType": "cascade",
+	"externalReferenceCode": "L_SEO_STUDIO_INSTANCE_TO_L_SEO_STUDIO_INTEGRATIONS",
+	"label": {
+		"en_US": "SEO Studio Instance to SEO Studio Integrations"
+	},
+	"name": "seoStudioInstanceToSEOStudioIntegrations",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:SEOStudioInstance$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioIntegration$]",
+	"objectDefinitionName2": "SEOStudioIntegration",
+	"system": true,
+	"type": "oneToMany"
+}

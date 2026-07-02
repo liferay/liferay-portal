@@ -1,0 +1,161 @@
+{
+	"accountEntryRestricted": false,
+	"className": "com.liferay.object.model.ObjectDefinition#S0I9",
+	"enableFormContainer": false,
+	"enableIndexSearch": false,
+	"externalReferenceCode": "L_SEO_STUDIO_INTEGRATION",
+	"friendlyURLSeparator": "l",
+	"label": {
+		"en_US": "SEO Studio Integration"
+	},
+	"modifiable": true,
+	"name": "SEOStudioIntegration",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"externalReferenceCode": "SCOPE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Scope"
+			},
+			"listTypeDefinitionExternalReferenceCode": "L_SEO_STUDIO_INTEGRATION_SCOPES",
+			"name": "scope",
+			"required": true,
+			"system": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"defaultValue": "active",
+			"externalReferenceCode": "STATE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "State"
+			},
+			"listTypeDefinitionExternalReferenceCode": "L_SEO_STUDIO_INTEGRATION_STATES",
+			"name": "state",
+			"objectFieldSettings": [
+				{
+					"name": "stateFlow",
+					"value": {
+						"objectStates": [
+							{
+								"key": "active",
+								"objectStateTransitions": [
+									{
+										"key": "inactive"
+									},
+									{
+										"key": "unavailable"
+									}
+								]
+							},
+							{
+								"key": "inactive",
+								"objectStateTransitions": [
+									{
+										"key": "active"
+									}
+								]
+							},
+							{
+								"key": "unavailable",
+								"objectStateTransitions": [
+									{
+										"key": "active"
+									}
+								]
+							}
+						]
+					}
+				}
+			],
+			"required": true,
+			"state": true,
+			"system": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"externalReferenceCode": "TYPE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Type"
+			},
+			"listTypeDefinitionExternalReferenceCode": "L_SEO_STUDIO_INTEGRATION_TYPES",
+			"name": "type",
+			"required": true,
+			"system": true,
+			"type": "String"
+		},
+		{
+			"DBType": "Long",
+			"businessType": "Relationship",
+			"externalReferenceCode": "SEO_STUDIO_DOMAIN_TO_SEO_STUDIO_INTEGRATIONS",
+			"indexed": true,
+			"label": {
+				"en_US": "SEO Studio Domain to SEO Studio Integrations"
+			},
+			"name": "r_seoStudioDomainToSEOStudioIntegrations_seoStudioDomainId",
+			"objectDefinitionExternalReferenceCode1": "L_SEO_STUDIO_DOMAIN",
+			"objectFieldSettings": [
+				{
+					"name": "objectDefinition1ShortName",
+					"value": "SEOStudioDomain"
+				},
+				{
+					"name": "objectRelationshipERCObjectFieldName",
+					"value": "r_seoStudioDomainToSEOStudioIntegrations_seoStudioDomainERC"
+				}
+			],
+			"objectRelationshipExternalReferenceCode": "L_SEO_STUDIO_DOMAIN_TO_L_SEO_STUDIO_INTEGRATIONS",
+			"readOnly": "false",
+			"relationshipType": "oneToMany",
+			"required": false,
+			"system": true,
+			"type": "Long"
+		},
+		{
+			"DBType": "Long",
+			"businessType": "Relationship",
+			"externalReferenceCode": "SEO_STUDIO_INSTANCE_TO_SEO_STUDIO_INTEGRATIONS",
+			"indexed": true,
+			"label": {
+				"en_US": "SEO Studio Instance to SEO Studio Integrations"
+			},
+			"name": "r_seoStudioInstanceToSEOStudioIntegrations_seoStudioInstanceId",
+			"objectDefinitionExternalReferenceCode1": "L_SEO_STUDIO_INSTANCE",
+			"objectFieldSettings": [
+				{
+					"name": "objectDefinition1ShortName",
+					"value": "SEOStudioInstance"
+				},
+				{
+					"name": "objectRelationshipERCObjectFieldName",
+					"value": "r_seoStudioInstanceToSEOStudioIntegrations_seoStudioInstanceERC"
+				}
+			],
+			"objectRelationshipExternalReferenceCode": "L_SEO_STUDIO_INSTANCE_TO_L_SEO_STUDIO_INTEGRATIONS",
+			"readOnly": "false",
+			"relationshipType": "oneToMany",
+			"required": false,
+			"system": true,
+			"type": "Long"
+		}
+	],
+	"objectFolderExternalReferenceCode": "default",
+	"panelCategoryKey": "control_panel.object",
+	"pluralLabel": {
+		"en_US": "SEO Studio Integrations"
+	},
+	"portlet": false,
+	"scope": "company",
+	"system": true,
+	"titleObjectFieldName": "type"
+}
