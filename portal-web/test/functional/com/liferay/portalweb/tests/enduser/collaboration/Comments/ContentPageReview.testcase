@@ -363,7 +363,7 @@ definition {
 		AssertElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_ELLIPSIS");
 	}
 
-	@description = "This case ensures that users can view created comments when no fragment is selected and navigate to them."
+	@description = "This case ensures that users can view created comments when no fragment is selected, navigate to them, and access the comment list via the Comments tab."
 	@priority = 5
 	@refactordone
 	test CanViewCommentList {
@@ -426,37 +426,6 @@ definition {
 			openComment = "true");
 
 		PageEditor.viewComment(fragmentComment = "Content fragment comment");
-	}
-
-	@description = "This case ensures that comment list can be viewed and accessed via site navigation."
-	@priority = 5
-	@refactordone
-	test CanViewCommentListNavigation {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Title");
-
-		PageEditor.addComment(
-			content = "Lorem ipsum dolor sit amet",
-			fragmentClass = "header",
-			fragmentComment = "Title fragment comment",
-			fragmentName = "Title",
-			position = 1);
-
-		PageEditor.publish();
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
 
 		PageEditor.gotoTab(tabName = "Comments");
 
