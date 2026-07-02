@@ -114,7 +114,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 	public void tearDown() throws Exception {
 		if (_seoStudioDomainObjectEntry != null) {
 			ObjectEntry seoStudioScanRunObjectEntry =
-				_getSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry);
+				_fetchSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry);
 
 			if (seoStudioScanRunObjectEntry != null) {
 				for (ObjectEntry seoStudioScanObjectEntry :
@@ -181,7 +181,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 		_executeCreateScans(_seoStudioDomainObjectEntry);
 
 		ObjectEntry seoStudioScanRunObjectEntry =
-			_getSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry);
+			_fetchSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry);
 
 		Map<String, Serializable> scanRunValues =
 			_objectEntryLocalService.getValues(
@@ -267,7 +267,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 		_executeCreateScans(_seoStudioDomainObjectEntry);
 
 		Assert.assertNull(
-			_getSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry));
+			_fetchSEOStudioScanRunObjectEntry(_seoStudioDomainObjectEntry));
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
@@ -348,6 +348,29 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 			TestPropsValues.getUserId());
 	}
 
+	private ObjectEntry _fetchSEOStudioScanRunObjectEntry(
+			ObjectEntry seoStudioDomainObjectEntry)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				_seoStudioDomainObjectDefinition.getObjectDefinitionId(),
+				"seoStudioDomainToSEOStudioScanRuns");
+
+		List<ObjectEntry> seoStudioScanRunObjectEntries =
+			_objectEntryLocalService.getOneToManyObjectEntries(
+				seoStudioDomainObjectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(), null, true,
+				seoStudioDomainObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
+			return null;
+		}
+
+		return seoStudioScanRunObjectEntries.get(0);
+	}
+
 	private List<ObjectEntry> _getSEOStudioScanObjectEntries(
 			ObjectEntry seoStudioScanRunObjectEntry)
 		throws Exception {
@@ -383,29 +406,6 @@ public class CreateSEOStudioScansObjectActionExecutorTest {
 		}
 
 		return seoStudioScanObjectEntryMap;
-	}
-
-	private ObjectEntry _getSEOStudioScanRunObjectEntry(
-			ObjectEntry seoStudioDomainObjectEntry)
-		throws Exception {
-
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				_seoStudioDomainObjectDefinition.getObjectDefinitionId(),
-				"seoStudioDomainToSEOStudioScanRuns");
-
-		List<ObjectEntry> seoStudioScanRunObjectEntries =
-			_objectEntryLocalService.getOneToManyObjectEntries(
-				seoStudioDomainObjectEntry.getGroupId(),
-				objectRelationship.getObjectRelationshipId(), null, true,
-				seoStudioDomainObjectEntry.getObjectEntryId(), true, null,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
-			return null;
-		}
-
-		return seoStudioScanRunObjectEntries.get(0);
 	}
 
 	@Inject

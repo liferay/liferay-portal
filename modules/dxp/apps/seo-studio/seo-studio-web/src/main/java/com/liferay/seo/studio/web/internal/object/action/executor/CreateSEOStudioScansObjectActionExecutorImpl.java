@@ -96,18 +96,17 @@ public class CreateSEOStudioScansObjectActionExecutorImpl
 			return;
 		}
 
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setUserId(userId);
-
 		long accountEntryId = GetterUtil.getLong(
 			values.get("r_accountToSEOStudioDomains_accountEntryId"));
-
 		ObjectDefinition seoStudioScanRunObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_SEO_STUDIO_SCAN_RUN", companyId);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, userId, seoStudioScanRunObjectDefinition.getObjectDefinitionId(),
