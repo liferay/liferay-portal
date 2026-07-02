@@ -50,7 +50,7 @@ const projectVocabularyTest = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
-		'LPD-92636': {enabled: true},
+		'LPD-86291': {enabled: true},
 	}),
 	loginTest()
 );

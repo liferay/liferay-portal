@@ -77,7 +77,7 @@ export default function EditGeneralInfo({
 }) {
 	const [languageId, setLanguageId] = useState<string>(defaultLanguageId);
 
-	const featureFlagEnabled = !!Liferay.FeatureFlags['LPD-92636'];
+	const featureFlagEnabled = !!Liferay.FeatureFlags['LPD-86291'];
 
 	const getLanguageLabel = (languageId: string) => {
 		return languageId.replace('_', '-');
