@@ -8,15 +8,17 @@ package com.liferay.seo.studio.web.internal.object.action.executor.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -46,7 +48,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 		int maxPagesPerScan = RandomTestUtil.randomInt();
 		String scope = RandomTestUtil.randomString();
 
-		_addSEOStudioDomainObjectEntry(
+		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry(
 			hostname,
 			JSONUtil.put(
 				"engines",
@@ -73,7 +75,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 		_executeCreateScans();
 
 		ObjectEntry seoStudioScanRunObjectEntry =
-			fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry);
+			_fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry);
 
 		Map<String, Serializable> scanRunValues =
 			objectEntryLocalService.getValues(
@@ -93,7 +95,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 			MapUtil.getLong(scanRunValues, "triggeringUserId"));
 
 		List<ObjectEntry> seoStudioScanObjectEntries =
-			getSEOStudioScanObjectEntries(seoStudioScanRunObjectEntry);
+			_getSEOStudioScanObjectEntries(seoStudioScanRunObjectEntry);
 
 		Assert.assertEquals(
 			seoStudioScanObjectEntries.toString(), 3,
@@ -135,7 +137,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 
 	@Test
 	public void testExecuteWithNoEnabledEngines() throws Exception {
-		_addSEOStudioDomainObjectEntry(
+		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry(
 			RandomTestUtil.randomString(),
 			JSONUtil.put(
 				"engines",
@@ -153,18 +155,15 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 		_executeCreateScans();
 
 		Assert.assertNull(
-			fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry));
+			_fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry));
 	}
 
-	private void _addSEOStudioDomainObjectEntry(
+	private ObjectEntry _addSEOStudioDomainObjectEntry(
 			String hostname, String scanConfigJSON)
 		throws Exception {
 
-		seoStudioDomainObjectEntry = objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			seoStudioDomainObjectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
+		return addObjectEntry(
+			seoStudioDomainObjectDefinition,
 			HashMapBuilder.<String, Serializable>put(
 				"hostname", hostname
 			).put(
@@ -177,9 +176,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 				seoStudioInstanceObjectEntry.getObjectEntryId()
 			).put(
 				"scanConfig", scanConfigJSON
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+			).build());
 	}
 
 	private void _executeCreateScans() throws Exception {
@@ -197,6 +194,45 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 				).build()
 			),
 			TestPropsValues.getUserId());
+	}
+
+	private ObjectEntry _fetchSEOStudioScanRunObjectEntry(
+			ObjectEntry seoStudioDomainObjectEntry)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				seoStudioDomainObjectDefinition.getObjectDefinitionId(),
+				"seoStudioDomainToSEOStudioScanRuns");
+
+		List<ObjectEntry> seoStudioScanRunObjectEntries =
+			objectEntryLocalService.getOneToManyObjectEntries(
+				seoStudioDomainObjectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(), null, true,
+				seoStudioDomainObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
+			return null;
+		}
+
+		return seoStudioScanRunObjectEntries.get(0);
+	}
+
+	private List<ObjectEntry> _getSEOStudioScanObjectEntries(
+			ObjectEntry seoStudioScanRunObjectEntry)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				seoStudioScanRunObjectEntry.getObjectDefinitionId(),
+				"seoStudioScanRunToSEOStudioScans");
+
+		return objectEntryLocalService.getOneToManyObjectEntries(
+			seoStudioScanRunObjectEntry.getGroupId(),
+			objectRelationship.getObjectRelationshipId(), null, true,
+			seoStudioScanRunObjectEntry.getObjectEntryId(), true, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	private Map<String, ObjectEntry> _getSEOStudioScanObjectEntryMap(
@@ -222,5 +258,8 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 
 	@Inject
 	private ObjectActionEngine _objectActionEngine;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }

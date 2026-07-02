@@ -12,21 +12,18 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -36,7 +33,9 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -77,10 +76,6 @@ public abstract class BaseObjectActionExecutorTestCase {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_SEO_STUDIO_INSTANCE", TestPropsValues.getCompanyId());
-		_seoStudioScanRunObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_SEO_STUDIO_SCAN_RUN", TestPropsValues.getCompanyId());
 
 		ObjectDefinition seoStudioScanObjectDefinition =
 			_objectDefinitionLocalService.
@@ -101,72 +96,24 @@ public abstract class BaseObjectActionExecutorTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		if (seoStudioDomainObjectEntry != null) {
-			ObjectEntry seoStudioScanRunObjectEntry =
-				fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry);
-
-			if (seoStudioScanRunObjectEntry != null) {
-				for (ObjectEntry seoStudioScanObjectEntry :
-						getSEOStudioScanObjectEntries(
-							seoStudioScanRunObjectEntry)) {
-
-					objectEntryLocalService.deleteObjectEntry(
-						seoStudioScanObjectEntry.getObjectEntryId());
-				}
-
-				objectEntryLocalService.deleteObjectEntry(
-					seoStudioScanRunObjectEntry.getObjectEntryId());
-			}
-
-			objectEntryLocalService.deleteObjectEntry(
-				seoStudioDomainObjectEntry.getObjectEntryId());
-		}
-
-		if (seoStudioInstanceObjectEntry != null) {
-			objectEntryLocalService.deleteObjectEntry(
-				seoStudioInstanceObjectEntry.getObjectEntryId());
-		}
-
 		ServiceContextThreadLocal.popServiceContext();
 	}
 
-	protected ObjectEntry fetchSEOStudioScanRunObjectEntry(
-			ObjectEntry seoStudioDomainObjectEntry)
+	protected ObjectEntry addObjectEntry(
+			ObjectDefinition objectDefinition, Map<String, Serializable> values)
 		throws Exception {
 
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				seoStudioDomainObjectDefinition.getObjectDefinitionId(),
-				"seoStudioDomainToSEOStudioScanRuns");
+		ObjectEntry objectEntry = objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null, values,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
 
-		List<ObjectEntry> seoStudioScanRunObjectEntries =
-			objectEntryLocalService.getOneToManyObjectEntries(
-				seoStudioDomainObjectEntry.getGroupId(),
-				objectRelationship.getObjectRelationshipId(), null, true,
-				seoStudioDomainObjectEntry.getObjectEntryId(), true, null,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		_objectEntries.add(objectEntry);
 
-		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
-			return null;
-		}
-
-		return seoStudioScanRunObjectEntries.get(0);
-	}
-
-	protected List<ObjectEntry> getSEOStudioScanObjectEntries(
-			ObjectEntry seoStudioScanRunObjectEntry)
-		throws Exception {
-
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				_seoStudioScanRunObjectDefinition.getObjectDefinitionId(),
-				"seoStudioScanRunToSEOStudioScans");
-
-		return objectEntryLocalService.getOneToManyObjectEntries(
-			seoStudioScanRunObjectEntry.getGroupId(),
-			objectRelationship.getObjectRelationshipId(), null, true,
-			seoStudioScanRunObjectEntry.getObjectEntryId(), true, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return objectEntry;
 	}
 
 	protected AccountEntry accountEntry;
@@ -191,11 +138,8 @@ public abstract class BaseObjectActionExecutorTestCase {
 	}
 
 	private ObjectEntry _addSEOStudioInstanceObjectEntry() throws Exception {
-		return objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_seoStudioInstanceObjectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
+		return addObjectEntry(
+			_seoStudioInstanceObjectDefinition,
 			HashMapBuilder.<String, Serializable>put(
 				"hostname", RandomTestUtil.randomString()
 			).put(
@@ -203,9 +147,7 @@ public abstract class BaseObjectActionExecutorTestCase {
 			).put(
 				"r_accountToSEOStudioInstances_accountEntryId",
 				accountEntry.getAccountEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+			).build());
 	}
 
 	@Inject
@@ -217,11 +159,10 @@ public abstract class BaseObjectActionExecutorTestCase {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+	@DeleteAfterTestRun
+	private List<ObjectEntry> _objectEntries = new ArrayList<>();
 
 	private ObjectDefinition _seoStudioInstanceObjectDefinition;
-	private ObjectDefinition _seoStudioScanRunObjectDefinition;
 
 	@Inject
 	private SiteInitializerRegistry _siteInitializerRegistry;
