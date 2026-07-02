@@ -463,11 +463,10 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.nth(1)
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText: /^FilterEvent \| citycontains "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 	}
 );
@@ -604,11 +603,11 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.first()
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText:
+						/^FilterEvent \| citydoes not contain "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 	}
 );
@@ -742,11 +741,10 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.nth(1)
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText: /^FilterEvent \| cityis "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 	}
 );
@@ -882,11 +880,10 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.first()
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText: /^FilterEvent \| cityis not "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 	}
 );
@@ -1022,11 +1019,10 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.nth(1)
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText: /^FilterEvent \| citycontains "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 
 		await test.step('Add a filter to the analysis', async () => {
@@ -1082,11 +1078,11 @@ test(
 				.click();
 
 			await expect(
-				page
-					.getByRole('row', {name: 'customEvent'})
-					.locator('div')
-					.first()
-			).not.toBeVisible();
+				page.locator('div').filter({
+					hasText:
+						/^FilterEvent \| citydoes not contain "rio de janeiro"$/,
+				})
+			).toHaveCount(0);
 		});
 	}
 );
