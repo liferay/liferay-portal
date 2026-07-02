@@ -91,7 +91,7 @@ public class ObjectEntryInfoItemObjectProviderTest {
 	@Test
 	public void testGetInfoItemLiferayObjectEntry() throws Exception {
 		long classPK = RandomTestUtil.randomLong();
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry objectEntry = _mockObjectEntry(true);
 
 		Mockito.when(
 			_objectEntryLocalService.fetchObjectEntry(classPK)
@@ -102,6 +102,150 @@ public class ObjectEntryInfoItemObjectProviderTest {
 		Assert.assertEquals(
 			objectEntry,
 			_assertGetInfoItem(new ClassPKInfoItemIdentifier(classPK)));
+
+		Mockito.verify(
+			_objectEntryLocalService, Mockito.never()
+		).fetchObjectEntryByHeadObjectEntryId(
+			Mockito.anyLong()
+		);
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
+	public void testGetInfoItemLiferayObjectEntryNonapprovedWithLatestApproved()
+		throws Exception {
+
+		long classPK = RandomTestUtil.randomLong();
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			classPK
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(classPK)
+		).thenReturn(
+			objectEntry
+		);
+
+		ObjectEntry latestApprovedObjectEntry = _mockObjectEntry(true);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+				classPK)
+		).thenReturn(
+			latestApprovedObjectEntry
+		);
+
+		Assert.assertEquals(
+			latestApprovedObjectEntry,
+			_assertGetInfoItem(new ClassPKInfoItemIdentifier(classPK)));
+
+		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+			new ClassPKInfoItemIdentifier(classPK);
+
+		classPKInfoItemIdentifier.setVersion(
+			InfoItemIdentifier.VERSION_LATEST_APPROVED);
+
+		Assert.assertEquals(
+			latestApprovedObjectEntry,
+			_assertGetInfoItem(classPKInfoItemIdentifier));
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
+	public void testGetInfoItemLiferayObjectEntryNonapprovedWithLatestVersion()
+		throws Exception {
+
+		long classPK = RandomTestUtil.randomLong();
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(classPK)
+		).thenReturn(
+			objectEntry
+		);
+
+		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+			new ClassPKInfoItemIdentifier(classPK);
+
+		classPKInfoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_LATEST);
+
+		Assert.assertEquals(
+			objectEntry, _assertGetInfoItem(classPKInfoItemIdentifier));
+
+		Mockito.verify(
+			_objectEntryLocalService, Mockito.never()
+		).fetchObjectEntryByHeadObjectEntryId(
+			Mockito.anyLong()
+		);
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
+	public void testGetInfoItemLiferayObjectEntryNonapprovedWithNonapprovedLatestApproved() {
+		long classPK = RandomTestUtil.randomLong();
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			classPK
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(classPK)
+		).thenReturn(
+			objectEntry
+		);
+
+		ObjectEntry latestApprovedObjectEntry = _mockObjectEntry(false);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+				classPK)
+		).thenReturn(
+			latestApprovedObjectEntry
+		);
+
+		_assertGetInfoItemNoSuchInfoItemException(
+			new ClassPKInfoItemIdentifier(classPK),
+			"Unable to get an approved object entry " + classPK);
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
+	public void testGetInfoItemLiferayObjectEntryNonapprovedWithoutLatestApproved() {
+		long classPK = RandomTestUtil.randomLong();
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			classPK
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(classPK)
+		).thenReturn(
+			objectEntry
+		);
+
+		_assertGetInfoItemNoSuchInfoItemException(
+			new ClassPKInfoItemIdentifier(classPK),
+			"Unable to get an approved object entry " + classPK);
+
+		Mockito.verify(
+			_objectEntryLocalService
+		).fetchObjectEntryByHeadObjectEntryId(
+			classPK
+		);
 
 		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
 	}
@@ -126,7 +270,7 @@ public class ObjectEntryInfoItemObjectProviderTest {
 	@Test
 	public void testGetInfoItemProxyObjectEntry() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry objectEntry = _mockObjectEntry(true);
 
 		_setUpProxyObjectEntry(externalReferenceCode, objectEntry);
 
@@ -139,6 +283,49 @@ public class ObjectEntryInfoItemObjectProviderTest {
 	}
 
 	@Test
+	public void testGetInfoItemProxyObjectEntryCachedNonapproved()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier = new ERCInfoItemIdentifier(
+			externalReferenceCode);
+
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		ObjectEntry latestApprovedObjectEntry = _mockObjectEntry(true);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+				objectEntryId)
+		).thenReturn(
+			latestApprovedObjectEntry
+		);
+
+		Assert.assertEquals(
+			latestApprovedObjectEntry,
+			_assertGetInfoItem(
+				ercInfoItemIdentifier,
+				_getHttpServletRequest(
+					HashMapBuilder.<String, Object>put(
+						_OBJECT_ENTRIES,
+						HashMapBuilder.<InfoItemIdentifier, ObjectEntry>put(
+							ercInfoItemIdentifier, objectEntry
+						).build()
+					).build())));
+
+		Mockito.verifyNoInteractions(_objectEntryManager);
+	}
+
+	@Test
 	public void testGetInfoItemProxyObjectEntryInfoItemIdentifierCachedInObjectEntriesAttribute()
 		throws Exception {
 
@@ -147,7 +334,7 @@ public class ObjectEntryInfoItemObjectProviderTest {
 		ERCInfoItemIdentifier ercInfoItemIdentifier = new ERCInfoItemIdentifier(
 			externalReferenceCode);
 
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry objectEntry = _mockObjectEntry(true);
 
 		_setUpProxyObjectEntry(externalReferenceCode, objectEntry);
 
@@ -169,12 +356,44 @@ public class ObjectEntryInfoItemObjectProviderTest {
 
 		Map<String, Object> attributes = new HashMap<>();
 		String externalReferenceCode = RandomTestUtil.randomString();
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry objectEntry = _mockObjectEntry(true);
 
 		_assertGetInfoItemProxyObjectEntry(
 			attributes, new ERCInfoItemIdentifier(externalReferenceCode),
 			_getHttpServletRequest(attributes), objectEntry,
 			_setUpProxyObjectEntry(externalReferenceCode, objectEntry));
+	}
+
+	@Test
+	public void testGetInfoItemProxyObjectEntryNonapprovedWithLatestApproved()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		ObjectEntry objectEntry = _mockObjectEntry(false);
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		_setUpProxyObjectEntry(externalReferenceCode, objectEntry);
+
+		ObjectEntry latestApprovedObjectEntry = _mockObjectEntry(true);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+				objectEntryId)
+		).thenReturn(
+			latestApprovedObjectEntry
+		);
+
+		Assert.assertEquals(
+			latestApprovedObjectEntry,
+			_assertGetInfoItem(
+				new ERCInfoItemIdentifier(externalReferenceCode)));
 	}
 
 	@Test
@@ -201,7 +420,7 @@ public class ObjectEntryInfoItemObjectProviderTest {
 	public void testGetInfoItemProxyObjectEntryNullHttpServletRequest()
 		throws Exception {
 
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry objectEntry = _mockObjectEntry(true);
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -410,6 +629,18 @@ public class ObjectEntryInfoItemObjectProviderTest {
 		);
 
 		return httpServletRequest;
+	}
+
+	private ObjectEntry _mockObjectEntry(boolean approved) {
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.isApproved()
+		).thenReturn(
+			approved
+		);
+
+		return objectEntry;
 	}
 
 	private void _pushServiceContext(HttpServletRequest httpServletRequest) {
