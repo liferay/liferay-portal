@@ -536,6 +536,14 @@ test(
 		tag: '@LPD-69499',
 	},
 	async ({apiHelpers, membershipsPage, page}) => {
+		let dialogMessage: null | string = null;
+
+		page.on('dialog', async (dialog) => {
+			dialogMessage = dialog.message();
+
+			await dialog.dismiss();
+		});
+
 		const user = await apiHelpers.headlessAdminUser.postUserAccount({
 			familyName: `"><script>alert(2)</script>`,
 			givenName: `"><script>alert(1)</script>`,
@@ -568,9 +576,9 @@ test(
 
 		await userCard.click({force: true});
 
-		const alert = page.locator('.alert');
+		await expect(userCard.locator('input[type="checkbox"]')).toBeChecked();
 
-		await expect(alert).toHaveCount(0);
+		expect(dialogMessage).toBeNull();
 	}
 );
 
@@ -587,6 +595,14 @@ test(
 		site,
 		siteSettingsPage,
 	}) => {
+		let dialogMessage: null | string = null;
+
+		page.on('dialog', async (dialog) => {
+			dialogMessage = dialog.message();
+
+			await dialog.dismiss();
+		});
+
 		const site2 = await apiHelpers.headlessAdminSite.postSite({
 			membershipType: 'restricted',
 			name: getRandomString(),
@@ -677,9 +693,9 @@ test(
 			})
 			.click();
 
-		const alert = page.locator('.alert');
+		await expect(page.locator('p.approved.status')).toBeVisible();
 
-		await expect(alert).toHaveCount(0);
+		expect(dialogMessage).toBeNull();
 	}
 );
 
