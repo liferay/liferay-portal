@@ -89,15 +89,17 @@ public class ResourcePermissionLocalServiceConcurrentTest {
 			ProxyUtil.fetchInvocationHandler(
 				_resourcePermissionLocalService, AopInvocationHandler.class);
 
-		ServiceWrapper<ResourcePermissionLocalService>
-			resourcePermissionLocalServiceWrapper =
-				(ServiceWrapper<ResourcePermissionLocalService>)
-					aopInvocationHandler.getTarget();
+		Object target = aopInvocationHandler.getTarget();
+
+		while (target instanceof ServiceWrapper) {
+			ServiceWrapper<?> serviceWrapper = (ServiceWrapper<?>)target;
+
+			target = serviceWrapper.getWrappedService();
+		}
 
 		final ResourcePermissionLocalServiceImpl
 			resourcePermissionLocalServiceImpl =
-				(ResourcePermissionLocalServiceImpl)
-					resourcePermissionLocalServiceWrapper.getWrappedService();
+				(ResourcePermissionLocalServiceImpl)target;
 
 		final ResourcePermissionPersistence resourcePermissionPersistence =
 			resourcePermissionLocalServiceImpl.
