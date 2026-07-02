@@ -52,14 +52,13 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcessTest {
 			).put(
 				survivingKey, survivingValue
 			).put(
-				"last-merge-layout-modified-time",
-				String.valueOf(RandomTestUtil.randomLong())
-			).put(
 				"last-merge-time", String.valueOf(RandomTestUtil.randomLong())
 			).put(
 				"last-merge-version", String.valueOf(RandomTestUtil.randomInt())
 			).put(
 				"last-reset-time", String.valueOf(RandomTestUtil.randomLong())
+			).put(
+				"merge-fail-count", String.valueOf(RandomTestUtil.randomInt())
 			).put(
 				"merge-fail-friendly-url-layouts",
 				"/" + RandomTestUtil.randomString()
@@ -80,11 +79,10 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcessTest {
 		Assert.assertEquals(
 			survivingValue, layoutSet.getSettingsProperty(survivingKey));
 
-		Assert.assertNull(
-			layoutSet.getSettingsProperty("last-merge-layout-modified-time"));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-merge-time"));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-merge-version"));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-reset-time"));
+		Assert.assertNull(layoutSet.getSettingsProperty("merge-fail-count"));
 		Assert.assertNull(
 			layoutSet.getSettingsProperty("merge-fail-friendly-url-layouts"));
 	}
