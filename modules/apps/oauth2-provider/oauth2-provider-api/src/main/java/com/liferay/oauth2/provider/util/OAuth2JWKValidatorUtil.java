@@ -78,10 +78,10 @@ public class OAuth2JWKValidatorUtil {
 		}
 	}
 
-	private static int _decodeBase64URLBitLength(String value) {
+	private static int _decodeBase64URLBitLength(String base64) {
 		try {
 			BigInteger bigInteger = new BigInteger(
-				1, Base64.decodeFromURL(value));
+				1, Base64.decodeFromURL(base64));
 
 			return bigInteger.bitLength();
 		}
