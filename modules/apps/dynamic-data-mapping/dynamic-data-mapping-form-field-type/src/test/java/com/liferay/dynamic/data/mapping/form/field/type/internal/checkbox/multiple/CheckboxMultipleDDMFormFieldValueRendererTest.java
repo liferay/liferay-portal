@@ -84,6 +84,22 @@ public class CheckboxMultipleDDMFormFieldValueRendererTest {
 			"option 1, option with &amp;",
 			_checkboxMultipleDDMFormFieldValueRenderer.render(
 				ddmFormFieldValue, LocaleUtil.US));
+
+		ddmForm = DDMFormTestUtil.createDDMForm();
+
+		ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(ddmForm);
+
+		ddmFormFieldValue = DDMFormValuesTestUtil.createDDMFormFieldValue(
+			"CheckboxMultiple", new UnlocalizedValue("[\"value 1\"]"));
+
+		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
+
+		Assert.assertNull(ddmFormFieldValue.getDDMFormField());
+
+		Assert.assertEquals(
+			"value 1",
+			_checkboxMultipleDDMFormFieldValueRenderer.render(
+				ddmFormFieldValue, LocaleUtil.US));
 	}
 
 	private CheckboxMultipleDDMFormFieldValueRenderer

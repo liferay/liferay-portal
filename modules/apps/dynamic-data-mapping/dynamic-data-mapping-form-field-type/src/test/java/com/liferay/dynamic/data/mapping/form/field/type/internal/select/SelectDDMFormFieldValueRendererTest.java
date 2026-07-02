@@ -1,9 +1,9 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.dynamic.data.mapping.form.field.type.internal.radio;
+package com.liferay.dynamic.data.mapping.form.field.type.internal.select;
 
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -22,9 +22,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * @author Renato Rego
+ * @author Victor Kammerer
  */
-public class RadioDDMFormFieldValueRendererTest {
+public class SelectDDMFormFieldValueRendererTest {
 
 	@ClassRule
 	@Rule
@@ -36,15 +36,13 @@ public class RadioDDMFormFieldValueRendererTest {
 		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
 
 		DDMFormField ddmFormField = DDMFormTestUtil.createDDMFormField(
-			"Radio", "Radio", "radio", "string", false, false, false);
+			"Select", "Select", "select", "string", false, false, false);
 
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
 		ddmFormFieldOptions.addOptionLabel(
 			"value 1", LocaleUtil.US, "option with &");
-		ddmFormFieldOptions.addOptionLabel(
-			"value 2", LocaleUtil.US, "option 2");
 
 		ddmForm.addDDMFormField(ddmFormField);
 
@@ -53,16 +51,16 @@ public class RadioDDMFormFieldValueRendererTest {
 
 		DDMFormFieldValue ddmFormFieldValue =
 			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"Radio", new UnlocalizedValue("value 1"));
+				"Select", new UnlocalizedValue("[\"value 1\"]"));
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
-		RadioDDMFormFieldValueRenderer radioDDMFormFieldValueRenderer =
-			new RadioDDMFormFieldValueRenderer();
+		SelectDDMFormFieldValueRenderer selectDDMFormFieldValueRenderer =
+			new SelectDDMFormFieldValueRenderer();
 
 		Assert.assertEquals(
 			"option with &amp;",
-			radioDDMFormFieldValueRenderer.render(
+			selectDDMFormFieldValueRenderer.render(
 				ddmFormFieldValue, LocaleUtil.US));
 
 		ddmForm = DDMFormTestUtil.createDDMForm();
@@ -70,7 +68,7 @@ public class RadioDDMFormFieldValueRendererTest {
 		ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(ddmForm);
 
 		ddmFormFieldValue = DDMFormValuesTestUtil.createDDMFormFieldValue(
-			"Radio", new UnlocalizedValue("value 1"));
+			"Select", new UnlocalizedValue("[\"value 1\"]"));
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
@@ -78,7 +76,7 @@ public class RadioDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"value 1",
-			radioDDMFormFieldValueRenderer.render(
+			selectDDMFormFieldValueRenderer.render(
 				ddmFormFieldValue, LocaleUtil.US));
 	}
 
