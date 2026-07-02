@@ -290,7 +290,6 @@ public class DefaultKaleoSignaler
 				Message message = new Message();
 
 				message.put("companyId", kaleoInstance.getCompanyId());
-
 				message.put("createDate", new Date());
 				message.put("exception", throwable);
 				message.put("userId", kaleoInstance.getUserId());
