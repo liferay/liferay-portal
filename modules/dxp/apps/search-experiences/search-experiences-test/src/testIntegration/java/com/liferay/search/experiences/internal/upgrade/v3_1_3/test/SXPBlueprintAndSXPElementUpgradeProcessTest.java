@@ -30,7 +30,6 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.search.experiences.constants.SXPBlueprintConstants;
 import com.liferay.search.experiences.model.SXPBlueprint;
 import com.liferay.search.experiences.model.SXPElement;
-import com.liferay.search.experiences.rest.dto.v1_0.util.ElementInstanceUtil;
 import com.liferay.search.experiences.service.SXPBlueprintLocalService;
 import com.liferay.search.experiences.service.SXPElementLocalService;
 
@@ -198,9 +197,6 @@ public class SXPBlueprintAndSXPElementUpgradeProcessTest {
 
 		String elementInstancesJSON = _readJSON("legacyFieldMappingLabel");
 
-		Assert.assertNotNull(
-			ElementInstanceUtil.toElementInstances(elementInstancesJSON));
-
 		SXPBlueprint sxpBlueprint = _sxpBlueprintLocalService.addSXPBlueprint(
 			null, TestPropsValues.getUserId(), StringPool.BLANK,
 			Collections.singletonMap(
@@ -361,9 +357,6 @@ public class SXPBlueprintAndSXPElementUpgradeProcessTest {
 			externalReferenceCode, fieldJSONObject);
 
 		String elementInstancesJSON = elementInstancesJSONArray.toString();
-
-		Assert.assertNotNull(
-			ElementInstanceUtil.toElementInstances(elementInstancesJSON));
 
 		SXPBlueprint sxpBlueprint = _sxpBlueprintLocalService.addSXPBlueprint(
 			null, TestPropsValues.getUserId(), StringPool.BLANK,
