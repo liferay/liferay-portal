@@ -23,6 +23,7 @@ import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -211,7 +212,12 @@ public class ConfigurationPersistenceManager
 			}
 		}
 		catch (Exception exception) {
-			_log.error(exception);
+			if (_hasConfigurationTable()) {
+				_log.error(exception);
+			}
+			else if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
 		}
 
 		_createConfigurationTable();
@@ -426,6 +432,21 @@ public class ConfigurationPersistenceManager
 		}
 
 		return 0L;
+	}
+
+	private boolean _hasConfigurationTable() {
+		try (Connection connection = _dataSource.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			return dbInspector.hasTable("Configuration_");
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return true;
+		}
 	}
 
 	private boolean _insertConfiguration(
