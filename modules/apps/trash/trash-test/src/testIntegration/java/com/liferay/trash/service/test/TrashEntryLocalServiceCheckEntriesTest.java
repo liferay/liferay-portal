@@ -6,6 +6,7 @@
 package com.liferay.trash.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -40,6 +41,10 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -85,6 +90,58 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 	@After
 	public void tearDown() throws Exception {
 		deleteTrashEntries();
+	}
+
+	@Test
+	public void testCheckEntriesWithUndeletableTrashEntry() throws Exception {
+		Group group = updateTrashEntriesMaxAge(
+			createGroup(TestPropsValues.getCompanyId()), _MAX_AGE);
+
+		createFileEntryTrashEntry(group, true);
+
+		// The trash handler cannot delete an entry whose model is gone
+
+		TrashEntry trashEntry = TrashEntryLocalServiceUtil.addTrashEntry(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			DLFileEntry.class.getName(), RandomTestUtil.randomLong(), null,
+			null, WorkflowConstants.STATUS_APPROVED, null, null);
+
+		int maxAge = _trashHelper.getMaxAge(group);
+
+		Date createDate = trashEntry.getCreateDate();
+
+		trashEntry.setCreateDate(
+			new Date(createDate.getTime() - (maxAge * Time.MINUTE) - Time.DAY));
+
+		trashEntry = TrashEntryLocalServiceUtil.updateTrashEntry(trashEntry);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.trash.service.impl.TrashEntryLocalServiceImpl",
+				LoggerTestUtil.WARN)) {
+
+			TrashEntryLocalServiceUtil.checkEntries();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to check trash entry " + trashEntry.getEntryId(),
+				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(
+				NoSuchFileEntryException.class, throwable.getClass());
+		}
+
+		Assert.assertEquals(
+			1, TrashEntryLocalServiceUtil.getTrashEntriesCount());
+		Assert.assertNotNull(
+			TrashEntryLocalServiceUtil.fetchEntry(trashEntry.getEntryId()));
 	}
 
 	@Test
