@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -67,6 +68,13 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 		_testGetLayoutDisplayPageObjectProviderNestedAssetCategory();
 	}
 
+	@FeatureFlag("LPD-70396")
+	@Test
+	public void testGetURLTitle() throws Exception {
+		_testGetURLTitleWithMaximumLengthExceeded();
+		_testGetURLTitleWithMaximumLengthNotExceeded();
+	}
+
 	private AssetCategory _addAssetCategory(
 			long assetVocabularyId, long parentAssetCategoryId, String title)
 		throws Exception {
@@ -85,6 +93,17 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 		return AssetTestUtil.addVocabulary(
 			_group.getGroupId(),
 			StringUtil.toLowerCase(StringUtil.randomString()));
+	}
+
+	private LayoutDisplayPageObjectProvider<?>
+		_getLayoutDisplayPageObjectProvider(AssetCategory assetCategory) {
+
+		return _layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+			assetCategory.getGroupId(),
+			new InfoItemReference(
+				AssetCategory.class.getName(),
+				new ERCInfoItemIdentifier(
+					assetCategory.getExternalReferenceCode())));
 	}
 
 	private void _testGetLayoutDisplayPageObjectProviderERCInfoItemIdentifier()
@@ -190,6 +209,58 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 			assetCategory4,
 			layoutDisplayPageObjectProvider2.getDisplayObject());
 	}
+
+	private void _testGetURLTitleWithMaximumLengthExceeded() throws Exception {
+		AssetVocabulary assetVocabulary = _addAssetVocabulary();
+
+		long parentCategoryId =
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID;
+
+		AssetCategory assetCategory = null;
+
+		int categoryCount =
+			(Http.URL_MAXIMUM_LENGTH / _CATEGORY_TITLE_LENGTH) + 2;
+
+		for (int i = 0; i < categoryCount; i++) {
+			assetCategory = _addAssetCategory(
+				assetVocabulary.getVocabularyId(), parentCategoryId,
+				StringUtil.toLowerCase(
+					StringUtil.randomString(_CATEGORY_TITLE_LENGTH)));
+
+			parentCategoryId = assetCategory.getCategoryId();
+		}
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			_getLayoutDisplayPageObjectProvider(assetCategory);
+
+		Assert.assertEquals(
+			String.valueOf(assetCategory.getCategoryId()),
+			layoutDisplayPageObjectProvider.getURLTitle(
+				LocaleUtil.getDefault()));
+	}
+
+	private void _testGetURLTitleWithMaximumLengthNotExceeded()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = _addAssetVocabulary();
+
+		String urlTitle = StringUtil.toLowerCase(StringUtil.randomString());
+
+		AssetCategory assetCategory = _addAssetCategory(
+			assetVocabulary.getVocabularyId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, urlTitle);
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			_getLayoutDisplayPageObjectProvider(assetCategory);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				assetVocabulary.getName(), StringPool.SLASH, urlTitle),
+			layoutDisplayPageObjectProvider.getURLTitle(
+				LocaleUtil.getDefault()));
+	}
+
+	private static final int _CATEGORY_TITLE_LENGTH = 250;
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
