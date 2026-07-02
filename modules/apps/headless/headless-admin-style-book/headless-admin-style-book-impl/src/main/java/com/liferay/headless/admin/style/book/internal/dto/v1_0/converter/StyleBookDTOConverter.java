@@ -116,7 +116,7 @@ public class StyleBookDTOConverter
 							return null;
 						}
 
-						FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+						FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
 							previewFileEntryId);
 
 						if (fileEntry == null) {
