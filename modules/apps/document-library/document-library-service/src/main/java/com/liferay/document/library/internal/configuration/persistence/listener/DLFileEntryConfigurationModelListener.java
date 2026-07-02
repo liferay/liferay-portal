@@ -34,14 +34,11 @@ public class DLFileEntryConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		long companyId = GetterUtil.getLong(properties.get("companyId"));
-		long groupId = GetterUtil.getLong(properties.get("groupId"));
-
 		ExtendedObjectClassDefinition.Scope scope = null;
 		long scopePK = 0;
 
-		// A group scoped configuration is also saved with a company ID, so
-		// the group scope takes precedence over the company scope.
+		long companyId = GetterUtil.getLong(properties.get("companyId"));
+		long groupId = GetterUtil.getLong(properties.get("groupId"));
 
 		if (groupId > 0) {
 			scope = ExtendedObjectClassDefinition.Scope.GROUP;
