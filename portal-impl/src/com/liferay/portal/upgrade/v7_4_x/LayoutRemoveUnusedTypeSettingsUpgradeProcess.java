@@ -16,28 +16,29 @@ import java.sql.ResultSet;
 /**
  * @author Carlos Correa
  */
-public class LayoutSetRemoveUnusedSettingsUpgradeProcess
+public class LayoutRemoveUnusedTypeSettingsUpgradeProcess
 	extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				"select ctCollectionId, layoutSetId, settings_ from LayoutSet");
+				"select ctCollectionId, plid, typeSettings from Layout where " +
+					"layoutSetPrototypeLayoutERC is not null");
 
 			ResultSet resultSet = preparedStatement1.executeQuery();
 
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
-					"update LayoutSet set settings_ = ? where ctCollectionId " +
-						"= ? and layoutSetId = ?")) {
+					"update Layout set typeSettings = ? where ctCollectionId " +
+						"= ? and plid = ?")) {
 
 			while (resultSet.next()) {
-				String settings = resultSet.getString("settings_");
+				String typeSettings = resultSet.getString("typeSettings");
 
 				UnicodeProperties unicodeProperties =
 					UnicodePropertiesBuilder.fastLoad(
-						settings
+						typeSettings
 					).build();
 
 				boolean modified = false;
@@ -57,7 +58,7 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcess
 				preparedStatement2.setLong(
 					2, resultSet.getLong("ctCollectionId"));
 
-				preparedStatement2.setLong(3, resultSet.getLong("layoutSetId"));
+				preparedStatement2.setLong(3, resultSet.getLong("plid"));
 
 				preparedStatement2.addBatch();
 			}
@@ -67,8 +68,7 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcess
 	}
 
 	private static final String[] _UNUSED_PROPERTY_KEYS = {
-		"last-merge-time", "last-merge-version", "last-reset-time",
-		"merge-fail-count", "merge-fail-friendly-url-layouts"
+		"last-merge-layout-modified-time", "last-merge-time"
 	};
 
 }

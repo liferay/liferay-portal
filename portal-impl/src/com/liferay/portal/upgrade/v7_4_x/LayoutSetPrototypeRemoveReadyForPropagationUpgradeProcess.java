@@ -16,21 +16,22 @@ import java.sql.ResultSet;
 /**
  * @author Carlos Correa
  */
-public class LayoutSetRemoveUnusedSettingsUpgradeProcess
+public class LayoutSetPrototypeRemoveReadyForPropagationUpgradeProcess
 	extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				"select ctCollectionId, layoutSetId, settings_ from LayoutSet");
+				"select ctCollectionId, layoutSetPrototypeId, settings_ from " +
+					"LayoutSetPrototype");
 
 			ResultSet resultSet = preparedStatement1.executeQuery();
 
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
-					"update LayoutSet set settings_ = ? where ctCollectionId " +
-						"= ? and layoutSetId = ?")) {
+					"update LayoutSetPrototype set settings_ = ? where " +
+						"ctCollectionId = ? and layoutSetPrototypeId = ?")) {
 
 			while (resultSet.next()) {
 				String settings = resultSet.getString("settings_");
@@ -40,15 +41,7 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcess
 						settings
 					).build();
 
-				boolean modified = false;
-
-				for (String key : _UNUSED_PROPERTY_KEYS) {
-					if (unicodeProperties.remove(key) != null) {
-						modified = true;
-					}
-				}
-
-				if (!modified) {
+				if (unicodeProperties.remove("readyForPropagation") == null) {
 					continue;
 				}
 
@@ -57,7 +50,8 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcess
 				preparedStatement2.setLong(
 					2, resultSet.getLong("ctCollectionId"));
 
-				preparedStatement2.setLong(3, resultSet.getLong("layoutSetId"));
+				preparedStatement2.setLong(
+					3, resultSet.getLong("layoutSetPrototypeId"));
 
 				preparedStatement2.addBatch();
 			}
@@ -65,10 +59,5 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcess
 			preparedStatement2.executeBatch();
 		}
 	}
-
-	private static final String[] _UNUSED_PROPERTY_KEYS = {
-		"last-merge-time", "last-merge-version", "last-reset-time",
-		"merge-fail-count", "merge-fail-friendly-url-layouts"
-	};
 
 }
