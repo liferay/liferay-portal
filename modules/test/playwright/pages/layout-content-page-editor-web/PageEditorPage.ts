@@ -149,12 +149,190 @@ export class PageEditorPage {
 
 		await this.goToSidebarTab('Comments');
 
+		await this._submitFragmentComment(comment);
+	}
+
+	async addFragmentCommentViaTopper(fragmentId: string, comment: string) {
+		await this.goToFragmentComment(fragmentId);
+
+		await this._submitFragmentComment(comment);
+	}
+
+	async deleteFragmentComment(comment: string) {
+		await this.openFragmentCommentOptions(comment, 'Delete');
+
+		await this.page
+			.locator('.page-editor__inline-confirm')
+			.getByRole('button', {exact: true, name: 'Delete'})
+			.click();
+
+		await expect(this.getFragmentComment(comment)).toBeHidden();
+	}
+
+	async editFragmentComment(comment: string, editedComment: string) {
+		await this.openFragmentCommentOptions(comment, 'Edit');
+
+		// The edited comment replaces the original text, so target the comment
+		// being edited through its Update button
+
+		const editedFragmentComment = this.page
+			.locator('.page-editor__fragment-comment')
+			.filter({
+				has: this.page.getByRole('button', {
+					exact: true,
+					name: 'Update',
+				}),
+			});
+
+		await editedFragmentComment.getByLabel('Add Comment').click();
+
+		await this.page.keyboard.press('ControlOrMeta+KeyA');
+		await this.page.keyboard.press('Backspace');
+		await this.page.keyboard.type(editedComment);
+
+		await editedFragmentComment
+			.getByRole('button', {exact: true, name: 'Update'})
+			.click();
+
+		await expect(this.getFragmentComment(editedComment)).toBeVisible();
+	}
+
+	getFragmentComment(comment: string) {
+		return this.page
+			.locator('.page-editor__fragment-comment')
+			.filter({hasText: comment});
+	}
+
+	async goToCommentList() {
+		await this.page.getByLabel('Back', {exact: true}).click();
+
+		await expect(
+			this.page
+				.locator('.page-editor__sidebar__panel-header')
+				.getByText('Comments', {exact: true})
+		).toBeVisible();
+	}
+
+	async goToFragmentComment(fragmentId: string) {
+		await this.selectFragment(fragmentId);
+
+		await this.page
+			.getByLabel('Comments', {exact: true})
+			.locator('.page-editor__topper__icon')
+			.click();
+
+		await this.page.getByLabel('Add Comment').waitFor();
+	}
+
+	async openFragmentCommentOptions(
+		comment: string,
+		option: 'Delete' | 'Edit'
+	) {
+		await this.getFragmentComment(comment)
+			.getByLabel('Options')
+			.first()
+			.click();
+
+		await this.page
+			.getByRole('menuitem', {exact: true, name: option})
+			.click();
+	}
+
+	async reopenResolvedFragmentComment(comment: string) {
+		await this.showResolvedComments();
+
+		await this.getFragmentComment(comment)
+			.locator('[data-title="Reopen"]')
+			.click();
+	}
+
+	async replyToFragmentComment(comment: string, reply: string) {
+		const fragmentComment = this.getFragmentComment(comment);
+
+		await fragmentComment
+			.getByRole('button', {exact: true, name: 'Reply'})
+			.click();
+
+		await fragmentComment.getByLabel('Add Comment').click();
+
+		await this.page.keyboard.type(reply);
+
+		await fragmentComment
+			.getByRole('button', {exact: true, name: 'Reply'})
+			.click();
+	}
+
+	async resolveFragmentComment(comment: string) {
+		await this.getFragmentComment(comment)
+			.locator('[data-title="Resolve"]')
+			.click();
+
+		await expect(this.getFragmentComment(comment)).toBeHidden();
+	}
+
+	async showResolvedComments() {
+		const checkbox = this.page.getByLabel('Show Resolved Comments');
+
+		if (!(await checkbox.isChecked())) {
+			await this.page.getByText('Show Resolved Comments').click();
+
+			await expect(checkbox).toBeChecked();
+		}
+	}
+
+	async viewCommentList({
+		commentCount,
+		fragmentName,
+		openComment = false,
+	}: {
+		commentCount: string;
+		fragmentName: string;
+		openComment?: boolean;
+	}) {
+		const commentListItem = this.page
+			.getByLabel('Show Comments')
+			.filter({hasText: fragmentName});
+
+		await expect(commentListItem.locator('strong')).toHaveText(
+			fragmentName
+		);
+		await expect(commentListItem.locator('.text-secondary')).toHaveText(
+			commentCount
+		);
+
+		if (openComment) {
+			await commentListItem.click();
+		}
+	}
+
+	async viewFragmentComment(comment: string) {
+		await expect(this.getFragmentComment(comment)).toBeVisible();
+	}
+
+	async viewFragmentCommentReply(reply: string, author: string) {
+		const fragmentCommentReply = this.page
+			.locator('.page-editor__fragment-comment--reply')
+			.filter({hasText: reply});
+
+		await expect(fragmentCommentReply).toBeVisible();
+
+		await expect(fragmentCommentReply.locator('strong').first()).toHaveText(
+			author
+		);
+	}
+
+	async _submitFragmentComment(comment: string) {
 		const commentButton = this.page.getByRole('button', {
 			exact: true,
 			name: 'Comment',
 		});
 
 		await this.page.getByLabel('Add Comment').click();
+
+		// Clear any content left in the editor before typing the comment
+
+		await this.page.keyboard.press('ControlOrMeta+KeyA');
+		await this.page.keyboard.press('Backspace');
 
 		await this.page.keyboard.type(comment);
 
