@@ -782,7 +782,7 @@ export function CardPageViews() {
 
 			<p className="c-mt-4">card-page-dense (min 190px columns)</p>
 
-			<div className="card-page-dense">
+			<div className="card-page card-page-dense">
 				{labels.map((label) => renderCard(label))}
 			</div>
 
@@ -790,7 +790,7 @@ export function CardPageViews() {
 				card-page-horizontal (min 288px columns, horizontal cards)
 			</p>
 
-			<div className="card-page-horizontal">
+			<div className="card-page card-page-horizontal">
 				{labels.map((label) => (
 					<ClayCardWithHorizontal
 						href="#"
