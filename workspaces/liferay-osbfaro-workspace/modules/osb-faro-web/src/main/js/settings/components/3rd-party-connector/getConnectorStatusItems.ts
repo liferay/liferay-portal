@@ -13,7 +13,7 @@ const DATA_FLOW_ACTIVE: ConnectorStatusItem = {
 	icon: 'plug',
 	iconDisplayType: 'success',
 	secondaryText: Liferay.Language.get('data-received-successfully'),
-	title: Liferay.Language.get('data-flow-established'),
+	title: Liferay.Language.get('data-flow-established')
 };
 
 const DATA_SOURCE_DISCONNECTED: ConnectorStatusItem = {
@@ -21,7 +21,7 @@ const DATA_SOURCE_DISCONNECTED: ConnectorStatusItem = {
 	icon: 'plug',
 	iconDisplayType: 'secondary',
 	secondaryText: Liferay.Language.get('token-revoked-successfully'),
-	title: Liferay.Language.get('data-source-disconnected'),
+	title: Liferay.Language.get('data-source-disconnected')
 };
 
 const INACTIVE_DATA_FLOW: ConnectorStatusItem = {
@@ -31,7 +31,7 @@ const INACTIVE_DATA_FLOW: ConnectorStatusItem = {
 	secondaryText: Liferay.Language.get(
 		'there-were-no-activities-in-the-past-90-days'
 	),
-	title: Liferay.Language.get('inactive-data-flow'),
+	title: Liferay.Language.get('inactive-data-flow')
 };
 
 const LISTENING: ConnectorStatusItem = {
@@ -41,7 +41,7 @@ const LISTENING: ConnectorStatusItem = {
 	secondaryText: Liferay.Language.get(
 		'waiting-for-first-data-to-arrive-this-may-take-some-time'
 	),
-	title: Liferay.Language.get('listening'),
+	title: Liferay.Language.get('listening')
 };
 
 const TOKEN_GENERATED: ConnectorStatusItem = {
@@ -51,7 +51,7 @@ const TOKEN_GENERATED: ConnectorStatusItem = {
 	secondaryText: Liferay.Language.get(
 		'liferay-data-platform-setup-completed'
 	),
-	title: Liferay.Language.get('token-generated'),
+	title: Liferay.Language.get('token-generated')
 };
 
 export function getInitialLogEntries(
@@ -59,20 +59,11 @@ export function getInitialLogEntries(
 	entityCount: number
 ): ConnectorStatusItem[] {
 	if (status === ConnectorStatus.Disconnected) {
-		return [
-			DATA_SOURCE_DISCONNECTED,
-			INACTIVE_DATA_FLOW,
-			DATA_FLOW_ACTIVE,
-			LISTENING,
-		];
+		return [DATA_SOURCE_DISCONNECTED];
 	}
 
-	if (status === ConnectorStatus.Active) {
-		if (entityCount > 0) {
-			return [DATA_FLOW_ACTIVE, LISTENING, TOKEN_GENERATED];
-		}
-
-		return [LISTENING, TOKEN_GENERATED];
+	if (status === ConnectorStatus.Active && entityCount > 0) {
+		return [DATA_FLOW_ACTIVE, LISTENING, TOKEN_GENERATED];
 	}
 
 	if (entityCount > 0) {
@@ -80,7 +71,7 @@ export function getInitialLogEntries(
 			INACTIVE_DATA_FLOW,
 			DATA_FLOW_ACTIVE,
 			LISTENING,
-			TOKEN_GENERATED,
+			TOKEN_GENERATED
 		];
 	}
 
