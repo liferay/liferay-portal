@@ -72,7 +72,10 @@ export function useAgentDefinitionForm({
 		onSubmit: async (formValues) => {
 			try {
 				const response = externalReferenceCode
-					? await putAgentDefinition(formValues)
+					? await putAgentDefinition(
+							formValues,
+							externalReferenceCode
+						)
 					: await postAgentDefinition(formValues);
 
 				if (formValues.externalReferenceCode) {

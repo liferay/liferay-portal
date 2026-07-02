@@ -77,9 +77,12 @@ async function postAgentDefinition(agentDefinition: AgentDefinition) {
 	return response.json();
 }
 
-async function putAgentDefinition(agentDefinition: AgentDefinition) {
+async function putAgentDefinition(
+	agentDefinition: AgentDefinition,
+	externalReferenceCode: string
+) {
 	const response = await fetch(
-		`${AGENT_DEFINITION_BY_ERC_URI}${agentDefinition.externalReferenceCode}`,
+		`${AGENT_DEFINITION_BY_ERC_URI}${externalReferenceCode}`,
 		{
 			body: JSON.stringify(agentDefinition),
 			headers: {
