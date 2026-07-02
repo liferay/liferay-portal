@@ -132,3 +132,66 @@ test(
 		await pageEditorPage.viewFragmentComment(comment);
 	}
 );
+
+test(
+	'Notifies a commenter when another user replies to their comment',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a fragment as the first user
+
+		const fragmentId = getRandomString();
+		const pageTitle = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: pageTitle,
+		});
+
+		// The first user adds a comment
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		const comment = getRandomString();
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		// A second user replies to the comment
+
+		const user = await createPageEditorUser(apiHelpers);
+
+		await performUserSwitch(page, user.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		const reply = getRandomString();
+
+		await pageEditorPage.replyToFragmentComment(comment, reply);
+
+		// The first user is notified of the reply and navigates to it
+
+		await performUserSwitch(page, 'test');
+
+		await viewCommentNotification(page, {
+			author: `${user.givenName} ${user.familyName}`,
+			body: reply,
+			fragmentName: 'Heading',
+			pageTitle,
+		});
+
+		await goToNotificationContent(page, reply);
+
+		await pageEditorPage.viewFragmentCommentReply(
+			reply,
+			`${user.givenName} ${user.familyName}`
+		);
+	}
+);

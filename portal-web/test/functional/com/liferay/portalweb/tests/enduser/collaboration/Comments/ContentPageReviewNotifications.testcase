@@ -54,61 +54,6 @@ definition {
 		}
 	}
 
-	@description = "This case ensures that a user is notified when a reply is added to their comment."
-	@priority = 5
-	@refactordone
-	test CanViewCommentReply {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Title");
-
-		PageEditor.addComment(
-			fragmentComment = "Comment By User 1",
-			fragmentName = "Title");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "user2@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.gotoCommentViaFragment(fragmentName = "Title");
-
-		PageEditor.replyToComment(commentReply = "Reply from User 2");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		Notifications.viewBadgeCount(
-			activePanel = "Notifications",
-			notificationCount = 1);
-
-		Notifications.gotoNotifications();
-
-		Notifications.viewNewComment(
-			contentBody = "Reply from User 2",
-			fragmentName = "Title",
-			user = "userfn userln");
-
-		Notifications.navigateToContent(contentBody = "Reply from User 2");
-
-		PageEditor.viewCommentReply(
-			commentReply = "Reply from User 2",
-			user = "userfn userln");
-	}
-
 	@description = "This test covers LPS-101493. It ensures that a user who replies to a comment will receive further reply notifications."
 	@priority = 4
 	@refactordone
