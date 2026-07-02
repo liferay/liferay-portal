@@ -142,3 +142,60 @@ test(
 	}
 );
 
+test(
+	'Reopens a resolved comment after publishing',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment, reply to it, resolve it, then publish
+
+		const comment = 'This is a fragment comment';
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		await pageEditorPage.replyToFragmentComment(
+			comment,
+			'Fragment Comment 1'
+		);
+
+		await pageEditorPage.resolveFragmentComment(comment);
+
+		await pageEditorPage.publishPage();
+
+		// Reopen the page, reopen the resolved comment, then reply again
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		await pageEditorPage.reopenResolvedFragmentComment(comment);
+
+		await pageEditorPage.replyToFragmentComment(
+			comment,
+			'Fragment Comment 2'
+		);
+
+		await pageEditorPage.viewFragmentCommentReply(
+			'Fragment Comment 2',
+			'Test Test'
+		);
+	}
+);
+

@@ -40,51 +40,6 @@ definition {
 		}
 	}
 
-	@description = "This case ensures a user can reopen a resolved comment after publishing a content page."
-	@priority = 4
-	@refactordone
-	test CanReopenResolvedComment {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Static Text");
-
-		PageEditor.addComment(
-			content = "This is static text.",
-			fragmentClass = "static-text",
-			fragmentComment = "This is a fragment comment",
-			fragmentName = "Static Text",
-			position = 1);
-
-		PageEditor.replyToComment(commentReply = "Fragment Comment 1");
-
-		PageEditor.resolveComment(fragmentComment = "This is a fragment comment");
-
-		PageEditor.publish();
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.gotoCommentViaFragment(
-			fragmentName = "Static Text",
-			position = 1);
-
-		PageEditor.reopenResolvedComment(
-			commentReply = "Fragment Comment 1",
-			fragmentComment = "This is a fragment comment");
-
-		PageEditor.replyToComment(commentReply = "Fragment Comment 2");
-	}
-
 	@description = "This test covers LPS-101027. It ensures that a published comment should remain if staging is deactivated."
 	@priority = 3
 	@refactordone
