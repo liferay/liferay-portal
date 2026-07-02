@@ -305,6 +305,7 @@ export default function CalendarView({
 				eventContent={(arg) => (
 					<CalendarTaskCard
 						itemsActions={itemsActions}
+						loadData={loadData}
 						task={arg.event.extendedProps.task}
 					/>
 				)}
@@ -376,6 +377,7 @@ export default function CalendarView({
 				<CalendarMoreLinkPopover
 					alignElement={moreLinkPopover.alignElement}
 					itemsActions={itemsActions}
+					loadData={loadData}
 					onClose={() => setMoreLinkPopover(null)}
 					tasks={moreLinkPopover.tasks}
 				/>

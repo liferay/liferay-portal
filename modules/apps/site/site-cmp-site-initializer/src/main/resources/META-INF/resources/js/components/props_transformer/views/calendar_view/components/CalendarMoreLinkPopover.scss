@@ -11,6 +11,10 @@
 		gap: 0.5rem;
 		padding: 0.25rem 1rem;
 
+		&-actions {
+			flex-shrink: 0;
+		}
+
 		&-assignee {
 			flex-shrink: 0;
 		}

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {IItemsActions} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
@@ -11,6 +13,7 @@ import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import getActionURL from '../../../../../utils/getActionURL';
+import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isOverdue from '../../../../../utils/isOverdue';
 import {ITaskObjectEntry} from '../../../../../utils/types';
 
@@ -18,17 +21,46 @@ import './CalendarTaskCard.scss';
 
 interface CalendarTaskCardProps {
 	itemsActions?: IItemsActions[];
+	loadData: Function;
 	task: ITaskObjectEntry;
+}
+
+/**
+ * Clicking the card views the task, but the card also contains the actions
+ * kebab. The kebab's menu is rendered in a portal, so its clicks still bubble
+ * to the card through the React tree. Skip viewing the task when the click
+ * comes from the kebab button or its menu (anything outside the card).
+ *
+ * A "stopPropagation" on the kebab trigger does not solve this. ClayDropDown
+ * clones the trigger and overrides its "onClick" with its own toggle handler,
+ * so the trigger's "stopPropagation" is not guaranteed to run. And even when it
+ * does, the menu is portaled: a menu item lives outside the card in the DOM but
+ * is still a React descendant, so its click bubbles to the card's "onClick"
+ * through the React tree, which "stopPropagation" on the trigger never sees.
+ */
+function isActionsMenuEvent(event: React.SyntheticEvent) {
+	const target = event.target as HTMLElement;
+
+	return (
+		!event.currentTarget.contains(target) ||
+		Boolean(target.closest('[data-actions-menu]'))
+	);
 }
 
 export default function CalendarTaskCard({
 	itemsActions = [],
+	loadData,
 	task,
 }: CalendarTaskCardProps) {
 	const {assignTo, dueDate, state, title} = task;
 
 	const blocked = state?.key === 'blocked';
 	const overdue = isOverdue({dueDate, state});
+
+	const taskItemsActions = getTaskItemsActions(itemsActions, loadData, {
+		actions: task.actions,
+		embedded: task,
+	});
 
 	const hasViewPermission = Boolean(task.actions?.get);
 
@@ -52,11 +84,22 @@ export default function CalendarTaskCard({
 				[`lfr__cmp-calendar-task-card-state-${state?.key}`]:
 					!overdue && state?.key,
 			})}
-			onClick={hasViewPermission ? handleViewTask : undefined}
+			onClick={
+				hasViewPermission
+					? (event) => {
+							if (!isActionsMenuEvent(event)) {
+								handleViewTask();
+							}
+						}
+					: undefined
+			}
 			onKeyDown={
 				hasViewPermission
 					? (event) => {
-							if (event.key === 'Enter' || event.key === ' ') {
+							if (
+								!isActionsMenuEvent(event) &&
+								(event.key === 'Enter' || event.key === ' ')
+							) {
 								event.preventDefault();
 
 								handleViewTask();
@@ -89,6 +132,23 @@ export default function CalendarTaskCard({
 					portrait={assignTo?.portrait}
 				/>
 			</span>
+
+			{!!taskItemsActions.length && (
+				<ClayDropDownWithItems
+					items={taskItemsActions}
+					trigger={
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get('actions')}
+							borderless
+							className="component-action lfr__cmp-calendar-task-card-actions"
+							data-actions-menu
+							displayType="secondary"
+							size="sm"
+							symbol="ellipsis-v"
+						/>
+					}
+				/>
+			)}
 		</div>
 	);
 }

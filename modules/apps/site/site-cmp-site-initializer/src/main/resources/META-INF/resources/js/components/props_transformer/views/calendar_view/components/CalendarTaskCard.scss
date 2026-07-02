@@ -11,6 +11,22 @@
 	padding: 0.25rem 0.5rem;
 	width: 100%;
 
+	// Hidden by default so it reserves no space. The doubled class outspecifies
+	// Clay's `.btn-monospaced { display: inline-flex }`. It stays in the DOM (not
+	// removed) so it remains focusable: tabbing to the card reveals it through
+	// `:focus-within`, which puts it in the tab order as the next stop.
+
+	& &-actions {
+		display: none;
+		flex-shrink: 0;
+	}
+
+	& &-actions[aria-expanded='true'],
+	&:focus-within &-actions,
+	&:hover &-actions {
+		display: inline-flex;
+	}
+
 	&-assignee {
 		flex-shrink: 0;
 	}
