@@ -14,9 +14,13 @@ import {AudiencesCriteria} from '../types';
 
 interface IProps {
 	audiencesCriteria: AudiencesCriteria;
+	iconColor: string;
 }
 
-export default function AttributeListItem({audiencesCriteria}: IProps) {
+export default function AttributeListItem({
+	audiencesCriteria,
+	iconColor,
+}: IProps) {
 	const [{isDragging}, handlerRef, previewRef] = useDrag({
 		collect: (monitor) => ({
 			isDragging: monitor.isDragging(),
@@ -48,7 +52,14 @@ export default function AttributeListItem({audiencesCriteria}: IProps) {
 				symbol="drag"
 			/>
 
-			<ClayIcon symbol={audiencesCriteria.icon} />
+			<span
+				className={classNames(
+					'align-items-center audience-builder-attribute__icon d-inline-flex justify-content-center rounded',
+					`audience-builder-attribute__icon--${iconColor}`
+				)}
+			>
+				<ClayIcon symbol={audiencesCriteria.icon} />
+			</span>
 
 			<span className="text-3 text-truncate">
 				{audiencesCriteria.label}

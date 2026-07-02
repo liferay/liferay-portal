@@ -18,6 +18,26 @@ $toolbar-height: 55px;
 	&--dragging {
 		opacity: 0.5;
 	}
+
+	&__icon {
+		height: 32px;
+		width: 32px;
+
+		&--indigo {
+			background-color: $indigo-l5;
+			color: $indigo;
+		}
+
+		&--orange {
+			background-color: $orange-l5;
+			color: $orange;
+		}
+
+		&--teal {
+			background-color: $teal-l5;
+			color: $teal;
+		}
+	}
 }
 
 .audience-builder-conjunction-line {
@@ -39,7 +59,7 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-rule {
-	border-left: 4px solid $teal-l2;
+	border-left: 4px solid $indigo;
 
 	&--dragging {
 		opacity: 0.5;
@@ -51,6 +71,18 @@ $toolbar-height: 55px;
 
 	&--drop-top {
 		box-shadow: 0 -4px 0 0 $primary;
+	}
+
+	&--indigo {
+		border-left-color: $indigo;
+	}
+
+	&--orange {
+		border-left-color: $orange;
+	}
+
+	&--teal {
+		border-left-color: $teal;
 	}
 }
 
