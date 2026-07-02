@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -879,7 +880,8 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
 	private static Integer _secretRetriesMax;
 	private static Long _secretRetryPeriodSeconds;
-	private static final Map<String, String> _secrets = new HashMap<>();
+	private static final Map<String, String> _secrets =
+		new ConcurrentHashMap<>();
 
 	private static class Item {
 
