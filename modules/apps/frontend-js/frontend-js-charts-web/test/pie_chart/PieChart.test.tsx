@@ -9,6 +9,9 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
+// eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+
 import PieChart from '../../src/main/resources/META-INF/resources/js/pie_chart/PieChart';
 import {PieDatum} from '../../src/main/resources/META-INF/resources/js/pie_chart/types/PieDatum';
 
@@ -309,6 +312,12 @@ describe('PieChart', () => {
 		expect(
 			container.querySelector('.chart-pie-focus-ring')
 		).not.toBeInTheDocument();
+	});
+
+	it('has no accessibility violations', async () => {
+		const {container} = render(<PieChart data={DATA} title="Sales" />);
+
+		await checkAccessibility({bestPractices: true, context: container});
 	});
 });
 
