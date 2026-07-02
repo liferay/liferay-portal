@@ -13,9 +13,6 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,18 +28,6 @@ import java.util.concurrent.Future;
  * @author Shuyang Zhou
  */
 public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
-
-	public static final TransactionConfig REQUIRES_NEW_TRANSACTION_CONFIG;
-
-	static {
-		TransactionConfig.Builder builder = new TransactionConfig.Builder();
-
-		builder.setPropagation(Propagation.REQUIRES_NEW);
-		builder.setRollbackForClasses(
-			PortalException.class, SystemException.class);
-
-		REQUIRES_NEW_TRANSACTION_CONFIG = builder.build();
-	}
 
 	@Override
 	public AddCriteriaMethod getAddCriteriaMethod() {
@@ -191,11 +176,6 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 		_primaryKeyPropertyName = primaryKeyPropertyName;
 	}
 
-	@Override
-	public void setTransactionConfig(TransactionConfig transactionConfig) {
-		_transactionConfig = transactionConfig;
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -291,14 +271,7 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 		addOrderCriteria(dynamicQuery);
 
 		try {
-			TransactionConfig transactionConfig = getTransactionConfig();
-
-			if (transactionConfig == null) {
-				return _performActions(dynamicQuery);
-			}
-
-			return TransactionInvokerUtil.invoke(
-				transactionConfig, () -> _performActions(dynamicQuery));
+			return _performActions(dynamicQuery);
 		}
 		catch (Throwable throwable) {
 			if (throwable instanceof PortalException) {
@@ -351,10 +324,6 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 
 	protected Class<?> getModelClass() {
 		return _modelClass;
-	}
-
-	protected TransactionConfig getTransactionConfig() {
-		return _transactionConfig;
 	}
 
 	protected void intervalCompleted(long startPrimaryKey, long endPrimaryKey)
@@ -414,6 +383,5 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 
 	private PerformCountMethod _performCountMethod;
 	private String _primaryKeyPropertyName;
-	private TransactionConfig _transactionConfig;
 
 }

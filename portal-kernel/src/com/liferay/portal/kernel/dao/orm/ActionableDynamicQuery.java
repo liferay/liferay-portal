@@ -7,7 +7,6 @@ package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
 
 /**
  * @author Brian Wing Shun Chan
@@ -55,8 +54,6 @@ public interface ActionableDynamicQuery {
 	public void setPerformCountMethod(PerformCountMethod performCountMethod);
 
 	public void setPrimaryKeyPropertyName(String primaryKeyPropertyName);
-
-	public void setTransactionConfig(TransactionConfig transactionConfig);
 
 	public interface AddCriteriaMethod {
 
