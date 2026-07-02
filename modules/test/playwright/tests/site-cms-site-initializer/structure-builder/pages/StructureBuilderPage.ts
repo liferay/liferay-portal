@@ -58,8 +58,8 @@ export class StructureBuilderPage {
 		this.customizeEditorButton = this.page.getByRole('button', {
 			name: 'Customize Editor',
 		});
-		this.labelInput = this.page.getByLabel('Structure Label');
-		this.nameInput = this.page.getByLabel('Structure Name');
+		this.labelInput = this.page.getByLabel('Content Structure Label');
+		this.nameInput = this.page.getByLabel('Content Structure Name');
 		this.publishButton = this.page.getByRole('button', {name: 'Publish'});
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 		this.spaceCheckbox = this.page.getByLabel(
@@ -84,13 +84,12 @@ export class StructureBuilderPage {
 		}
 
 		await expect(async () => {
-			await this.page.goto(url);
+			await this.page.goto(url, {waitUntil: 'networkidle'});
 
-			await this.page
-				.locator('.component-tbar')
-				.getByText('Publish')
-				.waitFor({timeout: 2000});
-		}).toPass();
+			await expect(
+				this.page.locator('.component-tbar').getByText('Publish')
+			).toBeVisible({timeout: 5000});
+		}).toPass({timeout: 30000});
 	}
 
 	getTreeItem({
@@ -715,8 +714,8 @@ export class StructureBuilderPage {
 
 				await expect(
 					this.page.locator('.label-secondary', {hasText: space})
-				).toBeVisible();
-			}).toPass();
+				).toBeVisible({timeout: 5000});
+			}).toPass({timeout: 20000});
 		}
 	}
 

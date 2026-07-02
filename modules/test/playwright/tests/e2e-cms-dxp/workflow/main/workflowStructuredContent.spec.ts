@@ -19,7 +19,6 @@ import {
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
-import {resolvePasswordResetWall} from '../../../../utils/resolvePasswordResetWall';
 import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 
 const test = mergeTests(
@@ -286,8 +285,6 @@ test(
 						page: userPage,
 						screenName: user.alternateName,
 					});
-
-					await resolvePasswordResetWall(userPage);
 
 					await expect(async () => {
 						await userPage.goto(viewUrl);

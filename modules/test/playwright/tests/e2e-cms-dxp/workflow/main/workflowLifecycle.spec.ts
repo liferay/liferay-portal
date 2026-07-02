@@ -18,7 +18,6 @@ import {
 } from '../../../../utils/cmsWorkflow';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
-import {resolvePasswordResetWall} from '../../../../utils/resolvePasswordResetWall';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -237,8 +236,6 @@ test(
 						page: userPage,
 						screenName: user.alternateName,
 					});
-
-					await resolvePasswordResetWall(userPage);
 
 					await expect(async () => {
 						await userPage.goto(viewUrl);

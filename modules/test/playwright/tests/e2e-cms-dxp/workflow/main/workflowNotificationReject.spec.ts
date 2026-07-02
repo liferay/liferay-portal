@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../../fixtures/workflowPagesTest';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {
 	assignWorkflowToStructure,
 	unassignWorkflowFromStructure,
@@ -137,12 +138,16 @@ test(
 
 				await workflowTaskDetailsPage.goTo(titleValue);
 
-				await workflowTaskDetailsPage.reviewActionMenu.click();
-
-				await workflowTaskDetailsPage.rejectMenuItem.click();
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: workflowTaskDetailsPage.rejectMenuItem,
+					timeout: 2000,
+					trigger: workflowTaskDetailsPage.reviewActionMenu,
+				});
 
 				await workflowTaskDetailsPage.reviewComment.fill(
-					`Please revise ${getRandomString()}`
+					`Please revise ${getRandomString()}`,
+					{timeout: 10000}
 				);
 
 				await workflowTaskDetailsPage.clickDoneButton();
