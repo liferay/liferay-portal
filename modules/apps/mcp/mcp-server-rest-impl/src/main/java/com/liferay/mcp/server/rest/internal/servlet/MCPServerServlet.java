@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -55,7 +56,6 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -321,7 +321,7 @@ public class MCPServerServlet extends HttpServlet {
 			return Collections.emptyList();
 		}
 
-		List<Map<String, Serializable>> valuesList = new ArrayList<>(
+		return TransformUtil.transform(
 			_objectEntryLocalService.getValuesList(
 				0, companyId, objectDefinition.getUserId(),
 				objectDefinition.getObjectDefinitionId(),
@@ -329,15 +329,8 @@ public class MCPServerServlet extends HttpServlet {
 					"mcpServerProfileExternalReferenceCode eq '" +
 						mcpServerProfileExternalReferenceCode + "'",
 					objectDefinition),
-				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
-
-		valuesList.sort(
-			Comparator.comparingInt(
-				values -> GetterUtil.getInteger(
-					values.get("executionOrder"), Integer.MAX_VALUE)));
-
-		return TransformUtil.transform(
-			valuesList,
+				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new Sort[] {new Sort("executionOrder", Sort.INT_TYPE, false)}),
 			values -> {
 				String externalReferenceCode = MapUtil.getString(
 					values, "dataMaskExternalReferenceCode");
