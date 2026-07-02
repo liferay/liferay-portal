@@ -192,7 +192,7 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 		return _assetCategoryLocalService.addCategory(
 			RandomTestUtil.randomString(), group.getCreatorUserId(),
 			group.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(), null,
-			assetVocabulary.getVocabularyId(), null,
+			assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 

@@ -104,7 +104,8 @@ public class AssetCategoryAdminPortletTest {
 				HashMapBuilder.put(
 					LocaleUtil.US, RandomTestUtil.randomString()
 				).build(),
-				null, assetVocabulary.getVocabularyId(), null, serviceContext);
+				null, assetVocabulary.getVocabularyId(), false, null,
+				serviceContext);
 
 		assetCategories.add(childAssetCategory1);
 
@@ -115,7 +116,8 @@ public class AssetCategoryAdminPortletTest {
 				HashMapBuilder.put(
 					LocaleUtil.US, RandomTestUtil.randomString()
 				).build(),
-				null, assetVocabulary.getVocabularyId(), null, serviceContext);
+				null, assetVocabulary.getVocabularyId(), false, null,
+				serviceContext);
 
 		assetCategories.add(childAssetCategory2);
 

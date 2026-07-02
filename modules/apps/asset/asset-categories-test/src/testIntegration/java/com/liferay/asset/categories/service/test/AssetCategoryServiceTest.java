@@ -163,7 +163,8 @@ public class AssetCategoryServiceTest {
 					LocaleUtil.US, RandomTestUtil.randomString()),
 				Collections.singletonMap(
 					LocaleUtil.US, RandomTestUtil.randomString()),
-				_assetVocabulary.getVocabularyId(), null, new ServiceContext());
+				_assetVocabulary.getVocabularyId(), false, null,
+				new ServiceContext());
 
 			assetCategory = _assetCategoryService.getOrAddEmptyCategory(
 				externalReferenceCode, _group.getGroupId());

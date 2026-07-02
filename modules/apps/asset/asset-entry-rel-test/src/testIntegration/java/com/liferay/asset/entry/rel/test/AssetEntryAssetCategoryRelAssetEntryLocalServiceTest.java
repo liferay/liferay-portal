@@ -154,7 +154,7 @@ public class AssetEntryAssetCategoryRelAssetEntryLocalServiceTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			_assetVocabulary.getVocabularyId(), null, serviceContext);
+			_assetVocabulary.getVocabularyId(), false, null, serviceContext);
 
 		_assetCategories.add(assetCategory);
 

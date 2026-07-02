@@ -719,7 +719,7 @@ public class TaxonomyCategoryResourceImpl
 		return _toTaxonomyCategory(
 			_assetCategoryService.addCategory(
 				externalReferenceCode, groupId, parentTaxonomyCategoryId,
-				titleMap, descriptionMap, taxonomyVocabularyId,
+				titleMap, descriptionMap, taxonomyVocabularyId, false,
 				_toStringArray(
 					taxonomyCategory.getTaxonomyCategoryProperties()),
 				_getServiceContext(groupId, taxonomyCategory)));

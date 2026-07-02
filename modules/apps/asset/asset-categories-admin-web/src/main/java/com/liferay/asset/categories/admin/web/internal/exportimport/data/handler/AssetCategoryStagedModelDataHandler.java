@@ -264,8 +264,8 @@ public class AssetCategoryStagedModelDataHandler
 				portletDataContext.getScopeGroupId(), parentCategoryId,
 				_getCategoryTitleMap(
 					portletDataContext.getScopeGroupId(), category, name),
-				category.getDescriptionMap(), vocabularyId, properties,
-				serviceContext);
+				category.getDescriptionMap(), vocabularyId, category.isSystem(),
+				properties, serviceContext);
 		}
 		else {
 			String name = _getCategoryName(

@@ -208,7 +208,7 @@ public class AssetCategoriesImporter {
 				null, serviceContext.getUserId(),
 				serviceContext.getScopeGroupId(),
 				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap,
-				null, assetVocabularyId, new String[0], serviceContext);
+				null, assetVocabularyId, false, new String[0], serviceContext);
 		}
 
 		// Commerce product friendly URL entry

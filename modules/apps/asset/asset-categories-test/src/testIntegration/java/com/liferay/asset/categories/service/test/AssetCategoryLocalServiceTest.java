@@ -196,7 +196,7 @@ public class AssetCategoryLocalServiceTest {
 			HashMapBuilder.put(
 				locale, StringPool.BLANK
 			).build(),
-			assetVocabulary.getVocabularyId(), null,
+			assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 
@@ -210,7 +210,7 @@ public class AssetCategoryLocalServiceTest {
 			HashMapBuilder.put(
 				locale, StringPool.BLANK
 			).build(),
-			assetVocabulary.getVocabularyId(), null,
+			assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 	}
@@ -234,7 +234,8 @@ public class AssetCategoryLocalServiceTest {
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			Collections.singletonMap(LocaleUtil.FRANCE, "Qualification"),
 			Collections.singletonMap(LocaleUtil.FRANCE, "La description"),
-			_assetVocabulary.getVocabularyId(), null, new ServiceContext());
+			_assetVocabulary.getVocabularyId(), false, null,
+			new ServiceContext());
 	}
 
 	@Test
@@ -262,7 +263,8 @@ public class AssetCategoryLocalServiceTest {
 			).put(
 				LocaleUtil.SPAIN, "Descripción"
 			).build(),
-			_assetVocabulary.getVocabularyId(), null, new ServiceContext());
+			_assetVocabulary.getVocabularyId(), false, null,
+			new ServiceContext());
 
 		Assert.assertEquals(
 			"Expected title does not match", expectedAssetCategoryTitle,
@@ -290,7 +292,7 @@ public class AssetCategoryLocalServiceTest {
 			HashMapBuilder.put(
 				locale, StringPool.BLANK
 			).build(),
-			assetVocabulary.getVocabularyId(), null,
+			assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 

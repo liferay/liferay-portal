@@ -584,8 +584,8 @@ public class StagingImplTest {
 
 		return AssetCategoryLocalServiceUtil.addCategory(
 			null, TestPropsValues.getUserId(), groupId, 0, titleMap,
-			descriptionMap, assetVocabulary.getVocabularyId(), new String[0],
-			serviceContext);
+			descriptionMap, assetVocabulary.getVocabularyId(), false,
+			new String[0], serviceContext);
 	}
 
 	protected void doTestInitialPublication() throws Exception {

@@ -69,7 +69,7 @@ public class AssetCategoryStagedModelDataHandlerTest
 				stagingGroup.getGroupId(),
 				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap,
 				Collections.emptyMap(), stagingVocabulary.getVocabularyId(),
-				null,
+				false, null,
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId()));
 
@@ -82,7 +82,8 @@ public class AssetCategoryStagedModelDataHandlerTest
 			externalReferenceCode, TestPropsValues.getUserId(),
 			liveGroup.getGroupId(),
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap,
-			Collections.emptyMap(), liveVocabulary.getVocabularyId(), null,
+			Collections.emptyMap(), liveVocabulary.getVocabularyId(), false,
+			null,
 			ServiceContextTestUtil.getServiceContext(liveGroup.getGroupId()));
 
 		importStagedModel(stagingCategory);

@@ -154,7 +154,8 @@ public class AssetTestUtil {
 					assetVocabulary.getGroupId(), 0,
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomLocaleStringMap(),
-					assetVocabulary.getVocabularyId(), null, serviceContext));
+					assetVocabulary.getVocabularyId(), false, null,
+					serviceContext));
 		}
 
 		return assetCategories;

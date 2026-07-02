@@ -861,7 +861,7 @@ public class FriendlyURLEntryLocalServiceTest {
 			).put(
 				new Locale("es", "ES"), "cat1-es"
 			).build(),
-			new HashMap<>(), assetVocabulary.getVocabularyId(), null,
+			new HashMap<>(), assetVocabulary.getVocabularyId(), false, null,
 			serviceContext);
 		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
@@ -870,7 +870,7 @@ public class FriendlyURLEntryLocalServiceTest {
 			).put(
 				new Locale("es", "ES"), "cat2-es"
 			).build(),
-			new HashMap<>(), assetVocabulary.getVocabularyId(), null,
+			new HashMap<>(), assetVocabulary.getVocabularyId(), false, null,
 			serviceContext);
 
 		serviceContext.setAttribute(

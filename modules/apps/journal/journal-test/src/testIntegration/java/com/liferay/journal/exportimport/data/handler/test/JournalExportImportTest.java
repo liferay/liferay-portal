@@ -442,7 +442,8 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()
 				).build(),
-				null, assetVocabulary.getVocabularyId(), null, serviceContext);
+				null, assetVocabulary.getVocabularyId(), false, null,
+				serviceContext);
 
 		serviceContext.setAssetCategoryIds(
 			new long[] {parentAssetCategory.getCategoryId()});

@@ -883,7 +883,7 @@ public class TaxonomyCategoryResourceTest
 			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
 			parentAssetCategory.getCategoryId(),
 			RandomTestUtil.randomLocaleStringMap(), null,
-			assetVocabulary.getVocabularyId(), null, serviceContext);
+			assetVocabulary.getVocabularyId(), false, null, serviceContext);
 
 		assetCategory.setCreateDate(date);
 		assetCategory.setModifiedDate(date);

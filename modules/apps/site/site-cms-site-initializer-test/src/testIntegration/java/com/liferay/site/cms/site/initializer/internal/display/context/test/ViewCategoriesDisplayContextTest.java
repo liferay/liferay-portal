@@ -86,7 +86,7 @@ public class ViewCategoriesDisplayContextTest
 			).put(
 				LocaleUtil.FRANCE, RandomTestUtil.randomString()
 			).build(),
-			Collections.emptyMap(), _assetVocabulary.getVocabularyId(),
+			Collections.emptyMap(), _assetVocabulary.getVocabularyId(), false,
 			new String[0],
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}

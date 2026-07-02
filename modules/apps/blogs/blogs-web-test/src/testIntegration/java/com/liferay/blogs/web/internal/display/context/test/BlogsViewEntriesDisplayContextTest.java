@@ -207,7 +207,7 @@ public class BlogsViewEntriesDisplayContextTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, RandomTestUtil.randomString()
 			).build(),
-			null, assetVocabulary.getVocabularyId(), null,
+			null, assetVocabulary.getVocabularyId(), false, null,
 			new ServiceContext());
 	}
 

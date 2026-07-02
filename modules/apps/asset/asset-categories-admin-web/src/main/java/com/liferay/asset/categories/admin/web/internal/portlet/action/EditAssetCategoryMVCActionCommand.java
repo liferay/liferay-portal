@@ -92,7 +92,7 @@ public class EditAssetCategoryMVCActionCommand extends BaseMVCActionCommand {
 
 			category = _assetCategoryService.addCategory(
 				externalReferenceCode, groupId, parentCategoryId, titleMap,
-				descriptionMap, vocabularyId, null, serviceContext);
+				descriptionMap, vocabularyId, false, null, serviceContext);
 
 			MultiSessionMessages.add(
 				actionRequest, "categoryAdded",

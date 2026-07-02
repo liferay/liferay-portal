@@ -201,7 +201,7 @@ public class CustomUserAttributesAssetEntryQueryProcessorTest {
 		return _assetCategoryLocalService.addCategory(
 			null, TestPropsValues.getUserId(), _companyGroup.getGroupId(),
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap,
-			Collections.emptyMap(), vocabularyId, null, _serviceContext);
+			Collections.emptyMap(), vocabularyId, false, null, _serviceContext);
 	}
 
 	private AssetCategory _addCategory(String name, long vocabularyId)

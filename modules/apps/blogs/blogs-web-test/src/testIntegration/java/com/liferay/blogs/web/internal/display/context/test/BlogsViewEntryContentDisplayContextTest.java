@@ -264,7 +264,7 @@ public class BlogsViewEntryContentDisplayContextTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, "cat1"
 			).build(),
-			null, assetVocabulary.getVocabularyId(), null,
+			null, assetVocabulary.getVocabularyId(), false, null,
 			new ServiceContext());
 
 		serviceContext.setAssetCategoryIds(

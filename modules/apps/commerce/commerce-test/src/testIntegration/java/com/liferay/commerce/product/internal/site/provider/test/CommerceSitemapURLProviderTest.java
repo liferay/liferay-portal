@@ -177,7 +177,8 @@ public class CommerceSitemapURLProviderTest {
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
 			null, _serviceContext.getUserId(), assetVocabulary.getGroupId(),
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap, null,
-			assetVocabulary.getVocabularyId(), new String[0], _serviceContext);
+			assetVocabulary.getVocabularyId(), false, new String[0],
+			_serviceContext);
 
 		FriendlyURLEntry friendlyURLEntry =
 			_friendlyURLEntryLocalService.addFriendlyURLEntry(

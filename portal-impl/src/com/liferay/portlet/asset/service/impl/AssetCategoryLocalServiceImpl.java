@@ -106,7 +106,7 @@ public class AssetCategoryLocalServiceImpl
 			HashMapBuilder.put(
 				locale, StringPool.BLANK
 			).build(),
-			vocabularyId, null, serviceContext);
+			vocabularyId, false, null, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -464,7 +464,7 @@ public class AssetCategoryLocalServiceImpl
 				AssetCategoryConstants.EMPTY_PARENT_CATEGORY_ID,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				null, AssetVocabularyConstants.EMPTY_VOCABULARY_ID,
+				null, AssetVocabularyConstants.EMPTY_VOCABULARY_ID, false,
 				new String[0], new ServiceContext()),
 			externalReferenceCode,
 			this::fetchAssetCategoryByExternalReferenceCode,

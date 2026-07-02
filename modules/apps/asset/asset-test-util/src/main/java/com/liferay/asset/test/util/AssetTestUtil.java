@@ -93,7 +93,7 @@ public class AssetTestUtil {
 
 		return AssetCategoryLocalServiceUtil.addCategory(
 			null, TestPropsValues.getUserId(), groupId, parentCategoryId,
-			titleMap, descriptionMap, vocabularyId, categoryProperties,
+			titleMap, descriptionMap, vocabularyId, false, categoryProperties,
 			serviceContext);
 	}
 
@@ -118,7 +118,7 @@ public class AssetTestUtil {
 		return AssetCategoryLocalServiceUtil.addCategory(
 			externalReferenceCode, TestPropsValues.getUserId(), groupId,
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, titleMap,
-			descriptionMap, vocabularyId, null, serviceContext);
+			descriptionMap, vocabularyId, false, null, serviceContext);
 	}
 
 	public static AssetTag addTag(long groupId) throws Exception {

@@ -2215,7 +2215,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			RandomTestUtil.randomString(), irrelevantGroup.getCreatorUserId(),
 			irrelevantGroup.getGroupId(), 0,
 			RandomTestUtil.randomLocaleStringMap(), null,
-			assetVocabulary.getVocabularyId(), null,
+			assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(
 				irrelevantGroup.getGroupId()));
 
@@ -2343,7 +2343,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
 			RandomTestUtil.randomString(), testGroup.getCreatorUserId(),
 			testGroup.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(),
-			null, assetVocabulary.getVocabularyId(), null,
+			null, assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs = {
@@ -2397,7 +2397,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
 			RandomTestUtil.randomString(), testGroup.getCreatorUserId(),
 			testGroup.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(),
-			null, assetVocabulary.getVocabularyId(), null,
+			null, assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs = {

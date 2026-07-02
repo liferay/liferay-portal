@@ -341,7 +341,7 @@ public class WikiPageResourceTest extends BaseWikiPageResourceTestCase {
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
 			RandomTestUtil.randomString(), testGroup.getCreatorUserId(),
 			testGroup.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(),
-			null, assetVocabulary.getVocabularyId(), null,
+			null, assetVocabulary.getVocabularyId(), false, null,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs = {

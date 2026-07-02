@@ -361,7 +361,8 @@ public class AssetVocabularySiteNavigationMenuItemTypeTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
-				_assetVocabulary.getVocabularyId(), null, serviceContext);
+				_assetVocabulary.getVocabularyId(), false, null,
+				serviceContext);
 
 		Assert.assertEquals(
 			2,
@@ -934,7 +935,7 @@ public class AssetVocabularySiteNavigationMenuItemTypeTest {
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			parentAssetCategoryId, RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
-			_assetVocabulary.getVocabularyId(), null, _serviceContext);
+			_assetVocabulary.getVocabularyId(), false, null, _serviceContext);
 	}
 
 	private SiteNavigationMenuItem _addSiteNavigationMenuItem(

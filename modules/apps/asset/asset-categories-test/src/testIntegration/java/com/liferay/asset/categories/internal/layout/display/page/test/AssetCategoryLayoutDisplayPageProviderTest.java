@@ -85,7 +85,7 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), title
 			).build(),
-			new HashMap<>(), assetVocabularyId, null,
+			new HashMap<>(), assetVocabularyId, false, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
@@ -118,7 +118,7 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), StringUtil.randomString()
 			).build(),
-			AssetVocabularyConstants.EMPTY_VOCABULARY_ID, null,
+			AssetVocabularyConstants.EMPTY_VOCABULARY_ID, false, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		LayoutDisplayPageObjectProvider layoutDisplayPageObjectProvider =
