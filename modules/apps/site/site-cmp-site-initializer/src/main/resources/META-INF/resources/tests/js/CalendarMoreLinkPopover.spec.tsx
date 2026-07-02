@@ -8,10 +8,19 @@ import {render} from '@testing-library/react';
 import React from 'react';
 
 import CalendarMoreLinkPopover from '../../js/components/props_transformer/views/calendar_view/components/CalendarMoreLinkPopover';
+import getTaskItemsActions from '../../js/utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../js/utils/types';
+
+jest.mock('../../js/utils/getTaskItemsActions', () => ({
+	__esModule: true,
+	default: jest.fn(() => []),
+}));
 
 jest.mock('@clayui/drop-down', () => ({
 	__esModule: true,
+	ClayDropDownWithItems: ({trigger}: {trigger: React.ReactNode}) => (
+		<div>{trigger}</div>
+	),
 	default: {
 		Menu: ({children}: {children: React.ReactNode}) => (
 			<div>{children}</div>
@@ -49,6 +58,7 @@ function renderPopover(tasks: ITaskObjectEntry[]) {
 		<CalendarMoreLinkPopover
 			alignElement={document.createElement('a')}
 			itemsActions={[]}
+			loadData={jest.fn()}
 			onClose={jest.fn()}
 			tasks={tasks}
 		/>
@@ -64,6 +74,10 @@ describe('CalendarMoreLinkPopover', () => {
 
 	afterAll(() => {
 		jest.useRealTimers();
+	});
+
+	beforeEach(() => {
+		(getTaskItemsActions as jest.Mock).mockReturnValue([]);
 	});
 
 	it('orders tasks by overdue, blocked, in progress, not started, then done', () => {
@@ -107,6 +121,19 @@ describe('CalendarMoreLinkPopover', () => {
 			'NotStartedTask',
 			'DoneTask',
 		]);
+	});
+
+	it('renders an actions menu for each task', () => {
+		(getTaskItemsActions as jest.Mock).mockReturnValue([
+			{label: 'edit', onClick: jest.fn()},
+		]);
+
+		const {getAllByLabelText} = renderPopover([
+			createTask({id: 1, title: 'Alpha'}),
+			createTask({id: 2, title: 'Beta'}),
+		]);
+
+		expect(getAllByLabelText('actions')).toHaveLength(2);
 	});
 
 	it('renders every task for the day', () => {

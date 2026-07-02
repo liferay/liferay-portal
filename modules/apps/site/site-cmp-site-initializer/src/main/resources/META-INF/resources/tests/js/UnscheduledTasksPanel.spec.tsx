@@ -8,9 +8,21 @@ import {fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import UnscheduledTasksPanel from '../../js/components/props_transformer/views/calendar_view/components/UnscheduledTasksPanel';
+import getTaskItemsActions from '../../js/utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../js/utils/types';
 
 let mockUnscheduledTasks: ITaskObjectEntry[] = [];
+
+jest.mock('../../js/utils/getTaskItemsActions', () => ({
+	__esModule: true,
+	default: jest.fn(() => []),
+}));
+
+jest.mock('@clayui/drop-down', () => ({
+	ClayDropDownWithItems: ({trigger}: {trigger: React.ReactNode}) => (
+		<div>{trigger}</div>
+	),
+}));
 
 jest.mock('@clayui/core', () => {
 	const SidePanel = ({children}: {children: React.ReactNode}) => (
@@ -57,6 +69,10 @@ function createTask(overrides: Partial<ITaskObjectEntry> = {}) {
 describe('UnscheduledTasksPanel', () => {
 	afterEach(() => {
 		mockUnscheduledTasks = [];
+	});
+
+	beforeEach(() => {
+		(getTaskItemsActions as jest.Mock).mockReturnValue([]);
 	});
 
 	it('filters the tasks by title as the user types', () => {
@@ -123,6 +139,21 @@ describe('UnscheduledTasksPanel', () => {
 
 		expect(getByText('Alpha')).toBeInTheDocument();
 		expect(getByText('Beta')).toBeInTheDocument();
+	});
+
+	it('renders an actions menu for each task', () => {
+		(getTaskItemsActions as jest.Mock).mockReturnValue([
+			{label: 'edit', onClick: jest.fn()},
+		]);
+
+		mockUnscheduledTasks = [
+			createTask({id: 1, title: 'Alpha'}),
+			createTask({id: 2, title: 'Beta'}),
+		];
+
+		const {getAllByLabelText} = render(<UnscheduledTasksPanel />);
+
+		expect(getAllByLabelText('actions')).toHaveLength(2);
 	});
 
 	it('renders the state label for a task', () => {
