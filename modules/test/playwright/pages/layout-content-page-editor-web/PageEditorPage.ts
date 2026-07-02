@@ -321,6 +321,14 @@ export class PageEditorPage {
 		);
 	}
 
+	async viewFragmentCommentWithoutOptions(comment: string) {
+		await this.viewFragmentComment(comment);
+
+		await expect(
+			this.getFragmentComment(comment).getByLabel('Options')
+		).toBeHidden();
+	}
+
 	async _submitFragmentComment(comment: string) {
 		const commentButton = this.page.getByRole('button', {
 			exact: true,

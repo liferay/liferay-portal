@@ -11,7 +11,9 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitch} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -475,5 +477,66 @@ test(
 		await pageEditorPage.goToFragmentComment(headingId);
 
 		await pageEditorPage.viewFragmentComment(comment);
+	}
+);
+
+test(
+	'Views a fragment comment without options as a different user',
+	{tag: ['@LPD-96910', '@LPS-99063']},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment and publish
+
+		const comment = 'This is a fragment comment!';
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		await pageEditorPage.publishPage();
+
+		// Sign in as a different user with permission to edit pages
+
+		const company =
+			await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+				'liferay.com'
+			);
+
+		const user = await createUserWithPermissions({
+			apiHelpers,
+			rolePermissions: [
+				{
+					actionIds: ['UPDATE'],
+					primaryKey: company.companyId,
+					resourceName: 'com.liferay.portal.kernel.model.Layout',
+					scope: 1,
+				},
+			],
+		});
+
+		await performUserSwitch(page, user.alternateName);
+
+		// The comment is visible but cannot be edited or deleted
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		await pageEditorPage.viewFragmentCommentWithoutOptions(comment);
 	}
 );
