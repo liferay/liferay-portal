@@ -33,6 +33,7 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
 	backURL?: string;
+	backURLTitle?: string;
 	name?: string;
 	namespace?: string;
 	rulesGroup?: AudiencesCriteriaRulesGroup;
@@ -41,6 +42,7 @@ interface IProps {
 export default function AudienceBuilder({
 	audiencesCriteriaTypes = [],
 	backURL,
+	backURLTitle,
 	name,
 	namespace = '',
 	rulesGroup,
@@ -69,6 +71,7 @@ export default function AudienceBuilder({
 										displayType="unstyled"
 										href={backURL}
 										monospaced
+										title={backURLTitle}
 									>
 										<ClayIcon symbol="angle-left" />
 									</ClayLink>

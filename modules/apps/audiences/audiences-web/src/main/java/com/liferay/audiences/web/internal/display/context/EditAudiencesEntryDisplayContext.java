@@ -147,6 +147,8 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"backURL", getBackURL()
 		).put(
+			"backURLTitle", getBackURLTitle()
+		).put(
 			"name", _getName()
 		).put(
 			"namespace", _renderResponse.getNamespace()
