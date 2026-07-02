@@ -54,9 +54,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		DataMaskTestUtil.processBatchEngineUnits();
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-90204")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		ObjectDefinition objectDefinition = _fetchDataMaskObjectDefinition();
@@ -93,9 +91,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-90204")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeRemove() throws Exception {
 		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
@@ -128,9 +124,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 				emailMaskObjectEntry.getObjectEntryId()));
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-90204")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
 		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
@@ -205,9 +199,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-90204")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeUpdateCustomMaskToSystem() throws Exception {
 		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(

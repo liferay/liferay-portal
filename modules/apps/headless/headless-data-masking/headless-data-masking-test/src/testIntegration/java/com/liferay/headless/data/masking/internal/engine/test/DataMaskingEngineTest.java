@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-90204"))
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class DataMaskingEngineTest {
 
@@ -161,7 +161,7 @@ public class DataMaskingEngineTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = @FeatureFlag(enable = false, value = "LPD-90204")
+		featureFlags = @FeatureFlag(enable = false, value = "LPD-63311")
 	)
 	@Test
 	public void testRedactWhenFeatureFlagIsDisabled() throws Exception {

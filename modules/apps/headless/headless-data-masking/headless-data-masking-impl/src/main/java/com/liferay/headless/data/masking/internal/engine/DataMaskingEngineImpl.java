@@ -47,7 +47,7 @@ public class DataMaskingEngineImpl implements DataMaskingEngine {
 	public String redact(
 		long companyId, List<String> maskExternalReferenceCodes, String text) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-90204") ||
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63311") ||
 			ListUtil.isEmpty(maskExternalReferenceCodes) ||
 			Validator.isNull(text)) {
 

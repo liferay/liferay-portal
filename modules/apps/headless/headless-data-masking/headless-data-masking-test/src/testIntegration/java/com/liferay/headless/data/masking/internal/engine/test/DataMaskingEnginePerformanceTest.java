@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-90204"))
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class DataMaskingEnginePerformanceTest {
 
