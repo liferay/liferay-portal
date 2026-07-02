@@ -268,13 +268,16 @@ public class CETManagerImpl implements CETManager {
 
 	@SuppressWarnings("unchecked")
 	private PortalCache<Long, Object> _getEntryPortalCache() throws Exception {
-		Class<?> modelClass = _clientExtensionEntryLocalService.getClass(
-		).getClassLoader(
-		).loadClass(
+		ImplementationClassName implementationClassName =
 			ClientExtensionEntry.class.getAnnotation(
-				ImplementationClassName.class
-			).value()
-		);
+				ImplementationClassName.class);
+
+		Class<?> serviceClass = _clientExtensionEntryLocalService.getClass();
+
+		ClassLoader classLoader = serviceClass.getClassLoader();
+
+		Class<?> modelClass = classLoader.loadClass(
+			implementationClassName.value());
 
 		PortalCache<?, ?> portalCache = _entityCache.getPortalCache(modelClass);
 
