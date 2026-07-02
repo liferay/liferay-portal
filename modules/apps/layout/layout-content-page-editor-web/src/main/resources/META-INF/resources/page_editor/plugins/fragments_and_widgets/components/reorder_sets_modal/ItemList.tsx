@@ -9,14 +9,13 @@ import {
 	DRAG_OVER_POSITIONS,
 	DragOverPosition,
 } from '../../config/constants/dragOverPositions';
-import {TabId} from '../../config/constants/tabsIds';
 import {Item} from './Item';
 import {KeyboardDragAndDropContextProvider} from './KeyboardDragAndDropContext';
 
 interface ItemListProps {
 	items: Item[];
-	listId: TabId;
-	updateLists: (tabId: TabId, items: Item[]) => void;
+	listId: string;
+	updateLists: (listId: string, items: Item[]) => void;
 }
 
 export function ItemList({
