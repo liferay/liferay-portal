@@ -12,18 +12,17 @@ import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
-import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.Bucket;
 import com.liferay.portal.search.aggregation.bucket.TermsAggregationResult;
-import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
-import com.liferay.portal.search.searcher.SearchRequestBuilder;
+import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
+import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
@@ -76,41 +75,43 @@ public class ExtensionSelectionFDSFilter extends BaseSelectionFDSFilter {
 	}
 
 	private List<String> _getExistingFileExtensions() {
-		SearchContext searchContext = new SearchContext();
-
 		long companyId = CompanyThreadLocal.getCompanyId();
-
-		searchContext.setCompanyId(companyId);
-
-		searchContext.setEnd(QueryUtil.ALL_POS);
 
 		long[] groupIds = TransformUtil.transformToLongArray(
 			_depotEntryLocalService.getDepotEntries(
 				companyId, DepotConstants.TYPE_SPACE),
 			DepotEntry::getGroupId);
 
-		if (ArrayUtil.isNotEmpty(groupIds)) {
-			searchContext.setGroupIds(groupIds);
+		List<ObjectDefinition> objectDefinitions =
+			_objectDefinitionService.getCMSObjectDefinitions(
+				companyId,
+				new String[] {
+					ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES
+				});
+
+		if (objectDefinitions.isEmpty()) {
+			return Collections.emptyList();
 		}
 
-		searchContext.setStart(0);
-
-		SearchRequestBuilder searchRequestBuilder =
+		SearchResponse searchResponse = _searcher.search(
 			_searchRequestBuilderFactory.builder(
-				searchContext
+			).addAggregation(
+				_aggregations.terms("extensions", "extension")
+			).addComplexQueryPart(
+				_complexQueryPartBuilderFactory.builder(
+				).query(
+					QueriesUtil.matchAll()
+				).build()
+			).companyId(
+				companyId
 			).emptySearchEnabled(
 				true
 			).entryClassNames(
-				ObjectEntry.class.getName()
-			).fields(
-				Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK, Field.UID
-			).highlightEnabled(
-				false
-			);
-
-		SearchResponse searchResponse = _searcher.search(
-			searchRequestBuilder.addAggregation(
-				_aggregations.terms("extensions", "extension")
+				TransformUtil.transformToArray(
+					objectDefinitions, ObjectDefinition::getClassName,
+					String.class)
+			).groupIds(
+				groupIds
 			).size(
 				0
 			).build());
@@ -131,7 +132,13 @@ public class ExtensionSelectionFDSFilter extends BaseSelectionFDSFilter {
 	private Aggregations _aggregations;
 
 	@Reference
+	private ComplexQueryPartBuilderFactory _complexQueryPartBuilderFactory;
+
+	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
+	private ObjectDefinitionService _objectDefinitionService;
 
 	@Reference
 	private Searcher _searcher;
