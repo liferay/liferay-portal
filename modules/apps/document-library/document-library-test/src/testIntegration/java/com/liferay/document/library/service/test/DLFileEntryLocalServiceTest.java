@@ -1623,6 +1623,8 @@ public class DLFileEntryLocalServiceTest {
 					}
 
 					dlFileEntry.setDescription(description);
+
+					_dlFileEntryLocalService.updateDLFileEntry(dlFileEntry);
 				},
 				0L, new String[] {ContentTypes.TEXT_PLAIN});
 
@@ -1633,7 +1635,7 @@ public class DLFileEntryLocalServiceTest {
 		}
 
 		Assert.assertEquals(
-			10,
+			19,
 			_dlFileEntryLocalService.dslQueryCount(
 				DSLQueryFactoryUtil.count(
 				).from(
