@@ -505,6 +505,80 @@ test(
 );
 
 test(
+	"Calendar's task actions are displayed",
+	{tag: ['@LPD-69885', '@LPD-96185']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const scheduledTaskTitle = getRandomString();
+
+		const targetDate = new Date();
+
+		targetDate.setDate(15);
+
+		const dueDate = toDateString(targetDate);
+
+		const {calendarView} = tasksPage;
+
+		const dayCell = page.locator(`[data-date="${dueDate}"]`);
+
+		const kebab = dayCell.getByLabel('Actions');
+
+		const taskEvent = dayCell.getByText(scheduledTaskTitle);
+
+		await test.step('Create a task with a due date', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					dueDate: `${dueDate}T00:00:00Z`,
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					title: scheduledTaskTitle,
+				},
+				cmpTask,
+				project.scopeKey
+			);
+		});
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await expect(calendarView.title).toBeVisible();
+		});
+
+		await test.step('Open the kebab and run an action without navigating away', async () => {
+			await taskEvent.hover();
+
+			await kebab.click();
+
+			await expect(page).not.toHaveURL(/\/e\/task\//);
+
+			await page.getByRole('menuitem', {name: 'Watch Task'}).click();
+
+			await expect(page).not.toHaveURL(/\/e\/task\//);
+		});
+
+		await test.step('Check the unscheduled panel tasks display a kebab and clicking it shows the actions', async () => {
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: 'Delete'}),
+				trigger: calendarView.unscheduledTasksPanel
+					.getByLabel('Actions')
+					.first(),
+			});
+		});
+	}
+);
+
+test(
 	'Create a task from the calendar by clicking a day',
 	{tag: ['@LPD-93258']},
 	async ({page, projectPage, projectsPage, tasksPage}) => {
