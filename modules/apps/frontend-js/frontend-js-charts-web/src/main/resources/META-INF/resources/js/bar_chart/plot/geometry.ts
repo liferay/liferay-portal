@@ -72,7 +72,8 @@ export function getBarChartGeometry({
 	const barRx = rounded ? barThickness / 2 : 2;
 
 	const bars = data.map((datum, index): BarLayout => {
-		const ratio = max === 0 ? 0 : datum.value / max;
+		const value = Math.max(0, datum.value);
+		const ratio = max === 0 ? 0 : value / max;
 		const length = ratio * (isVertical ? plotHeight : plotWidth);
 		const bandStart =
 			(isVertical ? pad.left : pad.top) +
