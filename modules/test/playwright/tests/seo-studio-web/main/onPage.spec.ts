@@ -8,21 +8,16 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {Scan} from '../../../helpers/SEOStudioApiHelper';
+import {SEO_STUDIO_FRIENDLY_URL} from './constants/site';
 import {seoStudioPagesTest} from './fixtures/seoStudioPagesTest';
-import {seoStudioSiteTest} from './fixtures/seoStudioSiteTest';
 
-const test = mergeTests(
-	loginTest(),
-	dataApiHelpersTest,
-	seoStudioPagesTest,
-	seoStudioSiteTest
-);
+const test = mergeTests(loginTest(), dataApiHelpersTest, seoStudioPagesTest);
 
 test(
 	'Renders the "no scans yet" empty state on the On-Page screen',
 	{tag: '@LPD-91406'},
-	async ({onPagePage, seoStudioSite}) => {
-		await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+	async ({onPagePage}) => {
+		await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
 		await expect(onPagePage.onPageHeading).toBeVisible();
 
@@ -39,11 +34,11 @@ test(
 test(
 	'Renders the "no insights found" empty state when the latest scan has no insights',
 	{tag: '@LPD-91406'},
-	async ({apiHelpers, onPagePage, seoStudioSite}) => {
+	async ({apiHelpers, onPagePage}) => {
 		const scan = await apiHelpers.seoStudio.createScan('crawler');
 
 		try {
-			await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+			await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
 			await onPagePage.emptyStateIsVisible('no-insights');
 		}
@@ -56,7 +51,7 @@ test(
 test(
 	'Renders the Insights table rows when the latest scan has insights',
 	{tag: '@LPD-91406'},
-	async ({apiHelpers, onPagePage, seoStudioSite}) => {
+	async ({apiHelpers, onPagePage}) => {
 		const insightTypeInputs = [
 			{
 				category: 'metadata',
@@ -92,7 +87,7 @@ test(
 		try {
 			await apiHelpers.seoStudio.createInsights(scan, insightTypeInputs);
 
-			await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+			await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
 			for (const insightTypeInput of insightTypeInputs) {
 				const row = onPagePage.getInsightRow(insightTypeInput.name);
@@ -113,7 +108,7 @@ test(
 test.describe('Filter and Sort Insights tests', () => {
 	let scan: Scan;
 
-	test.beforeEach(async ({apiHelpers, onPagePage, seoStudioSite}) => {
+	test.beforeEach(async ({apiHelpers, onPagePage}) => {
 		scan = await apiHelpers.seoStudio.createScan('crawler');
 
 		await apiHelpers.seoStudio.createInsights(scan, [
@@ -137,7 +132,7 @@ test.describe('Filter and Sort Insights tests', () => {
 			},
 		]);
 
-		await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+		await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 	});
 
 	test.afterEach(async () => {

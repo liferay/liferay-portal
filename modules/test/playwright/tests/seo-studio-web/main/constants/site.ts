@@ -3,8 +3,4 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export const config = {
-	dependencies: ['seo-studio-site.main'],
-	name: 'seo-studio-web.main',
-	testDir: 'tests/seo-studio-web/main',
-};
+export const SEO_STUDIO_FRIENDLY_URL = '/seo-studio';

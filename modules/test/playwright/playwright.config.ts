@@ -199,6 +199,8 @@ import {config as seoStudioWebConfig} from './tests/seo-studio-web/main/config';
 import {config as serverAdminWebConfig} from './tests/server-admin-web/main/config';
 import {config as pageManagementSiteConfig} from './tests/setup/page-management-site/main/config';
 import {config as pageManagementSiteTeardownConfig} from './tests/setup/page-management-site/teardown/config';
+import {config as seoStudioSiteConfig} from './tests/setup/seo-studio-site/main/config';
+import {config as seoStudioSiteTeardownConfig} from './tests/setup/seo-studio-site/teardown/config';
 import {config as siteCmsSiteConfig} from './tests/setup/site-cms-site/main/config';
 import {config as siteCmsSiteTeardownConfig} from './tests/setup/site-cms-site/teardown/config';
 import {config as siteAdminWebConfig} from './tests/site-admin-web/main/config';
@@ -236,6 +238,8 @@ import {config as marketplaceConfig} from './tests/workspaces/liferay-workspace-
 const setupProjects = [
 	pageManagementSiteConfig,
 	pageManagementSiteTeardownConfig,
+	seoStudioSiteConfig,
+	seoStudioSiteTeardownConfig,
 	siteCmsSiteConfig,
 	siteCmsSiteTeardownConfig,
 ];

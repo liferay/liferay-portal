@@ -4,7 +4,9 @@
  */
 
 export const config = {
-	dependencies: ['seo-studio-site.main'],
-	name: 'seo-studio-web.main',
-	testDir: 'tests/seo-studio-web/main',
+	name: 'seo-studio-site.main',
+	teardown: 'seo-studio-site.teardown',
+	testDir: 'tests/setup/seo-studio-site/main',
+	testMatch: 'setup.spec.ts',
+	timeout: 90 * 1000,
 };

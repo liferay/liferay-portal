@@ -6,26 +6,19 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {InsightType, PageData, Scan} from '../../../helpers/SEOStudioApiHelper';
 import getRandomString from '../../../utils/getRandomString';
+import {SEO_STUDIO_FRIENDLY_URL} from './constants/site';
 import {seoStudioPagesTest} from './fixtures/seoStudioPagesTest';
-import {seoStudioSiteTest} from './fixtures/seoStudioSiteTest';
 
-const test = mergeTests(
-	loginTest(),
-	dataApiHelpersTest,
-	featureFlagsTest({'LPD-44511': {enabled: true}}),
-	seoStudioPagesTest,
-	seoStudioSiteTest
-);
+const test = mergeTests(loginTest(), dataApiHelpersTest, seoStudioPagesTest);
 
 let insightType: InsightType;
 let insightTypeInput: InsightType & {pageURLs: PageData[]};
 let scan: Scan;
 
-test.beforeEach(async ({apiHelpers, onPagePage, seoStudioSite}) => {
+test.beforeEach(async ({apiHelpers, onPagePage}) => {
 	insightTypeInput = {
 		category: 'metadata',
 		description: 'Pages without meta description.',
@@ -54,7 +47,7 @@ test.beforeEach(async ({apiHelpers, onPagePage, seoStudioSite}) => {
 		insightTypeInput,
 	]);
 
-	await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+	await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 });
 
 test.afterEach(async () => {
@@ -127,13 +120,7 @@ test(
 test(
 	'Lists only pending pages and excludes fixed pages from the affected pages table and count',
 	{tag: '@LPD-95129'},
-	async ({
-		apiHelpers,
-		insightDetailPage,
-		onPagePage,
-		page,
-		seoStudioSite,
-	}) => {
+	async ({apiHelpers, insightDetailPage, onPagePage, page}) => {
 		const fixedPages: PageData[] = [
 			{
 				author: getRandomString(),
@@ -146,7 +133,7 @@ test(
 
 		await apiHelpers.seoStudio.addPages(scan, insightType.id, fixedPages);
 
-		await onPagePage.goto(seoStudioSite.friendlyUrlPath);
+		await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
 		await onPagePage.selectInsight(insightTypeInput.name);
 
