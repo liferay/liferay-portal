@@ -199,3 +199,51 @@ test(
 	}
 );
 
+test(
+	'Views an edited fragment comment after publishing',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment, edit it, then publish
+
+		const editedComment = 'This is a fragment comment edited.';
+
+		await pageEditorPage.addFragmentComment(
+			fragmentId,
+			'This is a fragment comment.'
+		);
+
+		await pageEditorPage.editFragmentComment(
+			'This is a fragment comment.',
+			editedComment
+		);
+
+		await pageEditorPage.publishPage();
+
+		// Reopen the page and check the edited comment
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		await pageEditorPage.viewFragmentComment(editedComment);
+	}
+);
+
