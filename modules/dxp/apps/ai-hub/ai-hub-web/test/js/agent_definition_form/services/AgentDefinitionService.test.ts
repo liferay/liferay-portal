@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getAgentDefinitions} from '../../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/AgentDefinitionService';
+import {
+	getAgentDefinitions,
+	putAgentDefinition,
+} from '../../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/AgentDefinitionService';
+import {AgentDefinition} from '../../../../src/main/resources/META-INF/resources/js/agent_definition_form/types/AgentDefinition';
 
 const mockFetch = jest.fn();
 
@@ -58,6 +62,35 @@ describe('AgentDefinitionService', () => {
 			expect(mockFetch).toHaveBeenCalledWith(
 				BASE_URI,
 				expect.objectContaining({method: 'GET'})
+			);
+		});
+	});
+
+	describe('putAgentDefinition', () => {
+		it('uses the ERC argument as the URL path, not the one in the body', async () => {
+			mockFetch.mockResolvedValueOnce({
+				json: () => Promise.resolve({}),
+			});
+
+			const agentDefinition = {
+				active: true,
+				description: 'Description',
+				externalReferenceCode: 'NEW-AGENT-DEFINITION-ERC',
+				inputVariables: 'input',
+				outputVariable: 'output',
+				r_accountToAIHubAgentDefinitions_accountEntryERC: 'ACCOUNT-ERC',
+				title_i18n: {en_US: 'Title'},
+				workflowDefinitionName: 'workflow',
+			} as AgentDefinition;
+
+			await putAgentDefinition(agentDefinition, 'AGENT-DEFINITION-ERC');
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/o/ai-hub/agent-definitions/by-external-reference-code/AGENT-DEFINITION-ERC`,
+				expect.objectContaining({
+					body: JSON.stringify(agentDefinition),
+					method: 'PUT',
+				})
 			);
 		});
 	});
