@@ -60,9 +60,7 @@ public class AssetCategoryFriendlyURLFeatureFlagListenerTest {
 	}
 
 	@Test
-	public void testOnValueMigratesLegacyCategoryFriendlyURLs()
-		throws Exception {
-
+	public void testOnValue() throws Exception {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId(),
 			StringUtil.toLowerCase(StringUtil.randomString()));
