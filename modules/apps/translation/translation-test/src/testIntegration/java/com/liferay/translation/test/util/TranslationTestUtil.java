@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -63,6 +65,12 @@ public class TranslationTestUtil {
 
 	public static String readFileToString(String fileName) throws Exception {
 		return new String(_getBytes(fileName));
+	}
+
+	public static String toFormattedString(String xml) throws Exception {
+		Document document = SAXReaderUtil.read(xml);
+
+		return document.formattedString();
 	}
 
 	public static void withRegularUser(

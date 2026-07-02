@@ -350,11 +350,13 @@ public class TranslationManagerTest {
 		throws Exception {
 
 		Assert.assertEquals(
-			StringUtil.replace(
-				TranslationTestUtil.readFileToString(expected),
-				"[$JOURNAL_ARTICLE_ID$]",
-				String.valueOf(_journalArticle.getResourcePrimKey())),
-			StringUtil.read(inputStream));
+			TranslationTestUtil.toFormattedString(
+				StringUtil.replace(
+					TranslationTestUtil.readFileToString(expected),
+					"[$JOURNAL_ARTICLE_ID$]",
+					String.valueOf(_journalArticle.getResourcePrimKey()))),
+			TranslationTestUtil.toFormattedString(
+				StringUtil.read(inputStream)));
 	}
 
 	private String _getXLIFFFileName() {
