@@ -780,12 +780,12 @@ public abstract class BaseDBProcess implements DBProcess {
 		ThrowableCollector throwableCollector = new ThrowableCollector();
 
 		try {
-			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
-			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
-
 			AtomicBoolean producerFinished = new AtomicBoolean();
 			BlockingQueue<T> queue = new ArrayBlockingQueue<>(
 				fixedThreadPoolSize);
+
+			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
+			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
 			Callable<Void> callable = () -> {
 				NotificationThreadLocal.setEnabled(notificationEnabled);
@@ -797,20 +797,20 @@ public abstract class BaseDBProcess implements DBProcess {
 					PreparedStatement preparedStatement = null;
 
 					while (!producerFinished.get() || !queue.isEmpty()) {
-						T current = queue.poll(1, TimeUnit.SECONDS);
+						T t = queue.poll(1, TimeUnit.SECONDS);
 
-						if (current == null) {
+						if (t == null) {
 							continue;
 						}
 
 						if (Validator.isNull(updateSQL)) {
-							unsafeConsumer.accept(current);
+							unsafeConsumer.accept(t);
 						}
 						else {
 							preparedStatement = _getConcurrentPreparedStatement(
 								updateSQL, preparedStatementHashMap);
 
-							unsafeBiConsumer.accept(current, preparedStatement);
+							unsafeBiConsumer.accept(t, preparedStatement);
 						}
 					}
 
@@ -837,11 +837,11 @@ public abstract class BaseDBProcess implements DBProcess {
 			}
 
 			try {
-				T current = unsafeSupplier.get();
+				T t = unsafeSupplier.get();
 
-				while (current != null) {
-					if (queue.offer(current, 1, TimeUnit.SECONDS)) {
-						current = unsafeSupplier.get();
+				while (t != null) {
+					if (queue.offer(t, 1, TimeUnit.SECONDS)) {
+						t = unsafeSupplier.get();
 					}
 					else if (throwableCollector.getThrowable() != null) {
 						return;
