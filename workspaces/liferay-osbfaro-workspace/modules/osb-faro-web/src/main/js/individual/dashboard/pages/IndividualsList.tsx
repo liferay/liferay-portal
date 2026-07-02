@@ -134,6 +134,7 @@ const IndividualsList: React.FC = () => {
 	const paginationParams = useStatefulPagination(undefined, {
 		initialFilterBy: Map({
 			activeUsers: Set([RangeKeyTimeRanges.Last30Days]),
+			profileTypes: Set([ProfileTypes.KNOWN]),
 		}) as FilterByType,
 		initialOrderIOMap: createOrderIOMap(LAST_ACTIVITY_DATE),
 	});
