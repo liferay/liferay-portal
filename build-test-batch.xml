@@ -8763,13 +8763,13 @@ information. Make sure to commit in all format-javadoc results.
 
 				<gradle-execute dir="modules" task="${modules.compile.tasks}">
 					<arg value="--continue" />
-					<arg value="--parallel" />
-					<arg value="--exclude-task" />
-					<arg value="javadoc" />
 					<arg value="--exclude-task" />
 					<arg value="jarJavadoc" />
 					<arg value="--exclude-task" />
 					<arg value="jarSources" />
+					<arg value="--exclude-task" />
+					<arg value="javadoc" />
+					<arg value="--parallel" />
 				</gradle-execute>
 			</test-action>
 
