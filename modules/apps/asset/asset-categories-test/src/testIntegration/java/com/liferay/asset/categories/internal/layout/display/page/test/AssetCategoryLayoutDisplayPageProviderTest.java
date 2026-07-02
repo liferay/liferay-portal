@@ -218,10 +218,10 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 
 		AssetCategory assetCategory = null;
 
-		int categoryCount =
+		int count =
 			(Http.URL_MAXIMUM_LENGTH / _CATEGORY_TITLE_LENGTH) + 2;
 
-		for (int i = 0; i < categoryCount; i++) {
+		for (int i = 0; i < count; i++) {
 			assetCategory = _addAssetCategory(
 				assetVocabulary.getVocabularyId(), parentCategoryId,
 				StringUtil.toLowerCase(
