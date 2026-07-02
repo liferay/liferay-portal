@@ -282,7 +282,7 @@ public final class KeySupport {
             for (final String algorithm : new String[] {JCAConstants.KEY_ALGO_RSA, JCAConstants.KEY_ALGO_DSA, "EC"}) {
                 try {
                     return KeyFactory.getInstance(algorithm).generatePrivate(keySpec);
-                } catch (final InvalidKeySpecException e) {
+                } catch (final GeneralSecurityException e) {
                     // try the next algorithm
                 }
             }
