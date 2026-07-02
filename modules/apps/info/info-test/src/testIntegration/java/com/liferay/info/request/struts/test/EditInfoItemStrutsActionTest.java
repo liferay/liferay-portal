@@ -772,6 +772,41 @@ public class EditInfoItemStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-96450")
+	public void testUpdateInfoItemWithDraftObjectEntry() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, _user.getUserId(), _objectDefinition.getObjectDefinitionId(), 0,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"myText", RandomTestUtil.randomString()
+			).build(),
+			serviceContext);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, objectEntry.getStatus());
+
+		Assert.assertNull(
+			_execute(
+				HashMapBuilder.<String, List<String>>put(
+					"classPK",
+					Collections.singletonList(
+						String.valueOf(objectEntry.getObjectEntryId()))
+				).build()));
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+	}
+
+	@Test
 	public void testUpdateInfoItemWithEmptyValues() throws Exception {
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
