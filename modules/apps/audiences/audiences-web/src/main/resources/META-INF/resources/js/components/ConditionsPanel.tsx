@@ -112,8 +112,9 @@ export default function ConditionsPanel({
 					<div className="align-items-center bg-lighter border-top d-flex p-3">
 						<div className="mr-3">
 							<Picker
+								UNSAFE_menuClassName="audience-builder-conjunction-menu"
 								aria-label={Liferay.Language.get('conjunction')}
-								className="form-control-sm w-auto"
+								className="form-control-sm text-uppercase w-auto"
 								items={[
 									{
 										label: Liferay.Language.get('and'),

@@ -44,6 +44,12 @@ $toolbar-height: 55px;
 	width: 20px;
 }
 
+.audience-builder-conjunction-menu {
+	.dropdown-item {
+		text-transform: uppercase;
+	}
+}
+
 .audience-builder-drop-zone {
 	min-height: 240px;
 	transition: background-color 0.1s ease-in-out;
