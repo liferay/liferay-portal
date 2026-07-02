@@ -167,6 +167,10 @@ public class DDMFormFieldValueUtil {
 
 		DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
 
+		if (ddmFormField == null) {
+			return new DDMFormFieldOptions();
+		}
+
 		return ddmFormField.getDDMFormFieldOptions();
 	}
 

@@ -82,6 +82,10 @@ public class GridDDMFormFieldValueRenderer
 
 		DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
 
+		if (ddmFormField == null) {
+			return new DDMFormFieldOptions();
+		}
+
 		return (DDMFormFieldOptions)ddmFormField.getProperty(optionType);
 	}
 
