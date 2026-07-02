@@ -235,16 +235,7 @@ public class SiteNavigationMenuPropagationTest {
 	private void _propagateLayout() throws Exception {
 		MergeLayoutPrototypesThreadLocal.clearMergeComplete();
 
-		LayoutSet layoutSet = _group.getPublicLayoutSet();
-
-		UnicodeProperties settingsUnicodeProperties =
-			layoutSet.getSettingsProperties();
-
-		settingsUnicodeProperties.remove(Sites.LAST_MERGE_TIME);
-
-		layoutSet = _layoutSetLocalService.updateLayoutSet(layoutSet);
-
-		_sites.mergeLayoutSetPrototypeLayouts(layoutSet);
+		_sites.mergeLayoutSetPrototypeLayouts(_group.getPublicLayoutSet());
 	}
 
 	@Inject

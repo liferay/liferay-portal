@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -165,17 +163,8 @@ public class LayoutLayoutSetPrototypeLayoutERCUpgradeProcessTest
 
 		MergeLayoutPrototypesThreadLocal.clearMergeComplete();
 
-		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-			_group.getGroupId(), false);
-
-		UnicodeProperties settingsUnicodeProperties =
-			layoutSet.getSettingsProperties();
-
-		settingsUnicodeProperties.remove(Sites.LAST_MERGE_TIME);
-
-		layoutSet = _layoutSetLocalService.updateLayoutSet(layoutSet);
-
-		_sites.mergeLayoutSetPrototypeLayouts(layoutSet);
+		_sites.mergeLayoutSetPrototypeLayouts(
+			_layoutSetLocalService.getLayoutSet(_group.getGroupId(), false));
 	}
 
 	@Inject
