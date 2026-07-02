@@ -11,6 +11,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -96,6 +97,13 @@ public class ServerDisplayContext {
 		return new NavigationItemList() {
 			{
 				for (String tabs1Name : _TABS1_NAMES) {
+					if (tabs1Name.equals("database-migration") &&
+						!FeatureFlagManagerUtil.isEnabled(
+							themeDisplay.getCompanyId(), "LPD-23840")) {
+
+						continue;
+					}
+
 					add(
 						navigationItem -> {
 							navigationItem.setActive(tabs1.equals(tabs1Name));
@@ -113,6 +121,12 @@ public class ServerDisplayContext {
 	}
 
 	public String getSessionMessagesKey() {
+		if (SessionMessages.contains(
+				_renderRequest, "databaseSchemaExported")) {
+
+			return "the-database-schema-was-exported-successfully";
+		}
+
 		if (SessionMessages.contains(
 				_renderRequest, "dlGenerateAudioPreviews")) {
 
@@ -142,9 +156,9 @@ public class ServerDisplayContext {
 	}
 
 	private static final String[] _TABS1_NAMES = {
-		"resources", "log-levels", "properties", "data-migration",
-		"external-services", "friendly-urls", "script", "shutdown",
-		"production-readiness"
+		"resources", "log-levels", "properties", "database-migration",
+		"data-migration", "external-services", "friendly-urls", "script",
+		"shutdown", "production-readiness"
 	};
 
 	private final FriendlyURLPublicMappingChecker
