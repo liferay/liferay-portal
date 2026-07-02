@@ -10,95 +10,101 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
 	apiHelpersTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-78863': {enabled: true, system: true},
-		'LPD-86384': {enabled: true},
+		'LPD-93951': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest()
 );
 
-const criteria: Segment = {
-	criteria: {
-		context: {
-			conjunction: 'and',
-			filterString: `(url eq '/pricing')`,
-			typeValue: 'context',
-		},
-	},
-	filterString: {
-		context: `(url eq '/pricing')`,
-	},
-};
-
 test(
-	'Can validate audiences and segments are not mixed across portlets',
+	'Can create, edit and delete an audience with a browser name condition',
 	{
-		tag: '@LPD-91094',
-	},
-	async ({apiHelpers, page, site}) => {
-		const audienceName = 'Audience ' + getRandomString();
-		const segmentName = 'Segment ' + getRandomString();
-
-		// Seed one segment (default source) and one audience (AUDIENCE source)
-
-		await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
-			criteria,
-			groupId: site.id,
-			name: segmentName,
-		});
-
-		await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
-			criteria,
-			groupId: site.id,
-			name: audienceName,
-			source: 'AUDIENCE',
-		});
-
-		// Audiences portlet shows only the audience
-
-		await page.goto(
-			`/group${site.friendlyUrlPath}${PORTLET_URLS.audiences}`
-		);
-
-		await expect(page.getByText(audienceName)).toBeVisible();
-		await expect(page.getByText(segmentName)).toBeHidden();
-
-		// Segments portlet shows only the segment
-
-		await page.goto(
-			`/group${site.friendlyUrlPath}${PORTLET_URLS.segments}`
-		);
-
-		await expect(page.getByText(segmentName)).toBeVisible();
-		await expect(page.getByText(audienceName)).toBeHidden();
-	}
-);
-
-test(
-	'Can validate audiences portlet only exposes the Session contributor',
-	{
-		tag: '@LPD-91094',
+		tag: '@LPD-93951',
 	},
 	async ({page, site}) => {
 		await page.goto(
 			`/group${site.friendlyUrlPath}${PORTLET_URLS.audiences}`
 		);
 
-		await page.getByRole('link', {name: 'Add New Audience'}).click();
+		// Create a new audience
 
-		// Session is exposed and the User/Organization/Segments contributors
-		// are hidden in the Audiences portlet
+		await page.getByRole('button', {name: 'New Audience'}).first().click();
 
-		await expect(page.locator('div#context')).toBeVisible();
-		await expect(page.locator('div#user')).toBeHidden();
-		await expect(page.locator('div#user-organization')).toBeHidden();
-		await expect(page.locator('div#segments')).toBeHidden();
+		const audienceName = 'Audience ' + getRandomString();
+
+		await page.getByPlaceholder('New Audience').fill(audienceName);
+
+		// Add the Browser Name condition and fill in its value
+
+		await dragAndDropElement({
+			dragTarget: page
+				.locator('.audience-builder-attribute')
+				.filter({hasText: 'Browser Name'}),
+			dropTarget: page.locator('.audience-builder-drop-zone'),
+		});
+
+		await page.getByLabel('Value').fill('Chrome');
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(page);
+
+		// The audience is listed
+
+		await expect(
+			page.locator('tr').filter({hasText: audienceName})
+		).toBeVisible();
+
+		// Reopen it and check the values were kept
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: page
+				.locator('tr')
+				.filter({hasText: audienceName})
+				.locator('button.dropdown-toggle'),
+		});
+
+		await expect(page.getByPlaceholder('New Audience')).toHaveValue(
+			audienceName
+		);
+		await expect(
+			page.locator('.audience-builder-rule').getByText('Browser Name')
+		).toBeVisible();
+		await expect(page.getByLabel('Value')).toHaveValue('Chrome');
+
+		// Go back to the list
+
+		await page.getByRole('link', {exact: true, name: 'Back'}).click();
+
+		// Delete the audience and check it is no longer listed
+
+		page.once('dialog', (dialog) => dialog.accept());
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Delete'}),
+			trigger: page
+				.locator('tr')
+				.filter({hasText: audienceName})
+				.locator('button.dropdown-toggle'),
+		});
+
+		await waitForAlert(page);
+
+		await expect(
+			page.locator('tr').filter({hasText: audienceName})
+		).toHaveCount(0);
 	}
 );

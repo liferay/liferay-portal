@@ -11,7 +11,7 @@ export const PORTLET_URLS = {
 	announcements:
 		'/~/control_panel/manage?p_p_id=com_liferay_announcements_web_portlet_AnnouncementsAdminPortlet',
 	audiences:
-		'/~/control_panel/manage?p_p_id=com_liferay_segments_web_internal_portlet_AudiencesPortlet',
+		'/~/control_panel/manage?p_p_id=com_liferay_audiences_web_internal_portlet_AudiencesPortlet',
 	batchExportImport:
 		'/~/control_panel/manage?p_p_id=com_liferay_batch_planner_web_internal_portlet_BatchPlannerPortlet',
 	blogs: '/~/control_panel/manage?p_p_id=com_liferay_blogs_web_portlet_BlogsAdminPortlet',
