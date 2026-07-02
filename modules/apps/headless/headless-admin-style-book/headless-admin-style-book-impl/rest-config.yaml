@@ -1,0 +1,14 @@
+apiDir: ../headless-admin-style-book-api/src/main/java
+apiPackagePath: com.liferay.headless.admin.style.book
+application:
+    baseURI: /headless-admin-style-book
+    className: HeadlessAdminStyleBookApplication
+    name: Liferay.Headless.Admin.Style.Book
+author: Thiago Buarque
+clientDir: ../headless-admin-style-book-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+generateBatch: true
+generatePermissions: true
+javaEEPackage: jakarta
+testDir: ../headless-admin-style-book-test/src/testIntegration/java
