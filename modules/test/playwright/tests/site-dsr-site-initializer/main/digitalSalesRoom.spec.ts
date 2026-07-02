@@ -737,7 +737,7 @@ test(
 
 test(
 	'A viewer cannot upload files nor share but can make comments',
-	{tag: '@LPD-87116'},
+	{tag: ['@LPD-87116', '@LPD-96701']},
 	async ({
 		apiHelpers,
 		digitalSalesRoomUsersPage,
@@ -807,6 +807,7 @@ test(
 
 		await editDigitalSalesRoomPage.documentsMenuItem.click();
 
+		await expect(editDigitalSalesRoomPage.noDocumentsMessage).toBeVisible();
 		await expect(editDigitalSalesRoomPage.newButton).not.toBeVisible();
 
 		await performUserSwitch(page, 'test');

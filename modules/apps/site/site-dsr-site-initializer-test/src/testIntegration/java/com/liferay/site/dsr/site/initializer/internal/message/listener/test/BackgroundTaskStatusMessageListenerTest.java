@@ -8,6 +8,8 @@ package com.liferay.site.dsr.site.initializer.internal.message.listener.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -19,6 +21,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -32,6 +35,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
+import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 import com.liferay.site.dsr.site.initializer.test.util.DSRTestUtil;
 
 import java.io.Serializable;
@@ -96,7 +101,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 			Group group = _layoutSetPrototype.getGroup();
 
 			Role role = _roleLocalService.fetchRoleByExternalReferenceCode(
-				"L_DSR_SELLER", TestPropsValues.getCompanyId());
+				DSRRoleConstants.EXTERNAL_REFERENCE_CODE_DSR_SELLER,
+				TestPropsValues.getCompanyId());
 
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
@@ -117,10 +123,47 @@ public class BackgroundTaskStatusMessageListenerTest {
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(group.getDefaultPublicPlid()),
 					role.getRoleId(), ActionKeys.VIEW));
+
+			DLFolder dlFolder =
+				_dlFolderLocalService.fetchDLFolderByExternalReferenceCode(
+					DSRFolderConstants.EXTERNAL_REFERENCE_CODE_DSR_DOCUMENTS,
+					group.getGroupId());
+
+			_assertHasResourcePermission(
+				ActionKeys.ADD_DOCUMENT, true,
+				String.valueOf(dlFolder.getFolderId()),
+				_roleLocalService.fetchRoleByExternalReferenceCode(
+					DSRRoleConstants.
+						EXTERNAL_REFERENCE_CODE_DSR_CONTENT_CONTRIBUTOR,
+					TestPropsValues.getCompanyId()));
+			_assertHasResourcePermission(
+				ActionKeys.ADD_DOCUMENT, true,
+				String.valueOf(dlFolder.getFolderId()),
+				_roleLocalService.fetchRoleByExternalReferenceCode(
+					DSRRoleConstants.
+						EXTERNAL_REFERENCE_CODE_DSR_ROOM_COLLABORATOR,
+					TestPropsValues.getCompanyId()));
+			_assertHasResourcePermission(
+				ActionKeys.ADD_DOCUMENT, false,
+				String.valueOf(dlFolder.getFolderId()),
+				_roleLocalService.fetchRole(
+					TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER));
 		}
 		finally {
 			CacheRegistryUtil.setActive(active);
 		}
+	}
+
+	private void _assertHasResourcePermission(
+			String actionId, boolean expected, String primKey, Role role)
+		throws Exception {
+
+		Assert.assertEquals(
+			expected,
+			_resourcePermissionLocalService.hasResourcePermission(
+				TestPropsValues.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL, primKey, role.getRoleId(),
+				actionId));
 	}
 
 	private AccountEntry _accountEntry;
@@ -130,6 +173,9 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private DLFolderLocalService _dlFolderLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
