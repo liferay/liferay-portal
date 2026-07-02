@@ -71,9 +71,7 @@ public class LayoutSetPrototypeRemoveReadyForPropagationUpgradeProcessTest {
 				layoutSetPrototype.getLayoutSetPrototypeId());
 
 		Assert.assertEquals(
-			randomValue,
-			layoutSetPrototype.getSettingsProperty(randomKey));
-
+			randomValue, layoutSetPrototype.getSettingsProperty(randomKey));
 		Assert.assertNull(
 			layoutSetPrototype.getSettingsProperty("readyForPropagation"));
 	}

@@ -43,14 +43,14 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcessTest {
 		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
 			group.getGroupId(), false);
 
-		String survivingKey = RandomTestUtil.randomString();
-		String survivingValue = RandomTestUtil.randomString();
+		String randomKey = RandomTestUtil.randomString();
+		String randomValue = RandomTestUtil.randomString();
 
 		layoutSet.setSettingsProperties(
 			UnicodePropertiesBuilder.fastLoad(
 				layoutSet.getSettings()
 			).put(
-				survivingKey, survivingValue
+				randomKey, randomValue
 			).put(
 				"last-merge-time", String.valueOf(RandomTestUtil.randomLong())
 			).put(
@@ -77,8 +77,7 @@ public class LayoutSetRemoveUnusedSettingsUpgradeProcessTest {
 			layoutSet.getLayoutSetId());
 
 		Assert.assertEquals(
-			survivingValue, layoutSet.getSettingsProperty(survivingKey));
-
+			randomValue, layoutSet.getSettingsProperty(randomKey));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-merge-time"));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-merge-version"));
 		Assert.assertNull(layoutSet.getSettingsProperty("last-reset-time"));
