@@ -104,7 +104,15 @@ public class OAuth2JWKValidatorUtil {
 
 		String keyType = jsonObject.getString("kty");
 
-		if (keyType.equals("RSA")) {
+		if (keyType.equals("EC")) {
+			String curve = jsonObject.getString("crv");
+
+			if (!_allowedECCurves.contains(curve)) {
+				throw new SecurityException(
+					"EC curve \"" + curve + "\" is not allowed in FIPS mode");
+			}
+		}
+		else if (keyType.equals("RSA")) {
 			int bits = _decodeBase64URLBitLength(jsonObject.getString("n"));
 
 			if (bits < _MIN_RSA_KEY_BITS) {
@@ -124,6 +132,10 @@ public class OAuth2JWKValidatorUtil {
 						" bits is not allowed in FIPS mode"));
 			}
 		}
+		else {
+			throw new SecurityException(
+				"JWK key type \"" + keyType + "\" is not allowed in FIPS mode");
+		}
 	}
 
 	private static final int _MIN_HMAC_KEY_BITS = 112;
@@ -133,6 +145,8 @@ public class OAuth2JWKValidatorUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2JWKValidatorUtil.class);
 
+	private static final Set<String> _allowedECCurves = Set.of(
+		"P-256", "P-384", "P-521");
 	private static final Set<String> _allowedJWSAlgorithms = Set.of(
 		"ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "PS256", "PS384",
 		"PS512", "RS256", "RS384", "RS512");
