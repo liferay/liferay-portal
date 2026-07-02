@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import classNames from 'classnames';
 import React from 'react';
 
 import {PieDatum} from '../types/PieDatum';
@@ -59,35 +60,32 @@ export default function PieChartLegendTable({
 			</thead>
 
 			<tbody>
-				{rows.map((row) => {
-					const rowClassName =
-						activeIndex === row.dataIndex ? 'is-active' : undefined;
+				{rows.map((row) => (
+					<tr
+						className={classNames({
+							'is-active': activeIndex === row.dataIndex,
+						})}
+						key={row.dataIndex}
+						onClick={() => onFocus(row.dataIndex)}
+						onMouseEnter={() => onHover(row.dataIndex)}
+						onMouseLeave={onHoverEnd}
+					>
+						<td>{row.rank}</td>
 
-					return (
-						<tr
-							className={rowClassName}
-							key={row.dataIndex}
-							onClick={() => onFocus(row.dataIndex)}
-							onMouseEnter={() => onHover(row.dataIndex)}
-							onMouseLeave={onHoverEnd}
-						>
-							<td>{row.rank}</td>
+						<td>
+							<span
+								className="chart-pie-legend-swatch"
+								style={{background: row.color}}
+							/>
+						</td>
 
-							<td>
-								<span
-									className="chart-pie-legend-swatch"
-									style={{background: row.color}}
-								/>
-							</td>
+						<th scope="row">{row.datum.label}</th>
 
-							<th scope="row">{row.datum.label}</th>
+						<td>{row.datum.value}</td>
 
-							<td>{row.datum.value}</td>
-
-							<td>{toPercent(row.datum.value, total)}%</td>
-						</tr>
-					);
-				})}
+						<td>{toPercent(row.datum.value, total)}%</td>
+					</tr>
+				))}
 			</tbody>
 		</table>
 	);

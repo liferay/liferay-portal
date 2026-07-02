@@ -6,12 +6,11 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import {CIRCLE_START_ANGLE, FULL_CIRCLE_RADIANS} from '../constants';
 import {PieDatum} from '../types/PieDatum';
-import {SliceAngles} from '../types/SliceAngles';
 
 interface PieChartSliceProps {
 	color: string;
+	d: string;
 	datum: PieDatum;
 	index: number;
 	isActive: boolean;
@@ -20,15 +19,13 @@ interface PieChartSliceProps {
 	onHover: (index: number) => void;
 	onHoverEnd: () => void;
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
-	pathFactory: (angles: SliceAngles) => string;
 	percent: number;
-	precedingTotal: number;
 	sliceRef: (element: SVGPathElement | null) => void;
-	total: number;
 }
 
 export default function PieChartSlice({
 	color,
+	d,
 	datum,
 	index,
 	isActive,
@@ -37,20 +34,9 @@ export default function PieChartSlice({
 	onHover,
 	onHoverEnd,
 	onKeyDown,
-	pathFactory,
 	percent,
-	precedingTotal,
 	sliceRef,
-	total,
 }: PieChartSliceProps) {
-	if (total <= 0) {
-		return null;
-	}
-
-	const startAngle =
-		CIRCLE_START_ANGLE + (precedingTotal / total) * FULL_CIRCLE_RADIANS;
-	const sweepAngle = (Math.max(0, datum.value) / total) * FULL_CIRCLE_RADIANS;
-
 	return (
 		<path
 			aria-label={
@@ -58,11 +44,7 @@ export default function PieChartSlice({
 				`${datum.label}: ${datum.value} (${percent}%)`
 			}
 			className={classNames('chart-pie-slice', {'is-hover': isActive})}
-			d={pathFactory({
-				endAngle: startAngle + sweepAngle,
-				startAngle,
-				sweepAngle,
-			})}
+			d={d}
 			fill={color}
 			onBlur={onBlur}
 			onFocus={() => onFocus(index)}

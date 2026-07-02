@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import {PieDatum} from '../types/PieDatum';
 import {SliceAngles} from '../types/SliceAngles';
 import {computePrecedingTotals} from '../utils/computePrecedingTotals';
+import {computeSliceAngles} from '../utils/computeSliceAngles';
 import {toPercent} from '../utils/percent';
 import PieChartCenterLabel from './PieChartCenterLabel';
 import PieChartSlice from './PieChartSlice';
@@ -16,8 +17,10 @@ interface PieChartGraphicProps {
 	activeDatum?: PieDatum;
 	activeIndex: number | null;
 	activePercent?: number;
+	baseId: string;
 	colors: string[];
 	data: PieDatum[];
+	focusIndex: number | null;
 	innerRadius: number;
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
@@ -32,12 +35,18 @@ interface PieChartGraphicProps {
 	total: number;
 }
 
+function getSliceClipId(baseId: string, index: number): string {
+	return `${baseId}-slice-clip-${index}`;
+}
+
 export default function PieChartGraphic({
 	activeDatum,
 	activeIndex,
 	activePercent,
+	baseId,
 	colors,
 	data,
+	focusIndex,
 	innerRadius,
 	onFocus,
 	onHover,
@@ -49,7 +58,26 @@ export default function PieChartGraphic({
 	sliceRefFactory,
 	total,
 }: PieChartGraphicProps) {
-	const precedingTotals = computePrecedingTotals(data);
+	const precedingTotals = useMemo(() => computePrecedingTotals(data), [data]);
+
+	const slicePaths = useMemo(
+		() =>
+			total > 0
+				? data.map((datum, index) =>
+						pathFactory(
+							computeSliceAngles({
+								precedingTotal: precedingTotals[index],
+								total,
+								value: datum.value,
+							})
+						)
+					)
+				: [],
+		[data, pathFactory, precedingTotals, total]
+	);
+
+	const focusedSlicePath =
+		focusIndex !== null ? slicePaths[focusIndex] : undefined;
 
 	return (
 		<>
@@ -59,25 +87,54 @@ export default function PieChartGraphic({
 				preserveAspectRatio="xMidYMid meet"
 				viewBox={`0 0 ${pixelSize} ${pixelSize}`}
 			>
-				{data.map((datum, index) => (
-					<PieChartSlice
-						color={colors[index]}
-						datum={datum}
-						index={index}
-						isActive={activeIndex === index}
-						key={index}
-						onBlur={onSliceBlur}
-						onFocus={onFocus}
-						onHover={onHover}
-						onHoverEnd={onHoverEnd}
-						onKeyDown={onKeyDown}
-						pathFactory={pathFactory}
-						percent={toPercent(datum.value, total)}
-						precedingTotal={precedingTotals[index]}
-						sliceRef={sliceRefFactory(index)}
-						total={total}
-					/>
-				))}
+				<defs>
+					{slicePaths.map((slicePath, index) => (
+						<clipPath
+							id={getSliceClipId(baseId, index)}
+							key={index}
+						>
+							<path d={slicePath} />
+						</clipPath>
+					))}
+				</defs>
+
+				{slicePaths.length
+					? data.map((datum, index) => (
+							<PieChartSlice
+								color={colors[index]}
+								d={slicePaths[index]}
+								datum={datum}
+								index={index}
+								isActive={activeIndex === index}
+								key={index}
+								onBlur={onSliceBlur}
+								onFocus={onFocus}
+								onHover={onHover}
+								onHoverEnd={onHoverEnd}
+								onKeyDown={onKeyDown}
+								percent={toPercent(datum.value, total)}
+								sliceRef={sliceRefFactory(index)}
+							/>
+						))
+					: null}
+
+				{focusIndex !== null && focusedSlicePath ? (
+					<g
+						aria-hidden="true"
+						clipPath={`url(#${getSliceClipId(baseId, focusIndex)})`}
+						pointerEvents="none"
+					>
+						<path
+							className="chart-pie-focus-halo"
+							d={focusedSlicePath}
+						/>
+
+						<path
+							className="chart-pie-focus-ring"
+							d={focusedSlicePath}
+						/>
+					</g>
+				) : null}
 			</svg>
 
 			{innerRadius > 0 ? (

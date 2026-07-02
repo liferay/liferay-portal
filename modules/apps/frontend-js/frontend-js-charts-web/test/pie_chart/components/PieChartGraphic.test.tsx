@@ -22,8 +22,10 @@ function createSliceRefFactory(sliceRefs: (SVGPathElement | null)[]) {
 
 const DEFAULT_PROPS = {
 	activeIndex: null,
+	baseId: 'pie-chart',
 	colors: ['#000000', '#ffffff'],
 	data: DATA,
+	focusIndex: null,
 	innerRadius: 0,
 	onFocus: () => {},
 	onHover: () => {},
@@ -44,7 +46,15 @@ describe('PieChartGraphic', () => {
 	it('renders one slice path per datum', () => {
 		const {container} = renderGraphic();
 
-		expect(container.querySelectorAll('path')).toHaveLength(DATA.length);
+		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(
+			DATA.length
+		);
+	});
+
+	it('renders no slices when the total is not positive', () => {
+		const {container} = renderGraphic({total: 0});
+
+		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(0);
 	});
 
 	it('sizes the viewBox from the given pixel size', () => {
@@ -123,5 +133,118 @@ describe('PieChartGraphic', () => {
 
 		expect(sliceRefs).toHaveLength(DATA.length);
 		expect(sliceRefs[0]?.tagName).toBe('path');
+	});
+
+	describe('focus ring overlay', () => {
+		const MULTI_SLICE_DATA = [
+			{label: 'Alpha', value: 10},
+			{label: 'Beta', value: 20},
+			{label: 'Gamma', value: 30},
+			{label: 'Delta', value: 40},
+		];
+
+		function pathFactoryByStartAngle({startAngle}: {startAngle: number}) {
+			return `M ${startAngle}`;
+		}
+
+		it('renders no overlay when no slice is focused', () => {
+			const {container} = renderGraphic({
+				data: MULTI_SLICE_DATA,
+				focusIndex: null,
+				pathFactory: pathFactoryByStartAngle,
+			});
+
+			expect(
+				container.querySelector('.chart-pie-focus-ring')
+			).not.toBeInTheDocument();
+			expect(
+				container.querySelector('.chart-pie-focus-halo')
+			).not.toBeInTheDocument();
+		});
+
+		it('renders the overlay only for a non-last focused slice, clipped to its own shape', () => {
+			const {container} = renderGraphic({
+				data: MULTI_SLICE_DATA,
+				focusIndex: 1,
+				pathFactory: pathFactoryByStartAngle,
+			});
+
+			const focusedSlicePath = screen.getAllByRole('img')[1];
+			const focusedSliceD = focusedSlicePath.getAttribute('d');
+
+			const ring = container.querySelector('.chart-pie-focus-ring');
+			const halo = container.querySelector('.chart-pie-focus-halo');
+
+			expect(ring).toBeInTheDocument();
+			expect(halo).toBeInTheDocument();
+			expect(ring).toHaveAttribute('d', focusedSliceD);
+			expect(halo).toHaveAttribute('d', focusedSliceD);
+
+			const overlayGroup = ring?.closest('g');
+
+			expect(overlayGroup).toHaveAttribute(
+				'clip-path',
+				'url(#pie-chart-slice-clip-1)'
+			);
+		});
+
+		it('keeps overlay halo/ring paths out of the direct-child slice path selector, so the reveal animation does not retrigger on focus change', () => {
+			const {container} = renderGraphic({
+				data: MULTI_SLICE_DATA,
+				focusIndex: 1,
+				pathFactory: pathFactoryByStartAngle,
+			});
+
+			const directChildPaths = container.querySelectorAll(
+				'svg.chart-pie-svg > path'
+			);
+			const anyDepthPaths = container.querySelectorAll(
+				'svg.chart-pie-svg path'
+			);
+
+			expect(directChildPaths).toHaveLength(MULTI_SLICE_DATA.length);
+			expect(anyDepthPaths.length).toBeGreaterThan(
+				directChildPaths.length
+			);
+
+			directChildPaths.forEach((path) => {
+				expect(path).toHaveClass('chart-pie-slice');
+			});
+
+			const overlayHalo = container.querySelector(
+				'.chart-pie-focus-halo'
+			);
+			const overlayRing = container.querySelector(
+				'.chart-pie-focus-ring'
+			);
+
+			expect(Array.from(directChildPaths)).not.toContain(overlayHalo);
+			expect(Array.from(directChildPaths)).not.toContain(overlayRing);
+		});
+
+		it('generates a distinct clipPath per slice matching that slice own d', () => {
+			const {container} = renderGraphic({
+				data: MULTI_SLICE_DATA,
+				focusIndex: null,
+				pathFactory: pathFactoryByStartAngle,
+			});
+
+			const clipPaths = container.querySelectorAll('clipPath');
+
+			expect(clipPaths).toHaveLength(MULTI_SLICE_DATA.length);
+
+			clipPaths.forEach((clipPath, index) => {
+				const slicePath = screen.getAllByRole('img')[index];
+
+				expect(clipPath).toHaveAttribute(
+					'id',
+					`pie-chart-slice-clip-${index}`
+				);
+				expect(clipPath.querySelector('path')).toHaveAttribute(
+					'd',
+					slicePath.getAttribute('d')
+				);
+			});
+		});
 	});
 });

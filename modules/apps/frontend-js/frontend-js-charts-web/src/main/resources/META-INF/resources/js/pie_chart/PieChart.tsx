@@ -4,7 +4,7 @@
  */
 
 import classNames from 'classnames';
-import React, {useCallback, useId, useRef, useState} from 'react';
+import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import PieChartGraphic from './components/PieChartGraphic';
 import PieChartLegend from './components/PieChartLegend';
@@ -83,14 +83,18 @@ export default function PieChart({
 		0
 	);
 
-	const colors = getPieSliceColors(data);
+	const colors = useMemo(() => getPieSliceColors(data), [data]);
 
-	const pathFactory = getPieChartSlicePathFactory({
-		centerX: center,
-		centerY: center,
-		innerRadius,
-		outerRadius,
-	});
+	const pathFactory = useMemo(
+		() =>
+			getPieChartSlicePathFactory({
+				centerX: center,
+				centerY: center,
+				innerRadius,
+				outerRadius,
+			}),
+		[center, innerRadius, outerRadius]
+	);
 
 	const focusSlice = useCallback((index: number) => {
 		setFocusIndex(index);
@@ -141,8 +145,10 @@ export default function PieChart({
 					activeDatum={activeDatum}
 					activeIndex={activeIndex}
 					activePercent={activePercent}
+					baseId={baseId}
 					colors={colors}
 					data={data}
+					focusIndex={focusIndex}
 					innerRadius={innerRadius}
 					onFocus={focusSlice}
 					onHover={setHoverIndex}

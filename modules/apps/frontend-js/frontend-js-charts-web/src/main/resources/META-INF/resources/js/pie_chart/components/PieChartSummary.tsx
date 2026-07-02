@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from '@clayui/shared';
 import React from 'react';
 
 import {PieDatum} from '../types/PieDatum';
@@ -25,12 +26,16 @@ export default function PieChartSummary({
 		<p className="chart-pie-summary sr-only" id={id}>
 			{description ? `${description} ` : ''}
 
-			{data.map(
-				(datum, index) =>
-					`${index + 1} of ${data.length}, ${datum.label}: ${
-						datum.value
-					} (${toPercent(datum.value, total)}%). `
-			)}
+			{data.map((datum, index) => {
+				const position = sub(Liferay.Language.get('x-of-x'), [
+					index + 1,
+					data.length,
+				]);
+
+				return `${position}, ${datum.label}: ${
+					datum.value
+				} (${toPercent(datum.value, total)}%). `;
+			})}
 		</p>
 	);
 }

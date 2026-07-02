@@ -22,15 +22,10 @@
 		display: block;
 		inline-size: 100%;
 
-		path {
+		> path {
 			cursor: pointer;
 			outline: none;
 			transition: transform 150ms ease;
-
-			&:focus-visible {
-				stroke: var(--brand-color, #0b5fff);
-				stroke-width: 3;
-			}
 		}
 	}
 
@@ -109,6 +104,18 @@
 	}
 }
 
+.chart-pie-focus-halo {
+	fill: none;
+	stroke: var(--white);
+	stroke-width: 8;
+}
+
+.chart-pie-focus-ring {
+	fill: none;
+	stroke: var(--primary-d2);
+	stroke-width: 4;
+}
+
 .chart-pie-legend-table {
 	border-collapse: collapse;
 	inline-size: 100%;
@@ -145,7 +152,7 @@
 }
 
 .chart-pie-revealed {
-	.chart-pie-svg path {
+	.chart-pie-svg > path {
 		animation: chart-pie-reveal 400ms ease both;
 	}
 }
@@ -161,13 +168,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.chart-pie-revealed .chart-pie-svg path {
+	.chart-pie-revealed .chart-pie-svg > path {
 		animation: none;
 		transition: none;
 	}
 }
 
-body.c-prefers-reduced-motion .chart-pie-revealed .chart-pie-svg path {
+body.c-prefers-reduced-motion .chart-pie-revealed .chart-pie-svg > path {
 	animation: none;
 	transition: none;
 }

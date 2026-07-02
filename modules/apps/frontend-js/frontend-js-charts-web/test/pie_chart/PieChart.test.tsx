@@ -22,7 +22,9 @@ describe('PieChart', () => {
 	it('renders one slice path per datum', () => {
 		const {container} = render(<PieChart data={DATA} title="Sales" />);
 
-		expect(container.querySelectorAll('path')).toHaveLength(DATA.length);
+		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(
+			DATA.length
+		);
 	});
 
 	it('renders the center label for a ring', () => {
@@ -255,6 +257,32 @@ describe('PieChart', () => {
 		expect(
 			screen.getByRole('img', {name: 'Gamma: 20 (20%)'})
 		).toHaveFocus();
+	});
+
+	it('shows the focus ring when a slice receives keyboard focus', async () => {
+		const {container} = render(<PieChart data={DATA} title="Sales" />);
+
+		const slices = screen.getAllByRole('img');
+
+		await userEvent.tab();
+
+		expect(slices[0]).toHaveFocus();
+		expect(
+			container.querySelector('.chart-pie-focus-ring')
+		).toBeInTheDocument();
+	});
+
+	it('does not show the focus ring on hover alone', async () => {
+		const {container} = render(<PieChart data={DATA} title="Sales" />);
+
+		const slices = screen.getAllByRole('img');
+
+		await userEvent.hover(slices[1]);
+
+		expect(slices[1]).not.toHaveFocus();
+		expect(
+			container.querySelector('.chart-pie-focus-ring')
+		).not.toBeInTheDocument();
 	});
 });
 

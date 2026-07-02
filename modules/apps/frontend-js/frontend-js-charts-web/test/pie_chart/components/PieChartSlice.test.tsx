@@ -10,6 +10,7 @@ import PieChartSlice from '../../../src/main/resources/META-INF/resources/js/pie
 
 const DEFAULT_PROPS = {
 	color: '#000000',
+	d: 'M 0 0',
 	datum: {label: 'Alpha', value: 1},
 	index: 0,
 	isActive: false,
@@ -18,11 +19,8 @@ const DEFAULT_PROPS = {
 	onHover: () => {},
 	onHoverEnd: () => {},
 	onKeyDown: () => {},
-	pathFactory: () => '',
 	percent: 100,
-	precedingTotal: 0,
 	sliceRef: () => {},
-	total: 1,
 };
 
 function renderSlice(props = {}) {
@@ -34,28 +32,9 @@ function renderSlice(props = {}) {
 }
 
 describe('PieChartSlice', () => {
-	it('renders nothing when the total is not positive', () => {
-		renderSlice({total: 0});
+	it('renders a path using the given d', () => {
+		renderSlice({d: 'M 1 1'});
 
-		expect(screen.queryByRole('img')).toBeNull();
-	});
-
-	it('calls pathFactory with the computed slice angles', () => {
-		const pathFactory = jest.fn(() => 'M 0 0');
-
-		renderSlice({
-			datum: {label: 'Alpha', value: 1},
-			pathFactory,
-			precedingTotal: 0,
-			total: 2,
-		});
-
-		expect(pathFactory).toHaveBeenCalledWith(
-			expect.objectContaining({
-				endAngle: Math.PI / 2,
-				startAngle: -Math.PI / 2,
-				sweepAngle: Math.PI,
-			})
-		);
+		expect(screen.getByRole('img')).toHaveAttribute('d', 'M 1 1');
 	});
 });

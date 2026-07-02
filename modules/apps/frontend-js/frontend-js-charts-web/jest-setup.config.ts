@@ -5,11 +5,15 @@
 
 // @ts-nocheck
 
+const LANGUAGE_MAP: Record<string, string> = {
+	'x-of-x': '{0} of {1}',
+};
+
 (globalThis as any).Liferay = {
 	...(globalThis.Liferay || {}),
 	Language: {
 		...(globalThis.Liferay.Language || {}),
-		get: (key: string) => key,
+		get: (key: string) => LANGUAGE_MAP[key] ?? key,
 	},
 
 	ThemeDisplay: {
