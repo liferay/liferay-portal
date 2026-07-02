@@ -6,15 +6,13 @@
 package com.liferay.journal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalHelper;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexerPostProcessor;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -23,16 +21,19 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerPostProcessor;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
+import com.liferay.portal.kernel.settings.ModifiableSettings;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -75,30 +76,29 @@ public class JournalArticleIndexVersionsTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		PortalPreferences portalPreferences =
-			_portletPreferencesFactory.getPortalPreferences(
-				TestPropsValues.getUserId(), true);
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new CompanyServiceSettingsLocator(
+				TestPropsValues.getCompanyId(),
+				JournalServiceConfiguration.class.getName()));
 
-		_originalPortalPreferencesXML = _portletPreferencesFactory.toXML(
-			portalPreferences);
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
 
-		portalPreferences.setValue(
-			"", "expireAllArticleVersionsEnabled", "true");
-		portalPreferences.setValue(
-			"", "indexAllArticleVersionsEnabled", "false");
+		_originalExpireAllArticleVersionsEnabled = GetterUtil.getBoolean(
+			modifiableSettings.getValue(
+				"expireAllArticleVersionsEnabled", "true"));
+		_originalIndexAllArticleVersionsEnabled = GetterUtil.getBoolean(
+			modifiableSettings.getValue(
+				"indexAllArticleVersionsEnabled", "true"));
 
-		_portalPreferencesLocalService.updatePreferences(
-			TestPropsValues.getCompanyId(),
-			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			PortletPreferencesFactoryUtil.toXML(portalPreferences));
+		_updateJournalServiceConfiguration(true, false);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_portalPreferencesLocalService.updatePreferences(
-			TestPropsValues.getCompanyId(),
-			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			_originalPortalPreferencesXML);
+		_updateJournalServiceConfiguration(
+			_originalExpireAllArticleVersionsEnabled,
+			_originalIndexAllArticleVersionsEnabled);
 	}
 
 	@Test
@@ -366,17 +366,30 @@ public class JournalArticleIndexVersionsTest {
 	}
 
 	private void _enableIndexAllArticleVersions() throws Exception {
-		PortalPreferences portalPreferences =
-			_portletPreferencesFactory.getPortalPreferences(
-				TestPropsValues.getUserId(), true);
+		_updateJournalServiceConfiguration(true, true);
+	}
 
-		portalPreferences.setValue(
-			"", "indexAllArticleVersionsEnabled", "true");
+	private void _updateJournalServiceConfiguration(
+			boolean expireAllArticleVersionsEnabled,
+			boolean indexAllArticleVersionsEnabled)
+		throws Exception {
 
-		_portalPreferencesLocalService.updatePreferences(
-			TestPropsValues.getCompanyId(),
-			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
-			PortletPreferencesFactoryUtil.toXML(portalPreferences));
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new CompanyServiceSettingsLocator(
+				TestPropsValues.getCompanyId(),
+				JournalServiceConfiguration.class.getName()));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue(
+			"expireAllArticleVersionsEnabled",
+			String.valueOf(expireAllArticleVersionsEnabled));
+		modifiableSettings.setValue(
+			"indexAllArticleVersionsEnabled",
+			String.valueOf(indexAllArticleVersionsEnabled));
+
+		modifiableSettings.store();
 	}
 
 	@DeleteAfterTestRun
@@ -391,13 +404,8 @@ public class JournalArticleIndexVersionsTest {
 	@Inject
 	private JournalHelper _journalHelper;
 
-	private String _originalPortalPreferencesXML;
-
-	@Inject
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Inject
-	private PortletPreferencesFactory _portletPreferencesFactory;
+	private boolean _originalExpireAllArticleVersionsEnabled;
+	private boolean _originalIndexAllArticleVersionsEnabled;
 
 	@Inject
 	private Searcher _searcher;
