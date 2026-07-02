@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -35,6 +37,7 @@ import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoNode;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.KaleoSignaler;
+import com.liferay.portal.workflow.kaleo.runtime.constants.WorkflowInstanceDestinationNames;
 import com.liferay.portal.workflow.kaleo.runtime.graph.GraphWalker;
 import com.liferay.portal.workflow.kaleo.runtime.graph.PathElement;
 import com.liferay.portal.workflow.kaleo.runtime.internal.node.util.NodeExecutorRegistryUtil;
@@ -43,6 +46,7 @@ import com.liferay.portal.workflow.kaleo.runtime.util.ExecutionContextHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -282,6 +286,20 @@ public class DefaultKaleoSignaler
 				kaleoLogLocalService.addInstanceFailKaleoLog(
 					executionContextKaleoInstanceToken, throwable.getMessage(),
 					executionContext.getServiceContext());
+
+				Message message = new Message();
+
+				message.put("companyId", kaleoInstance.getCompanyId());
+
+				message.put("createDate", new Date());
+				message.put("exception", throwable);
+				message.put("userId", kaleoInstance.getUserId());
+				message.put(
+					"workflowInstanceId", kaleoInstance.getKaleoInstanceId());
+
+				_messageBus.sendMessage(
+					WorkflowInstanceDestinationNames.WORKFLOW_INSTANCE,
+					message);
 			}
 			catch (Exception exception) {
 				_log.error(exception);
@@ -305,6 +323,9 @@ public class DefaultKaleoSignaler
 
 	@Reference
 	private GraphWalker _graphWalker;
+
+	@Reference
+	private MessageBus _messageBus;
 
 	private NoticeableExecutorService _noticeableExecutorService;
 

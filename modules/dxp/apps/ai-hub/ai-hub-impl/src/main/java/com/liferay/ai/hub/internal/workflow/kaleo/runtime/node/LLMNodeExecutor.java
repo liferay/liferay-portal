@@ -157,8 +157,7 @@ public class LLMNodeExecutor extends BaseNodeExecutor {
 			serviceContext, workflowContext);
 
 		Consumer<Throwable> onErrorConsumer = OnErrorConsumerUtil.create(
-			kaleoInstanceToken, sseEventSinkKey,
-			vertexAiGeminiStreamingChatModel);
+			sseEventSinkKey, vertexAiGeminiStreamingChatModel);
 
 		AssistantHandlerUtil.handle(
 			AssistantHandlerContext.builder(
