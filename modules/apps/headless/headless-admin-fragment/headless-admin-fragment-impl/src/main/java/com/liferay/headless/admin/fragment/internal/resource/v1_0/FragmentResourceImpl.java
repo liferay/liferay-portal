@@ -243,9 +243,7 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 			fragment, FragmentVersion.Status.APPROVED);
 		FragmentVersion draftFragmentVersion = _getFragmentVersion(
 			fragment, FragmentVersion.Status.DRAFT);
-
 		int type = _getType(fragment);
-
 		String typeOptions = _getTypeOptions(fragment);
 
 		ServiceContext serviceContext = ServiceContextUtil.getServiceContext(
