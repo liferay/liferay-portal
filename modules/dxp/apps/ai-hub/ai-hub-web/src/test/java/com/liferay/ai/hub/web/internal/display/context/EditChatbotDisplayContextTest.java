@@ -65,7 +65,7 @@ public class EditChatbotDisplayContextTest {
 	private void _setUpPortalUtil() {
 		PortalUtil portalUtil = new PortalUtil();
 
-		portalUtil.setPortal(_portal);
+		portalUtil.setPortal(Mockito.mock(Portal.class));
 	}
 
 	private void _testGetReactData(
@@ -99,6 +99,5 @@ public class EditChatbotDisplayContextTest {
 	}
 
 	private EditChatbotDisplayContext _editChatbotDisplayContext;
-	private final Portal _portal = Mockito.mock(Portal.class);
 
 }
