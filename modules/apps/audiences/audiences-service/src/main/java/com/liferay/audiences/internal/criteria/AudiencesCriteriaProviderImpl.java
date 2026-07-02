@@ -90,7 +90,7 @@ public class AudiencesCriteriaProviderImpl
 					AudiencesCriteria.Type.STRING
 				).build(),
 				AudiencesCriteriaBuilder.setIcon(
-					"fieldset"
+					"braces"
 				).setInputType(
 					AudiencesCriteria.InputType.TEXT
 				).setKey(
@@ -193,7 +193,7 @@ public class AudiencesCriteriaProviderImpl
 					AudiencesCriteria.Type.STRING
 				).build(),
 				AudiencesCriteriaBuilder.setIcon(
-					"fieldset"
+					"braces"
 				).setInputType(
 					AudiencesCriteria.InputType.TEXT
 				).setKey(
