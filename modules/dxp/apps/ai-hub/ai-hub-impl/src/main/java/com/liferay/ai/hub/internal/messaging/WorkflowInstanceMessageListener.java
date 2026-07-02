@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
@@ -103,7 +103,7 @@ public class WorkflowInstanceMessageListener extends BaseMessageListener {
 				AIHubEventTypes.AI_HUB_AGENT_INSTANCE_COMPLETE_EXCEPTIONALLY :
 					AIHubEventTypes.AI_HUB_AGENT_INSTANCE_COMPLETE);
 
-		MessageBusUtil.sendMessage(
+		_messageBus.sendMessage(
 			AIHubDestinationNames.AI_HUB_AGENT_INSTANCE, message);
 	}
 
@@ -111,6 +111,9 @@ public class WorkflowInstanceMessageListener extends BaseMessageListener {
 	private DestinationFactory _destinationFactory;
 
 	private ServiceRegistration<Destination> _destinationServiceRegistration;
+
+	@Reference
+	private MessageBus _messageBus;
 
 	@Reference
 	private WorkflowInstanceManager _workflowInstanceManager;

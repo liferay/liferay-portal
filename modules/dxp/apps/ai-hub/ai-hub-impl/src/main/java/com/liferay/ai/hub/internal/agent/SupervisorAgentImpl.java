@@ -7,6 +7,7 @@ package com.liferay.ai.hub.internal.agent;
 
 import com.liferay.ai.hub.agent.AgentContext;
 import com.liferay.ai.hub.agent.SupervisorAgent;
+import com.liferay.ai.hub.internal.exception.ContentInjectorException;
 import com.liferay.ai.hub.internal.memory.ChatMemoryProviderUtil;
 import com.liferay.ai.hub.internal.model.VertexAiGeminiUtil;
 import com.liferay.ai.hub.quota.QuotaManager;
@@ -209,6 +210,18 @@ public class SupervisorAgentImpl implements SupervisorAgent {
 				"Chat Message Sent", null, agentContext.getSseEventSinkKey());
 
 			return;
+		}
+
+		if ((invocationTargetException.getCause() instanceof
+				RuntimeException runtimeException) &&
+			(runtimeException.getCause() instanceof
+				ContentInjectorException contentInjectorException)) {
+
+			SseUtil.send(
+				_language.get(
+					dtoConverterContext.getLocale(),
+					contentInjectorException.getMessageKey()),
+				"Chat Message Sent", null, agentContext.getSseEventSinkKey());
 		}
 
 		if (invocationTargetException.getCause() instanceof

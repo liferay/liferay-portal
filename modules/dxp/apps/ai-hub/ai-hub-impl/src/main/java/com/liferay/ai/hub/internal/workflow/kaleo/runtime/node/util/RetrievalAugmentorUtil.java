@@ -5,6 +5,7 @@
 
 package com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util;
 
+import com.liferay.ai.hub.internal.langchain4j.rag.content.injector.DefaultContentInjector;
 import com.liferay.ai.hub.internal.langchain4j.rag.content.retriever.ElasticsearchContentRetriever;
 import com.liferay.ai.hub.internal.langchain4j.rag.content.retriever.LiferayWebSearchContentRetriever;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
@@ -32,7 +33,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.RetrievalAugmentor;
-import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.query.router.DefaultQueryRouter;
 
@@ -85,10 +85,7 @@ public class RetrievalAugmentorUtil {
 
 		return DefaultRetrievalAugmentor.builder(
 		).contentInjector(
-			DefaultContentInjector.builder(
-			).metadataKeysToInclude(
-				List.of("url")
-			).build()
+			new DefaultContentInjector(List.of("url"))
 		).queryRouter(
 			new DefaultQueryRouter(contentRetrievers)
 		).build();
