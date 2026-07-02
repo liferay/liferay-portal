@@ -129,9 +129,9 @@
 								includes="**/target/@{war.file.name}-*.war"
 							/>
 							<mapper
-								from="@{war.file.name}-*.war"
+								from="^.*@{war.file.name}-.*\.war$"
 								to="@{war.file.name}.war"
-								type="glob"
+								type="regexp"
 							/>
 						</copy>
 					</sequential>
