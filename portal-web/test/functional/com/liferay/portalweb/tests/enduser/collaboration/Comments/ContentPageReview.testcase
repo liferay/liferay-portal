@@ -167,7 +167,7 @@ definition {
 		PageEditor.resolveComment(fragmentComment = "This is a fragment comment.");
 	}
 
-	@description = "This case ensures that the user can see a fragment comment, including one with escape characters, after publishing a content page."
+	@description = "This case ensures that the user can add fragment comments via the sidebar, with escape characters, and via the fragment topper icon, then see them after publishing a content page."
 	@priority = 5
 	@refactordone
 	test CanViewComment {
@@ -218,6 +218,13 @@ definition {
 			position = 2);
 
 		PageEditor.viewComment(fragmentComment = '''& < > " Escape Characters Comment''');
+
+		PageEditor.addCommentViaFragment(
+			fragmentComment = "This is a fragment topper comment!",
+			fragmentName = "Rich Text",
+			position = 1);
+
+		PageEditor.viewComment(fragmentComment = "This is a fragment topper comment!");
 	}
 
 	@description = "This test covers LPS-101027. It ensures that a published comment should remain if staging is deactivated."
@@ -586,44 +593,6 @@ definition {
 		PageEditor.viewComment();
 
 		PageEditor.closeSidebar(tabName = "Comments");
-	}
-
-	@description = "This case ensures that a comment can be added and viewed using the icon in the fragment topper."
-	@priority = 5
-	@refactordone
-	test CanViewCommentViaFragment {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Rich Text");
-
-		PageEditor.addCommentViaFragment(
-			fragmentComment = "This is a fragment comment!",
-			fragmentName = "Rich Text",
-			position = 1);
-
-		PageEditor.publish();
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.gotoCommentViaFragment(
-			fragmentComment = "This is a fragment comment!",
-			fragmentName = "Rich Text",
-			position = 1);
-
-		PageEditor.viewComment(
-			fragmentComment = "This is a fragment comment!",
-			key_fragmentName = "Rich Text");
 	}
 
 	@description = "This case ensures that the user can see an edited fragment comment after publishing a content page."
