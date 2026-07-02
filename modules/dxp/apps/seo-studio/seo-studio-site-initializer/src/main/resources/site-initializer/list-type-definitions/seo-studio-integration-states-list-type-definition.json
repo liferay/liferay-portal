@@ -1,0 +1,25 @@
+{
+	"externalReferenceCode": "L_SEO_STUDIO_INTEGRATION_STATES",
+	"listTypeEntries": [
+		{
+			"externalReferenceCode": "ACTIVE",
+			"key": "active",
+			"name": "Active",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "INACTIVE",
+			"key": "inactive",
+			"name": "Inactive",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "UNAVAILABLE",
+			"key": "unavailable",
+			"name": "Unavailable",
+			"system": true
+		}
+	],
+	"name": "SEO Studio Integration States",
+	"system": true
+}

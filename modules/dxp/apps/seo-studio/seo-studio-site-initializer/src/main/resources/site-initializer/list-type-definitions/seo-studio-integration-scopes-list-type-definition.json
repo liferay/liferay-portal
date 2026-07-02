@@ -1,0 +1,19 @@
+{
+	"externalReferenceCode": "L_SEO_STUDIO_INTEGRATION_SCOPES",
+	"listTypeEntries": [
+		{
+			"externalReferenceCode": "DOMAIN",
+			"key": "domain",
+			"name": "Domain",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "INSTANCE",
+			"key": "instance",
+			"name": "Instance",
+			"system": true
+		}
+	],
+	"name": "SEO Studio Integration Scopes",
+	"system": true
+}

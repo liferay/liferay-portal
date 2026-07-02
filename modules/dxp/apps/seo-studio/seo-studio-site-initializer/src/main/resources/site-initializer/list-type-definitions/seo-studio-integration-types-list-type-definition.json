@@ -1,0 +1,19 @@
+{
+	"externalReferenceCode": "L_SEO_STUDIO_INTEGRATION_TYPES",
+	"listTypeEntries": [
+		{
+			"externalReferenceCode": "GSC",
+			"key": "gsc",
+			"name": "Google Search Console",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "PAGESPEED",
+			"key": "pageSpeed",
+			"name": "PageSpeed",
+			"system": true
+		}
+	],
+	"name": "SEO Studio Integration Types",
+	"system": true
+}
