@@ -343,9 +343,9 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 
 		CrawlHit crawlHit = _getOnlyCrawlHit(seoStudioDomainId);
 
-		Assert.assertEquals(title, crawlHit.getTitle());
 		Assert.assertArrayEquals(
 			new String[] {link1, link2}, crawlHit.getLinks());
+		Assert.assertEquals(title, crawlHit.getTitle());
 	}
 
 	private void _testGetSeoStudioDomainCrawlHitsPageWithoutURL()
@@ -448,9 +448,9 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 
 		CrawlHit crawlHit = _getOnlyCrawlHit(seoStudioDomainId);
 
-		Assert.assertEquals(url, crawlHit.getUrl());
 		Assert.assertEquals(
 			"https://liferay.com/commerce", crawlHit.getCanonicalUrl());
+		Assert.assertEquals(url, crawlHit.getUrl());
 	}
 
 	private static String _originalName;
