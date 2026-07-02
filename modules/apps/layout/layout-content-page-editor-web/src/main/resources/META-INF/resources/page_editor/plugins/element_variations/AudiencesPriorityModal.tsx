@@ -12,6 +12,8 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import {ItemList} from '../fragments_and_widgets/components/reorder_sets_modal/ItemList';
 
+import './AudiencesPriorityModal.scss';
+
 const DragAndDropProvider = DndProvider as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;

@@ -1,44 +1,9 @@
+@import 'ReorderList';
+
 html#{$cadmin-selector} .page-editor__reorder-set-modal {
-	.card {
-		cursor: grab;
-		position: relative;
-
-		&.draggingOver::before {
-			background-color: $primary-l1;
-			content: '';
-			display: block;
-			height: 0.25rem;
-			position: absolute;
-			width: 100%;
-		}
-
-		&.draggingOverBottom::before {
-			bottom: auto;
-			top: calc(100% + 0.4rem);
-		}
-
-		&.draggingOverTop::before {
-			bottom: calc(100% + 0.35rem);
-			top: auto;
-		}
-
-		&.dragging {
-			opacity: 0.4;
-		}
-	}
+	@include reorder-list;
 
 	.dropdown-menu {
 		min-width: 192px;
-	}
-
-	.lexicon-icon-drag {
-		height: 16px;
-		margin: 0;
-		width: 16px;
-	}
-
-	.modal-dialog .modal-content .modal-body {
-		max-height: 70vh;
-		overflow: auto;
 	}
 }

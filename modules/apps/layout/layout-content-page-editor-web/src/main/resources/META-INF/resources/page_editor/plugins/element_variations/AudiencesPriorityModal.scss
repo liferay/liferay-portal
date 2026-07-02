@@ -1,0 +1,8 @@
+@import 'functions/_global-functions';
+@import 'variables/_globals';
+
+@import '../fragments_and_widgets/components/reorder_sets_modal/ReorderList';
+
+.element-variations__audiences-priority-modal {
+	@include reorder-list;
+}
