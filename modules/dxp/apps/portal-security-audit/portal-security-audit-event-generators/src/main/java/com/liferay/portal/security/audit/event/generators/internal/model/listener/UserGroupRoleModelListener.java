@@ -67,6 +67,8 @@ public class UserGroupRoleModelListener
 				"scopeClassPK", group.getClassPK()
 			);
 
+			auditMessage.setCompanyId(role.getCompanyId());
+
 			_auditRouter.route(auditMessage);
 		}
 		catch (Exception exception) {

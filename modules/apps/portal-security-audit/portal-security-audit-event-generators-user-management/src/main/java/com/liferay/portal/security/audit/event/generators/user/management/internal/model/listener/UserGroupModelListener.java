@@ -81,6 +81,8 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 						UserGroup.class.getName(), userGroup.getUserGroupId(),
 						EventTypes.UPDATE, attributes);
 
+				auditMessage.setCompanyId(userGroup.getCompanyId());
+
 				_auditRouter.route(auditMessage);
 			}
 		}
@@ -129,6 +131,8 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 
 			additionalInfoJSONObject.put("userGroupName", userGroup.getName());
 
+			auditMessage.setCompanyId(userGroup.getCompanyId());
+
 			_auditRouter.route(auditMessage);
 		}
 		catch (Exception exception) {
@@ -143,6 +147,8 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 			AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
 				UserGroup.class.getName(), userGroup.getUserGroupId(),
 				eventType, null);
+
+			auditMessage.setCompanyId(userGroup.getCompanyId());
 
 			_auditRouter.route(auditMessage);
 		}

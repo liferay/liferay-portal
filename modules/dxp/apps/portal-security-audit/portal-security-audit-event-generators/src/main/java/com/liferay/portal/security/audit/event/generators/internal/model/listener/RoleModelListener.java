@@ -82,6 +82,8 @@ public class RoleModelListener extends BaseModelListener<Role> {
 						Role.class.getName(), role.getRoleId(),
 						EventTypes.UPDATE, attributes);
 
+				auditMessage.setCompanyId(role.getCompanyId());
+
 				_auditRouter.route(auditMessage);
 			}
 		}
@@ -96,6 +98,8 @@ public class RoleModelListener extends BaseModelListener<Role> {
 		try {
 			AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
 				Role.class.getName(), role.getRoleId(), eventType, null);
+
+			auditMessage.setCompanyId(role.getCompanyId());
 
 			_auditRouter.route(auditMessage);
 		}
@@ -182,6 +186,8 @@ public class RoleModelListener extends BaseModelListener<Role> {
 					"userId", userId
 				);
 			}
+
+			auditMessage.setCompanyId(role.getCompanyId());
 
 			_auditRouter.route(auditMessage);
 		}
