@@ -283,37 +283,4 @@ definition {
 			openComment = "true");
 	}
 
-	@description = "This case ensures that multiple replies can be added and viewed in a comment."
-	@priority = 4
-	@refactordone
-	test CanViewMultipleReplies {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Static Text");
-
-		PageEditor.addComment(
-			content = "This is static text.",
-			fragmentClass = "static-text",
-			fragmentComment = "This is a fragment comment.",
-			fragmentName = "Static Text",
-			position = 1);
-
-		for (var commentReplyNumber : list "1,2,3,4,5") {
-			PageEditor.replyToComment(commentReply = "Fragment Comment ${commentReplyNumber}");
-
-			PageEditor.viewCommentReply(
-				commentReply = "Fragment Comment ${commentReplyNumber}",
-				user = "Test Test");
-		}
-	}
-
 }

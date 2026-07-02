@@ -374,3 +374,40 @@ test(
 	}
 );
 
+test(
+	'Views multiple replies in a comment',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment and reply to it five times
+
+		const comment = 'This is a fragment comment.';
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		for (let i = 1; i <= 5; i++) {
+			const reply = `Fragment Comment ${i}`;
+
+			await pageEditorPage.replyToFragmentComment(comment, reply);
+
+			await pageEditorPage.viewFragmentCommentReply(reply, 'Test Test');
+		}
+	}
+);
