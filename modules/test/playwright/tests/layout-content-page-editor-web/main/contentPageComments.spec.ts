@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -244,6 +244,83 @@ test(
 		await pageEditorPage.goToFragmentComment(fragmentId);
 
 		await pageEditorPage.viewFragmentComment(editedComment);
+	}
+);
+
+test(
+	'Views comments in the comment list and its empty state',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with two fragments and go to edit mode
+
+		const headingId = getRandomString();
+		const paragraphId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: headingId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+				getFragmentDefinition({
+					id: paragraphId,
+					key: 'BASIC_COMPONENT-paragraph',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Check the empty state when no comments exist
+
+		await pageEditorPage.goToSidebarTab('Comments');
+
+		await expect(
+			page.getByText('There are no comments yet.')
+		).toBeVisible();
+		await expect(
+			page.getByText('Select a fragment to add a comment.')
+		).toBeVisible();
+
+		// Add a comment to the first fragment and view it in the list
+
+		const headingComment = 'Heading fragment comment';
+
+		await pageEditorPage.addFragmentComment(headingId, headingComment);
+
+		await pageEditorPage.goToCommentList();
+
+		await pageEditorPage.viewCommentList({
+			commentCount: '1 Comment',
+			fragmentName: 'Heading',
+			openComment: true,
+		});
+
+		await pageEditorPage.viewFragmentComment(headingComment);
+
+		// Add a comment to the second fragment and view both in the list
+
+		const paragraphComment = 'Paragraph fragment comment';
+
+		await pageEditorPage.addFragmentComment(paragraphId, paragraphComment);
+
+		await pageEditorPage.goToCommentList();
+
+		await pageEditorPage.viewCommentList({
+			commentCount: '1 Comment',
+			fragmentName: 'Heading',
+		});
+
+		await pageEditorPage.viewCommentList({
+			commentCount: '1 Comment',
+			fragmentName: 'Paragraph',
+			openComment: true,
+		});
+
+		await pageEditorPage.viewFragmentComment(paragraphComment);
 	}
 );
 
