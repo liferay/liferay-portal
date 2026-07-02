@@ -9,12 +9,11 @@ describe('getInitialLogEntries', () => {
 		expect(entries[0].title).toBe('Token Generated');
 	});
 
-	it('seeds Listening and Token generated for Active with no data', () => {
+	it('falls back to a single Token generated entry for Active with no data (a state that should no longer occur)', () => {
 		const entries = getInitialLogEntries(ConnectorStatus.Active, 0);
 
-		expect(entries).toHaveLength(2);
-		expect(entries[0].title).toBe('Listening...');
-		expect(entries[1].title).toBe('Token Generated');
+		expect(entries).toHaveLength(1);
+		expect(entries[0].title).toBe('Token Generated');
 	});
 
 	it('seeds Data flow, Listening, Token generated for Active with data', () => {
@@ -37,14 +36,11 @@ describe('getInitialLogEntries', () => {
 		expect(entries[3].title).toBe('Token Generated');
 	});
 
-	it('seeds disconnected history for Disconnected status', () => {
+	it('shows only the Data source disconnected entry for Disconnected status', () => {
 		const entries = getInitialLogEntries(ConnectorStatus.Disconnected, 0);
 
-		expect(entries).toHaveLength(4);
+		expect(entries).toHaveLength(1);
 		expect(entries[0].title).toBe('Data Source Disconnected');
-		expect(entries[1].title).toBe('Inactive Data Flow');
-		expect(entries[2].title).toBe('Data Flow Established');
-		expect(entries[3].title).toBe('Listening...');
 	});
 });
 
