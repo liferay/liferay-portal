@@ -77,17 +77,7 @@ public abstract class BaseObjectActionExecutorTestCase {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_SEO_STUDIO_INSTANCE", TestPropsValues.getCompanyId());
 
-		ObjectDefinition seoStudioScanObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_SEO_STUDIO_SCAN", TestPropsValues.getCompanyId());
-
-		for (ObjectAction objectAction :
-				_objectActionLocalService.getObjectActions(
-					seoStudioScanObjectDefinition.getObjectDefinitionId())) {
-
-			_objectActionLocalService.deleteObjectAction(objectAction);
-		}
+		_updateSEOStudioScanObjectActions(false);
 
 		accountEntry = _addAccountEntry();
 
@@ -96,6 +86,8 @@ public abstract class BaseObjectActionExecutorTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		_updateSEOStudioScanObjectActions(true);
+
 		ServiceContextThreadLocal.popServiceContext();
 	}
 
@@ -148,6 +140,24 @@ public abstract class BaseObjectActionExecutorTestCase {
 				"r_accountToSEOStudioInstances_accountEntryId",
 				accountEntry.getAccountEntryId()
 			).build());
+	}
+
+	private void _updateSEOStudioScanObjectActions(boolean active)
+		throws Exception {
+
+		ObjectDefinition seoStudioScanObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_SEO_STUDIO_SCAN", TestPropsValues.getCompanyId());
+
+		for (ObjectAction objectAction :
+				_objectActionLocalService.getObjectActions(
+					seoStudioScanObjectDefinition.getObjectDefinitionId())) {
+
+			objectAction.setActive(active);
+
+			_objectActionLocalService.updateObjectAction(objectAction);
+		}
 	}
 
 	@Inject
