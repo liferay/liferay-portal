@@ -203,36 +203,39 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_SEO_STUDIO_DOMAIN", companyId);
 
-		ObjectEntry domainObjectEntry = _objectEntryLocalService.addObjectEntry(
-			0L, user.getUserId(),
-			domainObjectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				"hostname",
-				StringUtil.toLowerCase(RandomTestUtil.randomString())
-			).put(
-				"name", RandomTestUtil.randomString()
-			).put(
-				"r_accountToSEOStudioDomains_accountEntryId",
-				_accountEntry.getAccountEntryId()
-			).put(
-				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
-				_seoStudioInstanceObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
+		ObjectEntry seoStudioDomainObjectEntry =
+			_objectEntryLocalService.addObjectEntry(
+				0L, user.getUserId(),
+				domainObjectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"hostname",
+					StringUtil.toLowerCase(RandomTestUtil.randomString())
+				).put(
+					"name", RandomTestUtil.randomString()
+				).put(
+					"r_accountToSEOStudioDomains_accountEntryId",
+					_accountEntry.getAccountEntryId()
+				).put(
+					"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
+					_seoStudioInstanceObjectEntry.getObjectEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
 
-		_objectEntries.add(domainObjectEntry);
+		_objectEntries.add(seoStudioDomainObjectEntry);
 
-		String indexName = "seo_studio_" + domainObjectEntry.getObjectEntryId();
+		String indexName =
+			"seo_studio_" + seoStudioDomainObjectEntry.getObjectEntryId();
 
 		_searchEngineAdapter.execute(new CreateIndexRequest(indexName));
 
 		_indexNames.add(indexName);
 		_indexNamesByDomainIdMap.put(
-			domainObjectEntry.getObjectEntryId(), indexName);
+			seoStudioDomainObjectEntry.getObjectEntryId(), indexName);
 
-		return domainObjectEntry.getObjectEntryId();
+		return seoStudioDomainObjectEntry.getObjectEntryId();
 	}
 
 	private CrawlHit _getOnlyCrawlHit(Long seoStudioDomainId) throws Exception {
