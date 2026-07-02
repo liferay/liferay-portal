@@ -667,7 +667,7 @@ public abstract class SecretsUtil {
 			}
 		}
 
-		return secretReference;
+		return null;
 	}
 
 	private static String _getSecretReference(
