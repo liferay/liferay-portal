@@ -522,11 +522,6 @@ Output:
 	</llm>
 	<service>
 		<name>repairSitePlan</name>
-		<labels>
-			<label language-id="en_US">
-				Repair Site Plan
-			</label>
-		</labels>
 		<input-variables>
 			<![CDATA[
 				[
@@ -538,6 +533,11 @@ Output:
 			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#jsonRepair</java-delegate>
+		<labels>
+			<label language-id="en_US">
+				Repair Site Plan
+			</label>
+		</labels>
 		<output-variables>
 			<![CDATA[
 				[
@@ -557,12 +557,12 @@ Output:
 	</service>
 	<service>
 		<name>acknowledgeAgent</name>
+		<java-delegate>javaDelegate#acknowledgeAgent</java-delegate>
 		<labels>
 			<label language-id="en_US">
 				Acknowledge Agent
 			</label>
 		</labels>
-		<java-delegate>javaDelegate#acknowledgeAgent</java-delegate>
 		<output-variables>
 			<![CDATA[
 				[
@@ -582,11 +582,6 @@ Output:
 	</service>
 	<service>
 		<name>repairEnrichedSitePlan</name>
-		<labels>
-			<label language-id="en_US">
-				Repair Enriched Site Plan
-			</label>
-		</labels>
 		<input-variables>
 			<![CDATA[
 				[
@@ -598,6 +593,11 @@ Output:
 			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#jsonRepair</java-delegate>
+		<labels>
+			<label language-id="en_US">
+				Repair Enriched Site Plan
+			</label>
+		</labels>
 		<output-variables>
 			<![CDATA[
 				[
@@ -617,11 +617,6 @@ Output:
 	</service>
 	<service>
 		<name>writeGenerationItems</name>
-		<labels>
-			<label language-id="en_US">
-				Write Generation Items
-			</label>
-		</labels>
 		<input-variables>
 			<![CDATA[
 				[
@@ -641,6 +636,11 @@ Output:
 			]]>
 		</input-variables>
 		<java-delegate>javaDelegate#writeCSGGenerationItems</java-delegate>
+		<labels>
+			<label language-id="en_US">
+				Write Generation Items
+			</label>
+		</labels>
 		<output-variables>
 			<![CDATA[
 				[
