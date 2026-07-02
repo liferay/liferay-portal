@@ -6,6 +6,7 @@
 import {ConnectToAnalyticsCloud} from '@liferay/analytics-reports-js-components-web';
 import React from 'react';
 
+import {PerformanceContextProvider} from './PerformanceContext';
 import {AudienceAndDistribution} from './components/AudienceAndDistribution';
 import {ContentConsumption} from './components/ContentConsumption';
 import {Filters} from './components/Filters';
@@ -30,7 +31,7 @@ export default function PerformanceDashboard({
 	}
 
 	return (
-		<>
+		<PerformanceContextProvider>
 			<Filters />
 
 			<Overview />
@@ -38,6 +39,6 @@ export default function PerformanceDashboard({
 			<AudienceAndDistribution />
 
 			<ContentConsumption />
-		</>
+		</PerformanceContextProvider>
 	);
 }

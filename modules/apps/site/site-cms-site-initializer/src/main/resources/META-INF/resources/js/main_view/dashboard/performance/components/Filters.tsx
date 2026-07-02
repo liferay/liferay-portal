@@ -5,28 +5,16 @@
 
 import ClayLayout from '@clayui/layout';
 import {
-	RangeSelector,
 	RangeSelectors,
 	RangeSelectorsDropdown,
 } from '@liferay/analytics-reports-js-components-web';
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 
-import {
-	SpaceOption,
-	SpacesDropdown,
-	initialSpace,
-} from '../../common/SpacesDropdown';
-
-const initialRangeSelector: RangeSelector = {
-	rangeEnd: '',
-	rangeKey: RangeSelectors.Last7Days,
-	rangeStart: '',
-};
+import {SpacesDropdown} from '../../common/SpacesDropdown';
+import {PerformanceContext} from '../PerformanceContext';
 
 export function Filters() {
-	const [rangeSelector, setRangeSelector] =
-		useState<RangeSelector>(initialRangeSelector);
-	const [space, setSpace] = useState<SpaceOption>(initialSpace);
+	const {range, setRange, setSpace, space} = useContext(PerformanceContext);
 
 	return (
 		<ClayLayout.Row className="mb-4">
@@ -39,7 +27,7 @@ export function Filters() {
 					/>
 
 					<RangeSelectorsDropdown
-						activeRangeSelector={rangeSelector}
+						activeRangeSelector={range}
 						availableRangeKeys={[
 							RangeSelectors.Last24Hours,
 							RangeSelectors.Last7Days,
@@ -48,7 +36,7 @@ export function Filters() {
 							RangeSelectors.Last90Days,
 						]}
 						borderless={false}
-						onChange={setRangeSelector}
+						onChange={setRange}
 					/>
 				</div>
 			</ClayLayout.Col>
