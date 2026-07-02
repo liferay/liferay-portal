@@ -46,13 +46,21 @@ public class PageSpecificationVersionResourceImpl
 		FeatureFlagManagerUtil.checkEnabled(
 			contextCompany.getCompanyId(), "LPD-10622");
 
-		_getLayout(
+		Layout layout = _getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
-		return _toPageSpecificationVersion(
-			_getLayoutContentVersion(
-				siteExternalReferenceCode,
-				pageSpecificationVersionExternalReferenceCode));
+		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
+			siteExternalReferenceCode,
+			pageSpecificationVersionExternalReferenceCode);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if (layoutContentVersion.getPlid() == draftLayout.getPlid()) {
+			return _toPageSpecificationVersion(layoutContentVersion);
+		}
+
+		throw new IllegalArgumentException(
+			"The page specification version must belong to the site page");
 	}
 
 	@NestedField(
