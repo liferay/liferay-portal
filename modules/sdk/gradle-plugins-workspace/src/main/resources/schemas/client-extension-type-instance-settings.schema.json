@@ -2979,6 +2979,13 @@
 		},
 		{
 			"properties": {
+				"checkBatchSize": {
+					"default": 100,
+					"description": "Set the maximum number of object entries and object entry versions to process per check.",
+					"min": 1,
+					"title": "Object Entry Check Batch Size",
+					"type": "number"
+				},
 				"checkInterval": {
 					"default": 15,
 					"description": "Set the interval (in minutes) to check for expiration, publishing, and review of object entries.",
