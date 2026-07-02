@@ -54,7 +54,7 @@
 			<finder-column name="groupId" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="P_V" return-type="LayoutContentVersion">
+		<finder name="P_V" return-type="LayoutContentVersion" unique="true">
 			<finder-column name="plid" />
 			<finder-column name="version" />
 		</finder>
