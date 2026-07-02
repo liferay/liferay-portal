@@ -13,7 +13,7 @@ import {
 	openModal,
 	openToast,
 } from 'frontend-js-components-web';
-import {debounce, fetch, sub} from 'frontend-js-web';
+import {cancelDebounce, debounce, fetch, sub} from 'frontend-js-web';
 import React, {Ref, useContext, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
@@ -223,6 +223,8 @@ const SnapshotsControls = () => {
 	);
 
 	const clearSearch = () => {
+		cancelDebounce(debouncedSetSearchTerm);
+
 		setSearchTerm('');
 		setDebouncedSearchTerm('');
 	};
@@ -605,45 +607,41 @@ const SnapshotsControls = () => {
 
 					{hasSearchResults ? (
 						<ClayDropDown.ItemList>
-							{filteredPickerItems.map(
-								(group: ISnapshots, index: number) => (
-									<ClayDropDown.Group
-										header={
-											group.headerVisible
-												? group.label
-												: undefined
-										}
-										key={index}
-									>
-										{group.items.map(
-											(snapshot: ISnapshot) => (
-												<ClayDropDown.Item
-													active={
-														snapshot.erc ===
-														activeSnapshot.erc
-													}
-													key={snapshot.erc}
-													onClick={() =>
-														onSnapshotChange({
-															defaultSnapshot,
-															snapshots,
-															value: snapshot.erc,
-														})
-													}
-													symbolRight={
-														snapshot.erc ===
-														activeSnapshot.erc
-															? 'check'
-															: undefined
-													}
-												>
-													{snapshot.label}
-												</ClayDropDown.Item>
-											)
-										)}
-									</ClayDropDown.Group>
-								)
-							)}
+							{filteredPickerItems.map((group: ISnapshots) => (
+								<ClayDropDown.Group
+									header={
+										group.headerVisible
+											? group.label
+											: undefined
+									}
+									key={group.label || 'default'}
+								>
+									{group.items.map((snapshot: ISnapshot) => (
+										<ClayDropDown.Item
+											active={
+												snapshot.erc ===
+												activeSnapshot.erc
+											}
+											key={snapshot.erc}
+											onClick={() =>
+												onSnapshotChange({
+													defaultSnapshot,
+													snapshots,
+													value: snapshot.erc,
+												})
+											}
+											symbolRight={
+												snapshot.erc ===
+												activeSnapshot.erc
+													? 'check'
+													: undefined
+											}
+										>
+											{snapshot.label}
+										</ClayDropDown.Item>
+									))}
+								</ClayDropDown.Group>
+							))}
 						</ClayDropDown.ItemList>
 					) : (
 						<ClayDropDown.Caption>

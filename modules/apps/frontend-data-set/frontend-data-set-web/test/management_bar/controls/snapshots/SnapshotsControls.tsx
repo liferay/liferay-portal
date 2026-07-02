@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {openModal} from 'frontend-js-components-web';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
@@ -397,5 +397,34 @@ describe('SnapshotsControls views search', () => {
 				'Team Orders',
 			])
 		);
+	});
+
+	it('does not re-filter when cleared before the debounce elapses', async () => {
+		await openViewsDropdown();
+
+		const searchInput = await screen.findByPlaceholderText('search');
+
+		jest.useFakeTimers();
+
+		try {
+			fireEvent.change(searchInput, {target: {value: 'archived'}});
+
+			fireEvent.click(screen.getByRole('button', {name: 'clear'}));
+
+			act(() => {
+				jest.advanceTimersByTime(1000);
+			});
+
+			expect(getViewLabels()).toEqual([
+				'default-view',
+				'Active Orders',
+				'Archived Orders',
+				'Pending Invoices',
+				'Team Orders',
+			]);
+		}
+		finally {
+			jest.useRealTimers();
+		}
 	});
 });
