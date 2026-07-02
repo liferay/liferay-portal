@@ -28,6 +28,19 @@
 		},
 		{
 			"active": true,
+			"description": "This agent analyzes a project's content coverage matrix and surfaces under-covered persona and funnel stage combinations as a prioritized list of gaps, each with a severity and a short reason. It reasons only over the coverage data provided, never invents personas or funnel stages, and never modifies project data.",
+			"externalReferenceCode": "L_CONTENT_GAP_ANALYSIS",
+			"inputVariables": "contentCoverage,focusScope,projectContext",
+			"outputVariable": "gapAnalysis",
+			"r_accountToAIHubAgentDefinitions_accountEntryERC": "L_AI_HUB",
+			"system": true,
+			"title_i18n": {
+				"en_US": "Content Gap Analysis"
+			},
+			"workflowDefinitionName": "Content Gap Analysis"
+		},
+		{
+			"active": true,
 			"description": "This writing agent acts as an expert linguistic editor, correcting grammar and spelling errors while strictly preserving your original tone and style.",
 			"externalReferenceCode": "L_FIX_SPELLING_AND_GRAMMAR",
 			"inputVariables": "text",
