@@ -101,6 +101,15 @@ export class HeadlessAssetLibraryApiHelper {
 		);
 	}
 
+	async disconnectSite(
+		assetLibraryExternalReferenceCode: string,
+		connectedSiteExternalReferenceCode: string
+	) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryExternalReferenceCode}/connected-sites/${connectedSiteExternalReferenceCode}`
+		);
+	}
+
 	async putAssetLibraryUserAccount(
 		assetLibraryExternalReferenceCode: string,
 		userAccountExternalReferenceCode: string
