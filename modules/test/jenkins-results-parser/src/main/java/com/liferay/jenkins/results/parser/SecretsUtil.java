@@ -104,8 +104,8 @@ public abstract class SecretsUtil {
 
 		if (cachedSecretsPublicKey == null) {
 			System.out.println(
-				"Cached secrets public key is not configured, unable to " +
-					"write encrypted 1Password cache");
+				"Unable to write encrypted 1Password cache, cached secrets " +
+					"public key is not configured");
 
 			return;
 		}
