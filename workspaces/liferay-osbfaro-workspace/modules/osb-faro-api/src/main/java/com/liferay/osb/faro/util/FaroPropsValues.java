@@ -99,4 +99,10 @@ public class FaroPropsValues {
 		PropsUtil.get("osb.faro.clamav.timeout"),
 		GetterUtil.getInteger(System.getenv("OSB_FARO_CLAMAV_TIMEOUT")));
 
+	public static final boolean OSB_FARO_SUBSCRIPTION_PUSH_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get("osb.faro.subscription.push.enabled"),
+			GetterUtil.getBoolean(
+				System.getenv("OSB_FARO_SUBSCRIPTION_PUSH_ENABLED")));
+
 }
