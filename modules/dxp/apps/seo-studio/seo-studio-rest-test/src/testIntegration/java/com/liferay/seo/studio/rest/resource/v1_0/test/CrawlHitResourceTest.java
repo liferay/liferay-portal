@@ -145,17 +145,17 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 			testGetSeoStudioDomainCrawlHitsPage_getIrrelevantSeoStudioDomainId()
 		throws Exception {
 
-		return _addSEOStudioDomainObjectEntry().getObjectEntryId();
+		return _addSEOStudioDomainObjectEntry();
 	}
 
 	@Override
 	protected Long testGetSeoStudioDomainCrawlHitsPage_getSeoStudioDomainId()
 		throws Exception {
 
-		return _addSEOStudioDomainObjectEntry().getObjectEntryId();
+		return _addSEOStudioDomainObjectEntry();
 	}
 
-	private ObjectEntry _addSEOStudioDomainObjectEntry() throws Exception {
+	private long _addSEOStudioDomainObjectEntry() throws Exception {
 		long companyId = testCompany.getCompanyId();
 
 		User user = UserTestUtil.getAdminUser(companyId);
@@ -232,7 +232,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 		_indexNamesByDomainIdMap.put(
 			domainObjectEntry.getObjectEntryId(), indexName);
 
-		return domainObjectEntry;
+		return domainObjectEntry.getObjectEntryId();
 	}
 
 	private CrawlHit _getOnlyCrawlHit(Long seoStudioDomainId) throws Exception {
@@ -286,8 +286,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithLastURL()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String indexName = _indexNamesByDomainIdMap.get(seoStudioDomainId);
 
@@ -329,8 +328,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithLinks()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String title = RandomTestUtil.randomString();
 
@@ -351,8 +349,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithoutURL()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String indexName = _indexNamesByDomainIdMap.get(seoStudioDomainId);
 
@@ -369,8 +366,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithReservedAndExcludedParameters()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String url =
 			"https://liferay.com/o/page?p_l_back_url=/search&delta=20" +
@@ -390,8 +386,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithSkippedHits()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String indexName = _indexNamesByDomainIdMap.get(seoStudioDomainId);
 
@@ -421,8 +416,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithSpaceInURL()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		_indexDocument(
 			_indexNamesByDomainIdMap.get(seoStudioDomainId),
@@ -437,8 +431,7 @@ public class CrawlHitResourceTest extends BaseCrawlHitResourceTestCase {
 	private void _testGetSeoStudioDomainCrawlHitsPageWithTrailingSlashInURL()
 		throws Exception {
 
-		long seoStudioDomainId =
-			_addSEOStudioDomainObjectEntry().getObjectEntryId();
+		long seoStudioDomainId = _addSEOStudioDomainObjectEntry();
 
 		String url = "https://liferay.com/commerce/";
 
