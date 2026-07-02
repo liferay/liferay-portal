@@ -48,7 +48,7 @@ export default function useApplySmallResolutionChanges() {
 
 		const elements = ELEMENTS_SELECTORS.map((selector) =>
 			document.querySelector(selector)
-		);
+		).filter(Boolean);
 
 		const onResize = debounce(() => {
 			document.body.style.setProperty('--editor-height', '0px');
