@@ -46,23 +46,18 @@ public class MCPServerDataMaskObjectEntryModelListener
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		ObjectDefinition profileDataMaskObjectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					objectEntry.getCompanyId());
 
-		if (profileDataMaskObjectDefinition == null) {
-			return;
-		}
-
-		String maskExternalReferenceCode =
-			objectEntry.getExternalReferenceCode();
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 
 		for (ObjectEntry profileDataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
-					0, profileDataMaskObjectDefinition.getObjectDefinitionId(),
+					0, objectDefinition.getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			Map<String, Serializable> values =
@@ -70,7 +65,7 @@ public class MCPServerDataMaskObjectEntryModelListener
 
 			if (!Objects.equals(
 					values.get("dataMaskExternalReferenceCode"),
-					maskExternalReferenceCode)) {
+					externalReferenceCode)) {
 
 				continue;
 			}
@@ -100,7 +95,7 @@ public class MCPServerDataMaskObjectEntryModelListener
 						StringBundler.concat(
 							"Unable to delete profile data mask ",
 							profileDataMaskObjectEntry.getObjectEntryId(),
-							" for data mask ", maskExternalReferenceCode),
+							" for data mask ", externalReferenceCode),
 						portalException);
 				}
 			}

@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
-@FeatureFlag("LPD-63311")
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class MCPServerDataMaskAuditTest {
 
@@ -90,9 +90,6 @@ public class MCPServerDataMaskAuditTest {
 		MCPServerDataMaskTestUtil.updateMCPServerConfiguration(false);
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsDataMaskCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -122,9 +119,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsDataMaskDelete() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -155,9 +149,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsDataMaskUpdate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -201,9 +192,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsDeleteReasonWhenMaskIsDeleted()
 		throws Exception {
@@ -266,9 +254,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsDeleteReasonWhenProfileIsDeleted()
 		throws Exception {
@@ -331,9 +316,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsProfileDataMaskCreate() throws Exception {
 		ObjectEntry profileObjectEntry = MCPServerDataMaskTestUtil.addProfile(
@@ -372,9 +354,6 @@ public class MCPServerDataMaskAuditTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testAuditLogRecordsProfileDataMaskDelete() throws Exception {
 		ObjectEntry profileObjectEntry = MCPServerDataMaskTestUtil.addProfile(

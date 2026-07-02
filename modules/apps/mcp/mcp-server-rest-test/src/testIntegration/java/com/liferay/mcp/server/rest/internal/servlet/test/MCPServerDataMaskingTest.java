@@ -56,7 +56,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
-@FeatureFlag("LPD-63311")
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class MCPServerDataMaskingTest {
 
@@ -96,9 +96,6 @@ public class MCPServerDataMaskingTest {
 		MCPServerDataMaskTestUtil.updateMCPServerConfiguration(false);
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testCustomMaskCanBeDeletedWhileAttachedToProfile()
 		throws Exception {
@@ -140,9 +137,6 @@ public class MCPServerDataMaskingTest {
 				profileDataMaskObjectEntry.getObjectEntryId()));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testEmailIsNotRedactedWhenAssociationIsRemoved()
 		throws Exception {
@@ -171,9 +165,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString("[EMAIL_ADDRESS]")));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testEmailIsRedactedInProfileResponse() throws Exception {
 		String profileName = RandomTestUtil.randomString();
@@ -197,9 +188,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testErrorResponseIsRedacted() throws Exception {
 		String profileName = RandomTestUtil.randomString();
@@ -236,9 +224,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testIPv4IsRedactedOnceInProfileResponse() throws Exception {
 		String profileName = RandomTestUtil.randomString();
@@ -259,9 +244,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString("192.168.1.42")));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testProfileDataMaskCannotBeRemovedWithoutDeleteReason()
 		throws Exception {
@@ -303,9 +285,6 @@ public class MCPServerDataMaskingTest {
 				profileDataMaskObjectEntry.getObjectEntryId()));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testProfileDataMasksAreDeletedOnProfileRemove()
 		throws Exception {
@@ -341,9 +320,6 @@ public class MCPServerDataMaskingTest {
 			0, _countProfileDataMasks(mcpServerProfileExternalReferenceCode));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testRestApiInvokeAppliesMasksWhenDataMasksHeaderSet()
 		throws Exception {
@@ -364,9 +340,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testRestApiInvokeRespectsSelectedMasksOnly() throws Exception {
 		MCPServerDataMaskTestUtil.addProfile(
@@ -389,9 +362,6 @@ public class MCPServerDataMaskingTest {
 			responseText, CoreMatchers.containsString(_SAMPLE_PHONE));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testRestApiInvokeSkipsRedactionWhenDataMasksHeaderIsUnknown()
 		throws Exception {
@@ -412,9 +382,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString("[EMAIL_ADDRESS]")));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testRestApiInvokeSkipsRedactionWhenNoDataMasksHeader()
 		throws Exception {
@@ -433,9 +400,6 @@ public class MCPServerDataMaskingTest {
 			CoreMatchers.not(CoreMatchers.containsString("[EMAIL_ADDRESS]")));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testSystemMasksAreAutoAttachedOnProfileCreate()
 		throws Exception {
@@ -450,9 +414,6 @@ public class MCPServerDataMaskingTest {
 				profileObjectEntry.getExternalReferenceCode()));
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag("LPD-63311")
-	)
 	@Test
 	public void testSystemMasksAreSeededOnDefaultProfile() throws Exception {
 		ObjectEntry defaultProfileObjectEntry = _findProfile("default");

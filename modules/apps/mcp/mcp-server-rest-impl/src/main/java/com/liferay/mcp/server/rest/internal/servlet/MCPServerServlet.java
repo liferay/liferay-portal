@@ -310,25 +310,25 @@ public class MCPServerServlet extends HttpServlet {
 			long companyId, String mcpServerProfileExternalReferenceCode)
 		throws PortalException {
 
-		ObjectDefinition profileDataMaskObjectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					companyId);
 
-		if (profileDataMaskObjectDefinition == null) {
+		if (objectDefinition == null) {
 			return Collections.emptyList();
 		}
 
 		List<Map<String, Serializable>> valuesList = new ArrayList<>(
 			_objectEntryLocalService.getValuesList(
-				0, companyId, profileDataMaskObjectDefinition.getUserId(),
-				profileDataMaskObjectDefinition.getObjectDefinitionId(),
+				0, companyId, objectDefinition.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
 				_filterFactory.create(
 					"mcpServerProfileExternalReferenceCode eq '" +
 						mcpServerProfileExternalReferenceCode + "'",
-					profileDataMaskObjectDefinition),
+					objectDefinition),
 				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		valuesList.sort(
@@ -339,8 +339,8 @@ public class MCPServerServlet extends HttpServlet {
 		return TransformUtil.transform(
 			valuesList,
 			values -> {
-				String externalReferenceCode = (String)values.get(
-					"dataMaskExternalReferenceCode");
+				String externalReferenceCode = MapUtil.getString(
+					values, "dataMaskExternalReferenceCode");
 
 				if (Validator.isNotNull(externalReferenceCode)) {
 					return externalReferenceCode;

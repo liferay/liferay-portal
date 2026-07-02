@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import jakarta.servlet.Servlet;
 
@@ -74,30 +75,29 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		ObjectDefinition profileDataMaskObjectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					objectEntry.getCompanyId());
 
-		if (profileDataMaskObjectDefinition == null) {
+		if (objectDefinition == null) {
 			return;
 		}
 
-		String mcpServerProfileExternalReferenceCode =
-			objectEntry.getExternalReferenceCode();
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 
 		for (ObjectEntry profileDataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
-					0, profileDataMaskObjectDefinition.getObjectDefinitionId(),
+					0, objectDefinition.getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			Map<String, Serializable> values =
 				profileDataMaskObjectEntry.getValues();
 
 			if (!Objects.equals(
-					mcpServerProfileExternalReferenceCode,
+					externalReferenceCode,
 					values.get("mcpServerProfileExternalReferenceCode"))) {
 
 				continue;
@@ -128,16 +128,15 @@ public class MCPServerProfileObjectEntryModelListener
 						StringBundler.concat(
 							"Unable to delete profile data mask ",
 							profileDataMaskObjectEntry.getObjectEntryId(),
-							" for profile ",
-							mcpServerProfileExternalReferenceCode),
+							" for profile ", externalReferenceCode),
 						portalException);
 				}
 			}
 		}
 	}
 
-	private void _addMCPServerProfileDataMasks(ObjectEntry profileObjectEntry) {
-		long companyId = profileObjectEntry.getCompanyId();
+	private void _addMCPServerProfileDataMasks(ObjectEntry objectEntry) {
+		long companyId = objectEntry.getCompanyId();
 
 		ObjectDefinition maskObjectDefinition =
 			_objectDefinitionLocalService.
@@ -165,15 +164,15 @@ public class MCPServerProfileObjectEntryModelListener
 					0, maskObjectDefinition.getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-			Map<String, Serializable> maskValues = maskObjectEntry.getValues();
+			Map<String, Serializable> values = maskObjectEntry.getValues();
 
-			if (!Objects.equals(maskValues.get("maskType"), "system")) {
+			if (!Objects.equals(values.get("maskType"), "system")) {
 				continue;
 			}
 
 			try {
 				_objectEntryLocalService.addObjectEntry(
-					0, profileObjectEntry.getUserId(),
+					0, objectEntry.getUserId(),
 					profileDataMaskObjectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -185,7 +184,7 @@ public class MCPServerProfileObjectEntryModelListener
 						"executionOrder", executionOrder
 					).put(
 						"mcpServerProfileExternalReferenceCode",
-						profileObjectEntry.getExternalReferenceCode()
+						objectEntry.getExternalReferenceCode()
 					).build(),
 					new ServiceContext());
 
@@ -196,8 +195,8 @@ public class MCPServerProfileObjectEntryModelListener
 					_log.warn(
 						StringBundler.concat(
 							"Unable to attach system mask \"",
-							maskValues.get("name"), "\" to profile ",
-							profileObjectEntry.getObjectEntryId()),
+							values.get("name"), "\" to profile ",
+							objectEntry.getObjectEntryId()),
 						portalException);
 				}
 			}
@@ -205,13 +204,11 @@ public class MCPServerProfileObjectEntryModelListener
 	}
 
 	private String _getName(ObjectEntry objectEntry) {
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		return (String)values.get("name");
+		return MapUtil.getString(objectEntry.getValues(), "name");
 	}
 
 	private void _invalidateServlet(
-		ObjectEntry profileObjectEntry, String profileName) {
+		ObjectEntry objectEntry, String profileName) {
 
 		if (_servlet == null) {
 			return;
@@ -219,8 +216,7 @@ public class MCPServerProfileObjectEntryModelListener
 
 		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
 
-		mcpServerServlet.invalidate(
-			profileObjectEntry.getCompanyId(), profileName);
+		mcpServerServlet.invalidate(objectEntry.getCompanyId(), profileName);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

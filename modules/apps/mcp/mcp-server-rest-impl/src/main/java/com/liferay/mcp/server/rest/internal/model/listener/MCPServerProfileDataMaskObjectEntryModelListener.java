@@ -10,13 +10,10 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.validation.ValidationException;
-
-import java.io.Serializable;
-
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -38,9 +35,9 @@ public class MCPServerProfileDataMaskObjectEntryModelListener
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		Map<String, Serializable> values = objectEntry.getValues();
+		if (Validator.isNull(
+				MapUtil.getString(objectEntry.getValues(), "deleteReason"))) {
 
-		if (Validator.isNull((String)values.get("deleteReason"))) {
 			throw new ModelListenerException(
 				new ValidationException(
 					"Unable to remove a profile data mask without a delete " +
