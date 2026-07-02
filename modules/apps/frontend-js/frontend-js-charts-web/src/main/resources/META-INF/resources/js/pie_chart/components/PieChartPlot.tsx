@@ -13,7 +13,7 @@ import {toPercent} from '../utils/percent';
 import PieChartCenterLabel from './PieChartCenterLabel';
 import PieChartSlice from './PieChartSlice';
 
-interface PieChartGraphicProps {
+interface PieChartPlotProps {
 	activeDatum?: PieDatum;
 	activeIndex: number | null;
 	activePercent?: number;
@@ -39,7 +39,7 @@ function getSliceClipId(baseId: string, index: number): string {
 	return `${baseId}-slice-clip-${index}`;
 }
 
-export default function PieChartGraphic({
+export default function PieChartPlot({
 	activeDatum,
 	activeIndex,
 	activePercent,
@@ -57,7 +57,7 @@ export default function PieChartGraphic({
 	pixelSize,
 	sliceRefFactory,
 	total,
-}: PieChartGraphicProps) {
+}: PieChartPlotProps) {
 	const precedingTotals = useMemo(() => computePrecedingTotals(data), [data]);
 
 	const slicePaths = useMemo(

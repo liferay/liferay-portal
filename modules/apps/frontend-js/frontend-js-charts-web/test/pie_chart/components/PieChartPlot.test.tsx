@@ -7,7 +7,7 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import PieChartGraphic from '../../../src/main/resources/META-INF/resources/js/pie_chart/components/PieChartGraphic';
+import PieChartPlot from '../../../src/main/resources/META-INF/resources/js/pie_chart/components/PieChartPlot';
 
 const DATA = [
 	{label: 'Alpha', value: 30},
@@ -38,13 +38,13 @@ const DEFAULT_PROPS = {
 	total: 100,
 };
 
-function renderGraphic(props = {}) {
-	return render(<PieChartGraphic {...DEFAULT_PROPS} {...props} />);
+function renderPlot(props = {}) {
+	return render(<PieChartPlot {...DEFAULT_PROPS} {...props} />);
 }
 
-describe('PieChartGraphic', () => {
+describe('PieChartPlot', () => {
 	it('renders one slice path per datum', () => {
-		const {container} = renderGraphic();
+		const {container} = renderPlot();
 
 		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(
 			DATA.length
@@ -52,13 +52,13 @@ describe('PieChartGraphic', () => {
 	});
 
 	it('renders no slices when the total is not positive', () => {
-		const {container} = renderGraphic({total: 0});
+		const {container} = renderPlot({total: 0});
 
 		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(0);
 	});
 
 	it('sizes the viewBox from the given pixel size', () => {
-		const {container} = renderGraphic({pixelSize: 300});
+		const {container} = renderPlot({pixelSize: 300});
 
 		expect(container.querySelector('svg')).toHaveAttribute(
 			'viewBox',
@@ -67,7 +67,7 @@ describe('PieChartGraphic', () => {
 	});
 
 	it('renders the center label when innerRadius is positive', () => {
-		const {container} = renderGraphic({innerRadius: 40});
+		const {container} = renderPlot({innerRadius: 40});
 
 		expect(
 			container.querySelector('.chart-pie-center-label')
@@ -75,7 +75,7 @@ describe('PieChartGraphic', () => {
 	});
 
 	it('omits the center label when innerRadius is zero', () => {
-		const {container} = renderGraphic({innerRadius: 0});
+		const {container} = renderPlot({innerRadius: 0});
 
 		expect(
 			container.querySelector('.chart-pie-center-label')
@@ -85,7 +85,7 @@ describe('PieChartGraphic', () => {
 	it('calls onFocus with the slice index when a slice is clicked', async () => {
 		const onFocus = jest.fn();
 
-		renderGraphic({onFocus});
+		renderPlot({onFocus});
 
 		await userEvent.click(screen.getAllByRole('img')[1]);
 
@@ -96,7 +96,7 @@ describe('PieChartGraphic', () => {
 		const onHover = jest.fn();
 		const onHoverEnd = jest.fn();
 
-		renderGraphic({onHover, onHoverEnd});
+		renderPlot({onHover, onHoverEnd});
 
 		const slice = screen.getAllByRole('img')[0];
 
@@ -110,7 +110,7 @@ describe('PieChartGraphic', () => {
 	it('calls onKeyDown with the slice index on keyboard interaction', () => {
 		const onKeyDown = jest.fn();
 
-		renderGraphic({onKeyDown});
+		renderPlot({onKeyDown});
 
 		const slice = screen.getAllByRole('img')[1];
 
@@ -125,7 +125,7 @@ describe('PieChartGraphic', () => {
 		const sliceRefs: (SVGPathElement | null)[] = [];
 
 		render(
-			<PieChartGraphic
+			<PieChartPlot
 				{...DEFAULT_PROPS}
 				sliceRefFactory={createSliceRefFactory(sliceRefs)}
 			/>
@@ -148,7 +148,7 @@ describe('PieChartGraphic', () => {
 		}
 
 		it('renders no overlay when no slice is focused', () => {
-			const {container} = renderGraphic({
+			const {container} = renderPlot({
 				data: MULTI_SLICE_DATA,
 				focusIndex: null,
 				pathFactory: pathFactoryByStartAngle,
@@ -163,7 +163,7 @@ describe('PieChartGraphic', () => {
 		});
 
 		it('renders the overlay only for a non-last focused slice, clipped to its own shape', () => {
-			const {container} = renderGraphic({
+			const {container} = renderPlot({
 				data: MULTI_SLICE_DATA,
 				focusIndex: 1,
 				pathFactory: pathFactoryByStartAngle,
@@ -189,7 +189,7 @@ describe('PieChartGraphic', () => {
 		});
 
 		it('keeps overlay halo/ring paths out of the direct-child slice path selector, so the reveal animation does not retrigger on focus change', () => {
-			const {container} = renderGraphic({
+			const {container} = renderPlot({
 				data: MULTI_SLICE_DATA,
 				focusIndex: 1,
 				pathFactory: pathFactoryByStartAngle,
@@ -223,7 +223,7 @@ describe('PieChartGraphic', () => {
 		});
 
 		it('generates a distinct clipPath per slice matching that slice own d', () => {
-			const {container} = renderGraphic({
+			const {container} = renderPlot({
 				data: MULTI_SLICE_DATA,
 				focusIndex: null,
 				pathFactory: pathFactoryByStartAngle,

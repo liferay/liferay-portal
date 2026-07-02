@@ -6,11 +6,19 @@
 .chart-pie {
 	display: block;
 	margin: 0;
+	width: fit-content;
 
 	.chart-pie-caption {
 		font-weight: 600;
 		margin-block-end: 0.5rem;
 		text-align: start;
+	}
+
+	.chart-pie-row {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
 	}
 
 	.chart-pie-body {
@@ -56,7 +64,7 @@
 
 	.chart-pie-legend {
 		list-style: none;
-		margin: 0.5rem 0 0;
+		margin: 0;
 		padding: 0;
 	}
 
@@ -119,7 +127,6 @@
 .chart-pie-legend-table {
 	border-collapse: collapse;
 	inline-size: 100%;
-	margin-block-start: 0.75rem;
 
 	th,
 	td {
