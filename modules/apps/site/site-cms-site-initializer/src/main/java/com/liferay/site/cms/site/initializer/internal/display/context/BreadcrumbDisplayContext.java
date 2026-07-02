@@ -11,6 +11,7 @@ import com.liferay.depot.service.DepotEntryPinLocalService;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -83,301 +84,273 @@ public class BreadcrumbDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"actionItems",
 			_putAll(
-				unsafeConsumer -> {
-					PermissionChecker permissionChecker =
-						_themeDisplay.getPermissionChecker();
+				unsafeBiConsumer -> {
+					DepotEntryPin depotEntryPin =
+						_depotEntryPinLocalService.fetchGroupDepotEntryPin(
+							_groupId, _themeDisplay.getUserId());
 
-					if (permissionChecker.hasPermission(
-							group, DepotEntry.class.getName(),
-							group.getClassPK(), ActionKeys.UPDATE)) {
+					unsafeBiConsumer.accept(
+						_hasUpdatePermission() && (depotEntryPin == null),
+						JSONUtil.put(
+							"href",
+							StringBundler.concat(
+								"/o/headless-asset-library/v1.0",
+								"/asset-libraries/",
+								group.getExternalReferenceCode(), "/pins")
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "pin-to-product-menu")
+						).put(
+							"redirect", _themeDisplay.getURLCurrent()
+						).put(
+							"successMessage",
+							LanguageUtil.get(
+								_httpServletRequest,
+								"the-space-has-been-successfully-pinned-to-" +
+									"the-product-menu")
+						).put(
+							"symbolLeft", "pin"
+						).put(
+							"target", "asyncPut"
+						));
+					unsafeBiConsumer.accept(
+						_hasUpdatePermission() && (depotEntryPin != null),
+						JSONUtil.put(
+							"href",
+							StringBundler.concat(
+								"/o/headless-asset-library/v1.0",
+								"/asset-libraries/",
+								group.getExternalReferenceCode(), "/pins")
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "unpin-from-product-menu")
+						).put(
+							"redirect", _themeDisplay.getURLCurrent()
+						).put(
+							"successMessage",
+							LanguageUtil.get(
+								_httpServletRequest,
+								"the-space-has-been-successfully-unpinned-" +
+									"from-the-product-menu")
+						).put(
+							"symbolLeft", "unpin"
+						).put(
+							"target", "asyncDelete"
+						));
 
-						DepotEntryPin depotEntryPin =
-							_depotEntryPinLocalService.fetchGroupDepotEntryPin(
-								_groupId, _themeDisplay.getUserId());
-
-						if (depotEntryPin == null) {
-							unsafeConsumer.accept(
-								JSONUtil.put(
-									"href",
-									StringBundler.concat(
-										"/o/headless-asset-library/v1.0",
-										"/asset-libraries/",
-										group.getExternalReferenceCode(),
-										"/pins")
-								).put(
-									"label",
-									LanguageUtil.get(
-										_httpServletRequest,
-										"pin-to-product-menu")
-								).put(
-									"redirect", _themeDisplay.getURLCurrent()
-								).put(
-									"successMessage",
-									LanguageUtil.get(
-										_httpServletRequest,
-										"the-space-has-been-successfully-" +
-											"pinned-to-the-product-menu")
-								).put(
-									"symbolLeft", "pin"
-								).put(
-									"target", "asyncPut"
-								));
-						}
-						else {
-							unsafeConsumer.accept(
-								JSONUtil.put(
-									"href",
-									StringBundler.concat(
-										"/o/headless-asset-library/v1.0",
-										"/asset-libraries/",
-										group.getExternalReferenceCode(),
-										"/pins")
-								).put(
-									"label",
-									LanguageUtil.get(
-										_httpServletRequest,
-										"unpin-from-product-menu")
-								).put(
-									"redirect", _themeDisplay.getURLCurrent()
-								).put(
-									"successMessage",
-									LanguageUtil.get(
-										_httpServletRequest,
-										"the-space-has-been-successfully-" +
-											"unpinned-from-the-product-menu")
-								).put(
-									"symbolLeft", "unpin"
-								).put(
-									"target", "asyncDelete"
-								));
-						}
-
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href",
-								ActionUtil.getSpaceSettingsURL(
-									group.getClassPK(),
-									_themeDisplay.getURLCurrent(),
-									_themeDisplay)
+					unsafeBiConsumer.accept(
+						_hasUpdatePermission(),
+						JSONUtil.put(
+							"href",
+							ActionUtil.getSpaceSettingsURL(
+								group.getClassPK(),
+								_themeDisplay.getURLCurrent(), _themeDisplay)
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "space-settings")
+						).put(
+							"symbolLeft", "cog"
+						));
+					unsafeBiConsumer.accept(
+						_hasUpdatePermission(),
+						JSONUtil.put(
+							"href",
+							_getControlPanelPortletURL(
+								ExportImportPortletKeys.EXPORT)
+						).put(
+							"label",
+							LanguageUtil.get(_httpServletRequest, "export")
+						).put(
+							"symbolLeft", "export"
+						));
+					unsafeBiConsumer.accept(
+						_hasUpdatePermission(),
+						JSONUtil.put(
+							"href",
+							_getControlPanelPortletURL(
+								ExportImportPortletKeys.IMPORT)
+						).put(
+							"label",
+							LanguageUtil.get(_httpServletRequest, "import")
+						).put(
+							"symbolLeft", "import"
+						));
+					unsafeBiConsumer.accept(
+						_hasViewPermission(),
+						JSONUtil.put(
+							"href", StringPool.BLANK
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "view-members")
+						).put(
+							"manageMembersData",
+							HashMapBuilder.<String, Object>put(
+								"assetLibraryCreatorUserId",
+								_themeDisplay.getUserId()
 							).put(
-								"label",
-								LanguageUtil.get(
-									_httpServletRequest, "space-settings")
+								"externalReferenceCode",
+								group.getExternalReferenceCode()
 							).put(
-								"symbolLeft", "cog"
-							));
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href",
-								_getControlPanelPortletURL(
-									ExportImportPortletKeys.EXPORT)
-							).put(
-								"label",
-								LanguageUtil.get(_httpServletRequest, "export")
-							).put(
-								"symbolLeft", "export"
-							));
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href",
-								_getControlPanelPortletURL(
-									ExportImportPortletKeys.IMPORT)
-							).put(
-								"label",
-								LanguageUtil.get(_httpServletRequest, "import")
-							).put(
-								"symbolLeft", "import"
-							));
-					}
-
-					if (permissionChecker.hasPermission(
-							group, DepotEntry.class.getName(),
-							group.getClassPK(), ActionKeys.VIEW)) {
-
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href", StringPool.BLANK
-							).put(
-								"label",
-								LanguageUtil.get(
-									_httpServletRequest, "view-members")
-							).put(
-								"manageMembersData",
-								HashMapBuilder.<String, Object>put(
-									"assetLibraryCreatorUserId",
-									_themeDisplay.getUserId()
-								).put(
-									"externalReferenceCode",
-									group.getExternalReferenceCode()
-								).put(
-									"hasAssignMembersPermission",
-									_groupModelResourcePermission.contains(
-										permissionChecker, group.getGroupId(),
-										ActionKeys.ASSIGN_MEMBERS)
-								).put(
-									"title",
-									LanguageUtil.get(
-										_httpServletRequest, "all-members")
-								).build()
-							).put(
-								"redirect", _themeDisplay.getURLCurrent()
-							).put(
-								"symbolLeft", "users"
-							).put(
-								"target", "manageMembersModal"
-							));
-
-						Map<String, Map<String, String>> actions =
-							_getAssetLibraryActions(group);
-
-						if (actions.containsKey("connect-sites") ||
-							actions.containsKey("view-connected-sites")) {
-
-							unsafeConsumer.accept(
-								JSONUtil.put(
-									"href", StringPool.BLANK
-								).put(
-									"label",
-									LanguageUtil.get(
-										_httpServletRequest,
-										"view-connected-sites")
-								).put(
-									"manageConnectedSitesData",
-									HashMapBuilder.<String, Object>put(
-										"externalReferenceCode",
-										group.getExternalReferenceCode()
-									).put(
-										"hasConnectSitesPermission",
-										actions.containsKey("connect-sites")
-									).build()
-								).put(
-									"redirect", _themeDisplay.getURLCurrent()
-								).put(
-									"symbolLeft", "globe"
-								).put(
-									"target", "manageConnectedSitesModal"
-								));
-						}
-					}
-
-					if (permissionChecker.hasPermission(
-							group, DepotEntry.class.getName(),
-							group.getClassPK(), ActionKeys.PERMISSIONS)) {
-
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"href",
-								PermissionsURLTag.doTag(
-									StringPool.BLANK,
-									DepotEntry.class.getName(), group.getName(),
+								"hasAssignMembersPermission",
+								_groupModelResourcePermission.contains(
+									_themeDisplay.getPermissionChecker(),
 									group.getGroupId(),
-									String.valueOf(group.getClassPK()),
-									LiferayWindowState.POP_UP.toString(), null,
-									_httpServletRequest)
+									ActionKeys.ASSIGN_MEMBERS)
 							).put(
-								"label",
+								"title",
 								LanguageUtil.get(
-									_httpServletRequest, "permissions")
-							).put(
-								"symbolLeft", "password-policies"
-							).put(
-								"target", "modal"
-							));
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"defaultPermissionAdditionalProps",
-								HashMapBuilder.putAll(
-									PermissionUtil.
-										getDefaultPermissionAdditionalProps(
-											_httpServletRequest, _themeDisplay)
-								).put(
-									"classExternalReferenceCode",
-									group.getExternalReferenceCode()
-								).put(
-									"className", DepotEntry.class.getName()
-								).build()
-							).put(
-								"href", StringPool.BLANK
-							).put(
-								"label",
-								LanguageUtil.get(
-									_httpServletRequest, "default-permissions")
-							).put(
-								"symbolLeft", "password-policies"
-							).put(
-								"target", "defaultPermissionsModal"
-							));
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"defaultPermissionAdditionalProps",
-								HashMapBuilder.putAll(
-									PermissionUtil.
-										getDefaultPermissionAdditionalProps(
-											true, _httpServletRequest,
-											_themeDisplay)
-								).put(
-									"classExternalReferenceCode",
-									group.getExternalReferenceCode()
-								).put(
-									"className", DepotEntry.class.getName()
-								).build()
-							).put(
-								"href", StringPool.BLANK
-							).put(
-								"label",
-								LanguageUtil.get(
-									_httpServletRequest,
-									"edit-and-propagate-default-permissions")
-							).put(
-								"symbolLeft", "password-policies"
-							).put(
-								"target", "defaultPermissionsModal"
-							));
-					}
+									_httpServletRequest, "all-members")
+							).build()
+						).put(
+							"redirect", _themeDisplay.getURLCurrent()
+						).put(
+							"symbolLeft", "users"
+						).put(
+							"target", "manageMembersModal"
+						));
 
-					if (permissionChecker.hasPermission(
-							group, DepotEntry.class.getName(),
-							group.getClassPK(), ActionKeys.DELETE)) {
+					Map<String, Map<String, String>> actions =
+						_getAssetLibraryActions(group);
 
-						unsafeConsumer.accept(
-							JSONUtil.put(
-								"confirmationMessage",
-								LanguageUtil.get(
-									_httpServletRequest,
-									"delete-space-confirmation-body")
+					unsafeBiConsumer.accept(
+						_hasViewPermission() &&
+						(actions.containsKey("connect-sites") ||
+						 actions.containsKey("view-connected-sites")),
+						JSONUtil.put(
+							"href", StringPool.BLANK
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "view-connected-sites")
+						).put(
+							"manageConnectedSitesData",
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode",
+								group.getExternalReferenceCode()
 							).put(
-								"confirmationTitle",
-								LanguageUtil.format(
-									_httpServletRequest,
-									"delete-space-confirmation-title",
-									group.getDescriptiveName())
+								"hasConnectSitesPermission",
+								actions.containsKey("connect-sites")
+							).build()
+						).put(
+							"redirect", _themeDisplay.getURLCurrent()
+						).put(
+							"symbolLeft", "globe"
+						).put(
+							"target", "manageConnectedSitesModal"
+						));
+
+					unsafeBiConsumer.accept(
+						_hasPermissionsPermission(),
+						JSONUtil.put(
+							"href",
+							PermissionsURLTag.doTag(
+								StringPool.BLANK, DepotEntry.class.getName(),
+								group.getName(), group.getGroupId(),
+								String.valueOf(group.getClassPK()),
+								LiferayWindowState.POP_UP.toString(), null,
+								_httpServletRequest)
+						).put(
+							"label",
+							LanguageUtil.get(_httpServletRequest, "permissions")
+						).put(
+							"symbolLeft", "password-policies"
+						).put(
+							"target", "modal"
+						));
+					unsafeBiConsumer.accept(
+						_hasPermissionsPermission(),
+						JSONUtil.put(
+							"defaultPermissionAdditionalProps",
+							HashMapBuilder.putAll(
+								PermissionUtil.
+									getDefaultPermissionAdditionalProps(
+										_httpServletRequest, _themeDisplay)
 							).put(
-								"href",
-								StringBundler.concat(
-									"/o/headless-asset-library/v1.0",
-									"/asset-libraries/",
-									group.getExternalReferenceCode())
+								"classExternalReferenceCode",
+								group.getExternalReferenceCode()
 							).put(
-								"label",
-								LanguageUtil.get(_httpServletRequest, "delete")
+								"className", DepotEntry.class.getName()
+							).build()
+						).put(
+							"href", StringPool.BLANK
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest, "default-permissions")
+						).put(
+							"symbolLeft", "password-policies"
+						).put(
+							"target", "defaultPermissionsModal"
+						));
+					unsafeBiConsumer.accept(
+						_hasPermissionsPermission(),
+						JSONUtil.put(
+							"defaultPermissionAdditionalProps",
+							HashMapBuilder.putAll(
+								PermissionUtil.
+									getDefaultPermissionAdditionalProps(
+										true, _httpServletRequest,
+										_themeDisplay)
 							).put(
-								"redirect",
-								StringBundler.concat(
-									_themeDisplay.getPathFriendlyURLPublic(),
-									GroupConstants.CMS_FRIENDLY_URL,
-									"/all-spaces")
+								"classExternalReferenceCode",
+								group.getExternalReferenceCode()
 							).put(
-								"successMessage",
-								LanguageUtil.format(
-									_httpServletRequest,
-									"x-was-successfully-deleted",
-									group.getDescriptiveName())
-							).put(
-								"symbolLeft", "trash"
-							).put(
-								"target", "asyncDelete"
-							));
-					}
+								"className", DepotEntry.class.getName()
+							).build()
+						).put(
+							"href", StringPool.BLANK
+						).put(
+							"label",
+							LanguageUtil.get(
+								_httpServletRequest,
+								"edit-and-propagate-default-permissions")
+						).put(
+							"symbolLeft", "password-policies"
+						).put(
+							"target", "defaultPermissionsModal"
+						));
+					unsafeBiConsumer.accept(
+						_hasPermission(ActionKeys.DELETE),
+						JSONUtil.put(
+							"confirmationMessage",
+							LanguageUtil.get(
+								_httpServletRequest,
+								"delete-space-confirmation-body")
+						).put(
+							"confirmationTitle",
+							LanguageUtil.format(
+								_httpServletRequest,
+								"delete-space-confirmation-title",
+								group.getDescriptiveName())
+						).put(
+							"href",
+							StringBundler.concat(
+								"/o/headless-asset-library/v1.0",
+								"/asset-libraries/",
+								group.getExternalReferenceCode())
+						).put(
+							"label",
+							LanguageUtil.get(_httpServletRequest, "delete")
+						).put(
+							"redirect",
+							StringBundler.concat(
+								_themeDisplay.getPathFriendlyURLPublic(),
+								GroupConstants.CMS_FRIENDLY_URL, "/all-spaces")
+						).put(
+							"successMessage",
+							LanguageUtil.format(
+								_httpServletRequest,
+								"x-was-successfully-deleted",
+								group.getDescriptiveName())
+						).put(
+							"symbolLeft", "trash"
+						).put(
+							"target", "asyncDelete"
+						));
 				})
 		).put(
 			"breadcrumbItems",
@@ -406,6 +379,10 @@ public class BreadcrumbDisplayContext {
 	private Map<String, Map<String, String>> _getAssetLibraryActions(
 			Group group)
 		throws Exception {
+
+		if (!_hasViewPermission()) {
+			return Collections.emptyMap();
+		}
 
 		AssetLibraryResource assetLibraryResource =
 			_assetLibraryResourceFactory.create(
@@ -443,17 +420,61 @@ public class BreadcrumbDisplayContext {
 	}
 
 	private Group _getGroup() throws Exception {
-		return _groupLocalService.getGroup(_groupId);
+		if (_group == null) {
+			_group = _groupLocalService.getGroup(_groupId);
+		}
+
+		return _group;
+	}
+
+	private boolean _hasPermission(String actionId) throws Exception {
+		PermissionChecker permissionChecker =
+			_themeDisplay.getPermissionChecker();
+
+		Group group = _getGroup();
+
+		return permissionChecker.hasPermission(
+			group, DepotEntry.class.getName(), group.getClassPK(), actionId);
+	}
+
+	private boolean _hasPermissionsPermission() throws Exception {
+		if (_hasPermissionsPermission == null) {
+			_hasPermissionsPermission = _hasPermission(ActionKeys.PERMISSIONS);
+		}
+
+		return _hasPermissionsPermission;
+	}
+
+	private boolean _hasUpdatePermission() throws Exception {
+		if (_hasUpdatePermission == null) {
+			_hasUpdatePermission = _hasPermission(ActionKeys.UPDATE);
+		}
+
+		return _hasUpdatePermission;
+	}
+
+	private boolean _hasViewPermission() throws Exception {
+		if (_hasViewPermission == null) {
+			_hasViewPermission = _hasPermission(ActionKeys.VIEW);
+		}
+
+		return _hasViewPermission;
 	}
 
 	private JSONArray _putAll(
-			UnsafeConsumer<UnsafeConsumer<JSONObject, Exception>, Exception>
-				unsafeConsumer)
+			UnsafeConsumer
+				<UnsafeBiConsumer<Boolean, JSONObject, Exception>, Exception>
+					unsafeConsumer)
 		throws Exception {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		unsafeConsumer.accept(jsonArray::put);
+		unsafeConsumer.accept(
+			(boolean1, jsonObject) -> {
+				if (boolean1) {
+					jsonArray.put(jsonObject);
+				}
+			});
 
 		if (jsonArray.length() == 0) {
 			return null;
@@ -464,9 +485,13 @@ public class BreadcrumbDisplayContext {
 
 	private final AssetLibraryResource.Factory _assetLibraryResourceFactory;
 	private final DepotEntryPinLocalService _depotEntryPinLocalService;
+	private Group _group;
 	private final long _groupId;
 	private final GroupLocalService _groupLocalService;
 	private final ModelResourcePermission<Group> _groupModelResourcePermission;
+	private Boolean _hasPermissionsPermission;
+	private Boolean _hasUpdatePermission;
+	private Boolean _hasViewPermission;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _size;
 	private final ThemeDisplay _themeDisplay;
