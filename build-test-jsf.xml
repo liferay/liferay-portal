@@ -91,7 +91,7 @@
 					<sequential>
 						<copy
 							flatten="true"
-							todir="${liferayHome}/osgi/war"
+							todir="${liferay.home}/osgi/war"
 						>
 							<fileset
 								dir="${liferay.faces.alloy.dir}"
