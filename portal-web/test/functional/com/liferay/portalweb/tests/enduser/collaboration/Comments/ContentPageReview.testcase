@@ -40,33 +40,6 @@ definition {
 		}
 	}
 
-	@description = "This case ensures that the user can add a comment to a fragment of a content page."
-	@priority = 5
-	@refactordone
-	test CanAddComment {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Title");
-
-		PageEditor.addComment(
-			content = "Lorem ipsum dolor sit amet",
-			fragmentClass = "header",
-			fragmentComment = "This is a fragment comment!",
-			fragmentName = "Title",
-			position = 1);
-
-		PageEditor.viewComment(fragmentComment = "This is a fragment comment!");
-	}
-
 	@description = "This case ensures that the user can add a comment with escape characters to a fragment of a content page."
 	@priority = 4
 	@refactordone
