@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <xliff version="1.2">
-		<file original="com.liferay.journal.model.JournalArticle:122" source-language="en" target-language="de" tool="okapi" datatype="html">
-		<header/>
+	<file datatype="html" original="com.liferay.journal.model.JournalArticle:122" source-language="en" target-language="de" tool="okapi">
+		<header />
 		<body>
 			<trans-unit id="1">
 				<source xml:lang="en-US">Segment one.</source>

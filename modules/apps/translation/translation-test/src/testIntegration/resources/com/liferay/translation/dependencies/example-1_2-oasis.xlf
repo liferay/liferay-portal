@@ -1,18 +1,28 @@
 <?xml version="1.0"?>
 
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2"  version="1.2">
-	<file original="com.liferay.journal.model.JournalArticle:122"
-		  source-language="en-US" target-language="ja-JP"
-		  tool="Rainbow" datatype="photoshop">
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file
+		datatype="photoshop"
+		original="com.liferay.journal.model.JournalArticle:122"
+		source-language="en-US"
+		target-language="ja-JP"
+		tool="Rainbow"
+	>
 		<header>
 			<skl>
-				<external-file uid="3BB236513BB24732" href="Graphic Example.psd.skl"/>
+				<external-file href="Graphic Example.psd.skl" uid="3BB236513BB24732" />
 			</skl>
 			<phase-group>
-				<phase phase-name="extract" process-name="extraction"
-					   tool="Rainbow" date="20010926T152258Z"
-					   company-name="NeverLand Inc." job-id="123"
-					   contact-name="Peter Pan" contact-email="ppan@example.com">
+				<phase
+					company-name="NeverLand Inc."
+					contact-email="ppan@example.com"
+					contact-name="Peter Pan"
+					date="20010926T152258Z"
+					job-id="123"
+					phase-name="extract"
+					process-name="extraction"
+					tool="Rainbow"
+				>
 					<note>Make sure to use the glossary I sent you yesterday.
 						Thanks.</note>
 				</phase>
