@@ -10,7 +10,9 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 
@@ -21,7 +23,8 @@ const test = mergeTests(
 	}),
 	isolatedSiteTest,
 	loginTest(),
-	pageEditorPagesTest
+	pageEditorPagesTest,
+	pagesAdminPagesTest
 );
 
 test(
@@ -409,5 +412,68 @@ test(
 
 			await pageEditorPage.viewFragmentCommentReply(reply, 'Test Test');
 		}
+	}
+);
+
+test(
+	'Views a fragment comment after discarding a draft',
+	{tag: ['@LPD-96910', '@LPS-99643']},
+	async ({apiHelpers, page, pageEditorPage, pagesAdminPage, site}) => {
+
+		// Create a page with two fragments and go to edit mode
+
+		const headingId = getRandomString();
+		const paragraphId = getRandomString();
+
+		const layoutTitle = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: headingId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+				getFragmentDefinition({
+					id: paragraphId,
+					key: 'BASIC_COMPONENT-paragraph',
+				}),
+			]),
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment and publish
+
+		const comment = 'This is a fragment comment';
+
+		await pageEditorPage.addFragmentComment(headingId, comment);
+
+		await pageEditorPage.publishPage();
+
+		// Create a draft by removing the uncommented fragment
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.removeFragment(paragraphId);
+
+		// Discard the draft
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		page.once('dialog', (dialog) => dialog.accept());
+
+		await pagesAdminPage.clickOnAction('Discard Draft', layoutTitle);
+
+		await waitForAlert(page);
+
+		// Reopen the page and check the comment persists
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(headingId);
+
+		await pageEditorPage.viewFragmentComment(comment);
 	}
 );
