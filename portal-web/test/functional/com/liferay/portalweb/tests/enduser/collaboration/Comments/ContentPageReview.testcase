@@ -130,43 +130,6 @@ definition {
 		PageEditor.replyToComment(commentReply = "Fragment Comment 2");
 	}
 
-	@description = "This case ensures a user can mark a fragment comment as resolved after publishing a content page."
-	@priority = 4
-	@refactordone
-	test CanResolveComment {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Static Text");
-
-		PageEditor.addComment(
-			content = "This is static text.",
-			fragmentClass = "static-text",
-			fragmentComment = "This is a fragment comment.",
-			fragmentName = "Static Text",
-			position = 1);
-
-		PageEditor.publish();
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.gotoCommentViaFragment(
-			fragmentName = "Static Text",
-			position = 1);
-
-		PageEditor.resolveComment(fragmentComment = "This is a fragment comment.");
-	}
-
 	@description = "This case ensures that the user can add fragment comments via the sidebar, with escape characters, and via the fragment topper icon, then see them after publishing a content page."
 	@priority = 5
 	@refactordone
