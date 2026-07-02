@@ -69,12 +69,12 @@ test('Assert that the style books in the page editor are based on the applied th
 		await expect(page.getByText(styleBookName)).toBeVisible();
 	});
 
-	await test.step('Apply the Dialect theme and assert the Dialect style book is applied', async () => {
+	await test.step('Apply the CMS theme and assert the CMS style book is applied', async () => {
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
 		await pagesAdminPage.goToDesignTabConfiguration(pageName);
 
-		await pagesAdminPage.changeTheme('Dialect');
+		await pagesAdminPage.changeTheme('CMS');
 
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
@@ -84,7 +84,7 @@ test('Assert that the style books in the page editor are based on the applied th
 
 		await pageEditorPage.goToConfigurationTab('Style Book');
 
-		await expect(page.getByText('Styles from Dialect Theme')).toBeVisible();
+		await expect(page.getByText('Styles from CMS Theme')).toBeVisible();
 		await expect(page.getByText(styleBookName)).toBeHidden();
 	});
 });
@@ -331,16 +331,16 @@ test('Style book is incompatible with the applied theme', async ({
 		await styleBooksPage.publish();
 	});
 
-	const dialectStyleBookName = getRandomString();
+	const cmsStyleBookName = getRandomString();
 
-	await test.step('Create a style book for Dialect theme and mark it as default', async () => {
+	await test.step('Create a style book for CMS theme and mark it as default', async () => {
 		await styleBooksPage.goto(site.friendlyUrlPath);
 
-		await styleBooksPage.create(dialectStyleBookName, 'Dialect Theme');
+		await styleBooksPage.create(cmsStyleBookName, 'CMS Theme');
 
 		await styleBooksPage.publish();
 
-		await styleBooksPage.markAsDefault(dialectStyleBookName);
+		await styleBooksPage.markAsDefault(cmsStyleBookName);
 	});
 
 	const pageName = getRandomString();
@@ -358,15 +358,15 @@ test('Style book is incompatible with the applied theme', async ({
 		await pageEditorPage.publishPage();
 	});
 
-	await test.step('Change the theme to Dialect', async () => {
+	await test.step('Change the theme to CMS', async () => {
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
 		await pagesAdminPage.goToDesignTabConfiguration(pageName);
 
-		await pagesAdminPage.changeTheme('Dialect');
+		await pagesAdminPage.changeTheme('CMS');
 	});
 
-	await test.step('Assert that the applied style book is the default one from the Dialect theme', async () => {
+	await test.step('Assert that the applied style book is the default one from the CMS theme', async () => {
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
 		await pagesAdminPage.editPage(pageName);
@@ -377,7 +377,7 @@ test('Style book is incompatible with the applied theme', async ({
 
 		await page
 			.locator(
-				`.page-editor__sidebar__design-options__tab-card--active:has-text("${dialectStyleBookName}"):has-text("Styles by Default")`
+				`.page-editor__sidebar__design-options__tab-card--active:has-text("${cmsStyleBookName}"):has-text("Styles by Default")`
 			)
 			.waitFor();
 	});

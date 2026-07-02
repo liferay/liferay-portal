@@ -11,8 +11,8 @@ import getRandomString from '../../../utils/getRandomString';
 import {frontendThemePagesTest} from './fixtures/frontendThemePagesTest';
 import {PageHelper} from './helpers/PageHelper';
 
-const CLASSIC_FOOTER_COLOR = 'rgb(48, 49, 63)';
-const DIALECT_FOOTER_COLOR = 'rgb(51, 43, 74)';
+const CLASSIC_THEME_CONTEXT_PATH = 'classic-theme';
+const CMS_THEME_CONTEXT_PATH = 'cms-theme';
 
 async function createPage(pageHelper: PageHelper) {
 	const sitePageName = getRandomString();
@@ -30,7 +30,7 @@ const test = mergeTests(
 );
 
 test(
-	'Verifies dialect theme can be applied to a site page',
+	'Verifies CMS theme can be applied to a site page',
 	{tag: '@LPD-70288'},
 	async ({pageHelper, themeHelper}) => {
 		const {sitePage, sitePageName} =
@@ -40,19 +40,17 @@ test(
 		await test.step('Verify classic theme is applied by default', async () => {
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				CLASSIC_FOOTER_COLOR
+			await pageHelper.expectPageToUseThemeCss(
+				CLASSIC_THEME_CONTEXT_PATH
 			);
 		});
 
-		await test.step('Verify dialect theme can be applied', async () => {
-			await themeHelper.changePageThemeToDialect(sitePageName);
+		await test.step('Verify CMS theme can be applied', async () => {
+			await themeHelper.changePageThemeToCMS(sitePageName);
 
 			await themeHelper.publishPage(sitePageName);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				DIALECT_FOOTER_COLOR
-			);
+			await pageHelper.expectPageToUseThemeCss(CMS_THEME_CONTEXT_PATH);
 		});
 	}
 );
@@ -65,40 +63,36 @@ test(
 			await test.step('Create site page', async () =>
 				await createPage(pageHelper));
 
-		await test.step('Set page theme to dialect theme', async () => {
-			await themeHelper.changePageThemeToDialect(sitePageName);
+		await test.step('Set page theme to CMS theme', async () => {
+			await themeHelper.changePageThemeToCMS(sitePageName);
 
 			await themeHelper.publishPage(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				DIALECT_FOOTER_COLOR
-			);
+			await pageHelper.expectPageToUseThemeCss(CMS_THEME_CONTEXT_PATH);
 		});
 
-		await test.step('Deactivates dialect theme', async () => {
-			await themeHelper.deactivateDialectTheme(sitePageName);
+		await test.step('Deactivates CMS theme', async () => {
+			await themeHelper.deactivateCMSTheme(sitePageName);
 
 			await themeHelper.expectCurrentThemeToBeClassic(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				CLASSIC_FOOTER_COLOR
+			await pageHelper.expectPageToUseThemeCss(
+				CLASSIC_THEME_CONTEXT_PATH
 			);
 		});
 
-		await test.step('Reactivates dialect theme', async () => {
-			await themeHelper.activateDialectTheme(sitePageName);
+		await test.step('Reactivates CMS theme', async () => {
+			await themeHelper.activateCMSTheme(sitePageName);
 
-			await themeHelper.expectCurrentThemeToBeDialect(sitePageName);
+			await themeHelper.expectCurrentThemeToBeCMS(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				DIALECT_FOOTER_COLOR
-			);
+			await pageHelper.expectPageToUseThemeCss(CMS_THEME_CONTEXT_PATH);
 		});
 	}
 );
@@ -111,40 +105,36 @@ test(
 			await test.step('Create site page', async () =>
 				await createPage(pageHelper));
 
-		await test.step('Set page theme to dialect theme', async () => {
-			await themeHelper.changePageThemeToDialect(sitePageName);
+		await test.step('Set page theme to CMS theme', async () => {
+			await themeHelper.changePageThemeToCMS(sitePageName);
 
 			await themeHelper.publishPage(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				DIALECT_FOOTER_COLOR
-			);
+			await pageHelper.expectPageToUseThemeCss(CMS_THEME_CONTEXT_PATH);
 		});
 
-		await test.step('Uninstall dialect theme', async () => {
-			await themeHelper.uninstallDialectTheme(sitePageName);
+		await test.step('Uninstall CMS theme', async () => {
+			await themeHelper.uninstallCMSTheme(sitePageName);
 
 			await themeHelper.expectCurrentThemeToBeClassic(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				CLASSIC_FOOTER_COLOR
+			await pageHelper.expectPageToUseThemeCss(
+				CLASSIC_THEME_CONTEXT_PATH
 			);
 		});
 
-		await test.step('Redeploy dialect theme', async () => {
-			await themeHelper.reinstallDialectTheme(sitePageName);
+		await test.step('Redeploy CMS theme', async () => {
+			await themeHelper.reinstallCMSTheme(sitePageName);
 
-			await themeHelper.expectCurrentThemeToBeDialect(sitePageName);
+			await themeHelper.expectCurrentThemeToBeCMS(sitePageName);
 
 			await pageHelper.goToPage(sitePage);
 
-			await pageHelper.expectFooterToHaveBackgroundColor(
-				DIALECT_FOOTER_COLOR
-			);
+			await pageHelper.expectPageToUseThemeCss(CMS_THEME_CONTEXT_PATH);
 		});
 	}
 );

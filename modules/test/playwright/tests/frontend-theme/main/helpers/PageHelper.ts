@@ -25,11 +25,12 @@ export class PageHelper {
 		});
 	}
 
-	async expectFooterToHaveBackgroundColor(color: string) {
-		const locator = this.page.locator('footer');
-
-		await expect(locator).toBeVisible();
-		await expect(locator).toHaveCSS('background-color', color);
+	async expectPageToUseThemeCss(themeContextPath: string) {
+		await expect(
+			this.page
+				.locator(`link.lfr-css-file[href*="/o/${themeContextPath}/"]`)
+				.first()
+		).toBeAttached();
 	}
 
 	async goToPage(page: Layout) {

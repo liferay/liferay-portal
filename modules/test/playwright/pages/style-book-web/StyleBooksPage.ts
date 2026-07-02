@@ -56,9 +56,13 @@ export class StyleBooksPage {
 			.getByRole('textbox', {name: 'Name'})
 			.fill(styleBookName);
 
-		await this.page.getByLabel('Create Style Book For').click();
+		const themePicker = this.page.getByLabel('Create Style Book For');
 
-		await this.page.getByRole('option', {name: baseThemeName}).click();
+		if ((await themePicker.innerText()).trim() !== baseThemeName) {
+			await themePicker.click();
+
+			await this.page.getByRole('option', {name: baseThemeName}).click();
+		}
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 

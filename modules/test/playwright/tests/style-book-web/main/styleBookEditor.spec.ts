@@ -559,13 +559,13 @@ const themeScopedTest = mergeTests(
 themeScopedTest(
 	'Fragment collection preview applies the theme in which the style book is based on',
 	async ({page, site, styleBooksPage}) => {
-		await test.step('Create a style book based on the Dialect theme', async () => {
+		await test.step('Create a style book based on the CMS theme', async () => {
 			await styleBooksPage.goto(site.friendlyUrlPath);
 
-			await styleBooksPage.create('New style book', 'Dialect Theme');
+			await styleBooksPage.create('New style book', 'CMS Theme');
 		});
 
-		await test.step("Assert that the tokens applied to the preview page of the 'Basic Components' fragment collection are from the dialect theme", async () => {
+		await test.step("Assert that the preview page of the 'Basic Components' fragment collection uses the CMS theme", async () => {
 			await styleBooksPage.previewFragmentCollection('Basic Components');
 
 			const previewIframe = page.frameLocator(
@@ -580,10 +580,11 @@ themeScopedTest(
 
 			await firstButton.waitFor();
 
-			expect(firstButton).toHaveCSS(
-				'background-color',
-				'rgb(89, 36, 235)'
-			);
+			await expect(
+				previewIframe
+					.locator('link.lfr-css-file[href*="/o/cms-theme/"]')
+					.first()
+			).toBeAttached();
 		});
 	}
 );

@@ -15,8 +15,8 @@ import {reloadUntilVisible} from '../../../../utils/reloadUntilVisible';
 
 export class ThemeHelper {
 	private readonly classicThemeName = 'Classic';
-	private readonly dialectThemeName = 'Dialect';
-	private readonly dialectAppName = 'dialect-theme';
+	private readonly cmsThemeName = 'CMS';
+	private readonly cmsAppName = 'cms-theme';
 
 	constructor(
 		private readonly appManagerPage: AppManagerPage,
@@ -27,52 +27,52 @@ export class ThemeHelper {
 		private readonly site: Site
 	) {}
 
-	async uninstallDialectTheme(testPageName?: string) {
+	async uninstallCMSTheme(testPageName?: string) {
 		await doAndGoBack(this.page, async () => {
-			await this.appManagerPage.uninstallApp(this.dialectAppName);
+			await this.appManagerPage.uninstallApp(this.cmsAppName);
 
 			if (testPageName) {
 				await this.goToDesignTabConfiguration(testPageName);
 
-				await this.expectThemeToBeDeactivated(this.dialectThemeName);
+				await this.expectThemeToBeDeactivated(this.cmsThemeName);
 			}
 		});
 	}
 
-	async reinstallDialectTheme(testPageName?: string) {
+	async reinstallCMSTheme(testPageName?: string) {
 		await doAndGoBack(this.page, async () => {
 			await this.bundleBlacklistPage.updateBundleBlacklist('');
 
 			if (testPageName) {
 				await this.goToDesignTabConfiguration(testPageName);
 
-				await this.expectThemeToBeActivated(this.dialectThemeName);
+				await this.expectThemeToBeActivated(this.cmsThemeName);
 			}
 		});
 	}
 
-	async deactivateDialectTheme(testPageName: string) {
+	async deactivateCMSTheme(testPageName: string) {
 		await doAndGoBack(this.page, async () => {
-			await this.appManagerPage.deactivateApp(this.dialectAppName);
+			await this.appManagerPage.deactivateApp(this.cmsAppName);
 
 			await this.goToDesignTabConfiguration(testPageName);
 
-			await this.expectThemeToBeDeactivated(this.dialectThemeName);
+			await this.expectThemeToBeDeactivated(this.cmsThemeName);
 		});
 	}
 
-	async activateDialectTheme(testPageName: string) {
+	async activateCMSTheme(testPageName: string) {
 		await doAndGoBack(this.page, async () => {
-			await this.appManagerPage.activateApp(this.dialectAppName);
+			await this.appManagerPage.activateApp(this.cmsAppName);
 
 			await this.goToDesignTabConfiguration(testPageName);
 
-			await this.expectThemeToBeActivated(this.dialectThemeName);
+			await this.expectThemeToBeActivated(this.cmsThemeName);
 		});
 	}
 
-	async changePageThemeToDialect(pageName: string) {
-		await this.changePageTheme(pageName, this.dialectThemeName);
+	async changePageThemeToCMS(pageName: string) {
+		await this.changePageTheme(pageName, this.cmsThemeName);
 	}
 
 	async changePageThemeToClassic(pageName: string) {
@@ -135,8 +135,8 @@ export class ThemeHelper {
 		await this.expectCurrentThemeToBe(pageName, this.classicThemeName);
 	}
 
-	async expectCurrentThemeToBeDialect(pageName: string) {
-		await this.expectCurrentThemeToBe(pageName, this.dialectThemeName);
+	async expectCurrentThemeToBeCMS(pageName: string) {
+		await this.expectCurrentThemeToBe(pageName, this.cmsThemeName);
 	}
 
 	async expectCurrentThemeToBe(pageName: string, themeName: string) {

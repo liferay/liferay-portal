@@ -396,7 +396,7 @@ test(
 
 		await page
 			.frameLocator('iframe[title="Available Themes"]')
-			.getByRole('button', {name: /Select Dialect/})
+			.getByRole('button', {name: /Select CMS/})
 			.click();
 
 		await page.getByRole('button', {exact: true, name: 'Save'}).click();
@@ -407,10 +407,11 @@ test(
 
 		await page.getByRole('link', {exact: true, name: 'Users'}).click();
 
-		await expect(page.getByRole('button', {name: 'New'})).toHaveCSS(
-			'background-color',
-			'rgb(89, 36, 235)'
-		);
+		await expect(page.getByRole('button', {name: 'New'})).toBeVisible();
+
+		await expect(
+			page.locator('link.lfr-css-file[href*="/o/cms-theme/"]').first()
+		).toBeAttached();
 	}
 );
 

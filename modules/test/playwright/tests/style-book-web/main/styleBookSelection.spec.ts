@@ -203,13 +203,13 @@ test(
 
 		const textbox = page.getByRole('textbox', {name: 'Style Book'});
 
-		await test.step('Assert only Dialect style books are available when it is the selected theme', async () => {
-			await pagesAdminPage.changeTheme('Dialect');
+		await test.step('Assert only CMS style books are available when it is the selected theme', async () => {
+			await pagesAdminPage.changeTheme('CMS');
 
 			await clickAndExpectToBeVisible({target: frame, trigger: textbox});
 
 			await expect(frame.getByRole('button')).toHaveCount(1);
-			await expect(textbox).toHaveValue('Styles from Dialect Theme');
+			await expect(textbox).toHaveValue('Styles from CMS Theme');
 
 			await page.getByRole('button', {name: 'Close'}).click();
 		});
