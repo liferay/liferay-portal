@@ -10,7 +10,6 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HTTPAuthoriza
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 
 import java.nio.charset.StandardCharsets;
 
@@ -28,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
@@ -70,8 +66,14 @@ public abstract class SecretsUtil {
 	public static String getSecret(
 		String vaultName, String itemTitle, String fieldLabel) {
 
-		String cachedSecret = _getCachedSecret(
-			_getSecretReference(vaultName, itemTitle, fieldLabel));
+		String secretReference = _getSecretReference(
+			vaultName, itemTitle, fieldLabel);
+
+		if (_secrets.containsKey(secretReference)) {
+			return _secrets.get(secretReference);
+		}
+
+		String cachedSecret = _getCachedSecret(secretReference);
 
 		if (cachedSecret != null) {
 			return cachedSecret;
@@ -90,8 +92,7 @@ public abstract class SecretsUtil {
 		return matcher.matches();
 	}
 
-	public static void writeCachedSecrets(
-			File cachedSecretsFile, File rootDirectory)
+	public static void writeCachedSecrets(File cachedSecretsFile)
 		throws IOException {
 
 		if (!_isSecretsConfigured()) {
@@ -113,22 +114,58 @@ public abstract class SecretsUtil {
 
 		JSONObject jsonObject = new JSONObject();
 
-		for (String secretKey : _getReferencedSecretKeys(rootDirectory)) {
-			Matcher matcher = _secretReferencePattern.matcher(secretKey);
+		for (Vault vault : Vault.getInstances()) {
+			String vaultName = vault.getName();
 
-			if (!matcher.matches()) {
-				continue;
-			}
+			for (Item item : vault.getItems()) {
+				String itemId = item.getId();
+				String itemTitle = item.getTitle();
 
-			String secret = _getSecretFromConnect(
-				matcher.group("vaultName"), matcher.group("itemTitle"),
-				matcher.group("fieldLabel"));
+				for (ItemField itemField : item.getItemFields()) {
+					String itemFieldValue = itemField.getValue();
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(secret)) {
-				jsonObject.put(secretKey, secret);
-			}
-			else {
-				System.out.println("Unable to resolve secret: " + secretKey);
+					if (JenkinsResultsParserUtil.isNullOrEmpty(
+							itemFieldValue)) {
+
+						continue;
+					}
+
+					String itemFieldLabel = itemField.getLabel();
+					String itemFieldId = itemField.getId();
+
+					jsonObject.put(
+						_getSecretReference(vaultName, itemId, itemFieldId),
+						itemFieldValue
+					).put(
+						_getSecretReference(vaultName, itemId, itemFieldLabel),
+						itemFieldValue
+					).put(
+						_getSecretReference(vaultName, itemTitle, itemFieldId),
+						itemFieldValue
+					).put(
+						_getSecretReference(
+							vaultName, itemTitle, itemFieldLabel),
+						itemFieldValue
+					);
+				}
+
+				for (ItemFile itemFile : item.getItemFiles()) {
+					String itemFileValue = itemFile.getValue();
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(itemFileValue)) {
+						continue;
+					}
+
+					String itemFileName = itemFile.getName();
+
+					jsonObject.put(
+						_getSecretReference(vaultName, itemId, itemFileName),
+						itemFileValue
+					).put(
+						_getSecretReference(vaultName, itemTitle, itemFileName),
+						itemFileValue
+					);
+				}
 			}
 		}
 
@@ -565,38 +602,6 @@ public abstract class SecretsUtil {
 		return _httpAuthorization;
 	}
 
-	private static Set<String> _getReferencedSecretKeys(File rootDirectory) {
-		Set<String> secretKeys = new TreeSet<>();
-
-		List<File> propertiesFiles = JenkinsResultsParserUtil.findFiles(
-			rootDirectory, ".*\\.properties");
-
-		for (File propertiesFile : propertiesFiles) {
-			Properties properties = new Properties();
-
-			try {
-				String content = JenkinsResultsParserUtil.read(propertiesFile);
-
-				if (!JenkinsResultsParserUtil.isNullOrEmpty(content)) {
-					properties.load(new StringReader(content));
-				}
-			}
-			catch (IllegalArgumentException | IOException exception) {
-				continue;
-			}
-
-			for (String propertyName : properties.stringPropertyNames()) {
-				String value = properties.getProperty(propertyName);
-
-				if (isSecretProperty(value)) {
-					secretKeys.add(value);
-				}
-			}
-		}
-
-		return secretKeys;
-	}
-
 	private static String _getSecretFromConnect(
 		String vaultName, String itemTitle, String fieldLabel) {
 
@@ -622,12 +627,7 @@ public abstract class SecretsUtil {
 			return null;
 		}
 
-		String secretReference = _getSecretReference(
-			vaultName, itemTitle, fieldLabel);
-
-		if (_secrets.containsKey(secretReference)) {
-			return _secrets.get(secretReference);
-		}
+		String itemId = item.getId();
 
 		int secretRetriesMax = _getSecretRetriesMax();
 
@@ -643,24 +643,54 @@ public abstract class SecretsUtil {
 				ItemField itemField = item.getItemField(fieldLabel);
 
 				if (itemField != null) {
-					String value = itemField.getValue();
+					String itemFieldValue = itemField.getValue();
 
-					if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-						_secrets.put(secretReference, value);
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(
+							itemFieldValue)) {
 
-						return value;
+						String itemFieldId = itemField.getId();
+						String itemFieldLabel = itemField.getLabel();
+
+						_secrets.put(
+							_getSecretReference(vaultName, itemId, itemFieldId),
+							itemFieldValue);
+						_secrets.put(
+							_getSecretReference(
+								vaultName, itemId, itemFieldLabel),
+							itemFieldValue);
+						_secrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFieldId),
+							itemFieldValue);
+						_secrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFieldLabel),
+							itemFieldValue);
+
+						return itemFieldValue;
 					}
 				}
 
 				ItemFile itemFile = item.getItemFile(fieldLabel);
 
 				if (itemFile != null) {
-					String value = itemFile.getValue();
+					String itemFileValue = itemFile.getValue();
 
-					if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-						_secrets.put(secretReference, value);
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(
+							itemFileValue)) {
 
-						return value;
+						String itemFileName = itemFile.getName();
+
+						_secrets.put(
+							_getSecretReference(
+								vaultName, itemId, itemFileName),
+							itemFileValue);
+						_secrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFileName),
+							itemFileValue);
+
+						return itemFileValue;
 					}
 				}
 			}
@@ -915,6 +945,16 @@ public abstract class SecretsUtil {
 			return null;
 		}
 
+		public List<ItemField> getItemFields() {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_init();
+				}
+
+				return _itemFields;
+			}
+		}
+
 		public ItemFile getItemFile(String fileName) {
 			List<ItemFile> itemFiles;
 
@@ -939,8 +979,26 @@ public abstract class SecretsUtil {
 			return null;
 		}
 
+		public List<ItemFile> getItemFiles() {
+			synchronized (_vault) {
+				if (_itemFiles == null) {
+					_init();
+				}
+
+				return _itemFiles;
+			}
+		}
+
 		public String getTitle() {
 			return _title;
+		}
+
+		public void load() {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_init();
+				}
+			}
 		}
 
 		public void refresh() {
@@ -1122,7 +1180,23 @@ public abstract class SecretsUtil {
 	private static class Vault {
 
 		public static Vault getInstance(String name) {
-			return _vaultsMap.get(name);
+			Map<String, Vault> vaultsMap = _getVaultsMap();
+
+			return vaultsMap.get(name);
+		}
+
+		public static List<Vault> getInstances() {
+			Map<String, Vault> vaultsMap = _getVaultsMap();
+
+			List<Vault> vaults = new ArrayList<>();
+
+			for (Vault vault : vaultsMap.values()) {
+				if (!vaults.contains(vault)) {
+					vaults.add(vault);
+				}
+			}
+
+			return vaults;
 		}
 
 		public String getId() {
@@ -1147,8 +1221,62 @@ public abstract class SecretsUtil {
 			return null;
 		}
 
+		public List<Item> getItems() {
+			synchronized (_vaultsMap) {
+				if (_items == null) {
+					_init();
+				}
+			}
+
+			return _items;
+		}
+
 		public String getName() {
 			return _name;
+		}
+
+		public void loadAllItems() {
+			synchronized (_vaultsMap) {
+				if (_allItemsLoaded) {
+					return;
+				}
+
+				_allItemsLoaded = true;
+
+				if (_items == null) {
+					_init();
+				}
+			}
+
+			for (Item item : _items) {
+				item.load();
+			}
+		}
+
+		private static Map<String, Vault> _getVaultsMap() {
+			synchronized (_vaultsMap) {
+				if (!_vaultsMap.isEmpty()) {
+					return _vaultsMap;
+				}
+
+				JSONArray vaultsJSONArray = _toJSONArray("/v1/vaults");
+
+				for (int i = 0; i < vaultsJSONArray.length(); i++) {
+					JSONObject vaultJSONObject = vaultsJSONArray.getJSONObject(
+						i);
+
+					Vault vault = new Vault(
+						vaultJSONObject.getString("id"),
+						vaultJSONObject.getString("name"));
+
+					_vaultsMap.put(vault.getId(), vault);
+					_vaultsMap.put(vault.getName(), vault);
+
+					vault.loadAllItems();
+				}
+			}
+
+			return _vaultsMap;
 		}
 
 		private Vault(String id, String name) {
@@ -1175,21 +1303,7 @@ public abstract class SecretsUtil {
 
 		private static final Map<String, Vault> _vaultsMap = new HashMap<>();
 
-		static {
-			JSONArray vaultsJSONArray = _toJSONArray("/v1/vaults");
-
-			for (int i = 0; i < vaultsJSONArray.length(); i++) {
-				JSONObject vaultJSONObject = vaultsJSONArray.getJSONObject(i);
-
-				Vault vault = new Vault(
-					vaultJSONObject.getString("id"),
-					vaultJSONObject.getString("name"));
-
-				_vaultsMap.put(vault.getId(), vault);
-				_vaultsMap.put(vault.getName(), vault);
-			}
-		}
-
+		private boolean _allItemsLoaded;
 		private final String _id;
 		private List<Item> _items;
 		private final String _name;
