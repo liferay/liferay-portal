@@ -94,3 +94,51 @@ test(
 	}
 );
 
+test(
+	'Deletes a fragment comment after publishing',
+	{tag: ['@LPD-96910', '@LPS-106776']},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment and publish
+
+		const comment = 'This is a fragment comment.';
+
+		await pageEditorPage.addFragmentComment(fragmentId, comment);
+
+		await pageEditorPage.publishPage();
+
+		// Reopen the page, reply to the comment, then delete it
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToFragmentComment(fragmentId);
+
+		await pageEditorPage.viewFragmentComment(comment);
+
+		const reply = 'Fragment Comment.';
+
+		await pageEditorPage.replyToFragmentComment(comment, reply);
+
+		await pageEditorPage.viewFragmentCommentReply(reply, 'Test Test');
+
+		await pageEditorPage.deleteFragmentComment(comment);
+	}
+);
+
