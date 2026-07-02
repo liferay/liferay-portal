@@ -21,6 +21,11 @@ const DATA: PieDatum[] = [
 	{label: 'Gamma', value: 20},
 ];
 
+const LARGE_VALUE_DATA: PieDatum[] = [
+	{label: 'Alpha', value: 1200},
+	{label: 'Beta', value: 300},
+];
+
 describe('PieChart', () => {
 	it('renders one slice path per datum', () => {
 		const {container} = render(<PieChart data={DATA} title="Sales" />);
@@ -120,13 +125,13 @@ describe('PieChart', () => {
 		render(<PieChart data={DATA} title="Sales" />);
 
 		expect(
-			screen.getByRole('img', {name: 'Alpha: 30 (30%)'})
+			screen.getByRole('img', {name: 'Alpha: 30 (30.0%)'})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('img', {name: 'Beta: 50 (50%)'})
+			screen.getByRole('img', {name: 'Beta: 50 (50.0%)'})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('img', {name: 'Gamma: 20 (20%)'})
+			screen.getByRole('img', {name: 'Gamma: 20 (20.0%)'})
 		).toBeInTheDocument();
 	});
 
@@ -140,7 +145,7 @@ describe('PieChart', () => {
 
 	it('omits the reveal class when animation is disabled', () => {
 		const {container} = render(
-			<PieChart animationDisabled data={DATA} title="Sales" />
+			<PieChart animated={false} data={DATA} title="Sales" />
 		);
 
 		expect(container.querySelector('.chart-pie')).not.toHaveClass(
@@ -284,7 +289,7 @@ describe('PieChart', () => {
 		await userEvent.click(gammaRow);
 
 		expect(
-			screen.getByRole('img', {name: 'Gamma: 20 (20%)'})
+			screen.getByRole('img', {name: 'Gamma: 20 (20.0%)'})
 		).toHaveFocus();
 	});
 
@@ -318,5 +323,25 @@ describe('PieChart', () => {
 		const {container} = render(<PieChart data={DATA} title="Sales" />);
 
 		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('formats the center label total using locale grouping', () => {
+		const {container} = render(
+			<PieChart data={LARGE_VALUE_DATA} title="Sales" />
+		);
+
+		expect(
+			container.querySelector('.chart-pie-center-label-value')
+		).toHaveTextContent('1,500');
+	});
+
+	it('formats the table legend value using locale grouping', () => {
+		render(
+			<PieChart data={LARGE_VALUE_DATA} legend="table" title="Sales" />
+		);
+
+		const table = screen.getByRole('table');
+
+		expect(within(table).getByText('1,200')).toBeInTheDocument();
 	});
 });

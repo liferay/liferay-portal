@@ -9,7 +9,7 @@ import {PieDatum} from '../types/PieDatum';
 
 interface PieChartCenterLabelProps {
 	activeDatum?: PieDatum;
-	activePercent?: number;
+	activePercent?: string;
 	total: number;
 }
 
@@ -18,31 +18,33 @@ export default function PieChartCenterLabel({
 	activePercent,
 	total,
 }: PieChartCenterLabelProps) {
-	if (!activeDatum) {
-		return (
-			<div aria-hidden="true" className="chart-pie-center-label">
-				<span className="chart-pie-center-label-title">
-					{Liferay.Language.get('total')}
-				</span>
-
-				<span className="chart-pie-center-label-value">{total}</span>
-			</div>
-		);
-	}
-
 	return (
 		<div aria-hidden="true" className="chart-pie-center-label">
-			<span className="chart-pie-center-label-title">
-				{activeDatum.label}
-			</span>
+			{activeDatum ? (
+				<>
+					<span className="chart-pie-center-label-title">
+						{activeDatum.label}
+					</span>
 
-			<span className="chart-pie-center-label-percent">
-				{activePercent}%
-			</span>
+					<span className="chart-pie-center-label-percent">
+						{activePercent}%
+					</span>
 
-			<span className="chart-pie-center-label-value">
-				{activeDatum.value}
-			</span>
+					<span className="chart-pie-center-label-value">
+						{activeDatum.value.toLocaleString()}
+					</span>
+				</>
+			) : (
+				<>
+					<span className="chart-pie-center-label-title">
+						{Liferay.Language.get('total')}
+					</span>
+
+					<span className="chart-pie-center-label-value">
+						{total.toLocaleString()}
+					</span>
+				</>
+			)}
 		</div>
 	);
 }

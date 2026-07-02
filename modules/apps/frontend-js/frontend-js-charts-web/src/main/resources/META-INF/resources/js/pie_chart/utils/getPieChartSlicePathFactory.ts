@@ -5,8 +5,8 @@
 
 import {Point} from '../types/Point';
 import {SliceAngles} from '../types/SliceAngles';
+import {getPointOnCircle} from './getPointOnCircle';
 import {isFullCircle} from './isFullCircle';
-import {pointOnCircle} from './pointOnCircle';
 
 interface GetPieChartSlicePathFactoryParameters {
 	centerX: number;
@@ -46,8 +46,8 @@ function getWedgeShapedPieChartSlicePathFactory(
 		return _buildWedgePath(
 			centerX,
 			centerY,
-			pointOnCircle(centerX, centerY, outerRadius, angles.startAngle),
-			pointOnCircle(centerX, centerY, outerRadius, angles.endAngle),
+			getPointOnCircle(centerX, centerY, outerRadius, angles.startAngle),
+			getPointOnCircle(centerX, centerY, outerRadius, angles.endAngle),
 			outerRadius,
 			angles.sweepAngle > Math.PI ? 1 : 0
 		);
@@ -71,10 +71,10 @@ function getRingShapedPieChartSlicePathFactory(
 		}
 
 		return _buildRingSegmentPath(
-			pointOnCircle(centerX, centerY, outerRadius, angles.startAngle),
-			pointOnCircle(centerX, centerY, outerRadius, angles.endAngle),
-			pointOnCircle(centerX, centerY, innerRadius, angles.startAngle),
-			pointOnCircle(centerX, centerY, innerRadius, angles.endAngle),
+			getPointOnCircle(centerX, centerY, outerRadius, angles.startAngle),
+			getPointOnCircle(centerX, centerY, outerRadius, angles.endAngle),
+			getPointOnCircle(centerX, centerY, innerRadius, angles.startAngle),
+			getPointOnCircle(centerX, centerY, innerRadius, angles.endAngle),
 			outerRadius,
 			innerRadius,
 			angles.sweepAngle > Math.PI ? 1 : 0

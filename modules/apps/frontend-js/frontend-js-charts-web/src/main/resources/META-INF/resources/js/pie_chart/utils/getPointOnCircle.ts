@@ -5,7 +5,7 @@
 
 import {Point} from '../types/Point';
 
-export function pointOnCircle(
+export function getPointOnCircle(
 	centerX: number,
 	centerY: number,
 	radius: number,

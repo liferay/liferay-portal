@@ -19,7 +19,7 @@ import {toPercent} from './utils/percent';
 import {getPieSliceColors} from './utils/pieColors';
 
 export interface PieChartProps {
-	animationDisabled?: boolean;
+	animated?: boolean;
 	className?: string;
 	data: PieDatum[];
 	description?: string;
@@ -50,7 +50,7 @@ function getPixelSize(size: PieChartProps['size']): number {
 }
 
 export default function PieChart({
-	animationDisabled = false,
+	animated = true,
 	className,
 	data,
 	description,
@@ -124,7 +124,7 @@ export default function PieChart({
 			aria-labelledby={titleId}
 			className={classNames(
 				'chart-pie',
-				{'chart-pie-revealed': !animationDisabled},
+				{'chart-pie-revealed': animated},
 				className
 			)}
 		>

@@ -19,7 +19,7 @@ interface PieChartSliceProps {
 	onHover: (index: number) => void;
 	onHoverEnd: () => void;
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
-	percent: number;
+	percent: string;
 	sliceRef: (element: SVGPathElement | null) => void;
 }
 

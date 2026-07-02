@@ -16,7 +16,7 @@ import PieChartSlice from './PieChartSlice';
 interface PieChartPlotProps {
 	activeDatum?: PieDatum;
 	activeIndex: number | null;
-	activePercent?: number;
+	activePercent?: string;
 	baseId: string;
 	colors: string[];
 	data: PieDatum[];

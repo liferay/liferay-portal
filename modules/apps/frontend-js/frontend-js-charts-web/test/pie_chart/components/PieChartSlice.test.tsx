@@ -19,7 +19,7 @@ const DEFAULT_PROPS = {
 	onHover: () => {},
 	onHoverEnd: () => {},
 	onKeyDown: () => {},
-	percent: 100,
+	percent: '100.0',
 	sliceRef: () => {},
 };
 

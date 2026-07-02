@@ -6,18 +6,10 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import {PieDatum} from '../types/PieDatum';
+import {PieChartLegendBaseProps} from '../types/PieChartLegendBaseProps';
 import {toPercent} from '../utils/percent';
 
-interface PieChartLegendListProps {
-	activeIndex: number | null;
-	colors: string[];
-	data: PieDatum[];
-	onFocus: (index: number) => void;
-	onHover: (index: number) => void;
-	onHoverEnd: () => void;
-	total: number;
-}
+type PieChartLegendListProps = PieChartLegendBaseProps;
 
 export default function PieChartLegendList({
 	activeIndex,

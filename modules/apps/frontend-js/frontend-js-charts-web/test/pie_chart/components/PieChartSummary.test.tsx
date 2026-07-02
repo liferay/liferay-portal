@@ -25,10 +25,10 @@ describe('PieChartSummary', () => {
 		render(<PieChartSummary {...DEFAULT_PROPS} />);
 
 		expect(
-			screen.getByText(/1 of 2, Alpha: 1 \(25%\)\./)
+			screen.getByText(/1 of 2, Alpha: 1 \(25\.0%\)\./)
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(/2 of 2, Beta: 3 \(75%\)\./)
+			screen.getByText(/2 of 2, Beta: 3 \(75\.0%\)\./)
 		).toBeInTheDocument();
 	});
 

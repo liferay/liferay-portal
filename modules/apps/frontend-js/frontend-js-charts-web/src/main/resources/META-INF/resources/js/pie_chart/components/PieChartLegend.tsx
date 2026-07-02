@@ -5,20 +5,13 @@
 
 import React from 'react';
 
-import {PieDatum} from '../types/PieDatum';
+import {PieChartLegendBaseProps} from '../types/PieChartLegendBaseProps';
 import PieChartLegendList from './PieChartLegendList';
 import PieChartLegendTable from './PieChartLegendTable';
 
-interface PieChartLegendProps {
-	activeIndex: number | null;
-	colors: string[];
-	data: PieDatum[];
+interface PieChartLegendProps extends PieChartLegendBaseProps {
 	legend: 'list' | 'none' | 'table';
-	onFocus: (index: number) => void;
-	onHover: (index: number) => void;
-	onHoverEnd: () => void;
 	titleId: string;
-	total: number;
 }
 
 export default function PieChartLegend({

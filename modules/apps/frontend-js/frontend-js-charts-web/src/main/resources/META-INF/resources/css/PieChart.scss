@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+@import 'atlas-custom-properties/_variables';
+
 .chart-pie {
 	display: block;
 	margin: 0;
@@ -78,11 +80,11 @@
 		padding-inline: 0.5rem;
 
 		&.is-active {
-			background: var(--primary);
-			color: var(--white);
+			background: $primary;
+			color: $white;
 
 			.chart-pie-legend-swatch {
-				border-color: var(--white);
+				border-color: $white;
 			}
 		}
 	}
@@ -98,7 +100,7 @@
 
 	.chart-pie-legend-swatch {
 		block-size: 0.75rem;
-		border: 1px solid var(--dark-d1);
+		border: 1px solid $dark-d1;
 		border-radius: 0.125rem;
 		display: inline-block;
 		flex-shrink: 0;
@@ -114,13 +116,13 @@
 
 .chart-pie-focus-halo {
 	fill: none;
-	stroke: var(--white);
+	stroke: $white;
 	stroke-width: 8;
 }
 
 .chart-pie-focus-ring {
 	fill: none;
-	stroke: var(--primary-d2);
+	stroke: $primary-d2;
 	stroke-width: 4;
 }
 
@@ -130,7 +132,7 @@
 
 	th,
 	td {
-		border-bottom: 1px solid var(--light-d1);
+		border-bottom: 1px solid $light-d1;
 		padding-block: 0.25rem;
 		padding-inline: 0.5rem;
 		text-align: start;
@@ -140,18 +142,18 @@
 		cursor: pointer;
 
 		&.is-active {
-			background: var(--primary);
-			color: var(--white);
+			background: $primary;
+			color: $white;
 
 			.chart-pie-legend-swatch {
-				border-color: var(--white);
+				border-color: $white;
 			}
 		}
 	}
 
 	.chart-pie-legend-swatch {
 		block-size: 0.75rem;
-		border: 1px solid var(--dark-d1);
+		border: 1px solid $dark-d1;
 		border-radius: 0.125rem;
 		display: inline-block;
 		inline-size: 0.75rem;

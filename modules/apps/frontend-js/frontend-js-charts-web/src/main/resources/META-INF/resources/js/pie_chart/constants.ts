@@ -5,9 +5,8 @@
 
 export const CIRCLE_START_ANGLE = -Math.PI / 2;
 
-export const FULL_CIRCLE_RADIANS = Math.PI * 2;
-
 export const FULL_CIRCLE_EPSILON = 1e-6;
+export const FULL_CIRCLE_RADIANS = Math.PI * 2;
 
 export const SIZE_PRESETS = {lg: 360, md: 280, sm: 220, xs: 160};
 
