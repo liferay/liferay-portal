@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecificationVersion;
+import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
@@ -78,6 +79,7 @@ public class PageSpecificationVersionResourceTest
 	public void testGetSiteSitePagePageSpecificationVersion() throws Exception {
 		super.testGetSiteSitePagePageSpecificationVersion();
 
+		_testGetSiteSitePagePageSpecificationVersionMismatchedSitePage();
 		_testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField();
 	}
 
@@ -215,6 +217,33 @@ public class PageSpecificationVersionResourceTest
 		).parameters(
 			"nestedFields", "pageSpecification"
 		).build();
+	}
+
+	private void _testGetSiteSitePagePageSpecificationVersionMismatchedSitePage()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		PageSpecificationVersion pageSpecificationVersion =
+			testGetSiteSitePagePageSpecificationVersion_addPageSpecificationVersion();
+
+		try {
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					layout.getExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"The page specification version must belong to the site page",
+				problem.getTitle());
+		}
 	}
 
 	private void _testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField()
