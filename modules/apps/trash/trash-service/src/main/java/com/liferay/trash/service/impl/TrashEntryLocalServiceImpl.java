@@ -8,7 +8,6 @@ package com.liferay.trash.service.impl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -161,37 +160,18 @@ public class TrashEntryLocalServiceImpl extends TrashEntryLocalServiceBaseImpl {
 
 		actionableDynamicQuery.setPerformActionMethod(
 			(TrashEntry trashEntry) -> {
-				Group group = _groupLocalService.fetchGroup(
-					trashEntry.getGroupId());
-
-				if (group == null) {
-					return;
+				try {
+					_checkEntry(trashEntry);
 				}
-
-				Date createDate = trashEntry.getCreateDate();
-
-				Date date = _getMaxAge(group);
-
-				if (createDate.before(date) || !_isTrashEnabled(group)) {
-					TrashHandler trashHandler =
-						TrashHandlerRegistryUtil.getTrashHandler(
-							trashEntry.getClassName());
-
-					if (trashHandler != null) {
-						try {
-							trashHandler.deleteTrashEntry(
-								trashEntry.getClassPK());
-						}
-						catch (Exception exception) {
-							if (_log.isDebugEnabled()) {
-								_log.debug(exception);
-							}
-						}
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to check trash entry " +
+								trashEntry.getEntryId(),
+							exception);
 					}
 				}
 			});
-		actionableDynamicQuery.setTransactionConfig(
-			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
 
 		actionableDynamicQuery.performActions();
 	}
@@ -459,6 +439,28 @@ public class TrashEntryLocalServiceImpl extends TrashEntryLocalServiceBaseImpl {
 		return searchContext;
 	}
 
+	private void _checkEntry(TrashEntry trashEntry) throws Exception {
+		Group group = _groupLocalService.fetchGroup(trashEntry.getGroupId());
+
+		if (group == null) {
+			return;
+		}
+
+		Date createDate = trashEntry.getCreateDate();
+
+		Date date = _getMaxAge(group);
+
+		if (createDate.before(date) || !_isTrashEnabled(group)) {
+			TrashHandler trashHandler =
+				TrashHandlerRegistryUtil.getTrashHandler(
+					trashEntry.getClassName());
+
+			if (trashHandler != null) {
+				trashHandler.deleteTrashEntry(trashEntry.getClassPK());
+			}
+		}
+	}
+
 	private List<TrashEntry> _getEntries(Hits hits) {
 		List<TrashEntry> entries = new ArrayList<>();
 
@@ -524,7 +526,7 @@ public class TrashEntryLocalServiceImpl extends TrashEntryLocalServiceBaseImpl {
 		return entries;
 	}
 
-	private Date _getMaxAge(Group group) throws PortalException {
+	private Date _getMaxAge(Group group) throws Exception {
 		Calendar calendar = Calendar.getInstance();
 
 		calendar.setTime(new Date());
