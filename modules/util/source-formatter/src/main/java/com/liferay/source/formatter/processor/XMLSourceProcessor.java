@@ -87,7 +87,7 @@ public class XMLSourceProcessor extends BaseSourceProcessor {
 		"**/*.action", "**/*.function", "**/*.jelly", "**/*.jrxml",
 		"**/*.macro", "**/*.pom", "**/*.project", "**/*.properties", "**/*.qti",
 		"**/*.svg", "**/*.testcase", "**/*.toggle", "**/*.wsdl", "**/*.xml",
-		"**/definitions/liferay-*.xsd", "**/*.xml.tpl"
+		"**/*.xml.tpl", "**/*.xlf", "**/definitions/liferay-*.xsd"
 	};
 
 }
