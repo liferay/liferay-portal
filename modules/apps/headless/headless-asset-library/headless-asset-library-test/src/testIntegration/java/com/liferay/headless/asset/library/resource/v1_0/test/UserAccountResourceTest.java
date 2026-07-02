@@ -38,6 +38,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -69,6 +70,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		CMSTestUtil.getOrAddGroup(UserAccountResourceTest.class);
 
 		_spaceDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(

@@ -46,6 +46,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,6 +79,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		CMSTestUtil.getOrAddGroup(RoleResourceTest.class);
 
 		_userGroup = UserGroupTestUtil.addUserGroup();
 
