@@ -1,6 +1,0 @@
-Bundle-Name: Liferay Headless Design Library Test
-Bundle-SymbolicName: com.liferay.headless.design.library.test
-Bundle-Version: 1.0.0
--includeresource:\
-	com.liferay.headless.design.library.client.jar=com.liferay.headless.design.library.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar

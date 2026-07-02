@@ -1,6 +1,0 @@
-Bundle-Name: Liferay Headless Design Library API
-Bundle-SymbolicName: com.liferay.headless.design.library.api
-Bundle-Version: 1.0.3
-Export-Package:\
-	com.liferay.headless.design.library.dto.v1_0,\
-	com.liferay.headless.design.library.resource.v1_0
