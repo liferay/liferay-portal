@@ -283,44 +283,6 @@ definition {
 			openComment = "true");
 	}
 
-	@description = "This case ensures that multiple comments can be added, viewed and accessed in the fragment list."
-	@priority = 4
-	@refactordone
-	test CanViewMultipleCommentsList {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Collection Name",
-			fragmentName = "Static Text");
-
-		for (var commentNumber : list "1,2,3") {
-			PageEditor.addCommentViaFragment(
-				content = "This is static text.",
-				fragmentClass = "static-text",
-				fragmentComment = "Static Text fragment comment ${commentNumber}",
-				fragmentName = "Static Text",
-				position = 1);
-		}
-
-		PageEditor.gotoCommentList();
-
-		PageEditor.viewCommentList(
-			commentCount = "3 Comments",
-			fragmentName = "Static Text",
-			openComment = "true");
-
-		for (var commentNumber : list "1,2,3") {
-			PageEditor.viewComment(fragmentComment = "Static Text fragment comment ${commentNumber}");
-		}
-	}
-
 	@description = "This case ensures that multiple replies can be added and viewed in a comment."
 	@priority = 4
 	@refactordone

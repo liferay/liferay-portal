@@ -324,3 +324,53 @@ test(
 	}
 );
 
+test(
+	'Views multiple comments in the fragment comment list',
+	{tag: '@LPD-96910'},
+	async ({apiHelpers, pageEditorPage, site}) => {
+
+		// Create a page with a fragment and go to edit mode
+
+		const fragmentId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: fragmentId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add three comments to the same fragment
+
+		const comments = [
+			'Fragment comment 1',
+			'Fragment comment 2',
+			'Fragment comment 3',
+		];
+
+		for (const comment of comments) {
+			await pageEditorPage.addFragmentComment(fragmentId, comment);
+		}
+
+		// View the three comments in the fragment comment list
+
+		await pageEditorPage.goToCommentList();
+
+		await pageEditorPage.viewCommentList({
+			commentCount: '3 Comments',
+			fragmentName: 'Heading',
+			openComment: true,
+		});
+
+		for (const comment of comments) {
+			await pageEditorPage.viewFragmentComment(comment);
+		}
+	}
+);
+
