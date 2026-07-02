@@ -110,6 +110,7 @@ modules/apps/headless/headless-admin-address/    @liferay-commerce
 modules/apps/headless/headless-admin-content/    @liferay-content-management
 modules/apps/headless/headless-admin-list-type/    @liferay-bpm
 modules/apps/headless/headless-admin-site/    @liferay-page-management
+modules/apps/headless/headless-admin-style-book/    @liferay-platform-experience
 modules/apps/headless/headless-admin-taxonomy/    @liferay-content-management
 modules/apps/headless/headless-admin-user/    @liferay-commerce
 modules/apps/headless/headless-admin-workflow/    @liferay-bpm
