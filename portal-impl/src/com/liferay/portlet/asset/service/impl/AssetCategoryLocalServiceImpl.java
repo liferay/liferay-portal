@@ -21,6 +21,7 @@ import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetVocabularyPersistence;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -262,7 +263,9 @@ public class AssetCategoryLocalServiceImpl
 
 		if (FeatureFlagManagerUtil.isEnabled(
 				category.getCompanyId(), "LPD-86291") &&
-			!GroupThreadLocal.isDeleteInProcess() && category.isSystem()) {
+			category.isSystem() &&
+			!ExportImportThreadLocal.isImportInProcess() &&
+			!GroupThreadLocal.isDeleteInProcess()) {
 
 			throw new SystemCategoryException.MustNotDelete(
 				category.getCategoryId());
@@ -909,7 +912,8 @@ public class AssetCategoryLocalServiceImpl
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				category.getCompanyId(), "LPD-86291") ||
-			!category.isSystem()) {
+			!category.isSystem() ||
+			ExportImportThreadLocal.isImportInProcess()) {
 
 			return;
 		}

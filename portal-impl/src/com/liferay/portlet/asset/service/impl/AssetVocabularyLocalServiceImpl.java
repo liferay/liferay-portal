@@ -16,6 +16,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -292,6 +293,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		if (FeatureFlagManagerUtil.isEnabled(
 				vocabulary.getCompanyId(), "LPD-86291") &&
+			!ExportImportThreadLocal.isImportInProcess() &&
 			!GroupThreadLocal.isDeleteInProcess() && vocabulary.isSystem()) {
 
 			throw new SystemVocabularyException.MustNotDelete(
@@ -815,6 +817,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				vocabulary.getCompanyId(), "LPD-86291") ||
+			ExportImportThreadLocal.isImportInProcess() ||
 			!vocabulary.isSystem()) {
 
 			return;
