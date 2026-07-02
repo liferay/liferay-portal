@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
+import {DragPreview} from '@liferay/layout-js-components-web';
 import {useId} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 import {DndProvider} from 'react-dnd';
@@ -42,6 +43,8 @@ export default function AudiencesPriorityModal({
 
 	return (
 		<DragAndDropProvider backend={HTML5Backend}>
+			<DragPreview />
+
 			<ClayModal
 				className="element-variations__audiences-priority-modal"
 				observer={observer}
