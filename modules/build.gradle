@@ -288,8 +288,7 @@ gradle.beforeProject {
 
 					dependencies {
 						testImplementation group: "junit", name: "junit", version: "4.13.1"
-						testImplementation group: "org.mockito", name: "mockito-core", version: "4.5.1"
-						testImplementation group: "org.mockito", name: "mockito-inline", version: "4.5.1"
+						testImplementation group: "org.mockito", name: "mockito-core", version: "5.15.2"
 						testImplementation group: "org.springframework", name: "spring-test", version: "6.2.19"
 					}
 				}
