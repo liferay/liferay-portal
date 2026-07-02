@@ -116,7 +116,7 @@ public class LDAPReferralUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeThrowsReferral() throws Exception {
+	public void testUpgrade() throws Exception {
 		long followCompanyId = RandomTestUtil.randomLong();
 
 		_createConfiguration(followCompanyId, LDAPReferralModes.FOLLOW);
