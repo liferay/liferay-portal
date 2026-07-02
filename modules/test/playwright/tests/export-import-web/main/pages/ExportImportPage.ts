@@ -25,7 +25,6 @@ export type taskStatus = 'success' | 'completedWithErrors';
 
 export class ExportImportPage {
 	readonly addFilterButton: Locator;
-	readonly allRadioButton: Locator;
 	readonly cancelButton: Locator;
 	readonly clearMenuItem: Locator;
 	readonly clearSearchButton: Locator;
@@ -83,7 +82,6 @@ export class ExportImportPage {
 
 	constructor(page: Page) {
 		this.addFilterButton = page.getByRole('button', {name: 'Add Filter'});
-		this.allRadioButton = page.getByTestId('range_rangeAll');
 		this.cancelButton = page.getByRole('button', {name: 'Cancel'});
 		this.clearMenuItem = page.getByRole('link', {name: 'Clear'});
 		this.clearSearchButton = page.getByRole('button', {

@@ -99,6 +99,46 @@ describe('DateFilter', () => {
 		expect(screen.getByText('show-results')).toBeDisabled();
 	});
 
+	it('resets the date range fields when filters are cleared', async () => {
+		const {onApplyFilter, user} = renderDateFilter();
+
+		await user.selectOptions(
+			screen.getByLabelText('filter-content-by'),
+			Range.DateRange
+		);
+
+		await user.type(screen.getByLabelText('from'), '2026-01-01 08:00');
+		await user.type(
+			screen.getByLabelText('to[date-time]'),
+			'2026-01-02 08:00'
+		);
+
+		await user.click(screen.getByText('show-results'));
+
+		expect(onApplyFilter).toHaveBeenCalledWith({
+			endDate: '2026-01-02 08:00',
+			range: Range.DateRange,
+			startDate: '2026-01-01 08:00',
+		});
+
+		expect(screen.getByLabelText('from')).toHaveValue('2026-01-01 08:00');
+		expect(screen.getByLabelText('from')).toBeEnabled();
+		expect(screen.getByLabelText('to[date-time]')).toHaveValue(
+			'2026-01-02 08:00'
+		);
+		expect(screen.getByLabelText('to[date-time]')).toBeEnabled();
+
+		await user.click(screen.getByText('clear-filters'));
+
+		await user.selectOptions(
+			screen.getByLabelText('filter-content-by'),
+			Range.DateRange
+		);
+
+		expect(screen.getByLabelText('from')).toHaveValue('');
+		expect(screen.getByLabelText('to[date-time]')).toHaveValue('');
+	});
+
 	it('shows an alert summary and clears filters correctly', async () => {
 		const {onApplyFilter, user} = renderDateFilter();
 
