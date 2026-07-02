@@ -52,6 +52,13 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 					assetCategoryException,
 					assetCategoryException.getVocabulary());
 			}
+			else if (assetCategoryException.getType() ==
+						AssetCategoryException.TOO_MANY_CATEGORIES) {
+
+				throw new InfoFormValidationException.TooManyAssetCategories(
+					assetCategoryException,
+					assetCategoryException.getVocabulary());
+			}
 		}
 
 		if (exception instanceof ModelListenerException) {

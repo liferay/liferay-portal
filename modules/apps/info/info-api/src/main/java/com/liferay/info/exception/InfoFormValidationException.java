@@ -432,6 +432,39 @@ public class InfoFormValidationException extends InfoFormException {
 
 	}
 
+	public static class TooManyAssetCategories
+		extends InfoFormValidationException {
+
+		public TooManyAssetCategories(
+			AssetCategoryException assetCategoryException,
+			AssetVocabulary assetVocabulary) {
+
+			_assetCategoryException = assetCategoryException;
+			_assetVocabulary = assetVocabulary;
+		}
+
+		public AssetCategoryException getAssetCategoryException() {
+			return _assetCategoryException;
+		}
+
+		public AssetVocabulary getAssetVocabulary() {
+			return _assetVocabulary;
+		}
+
+		@Override
+		public String getLocalizedMessage(Locale locale) {
+			return LanguageUtil.format(
+				locale, "you-cannot-select-more-than-one-category-for-x",
+				(_assetVocabulary != null) ?
+					HtmlUtil.escape(_assetVocabulary.getTitle(locale)) :
+						StringPool.BLANK);
+		}
+
+		private final AssetCategoryException _assetCategoryException;
+		private final AssetVocabulary _assetVocabulary;
+
+	}
+
 	public static class UniqueValueConstraintViolation
 		extends InfoFormValidationException {
 

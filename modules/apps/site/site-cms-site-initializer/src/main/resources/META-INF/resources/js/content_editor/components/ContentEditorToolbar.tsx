@@ -198,7 +198,7 @@ export default function ContentEditorToolbar({
 
 		sessionStorage.removeItem(SUCCESS_MESSAGE_SESSION_KEY);
 
-		if (getForm()?.querySelector('.form-group.has-error')) {
+		if (getForm()?.querySelector('.alert-danger, .form-group.has-error')) {
 			return;
 		}
 
