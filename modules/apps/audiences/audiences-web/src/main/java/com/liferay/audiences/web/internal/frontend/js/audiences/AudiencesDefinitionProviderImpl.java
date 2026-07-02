@@ -59,7 +59,7 @@ public class AudiencesDefinitionProviderImpl
 		).toString();
 
 		audiencesDefinition = new AudiencesDefinition(
-			HashedFilesUtil.computeHash(json), json);
+			json, HashedFilesUtil.computeHash(json));
 
 		_portalCache.put(companyId, audiencesDefinition);
 
