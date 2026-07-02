@@ -19,9 +19,11 @@ import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscript
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.util.DateUtil;
+import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.constants.FaroMessageDestinationNames;
 import com.liferay.osb.faro.web.internal.messaging.destination.creator.DestinationCreator;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
+import com.liferay.osb.faro.web.internal.util.OSBAccountEntryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -159,6 +161,9 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 							Collections.singletonList(osbOfferingEntry));
 					}
 				};
+			}
+			else if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+				osbAccountEntry = OSBAccountEntryUtil.build(faroProject);
 			}
 			else {
 				osbAccountEntry = _provisioningClient.getOSBAccountEntry(
