@@ -35,6 +35,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,6 +68,8 @@ public class SiteTemplateResourceTest extends BaseSiteTemplateResourceTestCase {
 	@Test
 	public void testGetSiteTemplatesPage() throws Exception {
 		super.testGetSiteTemplatesPage();
+
+		CMSTestUtil.getOrAddGroup(SiteTemplateResourceTest.class);
 
 		_testGetSiteTemplatesPageWithAssetLibraryMember();
 		_testGetSiteTemplatesPageWithExcludedSiteExternalReferenceCodes();
