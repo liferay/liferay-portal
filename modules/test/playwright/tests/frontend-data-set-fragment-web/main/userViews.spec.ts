@@ -303,7 +303,9 @@ test(
 			).toHaveText(userView1Name);
 			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await expect(userViewsDropdown.getByRole('option')).toHaveCount(2);
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				2
+			);
 
 			page.keyboard.press('Escape');
 		});
@@ -368,7 +370,7 @@ test(
 			await userViewsDropdown.waitFor();
 
 			await userViewsDropdown
-				.getByRole('option', {name: 'Default View'})
+				.getByRole('menuitem', {name: 'Default View'})
 				.click();
 
 			await expect(dataSetFragmentPage.table.headerCells).toHaveCount(6);
@@ -380,7 +382,7 @@ test(
 			await userViewsDropdown.waitFor();
 
 			await userViewsDropdown
-				.getByRole('option', {name: userView1Name})
+				.getByRole('menuitem', {name: userView1Name})
 				.click();
 
 			await dataSetFragmentPage.changeVisualizationMode('Cards');
@@ -416,7 +418,7 @@ test(
 			await dataSetFragmentPage.userViewsSelectorButton.click();
 
 			await userViewsDropdown
-				.getByRole('option', {name: 'Default View'})
+				.getByRole('menuitem', {name: 'Default View'})
 				.click();
 
 			await dataSetFragmentPage.table.container.waitFor({
@@ -430,7 +432,7 @@ test(
 			await dataSetFragmentPage.userViewsSelectorButton.click();
 
 			await userViewsDropdown
-				.getByRole('option', {name: userView1Name})
+				.getByRole('menuitem', {name: userView1Name})
 				.click();
 
 			await dataSetFragmentPage.cardsWrapper.waitFor({
@@ -514,8 +516,134 @@ test(
 			await userViewsDropdown.waitFor();
 
 			await expect(
-				userViewsDropdown.getByRole('option', {name: userView2Name})
+				userViewsDropdown.getByRole('menuitem', {name: userView2Name})
 			).not.toBeVisible();
+		});
+	}
+);
+
+test(
+	'Can search the User Views dropdown to filter the list',
+	{tag: '@LPD-75911'},
+	async ({dataSetFragmentPage, dataSetManagerApiHelpers, layout, page}) => {
+		await test.step('Enable User Views (snapshots)', async () => {
+			await dataSetManagerApiHelpers.updateDataSet({
+				erc: dataSetERC,
+				snapshotsEnabled: true,
+			});
+		});
+
+		await test.step('Configure Data Set fragment on the page', async () => {
+			await dataSetFragmentPage.configureDataSetFragment({
+				dataSetLabel,
+				layout,
+			});
+		});
+
+		await test.step('Seed several user views via the API', async () => {
+			for (const snapshotName of [
+				'Active Orders',
+				'Archived Orders',
+				'Pending Invoices',
+			]) {
+				await dataSetManagerApiHelpers.createDataSetSnapshot({
+					dataSetERC,
+					snapshotName,
+				});
+			}
+		});
+
+		await test.step('Reload so the seeded views are listed', async () => {
+			await dataSetFragmentPage.goToPage({layout});
+
+			await page
+				.locator('.data-set-content-wrapper')
+				.waitFor({state: 'visible'});
+		});
+
+		await dataSetFragmentPage.userViewsSelectorButton.click();
+
+		const userViewsDropdownId =
+			await dataSetFragmentPage.userViewsSelectorButton.getAttribute(
+				'aria-controls'
+			);
+		const userViewsDropdown = page.locator(`#${userViewsDropdownId}`);
+
+		await userViewsDropdown.waitFor();
+
+		const searchInput = userViewsDropdown.getByPlaceholder('Search');
+
+		// "Default View" plus the three seeded views
+
+		const allViewsCount = 4;
+
+		await test.step('The full list and the search input are shown initially', async () => {
+			await expect(searchInput).toBeVisible();
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				allViewsCount
+			);
+		});
+
+		await test.step('Typing filters the list in real time', async () => {
+			await searchInput.fill('orders');
+
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				2
+			);
+			await expect(
+				userViewsDropdown.getByRole('menuitem', {name: 'Active Orders'})
+			).toBeVisible();
+			await expect(
+				userViewsDropdown.getByRole('menuitem', {
+					name: 'Archived Orders',
+				})
+			).toBeVisible();
+		});
+
+		await test.step('The search is case-insensitive', async () => {
+			await searchInput.fill('INVOICES');
+
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				1
+			);
+			await expect(
+				userViewsDropdown.getByRole('menuitem', {
+					name: 'Pending Invoices',
+				})
+			).toBeVisible();
+		});
+
+		await test.step('The Default View is filtered along with the rest', async () => {
+			await searchInput.fill('default');
+
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				1
+			);
+			await expect(
+				userViewsDropdown.getByRole('menuitem', {name: 'Default View'})
+			).toBeVisible();
+		});
+
+		await test.step('An empty state is shown when nothing matches', async () => {
+			await searchInput.fill('nonexistent view name');
+
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				0
+			);
+			await expect(
+				userViewsDropdown.getByText('No Results Found')
+			).toBeVisible();
+		});
+
+		await test.step('Clearing the search restores the full list', async () => {
+			await userViewsDropdown
+				.getByRole('button', {name: 'Clear'})
+				.click();
+
+			await expect(searchInput).toHaveValue('');
+			await expect(userViewsDropdown.getByRole('menuitem')).toHaveCount(
+				allViewsCount
+			);
 		});
 	}
 );
@@ -578,7 +706,7 @@ test(
 
 			await page
 				.locator(`#${userViewsDropdownId}`)
-				.getByRole('option', {name: snapshotName})
+				.getByRole('menuitem', {name: snapshotName})
 				.click();
 		});
 
@@ -804,14 +932,16 @@ test(
 			).toBeVisible();
 
 			await expect(
-				userViewsDropdown.getByRole('option', {
+				userViewsDropdown.getByRole('menuitem', {
 					name: sharedSnapshotName,
 				})
 			).toBeVisible();
 		});
 
 		await test.step('Selecting the shared view makes it the active view', async () => {
-			await page.getByRole('option', {name: sharedSnapshotName}).click();
+			await page
+				.getByRole('menuitem', {name: sharedSnapshotName})
+				.click();
 
 			await expect(
 				dataSetFragmentPage.userViewsSelectorButton
