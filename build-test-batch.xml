@@ -6779,10 +6779,6 @@ information. Make sure to commit in all format-javadoc results.
 		/>
 	</target>
 
-	<target name="functional-smoke-tomcat-mysql84-jdk17_zulu">
-		<antcall target="functional-tomcat-mysql84-jdk17_zulu" />
-	</target>
-
 	<target name="functional-smoke-tomcat-mysql84-jdk21_zulu">
 		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
 
@@ -6968,7 +6964,7 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="tomcat" browser.type="chrome" database.type="mysql" database.version="8.4" test.portal.log.assert="true" />
 	</target>
 
-	<target name="functional-smoke-tomcat101-mysql84-jdk17_zulu">
+	<target name="functional-smoke-tomcat101-mysql84-jdk21_zulu">
 		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" test.portal.log.assert="true" />
 	</target>
 
@@ -7065,12 +7061,6 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-weblogic151-mysql84">
-		<set-app-server-version-number app.server.type="weblogic" app.server.version="15.1.1" />
-
-		<run-functional-test app.server.type="weblogic" database.type="mysql" database.version="8.4" test.portal.log.assert="true" />
-	</target>
-
-	<target name="functional-smoke-weblogic151-mysql84-jdk17_zulu">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="15.1.1" />
 
 		<run-functional-test app.server.type="weblogic" database.type="mysql" database.version="8.4" test.portal.log.assert="true" />
@@ -7452,10 +7442,6 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="functional-tomcat-mysql84-jdk17_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
-	</target>
-
 	<target name="functional-tomcat-mysql84-jdk21_zulu">
 		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
 	</target>
@@ -7683,10 +7669,6 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-tomcat101-mysql84-chrome100_stable">
-		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
-	</target>
-
-	<target name="functional-tomcat101-mysql84-jdk17_zulu">
 		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
 	</target>
 
