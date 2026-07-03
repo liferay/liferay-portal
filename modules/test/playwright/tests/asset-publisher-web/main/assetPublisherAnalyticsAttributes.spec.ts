@@ -139,7 +139,7 @@ test(
 			await assetPublisherPage.closeConfiguration();
 		}
 
-		await page.getByLabel('Publish', {exact: true}).click();
+		await pageEditorPage.publishPage();
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
@@ -330,7 +330,7 @@ test(
 
 		// Publish the page and assert the rendered analytics attributes
 
-		await page.getByLabel('Publish', {exact: true}).click();
+		await pageEditorPage.publishPage();
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
