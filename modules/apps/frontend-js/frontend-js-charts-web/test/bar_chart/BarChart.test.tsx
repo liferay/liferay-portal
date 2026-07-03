@@ -69,9 +69,10 @@ describe('BarChart', () => {
 			<BarChart data={DATA} scheme="categorical" title="Monthly visits" />
 		);
 
-		expect(screen.getAllByRole('img')[0].getAttribute('style')).toContain(
-			'--charts-bar-fill'
-		);
+		expect(screen.getAllByRole('img')[0]).toHaveStyle({
+			'--charts-bar-fill':
+				'var(--primary-l0, light-dark(#5791ff, #0f62ff))',
+		});
 	});
 
 	it('renders a semantic detail table for legend="table"', () => {

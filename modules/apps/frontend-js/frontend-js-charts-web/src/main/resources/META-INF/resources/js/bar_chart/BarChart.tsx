@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import {getCategoricalColors} from '../palette';
+import {CHART_FAMILY_CLAY_PALETTE} from '../tokens';
 import BarChartLegend from './legend/BarChartLegend';
 import BarChartPlot from './plot/BarChartPlot';
 import {getBarChartGeometry} from './plot/geometry';
@@ -53,8 +54,8 @@ export default function BarChart({
 	const colorFor = useCallback(
 		(index: number): string =>
 			palette
-				? palette[index] ?? 'var(--primary-l0)'
-				: 'var(--primary-l0)',
+				? palette[index] ?? CHART_FAMILY_CLAY_PALETTE.blue
+				: CHART_FAMILY_CLAY_PALETTE.blue,
 		[palette]
 	);
 

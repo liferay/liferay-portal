@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+@import 'atlas-custom-properties/_variables';
+
 .charts-bar-chart {
-	color: var(--dark);
+	color: $dark;
 	display: block;
 	margin: 0;
 
@@ -24,7 +26,7 @@
 	}
 
 	&__axis {
-		stroke: var(--light-d2);
+		stroke: $light-d2;
 		stroke-width: 1;
 	}
 
@@ -33,7 +35,7 @@
 		// fallback keeps blue mode rendering with `--primary`.
 
 		cursor: pointer;
-		fill: var(--charts-bar-fill, var(--primary));
+		fill: var(--charts-bar-fill, $primary);
 		outline: none;
 		transform-box: fill-box;
 		transform-origin: center bottom;
@@ -47,14 +49,14 @@
 	// row reads as "progress out of total".
 
 	&__bar-track {
-		fill: var(--light-d1);
+		fill: $light-d1;
 		pointer-events: none;
 	}
 
 	// Blue mode: darken the active bar (resting bars are already `--primary`).
 
 	&--blue &__bar-group.is-active .charts-bar-chart__bar {
-		fill: var(--primary-d2);
+		fill: $primary-d2;
 	}
 
 	// Categorical mode: keep the per-bar hue and brighten slightly.
@@ -64,16 +66,16 @@
 	}
 
 	&__bar:focus-visible {
-		outline: 2px solid var(--primary-d2);
+		outline: 2px solid $primary-d2;
 		outline-offset: 2px;
 	}
 
 	&--blue &__bar:focus-visible {
-		fill: var(--primary-d2);
+		fill: $primary-d2;
 	}
 
 	&__label {
-		fill: var(--dark);
+		fill: $dark;
 		font-size: 0.75rem;
 	}
 
@@ -81,7 +83,7 @@
 		pointer-events: none;
 
 		.charts-bar-chart__value {
-			fill: var(--dark);
+			fill: $dark;
 			font-size: 0.75rem;
 			font-variant-numeric: tabular-nums;
 			font-weight: 700;
@@ -89,11 +91,11 @@
 		}
 
 		.charts-bar-chart__value-bg {
-			fill: var(--primary);
+			fill: $primary;
 		}
 
 		&.is-active .charts-bar-chart__value {
-			fill: var(--white);
+			fill: $white;
 		}
 	}
 
@@ -112,7 +114,7 @@
 	&__legend-item {
 		align-items: center;
 		border-radius: 4px;
-		color: var(--dark);
+		color: $dark;
 		cursor: pointer;
 		display: grid;
 		gap: 0.5rem;
@@ -123,21 +125,21 @@
 			color 140ms ease;
 
 		&.is-active {
-			background: var(--primary);
-			color: var(--white);
+			background: $primary;
+			color: $white;
 
 			.charts-bar-chart__legend-value {
-				color: var(--white);
+				color: $white;
 			}
 
 			.charts-bar-chart__legend-swatch {
-				border-color: var(--white);
+				border-color: $white;
 			}
 		}
 	}
 
 	&__legend-swatch {
-		border: 1px solid var(--dark-d1);
+		border: 1px solid $dark-d1;
 		border-radius: 2px;
 		display: inline-block;
 		height: 12px;
@@ -150,7 +152,7 @@
 	}
 
 	&__legend-value {
-		color: var(--dark);
+		color: $dark;
 		font-variant-numeric: tabular-nums;
 		font-weight: 700;
 	}
@@ -159,7 +161,7 @@
 
 	&__legend-table {
 		border-collapse: collapse;
-		color: var(--dark);
+		color: $dark;
 		font-size: 0.8125rem;
 		font-variant-numeric: tabular-nums;
 		margin-top: 1rem;
@@ -168,8 +170,8 @@
 	}
 
 	&__legend-table-th {
-		border-bottom: 1px solid var(--light-d1);
-		color: var(--dark);
+		border-bottom: 1px solid $light-d1;
+		color: $dark;
 		font-size: 0.75rem;
 		font-weight: 600;
 		letter-spacing: 0.03em;
@@ -207,26 +209,26 @@
 			color 140ms ease;
 
 		&:hover {
-			background: var(--light);
+			background: $light;
 		}
 
 		&.is-active {
-			background: var(--primary);
-			color: var(--white);
+			background: $primary;
+			color: $white;
 
 			.charts-bar-chart__legend-swatch {
-				border-color: var(--white);
+				border-color: $white;
 			}
 
 			.charts-bar-chart__legend-cell {
-				color: var(--white);
+				color: $white;
 			}
 		}
 	}
 
 	&__legend-cell {
-		border-bottom: 1px solid var(--light-d1);
-		color: var(--dark);
+		border-bottom: 1px solid $light-d1;
+		color: $dark;
 		font-weight: 400;
 		padding: 0.375rem 0.625rem;
 

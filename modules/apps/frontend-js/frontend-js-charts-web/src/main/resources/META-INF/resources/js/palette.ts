@@ -21,9 +21,9 @@ export function getCategoricalColors(count: number): string[] {
 		const slot = index % totalSize;
 
 		if (slot < baseSize) {
-			return `var(${CHART_FAMILY_CLAY_PALETTE[CHART_FAMILY_ORDER[slot]]})`;
+			return CHART_FAMILY_CLAY_PALETTE[CHART_FAMILY_ORDER[slot]];
 		}
 
-		return `var(${CHART_FAMILY_CLAY_PALETTE_EXTENDED[slot - baseSize]})`;
+		return CHART_FAMILY_CLAY_PALETTE_EXTENDED[slot - baseSize];
 	});
 }

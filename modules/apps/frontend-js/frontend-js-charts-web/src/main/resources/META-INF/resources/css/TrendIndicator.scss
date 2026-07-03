@@ -3,13 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+@import 'atlas-custom-properties/_variables';
+
 .charts-trend-indicator {
-	// Trend color tokens are chart specific and not part of clay-css, so they
-	// are defined here, mapped to Clay's themeable success/danger tokens.
-
-	--chart-trend-positive: var(--success);
-	--chart-trend-negative: var(--danger);
-
 	align-items: center;
 	display: inline-flex;
 	font-variant-numeric: tabular-nums;
@@ -18,19 +14,19 @@
 	white-space: nowrap;
 
 	&--up {
-		color: var(--chart-trend-positive);
+		color: $success;
 	}
 
 	&--down {
-		color: var(--chart-trend-negative);
+		color: $danger;
 	}
 
 	&--neutral {
-		color: var(--secondary);
+		color: $secondary;
 	}
 
 	&__label {
-		color: var(--secondary);
+		color: $secondary;
 		font-weight: 400;
 		margin-left: 0.25rem;
 	}
