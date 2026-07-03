@@ -945,6 +945,43 @@ public class AgentDefinitionResourceTest
 					active = true;
 					externalReferenceCode =
 						WorkflowDefinitionConstants.
+							EXTERNAL_REFERENCE_CODE_CONTENT_GAP_ANALYSIS;
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "contentCoverage";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "focusScope";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "projectContext";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "gapAnalysis";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName =
+						WorkflowDefinitionConstants.NAME_CONTENT_GAP_ANALYSIS;
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = true;
+					externalReferenceCode =
+						WorkflowDefinitionConstants.
 							EXTERNAL_REFERENCE_CODE_FIX_SPELLING_AND_GRAMMAR;
 					inputVariables = new Variable[] {
 						new Variable() {
