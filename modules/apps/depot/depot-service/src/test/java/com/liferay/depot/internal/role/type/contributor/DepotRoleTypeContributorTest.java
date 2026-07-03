@@ -96,6 +96,21 @@ public class DepotRoleTypeContributorTest {
 					DepotRolesConstants.SUBTYPE_SPACE
 				},
 				depotRoleTypeContributor.getSubtypes());
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-57283"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertArrayEquals(
+				new String[] {
+					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY,
+					DepotRolesConstants.SUBTYPE_PROJECT,
+					DepotRolesConstants.SUBTYPE_SPACE
+				},
+				depotRoleTypeContributor.getSubtypes());
 		}
 	}
 

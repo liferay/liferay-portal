@@ -1338,10 +1338,28 @@ public class ObjectDefinitionLocalServiceTest {
 				ObjectDefinitionSettingConstants.NAME_DOMAIN,
 				DepotRolesConstants.SUBTYPE_SPACE));
 
+		ObjectDefinition objectDefinition5 = _publishCustomObjectDefinition(
+			ObjectDefinitionTestUtil.getRandomName(),
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_DOMAIN
+				).value(
+					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY
+				).build()));
+
+		_assertObjectDefinitionSettingsValues(
+			objectDefinition5.getObjectDefinitionSettings(),
+			Collections.singletonMap(
+				ObjectDefinitionSettingConstants.NAME_DOMAIN,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY));
+
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition3);
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition4);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition5);
 	}
 
 	@FeatureFlag("LPD-17564")

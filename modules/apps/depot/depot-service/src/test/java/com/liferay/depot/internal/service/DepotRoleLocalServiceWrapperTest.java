@@ -67,6 +67,10 @@ public class DepotRoleLocalServiceWrapperTest {
 				depotRoleLocalServiceWrapper, DepotRolesConstants.SUBTYPE_SPACE,
 				RoleConstants.TYPE_DEPOT, false);
 			_assertAddRole(
+				depotRoleLocalServiceWrapper,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY,
+				RoleConstants.TYPE_DEPOT, false);
+			_assertAddRole(
 				depotRoleLocalServiceWrapper, null, RoleConstants.TYPE_DEPOT,
 				true);
 			_assertAddRole(
@@ -108,6 +112,25 @@ public class DepotRoleLocalServiceWrapperTest {
 				depotRoleLocalServiceWrapper,
 				DepotRolesConstants.SUBTYPE_PROJECT, RoleConstants.TYPE_DEPOT,
 				true);
+			_assertAddRole(
+				depotRoleLocalServiceWrapper,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY,
+				RoleConstants.TYPE_DEPOT, false);
+			_assertAddRole(
+				depotRoleLocalServiceWrapper, RandomTestUtil.randomString(),
+				RoleConstants.TYPE_DEPOT, false);
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-57283"))
+			).thenReturn(
+				true
+			);
+
+			_assertAddRole(
+				depotRoleLocalServiceWrapper,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY,
+				RoleConstants.TYPE_DEPOT, true);
 			_assertAddRole(
 				depotRoleLocalServiceWrapper, RandomTestUtil.randomString(),
 				RoleConstants.TYPE_DEPOT, false);

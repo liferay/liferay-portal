@@ -32,56 +32,69 @@ public class DepotRoleUtilTest {
 
 	@Test
 	public void testFilter() {
-		Role role1 = _mockRole(DepotRolesConstants.SUBTYPE_PROJECT);
-		Role role2 = _mockRole(DepotRolesConstants.SUBTYPE_SPACE);
-		Role role3 = _mockRole(null);
-		Role role4 = _mockRole("");
+		Role role1 = _mockRole(DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
+		Role role2 = _mockRole(DepotRolesConstants.SUBTYPE_PROJECT);
+		Role role3 = _mockRole(DepotRolesConstants.SUBTYPE_SPACE);
+		Role role4 = _mockRole(null);
+		Role role5 = _mockRole("");
 
 		Assert.assertEquals(
-			Arrays.asList(role1, role2, role3, role4),
+			Arrays.asList(role1, role2, role3, role4, role5),
 			DepotRoleUtil.filter(
-				(DepotEntry)null, Arrays.asList(role1, role2, role3, role4)));
+				(DepotEntry)null,
+				Arrays.asList(role1, role2, role3, role4, role5)));
 		Assert.assertEquals(
-			Arrays.asList(role1, role2, role3, role4),
+			Arrays.asList(role1, role2, role3, role4, role5),
 			DepotRoleUtil.filter(
 				_mockDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY),
-				Arrays.asList(role1, role2, role3, role4)));
+				Arrays.asList(role1, role2, role3, role4, role5)));
 		Assert.assertEquals(
-			Arrays.asList(role1, role3, role4),
+			Arrays.asList(role1, role4, role5),
+			DepotRoleUtil.filter(
+				_mockDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY),
+				Arrays.asList(role1, role2, role3, role4, role5)));
+		Assert.assertEquals(
+			Arrays.asList(role2, role4, role5),
 			DepotRoleUtil.filter(
 				_mockDepotEntry(DepotConstants.TYPE_PROJECT),
-				Arrays.asList(role1, role2, role3, role4)));
+				Arrays.asList(role1, role2, role3, role4, role5)));
 		Assert.assertEquals(
-			Arrays.asList(role2, role3, role4),
+			Arrays.asList(role3, role4, role5),
 			DepotRoleUtil.filter(
 				_mockDepotEntry(DepotConstants.TYPE_SPACE),
-				Arrays.asList(role1, role2, role3, role4)));
+				Arrays.asList(role1, role2, role3, role4, role5)));
 	}
 
 	@Test
 	public void testFilterBySubtype() {
-		Role role1 = _mockRole(DepotRolesConstants.SUBTYPE_PROJECT);
-		Role role2 = _mockRole(DepotRolesConstants.SUBTYPE_SPACE);
-		Role role3 = _mockRole(null);
-		Role role4 = _mockRole("");
+		Role role1 = _mockRole(DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
+		Role role2 = _mockRole(DepotRolesConstants.SUBTYPE_PROJECT);
+		Role role3 = _mockRole(DepotRolesConstants.SUBTYPE_SPACE);
+		Role role4 = _mockRole(null);
+		Role role5 = _mockRole("");
 
 		Assert.assertEquals(
-			Arrays.asList(role1, role2, role3, role4),
+			Arrays.asList(role1, role2, role3, role4, role5),
 			DepotRoleUtil.filter(
-				Arrays.asList(role1, role2, role3, role4), null));
+				Arrays.asList(role1, role2, role3, role4, role5), null));
 		Assert.assertEquals(
-			Arrays.asList(role1, role2, role3, role4),
+			Arrays.asList(role1, role2, role3, role4, role5),
 			DepotRoleUtil.filter(
-				Arrays.asList(role1, role2, role3, role4), ""));
+				Arrays.asList(role1, role2, role3, role4, role5), ""));
 		Assert.assertEquals(
-			Arrays.asList(role1, role3, role4),
+			Arrays.asList(role1, role4, role5),
 			DepotRoleUtil.filter(
-				Arrays.asList(role1, role2, role3, role4),
+				Arrays.asList(role1, role2, role3, role4, role5),
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY));
+		Assert.assertEquals(
+			Arrays.asList(role2, role4, role5),
+			DepotRoleUtil.filter(
+				Arrays.asList(role1, role2, role3, role4, role5),
 				DepotRolesConstants.SUBTYPE_PROJECT));
 		Assert.assertEquals(
-			Arrays.asList(role2, role3, role4),
+			Arrays.asList(role3, role4, role5),
 			DepotRoleUtil.filter(
-				Arrays.asList(role1, role2, role3, role4),
+				Arrays.asList(role1, role2, role3, role4, role5),
 				DepotRolesConstants.SUBTYPE_SPACE));
 	}
 
