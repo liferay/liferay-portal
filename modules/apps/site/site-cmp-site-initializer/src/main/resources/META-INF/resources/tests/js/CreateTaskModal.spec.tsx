@@ -130,6 +130,7 @@ describe('CreateTaskModal', () => {
 				closeModal={() => {}}
 				loadData={() => {}}
 				projectId={projectId}
+				projectObjectDefinitionId={123}
 				state=""
 			/>
 		);

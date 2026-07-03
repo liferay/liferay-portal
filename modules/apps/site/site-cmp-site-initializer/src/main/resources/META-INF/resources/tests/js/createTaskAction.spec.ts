@@ -27,6 +27,7 @@ describe('createTaskAction', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
+				projectObjectDefinitionId: 123,
 			});
 
 			expect(mockNavigate).not.toHaveBeenCalled();
@@ -49,6 +50,7 @@ describe('createTaskAction', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
+				projectObjectDefinitionId: 123,
 				redirect: 'http://localhost/redirect-url',
 			});
 
