@@ -444,7 +444,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 				 (FeatureFlagManagerUtil.isEnabled(
 					 _themeDisplay.getCompanyId(), "LPD-17564") ||
 				  FeatureFlagManagerUtil.isEnabled(
-					 _themeDisplay.getCompanyId(), "LPD-57283") ||
+					  _themeDisplay.getCompanyId(), "LPD-57283") ||
 				  FeatureFlagManagerUtil.isEnabled(
 					  _themeDisplay.getCompanyId(), "LPD-58677"))) {
 
