@@ -31,6 +31,7 @@ export default function SaveButtons({
 	selectedLanguageId,
 	showPublishModal,
 	timeZone,
+	use12Hours,
 	workflowEnabled,
 }) {
 	const formId = `${portletNamespace}fm1`;
@@ -373,6 +374,7 @@ export default function SaveButtons({
 					portletNamespace={portletNamespace}
 					showPermissionsOptions={showPublishModal}
 					timeZone={timeZone}
+					use12Hours={use12Hours}
 					workflowEnabled={workflowEnabled}
 				/>
 			) : null}

@@ -170,9 +170,7 @@ baseTest(
 			.getByRole('menuitem', {name: 'Schedule Publication'})
 			.click();
 
-		await page
-			.getByPlaceholder('YYYY-MM-DD HH:mm')
-			.fill('9987-11-26 13:00');
+		await page.getByLabel('Date and Time').fill('9987-11-26 01:00 PM');
 
 		await page
 			.getByLabel('Schedule Publication')
@@ -457,7 +455,7 @@ translationAndAutosaveTest(
 
 		await journalEditArticlePage.scheduleArticle(
 			unSelectableWebContent,
-			'9987-11-26 13:00'
+			'9987-11-26 01:00 PM'
 		);
 
 		await journalEditArticlePage.goto({

@@ -22,6 +22,7 @@ export default function ScheduleOptions({
 	setDisplayDate,
 	setError,
 	timeZone,
+	use12Hours,
 }) {
 	const currentYear = new Date().getFullYear();
 	const {day, hour, minutes, month, year} = getDate(displayDate);
@@ -90,10 +91,15 @@ export default function ScheduleOptions({
 						`${Liferay.Language.get('december')}`,
 					]}
 					onChange={setDisplayDate}
-					placeholder={Liferay.Language.get('yyyy-mm-dd-hh-mm')}
+					placeholder={
+						use12Hours
+							? Liferay.Language.get('yyyy-mm-dd-hh-mm-am-pm')
+							: Liferay.Language.get('yyyy-mm-dd-hh-mm')
+					}
 					required
 					time
 					timezone={timeZone.name}
+					use12Hours={use12Hours}
 					value={displayDate || ''}
 					weekdaysShort={dateUtils.getWeekdaysShort()}
 					years={{

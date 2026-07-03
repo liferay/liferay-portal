@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -1129,9 +1130,17 @@ public class JournalEditArticleDisplayContext {
 					return null;
 				}
 
+				boolean formatAmPm = DateUtil.isFormatAmPm(
+					_themeDisplay.getLocale());
+
+				String pattern = "yyyy-MM-dd HH:mm";
+
+				if (formatAmPm) {
+					pattern = "yyyy-MM-dd hh:mm a";
+				}
+
 				Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(
-					"yyyy-MM-dd HH:mm", _themeDisplay.getLocale(),
-					_themeDisplay.getTimeZone());
+					pattern, LocaleUtil.US, _themeDisplay.getTimeZone());
 
 				return format.format(_article.getDisplayDate());
 			}
@@ -1154,6 +1163,8 @@ public class JournalEditArticleDisplayContext {
 			"showPublishModal", _isShowPublishModal()
 		).put(
 			"timeZone", getTimeZoneMap()
+		).put(
+			"use12Hours", DateUtil.isFormatAmPm(_themeDisplay.getLocale())
 		).put(
 			"workflowEnabled", () -> _isWorkflowEnabled()
 		).build();

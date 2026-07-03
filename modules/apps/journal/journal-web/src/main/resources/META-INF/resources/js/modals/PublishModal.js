@@ -22,6 +22,7 @@ export default function PublishModal({
 	portletNamespace,
 	showPermissionsOptions,
 	timeZone,
+	use12Hours,
 	workflowEnabled,
 }) {
 	const formId = `${portletNamespace}fm1`;
@@ -105,6 +106,7 @@ export default function PublishModal({
 						setDisplayDate={setDisplayDate}
 						setError={setDateError}
 						timeZone={timeZone}
+						use12Hours={use12Hours}
 					/>
 				) : null}
 

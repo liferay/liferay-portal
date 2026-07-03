@@ -119,9 +119,9 @@ export class JournalEditArticlePage {
 			);
 		}
 
-		await expect(
-			this.page.getByPlaceholder('YYYY-MM-DD HH:mm')
-		).toHaveValue(publishDate);
+		await expect(this.page.getByLabel('Date and Time')).toHaveValue(
+			publishDate
+		);
 
 		if (reviewDate) {
 			await expect(this.page.getByText('Review Date')).toHaveValue(
@@ -465,7 +465,7 @@ export class JournalEditArticlePage {
 			trigger: this.publishDropdown,
 		});
 
-		await this.page.getByPlaceholder('YYYY-MM-DD HH:mm').fill(publishDate);
+		await this.page.getByLabel('Date and Time').fill(publishDate);
 
 		await this.page
 			.locator('.modal-footer')

@@ -87,7 +87,7 @@ scheduleTest(
 
 		const articleTitle = getRandomString();
 		const expirationDate = '01/01/9999';
-		const publishDate = '9987-11-26 13:35';
+		const publishDate = '9987-11-26 01:35 PM';
 		const reviewDate = '01/01/9999';
 
 		await journalEditArticlePage.scheduleArticle(
@@ -127,7 +127,7 @@ scheduleTest(
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 
 		const articleTitle = getRandomString();
-		const articleDate = '9987-11-26 13:00';
+		const articleDate = '9987-11-26 01:00 PM';
 
 		await journalEditArticlePage.scheduleArticle(
 			articleTitle,
