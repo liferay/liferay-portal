@@ -169,17 +169,11 @@ export default function ConditionsPanel({
 								{index > 0 ? (
 									<div
 										aria-hidden="true"
-										className="align-items-center d-flex my-3"
+										className="font-weight-semi-bold my-3 text-3 text-secondary text-uppercase"
 									>
-										<span className="audience-builder-conjunction-line border-top" />
-
-										<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
-											{conjunction === 'OR'
-												? Liferay.Language.get('or')
-												: Liferay.Language.get('and')}
-										</span>
-
-										<span className="border-top flex-grow-1" />
+										{conjunction === 'OR'
+											? Liferay.Language.get('or')
+											: Liferay.Language.get('and')}
 									</div>
 								) : null}
 

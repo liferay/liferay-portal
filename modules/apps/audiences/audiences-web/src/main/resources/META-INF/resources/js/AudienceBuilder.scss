@@ -43,10 +43,6 @@ $toolbar-height: 55px;
 	}
 }
 
-.audience-builder-conjunction-line {
-	width: 20px;
-}
-
 .audience-builder-conjunction-menu {
 	.dropdown-item {
 		text-transform: uppercase;
@@ -74,10 +70,15 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-rule {
+	border: 2px solid var(--secondary-l3);
 	border-left: 4px solid $indigo;
+	border-radius: 0.5rem;
 
 	&:focus-within {
 		background-color: var(--primary-l3);
+		border-bottom-color: $primary;
+		border-right-color: $primary;
+		border-top-color: $primary;
 	}
 
 	&--dragging {
@@ -89,7 +90,7 @@ $toolbar-height: 55px;
 	}
 
 	&--drop-top {
-		box-shadow: 0 -4px 0 0 $primary;
+		box-shadow: inset 0 4px 0 0 $primary;
 	}
 
 	&--error {
@@ -97,6 +98,9 @@ $toolbar-height: 55px;
 
 		&:focus-within {
 			background-color: $gray-100;
+			border-bottom-color: var(--secondary-l3);
+			border-right-color: var(--secondary-l3);
+			border-top-color: var(--secondary-l3);
 		}
 	}
 
