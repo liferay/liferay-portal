@@ -53,7 +53,13 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 
 	@Override
 	public String[] getSubtypes() {
-		List<String> subtypes = new ArrayList<>(2);
+		List<String> subtypes = new ArrayList<>(3);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-57283")) {
+
+			subtypes.add(DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
+		}
 
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-58677")) {

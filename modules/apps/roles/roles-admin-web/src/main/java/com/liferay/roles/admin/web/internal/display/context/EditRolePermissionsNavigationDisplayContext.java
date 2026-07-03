@@ -444,6 +444,8 @@ public class EditRolePermissionsNavigationDisplayContext {
 				 (FeatureFlagManagerUtil.isEnabled(
 					 _themeDisplay.getCompanyId(), "LPD-17564") ||
 				  FeatureFlagManagerUtil.isEnabled(
+					 _themeDisplay.getCompanyId(), "LPD-57283") ||
+				  FeatureFlagManagerUtil.isEnabled(
 					  _themeDisplay.getCompanyId(), "LPD-58677"))) {
 
 			_getObjectsNavigationItems(topLevelNavigationItem);
@@ -587,6 +589,8 @@ public class EditRolePermissionsNavigationDisplayContext {
 			Validator.isNull(_role.getSubtype()) ||
 			(!FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-17564") &&
+			 !FeatureFlagManagerUtil.isEnabled(
+				 _themeDisplay.getCompanyId(), "LPD-57283") &&
 			 !FeatureFlagManagerUtil.isEnabled(
 				 _themeDisplay.getCompanyId(), "LPD-58677"))) {
 
