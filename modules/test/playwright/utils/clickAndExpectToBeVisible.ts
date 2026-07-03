@@ -17,14 +17,11 @@ export async function clickAndExpectToBeVisible({
 	trigger: Locator;
 }) {
 	await expect(async () => {
-		try {
-			await expect(target).toBeVisible({timeout});
-		}
-		catch {
+		if (!(await target.isVisible())) {
 			await trigger.click({timeout});
-
-			await expect(target).toBeVisible({timeout});
 		}
+
+		await expect(target).toBeVisible({timeout});
 
 		if (autoClick) {
 			await target.click();
