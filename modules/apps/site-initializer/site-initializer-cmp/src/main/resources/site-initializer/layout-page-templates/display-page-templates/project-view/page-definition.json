@@ -552,6 +552,33 @@
 						"pageElements": [
 							{
 								"definition": {
+									"fragmentStyle": {
+										"marginBottom": "40px"
+									},
+									"indexed": true,
+									"layout": {
+									},
+									"name": "project-content-coverage-matrix-container"
+								},
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "com.liferay.site.cmp.site.initializer.internal.fragment.renderer.ContentCoverageMatrixComponentSectionFragmentRenderer"
+											},
+											"fragmentConfig": {
+											},
+											"fragmentFields": [
+											],
+											"indexed": true
+										},
+										"type": "Fragment"
+									}
+								],
+								"type": "Section"
+							},
+							{
+								"definition": {
 									"indexed": true,
 									"layout": {
 									}
