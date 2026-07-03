@@ -132,7 +132,7 @@ public abstract class SecretsUtil {
 			}
 		}
 
-		String encryptedCache;
+		String encryptedCache = null;
 
 		try {
 			encryptedCache = _encrypt(
