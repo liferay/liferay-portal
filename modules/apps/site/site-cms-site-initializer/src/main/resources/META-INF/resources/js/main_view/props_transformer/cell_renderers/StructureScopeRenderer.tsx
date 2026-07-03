@@ -60,7 +60,15 @@ const StructureScopeRenderer = ({
 		spaceExternalReferenceCodes.includes(space.externalReferenceCode)
 	);
 
-	return <SpacesDisplay spaces={structureSpaces} />;
+	return (
+		<SpacesDisplay
+			allScopesLabel={Liferay.Language.get('all-spaces')}
+			availableInScopeLabel={Liferay.Language.get(
+				'available-in-spaces-x'
+			)}
+			spaces={structureSpaces}
+		/>
+	);
 };
 
 export default StructureScopeRenderer;

@@ -12,11 +12,16 @@ import {Space} from '../types/Space';
 import SpaceSticker from './SpaceSticker';
 
 export interface SpaceDisplayProps {
+	allScopesLabel: string;
+	availableInScopeLabel: string;
 	spaces: Space[];
 }
 
-export default function SpacesDisplay(props: SpaceDisplayProps) {
-	const {spaces} = props;
+export default function SpacesDisplay({
+	allScopesLabel,
+	availableInScopeLabel,
+	spaces,
+}: SpaceDisplayProps) {
 	const shouldRenderAllSpaces =
 		!spaces.length || spaces.some(({id}) => id === -1);
 
@@ -25,7 +30,7 @@ export default function SpacesDisplay(props: SpaceDisplayProps) {
 			<Badge
 				className="badge-pill"
 				displayType="secondary"
-				label={Liferay.Language.get('all-spaces')}
+				label={allScopesLabel}
 			/>
 		);
 	}
@@ -51,7 +56,7 @@ export default function SpacesDisplay(props: SpaceDisplayProps) {
 							displayType="secondary"
 							label={`+${otherSpaces.length}`}
 							title={sub(
-								Liferay.Language.get('available-in-spaces-x'),
+								availableInScopeLabel,
 								spaces.map((space) => space.name).join(', ')
 							)}
 						/>

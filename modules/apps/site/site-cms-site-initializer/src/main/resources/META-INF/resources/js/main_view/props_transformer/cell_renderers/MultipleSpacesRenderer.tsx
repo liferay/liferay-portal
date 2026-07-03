@@ -10,66 +10,88 @@ import SpacesDisplay from '../../../common/components/SpacesDisplay';
 import SpaceService from '../../../common/services/SpaceService';
 import {Space} from '../../../common/types/Space';
 
+interface ScopeData {
+	externalReferenceCode: string;
+	id: number;
+	name: string;
+}
+
 export interface MultipleSpacesRendererProps {
 	itemData: {
-		assetLibraries: {
-			externalReferenceCode: string;
-			id: number;
-			name: string;
-		}[];
+		assetLibraries: ScopeData[];
+		projects?: ScopeData[];
 	};
 }
+
+const isAllScopes = (scopes: ScopeData[] | undefined) =>
+	!scopes?.length || scopes.some(({id}) => id === -1);
+
+const getScopes = (scopes: ScopeData[] | undefined): Promise<Space[]> => {
+	if (!scopes || isAllScopes(scopes)) {
+		return Promise.resolve([]);
+	}
+
+	return Promise.all(
+		scopes.map(async (scope) => {
+			try {
+				return await SpaceService.getSpaceWithCache(
+					scope.externalReferenceCode,
+					scope.name
+				);
+			}
+			catch (error) {
+				return {
+					externalReferenceCode: scope.externalReferenceCode,
+					id: scope.id,
+					name: scope.name,
+					settings: {},
+				} as Space;
+			}
+		})
+	);
+};
 
 export default function MultipleSpacesRenderer({
 	itemData,
 }: MultipleSpacesRendererProps) {
-	const {assetLibraries} = itemData;
-	const [spaces, setSpaces] = useState<Space[]>([]);
+	const {assetLibraries, projects} = itemData;
+
+	const renderProjects =
+		Array.isArray(projects) &&
+		!!Liferay.FeatureFlags['LPD-58677'] &&
+		!!Liferay.FeatureFlags['LPD-86291'];
+
+	const [projectScopes, setProjectScopes] = useState<Space[]>([]);
+	const [spaceScopes, setSpaceScopes] = useState<Space[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		let isMounted = true;
-		const isAllSpaces =
-			!assetLibraries.length || assetLibraries.some(({id}) => id === -1);
 
-		const fetchAndSetSpaces = async () => {
-			if (isAllSpaces) {
-				return;
-			}
+		const fetchAndSetScopes = async () => {
+			setLoading(
+				(renderProjects && !isAllScopes(projects)) ||
+					!isAllScopes(assetLibraries)
+			);
 
-			setLoading(true);
-
-			const spacePromises = assetLibraries.map(async (assetLib) => {
-				try {
-					return await SpaceService.getSpaceWithCache(
-						assetLib.externalReferenceCode,
-						assetLib.name
-					);
-				}
-				catch (error) {
-					return {
-						externalReferenceCode: assetLib.externalReferenceCode,
-						id: assetLib.id,
-						name: assetLib.name,
-						settings: {},
-					} as Space;
-				}
-			});
-
-			const fetchedOrFallbackSpaces = await Promise.all(spacePromises);
+			const [fetchedProjects, fetchedSpaces] = await Promise.all([
+				renderProjects ? getScopes(projects) : Promise.resolve([]),
+				getScopes(assetLibraries),
+			]);
 
 			if (isMounted) {
-				setSpaces(fetchedOrFallbackSpaces);
+				setProjectScopes(fetchedProjects);
+				setSpaceScopes(fetchedSpaces);
 				setLoading(false);
 			}
 		};
 
-		fetchAndSetSpaces();
+		fetchAndSetScopes();
 
 		return () => {
 			isMounted = false;
 		};
-	}, [assetLibraries]);
+	}, [assetLibraries, projects, renderProjects]);
 
 	if (loading) {
 		return (
@@ -81,5 +103,35 @@ export default function MultipleSpacesRenderer({
 		);
 	}
 
-	return <SpacesDisplay spaces={spaces} />;
+	if (!renderProjects) {
+		return (
+			<SpacesDisplay
+				allScopesLabel={Liferay.Language.get('all-spaces')}
+				availableInScopeLabel={Liferay.Language.get(
+					'available-in-spaces-x'
+				)}
+				spaces={spaceScopes}
+			/>
+		);
+	}
+
+	return (
+		<span className="align-items-center c-gap-3 d-flex flex-wrap">
+			<SpacesDisplay
+				allScopesLabel={Liferay.Language.get('all-spaces')}
+				availableInScopeLabel={Liferay.Language.get(
+					'available-in-spaces-x'
+				)}
+				spaces={spaceScopes}
+			/>
+
+			<SpacesDisplay
+				allScopesLabel={Liferay.Language.get('all-projects')}
+				availableInScopeLabel={Liferay.Language.get(
+					'available-in-projects-x'
+				)}
+				spaces={projectScopes}
+			/>
+		</span>
+	);
 }
