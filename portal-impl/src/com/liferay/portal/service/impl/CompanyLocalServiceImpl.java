@@ -244,7 +244,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				company.getCompanyId());
 
 		try {
-			return _transactionAwareInvoke(
+			Company addedCompany = _transactionAwareInvoke(
 				() -> {
 					company.setWebId(webId);
 					company.setMx(mx);
@@ -332,6 +332,15 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 					return updatedCompany;
 				});
+
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					safeCloseable.close();
+
+					return null;
+				});
+
+			return addedCompany;
 		}
 		catch (Throwable throwable) {
 			try {
@@ -351,14 +360,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			}
 
 			throw new PortalException(throwable);
-		}
-		finally {
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable.close();
-
-					return null;
-				});
 		}
 	}
 
@@ -395,11 +396,11 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		SafeCloseable safeCloseable2 =
 			CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId);
 
-		companyPersistence.clearCache();
-		_virtualHostPersistence.clearCache();
-
 		try {
-			return _transactionAwareInvoke(
+			companyPersistence.clearCache();
+			_virtualHostPersistence.clearCache();
+
+			Company importedCompany = _transactionAwareInvoke(
 				() -> {
 					Company company = companyPersistence.findByPrimaryKey(
 						companyId);
@@ -441,6 +442,16 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 					return _addDBPartitionCompany(company);
 				});
+
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					safeCloseable1.close();
+					safeCloseable2.close();
+
+					return null;
+				});
+
+			return importedCompany;
 		}
 		catch (Throwable throwable) {
 			try (SafeCloseable safeCloseable3 =
@@ -463,15 +474,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			}
 
 			throw new PortalException(throwable);
-		}
-		finally {
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable1.close();
-					safeCloseable2.close();
-
-					return null;
-				});
 		}
 	}
 
@@ -673,7 +675,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		long companyId = toCompanyId;
 
 		try {
-			return _transactionAwareInvoke(
+			Company copiedCompany = _transactionAwareInvoke(
 				() -> {
 					Company company = fromCompany.cloneWithOriginalValues();
 
@@ -689,6 +691,16 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 					return _addDBPartitionCompany(company);
 				});
+
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					safeCloseable1.close();
+					safeCloseable2.close();
+
+					return null;
+				});
+
+			return copiedCompany;
 		}
 		catch (Throwable throwable) {
 			try (SafeCloseable safeCloseable3 =
@@ -709,15 +721,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			}
 
 			throw new PortalException(throwable);
-		}
-		finally {
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable1.close();
-					safeCloseable2.close();
-
-					return null;
-				});
 		}
 	}
 
