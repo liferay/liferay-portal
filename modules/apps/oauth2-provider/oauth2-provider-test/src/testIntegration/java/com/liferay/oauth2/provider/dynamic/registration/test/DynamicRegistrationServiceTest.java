@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -34,7 +35,6 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Arrays;
@@ -54,6 +54,7 @@ import org.osgi.framework.BundleActivator;
 /**
  * @author Jorge García Jiménez
  */
+@FeatureFlag("LPD-63416")
 @RunWith(Arquillian.class)
 public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
@@ -62,9 +63,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@FeatureFlag("LPD-63416")
 	@Test
-	public void testDelete() throws Exception {
+	public void testDeleteClientRegistration() throws Exception {
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
 				TestPropsValues.getCompanyId(), "oauthDeleteMeApplication");
@@ -96,9 +96,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		Assert.assertEquals(401, response.getStatus());
 	}
 
-	@FeatureFlag("LPD-63416")
 	@Test
-	public void testPost() throws Exception {
+	public void testRegister() throws Exception {
 		WebTarget registerWebTarget = getRegisterWebTarget();
 
 		Invocation.Builder invocationBuilder = authorize(
@@ -123,26 +122,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			RandomTestUtil.randomString() + StringPool.SPACE +
 				RandomTestUtil.randomString();
 
-		JSONObject jsonObject = JSONUtil.put(
-			"client_name", clientName
-		).put(
-			"grant_types",
-			new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT}
-		).put(
-			"logo_uri", RandomTestUtil.randomString()
-		).put(
-			"redirect_uris",
-			new String[] {
-				StringBundler.concat(
-					Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(),
-					StringPool.SLASH, RandomTestUtil.randomString()),
-				StringBundler.concat(
-					Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(),
-					StringPool.SLASH, RandomTestUtil.randomString())
-			}
-		).put(
-			"scope", scope
-		);
+		JSONObject jsonObject = _createAuthenticatedRegistrationJSONObject(
+			clientName, scope);
 
 		response = invocationBuilder.method(
 			"post", Entity.json(jsonObject.toString()));
@@ -210,9 +191,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			response.getHeaderString("Access-Control-Allow-Origin"));
 	}
 
-	@FeatureFlag("LPD-63416")
 	@Test
-	public void testPut() throws Exception {
+	public void testUpdateClientRegistration() throws Exception {
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
 				TestPropsValues.getCompanyId(), "oauthDeleteMeApplication");
@@ -229,27 +209,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		Response response = invocationBuilder.method(
 			"put",
 			Entity.json(
-				JSONUtil.put(
-					"client_name", clientName
-				).put(
-					"grant_types",
-					new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT}
-				).put(
-					"logo_uri", RandomTestUtil.randomString()
-				).put(
-					"redirect_uris",
-					new String[] {
-						StringBundler.concat(
-							Http.HTTPS_WITH_SLASH,
-							RandomTestUtil.randomString(), StringPool.SLASH,
-							RandomTestUtil.randomString()),
-						StringBundler.concat(
-							Http.HTTPS_WITH_SLASH,
-							RandomTestUtil.randomString(), StringPool.SLASH,
-							RandomTestUtil.randomString())
-					}
-				).put(
-					"scope", RandomTestUtil.randomString()
+				_createAuthenticatedRegistrationJSONObject(
+					clientName, RandomTestUtil.randomString()
 				).toString()));
 
 		Assert.assertEquals(200, response.getStatus());
@@ -274,6 +235,31 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	@Override
 	protected BundleActivator getBundleActivator() {
 		return new DynamicRegistrationServiceTestPreparatorBundleActivator();
+	}
+
+	private JSONObject _createAuthenticatedRegistrationJSONObject(
+		String clientName, String scope) {
+
+		return JSONUtil.put(
+			"client_name", clientName
+		).put(
+			"grant_types",
+			new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT}
+		).put(
+			"logo_uri", RandomTestUtil.randomString()
+		).put(
+			"redirect_uris",
+			new String[] {
+				StringBundler.concat(
+					Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(),
+					StringPool.SLASH, RandomTestUtil.randomString()),
+				StringBundler.concat(
+					Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(),
+					StringPool.SLASH, RandomTestUtil.randomString())
+			}
+		).put(
+			"scope", scope
+		);
 	}
 
 	private OAuth2Application _getDynamicRegistratorOAuth2Application()
@@ -305,16 +291,20 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = tokenWebTarget.request();
 
-		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
-
-		formData.add(OAuthConstants.CLIENT_ID, oAuth2Application.getClientId());
-		formData.add(
-			OAuthConstants.CLIENT_SECRET, oAuth2Application.getClientSecret());
-		formData.add(
-			OAuthConstants.GRANT_TYPE, OAuthConstants.CLIENT_CREDENTIALS_GRANT);
-
 		String tokenString = parseTokenString(
-			invocationBuilder.post(Entity.form(formData)));
+			invocationBuilder.post(
+				Entity.form(
+					new MultivaluedHashMap<>(
+						HashMapBuilder.put(
+							OAuthConstants.CLIENT_ID,
+							oAuth2Application.getClientId()
+						).put(
+							OAuthConstants.CLIENT_SECRET,
+							oAuth2Application.getClientSecret()
+						).put(
+							OAuthConstants.GRANT_TYPE,
+							OAuthConstants.CLIENT_CREDENTIALS_GRANT
+						).build()))));
 
 		Assert.assertNotNull(tokenString);
 
