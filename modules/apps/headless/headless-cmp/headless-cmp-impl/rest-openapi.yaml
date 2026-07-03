@@ -1,5 +1,70 @@
 components:
     schemas:
+        ContentCoverage:
+            properties:
+                assetCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                contentCoverageEntries:
+                    items:
+                        $ref: "#/components/schemas/ContentCoverageEntry"
+                    readOnly: true
+                    type: array
+                funnelStages:
+                    items:
+                        $ref: "#/components/schemas/FunnelStage"
+                    readOnly: true
+                    type: array
+                personas:
+                    items:
+                        $ref: "#/components/schemas/Persona"
+                    readOnly: true
+                    type: array
+        ContentCoverageEntry:
+            properties:
+                assetCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                funnelStageId:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                personaId:
+                    format: int64
+                    readOnly: true
+                    type: integer
+        FunnelStage:
+            properties:
+                description:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    readOnly: true
+                    type: string
+        Persona:
+            properties:
+                description:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    readOnly: true
+                    type: string
         TaskAssignee:
             properties:
                 externalReferenceCode:
@@ -43,6 +108,26 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/projects/{projectId}/content-coverage":
+        get:
+            operationId: getProjectContentCoverage
+            parameters:
+                -   in: path
+                    name: projectId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ContentCoverage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ContentCoverage"
+            tags: ["ContentCoverage"]
     "/projects/{projectId}/task-statistics":
         get:
             operationId: getProjectTaskStatistics
