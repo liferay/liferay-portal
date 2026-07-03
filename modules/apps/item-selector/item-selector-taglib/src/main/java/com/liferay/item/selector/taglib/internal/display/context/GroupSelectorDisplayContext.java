@@ -7,10 +7,12 @@ package com.liferay.item.selector.taglib.internal.display.context;
 
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
+import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
 import com.liferay.item.selector.taglib.internal.servlet.item.selector.ItemSelectorUtil;
 import com.liferay.item.selector.taglib.internal.util.EntryURLUtil;
 import com.liferay.item.selector.taglib.internal.util.GroupItemSelectorProviderRegistryUtil;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -29,6 +31,7 @@ import com.liferay.site.search.GroupSearch;
 import jakarta.portlet.PortletURL;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -112,7 +115,9 @@ public class GroupSelectorDisplayContext {
 			List<String> parts = StringUtil.split(criterion);
 
 			if (parts.contains("file") || parts.contains("folder") ||
-				parts.contains("image")) {
+				parts.contains("image") ||
+				(parts.contains("infoitem") &&
+				 _isJournalArticleItemSelectorCriterion())) {
 
 				groupItemSelectorProviderTypes.remove("space-depot");
 
@@ -237,6 +242,33 @@ public class GroupSelectorDisplayContext {
 			_liferayPortletRequest, "selectedTab");
 
 		return _selectedTab;
+	}
+
+	private boolean _isJournalArticleItemSelectorCriterion() {
+		ItemSelector itemSelector = _getItemSelector();
+
+		for (ItemSelectorCriterion itemSelectorCriterion :
+				itemSelector.getItemSelectorCriteria(
+					_liferayPortletRequest.getParameterMap())) {
+
+			if (!(itemSelectorCriterion instanceof
+					InfoItemItemSelectorCriterion)) {
+
+				continue;
+			}
+
+			InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+				(InfoItemItemSelectorCriterion)itemSelectorCriterion;
+
+			if (Objects.equals(
+					infoItemItemSelectorCriterion.getItemType(),
+					JournalArticle.class.getName())) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean _isScopeGroupType() {
