@@ -97,6 +97,9 @@ public abstract class BaseTasksSectionDisplayContext
 				return assetEntry.getClassPK();
 			}
 		).put(
+			"projectObjectDefinitionId",
+			projectObjectDefinition.getObjectDefinitionId()
+		).put(
 			"states",
 			() -> {
 				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
@@ -207,6 +210,10 @@ public abstract class BaseTasksSectionDisplayContext
 				dropdownItem.putData(
 					"objectDefinitionId",
 					String.valueOf(objectDefinition.getObjectDefinitionId()));
+				dropdownItem.putData(
+					"projectObjectDefinitionId",
+					String.valueOf(
+						projectObjectDefinition.getObjectDefinitionId()));
 
 				if (assetEntry != null) {
 					dropdownItem.putData(
