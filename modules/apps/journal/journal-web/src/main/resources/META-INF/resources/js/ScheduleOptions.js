@@ -189,7 +189,7 @@ function getDate(value) {
 	return {day: '', hour: '', minutes: '', month: '', year: ''};
 }
 
-function toParseableDate(value) {
+export function toParseableDate(value) {
 	const match = /^(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}) (AM|PM)$/i.exec(value);
 
 	if (!match) {
