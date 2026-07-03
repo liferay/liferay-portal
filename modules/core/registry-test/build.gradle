@@ -19,16 +19,20 @@ copyTestLibs {
 
 dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.osgi.service.tracker.collections", version: "2.0.0"
-	compileOnly group: "log4j", name: "log4j", version: "1.2.17"
+	compileOnly group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compileOnly group: "org.osgi", name: "org.osgi.service.log", version: "1.3.0"
-	compileOnly group: "org.slf4j", name: "slf4j-log4j12", version: "1.5.6"
+	compileOnly(group: "org.slf4j", name: "slf4j-log4j12", version: "1.5.6") {
+		exclude group: "log4j", module: "log4j"
+	}
 	compileOnly project(":core:registry-api")
 	compileOnly project(":core:registry-impl")
 
 	testIntegrationCompile group: "com.liferay.arquillian", name: "com.liferay.arquillian.arquillian-deployment-generator-bnd", version: "1.0.4"
 	testIntegrationCompile group: "org.apache.felix", name: "org.apache.felix.framework", version: "5.4.0"
 	testIntegrationCompile group: "org.apache.felix", name: "org.apache.felix.main", version: "5.4.0"
-	testIntegrationCompile group: "org.jboss.arquillian.container", name: "arquillian-container-felix-embedded", version: "2.1.0.Final"
+	testIntegrationCompile(group: "org.jboss.arquillian.container", name: "arquillian-container-felix-embedded", version: "2.1.0.Final") {
+		exclude group: "log4j", module: "log4j"
+	}
 	testIntegrationCompile group: "org.jboss.arquillian.junit", name: "arquillian-junit-container", version: "1.1.10.Final"
 
 	testLibs group: "org.jboss.arquillian.osgi", name: "arquillian-osgi-bundle", version: "2.1.0.Final"

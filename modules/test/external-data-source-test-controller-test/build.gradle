@@ -3,7 +3,7 @@ copyLibs {
 }
 
 dependencies {
-	compileOnly group: "org.hsqldb", name: "hsqldb", version: "2.3.3"
+	compileOnly group: "org.hsqldb", name: "hsqldb", version: "2.7.1", classifier: "jdk8"
 	compileOnly project(":test:external-data-source-test")
 	compileOnly project(":test:external-data-source-test-api")
 	compileOnly project(":test:external-data-source-test-service")

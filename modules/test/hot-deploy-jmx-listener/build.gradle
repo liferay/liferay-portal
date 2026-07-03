@@ -1,6 +1,6 @@
 dependencies {
 	compile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
-	compile group: "log4j", name: "log4j", version: "1.2.17"
+	compile group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compile group: "org.osgi", name: "org.osgi.compendium", version: "5.0.0"
 }
 

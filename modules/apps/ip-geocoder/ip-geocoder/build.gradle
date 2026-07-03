@@ -3,10 +3,10 @@ targetCompatibility = "1.6"
 
 dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileOnly group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compileOnly group: "com.liferay", name: "com.liferay.ip.geocoder.api", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: "2.0.0"
 	compileOnly group: "com.maxmind.geoip", name: "geoip-api", version: "1.2.14"
-	compileOnly group: "log4j", name: "log4j", version: "1.2.17"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
 	compileOnly group: "org.tukaani", name: "xz", version: "1.5"
 }

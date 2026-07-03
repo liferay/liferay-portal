@@ -17,28 +17,37 @@
 	<filteredResources>
 		<filter>
 			<id>1523898065293</id>
-			<name/>
+			<name></name>
 			<type>26</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.orFilterMatcher</id>
 				<arguments>
 					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
 						<arguments>1.0-name-matches-false-false-.git</arguments>
-						<id>org.eclipse.ui.ide.multiFilter</id>
 					</matcher>
 					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
 						<arguments>1.0-name-matches-false-false-.gradle</arguments>
-						<id>org.eclipse.ui.ide.multiFilter</id>
 					</matcher>
 					<matcher>
+						<id>org.eclipse.ui.ide.multiFilter</id>
 						<arguments>1.0-name-matches-false-false-build</arguments>
-						<id>org.eclipse.ui.ide.multiFilter</id>
 					</matcher>
 					<matcher>
-						<arguments>1.0-name-matches-false-false-node_modules</arguments>
 						<id>org.eclipse.ui.ide.multiFilter</id>
+						<arguments>1.0-name-matches-false-false-node_modules</arguments>
 					</matcher>
 				</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1783059120538</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

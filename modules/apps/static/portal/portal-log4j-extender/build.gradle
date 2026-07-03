@@ -1,6 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.49.0"
-	compileOnly group: "log4j", name: "log4j", version: "1.2.17"
+	compileOnly group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
 }

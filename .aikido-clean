@@ -1,0 +1,18 @@
+# Arena Liferay Portal 7.0.6-ga7-specific extra pre-scan cleanup paths.
+# One glob pattern per line (# comments allowed), relative to the repo root.
+# Read by .claude/skills/aikido-scan/scripts/pre-aikido-scan.sh, in addition
+# to its built-in generic patterns (**/target, **/assembly/overlays,
+# **/build/stage) — none of which match this repo's own build output name.
+#
+# Intentionally no extra patterns below: a globstar pattern like **/build
+# also matches every build/ dir nested inside the ~267 node_modules trees
+# under modules/** (verified: 2960 matches, mostly several levels deep
+# inside npm packages), which is out of scope for a "prepare for scan"
+# cleanup step and risks git-clean churning through npm package internals.
+# .aikido-exclude already keeps the 9 IDE-generated top-level build/ dirs
+# out of the scan itself (**/build/**) — that solves the actual noise
+# problem without this file.
+#
+# The stray *.hprof heap dump (see .aikido-exclude) is also intentionally
+# not listed here — it isn't reproducible generated build output, it's a
+# one-off debug artifact. Delete it directly if/when appropriate.

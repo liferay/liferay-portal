@@ -1,0 +1,19 @@
+# Arena Liferay Portal 7.0.6-ga7 accepted-risk Aikido issue groups.
+# Read by .claude/skills/aikido-analyse/scripts/bulk-ignore-groups.sh and
+# .claude/skills/aikido-analyse/scripts/check-accepted-risk-drift.sh.
+# One group per line: <group_id> <reason>. Reason may contain spaces, `#`
+# comments and blank lines are ignored.
+#
+# SECURITY_REVIEW-1.md and SECURITY_REVIEW-2.md already document accepted
+# risk in prose, but no numeric Aikido group ids to carry over verbatim:
+#   - Tomcat EOL (platform, deferred)
+#   - xalan suppression
+#   - Spring upgrade deferred to next major
+#   - commons-lang 2.6 / struts 1.3.10 EOL, accepted with mitigations
+#
+# Run the aikido-scan skill, triage the export with aikido-analyse, then add
+# real `<group_id> <reason>` lines below for whichever of the above (or new)
+# findings actually show up as groups — never invent a group id without
+# having seen its package/version/CVE. Reference SECURITY_REVIEW-1.md /
+# SECURITY_REVIEW-2.md in the reason text, same convention as arena-parent's
+# SECURITY_REVIEW-3.md cross-references.

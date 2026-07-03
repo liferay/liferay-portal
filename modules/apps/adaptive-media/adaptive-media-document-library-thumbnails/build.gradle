@@ -10,5 +10,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
 
 	testCompile group: "com.liferay.portal", name: "com.liferay.util.java", version: "2.0.0"
-	testCompile group: "easyconf", name: "easyconf", version: "0.9.5"
+	testCompile(group: "easyconf", name: "easyconf", version: "0.9.5") {
+		exclude group: "log4j", module: "log4j"
+	}
 }

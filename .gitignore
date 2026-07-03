@@ -44,6 +44,7 @@
 /dist
 /intellij
 /jacoco
+/lib/development/ojdbc8.jar
 /modules/.releng/private
 /modules/private
 /nbproject/private

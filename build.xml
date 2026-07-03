@@ -3,6 +3,10 @@
 <project basedir="." default="compile" name="portal" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<import file="build-common.xml" />
 
+	<property name="oracle.jdbc.driver.file" value="lib/development/ojdbc8.jar" />
+	<property name="oracle.jdbc.driver.version" value="23.26.2.0.0" />
+	<property name="oracle.jdbc.driver.url" value="https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc8/${oracle.jdbc.driver.version}/ojdbc8-${oracle.jdbc.driver.version}.jar" />
+
 	<macrodef name="clean-liferay-home">
 		<sequential>
 			<parallel failonany="true" threadcount="${parallel.thread.count}">
@@ -531,7 +535,24 @@ message.
 		<print-current-time />
 	</target>
 
-	<target name="deploy-additional-jars">
+	<target name="download-oracle-jdbc-driver">
+		<if>
+			<not>
+				<available file="${oracle.jdbc.driver.file}" />
+			</not>
+			<then>
+				<mkdir dir="lib/development" />
+
+				<get
+					dest="${oracle.jdbc.driver.file}"
+					src="${oracle.jdbc.driver.url}"
+					usetimestamp="true"
+				/>
+			</then>
+		</if>
+	</target>
+
+	<target depends="download-oracle-jdbc-driver" name="deploy-additional-jars">
 		<copy
 			todir="${app.server.lib.global.dir}"
 		>

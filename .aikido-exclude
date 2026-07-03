@@ -1,0 +1,32 @@
+# Arena Liferay Portal 7.0.6-ga7-specific Aikido scan excludes.
+# One glob pattern per line (# comments allowed), passed as --exclude to
+# .claude/skills/aikido-scan/scripts/aikido-scan.sh.
+# Kept here (repo root) rather than in the aikido-scan skill so the skill
+# itself stays portable to other projects unmodified.
+
+# IDE-generated build/compiled-class output for the Ant-built core modules
+# (portal-impl, portal-kernel, portal-test, portal-test-integration,
+# support-tomcat, util-bridges, util-java, util-slf4j, util-taglib, ...).
+# This repo's own .gitignore predates these paths (it lists per-module
+# classes/test-classes/woven-classes, not build/) so they show up untracked.
+# Verified via `git ls-files | grep -E "(^|/)build/"` — zero tracked files
+# live under any build/ directory anywhere in this repo, so this is safe.
+**/build/**
+
+# Stray JVM heap dump left in the working tree (modules/apps/foundation/
+# portal/java_pid83209.hprof) — not build output, but pure scan noise either
+# way. Consider deleting it directly; it may contain sensitive memory
+# contents and has no reason to exist in the working tree.
+**/*.hprof
+
+# NOTE: node_modules (~267 directories under modules/**) is intentionally
+# NOT excluded here. Aikido's JS supply-chain coverage (package-lock.json /
+# node_modules CVEs) is real scanning surface, not noise — unlike the
+# palma-style scope exclusions elsewhere, this is a security-coverage
+# decision, not cleanup. If scan time/volume becomes a problem, discuss
+# before adding an exclude for it.
+sql
+scripts
+readme
+support-resin
+support-websphere

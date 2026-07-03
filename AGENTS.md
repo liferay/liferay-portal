@@ -2,11 +2,28 @@
 
 Security-patch branch of Liferay Portal CE 7.0.6 maintained by Axiell (Arena). Branch: `arena-7.0.6-ga7`. Main branch for PRs: `6.2.x`.
 
+**This is a legacy/old version** of both Arena Liferay Portal and its consuming project, Arena (`arena-parent`). Do not assume feature parity with current Arena — e.g. this repo only ever built `elasticsearch6` (`portal-search-elasticsearch6-impl` + `build-test-elasticsearch6.xml`); `portal-search-elasticsearch7` does not exist in this tree's `modules/apps/`.
+
 Architecture and security debt details: [@DESIGN.md](DESIGN.md)
+
+## Related repos
+
+- **arena-parent** (old 4.7.x line): `/opt/projects/arena-parent/4.7.x/arena-parent` — the consuming
+  Arena application; deploys `arena-portlet.war` into this Liferay. See `DESIGN.md` here for how
+  its build consumes this repo's published `com.liferay.portal.*` artifacts.
+- **arena-liferay-modules 4.7.x** (old): `/opt/projects/arena-liferay-modules/4.7.x/arena-liferay-modules` —
+  Gradle/OSGi workspace of bundles deployed into this same Liferay instance. Independent of
+  arena-parent; no dependency in either direction on this repo's source, only on its published
+  bundle jars at runtime.
+- **eHub 4.7.x**: `/opt/projects/ehub/4.7.x/ehub` — separate Maven reactor (Java 17) consumed by
+  arena-parent; not deployed into this Liferay and has no direct relationship with this repo.
+- Note: `/opt/projects/liferay/portal/arena-7.0.6-ga7` (one level up from this repo) is the
+  runtime/bundle install root (`bundles/`, `bundles.bak/`, DB backups), not a checkout — this repo
+  (`arena-7.0.6-ga7/portal`) is the actual git source.
 
 ## Axiell Vault
 
-Do NOT consult the Axiell Obsidian vault for this project. All relevant context is in `DESIGN.md` and `SECURITY_REVIEW.md` in this repo.
+Do NOT consult the Axiell Obsidian vault for this project. The vault documents the **current/newer** versions of Arena Liferay Portal and `arena-parent` — its architecture, module list, and dependency versions do not describe this legacy branch and will mislead. All relevant context for this repo is in `DESIGN.md` and `SECURITY_REVIEW-1.md`/`SECURITY_REVIEW-2.md` in this repo.
 
 ## Build System
 

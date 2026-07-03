@@ -4983,7 +4983,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/dom4j.jar</file-name>
-				<version>1.6.1</version>
+				<version>2.1.4</version>
 				<project-name>dom4j</project-name>
 				<project-url>http://dom4j.org</project-url>
 				<licenses>

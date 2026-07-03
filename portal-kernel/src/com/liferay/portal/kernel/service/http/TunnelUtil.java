@@ -38,10 +38,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-
 /**
  * @author Brian Wing Shun Chan
  */
@@ -119,23 +115,6 @@ public class TunnelUtil {
 		httpURLConnection.setDoInput(true);
 		httpURLConnection.setDoOutput(true);
 
-		if (!_VERIFY_SSL_HOSTNAME &&
-			(httpURLConnection instanceof HttpsURLConnection)) {
-
-			HttpsURLConnection httpsURLConnection =
-				(HttpsURLConnection)httpURLConnection;
-
-			httpsURLConnection.setHostnameVerifier(
-				new HostnameVerifier() {
-
-					@Override
-					public boolean verify(String hostname, SSLSession session) {
-						return true;
-					}
-
-				});
-		}
-
 		httpURLConnection.setRequestMethod(HttpMethods.POST);
 		httpURLConnection.setRequestProperty(
 			HttpHeaders.CONTENT_TYPE,
@@ -144,9 +123,6 @@ public class TunnelUtil {
 
 		return httpURLConnection;
 	}
-
-	private static final boolean _VERIFY_SSL_HOSTNAME = GetterUtil.getBoolean(
-		PropsUtil.get(TunnelUtil.class.getName() + ".verify.ssl.hostname"));
 
 	private static final Log _log = LogFactoryUtil.getLog(TunnelUtil.class);
 

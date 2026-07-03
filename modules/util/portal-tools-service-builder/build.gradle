@@ -21,7 +21,7 @@ dependencies {
 	compile group: "dom4j", name: "dom4j", transitive: false, version: "1.6.1"
 	compile group: "jalopy", name: "jalopy", transitive: false, version: "1.5rc3"
 	compile group: "jaxen", name: "jaxen", transitive: false, version: "1.1.1"
-	compile group: "log4j", name: "log4j", version: "1.2.17"
+	compile group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compile group: "org.freemarker", name: "freemarker", transitive: false, version: "2.3.23"
 
 	compileOnly group: "com.liferay", name: "com.liferay.petra.concurrent", version: "1.1.0"

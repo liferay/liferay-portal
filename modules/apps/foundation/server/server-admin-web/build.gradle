@@ -3,6 +3,7 @@ dependencies {
 	compileInclude group: "jfree", name: "jfreechart", version: "1.0.13"
 
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileOnly group: "ch.qos.reload4j", name: "reload4j", version: "1.2.26"
 	compileOnly group: "com.liferay", name: "com.liferay.application.list.api", version: "2.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.captcha.api", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.frontend.taglib", version: "2.0.0"
@@ -19,6 +20,5 @@ dependencies {
 	compileOnly group: "javax.portlet", name: "portlet-api", version: "2.0"
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
 	compileOnly group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", version: "2.3.1"
-	compileOnly group: "log4j", name: "log4j", version: "1.2.17"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
 }

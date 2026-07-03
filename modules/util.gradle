@@ -136,6 +136,10 @@ repositories {
 	maven {
 		url System.properties["repository.url"] ?: "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
 	}
+
+	maven {
+		url "https://plugins.gradle.org/m2"
+	}
 }
 
 wrapper {

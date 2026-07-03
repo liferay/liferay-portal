@@ -47,9 +47,7 @@ they run only on developer machines and CI runners. Runtime exposure is **build 
 | CVE-2016-9841 | High | Undefined pointer arithmetic in `inffast.c` | >= 1.2.9 |
 | CVE-2016-9840 | Medium | Undefined left-shift behavior in `inflate.c` | >= 1.2.9 |
 
-**Fix:** Upgrade the Gradle Node.js plugin toolchain to Node.js >= 18 LTS (ships zlib >= 1.2.12).
-Locate `node` version pins in each module's `build.gradle` or the root `com.liferay.node` plugin
-config and bump the version. CI/developer machine change only — no portal deployment needed.
+**Fix:** No safe security-patch fix. Attempted Node.js 18.20.4 upgrade was rolled back because `ant clean all` fails in legacy Liferay theme modules (`gulp` 3 / `graceful-fs` 3 `primordials` crash on Node 12+). Do not bump Node on this security-patch branch; record Aikido acceptance for nodejs/zlib/openssl/v8/c-ares as build-tool-only risk. Migrate the theme toolchain in the next major upgrade.
 
 ---
 
@@ -60,10 +58,10 @@ config and bump the version. CI/developer machine change only — no portal depl
 | Dependency | Version | Finding | HAProxy mitigation | Fix |
 |---|---|---|---|---|
 | Apache Tomcat | (bundled) | EOL — no security updates for 8 years | HTTPS termination at HAProxy reduces TLS-layer exposure; application-layer CVEs not mitigated | Accept for security-patch branch; note for next major upgrade |
-| nodejs | v6.6.0 | EOL — bundles zlib 1.2.8, openssl 1.0.x, v8 5.x, c-ares 1.x | Build-time only — not reachable from internet | Upgrade Gradle Node.js toolchain to Node 18 LTS |
-| madler/zlib | 1.2.8 | Memory corruption → crash or RCE (6 CVEs, see above) | Build-time only | Resolved by Node.js upgrade |
-| openssl/openssl | (Node.js 6.6.0) | OS command injection | Build-time only | Resolved by Node.js upgrade |
-| v8/v8 | 5.x (Node.js 6.6.0) | Memory operation restrictions abuse | Build-time only | Resolved by Node.js upgrade |
+| nodejs | v6.6.0 | EOL — bundles zlib 1.2.8, openssl 1.0.x, v8 5.x, c-ares 1.x | Build-time only — not reachable from internet | Accepted risk: Node 18 upgrade breaks legacy theme gulpBuild; migrate theme toolchain next major |
+| madler/zlib | 1.2.8 | Memory corruption → crash or RCE (6 CVEs, see above) | Build-time only | Accepted risk with nodejs toolchain finding |
+| openssl/openssl | (Node.js 6.6.0) | OS command injection | Build-time only | Accepted risk with nodejs toolchain finding |
+| v8/v8 | 5.x (Node.js 6.6.0) | Memory operation restrictions abuse | Build-time only | Accepted risk with nodejs toolchain finding |
 | org.codehaus.groovy:groovy-all | 2.0.1 | Deserialization → RCE (CVE-2015-3253, CVE-2016-6497) | SDK tooling in `tools/sdk/` — **not deployed to portal**; JSONWS allowlist also blocks any API-based Groovy script execution from the internet | Upgrade jar in `tools/sdk/dependencies/` to >= 2.4.21 |
 | Log4j | 1.x | CVE-2019-17571 SocketServer RCE | **Accepted risk** — SocketServer never started. Documented in SECURITY_REVIEW-1.md | No action |
 
@@ -74,7 +72,7 @@ config and bump the version. CI/developer machine change only — no portal depl
 | spring-webmvc / spring-webmvc-portlet | 4.1.9.RELEASE | Path traversal (CVE-2018-1271, CVE-2018-1272) | **CVE-2018-1271 primary vector blocked**: HAProxy denies all `path_beg /WEB-INF` requests → attacker cannot reach `WEB-INF/` files through traversal. CVE-2018-1272 (multipart path traversal) not directly addressed by current rules. | For CVE-2018-1271: **effectively mitigated by HAProxy**. For completeness, upgrade Spring to 4.3.x+ and/or add `path_reg \.\.` deny rule. Pins in `lib/portal/dependencies.properties`. |
 | xalan:xalan | 2.7.2 | XSLT integer truncation → arbitrary bytecode injection (CVE-2022-34169) | No direct mitigation — XSLT transforms triggered via authenticated admin portlet, not via JSONWS | No patch for 2.7.x. Exploitable only by authenticated admin. Suppress in Aikido with justification, or replace with Saxon-HE. `lib/portal/xalan.jar` |
 | xerces:xercesImpl | (lib/portal) | DoS via infinite loop during XML parsing | Malformed XML must reach the parser through a portal endpoint; HAProxy does not filter XML bodies | Documented in SECURITY_REVIEW-1.md; Xerces upgrade required |
-| c-ares/c-ares | (Node.js 6.6.0) | Missing input validation in DNS resolution | Build-time only | Resolved by Node.js upgrade |
+| c-ares/c-ares | (Node.js 6.6.0) | Missing input validation in DNS resolution | Build-time only | Accepted risk with nodejs toolchain finding |
 
 ### Critical — SAST
 
@@ -137,7 +135,7 @@ http-request deny deny_status 403 if is-ddm-template !jsonws-internal
 HAProxy mitigations are noted in brackets.
 
 1. **TunnelUtil.java TLS bypass (Critical SAST — no HAProxy protection)** — check production `portal-ext.properties` immediately; set `verify.ssl.hostname=true` if missing.
-2. **Node.js v6.6.0 upgrade (Critical — build env only, no runtime HAProxy needed)** — resolves zlib + openssl + v8 + c-ares + nodejs EOL in one change. Upgrade Gradle toolchain to Node 18 LTS.
+2. **Node.js v6.6.0 findings (Critical — build env only, no runtime HAProxy needed)** — accepted risk for this security-patch branch. Node 18.20.4 was attempted but broke `ant clean all` in legacy Liferay theme modules; upgrading `gulp` 3 / `liferay-theme-tasks` 1.x is deferred to the next major upgrade.
 3. **groovy-all 2.0.1 (Critical dep — SDK only, JSONWS lockdown also blocks API exploitation)** — upgrade jar in `tools/sdk/dependencies/` to >= 2.4.21.
 4. **xalan 2.7.2 (High — admin-authenticated only, no HAProxy mitigation)** — suppress in Aikido with justification or replace with Saxon-HE. `lib/portal/xalan.jar`.
 5. **spring-webmvc CVE-2018-1271 (High — CVE-2018-1271 effectively mitigated by `/WEB-INF` block)** — consider adding `path_reg (\.\./|%2e%2e)` rule for belt-and-suspenders, then close in Aikido.

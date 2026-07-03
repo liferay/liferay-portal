@@ -9,8 +9,8 @@
 
         $(document).keydown(function (event) {
           event = $.event.fix(event);
-          // Ctrl+Shift+l
-          if (event.shiftKey && event.ctrlKey && event.which === 76) {
+          // ctrl+shift/alt+l
+          if ((event.shiftKey || event.altKey) && event.ctrlKey && event.keyCode === 76) {
             var elementDockbar = $(dockbarSelector);
             elementDockbar.toggle();
             return false;

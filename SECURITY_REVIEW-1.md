@@ -22,7 +22,7 @@ All genuinely in production. `lib/portal/` JARs are copied to the portal classpa
 | Critical | `com.thoughtworks.xstream:xstream` | `xstream.jar` | Attacker can inject own code to run (RCE) |
 | Critical | `commons-collections:commons-collections` | `commons-collections.jar` | Unsafe deserialization → RCE |
 | Critical | `Apache Commons FileUpload` | `commons-fileupload.jar` | Improper access control |
-| Critical | `Log4j` | `log4j.jar` | SQL injection attack possible |
+| ~~Critical~~ Fixed | ~~`Log4j`~~ `reload4j` | `log4j.jar` | SQL injection attack possible — **fixed**, see item 3 below |
 | High | `commons-beanutils:commons-beanutils` | `commons-beanutils.jar` | Improper access control |
 | High | `org.apache.struts:struts-core` | `struts-core.jar` | Missing input validation |
 | High | `org.json:json` | `json-java.jar` | Memory corruption → crash/RCE |
@@ -51,10 +51,11 @@ Deploys as its own WAR with an independent `WEB-INF/lib`. Shiro and Sanselan com
 | Severity | Dependency | Where | Aikido finding |
 |---|---|---|---|
 | Medium | `org.apache.commons:commons-lang3` | `petra-doulos`, `portal-template-soy` (both `.lfrbuild-portal`) | DoS via infinite loop |
-| Medium | `com.google.protobuf:protobuf-java` | `portal-search-elasticsearch7-impl` build bundle | Missing input validation |
 | Medium | `bootstrap` / `bootstrap-sass` | Compiled into theme CSS/JS via `liferay-theme-deps-7.0` | XSS attack possible |
 
 Bootstrap XSS risk is limited to Bootstrap JS components (data-attribute driven dropdowns/tooltips). Only exploitable if those components are used without sanitisation on user-controlled attributes.
+
+**N/A (verified 2026-07-03):** `com.google.protobuf:protobuf-java` was previously listed here against `portal-search-elasticsearch7-impl` — that module doesn't exist in this tree (`modules/apps/portal-search-elasticsearch7/` is empty). This fork only ships `portal-search-elasticsearch6-impl` (deployed via `ant -f build-test-elasticsearch6.xml deploy-elasticsearch6`, ES 6.1.3); scanned every jar and WAR under `bundles.org/osgi` for `com/google/protobuf` classes — zero matches. Not applicable to this branch; remove from Aikido triage.
 
 ### Test/build artifacts only — not runtime
 
@@ -69,7 +70,7 @@ Bootstrap XSS risk is limited to Bootstrap JS components (data-attribute driven 
 
 1. **XStream (Critical, RCE)** ✓ — upgraded 1.4.7→1.4.21. Security framework (deny-all + allowlist via `NoTypePermission.NONE` + `allowTypes`) was already wired in `PortletDataContextImpl`. JAR swap only, no code changes required.
 2. **commons-collections (Critical, RCE)** — unsafe deserialization; frequently chained with XStream exploits.
-3. **Log4j (Critical)** — ~~confirm which CVE Aikido is flagging~~ CVE-2019-17571 (`SocketServer` RCE via deserialization). **Not exploitable:** Liferay never starts a SocketServer; only file appenders are used (`portal-log4j.xml`). `log4j-over-slf4j` cannot replace `log4j.jar` here because `log4j-extras` (`EnhancedPatternLayout`, `RollingFileAppender`) depends on log4j 1.x internals. Full remediation requires a Log4j 2.x migration (out of scope for security-patch branch). **Status: accepted risk — SocketServer not reachable.**
+3. **Log4j (Critical) — migrated to reload4j.** Previously accepted-risk on the grounds that CVE-2019-17571 (`SocketServer` RCE) specifically wasn't reachable (no SocketServer started; only file appenders via `portal-log4j.xml`) — but that only covered one CVE in the cluster, not `log4j-extras`/`EnhancedPatternLayout`/`RollingFileAppender` internals dependency, which still ruled out a straight `log4j-over-slf4j` swap. Resolved instead with `reload4j` (`ch.qos.reload4j:reload4j:1.2.26`), a maintained, API/ABI-compatible drop-in fork that keeps the same `org.apache.log4j.*` classes `log4j-extras` needs, while shipping CVE fixes for the whole cluster (not just SocketServer). `lib/portal/log4j.jar` replaced with the real reload4j jar; `lib/portal/log4j-extras.jar` left as the original Apache `apache-log4j-extras:1.2.17` (no reload4j equivalent exists, and it's ABI-compatible with the new core jar); `lib/portal/dependencies.properties` and `modules/core/portal-bootstrap/system.packages.extra.bnd` (OSGi system-package version declarations) updated to match. Two Gradle OSGi modules (`petra-log4j`, `portal-log4j-extender`) plus four more with test-scope transitive log4j pulls (`registry-test`, `portal-search-elasticsearch`, `portal-search-elasticsearch6-impl`, `adaptive-media-document-library-thumbnails`) updated in lockstep. **Status: fixed**, verified via clean Gradle rebuild of both core log4j modules.
 4. **commons-fileupload (Critical)** — improper access control on file upload handling.
 5. **shiro-core / shiro-web (Critical)** — conditional on opensocial being deployed.
 6. **High severity deps** — beanutils ✓ upgraded 1.9.2→1.9.4; struts-core: **mitigated** — `PortalRequestProcessor.processPopulate()` blocks `class.*`/`[class]` parameters via `struts.portlet.ignored.parameters.regexp` (CVE-2014-0114); 1.3.10 is final 1.x release, no upstream patch. json, xerces, httpclient: assess exploitability in context of how each is used.
