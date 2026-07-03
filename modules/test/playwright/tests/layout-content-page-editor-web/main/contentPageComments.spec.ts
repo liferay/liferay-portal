@@ -253,7 +253,7 @@ test(
 );
 
 test(
-	'Views comments in the comment list and its empty state',
+	'Views the comment list empty state and comments grouped by fragment',
 	{tag: '@LPD-96910'},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
 
@@ -290,32 +290,28 @@ test(
 			page.getByText('Select a fragment to add a comment.')
 		).toBeVisible();
 
-		// Add a comment to the first fragment and view it in the list
+		// Add several comments to the heading fragment and one to the paragraph
 
-		const headingComment = 'Heading fragment comment';
+		const headingComments = [
+			'Heading fragment comment 1',
+			'Heading fragment comment 2',
+			'Heading fragment comment 3',
+		];
 
-		await pageEditorPage.addFragmentComment(headingId, headingComment);
-
-		await pageEditorPage.goToCommentList();
-
-		await pageEditorPage.viewCommentList({
-			commentCount: '1 Comment',
-			fragmentName: 'Heading',
-			openComment: true,
-		});
-
-		await pageEditorPage.viewFragmentComment(headingComment);
-
-		// Add a comment to the second fragment and view both in the list
+		for (const comment of headingComments) {
+			await pageEditorPage.addFragmentComment(headingId, comment);
+		}
 
 		const paragraphComment = 'Paragraph fragment comment';
 
 		await pageEditorPage.addFragmentComment(paragraphId, paragraphComment);
 
+		// Both fragments are listed with their comment counts
+
 		await pageEditorPage.goToCommentList();
 
 		await pageEditorPage.viewCommentList({
-			commentCount: '1 Comment',
+			commentCount: '3 Comments',
 			fragmentName: 'Heading',
 		});
 
@@ -326,44 +322,8 @@ test(
 		});
 
 		await pageEditorPage.viewFragmentComment(paragraphComment);
-	}
-);
 
-test(
-	'Views multiple comments in the fragment comment list',
-	{tag: '@LPD-96910'},
-	async ({apiHelpers, pageEditorPage, site}) => {
-
-		// Create a page with a fragment and go to edit mode
-
-		const fragmentId = getRandomString();
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([
-				getFragmentDefinition({
-					id: fragmentId,
-					key: 'BASIC_COMPONENT-heading',
-				}),
-			]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-		// Add three comments to the same fragment
-
-		const comments = [
-			'Fragment comment 1',
-			'Fragment comment 2',
-			'Fragment comment 3',
-		];
-
-		for (const comment of comments) {
-			await pageEditorPage.addFragmentComment(fragmentId, comment);
-		}
-
-		// View the three comments in the fragment comment list
+		// Opening the heading fragment shows all of its comments
 
 		await pageEditorPage.goToCommentList();
 
@@ -373,7 +333,7 @@ test(
 			openComment: true,
 		});
 
-		for (const comment of comments) {
+		for (const comment of headingComments) {
 			await pageEditorPage.viewFragmentComment(comment);
 		}
 	}
