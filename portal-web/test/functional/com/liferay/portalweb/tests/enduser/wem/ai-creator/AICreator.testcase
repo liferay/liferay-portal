@@ -115,7 +115,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-179485. The content creator should see success message after set up an api key successfully."
+	@description = "This is a test for LPS-179485 and LPS-188490. The content creator should see success message after set up an api key successfully. The content creator should see error message when generic errors happen on configuring API key."
 	@priority = 4
 	test ConfigureAPIKey {
 		property test.liferay.virtual.instance = "false";
@@ -146,6 +146,22 @@ definition {
 			InputField.viewText(
 				fieldLabel = "API Key",
 				text = "VALID_API_KEY");
+		}
+
+		task ("When the content creator meets the generic errors on configuring API Key") {
+			InputField.editText(
+				fieldLabel = "API Key",
+				text = "OPENAI_API_IOEXCEPTION");
+
+			Button.clickSave();
+		}
+
+		task ("Then the content creator should see error message") {
+			Alert.viewErrorMessage(errorMessage = "An unexpected error occurred while validating the API key.");
+
+			InputField.viewText(
+				fieldLabel = "API Key",
+				text = "OPENAI_API_IOEXCEPTION");
 		}
 	}
 
@@ -254,42 +270,6 @@ definition {
 			CKEditor.viewEntryContent(
 				content = "OPENAI_API_COMPLETION_RESPONSE_CONTENT",
 				fieldLabel = "Content");
-		}
-	}
-
-	@description = "This is a test for LPS-188490. The content creator should see new error message when the generic errors happen on setting up API key."
-	@priority = 3
-	test ViewErrorMessageWhenGenericErrorsHappenOnConfiguringAPIKey {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given a content creator accesses to the OpenAI configuration page") {
-			GogoShell.openGogoShellAdmin();
-
-			GogoShell.executeCommand(commandName = "scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient");
-
-			GogoShell.viewOutput(outputContent = "true");
-
-			PortalSettings.gotoConfiguration(
-				configurationCategory = "AI Creator",
-				configurationName = "OpenAI",
-				configurationScope = "Virtual Instance Scope");
-		}
-
-		task ("When the content creator meets the generic errors on configuring API Key") {
-			InputField.editText(
-				fieldLabel = "API Key",
-				text = "OPENAI_API_IOEXCEPTION");
-
-			Button.clickSave();
-		}
-
-		task ("Then the content creator should see error message") {
-			Alert.viewErrorMessage(errorMessage = "An unexpected error occurred while validating the API key.");
-
-			InputField.viewText(
-				fieldLabel = "API Key",
-				text = "OPENAI_API_IOEXCEPTION");
 		}
 	}
 
