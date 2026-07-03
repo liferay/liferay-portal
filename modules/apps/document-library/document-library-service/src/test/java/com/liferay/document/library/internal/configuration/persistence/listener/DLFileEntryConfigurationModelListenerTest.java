@@ -7,6 +7,8 @@ package com.liferay.document.library.internal.configuration.persistence.listener
 
 import com.liferay.document.library.configuration.DLFileEntryConfigurationProvider;
 import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
+import com.liferay.document.library.internal.util.DLFileEntryConfigurationModelListenerThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
@@ -182,6 +184,24 @@ public class DLFileEntryConfigurationModelListenerTest {
 			).put(
 				"previewableProcessorMaxSize", 2000L
 			).build());
+	}
+
+	@Test
+	public void testOnBeforeSaveWithValidationDisabled() throws Exception {
+		try (SafeCloseable safeCloseable =
+				DLFileEntryConfigurationModelListenerThreadLocal.
+					setValidationEnabledWithSafeCloseable(false)) {
+
+			_dlFileEntryConfigurationModelListener.onBeforeSave(
+				RandomTestUtil.randomString(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"companyId", _COMPANY_ID
+				).put(
+					"maxNumberOfPages", 20
+				).put(
+					"previewableProcessorMaxSize", 1000L
+				).build());
+		}
 	}
 
 	@Test
