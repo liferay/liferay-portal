@@ -122,7 +122,7 @@ definition {
 			value1 = "Notification for Sharing was deleted.");
 	}
 
-	@description = "This test ensures a user can only comment on a blog entry once it is shared with him."
+	@description = "This test ensures a user can view, comment on, and update a blog entry once it is shared with him with the matching permission."
 	@priority = 5
 	@refactordone
 	test CanShareWithPermissions {
@@ -194,13 +194,14 @@ definition {
 			contentSharingPermission = "View",
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
-	}
 
-	@description = "This test ensures a user can update a blog entry once it is shared with him."
-	@priority = 5
-	@refactordone
-	test CanShareWithUpdatePermissions {
-		property portal.acceptance = "true";
+		User.logoutPG();
+
+		User.loginPG(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "test@liferay.com");
+
+		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		BlogsNavigator.gotoShare(entryTitle = "Blogs Entry Title");
 
