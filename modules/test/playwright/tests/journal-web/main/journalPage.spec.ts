@@ -400,7 +400,15 @@ test(
 
 		await page.getByLabel('Filter', {exact: true}).click();
 
-		await page.getByRole('menuitem', {name: 'Web Content'}).click();
+		const webContentFilter = page.getByRole('menuitem', {
+			name: 'Web Content',
+		});
+
+		if ((await webContentFilter.getAttribute('aria-selected')) !== 'true') {
+			await webContentFilter.click();
+		}
+
+		await page.keyboard.press('Escape');
 
 		const foldersList = await page
 			.getByRole('link')
