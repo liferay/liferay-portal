@@ -165,7 +165,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-179485 and LPS-187651. The content creator could generate content via AI Creator. View "Learn more about OpenAI integration" link in web content AI Creator."
+	@description = "This is a test for LPS-179485 and LPS-187651. The content creator could generate content via AI Creator. View "Learn more about OpenAI integration" link in web content AI Creator. The generated content should be appended to the existing content."
 	@priority = 4
 	test GenerateContent {
 		property test.liferay.virtual.instance = "false";
@@ -269,6 +269,16 @@ definition {
 		task ("Then the content creator could see the generated content in Content field") {
 			CKEditor.viewEntryContent(
 				content = "OPENAI_API_COMPLETION_RESPONSE_CONTENT",
+				fieldLabel = "Content");
+		}
+
+		task ("When the content creator generates more content") {
+			CKEditor.addGeneratedContent(description = "USER_CONTENT");
+		}
+
+		task ("Then the content creator sees the generated content appended to the existing content") {
+			CKEditor.viewEntryContent(
+				content = "OPENAI_API_COMPLETION_RESPONSE_CONTENTOPENAI_API_COMPLETION_RESPONSE_CONTENT",
 				fieldLabel = "Content");
 		}
 	}
@@ -405,52 +415,6 @@ definition {
 			InputField.viewText(
 				fieldLabel = "API Key",
 				text = "INVALID_KEY");
-		}
-	}
-
-	@description = "This is a test for LPS-179485. The generated content should be appended to the existing content."
-	@priority = 3
-	test ViewGeneratedContentAppendedToExistingContent {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given a content creator configures the API key") {
-			GogoShell.openGogoShellAdmin();
-
-			GogoShell.executeCommand(commandName = "scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient");
-
-			GogoShell.viewOutput(outputContent = "true");
-
-			PortalSettings.gotoConfiguration(
-				configurationCategory = "AI Creator",
-				configurationName = "OpenAI",
-				configurationScope = "Virtual Instance Scope");
-
-			InputField.editText(
-				fieldLabel = "API Key",
-				text = "VALID_API_KEY");
-
-			PortletEntry.save();
-		}
-
-		task ("When the content creator generates content in web content editor") {
-			HeadlessSite.addSite(siteName = ${randomSiteName});
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = ${siteURLKey});
-
-			WebContentNavigator.gotoAddCP();
-
-			CKEditor.addContentInWebContent(
-				content = "Web Content Content",
-				fieldLabel = "Content");
-
-			CKEditor.addGeneratedContent(description = "USER_CONTENT");
-		}
-
-		task ("Then the content creator sees the generated content appended to existing content") {
-			CKEditor.viewEntryContent(
-				content = "Web Content ContentOPENAI_API_COMPLETION_RESPONSE_CONTENT",
-				fieldLabel = "Content");
 		}
 	}
 
