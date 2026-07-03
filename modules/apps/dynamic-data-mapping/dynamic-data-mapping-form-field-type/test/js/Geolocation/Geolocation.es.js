@@ -29,11 +29,19 @@ beforeAll(() => {
 			CONTROLS: {},
 			register: jest.fn(),
 		},
+		Maps: {},
 		ThemeDisplay: {
 			getPathThemeImages: () => '',
 		},
 		detach: jest.fn(),
+		fire: jest.fn(),
+		namespace: jest.fn((name) => {
+			window.Liferay[name] = window.Liferay[name] || {};
+
+			return window.Liferay[name];
+		}),
 		on: jest.fn(),
+		once: jest.fn(),
 	};
 });
 
@@ -173,5 +181,143 @@ describe('Geolocation', () => {
 
 		expect(previousListener.removeListener).toHaveBeenCalledTimes(1);
 		expect(currentListener.removeListener).not.toHaveBeenCalled();
+	});
+});
+
+describe('Geolocation Google Maps loader', () => {
+	const gmapsScriptSelector =
+		'script[src*="maps.googleapis.com/maps/api/js"]';
+
+	const renderGoogleMapsField = (instanceId, name) =>
+		render(
+			<ConfigProvider value={{defaultLanguageId: 'en_US'}}>
+				<FormProvider
+					initialState={{editingLanguageId: 'en_US', pages: []}}
+					reducers={[languageReducer]}
+				>
+					<PageProvider value={{pageIndex: 0}}>
+						<Geolocation
+							instanceId={instanceId}
+							mapProviderKey="GoogleMaps"
+							name={name}
+							onChange={jest.fn()}
+							value={{lat: 1, lng: 1}}
+						/>
+					</PageProvider>
+				</FormProvider>
+			</ConfigProvider>
+		);
+
+	beforeEach(() => {
+		delete window.google;
+
+		window.Liferay.Maps = {};
+
+		document
+			.querySelectorAll(gmapsScriptSelector)
+			.forEach((script) => script.remove());
+	});
+
+	afterEach(() => {
+		document
+			.querySelectorAll(gmapsScriptSelector)
+			.forEach((script) => script.remove());
+	});
+
+	it('injects the Google Maps API script only once for two fields', () => {
+		render(
+			<ConfigProvider value={{defaultLanguageId: 'en_US'}}>
+				<FormProvider
+					initialState={{
+						editingLanguageId: 'en_US',
+						pages: [],
+					}}
+					reducers={[languageReducer]}
+				>
+					<PageProvider value={{pageIndex: 0}}>
+						<>
+							<Geolocation
+								instanceId="first"
+								mapProviderKey="GoogleMaps"
+								name="geoFirst"
+								onChange={jest.fn()}
+								value={{lat: 1, lng: 1}}
+							/>
+
+							<Geolocation
+								instanceId="second"
+								mapProviderKey="GoogleMaps"
+								name="geoSecond"
+								onChange={jest.fn()}
+								value={{lat: 2, lng: 2}}
+							/>
+						</>
+					</PageProvider>
+				</FormProvider>
+			</ConfigProvider>
+		);
+
+		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
+	});
+
+	it('re-injects the Google Maps API script after a failed load', () => {
+		renderGoogleMapsField('first', 'geoFirst');
+
+		const [script] = document.querySelectorAll(gmapsScriptSelector);
+
+		expect(script).toBeTruthy();
+		expect(window.Liferay.Maps.gmapsLoading).toBe(true);
+
+		script.dispatchEvent(new Event('error'));
+
+		expect(window.Liferay.Maps.gmapsLoading).toBe(false);
+		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(0);
+
+		renderGoogleMapsField('second', 'geoSecond');
+
+		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
+	});
+});
+
+describe('Geolocation map configuration', () => {
+	it('builds an isolated position for each field', () => {
+		MapOpenStreetMap.mockClear();
+
+		render(
+			<ConfigProvider value={{defaultLanguageId: 'en_US'}}>
+				<FormProvider
+					initialState={{editingLanguageId: 'en_US', pages: []}}
+					reducers={[languageReducer]}
+				>
+					<PageProvider value={{pageIndex: 0}}>
+						<>
+							<Geolocation
+								instanceId="a"
+								mapProviderKey="OpenStreetMap"
+								name="geoA"
+								onChange={jest.fn()}
+								value={{lat: 1, lng: 1}}
+							/>
+
+							<Geolocation
+								instanceId="b"
+								mapProviderKey="OpenStreetMap"
+								name="geoB"
+								onChange={jest.fn()}
+								value={{lat: 2, lng: 2}}
+							/>
+						</>
+					</PageProvider>
+				</FormProvider>
+			</ConfigProvider>
+		);
+
+		const [firstConfig, secondConfig] = MapOpenStreetMap.mock.calls.map(
+			([config]) => config
+		);
+
+		expect(firstConfig.position.location).toEqual({lat: 1, lng: 1});
+		expect(secondConfig.position.location).toEqual({lat: 2, lng: 2});
+		expect(firstConfig.position).not.toBe(secondConfig.position);
 	});
 });
