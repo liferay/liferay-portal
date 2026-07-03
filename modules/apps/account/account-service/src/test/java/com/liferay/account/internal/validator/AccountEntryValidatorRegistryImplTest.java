@@ -337,7 +337,7 @@ public class AccountEntryValidatorRegistryImplTest {
 		accountEntryValidatorResult = accountEntryValidatorResultsMap.get(
 			className);
 
-		Assert.assertEquals(classPK, accountEntryValidatorResult.getKey());
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			resultMessage, accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(
