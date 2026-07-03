@@ -29,7 +29,15 @@ name = AUIUtil.getNamespace(liferayPortletRequest, liferayPortletResponse) + nam
 			Liferay.fire('gmapsReady');
 		};
 
-		if (!Liferay.Maps.gmapsReady) {
+		if (
+			!Liferay.Maps.gmapsReady &&
+			!Liferay.Maps.gmapsLoading &&
+			!document.querySelector(
+				'script[src*="maps.googleapis.com/maps/api/js"][src*="callback=Liferay.Maps.onGMapsReady"]'
+			)
+		) {
+			Liferay.Maps.gmapsLoading = true;
+
 			var apiURL =
 				'<%= protocol %>' +
 				'://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady';

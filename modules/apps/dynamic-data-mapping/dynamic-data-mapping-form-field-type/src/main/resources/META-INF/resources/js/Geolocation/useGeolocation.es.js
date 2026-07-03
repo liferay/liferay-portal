@@ -59,29 +59,41 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 		Liferay.Maps.gmapsReady
 	) {
 		callback();
+
+		return;
 	}
-	else {
-		Liferay.namespace('Maps').onGMapsReady = function () {
-			Liferay.Maps.gmapsReady = true;
-			Liferay.fire('gmapsReady');
-		};
 
-		Liferay.once('gmapsReady', () => callback());
+	Liferay.namespace('Maps').onGMapsReady = function () {
+		Liferay.Maps.gmapsReady = true;
+		Liferay.fire('gmapsReady');
+	};
 
-		let apiURL = `${location.protocol}//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady`;
+	Liferay.once('gmapsReady', () => callback());
 
-		if (googleMapsAPIKey) {
-			apiURL += '&key=' + googleMapsAPIKey;
-		}
-
-		let script = document.createElement('script');
-
-		script.setAttribute('src', apiURL);
-
-		document.head.appendChild(script);
-
-		script = null;
+	if (
+		Liferay.Maps.gmapsLoading ||
+		document.querySelector(
+			'script[src*="maps.googleapis.com/maps/api/js"][src*="callback=Liferay.Maps.onGMapsReady"]'
+		)
+	) {
+		return;
 	}
+
+	Liferay.Maps.gmapsLoading = true;
+
+	let apiURL = `${location.protocol}//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady`;
+
+	if (googleMapsAPIKey) {
+		apiURL += '&key=' + googleMapsAPIKey;
+	}
+
+	let script = document.createElement('script');
+
+	script.setAttribute('src', apiURL);
+
+	document.head.appendChild(script);
+
+	script = null;
 };
 
 export function useGeolocation({
