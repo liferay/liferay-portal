@@ -8,12 +8,8 @@ package com.liferay.portal.security.key.spi;
 /**
  * @author Christopher Kian
  */
-public interface SecurityModuleProvider {
+public enum ProviderStatus {
 
-	public ModuleStatus getModuleStatus();
-
-	public boolean isAllowedCompany(long companyId);
-
-	public SelfTestResult performSelfTests();
+	DEGRADED, ERROR, OPERATIONAL
 
 }
