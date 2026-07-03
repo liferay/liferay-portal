@@ -143,7 +143,7 @@ public class AssetCategoryFriendlyURLFeatureFlagListenerTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), title
 			).build(),
-			new HashMap<>(), assetVocabularyId, null,
+			new HashMap<>(), assetVocabularyId, false, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
