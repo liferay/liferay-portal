@@ -13,6 +13,7 @@
 		"@clayui/toolbar": "^3.165.0",
 		"@liferay/frontend-data-set-web": "*",
 		"classnames": "2.3.1",
+		"eventsource": "^4.0.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
