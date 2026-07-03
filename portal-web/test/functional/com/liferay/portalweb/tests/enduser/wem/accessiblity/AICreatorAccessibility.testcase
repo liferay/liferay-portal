@@ -151,7 +151,7 @@ definition {
 
 	@description = "This is a test for LPS-179485. The focus should be on the AI Creator modal when the modal is open."
 	@priority = 3
-	test ViewFocusOnModalWhenAICreatorModalIsOpen {
+	test AccessibilityOfAICreatorModal {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
