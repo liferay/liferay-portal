@@ -9,6 +9,7 @@ import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../../../utils/checkAccessibility';
+import getRandomString from '../../../../../utils/getRandomString';
 import {EFDSVisualizationMode, waitForFDS} from '../../../../../utils/waitFor';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
@@ -283,6 +284,8 @@ test('Advanced FDS is accessible across user views', async ({
 	fdsSamplePage,
 	page,
 }) => {
+	const userViewName = getRandomString();
+
 	await test.step('Open user views menu', async () => {
 		await fdsSamplePage.userViewsSelectorButton.click();
 
@@ -324,7 +327,7 @@ test('Advanced FDS is accessible across user views', async ({
 
 		await fdsSamplePage.userViewsSaveModal
 			.getByLabel('NameRequired')
-			.fill('Accessibility View');
+			.fill(userViewName);
 
 		await fdsSamplePage.userViewsSaveModal
 			.getByRole('button', {name: 'Save'})
@@ -361,6 +364,24 @@ test('Advanced FDS is accessible across user views', async ({
 		});
 
 		await page.keyboard.press('Escape');
+	});
+
+	// Delete the saved view so it does not linger for the next run. User
+	// views are persisted per user and are not removed with the isolated
+	// site.
+
+	await test.step('Delete the saved view', async () => {
+		await fdsSamplePage.userViewsActionsButton.click();
+
+		await fdsSamplePage.dropdownMenu
+			.getByRole('menuitem', {name: 'Delete View'})
+			.click();
+
+		await fdsSamplePage.userViewsDeleteAlert
+			.getByRole('button', {name: 'Delete'})
+			.click();
+
+		await fdsSamplePage.userViewsDeleteAlert.waitFor({state: 'hidden'});
 	});
 });
 
