@@ -85,6 +85,14 @@ $toolbar-height: 55px;
 		box-shadow: 0 -4px 0 0 $primary;
 	}
 
+	&--error {
+		border-left-color: var(--secondary-l1);
+
+		&:focus-within {
+			background-color: $gray-100;
+		}
+	}
+
 	&--indigo {
 		border-left-color: $indigo;
 	}
