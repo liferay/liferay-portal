@@ -124,6 +124,8 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 					}
 				).build();
 
+			Map<String, ?> input = _agentContext.getInput();
+
 			for (AgentArgument agentArgument : arguments()) {
 				String name = agentArgument.name();
 
@@ -131,8 +133,13 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 					continue;
 				}
 
-				workflowContext.put(
-					name, MapUtil.getString(inputObjects, name));
+				if ((input != null) && input.containsKey(name)) {
+					workflowContext.put(name, MapUtil.getString(input, name));
+				}
+				else {
+					workflowContext.put(
+						name, MapUtil.getString(inputObjects, name));
+				}
 			}
 
 			Message message = new Message();
