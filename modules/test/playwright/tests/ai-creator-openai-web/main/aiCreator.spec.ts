@@ -298,3 +298,35 @@ test(
 		}
 	}
 );
+
+test(
+	'View an error message when providing a wrong API key',
+	{tag: '@LPS-188490'},
+	async ({
+		aiCreatorInstanceSettingsPage,
+		enableMockAICreatorOpenAIClient,
+		page,
+	}) => {
+		await enableMockAICreatorOpenAIClient();
+
+		await aiCreatorInstanceSettingsPage.goto();
+
+		// A wrong API key surfaces the OpenAI incorrect-key error
+
+		const apiKey =
+			'OPENAI_API_Incorrect API key provided: INVALID_KEY. You can find your API key at https://platform.openai.com/account/api-keys._ERROR_MESSAGE';
+
+		await aiCreatorInstanceSettingsPage.apiKeyInput.fill(apiKey);
+		await aiCreatorInstanceSettingsPage.saveButton.click();
+
+		await expect(
+			page.getByText(
+				'Incorrect API key provided: INVALID_KEY. You can find your API key at https://platform.openai.com/account/api-keys. Check this link for further information about OpenAI issues.'
+			)
+		).toBeVisible();
+
+		await expect(aiCreatorInstanceSettingsPage.apiKeyInput).toHaveValue(
+			apiKey
+		);
+	}
+);
