@@ -415,6 +415,7 @@ exports[`TranslationAdminSelector renders an open dropdown with the list of acti
   id="clay-dropdown-menu-1"
   role="presentation"
   style="left: -999px; top: -995px;"
+  tabindex="0"
 >
   <ul
     class="list-unstyled"
