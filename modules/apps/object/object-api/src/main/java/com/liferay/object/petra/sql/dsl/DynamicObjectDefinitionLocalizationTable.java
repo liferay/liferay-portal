@@ -67,6 +67,18 @@ public class DynamicObjectDefinitionLocalizationTable
 			});
 	}
 
+	@Override
+	public DynamicObjectDefinitionLocalizationTable as(String alias) {
+		DynamicObjectDefinitionLocalizationTable
+			dynamicObjectDefinitionLocalizationTable =
+				new DynamicObjectDefinitionLocalizationTable(
+					_objectDefinition, _objectFields);
+
+		dynamicObjectDefinitionLocalizationTable.setAlias(alias);
+
+		return dynamicObjectDefinitionLocalizationTable;
+	}
+
 	public String getCreateTableSQL() {
 		StringBundler sb = new StringBundler();
 
