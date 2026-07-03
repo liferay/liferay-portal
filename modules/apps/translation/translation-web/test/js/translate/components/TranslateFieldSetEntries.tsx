@@ -12,46 +12,84 @@ import TranslateFieldSetEntries from '../../../../src/main/resources/META-INF/re
 jest.mock('frontend-editor-ckeditor-web', () => {
 	const React = require('react');
 
+	const normalize = (value: string) =>
+		value === '' || value.startsWith('<') ? value : `<p>${value}</p>`;
+
 	return {
 		CKEditor5ClassicEditor: ({data, onReady}: any) => {
 			const wrapperRef = React.useRef(null);
+			const readyRef = React.useRef(false);
+			const stateRef = React.useRef({dataFromRoots: '', model: ''});
+
+			const getArea = () =>
+				wrapperRef.current.querySelector('.ck-source-editing-area');
+
+			const updateEditorData = () => {
+				const editorState = stateRef.current;
+
+				const newData = getArea().dataset.value;
+
+				if (editorState.dataFromRoots !== newData) {
+					editorState.model = normalize(newData);
+					editorState.dataFromRoots = newData;
+				}
+			};
+
+			const getData = () => {
+				updateEditorData();
+
+				return stateRef.current.model;
+			};
 
 			React.useEffect(() => {
-				const wrapper = wrapperRef.current;
+				const area = getArea();
+				const textarea = area.querySelector('textarea');
+				const editorState = stateRef.current;
 
-				const textarea = wrapper.querySelector('textarea');
-
+				area.dataset.value = data;
 				textarea.value = data;
+				editorState.dataFromRoots = data;
+				editorState.model = data;
 
-				const sourceEditingPlugin = {
-					isSourceEditingMode: true,
-					on: (event: string, callback: () => void) => {
-						if (event === 'change:isSourceEditingMode') {
-							callback();
-						}
-					},
-				};
+				textarea.addEventListener('input', () => {
+					area.dataset.value = textarea.value;
+				});
 
 				onReady({
-					getData: () =>
-						textarea.value.startsWith('<')
-							? textarea.value
-							: `<p>${textarea.value}</p>`,
+					getData,
 					plugins: {
-						get: () => sourceEditingPlugin,
+						get: () => ({
+							isSourceEditingMode: true,
+							on: (event: string, callback: () => void) => {
+								if (event === 'change:isSourceEditingMode') {
+									callback();
+								}
+							},
+							updateEditorData,
+						}),
 					},
 					ui: {
-						element: wrapper,
+						element: wrapperRef.current,
 					},
 				});
+
+				readyRef.current = true;
 
 				// eslint-disable-next-line react-hooks/exhaustive-deps
 			}, []);
 
+			React.useEffect(() => {
+				if (readyRef.current && getData() !== data) {
+					stateRef.current.model = data;
+				}
+
+				// eslint-disable-next-line react-hooks/exhaustive-deps
+			}, [data]);
+
 			return (
 				<div ref={wrapperRef}>
 					<div className="ck-source-editing-area">
-						<textarea aria-label="source" defaultValue={data} />
+						<textarea aria-label="source" />
 					</div>
 				</div>
 			);
@@ -95,6 +133,29 @@ const buildComponent = (content: string) => (
 		}}
 	/>
 );
+
+const SourceEditingHarness = ({initialContent}: {initialContent: string}) => {
+	const [content, setContent] = React.useState(initialContent);
+
+	return (
+		<>
+			<button onClick={() => setContent(TRANSLATED_TARGET)} type="button">
+				translate
+			</button>
+
+			<TranslateFieldSetEntries
+				autoTranslateEnabled={false}
+				fetchAutoTranslateField={() => {}}
+				infoFieldSetEntries={infoFieldSetEntries}
+				onChange={({content: newContent}) => setContent(newContent)}
+				portletNamespace="_mock_TranslationPortlet_"
+				targetFieldsContent={{
+					[ID]: {content, message: '', status: ''},
+				}}
+			/>
+		</>
+	);
+};
 
 describe('TranslateFieldSetEntries', () => {
 	beforeAll(() => {
@@ -143,5 +204,21 @@ describe('TranslateFieldSetEntries', () => {
 		rerender(buildComponent(TRANSLATED_TARGET));
 
 		expect(textarea).toHaveValue(TRANSLATED_TARGET);
+	});
+
+	it('keeps populating the source view after repeated remove-and-translate cycles', () => {
+		render(<SourceEditingHarness initialContent={ORIGINAL_TARGET} />);
+
+		const textarea = screen.getByLabelText('source');
+
+		for (let cycle = 0; cycle < 3; cycle++) {
+			fireEvent.click(screen.getByText('translate'));
+
+			expect(textarea).toHaveValue(TRANSLATED_TARGET);
+
+			fireEvent.input(textarea, {target: {value: ''}});
+
+			expect(textarea).toHaveValue('');
+		}
 	});
 });
