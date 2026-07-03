@@ -91,12 +91,18 @@ public abstract class BaseTasksSectionDisplayContextTestCase
 		Map<String, Object> additionalProps = getAdditionalProps(null);
 
 		Assert.assertNull(additionalProps.get("projectId"));
+		Assert.assertEquals(
+			projectObjectDefinition.getObjectDefinitionId(),
+			additionalProps.get("projectObjectDefinitionId"));
 		Assert.assertNotNull(additionalProps.get("states"));
 
 		additionalProps = getAdditionalProps(assetEntry);
 
 		Assert.assertEquals(
 			assetEntry.getClassPK(), additionalProps.get("projectId"));
+		Assert.assertEquals(
+			projectObjectDefinition.getObjectDefinitionId(),
+			additionalProps.get("projectObjectDefinitionId"));
 		Assert.assertNotNull(additionalProps.get("states"));
 	}
 
@@ -153,6 +159,9 @@ public abstract class BaseTasksSectionDisplayContextTestCase
 		Assert.assertEquals(
 			String.valueOf(objectDefinition.getObjectDefinitionId()),
 			getValue(dropdownItem, "objectDefinitionId"));
+		Assert.assertEquals(
+			String.valueOf(projectObjectDefinition.getObjectDefinitionId()),
+			getValue(dropdownItem, "projectObjectDefinitionId"));
 		Assert.assertEquals(
 			StringBundler.concat(
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
