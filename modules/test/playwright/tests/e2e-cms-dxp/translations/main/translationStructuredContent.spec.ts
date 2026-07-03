@@ -107,7 +107,7 @@ test(
 
 		if (!bodyField || !numericField) {
 			throw new Error(
-				'Body or Numeric field not found in object definition'
+				'The "Body" or "Numeric" field was not found in the object definition'
 			);
 		}
 
