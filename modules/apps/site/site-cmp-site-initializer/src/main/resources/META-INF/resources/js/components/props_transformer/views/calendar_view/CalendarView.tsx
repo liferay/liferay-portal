@@ -35,6 +35,7 @@ interface CalendarViewProps {
 	items: ITask[];
 	itemsActions: IItemsActions[];
 	projectId?: string;
+	projectObjectDefinitionId: number;
 }
 
 interface MoreLinkPopover {
@@ -47,6 +48,7 @@ export default function CalendarView({
 	items,
 	itemsActions,
 	projectId,
+	projectObjectDefinitionId,
 }: CalendarViewProps) {
 	const {loadData, onInfoPanelToggleButtonClick} = useContext(
 		FrontendDataSetContext
@@ -139,6 +141,7 @@ export default function CalendarView({
 					dueDate={dueDate}
 					loadData={loadData}
 					projectId={projectId}
+					projectObjectDefinitionId={projectObjectDefinitionId}
 					state={DEFAULT_TASK_STATE_KEY}
 				/>
 			),

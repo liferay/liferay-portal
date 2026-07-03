@@ -26,10 +26,12 @@ export default function SelectProjectModalContent({
 	addProjectURL,
 	addTaskURL,
 	closeModal,
+	projectObjectDefinitionId,
 }: {
 	addProjectURL: string;
 	addTaskURL: string;
 	closeModal: () => void;
+	projectObjectDefinitionId: number;
 }) {
 	const [errorMessage, setErrorMessage] = useState<string>('');
 	const [selectedProject, setSelectedProject] = useState<Project | null>();
@@ -47,7 +49,7 @@ export default function SelectProjectModalContent({
 			method: 'GET',
 		},
 		fetchPolicy: FetchPolicy.CacheFirst,
-		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionExternalReferenceCode eq 'L_CMP_PROJECT'&nestedFields=embedded`,
+		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionId eq ${projectObjectDefinitionId}&nestedFields=embedded`,
 	});
 
 	const projects: Project[] = resource?.items?.length

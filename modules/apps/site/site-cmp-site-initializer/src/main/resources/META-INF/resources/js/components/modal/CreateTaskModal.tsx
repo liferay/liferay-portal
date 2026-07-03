@@ -32,6 +32,7 @@ type CreateTaskModalProps = {
 	dueDate?: string;
 	loadData: Function;
 	projectId?: string;
+	projectObjectDefinitionId: number;
 	state: string;
 };
 
@@ -40,6 +41,7 @@ export default function CreateTaskModal({
 	dueDate = '',
 	loadData,
 	projectId,
+	projectObjectDefinitionId,
 	state,
 }: CreateTaskModalProps) {
 	const [states, setStates] = useState([]);
@@ -113,7 +115,7 @@ export default function CreateTaskModal({
 
 			const {
 				data: {items},
-			} = (await getAllProjects()) as {
+			} = (await getAllProjects(projectObjectDefinitionId)) as {
 				data: {
 					items: {
 						embedded: IProjectObjectEntry;
@@ -143,7 +145,7 @@ export default function CreateTaskModal({
 		};
 
 		makeFetch();
-	}, [projectId]);
+	}, [projectId, projectObjectDefinitionId]);
 
 	return (
 		<ClayForm

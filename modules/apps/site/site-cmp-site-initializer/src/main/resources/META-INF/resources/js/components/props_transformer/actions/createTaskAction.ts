@@ -11,10 +11,12 @@ import SelectProjectModalContent from '../../modal/SelectProjectModalContent';
 export default function createTaskAction({
 	addProjectURL,
 	addTaskURL,
+	projectObjectDefinitionId,
 	redirect,
 }: {
 	addProjectURL: string;
 	addTaskURL: string;
+	projectObjectDefinitionId: number;
 	redirect?: string;
 }) {
 	if (redirect) {
@@ -32,6 +34,7 @@ export default function createTaskAction({
 				addProjectURL,
 				addTaskURL,
 				closeModal,
+				projectObjectDefinitionId,
 			}),
 		size: 'md',
 	});

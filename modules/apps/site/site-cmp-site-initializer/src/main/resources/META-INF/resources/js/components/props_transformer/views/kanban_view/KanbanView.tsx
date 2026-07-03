@@ -20,6 +20,7 @@ interface KanbanViewProps {
 	items: ITask[];
 	itemsActions: IItemsActions[];
 	projectId: string;
+	projectObjectDefinitionId: number;
 }
 
 function KanbanView(props: KanbanViewProps) {
@@ -63,6 +64,7 @@ function KanbanView(props: KanbanViewProps) {
 				itemsActions: props.itemsActions,
 				loadData,
 				projectId: props.projectId,
+				projectObjectDefinitionId: props.projectObjectDefinitionId,
 			}}
 		>
 			<Board />

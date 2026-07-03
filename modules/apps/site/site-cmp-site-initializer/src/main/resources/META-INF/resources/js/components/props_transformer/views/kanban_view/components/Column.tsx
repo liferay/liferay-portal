@@ -43,7 +43,7 @@ export function ColumnView({
 	column: {icon, key, name, tasks},
 	stateFlow,
 }: IColumnViewProps) {
-	const {changeTaskStatus, loadData, projectId} =
+	const {changeTaskStatus, loadData, projectId, projectObjectDefinitionId} =
 		useContext(KanbanViewContext);
 
 	const canTransition = (taskStateKey: string) => {
@@ -129,6 +129,9 @@ export function ColumnView({
 										closeModal={closeModal}
 										loadData={loadData}
 										projectId={projectId}
+										projectObjectDefinitionId={
+											projectObjectDefinitionId
+										}
 										state={key}
 									/>
 								),

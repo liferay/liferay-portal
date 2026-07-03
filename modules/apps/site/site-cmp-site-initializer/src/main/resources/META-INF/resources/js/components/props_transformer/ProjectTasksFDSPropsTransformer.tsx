@@ -69,6 +69,8 @@ export default function ProjectTasksFDSPropsTransformer({
 			CalendarView({
 				...props,
 				projectId: additionalProps.projectId,
+				projectObjectDefinitionId:
+					additionalProps.projectObjectDefinitionId,
 			}),
 		default: false,
 		initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
@@ -88,7 +90,12 @@ export default function ProjectTasksFDSPropsTransformer({
 
 	const kanbanView: IView = {
 		component: (props: any) =>
-			KanbanView({...props, projectId: additionalProps.projectId}),
+			KanbanView({
+				...props,
+				projectId: additionalProps.projectId,
+				projectObjectDefinitionId:
+					additionalProps.projectObjectDefinitionId,
+			}),
 		default: false,
 		initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
 		label: Liferay.Language.get('kanban'),

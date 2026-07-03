@@ -34,9 +34,9 @@ export async function deleteTaskById({taskId}: {taskId: string}) {
 	return await ApiHelper.delete(`/o/cmp/tasks/${taskId}`);
 }
 
-export async function getAllProjects() {
+export async function getAllProjects(projectObjectDefinitionId: number) {
 	return await ApiHelper.get(
-		`/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionExternalReferenceCode eq 'L_CMP_PROJECT'&nestedFields=embedded`
+		`/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionId eq ${projectObjectDefinitionId}&nestedFields=embedded`
 	);
 }
 
