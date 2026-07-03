@@ -27,6 +27,9 @@ public class LayoutPageTemplateStructureRelElementVariationImpl
 						getExternalReferenceCode()),
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRel::
 					getAudienceEntryERC);
+
+			audienceEntryERCsUpdateEntityCacheBiConsumer.accept(
+				this, _audienceEntryERCs);
 		}
 
 		return _audienceEntryERCs;
