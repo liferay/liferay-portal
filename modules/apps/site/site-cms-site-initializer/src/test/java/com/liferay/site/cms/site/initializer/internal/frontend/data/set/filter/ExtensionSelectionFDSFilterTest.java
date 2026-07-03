@@ -126,32 +126,6 @@ public class ExtensionSelectionFDSFilterTest {
 	}
 
 	@Test
-	public void testGetSelectionFDSFilterItemsAggregatesObjectEntryClassNames() {
-		TermsAggregationResult termsAggregationResult = Mockito.mock(
-			TermsAggregationResult.class);
-
-		Mockito.when(
-			termsAggregationResult.getBuckets()
-		).thenReturn(
-			Collections.emptyList()
-		);
-
-		Mockito.when(
-			_searchResponse.getAggregationResult("extensions")
-		).thenReturn(
-			termsAggregationResult
-		);
-
-		_extensionSelectionFDSFilter.getSelectionFDSFilterItems(_locale);
-
-		Mockito.verify(
-			_searchRequestBuilder
-		).entryClassNames(
-			_OBJECT_DEFINITION_CLASS_NAME
-		);
-	}
-
-	@Test
 	public void testGetSelectionFDSFilterItemsWhenNoCMSObjectDefinitions() {
 		Mockito.when(
 			_objectDefinitionService.getCMSObjectDefinitions(
@@ -188,6 +162,32 @@ public class ExtensionSelectionFDSFilterTest {
 		Assert.assertTrue(
 			selectionFDSFilterItems.toString(),
 			selectionFDSFilterItems.isEmpty());
+	}
+
+	@Test
+	public void testGetSelectionFDSFilterItemsWithCMSObjectDefinitions() {
+		TermsAggregationResult termsAggregationResult = Mockito.mock(
+			TermsAggregationResult.class);
+
+		Mockito.when(
+			termsAggregationResult.getBuckets()
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		Mockito.when(
+			_searchResponse.getAggregationResult("extensions")
+		).thenReturn(
+			termsAggregationResult
+		);
+
+		_extensionSelectionFDSFilter.getSelectionFDSFilterItems(_locale);
+
+		Mockito.verify(
+			_searchRequestBuilder
+		).entryClassNames(
+			_OBJECT_DEFINITION_CLASS_NAME
+		);
 	}
 
 	@Test
