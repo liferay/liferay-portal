@@ -9,8 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -142,10 +145,14 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			Assert.fail();
 		}
 		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
-				"A style book with the same external reference code already " +
-					"exists",
-				problemException.getMessage());
+				_language.get(
+					LocaleUtil.getDefault(),
+					"this-external-reference-code-is-already-in-use"),
+				problem.getTitle());
 		}
 	}
 
@@ -170,5 +177,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				problemException.getMessage());
 		}
 	}
+
+	@Inject
+	private Language _language;
 
 }
