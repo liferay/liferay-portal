@@ -14,9 +14,11 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -37,19 +40,28 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Jorge García Jiménez
@@ -62,6 +74,37 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_auditMessages = new ArrayList<>();
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			DynamicRegistrationServiceTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Dictionary<String, Object> properties = new Hashtable<>();
+
+		properties.put("eventTypes", "*");
+
+		_serviceRegistration = bundleContext.registerService(
+			AuditMessageProcessor.class,
+			auditMessage -> _auditMessages.add(auditMessage), properties);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
+
+		super.tearDown();
+	}
 
 	@Test
 	public void testDeleteClientRegistration() throws Exception {
@@ -189,6 +232,80 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Assert.assertNull(
 			response.getHeaderString("Access-Control-Allow-Origin"));
+
+		AuditMessage addAuditMessage = _fetchAuditMessage(
+			"DYNAMIC_REGISTRATION_ADD");
+
+		Assert.assertEquals(
+			OAuth2Application.class.getName(), addAuditMessage.getClassName());
+		Assert.assertEquals(clientId, addAuditMessage.getClassPK());
+
+		JSONObject addAdditionalInfoJSONObject =
+			addAuditMessage.getAdditionalInfo();
+
+		Assert.assertEquals(
+			clientName, addAdditionalInfoJSONObject.getString("clientName"));
+
+		JSONArray grantTypesJSONArray =
+			addAdditionalInfoJSONObject.getJSONArray("grantTypes");
+
+		Assert.assertEquals(1, grantTypesJSONArray.length());
+		Assert.assertEquals(
+			OAuthConstants.CLIENT_CREDENTIALS_GRANT,
+			grantTypesJSONArray.getString(0));
+
+		Assert.assertEquals(
+			"authenticated", addAdditionalInfoJSONObject.getString("mode"));
+
+		String[] auditScopes = StringUtil.split(
+			addAdditionalInfoJSONObject.getString("scope"), CharPool.SPACE);
+
+		Arrays.sort(auditScopes);
+
+		Assert.assertArrayEquals(expectedScopes, auditScopes);
+
+		AuditMessage rejectAuditMessage = _fetchAuditMessage(
+			"DYNAMIC_REGISTRATION_REJECT");
+
+		Assert.assertEquals(
+			OAuth2Application.class.getName(),
+			rejectAuditMessage.getClassName());
+
+		JSONObject rejectAdditionalInfoJSONObject =
+			rejectAuditMessage.getAdditionalInfo();
+
+		Assert.assertEquals(
+			"invalid_client_metadata",
+			rejectAdditionalInfoJSONObject.getString("error"));
+	}
+
+	@Test
+	public void testRegisterWithInvalidBearerToken() throws Exception {
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		Invocation.Builder invocationBuilder = registerWebTarget.request();
+
+		invocationBuilder.header(
+			"Authorization", "Bearer " + RandomTestUtil.randomString());
+
+		Response response = invocationBuilder.method(
+			"post",
+			Entity.json(
+				JSONUtil.put(
+					"client_name", RandomTestUtil.randomString()
+				).toString()));
+
+		Assert.assertEquals(401, response.getStatus());
+
+		AuditMessage auditMessage = _fetchAuditMessage(
+			"DYNAMIC_REGISTRATION_REJECT");
+
+		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
+
+		Assert.assertEquals(
+			"invalid_token", additionalInfoJSONObject.getString("error"));
+		Assert.assertEquals(
+			"authenticated", additionalInfoJSONObject.getString("mode"));
 	}
 
 	@Test
@@ -262,6 +379,16 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		);
 	}
 
+	private AuditMessage _fetchAuditMessage(String eventType) {
+		for (AuditMessage auditMessage : _auditMessages) {
+			if (eventType.equals(auditMessage.getEventType())) {
+				return auditMessage;
+			}
+		}
+
+		return null;
+	}
+
 	private OAuth2Application _getDynamicRegistratorOAuth2Application()
 		throws Exception {
 
@@ -311,8 +438,12 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		return tokenString;
 	}
 
+	private List<AuditMessage> _auditMessages;
+
 	@Inject
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+
+	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
 	private class DynamicRegistrationServiceTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
