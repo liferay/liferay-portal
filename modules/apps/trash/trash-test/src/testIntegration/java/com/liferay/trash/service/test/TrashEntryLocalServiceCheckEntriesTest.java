@@ -93,56 +93,6 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 	}
 
 	@Test
-	public void testUndeletableTrashEntry() throws Exception {
-		Group group = updateTrashEntriesMaxAge(
-			createGroup(TestPropsValues.getCompanyId()), _MAX_AGE);
-
-		createFileEntryTrashEntry(group, true);
-
-		TrashEntry trashEntry = TrashEntryLocalServiceUtil.addTrashEntry(
-			TestPropsValues.getUserId(), group.getGroupId(),
-			DLFileEntry.class.getName(), RandomTestUtil.randomLong(), null,
-			null, WorkflowConstants.STATUS_APPROVED, null, null);
-
-		int maxAge = _trashHelper.getMaxAge(group);
-
-		Date createDate = trashEntry.getCreateDate();
-
-		trashEntry.setCreateDate(
-			new Date(createDate.getTime() - (maxAge * Time.MINUTE) - Time.DAY));
-
-		trashEntry = TrashEntryLocalServiceUtil.updateTrashEntry(trashEntry);
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.trash.service.impl.TrashEntryLocalServiceImpl",
-				LoggerTestUtil.WARN)) {
-
-			TrashEntryLocalServiceUtil.checkEntries();
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"Unable to check trash entry " + trashEntry.getEntryId(),
-				logEntry.getMessage());
-			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
-
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertSame(
-				NoSuchFileEntryException.class, throwable.getClass());
-		}
-
-		Assert.assertEquals(
-			1, TrashEntryLocalServiceUtil.getTrashEntriesCount());
-		Assert.assertNotNull(
-			TrashEntryLocalServiceUtil.fetchEntry(trashEntry.getEntryId()));
-	}
-
-	@Test
 	public void testCompanies() throws Exception {
 		long[] companyIds = new long[_COMPANIES_COUNT];
 
@@ -264,6 +214,56 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 
 		Assert.assertEquals(
 			0, TrashEntryLocalServiceUtil.getTrashEntriesCount());
+	}
+
+	@Test
+	public void testUndeletableTrashEntry() throws Exception {
+		Group group = updateTrashEntriesMaxAge(
+			createGroup(TestPropsValues.getCompanyId()), _MAX_AGE);
+
+		createFileEntryTrashEntry(group, true);
+
+		TrashEntry trashEntry = TrashEntryLocalServiceUtil.addTrashEntry(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			DLFileEntry.class.getName(), RandomTestUtil.randomLong(), null,
+			null, WorkflowConstants.STATUS_APPROVED, null, null);
+
+		int maxAge = _trashHelper.getMaxAge(group);
+
+		Date createDate = trashEntry.getCreateDate();
+
+		trashEntry.setCreateDate(
+			new Date(createDate.getTime() - (maxAge * Time.MINUTE) - Time.DAY));
+
+		trashEntry = TrashEntryLocalServiceUtil.updateTrashEntry(trashEntry);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.trash.service.impl.TrashEntryLocalServiceImpl",
+				LoggerTestUtil.WARN)) {
+
+			TrashEntryLocalServiceUtil.checkEntries();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to check trash entry " + trashEntry.getEntryId(),
+				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(
+				NoSuchFileEntryException.class, throwable.getClass());
+		}
+
+		Assert.assertEquals(
+			1, TrashEntryLocalServiceUtil.getTrashEntriesCount());
+		Assert.assertNotNull(
+			TrashEntryLocalServiceUtil.fetchEntry(trashEntry.getEntryId()));
 	}
 
 	protected long createCompany() throws Exception {
