@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.cms.site.initializer.util.AssetTagUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -129,21 +129,8 @@ public abstract class BaseRelatedAssetsSectionDisplayContext
 	protected Set<String> getTagNames(
 		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
 
-		return SetUtil.fromList(
-			TransformUtil.transform(
-				assetTagLocalService.getTags(
-					objectDefinition.getClassName(),
-					objectEntry.getObjectEntryId()),
-				assetTag -> {
-					if (!StringUtil.startsWith(
-							assetTag.getName(),
-							objectDefinition.getExternalReferenceCode())) {
-
-						return null;
-					}
-
-					return assetTag.getName();
-				}));
+		return AssetTagUtil.getAssetTagNames(
+			assetTagLocalService, objectDefinition, objectEntry);
 	}
 
 	protected final AssetTagLocalService assetTagLocalService;

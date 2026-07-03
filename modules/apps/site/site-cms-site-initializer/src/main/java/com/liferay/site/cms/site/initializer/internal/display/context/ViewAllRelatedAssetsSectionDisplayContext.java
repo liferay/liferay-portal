@@ -16,7 +16,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -26,11 +25,11 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.site.cms.site.initializer.util.AssetTagUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,30 +123,20 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 
 	@Override
 	protected String[] getKeywords() {
-		Set<String> tagNames = new HashSet<>();
-
 		try {
-			for (ObjectEntry relatedObjectEntry :
-					_objectEntryLocalService.getOneToManyObjectEntries(
-						objectEntry.getGroupId(),
-						_objectRelationship.getObjectRelationshipId(), null,
-						false, objectEntry.getObjectEntryId(), true, null,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			Set<String> assetTagNames = AssetTagUtil.getRelatedAssetTagNames(
+				assetTagLocalService, _objectDefinitionLocalService,
+				objectEntry, _objectEntryLocalService, _objectRelationship);
 
-				tagNames.addAll(
-					getTagNames(
-						_objectDefinitionLocalService.fetchObjectDefinition(
-							relatedObjectEntry.getObjectDefinitionId()),
-						relatedObjectEntry));
-			}
+			return assetTagNames.toArray(new String[0]);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
-		}
 
-		return tagNames.toArray(new String[0]);
+			return new String[0];
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
