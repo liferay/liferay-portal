@@ -125,6 +125,132 @@ public class AddFormInstanceRecordMVCCommandUtilTest {
 		_assertDDMFormFields(false, null);
 	}
 
+	@Test
+	public void testInvisibleNestedFieldKeepsPersistedValue() throws Exception {
+		DDMFormFieldValue ddmFormFieldValue =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"parentInstanceId", "parent", new UnlocalizedValue(""));
+
+		ddmFormFieldValue.addNestedDDMFormFieldValue(
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"childInstanceId", "child",
+				new UnlocalizedValue(StringPool.BLANK)));
+
+		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
+			DDMFormTestUtil.createDDMForm());
+
+		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
+
+		DDMFormFieldValue persistedDDMFormFieldValue =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"parentInstanceId", "parent", new UnlocalizedValue(""));
+
+		persistedDDMFormFieldValue.addNestedDDMFormFieldValue(
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"childInstanceId", "child", new UnlocalizedValue("kept")));
+
+		DDMFormValues persistedDDMFormValues =
+			DDMFormValuesTestUtil.createDDMFormValues(
+				DDMFormTestUtil.createDDMForm());
+
+		persistedDDMFormValues.addDDMFormFieldValue(persistedDDMFormFieldValue);
+
+		AddFormInstanceRecordMVCCommandUtil.updateInvisibleDDMFormFieldValues(
+			HashMapBuilder.
+				<DDMFormEvaluatorFieldContextKey, Map<String, Object>>put(
+					new DDMFormEvaluatorFieldContextKey(
+						"child", "childInstanceId"),
+					HashMapBuilder.<String, Object>put(
+						"visible", false
+					).build()
+				).build(),
+			ddmFormValues, persistedDDMFormValues);
+
+		DDMFormFieldValue parentDDMFormFieldValue =
+			ddmFormValues.getDDMFormFieldValues(
+			).get(
+				0
+			);
+
+		List<DDMFormFieldValue> nestedDDMFormFieldValues =
+			parentDDMFormFieldValue.getNestedDDMFormFieldValues();
+
+		Assert.assertEquals(
+			nestedDDMFormFieldValues.toString(), 1,
+			nestedDDMFormFieldValues.size());
+
+		DDMFormFieldValue childDDMFormFieldValue = nestedDDMFormFieldValues.get(
+			0);
+
+		Value value = childDDMFormFieldValue.getValue();
+
+		Assert.assertEquals("kept", value.getString(LocaleUtil.US));
+	}
+
+	@Test
+	public void testInvisibleRepeatableFieldKeepsAllPersistedInstances()
+		throws Exception {
+
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
+
+		DDMFormField ddmFormField = DDMFormTestUtil.createTextDDMFormField(
+			_FIELD_NAME, false, false, false);
+
+		ddmFormField.setRepeatable(true);
+
+		ddmForm.addDDMFormField(ddmFormField);
+
+		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
+			ddmForm);
+
+		ddmFormValues.addDDMFormFieldValue(
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"instanceId0", _FIELD_NAME,
+				new UnlocalizedValue(StringPool.BLANK)));
+
+		DDMFormValues persistedDDMFormValues =
+			DDMFormValuesTestUtil.createDDMFormValues(ddmForm);
+
+		persistedDDMFormValues.addDDMFormFieldValue(
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"instanceId0", _FIELD_NAME, new UnlocalizedValue("value0")));
+		persistedDDMFormValues.addDDMFormFieldValue(
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"instanceId1", _FIELD_NAME, new UnlocalizedValue("value1")));
+
+		AddFormInstanceRecordMVCCommandUtil.updateInvisibleDDMFormFieldValues(
+			HashMapBuilder.
+				<DDMFormEvaluatorFieldContextKey, Map<String, Object>>put(
+					new DDMFormEvaluatorFieldContextKey(
+						_FIELD_NAME, "instanceId0"),
+					HashMapBuilder.<String, Object>put(
+						"visible", false
+					).build()
+				).build(),
+			ddmFormValues, persistedDDMFormValues);
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap(false);
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			_FIELD_NAME);
+
+		Assert.assertEquals(
+			ddmFormFieldValues.toString(), 2, ddmFormFieldValues.size());
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		Assert.assertEquals("value0", value.getString(LocaleUtil.US));
+
+		ddmFormFieldValue = ddmFormFieldValues.get(1);
+
+		value = ddmFormFieldValue.getValue();
+
+		Assert.assertEquals("value1", value.getString(LocaleUtil.US));
+	}
+
 	@Test(expected = FormInstanceExpiredException.class)
 	public void testValidateExpirationStatus() throws Exception {
 		ThemeDisplay themeDisplay = _mockThemeDisplay();
