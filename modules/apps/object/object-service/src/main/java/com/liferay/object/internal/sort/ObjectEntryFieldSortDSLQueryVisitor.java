@@ -7,7 +7,9 @@ package com.liferay.object.internal.sort;
 
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -23,11 +25,14 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.sql.Clob;
 import java.sql.Types;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -53,6 +58,7 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 
 		Expression<?> columnExpression = null;
 		Table fieldTable = null;
+		boolean localized = false;
 		String prefix = StringPool.BLANK;
 
 		if (objectField == null) {
@@ -65,13 +71,49 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 			columnExpression = fieldTable.getColumn(fieldName);
 		}
 		else {
-			fieldTable = getAliasedTable(
-				_getSuffix(sort),
-				objectFieldLocalService.getTable(
-					objectDefinition.getObjectDefinitionId(),
-					objectField.getName()));
+			Table objectFieldTable = objectFieldLocalService.getTable(
+				objectDefinition.getObjectDefinitionId(),
+				objectField.getName());
+
+			fieldTable = getAliasedTable(_getSuffix(sort), objectFieldTable);
 
 			columnExpression = _getColumnExpression(objectField, fieldTable);
+
+			if (objectField.isLocalized() && !_isParentComplexField(sort) &&
+				(objectFieldTable instanceof
+					DynamicObjectDefinitionLocalizationTable)) {
+
+				localized = true;
+
+				Table defaultLanguageIdFieldTable = getAliasedTable(
+					"defaultLanguageId", objectFieldTable);
+
+				if (!contains(dslQuery, defaultLanguageIdFieldTable)) {
+					dslQuery = addLeftJoin(
+						getPrimaryKeyColumn(defaultLanguageIdFieldTable),
+						ObjectEntryTable.INSTANCE.objectEntryId, dslQuery,
+						defaultLanguageIdFieldTable,
+						_getLanguageIdColumn(
+							defaultLanguageIdFieldTable
+						).eq(
+							_getDefaultLanguageId()
+						));
+				}
+
+				Expression<String> activeExpression =
+					(Expression<String>)columnExpression;
+				Expression<String> defaultExpression =
+					(Expression<String>)_getColumnExpression(
+						objectField, defaultLanguageIdFieldTable);
+
+				columnExpression = DSLFunctionFactoryUtil.caseWhenThen(
+					activeExpression.isNotNull(), activeExpression
+				).whenThen(
+					defaultExpression.isNotNull(), defaultExpression
+				).elseEnd(
+					activeExpression
+				);
+			}
 
 			if (Objects.equals(
 					objectField.getDBType(),
@@ -90,6 +132,21 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 			_isParentComplexField(sort), columnExpression, prefix,
 			sort.isReverse());
 
+		OrderByExpression[] orderByExpressions = {orderByExpression};
+
+		if (localized) {
+			OrderByExpression nullOrderByExpression =
+				DSLFunctionFactoryUtil.caseWhenThen(
+					columnExpression.isNull(), 1
+				).elseEnd(
+					0
+				).ascending();
+
+			orderByExpressions = new OrderByExpression[] {
+				nullOrderByExpression, orderByExpression
+			};
+		}
+
 		Stack<BaseASTNode> allBaseASTNodes = getAllBaseASTNodes(
 			OrderByStep.class, dslQuery);
 
@@ -101,13 +158,12 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 			BaseASTNode baseASTNode = new OrderBy(
 				(OrderByStep)orderBy.getChild(),
 				ArrayUtil.append(
-					orderBy.getOrderByExpressions(), orderByExpression));
+					orderBy.getOrderByExpressions(), orderByExpressions));
 
 			return updateParents(baseASTNode, allBaseASTNodes);
 		}
 
-		BaseASTNode baseASTNode = new OrderBy(
-			orderByStep, new OrderByExpression[] {orderByExpression});
+		BaseASTNode baseASTNode = new OrderBy(orderByStep, orderByExpressions);
 
 		return updateParents(baseASTNode, allBaseASTNodes);
 	}
@@ -129,6 +185,20 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 		}
 
 		return column;
+	}
+
+	private String _getDefaultLanguageId() {
+		Locale locale = LocaleThreadLocal.getSiteDefaultLocale();
+
+		if (locale == null) {
+			locale = LocaleUtil.getDefault();
+		}
+
+		return LocaleUtil.toLanguageId(locale);
+	}
+
+	private Column<?, String> _getLanguageIdColumn(Table<?> table) {
+		return (Column<?, String>)table.getColumn("languageId");
 	}
 
 	private OrderByExpression _getOrderByExpression(

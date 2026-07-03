@@ -12,6 +12,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.sql.dsl.query.JoinStep;
 import com.liferay.petra.sql.dsl.spi.ast.BaseASTNode;
@@ -44,6 +45,13 @@ public abstract class BaseSortDSLQueryVisitor {
 		Column<?, Long> column1, Column<?, Long> column2, DSLQuery dslQuery,
 		Table<?> table) {
 
+		return addLeftJoin(column1, column2, dslQuery, table, null);
+	}
+
+	protected DSLQuery addLeftJoin(
+		Column<?, Long> column1, Column<?, Long> column2, DSLQuery dslQuery,
+		Table<?> table, Predicate onPredicate) {
+
 		Stack<BaseASTNode> allBaseASTNodes = getAllBaseASTNodes(
 			JoinStep.class, dslQuery);
 
@@ -53,8 +61,14 @@ public abstract class BaseSortDSLQueryVisitor {
 			column2 = getPrimaryKeyColumn(getTable(joinStep));
 		}
 
+		Predicate predicate = column1.eq(column2);
+
+		if (onPredicate != null) {
+			predicate = predicate.and(onPredicate);
+		}
+
 		BaseASTNode baseASTNode = (BaseASTNode)joinStep.leftJoinOn(
-			table, column1.eq(column2));
+			table, predicate);
 
 		return updateParents(baseASTNode, allBaseASTNodes);
 	}
