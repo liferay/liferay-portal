@@ -98,8 +98,8 @@ public class AccountEntryValidatorRegistryImpl
 			return Collections.emptyMap();
 		}
 
-		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
-			new LinkedHashMap<>();
+		Map<String, AccountEntryValidatorResult>
+			accountEntryValidatorResultsMap = new LinkedHashMap<>();
 
 		for (AccountEntryValidator accountEntryValidator :
 				getAccountEntryValidators()) {
@@ -137,14 +137,14 @@ public class AccountEntryValidatorRegistryImpl
 					});
 
 			if (valuesList.isEmpty()) {
-				accountEntryValidatorResults.put(className, null);
+				accountEntryValidatorResultsMap.put(className, null);
 
 				continue;
 			}
 
 			Map<String, Serializable> valuesMap = valuesList.get(0);
 
-			accountEntryValidatorResults.put(
+			accountEntryValidatorResultsMap.put(
 				className,
 				AccountEntryValidatorResult.builder(
 					classPK
@@ -155,7 +155,7 @@ public class AccountEntryValidatorRegistryImpl
 				).build());
 		}
 
-		return accountEntryValidatorResults;
+		return accountEntryValidatorResultsMap;
 	}
 
 	@Override
