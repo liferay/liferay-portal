@@ -10,7 +10,8 @@
 <%
 ViewChangesDisplayContext viewChangesDisplayContext = (ViewChangesDisplayContext)request.getAttribute(CTWebKeys.VIEW_CHANGES_DISPLAY_CONTEXT);
 
-portletDisplay.setURLBack(
+String backURL = ParamUtil.getString(
+	request, "backURL",
 	PortletURLBuilder.createRenderURL(
 		renderResponse
 	).setMVCRenderCommandName(
@@ -18,6 +19,8 @@ portletDisplay.setURLBack(
 	).setParameter(
 		"ctCollectionId", viewChangesDisplayContext.getCtCollectionId()
 	).buildString());
+
+portletDisplay.setURLBack(backURL);
 
 portletDisplay.setShowBackIcon(true);
 

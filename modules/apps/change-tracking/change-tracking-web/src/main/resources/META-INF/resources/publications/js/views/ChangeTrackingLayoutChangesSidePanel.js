@@ -9,7 +9,7 @@ import {SidePanel} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
-import {fetch} from 'frontend-js-web';
+import {createPortletURL, fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 const DELTA = 20;
@@ -121,39 +121,50 @@ export default function ChangeTrackingLayoutChangesSidePanel({
 							{Liferay.Language.get('collapse-all')}
 						</ClayButton>
 					</ClayButton.Group>
-					{panels.map((panel) => (
-						<ClayPanel
-							collapsable
-							displayTitle={
-								<ClayPanel.Title className="panel-title text-secondary">
-									{panel.title}
-								</ClayPanel.Title>
+					{panels.map((panel) => {
+						const viewChangeURL = createPortletURL(
+							panel.viewChangeURL,
+							{
+								backURL:
+									window.location.pathname +
+									window.location.search,
 							}
-							displayType="unstyled"
-							expanded={panel.expanded}
-							key={panel.ctEntryId}
-							onExpandedChange={() => {
-								handleExpanded(panel.ctEntryId);
-							}}
-							showCollapseIcon={true}
-						>
-							<ClayPanel.Body>
-								<div
-									className="mb-4 mt-3 taglib-diff-html"
-									dangerouslySetInnerHTML={{
-										__html: panel.preview,
-									}}
-								/>
+						).toString();
 
-								<a
-									className="btn btn-secondary btn-xs"
-									href={panel.viewChangeURL}
-								>
-									{Liferay.Language.get('view-details')}
-								</a>
-							</ClayPanel.Body>
-						</ClayPanel>
-					))}
+						return (
+							<ClayPanel
+								collapsable
+								displayTitle={
+									<ClayPanel.Title className="panel-title text-secondary">
+										{panel.title}
+									</ClayPanel.Title>
+								}
+								displayType="unstyled"
+								expanded={panel.expanded}
+								key={panel.ctEntryId}
+								onExpandedChange={() => {
+									handleExpanded(panel.ctEntryId);
+								}}
+								showCollapseIcon={true}
+							>
+								<ClayPanel.Body>
+									<div
+										className="mb-4 mt-3 taglib-diff-html"
+										dangerouslySetInnerHTML={{
+											__html: panel.preview,
+										}}
+									/>
+
+									<a
+										className="btn btn-secondary btn-xs"
+										href={viewChangeURL}
+									>
+										{Liferay.Language.get('view-details')}
+									</a>
+								</ClayPanel.Body>
+							</ClayPanel>
+						);
+					})}
 					{panels.length < total ? (
 						<div className="align-items-center d-flex justify-content-center">
 							<ClayButton

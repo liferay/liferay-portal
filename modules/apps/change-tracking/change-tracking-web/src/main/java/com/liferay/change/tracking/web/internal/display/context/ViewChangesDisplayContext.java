@@ -280,7 +280,7 @@ public class ViewChangesDisplayContext {
 					_renderResponse
 				).setMVCRenderCommandName(
 					"/change_tracking/view_change"
-				).setRedirect(
+				).setBackURL(
 					_themeDisplay.getURLCurrent()
 				).setParameter(
 					"ctCollectionId", "{ctCollectionId}"
