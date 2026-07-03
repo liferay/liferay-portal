@@ -87,69 +87,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-179485. The AI Creator modal should comply with WCAG 2.1 AA standards."
-	@priority = 3
-	test ViewAccessibilityOfAICreatorModal {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given a content creator configures the API key") {
-			GogoShell.openGogoShellAdmin();
-
-			GogoShell.executeCommand(commandName = "scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient");
-
-			GogoShell.viewOutput(outputContent = "true");
-
-			PortalSettings.gotoConfiguration(
-				configurationCategory = "AI Creator",
-				configurationName = "OpenAI",
-				configurationScope = "Virtual Instance Scope");
-
-			InputField.editText(
-				fieldLabel = "API Key",
-				text = "VALID_API_KEY");
-
-			PortletEntry.save();
-		}
-
-		task ("When the content creator opens the AI Creator modal in web content editor") {
-			HeadlessSite.addSite(siteName = ${randomSiteName});
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = ${siteURLKey});
-
-			WebContentNavigator.gotoAddCP();
-
-			Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
-		}
-
-		task ("Then should be no accessibility problem on modal") {
-			AssertElementAccessible(
-				key_title = "AI Creator",
-				locator1 = "IFrame#MODAL_ANY");
-		}
-
-		task ("When the content creator generates content") {
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-			InputField.editText(
-				fieldLabel = "Description",
-				text = "USER_CONTENT");
-
-			Button.clickCreate();
-		}
-
-		task ("Then should be no accessibility problem on modal") {
-			SelectFrameTop();
-
-			WaitForFrameLoad();
-
-			AssertElementAccessible(
-				key_title = "AI Creator",
-				locator1 = "IFrame#MODAL_ANY");
-		}
-	}
-
-	@description = "This is a test for LPS-179485. The focus should be on the AI Creator modal when the modal is open."
+	@description = "This is a test for LPS-179485. The AI Creator modal should comply with WCAG 2.1 AA standards and keep the focus within the modal when it is open."
 	@priority = 3
 	test AccessibilityOfAICreatorModal {
 		property test.liferay.virtual.instance = "false";
@@ -182,6 +120,12 @@ definition {
 			WebContentNavigator.gotoAddCP();
 
 			Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
+		}
+
+		task ("Then should be no accessibility problem on modal") {
+			AssertElementAccessible(
+				key_title = "AI Creator",
+				locator1 = "IFrame#MODAL_ANY");
 		}
 
 		task ("Then the focus should be on modal when go through via Tab key") {
@@ -250,6 +194,12 @@ definition {
 			WaitForFrameLoad();
 
 			AssertElementFocused(
+				key_title = "AI Creator",
+				locator1 = "IFrame#MODAL_ANY");
+		}
+
+		task ("Then should be no accessibility problem on modal") {
+			AssertElementAccessible(
 				key_title = "AI Creator",
 				locator1 = "IFrame#MODAL_ANY");
 		}
