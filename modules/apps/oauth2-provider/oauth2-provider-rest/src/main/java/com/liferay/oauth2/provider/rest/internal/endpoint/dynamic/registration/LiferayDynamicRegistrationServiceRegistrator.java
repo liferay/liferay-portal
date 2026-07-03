@@ -41,9 +41,9 @@ public class LiferayDynamicRegistrationServiceRegistrator {
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		if (!MapUtil.getBoolean(properties, "enabled", true) &&
-			!FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getNonsystemCompanyId(), "LPD-63416")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getNonsystemCompanyId(), "LPD-63416") &&
+			!MapUtil.getBoolean(properties, "enabled", true)) {
 
 			return;
 		}
