@@ -89,6 +89,12 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 
 	let script = document.createElement('script');
 
+	script.addEventListener('error', (event) => {
+		Liferay.Maps.gmapsLoading = false;
+
+		event.currentTarget.remove();
+	});
+
 	script.setAttribute('src', apiURL);
 
 	document.head.appendChild(script);
