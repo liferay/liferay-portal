@@ -125,7 +125,7 @@ definition {
 	@description = "This test ensures a user can only comment on a blog entry once it is shared with him."
 	@priority = 5
 	@refactordone
-	test CanShareWithCommentPermissions {
+	test CanShareWithPermissions {
 		property portal.acceptance = "true";
 
 		BlogsNavigator.gotoShare(entryTitle = "Blogs Entry Title");
