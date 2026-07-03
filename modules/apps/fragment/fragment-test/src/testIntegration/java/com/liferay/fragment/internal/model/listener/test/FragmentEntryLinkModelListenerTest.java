@@ -141,6 +141,25 @@ public class FragmentEntryLinkModelListenerTest {
 	}
 
 	@Test
+	public void testAddFragmentEntryLinkPreservesInlineSVGInLinkField()
+		throws Exception {
+
+		String editableFieldValue =
+			"<svg viewBox=\"0 0 24 24\">" +
+				"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg> Read More";
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-button"),
+			_createEditableValues("link", editableFieldValue), _serviceContext);
+
+		String editableValues = fragmentEntryLink.getEditableValues();
+
+		Assert.assertTrue(editableValues, editableValues.contains("<svg"));
+		Assert.assertTrue(editableValues, editableValues.contains("<path"));
+	}
+
+	@Test
 	public void testAddFragmentEntryLinkSanitizesLinkFieldScriptContent()
 		throws Exception {
 
@@ -160,6 +179,33 @@ public class FragmentEntryLinkModelListenerTest {
 			Assert.assertEquals(
 				_createEditableValues("link", "Read More"),
 				fragmentEntryLink.getEditableValues());
+		}
+	}
+
+	@Test
+	public void testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField()
+		throws Exception {
+
+		String editableFieldValue =
+			"<svg viewBox=\"0 0 24 24\"><script>alert('xss');</script>" +
+				"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>";
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
+
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				_fragmentCollectionContributorRegistry.getFragmentEntry(
+					"BASIC_COMPONENT-button"),
+				_createEditableValues("link", editableFieldValue),
+				_serviceContext);
+
+			String editableValues = fragmentEntryLink.getEditableValues();
+
+			Assert.assertTrue(editableValues, editableValues.contains("<svg"));
+			Assert.assertFalse(
+				editableValues, editableValues.contains("<script"));
 		}
 	}
 
