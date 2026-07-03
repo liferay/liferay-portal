@@ -721,7 +721,7 @@ test(
 
 			await userViewsDropdown.waitFor();
 
-			const userViewMenuItem = userViewsDropdown.getByRole('option', {
+			const userViewMenuItem = userViewsDropdown.getByRole('menuitem', {
 				name: userView1Name,
 			});
 
