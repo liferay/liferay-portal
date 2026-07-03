@@ -20,6 +20,9 @@ import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
+const _PNG_BASE64 =
+	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAEABToPCwAAAABJRU5ErkJggg==';
+
 const test = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
@@ -1185,6 +1188,67 @@ test(
 
 			await expect(assetsPage.getItem(approvedTitle)).toBeVisible();
 			await expect(assetsPage.getItem(expiredTitle)).toBeHidden();
+		});
+	}
+);
+
+test(
+	'All section can be filtered by Extension',
+	{tag: '@LPD-96958'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-documents';
+		const jpgFileName = `JPG ${getRandomString()}.jpg`;
+		const pngFileName = `PNG ${getRandomString()}.png`;
+
+		await test.step('Upload a PNG file and a JPG file to the Default Space', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {fileBase64: _PNG_BASE64, name: pngFileName},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: pngFileName,
+				},
+				applicationName,
+				'Default'
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64: readFileSync(
+							path.join(
+								__dirname,
+								'/dependencies/file_upload_image_1.jpg'
+							)
+						).toString('base64'),
+						name: jpgFileName,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: jpgFileName,
+				},
+				applicationName,
+				'Default'
+			);
+		});
+
+		await test.step('Both files are visible before filtering', async () => {
+			await assetsPage.gotoAll();
+
+			await expect(assetsPage.getItem(pngFileName)).toBeVisible();
+			await expect(assetsPage.getItem(jpgFileName)).toBeVisible();
+		});
+
+		// The Extension filter is only offered when the aggregation finds
+		// existing file extensions, so applying it also proves the filter is
+		// mounted with options (LPD-96958).
+
+		await test.step('Filter by Extension png and check only the PNG file is visible', async () => {
+			await applyFDSSelectionFilter(page, {
+				filter: 'Extension',
+				value: 'png',
+			});
+
+			await expect(assetsPage.getItem(pngFileName)).toBeVisible();
+			await expect(assetsPage.getItem(jpgFileName)).toBeHidden();
 		});
 	}
 );
