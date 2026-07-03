@@ -39,8 +39,6 @@ import java.io.File;
 
 import javax.sql.DataSource;
 
-import org.apache.felix.cm.PersistenceManager;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -194,33 +192,38 @@ public class DBPartitionDBMigrationSchemaExportTest
 
 	@Test
 	public void testExportImportReport() throws Exception {
-		String reportContent = getReportContent();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
 
-		Assert.assertTrue(
-			reportContent.contains(
-				"Default virtual instance missing tables:\n"));
-		Assert.assertTrue(
-			reportContent.contains(
-				"Virtual instance " + _company.getCompanyId() +
-					" missing tables:\n"));
-		Assert.assertTrue(
-			reportContent.contains(
-				"Virtual instance " + _company.getCompanyId() +
-					" missing views:\n") ||
-			reportContent.endsWith(
-				"Virtual instance " + _company.getCompanyId() +
-					" missing views:"));
-		Assert.assertTrue(
-			reportContent.contains(
-				"Virtual instance " + TestPropsValues.getCompanyId() +
-					" missing tables:\n"));
-		Assert.assertTrue(
-			reportContent.contains(
-				"Virtual instance " + TestPropsValues.getCompanyId() +
-					" missing views:\n") ||
-			reportContent.endsWith(
-				"Virtual instance " + TestPropsValues.getCompanyId() +
-					" missing views:"));
+			String reportContent = getReportContent();
+
+			Assert.assertTrue(
+				reportContent.contains(
+					"Default virtual instance missing tables:\n"));
+			Assert.assertTrue(
+				reportContent.contains(
+					"Virtual instance " + _company.getCompanyId() +
+						" missing tables:\n"));
+			Assert.assertTrue(
+				reportContent.contains(
+					"Virtual instance " + _company.getCompanyId() +
+						" missing views:\n") ||
+				reportContent.endsWith(
+					"Virtual instance " + _company.getCompanyId() +
+						" missing views:"));
+			Assert.assertTrue(
+				reportContent.contains(
+					"Virtual instance " + TestPropsValues.getCompanyId() +
+						" missing tables:\n"));
+			Assert.assertTrue(
+				reportContent.contains(
+					"Virtual instance " + TestPropsValues.getCompanyId() +
+						" missing views:\n") ||
+				reportContent.endsWith(
+					"Virtual instance " + TestPropsValues.getCompanyId() +
+						" missing views:"));
+		}
 	}
 
 	@Test
@@ -312,8 +315,5 @@ public class DBPartitionDBMigrationSchemaExportTest
 	private static String _companyPartitionName;
 	private static ObjectDefinition _objectDBPartitionDefinition1;
 	private static ObjectDefinition _objectDBPartitionDefinition2;
-
-	@Inject
-	private PersistenceManager _persistenceManager;
 
 }
