@@ -149,24 +149,24 @@ export class PageEditorPage {
 
 		await this.goToSidebarTab('Comments');
 
-		await this._submitFragmentComment(comment);
+		await this.submitFragmentComment(comment);
 	}
 
 	async addFragmentCommentViaTopper(fragmentId: string, comment: string) {
 		await this.goToFragmentComment(fragmentId);
 
-		await this._submitFragmentComment(comment);
+		await this.submitFragmentComment(comment);
 	}
 
 	async deleteFragmentComment(comment: string) {
 		await this.openFragmentCommentOptions(comment, 'Delete');
 
-		await this.page
-			.locator('.page-editor__inline-confirm')
-			.getByRole('button', {exact: true, name: 'Delete'})
-			.click();
-
-		await expect(this.getFragmentComment(comment)).toBeHidden();
+		await clickAndExpectToBeHidden({
+			target: this.getFragmentComment(comment),
+			trigger: this.page
+				.locator('.page-editor__inline-confirm')
+				.getByRole('button', {exact: true, name: 'Delete'}),
+		});
 	}
 
 	async editFragmentComment(comment: string, editedComment: string) {
@@ -190,6 +190,10 @@ export class PageEditorPage {
 		await this.page.keyboard.press('Backspace');
 		await this.page.keyboard.type(editedComment);
 
+		// "Update" saves the edit. It is a one-shot action and the edited text
+		// is already in the editor, so a retrying click helper would short
+		// circuit without ever saving
+
 		await editedFragmentComment
 			.getByRole('button', {exact: true, name: 'Update'})
 			.click();
@@ -204,38 +208,39 @@ export class PageEditorPage {
 	}
 
 	async goToCommentList() {
-		await this.page.getByLabel('Back', {exact: true}).click();
-
-		await expect(
-			this.page
+		await clickAndExpectToBeVisible({
+			target: this.page
 				.locator('.page-editor__sidebar__panel-header')
-				.getByText('Comments', {exact: true})
-		).toBeVisible();
+				.getByText('Comments', {exact: true}),
+			trigger: this.page.getByLabel('Back', {exact: true}),
+		});
 	}
 
 	async goToFragmentComment(fragmentId: string) {
 		await this.selectFragment(fragmentId);
 
-		await this.page
-			.getByLabel('Comments', {exact: true})
-			.locator('.page-editor__topper__icon')
-			.click();
-
-		await this.page.getByLabel('Add Comment').waitFor();
+		await clickAndExpectToBeVisible({
+			target: this.page.getByLabel('Add Comment'),
+			trigger: this.page
+				.getByLabel('Comments', {exact: true})
+				.locator('.page-editor__topper__icon'),
+		});
 	}
 
 	async openFragmentCommentOptions(
 		comment: string,
 		option: 'Delete' | 'Edit'
 	) {
-		await this.getFragmentComment(comment)
-			.getByLabel('Options')
-			.first()
-			.click();
-
-		await this.page
-			.getByRole('menuitem', {exact: true, name: option})
-			.click();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: option,
+			}),
+			trigger: this.getFragmentComment(comment)
+				.getByLabel('Options')
+				.first(),
+		});
 	}
 
 	async reopenResolvedFragmentComment(comment: string) {
@@ -249,11 +254,14 @@ export class PageEditorPage {
 	async replyToFragmentComment(comment: string, reply: string) {
 		const fragmentComment = this.getFragmentComment(comment);
 
-		await fragmentComment
-			.getByRole('button', {exact: true, name: 'Reply'})
-			.click();
-
-		await fragmentComment.getByLabel('Add Comment').click();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: fragmentComment.getByLabel('Add Comment'),
+			trigger: fragmentComment.getByRole('button', {
+				exact: true,
+				name: 'Reply',
+			}),
+		});
 
 		await this.page.keyboard.type(reply);
 
@@ -263,6 +271,10 @@ export class PageEditorPage {
 	}
 
 	async resolveFragmentComment(comment: string) {
+
+		// "Resolve" is a toggle, so a retrying click helper would flip it back
+		// and forth; click it once and wait for the comment to hide
+
 		await this.getFragmentComment(comment)
 			.locator('[data-title="Resolve"]')
 			.click();
@@ -274,6 +286,10 @@ export class PageEditorPage {
 		const checkbox = this.page.getByLabel('Show Resolved Comments');
 
 		if (!(await checkbox.isChecked())) {
+
+			// The label is a toggle, so a retrying click helper would uncheck
+			// it again; click it once and wait for the checked state
+
 			await this.page.getByText('Show Resolved Comments').click();
 
 			await expect(checkbox).toBeChecked();
@@ -329,7 +345,7 @@ export class PageEditorPage {
 		).toBeHidden();
 	}
 
-	async _submitFragmentComment(comment: string) {
+	async submitFragmentComment(comment: string) {
 		const commentButton = this.page.getByRole('button', {
 			exact: true,
 			name: 'Comment',
