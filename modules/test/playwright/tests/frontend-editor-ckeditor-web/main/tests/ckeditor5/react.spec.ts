@@ -39,7 +39,7 @@ test(
 				'Image',
 				'Video',
 				'Timestamp',
-				'Styles'
+				'Styles',
 			];
 
 			const availableButtons =
