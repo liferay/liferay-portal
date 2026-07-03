@@ -54,7 +54,7 @@ definition {
 	@description = "This test asserts that a user can change the view permission to the comment permission via the manage collaborators."
 	@priority = 4
 	@refactordone
-	test CanChangePermissionToCommentViaManageCollaborators {
+	test CanChangePermissionViaManageCollaborators {
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "DM Document Title",
