@@ -31,13 +31,12 @@ const AssistantMessageBalloon: React.FC<AssistantMessageBalloonProps> = ({
 			className={`d-flex flex-column mb-2 rounded ${error ? 'ai-assistant-chat__ai-assistant-error-message-balloon' : 'ai-assistant-chat__ai-assistant-message-balloon'}`}
 		>
 			<div className="d-flex flex-row font-weight-semi-bold">
-				<div className="align-items-start d-inline-block ml-2 mt-2">
+				<div
+					className={`align-items-start d-inline-block ml-2 mt-2 text-2 ${error ? 'text-danger' : 'text-primary'}`}
+				>
 					<ClayIcon
-						color={error ? '#FF0000' : '#0B5FFF'}
-						height={12}
 						spritemap={Liferay.Icons.spritemap}
 						symbol={error ? 'exclamation-full' : 'stars'}
-						width={12}
 					/>
 				</div>
 

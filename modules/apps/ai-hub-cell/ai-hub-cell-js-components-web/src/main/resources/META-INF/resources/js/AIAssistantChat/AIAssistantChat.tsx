@@ -44,7 +44,10 @@ interface ReportContext {
 	index: number;
 }
 
+type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
+
 interface AIAssistantChatProps {
+	aiState?: AIState;
 	embedded?: boolean;
 	getContext: () => ChatContext;
 	initialMessage?: string;
@@ -53,6 +56,7 @@ interface AIAssistantChatProps {
 }
 
 const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
+	aiState,
 	embedded = false,
 	getContext,
 	initialMessage,
@@ -443,10 +447,12 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 				className="flex-shrink-0 pt-3 px-3"
 				onSubmit={(event) => onSubmit(event)}
 			>
-				<div className="align-items-end d-flex flex-row">
+				<div
+					className="align-items-end d-flex flex-row"
+					data-ai-state={aiState}
+				>
 					<textarea
 						className="ai-assistant-chat__input form-control mr-2"
-						disabled={isGenerating}
 						id="assistant-user-input"
 						onChange={(event) => {
 							setMessage(event.target.value);
@@ -458,6 +464,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 							handleTextAreaKeyDown(event);
 						}}
 						placeholder="Ask me anything..."
+						readOnly={isGenerating || !!aiState}
 						ref={textAreaRef}
 						rows={1}
 						value={message}
@@ -484,7 +491,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 
 	if (embedded) {
 		return (
-			<div className="ai-assistant-chat__embedded d-flex flex-column pt-3">
+			<div className="ai-assistant ai-assistant-chat__embedded d-flex flex-column pt-3">
 				{chatSurface}
 			</div>
 		);
@@ -497,6 +504,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 			className="d-flex p-0"
 			hasRightSymbols={false}
 			menuElementAttrs={{
+				className: 'cadmin',
 				style: {
 					height: 552,
 					maxHeight: 'none',
@@ -526,7 +534,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 				</ClayButton>
 			}
 		>
-			<div className="ai-assistant-chat__dropdown-container d-flex flex-column">
+			<div className="ai-assistant ai-assistant-chat__dropdown-container d-flex flex-column">
 				<div className="flex-shrink-0 p-3">
 					<ClayLayout.ContentRow className="align-items-center border-bottom justify-content-between mb-3 pb-2">
 						<ClayLayout.ContentCol className="ai-assistant-chat__dropdown-title font-weight-semi-bold">

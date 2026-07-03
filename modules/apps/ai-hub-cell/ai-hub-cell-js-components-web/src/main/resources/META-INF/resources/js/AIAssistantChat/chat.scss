@@ -1,107 +1,146 @@
-@import 'atlas-variables';
+@import 'cadmin-variables';
 
-.ai-assistant-chat__embedded {
-	height: 100%;
+html#{$cadmin-selector} .cadmin {
+	.ai-assistant-chat__embedded {
+		height: 100%;
 
-	.ai-assistant-chat__messages-container {
-		min-height: 200px;
-	}
+		.ai-assistant-chat__messages-container {
+			min-height: 200px;
+		}
 
-	.ai-assistant-chat__quick-actions-title {
-		display: block;
-		margin-bottom: 0.5rem;
-	}
-}
-
-.ai-assistant-chat__dropdown-container,
-.ai-assistant-chat__embedded {
-	height: 100%;
-	width: 100%;
-
-	.ai-assistant-chat__dropdown-title {
-		color: #272833;
-	}
-
-	.ai-assistant-chat__dropdown-close-button {
-		color: #6b6c7e;
-		height: 12;
-		width: 12;
-	}
-
-	.ai-assistant-chat__footer-disclaimer {
-		align-items: center;
-		display: flex;
-		flex-direction: row;
-		padding-bottom: 1rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
-		padding-top: 0.5rem;
-
-		&-text {
-			color: $secondary;
-			font-size: 0.75rem;
-			line-height: 1.4;
+		.ai-assistant-chat__quick-actions-title {
+			display: block;
+			margin-bottom: 0.5rem;
 		}
 	}
 
-	.ai-assistant-chat__messages-container {
-		min-height: 0;
+	.ai-assistant-chat__dropdown-container,
+	.ai-assistant-chat__embedded {
+		height: 100%;
+		width: 100%;
+
+		.ai-assistant-chat__dropdown-title {
+			color: $cadmin-gray-900;
+		}
+
+		.ai-assistant-chat__dropdown-close-button {
+			color: $cadmin-gray-600;
+			height: 12;
+			width: 12;
+		}
+
+		.ai-assistant-chat__footer-disclaimer {
+			align-items: center;
+			display: flex;
+			flex-direction: row;
+			padding-bottom: 1rem;
+			padding-left: 1rem;
+			padding-right: 1rem;
+			padding-top: 0.5rem;
+
+			&-text {
+				color: $cadmin-secondary;
+				font-size: 0.75rem;
+				line-height: 1.4;
+			}
+		}
+
+		.ai-assistant-chat__messages-container {
+			min-height: 0;
+		}
+
+		.ai-assistant-chat__quick-actions-button {
+			background: $cadmin-gray-100;
+			padding-bottom: 3px;
+			padding-top: 3px;
+		}
+
+		.ai-assistant-chat__input {
+			height: auto;
+			max-height: calc(1.25em * 4);
+			overflow-x: hidden;
+			overflow-y: auto;
+			resize: none;
+		}
+
+		.ai-assistant-chat__quick-actions-button:hover {
+			background: unquote('hsl(from #{$cadmin-gray-900} h s l / 0.08)');
+		}
+
+		.ai-assistant-chat__generating-loading-text {
+			align-self: center;
+			color: $cadmin-primary;
+		}
+		.ai-assistant-chat__ai-assistant-error-message-balloon {
+			background: $cadmin-danger-l2;
+		}
+		.ai-assistant-chat__ai-assistant-message-balloon {
+			background: $cadmin-gray-100;
+		}
+
+		.ai-feedback-actions-row {
+			gap: 0.375rem;
+		}
+
+		.ai-assistant-chat__user-image {
+			align-items: center;
+			border-radius: 50%;
+			height: 30px;
+			width: 30px;
+		}
+
+		.ai-assistant-chat__user-initials {
+			align-items: center;
+			background-color: $cadmin-primary;
+			border-radius: 50%;
+			color: $cadmin-white;
+			display: flex;
+			font-size: 12px;
+			font-weight: 800;
+			height: 30px;
+			justify-content: center;
+			width: 30px;
+		}
+
+		.ai-assistant-chat__user-message {
+			max-width: 70%;
+		}
+
+		.ai-assistant-chat__suggestion-hint {
+			color: $cadmin-purple;
+		}
 	}
 
-	.ai-assistant-chat__quick-actions-button {
-		background: #f7f8f9;
-		padding-bottom: 3px;
-		padding-top: 3px;
-	}
+	.ai-assistant {
+		--ai-assistant-focus-box-shadow: #{unquote(
+				'0 0 10px hsl(from #{$cadmin-purple} h s l / 0.15)'
+			)};
 
-	.ai-assistant-chat__input {
-		height: auto;
-		max-height: calc(1.25em * 4);
-		overflow-x: hidden;
-		overflow-y: auto;
-		resize: none;
-	}
+		[data-ai-state='focused'] {
+			.form-control {
+				background-color: $cadmin-input-bg;
+				border-color: $cadmin-purple-d2;
+				box-shadow: var(--ai-assistant-focus-box-shadow);
+				color: $cadmin-input-color;
+			}
+		}
 
-	.ai-assistant-chat__quick-actions-button:hover {
-		background: #27283314;
-	}
+		[data-ai-state='working'] {
+			.form-control {
+				background-color: $cadmin-purple-l5;
+				border-color: $cadmin-purple-l1;
+				box-shadow: var(--ai-assistant-focus-box-shadow);
+				color: $cadmin-purple-d2;
+			}
+		}
 
-	.ai-assistant-chat__generating-loading-text {
-		align-self: center;
-		color: #0b5fff;
-	}
-	.ai-assistant-chat__ai-assistant-error-message-balloon {
-		background: #feefef;
-	}
-	.ai-assistant-chat__ai-assistant-message-balloon {
-		background: #f7f8f9;
-	}
-
-	.ai-feedback-actions-row {
-		gap: 0.375rem;
-	}
-
-	.ai-assistant-chat__user-image {
-		align-items: center;
-		border-radius: 50%;
-		height: 30px;
-		width: 30px;
-	}
-
-	.ai-assistant-chat__user-initials {
-		align-items: center;
-		background-color: $primary;
-		border-radius: 50%;
-		color: #fff;
-		display: flex;
-		font-size: 12px;
-		font-weight: 800;
-		height: 30px;
-		justify-content: center;
-		width: 30px;
-	}
-
-	.ai-assistant-chat__user-message {
-		max-width: 70%;
+		[data-ai-state='result'],
+		[data-ai-state='result-readonly'] {
+			.form-control {
+				background-color: $cadmin-input-bg;
+				border-color: $cadmin-purple-l1;
+				color: $cadmin-purple;
+			}
+		}
 	}
 }
