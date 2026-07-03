@@ -1,14 +1,23 @@
 definition {
 
-	@summary = "Extracts an integrated DB Partition into a standalone partition"
+	@summary = "Exports the database schema definition through the headless API"
 	macro dbSchemaDefinitionExport() {
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+		var portalURL = JSONCompany.getDefaultPortalURL();
+		var userLoginInfo = JSONUtil2.formatJSONSuperAdminUser();
+		var parameters = JSONUtil2._addJSONObject(
+			json = "{}",
+			key = "exportFilesPath",
+			value = "\"${liferayHome}\"");
 
-		OSGiConfig.deployOSGiConfigFile(
-			osgiConfigFileName = "com.liferay.portal.db.migration.schema.exporter.internal.configuration.DBMigrationSchemaExportConfiguration.config",
-			osgiConfigs = "exportFilesPath=\"${liferayHome}\"");
+		var curl = '''
+			${portalURL}/o/headless-admin-server/v1.0/database-schema-export \
+				-u ${userLoginInfo} \
+				-d ${parameters} \
+				-H Content-Type: application/json
+		''';
 
-		OSGiConfig.waitForOSGiConfigDeleted(osgiConfigFileName = "com.liferay.portal.db.migration.schema.exporter.internal.configuration.DBMigrationSchemaExportConfiguration.config");
+		JSONCurlUtil.post(${curl});
 	}
 
 	@summary = "Switch JDBC to use PostgreSQL"
