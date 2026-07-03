@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +41,38 @@ import java.util.Set;
  * @author Leonardo Barros
  */
 public class AddFormInstanceRecordMVCCommandUtil {
+
+	public static void updateInvisibleDDMFormFieldValues(
+		Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
+			ddmFormFieldsPropertyChanges,
+		DDMFormValues ddmFormValues, DDMFormValues persistedDDMFormValues) {
+
+		Set<String> invisibleDDMFormFieldNames = new HashSet<>();
+
+		for (Map.Entry<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
+				entry : ddmFormFieldsPropertyChanges.entrySet()) {
+
+			if (MapUtil.getBoolean(entry.getValue(), "visible", true)) {
+				continue;
+			}
+
+			DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey =
+				entry.getKey();
+
+			invisibleDDMFormFieldNames.add(
+				ddmFormEvaluatorFieldContextKey.getName());
+		}
+
+		if (invisibleDDMFormFieldNames.isEmpty()) {
+			return;
+		}
+
+		ddmFormValues.setDDMFormFieldValues(
+			_restoreInvisibleDDMFormFieldValues(
+				invisibleDDMFormFieldNames,
+				ddmFormValues.getDDMFormFieldValues(),
+				persistedDDMFormValues.getDDMFormFieldValues()));
+	}
 
 	public static void updateNonevaluableDDMFormFields(
 			Map<String, DDMFormField> ddmFormFieldsMap,
@@ -180,6 +214,111 @@ public class AddFormInstanceRecordMVCCommandUtil {
 					" has already submitted an entry in form instance ",
 					ddmFormInstance.getFormInstanceId()));
 		}
+	}
+
+	private static void _addDDMFormFieldValuesByName(
+		List<DDMFormFieldValue> ddmFormFieldValues,
+		List<DDMFormFieldValue> sourceDDMFormFieldValues, String name) {
+
+		for (DDMFormFieldValue sourceDDMFormFieldValue :
+				sourceDDMFormFieldValues) {
+
+			if (name.equals(sourceDDMFormFieldValue.getName())) {
+				ddmFormFieldValues.add(sourceDDMFormFieldValue);
+			}
+		}
+	}
+
+	private static DDMFormFieldValue _getDDMFormFieldValueByInstanceId(
+		List<DDMFormFieldValue> ddmFormFieldValues, String instanceId) {
+
+		if (instanceId == null) {
+			return null;
+		}
+
+		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+			if (instanceId.equals(ddmFormFieldValue.getInstanceId())) {
+				return ddmFormFieldValue;
+			}
+		}
+
+		return null;
+	}
+
+	private static List<DDMFormFieldValue> _restoreInvisibleDDMFormFieldValues(
+		Set<String> invisibleDDMFormFieldNames,
+		List<DDMFormFieldValue> ddmFormFieldValues,
+		List<DDMFormFieldValue> persistedDDMFormFieldValues) {
+
+		List<DDMFormFieldValue> newDDMFormFieldValues = new ArrayList<>();
+
+		Set<String> restoredDDMFormFieldNames = new HashSet<>();
+
+		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+			String name = ddmFormFieldValue.getName();
+
+			if (invisibleDDMFormFieldNames.contains(name)) {
+				if (!restoredDDMFormFieldNames.contains(name)) {
+					_addDDMFormFieldValuesByName(
+						newDDMFormFieldValues, persistedDDMFormFieldValues,
+						name);
+
+					restoredDDMFormFieldNames.add(name);
+				}
+
+				continue;
+			}
+
+			DDMFormFieldValue persistedDDMFormFieldValue =
+				_getDDMFormFieldValueByInstanceId(
+					persistedDDMFormFieldValues,
+					ddmFormFieldValue.getInstanceId());
+
+			if (persistedDDMFormFieldValue != null) {
+				List<DDMFormFieldValue> nestedDDMFormFieldValues =
+					ddmFormFieldValue.getNestedDDMFormFieldValues();
+				List<DDMFormFieldValue> persistedNestedDDMFormFieldValues =
+					persistedDDMFormFieldValue.getNestedDDMFormFieldValues();
+
+				if (!nestedDDMFormFieldValues.isEmpty() ||
+					!persistedNestedDDMFormFieldValues.isEmpty()) {
+
+					List<DDMFormFieldValue> newNestedDDMFormFieldValues =
+						_restoreInvisibleDDMFormFieldValues(
+							invisibleDDMFormFieldNames,
+							nestedDDMFormFieldValues,
+							persistedNestedDDMFormFieldValues);
+
+					nestedDDMFormFieldValues.clear();
+
+					for (DDMFormFieldValue newNestedDDMFormFieldValue :
+							newNestedDDMFormFieldValues) {
+
+						ddmFormFieldValue.addNestedDDMFormFieldValue(
+							newNestedDDMFormFieldValue);
+					}
+				}
+			}
+
+			newDDMFormFieldValues.add(ddmFormFieldValue);
+		}
+
+		for (DDMFormFieldValue persistedDDMFormFieldValue :
+				persistedDDMFormFieldValues) {
+
+			String name = persistedDDMFormFieldValue.getName();
+
+			if (invisibleDDMFormFieldNames.contains(name) &&
+				!restoredDDMFormFieldNames.contains(name)) {
+
+				_addDDMFormFieldValuesByName(
+					newDDMFormFieldValues, persistedDDMFormFieldValues, name);
+
+				restoredDDMFormFieldNames.add(name);
+			}
+		}
+
+		return newDDMFormFieldValues;
 	}
 
 }
