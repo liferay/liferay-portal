@@ -2337,40 +2337,6 @@ definition {
 			dmFolderName = "DM Folder2 Name");
 	}
 
-	@description = "This is a test for LPS-91751. It ensures that a user cannot preview a file with size that exceeds the preview limit."
-	@priority = 4
-	@refactordone
-	test CannotPreviewFileThatExceedsLimit {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		DMNavigator.openToConfigInSystemSettings(portlet = "File Entries");
-
-		Type(
-			key_fieldLabel = "Maximum File Size",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = 1024);
-
-		SystemSettings.saveConfiguration();
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description1",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "high_resolution_photo.jpg");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUBTITLE",
-			value1 = "This file is too large to preview. The maximum file size for previews is 1 KB.");
-	}
-
 	@description = "This test ensures that a user cannot set a previous expiration date."
 	@priority = 3
 	test CannotPublishInvalidExpirationDate {

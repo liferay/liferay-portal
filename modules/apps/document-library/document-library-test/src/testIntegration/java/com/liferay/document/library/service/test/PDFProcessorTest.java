@@ -512,6 +512,32 @@ public class PDFProcessorTest {
 		Assert.assertEquals(2, count.get());
 	}
 
+	@Test
+	public void testShouldNotCreateNewPreviewWhenFileExceedsPreviewableProcessorMaxSize()
+		throws Exception {
+
+		_withDLFileEntrySystemConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"previewableProcessorMaxSize", 1L
+			).build(),
+			() -> {
+				FileEntry fileEntry = _dlAppService.addFileEntry(
+					null, _serviceContext.getScopeGroupId(),
+					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+					StringUtil.randomString() + ".pdf",
+					ContentTypes.APPLICATION_PDF, StringUtil.randomString(),
+					StringUtil.randomString(), StringUtil.randomString(),
+					StringUtil.randomString(),
+					FileUtil.getBytes(getClass(), "dependencies/test_2.pdf"),
+					null, null, null, _serviceContext);
+
+				Assert.assertEquals(
+					0,
+					PDFProcessorUtil.getPreviewFileCount(
+						fileEntry.getFileVersion()));
+			});
+	}
+
 	protected AtomicBoolean registerCleanUpDLProcessor() {
 		final AtomicBoolean cleanUp = new AtomicBoolean(false);
 
@@ -638,13 +664,9 @@ public class PDFProcessorTest {
 	}
 
 	private void _withDLFileEntrySystemConfiguration(
-			int maxNumberOfPages, UnsafeRunnable<Exception> unsafeRunnable)
+			Dictionary<String, Object> dictionary,
+			UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
-
-		Dictionary<String, Object> dictionary =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"maxNumberOfPages", maxNumberOfPages
-			).build();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -654,6 +676,17 @@ public class PDFProcessorTest {
 
 			unsafeRunnable.run();
 		}
+	}
+
+	private void _withDLFileEntrySystemConfiguration(
+			int maxNumberOfPages, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		_withDLFileEntrySystemConfiguration(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"maxNumberOfPages", maxNumberOfPages
+			).build(),
+			unsafeRunnable);
 	}
 
 	private static boolean _originalDLFileEntryPreviewForkProcessEnabled;

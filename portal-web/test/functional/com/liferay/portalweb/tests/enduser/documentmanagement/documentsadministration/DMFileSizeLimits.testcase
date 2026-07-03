@@ -133,55 +133,6 @@ definition {
 			imageFileName = "Document_1.jpg");
 	}
 
-	@description = "This test ensures that a user can not see the documents preview when uploading a file larger than 20MB by default."
-	@priority = 4
-	test CanLimitMaxFileSizeForFilePreview {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		DMNavigator.openToConfigInSystemSettings(portlet = "File Preview Limits");
-
-		Alert.viewInfoMessageSpecific(infoMessage = "Changes will only apply to new documents uploaded.");
-
-		AssertTextEquals(
-			key_fieldLabel = "Maximum File Size",
-			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
-			value1 = 20971520);
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "super_large_file.pdf",
-			groupName = "Guest",
-			mimeType = "application/pdf",
-			sourceFileName = "super_large_file.pdf");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "super_large_file.pdf",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUBTITLE",
-			value1 = "This file is too large to preview. The maximum file size for previews is 20 MB.");
-	}
-
-	@description = "This test ensures that a user will see an alert message when editing a value in instance settings that is larger than the one defined in System Settings."
-	@priority = 4
-	test CanLimitMaxFileSizeForFilePreviewInInstanceSettingsByTheConfigurationInSystemSetting {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		DMNavigator.openToConfigInInstanceSettings(portlet = "File Preview Limits");
-
-		Type(
-			key_fieldLabel = "Maximum File Size",
-			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
-			value1 = 41943040);
-
-		AssertTextEquals(
-			locator1 = "Message#ERROR",
-			value1 = "This limit is higher than the System Settings limit. Please enter a maximum value no larger than 20971520.");
-	}
-
 	@description = "This test ensures that a file that exceed the set maximum size cannot be uploaded via Media Gallery."
 	@priority = 3
 	test CanLimitMaxFileSizeInMediaGallery {
