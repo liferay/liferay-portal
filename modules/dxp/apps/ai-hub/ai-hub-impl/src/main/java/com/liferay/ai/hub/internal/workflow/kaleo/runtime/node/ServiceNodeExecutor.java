@@ -142,13 +142,6 @@ public class ServiceNodeExecutor extends BaseNodeExecutor {
 
 			throw new PortalException(exception);
 		}
-	}
-
-	@Override
-	protected void doExit(
-			KaleoNode currentKaleoNode, ExecutionContext executionContext,
-			List<PathElement> remainingPathElements)
-		throws PortalException {
 
 		KaleoTransition kaleoTransition = null;
 
@@ -167,6 +160,12 @@ public class ServiceNodeExecutor extends BaseNodeExecutor {
 					executionContext.getKaleoInstanceToken(),
 					executionContext.getWorkflowContext(),
 					executionContext.getServiceContext())));
+	}
+
+	@Override
+	protected void doExit(
+		KaleoNode currentKaleoNode, ExecutionContext executionContext,
+		List<PathElement> remainingPathElements) {
 	}
 
 	private String _getAIHubCellLiferayDXPURL(

@@ -7,6 +7,8 @@ package com.liferay.ai.hub.internal.workflow.kaleo.runtime.node;
 
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoNodeSettingUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.VariablesUtil;
+import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -70,16 +72,25 @@ public class HTTPRequestNodeExecutor extends BaseNodeExecutor {
 			KaleoInstanceToken kaleoInstanceToken =
 				executionContext.getKaleoInstanceToken();
 
+			if (Validator.isNull(
+					GetterUtil.getString(
+						workflowContext.get("aiHubCellLiferayDXPURL")))) {
+
+				workflowContext.put(
+					"aiHubCellLiferayDXPURL",
+					_getAIHubCellLiferayDXPURL(workflowContext));
+			}
+
 			Http.Options options = new Http.Options();
 
 			Company company = _companyLocalService.getCompany(
 				kaleoInstanceToken.getCompanyId());
 
-			options.addHeader(
-				HttpHeaders.AUTHORIZATION,
-				EncryptorUtil.decrypt(
-					company.getKeyObj(),
-					GetterUtil.getString(workflowContext.get("userToken"))));
+			String userToken = EncryptorUtil.decrypt(
+				company.getKeyObj(),
+				GetterUtil.getString(workflowContext.get("userToken")));
+
+			options.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + userToken);
 
 			String requestBody = VariablesUtil.applyInputVariables(
 				executionContext, "requestBody", kaleoNodeSettingValues);
@@ -126,13 +137,6 @@ public class HTTPRequestNodeExecutor extends BaseNodeExecutor {
 
 			throw new PortalException(exception);
 		}
-	}
-
-	@Override
-	protected void doExit(
-			KaleoNode currentKaleoNode, ExecutionContext executionContext,
-			List<PathElement> remainingPathElements)
-		throws PortalException {
 
 		KaleoTransition kaleoTransition = null;
 
@@ -146,11 +150,28 @@ public class HTTPRequestNodeExecutor extends BaseNodeExecutor {
 
 		remainingPathElements.add(
 			new PathElement(
-				null, kaleoTransition.getTargetKaleoNode(),
+				currentKaleoNode, kaleoTransition.getTargetKaleoNode(),
 				new ExecutionContext(
 					executionContext.getKaleoInstanceToken(),
 					executionContext.getWorkflowContext(),
 					executionContext.getServiceContext())));
+	}
+
+	@Override
+	protected void doExit(
+		KaleoNode currentKaleoNode, ExecutionContext executionContext,
+		List<PathElement> remainingPathElements) {
+	}
+
+	private String _getAIHubCellLiferayDXPURL(
+			Map<String, Serializable> workflowContext)
+		throws PortalException {
+
+		OAuth2Application oAuth2Application =
+			_oAuth2ApplicationLocalService.getOAuth2Application(
+				GetterUtil.getLong(workflowContext.get("oAuth2ApplicationId")));
+
+		return oAuth2Application.getHomePageURL();
 	}
 
 	@Reference
@@ -158,5 +179,8 @@ public class HTTPRequestNodeExecutor extends BaseNodeExecutor {
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }
