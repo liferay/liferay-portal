@@ -22,8 +22,13 @@ public class OAuth2ProviderRESTEndpointConstants {
 	public static final String DYNAMIC_REGISTRATION_MODE_AUTHENTICATED =
 		"authenticated";
 
+	public static final String DYNAMIC_REGISTRATION_MODE_OPEN = "open";
+
 	public static final String ERROR_INVALID_CLIENT_METADATA =
 		"invalid_client_metadata";
+
+	public static final String ERROR_INVALID_REDIRECT_URI =
+		"invalid_redirect_uri";
 
 	public static final String ERROR_INVALID_TOKEN = "invalid_token";
 
@@ -61,6 +66,9 @@ public class OAuth2ProviderRESTEndpointConstants {
 		"trusted.application";
 
 	public static final String PROPERTY_KEY_COMPANY_ID = "company.id";
+
+	public static final String PROPERTY_KEY_DYNAMIC_REGISTRATION_MODE =
+		"dynamic.registration.mode";
 
 	public static final String PROPERTY_KEY_REMEMBER_DEVICE =
 		"oauth2.remember.device";

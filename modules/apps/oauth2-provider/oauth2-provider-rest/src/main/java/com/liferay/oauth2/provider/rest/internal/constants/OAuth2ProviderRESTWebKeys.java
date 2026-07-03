@@ -13,4 +13,7 @@ public class OAuth2ProviderRESTWebKeys {
 	public static final String DYNAMIC_REGISTRATION_CLIENT_HOST =
 		"DYNAMIC_REGISTRATION_CLIENT_HOST";
 
+	public static final String DYNAMIC_REGISTRATION_OPEN =
+		"DYNAMIC_REGISTRATION_OPEN";
+
 }
