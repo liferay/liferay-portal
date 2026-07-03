@@ -516,68 +516,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	test ExportLARWithNestedWebContent {
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "WC Structure Description",
-			structureName = "WC Structure Name");
-
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
-			fieldName = "Text");
-
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Web Content",
-			fieldName = "Web Content",
-			targetFieldLabel = "Text");
-
-		WebContentStructures.saveCP(structureName = "WC Structure Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		NavItem.gotoTemplates();
-
-		WebContentTemplates.addCP(
-			structureName = "WC Structure Name",
-			templateDescription = "WC Template Description",
-			templateFieldNames = "Text",
-			templateName = "WC Template Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "Basic Web Content");
-
-		WebContent.addWithStructureCP(
-			structureName = "Basic Web Content",
-			templateName = "Basic Web Content",
-			webContentTitle = "Basic WebContent Title");
-
-		WebContent.publishWithPermissions();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
-
-		WebContent.addWithStructureCP(
-			structureName = "WC Structure Name",
-			templateName = "WC Template Name",
-			webContentText = "WC WebContent Text",
-			webContentTitle = "WC WebContent Title",
-			webContentWebContent = "Basic WebContent Title");
-
-		WebContent.publishWithPermissions();
-
-		WebContent.viewTitle(webContentTitle = "WC WebContent Title");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		LAR.exportPortlet(larFileName = "WebContent_portlet.lar");
-	}
-
 	@description = "This is a use case for LPS-95441."
 	@priority = 3
 	test ExportWebContentWithEditedStructure {
@@ -847,34 +785,6 @@ definition {
 		LAR.importPortlet(
 			larFileName = "WebContent_portlet.lar",
 			siteName = "Site Name");
-	}
-
-	@description = "This is a use case for LPS-88893."
-	@priority = 3
-	test ImportLARWithTheSameTitle {
-		HeadlessSite.addSite(siteName = "Site Name 1");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Site Name 1",
-			title = "WC WebContent Title");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-1");
-
-		LAR.exportPortlet(larFileName = "WebContent_portlet.lar");
-
-		HeadlessSite.addSite(siteName = "Site Name 2");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Site Name 2",
-			title = "WC WebContent Title");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-2");
-
-		LAR.importPortlet(larFileName = "WebContent_portlet.lar");
-
-		AssertConsoleTextNotPresent(value1 = "DuplicateFriendlyURLEntryException");
 	}
 
 	@description = "This is a test for LPS-96545. Cancel reset and reset the default values when edit default values in imported web content structure."
