@@ -417,6 +417,8 @@ public class X509Support {
      */
     @Nullable public static Collection<X509Certificate> decodeCertificates(@Nonnull final byte[] certs)
             throws CertificateException {
+        Constraint.isNotNull(certs, "Input bytes cannot be null");
+
         // LIFERAY FIPS PATCH: decode via the JCA CertificateFactory (handles
         // both DER and PEM) instead of org.cryptacular.util.CertUtil.
         final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -469,6 +471,8 @@ public class X509Support {
      * @throws CertificateException thrown if the certificate cannot be decoded
      */
     @Nullable public static X509Certificate decodeCertificate(@Nonnull final byte[] cert) throws CertificateException {
+        Constraint.isNotNull(cert, "Input bytes cannot be null");
+
         try {
             // LIFERAY FIPS PATCH: decode via the JCA CertificateFactory instead
             // of org.cryptacular.util.CertUtil.
