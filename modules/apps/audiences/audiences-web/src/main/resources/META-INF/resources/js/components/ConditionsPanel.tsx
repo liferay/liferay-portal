@@ -69,13 +69,16 @@ export default function ConditionsPanel({
 		};
 	});
 
-	const [{isOver}, drop] = useDrop<
+	const [{canDrop, isOver}, drop] = useDrop<
 		AttributeDragItem,
 		void,
-		{isOver: boolean}
+		{canDrop: boolean; isOver: boolean}
 	>({
 		accept: DRAG_TYPES.ATTRIBUTE,
-		collect: (monitor) => ({isOver: monitor.isOver()}),
+		collect: (monitor) => ({
+			canDrop: monitor.canDrop(),
+			isOver: monitor.isOver(),
+		}),
 		drop: (item) => handleAddRule(item.audiencesCriteria),
 	});
 
@@ -226,20 +229,23 @@ export default function ConditionsPanel({
 			) : (
 				<div
 					className={classNames(
-						'audience-builder-drop-zone border-top p-4',
+						'audience-builder-drop-zone m-4 p-4',
 						{
+							'audience-builder-drop-zone--active': canDrop,
 							'audience-builder-drop-zone--over': isOver,
 						}
 					)}
 					ref={drop}
 				>
-					<ClayEmptyState
-						description={Liferay.Language.get(
-							'to-create-a-new-audience-drag-items-from-the-sidebar-and-drop-them-here'
-						)}
-						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
-						title={Liferay.Language.get('no-criteria-yet')}
-					/>
+					{!canDrop && (
+						<ClayEmptyState
+							description={Liferay.Language.get(
+								'to-create-a-new-audience-drag-items-from-the-sidebar-and-drop-them-here'
+							)}
+							imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+							title={Liferay.Language.get('no-criteria-yet')}
+						/>
+					)}
 				</div>
 			)}
 		</div>

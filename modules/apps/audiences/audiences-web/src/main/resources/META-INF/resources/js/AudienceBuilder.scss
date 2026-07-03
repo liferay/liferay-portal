@@ -51,12 +51,18 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-drop-zone {
+	background-color: $white;
+	border: 2px dashed transparent;
+	border-radius: 0.5rem;
 	min-height: 240px;
 	transition: background-color 0.1s ease-in-out;
 
+	&--active {
+		border-color: $primary;
+	}
+
 	&--over {
-		background-color: rgba($primary, 0.06);
-		box-shadow: inset 0 0 0 2px $primary;
+		background-color: var(--primary-l3);
 	}
 }
 
