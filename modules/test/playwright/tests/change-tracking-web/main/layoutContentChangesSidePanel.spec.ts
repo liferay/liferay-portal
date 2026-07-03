@@ -223,7 +223,7 @@ test('LPD-82049 Changes are limited to 20 panels and can be expanded to view mor
 	await expect(viewMoreButton).not.toBeVisible();
 });
 
-test('LPD-82049 Can redirect to fragment entry link change view', async ({
+test('LPD-82049, LPD-86527 Can redirect to fragment entry link change view and back', async ({
 	changeTrackingPage,
 	ctCollection,
 	page,
@@ -247,21 +247,23 @@ test('LPD-82049 Can redirect to fragment entry link change view', async ({
 		type: 'Page',
 	});
 
-	await expect(
-		page
-			.getByLabel('Layout Changes Side Panel')
-			.filter({hasText: 'Content Changes'})
-	).toBeVisible();
+	const sidePanelLocator = page
+		.getByLabel('Layout Changes Side Panel')
+		.filter({hasText: 'Content Changes'});
 
-	const viewDetailsButton = page.getByRole('link', {name: 'View Details'});
+	await expect(sidePanelLocator).toBeVisible();
 
 	const fragmentTitle = await page
 		.locator('button.panel-header-link')
 		.innerText();
 
-	await viewDetailsButton.click();
+	await page.getByRole('link', {name: 'View Details'}).click();
 
 	await expect(page.locator('h2')).toContainText(fragmentTitle, {
 		ignoreCase: true,
 	});
+
+	await page.getByRole('link', {exact: true, name: 'Back'}).click();
+
+	await expect(sidePanelLocator).toBeVisible();
 });
