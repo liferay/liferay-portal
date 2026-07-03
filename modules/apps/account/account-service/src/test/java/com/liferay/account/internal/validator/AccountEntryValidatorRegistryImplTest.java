@@ -171,11 +171,6 @@ public class AccountEntryValidatorRegistryImplTest {
 
 		Assert.assertTrue(accountEntryValidatorResultsMap.isEmpty());
 
-		AccountEntryValidator accountEntryValidator = Mockito.mock(
-			AccountEntryValidator.class);
-		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration =
-			Mockito.mock(AccountEntryValidatorConfiguration.class);
-
 		Mockito.when(
 			accountEntry.getAccountEntryId()
 		).thenReturn(
@@ -187,6 +182,11 @@ public class AccountEntryValidatorRegistryImplTest {
 		).thenReturn(
 			RandomTestUtil.randomLong()
 		);
+
+		AccountEntryValidator accountEntryValidator = Mockito.mock(
+			AccountEntryValidator.class);
+		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration =
+			Mockito.mock(AccountEntryValidatorConfiguration.class);
 
 		Mockito.when(
 			accountEntryValidator.getAccountEntryValidatorConfiguration(1L)
