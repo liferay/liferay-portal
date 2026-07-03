@@ -23,8 +23,10 @@ import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
@@ -79,6 +81,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portlet.exportimport.staging.StagingAdvicesThreadLocal;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
@@ -506,6 +509,62 @@ public class LayoutLocalServiceWrapper
 			targetSegmentsExperienceId, user);
 	}
 
+	private void _copyLayoutPageTemplateStructureRelElementVariations(
+			Layout sourceLayout, Layout targetLayout, User user)
+		throws Exception {
+
+		for (LayoutPageTemplateStructureRelElementVariation
+				targetLayoutPageTemplateStructureRelElementVariation :
+					_layoutPageTemplateStructureRelElementVariationLocalService.
+						getLayoutPageTemplateStructureRelElementVariations(
+							targetLayout.getPlid())) {
+
+			_layoutPageTemplateStructureRelElementVariationLocalService.
+				deleteLayoutPageTemplateStructureRelElementVariation(
+					targetLayoutPageTemplateStructureRelElementVariation.
+						getExternalReferenceCode(),
+					targetLayout.getGroupId());
+		}
+
+		for (LayoutPageTemplateStructureRelElementVariation
+				sourceLayoutPageTemplateStructureRelElementVariation :
+					_layoutPageTemplateStructureRelElementVariationLocalService.
+						getLayoutPageTemplateStructureRelElementVariations(
+							sourceLayout.getPlid())) {
+
+			String segmentsExperienceERC = _getTargetSegmentsExperienceERC(
+				sourceLayoutPageTemplateStructureRelElementVariation.
+					getSegmentsExperienceERC(),
+				sourceLayout, targetLayout);
+
+			if (segmentsExperienceERC == null) {
+				continue;
+			}
+
+			List<String> audienceEntryERCs =
+				sourceLayoutPageTemplateStructureRelElementVariation.
+					getAudienceEntryERCs();
+
+			_layoutPageTemplateStructureRelElementVariationLocalService.
+				addOrUpdateLayoutPageTemplateStructureRelElementVariation(
+					PortalUUIDUtil.generate(), user.getUserId(),
+					targetLayout.getGroupId(),
+					audienceEntryERCs.toArray(new String[0]),
+					sourceLayoutPageTemplateStructureRelElementVariation.
+						getHideMap(),
+					sourceLayoutPageTemplateStructureRelElementVariation.
+						getHtmlMap(),
+					sourceLayoutPageTemplateStructureRelElementVariation.
+						getJsMap(),
+					sourceLayoutPageTemplateStructureRelElementVariation.
+						getName(),
+					targetLayout.getPlid(), segmentsExperienceERC,
+					sourceLayoutPageTemplateStructureRelElementVariation.
+						getTargetElement(),
+					ServiceContextThreadLocal.getServiceContext());
+		}
+	}
+
 	private void _copyLayoutSEOEntry(
 			Layout sourceLayout, Layout targetLayout, long userId)
 		throws Exception {
@@ -888,6 +947,32 @@ public class LayoutLocalServiceWrapper
 						targetLayout.getGroupId(), segmentsExperiencesIds,
 						targetLayout.getPlid()),
 				FragmentEntryLink.FRAGMENT_ENTRY_LINK_ID_ACCESSOR));
+	}
+
+	private String _getTargetSegmentsExperienceERC(
+		String segmentsExperienceERC, Layout sourceLayout,
+		Layout targetLayout) {
+
+		SegmentsExperience sourceSegmentsExperience =
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					segmentsExperienceERC, sourceLayout.getGroupId());
+
+		if (sourceSegmentsExperience == null) {
+			return null;
+		}
+
+		SegmentsExperience targetSegmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				targetLayout.getGroupId(),
+				sourceSegmentsExperience.getSegmentsExperienceKey(),
+				targetLayout.getPlid());
+
+		if (targetSegmentsExperience == null) {
+			return null;
+		}
+
+		return targetSegmentsExperience.getExternalReferenceCode();
 	}
 
 	private String _getTypeSettings(Layout sourceLayout, Layout targetLayout) {
@@ -1312,6 +1397,10 @@ public class LayoutLocalServiceWrapper
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
+	private LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
+
+	@Reference
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
 
 	@Reference
@@ -1375,6 +1464,9 @@ public class LayoutLocalServiceWrapper
 						_sourceSegmentsExperiencesIds, _targetLayout,
 						_targetSegmentsExperiencesIds, _user);
 				}
+
+				_copyLayoutPageTemplateStructureRelElementVariations(
+					_sourceLayout, _targetLayout, _user);
 
 				List<String> portletIds = _getLayoutPortletIds(
 					_sourceLayout, _sourceSegmentsExperiencesIds);
