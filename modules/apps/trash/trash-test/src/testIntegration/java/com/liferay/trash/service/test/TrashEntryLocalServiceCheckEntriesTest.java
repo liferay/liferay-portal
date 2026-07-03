@@ -93,13 +93,11 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 	}
 
 	@Test
-	public void testCheckEntriesWithUndeletableTrashEntry() throws Exception {
+	public void testUndeletableTrashEntry() throws Exception {
 		Group group = updateTrashEntriesMaxAge(
 			createGroup(TestPropsValues.getCompanyId()), _MAX_AGE);
 
 		createFileEntryTrashEntry(group, true);
-
-		// The trash handler cannot delete an entry whose model is gone
 
 		TrashEntry trashEntry = TrashEntryLocalServiceUtil.addTrashEntry(
 			TestPropsValues.getUserId(), group.getGroupId(),
