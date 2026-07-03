@@ -55,9 +55,15 @@ public class ProjectUsageHelper {
 			FaroProject faroProject)
 		throws Exception {
 
+		List<DataSourceUsage> dataSourceUsages = ListUtil.fromArray(
+			new DataSourceUsage(
+				"10001", "Liferay", _getDataSourceUsageMetrics(0)),
+			new DataSourceUsage(
+				"10002", "Salesforce", _getDataSourceUsageMetrics(1)));
+
 		return new DataSourceUsageMetricDisplay(
-			5, _getDataSourceUsages().size(), faroProject.getCorpProjectName(),
-			faroProject.getCorpProjectUuid(), _getDataSourceUsages(),
+			5, dataSourceUsages.size(), faroProject.getCorpProjectName(),
+			faroProject.getCorpProjectUuid(), dataSourceUsages,
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
 				DateUtil.PATTERN_DATE),
@@ -78,14 +84,6 @@ public class ProjectUsageHelper {
 			new DataSourceUsageMetric(
 				"2026-06-16", 98230 - (dataSourceIndex * 12000),
 				63 + (dataSourceIndex * 25)));
-	}
-
-	private List<DataSourceUsage> _getDataSourceUsages() {
-		return ListUtil.fromArray(
-			new DataSourceUsage(
-				"10001", "Liferay", _getDataSourceUsageMetrics(0)),
-			new DataSourceUsage(
-				"10002", "Salesforce", _getDataSourceUsageMetrics(1)));
 	}
 
 	@Reference

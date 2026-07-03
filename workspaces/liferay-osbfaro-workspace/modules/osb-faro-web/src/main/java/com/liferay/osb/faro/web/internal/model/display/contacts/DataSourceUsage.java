@@ -8,9 +8,6 @@ package com.liferay.osb.faro.web.internal.model.display.contacts;
 import java.util.List;
 
 /**
- * Usage of a single data source within a workspace: its identity plus a list of
- * per-day usage metrics.
- *
  * @author Caio Pinheiro
  */
 public class DataSourceUsage {

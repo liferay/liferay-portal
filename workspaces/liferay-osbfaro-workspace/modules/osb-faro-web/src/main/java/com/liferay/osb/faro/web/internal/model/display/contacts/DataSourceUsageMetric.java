@@ -6,9 +6,6 @@
 package com.liferay.osb.faro.web.internal.model.display.contacts;
 
 /**
- * Per-day usage metric for a single data source, returned by the data source
- * usage report endpoint.
- *
  * @author Caio Pinheiro
  */
 public class DataSourceUsageMetric {

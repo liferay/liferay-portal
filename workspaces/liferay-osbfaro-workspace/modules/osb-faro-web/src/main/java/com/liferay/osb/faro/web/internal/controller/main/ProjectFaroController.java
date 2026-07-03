@@ -480,10 +480,10 @@ public class ProjectFaroController extends BaseFaroController {
 	@Path("/usage/data-sources")
 	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
 	public Page<DataSourceUsageMetricDisplay> getDataSourceUsageMetricDisplays(
-			@QueryParam("endDateString") String endDateString,
+			@QueryParam("endDate") String endDateString,
 			@DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("15") @QueryParam("pageSize") int pageSize,
-			@QueryParam("startDateString") String startDateString)
+			@QueryParam("startDate") String startDateString)
 		throws Exception {
 
 		return _projectUsageHelper.getDataSourceUsageMetricDisplays(

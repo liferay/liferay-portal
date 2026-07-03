@@ -8,9 +8,6 @@ package com.liferay.osb.faro.web.internal.model.display.contacts;
 import java.util.List;
 
 /**
- * Workspace-level item of the data source usage report: the workspace identity
- * and workspace-scoped counts, plus the per-data-source usage breakdown.
- *
  * @author Caio Pinheiro
  */
 public class DataSourceUsageMetricDisplay {
