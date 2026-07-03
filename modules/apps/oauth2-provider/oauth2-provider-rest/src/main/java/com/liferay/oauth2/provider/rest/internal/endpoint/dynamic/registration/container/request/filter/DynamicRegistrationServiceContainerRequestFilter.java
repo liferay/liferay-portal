@@ -9,10 +9,16 @@ import com.liferay.oauth2.provider.constants.OAuth2ApplicationConstants;
 import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWebKeys;
+import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.audit.AuditException;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -87,9 +93,9 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		HttpServletRequest httpServletRequest = (HttpServletRequest)message.get(
 			AbstractHTTPDestination.HTTP_REQUEST);
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(httpServletRequest), "LPD-63416")) {
+		long companyId = _portal.getCompanyId(httpServletRequest);
 
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63416")) {
 			containerRequestContext.abortWith(
 				Response.status(
 					Response.Status.NOT_FOUND
@@ -101,6 +107,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		User user = null;
 
 		try {
+			httpServletRequest.setAttribute(
+				OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST,
+				_normalizeHost(_getClientHost(httpServletRequest, false)));
+
 			user = _authorize(
 				httpServletRequest, httpServletRequest.getMethod());
 		}
@@ -115,6 +125,15 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			if (_log.isDebugEnabled()) {
 				_log.debug(exception);
 			}
+
+			String clientHost = GetterUtil.getString(
+				httpServletRequest.getAttribute(
+					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
+				_normalizeHost(_getClientHost(httpServletRequest, false)));
+
+			_routeAuditMessage(
+				_buildAuthorizationFailureAuditMessage(
+					clientHost, companyId, httpServletRequest));
 
 			throw ExceptionUtils.toNotAuthorizedException(null, null);
 		}
@@ -205,6 +224,70 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		return user;
 	}
 
+	private AuditMessage _buildAuthorizationFailureAuditMessage(
+		String clientHost, long companyId,
+		HttpServletRequest httpServletRequest) {
+
+		return _buildRejectAuditMessage(
+			clientHost, companyId,
+			OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_TOKEN,
+			"Authenticated registration authorization failed",
+			httpServletRequest,
+			OAuth2ProviderRESTEndpointConstants.
+				DYNAMIC_REGISTRATION_MODE_AUTHENTICATED);
+	}
+
+	private AuditMessage _buildRejectAuditMessage(
+		String clientHost, long companyId, String error,
+		String errorDescription, HttpServletRequest httpServletRequest,
+		String mode) {
+
+		return new AuditMessage(
+			0, companyId, 0, StringPool.BLANK, null,
+			JSONUtil.put(
+				"clientHost", clientHost
+			).put(
+				"error", error
+			).put(
+				"errorDescription", errorDescription
+			).put(
+				"mode", mode
+			).put(
+				"userAgent",
+				GetterUtil.getString(httpServletRequest.getHeader("User-Agent"))
+			),
+			OAuth2Application.class.getName(), StringPool.BLANK,
+			OAuth2ProviderRESTEndpointConstants.
+				EVENT_TYPE_DYNAMIC_REGISTRATION_REJECT,
+			StringPool.BLANK);
+	}
+
+	private String _getClientHost(
+		HttpServletRequest httpServletRequest, boolean trustProxyHeaders) {
+
+		if (!trustProxyHeaders) {
+			return httpServletRequest.getRemoteAddr();
+		}
+
+		String forwardedFor = httpServletRequest.getHeader("X-Forwarded-For");
+
+		if (!Validator.isBlank(forwardedFor)) {
+			int index = forwardedFor.indexOf(',');
+
+			if (index >= 0) {
+				forwardedFor = forwardedFor.substring(0, index);
+			}
+
+			forwardedFor = forwardedFor.trim();
+
+			if (!Validator.isBlank(forwardedFor)) {
+				return forwardedFor;
+			}
+		}
+
+		return httpServletRequest.getRemoteAddr();
+	}
+
 	private String _getClientId(HttpServletRequest httpServletRequest) {
 		String requestURI = httpServletRequest.getRequestURI();
 
@@ -254,6 +337,53 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			accessTokenContent);
 
 		return jwsJwtCompactConsumer.getJwtToken();
+	}
+
+	private String _normalizeHost(String host) {
+		if (Validator.isBlank(host)) {
+			return StringPool.BLANK;
+		}
+
+		String normalizedHost = host.trim();
+
+		if (normalizedHost.startsWith(StringPool.OPEN_BRACKET)) {
+			int index = normalizedHost.indexOf(StringPool.CLOSE_BRACKET);
+
+			if (index > 1) {
+				normalizedHost = normalizedHost.substring(1, index);
+			}
+		}
+		else {
+			int index = normalizedHost.indexOf(StringPool.COLON);
+
+			if ((index > 0) &&
+				(normalizedHost.indexOf(StringPool.COLON, index + 1) < 0)) {
+
+				normalizedHost = normalizedHost.substring(0, index);
+			}
+		}
+
+		return StringUtil.toLowerCase(normalizedHost);
+	}
+
+	private void _routeAuditMessage(AuditMessage auditMessage) {
+		if (auditMessage == null) {
+			return;
+		}
+
+		try {
+			AuditRouterUtil.route(auditMessage);
+		}
+		catch (AuditException auditException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to route audit message", auditException);
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
 	}
 
 	private void _setSecurityContext(

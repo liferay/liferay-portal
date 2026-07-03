@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 
 import java.util.Map;
 
@@ -67,6 +68,8 @@ public class LiferayDynamicRegistrationServiceRegistrator {
 								liferayDynamicRegistrationService.
 									setClientProvider(
 										_liferayOAuthDataProvider);
+								liferayDynamicRegistrationService.setPortal(
+									_portal);
 								liferayDynamicRegistrationService.
 									setSupportRegistrationAccessTokens(true);
 
@@ -106,6 +109,9 @@ public class LiferayDynamicRegistrationServiceRegistrator {
 
 	@Reference
 	private LiferayOAuthDataProvider _liferayOAuthDataProvider;
+
+	@Reference
+	private Portal _portal;
 
 	private volatile ServiceRegistration<Object> _serviceRegistration;
 
