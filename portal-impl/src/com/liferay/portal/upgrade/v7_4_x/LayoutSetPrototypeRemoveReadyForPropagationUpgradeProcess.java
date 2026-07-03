@@ -49,7 +49,6 @@ public class LayoutSetPrototypeRemoveReadyForPropagationUpgradeProcess
 
 				preparedStatement2.setLong(
 					2, resultSet.getLong("ctCollectionId"));
-
 				preparedStatement2.setLong(
 					3, resultSet.getLong("layoutSetPrototypeId"));
 
