@@ -13,13 +13,17 @@
 
 <aui:model-context bean="<%= company %>" model="<%= Company.class %>" />
 
+<%
+CompanyInfo companyInfo = company.getCompanyInfo();
+%>
+
 <clay:row>
 	<clay:col
 		md="6"
 	>
 		<liferay-ui:error exception="<%= CompanyNameException.class %>" message="please-enter-a-valid-name" />
 
-		<aui:input name="name" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="name" />
 
 		<liferay-ui:error exception="<%= CompanyMxException.class %>" message="please-enter-a-valid-mail-domain" />
 
@@ -47,7 +51,7 @@
 	<clay:col
 		md="6"
 	>
-		<aui:input bean="<%= company %>" helpMessage="home-url-help" label="home-url" model="<%= Company.class %>" name="homeURL" />
+		<aui:input bean="<%= companyInfo %>" helpMessage="home-url-help" label="home-url" model="<%= CompanyInfo.class %>" name="homeURL" />
 
 		<aui:input helpMessage="default-landing-page-help" label="default-landing-page" name='<%= "settings--" + PropsKeys.DEFAULT_LANDING_PAGE_PATH + "--" %>' type="text" value="<%= PrefsPropsUtil.getString(company.getCompanyId(), PropsKeys.DEFAULT_LANDING_PAGE_PATH, PropsValues.DEFAULT_LANDING_PAGE_PATH) %>" />
 	</clay:col>
@@ -65,22 +69,22 @@
 	<clay:col
 		md="6"
 	>
-		<aui:input name="legalName" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="legalName" />
 
-		<aui:input name="legalId" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="legalId" />
 
-		<aui:input name="legalType" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="legalType" />
 
-		<aui:input name="sicCode" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="sicCode" />
 	</clay:col>
 
 	<clay:col
 		md="6"
 	>
-		<aui:input name="tickerSymbol" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="tickerSymbol" />
 
-		<aui:input name="industry" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="industry" />
 
-		<aui:input name="type" />
+		<aui:input bean="<%= companyInfo %>" model="<%= CompanyInfo.class %>" name="type" />
 	</clay:col>
 </clay:row>
