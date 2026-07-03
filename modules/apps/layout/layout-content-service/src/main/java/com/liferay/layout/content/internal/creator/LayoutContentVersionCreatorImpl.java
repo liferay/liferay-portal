@@ -8,6 +8,10 @@ package com.liferay.layout.content.internal.creator;
 import com.liferay.layout.content.creator.LayoutContentVersionCreator;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -28,7 +32,23 @@ public class LayoutContentVersionCreatorImpl
 	@Override
 	public void createLayoutContentVersion(Layout layout) {
 		try {
-			if (!layout.isDraftLayout()) {
+			if (!layout.isDraftLayout() || !layout.isTypeContent()) {
+				return;
+			}
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
+
+			if (layoutPageTemplateEntry != null) {
+				return;
+			}
+
+			LayoutUtilityPageEntry layoutUtilityPageEntry =
+				_layoutUtilityPageEntryLocalService.
+					fetchLayoutUtilityPageEntryByPlid(layout.getClassPK());
+
+			if (layoutUtilityPageEntry != null) {
 				return;
 			}
 
@@ -65,5 +85,13 @@ public class LayoutContentVersionCreatorImpl
 
 	@Reference
 	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
 
 }
