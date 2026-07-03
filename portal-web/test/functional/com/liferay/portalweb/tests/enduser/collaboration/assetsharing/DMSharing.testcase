@@ -471,6 +471,57 @@ definition {
 			commentCount = 1,
 			entryComment = "test",
 			userFullName = "userfn userln");
+
+		User.logoutPG();
+
+		User.loginPG(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "test@liferay.com");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title View",
+			groupName = "Guest",
+			guestPermissions = "false",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoShare(dmDocumentTitle = "DM Document Title View");
+
+		DMDocument.sharePG(
+			noAutocomplete = "true",
+			userEmailAddress = "userea@liferay.com",
+			userName = "userfn userln");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
+
+		DMDocumentSharing.viewSharedFlag(
+			detailsView = "true",
+			dmDocumentTitle = "DM Document Title View");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "userea@liferay.com");
+
+		Notifications.viewBadgeCount(notificationCount = 1);
+
+		Notifications.gotoNotifications();
+
+		Notifications.viewNewSharedContent(
+			contentSharingPermission = "viewing",
+			contentTitle = "DM Document Title View",
+			openNotification = "true",
+			ownerName = "Test Test");
+
+		DMDocumentSharing.viewDocumentViaSharedContent(
+			contentSharingPermission = "View",
+			dmDocumentTitle = "DM Document Title View");
 	}
 
 	@description = "This test covers LPS-94661. It ensures that the user can share a document with an apostrophe in the title."
@@ -573,56 +624,6 @@ definition {
 		DMDocumentSharing.viewDocumentViaSharedContent(
 			contentSharingPermission = "Update",
 			dmDocumentTitle = "DM Document Title Edit");
-	}
-
-	@description = "This test asserts that a user can only view a document once it is shared with him"
-	@priority = 4
-	@refactordone
-	test CanShareWithViewPermissions {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			guestPermissions = "false",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoShare(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.sharePG(
-			noAutocomplete = "true",
-			userEmailAddress = "userea@liferay.com",
-			userName = "userfn userln");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
-
-		DMDocumentSharing.viewSharedFlag(
-			detailsView = "true",
-			dmDocumentTitle = "DM Document Title");
-
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "userea@liferay.com");
-
-		Notifications.viewBadgeCount(notificationCount = 1);
-
-		Notifications.gotoNotifications();
-
-		Notifications.viewNewSharedContent(
-			contentSharingPermission = "viewing",
-			contentTitle = "DM Document Title",
-			openNotification = "true",
-			ownerName = "Test Test");
-
-		DMDocumentSharing.viewDocumentViaSharedContent(
-			contentSharingPermission = "View",
-			dmDocumentTitle = "DM Document Title");
 	}
 
 	@description = "This test makes sure all collaborators will view all collaborators of the document that was shared to him. This usecase also tests that a user can successfully remove collaborators through Manage Collaborators and asserts that empty message displays when all collaborators are removed."
