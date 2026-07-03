@@ -5,12 +5,17 @@
 
 package com.liferay.item.selector.taglib.internal.display.context;
 
+import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletRequest;
@@ -19,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -59,17 +65,43 @@ public class GroupSelectorDisplayContextTest {
 			RandomTestUtil.randomLong()
 		);
 
-		_serviceRegistration = bundleContext.registerService(
-			GroupItemSelectorProvider.class,
-			new MockGroupItemSelectorProvider(), null);
+		Mockito.when(
+			PortalUtil.getHttpServletRequest(
+				Mockito.any(LiferayPortletRequest.class))
+		).thenAnswer(
+			invocationOnMock -> {
+				LiferayPortletRequest liferayPortletRequest =
+					invocationOnMock.getArgument(0);
+
+				return liferayPortletRequest.getHttpServletRequest();
+			}
+		);
+
+		_groupItemSelectorProviderServiceRegistration =
+			bundleContext.registerService(
+				GroupItemSelectorProvider.class,
+				new MockGroupItemSelectorProvider("test"), null);
+		_itemSelectorServiceRegistration = bundleContext.registerService(
+			ItemSelector.class, _itemSelector, null);
+		_spaceDepotGroupItemSelectorProviderServiceRegistration =
+			bundleContext.registerService(
+				GroupItemSelectorProvider.class,
+				new MockGroupItemSelectorProvider("space-depot"), null);
 	}
 
 	@AfterClass
 	public static void tearDownClass() {
-		_serviceRegistration.unregister();
+		_groupItemSelectorProviderServiceRegistration.unregister();
+		_itemSelectorServiceRegistration.unregister();
+		_spaceDepotGroupItemSelectorProviderServiceRegistration.unregister();
 
 		_frameworkUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
+	}
+
+	@After
+	public void tearDown() {
+		Mockito.reset(_itemSelector);
 	}
 
 	@Test
@@ -94,6 +126,76 @@ public class GroupSelectorDisplayContextTest {
 
 	@Test
 	public void testGetGroupTypes() {
+		_testGetGroupTypesWithoutCMSFeatureFlag();
+		_testGetGroupTypesWithFileItemSelectorCriterion();
+		_testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion();
+		_testGetGroupTypesWithoutJournalArticleInfoItemItemSelectorCriterion();
+	}
+
+	private MockedStatic<FeatureFlagManagerUtil> _enableCMSFeatureFlag() {
+		MockedStatic<FeatureFlagManagerUtil>
+			featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+				FeatureFlagManagerUtil.class);
+
+		featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-17564"))
+		).thenReturn(
+			true
+		);
+
+		return featureFlagManagerUtilMockedStatic;
+	}
+
+	private void _testGetGroupTypesWithFileItemSelectorCriterion() {
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
+
+			MockLiferayResourceRequest mockLiferayResourceRequest =
+				new MockLiferayResourceRequest();
+
+			mockLiferayResourceRequest.addParameter("criteria", "file");
+
+			GroupSelectorDisplayContext groupSelectorDisplayContext =
+				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+			Assert.assertEquals(
+				Collections.singleton("test"),
+				groupSelectorDisplayContext.getGroupTypes());
+		}
+	}
+
+	private void _testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion() {
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
+
+			InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+				new InfoItemItemSelectorCriterion();
+
+			infoItemItemSelectorCriterion.setItemType(
+				"com.liferay.journal.model.JournalArticle");
+
+			Mockito.when(
+				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+			).thenReturn(
+				Collections.singletonList(infoItemItemSelectorCriterion)
+			);
+
+			MockLiferayResourceRequest mockLiferayResourceRequest =
+				new MockLiferayResourceRequest();
+
+			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+
+			GroupSelectorDisplayContext groupSelectorDisplayContext =
+				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+			Assert.assertEquals(
+				Collections.singleton("test"),
+				groupSelectorDisplayContext.getGroupTypes());
+		}
+	}
+
+	private void _testGetGroupTypesWithoutCMSFeatureFlag() {
 		GroupSelectorDisplayContext groupSelectorDisplayContext =
 			new GroupSelectorDisplayContext(new MockLiferayResourceRequest());
 
@@ -102,15 +204,49 @@ public class GroupSelectorDisplayContextTest {
 			groupSelectorDisplayContext.getGroupTypes());
 	}
 
+	private void _testGetGroupTypesWithoutJournalArticleInfoItemItemSelectorCriterion() {
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
+
+			Mockito.when(
+				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+			).thenReturn(
+				Collections.singletonList(new InfoItemItemSelectorCriterion())
+			);
+
+			MockLiferayResourceRequest mockLiferayResourceRequest =
+				new MockLiferayResourceRequest();
+
+			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+
+			GroupSelectorDisplayContext groupSelectorDisplayContext =
+				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+			Assert.assertEquals(
+				SetUtil.fromArray("space-depot", "test"),
+				groupSelectorDisplayContext.getGroupTypes());
+		}
+	}
+
 	private static final MockedStatic<FrameworkUtil>
 		_frameworkUtilMockedStatic = Mockito.mockStatic(FrameworkUtil.class);
+	private static ServiceRegistration<GroupItemSelectorProvider>
+		_groupItemSelectorProviderServiceRegistration;
+	private static final ItemSelector _itemSelector = Mockito.mock(
+		ItemSelector.class);
+	private static ServiceRegistration<ItemSelector>
+		_itemSelectorServiceRegistration;
 	private static final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
 	private static ServiceRegistration<GroupItemSelectorProvider>
-		_serviceRegistration;
+		_spaceDepotGroupItemSelectorProviderServiceRegistration;
 
 	private static class MockGroupItemSelectorProvider
 		implements GroupItemSelectorProvider {
+
+		public MockGroupItemSelectorProvider(String groupType) {
+			_groupType = groupType;
+		}
 
 		@Override
 		public String getEmptyResultsMessage() {
@@ -133,7 +269,7 @@ public class GroupSelectorDisplayContextTest {
 
 		@Override
 		public String getGroupType() {
-			return "test";
+			return _groupType;
 		}
 
 		@Override
@@ -145,6 +281,8 @@ public class GroupSelectorDisplayContextTest {
 		public String getLabel(Locale locale) {
 			return "label";
 		}
+
+		private final String _groupType;
 
 	}
 
