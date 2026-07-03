@@ -5,7 +5,7 @@
 
 import React, {useEffect, useState} from 'react';
 
-import SpacesDisplay from '../../../common/components/SpacesDisplay';
+import ScopesDisplay from '../../../common/components/ScopesDisplay';
 import SpaceService from '../../../common/services/SpaceService';
 import {Space} from '../../../common/types/Space';
 
@@ -61,12 +61,12 @@ const StructureScopeRenderer = ({
 	);
 
 	return (
-		<SpacesDisplay
+		<ScopesDisplay
 			allScopesLabel={Liferay.Language.get('all-spaces')}
 			availableInScopeLabel={Liferay.Language.get(
 				'available-in-spaces-x'
 			)}
-			spaces={structureSpaces}
+			scopes={structureSpaces}
 		/>
 	);
 };

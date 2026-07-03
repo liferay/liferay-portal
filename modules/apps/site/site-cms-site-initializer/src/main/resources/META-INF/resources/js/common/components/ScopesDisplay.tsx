@@ -8,24 +8,24 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import {Space} from '../types/Space';
+import {Space as Scope} from '../types/Space';
 import SpaceSticker from './SpaceSticker';
 
-export interface SpaceDisplayProps {
+export interface ScopeDisplayProps {
 	allScopesLabel: string;
 	availableInScopeLabel: string;
-	spaces: Space[];
+	scopes: Scope[];
 }
 
-export default function SpacesDisplay({
+export default function ScopesDisplay({
 	allScopesLabel,
 	availableInScopeLabel,
-	spaces,
-}: SpaceDisplayProps) {
-	const shouldRenderAllSpaces =
-		!spaces.length || spaces.some(({id}) => id === -1);
+	scopes,
+}: ScopeDisplayProps) {
+	const shouldRenderAllScopes =
+		!scopes.length || scopes.some(({id}) => id === -1);
 
-	if (shouldRenderAllSpaces) {
+	if (shouldRenderAllScopes) {
 		return (
 			<Badge
 				className="badge-pill"
@@ -35,29 +35,29 @@ export default function SpacesDisplay({
 		);
 	}
 
-	const [firstSpace, ...otherSpaces] = spaces;
+	const [firstScope, ...otherScopes] = scopes;
 
 	return (
 		<span className="align-items-center c-gap-2 d-flex flex-wrap">
 			<span className="align-items-center d-flex space-renderer-sticker">
 				<SpaceSticker
-					displayType={firstSpace.settings?.logoColor}
-					name={firstSpace.name}
+					displayType={firstScope.settings?.logoColor}
+					name={firstScope.name}
 					size="xs"
 				/>
 			</span>
 
-			{otherSpaces.length ? (
+			{otherScopes.length ? (
 				<ClayTooltipProvider>
 					<span>
 						<Badge
 							className="badge-pill"
 							data-tooltip-align="bottom"
 							displayType="secondary"
-							label={`+${otherSpaces.length}`}
+							label={`+${otherScopes.length}`}
 							title={sub(
 								availableInScopeLabel,
-								spaces.map((space) => space.name).join(', ')
+								scopes.map((scope) => scope.name).join(', ')
 							)}
 						/>
 					</span>

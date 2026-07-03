@@ -6,7 +6,7 @@
 import LoadingIndicator from '@clayui/loading-indicator';
 import React, {useEffect, useState} from 'react';
 
-import SpacesDisplay from '../../../common/components/SpacesDisplay';
+import ScopesDisplay from '../../../common/components/ScopesDisplay';
 import SpaceService from '../../../common/services/SpaceService';
 import {Space as Scope} from '../../../common/types/Space';
 
@@ -105,32 +105,32 @@ export default function MultipleScopesRenderer({
 
 	if (!renderProjects) {
 		return (
-			<SpacesDisplay
+			<ScopesDisplay
 				allScopesLabel={Liferay.Language.get('all-spaces')}
 				availableInScopeLabel={Liferay.Language.get(
 					'available-in-spaces-x'
 				)}
-				spaces={spaceScopes}
+				scopes={spaceScopes}
 			/>
 		);
 	}
 
 	return (
 		<span className="align-items-center c-gap-3 d-flex flex-wrap">
-			<SpacesDisplay
+			<ScopesDisplay
 				allScopesLabel={Liferay.Language.get('all-spaces')}
 				availableInScopeLabel={Liferay.Language.get(
 					'available-in-spaces-x'
 				)}
-				spaces={spaceScopes}
+				scopes={spaceScopes}
 			/>
 
-			<SpacesDisplay
+			<ScopesDisplay
 				allScopesLabel={Liferay.Language.get('all-projects')}
 				availableInScopeLabel={Liferay.Language.get(
 					'available-in-projects-x'
 				)}
-				spaces={projectScopes}
+				scopes={projectScopes}
 			/>
 		</span>
 	);
