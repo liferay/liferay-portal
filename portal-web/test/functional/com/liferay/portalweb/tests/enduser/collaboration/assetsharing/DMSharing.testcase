@@ -415,7 +415,7 @@ definition {
 		LexiconEntry.viewNoEntryMenu(rowEntry = "DM Document Title");
 	}
 
-	@description = "This test covers LPS-94294. This test asserts that a user can comment on a document it is shared with him"
+	@description = "This test covers LPS-94294, LPS-94448. It asserts that a user can view, comment on, and update a document once it is shared with him with the matching permission."
 	@priority = 4
 	@refactordone
 	test CanShareWithPermissions {
@@ -522,6 +522,64 @@ definition {
 		DMDocumentSharing.viewDocumentViaSharedContent(
 			contentSharingPermission = "View",
 			dmDocumentTitle = "DM Document Title View");
+
+		User.logoutPG();
+
+		User.loginPG(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "test@liferay.com");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title Update",
+			groupName = "Guest",
+			guestPermissions = "false",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_1.jpg");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoShare(dmDocumentTitle = "DM Document Title Update");
+
+		DMDocument.sharePG(
+			noAutocomplete = "true",
+			sharingPermissions = "Update",
+			userEmailAddress = "userea@liferay.com",
+			userName = "userfn userln");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocumentSharing.viewSharedFlag(
+			detailsView = "true",
+			dmDocumentTitle = "DM Document Title Update");
+
+		User.logoutPG();
+
+		User.loginUserPG(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "userea@liferay.com");
+
+		Notifications.viewBadgeCount(notificationCount = 1);
+
+		Notifications.gotoNotifications();
+
+		Notifications.viewNewSharedContent(
+			contentSharingPermission = "updating",
+			contentTitle = "DM Document Title Update",
+			openNotification = "true",
+			ownerName = "Test Test");
+
+		LexiconEntry.gotoVerticalEllipsisMenuItemNoError(menuItem = "Edit");
+
+		DMDocument.editCmd(dmDocumentTitleEdit = "DM Document Title Update Edit");
+
+		Button.clickPublish();
+
+		DMDocumentSharing.viewDocumentViaSharedContent(
+			contentSharingPermission = "Update",
+			dmDocumentTitle = "DM Document Title Update Edit");
 	}
 
 	@description = "This test covers LPS-94661. It ensures that the user can share a document with an apostrophe in the title."
@@ -567,63 +625,6 @@ definition {
 			contentTitle = '''DM Document's Title''',
 			ownerName = "Test Test",
 			specialCharacter = "true");
-	}
-
-	@description = "This test asserts that a user can update a document once it is shared with him, also covers LPS-94448 and LPS-94294"
-	@priority = 4
-	@refactordone
-	test CanShareWithUpdatePermissions {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			guestPermissions = "false",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoShare(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.sharePG(
-			noAutocomplete = "true",
-			sharingPermissions = "Update",
-			userEmailAddress = "userea@liferay.com",
-			userName = "userfn userln");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocumentSharing.viewSharedFlag(
-			detailsView = "true",
-			dmDocumentTitle = "DM Document Title");
-
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "userea@liferay.com");
-
-		Notifications.viewBadgeCount(notificationCount = 1);
-
-		Notifications.gotoNotifications();
-
-		Notifications.viewNewSharedContent(
-			contentSharingPermission = "updating",
-			contentTitle = "DM Document Title",
-			openNotification = "true",
-			ownerName = "Test Test");
-
-		LexiconEntry.gotoVerticalEllipsisMenuItemNoError(menuItem = "Edit");
-
-		DMDocument.editCmd(dmDocumentTitleEdit = "DM Document Title Edit");
-
-		Button.clickPublish();
-
-		DMDocumentSharing.viewDocumentViaSharedContent(
-			contentSharingPermission = "Update",
-			dmDocumentTitle = "DM Document Title Edit");
 	}
 
 	@description = "This test makes sure all collaborators will view all collaborators of the document that was shared to him. This usecase also tests that a user can successfully remove collaborators through Manage Collaborators and asserts that empty message displays when all collaborators are removed."
