@@ -15,14 +15,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 
 import java.io.IOException;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,6 +47,10 @@ public class DatabaseSchemaExportResourceImpl
 
 		String exportFilesPath = databaseSchemaExport.getExportFilesPath();
 
+		if (Validator.isBlank(exportFilesPath)) {
+			throw new BadRequestException("Export files path is null");
+		}
+
 		if (_log.isInfoEnabled()) {
 			_log.info(
 				StringBundler.concat(
@@ -56,11 +59,22 @@ public class DatabaseSchemaExportResourceImpl
 					exportFilesPath));
 		}
 
-		DBMigrationSchemaExportResult dbMigrationSchemaExportResult = null;
+		DatabaseSchemaExport resultDatabaseSchemaExport =
+			new DatabaseSchemaExport();
+
+		resultDatabaseSchemaExport.setExportFilesPath(() -> exportFilesPath);
 
 		try {
-			dbMigrationSchemaExportResult = _dbMigrationSchemaExporter.export(
-				exportFilesPath);
+			DBMigrationSchemaExportResult dbMigrationSchemaExportResult =
+				_dbMigrationSchemaExporter.export(exportFilesPath);
+
+			resultDatabaseSchemaExport.setFileNames(
+				() -> dbMigrationSchemaExportResult.getFileNames(
+				).toArray(
+					new String[0]
+				));
+			resultDatabaseSchemaExport.setReportFileName(
+				dbMigrationSchemaExportResult::getReportFileName);
 		}
 		catch (IOException ioException) {
 			_log.error(
@@ -69,17 +83,6 @@ public class DatabaseSchemaExportResourceImpl
 			throw new BadRequestException(
 				"Unable to write to \"" + exportFilesPath + "\"");
 		}
-
-		List<String> fileNames = dbMigrationSchemaExportResult.getFileNames();
-
-		DatabaseSchemaExport resultDatabaseSchemaExport =
-			new DatabaseSchemaExport();
-
-		resultDatabaseSchemaExport.setExportFilesPath(() -> exportFilesPath);
-		resultDatabaseSchemaExport.setFileNames(
-			() -> fileNames.toArray(new String[0]));
-		resultDatabaseSchemaExport.setReportFileName(
-			dbMigrationSchemaExportResult::getReportFileName);
 
 		return resultDatabaseSchemaExport;
 	}

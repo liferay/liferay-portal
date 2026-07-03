@@ -48,6 +48,7 @@ public class DatabaseSchemaExportResourceTest
 		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPostDatabaseSchemaExport();
+		_testPostDatabaseSchemaExportWithoutExportFilesPath();
 		_testPostDatabaseSchemaExportWithoutOmniadminPermission();
 	}
 
@@ -86,6 +87,26 @@ public class DatabaseSchemaExportResourceTest
 		}
 		finally {
 			FileUtil.deltree(directory);
+		}
+	}
+
+	private void _testPostDatabaseSchemaExportWithoutExportFilesPath()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR)) {
+
+			databaseSchemaExportResource.postDatabaseSchemaExport(
+				new DatabaseSchemaExport());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 		}
 	}
 
