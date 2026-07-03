@@ -725,14 +725,13 @@ public class ObjectEntryLocalServiceImpl
 			configurationProvider.getCompanyConfiguration(
 				ObjectEntryScheduleConfiguration.class, companyId);
 
-		long checkInterval =
-			objectEntryScheduleConfiguration.checkInterval() * Time.MINUTE;
-
 		int checkBatchSize = objectEntryScheduleConfiguration.checkBatchSize();
 
 		_checkObjectEntriesByDisplayDate(companyId, date, checkBatchSize);
-
 		_checkObjectEntriesByExpirationDate(companyId, date, checkBatchSize);
+
+		long checkInterval =
+			objectEntryScheduleConfiguration.checkInterval() * Time.MINUTE;
 
 		ReviewCheckpoint reviewCheckpoint =
 			_companyIdReviewCheckpoint.computeIfAbsent(
