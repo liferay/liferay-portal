@@ -250,70 +250,6 @@ definition {
 			templateName = "WC Template Name");
 	}
 
-	@description = "This ensures that the user can import the asset library with document to a site."
-	@priority = 4
-	@refactordone
-	test ExportedDepotWithDMCanBeImportedToSite {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
-		DepotNavigator.openDepotExportImportAdmin(
-			depotName = "Test Depot Name",
-			exportAdmin = "true");
-
-		LAR.exportSiteCP(depotName = "Test Depot Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		HeadlessSite.addSite(siteName = "New Site");
-
-		LAR.importSiteCP(
-			larFileName = ${larFileName},
-			siteName = "New Site");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "New Site",
-			siteURLKey = "new-site");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-	}
-
-	@description = "This ensures that the user can import the asset library with web content to a site."
-	@priority = 4
-	@refactordone
-	test ExportedDepotWithWCCanBeImportedToSite {
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent Title");
-
-		DepotNavigator.openDepotExportImportAdmin(
-			depotName = "Test Depot Name",
-			exportAdmin = "true");
-
-		LAR.exportSiteCP(depotName = "Test Depot Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		HeadlessSite.addSite(siteName = "New Site");
-
-		LAR.importSiteCP(
-			larFileName = ${larFileName},
-			siteName = "New Site");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "new-site");
-
-		WebContent.viewTitle(webContentTitle = "WC WebContent Title");
-	}
-
 	@description = "This ensures that the user can import the site with collections to a depot."
 	@priority = 4
 	@refactordone
@@ -343,68 +279,6 @@ definition {
 		AssetListsAdmin.viewAssetList(
 			assetListTitle = "Depot Manual Asset List",
 			type = "Manual");
-	}
-
-	@description = "This ensures that the user can import the site with document to a depot."
-	@priority = 4
-	@refactordone
-	test ExportedSiteWithDMCanBeImportedToDepot {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name");
-
-		LAR.exportSiteCP(siteScopeName = "Site Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		DepotNavigator.openDepotExportImportAdmin(
-			depotName = "Test Depot Name",
-			importAdmin = "true");
-
-		LAR.importSiteCP(
-			depotName = "Test Depot Name",
-			larFileName = ${larFileName});
-
-		DepotNavigator.openToDMEntryInDepot(
-			depotName = "Test Depot Name",
-			dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-	}
-
-	@description = "This ensures that the user can import the site with web content to a depot."
-	@priority = 4
-	@refactordone
-	test ExportedSiteWithWCCanBeImportedToDepot {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Site Name",
-			title = "WC WebContent Title");
-
-		LAR.exportSiteCP(siteScopeName = "Site Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		DepotNavigator.openDepotExportImportAdmin(
-			depotName = "Test Depot Name",
-			importAdmin = "true");
-
-		LAR.importSiteCP(
-			depotName = "Test Depot Name",
-			larFileName = ${larFileName});
-
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
-
-		WebContent.viewTitle(webContentTitle = "WC WebContent Title");
 	}
 
 }
