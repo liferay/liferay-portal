@@ -8,6 +8,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:layout:layout-content-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
+	compileOnly project(":apps:layout:layout-utility-page-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":core:petra:petra-function")
