@@ -8,13 +8,13 @@ import {Locator, Page, expect} from '@playwright/test';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 
 export class EditCategoryPage {
+	readonly descriptionInput: Locator;
+	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly saveAndAddAnotherButton: Locator;
 
-	private readonly descriptionInput: Locator;
 	private readonly editConfirmationModal: Locator;
-	private readonly nameInput: Locator;
 	private readonly permissionsFormGroup: Locator;
 	private readonly permissionsTable: Locator;
 	private readonly permissionsTableViewableByDropdown: Locator;

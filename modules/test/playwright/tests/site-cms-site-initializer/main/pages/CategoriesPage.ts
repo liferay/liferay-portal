@@ -96,8 +96,22 @@ export class CategoriesPage {
 		});
 	}
 
+	async expectItemActionHidden({
+		action,
+		filter,
+	}: {
+		action: string;
+		filter: string;
+	}) {
+		await this.dataSetFragmentPage.expectItemActionHidden({action, filter});
+	}
+
 	getItem(filter: string) {
 		return this.dataSetFragmentPage.getRow(filter);
+	}
+
+	getItemSystemIcon(filter: string) {
+		return this.getItem(filter).getByLabel('System Category');
 	}
 
 	async goto(vocabularyId: string | number, vocabularyName: string) {

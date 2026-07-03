@@ -33,6 +33,7 @@ export interface postTaxonomyVocabularyProps {
 export interface postTaxonomyVocabularyTaxonomyCategoryProps {
 	name: string;
 	name_i18n?: {['ES-es']: string};
+	system?: boolean;
 	vocabularyId: number;
 }
 
@@ -193,6 +194,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	async postTaxonomyVocabularyTaxonomyCategory({
 		name,
 		name_i18n,
+		system,
 		vocabularyId,
 	}: postTaxonomyVocabularyTaxonomyCategoryProps): Promise<{
 		externalReferenceCode: string;
@@ -200,7 +202,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies/${vocabularyId}/taxonomy-categories`,
-			{data: {name, name_i18n}}
+			{data: {name, name_i18n, system}}
 		);
 	}
 
