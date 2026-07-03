@@ -358,17 +358,21 @@ export default function AllTasksFDSPropsTransformer({
 					getCustomBulkDeleteMessage: (selectedData) => {
 						if (selectedData.selectAll) {
 							return {
-								confirmationMessage: Liferay.Language.get(
-									'delete-tasks-confirmation'
-								),
+								messages: [
+									Liferay.Language.get(
+										'delete-tasks-confirmation'
+									),
+								],
 								title: Liferay.Language.get('delete-all-tasks'),
 							};
 						}
 						else if (selectedData.items.length > 1) {
 							return {
-								confirmationMessage: Liferay.Language.get(
-									'delete-tasks-confirmation'
-								),
+								messages: [
+									Liferay.Language.get(
+										'delete-tasks-confirmation'
+									),
+								],
 								title: sub(
 									Liferay.Language.get('delete-x-tasks'),
 									[selectedData.items.length]
@@ -377,9 +381,11 @@ export default function AllTasksFDSPropsTransformer({
 						}
 
 						return {
-							confirmationMessage: Liferay.Language.get(
-								'delete-tasks-confirmation'
-							),
+							messages: [
+								Liferay.Language.get(
+									'delete-tasks-confirmation'
+								),
+							],
 							title: Liferay.Language.get('delete-task'),
 						};
 					},
