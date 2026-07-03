@@ -20,14 +20,14 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-179484. The site administrator could access to the OpenAI configuration page of Instance Settings."
+	@description = "This is a test for LPS-179484. The site administrator could access to the OpenAI configuration page from both the Instance Settings and the Site Settings."
 	@priority = 4
 	test AccessToOpenAIConfigurationPage {
 		task ("Given a site administrator goes to the Instance Settings") {
 			PortalSettings.openInstanceSettingsAdmin();
 		}
 
-		task ("When the site administrator accesses to the OpenAI configuration page") {
+		task ("When the site administrator accesses to the OpenAI configuration page from the Instance Settings") {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "AI Creator",
 				configurationName = "OpenAI",
@@ -42,29 +42,13 @@ definition {
 				text = "");
 		}
 
-		task ("When the site administrator clicks the link of How do I get an API key?") {
-			Click(
-				key_text = "How do I get an API key?",
-				locator1 = "Link#ANY");
-		}
-
-		task ("Then the site administrator should see the OpenAI API page opened in a new tab") {
-			SelectWindow.selectPopUp(value1 = "null");
-
-			AssertLocation.assertPartialLocation(value1 = "https://platform.openai.com/docs/api-reference");
-		}
-	}
-
-	@description = "This is a test for LPS-179484. The site administrator could access to the OpenAI configuration page of Site Settings."
-	@priority = 4
-	test AccessToOpenAIConfigurationPageOfSiteSettings {
 		task ("Given a site administrator goes to the Site Settings") {
 			HeadlessSite.addSite(siteName = ${randomSiteName});
 
 			Site.openSiteSettingsAdmin(siteURLKey = ${siteURLKey});
 		}
 
-		task ("When the site administrator accesses to the OpenAI configuration page") {
+		task ("When the site administrator accesses to the OpenAI configuration page from the Site Settings") {
 			Click(
 				key_itemName = "AI Creator",
 				locator1 = "ListGroupItem#ITEM_TEXT");
