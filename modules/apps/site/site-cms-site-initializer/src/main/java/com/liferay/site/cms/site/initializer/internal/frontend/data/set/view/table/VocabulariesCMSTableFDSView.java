@@ -10,6 +10,8 @@ import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
 import com.liferay.frontend.data.set.view.table.LinkFDSTableSchemaField;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
 import java.util.Locale;
@@ -31,6 +33,14 @@ public class VocabulariesCMSTableFDSView extends BaseCMSTableFDSView {
 		FDSTableSchemaBuilder fdsTableSchemaBuilder =
 			_fdsTableSchemaBuilderFactory.create();
 
+		String scopeKey = "space";
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-86291")) {
+
+			scopeKey = "scope";
+		}
+
 		return fdsTableSchemaBuilder.add(
 			"name", "title",
 			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
@@ -50,7 +60,7 @@ public class VocabulariesCMSTableFDSView extends BaseCMSTableFDSView {
 				true
 			)
 		).add(
-			"scopeKey", "space",
+			"scopeKey", scopeKey,
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"spaceTableCellRenderer")
 		).add(
