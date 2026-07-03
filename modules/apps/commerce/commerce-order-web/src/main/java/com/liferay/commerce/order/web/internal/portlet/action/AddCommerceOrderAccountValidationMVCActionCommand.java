@@ -148,10 +148,11 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 	}
 
 	private boolean _isLastResultSuccess(
-		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults) {
+		Map<String, AccountEntryValidatorResult>
+			accountEntryValidatorResultsMap) {
 
 		for (AccountEntryValidatorResult accountEntryValidatorResult :
-				accountEntryValidatorResults.values()) {
+				accountEntryValidatorResultsMap.values()) {
 
 			if ((accountEntryValidatorResult == null) ||
 				(!Objects.equals(
