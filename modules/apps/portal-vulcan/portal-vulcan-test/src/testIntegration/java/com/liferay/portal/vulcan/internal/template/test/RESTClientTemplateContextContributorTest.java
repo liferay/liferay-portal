@@ -73,10 +73,14 @@ public class RESTClientTemplateContextContributorTest {
 				"friendlyUrlPath"
 			);
 
+			User user = TestPropsValues.getUser();
+
+			_userLocalService.updateAgreedToTermsOfUse(user.getUserId(), true);
+
 			HTTPTestUtil.customize(
 			).withoutModulePath(
 			).apply(
-				() -> _test(friendlyUrlPath, TestPropsValues.getUser())
+				() -> _test(friendlyUrlPath, user)
 			);
 
 			HTTPTestUtil.customize(
