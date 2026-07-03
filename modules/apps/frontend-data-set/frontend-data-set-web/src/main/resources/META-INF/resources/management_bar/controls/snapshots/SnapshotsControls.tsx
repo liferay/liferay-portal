@@ -616,30 +616,39 @@ const SnapshotsControls = () => {
 									}
 									key={group.label || 'default'}
 								>
-									{group.items.map((snapshot: ISnapshot) => (
-										<ClayDropDown.Item
-											active={
-												snapshot.erc ===
-												activeSnapshot.erc
-											}
-											key={snapshot.erc}
-											onClick={() =>
-												onSnapshotChange({
-													defaultSnapshot,
-													snapshots,
-													value: snapshot.erc,
-												})
-											}
-											symbolRight={
-												snapshot.erc ===
-												activeSnapshot.erc
-													? 'check'
-													: undefined
-											}
-										>
-											{snapshot.label}
-										</ClayDropDown.Item>
-									))}
+									{group.items.map((snapshot: ISnapshot) => {
+										const isActiveSnapshot =
+											snapshot.erc === activeSnapshot.erc;
+
+										return (
+											<ClayDropDown.Item
+												aria-current={
+													isActiveSnapshot ||
+													undefined
+												}
+												className={
+													isActiveSnapshot
+														? 'active'
+														: undefined
+												}
+												key={snapshot.erc}
+												onClick={() =>
+													onSnapshotChange({
+														defaultSnapshot,
+														snapshots,
+														value: snapshot.erc,
+													})
+												}
+												symbolRight={
+													isActiveSnapshot
+														? 'check'
+														: undefined
+												}
+											>
+												{snapshot.label}
+											</ClayDropDown.Item>
+										);
+									})}
 								</ClayDropDown.Group>
 							))}
 						</ClayDropDown.ItemList>
