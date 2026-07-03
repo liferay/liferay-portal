@@ -785,7 +785,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 
 			<configure-elasticsearch-ltr-properties />
 
-			<configure-elasticsearch-jdk elasticsearch.java.home="/opt/java/openjdk17" />
+			<configure-elasticsearch-jdk elasticsearch.java.home="/opt/java/openjdk21" />
 
 			<prepare-elasticsearch-ltr />
 
