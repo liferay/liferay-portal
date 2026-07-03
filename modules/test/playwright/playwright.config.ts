@@ -11,6 +11,7 @@ import {liferayConfig} from './liferay.config';
 import {config as accessibilityMenuWeb} from './tests/accessibility-menu-web/main/config';
 import {config as accountAdminWebConfig} from './tests/account-admin-web/main/config';
 import {config as addressWebConfig} from './tests/address-web/main/config';
+import {config as aiCreatorOpenAIWebConfig} from './tests/ai-creator-openai-web/main/config';
 import {config as aiHubSiteInitializerConfig} from './tests/ai-hub-site-initializer/main/config';
 import {config as analyticsClientJs} from './tests/analytics-client-js/main/config';
 import {config as analyticsReportsJsComponentsWeb} from './tests/analytics-reports-js-components-web/main/config';
@@ -254,6 +255,7 @@ export default defineConfig({
 		accessibilityMenuWeb,
 		accountAdminWebConfig,
 		addressWebConfig,
+		aiCreatorOpenAIWebConfig,
 		aiHubSiteInitializerConfig,
 		analyticsClientJs,
 		analyticsReportsJsComponentsWeb,
