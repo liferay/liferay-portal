@@ -457,8 +457,6 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 					"reviewDate", reviewDate
 				).build());
 
-			// Two entries share a review date; the limit notifies one per run
-
 			_jobExecutorUnsafeRunnable.run();
 
 			Assert.assertEquals(
@@ -470,8 +468,6 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 
 			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry1));
 			Assert.assertEquals(1, _getReviewNotificationCount(objectEntry2));
-
-			// A further run must not re-notify
 
 			_jobExecutorUnsafeRunnable.run();
 
@@ -502,15 +498,11 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 				"reviewDate", reviewDate
 			).build());
 
-		// Fail the second entry's notification with a nonexistent user
-
 		long userId = objectEntry2.getUserId();
 
 		objectEntry2.setUserId(-1);
 
 		objectEntry2 = _objectEntryLocalService.updateObjectEntry(objectEntry2);
-
-		// The failure is logged and does not halt the run
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.object.service.impl.ObjectEntryLocalServiceImpl",
@@ -541,9 +533,6 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 		objectEntry2.setUserId(userId);
 
 		objectEntry2 = _objectEntryLocalService.updateObjectEntry(objectEntry2);
-
-		// The checkpoint advanced past the failed entry, so it is skipped
-		// rather than retried
 
 		_jobExecutorUnsafeRunnable.run();
 
