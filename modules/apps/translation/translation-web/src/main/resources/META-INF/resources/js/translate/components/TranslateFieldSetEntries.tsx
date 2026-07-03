@@ -215,6 +215,10 @@ const TranslateFieldEditor = ({
 				textarea.value = targetContent;
 
 				sourceEditingArea!.dataset.value = targetContent;
+
+				lastSourceInputRef.current = targetContent;
+
+				sourceEditingPlugin.updateEditorData();
 			}
 		}
 
