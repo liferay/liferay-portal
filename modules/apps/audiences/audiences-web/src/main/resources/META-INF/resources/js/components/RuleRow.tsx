@@ -152,7 +152,7 @@ export default function RuleRow({
 	const operators = getOperators(inputType, type);
 
 	return (
-		<div className="mb-3" ref={attributeDrop}>
+		<div ref={attributeDrop}>
 			<div
 				className={classNames(
 					'align-items-center audience-builder-rule d-flex justify-content-between p-3',

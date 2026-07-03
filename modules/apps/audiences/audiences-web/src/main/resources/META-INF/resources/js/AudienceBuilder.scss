@@ -8,11 +8,14 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-attribute {
+	border: 2px solid transparent;
 	cursor: grab;
 	height: 55px;
 
+	&:focus,
 	&:hover {
-		background-color: $light;
+		background-color: var(--primary-l3);
+		border-color: $primary;
 	}
 
 	&--dragging {
@@ -72,6 +75,10 @@ $toolbar-height: 55px;
 
 .audience-builder-rule {
 	border-left: 4px solid $indigo;
+
+	&:focus-within {
+		background-color: var(--primary-l3);
+	}
 
 	&--dragging {
 		opacity: 0.5;

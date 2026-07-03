@@ -169,7 +169,7 @@ export default function ConditionsPanel({
 								{index > 0 ? (
 									<div
 										aria-hidden="true"
-										className="align-items-center d-flex mb-3"
+										className="align-items-center d-flex my-3"
 									>
 										<span className="audience-builder-conjunction-line border-top" />
 
