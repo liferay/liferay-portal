@@ -16,8 +16,11 @@ import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -27,7 +30,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
@@ -37,8 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 
@@ -49,13 +52,21 @@ public abstract class BaseObjectActionExecutorTestCase {
 
 	@ClassRule
 	@Rule
-	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			new LiferayIntegrationTestRule(),
-			PermissionCheckerMethodTestRule.INSTANCE);
+	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
+		new LiferayIntegrationTestRule();
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_originalName = PrincipalThreadLocal.getName();
+
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		_originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
 		group = GroupTestUtil.addGroup();
 
 		ServiceContextThreadLocal.pushServiceContext(
@@ -78,17 +89,24 @@ public abstract class BaseObjectActionExecutorTestCase {
 					"L_SEO_STUDIO_INSTANCE", TestPropsValues.getCompanyId());
 
 		_updateSEOStudioScanObjectActions(false);
-
-		accountEntry = _addAccountEntry();
-
-		seoStudioInstanceObjectEntry = _addSEOStudioInstanceObjectEntry();
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDownClass() throws Exception {
 		_updateSEOStudioScanObjectActions(true);
 
 		ServiceContextThreadLocal.popServiceContext();
+
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
+
+		PrincipalThreadLocal.setName(_originalName);
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		accountEntry = _addAccountEntry();
+
+		seoStudioInstanceObjectEntry = _addSEOStudioInstanceObjectEntry();
 	}
 
 	protected ObjectEntry addObjectEntry(
@@ -108,15 +126,34 @@ public abstract class BaseObjectActionExecutorTestCase {
 		return objectEntry;
 	}
 
+	protected static Group group;
+	protected static ObjectDefinition seoStudioDomainObjectDefinition;
+
 	protected AccountEntry accountEntry;
-	protected Group group;
 
 	@Inject
 	protected ObjectEntryLocalService objectEntryLocalService;
 
-	protected ObjectDefinition seoStudioDomainObjectDefinition;
 	protected ObjectEntry seoStudioDomainObjectEntry;
 	protected ObjectEntry seoStudioInstanceObjectEntry;
+
+	private static void _updateSEOStudioScanObjectActions(boolean active)
+		throws Exception {
+
+		ObjectDefinition seoStudioScanObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_SEO_STUDIO_SCAN", TestPropsValues.getCompanyId());
+
+		for (ObjectAction objectAction :
+				_objectActionLocalService.getObjectActions(
+					seoStudioScanObjectDefinition.getObjectDefinitionId())) {
+
+			objectAction.setActive(active);
+
+			_objectActionLocalService.updateObjectAction(objectAction);
+		}
+	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
 		return _accountEntryLocalService.addAccountEntry(
@@ -142,39 +179,23 @@ public abstract class BaseObjectActionExecutorTestCase {
 			).build());
 	}
 
-	private void _updateSEOStudioScanObjectActions(boolean active)
-		throws Exception {
+	@Inject
+	private static ObjectActionLocalService _objectActionLocalService;
 
-		ObjectDefinition seoStudioScanObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_SEO_STUDIO_SCAN", TestPropsValues.getCompanyId());
+	@Inject
+	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-		for (ObjectAction objectAction :
-				_objectActionLocalService.getObjectActions(
-					seoStudioScanObjectDefinition.getObjectDefinitionId())) {
+	private static String _originalName;
+	private static PermissionChecker _originalPermissionChecker;
+	private static ObjectDefinition _seoStudioInstanceObjectDefinition;
 
-			objectAction.setActive(active);
-
-			_objectActionLocalService.updateObjectAction(objectAction);
-		}
-	}
+	@Inject
+	private static SiteInitializerRegistry _siteInitializerRegistry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
-	@Inject
-	private ObjectActionLocalService _objectActionLocalService;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
 	@DeleteAfterTestRun
 	private List<ObjectEntry> _objectEntries = new ArrayList<>();
-
-	private ObjectDefinition _seoStudioInstanceObjectDefinition;
-
-	@Inject
-	private SiteInitializerRegistry _siteInitializerRegistry;
 
 }
