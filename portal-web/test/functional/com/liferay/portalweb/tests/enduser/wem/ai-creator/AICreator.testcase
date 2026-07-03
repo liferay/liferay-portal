@@ -22,7 +22,7 @@ definition {
 
 	@description = "This is a test for LPS-179484. The site administrator could access to the OpenAI configuration page of Instance Settings."
 	@priority = 4
-	test AccessToOpenAIConfigurationPageOfInstanceSettings {
+	test AccessToOpenAIConfigurationPage {
 		task ("Given a site administrator goes to the Instance Settings") {
 			PortalSettings.openInstanceSettingsAdmin();
 		}
