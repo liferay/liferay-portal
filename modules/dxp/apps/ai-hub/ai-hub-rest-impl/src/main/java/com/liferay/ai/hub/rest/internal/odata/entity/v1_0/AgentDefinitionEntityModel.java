@@ -5,7 +5,9 @@
 
 package com.liferay.ai.hub.rest.internal.odata.entity.v1_0;
 
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.odata.entity.BooleanEntityField;
+import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 
@@ -38,7 +40,13 @@ public class AgentDefinitionEntityModel implements EntityModel {
 	@Activate
 	protected void activate() {
 		_entityFieldMap = EntityModel.toEntityFieldsMap(
-			new BooleanEntityField("active", locale -> "active"));
+			new BooleanEntityField("active", locale -> "active"),
+			new DateTimeEntityField(
+				"dateCreated", locale -> Field.CREATE_DATE,
+				locale -> Field.CREATE_DATE),
+			new DateTimeEntityField(
+				"dateModified", locale -> "modifiedDate",
+				locale -> "modifiedDate"));
 	}
 
 	private Map<String, EntityField> _entityFieldMap;
