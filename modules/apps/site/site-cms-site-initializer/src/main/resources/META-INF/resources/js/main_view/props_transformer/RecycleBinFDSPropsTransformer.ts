@@ -7,6 +7,7 @@ import {
 	IBulkActionItem,
 	IInternalRenderer,
 } from '@liferay/frontend-data-set-web';
+import {getCMSItemSelectorGroupedFilters} from '@liferay/frontend-js-item-selector-web';
 import {sub} from 'frontend-js-web';
 
 import {
@@ -76,6 +77,7 @@ export default function RecycleBinFDSPropsTransformer({
 				} as IInternalRenderer,
 			],
 		},
+		groupedFilters: getCMSItemSelectorGroupedFilters('scopeGroupId'),
 		hideManagementBarInEmptyState: true,
 		itemsActions: itemsActions.map((action) => {
 			if (action?.data?.id === 'actionLink') {
