@@ -142,7 +142,7 @@ public class LayoutUtilityPageEntryDisplayContext {
 
 		_orderByCol = ParamUtil.getString(
 			_renderRequest, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM,
-			"modified-date");
+			"create-date");
 
 		return _orderByCol;
 	}
