@@ -125,6 +125,8 @@ public class CompanyInfoPersistenceImpl
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
 		dbColumnNames.put("key", "key_");
+		dbColumnNames.put("size", "size_");
+		dbColumnNames.put("type", "type_");
 
 		setDBColumnNames(dbColumnNames);
 
@@ -332,7 +334,7 @@ public class CompanyInfoPersistenceImpl
 		"SELECT companyInfo FROM CompanyInfo companyInfo WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
-		new String[] {"key"});
+		new String[] {"key", "size", "type"});
 
 	@Override
 	protected FinderCache getFinderCache() {
@@ -340,4 +342,4 @@ public class CompanyInfoPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:31304860
+// LIFERAY-SERVICE-BUILDER-HASH:-1807579771

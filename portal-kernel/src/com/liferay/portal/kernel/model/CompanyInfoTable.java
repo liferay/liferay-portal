@@ -28,12 +28,40 @@ public class CompanyInfoTable extends BaseTable<CompanyInfoTable> {
 		"companyInfoId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<CompanyInfoTable, Long> companyId = createColumn(
 		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> homeURL = createColumn(
+		"homeURL", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> indexNameCurrent =
+		createColumn(
+			"indexNameCurrent", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> indexNameNext = createColumn(
+		"indexNameNext", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> industry = createColumn(
+		"industry", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CompanyInfoTable, Clob> key = createColumn(
 		"key_", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> legalId = createColumn(
+		"legalId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> legalName = createColumn(
+		"legalName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> legalType = createColumn(
+		"legalType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, Long> logoId = createColumn(
+		"logoId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> name = createColumn(
+		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> sicCode = createColumn(
+		"sicCode", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> size = createColumn(
+		"size_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> tickerSymbol = createColumn(
+		"tickerSymbol", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CompanyInfoTable, String> type = createColumn(
+		"type_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private CompanyInfoTable() {
 		super("CompanyInfo", CompanyInfoTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1707422040
+// LIFERAY-SERVICE-BUILDER-HASH:-1059117305

@@ -73,12 +73,38 @@ public interface Company extends CompanyModel, PersistedModel {
 	public User getGuestUser()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getHomeURL();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getIndexNameCurrent();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getIndexNameNext();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getIndustry();
+
 	public String getKey();
 
 	public java.security.Key getKeyObj();
 
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getLegalId();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getLegalName();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getLegalType();
+
 	public java.util.Locale getLocale()
 		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public long getLogoId();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getName();
 
 	public String getPortalURL(long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -89,8 +115,20 @@ public interface Company extends CompanyModel, PersistedModel {
 	public String getShortName()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getSicCode();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getSize();
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getTickerSymbol();
+
 	public java.util.TimeZone getTimeZone()
 		throws com.liferay.portal.kernel.exception.PortalException;
+
+	@com.liferay.portal.kernel.bean.AutoEscape
+	public String getType();
 
 	public String getVirtualHostname();
 
@@ -112,11 +150,37 @@ public interface Company extends CompanyModel, PersistedModel {
 
 	public void setGroupId(long groupId);
 
+	public void setHomeURL(String homeURL);
+
+	public void setIndexNameCurrent(String indexNameCurrent);
+
+	public void setIndexNameNext(String indexNameNext);
+
+	public void setIndustry(String industry);
+
 	public void setKey(String key);
 
 	public void setKeyObj(java.security.Key keyObj);
 
+	public void setLegalId(String legalId);
+
+	public void setLegalName(String legalName);
+
+	public void setLegalType(String legalType);
+
+	public void setLogoId(long logoId);
+
+	public void setName(String name);
+
+	public void setSicCode(String sicCode);
+
+	public void setSize(String size);
+
+	public void setTickerSymbol(String tickerSymbol);
+
+	public void setType(String type);
+
 	public void setVirtualHostname(String virtualHostname);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1558084506
+// LIFERAY-SERVICE-BUILDER-HASH:1636826691

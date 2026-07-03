@@ -40,21 +40,8 @@ public class CompanyWrapper
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("webId", getWebId());
 		attributes.put("mx", getMx());
-		attributes.put("homeURL", getHomeURL());
-		attributes.put("logoId", getLogoId());
 		attributes.put("maxUsers", getMaxUsers());
 		attributes.put("active", isActive());
-		attributes.put("name", getName());
-		attributes.put("legalName", getLegalName());
-		attributes.put("legalId", getLegalId());
-		attributes.put("legalType", getLegalType());
-		attributes.put("sicCode", getSicCode());
-		attributes.put("tickerSymbol", getTickerSymbol());
-		attributes.put("industry", getIndustry());
-		attributes.put("type", getType());
-		attributes.put("size", getSize());
-		attributes.put("indexNameCurrent", getIndexNameCurrent());
-		attributes.put("indexNameNext", getIndexNameNext());
 
 		return attributes;
 	}
@@ -109,18 +96,6 @@ public class CompanyWrapper
 			setMx(mx);
 		}
 
-		String homeURL = (String)attributes.get("homeURL");
-
-		if (homeURL != null) {
-			setHomeURL(homeURL);
-		}
-
-		Long logoId = (Long)attributes.get("logoId");
-
-		if (logoId != null) {
-			setLogoId(logoId);
-		}
-
 		Integer maxUsers = (Integer)attributes.get("maxUsers");
 
 		if (maxUsers != null) {
@@ -131,72 +106,6 @@ public class CompanyWrapper
 
 		if (active != null) {
 			setActive(active);
-		}
-
-		String name = (String)attributes.get("name");
-
-		if (name != null) {
-			setName(name);
-		}
-
-		String legalName = (String)attributes.get("legalName");
-
-		if (legalName != null) {
-			setLegalName(legalName);
-		}
-
-		String legalId = (String)attributes.get("legalId");
-
-		if (legalId != null) {
-			setLegalId(legalId);
-		}
-
-		String legalType = (String)attributes.get("legalType");
-
-		if (legalType != null) {
-			setLegalType(legalType);
-		}
-
-		String sicCode = (String)attributes.get("sicCode");
-
-		if (sicCode != null) {
-			setSicCode(sicCode);
-		}
-
-		String tickerSymbol = (String)attributes.get("tickerSymbol");
-
-		if (tickerSymbol != null) {
-			setTickerSymbol(tickerSymbol);
-		}
-
-		String industry = (String)attributes.get("industry");
-
-		if (industry != null) {
-			setIndustry(industry);
-		}
-
-		String type = (String)attributes.get("type");
-
-		if (type != null) {
-			setType(type);
-		}
-
-		String size = (String)attributes.get("size");
-
-		if (size != null) {
-			setSize(size);
-		}
-
-		String indexNameCurrent = (String)attributes.get("indexNameCurrent");
-
-		if (indexNameCurrent != null) {
-			setIndexNameCurrent(indexNameCurrent);
-		}
-
-		String indexNameNext = (String)attributes.get("indexNameNext");
-
-		if (indexNameNext != null) {
-			setIndexNameNext(indexNameNext);
 		}
 	}
 
@@ -295,41 +204,21 @@ public class CompanyWrapper
 		return model.getGuestUser();
 	}
 
-	/**
-	 * Returns the home url of this company.
-	 *
-	 * @return the home url of this company
-	 */
 	@Override
 	public String getHomeURL() {
 		return model.getHomeURL();
 	}
 
-	/**
-	 * Returns the index name current of this company.
-	 *
-	 * @return the index name current of this company
-	 */
 	@Override
 	public String getIndexNameCurrent() {
 		return model.getIndexNameCurrent();
 	}
 
-	/**
-	 * Returns the index name next of this company.
-	 *
-	 * @return the index name next of this company
-	 */
 	@Override
 	public String getIndexNameNext() {
 		return model.getIndexNameNext();
 	}
 
-	/**
-	 * Returns the industry of this company.
-	 *
-	 * @return the industry of this company
-	 */
 	@Override
 	public String getIndustry() {
 		return model.getIndustry();
@@ -345,31 +234,16 @@ public class CompanyWrapper
 		return model.getKeyObj();
 	}
 
-	/**
-	 * Returns the legal ID of this company.
-	 *
-	 * @return the legal ID of this company
-	 */
 	@Override
 	public String getLegalId() {
 		return model.getLegalId();
 	}
 
-	/**
-	 * Returns the legal name of this company.
-	 *
-	 * @return the legal name of this company
-	 */
 	@Override
 	public String getLegalName() {
 		return model.getLegalName();
 	}
 
-	/**
-	 * Returns the legal type of this company.
-	 *
-	 * @return the legal type of this company
-	 */
 	@Override
 	public String getLegalType() {
 		return model.getLegalType();
@@ -382,11 +256,6 @@ public class CompanyWrapper
 		return model.getLocale();
 	}
 
-	/**
-	 * Returns the logo ID of this company.
-	 *
-	 * @return the logo ID of this company
-	 */
 	@Override
 	public long getLogoId() {
 		return model.getLogoId();
@@ -432,11 +301,6 @@ public class CompanyWrapper
 		return model.getMx();
 	}
 
-	/**
-	 * Returns the name of this company.
-	 *
-	 * @return the name of this company
-	 */
 	@Override
 	public String getName() {
 		return model.getName();
@@ -473,31 +337,16 @@ public class CompanyWrapper
 		return model.getShortName();
 	}
 
-	/**
-	 * Returns the sic code of this company.
-	 *
-	 * @return the sic code of this company
-	 */
 	@Override
 	public String getSicCode() {
 		return model.getSicCode();
 	}
 
-	/**
-	 * Returns the size of this company.
-	 *
-	 * @return the size of this company
-	 */
 	@Override
 	public String getSize() {
 		return model.getSize();
 	}
 
-	/**
-	 * Returns the ticker symbol of this company.
-	 *
-	 * @return the ticker symbol of this company
-	 */
 	@Override
 	public String getTickerSymbol() {
 		return model.getTickerSymbol();
@@ -510,11 +359,6 @@ public class CompanyWrapper
 		return model.getTimeZone();
 	}
 
-	/**
-	 * Returns the type of this company.
-	 *
-	 * @return the type of this company
-	 */
 	@Override
 	public String getType() {
 		return model.getType();
@@ -655,41 +499,21 @@ public class CompanyWrapper
 		model.setGroupId(groupId);
 	}
 
-	/**
-	 * Sets the home url of this company.
-	 *
-	 * @param homeURL the home url of this company
-	 */
 	@Override
 	public void setHomeURL(String homeURL) {
 		model.setHomeURL(homeURL);
 	}
 
-	/**
-	 * Sets the index name current of this company.
-	 *
-	 * @param indexNameCurrent the index name current of this company
-	 */
 	@Override
 	public void setIndexNameCurrent(String indexNameCurrent) {
 		model.setIndexNameCurrent(indexNameCurrent);
 	}
 
-	/**
-	 * Sets the index name next of this company.
-	 *
-	 * @param indexNameNext the index name next of this company
-	 */
 	@Override
 	public void setIndexNameNext(String indexNameNext) {
 		model.setIndexNameNext(indexNameNext);
 	}
 
-	/**
-	 * Sets the industry of this company.
-	 *
-	 * @param industry the industry of this company
-	 */
 	@Override
 	public void setIndustry(String industry) {
 		model.setIndustry(industry);
@@ -705,41 +529,21 @@ public class CompanyWrapper
 		model.setKeyObj(keyObj);
 	}
 
-	/**
-	 * Sets the legal ID of this company.
-	 *
-	 * @param legalId the legal ID of this company
-	 */
 	@Override
 	public void setLegalId(String legalId) {
 		model.setLegalId(legalId);
 	}
 
-	/**
-	 * Sets the legal name of this company.
-	 *
-	 * @param legalName the legal name of this company
-	 */
 	@Override
 	public void setLegalName(String legalName) {
 		model.setLegalName(legalName);
 	}
 
-	/**
-	 * Sets the legal type of this company.
-	 *
-	 * @param legalType the legal type of this company
-	 */
 	@Override
 	public void setLegalType(String legalType) {
 		model.setLegalType(legalType);
 	}
 
-	/**
-	 * Sets the logo ID of this company.
-	 *
-	 * @param logoId the logo ID of this company
-	 */
 	@Override
 	public void setLogoId(long logoId) {
 		model.setLogoId(logoId);
@@ -785,11 +589,6 @@ public class CompanyWrapper
 		model.setMx(mx);
 	}
 
-	/**
-	 * Sets the name of this company.
-	 *
-	 * @param name the name of this company
-	 */
 	@Override
 	public void setName(String name) {
 		model.setName(name);
@@ -805,41 +604,21 @@ public class CompanyWrapper
 		model.setPrimaryKey(primaryKey);
 	}
 
-	/**
-	 * Sets the sic code of this company.
-	 *
-	 * @param sicCode the sic code of this company
-	 */
 	@Override
 	public void setSicCode(String sicCode) {
 		model.setSicCode(sicCode);
 	}
 
-	/**
-	 * Sets the size of this company.
-	 *
-	 * @param size the size of this company
-	 */
 	@Override
 	public void setSize(String size) {
 		model.setSize(size);
 	}
 
-	/**
-	 * Sets the ticker symbol of this company.
-	 *
-	 * @param tickerSymbol the ticker symbol of this company
-	 */
 	@Override
 	public void setTickerSymbol(String tickerSymbol) {
 		model.setTickerSymbol(tickerSymbol);
 	}
 
-	/**
-	 * Sets the type of this company.
-	 *
-	 * @param type the type of this company
-	 */
 	@Override
 	public void setType(String type) {
 		model.setType(type);
@@ -901,4 +680,4 @@ public class CompanyWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1514070203
+// LIFERAY-SERVICE-BUILDER-HASH:1560710173

@@ -91,6 +91,66 @@ public interface CompanyInfoModel
 	public void setCompanyId(long companyId);
 
 	/**
+	 * Returns the home url of this company info.
+	 *
+	 * @return the home url of this company info
+	 */
+	@AutoEscape
+	public String getHomeURL();
+
+	/**
+	 * Sets the home url of this company info.
+	 *
+	 * @param homeURL the home url of this company info
+	 */
+	public void setHomeURL(String homeURL);
+
+	/**
+	 * Returns the index name current of this company info.
+	 *
+	 * @return the index name current of this company info
+	 */
+	@AutoEscape
+	public String getIndexNameCurrent();
+
+	/**
+	 * Sets the index name current of this company info.
+	 *
+	 * @param indexNameCurrent the index name current of this company info
+	 */
+	public void setIndexNameCurrent(String indexNameCurrent);
+
+	/**
+	 * Returns the index name next of this company info.
+	 *
+	 * @return the index name next of this company info
+	 */
+	@AutoEscape
+	public String getIndexNameNext();
+
+	/**
+	 * Sets the index name next of this company info.
+	 *
+	 * @param indexNameNext the index name next of this company info
+	 */
+	public void setIndexNameNext(String indexNameNext);
+
+	/**
+	 * Returns the industry of this company info.
+	 *
+	 * @return the industry of this company info
+	 */
+	@AutoEscape
+	public String getIndustry();
+
+	/**
+	 * Sets the industry of this company info.
+	 *
+	 * @param industry the industry of this company info
+	 */
+	public void setIndustry(String industry);
+
+	/**
 	 * Returns the key of this company info.
 	 *
 	 * @return the key of this company info
@@ -105,6 +165,140 @@ public interface CompanyInfoModel
 	 */
 	public void setKey(String key);
 
+	/**
+	 * Returns the legal ID of this company info.
+	 *
+	 * @return the legal ID of this company info
+	 */
+	@AutoEscape
+	public String getLegalId();
+
+	/**
+	 * Sets the legal ID of this company info.
+	 *
+	 * @param legalId the legal ID of this company info
+	 */
+	public void setLegalId(String legalId);
+
+	/**
+	 * Returns the legal name of this company info.
+	 *
+	 * @return the legal name of this company info
+	 */
+	@AutoEscape
+	public String getLegalName();
+
+	/**
+	 * Sets the legal name of this company info.
+	 *
+	 * @param legalName the legal name of this company info
+	 */
+	public void setLegalName(String legalName);
+
+	/**
+	 * Returns the legal type of this company info.
+	 *
+	 * @return the legal type of this company info
+	 */
+	@AutoEscape
+	public String getLegalType();
+
+	/**
+	 * Sets the legal type of this company info.
+	 *
+	 * @param legalType the legal type of this company info
+	 */
+	public void setLegalType(String legalType);
+
+	/**
+	 * Returns the logo ID of this company info.
+	 *
+	 * @return the logo ID of this company info
+	 */
+	public long getLogoId();
+
+	/**
+	 * Sets the logo ID of this company info.
+	 *
+	 * @param logoId the logo ID of this company info
+	 */
+	public void setLogoId(long logoId);
+
+	/**
+	 * Returns the name of this company info.
+	 *
+	 * @return the name of this company info
+	 */
+	@AutoEscape
+	public String getName();
+
+	/**
+	 * Sets the name of this company info.
+	 *
+	 * @param name the name of this company info
+	 */
+	public void setName(String name);
+
+	/**
+	 * Returns the sic code of this company info.
+	 *
+	 * @return the sic code of this company info
+	 */
+	@AutoEscape
+	public String getSicCode();
+
+	/**
+	 * Sets the sic code of this company info.
+	 *
+	 * @param sicCode the sic code of this company info
+	 */
+	public void setSicCode(String sicCode);
+
+	/**
+	 * Returns the size of this company info.
+	 *
+	 * @return the size of this company info
+	 */
+	@AutoEscape
+	public String getSize();
+
+	/**
+	 * Sets the size of this company info.
+	 *
+	 * @param size the size of this company info
+	 */
+	public void setSize(String size);
+
+	/**
+	 * Returns the ticker symbol of this company info.
+	 *
+	 * @return the ticker symbol of this company info
+	 */
+	@AutoEscape
+	public String getTickerSymbol();
+
+	/**
+	 * Sets the ticker symbol of this company info.
+	 *
+	 * @param tickerSymbol the ticker symbol of this company info
+	 */
+	public void setTickerSymbol(String tickerSymbol);
+
+	/**
+	 * Returns the type of this company info.
+	 *
+	 * @return the type of this company info
+	 */
+	@AutoEscape
+	public String getType();
+
+	/**
+	 * Sets the type of this company info.
+	 *
+	 * @param type the type of this company info
+	 */
+	public void setType(String type);
+
 	@Override
 	public CompanyInfo cloneWithOriginalValues();
 
@@ -113,4 +307,4 @@ public interface CompanyInfoModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1825035269
+// LIFERAY-SERVICE-BUILDER-HASH:-936766156

@@ -39,40 +39,14 @@ public class CompanyTable extends BaseTable<CompanyTable> {
 		"webId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CompanyTable, String> mx = createColumn(
 		"mx", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> homeURL = createColumn(
-		"homeURL", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, Long> logoId = createColumn(
-		"logoId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<CompanyTable, Integer> maxUsers = createColumn(
 		"maxUsers", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<CompanyTable, Boolean> active = createColumn(
 		"active_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> legalName = createColumn(
-		"legalName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> legalId = createColumn(
-		"legalId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> legalType = createColumn(
-		"legalType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> sicCode = createColumn(
-		"sicCode", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> tickerSymbol = createColumn(
-		"tickerSymbol", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> industry = createColumn(
-		"industry", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> type = createColumn(
-		"type_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> size = createColumn(
-		"size_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> indexNameCurrent = createColumn(
-		"indexNameCurrent", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CompanyTable, String> indexNameNext = createColumn(
-		"indexNameNext", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private CompanyTable() {
 		super("Company", CompanyTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-727820500
+// LIFERAY-SERVICE-BUILDER-HASH:373410433

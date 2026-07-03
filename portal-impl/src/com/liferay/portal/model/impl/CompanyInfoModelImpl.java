@@ -58,7 +58,14 @@ public class CompanyInfoModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"companyInfoId", Types.BIGINT},
-		{"companyId", Types.BIGINT}, {"key_", Types.CLOB}
+		{"companyId", Types.BIGINT}, {"homeURL", Types.VARCHAR},
+		{"indexNameCurrent", Types.VARCHAR}, {"indexNameNext", Types.VARCHAR},
+		{"industry", Types.VARCHAR}, {"key_", Types.CLOB},
+		{"legalId", Types.VARCHAR}, {"legalName", Types.VARCHAR},
+		{"legalType", Types.VARCHAR}, {"logoId", Types.BIGINT},
+		{"name", Types.VARCHAR}, {"sicCode", Types.VARCHAR},
+		{"size_", Types.VARCHAR}, {"tickerSymbol", Types.VARCHAR},
+		{"type_", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -68,11 +75,24 @@ public class CompanyInfoModelImpl
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyInfoId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("homeURL", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("indexNameCurrent", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("indexNameNext", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("industry", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("key_", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("legalId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("legalName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("legalType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("logoId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sicCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("size_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("tickerSymbol", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CompanyInfo (mvccVersion LONG default 0 not null,companyInfoId LONG not null primary key,companyId LONG,key_ TEXT null)";
+		"create table CompanyInfo (mvccVersion LONG default 0 not null,companyInfoId LONG not null primary key,companyId LONG,homeURL STRING null,indexNameCurrent VARCHAR(75) null,indexNameNext VARCHAR(75) null,industry VARCHAR(75) null,key_ TEXT null,legalId VARCHAR(75) null,legalName VARCHAR(75) null,legalType VARCHAR(75) null,logoId LONG,name VARCHAR(75) null,sicCode VARCHAR(75) null,size_ VARCHAR(75) null,tickerSymbol VARCHAR(75) null,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CompanyInfo";
 
@@ -226,7 +246,25 @@ public class CompanyInfoModelImpl
 				"companyInfoId", CompanyInfo::getCompanyInfoId);
 			attributeGetterFunctions.put(
 				"companyId", CompanyInfo::getCompanyId);
+			attributeGetterFunctions.put("homeURL", CompanyInfo::getHomeURL);
+			attributeGetterFunctions.put(
+				"indexNameCurrent", CompanyInfo::getIndexNameCurrent);
+			attributeGetterFunctions.put(
+				"indexNameNext", CompanyInfo::getIndexNameNext);
+			attributeGetterFunctions.put("industry", CompanyInfo::getIndustry);
 			attributeGetterFunctions.put("key", CompanyInfo::getKey);
+			attributeGetterFunctions.put("legalId", CompanyInfo::getLegalId);
+			attributeGetterFunctions.put(
+				"legalName", CompanyInfo::getLegalName);
+			attributeGetterFunctions.put(
+				"legalType", CompanyInfo::getLegalType);
+			attributeGetterFunctions.put("logoId", CompanyInfo::getLogoId);
+			attributeGetterFunctions.put("name", CompanyInfo::getName);
+			attributeGetterFunctions.put("sicCode", CompanyInfo::getSicCode);
+			attributeGetterFunctions.put("size", CompanyInfo::getSize);
+			attributeGetterFunctions.put(
+				"tickerSymbol", CompanyInfo::getTickerSymbol);
+			attributeGetterFunctions.put("type", CompanyInfo::getType);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -253,7 +291,44 @@ public class CompanyInfoModelImpl
 				"companyId",
 				(BiConsumer<CompanyInfo, Long>)CompanyInfo::setCompanyId);
 			attributeSetterBiConsumers.put(
+				"homeURL",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setHomeURL);
+			attributeSetterBiConsumers.put(
+				"indexNameCurrent",
+				(BiConsumer<CompanyInfo, String>)
+					CompanyInfo::setIndexNameCurrent);
+			attributeSetterBiConsumers.put(
+				"indexNameNext",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setIndexNameNext);
+			attributeSetterBiConsumers.put(
+				"industry",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setIndustry);
+			attributeSetterBiConsumers.put(
 				"key", (BiConsumer<CompanyInfo, String>)CompanyInfo::setKey);
+			attributeSetterBiConsumers.put(
+				"legalId",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setLegalId);
+			attributeSetterBiConsumers.put(
+				"legalName",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setLegalName);
+			attributeSetterBiConsumers.put(
+				"legalType",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setLegalType);
+			attributeSetterBiConsumers.put(
+				"logoId",
+				(BiConsumer<CompanyInfo, Long>)CompanyInfo::setLogoId);
+			attributeSetterBiConsumers.put(
+				"name", (BiConsumer<CompanyInfo, String>)CompanyInfo::setName);
+			attributeSetterBiConsumers.put(
+				"sicCode",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setSicCode);
+			attributeSetterBiConsumers.put(
+				"size", (BiConsumer<CompanyInfo, String>)CompanyInfo::setSize);
+			attributeSetterBiConsumers.put(
+				"tickerSymbol",
+				(BiConsumer<CompanyInfo, String>)CompanyInfo::setTickerSymbol);
+			attributeSetterBiConsumers.put(
+				"type", (BiConsumer<CompanyInfo, String>)CompanyInfo::setType);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -314,6 +389,82 @@ public class CompanyInfoModelImpl
 	}
 
 	@Override
+	public String getHomeURL() {
+		if (_homeURL == null) {
+			return "";
+		}
+		else {
+			return _homeURL;
+		}
+	}
+
+	@Override
+	public void setHomeURL(String homeURL) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_homeURL = homeURL;
+	}
+
+	@Override
+	public String getIndexNameCurrent() {
+		if (_indexNameCurrent == null) {
+			return "";
+		}
+		else {
+			return _indexNameCurrent;
+		}
+	}
+
+	@Override
+	public void setIndexNameCurrent(String indexNameCurrent) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_indexNameCurrent = indexNameCurrent;
+	}
+
+	@Override
+	public String getIndexNameNext() {
+		if (_indexNameNext == null) {
+			return "";
+		}
+		else {
+			return _indexNameNext;
+		}
+	}
+
+	@Override
+	public void setIndexNameNext(String indexNameNext) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_indexNameNext = indexNameNext;
+	}
+
+	@Override
+	public String getIndustry() {
+		if (_industry == null) {
+			return "";
+		}
+		else {
+			return _industry;
+		}
+	}
+
+	@Override
+	public void setIndustry(String industry) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_industry = industry;
+	}
+
+	@Override
 	public String getKey() {
 		if (_key == null) {
 			return "";
@@ -330,6 +481,172 @@ public class CompanyInfoModelImpl
 		}
 
 		_key = key;
+	}
+
+	@Override
+	public String getLegalId() {
+		if (_legalId == null) {
+			return "";
+		}
+		else {
+			return _legalId;
+		}
+	}
+
+	@Override
+	public void setLegalId(String legalId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_legalId = legalId;
+	}
+
+	@Override
+	public String getLegalName() {
+		if (_legalName == null) {
+			return "";
+		}
+		else {
+			return _legalName;
+		}
+	}
+
+	@Override
+	public void setLegalName(String legalName) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_legalName = legalName;
+	}
+
+	@Override
+	public String getLegalType() {
+		if (_legalType == null) {
+			return "";
+		}
+		else {
+			return _legalType;
+		}
+	}
+
+	@Override
+	public void setLegalType(String legalType) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_legalType = legalType;
+	}
+
+	@Override
+	public long getLogoId() {
+		return _logoId;
+	}
+
+	@Override
+	public void setLogoId(long logoId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_logoId = logoId;
+	}
+
+	@Override
+	public String getName() {
+		if (_name == null) {
+			return "";
+		}
+		else {
+			return _name;
+		}
+	}
+
+	@Override
+	public void setName(String name) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_name = name;
+	}
+
+	@Override
+	public String getSicCode() {
+		if (_sicCode == null) {
+			return "";
+		}
+		else {
+			return _sicCode;
+		}
+	}
+
+	@Override
+	public void setSicCode(String sicCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_sicCode = sicCode;
+	}
+
+	@Override
+	public String getSize() {
+		if (_size == null) {
+			return "";
+		}
+		else {
+			return _size;
+		}
+	}
+
+	@Override
+	public void setSize(String size) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_size = size;
+	}
+
+	@Override
+	public String getTickerSymbol() {
+		if (_tickerSymbol == null) {
+			return "";
+		}
+		else {
+			return _tickerSymbol;
+		}
+	}
+
+	@Override
+	public void setTickerSymbol(String tickerSymbol) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_tickerSymbol = tickerSymbol;
+	}
+
+	@Override
+	public String getType() {
+		if (_type == null) {
+			return "";
+		}
+		else {
+			return _type;
+		}
+	}
+
+	@Override
+	public void setType(String type) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_type = type;
 	}
 
 	public long getColumnBitmask() {
@@ -391,7 +708,20 @@ public class CompanyInfoModelImpl
 		companyInfoImpl.setMvccVersion(getMvccVersion());
 		companyInfoImpl.setCompanyInfoId(getCompanyInfoId());
 		companyInfoImpl.setCompanyId(getCompanyId());
+		companyInfoImpl.setHomeURL(getHomeURL());
+		companyInfoImpl.setIndexNameCurrent(getIndexNameCurrent());
+		companyInfoImpl.setIndexNameNext(getIndexNameNext());
+		companyInfoImpl.setIndustry(getIndustry());
 		companyInfoImpl.setKey(getKey());
+		companyInfoImpl.setLegalId(getLegalId());
+		companyInfoImpl.setLegalName(getLegalName());
+		companyInfoImpl.setLegalType(getLegalType());
+		companyInfoImpl.setLogoId(getLogoId());
+		companyInfoImpl.setName(getName());
+		companyInfoImpl.setSicCode(getSicCode());
+		companyInfoImpl.setSize(getSize());
+		companyInfoImpl.setTickerSymbol(getTickerSymbol());
+		companyInfoImpl.setType(getType());
 
 		companyInfoImpl.resetOriginalValues();
 
@@ -408,7 +738,29 @@ public class CompanyInfoModelImpl
 			this.<Long>getColumnOriginalValue("companyInfoId"));
 		companyInfoImpl.setCompanyId(
 			this.<Long>getColumnOriginalValue("companyId"));
+		companyInfoImpl.setHomeURL(
+			this.<String>getColumnOriginalValue("homeURL"));
+		companyInfoImpl.setIndexNameCurrent(
+			this.<String>getColumnOriginalValue("indexNameCurrent"));
+		companyInfoImpl.setIndexNameNext(
+			this.<String>getColumnOriginalValue("indexNameNext"));
+		companyInfoImpl.setIndustry(
+			this.<String>getColumnOriginalValue("industry"));
 		companyInfoImpl.setKey(this.<String>getColumnOriginalValue("key_"));
+		companyInfoImpl.setLegalId(
+			this.<String>getColumnOriginalValue("legalId"));
+		companyInfoImpl.setLegalName(
+			this.<String>getColumnOriginalValue("legalName"));
+		companyInfoImpl.setLegalType(
+			this.<String>getColumnOriginalValue("legalType"));
+		companyInfoImpl.setLogoId(this.<Long>getColumnOriginalValue("logoId"));
+		companyInfoImpl.setName(this.<String>getColumnOriginalValue("name"));
+		companyInfoImpl.setSicCode(
+			this.<String>getColumnOriginalValue("sicCode"));
+		companyInfoImpl.setSize(this.<String>getColumnOriginalValue("size_"));
+		companyInfoImpl.setTickerSymbol(
+			this.<String>getColumnOriginalValue("tickerSymbol"));
+		companyInfoImpl.setType(this.<String>getColumnOriginalValue("type_"));
 
 		return companyInfoImpl;
 	}
@@ -491,12 +843,110 @@ public class CompanyInfoModelImpl
 
 		companyInfoCacheModel.companyId = getCompanyId();
 
+		companyInfoCacheModel.homeURL = getHomeURL();
+
+		String homeURL = companyInfoCacheModel.homeURL;
+
+		if ((homeURL != null) && (homeURL.length() == 0)) {
+			companyInfoCacheModel.homeURL = null;
+		}
+
+		companyInfoCacheModel.indexNameCurrent = getIndexNameCurrent();
+
+		String indexNameCurrent = companyInfoCacheModel.indexNameCurrent;
+
+		if ((indexNameCurrent != null) && (indexNameCurrent.length() == 0)) {
+			companyInfoCacheModel.indexNameCurrent = null;
+		}
+
+		companyInfoCacheModel.indexNameNext = getIndexNameNext();
+
+		String indexNameNext = companyInfoCacheModel.indexNameNext;
+
+		if ((indexNameNext != null) && (indexNameNext.length() == 0)) {
+			companyInfoCacheModel.indexNameNext = null;
+		}
+
+		companyInfoCacheModel.industry = getIndustry();
+
+		String industry = companyInfoCacheModel.industry;
+
+		if ((industry != null) && (industry.length() == 0)) {
+			companyInfoCacheModel.industry = null;
+		}
+
 		companyInfoCacheModel.key = getKey();
 
 		String key = companyInfoCacheModel.key;
 
 		if ((key != null) && (key.length() == 0)) {
 			companyInfoCacheModel.key = null;
+		}
+
+		companyInfoCacheModel.legalId = getLegalId();
+
+		String legalId = companyInfoCacheModel.legalId;
+
+		if ((legalId != null) && (legalId.length() == 0)) {
+			companyInfoCacheModel.legalId = null;
+		}
+
+		companyInfoCacheModel.legalName = getLegalName();
+
+		String legalName = companyInfoCacheModel.legalName;
+
+		if ((legalName != null) && (legalName.length() == 0)) {
+			companyInfoCacheModel.legalName = null;
+		}
+
+		companyInfoCacheModel.legalType = getLegalType();
+
+		String legalType = companyInfoCacheModel.legalType;
+
+		if ((legalType != null) && (legalType.length() == 0)) {
+			companyInfoCacheModel.legalType = null;
+		}
+
+		companyInfoCacheModel.logoId = getLogoId();
+
+		companyInfoCacheModel.name = getName();
+
+		String name = companyInfoCacheModel.name;
+
+		if ((name != null) && (name.length() == 0)) {
+			companyInfoCacheModel.name = null;
+		}
+
+		companyInfoCacheModel.sicCode = getSicCode();
+
+		String sicCode = companyInfoCacheModel.sicCode;
+
+		if ((sicCode != null) && (sicCode.length() == 0)) {
+			companyInfoCacheModel.sicCode = null;
+		}
+
+		companyInfoCacheModel.size = getSize();
+
+		String size = companyInfoCacheModel.size;
+
+		if ((size != null) && (size.length() == 0)) {
+			companyInfoCacheModel.size = null;
+		}
+
+		companyInfoCacheModel.tickerSymbol = getTickerSymbol();
+
+		String tickerSymbol = companyInfoCacheModel.tickerSymbol;
+
+		if ((tickerSymbol != null) && (tickerSymbol.length() == 0)) {
+			companyInfoCacheModel.tickerSymbol = null;
+		}
+
+		companyInfoCacheModel.type = getType();
+
+		String type = companyInfoCacheModel.type;
+
+		if ((type != null) && (type.length() == 0)) {
+			companyInfoCacheModel.type = null;
 		}
 
 		return companyInfoCacheModel;
@@ -563,7 +1013,20 @@ public class CompanyInfoModelImpl
 	private long _mvccVersion;
 	private long _companyInfoId;
 	private long _companyId;
+	private String _homeURL;
+	private String _indexNameCurrent;
+	private String _indexNameNext;
+	private String _industry;
 	private String _key;
+	private String _legalId;
+	private String _legalName;
+	private String _legalType;
+	private long _logoId;
+	private String _name;
+	private String _sicCode;
+	private String _size;
+	private String _tickerSymbol;
+	private String _type;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -598,7 +1061,20 @@ public class CompanyInfoModelImpl
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("companyInfoId", _companyInfoId);
 		_columnOriginalValues.put("companyId", _companyId);
+		_columnOriginalValues.put("homeURL", _homeURL);
+		_columnOriginalValues.put("indexNameCurrent", _indexNameCurrent);
+		_columnOriginalValues.put("indexNameNext", _indexNameNext);
+		_columnOriginalValues.put("industry", _industry);
 		_columnOriginalValues.put("key_", _key);
+		_columnOriginalValues.put("legalId", _legalId);
+		_columnOriginalValues.put("legalName", _legalName);
+		_columnOriginalValues.put("legalType", _legalType);
+		_columnOriginalValues.put("logoId", _logoId);
+		_columnOriginalValues.put("name", _name);
+		_columnOriginalValues.put("sicCode", _sicCode);
+		_columnOriginalValues.put("size_", _size);
+		_columnOriginalValues.put("tickerSymbol", _tickerSymbol);
+		_columnOriginalValues.put("type_", _type);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -607,6 +1083,8 @@ public class CompanyInfoModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("key_", "key");
+		attributeNames.put("size_", "size");
+		attributeNames.put("type_", "type");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -628,7 +1106,33 @@ public class CompanyInfoModelImpl
 
 		columnBitmasks.put("companyId", 4L);
 
-		columnBitmasks.put("key_", 8L);
+		columnBitmasks.put("homeURL", 8L);
+
+		columnBitmasks.put("indexNameCurrent", 16L);
+
+		columnBitmasks.put("indexNameNext", 32L);
+
+		columnBitmasks.put("industry", 64L);
+
+		columnBitmasks.put("key_", 128L);
+
+		columnBitmasks.put("legalId", 256L);
+
+		columnBitmasks.put("legalName", 512L);
+
+		columnBitmasks.put("legalType", 1024L);
+
+		columnBitmasks.put("logoId", 2048L);
+
+		columnBitmasks.put("name", 4096L);
+
+		columnBitmasks.put("sicCode", 8192L);
+
+		columnBitmasks.put("size_", 16384L);
+
+		columnBitmasks.put("tickerSymbol", 32768L);
+
+		columnBitmasks.put("type_", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -637,4 +1141,4 @@ public class CompanyInfoModelImpl
 	private CompanyInfo _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-848778778
+// LIFERAY-SERVICE-BUILDER-HASH:1174498965

@@ -578,24 +578,24 @@
 		<field name="mvccVersion" type="long" />
 		<field name="companyInfoId" type="long" />
 		<field name="companyId" type="long" />
-		<field name="key" type="String">
-			<hint-collection name="CLOB" />
-		</field>
 		<field name="homeURL" type="String">
 			<hint-collection name="URL" />
 		</field>
-		<field name="logoId" type="long" />
-		<field name="name" type="String" />
-		<field name="legalName" type="String" />
-		<field name="legalId" type="String" />
-		<field name="legalType" type="String" />
-		<field name="sicCode" type="String" />
-		<field name="tickerSymbol" type="String" />
-		<field name="industry" type="String" />
-		<field name="type" type="String" />
-		<field name="size" type="String" />
 		<field name="indexNameCurrent" type="String" />
 		<field name="indexNameNext" type="String" />
+		<field name="industry" type="String" />
+		<field name="key" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="legalId" type="String" />
+		<field name="legalName" type="String" />
+		<field name="legalType" type="String" />
+		<field name="logoId" type="long" />
+		<field name="name" type="String" />
+		<field name="sicCode" type="String" />
+		<field name="size" type="String" />
+		<field name="tickerSymbol" type="String" />
+		<field name="type" type="String" />
 	</model>
 	<model name="com.liferay.portal.kernel.model.Contact">
 		<default-hints>

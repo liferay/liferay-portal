@@ -231,28 +231,28 @@ create table Company (
 	modifiedDate DATE null,
 	webId VARCHAR(75) null,
 	mx VARCHAR(200) null,
-	homeURL STRING null,
-	logoId LONG,
 	maxUsers INTEGER,
-	active_ BOOLEAN,
-	name VARCHAR(75) null,
-	legalName VARCHAR(75) null,
-	legalId VARCHAR(75) null,
-	legalType VARCHAR(75) null,
-	sicCode VARCHAR(75) null,
-	tickerSymbol VARCHAR(75) null,
-	industry VARCHAR(75) null,
-	type_ VARCHAR(75) null,
-	size_ VARCHAR(75) null,
-	indexNameCurrent VARCHAR(75) null,
-	indexNameNext VARCHAR(75) null
+	active_ BOOLEAN
 );
 
 create table CompanyInfo (
 	mvccVersion LONG default 0 not null,
 	companyInfoId LONG not null primary key,
 	companyId LONG,
-	key_ TEXT null
+	homeURL STRING null,
+	indexNameCurrent VARCHAR(75) null,
+	indexNameNext VARCHAR(75) null,
+	industry VARCHAR(75) null,
+	key_ TEXT null,
+	legalId VARCHAR(75) null,
+	legalName VARCHAR(75) null,
+	legalType VARCHAR(75) null,
+	logoId LONG,
+	name VARCHAR(75) null,
+	sicCode VARCHAR(75) null,
+	size_ VARCHAR(75) null,
+	tickerSymbol VARCHAR(75) null,
+	type_ VARCHAR(75) null
 );
 
 create table Contact_ (

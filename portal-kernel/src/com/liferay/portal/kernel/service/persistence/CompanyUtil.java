@@ -171,75 +171,6 @@ public class CompanyUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the companies where logoId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.CompanyModelImpl</code>.
-	 * </p>
-	 *
-	 * @param logoId the logo ID
-	 * @param start the lower bound of the range of companies
-	 * @param end the upper bound of the range of companies (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching companies
-	 */
-	public static List<Company> findByLogoId(
-		long logoId, int start, int end,
-		OrderByComparator<Company> orderByComparator, boolean useFinderCache) {
-
-		return getPersistence().findByLogoId(
-			logoId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first company in the ordered set where logoId = &#63;.
-	 *
-	 * @param logoId the logo ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching company
-	 * @throws NoSuchCompanyException if a matching company could not be found
-	 */
-	public static Company findByLogoId_First(
-			long logoId, OrderByComparator<Company> orderByComparator)
-		throws com.liferay.portal.kernel.exception.NoSuchCompanyException {
-
-		return getPersistence().findByLogoId_First(logoId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first company in the ordered set where logoId = &#63;.
-	 *
-	 * @param logoId the logo ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching company, or <code>null</code> if a matching company could not be found
-	 */
-	public static Company fetchByLogoId_First(
-		long logoId, OrderByComparator<Company> orderByComparator) {
-
-		return getPersistence().fetchByLogoId_First(logoId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the companies where logoId = &#63; from the database.
-	 *
-	 * @param logoId the logo ID
-	 */
-	public static void removeByLogoId(long logoId) {
-		getPersistence().removeByLogoId(logoId);
-	}
-
-	/**
-	 * Returns the number of companies where logoId = &#63;.
-	 *
-	 * @param logoId the logo ID
-	 * @return the number of matching companies
-	 */
-	public static int countByLogoId(long logoId) {
-		return getPersistence().countByLogoId(logoId);
-	}
-
-	/**
 	 * Creates a new company with the primary key. Does not add the company to the database.
 	 *
 	 * @param companyId the primary key for the new company
@@ -299,53 +230,6 @@ public class CompanyUtil {
 		return getPersistence().fetchByWebId(webId);
 	}
 
-	/**
-	 * Returns all the companies where logoId = &#63;.
-	 *
-	 * @param logoId the logo ID
-	 * @return the matching companies
-	 */
-	public static List<Company> findByLogoId(long logoId) {
-		return getPersistence().findByLogoId(logoId);
-	}
-
-	/**
-	 * Returns a range of all the companies where logoId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.CompanyModelImpl</code>.
-	 * </p>
-	 *
-	 * @param logoId the logo ID
-	 * @param start the lower bound of the range of companies
-	 * @param end the upper bound of the range of companies (not inclusive)
-	 * @return the range of matching companies
-	 */
-	public static List<Company> findByLogoId(long logoId, int start, int end) {
-		return getPersistence().findByLogoId(logoId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the companies where logoId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.CompanyModelImpl</code>.
-	 * </p>
-	 *
-	 * @param logoId the logo ID
-	 * @param start the lower bound of the range of companies
-	 * @param end the upper bound of the range of companies (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching companies
-	 */
-	public static List<Company> findByLogoId(
-		long logoId, int start, int end,
-		OrderByComparator<Company> orderByComparator) {
-
-		return getPersistence().findByLogoId(
-			logoId, start, end, orderByComparator);
-	}
-
 	public static CompanyPersistence getPersistence() {
 		return _persistence;
 	}
@@ -357,4 +241,4 @@ public class CompanyUtil {
 	private static volatile CompanyPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1972810345
+// LIFERAY-SERVICE-BUILDER-HASH:-1766332173
