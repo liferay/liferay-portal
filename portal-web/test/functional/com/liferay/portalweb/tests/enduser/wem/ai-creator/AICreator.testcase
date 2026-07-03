@@ -283,55 +283,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-188490. The content creator should see new error message when the generic errors happen on generating content."
-	@priority = 3
-	test ViewErrorMessageWhenGenericErrorsHappenOnGeneratingContent {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given a content creator configures the API key") {
-			GogoShell.openGogoShellAdmin();
-
-			GogoShell.executeCommand(commandName = "scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient");
-
-			GogoShell.viewOutput(outputContent = "true");
-
-			PortalSettings.gotoConfiguration(
-				configurationCategory = "AI Creator",
-				configurationName = "OpenAI",
-				configurationScope = "Virtual Instance Scope");
-
-			InputField.editText(
-				fieldLabel = "API Key",
-				text = "VALID_API_KEY");
-
-			PortletEntry.save();
-		}
-
-		task ("When the content creator meets generic errors on generating content") {
-			HeadlessSite.addSite(siteName = ${randomSiteName});
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = ${siteURLKey});
-
-			WebContentNavigator.gotoAddCP();
-
-			Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
-
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-			InputField.editText(
-				fieldLabel = "Description",
-				text = "OPENAI_API_IOEXCEPTION");
-
-			Button.clickCreate();
-		}
-
-		task ("Then the content creator should see error message") {
-			Alert.viewErrorMessage(errorMessage = "An unexpected error occurred.");
-		}
-	}
-
-	@description = "This is a test for LPS-188490. The content creator should see new error message when the OpenAI server errors happen on generating content."
+	@description = "This is a test for LPS-188490. The content creator should see new error message when the generic errors or the OpenAI server errors happen on generating content."
 	@priority = 3
 	test ViewErrorMessageWhenErrorsHappenOnGeneratingContent {
 		property test.liferay.virtual.instance = "false";
@@ -388,6 +340,18 @@ definition {
 
 		task ("Then the content creator should see error message") {
 			Alert.viewErrorMessage(errorMessage = "The server had an error while processing your request. Check this link for further information about OpenAI issues.");
+		}
+
+		task ("When the content creator meets the generic errors on generating content") {
+			InputField.editText(
+				fieldLabel = "Description",
+				text = "OPENAI_API_IOEXCEPTION");
+
+			Button.clickCreate();
+		}
+
+		task ("Then the content creator should see error message") {
+			Alert.viewErrorMessage(errorMessage = "An unexpected error occurred.");
 		}
 	}
 
