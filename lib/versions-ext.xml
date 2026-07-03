@@ -592,19 +592,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mockito-core.jar</file-name>
-				<version>4.5.1</version>
-				<project-name>Mockito</project-name>
-				<project-url>https://github.com/mockito/mockito</project-url>
-				<licenses>
-					<license>
-						<license-name>MIT License</license-name>
-						<license-url>http://opensource.org/licenses/MIT</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>lib/development/mockito-inline.jar</file-name>
-				<version>4.5.1</version>
+				<version>5.15.2</version>
 				<project-name>Mockito</project-name>
 				<project-url>https://github.com/mockito/mockito</project-url>
 				<licenses>
@@ -628,7 +616,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/objenesis.jar</file-name>
-				<version>2.1</version>
+				<version>3.3</version>
 				<project-name>Objenesis</project-name>
 				<project-url>http://code.google.com/p/objenesis</project-url>
 				<licenses>

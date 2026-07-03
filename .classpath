@@ -84,7 +84,6 @@
 	<classpathentry kind="lib" path="lib/development/mariadb.jar"/>
 	<classpathentry kind="lib" path="lib/development/maven-ant-tasks.jar"/>
 	<classpathentry kind="lib" path="lib/development/mockito-core.jar"/>
-	<classpathentry kind="lib" path="lib/development/mockito-inline.jar"/>
 	<classpathentry kind="lib" path="lib/development/mysql.jar"/>
 	<classpathentry kind="lib" path="lib/development/objenesis.jar"/>
 	<classpathentry kind="lib" path="lib/development/osgi-annotation-versioning.jar"/>
