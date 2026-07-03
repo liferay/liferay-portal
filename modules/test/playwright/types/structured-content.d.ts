@@ -4,5 +4,6 @@
  */
 
 type StructuredContent = {
+	id: number;
 	key: string;
 };
