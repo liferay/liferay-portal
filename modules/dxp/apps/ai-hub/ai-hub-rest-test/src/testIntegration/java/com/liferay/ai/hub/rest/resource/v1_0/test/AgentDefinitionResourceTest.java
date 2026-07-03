@@ -69,6 +69,8 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -165,10 +167,26 @@ public class AgentDefinitionResourceTest
 		_testGetAgentDefinitionsPageWithPermissions();
 	}
 
+	@Override
+	@Test
+	public void testGetAgentDefinitionsPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		_assertGetAgentDefinitionsPageFilteredByDateTime("dateCreated");
+		_assertGetAgentDefinitionsPageFilteredByDateTime("dateModified");
+	}
+
 	@Ignore
 	@Override
 	@Test
 	public void testGetAgentDefinitionsPageWithPagination() {
+	}
+
+	@Override
+	@Test
+	public void testGetAgentDefinitionsPageWithSortDateTime() throws Exception {
+		_assertGetAgentDefinitionsPageSortedByDateTime("dateCreated");
+		_assertGetAgentDefinitionsPageSortedByDateTime("dateModified");
 	}
 
 	@Override
@@ -532,6 +550,50 @@ public class AgentDefinitionResourceTest
 		Assert.assertEquals(expectedLabel, model.getLabel());
 		Assert.assertEquals(expectedName, model.getName());
 		Assert.assertEquals(expectedProviderLabel, model.getProviderLabel());
+	}
+
+	private void _assertGetAgentDefinitionsPageFilteredByDateTime(
+			String filterField)
+		throws Exception {
+
+		long totalCount = agentDefinitionResource.getAgentDefinitionsPage(
+			null, null, Pagination.of(1, 1), null
+		).getTotalCount();
+
+		Page<AgentDefinition> pastPage =
+			agentDefinitionResource.getAgentDefinitionsPage(
+				null, filterField + " gt 2000-01-01T00:00:00Z",
+				Pagination.of(1, 1), null);
+
+		Assert.assertEquals(totalCount, pastPage.getTotalCount());
+
+		Page<AgentDefinition> futurePage =
+			agentDefinitionResource.getAgentDefinitionsPage(
+				null, filterField + " gt 3000-01-01T00:00:00Z",
+				Pagination.of(1, 1), null);
+
+		Assert.assertEquals(0, futurePage.getTotalCount());
+	}
+
+	private void _assertGetAgentDefinitionsPageSortedByDateTime(
+			String sortField)
+		throws Exception {
+
+		Page<AgentDefinition> ascPage =
+			agentDefinitionResource.getAgentDefinitionsPage(
+				null, null, Pagination.of(1, 10), sortField + ":asc");
+
+		Page<AgentDefinition> descPage =
+			agentDefinitionResource.getAgentDefinitionsPage(
+				null, null, Pagination.of(1, 10), sortField + ":desc");
+
+		List<AgentDefinition> agentDefinitions = new ArrayList<>(
+			(List<AgentDefinition>)descPage.getItems());
+
+		Collections.reverse(agentDefinitions);
+
+		assertEquals(
+			(List<AgentDefinition>)ascPage.getItems(), agentDefinitions);
 	}
 
 	private Page<AgentDefinition> _getAgentDefinitionsPageWithModel(
