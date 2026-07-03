@@ -11,7 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 const MOCKED_IMAGE_PATH =
-	'USER_IMAGES_URL_https://images.freeimages.com/images/large-previews/83f/paris-1213603.jpg';
+	'USER_IMAGES_URL_http://localhost:8080/o/classic-theme/images/favicon.ico';
 
 const test = mergeTests(
 	documentLibraryPagesTest,
@@ -71,33 +71,40 @@ test(
 		await gogoShellPage.addCommand(
 			'scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
 		);
-		await aiCreatorInstanceSettingsPage.addApiKey();
 
-		await documentLibraryPage.goto(site.friendlyUrlPath);
-		await documentLibraryPage.openCreateAIImage();
-		await expect(page.getByText('Create AI Image')).toBeVisible();
+		try {
+			await aiCreatorInstanceSettingsPage.addApiKey();
 
-		const createAIImageModalPage = page.frameLocator(
-			'iframe[title="Create AI Image"]'
-		);
-		await createAIImageModalPage
-			.getByPlaceholder('Write something...')
-			.fill(MOCKED_IMAGE_PATH);
-		await createAIImageModalPage
-			.getByRole('button', {name: 'Create'})
-			.click();
-		await createAIImageModalPage.getByRole('checkbox').first().check();
-		await createAIImageModalPage
-			.getByRole('button', {name: 'Add Selected'})
-			.click();
-		await waitForAlert(page, 'Success:1 files were successfully added.');
-		await expect(
-			page.getByRole('link').filter({hasText: 'AI-image-'})
-		).toHaveCount(1);
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openCreateAIImage();
+			await expect(page.getByText('Create AI Image')).toBeVisible();
 
-		await aiCreatorInstanceSettingsPage.removeApiKey();
-		await gogoShellPage.addCommand(
-			'scr:disable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
-		);
+			const createAIImageModalPage = page.frameLocator(
+				'iframe[title="Create AI Image"]'
+			);
+			await createAIImageModalPage
+				.getByPlaceholder('Write something...')
+				.fill(MOCKED_IMAGE_PATH);
+			await createAIImageModalPage
+				.getByRole('button', {name: 'Create'})
+				.click();
+			await createAIImageModalPage.getByRole('checkbox').first().check();
+			await createAIImageModalPage
+				.getByRole('button', {name: 'Add Selected'})
+				.click();
+			await waitForAlert(
+				page,
+				'Success:1 files were successfully added.'
+			);
+			await expect(
+				page.getByRole('link').filter({hasText: 'AI-image-'})
+			).toHaveCount(1);
+		}
+		finally {
+			await aiCreatorInstanceSettingsPage.removeApiKey();
+			await gogoShellPage.addCommand(
+				'scr:disable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
+			);
+		}
 	}
 );
