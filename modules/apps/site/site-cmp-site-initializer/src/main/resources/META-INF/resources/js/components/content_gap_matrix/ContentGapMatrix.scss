@@ -1,0 +1,141 @@
+@import 'atlas-variables';
+
+$content-gap-cell-text: #125449;
+$content-gap-cell-text-gap: #863a00;
+$content-gap-cell-text-inverse: #ffffff;
+$content-gap-cell-tiers: (
+	1: #ccf4ee,
+	2: #96e9db,
+	3: #5dc9b7,
+	4: #15806e,
+);
+
+.lfr-cmp__content-gap-cell {
+	align-items: center;
+	border: 0.0625rem solid $secondary-l3;
+	border-radius: 0.5rem;
+	display: flex;
+	justify-content: center;
+	min-height: 4rem;
+	overflow: hidden;
+	position: relative;
+
+	@each $tier, $color in $content-gap-cell-tiers {
+		&--tier-#{$tier} {
+			background-color: $color;
+		}
+	}
+
+	&--tier-4 .lfr-cmp__content-gap-cell-count {
+		color: $content-gap-cell-text-inverse;
+	}
+
+	&--gap {
+		background-color: $light-l1;
+		border-color: $warning;
+		border-style: dashed;
+
+		.lfr-cmp__content-gap-cell-count {
+			color: $content-gap-cell-text-gap;
+		}
+	}
+}
+
+.lfr-cmp__content-gap-cell-count {
+	color: $content-gap-cell-text;
+	font-size: 1rem;
+	font-weight: 600;
+	position: relative;
+	z-index: 1;
+}
+
+.lfr-cmp__content-gap-matrix-card {
+	width: 100%;
+}
+
+.lfr-cmp__content-gap-matrix-column-header {
+	color: $body-color;
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding-bottom: 0.5rem;
+	text-align: center;
+}
+
+.lfr-cmp__content-gap-matrix-container {
+	border-color: $secondary-l3;
+	border-radius: 0.5rem;
+	border-style: solid;
+	border-width: 0.0625rem;
+	margin: 1.5rem;
+	padding: 1.5rem;
+
+	.empty-state {
+		padding-bottom: 1rem;
+		padding-top: 1rem;
+	}
+}
+
+.lfr-cmp__content-gap-matrix-corner {
+	background-color: transparent;
+}
+
+.lfr-cmp__content-gap-matrix-description {
+	color: $secondary;
+	font-size: 0.875rem;
+	margin-bottom: 0;
+}
+
+.lfr-cmp__content-gap-matrix-grid {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.lfr-cmp__content-gap-matrix-header {
+	margin: 1.5rem;
+}
+
+.lfr-cmp__content-gap-matrix-header-stats {
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+
+	.label {
+		margin: 0;
+		text-transform: none;
+	}
+}
+
+.lfr-cmp__content-gap-matrix-header-title {
+	align-items: center;
+	color: $secondary;
+	display: flex;
+	font-size: 0.875rem;
+	font-weight: 600;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.lfr-cmp__content-gap-matrix-intro {
+	margin-bottom: 1.5rem;
+}
+
+.lfr-cmp__content-gap-matrix-row {
+	display: contents;
+}
+
+.lfr-cmp__content-gap-matrix-row-header {
+	align-items: center;
+	color: $body-color;
+	display: flex;
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding-right: 1rem;
+}
+
+.lfr-cmp__content-gap-matrix-title {
+	color: $body-color;
+	font-size: 1rem;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+	text-transform: uppercase;
+}
