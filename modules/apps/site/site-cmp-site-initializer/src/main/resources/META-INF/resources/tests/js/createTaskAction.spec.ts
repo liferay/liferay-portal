@@ -41,6 +41,7 @@ describe('createTaskAction', () => {
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
 				closeModal: mockCloseModal,
+				projectObjectDefinitionId: 123,
 			});
 		});
 	});
