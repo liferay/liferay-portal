@@ -17,7 +17,7 @@
 			<then>
 				<local name="java.jdk.home" />
 
-				<get-java-jdk-home type="oracle" version="17" />
+				<get-java-jdk-home type="oracle" version="21" />
 
 				<ant antfile="build-dist.xml" inheritAll="false" target="unzip-weblogic">
 					<property name="weblogic.java.jdk.home" value="${java.jdk.home}" />
