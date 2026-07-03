@@ -418,7 +418,7 @@ definition {
 	@description = "This test covers LPS-94294. This test asserts that a user can comment on a document it is shared with him"
 	@priority = 4
 	@refactordone
-	test CanShareWithCommentPermissions {
+	test CanShareWithPermissions {
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "DM Document Title",
