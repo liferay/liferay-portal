@@ -38,6 +38,8 @@ test(
 				'Bookmark',
 				'Image',
 				'Video',
+				'Timestamp',
+				'Styles'
 			];
 
 			const availableButtons =
