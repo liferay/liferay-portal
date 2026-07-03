@@ -9,7 +9,7 @@ import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.OutputGuardrail;
 import dev.langchain4j.invocation.InvocationParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
+import dev.langchain4j.model.google.genai.GoogleGenAiStreamingChatModel;
 import dev.langchain4j.observability.api.listener.AiServiceListener;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.tool.ToolProvider;
@@ -29,6 +29,7 @@ public class AssistantHandlerContext {
 
 	public AssistantHandlerContext(AssistantHandlerContext.Builder builder) {
 		_aiServiceListeners = builder._aiServiceListeners;
+		_googleGenAiStreamingChatModel = builder._googleGenAiStreamingChatModel;
 		_inputGuardrails = builder._inputGuardrails;
 		_invocationParameters = builder._invocationParameters;
 		_memoryId = builder._memoryId;
@@ -40,12 +41,14 @@ public class AssistantHandlerContext {
 		_tools = builder._tools;
 		_toolProvider = builder._toolProvider;
 		_userMessage = builder._userMessage;
-		_vertexAiGeminiStreamingChatModel =
-			builder._vertexAiGeminiStreamingChatModel;
 	}
 
 	public List<AiServiceListener<?>> getAiServiceListeners() {
 		return _aiServiceListeners;
+	}
+
+	public GoogleGenAiStreamingChatModel getGoogleGenAiStreamingChatModel() {
+		return _googleGenAiStreamingChatModel;
 	}
 
 	public List<InputGuardrail> getInputGuardrails() {
@@ -92,12 +95,6 @@ public class AssistantHandlerContext {
 		return _userMessage;
 	}
 
-	public VertexAiGeminiStreamingChatModel
-		getVertexAiGeminiStreamingChatModel() {
-
-		return _vertexAiGeminiStreamingChatModel;
-	}
-
 	public static class Builder {
 
 		public Builder aiServiceListeners(
@@ -110,6 +107,14 @@ public class AssistantHandlerContext {
 
 		public AssistantHandlerContext build() {
 			return new AssistantHandlerContext(this);
+		}
+
+		public Builder googleGenAiStreamingChatModel(
+			GoogleGenAiStreamingChatModel googleGenAiStreamingChatModel) {
+
+			_googleGenAiStreamingChatModel = googleGenAiStreamingChatModel;
+
+			return this;
 		}
 
 		public Builder inputGuardrails(List<InputGuardrail> inputGuardrails) {
@@ -190,16 +195,8 @@ public class AssistantHandlerContext {
 			return this;
 		}
 
-		public Builder vertexAiGeminiStreamingChatModel(
-			VertexAiGeminiStreamingChatModel vertexAiGeminiStreamingChatModel) {
-
-			_vertexAiGeminiStreamingChatModel =
-				vertexAiGeminiStreamingChatModel;
-
-			return this;
-		}
-
 		private List<AiServiceListener<?>> _aiServiceListeners;
+		private GoogleGenAiStreamingChatModel _googleGenAiStreamingChatModel;
 		private List<InputGuardrail> _inputGuardrails;
 		private InvocationParameters _invocationParameters;
 		private String _memoryId;
@@ -211,12 +208,11 @@ public class AssistantHandlerContext {
 		private ToolProvider _toolProvider;
 		private Object[] _tools = new Object[0];
 		private String _userMessage;
-		private VertexAiGeminiStreamingChatModel
-			_vertexAiGeminiStreamingChatModel;
 
 	}
 
 	private final List<AiServiceListener<?>> _aiServiceListeners;
+	private final GoogleGenAiStreamingChatModel _googleGenAiStreamingChatModel;
 	private final List<InputGuardrail> _inputGuardrails;
 	private final InvocationParameters _invocationParameters;
 	private final String _memoryId;
@@ -228,7 +224,5 @@ public class AssistantHandlerContext {
 	private final ToolProvider _toolProvider;
 	private final Object[] _tools;
 	private final String _userMessage;
-	private final VertexAiGeminiStreamingChatModel
-		_vertexAiGeminiStreamingChatModel;
 
 }

@@ -9,8 +9,6 @@ import com.liferay.ai.hub.internal.mcp.tool.provider.MCPToolProviderUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
-
 import java.util.function.Consumer;
 
 /**
@@ -18,14 +16,9 @@ import java.util.function.Consumer;
  */
 public class OnErrorConsumerUtil {
 
-	public static Consumer<Throwable> create(
-		String sseEventSinkKey,
-		VertexAiGeminiStreamingChatModel vertexAiGeminiStreamingChatModel) {
-
+	public static Consumer<Throwable> create(String sseEventSinkKey) {
 		return throwable -> {
 			MCPToolProviderUtil.close(sseEventSinkKey);
-
-			vertexAiGeminiStreamingChatModel.close();
 
 			_log.error(throwable);
 		};

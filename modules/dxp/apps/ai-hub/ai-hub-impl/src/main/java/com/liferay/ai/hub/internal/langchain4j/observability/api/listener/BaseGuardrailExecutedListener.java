@@ -77,21 +77,27 @@ public abstract class BaseGuardrailExecutedListener {
 			}
 		}
 
-		Message message = new Message();
+		try {
+			Message message = new Message();
 
-		KaleoInstanceToken kaleoInstanceToken =
-			_executionContext.getKaleoInstanceToken();
+			KaleoInstanceToken kaleoInstanceToken =
+				_executionContext.getKaleoInstanceToken();
 
-		message.put("companyId", kaleoInstanceToken.getCompanyId());
+			message.put("companyId", kaleoInstanceToken.getCompanyId());
 
-		message.put("createDate", new Date());
-		message.put("exception", new IllegalArgumentException(failureMessage));
-		message.put("userId", kaleoInstanceToken.getUserId());
-		message.put(
-			"workflowInstanceId", kaleoInstanceToken.getKaleoInstanceId());
+			message.put("createDate", new Date());
+			message.put(
+				"exception", new IllegalArgumentException(failureMessage));
+			message.put("userId", kaleoInstanceToken.getUserId());
+			message.put(
+				"workflowInstanceId", kaleoInstanceToken.getKaleoInstanceId());
 
-		MessageBusUtil.sendMessage(
-			WorkflowInstanceDestinationNames.WORKFLOW_INSTANCE, message);
+			MessageBusUtil.sendMessage(
+				WorkflowInstanceDestinationNames.WORKFLOW_INSTANCE, message);
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -8,8 +8,8 @@ package com.liferay.ai.hub.internal.agent;
 import com.liferay.ai.hub.agent.AgentContext;
 import com.liferay.ai.hub.agent.SupervisorAgent;
 import com.liferay.ai.hub.internal.exception.ContentInjectorException;
+import com.liferay.ai.hub.internal.langchain4j.model.chat.GoogleGenAiChatModelWrapper;
 import com.liferay.ai.hub.internal.memory.ChatMemoryProviderUtil;
-import com.liferay.ai.hub.internal.model.VertexAiGeminiUtil;
 import com.liferay.ai.hub.quota.QuotaManager;
 import com.liferay.ai.hub.rest.resource.v1_0.util.SseUtil;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
@@ -44,7 +44,7 @@ import dev.langchain4j.agentic.scope.AgenticScope;
 import dev.langchain4j.agentic.scope.ResultWithAgenticScope;
 import dev.langchain4j.agentic.supervisor.SupervisorContextStrategy;
 import dev.langchain4j.agentic.supervisor.SupervisorResponseStrategy;
-import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
+import dev.langchain4j.model.chat.ChatModel;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -76,17 +76,16 @@ public class SupervisorAgentImpl implements SupervisorAgent {
 					PermissionChecker originalPermissionChecker =
 						PermissionThreadLocal.getPermissionChecker();
 
-					try (VertexAiGeminiChatModel vertexAiGeminiChatModel =
-							VertexAiGeminiUtil.createVertexAiGeminiChatModel(
-								_quotaManager,
-								agentContext.getServiceContext())) {
-
+					try {
 						PermissionThreadLocal.setPermissionChecker(
 							permissionChecker);
 
 						_invoke(
-							agentContext, internalAgents,
-							vertexAiGeminiChatModel);
+							agentContext,
+							new GoogleGenAiChatModelWrapper(
+								_quotaManager,
+								agentContext.getServiceContext()),
+							internalAgents);
 					}
 					catch (Exception exception) {
 						_handleException(agentContext, exception);
@@ -236,8 +235,8 @@ public class SupervisorAgentImpl implements SupervisorAgent {
 	}
 
 	private void _invoke(
-			AgentContext agentContext, InternalAgent[] internalAgents,
-			VertexAiGeminiChatModel vertexAiGeminiChatModel)
+			AgentContext agentContext, ChatModel chatModel,
+			InternalAgent[] internalAgents)
 		throws PortalException {
 
 		_quotaManager.checkTokensUsage(
@@ -251,7 +250,7 @@ public class SupervisorAgentImpl implements SupervisorAgent {
 				memoryId -> ChatMemoryProviderUtil.provide(
 					agentContext.getSseEventSinkKey())
 			).chatModel(
-				vertexAiGeminiChatModel
+				chatModel
 			).contextGenerationStrategy(
 				SupervisorContextStrategy.CHAT_MEMORY_AND_SUMMARIZATION
 			).maxAgentsInvocations(

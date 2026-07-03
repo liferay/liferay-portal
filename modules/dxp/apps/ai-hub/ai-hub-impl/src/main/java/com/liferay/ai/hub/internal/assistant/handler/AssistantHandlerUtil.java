@@ -42,12 +42,12 @@ public class AssistantHandlerUtil {
 
 		Assistant assistant = aiServices.inputGuardrails(
 			assistantHandlerContext.getInputGuardrails()
-		).maxSequentialToolsInvocations(
+		).maxToolCallingRoundTrips(
 			7
 		).outputGuardrails(
 			assistantHandlerContext.getOutputGuardrails()
 		).streamingChatModel(
-			assistantHandlerContext.getVertexAiGeminiStreamingChatModel()
+			assistantHandlerContext.getGoogleGenAiStreamingChatModel()
 		).systemMessageProvider(
 			assistantHandlerContext.getSystemMessageProviderFunction()
 		).toolProvider(

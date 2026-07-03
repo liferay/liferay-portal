@@ -8,7 +8,6 @@ package com.liferay.ai.hub.internal.langchain4j.model.chat.listener;
 import com.liferay.ai.hub.quota.QuotaManager;
 import com.liferay.ai.hub.quota.Source;
 import com.liferay.ai.hub.quota.Usage;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -67,8 +66,8 @@ public class AIHubChatModelListenerImpl implements ChatModelListener {
 				).build(),
 				_userId);
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 	}
 

@@ -18,7 +18,6 @@ import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import dev.langchain4j.agentic.UntypedAgent;
 import dev.langchain4j.agentic.internal.InternalAgent;
-import dev.langchain4j.agentic.observability.AgentListenerProvider;
 import dev.langchain4j.agentic.planner.AgentArgument;
 
 /**
@@ -64,10 +63,7 @@ public class InternalAgentFactory {
 
 		return (InternalAgent)ProxyUtil.newProxyInstance(
 			UntypedAgent.class.getClassLoader(),
-			new Class<?>[] {
-				AgentListenerProvider.class, InternalAgent.class,
-				UntypedAgent.class
-			},
+			new Class<?>[] {InternalAgent.class, UntypedAgent.class},
 			internalAgentImpl);
 	}
 

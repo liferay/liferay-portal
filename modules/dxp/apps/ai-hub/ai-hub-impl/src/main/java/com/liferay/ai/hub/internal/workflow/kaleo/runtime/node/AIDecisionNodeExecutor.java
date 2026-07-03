@@ -12,7 +12,7 @@ import com.liferay.ai.hub.internal.langchain4j.observability.api.listener.AiServ
 import com.liferay.ai.hub.internal.langchain4j.observability.api.listener.InputGuardrailExecutedListenerImpl;
 import com.liferay.ai.hub.internal.langchain4j.observability.api.listener.OutputGuardrailExecutedListenerImpl;
 import com.liferay.ai.hub.internal.mcp.tool.provider.MCPToolProviderUtil;
-import com.liferay.ai.hub.internal.model.VertexAiGeminiUtil;
+import com.liferay.ai.hub.internal.model.GoogleGenAiUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.GuardrailsUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoNodeSettingUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.MessageUtil;
@@ -25,6 +25,8 @@ import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.VariablesUti
 import com.liferay.ai.hub.quota.QuotaManager;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
+import com.liferay.petra.concurrent.NoticeableExecutorService;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -51,7 +53,6 @@ import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.OutputGuardrail;
 import dev.langchain4j.invocation.InvocationParameters;
-import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
 
 import java.io.Serializable;
 
@@ -61,7 +62,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
@@ -134,6 +137,17 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 
 	}
 
+	@Activate
+	protected void activate() {
+		_noticeableExecutorService = _portalExecutorManager.getPortalExecutor(
+			AIDecisionNodeExecutor.class.getName());
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_noticeableExecutorService.shutdown();
+	}
+
 	@Override
 	protected boolean doEnter(
 		KaleoNode currentKaleoNode, ExecutionContext executionContext) {
@@ -173,11 +187,6 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 		String userMessage = VariablesUtil.applyInputVariables(
 			executionContext, "userMessage", kaleoNodeSettingValues);
 
-		VertexAiGeminiStreamingChatModel vertexAiGeminiStreamingChatModel =
-			VertexAiGeminiUtil.createVertexAiGeminiStreamingChatModel(
-				VertexAiGeminiUtil.TOOL_CALLING_MODEL_NAME, _quotaManager,
-				serviceContext);
-
 		String sseEventSinkKey = GetterUtil.getString(
 			workflowContext.get("sseEventSinkKey"));
 
@@ -190,7 +199,7 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 			serviceContext, workflowContext);
 
 		Consumer<Throwable> onErrorConsumer = OnErrorConsumerUtil.create(
-			sseEventSinkKey, vertexAiGeminiStreamingChatModel);
+			sseEventSinkKey);
 
 		AssistantHandlerUtil.handle(
 			AssistantHandlerContext.builder(
@@ -199,6 +208,9 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 					new AiServiceErrorListenerImpl(onErrorConsumer),
 					new InputGuardrailExecutedListenerImpl(executionContext),
 					new OutputGuardrailExecutedListenerImpl(executionContext))
+			).googleGenAiStreamingChatModel(
+				GoogleGenAiUtil.createGoogleGenAiStreamingChatModel(
+					_noticeableExecutorService, _quotaManager, serviceContext)
 			).inputGuardrails(
 				inputGuardrails
 			).invocationParameters(
@@ -209,8 +221,6 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 			).onCompleteResponseConsumer(
 				chatResponse -> {
 					MCPToolProviderUtil.close(sseEventSinkKey);
-
-					vertexAiGeminiStreamingChatModel.close();
 
 					MessageUtil.sendMessage(
 						chatResponse, kaleoInstanceToken, prompt,
@@ -242,8 +252,6 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 					serviceContext.getUserId(), workflowContext)
 			).userMessage(
 				userMessage
-			).vertexAiGeminiStreamingChatModel(
-				vertexAiGeminiStreamingChatModel
 			).build());
 	}
 
@@ -287,10 +295,15 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 	@Reference
 	private ModelArmorHandler _modelArmorHandler;
 
+	private NoticeableExecutorService _noticeableExecutorService;
+
 	@Reference(
 		target = "(object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
 	)
 	private ObjectEntryManager _objectEntryManager;
+
+	@Reference
+	private PortalExecutorManager _portalExecutorManager;
 
 	@Reference(policyOption = ReferencePolicyOption.GREEDY)
 	private QuotaManager _quotaManager;

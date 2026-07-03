@@ -5,6 +5,9 @@
 
 package com.liferay.ai.hub.internal.langchain4j.observability.api.listener;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import dev.langchain4j.observability.api.event.AiServiceErrorEvent;
 import dev.langchain4j.observability.api.listener.AiServiceErrorListener;
 
@@ -21,8 +24,16 @@ public class AiServiceErrorListenerImpl implements AiServiceErrorListener {
 
 	@Override
 	public void onEvent(AiServiceErrorEvent aiServiceErrorEvent) {
-		_onErrorConsumer.accept(aiServiceErrorEvent.error());
+		try {
+			_onErrorConsumer.accept(aiServiceErrorEvent.error());
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AiServiceErrorListenerImpl.class);
 
 	private final Consumer<Throwable> _onErrorConsumer;
 

@@ -25,11 +25,14 @@ import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
+import dev.langchain4j.agentic.UntypedAgent;
 import dev.langchain4j.agentic.internal.InternalAgent;
-import dev.langchain4j.agentic.observability.AgentListenerProvider;
+import dev.langchain4j.agentic.observability.AgentListener;
 import dev.langchain4j.agentic.planner.AgentArgument;
 import dev.langchain4j.agentic.planner.AgentInstance;
 import dev.langchain4j.agentic.planner.AgenticSystemTopology;
+import dev.langchain4j.agentic.planner.Planner;
+import dev.langchain4j.agentic.scope.AgenticScopeAccess;
 
 import java.io.Serializable;
 
@@ -40,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Feliphe Marinho
@@ -60,6 +64,11 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 	@Override
 	public String agentId() {
 		return _name;
+	}
+
+	@Override
+	public boolean allowStreamingOutput() {
+		return false;
 	}
 
 	@Override
@@ -186,17 +195,30 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] arguments)
 		throws Throwable {
 
-		if ((method.getDeclaringClass() == AgentInstance.class) ||
-			(method.getDeclaringClass() == InternalAgent.class)) {
+		Class<?> declaringClass = method.getDeclaringClass();
+
+		if ((declaringClass == AgentInstance.class) ||
+			(declaringClass == InternalAgent.class) ||
+			(declaringClass == Object.class)) {
 
 			return method.invoke(
 				ProxyUtil.getInvocationHandler(proxy), arguments);
 		}
-		else if (method.getDeclaringClass() == AgentListenerProvider.class) {
+
+		if (declaringClass == AgenticScopeAccess.class) {
+			if (Objects.equals(method.getName(), "evictAgenticScope")) {
+				return false;
+			}
+
 			return null;
 		}
 
 		return invoke((Map<String, ?>)arguments[0]);
+	}
+
+	@Override
+	public AgentListener listener() {
+		return null;
 	}
 
 	@Override
@@ -216,7 +238,16 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 
 	@Override
 	public AgentInstance parent() {
-		return _agentInstance;
+		return _internalAgent;
+	}
+
+	@Override
+	public Class<? extends Planner> plannerType() {
+		return null;
+	}
+
+	@Override
+	public void registerInheritedParentListener(AgentListener agentListener) {
 	}
 
 	public void setAgentArguments(List<AgentArgument> agentArguments) {
@@ -248,8 +279,8 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 	}
 
 	@Override
-	public void setParent(AgentInstance agentInstance) {
-		_agentInstance = agentInstance;
+	public void setParent(InternalAgent internalAgent) {
+		_internalAgent = internalAgent;
 	}
 
 	public void setWorkflowDefinitionName(String workflowDefinitionName) {
@@ -263,19 +294,19 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 
 	@Override
 	public AgenticSystemTopology topology() {
-		return AgenticSystemTopology.SINGLE_AGENT;
+		return AgenticSystemTopology.AI_AGENT;
 	}
 
 	@Override
 	public Class<?> type() {
-		return null;
+		return UntypedAgent.class;
 	}
 
 	private List<AgentArgument> _agentArguments;
 	private final AgentContext _agentContext;
-	private AgentInstance _agentInstance;
 	private boolean _async;
 	private String _description;
+	private InternalAgent _internalAgent;
 	private String _memoryId;
 	private String _name;
 	private String _outBoundEventName;
