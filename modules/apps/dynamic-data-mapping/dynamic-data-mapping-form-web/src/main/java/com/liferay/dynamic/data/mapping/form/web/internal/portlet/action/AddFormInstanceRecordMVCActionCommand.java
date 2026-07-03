@@ -161,6 +161,9 @@ public class AddFormInstanceRecordMVCActionCommand
 			ddmForm.getDDMFormFieldsMap(true),
 			ddmFormEvaluatorEvaluateResponse.getDDMFormFieldsPropertyChanges());
 
+		_updateInvisibleDDMFormFieldValues(
+			actionRequest, ddmFormEvaluatorEvaluateResponse, ddmFormValues);
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMFormInstanceRecord.class.getName(), actionRequest);
 
@@ -287,6 +290,28 @@ public class AddFormInstanceRecordMVCActionCommand
 					false, ddmFormValues, serviceContext);
 			}
 		}
+	}
+
+	private void _updateInvisibleDDMFormFieldValues(
+			ActionRequest actionRequest,
+			DDMFormEvaluatorEvaluateResponse ddmFormEvaluatorEvaluateResponse,
+			DDMFormValues ddmFormValues)
+		throws Exception {
+
+		long ddmFormInstanceRecordId = ParamUtil.getLong(
+			actionRequest, "formInstanceRecordId");
+
+		if (ddmFormInstanceRecordId == 0) {
+			return;
+		}
+
+		DDMFormInstanceRecord ddmFormInstanceRecord =
+			_ddmFormInstanceRecordService.getFormInstanceRecord(
+				ddmFormInstanceRecordId);
+
+		AddFormInstanceRecordMVCCommandUtil.updateInvisibleDDMFormFieldValues(
+			ddmFormEvaluatorEvaluateResponse.getDDMFormFieldsPropertyChanges(),
+			ddmFormValues, ddmFormInstanceRecord.getDDMFormValues());
 	}
 
 	private void _validateCaptcha(
