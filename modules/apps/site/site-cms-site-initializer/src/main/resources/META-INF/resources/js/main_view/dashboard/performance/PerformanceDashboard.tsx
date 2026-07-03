@@ -6,6 +6,7 @@
 import {ConnectToAnalyticsCloud} from '@liferay/analytics-reports-js-components-web';
 import React from 'react';
 
+import {AudienceAndDistribution} from './components/AudienceAndDistribution';
 import {Filters} from './components/Filters';
 import {Overview} from './components/Overview';
 
@@ -32,6 +33,8 @@ export default function PerformanceDashboard({
 			<Filters />
 
 			<Overview />
+
+			<AudienceAndDistribution />
 		</>
 	);
 }
