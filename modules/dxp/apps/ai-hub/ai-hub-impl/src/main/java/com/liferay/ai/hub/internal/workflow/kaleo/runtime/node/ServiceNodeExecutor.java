@@ -6,10 +6,9 @@
 package com.liferay.ai.hub.internal.workflow.kaleo.runtime.node;
 
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoNodeSettingUtil;
+import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.OAuth2ApplicationHomePageURLResolverUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.VariablesUtil;
 import com.liferay.ai.hub.workflow.node.ServiceNodeDelegate;
-import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
@@ -18,9 +17,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InetAddressUtil;
-import com.liferay.portal.kernel.util.PortalRunMode;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.workflow.kaleo.definition.NodeType;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
@@ -33,10 +30,6 @@ import com.liferay.portal.workflow.kaleo.runtime.node.NodeExecutor;
 
 import java.io.Serializable;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +37,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Iliyan Peychev
@@ -110,7 +102,8 @@ public class ServiceNodeExecutor extends BaseNodeExecutor {
 
 		workflowContext.put(
 			"aiHubCellLiferayDXPURL",
-			_getAIHubCellLiferayDXPURL(workflowContext));
+			OAuth2ApplicationHomePageURLResolverUtil.resolve(
+				MapUtil.getLong(workflowContext, "oAuth2ApplicationId")));
 
 		KaleoInstanceToken kaleoInstanceToken =
 			executionContext.getKaleoInstanceToken();
@@ -169,42 +162,8 @@ public class ServiceNodeExecutor extends BaseNodeExecutor {
 					executionContext.getServiceContext())));
 	}
 
-	private String _getAIHubCellLiferayDXPURL(
-			Map<String, Serializable> workflowContext)
-		throws PortalException {
-
-		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.getOAuth2Application(
-				GetterUtil.getLong(workflowContext.get("oAuth2ApplicationId")));
-
-		String homePageURL = oAuth2Application.getHomePageURL();
-
-		try {
-			URL url = new URL(homePageURL);
-
-			if (!PortalRunMode.isTestMode() &&
-				InetAddressUtil.isLocalInetAddress(
-					InetAddressUtil.getInetAddressByName(url.getHost()))) {
-
-				throw new PortalException(
-					"The AI Hub Cell Liferay DXP URL must not be local: " +
-						homePageURL);
-			}
-		}
-		catch (MalformedURLException | UnknownHostException exception) {
-			throw new PortalException(
-				"The AI Hub Cell Liferay DXP URL is invalid: " + homePageURL,
-				exception);
-		}
-
-		return homePageURL;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ServiceNodeExecutor.class);
-
-	@Reference
-	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 	private ServiceTrackerMap<String, ServiceNodeDelegate> _serviceTrackerMap;
 

@@ -6,6 +6,7 @@
 package com.liferay.ai.hub.internal.workflow.kaleo.runtime.node;
 
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoNodeSettingUtil;
+import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.OAuth2ApplicationHomePageURLResolverUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.VariablesUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.workflow.kaleo.definition.NodeType;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
@@ -65,6 +67,11 @@ public class HTTPRequestNodeExecutor extends BaseNodeExecutor {
 
 		Map<String, Serializable> workflowContext =
 			executionContext.getWorkflowContext();
+
+		workflowContext.put(
+			"aiHubCellLiferayDXPURL",
+			OAuth2ApplicationHomePageURLResolverUtil.resolve(
+				MapUtil.getLong(workflowContext, "oAuth2ApplicationId")));
 
 		try {
 			KaleoInstanceToken kaleoInstanceToken =
