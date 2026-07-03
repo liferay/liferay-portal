@@ -7,6 +7,8 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -14,11 +16,17 @@ import {
 	performLogout,
 	userData,
 } from '../../../../utils/performLogin';
-import {miniumSetUp} from '../../utils/commerce';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
 	loginTest()
 );
 
@@ -372,6 +380,116 @@ test(
 		).toBeVisible();
 		await expect(
 			commerceMiniCartPage.miniCartItemReplacementLabel('MIN93015')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Replacement product row redirects to the discontinued product details page',
+	{tag: '@LPD-97008'},
+	async ({
+			   apiHelpers,
+			   commerceAdminChannelsPage,
+			   page,
+			   productDetailsPage,
+			   site,
+		   }) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const suffix = getRandomString();
+
+		const discontinuedProductName = `Test Simple Product ${suffix}`;
+		const discontinuedSku = `SKU1002-${suffix}`;
+		const replacementProductName = `Test Simple Product Replacement ${suffix}`;
+		const replacementSku = `SKU1001-${suffix}`;
+
+		const replacementProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: replacementProductName},
+				productType: 'simple',
+				skus: [
+					{
+						cost: 0,
+						price: 0,
+						published: true,
+						purchasable: true,
+						sku: replacementSku,
+					},
+				],
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: discontinuedProductName},
+			productType: 'simple',
+			skus: [
+				{
+					cost: 0,
+					discontinued: true,
+					price: 0,
+					published: true,
+					purchasable: true,
+					replacementSkuId: replacementProduct.skus[0].id,
+					sku: discontinuedSku,
+				},
+			],
+		});
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(
+			`/web/${site.name}/p/${replacementProductName
+				.toLowerCase()
+				.replace(/ /g, '-')}`,
+			{waitUntil: 'networkidle'}
+		);
+
+		await productDetailsPage.replacementsTab.click();
+
+		await expect(
+			productDetailsPage.replacementsTableCell(discontinuedSku)
+		).toBeVisible();
+
+		await page
+			.getByRole('row', {name: discontinuedSku})
+			.getByLabel('View')
+			.click();
+
+		await expect(
+			await productDetailsPage.nameField(discontinuedProductName)
+		).toBeVisible();
+		await expect(
+			await productDetailsPage.skuField(discontinuedSku)
 		).toBeVisible();
 	}
 );

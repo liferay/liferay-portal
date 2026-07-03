@@ -287,63 +287,6 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-9348 | Replacement product's button redirects to the right product's product details page"
-	@priority = 5
-	test ReplacementProductButtonRedirectsToRightProductDetailsPage {
-		property portal.acceptance = "true";
-
-		task ("Given a simple product with a SKU") {
-			CommerceJSONProductsAPI._addCommerceProduct(
-				catalogName = "Master",
-				productName = "Test Simple Product Replacement",
-				productType = "Simple",
-				sku = "SKU1001");
-		}
-
-		task ("And given a simple product with a SKU marked as discontinued with a replacement product set") {
-			CommerceJSONProductsAPI._addCommerceProduct(
-				catalogName = "Master",
-				discontinued = "True",
-				productName = "Test Simple Product",
-				productType = "Simple",
-				replacementSKU = "SKU1001",
-				sku = "SKU1002");
-		}
-
-		task ("And given a Minium site with a buyer user") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-		}
-
-		task ("When the replaced product's product details page is reached") {
-			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Test Simple Product Replacement");
-		}
-
-		task ("And when the replacement product's is selected") {
-			Click(
-				key_text = "Replacements",
-				locator1 = "Button#ANY");
-
-			ScrollWebElementIntoView(
-				key_itemName = "SKU1002",
-				locator1 = "CommerceEntry#VIEW_ITEM_FROM_LIST");
-
-			Click(
-				key_itemName = "SKU1002",
-				locator1 = "CommerceEntry#VIEW_ITEM_FROM_LIST");
-		}
-
-		task ("Then the user is redirected to the replacement's product details page") {
-			FrontStore.assertProductDetails(
-				productName = "Test Simple Product",
-				productSKU = "SKU1001");
-		}
-	}
-
 	@description = "COMMERCE-9347 | Replacement product's information is shown in product details"
 	@priority = 5
 	test ReplacementProductInformationIsDisplayedInProductDetails {
