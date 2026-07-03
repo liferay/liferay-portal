@@ -15,6 +15,14 @@ definition {
 			User.firstLoginPG();
 		}
 
+		task ("And: The Export Templates feature flag is enabled") {
+			LAR.enableExportTemplatesFeatureFlag();
+
+			ProductMenu.gotoPortlet(
+				category = "Publishing",
+				portlet = "Export");
+		}
+
 		task ("And: Open export portlet") {
 			Navigator.openURL();
 
