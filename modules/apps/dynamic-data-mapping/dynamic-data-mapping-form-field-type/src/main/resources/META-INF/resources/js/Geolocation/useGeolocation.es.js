@@ -121,14 +121,10 @@ export function useGeolocation({
 			const mapConfig = {
 				...MAP_CONFIG,
 				boundingBox: `#map_${instanceId}`,
+				position: {
+					location: value ? parseJSONValue(value) : {lat: 0, lng: 0},
+				},
 			};
-
-			if (value) {
-				mapConfig.position.location = parseJSONValue(value);
-			}
-			else {
-				mapConfig.position.location = {lat: 0, lng: 0};
-			}
 
 			const registerMapBase = (MapProvider, mapConfig) => {
 				mapRef.current = new MapProvider(mapConfig);
