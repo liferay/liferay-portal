@@ -9,12 +9,12 @@
 	.data-set {
 		.management-bar-wrapper {
 			background-color: #fff;
-			top: 168px;
+			top: calc(var(--control-menu-container-height, 56px) + 4rem + 48px);
 		}
 	}
 
 	> .lfr-tooltip-scope {
-		top: 56px;
+		top: var(--control-menu-container-height, 56px);
 	}
 
 	.navbar {
@@ -22,26 +22,28 @@
 	}
 
 	.page-header {
-		top: 120px;
+		top: calc(var(--control-menu-container-height, 56px) + 4rem);
 	}
 
 	&.publication {
 		& > .lfr-tooltip-scope {
-			top: 80px;
+			top: calc(var(--control-menu-container-height, 56px) + 1.5rem);
 		}
 
 		.data-set .management-bar-wrapper {
-			top: 192px;
+			top: calc(
+				var(--control-menu-container-height, 56px) + 1.5rem + 4rem + 48px
+			);
 		}
 
 		.lfr-objects__object-definition-details-management-toolbar {
 			.lfr__management-toolbar {
-				margin-top: 24px;
+				margin-top: 1.5rem;
 			}
 		}
 
 		.page-header {
-			top: 144px;
+			top: calc(var(--control-menu-container-height, 56px) + 1.5rem + 4rem);
 		}
 	}
 }

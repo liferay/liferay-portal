@@ -1,11 +1,11 @@
 .edit-object-definition-wrapper {
 	position: relative;
-	top: -3.5rem;
+	top: calc(-1 * var(--control-menu-container-height, 56px));
 }
 
 .lfr-objects__object-definition-details {
 	margin-bottom: 25px;
-	margin-top: 5.5rem;
+	margin-top: calc(var(--control-menu-container-height, 56px) + 4rem);
 
 	&-configuration {
 		display: flex;
@@ -15,13 +15,9 @@
 
 .lfr-objects__object-definition-details-management-toolbar {
 	position: sticky;
-	top: 3.5rem;
+	top: var(--control-menu-container-height, 56px);
 	width: 100%;
 	z-index: 1;
-
-	.has-control-menu & .lfr__management-toolbar {
-		top: 0;
-	}
 }
 
 .lfr__object-web-edit-object-details-external-data-source-container {

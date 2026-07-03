@@ -1,13 +1,7 @@
 @import 'atlas-custom-properties/_variables';
 
 .lfr__management-toolbar {
-	position: sticky;
 	width: 100%;
-	z-index: 2;
-
-	.has-control-menu & {
-		top: var(--control-menu-container-height);
-	}
 
 	&--box-shadow {
 		box-shadow: 0 0.125rem 0.75rem
