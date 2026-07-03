@@ -100,7 +100,7 @@ definition {
 		task ("And given the user cannot migrate data to IBM S3 store without setting up a connection configuration") {
 			ServerAdministration.openServerAdmin();
 
-			Navigator.gotoNavItem(navItem = "Data Migration");
+			Navigator.gotoNavItem(navItem = "Document Migration");
 
 			AssertElementNotPresent(
 				key_fieldLabel = "dl.store.impl",

@@ -20,7 +20,7 @@ Collection<ConvertProcess> convertProcesses = ConvertProcessUtil.getEnabledConve
 <c:choose>
 	<c:when test="<%= convertProcesses.isEmpty() %>">
 		<div class="alert alert-info">
-			<liferay-ui:message key="no-data-migration-processes-are-available" />
+			<liferay-ui:message key="no-document-migration-processes-are-available" />
 		</div>
 	</c:when>
 	<c:otherwise>
