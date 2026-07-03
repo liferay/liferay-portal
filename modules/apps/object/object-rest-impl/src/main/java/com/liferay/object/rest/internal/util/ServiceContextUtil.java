@@ -6,8 +6,12 @@
 package com.liferay.object.rest.internal.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyGroupRel;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.object.comment.ObjectEntryComment;
 import com.liferay.object.exception.ObjectEntryGroupIdException;
@@ -23,6 +27,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -135,6 +140,34 @@ public class ServiceContextUtil {
 		return serviceContext;
 	}
 
+	private static AssetVocabulary _fetchAssetVocabulary(
+		long groupId, TaxonomyCategoryBrief taxonomyCategoryBrief) {
+
+		ParentTaxonomyVocabulary parentTaxonomyVocabulary =
+			taxonomyCategoryBrief.getParentTaxonomyVocabulary();
+
+		if (parentTaxonomyVocabulary != null) {
+			return AssetVocabularyLocalServiceUtil.
+				fetchAssetVocabularyByExternalReferenceCode(
+					parentTaxonomyVocabulary.getExternalReferenceCode(),
+					groupId);
+		}
+
+		AssetCategory assetCategory =
+			AssetCategoryLocalServiceUtil.
+				fetchAssetCategoryByExternalReferenceCode(
+					taxonomyCategoryBrief.
+						getTaxonomyCategoryExternalReferenceCode(),
+					groupId);
+
+		if (assetCategory == null) {
+			return null;
+		}
+
+		return AssetVocabularyLocalServiceUtil.fetchAssetVocabulary(
+			assetCategory.getVocabularyId());
+	}
+
 	private static long[] _getAllowedGroupIds(long companyId, long groupId)
 		throws PortalException {
 
@@ -188,6 +221,27 @@ public class ServiceContextUtil {
 		return status.getCode();
 	}
 
+	private static boolean _isAssetVocabularyAvailable(
+		long assetVocabularyId, long groupId) {
+
+		List<AssetVocabularyGroupRel> assetVocabularyGroupRels =
+			AssetVocabularyGroupRelLocalServiceUtil.
+				getAssetVocabularyGroupRelsByVocabularyId(assetVocabularyId);
+
+		for (AssetVocabularyGroupRel assetVocabularyGroupRel :
+				assetVocabularyGroupRels) {
+
+			if ((assetVocabularyGroupRel.getGroupId() ==
+					GroupConstants.ANY_PARENT_GROUP_ID) ||
+				(assetVocabularyGroupRel.getGroupId() == groupId)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static boolean _isObjectEntryDraft(Status status) {
 		if ((status != null) &&
 			(status.getCode() == WorkflowConstants.STATUS_DRAFT)) {
@@ -231,8 +285,17 @@ public class ServiceContextUtil {
 				taxonomyCategoryBrief);
 
 			if (!ArrayUtil.contains(groupIds, scopeGroupId)) {
-				throw new ObjectEntryGroupIdException.
-					InvalidGroupIdForAssetCategoryBrief(externalReferenceCode);
+				AssetVocabulary assetVocabulary = _fetchAssetVocabulary(
+					scopeGroupId, taxonomyCategoryBrief);
+
+				if ((assetVocabulary == null) ||
+					!_isAssetVocabularyAvailable(
+						assetVocabulary.getVocabularyId(), groupId)) {
+
+					throw new ObjectEntryGroupIdException.
+						InvalidGroupIdForAssetCategoryBrief(
+							externalReferenceCode);
+				}
 			}
 
 			try {
@@ -297,7 +360,9 @@ public class ServiceContextUtil {
 					assetCategoryId);
 
 			if ((assetCategory == null) ||
-				!ArrayUtil.contains(groupIds, assetCategory.getGroupId())) {
+				(!ArrayUtil.contains(groupIds, assetCategory.getGroupId()) &&
+				 !_isAssetVocabularyAvailable(
+					 assetCategory.getVocabularyId(), groupId))) {
 
 				throw new ObjectEntryGroupIdException.
 					InvalidGroupIdForAssetCategory(assetCategoryId);
