@@ -8,7 +8,7 @@ import React, {useEffect, useState} from 'react';
 
 import SpacesDisplay from '../../../common/components/SpacesDisplay';
 import SpaceService from '../../../common/services/SpaceService';
-import {Space} from '../../../common/types/Space';
+import {Space as Scope} from '../../../common/types/Space';
 
 interface ScopeData {
 	externalReferenceCode: string;
@@ -16,7 +16,7 @@ interface ScopeData {
 	name: string;
 }
 
-export interface MultipleSpacesRendererProps {
+export interface MultipleScopesRendererProps {
 	itemData: {
 		assetLibraries: ScopeData[];
 		projects?: ScopeData[];
@@ -26,7 +26,7 @@ export interface MultipleSpacesRendererProps {
 const isAllScopes = (scopes: ScopeData[] | undefined) =>
 	!scopes?.length || scopes.some(({id}) => id === -1);
 
-const getScopes = (scopes: ScopeData[] | undefined): Promise<Space[]> => {
+const getScopes = (scopes: ScopeData[] | undefined): Promise<Scope[]> => {
 	if (!scopes || isAllScopes(scopes)) {
 		return Promise.resolve([]);
 	}
@@ -45,15 +45,15 @@ const getScopes = (scopes: ScopeData[] | undefined): Promise<Space[]> => {
 					id: scope.id,
 					name: scope.name,
 					settings: {},
-				} as Space;
+				} as Scope;
 			}
 		})
 	);
 };
 
-export default function MultipleSpacesRenderer({
+export default function MultipleScopesRenderer({
 	itemData,
-}: MultipleSpacesRendererProps) {
+}: MultipleScopesRendererProps) {
 	const {assetLibraries, projects} = itemData;
 
 	const renderProjects =
@@ -61,8 +61,8 @@ export default function MultipleSpacesRenderer({
 		!!Liferay.FeatureFlags['LPD-58677'] &&
 		!!Liferay.FeatureFlags['LPD-86291'];
 
-	const [projectScopes, setProjectScopes] = useState<Space[]>([]);
-	const [spaceScopes, setSpaceScopes] = useState<Space[]>([]);
+	const [projectScopes, setProjectScopes] = useState<Scope[]>([]);
+	const [spaceScopes, setSpaceScopes] = useState<Scope[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {

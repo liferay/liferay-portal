@@ -62,7 +62,7 @@ public class VocabulariesCMSTableFDSView extends BaseCMSTableFDSView {
 		).add(
 			"scopeKey", scopeKey,
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"spaceTableCellRenderer")
+				"scopeTableCellRenderer")
 		).add(
 			addDateFDSTableSchemaField("dateModified", "modified")
 		).build();

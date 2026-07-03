@@ -11,7 +11,7 @@ import React, {ComponentProps} from 'react';
 
 import {ActionDropdownItemProps} from '../../../common/components/Breadcrumb';
 import {openCMSModal} from '../../../common/utils/openCMSModal';
-import MultipleSpacesRenderer from '../../props_transformer/cell_renderers/MultipleSpacesRenderer';
+import MultipleScopesRenderer from '../../props_transformer/cell_renderers/MultipleScopesRenderer';
 import {executeAsyncItemAction} from '../../props_transformer/utils/executeAsyncItemAction';
 import CategorizationToolbar from '../CategorizationToolbar';
 import CreateTagsModal from './CreateTagsModal';
@@ -269,7 +269,7 @@ export default function ViewTags({
 							type: 'internal',
 						},
 						{
-							component: MultipleSpacesRenderer,
+							component: MultipleScopesRenderer,
 							name: VIEWS_SPACE_TABLE_CELL_RENDERER_NAME,
 							type: 'internal',
 						},
