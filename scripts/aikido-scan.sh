@@ -2,7 +2,7 @@
 # Run Aikido local scanner locally via Docker.
 #
 # Usage:
-#   bin/aikido-scan.sh [--base-commit <sha>] [--repo-name <name>] [--no-fail]
+#   bin/aikido-scan.sh [--base-commit <sha>] [--repo-name <name>] [--no-fail] [--full]
 #
 # Runs a PR-gating scan of the current branch against the main baseline
 # already registered in Aikido. Base commit defaults to the merge-base of
@@ -11,16 +11,22 @@
 # basename. Use --repo-name to override when the remote name differs from
 # the Aikido-registered name.
 #
+# Aikido requires at least one full (non-gated) scan before PR-gated scans
+# will work. Use --full to run a baseline scan first.
+#
 # Options:
 #   --base-commit <sha>  Override the auto-detected merge-base commit
 #   --repo-name <name>   Override the auto-detected repository name
 #   --no-fail            Report findings but always exit 0
+#   --full               Run a full baseline scan (not PR-gated); required
+#                        before the first PR-gated scan on a new repository
 #
 # Required env:
 #   AIKIDO_SECRET_KEY  — API key from app.aikido.dev/settings/integrations
 #                        (also accepted as AIKIDO_LOCAL_SCANNER_TOKEN)
 #
 # Examples:
+#   AIKIDO_SECRET_KEY=xxx bin/aikido-scan.sh --full   # first time / new repo
 #   AIKIDO_SECRET_KEY=xxx bin/aikido-scan.sh
 #   AIKIDO_SECRET_KEY=xxx bin/aikido-scan.sh --base-commit d8caace6
 #   AIKIDO_SECRET_KEY=xxx bin/aikido-scan.sh --repo-name my-repo
@@ -33,12 +39,14 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BASE_COMMIT=""
 REPO_NAME=""
 FAIL_ON="critical"
+FULL_SCAN=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --base-commit) BASE_COMMIT="$2"; shift 2 ;;
     --repo-name)   REPO_NAME="$2";   shift 2 ;;
     --no-fail)     FAIL_ON="";       shift   ;;
+    --full)        FULL_SCAN=true;   shift   ;;
     -h|--help)
       sed -n '/^# /p' "$0" | sed 's/^# //'
       exit 0 ;;
@@ -68,20 +76,10 @@ fi
 BRANCH="$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD)"
 HEAD_SHA="$(git -C "$REPO_ROOT" rev-parse HEAD)"
 
-if [[ -z "$BASE_COMMIT" ]]; then
-  BASE_COMMIT="$(git -C "$REPO_ROOT" merge-base HEAD master 2>/dev/null \
-    || git -C "$REPO_ROOT" merge-base HEAD main 2>/dev/null \
-    || git -C "$REPO_ROOT" rev-parse HEAD~1)"
-  echo "==> base commit auto-detected: $BASE_COMMIT"
-fi
-
 SCAN_ARGS=(
   --apikey "$API_KEY"
   --repositoryname "$REPO_NAME"
   --branchname "$BRANCH"
-  --gating-mode pr
-  --base-commit-id "$BASE_COMMIT"
-  --head-commit-id "$HEAD_SHA"
   --disable-artifact-scanning
   --exclude .m2
   --exclude target
@@ -89,11 +87,27 @@ SCAN_ARGS=(
   --exclude .ai
 )
 
-[[ -n "$FAIL_ON" ]] && SCAN_ARGS+=(--fail-on "$FAIL_ON")
+if [[ "$FULL_SCAN" == true ]]; then
+  echo "==> Aikido full baseline scan  repo=$REPO_NAME  branch=$BRANCH"
+  echo "    head=$HEAD_SHA"
+else
+  if [[ -z "$BASE_COMMIT" ]]; then
+    BASE_COMMIT="$(git -C "$REPO_ROOT" merge-base HEAD master 2>/dev/null \
+      || git -C "$REPO_ROOT" merge-base HEAD main 2>/dev/null \
+      || git -C "$REPO_ROOT" rev-parse HEAD~1)"
+    echo "==> base commit auto-detected: $BASE_COMMIT"
+  fi
+  SCAN_ARGS+=(
+    --gating-mode pr
+    --base-commit-id "$BASE_COMMIT"
+    --head-commit-id "$HEAD_SHA"
+  )
+  echo "==> Aikido PR scan  repo=$REPO_NAME  branch=$BRANCH"
+  echo "    base=$BASE_COMMIT"
+  echo "    head=$HEAD_SHA"
+fi
 
-echo "==> Aikido PR scan  repo=$REPO_NAME  branch=$BRANCH"
-echo "    base=$BASE_COMMIT"
-echo "    head=$HEAD_SHA"
+[[ -n "$FAIL_ON" ]] && SCAN_ARGS+=(--fail-on "$FAIL_ON")
 
 docker run --rm \
   --entrypoint "" \
