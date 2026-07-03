@@ -585,6 +585,18 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro enableExportTemplatesFeatureFlag() {
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Deprecation",
+			configurationScope = "Virtual Instance Scope");
+
+		FeatureFlag.enableFeatureFlag(featureFlag = "LPD-96546");
+
+		Navigator.openURL();
+	}
+
+	@summary = "Default summary"
 	macro exportDDL(exportPermissions = null, larFileName = null) {
 		LAR._gotoExportImport();
 

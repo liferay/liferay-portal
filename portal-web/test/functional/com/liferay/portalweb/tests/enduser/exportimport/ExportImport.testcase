@@ -181,6 +181,10 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		task ("Given: The Export Templates feature flag is enabled") {
+			LAR.enableExportTemplatesFeatureFlag();
+		}
+
 		task ("Given: User add a new Blog entry and web content") {
 			JSONBlog.addEntry(
 				entryContent = "Blogs Entry Content",
@@ -1494,6 +1498,10 @@ definition {
 	test ExportImportWithExportTemplate {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		task ("Given: The Export Templates feature flag is enabled") {
+			LAR.enableExportTemplatesFeatureFlag();
+		}
 
 		task ("Given: User adds a new export template") {
 			LAR.openExportAdmin(siteScopeName = "Guest");
