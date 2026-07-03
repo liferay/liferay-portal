@@ -20,73 +20,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-181285, LPS-188490 and LPS-196540. The screen reader should announce the popover message when OpenAI is not configured."
-	@priority = 4
-	test AnnouncePopoverMessageWhenOpenAINotConfigured {
-		task ("Given a site administrator doesn't configure the OpenAI") {
-			HeadlessSite.addSite(siteName = ${randomSiteName});
-		}
-
-		task ("When the site administrator hovers on the AI Creator button in web content editor") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = ${siteURLKey});
-
-			WebContentNavigator.gotoAddCP();
-
-			MouseOver.javaScriptFocus(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
-		}
-
-		task ("Then the the site administrator should see the tooltip") {
-			AssertVisible(
-				key_content = "Create AI Content",
-				locator1 = "Tooltip#FLOATING_TOOLTIP_CONTENT");
-		}
-
-		task ("When the site administrator clicks the AI Creator button") {
-			Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
-		}
-
-		task ("Then the screen reader should announce the popover message") {
-			AssertAttributeValue(
-				locator1 = "//div[contains(@class,'popover-top')]",
-				value1 = "role",
-				value2 = "alert");
-
-			AssertElementFocused(locator1 = "//div[contains(@class,'popover-top')]");
-
-			AssertVisible(
-				key_header = "Configure OpenAI",
-				locator1 = "Tooltip#POPOVER_HEADER");
-
-			AssertVisible(
-				key_content = "Authentication is needed to use this feature. Contact your administrator to add an API key in instance or site settings.",
-				locator1 = "Tooltip#POPOVER_BODY_CONTENT");
-		}
-
-		task ("When the site administrator opens the AI Creator icon url") {
-			var url = Css.getCssValue(
-				attribute = "background-image",
-				element = "//span[contains(@class,'aicreator_icon')]");
-
-			var url = StringUtil.extractFirst(${url}, "\")");
-
-			var url = StringUtil.extractLast(${url}, "(\"");
-
-			Navigator.openSpecificURL(url = ${url});
-		}
-
-		task ("Then the site administrator could see the size of AI Creator icon") {
-			AssertAttributeValue(
-				locator1 = "//img[contains(@src,'ai_creator.png')]",
-				value1 = "height",
-				value2 = 32);
-
-			AssertAttributeValue(
-				locator1 = "//img[contains(@src,'ai_creator.png')]",
-				value1 = "width",
-				value2 = 32);
-		}
-	}
-
 	@description = "This is a test for LPS-179485. The AI Creator modal should comply with WCAG 2.1 AA standards and keep the focus within the modal when it is open."
 	@priority = 3
 	test AccessibilityOfAICreatorModal {
@@ -218,6 +151,73 @@ definition {
 			AssertElementFocused(
 				key_title = "AI Creator",
 				locator1 = "IFrame#MODAL_ANY");
+		}
+	}
+
+	@description = "This is a test for LPS-181285, LPS-188490 and LPS-196540. The screen reader should announce the popover message when OpenAI is not configured."
+	@priority = 4
+	test AnnouncePopoverMessageWhenOpenAINotConfigured {
+		task ("Given a site administrator doesn't configure the OpenAI") {
+			HeadlessSite.addSite(siteName = ${randomSiteName});
+		}
+
+		task ("When the site administrator hovers on the AI Creator button in web content editor") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = ${siteURLKey});
+
+			WebContentNavigator.gotoAddCP();
+
+			MouseOver.javaScriptFocus(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
+		}
+
+		task ("Then the the site administrator should see the tooltip") {
+			AssertVisible(
+				key_content = "Create AI Content",
+				locator1 = "Tooltip#FLOATING_TOOLTIP_CONTENT");
+		}
+
+		task ("When the site administrator clicks the AI Creator button") {
+			Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
+		}
+
+		task ("Then the screen reader should announce the popover message") {
+			AssertAttributeValue(
+				locator1 = "//div[contains(@class,'popover-top')]",
+				value1 = "role",
+				value2 = "alert");
+
+			AssertElementFocused(locator1 = "//div[contains(@class,'popover-top')]");
+
+			AssertVisible(
+				key_header = "Configure OpenAI",
+				locator1 = "Tooltip#POPOVER_HEADER");
+
+			AssertVisible(
+				key_content = "Authentication is needed to use this feature. Contact your administrator to add an API key in instance or site settings.",
+				locator1 = "Tooltip#POPOVER_BODY_CONTENT");
+		}
+
+		task ("When the site administrator opens the AI Creator icon url") {
+			var url = Css.getCssValue(
+				attribute = "background-image",
+				element = "//span[contains(@class,'aicreator_icon')]");
+
+			var url = StringUtil.extractFirst(${url}, "\")");
+
+			var url = StringUtil.extractLast(${url}, "(\"");
+
+			Navigator.openSpecificURL(url = ${url});
+		}
+
+		task ("Then the site administrator could see the size of AI Creator icon") {
+			AssertAttributeValue(
+				locator1 = "//img[contains(@src,'ai_creator.png')]",
+				value1 = "height",
+				value2 = 32);
+
+			AssertAttributeValue(
+				locator1 = "//img[contains(@src,'ai_creator.png')]",
+				value1 = "width",
+				value2 = 32);
 		}
 	}
 
