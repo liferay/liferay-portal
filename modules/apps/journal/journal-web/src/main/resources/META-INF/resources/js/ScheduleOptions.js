@@ -37,7 +37,7 @@ export default function ScheduleOptions({
 
 			if (
 				displayDate.length !== requiredLength ||
-				!dateUtils.isValid(displayDate)
+				!dateUtils.isValid(toParseableDate(displayDate))
 			) {
 				setError(Liferay.Language.get('please-enter-a-valid-date'));
 
@@ -174,7 +174,7 @@ export default function ScheduleOptions({
 }
 
 function getDate(value) {
-	const date = new Date(value);
+	const date = new Date(toParseableDate(value));
 
 	if (dateUtils.isValid(date)) {
 		return {
@@ -187,4 +187,19 @@ function getDate(value) {
 	}
 
 	return {day: '', hour: '', minutes: '', month: '', year: ''};
+}
+
+function toParseableDate(value) {
+	const match = /^(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}) (AM|PM)$/i.exec(value);
+
+	if (!match) {
+		return value;
+	}
+
+	const [, date, hours, minutes, meridiem] = match;
+
+	const hours24 =
+		(Number(hours) % 12) + (meridiem.toUpperCase() === 'PM' ? 12 : 0);
+
+	return `${date} ${String(hours24).padStart(2, '0')}:${minutes}`;
 }
