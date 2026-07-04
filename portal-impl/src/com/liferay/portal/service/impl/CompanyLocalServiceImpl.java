@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -1664,9 +1665,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 					_synchronizePortalInstances();
 
-					try (SafeCloseable safeCloseable =
-							CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-								companyId)) {
+					try (SafeCloseable safeCloseable1 =
+							CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
+								companyId);
+						SafeCloseable safeCloseable2 =
+							CTCollectionThreadLocal.
+								setProductionModeWithSafeCloseable()) {
 
 						CacheRegistryUtil.clear();
 					}
