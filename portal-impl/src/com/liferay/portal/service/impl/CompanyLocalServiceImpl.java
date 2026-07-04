@@ -1531,9 +1531,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		catch (Exception exception) {
 			throw new SystemException(exception);
 		}
-
-		companyPersistence.clearCache(SetUtil.fromArray(companyId));
-		_clearCacheCallback(companyId);
 	}
 
 	/**
@@ -1586,8 +1583,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		catch (IOException | PortletException exception) {
 			throw new SystemException(exception);
 		}
-
-		_clearCacheCallback(companyId);
 	}
 
 	protected Company checkLogo(long companyId) throws PortalException {
@@ -2441,30 +2436,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		_contactPersistence.update(guestContact);
 
 		return guestUser;
-	}
-
-	private void _clearCacheCallback(long companyId) {
-		Company company = companyPersistence.fetchByPrimaryKey(companyId);
-
-		if (company == null) {
-			return;
-		}
-
-		VirtualHost virtualHost = _virtualHostPersistence.fetchByHostname(
-			company.getVirtualHostname());
-
-		TransactionCommitCallbackUtil.registerCallback(
-			() -> {
-				EntityCacheUtil.removeResult(
-					company.getClass(), company.getPrimaryKeyObj());
-
-				if (virtualHost != null) {
-					EntityCacheUtil.removeResult(
-						virtualHost.getClass(), virtualHost.getPrimaryKeyObj());
-				}
-
-				return null;
-			});
 	}
 
 	private void _deletePortalInstance(Company company) throws PortalException {
