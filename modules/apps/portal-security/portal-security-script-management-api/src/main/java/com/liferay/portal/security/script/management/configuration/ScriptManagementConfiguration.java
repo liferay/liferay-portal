@@ -23,7 +23,11 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface ScriptManagementConfiguration {
 
-	@Meta.AD(deflt = "false", required = false)
+	@Meta.AD(
+		deflt = "false",
+		name = "allow-script-content-to-be-executed-or-included",
+		required = false
+	)
 	public boolean allowScriptContentToBeExecutedOrIncluded();
 
 }
