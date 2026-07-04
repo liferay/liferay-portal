@@ -104,8 +104,8 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	public void testAccessCompanyByCompanyThreadLocal() throws Exception {
 		for (long companyId : COMPANY_IDS) {
 			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.
-						setInitializingCompanyIdWithSafeCloseable(companyId);
+					CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
+						companyId);
 
 				Connection connection = DataAccess.getConnection();
 

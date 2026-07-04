@@ -240,7 +240,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		boolean newDBPartitionAdded = DBPartitionUtil.addDBPartition(companyId);
 
 		SafeCloseable safeCloseable =
-			CompanyThreadLocal.setInitializingCompanyIdWithSafeCloseable(
+			CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
 				company.getCompanyId());
 
 		try {

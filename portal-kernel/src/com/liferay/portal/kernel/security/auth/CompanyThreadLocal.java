@@ -245,14 +245,15 @@ public class CompanyThreadLocal {
 		};
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #setRawCompanyIdWithSafeCloseable(long)}
+	 */
+	@Deprecated
 	public static SafeCloseable setInitializingCompanyIdWithSafeCloseable(
 		long companyId) {
 
-		if (companyId > 0) {
-			return _companyId.setWithSafeCloseable(companyId);
-		}
-
-		return _companyId.setWithSafeCloseable(CompanyConstants.SYSTEM);
+		return setRawCompanyIdWithSafeCloseable(companyId);
 	}
 
 	public static SafeCloseable setInitializingPortalInstanceWithSafeCloseable(
@@ -260,6 +261,16 @@ public class CompanyThreadLocal {
 
 		return _initializingPortalInstance.setWithSafeCloseable(
 			initializingPortalInstance);
+	}
+
+	public static SafeCloseable setRawCompanyIdWithSafeCloseable(
+		long companyId) {
+
+		if (companyId > 0) {
+			return _companyId.setWithSafeCloseable(companyId);
+		}
+
+		return _companyId.setWithSafeCloseable(CompanyConstants.SYSTEM);
 	}
 
 	public static SafeCloseable setUpgradingPortalInstanceWithSafeCloseable(
