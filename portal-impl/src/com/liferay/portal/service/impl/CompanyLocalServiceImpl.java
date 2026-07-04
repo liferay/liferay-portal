@@ -1533,7 +1533,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 
 		companyPersistence.clearCache(SetUtil.fromArray(companyId));
-		_clearCacheCallback(companyId, false);
+		_clearCacheCallback(companyId);
 	}
 
 	/**
@@ -1587,7 +1587,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			throw new SystemException(exception);
 		}
 
-		_clearCacheCallback(companyId, false);
+		_clearCacheCallback(companyId);
 	}
 
 	protected Company checkLogo(long companyId) throws PortalException {
@@ -1642,11 +1642,22 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		preunregisterCompany(company);
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
-			_clearCacheCallback(companyId, true);
+			VirtualHost virtualHost = _virtualHostPersistence.fetchByHostname(
+				company.getVirtualHostname());
 
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
-					_clearCache(companyId);
+					EntityCacheUtil.removeResult(
+						company.getClass(), company.getPrimaryKeyObj());
+
+					if (virtualHost != null) {
+						EntityCacheUtil.removeResult(
+							virtualHost.getClass(),
+							virtualHost.getPrimaryKeyObj());
+					}
+
+					PortalCacheHelperUtil.removePortalCaches(
+						PortalCacheManagerNames.MULTI_VM, companyId);
 
 					Store store = _storeSnapshot.get();
 
@@ -2432,22 +2443,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		return guestUser;
 	}
 
-	private void _clearCache(long companyId) {
-		Company company = companyPersistence.fetchByPrimaryKey(companyId);
-
-		if (company != null) {
-			companyPersistence.clearCache(company);
-
-			VirtualHost virtualHost = _virtualHostPersistence.fetchByHostname(
-				company.getVirtualHostname());
-
-			_virtualHostPersistence.clearCache(virtualHost);
-		}
-	}
-
-	private void _clearCacheCallback(
-		long companyId, boolean removePortalCache) {
-
+	private void _clearCacheCallback(long companyId) {
 		Company company = companyPersistence.fetchByPrimaryKey(companyId);
 
 		if (company == null) {
@@ -2464,11 +2460,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 				EntityCacheUtil.removeResult(
 					virtualHost.getClass(), virtualHost.getPrimaryKeyObj());
-
-				if (removePortalCache) {
-					PortalCacheHelperUtil.removePortalCaches(
-						PortalCacheManagerNames.MULTI_VM, companyId);
-				}
 
 				return null;
 			});
