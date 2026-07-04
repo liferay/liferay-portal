@@ -50,16 +50,19 @@ public class SQLWriter {
 				SQLProvider sqlProvider = new DBPartitionSQLProvider(companyId);
 
 				String indexesFileName = companyId + "_indexes.sql";
-				String tablesFileName = companyId + "_tables.sql";
 
 				FileUtil.write(
 					new File(directory, indexesFileName),
 					sqlProvider.getIndexesSQL());
+
+				fileNames.add(indexesFileName);
+
+				String tablesFileName = companyId + "_tables.sql";
+
 				FileUtil.write(
 					new File(directory, tablesFileName),
 					sqlProvider.getTablesSQL());
 
-				fileNames.add(indexesFileName);
 				fileNames.add(tablesFileName);
 			});
 
