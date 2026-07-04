@@ -369,14 +369,14 @@ public class LiferayDynamicRegistrationService
 			return;
 		}
 
-		List<String> redirectUris = clientRegistration.getRedirectUris();
+		List<String> redirectURIs = clientRegistration.getRedirectUris();
 
-		if (redirectUris != null) {
+		if (redirectURIs != null) {
 			String applicationType = _getApplicationType(clientRegistration);
 
-			for (String redirectUri : redirectUris) {
+			for (String redirectURI : redirectURIs) {
 				validateRequestUri(
-					redirectUri, applicationType,
+					redirectURI, applicationType,
 					client.getAllowedGrantTypes());
 			}
 		}
@@ -384,7 +384,7 @@ public class LiferayDynamicRegistrationService
 		if ((allowedGrantTypes.contains(
 				OAuthConstants.AUTHORIZATION_CODE_GRANT) ||
 			 allowedGrantTypes.contains(OAuthConstants.IMPLICIT_GRANT)) &&
-			ListUtil.isEmpty(redirectUris)) {
+			ListUtil.isEmpty(redirectURIs)) {
 
 			OAuth2ErrorUtil.reportInvalidRequestError(
 				StringBundler.concat(
