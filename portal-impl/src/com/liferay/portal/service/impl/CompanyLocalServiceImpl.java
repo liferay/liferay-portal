@@ -240,99 +240,104 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		boolean newDBPartitionAdded = DBPartitionUtil.addDBPartition(companyId);
 
+		Callable<Company> callable = () -> {
+			company.setWebId(webId);
+			company.setMx(mx);
+			company.setMaxUsers(maxUsers);
+			company.setActive(active);
+
+			String name = webId;
+
+			if (webId.equals(PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+				name = PropsValues.COMPANY_DEFAULT_NAME;
+			}
+
+			company.setName(name);
+
+			Company updatedCompany = companyPersistence.update(company);
+
+			User guestUser = _addGuestUser(updatedCompany);
+
+			// Virtual host
+
+			updateVirtualHostname(
+				updatedCompany.getCompanyId(), lowerCaseVirtualHostname);
+
+			if (newDBPartitionAdded) {
+				_dlFileEntryTypeLocalService.
+					createBasicDocumentDLFileEntryType();
+			}
+
+			// Company info
+
+			try {
+				updatedCompany.setKey(
+					EncryptorUtil.serializeKey(EncryptorUtil.generateKey()));
+			}
+			catch (EncryptorException encryptorException) {
+				throw new SystemException(encryptorException);
+			}
+
+			_companyInfoPersistence.update(updatedCompany.getCompanyInfo());
+
+			// Demo settings
+
+			if (webId.equals("liferay.net")) {
+				_addDemoSettings(updatedCompany);
+			}
+
+			updatedCompany = checkCompany(updatedCompany, true);
+
+			if (addDefaultAdminUser) {
+				_userLocalService.addDefaultAdminUser(
+					updatedCompany.getCompanyId(),
+					GetterUtil.getString(
+						defaultAdminPassword,
+						PropsValues.DEFAULT_ADMIN_PASSWORD),
+					GetterUtil.getString(
+						defaultAdminScreenName,
+						PropsValues.DEFAULT_ADMIN_SCREEN_NAME),
+					GetterUtil.getString(
+						defaultAdminEmailAddress,
+						PropsValues.DEFAULT_ADMIN_EMAIL_ADDRESS_PREFIX + "@" +
+							mx),
+					guestUser.getLocale(),
+					GetterUtil.getString(
+						defaultAdminFirstName,
+						PropsValues.DEFAULT_ADMIN_FIRST_NAME),
+					GetterUtil.getString(
+						defaultAdminMiddleName,
+						PropsValues.DEFAULT_ADMIN_MIDDLE_NAME),
+					GetterUtil.getString(
+						defaultAdminLastName,
+						PropsValues.DEFAULT_ADMIN_LAST_NAME));
+			}
+
+			// Guest user must have the Guest role
+
+			Role guestRole = _roleLocalService.getRole(
+				updatedCompany.getCompanyId(), RoleConstants.GUEST);
+
+			_roleLocalService.setUserRoles(
+				guestUser.getUserId(), new long[] {guestRole.getRoleId()});
+
+			return updatedCompany;
+		};
+
 		SafeCloseable safeCloseable =
 			CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
 				company.getCompanyId());
 
 		try {
-			Company addedCompany = _transactionAwareInvoke(
-				() -> {
-					company.setWebId(webId);
-					company.setMx(mx);
-					company.setMaxUsers(maxUsers);
-					company.setActive(active);
+			Company addedCompany = null;
 
-					String name = webId;
-
-					if (webId.equals(PropsValues.COMPANY_DEFAULT_WEB_ID)) {
-						name = PropsValues.COMPANY_DEFAULT_NAME;
-					}
-
-					company.setName(name);
-
-					Company updatedCompany = companyPersistence.update(company);
-
-					User guestUser = _addGuestUser(updatedCompany);
-
-					// Virtual host
-
-					updateVirtualHostname(
-						updatedCompany.getCompanyId(),
-						lowerCaseVirtualHostname);
-
-					if (newDBPartitionAdded) {
-						_dlFileEntryTypeLocalService.
-							createBasicDocumentDLFileEntryType();
-					}
-
-					// Company info
-
-					try {
-						updatedCompany.setKey(
-							EncryptorUtil.serializeKey(
-								EncryptorUtil.generateKey()));
-					}
-					catch (EncryptorException encryptorException) {
-						throw new SystemException(encryptorException);
-					}
-
-					_companyInfoPersistence.update(
-						updatedCompany.getCompanyInfo());
-
-					// Demo settings
-
-					if (webId.equals("liferay.net")) {
-						_addDemoSettings(updatedCompany);
-					}
-
-					updatedCompany = checkCompany(updatedCompany, true);
-
-					if (addDefaultAdminUser) {
-						_userLocalService.addDefaultAdminUser(
-							updatedCompany.getCompanyId(),
-							GetterUtil.getString(
-								defaultAdminPassword,
-								PropsValues.DEFAULT_ADMIN_PASSWORD),
-							GetterUtil.getString(
-								defaultAdminScreenName,
-								PropsValues.DEFAULT_ADMIN_SCREEN_NAME),
-							GetterUtil.getString(
-								defaultAdminEmailAddress,
-								PropsValues.DEFAULT_ADMIN_EMAIL_ADDRESS_PREFIX +
-									"@" + mx),
-							guestUser.getLocale(),
-							GetterUtil.getString(
-								defaultAdminFirstName,
-								PropsValues.DEFAULT_ADMIN_FIRST_NAME),
-							GetterUtil.getString(
-								defaultAdminMiddleName,
-								PropsValues.DEFAULT_ADMIN_MIDDLE_NAME),
-							GetterUtil.getString(
-								defaultAdminLastName,
-								PropsValues.DEFAULT_ADMIN_LAST_NAME));
-					}
-
-					// Guest user must have the Guest role
-
-					Role guestRole = _roleLocalService.getRole(
-						updatedCompany.getCompanyId(), RoleConstants.GUEST);
-
-					_roleLocalService.setUserRoles(
-						guestUser.getUserId(),
-						new long[] {guestRole.getRoleId()});
-
-					return updatedCompany;
-				});
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
+				addedCompany = TransactionInvokerUtil.invoke(
+					_transactionConfig, callable);
+			}
+			else {
+				addedCompany = callable.call();
+			}
 
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
@@ -348,12 +353,19 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				if (newDBPartitionAdded) {
 					long addedCompanyId = companyId;
 
-					_transactionAwareInvoke(
-						() -> {
-							DBPartitionUtil.removeDBPartition(addedCompanyId);
+					try {
+						TransactionInvokerUtil.invoke(
+							_transactionConfig,
+							() -> {
+								DBPartitionUtil.removeDBPartition(
+									addedCompanyId);
 
-							return null;
-						});
+								return null;
+							});
+					}
+					catch (Throwable throwable2) {
+						throw new PortalException(throwable2);
+					}
 				}
 			}
 			finally {
@@ -401,7 +413,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			companyPersistence.clearCache();
 			_virtualHostPersistence.clearCache();
 
-			Company importedCompany = _transactionAwareInvoke(
+			Company importedCompany = TransactionInvokerUtil.invoke(
+				_transactionConfig,
 				() -> {
 					Company company = companyPersistence.findByPrimaryKey(
 						companyId);
@@ -455,14 +468,20 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 						setCompanyInDeletionProcessWithSafeCloseable(
 							companyId)) {
 
-				_transactionAwareInvoke(
-					() -> {
-						exportCompany(companyId);
+				try {
+					TransactionInvokerUtil.invoke(
+						_transactionConfig,
+						() -> {
+							exportCompany(companyId);
 
-						DBPartitionUtil.removeDBPartition(companyId);
+							DBPartitionUtil.removeDBPartition(companyId);
 
-						return null;
-					});
+							return null;
+						});
+				}
+				catch (Throwable throwable2) {
+					throw new PortalException(throwable2);
+				}
 			}
 			finally {
 				safeCloseable1.close();
@@ -671,7 +690,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		long companyId = toCompanyId;
 
 		try {
-			Company copiedCompany = _transactionAwareInvoke(
+			Company copiedCompany = TransactionInvokerUtil.invoke(
+				_transactionConfig,
 				() -> {
 					Company company = fromCompany.cloneWithOriginalValues();
 
@@ -699,12 +719,18 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 						setCompanyInDeletionProcessWithSafeCloseable(
 							companyId)) {
 
-				_transactionAwareInvoke(
-					() -> {
-						DBPartitionUtil.removeDBPartition(companyId);
+				try {
+					TransactionInvokerUtil.invoke(
+						_transactionConfig,
+						() -> {
+							DBPartitionUtil.removeDBPartition(companyId);
 
-						return null;
-					});
+							return null;
+						});
+				}
+				catch (Throwable throwable2) {
+					throw new PortalException(throwable2);
+				}
 			}
 			finally {
 				safeCloseable1.close();
@@ -2499,22 +2525,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		clusterRequest.setFireAndForget(true);
 
 		ClusterExecutorUtil.execute(clusterRequest);
-	}
-
-	private Company _transactionAwareInvoke(Callable<Company> callable)
-		throws PortalException {
-
-		try {
-			if (PropsValues.DATABASE_PARTITION_ENABLED) {
-				return TransactionInvokerUtil.invoke(
-					_transactionConfig, callable);
-			}
-
-			return callable.call();
-		}
-		catch (Throwable throwable) {
-			throw new PortalException(throwable);
-		}
 	}
 
 	private void _updateGroupLanguageIds(
