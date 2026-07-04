@@ -28,8 +28,8 @@ $c-empty-state-image: map-deep-merge(
 $c-empty-state-aspect-ratio: () !default;
 $c-empty-state-aspect-ratio: map-deep-merge(
 	(
-		background-repeat: no-repeat,
 		background-position: center,
+		background-repeat: no-repeat,
 		background-size: 100%,
 		display: block,
 		padding-bottom: 100%,

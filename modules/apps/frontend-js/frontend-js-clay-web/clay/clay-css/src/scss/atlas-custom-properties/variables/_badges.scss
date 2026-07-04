@@ -116,11 +116,11 @@ $badge-close: () !default;
 $badge-close: map-deep-merge(
 	(
 		color: inherit,
-		opacity: 1,
 		border-radius: 1px,
 		display: inline-flex,
 		font-size: inherit,
 		height: auto,
+		opacity: 1,
 		width: auto,
 
 		hover: (

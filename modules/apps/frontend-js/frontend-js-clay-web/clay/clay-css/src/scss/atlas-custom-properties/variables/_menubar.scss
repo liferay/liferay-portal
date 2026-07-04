@@ -245,8 +245,8 @@ $menubar-primary: map-deep-merge(
 
 		menubar-action: (
 			position: absolute,
-			top: var(--menubar-primary-menubar-action-top, 0.625rem),
 			right: var(--menubar-primary-menubar-action-right, 2rem),
+			top: var(--menubar-primary-menubar-action-top, 0.625rem),
 		),
 	),
 	$menubar-primary

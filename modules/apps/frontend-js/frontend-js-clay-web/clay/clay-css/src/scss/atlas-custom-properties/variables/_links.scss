@@ -97,8 +97,8 @@ $link-secondary: map-deep-merge(
 		),
 
 		focus: (
-			color: var(--link-secondary-focus-color, $gray-900),
 			box-shadow: $component-focus-box-shadow,
+			color: var(--link-secondary-focus-color, $gray-900),
 			outline: 0,
 		),
 	),
@@ -360,8 +360,8 @@ $component-subtitle-link: map-deep-merge(
 		),
 
 		focus: (
-			color: var(--component-subtitle-link-focus-color, $gray-900),
 			box-shadow: $component-focus-box-shadow,
+			color: var(--component-subtitle-link-focus-color, $gray-900),
 			outline: 0,
 		),
 	),
