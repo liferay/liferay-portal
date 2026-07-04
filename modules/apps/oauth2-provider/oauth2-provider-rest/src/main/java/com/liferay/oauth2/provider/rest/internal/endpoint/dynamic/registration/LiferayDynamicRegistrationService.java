@@ -169,34 +169,34 @@ public class LiferayDynamicRegistrationService
 				softwareId);
 		}
 
-		String tosUri = clientRegistration.getTosUri();
+		String tosURI = clientRegistration.getTosUri();
 
-		if (Validator.isNotNull(tosUri)) {
-			properties.put("tos_uri", tosUri);
+		if (Validator.isNotNull(tosURI)) {
+			properties.put("tos_uri", tosURI);
 		}
 
-		String logoUri = clientRegistration.getLogoUri();
+		String logoURI = clientRegistration.getLogoUri();
 
-		if (Validator.isNotNull(logoUri)) {
-			client.setApplicationLogoUri(logoUri);
+		if (Validator.isNotNull(logoURI)) {
+			client.setApplicationLogoUri(logoURI);
 		}
 
-		String clientUri = clientRegistration.getClientUri();
+		String clientURI = clientRegistration.getClientUri();
 
-		if (clientUri != null) {
-			client.setApplicationWebUri(clientUri);
+		if (clientURI != null) {
+			client.setApplicationWebUri(clientURI);
 		}
 
-		List<String> redirectUris = clientRegistration.getRedirectUris();
+		List<String> redirectURIs = clientRegistration.getRedirectUris();
 
-		if (redirectUris != null) {
-			client.setRedirectUris(redirectUris);
+		if (redirectURIs != null) {
+			client.setRedirectUris(redirectURIs);
 		}
 
-		List<String> resourceUris = clientRegistration.getResourceUris();
+		List<String> resourceURIs = clientRegistration.getResourceUris();
 
-		if (resourceUris != null) {
-			client.setRegisteredAudiences(resourceUris);
+		if (resourceURIs != null) {
+			client.setRegisteredAudiences(resourceURIs);
 		}
 
 		String scope = clientRegistration.getScope();
