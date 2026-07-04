@@ -1642,6 +1642,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		preunregisterCompany(company);
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			_clearCacheCallback(companyId, true);
+
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
 					_clearCache(companyId);
@@ -1665,8 +1667,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 					return null;
 				});
-
-			_clearCacheCallback(companyId, true);
 
 			DBPartitionUtil.removeDBPartition(companyId);
 
