@@ -37,8 +37,6 @@ public class
 				ServiceContext serviceContext)
 		throws PortalException {
 
-		User user = _userLocalService.getUser(userId);
-
 		LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
 			layoutPageTemplateStructureRelElementVariationAudienceEntryRel =
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
@@ -48,16 +46,16 @@ public class
 			serviceContext.getUuid());
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
 			setGroupId(groupId);
+
+		User user = _userLocalService.getUser(userId);
+
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
 			setCompanyId(user.getCompanyId());
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
 			setUserId(user.getUserId());
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
 			setUserName(user.getFullName());
-		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
-			setCreateDate(serviceContext.getCreateDate(new Date()));
-		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
-			setModifiedDate(serviceContext.getModifiedDate(new Date()));
+
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
 			setAudienceEntryERC(audienceEntryERC);
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRel.

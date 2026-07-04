@@ -178,6 +178,8 @@ public class
 	private void _assertAudienceEntryERCs(
 		String externalReferenceCode, List<String> audienceEntryERCs) {
 
+		Collections.sort(audienceEntryERCs);
+
 		List<String> actualAudienceEntryERCs = TransformUtil.transform(
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 				getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
@@ -185,7 +187,6 @@ public class
 			LayoutPageTemplateStructureRelElementVariationAudienceEntryRel::
 				getAudienceEntryERC);
 
-		Collections.sort(audienceEntryERCs);
 		Collections.sort(actualAudienceEntryERCs);
 
 		Assert.assertEquals(audienceEntryERCs, actualAudienceEntryERCs);
