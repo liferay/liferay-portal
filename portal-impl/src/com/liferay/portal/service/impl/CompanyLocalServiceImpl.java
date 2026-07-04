@@ -444,13 +444,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					return _addDBPartitionCompany(company);
 				});
 
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable1.close();
-					safeCloseable2.close();
-
-					return null;
-				});
+			safeCloseable1.close();
+			safeCloseable2.close();
 
 			return importedCompany;
 		}
@@ -693,13 +688,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					return _addDBPartitionCompany(company);
 				});
 
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable1.close();
-					safeCloseable2.close();
-
-					return null;
-				});
+			safeCloseable1.close();
+			safeCloseable2.close();
 
 			return copiedCompany;
 		}
