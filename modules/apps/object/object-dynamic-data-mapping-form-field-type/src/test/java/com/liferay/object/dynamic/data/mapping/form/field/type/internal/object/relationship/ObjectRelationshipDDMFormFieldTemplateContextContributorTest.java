@@ -138,14 +138,14 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 			StringBundler.concat(
 				_PORTAL_URL, _REST_CONTEXT_PATH, StringPool.QUESTION,
 				additionalAPIURLParameters),
-			_getParametersAPIURL(additionalAPIURLParameters));
+			_getAPIURL(additionalAPIURLParameters));
 
 		Assert.assertEquals(
 			_PORTAL_URL + _REST_CONTEXT_PATH,
-			_getParametersAPIURL(StringPool.BLANK));
+			_getAPIURL(StringPool.BLANK));
 	}
 
-	private String _getParametersAPIURL(String additionalAPIURLParameters) {
+	private String _getAPIURL(String additionalAPIURLParameters) {
 		SystemObjectDefinitionManager systemObjectDefinitionManager =
 			Mockito.mock(SystemObjectDefinitionManager.class);
 
