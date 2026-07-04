@@ -148,14 +148,14 @@ public class LiferayDynamicRegistrationService
 				jwks);
 		}
 
-		String jwksUri = clientRegistration.getStringProperty(
+		String jwksURI = clientRegistration.getStringProperty(
 			OAuth2ProviderRESTEndpointConstants.PROPERTY_KEY_CLIENT_JWKS_URI);
 
-		if (Validator.isNotNull(jwksUri)) {
+		if (Validator.isNotNull(jwksURI)) {
 			properties.put(
 				OAuth2ProviderRESTEndpointConstants.
 					PROPERTY_KEY_CLIENT_JWKS_URI,
-				jwksUri);
+				jwksURI);
 		}
 
 		String softwareId = clientRegistration.getStringProperty(
@@ -244,11 +244,11 @@ public class LiferayDynamicRegistrationService
 			liferayClientRegistrationResponse.setJwks(jwks);
 		}
 
-		String jwksUri = properties.get(
+		String jwksURI = properties.get(
 			OAuth2ProviderRESTEndpointConstants.PROPERTY_KEY_CLIENT_JWKS_URI);
 
-		if (jwksUri != null) {
-			liferayClientRegistrationResponse.setJwksUri(jwksUri);
+		if (jwksURI != null) {
+			liferayClientRegistrationResponse.setJwksUri(jwksURI);
 		}
 
 		liferayClientRegistrationResponse.setRegistrationAccessToken(
