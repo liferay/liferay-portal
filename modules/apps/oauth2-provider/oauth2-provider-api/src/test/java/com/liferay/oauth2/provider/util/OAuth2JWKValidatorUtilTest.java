@@ -54,22 +54,22 @@ public class OAuth2JWKValidatorUtilTest {
 
 	@Test
 	public void testValidateJWK() throws Exception {
-		OAuth2JWKValidatorUtil.validateJWK(_generateRsaJWK(2048, "RS256"));
+		OAuth2JWKValidatorUtil.validateJWK(_generateRSAJWK(2048, "RS256"));
 
 		Assert.assertThrows(
 			SecurityException.class,
 			() -> OAuth2JWKValidatorUtil.validateJWK(
-				_generateRsaJWK(1024, "RS256")));
+				_generateRSAJWK(1024, "RS256")));
 		Assert.assertThrows(
 			SecurityException.class,
 			() -> OAuth2JWKValidatorUtil.validateJWK(
-				_generateRsaJWK(2048, "RS1")));
+				_generateRSAJWK(2048, "RS1")));
 	}
 
 	@Test
 	public void testValidateJWKS() throws Exception {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			_generateRsaJWK(2048, "RS256"));
+			_generateRSAJWK(2048, "RS256"));
 
 		OAuth2JWKValidatorUtil.validateJWKS(
 			JSONUtil.put(
@@ -83,7 +83,7 @@ public class OAuth2JWKValidatorUtilTest {
 					JSONUtil.putAll(
 						jsonObject,
 						JSONFactoryUtil.createJSONObject(
-							_generateRsaJWK(1024, "RS256")))
+							_generateRSAJWK(1024, "RS256")))
 				).toString()));
 	}
 
@@ -137,7 +137,7 @@ public class OAuth2JWKValidatorUtilTest {
 		).toString();
 	}
 
-	private String _generateRsaJWK(int bits, String algorithm)
+	private String _generateRSAJWK(int bits, String algorithm)
 		throws Exception {
 
 		Base64.Encoder base64Encoder = Base64.getUrlEncoder();
