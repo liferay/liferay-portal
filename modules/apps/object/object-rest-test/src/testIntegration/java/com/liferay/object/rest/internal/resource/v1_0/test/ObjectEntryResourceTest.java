@@ -20833,7 +20833,7 @@ public class ObjectEntryResourceTest {
 
 		_groupLocalService.deleteGroup(childGroup);
 
-		// Can add a category from an all-spaces vocabulary
+		// Can add a category from an all spaces vocabulary
 
 		AssetVocabulary allSpacesAssetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
@@ -20866,7 +20866,7 @@ public class ObjectEntryResourceTest {
 
 		_assetVocabularyLocalService.deleteVocabulary(allSpacesAssetVocabulary);
 
-		// Can add a category from a space-associated vocabulary
+		// Can add a category from a space associated vocabulary
 
 		AssetVocabulary sharedAssetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
