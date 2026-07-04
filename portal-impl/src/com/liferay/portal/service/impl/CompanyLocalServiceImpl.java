@@ -2458,8 +2458,10 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				EntityCacheUtil.removeResult(
 					company.getClass(), company.getPrimaryKeyObj());
 
-				EntityCacheUtil.removeResult(
-					virtualHost.getClass(), virtualHost.getPrimaryKeyObj());
+				if (virtualHost != null) {
+					EntityCacheUtil.removeResult(
+						virtualHost.getClass(), virtualHost.getPrimaryKeyObj());
+				}
 
 				return null;
 			});
