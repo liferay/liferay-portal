@@ -99,7 +99,7 @@ Checks are configured in the following files:
    - [Upgrade](src/main/resources/documentation/upgrade_checks.md#upgrade-checks)
 
 - ### By File Extensions:
-   - [.action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd](src/main/resources/documentation/xml_source_processor_checks.md#checks-for-action-function-jelly-jrxml-macro-pom-project-properties-qti-svg-testcase-toggle-tpl-wsdl-xml-or-xsd)
+   - [.action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd](src/main/resources/documentation/xml_source_processor_checks.md#checks-for-action-function-jelly-jrxml-macro-pom-project-properties-qti-svg-testcase-toggle-tpl-wsdl-xlf-xml-or-xsd)
    - [.bnd](src/main/resources/documentation/bnd_source_processor_checks.md#checks-for-bnd)
    - [.bnd, .ftl, .gradle, .html, .java, .js, .jsp, .jspf, .jspx, .jsx, .properties, .tld, .ts, .tsx, or .xml](src/main/resources/documentation/jakarta_transform_source_processor_checks.md#checks-for-bnd-ftl-gradle-html-java-js-jsp-jspf-jspx-jsx-properties-tld-ts-tsx-or-xml)
    - [.bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm](src/main/resources/documentation/upgrade_source_processor_checks.md#checks-for-bnd-ftl-gradle-java-json-jsp-jspf-scss-or-vm)
