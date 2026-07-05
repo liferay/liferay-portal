@@ -29,9 +29,7 @@ async function createTag({
 		};
 	}
 
-	const groupId = assetLibraryId ?? cmsGroupId;
-
-	const url = `/o/headless-admin-taxonomy/v1.0/sites/${groupId}/keywords`;
+	const url = `/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`;
 
 	const {data, error} = await ApiHelper.get<{items: Tag[]}>(
 		`${url}?filter=name eq '${name}'`

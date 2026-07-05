@@ -37,7 +37,7 @@ describe('TagService.createTag', () => {
 				assetLibraries: [{id: assetLibraryId}],
 				name: 'Hola',
 			},
-			`/o/headless-admin-taxonomy/v1.0/sites/${assetLibraryId}/keywords`
+			`/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`
 		);
 	});
 
@@ -58,7 +58,7 @@ describe('TagService.createTag', () => {
 		});
 
 		expect(postSpy).toHaveBeenCalledWith(
-			`/o/headless-admin-taxonomy/v1.0/sites/${assetLibraryId}/keywords`,
+			`/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`,
 			{
 				assetLibraries: [{id: assetLibraryId}],
 				name: 'Hola',
@@ -91,7 +91,7 @@ describe('TagService.createTag', () => {
 
 		expect(patchSpy).not.toHaveBeenCalled();
 		expect(postSpy).toHaveBeenCalledWith(
-			`/o/headless-admin-taxonomy/v1.0/sites/${assetLibraryId}/keywords`,
+			`/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`,
 			{
 				assetLibraries: [{id: assetLibraryId}],
 				name: 'Hola',

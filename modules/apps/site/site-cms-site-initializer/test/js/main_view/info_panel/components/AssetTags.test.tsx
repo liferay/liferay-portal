@@ -193,20 +193,21 @@ describe('AssetTags', () => {
 		expect(screen.getByText('tags')).toBeInTheDocument();
 	});
 
-	it('builds the tags apiURL against the scope site when the scope is positive', () => {
-		renderComponent({scopeId: 123});
+	it('builds the tags apiURL against the CMS group site', () => {
+		renderComponent({cmsGroupId: 456, scopeId: 123});
 
 		const apiURL = screen
 			.getByTestId('item-selector')
 			.getAttribute('data-api-url');
 
 		expect(apiURL).toContain(
-			'/o/headless-admin-taxonomy/v1.0/sites/123/keywords'
+			'/o/headless-admin-taxonomy/v1.0/sites/456/keywords'
 		);
+		expect(apiURL).not.toContain('/sites/123/keywords');
 		expect(apiURL).not.toContain('groupIds in');
 	});
 
-	it('builds the tags apiURL against the cmsGroup site with a groupIds filter when the scope is negative', () => {
+	it('uses the CMS group scope even for a negative asset scope', () => {
 		renderComponent({cmsGroupId: 456, scopeId: -1});
 
 		const apiURL = screen
@@ -216,7 +217,7 @@ describe('AssetTags', () => {
 		expect(apiURL).toContain(
 			'/o/headless-admin-taxonomy/v1.0/sites/456/keywords'
 		);
-		expect(apiURL).toContain("groupIds in ('-1')");
+		expect(apiURL).not.toContain('groupIds in');
 	});
 
 	it('fires the categorize event when the sparkle is clicked', () => {
