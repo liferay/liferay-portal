@@ -635,8 +635,8 @@ $dropdown-menu-top: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: 0rem !important,
-		margin-top: 0rem,
 		margin-bottom: $dropdown-spacer,
+		margin-top: 0rem,
 		right: auto !important,
 		top: auto !important,
 		transform: none !important,
@@ -652,8 +652,8 @@ $dropdown-menu-top-right: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: auto !important,
-		margin-top: 0rem,
 		margin-bottom: $dropdown-spacer,
+		margin-top: 0rem,
 		right: 0rem !important,
 		top: auto !important,
 		transform: none !important,
@@ -669,8 +669,8 @@ $dropdown-menu-top-center: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: 50% !important,
-		margin-top: 0rem,
 		margin-bottom: $dropdown-spacer,
+		margin-top: 0rem,
 		right: auto !important,
 		top: auto !important,
 		transform: translateX(-50%) !important,
@@ -820,9 +820,9 @@ $dropdown-menu-width-full: () !default;
 $dropdown-menu-width-full: map-merge(
 	(
 		left: 12px !important,
-		right: 12px !important,
 		max-width: none,
 		min-width: 0rem,
+		right: 12px !important,
 		width: calc(100% - 24px),
 	),
 	$dropdown-menu-width-full

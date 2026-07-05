@@ -5,8 +5,8 @@ $bg-checkered-fg: $gray-300 !default;
 $c-focus-inset-focus: () !default;
 $c-focus-inset-focus: map-deep-merge(
 	(
-		box-shadow: $component-focus-inset-box-shadow,
 		border-color: $primary-l1,
+		box-shadow: $component-focus-inset-box-shadow,
 		outline: 0,
 	),
 	$c-focus-inset-focus

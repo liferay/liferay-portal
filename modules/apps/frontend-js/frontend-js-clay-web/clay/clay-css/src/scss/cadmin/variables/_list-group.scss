@@ -84,9 +84,9 @@ $cadmin-list-group-title-link: map-deep-merge(
 		border-radius: 1px,
 		color: $cadmin-gray-900,
 		display: inline-block,
+		max-width: 100%,
 		text-decoration: underline,
 		transition: box-shadow 0.15s ease-in-out,
-		max-width: 100%,
 
 		hover: (
 			color: $cadmin-gray-900,
@@ -281,8 +281,8 @@ $cadmin-list-group-notification-item-primary: map-deep-merge(
 			unquote(
 				'hsl(from #{$cadmin-component-active-bg} h s calc(l + 22.9))'
 			),
-		border-left-width: 8px,
 		border-bottom-left-radius: 0px,
+		border-left-width: 8px,
 		border-top-left-radius: 0px,
 
 		active-border-left-color:

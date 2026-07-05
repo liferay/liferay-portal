@@ -173,8 +173,8 @@ $cadmin-pagination-link: map-deep-merge(
 	(
 		align-items: center,
 		background-color: $cadmin-pagination-bg,
-		border-radius: $cadmin-pagination-link-border-radius,
 		border-color: $cadmin-pagination-border-color,
+		border-radius: $cadmin-pagination-link-border-radius,
 		border-style: solid,
 		border-width: $cadmin-pagination-border-width,
 		color: $cadmin-pagination-color,
@@ -408,9 +408,9 @@ $cadmin-pagination-items-per-page-link-disabled: map-deep-merge(
 		color: $cadmin-pagination-disabled-color,
 		cursor: $cadmin-pagination-disabled-cursor,
 		font-weight: $cadmin-font-weight-normal,
+		letter-spacing: 0.033em,
 		opacity: $cadmin-pagination-disabled-opacity,
 		pointer-events: $cadmin-pagination-disabled-pointer-events,
-		letter-spacing: 0.033em,
 
 		before: (
 			content: none,
@@ -543,8 +543,8 @@ $cadmin-pagination-sm: map-deep-merge(
 			height: $cadmin-pagination-item-height-sm,
 			line-height: $cadmin-pagination-line-height-sm,
 			padding-bottom: $cadmin-pagination-padding-y-sm,
-			padding-right: $cadmin-pagination-padding-x-sm,
 			padding-left: $cadmin-pagination-padding-x-sm,
+			padding-right: $cadmin-pagination-padding-x-sm,
 			padding-top: $cadmin-pagination-padding-y-sm,
 		),
 

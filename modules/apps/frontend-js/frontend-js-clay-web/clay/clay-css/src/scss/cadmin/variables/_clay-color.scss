@@ -181,8 +181,8 @@ $cadmin-clay-color-pointer: () !default;
 $cadmin-clay-color-pointer: map-deep-merge(
 	(
 		background-color: transparent,
-		border-radius: 100px,
 		border-color: $cadmin-white,
+		border-radius: 100px,
 		border-style: solid,
 		border-width: 2px,
 		height: 14px,
@@ -312,9 +312,9 @@ $cadmin-clay-color-map-values-input-group-inset-item-before: () !default;
 $cadmin-clay-color-map-values-input-group-inset-item-before: map-deep-merge(
 	(
 		font-weight: $cadmin-font-weight-semi-bold,
+		min-width: 18px,
 		padding-left: 10%,
 		padding-right: 0px,
-		min-width: 18px,
 	),
 	$cadmin-clay-color-map-values-input-group-inset-item-before
 );
@@ -349,10 +349,10 @@ $cadmin-clay-color-range-pointer: map-deep-merge(
 $cadmin-clay-color-form-group: () !default;
 $cadmin-clay-color-form-group: map-deep-merge(
 	(
-		display: flex,
 		align-items: center,
-		margin-top: 4px,
+		display: flex,
 		margin-bottom: 16px,
+		margin-top: 4px,
 
 		clay-range: (
 			flex-grow: 1,
@@ -370,9 +370,9 @@ $cadmin-clay-color-form-group: map-deep-merge(
 		input-group: (
 			input-group-inset-item-before: (
 				font-weight: $cadmin-font-weight-semi-bold,
+				min-width: 18px,
 				padding-left: 10%,
 				padding-right: 0px,
-				min-width: 18px,
 			),
 		),
 	),

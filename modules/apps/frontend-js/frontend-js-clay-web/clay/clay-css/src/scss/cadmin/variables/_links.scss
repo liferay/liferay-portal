@@ -50,8 +50,8 @@ $cadmin-component-link: map-deep-merge(
 		),
 
 		focus: (
-			color: $cadmin-gray-900,
 			box-shadow: $cadmin-component-focus-box-shadow,
+			color: $cadmin-gray-900,
 			outline: 0,
 		),
 	),
@@ -70,8 +70,8 @@ $cadmin-link-primary: map-deep-merge(
 		),
 
 		focus: (
-			color: $cadmin-primary-d1,
 			box-shadow: $cadmin-component-focus-box-shadow,
+			color: $cadmin-primary-d1,
 			outline: 0,
 		),
 	),
@@ -90,8 +90,8 @@ $cadmin-link-secondary: map-deep-merge(
 		),
 
 		focus: (
-			color: $cadmin-gray-900,
 			box-shadow: $cadmin-component-focus-box-shadow,
+			color: $cadmin-gray-900,
 			outline: 0,
 		),
 	),
@@ -304,8 +304,8 @@ $cadmin-component-title-link: map-deep-merge(
 		),
 
 		focus: (
-			color: unquote('hsl(from #{$cadmin-gray-900} h s calc(l - 15))'),
 			box-shadow: $cadmin-component-focus-box-shadow,
+			color: unquote('hsl(from #{$cadmin-gray-900} h s calc(l - 15))'),
 			outline: 0,
 		),
 	),
@@ -344,8 +344,8 @@ $cadmin-component-subtitle-link: map-deep-merge(
 		),
 
 		focus: (
-			color: $cadmin-gray-900,
 			box-shadow: $cadmin-component-focus-box-shadow,
+			color: $cadmin-gray-900,
 			outline: 0,
 		),
 	),

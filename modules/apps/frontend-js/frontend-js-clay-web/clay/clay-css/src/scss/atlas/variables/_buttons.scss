@@ -437,8 +437,8 @@ $btn-outline-primary: map-deep-merge(
 
 		active: (
 			background-color: rgba($primary, 0.12),
-			color: $primary-d1,
 			box-shadow: map-deep-get($btn-primary, active, box-shadow),
+			color: $primary-d1,
 			focus: (
 				box-shadow:
 					map-deep-get($btn-primary, active, focus, box-shadow),

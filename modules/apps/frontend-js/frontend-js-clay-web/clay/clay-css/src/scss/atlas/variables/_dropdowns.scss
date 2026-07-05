@@ -233,9 +233,9 @@ $dropdown-section-custom-control-label-text: map-deep-merge(
 $dropdown-section: () !default;
 $dropdown-section: map-deep-merge(
 	(
-		padding: 0.375rem $dropdown-item-padding-x,
 		custom-control-label: $dropdown-section-custom-control-label,
 		custom-control-label-text: $dropdown-section-custom-control-label-text,
+		padding: 0.375rem $dropdown-item-padding-x,
 
 		active: (
 			custom-control-label: $dropdown-section-active-custom-control-label,

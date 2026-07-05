@@ -477,8 +477,8 @@ $container-form-lg: map-deep-merge(
 	(
 		breakpoint-up: lg,
 		padding-bottom: 3rem,
-		padding-top: 3rem,
 		padding-bottom-mobile: 1rem,
+		padding-top: 3rem,
 		padding-top-mobile: 1rem,
 	),
 	$container-form-lg

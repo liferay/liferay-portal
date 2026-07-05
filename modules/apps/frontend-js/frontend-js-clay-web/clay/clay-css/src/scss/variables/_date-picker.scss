@@ -212,14 +212,14 @@ $date-picker-calendar-body-container: () !default;
 $date-picker-calendar-body-container: map-merge(
 	(
 		padding-left: 0.5rem,
-		padding-right: 0.5rem,
 		padding-bottom: 0.5rem,
+		padding-right: 0.5rem,
 
 		media-breakpoint-down: (
 			xs: (
+				padding-bottom: 0.25rem,
 				padding-left: 0.375rem,
 				padding-right: 0.375rem,
-				padding-bottom: 0.25rem,
 			),
 		),
 	),

@@ -373,9 +373,9 @@ $list-group-notification-item: () !default;
 $list-group-notification-item-primary: () !default;
 $list-group-notification-item-primary: map-deep-merge(
 	(
+		border-bottom-left-radius: 0px,
 		border-left-color: theme-color-level(primary, -9),
 		border-left-width: 0.5rem,
-		border-bottom-left-radius: 0px,
 		border-top-left-radius: 0px,
 
 		active-border-left-color: theme-color-level(primary, -9),

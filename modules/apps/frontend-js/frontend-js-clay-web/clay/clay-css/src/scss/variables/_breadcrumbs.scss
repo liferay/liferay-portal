@@ -63,13 +63,13 @@ $breadcrumb-item: map-deep-merge(
 			padding-left: 1em,
 
 			before: (
-				color: $breadcrumb-divider-color,
-				display: block,
-				float: left,
 				background-image: $breadcrumb-divider-svg-icon,
 				background-repeat: no-repeat,
 				background-size: 100%,
 				content: '',
+				color: $breadcrumb-divider-color,
+				display: block,
+				float: left,
 				height: $breadcrumb-divider-svg-icon-height,
 				left: 0rem,
 				margin-top: calc(#{$breadcrumb-divider-svg-icon-height} / -2),

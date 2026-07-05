@@ -144,8 +144,8 @@ $form-check-card: map-deep-merge(
 			transform: none,
 
 			card: (
-				box-shadow: none,
 				border-color: $card-border-color,
+				box-shadow: none,
 				outline-color: transparent,
 			),
 		),

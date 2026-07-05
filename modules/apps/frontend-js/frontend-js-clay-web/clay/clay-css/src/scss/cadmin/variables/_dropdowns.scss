@@ -39,7 +39,6 @@ $cadmin-dropdown-spacer: 5px !default; // 5px
 $cadmin-dropdown-menu: () !default;
 $cadmin-dropdown-menu: map-deep-merge(
 	(
-		breakpoint-down: md,
 		background-clip: padding-box,
 		background-color: $cadmin-dropdown-bg,
 		border-color: $cadmin-dropdown-border-color,
@@ -47,6 +46,7 @@ $cadmin-dropdown-menu: map-deep-merge(
 		border-width: $cadmin-dropdown-border-width,
 		border-radius: clay-enable-rounded($cadmin-dropdown-border-radius),
 		box-shadow: clay-enable-shadows($cadmin-dropdown-box-shadow),
+		breakpoint-down: md,
 		color: $cadmin-dropdown-color,
 		display: none,
 		float: left,
@@ -543,8 +543,8 @@ $cadmin-dropdown-menu-top: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: 0px !important,
-		margin-top: 0px,
 		margin-bottom: $cadmin-dropdown-spacer,
+		margin-top: 0px,
 		right: auto !important,
 		top: auto !important,
 		transform: none !important,
@@ -560,8 +560,8 @@ $cadmin-dropdown-menu-top-right: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: auto !important,
-		margin-top: 0px,
 		margin-bottom: $cadmin-dropdown-spacer,
+		margin-top: 0px,
 		right: 0px !important,
 		top: auto !important,
 		transform: none !important,
@@ -577,8 +577,8 @@ $cadmin-dropdown-menu-top-center: map-deep-merge(
 	(
 		bottom: 100% !important,
 		left: 50% !important,
-		margin-top: 0px,
 		margin-bottom: $cadmin-dropdown-spacer,
+		margin-top: 0px,
 		right: auto !important,
 		top: auto !important,
 		transform: translateX(-50%) !important,
@@ -728,9 +728,9 @@ $cadmin-dropdown-menu-width-full: () !default;
 $cadmin-dropdown-menu-width-full: map-merge(
 	(
 		left: 12px !important,
-		right: 12px !important,
 		max-width: none,
 		min-width: 0px,
+		right: 12px !important,
 		width: calc(100% - 24px),
 	),
 	$cadmin-dropdown-menu-width-full

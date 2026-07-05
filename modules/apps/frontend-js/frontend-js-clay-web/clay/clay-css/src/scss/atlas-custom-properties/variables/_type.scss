@@ -40,8 +40,8 @@ $c-kbd: () !default;
 $c-kbd: map-deep-merge(
 	(
 		background-color: var(--c-kbd-background-color, transparent),
-		border-radius: var(--c-kbd-border-radius, 2px),
 		border-color: var(--c-kbd-border-color, transparent),
+		border-radius: var(--c-kbd-border-radius, 2px),
 		border-style: var(--c-kbd-border-style, solid),
 		border-width: var(--c-kbd-border-width, 1px),
 		box-shadow: var(--c-kbd-box-shadow, none),

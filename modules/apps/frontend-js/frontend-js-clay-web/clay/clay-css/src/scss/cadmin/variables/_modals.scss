@@ -60,9 +60,9 @@ $cadmin-modal-content: map-deep-merge(
 	(
 		background-clip: padding-box,
 		background-color: $cadmin-modal-content-bg,
-		border-radius: clay-enable-rounded($cadmin-modal-content-border-radius),
 		border: $cadmin-modal-content-border-width solid
 			$cadmin-modal-content-border-color,
+		border-radius: clay-enable-rounded($cadmin-modal-content-border-radius),
 		box-shadow: clay-enable-shadows($cadmin-modal-content-box-shadow-xs),
 		color: $cadmin-modal-content-color,
 		display: flex,

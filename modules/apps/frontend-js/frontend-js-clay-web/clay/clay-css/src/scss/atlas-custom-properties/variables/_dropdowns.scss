@@ -936,8 +936,8 @@ $dropdown-menu-width-full: map-merge(
 		left: 12px !important,
 		max-width: none,
 		min-width: 0rem,
-		width: calc(100% - 24px),
 		right: 12px !important,
+		width: calc(100% - 24px),
 	),
 	$dropdown-menu-width-full
 );

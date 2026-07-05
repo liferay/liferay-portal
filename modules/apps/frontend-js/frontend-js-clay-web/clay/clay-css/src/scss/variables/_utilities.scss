@@ -99,8 +99,8 @@ $close: map-deep-merge(
 
 		focus: (
 			box-shadow: $input-btn-focus-box-shadow,
-			outline: 0,
 			opacity: 0.75,
+			outline: 0,
 		),
 
 		disabled: (
@@ -135,8 +135,8 @@ $close: map-deep-merge(
 $c-focus-inset-focus: () !default;
 $c-focus-inset-focus: map-deep-merge(
 	(
-		box-shadow: $component-focus-inset-box-shadow,
 		border-color: $input-btn-focus-color,
+		box-shadow: $component-focus-inset-box-shadow,
 		outline: 0,
 	),
 	$c-focus-inset-focus

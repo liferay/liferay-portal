@@ -143,9 +143,9 @@ $cadmin-alert: () !default;
 $cadmin-alert: map-deep-merge(
 	(
 		border-color: transparent,
+		border-radius: clay-enable-rounded($cadmin-alert-border-radius),
 		border-style: $cadmin-alert-border-style,
 		border-width: $cadmin-alert-border-width,
-		border-radius: clay-enable-rounded($cadmin-alert-border-radius),
 		display: block,
 		font-size: $cadmin-alert-font-size,
 		margin-bottom: $cadmin-alert-margin-bottom,
@@ -514,13 +514,13 @@ $cadmin-alert-inline: map-deep-merge(
 			align-items: center,
 			margin-bottom: calc(#{$cadmin-alert-padding-y} * -1 - 1px),
 			margin-top: calc(#{$cadmin-alert-padding-y} * -1 - 1px),
+			min-height: 56px,
 			padding-bottom: 9px,
 			padding-top: 9px,
-			min-height: 56px,
 
 			btn-group: (
-				margin-right: 32px,
 				margin-left: 12px,
+				margin-right: 32px,
 			),
 		),
 

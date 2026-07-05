@@ -182,8 +182,8 @@ $clay-color-pointer: () !default;
 $clay-color-pointer: map-deep-merge(
 	(
 		background-color: setter(map-get($clay-color-pointer, bg), transparent),
-		border-radius: 100px,
 		border-color: $white,
+		border-radius: 100px,
 		border-style: solid,
 		border-width: 2px,
 		height: 0.875rem,
@@ -311,9 +311,9 @@ $clay-color-map-values-input-group-inset-item-before: () !default;
 $clay-color-map-values-input-group-inset-item-before: map-merge(
 	(
 		font-weight: $font-weight-semi-bold,
+		min-width: 1.125rem,
 		padding-left: 10%,
 		padding-right: 0rem,
-		min-width: 1.125rem,
 	),
 	$clay-color-map-values-input-group-inset-item-before
 );
@@ -348,10 +348,10 @@ $clay-color-range-pointer: map-deep-merge(
 $clay-color-form-group: () !default;
 $clay-color-form-group: map-deep-merge(
 	(
-		display: flex,
 		align-items: center,
-		margin-top: 0.25rem,
+		display: flex,
 		margin-bottom: 1rem,
+		margin-top: 0.25rem,
 
 		clay-range: (
 			flex-grow: 1,
@@ -369,9 +369,9 @@ $clay-color-form-group: map-deep-merge(
 		input-group: (
 			input-group-inset-item-before: (
 				font-weight: $font-weight-semi-bold,
+				min-width: 1.125rem,
 				padding-left: 10%,
 				padding-right: 0rem,
-				min-width: 1.125rem,
 			),
 		),
 	),

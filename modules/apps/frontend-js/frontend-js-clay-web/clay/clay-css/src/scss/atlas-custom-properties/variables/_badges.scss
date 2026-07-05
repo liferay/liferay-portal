@@ -115,8 +115,8 @@ $badge-item-spacer-x: var(--badge-item-spacer-x, 0.85714em) !default;
 $badge-close: () !default;
 $badge-close: map-deep-merge(
 	(
-		color: inherit,
 		border-radius: 1px,
+		color: inherit,
 		display: inline-flex,
 		font-size: inherit,
 		height: auto,

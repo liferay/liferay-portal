@@ -243,15 +243,15 @@ $cadmin-date-picker-calendar-header-container: map-merge(
 $cadmin-date-picker-calendar-body-container: () !default;
 $cadmin-date-picker-calendar-body-container: map-merge(
 	(
+		padding-bottom: 8px,
 		padding-left: 8px,
 		padding-right: 8px,
-		padding-bottom: 8px,
 
 		media-breakpoint-down: (
 			xs: (
+				padding-bottom: 4px,
 				padding-left: 6px,
 				padding-right: 6px,
-				padding-bottom: 4px,
 			),
 		),
 	),

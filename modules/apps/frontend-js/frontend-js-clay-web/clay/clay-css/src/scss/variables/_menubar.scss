@@ -136,9 +136,9 @@ $menubar-primary: map-deep-merge(
 		),
 
 		menubar-action: (
+			right: 2rem,
 			position: absolute,
 			top: 0.625rem,
-			right: 2rem,
 		),
 	),
 	$menubar-primary

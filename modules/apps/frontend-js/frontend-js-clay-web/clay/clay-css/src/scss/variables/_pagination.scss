@@ -141,8 +141,8 @@ $pagination-link: map-deep-merge(
 	(
 		align-items: center,
 		background-color: $pagination-bg,
-		border-radius: $pagination-link-border-radius,
 		border-color: $pagination-border-color,
+		border-radius: $pagination-link-border-radius,
 		border-style: solid,
 		border-width: $pagination-border-width,
 		color: $pagination-color,
@@ -380,8 +380,8 @@ $pagination-items-per-page: () !default;
 $pagination-items-per-page: map-deep-merge(
 	(
 		font-size: $pagination-items-per-page-font-size,
-		margin-bottom: $pagination-margin-bottom,
 		link: $pagination-items-per-page-link,
+		margin-bottom: $pagination-margin-bottom,
 
 		media-breakpoint-down: (
 			sm: (
@@ -440,8 +440,8 @@ $pagination-sm: map-deep-merge(
 			height: $pagination-item-height-sm,
 			line-height: $pagination-line-height-sm,
 			padding-bottom: $pagination-padding-y-sm,
-			padding-right: $pagination-padding-x-sm,
 			padding-left: $pagination-padding-x-sm,
+			padding-right: $pagination-padding-x-sm,
 			padding-top: $pagination-padding-y-sm,
 		),
 

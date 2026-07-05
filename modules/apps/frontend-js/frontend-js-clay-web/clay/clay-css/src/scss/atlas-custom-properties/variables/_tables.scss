@@ -296,8 +296,8 @@ $table-action-link: map-deep-merge(
 					--table-action-link-focus-background-color,
 					unquote('hsl(from #{$black} h s l / 0.02)')
 				),
-			color: var(--table-action-link-focus-color, $gray-900),
 			box-shadow: $component-focus-box-shadow,
+			color: var(--table-action-link-focus-color, $gray-900),
 			outline: 0,
 		),
 
@@ -543,13 +543,13 @@ $c-tr-table-focus: map-deep-merge(
 						'inset 0 2px 0 0 #{$primary-l0},inset 0 4px 0 0 #{$white},inset 0 -2px 0 0 #{$primary-l0},inset 0 -4px 0 0 #{$white}'
 					),
 				content: '',
+				bottom: calc(#{$table-border-width} * -1),
 				display: block,
-				position: absolute,
 				left: calc(#{$table-border-width} * -1),
+				position: absolute,
+				pointer-events: none,
 				right: calc(#{$table-border-width} * -1),
 				top: calc(#{$table-border-width} * -1),
-				bottom: calc(#{$table-border-width} * -1),
-				pointer-events: none,
 				z-index: 1,
 			),
 
@@ -559,13 +559,13 @@ $c-tr-table-focus: map-deep-merge(
 						unquote(
 							'inset 2px 0 0 0 #{$primary-l0},inset 4px 0 0 0 #{$white}'
 						),
+					bottom: $table-border-width,
 					content: '',
 					display: block,
+					left: calc(#{$table-border-width} * -1),
 					position: absolute,
 					pointer-events: none,
 					top: $table-border-width,
-					bottom: $table-border-width,
-					left: calc(#{$table-border-width} * -1),
 					z-index: 1,
 					width: 0.25rem,
 				),
@@ -577,13 +577,13 @@ $c-tr-table-focus: map-deep-merge(
 						unquote(
 							'inset -2px 0 0 0 #{$primary-l0},inset -4px 0 0 0 #{$white}'
 						),
+					bottom: $table-border-width,
 					content: '',
 					display: block,
-					position: absolute,
 					pointer-events: none,
-					top: $table-border-width,
-					bottom: $table-border-width,
+					position: absolute,
 					right: calc(#{$table-border-width} * -1),
+					top: $table-border-width,
 					z-index: 1,
 					width: 0.25rem,
 				),
@@ -686,9 +686,9 @@ $c-table-nested-rows: () !default;
 $c-table-nested-rows: map-deep-merge(
 	(
 		autofit-col: (
+			min-width: 1.75rem,
 			padding-left: 0.125rem,
 			padding-right: 0.125rem,
-			min-width: 1.75rem,
 		),
 
 		autofit-col-checkbox: (

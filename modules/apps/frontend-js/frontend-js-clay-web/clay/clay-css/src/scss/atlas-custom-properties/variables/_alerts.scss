@@ -149,8 +149,8 @@ $alert: () !default;
 $alert: map-deep-merge(
 	(
 		border-color: transparent,
-		border-style: $alert-border-style,
 		border-radius: clay-enable-rounded($alert-border-radius),
+		border-style: $alert-border-style,
 		border-width: $alert-border-width,
 		display: block,
 		font-size: $alert-font-size,
@@ -386,8 +386,8 @@ $alert-notifications-fixed-top-mobile: null !default;
 $alert-notifications-fixed: () !default;
 $alert-notifications-fixed: map-deep-merge(
 	(
-		breakpoint-down: sm,
 		bottom: $alert-notifications-fixed-bottom,
+		breakpoint-down: sm,
 		left: $alert-notifications-fixed-left,
 		position: fixed,
 		right: $alert-notifications-fixed-right,

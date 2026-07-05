@@ -108,12 +108,12 @@ $cadmin-badge-item-spacer-x: 0.85714em !default;
 $cadmin-badge-close: () !default;
 $cadmin-badge-close: map-deep-merge(
 	(
-		color: inherit,
-		opacity: 1,
 		border-radius: 1px,
 		display: inline-flex,
+		color: inherit,
 		font-size: inherit,
 		height: auto,
+		opacity: 1,
 		width: auto,
 
 		hover: (

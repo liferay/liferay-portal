@@ -1,8 +1,8 @@
 $header-close: (
 	color: var(--color-action-neutral-default),
-	hover-color: var(--color-action-neutral-hover),
-	focus-color: var(--color-action-neutral-active),
 	disabled-color: var(--color-action-neutral-disabled),
+	focus-color: var(--color-action-neutral-active),
+	hover-color: var(--color-action-neutral-hover),
 );
 
 // Modal Success
@@ -10,8 +10,8 @@ $header-close: (
 $modal-success: (
 	header-bg: $success-l2,
 	header-border-color: $success,
-	header-color: $success,
 	header-close: $header-close,
+	header-color: $success,
 );
 
 // Modal Info
@@ -19,8 +19,8 @@ $modal-success: (
 $modal-info: (
 	header-bg: $info-l2,
 	header-border-color: $info,
-	header-color: $info,
 	header-close: $header-close,
+	header-color: $info,
 );
 
 // Modal Warning
@@ -28,8 +28,8 @@ $modal-info: (
 $modal-warning: (
 	header-bg: $warning-l2,
 	header-border-color: $warning,
-	header-color: $warning,
 	header-close: $header-close,
+	header-color: $warning,
 );
 
 // Modal Danger
@@ -37,6 +37,6 @@ $modal-warning: (
 $modal-danger: (
 	header-bg: $danger-l2,
 	header-border-color: $danger,
-	header-color: $danger,
 	header-close: $header-close,
+	header-color: $danger,
 );

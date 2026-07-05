@@ -169,8 +169,8 @@ $toggle-switch-bar: map-deep-merge(
 $toggle-switch-check: () !default;
 $toggle-switch-check: map-deep-merge(
 	(
-		breakpoint-down: sm,
 		bottom: 0rem,
+		breakpoint-down: sm,
 		font-size: 62.5%,
 		height: $toggle-switch-bar-height,
 		opacity: 0,

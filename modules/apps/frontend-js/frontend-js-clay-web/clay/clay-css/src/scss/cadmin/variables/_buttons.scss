@@ -36,9 +36,9 @@ $cadmin-btn: map-deep-merge(
 	(
 		background-color: transparent,
 		border-color: transparent,
+		border-radius: clay-enable-rounded($cadmin-btn-border-radius),
 		border-style: solid,
 		border-width: $cadmin-btn-border-width,
-		border-radius: clay-enable-rounded($cadmin-btn-border-radius),
 		box-shadow: clay-enable-shadows($cadmin-btn-box-shadow),
 		color: $cadmin-body-color,
 		cursor: $cadmin-btn-cursor,
@@ -961,8 +961,8 @@ $cadmin-btn-palette: map-deep-merge(
 		),
 
 		'.btn-translucent': (
-			extend: '%clay-btn-xs',
 			border-radius: clay-enable-rounded($cadmin-rounded-pill),
+			extend: '%clay-btn-xs',
 		),
 
 		'.btn-translucent.btn-ai': (

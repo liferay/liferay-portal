@@ -38,8 +38,8 @@ $btn: map-deep-merge(
 	(
 		background-color: transparent,
 		border-color: transparent,
-		border-style: solid,
 		border-radius: clay-enable-rounded($btn-border-radius),
+		border-style: solid,
 		border-width: $btn-border-width,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: $body-color,

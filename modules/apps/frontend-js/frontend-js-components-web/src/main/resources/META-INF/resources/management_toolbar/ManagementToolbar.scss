@@ -22,25 +22,25 @@ $management-bar-base: (
 );
 
 $management-bar-size: (
-	scaling-navbar: true,
+	active-border-bottom-width: 0.25rem,
 	border-bottom-width: 0.0625rem,
-	font-size: $navbar-font-size,
-	height: 4rem,
-	min-height: 4rem,
-	padding-x: 0,
-	padding-y: 0,
-	height-mobile: 3rem,
-	min-height-mobile: 3rem,
 	btn-monospaced-font-size: 1rem,
+	font-size: $navbar-font-size,
+	form-control-height-mobile: 2rem,
+	height: 4rem,
+	height-mobile: 3rem,
+	min-height: 4rem,
+	min-height-mobile: 3rem,
 	link-height: 2rem,
 	link-height-mobile: 2rem,
 	link-margin-x: 0.5rem,
 	link-margin-x-mobile: 0.25rem,
 	link-padding-x-mobile: 0.25rem,
-	form-control-height-mobile: 2rem,
-	toggler-margin-x: 0.875rem,
-	active-border-bottom-width: 0.25rem,
 	nav-item-dropdown-margin-top: 0,
+	padding-x: 0,
+	padding-y: 0,
+	toggler-margin-x: 0.875rem,
+	scaling-navbar: true,
 );
 
 $management-bar-light: (

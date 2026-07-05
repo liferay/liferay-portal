@@ -155,8 +155,8 @@ $sidebar: map-deep-merge(
 		),
 
 		sidebar-header: (
-			component-title: $sidebar-header-component-title,
 			component-subtitle: $sidebar-header-component-subtitle,
+			component-title: $sidebar-header-component-title,
 			padding-bottom:
 				var(--sidebar-header-padding-bottom, $sidebar-padding-bottom),
 			padding-left:

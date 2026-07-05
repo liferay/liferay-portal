@@ -1684,8 +1684,8 @@ $input-group-item: map-deep-merge(
 		dropdown: (
 			display: flex,
 			flex-wrap: wrap,
-			word-wrap: break-word,
 			width: 100%,
+			word-wrap: break-word,
 		),
 	),
 	$input-group-item
@@ -1716,13 +1716,13 @@ $input-group-item-focusable: map-deep-merge(
 			z-index: 1,
 
 			input-group-append: (
-				border-top-left-radius: 0rem,
 				border-bottom-left-radius: 0rem,
+				border-top-left-radius: 0rem,
 			),
 
 			input-group-prepend: (
-				border-top-right-radius: 0rem,
 				border-bottom-right-radius: 0rem,
+				border-top-right-radius: 0rem,
 			),
 		),
 	),
@@ -2280,8 +2280,8 @@ $input-group-sm: map-deep-merge(
 				btn-monospaced: $input-group-sm-inset-item-btn-monospaced,
 
 				form-file: (
-					height: 75%,
 					btn: $input-group-sm-inset-item-form-file-btn,
+					height: 75%,
 				),
 			),
 		),

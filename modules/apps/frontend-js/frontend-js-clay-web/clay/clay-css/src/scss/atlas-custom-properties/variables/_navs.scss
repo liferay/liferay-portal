@@ -470,8 +470,8 @@ $nav-tabs-link: () !default;
 $nav-tabs-link: map-deep-merge(
 	(
 		border-color: transparent,
-		border-style: solid,
 		border-radius: $nav-tabs-border-radius,
+		border-style: solid,
 		border-width: $nav-tabs-border-width,
 		color: $nav-tabs-link-color,
 		font-weight: $font-weight-semi-bold,

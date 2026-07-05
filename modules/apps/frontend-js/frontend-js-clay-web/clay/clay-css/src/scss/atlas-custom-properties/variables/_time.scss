@@ -38,9 +38,9 @@ $clay-time-form-control-inset: map-deep-merge(
 		margin-bottom: 0,
 		margin-left: 0,
 		margin-top: 0,
+		selection-bg: transparent,
 		text-align: center,
 		width: 20px,
-		selection-bg: transparent,
 
 		focus: (
 			background-color:

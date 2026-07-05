@@ -5,8 +5,8 @@ $component-link: map-deep-merge(
 		transition: box-shadow 0.15s ease-in-out,
 
 		focus: (
-			color: clay-darken($gray-600, 15%),
 			box-shadow: $component-focus-box-shadow,
+			color: clay-darken($gray-600, 15%),
 			outline: 0,
 		),
 	),
@@ -25,8 +25,8 @@ $link-primary: map-deep-merge(
 		),
 
 		focus: (
-			color: clay-darken($primary, 15%),
 			box-shadow: $component-focus-box-shadow,
+			color: clay-darken($primary, 15%),
 			outline: 0,
 		),
 	),
@@ -45,8 +45,8 @@ $link-secondary: map-deep-merge(
 		),
 
 		focus: (
-			color: $gray-900,
 			box-shadow: $component-focus-box-shadow,
+			color: $gray-900,
 			outline: 0,
 		),
 	),
@@ -91,8 +91,8 @@ $component-title-link: map-deep-merge(
 		transition: box-shadow 0.15s ease-in-out,
 
 		focus: (
-			color: clay-darken($gray-900, 15%),
 			box-shadow: $component-focus-box-shadow,
+			color: clay-darken($gray-900, 15%),
 			outline: 0,
 		),
 	),
@@ -121,8 +121,8 @@ $component-subtitle-link: map-deep-merge(
 		),
 
 		focus: (
-			color: $gray-900,
 			box-shadow: $component-focus-box-shadow,
+			color: $gray-900,
 			outline: 0,
 		),
 	),

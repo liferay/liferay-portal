@@ -82,11 +82,11 @@ $input: map-deep-merge(
 	(
 		background-color: $input-bg,
 		border-color: $input-border-color,
-		border-style: $input-border-style,
 		border-bottom-width: $input-border-bottom-width,
 		border-left-width: $input-border-left-width,
-		border-right-width: $input-border-right-width,
 		border-radius: $input-border-radius,
+		border-right-width: $input-border-right-width,
+		border-style: $input-border-style,
 		border-top-width: $input-border-top-width,
 		border-width: $input-border-width,
 		box-shadow: $input-box-shadow,

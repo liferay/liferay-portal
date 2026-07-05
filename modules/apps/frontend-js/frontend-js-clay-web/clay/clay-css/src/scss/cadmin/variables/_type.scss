@@ -38,8 +38,8 @@ $cadmin-c-kbd: () !default;
 $cadmin-c-kbd: map-deep-merge(
 	(
 		background-color: transparent,
-		border-radius: 2px,
 		border-color: transparent,
+		border-radius: 2px,
 		border-style: solid,
 		border-width: 1px,
 		box-shadow: none,
