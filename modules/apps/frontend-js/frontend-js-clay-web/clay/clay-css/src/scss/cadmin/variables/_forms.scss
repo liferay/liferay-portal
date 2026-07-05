@@ -85,11 +85,11 @@ $cadmin-input: map-deep-merge(
 	(
 		background-color: $cadmin-input-bg,
 		border-color: $cadmin-input-border-color,
-		border-style: $cadmin-input-border-style,
 		border-bottom-width: $cadmin-input-border-bottom-width,
 		border-left-width: $cadmin-input-border-left-width,
 		border-radius: clay-enable-rounded($cadmin-input-border-radius),
 		border-right-width: $cadmin-input-border-right-width,
+		border-style: $cadmin-input-border-style,
 		border-top-width: $cadmin-input-border-top-width,
 		border-width: $cadmin-input-border-width,
 		box-shadow: clay-enable-shadows([$cadmin-input-box-shadow]),

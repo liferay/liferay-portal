@@ -109,8 +109,8 @@ $cadmin-badge-close: () !default;
 $cadmin-badge-close: map-deep-merge(
 	(
 		border-radius: 1px,
-		display: inline-flex,
 		color: inherit,
+		display: inline-flex,
 		font-size: inherit,
 		height: auto,
 		opacity: 1,

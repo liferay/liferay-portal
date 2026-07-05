@@ -39,8 +39,8 @@ $input: () !default;
 $input: map-deep-merge(
 	(
 		background-color: $input-bg,
-		border-color: $input-border-color,
 		border-bottom-width: $input-border-bottom-width,
+		border-color: $input-border-color,
 		border-left-width: $input-border-left-width,
 		border-right-width: $input-border-right-width,
 		border-top-width: $input-border-top-width,

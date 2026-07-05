@@ -64,11 +64,11 @@ $cadmin-breadcrumb-item: map-deep-merge(
 
 			before: (
 				color: $cadmin-breadcrumb-divider-color,
-				display: block,
 				background-image: $cadmin-breadcrumb-divider-svg-icon,
 				background-repeat: no-repeat,
 				background-size: 100%,
 				content: '',
+				display: block,
 				float: left,
 				height: $cadmin-breadcrumb-divider-svg-icon-height,
 				left: 0px,

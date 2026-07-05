@@ -211,8 +211,8 @@ $date-picker-calendar-header-container: map-merge(
 $date-picker-calendar-body-container: () !default;
 $date-picker-calendar-body-container: map-merge(
 	(
-		padding-left: 0.5rem,
 		padding-bottom: 0.5rem,
+		padding-left: 0.5rem,
 		padding-right: 0.5rem,
 
 		media-breakpoint-down: (

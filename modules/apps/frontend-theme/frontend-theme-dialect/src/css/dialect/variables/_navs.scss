@@ -16,8 +16,8 @@ $nav-base-link: (
 
 $nav-underline-link: (
 	background-color: var(--tab-primary-item-background-color),
-	border-color: var(--tab-primary-item-border-color),
 	border-bottom-width: var(--tab-primary-horizontal-item-border-bottom-width),
+	border-color: var(--tab-primary-item-border-color),
 	border-left-width: var(--tab-primary-horizontal-item-border-left-width),
 	border-radius: var(--tab-primary-item-border-radius),
 	border-right-width: var(--tab-primary-horizontal-item-border-right-width),
@@ -36,8 +36,8 @@ $nav-underline-link: (
 		color: var(--tab-primary-item-color-active),
 		font-weight: var(--tab-primary-item-font-weight-active),
 		after: (
-			content: '',
 			background-color: var(--tab-primary-item-active-bar-color-active),
+			content: '',
 			height: var(--tab-primary-item-active-bar-thickness),
 		),
 		inline-item: (
@@ -246,8 +246,8 @@ $nav-tertiary-link: map-deep-merge(
 		color: var(--tab-tertiary-item-color),
 		font-size: var(--tab-tertiary-item-font-size),
 		font-weight: var(--tab-tertiary-item-font-weight),
-		margin-top: 0.0625rem,
 		line-height: var(--tab-tertiary-item-line-height),
+		margin-top: 0.0625rem,
 		padding: var(--tab-tertiary-horizontal-item-padding-y)
 			var(--tab-tertiary-horizontal-item-padding-x),
 		z-index: 1,

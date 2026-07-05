@@ -362,8 +362,8 @@ $cadmin-nav-tabs-link: () !default;
 $cadmin-nav-tabs-link: map-deep-merge(
 	(
 		border-color: transparent,
-		border-style: solid,
 		border-radius: $cadmin-nav-tabs-border-radius,
+		border-style: solid,
 		border-width: $cadmin-nav-tabs-border-width,
 		color: $cadmin-nav-tabs-link-color,
 		font-weight: $cadmin-font-weight-semi-bold,

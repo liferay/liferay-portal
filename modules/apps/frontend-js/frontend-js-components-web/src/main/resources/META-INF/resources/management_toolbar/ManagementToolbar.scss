@@ -29,18 +29,18 @@ $management-bar-size: (
 	form-control-height-mobile: 2rem,
 	height: 4rem,
 	height-mobile: 3rem,
-	min-height: 4rem,
-	min-height-mobile: 3rem,
 	link-height: 2rem,
 	link-height-mobile: 2rem,
 	link-margin-x: 0.5rem,
 	link-margin-x-mobile: 0.25rem,
 	link-padding-x-mobile: 0.25rem,
+	min-height: 4rem,
+	min-height-mobile: 3rem,
 	nav-item-dropdown-margin-top: 0,
 	padding-x: 0,
 	padding-y: 0,
-	toggler-margin-x: 0.875rem,
 	scaling-navbar: true,
+	toggler-margin-x: 0.875rem,
 );
 
 $management-bar-light: (
@@ -79,8 +79,8 @@ $management-bar-primary: (
 	navbar-nav: (
 		nav-link: (
 			border-radius: $border-radius,
-			font-weight: $font-weight-semi-bold,
 			color: $navbar-light-color,
+			font-weight: $font-weight-semi-bold,
 			hover: (
 				background-color: unquote('hsl(from #{$gray-900} h s l / 0.03)'),
 				color: $gray-900,
