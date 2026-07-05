@@ -11,12 +11,11 @@ import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWebKeys;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationAuditMessageUtil;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -131,7 +130,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
 				_normalizeHost(_getClientHost(httpServletRequest, false)));
 
-			_routeAuditMessage(
+			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
 				_getAuthorizationFailureAuditMessage(
 					clientHost, companyId, httpServletRequest));
 
@@ -364,26 +363,6 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		}
 
 		return StringUtil.toLowerCase(normalizedHost);
-	}
-
-	private void _routeAuditMessage(AuditMessage auditMessage) {
-		if (auditMessage == null) {
-			return;
-		}
-
-		try {
-			AuditRouterUtil.route(auditMessage);
-		}
-		catch (AuditException auditException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to route audit message", auditException);
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
 	}
 
 	private void _setSecurityContext(

@@ -10,20 +10,17 @@ import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWeb
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
 import com.liferay.oauth2.provider.rest.internal.endpoint.dynamic.registration.model.LiferayClientRegistration;
 import com.liferay.oauth2.provider.rest.internal.endpoint.dynamic.registration.model.LiferayClientRegistrationResponse;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationAuditMessageUtil;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -108,12 +105,13 @@ public class LiferayDynamicRegistrationService
 		try {
 			Response response = super.register(liferayClientRegistration);
 
-			_routeAuditMessage(_getAddAuditMessage(response));
+			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+				_getAddAuditMessage(response));
 
 			return response;
 		}
 		catch (RuntimeException runtimeException) {
-			_routeAuditMessage(
+			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
 				_getRejectAuditMessage(
 					runtimeException, liferayClientRegistration));
 
@@ -497,26 +495,6 @@ public class LiferayDynamicRegistrationService
 			StringPool.BLANK);
 	}
 
-	private void _routeAuditMessage(AuditMessage auditMessage) {
-		if (auditMessage == null) {
-			return;
-		}
-
-		try {
-			AuditRouterUtil.route(auditMessage);
-		}
-		catch (AuditException auditException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to route audit message", auditException);
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-	}
-
 	private void _setAllowedGrantTypes(Client client) {
 		if (!OAuthConstants.TOKEN_ENDPOINT_AUTH_NONE.equals(
 				client.getTokenEndpointAuthMethod())) {
@@ -632,9 +610,6 @@ public class LiferayDynamicRegistrationService
 			}
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LiferayDynamicRegistrationService.class);
 
 	private static final Map<String, String> _allowedResponseTypes =
 		HashMapBuilder.put(
