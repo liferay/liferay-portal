@@ -661,20 +661,32 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					companyId);
 		}
 
-		try (SafeCloseable safeCloseable1 =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId);
-			SafeCloseable safeCloseable2 =
-				PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
-					companyId)) {
+		SafeCloseable safeCloseable1 =
+			PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
+				companyId);
 
-			return doDeleteCompany(companyId);
+		try (SafeCloseable safeCloseable2 =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			Company company = doDeleteCompany(companyId);
+
+			TransactionCallbackUtil.registerCompletionCallback(
+				() -> {
+					safeCloseable1.close();
+
+					return null;
+				});
+
+			return company;
 		}
-		catch (PortalException portalException) {
+		catch (Throwable throwable) {
+			safeCloseable1.close();
+
 			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
+				_log.debug(throwable);
 			}
 
-			throw portalException;
+			throw throwable;
 		}
 	}
 
