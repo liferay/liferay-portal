@@ -108,13 +108,13 @@ public class LiferayDynamicRegistrationService
 		try {
 			Response response = super.register(liferayClientRegistration);
 
-			_routeAuditMessage(_buildAddAuditMessage(response));
+			_routeAuditMessage(_getAddAuditMessage(response));
 
 			return response;
 		}
 		catch (RuntimeException runtimeException) {
 			_routeAuditMessage(
-				_buildRejectAuditMessage(
+				_getRejectAuditMessage(
 					runtimeException, liferayClientRegistration));
 
 			throw runtimeException;
@@ -334,7 +334,7 @@ public class LiferayDynamicRegistrationService
 		return OAuth2SecureRandomGenerator.generateClientSecret();
 	}
 
-	private AuditMessage _buildAddAuditMessage(Response response) {
+	private AuditMessage _getAddAuditMessage(Response response) {
 		if (response == null) {
 			return null;
 		}
@@ -375,7 +375,59 @@ public class LiferayDynamicRegistrationService
 			StringPool.BLANK);
 	}
 
-	private AuditMessage _buildRejectAuditMessage(
+	private String _getApplicationType(ClientRegistration clientRegistration) {
+		return GetterUtil.getString(
+			clientRegistration.getApplicationType(), "web");
+	}
+
+	private JSONObject _getBaseAdditionalInfoJSONObject() {
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		String clientHost = StringPool.BLANK;
+		String userAgent = StringPool.BLANK;
+
+		if (httpServletRequest != null) {
+			clientHost = GetterUtil.getString(
+				httpServletRequest.getAttribute(
+					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
+				httpServletRequest.getRemoteAddr());
+
+			userAgent = GetterUtil.getString(
+				httpServletRequest.getHeader("User-Agent"));
+		}
+
+		return JSONUtil.put(
+			"clientHost", clientHost
+		).put(
+			"mode",
+			OAuth2ProviderRESTEndpointConstants.
+				DYNAMIC_REGISTRATION_MODE_AUTHENTICATED
+		).put(
+			"userAgent", userAgent
+		);
+	}
+
+	private long _getCompanyId() {
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		if ((httpServletRequest == null) || (_portal == null)) {
+			return 0;
+		}
+
+		return _portal.getCompanyId(httpServletRequest);
+	}
+
+	private HttpServletRequest _getHttpServletRequest() {
+		MessageContext messageContext = getMessageContext();
+
+		if (messageContext == null) {
+			return null;
+		}
+
+		return messageContext.getHttpServletRequest();
+	}
+
+	private AuditMessage _getRejectAuditMessage(
 		Exception exception,
 		LiferayClientRegistration liferayClientRegistration) {
 
@@ -443,58 +495,6 @@ public class LiferayDynamicRegistrationService
 			OAuth2ProviderRESTEndpointConstants.
 				EVENT_TYPE_DYNAMIC_REGISTRATION_REJECT,
 			StringPool.BLANK);
-	}
-
-	private String _getApplicationType(ClientRegistration clientRegistration) {
-		return GetterUtil.getString(
-			clientRegistration.getApplicationType(), "web");
-	}
-
-	private JSONObject _getBaseAdditionalInfoJSONObject() {
-		HttpServletRequest httpServletRequest = _getHttpServletRequest();
-
-		String clientHost = StringPool.BLANK;
-		String userAgent = StringPool.BLANK;
-
-		if (httpServletRequest != null) {
-			clientHost = GetterUtil.getString(
-				httpServletRequest.getAttribute(
-					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
-				httpServletRequest.getRemoteAddr());
-
-			userAgent = GetterUtil.getString(
-				httpServletRequest.getHeader("User-Agent"));
-		}
-
-		return JSONUtil.put(
-			"clientHost", clientHost
-		).put(
-			"mode",
-			OAuth2ProviderRESTEndpointConstants.
-				DYNAMIC_REGISTRATION_MODE_AUTHENTICATED
-		).put(
-			"userAgent", userAgent
-		);
-	}
-
-	private long _getCompanyId() {
-		HttpServletRequest httpServletRequest = _getHttpServletRequest();
-
-		if ((httpServletRequest == null) || (_portal == null)) {
-			return 0;
-		}
-
-		return _portal.getCompanyId(httpServletRequest);
-	}
-
-	private HttpServletRequest _getHttpServletRequest() {
-		MessageContext messageContext = getMessageContext();
-
-		if (messageContext == null) {
-			return null;
-		}
-
-		return messageContext.getHttpServletRequest();
 	}
 
 	private void _routeAuditMessage(AuditMessage auditMessage) {

@@ -132,7 +132,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 				_normalizeHost(_getClientHost(httpServletRequest, false)));
 
 			_routeAuditMessage(
-				_buildAuthorizationFailureAuditMessage(
+				_getAuthorizationFailureAuditMessage(
 					clientHost, companyId, httpServletRequest));
 
 			throw ExceptionUtils.toNotAuthorizedException(null, null);
@@ -224,42 +224,17 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		return user;
 	}
 
-	private AuditMessage _buildAuthorizationFailureAuditMessage(
+	private AuditMessage _getAuthorizationFailureAuditMessage(
 		String clientHost, long companyId,
 		HttpServletRequest httpServletRequest) {
 
-		return _buildRejectAuditMessage(
+		return _getRejectAuditMessage(
 			clientHost, companyId,
 			OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_TOKEN,
 			"Authenticated registration authorization failed",
 			httpServletRequest,
 			OAuth2ProviderRESTEndpointConstants.
 				DYNAMIC_REGISTRATION_MODE_AUTHENTICATED);
-	}
-
-	private AuditMessage _buildRejectAuditMessage(
-		String clientHost, long companyId, String error,
-		String errorDescription, HttpServletRequest httpServletRequest,
-		String mode) {
-
-		return new AuditMessage(
-			0, companyId, 0, StringPool.BLANK, null,
-			JSONUtil.put(
-				"clientHost", clientHost
-			).put(
-				"error", error
-			).put(
-				"errorDescription", errorDescription
-			).put(
-				"mode", mode
-			).put(
-				"userAgent",
-				GetterUtil.getString(httpServletRequest.getHeader("User-Agent"))
-			),
-			OAuth2Application.class.getName(), StringPool.BLANK,
-			OAuth2ProviderRESTEndpointConstants.
-				EVENT_TYPE_DYNAMIC_REGISTRATION_REJECT,
-			StringPool.BLANK);
 	}
 
 	private String _getClientHost(
@@ -337,6 +312,31 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			accessTokenContent);
 
 		return jwsJwtCompactConsumer.getJwtToken();
+	}
+
+	private AuditMessage _getRejectAuditMessage(
+		String clientHost, long companyId, String error,
+		String errorDescription, HttpServletRequest httpServletRequest,
+		String mode) {
+
+		return new AuditMessage(
+			0, companyId, 0, StringPool.BLANK, null,
+			JSONUtil.put(
+				"clientHost", clientHost
+			).put(
+				"error", error
+			).put(
+				"errorDescription", errorDescription
+			).put(
+				"mode", mode
+			).put(
+				"userAgent",
+				GetterUtil.getString(httpServletRequest.getHeader("User-Agent"))
+			),
+			OAuth2Application.class.getName(), StringPool.BLANK,
+			OAuth2ProviderRESTEndpointConstants.
+				EVENT_TYPE_DYNAMIC_REGISTRATION_REJECT,
+			StringPool.BLANK);
 	}
 
 	private String _normalizeHost(String host) {
