@@ -872,7 +872,42 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					CompanyThreadLocal.getCompanyId(), " is locked"));
 		}
 
+		Set<Long> persistedCompanyIds = new HashSet<>();
+
+		// getCompanyIds() returns the live instance IDs from the pool, or reads
+		// them by ID from the database when the pool is disabled, so the
+		// existence check never loads the full Company model
+
+		for (long companyId : PortalInstancePool.getCompanyIds()) {
+			persistedCompanyIds.add(companyId);
+		}
+
+		// The system scope is not a company: it cannot be deleted and has no
+		// Company row, so neither liveness check applies to it
+
+		persistedCompanyIds.add(CompanyConstants.SYSTEM);
+
 		for (long companyId : companyIds) {
+			if (PortalInstances.isCompanyInDeletionProcess(companyId)) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Skipping company " + companyId +
+							" because it is in the deletion process");
+				}
+
+				continue;
+			}
+
+			if (!persistedCompanyIds.contains(companyId)) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Skipping company " + companyId +
+							" because it no longer exists");
+				}
+
+				continue;
+			}
+
 			try (SafeCloseable safeCloseable =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						companyId)) {
