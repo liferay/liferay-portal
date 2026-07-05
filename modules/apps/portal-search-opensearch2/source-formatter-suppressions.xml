@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<checkstyle>
+		<suppress checks="CompanyIterationCheck" files=".*" />
+	</checkstyle>
+</suppressions>

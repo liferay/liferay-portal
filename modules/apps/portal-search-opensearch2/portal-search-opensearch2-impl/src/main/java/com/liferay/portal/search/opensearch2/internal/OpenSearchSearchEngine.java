@@ -337,9 +337,9 @@ public class OpenSearchSearchEngine
 			setAutoCreateIndex(false);
 
 			if (StartupHelperUtil.isDBNew()) {
-				_companyLocalService.forEachCompanyId(
-					companyId -> removeCompany(companyId),
-					_getIndexedCompanyIds());
+				for (long companyId : _getIndexedCompanyIds()) {
+					removeCompany(companyId);
+				}
 			}
 
 			_putTimestampPipeline();
