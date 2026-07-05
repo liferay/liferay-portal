@@ -324,38 +324,20 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			return updatedCompany;
 		};
 
-		SafeCloseable safeCloseable =
-			CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
-				company.getCompanyId());
-
-		try {
-			Company addedCompany = null;
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
+					companyId)) {
 
 			if (PropsValues.DATABASE_PARTITION_ENABLED) {
-				addedCompany = TransactionInvokerUtil.invoke(
+				return TransactionInvokerUtil.invoke(
 					_transactionConfig, callable);
 			}
-			else {
-				addedCompany = callable.call();
-			}
 
-			TransactionCommitCallbackUtil.registerCallback(
-				() -> {
-					safeCloseable.close();
-
-					return null;
-				});
-
-			return addedCompany;
+			return callable.call();
 		}
 		catch (Throwable throwable) {
-			try {
-				if (newDBPartitionAdded) {
-					_removeDBPartition(companyId, false);
-				}
-			}
-			finally {
-				safeCloseable.close();
+			if (newDBPartitionAdded) {
+				_removeDBPartition(companyId, false);
 			}
 
 			throw new PortalException(throwable);

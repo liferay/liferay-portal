@@ -17,7 +17,7 @@
 				<util:constant static-field="com.liferay.portal.kernel.cache.transactional.TransactionalPortalCacheUtil.TRANSACTION_LIFECYCLE_LISTENER" />
 				<util:constant static-field="com.liferay.portal.kernel.internal.spring.transaction.ReadOnlyTransactionThreadLocal.TRANSACTION_LIFECYCLE_LISTENER" />
 				<util:constant static-field="com.liferay.portal.kernel.transaction.TransactionLifecycleNotifier.TRANSACTION_LIFECYCLE_LISTENER" />
-				<util:constant static-field="com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.kernel.transaction.TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER" />
 			</list>
 		</property>
 	</bean>

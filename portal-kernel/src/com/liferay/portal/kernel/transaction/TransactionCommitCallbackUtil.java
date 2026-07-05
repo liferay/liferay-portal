@@ -5,108 +5,22 @@
 
 package com.liferay.portal.kernel.transaction;
 
-import com.liferay.petra.lang.CentralizedThreadLocal;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * @author Shuyang Zhou
+ * @author     Shuyang Zhou
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             TransactionCallbackUtil}
  */
+@Deprecated
 public class TransactionCommitCallbackUtil {
 
 	public static final TransactionLifecycleListener
-		TRANSACTION_LIFECYCLE_LISTENER = new NewTransactionLifecycleListener() {
-
-			@Override
-			protected void doCommitted(
-				TransactionAttribute transactionAttribute,
-				TransactionStatus transactionStatus) {
-
-				List<Callable<?>> callables = popCallbackList();
-
-				for (Callable<?> callable : callables) {
-					try {
-						callable.call();
-					}
-					catch (Exception exception) {
-						_log.error(
-							"Unable to execute transaction commit callback",
-							exception);
-					}
-				}
-			}
-
-			@Override
-			protected void doCreated(
-				TransactionAttribute transactionAttribute,
-				TransactionStatus transactionStatus) {
-
-				pushCallbackList();
-			}
-
-			@Override
-			protected void doRollbacked(
-				TransactionAttribute transactionAttribute,
-				TransactionStatus transactionStatus, Throwable throwable) {
-
-				popCallbackList();
-			}
-
-		};
+		TRANSACTION_LIFECYCLE_LISTENER =
+			TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER;
 
 	public static void registerCallback(Callable<?> callable) {
-		List<List<Callable<?>>> callbackListList = _callbackListList.get();
-
-		if (callbackListList.isEmpty()) {
-
-			// Not within a transaction boundary, should only happen during an
-			// upgrade and verify process. See DBUpgrader#_disableTransactions.
-
-			try {
-				callable.call();
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		}
-		else {
-			int index = callbackListList.size() - 1;
-
-			List<Callable<?>> callableList = callbackListList.get(index);
-
-			if (callableList == Collections.<Callable<?>>emptyList()) {
-				callableList = new ArrayList<>();
-
-				callbackListList.set(index, callableList);
-			}
-
-			callableList.add(callable);
-		}
+		TransactionCallbackUtil.registerCommitCallback(callable);
 	}
-
-	protected static List<Callable<?>> popCallbackList() {
-		List<List<Callable<?>>> callbackListList = _callbackListList.get();
-
-		return callbackListList.remove(callbackListList.size() - 1);
-	}
-
-	protected static void pushCallbackList() {
-		List<List<Callable<?>>> callbackListList = _callbackListList.get();
-
-		callbackListList.add(Collections.<Callable<?>>emptyList());
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		TransactionCommitCallbackUtil.class);
-
-	private static final ThreadLocal<List<List<Callable<?>>>>
-		_callbackListList = new CentralizedThreadLocal<>(
-			TransactionCommitCallbackUtil.class + "._callbackListList",
-			ArrayList::new);
 
 }
