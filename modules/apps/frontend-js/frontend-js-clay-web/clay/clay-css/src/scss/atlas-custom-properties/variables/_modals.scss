@@ -67,8 +67,8 @@ $modal-content: map-deep-merge(
 	(
 		background-clip: padding-box,
 		background-color: $modal-content-bg,
-		border-radius: clay-enable-rounded($modal-content-border-radius),
 		border: $modal-content-border-width solid $modal-content-border-color,
+		border-radius: clay-enable-rounded($modal-content-border-radius),
 		box-shadow: clay-enable-shadows($modal-content-box-shadow-xs),
 		color: $modal-content-color,
 		display: flex,

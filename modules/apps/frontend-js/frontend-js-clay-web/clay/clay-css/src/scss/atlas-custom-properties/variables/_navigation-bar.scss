@@ -6,10 +6,10 @@ $navigation-bar-size: map-deep-merge(
 		border-bottom-width: 1px,
 		font-size: var(--navigation-bar-font-size, $navbar-font-size),
 		height: var(--navigation-bar-height, 48px),
-		padding-x: var(--navigation-bar-padding-x, 0px),
-		padding-y: var(--navigation-bar-padding-y, 0px),
 		link-padding-x: var(--navigation-bar-nav-link-link-padding-x, 16px),
 		nav-item-dropdown-margin-top: 0,
+		padding-x: var(--navigation-bar-padding-x, 0px),
+		padding-y: var(--navigation-bar-padding-y, 0px),
 
 		active-border-bottom-width: 4px,
 		active-border-offset-bottom: -8.5px,
@@ -39,8 +39,8 @@ $navigation-bar-base: map-deep-merge(
 			nav-link: (
 				border-radius: clay-enable-rounded($border-radius),
 				border-width: 0,
-				outline: 0,
 				font-size: inherit,
+				outline: 0,
 
 				focus: (
 					box-shadow: $component-focus-box-shadow,

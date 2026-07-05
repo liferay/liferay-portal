@@ -193,7 +193,6 @@ $popovers: map-deep-merge(
 $popover-header: () !default;
 $popover-header: map-deep-merge(
 	(
-		color: $popover-header-color,
 		background-color: $popover-header-bg,
 		border-bottom: $popover-border-width solid
 			unquote('hsl(from #{$popover-header-bg} h s calc(l - 5))'),
@@ -202,6 +201,7 @@ $popover-header: map-deep-merge(
 			clay-enable-rounded($popover-offset-border-width),
 		border-top-right-radius:
 			clay-enable-rounded($popover-offset-border-width),
+		color: $popover-header-color,
 		font-size: $popover-header-font-size,
 		font-weight: $popover-header-font-weight,
 		margin-bottom: $popover-header-margin-y,

@@ -155,14 +155,14 @@ $sidebar: map-deep-merge(
 		),
 
 		sidebar-header: (
+			component-title: $sidebar-header-component-title,
+			component-subtitle: $sidebar-header-component-subtitle,
 			padding-bottom:
 				var(--sidebar-header-padding-bottom, $sidebar-padding-bottom),
 			padding-left:
 				var(--sidebar-header-padding-left, $sidebar-padding-left),
 			padding-right: var(--sidebar-header-padding-right, 16px),
 			padding-top: var(--sidebar-header-padding-top, $sidebar-padding-top),
-			component-title: $sidebar-header-component-title,
-			component-subtitle: $sidebar-header-component-subtitle,
 
 			autofit-row: (
 				margin-left: var(--sidebar-header-autofit-row-margin-left, -4px),
