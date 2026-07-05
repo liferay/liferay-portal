@@ -185,15 +185,14 @@ public class BasePersistenceImpl
 
 		if (getCTPersistenceHelper() == null) {
 			for (T model : models) {
-				@SuppressWarnings("unchecked")
-				T cachedModel = (T)entityCache.getResult(
+				Serializable serializable = entityCache.getResult(
 					_modelImplClass, model.getPrimaryKeyObj());
 
-				if (cachedModel == null) {
-					cacheResult(model);
+				if (_modelImplClass.isInstance(serializable)) {
+					model.copyCacheFields(_modelImplClass.cast(serializable));
 				}
 				else {
-					model.copyCacheFields(cachedModel);
+					cacheResult(model);
 				}
 			}
 
@@ -207,15 +206,14 @@ public class BasePersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						ctModel.getCtCollectionId())) {
 
-				@SuppressWarnings("unchecked")
-				T cachedModel = (T)entityCache.getResult(
+				Serializable serializable = entityCache.getResult(
 					_modelImplClass, model.getPrimaryKeyObj());
 
-				if (cachedModel == null) {
-					cacheResult(model);
+				if (_modelImplClass.isInstance(serializable)) {
+					model.copyCacheFields(_modelImplClass.cast(serializable));
 				}
 				else {
-					model.copyCacheFields(cachedModel);
+					cacheResult(model);
 				}
 			}
 		}
