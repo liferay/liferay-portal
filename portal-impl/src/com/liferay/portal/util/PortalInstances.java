@@ -6,9 +6,13 @@
 package com.liferay.portal.util;
 
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.events.EventsProcessorUtil;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
+import com.liferay.portal.kernel.cluster.ClusterNode;
+import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
 import com.liferay.portal.kernel.exception.NoSuchVirtualHostException;
@@ -31,6 +35,8 @@ import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -44,11 +50,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.SQLException;
 
-import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Brian Wing Shun Chan
@@ -373,7 +379,51 @@ public class PortalInstances {
 	}
 
 	public static boolean isCompanyInDeletionProcess(long companyId) {
-		return _companyIdsInDeletionProcess.contains(companyId);
+		CompanyDeletionProcess companyDeletionProcess =
+			_companyIdsInDeletionProcess.get(companyId);
+
+		if (companyDeletionProcess == null) {
+			return false;
+		}
+
+		if (ClusterExecutorUtil.isEnabled() &&
+			(companyDeletionProcess._clusterNodeId != null) &&
+			!ClusterExecutorUtil.isClusterNodeAlive(
+				companyDeletionProcess._clusterNodeId)) {
+
+			if (_companyIdsInDeletionProcess.remove(
+					companyId, companyDeletionProcess) &&
+				_log.isWarnEnabled()) {
+
+				_log.warn(
+					StringBundler.concat(
+						"Removing company ", companyId,
+						" from the deletion process because cluster node \"",
+						companyDeletionProcess._clusterNodeId,
+						"\" left the cluster"));
+			}
+
+			return false;
+		}
+
+		long elapsedTime =
+			System.currentTimeMillis() - companyDeletionProcess._timestamp;
+
+		if (elapsedTime <= PropsValues.COMPANY_DELETE_IN_PROCESS_MAX_TIME) {
+			return true;
+		}
+
+		if (_companyIdsInDeletionProcess.remove(
+				companyId, companyDeletionProcess) &&
+			_log.isWarnEnabled()) {
+
+			_log.warn(
+				StringBundler.concat(
+					"Removing company ", companyId,
+					" from the deletion process after ", elapsedTime, " ms"));
+		}
+
+		return false;
 	}
 
 	public static boolean isCompanyInImportProcess() {
@@ -385,8 +435,7 @@ public class PortalInstances {
 	}
 
 	public static boolean isCurrentCompanyInDeletionProcess() {
-		return _companyIdsInDeletionProcess.contains(
-			CompanyThreadLocal.getCompanyId());
+		return isCompanyInDeletionProcess(CompanyThreadLocal.getCompanyId());
 	}
 
 	public static boolean isVirtualHostsIgnoreHost(String host) {
@@ -416,14 +465,33 @@ public class PortalInstances {
 	public static SafeCloseable setCompanyInDeletionProcessWithSafeCloseable(
 		long companyId) {
 
-		if (_companyIdsInDeletionProcess.contains(companyId)) {
+		if (isCompanyInDeletionProcess(companyId)) {
 			throw new UnsupportedOperationException(
 				companyId + " is already in deletion");
 		}
 
-		_companyIdsInDeletionProcess.add(companyId);
+		CompanyDeletionProcess companyDeletionProcess =
+			new CompanyDeletionProcess(
+				_getLocalClusterNodeId(), System.currentTimeMillis());
 
-		return () -> _companyIdsInDeletionProcess.remove(companyId);
+		_companyIdsInDeletionProcess.put(companyId, companyDeletionProcess);
+
+		_notifyCluster(
+			new MethodHandler(
+				_addCompanyIdInDeletionProcessMethodKey, companyId,
+				companyDeletionProcess._clusterNodeId,
+				companyDeletionProcess._timestamp));
+
+		return () -> {
+			_companyIdsInDeletionProcess.remove(
+				companyId, companyDeletionProcess);
+
+			_notifyCluster(
+				new MethodHandler(
+					_removeCompanyIdInDeletionProcessMethodKey, companyId,
+					companyDeletionProcess._clusterNodeId,
+					companyDeletionProcess._timestamp));
+		};
 	}
 
 	public static SafeCloseable setCopyInProcessCompanyIdWithSafeCloseable(
@@ -450,6 +518,13 @@ public class PortalInstances {
 		_importInProcessCompanyId = companyId;
 
 		return () -> _importInProcessCompanyId = null;
+	}
+
+	private static void _addCompanyIdInDeletionProcess(
+		long companyId, String clusterNodeId, long timestamp) {
+
+		_companyIdsInDeletionProcess.put(
+			companyId, new CompanyDeletionProcess(clusterNodeId, timestamp));
 	}
 
 	private static long _getCompanyIdByHost(
@@ -508,6 +583,16 @@ public class PortalInstances {
 		return companyId;
 	}
 
+	private static String _getLocalClusterNodeId() {
+		ClusterNode clusterNode = ClusterExecutorUtil.getLocalClusterNode();
+
+		if (clusterNode == null) {
+			return null;
+		}
+
+		return clusterNode.getClusterNodeId();
+	}
+
 	private static boolean _isCompanyVirtualHostname(
 			long companyId, String serverName)
 		throws PortalException {
@@ -521,6 +606,22 @@ public class PortalInstances {
 		}
 
 		return Objects.equals(virtualHostname, serverName);
+	}
+
+	private static void _notifyCluster(MethodHandler methodHandler) {
+		ClusterRequest clusterRequest = ClusterRequest.createMulticastRequest(
+			methodHandler, true);
+
+		clusterRequest.setFireAndForget(true);
+
+		ClusterExecutorUtil.execute(clusterRequest);
+	}
+
+	private static void _removeCompanyIdInDeletionProcess(
+		long companyId, String clusterNodeId, long timestamp) {
+
+		_companyIdsInDeletionProcess.remove(
+			companyId, new CompanyDeletionProcess(clusterNodeId, timestamp));
 	}
 
 	private static void _setAttributes(
@@ -565,12 +666,20 @@ public class PortalInstances {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortalInstances.class);
 
+	private static final MethodKey _addCompanyIdInDeletionProcessMethodKey =
+		new MethodKey(
+			PortalInstances.class, "_addCompanyIdInDeletionProcess", long.class,
+			String.class, long.class);
 	private static final Set<String> _autoLoginIgnoreHosts;
 	private static final Set<String> _autoLoginIgnorePaths;
-	private static final List<Long> _companyIdsInDeletionProcess =
-		new CopyOnWriteArrayList<>();
+	private static final Map<Long, CompanyDeletionProcess>
+		_companyIdsInDeletionProcess = new ConcurrentHashMap<>();
 	private static Long _copyInProcessCompanyId;
 	private static Long _importInProcessCompanyId;
+	private static final MethodKey _removeCompanyIdInDeletionProcessMethodKey =
+		new MethodKey(
+			PortalInstances.class, "_removeCompanyIdInDeletionProcess",
+			long.class, String.class, long.class);
 	private static final Set<String> _virtualHostsIgnoreHosts;
 	private static final Set<String> _virtualHostsIgnorePaths;
 
@@ -583,6 +692,47 @@ public class PortalInstances {
 			PropsUtil.getArray(PropsKeys.VIRTUAL_HOSTS_IGNORE_HOSTS));
 		_virtualHostsIgnorePaths = SetUtil.fromArray(
 			PropsUtil.getArray(PropsKeys.VIRTUAL_HOSTS_IGNORE_PATHS));
+	}
+
+	private static class CompanyDeletionProcess {
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+
+			if (!(object instanceof
+					CompanyDeletionProcess companyDeletionProcess)) {
+
+				return false;
+			}
+
+			if (Objects.equals(
+					_clusterNodeId, companyDeletionProcess._clusterNodeId) &&
+				(_timestamp == companyDeletionProcess._timestamp)) {
+
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = HashUtil.hash(0, _clusterNodeId);
+
+			return HashUtil.hash(hash, _timestamp);
+		}
+
+		private CompanyDeletionProcess(String clusterNodeId, long timestamp) {
+			_clusterNodeId = clusterNodeId;
+			_timestamp = timestamp;
+		}
+
+		private final String _clusterNodeId;
+		private final long _timestamp;
+
 	}
 
 }

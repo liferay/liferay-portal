@@ -483,6 +483,9 @@ public interface PropsKeys {
 	public static final String COMPANY_DEFAULT_WEB_ID =
 		"company.default.web.id";
 
+	public static final String COMPANY_DELETE_IN_PROCESS_MAX_TIME =
+		"company.delete.in.process.max.time";
+
 	public static final String COMPANY_ENCRYPTION_ALGORITHM =
 		"company.encryption.algorithm";
 
