@@ -141,8 +141,7 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 			_getAPIURL(additionalAPIURLParameters));
 
 		Assert.assertEquals(
-			_PORTAL_URL + _REST_CONTEXT_PATH,
-			_getAPIURL(StringPool.BLANK));
+			_PORTAL_URL + _REST_CONTEXT_PATH, _getAPIURL(StringPool.BLANK));
 	}
 
 	private String _getAPIURL(String additionalAPIURLParameters) {
