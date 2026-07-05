@@ -218,8 +218,7 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 
 		AssetCategory assetCategory = null;
 
-		int count =
-			(Http.URL_MAXIMUM_LENGTH / _CATEGORY_TITLE_LENGTH) + 2;
+		int count = (Http.URL_MAXIMUM_LENGTH / _CATEGORY_TITLE_LENGTH) + 2;
 
 		for (int i = 0; i < count; i++) {
 			assetCategory = _addAssetCategory(
