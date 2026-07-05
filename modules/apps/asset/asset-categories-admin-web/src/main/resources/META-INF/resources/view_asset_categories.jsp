@@ -140,7 +140,10 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 								cssClass="table-cell-expand table-cell-minw-200 table-title"
 								name="category"
 							>
-								<aui:a href="<%= rowURL.toString() %>"><%= HtmlUtil.escape(curCategory.getTitle(locale)) %></aui:a>
+								<clay:link
+									href="<%= rowURL.toString() %>"
+									label="<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>"
+								/>
 
 								<c:if test="<%= assetCategoriesDisplayContext.isSystemCategory(curCategory) %>">
 									<span aria-label="<%= LanguageUtil.get(request, "system-category") %>" class="lfr-portal-tooltip" tabindex="0" title="<%= LanguageUtil.get(request, "system-category") %>">
