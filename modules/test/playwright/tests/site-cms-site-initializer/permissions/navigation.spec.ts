@@ -293,21 +293,38 @@ test(
 );
 
 test(
-	'A Space Content Reviewer cannot restore content from the Recycle Bin',
-	{tag: ['@LPD-95532', '@LPD-95532/TC-9.d', '@LPD-96455']},
+	'A Space Content Reviewer can restore only the content they have Delete permission on',
+	{tag: ['@LPD-95532', '@LPD-95532/TC-9.d']},
 	async ({apiHelpers, contentsPage, page}) => {
-
-		// Recorded failure (LPD-96455): a Content Reviewer is expected to have no
-		// Restore action in the Recycle Bin, but the product makes it available.
-
-		test.fail();
-
 		const recycleBinPage = new RecycleBinPage(page);
 
 		const space = await createSpace(apiHelpers);
-		const title = `Restore SCR ${getRandomString()}`;
 
-		await createBasicWebContent(apiHelpers, space.name, title);
+		const id = getRandomString();
+		const permittedTitle = `Restore SCR Permitted ${id}`;
+		const restrictedTitle = `Restore SCR Restricted ${id}`;
+
+		await createBasicWebContent(apiHelpers, space.name, permittedTitle);
+
+		const restrictedEntry = await createBasicWebContent(
+			apiHelpers,
+			space.name,
+			restrictedTitle
+		);
+
+		// Content Reviewer has Delete on new content by default; revoke it
+		// here to construct the entry they cannot restore.
+
+		await apiHelpers.objectEntry.putObjectEntryPermissions(
+			'cms/basic-web-contents',
+			restrictedEntry.id,
+			[
+				{
+					actionIds: ['VIEW'],
+					roleName: 'Asset Library Content Reviewer',
+				},
+			]
+		);
 
 		const contentReviewer = await addSpaceUser(
 			apiHelpers,
@@ -315,18 +332,34 @@ test(
 			['Asset Library Content Reviewer']
 		);
 
-		await contentsPage.goto();
-		await contentsPage.deleteContent(title);
+		await test.step('Delete both entries into the Recycle Bin', async () => {
+			await contentsPage.goto();
+
+			for (const title of [permittedTitle, restrictedTitle]) {
+				await contentsPage.deleteContent(title);
+			}
+		});
 
 		await startSessionAs(page, contentReviewer.alternateName);
 
 		await recycleBinPage.goto();
 
-		await recycleBinPage.getItem(title).getByRole('button').click();
+		await test.step('Content Reviewer restores the entry they have Delete permission on', async () => {
+			await recycleBinPage.execItemAction({
+				action: 'Restore',
+				filter: permittedTitle,
+			});
 
-		await expect(
-			page.getByRole('menuitem', {name: 'Restore'})
-		).toBeHidden();
+			await expect(recycleBinPage.getItem(permittedTitle)).toBeHidden();
+		});
+
+		await test.step('Content Reviewer has no Restore action on the entry they lack Delete permission on', async () => {
+			await expect(recycleBinPage.getItem(restrictedTitle)).toBeVisible();
+
+			await expect(
+				recycleBinPage.getItem(restrictedTitle).getByRole('button')
+			).toBeHidden();
+		});
 	}
 );
 
