@@ -63,11 +63,12 @@ public class CMSAssetVocabularyServiceWrapperTest {
 	}
 
 	@Test
-	@TestInfo("LPD-90753")
+	@TestInfo({"LPD-90753", "LPD-95312"})
 	public void testGetGroupVocabularies() throws Exception {
 		_testGetGroupVocabulariesWithAssetLibraryDepotEntry();
 		_testGetGroupVocabulariesWithSpaceDepotEntry();
 		_testGetGroupVocabulariesWithSpaceDepotEntryAndDifferentVisibilityType();
+		_testGetGroupVocabulariesWithSpaceDepotEntryAndInternalVisibilityType();
 	}
 
 	private AssetVocabulary _addAssetVocabulary(
@@ -177,6 +178,43 @@ public class CMSAssetVocabularyServiceWrapperTest {
 				assetVocabularies,
 				curAssetVocabulary ->
 					curAssetVocabulary.getVocabularyId() == assetVocabularyId));
+	}
+
+	private void _testGetGroupVocabulariesWithSpaceDepotEntryAndInternalVisibilityType()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		AssetVocabulary internalAssetVocabulary = _addAssetVocabulary(
+			depotEntry.getGroupId(),
+			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL);
+		AssetVocabulary publicAssetVocabulary = _addAssetVocabulary(
+			depotEntry.getGroupId(),
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyService.getGroupVocabularies(
+				new long[] {_group.getGroupId(), depotEntry.getGroupId()},
+				AssetVocabularyConstants.VISIBILITY_TYPES);
+
+		long internalAssetVocabularyId =
+			internalAssetVocabulary.getVocabularyId();
+
+		Assert.assertFalse(
+			ListUtil.exists(
+				assetVocabularies,
+				curAssetVocabulary ->
+					curAssetVocabulary.getVocabularyId() ==
+						internalAssetVocabularyId));
+
+		long publicAssetVocabularyId = publicAssetVocabulary.getVocabularyId();
+
+		Assert.assertTrue(
+			ListUtil.exists(
+				assetVocabularies,
+				curAssetVocabulary ->
+					curAssetVocabulary.getVocabularyId() ==
+						publicAssetVocabularyId));
 	}
 
 	@Inject
