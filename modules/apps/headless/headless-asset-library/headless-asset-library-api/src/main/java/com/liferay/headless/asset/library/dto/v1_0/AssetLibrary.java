@@ -1473,8 +1473,8 @@ public class AssetLibrary implements Serializable {
 	@GraphQLName("Type")
 	public static enum Type {
 
-		ASSET_LIBRARY("AssetLibrary"), CATALOG("Catalog"),
-		DESIGN_LIBRARY("DesignLibrary"), PROJECT("Project"), SPACE("Space");
+		ASSET_LIBRARY("AssetLibrary"), DESIGN_LIBRARY("DesignLibrary"),
+		PROJECT("Project"), SPACE("Space");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -1598,4 +1598,4 @@ public class AssetLibrary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1538681986
+// LIFERAY-REST-BUILDER-HASH:-1182920056
