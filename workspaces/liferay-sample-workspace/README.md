@@ -98,6 +98,10 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 	Add a custom style (Featured Content) to the CKEditor 5 Styles dropdown as an example of extending the editor's style definitions via a client extension.
 
+- *liferay-sample-editor-config-contributor-5*
+
+	Add a Document Link Selector button to the CKEditor 5 link dialog as an example of augmenting the link plugin for document browsing without portal dependencies.
+
 - *liferay-sample-etc-cron*
 
 	Use Spring Boot and OAuth (server to server) to read from and write to Liferay in timed intervals.

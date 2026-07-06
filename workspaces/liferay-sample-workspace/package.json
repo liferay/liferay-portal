@@ -30,8 +30,10 @@
 			"client-extensions/liferay-sample-custom-element-6",
 			"client-extensions/liferay-sample-editor-config-contributor-1",
 			"client-extensions/liferay-sample-editor-config-contributor-2",
+			"client-extensions/liferay-sample-custom-element-7",
 			"client-extensions/liferay-sample-editor-config-contributor-3",
-			"client-extensions/liferay-sample-editor-config-contributor-4"
+			"client-extensions/liferay-sample-editor-config-contributor-4",
+			"client-extensions/liferay-sample-editor-config-contributor-5"
 		]
 	}
 }

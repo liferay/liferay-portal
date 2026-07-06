@@ -1,0 +1,20 @@
+{
+	"dependencies": {
+		"@liferay/js-api": "0.8.0"
+	},
+	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Document Link Selector",
+	"devDependencies": {
+		"esbuild": "^0.20.2",
+		"serve": "^14.2.0",
+		"typescript": "^5.0.4"
+	},
+	"main": "./src/index.ts",
+	"name": "@liferay/liferay-sample-editor-config-contributor-5",
+	"scripts": {
+		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@liferay/* --external:frontend-editor-ckeditor-web/plugins/DocumentLinkSelector",
+		"start": "PORT=3003 serve --cors",
+		"watch": "tsc --watch"
+	},
+	"type": "module",
+	"version": "0.0.0"
+}
