@@ -99,7 +99,7 @@ public class BatchEnginePortletDataHandlerUtil {
 							portletDataContext.getParameterMap(),
 							PortletDataHandlerKeys.COMMENTS)) {
 
-						batchNestedFields.add("comments");
+						batchNestedFields.add("systemProperties.comments");
 					}
 
 					if (MapUtil.getBoolean(
@@ -197,7 +197,7 @@ public class BatchEnginePortletDataHandlerUtil {
 							portletDataContext.getParameterMap(),
 							PortletDataHandlerKeys.COMMENTS)) {
 
-						batchRestrictFields.add("comments");
+						batchRestrictFields.add("systemProperties.comments");
 					}
 
 					if (!MapUtil.getBoolean(
