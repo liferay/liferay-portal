@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.User;
@@ -88,6 +89,7 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -751,6 +753,10 @@ public class CompanyLocalServiceDBPartitionTest
 		companyLocalService.deleteCompany(_company1);
 
 		Assert.assertFalse(
+			PortalInstances.isCompanyInDeletionProcess(
+				_company1.getCompanyId()));
+
+		Assert.assertFalse(
 			ArrayUtil.contains(
 				CompanyLocalServiceTestUtil.getCompanyIdsBySQL(),
 				_company1.getCompanyId()));
@@ -807,6 +813,53 @@ public class CompanyLocalServiceDBPartitionTest
 					CompanyLocalServiceTestUtil.getCompanyIdsBySQL(),
 					_company1.getCompanyId()));
 		}
+	}
+
+	@Test
+	public void testForEachCompanyIdSkipsGoneOrInDeletionCompanies()
+		throws Exception {
+
+		_company1 = CompanyTestUtil.addCompany();
+
+		long companyId = _company1.getCompanyId();
+
+		List<Long> companyIds = new ArrayList<>();
+
+		// A company in the deletion process is skipped
+
+		try (SafeCloseable safeCloseable =
+				PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
+					companyId)) {
+
+			companyLocalService.forEachCompanyId(
+				companyIds::add, new long[] {companyId});
+		}
+
+		Assert.assertEquals(companyIds.toString(), 0, companyIds.size());
+
+		// A company that no longer exists is skipped
+
+		companyLocalService.forEachCompanyId(
+			companyIds::add, new long[] {RandomTestUtil.nextLong()});
+
+		Assert.assertEquals(companyIds.toString(), 0, companyIds.size());
+
+		// The system scope is passed through
+
+		companyLocalService.forEachCompanyId(
+			companyIds::add, new long[] {CompanyConstants.SYSTEM});
+
+		Assert.assertEquals(
+			Collections.singletonList(CompanyConstants.SYSTEM), companyIds);
+
+		companyIds.clear();
+
+		// A live company is iterated
+
+		companyLocalService.forEachCompanyId(
+			companyIds::add, new long[] {companyId});
+
+		Assert.assertEquals(Collections.singletonList(companyId), companyIds);
 	}
 
 	private void _addCopyDBPartitionCompanyCache(long companyId) {
