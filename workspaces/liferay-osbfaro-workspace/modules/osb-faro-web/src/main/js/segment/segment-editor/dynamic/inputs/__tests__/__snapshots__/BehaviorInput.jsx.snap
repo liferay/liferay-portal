@@ -1,18 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BehaviorInput AssetItem should render 1`] = `
-<div>
-  <div
-    class="asset-display-root"
-    title=""
-  >
-    <div
-      class="asset-name text-truncate"
-    />
-  </div>
-</div>
-`;
-
 exports[`BehaviorInput should render 1`] = `
 <div>
   <div
@@ -20,7 +7,7 @@ exports[`BehaviorInput should render 1`] = `
   >
     <div
       aria-hidden="true"
-      class="form-group form-group-autofit"
+      class="form-group page-asset-criteria form-group-autofit"
       data-aria-hidden="true"
     >
       <div
@@ -30,56 +17,119 @@ exports[`BehaviorInput should render 1`] = `
         test
       </div>
       <div
+        class="form-group-item entity-name form-group-item-label form-group-item-shrink"
+      >
+        triggered
+      </div>
+      <div
         class="form-group-item display-value form-group-item-label form-group-item-shrink"
       >
         <b />
       </div>
       <div
-        class="form-group-item"
+        class="form-group-item entity-name mr-0 form-group-item-label form-group-item-shrink"
+      >
+        on
+      </div>
+      <div
+        class="form-group-item form-group-item-shrink"
+      >
+        <button
+          aria-activedescendant=""
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Page or Asset Type"
+          class="form-control form-control-select form-control-select-secondary operator-input"
+          role="combobox"
+          tabindex="0"
+          type="button"
+        >
+          Asset Type
+        </button>
+      </div>
+      <div
+        class="form-group-item form-group-item-shrink"
+      >
+        <button
+          aria-activedescendant=""
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Asset Type"
+          class="form-control form-control-select form-control-select-secondary operator-input"
+          role="combobox"
+          tabindex="0"
+          type="button"
+        >
+          Blogs
+        </button>
+      </div>
+      <div
+        class="w-100"
+      />
+      <div
+        class="form-group-item mt-2 form-group-item-shrink"
       >
         <div
-          class="input-group select-entity-group"
+          class="input-group-item input-list-root"
+          style="max-width: 52rem;"
         >
           <div
-            class="input-group-item"
+            class="form-control form-control-tag-group"
+            style="max-width: 52rem; overflow-y: auto;"
           >
             <div
-              class="input-group select-input-root"
+              class="label label-root label-secondary label-dismissible"
             >
-              <div
-                class="input-group-item"
+              <span
+                class="label-item"
               >
-                <input
-                  class="input-root form-control"
-                  type="text"
-                  value=""
-                />
-              </div>
-              <div
-                class="selected-item-container"
+                123123123
+              </span>
+              <span
+                class="label-item label-item-after"
               >
-                <div
-                  class="asset-display-root"
-                  title=""
+                <button
+                  aria-label="Close"
+                  class="button-root close btn btn-secondary"
+                  type="button"
                 >
-                  <div
-                    class="asset-name text-truncate"
-                  />
-                </div>
-              </div>
+                  <svg
+                    class="lexicon-icon lexicon-icon-times icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#times"
+                    />
+                  </svg>
+                </button>
+              </span>
             </div>
-          </div>
-          <div
-            class="input-group-item input-group-item-shrink input-group-append"
-          >
             <button
-              class="btn btn-secondary"
+              aria-label="Clear"
+              class="button-root text-secondary btn btn-unstyled"
               type="button"
             >
-              Select
+              <svg
+                class="lexicon-icon lexicon-icon-times-circle icon-root"
+                role="presentation"
+              >
+                <use
+                  href="#times-circle"
+                />
+              </svg>
             </button>
           </div>
         </div>
+      </div>
+      <div
+        class="form-group-item mt-2 form-group-item-shrink"
+      >
+        <button
+          class="btn btn-secondary"
+          type="button"
+        >
+          Select
+        </button>
       </div>
     </div>
     <div
@@ -92,10 +142,10 @@ exports[`BehaviorInput should render 1`] = `
       >
         <button
           aria-activedescendant="ge"
-          aria-controls="clay-id-2"
+          aria-controls="clay-id-6"
           aria-expanded="true"
           aria-haspopup="listbox"
-          aria-owns="clay-id-2"
+          aria-owns="clay-id-6"
           class="form-control form-control-select form-control-select-secondary operator-input show"
           role="combobox"
           style=""
@@ -132,10 +182,10 @@ exports[`BehaviorInput should render 1`] = `
       >
         <button
           aria-activedescendant="ever"
-          aria-controls="clay-id-4"
+          aria-controls="clay-id-8"
           aria-expanded="true"
           aria-haspopup="listbox"
-          aria-owns="clay-id-4"
+          aria-owns="clay-id-8"
           class="form-control form-control-select form-control-select-secondary conjunction-input show"
           data-testid="conjunction-input"
           role="combobox"
@@ -162,7 +212,7 @@ exports[`BehaviorInput should render w/ data 1`] = `
     class="criteria-statement"
   >
     <div
-      class="form-group form-group-autofit"
+      class="form-group page-asset-criteria form-group-autofit"
     >
       <div
         class="form-group-item entity-name form-group-item-label form-group-item-shrink"
@@ -171,56 +221,119 @@ exports[`BehaviorInput should render w/ data 1`] = `
         test
       </div>
       <div
+        class="form-group-item entity-name form-group-item-label form-group-item-shrink"
+      >
+        triggered
+      </div>
+      <div
         class="form-group-item display-value form-group-item-label form-group-item-shrink"
       >
         <b />
       </div>
       <div
-        class="form-group-item"
+        class="form-group-item entity-name mr-0 form-group-item-label form-group-item-shrink"
+      >
+        on
+      </div>
+      <div
+        class="form-group-item form-group-item-shrink"
+      >
+        <button
+          aria-activedescendant=""
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Page or Asset Type"
+          class="form-control form-control-select form-control-select-secondary operator-input"
+          role="combobox"
+          tabindex="0"
+          type="button"
+        >
+          Asset Type
+        </button>
+      </div>
+      <div
+        class="form-group-item form-group-item-shrink"
+      >
+        <button
+          aria-activedescendant=""
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-label="Asset Type"
+          class="form-control form-control-select form-control-select-secondary operator-input"
+          role="combobox"
+          tabindex="0"
+          type="button"
+        >
+          Blogs
+        </button>
+      </div>
+      <div
+        class="w-100"
+      />
+      <div
+        class="form-group-item mt-2 form-group-item-shrink"
       >
         <div
-          class="input-group select-entity-group"
+          class="input-group-item input-list-root"
+          style="max-width: 52rem;"
         >
           <div
-            class="input-group-item"
+            class="form-control form-control-tag-group"
+            style="max-width: 52rem; overflow-y: auto;"
           >
             <div
-              class="input-group select-input-root"
+              class="label label-root label-secondary label-dismissible"
             >
-              <div
-                class="input-group-item"
+              <span
+                class="label-item"
               >
-                <input
-                  class="input-root form-control"
-                  type="text"
-                  value=""
-                />
-              </div>
-              <div
-                class="selected-item-container"
+                123123123
+              </span>
+              <span
+                class="label-item label-item-after"
               >
-                <div
-                  class="asset-display-root"
-                  title=""
+                <button
+                  aria-label="Close"
+                  class="button-root close btn btn-secondary"
+                  type="button"
                 >
-                  <div
-                    class="asset-name text-truncate"
-                  />
-                </div>
-              </div>
+                  <svg
+                    class="lexicon-icon lexicon-icon-times icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#times"
+                    />
+                  </svg>
+                </button>
+              </span>
             </div>
-          </div>
-          <div
-            class="input-group-item input-group-item-shrink input-group-append"
-          >
             <button
-              class="btn btn-secondary"
+              aria-label="Clear"
+              class="button-root text-secondary btn btn-unstyled"
               type="button"
             >
-              Select
+              <svg
+                class="lexicon-icon lexicon-icon-times-circle icon-root"
+                role="presentation"
+              >
+                <use
+                  href="#times-circle"
+                />
+              </svg>
             </button>
           </div>
         </div>
+      </div>
+      <div
+        class="form-group-item mt-2 form-group-item-shrink"
+      >
+        <button
+          class="btn btn-secondary"
+          type="button"
+        >
+          Select
+        </button>
       </div>
     </div>
     <div

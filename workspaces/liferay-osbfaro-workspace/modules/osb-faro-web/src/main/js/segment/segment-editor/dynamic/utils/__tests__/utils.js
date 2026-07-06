@@ -11,7 +11,7 @@ import {
 	PropertyTypes,
 	RelationalOperators,
 	SUPPORTED_OPERATORS_MAP,
-	TimeSpans,
+	TimeSpans
 } from '../constants';
 import {EntityType} from '../../context/referencedObjects';
 import {fromJS, Map} from 'immutable';
@@ -21,7 +21,7 @@ const {
 	AccountsFilter,
 	ActivitiesFilterByCount,
 	InterestsFilter,
-	SessionsFilter,
+	SessionsFilter
 } = CustomFunctionOperators;
 const {And} = Conjunctions;
 const {EQ, GT} = RelationalOperators;
@@ -82,9 +82,9 @@ describe('utils', () => {
 					{criteriaGroupId: 'foo', items: []},
 					{
 						criteriaGroupId: 'stuff',
-						items: [{criteriaGroupId: 'bar', items: []}],
-					},
-				],
+						items: [{criteriaGroupId: 'bar', items: []}]
+					}
+				]
 			};
 
 			const childGroupIds = utils.getChildGroupIds(criterionGroup);
@@ -134,7 +134,7 @@ describe('utils', () => {
 				utils.isCriterionGroup({
 					conjunctionName: And,
 					criteriaGroupId: 'foo',
-					items: [],
+					items: []
 				})
 			).toBeTrue();
 		});
@@ -161,10 +161,10 @@ describe('utils', () => {
 	});
 
 	describe('getNestedOrLimitState', () => {
-		const orWith = (count) => ({
+		const orWith = count => ({
 			conjunctionName: Conjunctions.Or,
 			criteriaGroupId: 'group-1',
-			items: Array.from({length: count}, (_, i) => ({rowId: `r${i}`})),
+			items: Array.from({length: count}, (_, i) => ({rowId: `r${i}`}))
 		});
 
 		it('should return null for missing criteria', () => {
@@ -176,7 +176,7 @@ describe('utils', () => {
 			const andGroup = {
 				conjunctionName: Conjunctions.And,
 				criteriaGroupId: 'group-1',
-				items: Array.from({length: 5}, (_, i) => ({rowId: `r${i}`})),
+				items: Array.from({length: 5}, (_, i) => ({rowId: `r${i}`}))
 			};
 
 			expect(utils.getNestedOrLimitState(andGroup)).toBeNull();
@@ -196,7 +196,7 @@ describe('utils', () => {
 	});
 
 	describe('hasNestedOrExceeded', () => {
-		const makeRow = (rowId) => ({rowId});
+		const makeRow = rowId => ({rowId});
 
 		it('should return false for missing criteria', () => {
 			expect(utils.hasNestedOrExceeded(null)).toBeFalse();
@@ -207,7 +207,7 @@ describe('utils', () => {
 			const root = {
 				conjunctionName: Conjunctions.And,
 				criteriaGroupId: 'root',
-				items: [makeRow('r0'), makeRow('r1')],
+				items: [makeRow('r0'), makeRow('r1')]
 			};
 
 			expect(utils.hasNestedOrExceeded(root)).toBeFalse();
@@ -221,8 +221,8 @@ describe('utils', () => {
 					makeRow('r0'),
 					makeRow('r1'),
 					makeRow('r2'),
-					makeRow('r3'),
-				],
+					makeRow('r3')
+				]
 			};
 
 			expect(utils.hasNestedOrExceeded(rootOr)).toBeFalse();
@@ -236,9 +236,9 @@ describe('utils', () => {
 					{
 						conjunctionName: Conjunctions.Or,
 						criteriaGroupId: 'nested',
-						items: [makeRow('r0'), makeRow('r1'), makeRow('r2')],
-					},
-				],
+						items: [makeRow('r0'), makeRow('r1'), makeRow('r2')]
+					}
+				]
 			};
 
 			expect(utils.hasNestedOrExceeded(root)).toBeFalse();
@@ -256,10 +256,10 @@ describe('utils', () => {
 							makeRow('r0'),
 							makeRow('r1'),
 							makeRow('r2'),
-							makeRow('r3'),
-						],
-					},
-				],
+							makeRow('r3')
+						]
+					}
+				]
 			};
 
 			expect(utils.hasNestedOrExceeded(root)).toBeTrue();
@@ -281,12 +281,12 @@ describe('utils', () => {
 									makeRow('r0'),
 									makeRow('r1'),
 									makeRow('r2'),
-									makeRow('r3'),
-								],
-							},
-						],
-					},
-				],
+									makeRow('r3')
+								]
+							}
+						]
+					}
+				]
 			};
 
 			expect(utils.hasNestedOrExceeded(root)).toBeTrue();
@@ -317,7 +317,7 @@ describe('utils', () => {
 			expect(utils.parseActivityKey('foo#bar#test')).toMatchObject({
 				eventId: 'bar',
 				id: 'test',
-				objectType: 'foo',
+				objectType: 'foo'
 			});
 		});
 	});
@@ -331,8 +331,8 @@ describe('utils', () => {
 	});
 
 	describe('findPropertyByCriterion', () => {
-		it('should return the view asset Property when provided with a view asset Criterion', () => {
-			const criterion = data.generateCriterion({
+		const makeBehaviorCriterion = activityKey =>
+			data.generateCriterion({
 				operatorName: ActivitiesFilterByCount,
 				propertyName: ACTIVITY_KEY,
 				value: fromJS({
@@ -343,27 +343,42 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: ACTIVITY_KEY,
-								value: 'Blog#viewAsset#123123',
+								value: activityKey
 							},
 							{
 								operatorName: GT,
 								propertyName: 'day',
-								value: TimeSpans.Last24Hours,
-							},
-						],
+								value: TimeSpans.Last24Hours
+							}
+						]
 					},
 					operator: GT,
-					value: 12,
-				}),
+					value: 12
+				})
 			});
 
-			const property = utils.findPropertyByCriterion(criterion);
+		// Stored segments use application-specific eventIds; each must map back
+		// to its generic behavior property so the criterion still resolves.
 
-			expect(property).toBeInstanceOf(Property);
-			expect(property.name).toBe('viewAsset');
-			expect(property.propertyKey).toBe('web');
-			expect(property.type).toBe('behavior');
-		});
+		it.each([
+			['Page#pageViewed#123123', 'view'],
+			['WebContent#webContentViewed#123123', 'view'],
+			['Blog#blogViewed#123123', 'view'],
+			['Document#documentDownloaded#123123', 'download'],
+			['Form#formSubmitted#123123', 'submit']
+		])(
+			'should map the stored activityKey %s back to the %s behavior property',
+			(activityKey, expectedName) => {
+				const property = utils.findPropertyByCriterion(
+					makeBehaviorCriterion(activityKey)
+				);
+
+				expect(property).toBeInstanceOf(Property);
+				expect(property.name).toBe(expectedName);
+				expect(property.propertyKey).toBe('web');
+				expect(property.type).toBe('behavior');
+			}
+		);
 
 		it('should return the account name Property when provided with an account name Criterion', () => {
 			const criterion = data.generateCriterion({
@@ -377,18 +392,18 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: 'organization/accountName/value',
-								value: 'foo',
-							},
-						],
-					},
-				}),
+								value: 'foo'
+							}
+						]
+					}
+				})
 			});
 
 			const mockProperty = new Property({
 				entityName: 'Account',
 				label: 'Account Name',
 				name: 'accountName',
-				type: 'account-text',
+				type: 'account-text'
 			});
 
 			const property = utils.findPropertyByCriterion(criterion);
@@ -408,16 +423,16 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: 'context/url',
-								value: 'https://www.liferay.com',
+								value: 'https://www.liferay.com'
 							},
 							{
 								operatorName: GT,
 								propertyName: 'completeDate',
-								value: TimeSpans.Last24Hours,
-							},
-						],
-					},
-				}),
+								value: TimeSpans.Last24Hours
+							}
+						]
+					}
+				})
 			});
 
 			const property = utils.findPropertyByCriterion(criterion);
@@ -440,16 +455,16 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: 'name',
-								value: 'foo',
+								value: 'foo'
 							},
 							{
 								operatorName: EQ,
 								propertyName: 'score',
-								value: 'true',
-							},
-						],
-					},
-				}),
+								value: 'true'
+							}
+						]
+					}
+				})
 			});
 
 			const property = utils.findPropertyByCriterion(criterion);
@@ -464,7 +479,7 @@ describe('utils', () => {
 			const criterion = data.generateCriterion({
 				operatorName: EQ,
 				propertyName: 'demographics/givenName/value',
-				value: 'test',
+				value: 'test'
 			});
 
 			const mockProperty = new Property();
@@ -472,9 +487,9 @@ describe('utils', () => {
 			const referencedPropertiesIMap = fromJS({
 				individual: {
 					demographics: {
-						givenName: mockProperty,
-					},
-				},
+						givenName: mockProperty
+					}
+				}
 			});
 
 			const property = utils.findPropertyByCriterion(
@@ -497,16 +512,16 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: 'vocabularies/id',
-								value: 'vocab-id',
+								value: 'vocab-id'
 							},
 							{
 								operatorName: EQ,
 								propertyName: 'vocabularies/name',
-								value: 'My Vocabulary',
-							},
-						],
-					},
-				}),
+								value: 'My Vocabulary'
+							}
+						]
+					}
+				})
 			});
 
 			const property = utils.findPropertyByCriterion(criterion, Map());
@@ -521,17 +536,17 @@ describe('utils', () => {
 			const criterion = data.generateCriterion({
 				operatorName: CustomFunctionOperators.VocabulariesFilter,
 				propertyName: 'vocab-id',
-				value: fromJS({criterionGroup: {items: []}}),
+				value: fromJS({criterionGroup: {items: []}})
 			});
 
 			const cachedProperty = new Property({
 				label: 'Cached Vocabulary',
 				name: 'vocab-id',
-				propertyKey: 'vocabulary',
+				propertyKey: 'vocabulary'
 			});
 
 			const referencedPropertiesIMap = fromJS({
-				vocabulary: {'vocab-id': cachedProperty},
+				vocabulary: {'vocab-id': cachedProperty}
 			});
 
 			const property = utils.findPropertyByCriterion(
@@ -554,16 +569,16 @@ describe('utils', () => {
 							{
 								operatorName: EQ,
 								propertyName: 'tags/id',
-								value: 'tag-id',
+								value: 'tag-id'
 							},
 							{
 								operatorName: EQ,
 								propertyName: 'tags/name',
-								value: 'My Tag',
-							},
-						],
-					},
-				}),
+								value: 'My Tag'
+							}
+						]
+					}
+				})
 			});
 
 			const property = utils.findPropertyByCriterion(criterion, Map());
@@ -578,17 +593,17 @@ describe('utils', () => {
 			const criterion = data.generateCriterion({
 				operatorName: CustomFunctionOperators.TagsFilter,
 				propertyName: 'tag-id',
-				value: fromJS({criterionGroup: {items: []}}),
+				value: fromJS({criterionGroup: {items: []}})
 			});
 
 			const cachedProperty = new Property({
 				label: 'Cached Tag',
 				name: 'tag-id',
-				propertyKey: 'tag',
+				propertyKey: 'tag'
 			});
 
 			const referencedPropertiesIMap = fromJS({
-				tag: {'tag-id': cachedProperty},
+				tag: {'tag-id': cachedProperty}
 			});
 
 			const property = utils.findPropertyByCriterion(
@@ -634,14 +649,14 @@ describe('utils', () => {
 	describe('invalidateCriterionWithMissingProperty', () => {
 		it('should invalidate criterions with missing property', () => {
 			const criteria = data.mockNewCriteria(1, {
-				propertyName: 'demographics/firstName/value',
+				propertyName: 'demographics/firstName/value'
 			});
 
 			expect(
 				utils.invalidateCriterionWithMissingProperty(
 					criteria,
 					new Map({
-						demographics: new Map(),
+						demographics: new Map()
 					})
 				).items[0].valid
 			).toBeFalse();
@@ -650,7 +665,7 @@ describe('utils', () => {
 		it('should not invalidate criterions with matched property', () => {
 			const criteria = data.mockNewCriteria(1, {
 				propertyName: 'demographics/firstName/value',
-				valid: true,
+				valid: true
 			});
 
 			expect(
@@ -658,8 +673,8 @@ describe('utils', () => {
 					criteria,
 					new Map({
 						individual: new Map({
-							demographics: new Map({firstName: new Property()}),
-						}),
+							demographics: new Map({firstName: new Property()})
+						})
 					})
 				).items[0].valid
 			).toBeTrue();
@@ -672,7 +687,7 @@ describe('utils', () => {
 			id: '345606994945962466',
 			name: 'accountName',
 			ownerType: 'account',
-			rawType: 'Text',
+			rawType: 'Text'
 		};
 
 		it('should convert fieldMapping to an Account Property Record', () => {
@@ -694,7 +709,7 @@ describe('utils', () => {
 			id: '335454102264596251',
 			name: 'additionalName',
 			ownerType: 'individual',
-			rawType: 'Text',
+			rawType: 'Text'
 		};
 
 		it('should convert fieldMapping to an Individual Property Record', () => {
@@ -721,9 +736,9 @@ describe('utils', () => {
 							id: '345606994945962466',
 							name: 'accountName',
 							ownerType: 'account',
-							rawType: 'Text',
-						},
-					},
+							rawType: 'Text'
+						}
+					}
 				},
 				individual: {
 					custom: {
@@ -732,8 +747,8 @@ describe('utils', () => {
 							id: '123123',
 							name: 'customIndividualField',
 							ownerType: 'individual',
-							rawType: 'Text',
-						},
+							rawType: 'Text'
+						}
 					},
 					demographics: {
 						additionaName: {
@@ -741,9 +756,9 @@ describe('utils', () => {
 							id: '335454102264596251',
 							name: 'additionalName',
 							ownerType: 'individual',
-							rawType: 'Text',
-						},
-					},
+							rawType: 'Text'
+						}
+					}
 				},
 				organization: {
 					custom: {
@@ -752,10 +767,10 @@ describe('utils', () => {
 							id: '321321',
 							name: 'customOrganizationField',
 							ownerType: 'organization',
-							rawType: 'Text',
-						},
-					},
-				},
+							rawType: 'Text'
+						}
+					}
+				}
 			});
 
 			const result =
@@ -764,7 +779,7 @@ describe('utils', () => {
 			const accountProp = result.getIn([
 				'account',
 				'organization',
-				'accountName',
+				'accountName'
 			]);
 			expect(accountProp).toBeInstanceOf(Property);
 			expect(accountProp.id).toBe('345606994945962466');
@@ -774,7 +789,7 @@ describe('utils', () => {
 			const individualProp = result.getIn([
 				'individual',
 				'demographics',
-				'additionaName',
+				'additionaName'
 			]);
 			expect(individualProp).toBeInstanceOf(Property);
 			expect(individualProp.id).toBe('335454102264596251');
@@ -785,7 +800,7 @@ describe('utils', () => {
 	describe('parseReferencedEntityId', () => {
 		it('should parse referenced entity id', () => {
 			const referencedEntities = new Map({
-				assets: new Map({'123_title': 'test'}),
+				assets: new Map({'123_title': 'test'})
 			});
 
 			expect(

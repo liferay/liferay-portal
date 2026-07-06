@@ -148,5 +148,6 @@ describe('EventInput', () => {
 
 		expect(screen.getByText('has / has not')).toBeInTheDocument();
 		expect(screen.getByText('Asset Clicked')).toBeInTheDocument();
+		expect(screen.getByText('triggered')).toBeInTheDocument();
 	}, 10000);
 });

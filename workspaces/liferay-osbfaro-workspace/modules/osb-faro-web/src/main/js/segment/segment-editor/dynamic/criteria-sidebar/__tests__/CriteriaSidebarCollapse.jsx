@@ -309,14 +309,32 @@ describe('getDefaultValue', () => {
 		).toBe('true');
 	});
 
-	it('should return CustomValueMap with activityKey, day, operator and value for PropertyTypes.Behavior', () => {
+	it('should return a single-type CustomValueMap (applicationId, eventId, day, operator and value) for PropertyTypes.Behavior', () => {
 		const result = getDefaultValue(
-			new Property({name: 'myBehavior', type: PropertyTypes.Behavior})
+			new Property({name: 'download', type: PropertyTypes.Behavior})
 		);
 
+		// A behavior requires a type; it starts on the first the event supports
+		// (Download -> Document): applicationId eq 'Document' and eventId eq
+		// 'documentDownloaded'.
+
+		const applicationIdIdx = getIndexFromPropertyName(
+			result,
+			'applicationId'
+		);
+
+		expect(applicationIdIdx).toBeGreaterThanOrEqual(0);
 		expect(
-			getIndexFromPropertyName(result, 'activityKey')
-		).toBeGreaterThanOrEqual(0);
+			result.getIn(['criterionGroup', 'items', applicationIdIdx, 'value'])
+		).toBe('Document');
+
+		const eventIdIdx = getIndexFromPropertyName(result, 'eventId');
+
+		expect(eventIdIdx).toBeGreaterThanOrEqual(0);
+		expect(
+			result.getIn(['criterionGroup', 'items', eventIdIdx, 'value'])
+		).toBe('documentDownloaded');
+
 		expect(getIndexFromPropertyName(result, 'day')).toBeGreaterThanOrEqual(
 			0
 		);

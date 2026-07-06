@@ -1,16 +1,20 @@
-import BehaviorInput, {AssetItem} from '../BehaviorInput';
+import BehaviorInput from '../BehaviorInput';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {ACTIVITY_KEY, RelationalOperators} from '../../utils/constants';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {createCustomValueMap} from '../../utils/custom-inputs';
-import {Map, OrderedMap} from 'immutable';
+import {Map} from 'immutable';
 import {Property, Segment} from 'shared/util/records';
 import {Provider} from 'react-redux';
 import {ReferencedObjectsProvider} from '../../context/referencedObjects';
 import {SegmentTypes} from 'shared/util/constants';
 
 jest.unmock('react-dom');
+
+jest.mock('shared/hooks/useRequest', () => ({
+	useRequest: () => ({data: null, error: false, loading: false})
+}));
 
 const mockValue = createCustomValueMap([
 	{
@@ -72,7 +76,7 @@ describe('BehaviorInput', () => {
 		expect(getByText('before')).toBeTruthy();
 		expect(getByText('between')).toBeTruthy();
 		expect(getAllByText('ever')[1]).toBeTruthy();
-		expect(getByText('on')).toBeTruthy();
+		expect(getAllByText('on')[0]).toBeTruthy();
 
 		expect(container).toMatchSnapshot();
 	});
@@ -93,22 +97,6 @@ describe('BehaviorInput', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should render with has-error for asset', () => {
-		const {container} = render(
-			<DefaultComponent
-				touched={{asset: true, occurenceCount: false}}
-				valid={{asset: false, occurenceCount: true}}
-				value={mockValue.set('value', 123)}
-			/>
-		);
-
-		expect(
-			container.querySelector('.form-group-item-shrink.has-error')
-		).toBeNull();
-
-		expect(container.querySelector('.has-error')).toBeTruthy();
-	});
-
 	it('should render with has-error for occurenceCount', () => {
 		const {container} = render(
 			<DefaultComponent touched={{asset: false, occurenceCount: true}} />
@@ -119,9 +107,8 @@ describe('BehaviorInput', () => {
 		).toBeTruthy();
 	});
 
-	describe('handleAssetSelect', () => {
-		it('should call onChange with a plain object when a single asset is selected', () => {
-			const onChange = jest.fn();
+	describe('handlePageAssetSelect', () => {
+		const renderWithRef = onChange => {
 			const ref = React.createRef();
 
 			render(
@@ -136,50 +123,91 @@ describe('BehaviorInput', () => {
 				</Provider>
 			);
 
-			const asset = {id: 'asset-1', name: 'Test Asset'};
+			return ref;
+		};
 
-			ref.current.handleAssetSelect(OrderedMap([[asset.id, asset]]));
+		it('should store a single selection as a flat activityKey item', () => {
+			const onChange = jest.fn();
+			const ref = renderWithRef(onChange);
 
-			expect(onChange).toHaveBeenCalledTimes(1);
-			expect(Array.isArray(onChange.mock.calls[0][0])).toBe(false);
+			ref.current.handlePageAssetSelect({
+				applicationId: 'Page',
+				eventId: 'pageViewed',
+				selections: [
+					{
+						activityKey: 'Page#pageViewed#p-1',
+						id: 'p-1',
+						name: 'Home'
+					}
+				]
+			});
+
+			const {valid, value} = onChange.mock.calls[0][0];
+			const item = value.getIn(['criterionGroup', 'items', 0]);
+
+			expect(item.get('propertyName')).toBe(ACTIVITY_KEY);
+			expect(item.get('value')).toBe('Page#pageViewed#p-1');
+			expect(valid.asset).toBe(true);
 		});
 
-		it('should call onChange with an array when multiple assets are selected', () => {
+		it('should store multiple selections as an "or" group of activityKey items', () => {
 			const onChange = jest.fn();
-			const ref = React.createRef();
+			const ref = renderWithRef(onChange);
 
-			render(
-				<Provider store={mockStore()}>
-					<ReferencedObjectsProvider segment={new Segment({})}>
-						<BehaviorInput
-							{...defaultProps}
-							onChange={onChange}
-							ref={ref}
-						/>
-					</ReferencedObjectsProvider>
-				</Provider>
-			);
+			ref.current.handlePageAssetSelect({
+				applicationId: 'Page',
+				eventId: 'pageViewed',
+				selections: [
+					{
+						activityKey: 'Page#pageViewed#p-1',
+						id: 'p-1',
+						name: 'Home'
+					},
+					{
+						activityKey: 'Page#pageViewed#p-2',
+						id: 'p-2',
+						name: 'About'
+					}
+				]
+			});
 
-			const items = OrderedMap([
-				['asset-1', {id: 'asset-1', name: 'Asset 1'}],
-				['asset-2', {id: 'asset-2', name: 'Asset 2'}]
+			const group = onChange.mock.calls[0][0].value.getIn([
+				'criterionGroup',
+				'items',
+				0
 			]);
 
-			ref.current.handleAssetSelect(items);
+			expect(group.get('conjunctionName')).toBe('or');
 
-			expect(onChange).toHaveBeenCalledTimes(1);
-			expect(Array.isArray(onChange.mock.calls[0][0])).toBe(true);
-			expect(onChange.mock.calls[0][0]).toHaveLength(2);
+			expect(
+				group
+					.get('items')
+					.map(item => item.get('value'))
+					.toArray()
+			).toEqual(['Page#pageViewed#p-1', 'Page#pageViewed#p-2']);
 		});
-	});
 
-	describe('AssetItem', () => {
-		afterEach(cleanup);
+		it('should store a single-type applicationId/eventId filter when there is no specific selection', () => {
+			const onChange = jest.fn();
+			const ref = renderWithRef(onChange);
 
-		it('should render', () => {
-			const {container} = render(<AssetItem />);
+			ref.current.handlePageAssetSelect({
+				applicationId: 'Document',
+				eventId: 'documentDownloaded',
+				selections: []
+			});
 
-			expect(container).toMatchSnapshot();
+			const {valid, value} = onChange.mock.calls[0][0];
+			const items = value.getIn(['criterionGroup', 'items']);
+
+			expect(items.get(0).get('propertyName')).toBe('applicationId');
+			expect(items.get(0).get('value')).toBe('Document');
+			expect(items.get(1).get('propertyName')).toBe('eventId');
+			expect(items.get(1).get('value')).toBe('documentDownloaded');
+
+			// A single type is a complete rule, so the criterion is valid.
+
+			expect(valid.asset).toBe(true);
 		});
 	});
 });

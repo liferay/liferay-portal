@@ -1,13 +1,9 @@
-import * as data from 'test/data';
 import DynamicSegmentEdit from '../Dynamic';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {DndProvider} from 'react-dnd';
-import {HTML5Backend} from 'react-dnd-html5-backend';
 import {List} from 'immutable';
 import {Provider} from 'react-redux';
-import {Segment} from 'shared/util/records';
 import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
@@ -17,39 +13,48 @@ jest.mock(
 	'segment/segment-editor/dynamic/hoc/WithPropertyGroups',
 	() => Component => Component
 );
-jest.mock('uuid', () => ({
-	v4: () => '00000000-0000-0000-0000-000000000000'
+
+// Capture the segment type the editor is rendered with.
+
+jest.mock('segment/segment-editor/dynamic', () => ({
+	__esModule: true,
+	default: ({type}) => <div data-testid='segment-type'>{type}</div>
 }));
+
+const renderEdit = ({location = '/', segment} = {}) =>
+	render(
+		<StaticRouter location={location}>
+			<Provider store={mockStore()}>
+				<DynamicSegmentEdit
+					groupId='23'
+					id='123'
+					propertyGroupsIList={new List()}
+					segment={segment}
+				/>
+			</Provider>
+		</StaticRouter>
+	);
 
 describe('DynamicSegmentEdit', () => {
 	afterEach(cleanup);
 
-	it('should render in BATCH mode', () => {
-		const SEGMENT_ID = '123';
-		const GROUP_ID = '23';
+	it("should use an existing segment's type", () => {
+		const {getByTestId} = renderEdit({
+			segment: {segmentType: 'REAL_TIME'}
+		});
 
-		const batchSegmentMock = data.getImmutableMock(
-			Segment,
-			data.mockSegment,
-			SEGMENT_ID,
-			{segmentType: 'BATCH'}
-		);
+		expect(getByTestId('segment-type').textContent).toBe('REAL_TIME');
+	});
 
-		const {container} = render(
-			<StaticRouter>
-				<Provider store={mockStore()}>
-					<DndProvider backend={HTML5Backend}>
-						<DynamicSegmentEdit
-							groupId={GROUP_ID}
-							id={SEGMENT_ID}
-							propertyGroupsIList={new List()}
-							segment={batchSegmentMock}
-						/>
-					</DndProvider>
-				</Provider>
-			</StaticRouter>
-		);
+	it('should use the type query param when there is no existing segment', () => {
+		const {getByTestId} = renderEdit({location: '/?type=REAL_TIME'});
 
-		expect(container).toMatchSnapshot();
+		expect(getByTestId('segment-type').textContent).toBe('REAL_TIME');
+	});
+
+	it('should default to BATCH when neither a segment nor a type param is present', () => {
+		const {getByTestId} = renderEdit({});
+
+		expect(getByTestId('segment-type').textContent).toBe('BATCH');
 	});
 });

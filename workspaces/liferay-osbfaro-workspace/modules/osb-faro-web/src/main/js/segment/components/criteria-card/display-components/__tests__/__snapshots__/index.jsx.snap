@@ -71,11 +71,6 @@ exports[`DisplayComponent renders $displayName for web 1`] = `
   <span>
     description
   </span>
-  <b
-    class="undefined-entity"
-  >
-    Undefined 
-  </b>
   <span>
     at least
   </span>
@@ -86,10 +81,7 @@ exports[`DisplayComponent renders $displayName for web 1`] = `
     time(s)
   </span>
   <span>
-    on
-  </span>
-  <span>
-    Invalid date
+    ever
   </span>
 </div>
 `;
