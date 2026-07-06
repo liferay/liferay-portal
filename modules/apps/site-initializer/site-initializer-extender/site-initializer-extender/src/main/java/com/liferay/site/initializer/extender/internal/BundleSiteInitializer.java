@@ -4139,6 +4139,24 @@ public class BundleSiteInitializer implements SiteInitializer {
 							menuItemJSONObject);
 
 				if (unicodePropertiesWrapper == null) {
+					if (menuItemJSONObject.getBoolean("append")) {
+						SiteNavigationMenuItem siteNavigationMenuItem =
+							_siteNavigationMenuItemLocalService.
+								fetchSiteNavigationMenuItemByExternalReferenceCode(
+									menuItemJSONObject.getString(
+										"externalReferenceCode"),
+									serviceContext.getScopeGroupId());
+
+						if (siteNavigationMenuItem != null) {
+							_addOrUpdateSiteNavigationMenuItems(
+								menuItemJSONObject, siteNavigationMenu,
+								siteNavigationMenuItem.
+									getSiteNavigationMenuItemId(),
+								serviceContext, siteNavigationMenuItemSettings,
+								stringUtilReplaceValues);
+						}
+					}
+
 					continue;
 				}
 

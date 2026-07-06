@@ -1,0 +1,21 @@
+[
+	{
+		"externalReferenceCode": "CMSPRIMARYNAVIGATION",
+		"menuItems": [
+			{
+				"append": true,
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION4",
+				"menuItems": [
+					{
+						"displayIcon": "shopping-cart",
+						"externalReferenceCode": "PIMPRIMARYNAVIGATIONPRODUCTS",
+						"friendlyURL": "/products",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"type": "node"
+			}
+		]
+	}
+]
