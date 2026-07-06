@@ -16,6 +16,7 @@ import com.liferay.headless.admin.fragment.resource.v1_0.FragmentSetResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -169,10 +170,21 @@ public class FragmentSetResourceImpl extends BaseFragmentSetResourceImpl {
 						contextUser.getUserId())));
 		}
 
-		return _toFragmentSet(
-			_fragmentCollectionService.updateFragmentCollection(
-				fragmentCollection.getFragmentCollectionId(),
-				fragmentSet.getName(), fragmentSet.getDescription()));
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextUtil.getServiceContext(
+				contextCompany.getCompanyId(), null, groupId,
+				contextHttpServletRequest, fragmentSet.getDateModified(),
+				contextUser.getUserId()));
+
+		try {
+			return _toFragmentSet(
+				_fragmentCollectionService.updateFragmentCollection(
+					fragmentCollection.getFragmentCollectionId(),
+					fragmentSet.getName(), fragmentSet.getDescription()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection)
