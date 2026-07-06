@@ -7,6 +7,7 @@ package com.liferay.commerce.order.content.web.internal.template;
 
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -33,10 +34,16 @@ public class CommerceOrderHttpHelperTemplateContextContributor
 		HttpServletRequest httpServletRequest) {
 
 		contextObjects.put("commerceOrderHttpHelper", _commerceOrderHttpHelper);
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		if (httpServletRequest != null) {
+			companyId = _portal.getCompanyId(httpServletRequest);
+		}
+
 		contextObjects.put(
 			"commerceReturnsEnabled",
-			FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(httpServletRequest), "LPD-10562"));
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-10562"));
 	}
 
 	@Reference
