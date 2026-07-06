@@ -17,7 +17,8 @@ export const createCustomValueMap = (
 	params.forEach(({key, value}) => {
 		if (isArray(value)) {
 			valueIMap = valueIMap.set(key, fromJS(createNewGroup(value)));
-		} else {
+		}
+		else {
 			valueIMap = valueIMap.set(key, value);
 		}
 	});
@@ -158,7 +159,7 @@ export const getPropertyValue = (
  */
 export const getTimePeriodLabel = (value: string): string => {
 	const timePeriod = TIME_PERIOD_OPTIONS.find(
-		timePeriod => timePeriod.value === value
+		(timePeriod) => timePeriod.value === value
 	);
 
 	return timePeriod ? timePeriod.label : '';

@@ -11,27 +11,27 @@ const EVENT_ID_MAP: {
 		click: 'blogClicked',
 		comment: 'commentPosted',
 		impression: 'blogImpressionMade',
-		view: 'blogViewed'
+		view: 'blogViewed',
 	},
 	Document: {
 		download: 'documentDownloaded',
 		impression: 'documentImpressionMade',
-		view: 'documentPreviewed'
+		view: 'documentPreviewed',
 	},
 	Form: {
 		submit: 'formSubmitted',
-		view: 'formViewed'
+		view: 'formViewed',
 	},
 	ObjectEntry: {
 		download: 'objectEntryDownloaded',
 		impression: 'objectEntryImpressionMade',
-		view: 'objectEntryViewed'
+		view: 'objectEntryViewed',
 	},
 	WebContent: {
 		click: 'webContentClicked',
 		impression: 'webContentImpressionMade',
-		view: 'webContentViewed'
-	}
+		view: 'webContentViewed',
+	},
 };
 
 /**
@@ -57,7 +57,7 @@ export const getSupportedApplicationIds = (
 ): string[] =>
 	action
 		? Object.keys(EVENT_ID_MAP).filter(
-				applicationId => EVENT_ID_MAP[applicationId][action]
+				(applicationId) => EVENT_ID_MAP[applicationId][action]
 			)
 		: Object.keys(EVENT_ID_MAP);
 
@@ -77,7 +77,7 @@ const EVENT_ID_TO_ACTION: {[eventId: string]: string} = {
 			return acc;
 		},
 		{} as {[eventId: string]: string}
-	)
+	),
 };
 
 /**

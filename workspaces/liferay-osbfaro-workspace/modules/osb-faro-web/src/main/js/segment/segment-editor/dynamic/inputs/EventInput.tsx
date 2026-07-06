@@ -3,13 +3,13 @@ import AttributeConjunctionInput from './components/attribute-conjunction-input'
 import DateFilterConjunctionInput from './components/DateFilterConjunctionInput';
 import EventPropertiesQuery, {
 	EventPropertiesData,
-	EventPropertiesVariables
+	EventPropertiesVariables,
 } from '../queries/EventPropertiesQuery';
 import Form from 'shared/components/form';
 import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import RealTimePeriodInput, {
-	DEFAULT_OPTIONS
+	DEFAULT_OPTIONS,
 } from './components/RealTimePeriodInput';
 import {Attribute, DataTypes} from 'event-analysis/utils/types';
 import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
@@ -18,7 +18,7 @@ import {fromJS, Map} from 'immutable';
 import {FunctionalOperators, RelationalOperators} from '../utils/constants';
 import {
 	getFilterCriterionIMap,
-	getIndexFromPropertyName
+	getIndexFromPropertyName,
 } from '../utils/custom-inputs';
 import {isBoolean, isNil} from 'lodash';
 import {NAME} from 'shared/util/pagination';
@@ -54,7 +54,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 	segmentType,
 	touched,
 	valid,
-	value: valueIMap
+	value: valueIMap,
 }) => {
 	const [selectedCustomAttribute, setSelectedCustomAttribute] =
 		useState<Attribute | null>(null);
@@ -112,15 +112,16 @@ const EventInput: React.FC<IEventInputProps> = ({
 					operatorName: RelationalOperators.GE,
 					touched: true,
 					valid: true,
-					value: newDayValue
+					value: newDayValue,
 				});
-			} else {
+			}
+			else {
 				dayCriterion = fromJS({
 					operatorName: RelationalOperators.GE,
 					propertyName: 'day',
 					touched: true,
 					valid: true,
-					value: newDayValue
+					value: newDayValue,
 				});
 			}
 
@@ -132,7 +133,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 			onChange({
 				touched: {...touched, dateFilter: true},
 				valid: {...valid, dateFilter: true},
-				value: updatedValue
+				value: updatedValue,
 			});
 		},
 		[onChange, valueIMap, touched, valid]
@@ -152,14 +153,14 @@ const EventInput: React.FC<IEventInputProps> = ({
 	}, [
 		segmentType,
 		getRealTimePeriodFromCriterion,
-		handleRealTimePeriodChange
+		handleRealTimePeriodChange,
 	]);
 
 	const getConjunctionDateFilterIMap = (value: CustomValue) => {
 		const conjunctionCriterion = value.getIn([
 			'criterionGroup',
 			'items',
-			2
+			2,
 		]);
 
 		if (conjunctionCriterion) {
@@ -172,7 +173,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 			attribute,
 			criterion,
 			touched: conjunctionTouched,
-			valid: conjunctionValid
+			valid: conjunctionValid,
 		}: {
 			attribute?: Attribute;
 			criterion: Criterion;
@@ -185,7 +186,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 				value: valueIMap.mergeIn(
 					['criterionGroup', 'items', 1],
 					fromJS(criterion)
-				)
+				),
 			});
 
 			if (attribute) {
@@ -201,7 +202,8 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 			if (isNil(criterion)) {
 				value = valueIMap.deleteIn(['criterionGroup', 'items', 2]);
-			} else {
+			}
+			else {
 				value = valueIMap.mergeIn(
 					['criterionGroup', 'items', 2],
 					fromJS(criterion)
@@ -211,13 +213,13 @@ const EventInput: React.FC<IEventInputProps> = ({
 			onChange({
 				touched: {
 					...touched,
-					dateFilter: criterion && criterion.touched
+					dateFilter: criterion && criterion.touched,
 				},
 				valid: {
 					...valid,
-					dateFilter: isNil(criterion) || criterion.valid
+					dateFilter: isNil(criterion) || criterion.valid,
 				},
-				value
+				value,
 			});
 		},
 		[onChange, valueIMap, touched, valid]
@@ -227,7 +229,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 		({
 			criterion,
 			touched: occurenceCountTouched,
-			valid: occurenceCountValid
+			valid: occurenceCountValid,
 		}: {
 			criterion?: Criterion;
 			touched?: boolean;
@@ -239,7 +241,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 				value?: CustomValue;
 			} = {
 				touched,
-				valid
+				valid,
 			};
 
 			if (criterion?.operatorName) {
@@ -248,15 +250,16 @@ const EventInput: React.FC<IEventInputProps> = ({
 					value: valueIMap.mergeIn(
 						['operator'],
 						criterion.operatorName
-					) as CustomValue
+					) as CustomValue,
 				};
-			} else if (!isNil(criterion?.value)) {
+			}
+			else if (!isNil(criterion?.value)) {
 				params = {
 					...params,
 					value: valueIMap.mergeIn(
 						['value'],
 						criterion.value
-					) as CustomValue
+					) as CustomValue,
 				};
 			}
 
@@ -265,15 +268,15 @@ const EventInput: React.FC<IEventInputProps> = ({
 					...params,
 					touched: {
 						...touched,
-						occurenceCount: occurenceCountTouched
-					}
+						occurenceCount: occurenceCountTouched,
+					},
 				};
 			}
 
 			if (isBoolean(occurenceCountValid)) {
 				params = {
 					...params,
-					valid: {...valid, occurenceCount: occurenceCountValid}
+					valid: {...valid, occurenceCount: occurenceCountValid},
 				};
 			}
 
@@ -293,11 +296,11 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 	if (
 		options!.length &&
-		options!.some(option => option.label === 'hidden' && option.value)
+		options!.some((option) => option.label === 'hidden' && option.value)
 	) {
 		return (
-			<div className='criteria-statement'>
-				<b className='non-existent-property-message'>
+			<div className="criteria-statement">
+				<b className="non-existent-property-message">
 					{Liferay.Language.get('custom-event-no-longer-exists')}
 				</b>
 			</div>
@@ -314,9 +317,9 @@ const EventInput: React.FC<IEventInputProps> = ({
 				size: 25,
 				sort: {
 					column: NAME,
-					type: OrderByDirections.Ascending
-				}
-			}
+					type: OrderByDirections.Ascending,
+				},
+			},
 		}
 	);
 
@@ -327,20 +330,20 @@ const EventInput: React.FC<IEventInputProps> = ({
 	const initialPeriod = getRealTimePeriodFromCriterion();
 
 	return (
-		<div className='criteria-statement'>
+		<div className="criteria-statement">
 			<SafeResults {...result} page={false} pageDisplay={false}>
 				{(data: any) => {
 					const rawAttributes =
 						data?.eventProperties?.eventProperties || [];
 					const attributes = rawAttributes.map((attr: Attribute) => ({
-						...attr
+						...attr,
 					}));
 
 					return (
 						<>
 							<Form.Group autoFit>
 								<Form.GroupItem
-									className='font-weight-semibold text-secondary'
+									className="font-weight-semibold text-secondary"
 									label
 									shrink
 								>
@@ -350,7 +353,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 								<OperatorDropdown />
 
 								<Form.GroupItem
-									className='entity-name'
+									className="entity-name"
 									label
 									shrink
 								>
@@ -360,7 +363,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 								</Form.GroupItem>
 
 								<Form.GroupItem
-									className='display-value'
+									className="display-value"
 									label
 									shrink
 								>
@@ -411,7 +414,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 							{!!attributes.length && (
 								<Form.Group autoFit>
 									<Form.GroupItem
-										className='conjunction'
+										className="conjunction"
 										label
 										shrink
 									>
@@ -432,11 +435,12 @@ const EventInput: React.FC<IEventInputProps> = ({
 										touched={{
 											attribute: touched.attribute,
 											attributeValue:
-												touched.attributeValue
+												touched.attributeValue,
 										}}
 										valid={{
 											attribute: valid.attribute,
-											attributeValue: valid.attributeValue
+											attributeValue:
+												valid.attributeValue,
 										}}
 									/>
 								</Form.Group>
@@ -444,9 +448,9 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 							{isRealTime && isSelectedAttributeDateType && (
 								<Alert
-									className='mt-2'
-									displayType='info'
-									variant='feedback'
+									className="mt-2"
+									displayType="info"
+									variant="feedback"
 								>
 									{Liferay.Language.get(
 										'event-date-attributes-may-create-time-conflicts-and-reduce-matching-users.-review-your-criteria-to-ensure-the-segment-behaves-as-expected'

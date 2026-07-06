@@ -1,7 +1,7 @@
 import {
 	getActionFromEventId,
 	getEventId,
-	getSupportedApplicationIds
+	getSupportedApplicationIds,
 } from '../activity-keys';
 
 describe('activity-keys', () => {
@@ -9,18 +9,18 @@ describe('activity-keys', () => {
 		it('should map each event action to the applicationIds that support it', () => {
 			expect(getSupportedApplicationIds('click')).toEqual([
 				'Blog',
-				'WebContent'
+				'WebContent',
 			]);
 			expect(getSupportedApplicationIds('comment')).toEqual(['Blog']);
 			expect(getSupportedApplicationIds('download')).toEqual([
 				'Document',
-				'ObjectEntry'
+				'ObjectEntry',
 			]);
 			expect(getSupportedApplicationIds('impression')).toEqual([
 				'Blog',
 				'Document',
 				'ObjectEntry',
-				'WebContent'
+				'WebContent',
 			]);
 			expect(getSupportedApplicationIds('submit')).toEqual(['Form']);
 			expect(getSupportedApplicationIds('view')).toEqual([
@@ -28,7 +28,7 @@ describe('activity-keys', () => {
 				'Document',
 				'Form',
 				'ObjectEntry',
-				'WebContent'
+				'WebContent',
 			]);
 		});
 
@@ -38,7 +38,7 @@ describe('activity-keys', () => {
 				'Document',
 				'Form',
 				'ObjectEntry',
-				'WebContent'
+				'WebContent',
 			]);
 		});
 	});

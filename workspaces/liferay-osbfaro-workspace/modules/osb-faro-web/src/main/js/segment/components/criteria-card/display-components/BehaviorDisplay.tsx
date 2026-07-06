@@ -8,7 +8,7 @@ import {EntityType} from 'segment/segment-editor/dynamic/context/referencedObjec
 import {
 	getActivityKeysFromValue,
 	getFilterCriterionIMapByPropertyName,
-	getFilterValueByPropertyName
+	getFilterValueByPropertyName,
 } from 'segment/segment-editor/dynamic/utils/custom-inputs';
 import {getOperatorLabel, maybeFormatToKnownType} from '../utils';
 import {IDisplayComponentProps} from '../types';
@@ -19,7 +19,7 @@ import {SegmentTypes} from 'shared/util/constants';
 const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
-	segmentType
+	segmentType,
 }) => {
 	const {operatorName, value} = criterion;
 
@@ -62,7 +62,7 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 
 				return (
 					<React.Fragment key={activityKey}>
-						{index > 0 && <span>,</span>}
+						{index > 0 && <span>{','}</span>}
 
 						<ReferencedEntityDisplay
 							id={id}

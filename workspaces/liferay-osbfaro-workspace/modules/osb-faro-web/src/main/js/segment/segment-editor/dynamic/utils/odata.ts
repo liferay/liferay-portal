@@ -7,14 +7,14 @@ import {
 	NotOperators,
 	PropertyTypes,
 	RelationalOperators,
-	SUPPORTED_PROPERTY_TYPES_MAP
+	SUPPORTED_PROPERTY_TYPES_MAP,
 } from './constants';
 import {
 	Context,
 	Criteria,
 	Criterion,
 	CriterionGroup,
-	ODataASTNode
+	ODataASTNode,
 } from './types';
 import {CustomValue} from 'shared/util/records';
 import {fromJS, Map} from 'immutable';
@@ -23,7 +23,7 @@ import {get, invert, isFinite, isNull, isString, isUndefined} from 'lodash';
 import {getPropertyValue, setPropertyValue} from './custom-inputs';
 import {
 	getRemoteCriterionTypeByOperator,
-	REMOTE_CRITERION_TYPES
+	REMOTE_CRITERION_TYPES,
 } from '../criterion-types/registry';
 import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {filter as oDataFilterFn} from 'odata-v4-parser';
@@ -32,7 +32,7 @@ import {RemoteCriterionType} from '../criterion-types/RemoteCriterionType';
 const OPERATORS = {
 	...CustomFunctionOperators,
 	...FunctionalOperators,
-	...RelationalOperators
+	...RelationalOperators,
 };
 
 const EXPRESSION_TYPES = {
@@ -52,7 +52,7 @@ const EXPRESSION_TYPES = {
 	NOT_EQUALS: 'NotEqualsExpression',
 	OR: 'OrExpression',
 	PAREN: 'ParenExpression',
-	PROPERTY_PATH: 'PropertyPathExpression'
+	PROPERTY_PATH: 'PropertyPathExpression',
 };
 
 const EDM_NUMBERS = [
@@ -60,7 +60,7 @@ const EDM_NUMBERS = [
 	'Edm.SByte',
 	'Edm.Int16',
 	'Edm.Int32',
-	'Edm.Int64'
+	'Edm.Int64',
 ];
 
 const EDM_NULL = 'null';
@@ -82,7 +82,7 @@ const oDataV4ParserNameMap = {
 	[EXPRESSION_TYPES.LESSER_OR_EQUALS]: OPERATORS.LE,
 	[EXPRESSION_TYPES.LESSER_THAN]: OPERATORS.LT,
 	[EXPRESSION_TYPES.NOT_EQUALS]: OPERATORS.NE,
-	[EXPRESSION_TYPES.OR]: Conjunctions.Or
+	[EXPRESSION_TYPES.OR]: Conjunctions.Or,
 };
 
 /**
@@ -91,80 +91,80 @@ const oDataV4ParserNameMap = {
 const FARO_SPECIAL_CHARS = {
 	ampersand: {
 		encoded: '_FARO_AMPERSAND_',
-		raw: '&'
+		raw: '&',
 	},
 	at: {
 		encoded: '_FARO_AT_',
-		raw: '@'
+		raw: '@',
 	},
 	backtick: {
 		encoded: '_FARO_BACKTICK_',
-		raw: '`'
+		raw: '`',
 	},
 	braceLeft: {
 		encoded: '_FARO_LEFT_BRACE_',
-		raw: '{'
+		raw: '{',
 	},
 	braceRight: {
 		encoded: '_FARO_RIGHT_BRACE_',
-		raw: '}'
+		raw: '}',
 	},
 	bracketLeft: {
 		encoded: '_FARO_LEFT_BRACKET_',
-		raw: '['
+		raw: '[',
 	},
 	bracketRight: {
 		encoded: '_FARO_RIGHT_BRACKET_',
-		raw: ']'
+		raw: ']',
 	},
 	caret: {
 		encoded: '_FARO_CARET_',
-		raw: '^'
+		raw: '^',
 	},
 	dash: {
 		encoded: '_FARO_DASH_',
-		raw: '-'
+		raw: '-',
 	},
 	dollar: {
 		encoded: '_FARO_DOLLAR_',
-		raw: '$'
+		raw: '$',
 	},
 	greaterThan: {
 		encoded: '_FARO_GREATER_THAN_',
-		raw: '>'
+		raw: '>',
 	},
 	hash: {
 		encoded: '_FARO_HASH_',
-		raw: '#'
+		raw: '#',
 	},
 	lessThan: {
 		encoded: '_FARO_LESS_THAN_',
-		raw: '<'
+		raw: '<',
 	},
 	percent: {
 		encoded: '_FARO_PERCENT_',
-		raw: '%'
+		raw: '%',
 	},
 	pipe: {
 		encoded: '_FARO_PIPE_',
-		raw: '|'
+		raw: '|',
 	},
 	plus: {
 		encoded: '_FARO_PLUS_',
-		raw: '+'
+		raw: '+',
 	},
 	question: {
 		encoded: '_FARO_QUESTION_',
-		raw: '?'
+		raw: '?',
 	},
 	slash: {
 		encoded: '_FARO_SLASH_',
-		raw: '/'
+		raw: '/',
 	},
 	underscore: {
 		encoded: '_FARO_UNDERSCORE_',
-		raw: '_'
-	}
+		raw: '_',
+	},
 };
 
 /**
@@ -175,9 +175,9 @@ const addNewGroup = ({oDataASTNode, prevConjunction}: Context): Context => ({
 	lastNodeWasGroup: false,
 	oDataASTNode: {
 		type: EXPRESSION_TYPES.BOOL_PAREN,
-		value: oDataASTNode
+		value: oDataASTNode,
 	},
-	prevConjunction
+	prevConjunction,
 });
 
 const PARAM_REGEX = /\s+((?:criterionGroup|operator|value)=)/g;
@@ -226,7 +226,8 @@ const buildRemoteFilterString = (
 		parts.push(
 			`(applicationId in (${appIds}) and eventId in (${eventIds}))`
 		);
-	} else if (activityKeyItem) {
+	}
+	else if (activityKeyItem) {
 		parts.push(`activityKey eq '${activityKeyItem.value}'`);
 	}
 
@@ -234,7 +235,7 @@ const buildRemoteFilterString = (
 		const catParts = (
 			categoriesItem.value as Array<{id: string; name: string}>
 		).map(
-			cat =>
+			(cat) =>
 				`(categories/id eq '${cat.id}' and categories/name eq '${cat.name}')`
 		);
 		parts.push(`(${catParts.join(' or ')})`);
@@ -276,7 +277,8 @@ const buildQueryString = (
 				if (val) {
 					queryString = queryString.concat(`(${val})`);
 				}
-			} else {
+			}
+			else {
 				const {operatorName, propertyName, type, value} =
 					criterion as Criterion;
 
@@ -292,12 +294,14 @@ const buildQueryString = (
 						queryString = queryString.concat(
 							`${propertyName} in (${ids})`
 						);
-					} else {
+					}
+					else {
 						queryString = queryString.concat(
 							`${propertyName} ${operatorName} ${parsedValue}`
 						);
 					}
-				} else if (isValueType(CustomFunctionOperators, operatorName)) {
+				}
+				else if (isValueType(CustomFunctionOperators, operatorName)) {
 					const remoteCriterionType =
 						getRemoteCriterionTypeByOperator(operatorName);
 
@@ -313,7 +317,7 @@ const buildQueryString = (
 						const occurrenceCount = value.get('value');
 
 						const params: string[] = [
-							`filter='${encodeQuotes(filterString)}'`
+							`filter='${encodeQuotes(filterString)}'`,
 						];
 
 						if (!isNull(occurrenceOperator)) {
@@ -329,7 +333,8 @@ const buildQueryString = (
 								params.join(',')
 							)})`
 						);
-					} else {
+					}
+					else {
 						const fnName = getFunctionNameFromOperatorName(
 							operatorName ?? ''
 						);
@@ -343,13 +348,15 @@ const buildQueryString = (
 									isNull(value.get(key))
 								) {
 									return;
-								} else if (key === 'criterionGroup') {
+								}
+								else if (key === 'criterionGroup') {
 									return `filter='${encodeQuotes(
 										buildQueryString([
-											value.get(key).toJS()
+											value.get(key).toJS(),
 										])
 									)}'`;
-								} else if (
+								}
+								else if (
 									key === 'value' &&
 									!isString(value.get(key))
 								) {
@@ -369,19 +376,22 @@ const buildQueryString = (
 							)})`
 						);
 					}
-				} else if (isValueType(FunctionalOperators, operatorName)) {
+				}
+				else if (isValueType(FunctionalOperators, operatorName)) {
 					if (operatorName === FunctionalOperators.Between) {
 						const {end, start} = parsedValue;
 
 						queryString = queryString.concat(
 							`between(${propertyName},'${start}','${end}')`
 						);
-					} else {
+					}
+					else {
 						queryString = queryString.concat(
 							`${operatorName}(${propertyName}, ${parsedValue})`
 						);
 					}
-				} else if (isValueType(NotOperators, operatorName)) {
+				}
+				else if (isValueType(NotOperators, operatorName)) {
 					const baseOperator = (
 						(operatorName ?? '') as string
 					).replace(/not-/g, '') as Conjunctions &
@@ -395,8 +405,8 @@ const buildQueryString = (
 							operatorName: baseOperator,
 							propertyName,
 							type,
-							value
-						}
+							value,
+						},
 					];
 
 					queryString = queryString.concat(
@@ -420,7 +430,7 @@ const decodeSpecialCharacters = (queryString: string): string => {
 
 	const pattern = new RegExp(specialCharsEncoded, 'g');
 
-	return queryString.replace(pattern, match => {
+	return queryString.replace(pattern, (match) => {
 		const specialCharacter = specialCharactersArr.find(
 			({encoded}) => encoded === match
 		);
@@ -448,7 +458,7 @@ const encodeSpecialCharacters = (queryString: string): string => {
 
 	const pattern = new RegExp(specialCharsPattern, 'g');
 
-	return queryString.replace(pattern, match => {
+	return queryString.replace(pattern, (match) => {
 		const specialCharacter = specialCharactersArr.find(
 			({raw}) => raw === match
 		);
@@ -523,7 +533,8 @@ const getExpressionName = (oDataASTNode: ODataASTNode): string => {
 
 	if (type == EXPRESSION_TYPES.METHOD_CALL) {
 		returnValue = oDataASTNode.value.method;
-	} else if (type === EXPRESSION_TYPES.FUNCTION) {
+	}
+	else if (type === EXPRESSION_TYPES.FUNCTION) {
 		const {name, namespace} = oDataASTNode.value.fn.value;
 
 		returnValue = getOperatorNameFromFunctionName(name, namespace);
@@ -545,7 +556,8 @@ const getNextNonGroupExpression = (
 
 	if (oDataASTNode.value.type === EXPRESSION_TYPES.BOOL_PAREN) {
 		returnValue = getNextNonGroupExpression(oDataASTNode.value);
-	} else {
+	}
+	else {
 		returnValue = oDataASTNode.value.left
 			? oDataASTNode.value.left
 			: oDataASTNode.value;
@@ -581,7 +593,8 @@ const getNextOperatorExpression = (
 		type === EXPRESSION_TYPES.PAREN
 	) {
 		returnValue = getNextOperatorExpression(nextNode);
-	} else {
+	}
+	else {
 		returnValue = nextNode;
 	}
 
@@ -594,7 +607,7 @@ const getNextOperatorExpression = (
 const hasDifferentConjunctions = ({
 	lastNodeWasGroup,
 	oDataASTNode,
-	prevConjunction
+	prevConjunction,
 }: Context): boolean =>
 	prevConjunction !== oDataASTNode.type && !lastNodeWasGroup;
 
@@ -615,7 +628,7 @@ const isValueType = (types: object, value: string | undefined): boolean =>
 const isRedundantGroup = ({
 	lastNodeWasGroup,
 	oDataASTNode,
-	prevConjunction
+	prevConjunction,
 }: Context): boolean => {
 	const nextNodeExpressionName = getExpressionName(
 		getNextNonGroupExpression(oDataASTNode)
@@ -655,7 +668,7 @@ const removeQuotes = (text: string): string => text.replace(/['"]+/g, '');
 const skipGroup = ({oDataASTNode, prevConjunction}: Context): Context => ({
 	lastNodeWasGroup: true,
 	oDataASTNode: oDataASTNode.value,
-	prevConjunction
+	prevConjunction,
 });
 
 /**
@@ -674,7 +687,8 @@ export const decodeValueFromCriteria = (criteria: Criteria) => {
 
 		try {
 			decodedValue = getSafeDecodedURIComponent(value);
-		} catch (e) {}
+		}
+		catch (e) {}
 
 		return decodedValue;
 	};
@@ -685,7 +699,8 @@ export const decodeValueFromCriteria = (criteria: Criteria) => {
 		if (newCriteria.value) {
 			if (typeof newCriteria.value === 'string') {
 				newCriteria.value = decodeValue(newCriteria.value);
-			} else if (newCriteria.value?._map) {
+			}
+			else if (newCriteria.value?._map) {
 				const firstItemValue = getPropertyValue(
 					newCriteria.value,
 					'value',
@@ -794,7 +809,7 @@ const buildInnerFilterItems = (
 				rowId: generateRowId(),
 				touched: false,
 				valid: true,
-				value: entityId
+				value: entityId,
 			} as unknown as Criterion,
 			{
 				operatorName: RelationalOperators.EQ,
@@ -802,16 +817,17 @@ const buildInnerFilterItems = (
 				rowId: generateRowId(),
 				touched: false,
 				valid: true,
-				value: entityName
+				value: entityName,
 			} as unknown as Criterion
 		);
 	}
 
 	if (appIdInMatch && eventIdInMatch) {
+
 		// A vocabulary/tag criterion lists one or more applicationIds/eventIds.
 
 		const parseIds = (s: string) =>
-			s.split(',').map(id => id.trim().replace(/^'|'$/g, ''));
+			s.split(',').map((id) => id.trim().replace(/^'|'$/g, ''));
 
 		items.push({
 			operatorName: RelationalOperators.In,
@@ -819,7 +835,7 @@ const buildInnerFilterItems = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: parseIds(appIdInMatch[1])
+			value: parseIds(appIdInMatch[1]),
 		} as unknown as Criterion);
 
 		items.push({
@@ -828,9 +844,11 @@ const buildInnerFilterItems = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: parseIds(eventIdInMatch[1])
+			value: parseIds(eventIdInMatch[1]),
 		} as unknown as Criterion);
-	} else if (appIdEqMatch && eventIdEqMatch) {
+	}
+	else if (appIdEqMatch && eventIdEqMatch) {
+
 		// A single-type behavior targets one applicationId/eventId.
 
 		items.push({
@@ -839,7 +857,7 @@ const buildInnerFilterItems = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: appIdEqMatch[1]
+			value: appIdEqMatch[1],
 		} as unknown as Criterion);
 
 		items.push({
@@ -848,9 +866,10 @@ const buildInnerFilterItems = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: eventIdEqMatch[1]
+			value: eventIdEqMatch[1],
 		} as unknown as Criterion);
-	} else {
+	}
+	else {
 		const activityKeyMatch = innerFilter.match(/activityKey eq '([^']+)'/);
 
 		if (activityKeyMatch) {
@@ -860,7 +879,7 @@ const buildInnerFilterItems = (
 				rowId: generateRowId(),
 				touched: false,
 				valid: true,
-				value: activityKeyMatch[1]
+				value: activityKeyMatch[1],
 			} as unknown as Criterion);
 		}
 	}
@@ -882,7 +901,7 @@ const buildInnerFilterItems = (
 				rowId: generateRowId(),
 				touched: false,
 				valid: true,
-				value: categoryItems
+				value: categoryItems,
 			} as unknown as Criterion);
 		}
 	}
@@ -896,7 +915,7 @@ const buildInnerFilterItems = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: dayMatch[2]
+			value: dayMatch[2],
 		} as unknown as Criterion);
 	}
 
@@ -934,14 +953,14 @@ const parseRemoteFilterByCount = (
 	const criterionGroup: CriterionGroup = {
 		conjunctionName: Conjunctions.And,
 		criteriaGroupId: generateGroupId(),
-		items
+		items,
 	};
 
 	const customValue = new CustomValue(
 		Map({
 			criterionGroup: fromJS(criterionGroup),
 			operator: occurrenceOperator,
-			value: occurrenceValue
+			value: occurrenceValue,
 		})
 	);
 
@@ -958,8 +977,8 @@ const parseRemoteFilterByCount = (
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: customValue
-		} as unknown as Criteria
+			value: customValue,
+		} as unknown as Criteria,
 	]);
 };
 
@@ -991,21 +1010,26 @@ const splitTopLevelConjunction = (
 				current += "''";
 				i += 2;
 				continue;
-			} else if (char === "'") {
+			}
+			else if (char === "'") {
 				inString = false;
 			}
 
 			current += char;
-		} else if (char === "'") {
+		}
+		else if (char === "'") {
 			inString = true;
 			current += char;
-		} else if (char === '(') {
+		}
+		else if (char === '(') {
 			depth++;
 			current += char;
-		} else if (char === ')') {
+		}
+		else if (char === ')') {
 			depth--;
 			current += char;
-		} else if (depth === 0) {
+		}
+		else if (depth === 0) {
 			const remaining = stripped.slice(i);
 
 			if (/^ and /i.test(remaining)) {
@@ -1014,16 +1038,19 @@ const splitTopLevelConjunction = (
 				current = '';
 				i += 5;
 				continue;
-			} else if (/^ or /i.test(remaining)) {
+			}
+			else if (/^ or /i.test(remaining)) {
 				parts.push(current.trim());
 				conjunction = Conjunctions.Or;
 				current = '';
 				i += 4;
 				continue;
-			} else {
+			}
+			else {
 				current += char;
 			}
-		} else {
+		}
+		else {
 			current += char;
 		}
 
@@ -1054,7 +1081,8 @@ const parseMultipleCriteria = (queryString: string): CriterionGroup | null => {
 			if (result?.items?.length) {
 				criteriaItems.push(...result.items);
 			}
-		} else {
+		}
+		else {
 			try {
 				const encodedQuotes = encodeDoubleQuotesToOdataQuotes(part);
 				const trimSpaces = trimSpacesBeforeParams(encodedQuotes);
@@ -1075,8 +1103,11 @@ const parseMultipleCriteria = (queryString: string): CriterionGroup | null => {
 				const decoded = decodeValueFromCriteria(parsed);
 
 				criteriaItems.push(...decoded.items);
-			} catch {
+			}
+			catch {
+
 				// skip unparseable parts
+
 			}
 		}
 	}
@@ -1088,7 +1119,7 @@ const parseMultipleCriteria = (queryString: string): CriterionGroup | null => {
 	return {
 		conjunctionName: conjunction,
 		criteriaGroupId: generateGroupId(),
-		items: criteriaItems
+		items: criteriaItems,
 	};
 };
 
@@ -1120,10 +1151,13 @@ const translateQueryToCriteria = (queryString: string): Criteria => {
 			: wrapInCriteriaGroup(criteriaArray);
 
 		criteria = decodeValueFromCriteria(criteria);
-	} catch (e) {
+	}
+	catch (e) {
 		try {
 			criteria = parseMultipleCriteria(queryString);
-		} catch (innerError) {
+		}
+		catch (innerError) {
+
 			// eslint-disable-next-line no-console
 			console.error(
 				'Faro: parseMultipleCriteria fallback failed for queryString',
@@ -1151,17 +1185,23 @@ const toCriteria = (context: Context): Criteria[] => {
 
 	if (oDataASTNode.type === EXPRESSION_TYPES.NOT) {
 		criterion = transformNotNode(context);
-	} else if (oDataASTNode.type === EXPRESSION_TYPES.COMMON) {
+	}
+	else if (oDataASTNode.type === EXPRESSION_TYPES.COMMON) {
 		criterion = transformCommonNode(context);
-	} else if (oDataASTNode.type === EXPRESSION_TYPES.METHOD_CALL) {
+	}
+	else if (oDataASTNode.type === EXPRESSION_TYPES.METHOD_CALL) {
 		criterion = transformFunctionalNode(context);
-	} else if (oDataASTNode.type === EXPRESSION_TYPES.FUNCTION) {
+	}
+	else if (oDataASTNode.type === EXPRESSION_TYPES.FUNCTION) {
 		criterion = transformCustomFunctionNode(context);
-	} else if (isValueType(RelationalOperators, expressionName)) {
+	}
+	else if (isValueType(RelationalOperators, expressionName)) {
 		criterion = transformOperatorNode(context);
-	} else if (isValueType(Conjunctions, expressionName)) {
+	}
+	else if (isValueType(Conjunctions, expressionName)) {
 		criterion = transformConjunctionNode(context);
-	} else if (expressionName === GROUP) {
+	}
+	else if (expressionName === GROUP) {
 		criterion = transformGroupNode(context);
 	}
 
@@ -1179,7 +1219,8 @@ const transformCommonNode = ({oDataASTNode}: Context): Criteria[] => {
 
 	if (nextNodeExpression.type === EXPRESSION_TYPES.FUNCTION) {
 		return transformCustomFunctionNode({oDataASTNode: nextNodeExpression});
-	} else if (nextNodeExpression.type === EXPRESSION_TYPES.METHOD_CALL) {
+	}
+	else if (nextNodeExpression.type === EXPRESSION_TYPES.METHOD_CALL) {
 		const methodExpressionName = getExpressionName(nextNodeExpression);
 
 		if (methodExpressionName === 'substring') {
@@ -1195,31 +1236,33 @@ const transformCommonNode = ({oDataASTNode}: Context): Criteria[] => {
 					valid: true,
 					value: {
 						end: removeQuotes(end),
-						start: removeQuotes(start)
-					}
-				}
+						start: removeQuotes(start),
+					},
+				},
 			] as unknown as Criterion[];
 		}
 
 		return [];
-	} else {
+	}
+	else {
 		const anyExpression = get(nextNodeExpression, [
 			'value',
 			'next',
-			'value'
+			'value',
 		]);
 
 		const methodExpression = get(anyExpression, [
 			'value',
 			'predicate',
-			'value'
+			'value',
 		]);
 
 		const methodExpressionName = getExpressionName(methodExpression);
 
 		if (methodExpressionName == OPERATORS.Contains) {
 			value = removeQuotes(methodExpression.value.parameters[1].raw);
-		} else if (methodExpressionName == OPERATORS.EQ) {
+		}
+		else if (methodExpressionName == OPERATORS.EQ) {
 			value = removeQuotes(methodExpression.value.right.raw);
 		}
 
@@ -1230,8 +1273,8 @@ const transformCommonNode = ({oDataASTNode}: Context): Criteria[] => {
 				rowId: generateRowId(),
 				touched: false,
 				valid: true,
-				value
-			}
+				value,
+			},
 		] as unknown as Criteria[];
 	}
 };
@@ -1255,12 +1298,12 @@ const transformConjunctionNode = (context: Context): Criteria[] => {
 		: [
 				...toCriteria({
 					oDataASTNode: nextNode.left,
-					prevConjunction: conjunctionType
+					prevConjunction: conjunctionType,
 				}),
 				...toCriteria({
 					oDataASTNode: nextNode.right,
-					prevConjunction: conjunctionType
-				})
+					prevConjunction: conjunctionType,
+				}),
 			];
 };
 
@@ -1283,9 +1326,9 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 		params.value.reduce((accIMap: Map<string, any>, cur: any) => {
 			const {
 				name: {
-					value: {name}
+					value: {name},
 				},
-				value: {value}
+				value: {value},
 			} = cur.value;
 
 			if (name === 'filter') {
@@ -1303,7 +1346,7 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 						fromJS({
 							conjunctionName: Conjunctions.And,
 							criteriaGroupId: generateGroupId(),
-							items: innerResult.items
+							items: innerResult.items,
 						})
 					);
 				}
@@ -1324,7 +1367,8 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 							rawFilter.match(
 								/vocabularies\/name eq '([^']+)'/
 							)?.[1] ?? null;
-					} else if (tagIdMatch) {
+					}
+					else if (tagIdMatch) {
 						detectedFilterType = 'tag';
 						detectedEntityId = tagIdMatch[1];
 						detectedEntityName =
@@ -1338,9 +1382,11 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 							.set('criterionGroup', criterionGroupIMap)
 							.set('_name', detectedEntityName)
 					: accIMap.set('criterionGroup', criterionGroupIMap);
-			} else if (name === 'value' && isFinite(parseInt(value.raw))) {
+			}
+			else if (name === 'value' && isFinite(parseInt(value.raw))) {
 				return accIMap.set(name, parseInt(value.raw));
-			} else {
+			}
+			else {
 				return accIMap.set(name, removeQuotes(value.raw));
 			}
 		}, Map())
@@ -1350,7 +1396,7 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 		'criterionGroup',
 		'items',
 		0,
-		'propertyName'
+		'propertyName',
 	]);
 	const isVocabularyFilter =
 		firstItemPropertyName === 'vocabularies/id' ||
@@ -1396,13 +1442,14 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 	) {
 		touched = {asset: false, occurenceCount: false};
 		valid = {asset: true, occurenceCount: true};
-	} else if (
+	}
+	else if (
 		SUPPORTED_PROPERTY_TYPES_MAP[PropertyTypes.Event].includes(operatorName)
 	) {
 		touched = {
 			attribute: false,
 			attributeValue: false,
-			occurenceCount: false
+			occurenceCount: false,
 		};
 		valid = {attribute: true, attributeValue: true, occurenceCount: true};
 	}
@@ -1414,8 +1461,8 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 			rowId: generateRowId(),
 			touched,
 			valid,
-			value: customValue
-		}
+			value: customValue,
+		},
 	] as unknown as Criterion[];
 };
 
@@ -1433,8 +1480,8 @@ const transformFunctionalNode = ({oDataASTNode}: Context): Criterion[] =>
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value: removeQuotes(oDataASTNode.value.parameters[1].raw)
-		}
+			value: removeQuotes(oDataASTNode.value.parameters[1].raw),
+		},
 	] as unknown as Criterion[];
 
 /**
@@ -1456,9 +1503,9 @@ const transformGroupNode = (context: Context): Criteria[] => {
 					items: toCriteria({
 						lastNodeWasGroup: true,
 						oDataASTNode: oDataASTNode.value,
-						prevConjunction
-					})
-				}
+						prevConjunction,
+					}),
+				},
 			];
 };
 
@@ -1479,23 +1526,25 @@ const transformNotNode = ({oDataASTNode}: Context): Criteria[] => {
 		returnValue = [
 			{
 				...transformFunctionalNode({
-					oDataASTNode: nextNodeExpression
+					oDataASTNode: nextNodeExpression,
 				})[0],
-				operatorName: NotOperators.NotContains
-			}
+				operatorName: NotOperators.NotContains,
+			},
 		] as unknown as Criteria[];
-	} else if (isValueType(CustomFunctionOperators, nextNodeExpressionName)) {
+	}
+	else if (isValueType(CustomFunctionOperators, nextNodeExpressionName)) {
 		const criterion = transformCustomFunctionNode({
-			oDataASTNode: nextNodeExpression
+			oDataASTNode: nextNodeExpression,
 		})[0];
 
 		returnValue = [
 			{
 				...criterion,
-				operatorName: `not-${criterion.operatorName}`
-			}
+				operatorName: `not-${criterion.operatorName}`,
+			},
 		] as unknown as Criteria[];
-	} else if (nextNodeExpression.type == EXPRESSION_TYPES.PROPERTY_PATH) {
+	}
+	else if (nextNodeExpression.type == EXPRESSION_TYPES.PROPERTY_PATH) {
 		const anyExpression = nextNodeExpression.value.next.value;
 
 		const methodExpression = anyExpression.value.predicate.value;
@@ -1506,10 +1555,10 @@ const transformNotNode = ({oDataASTNode}: Context): Criteria[] => {
 			returnValue = [
 				{
 					...transformFunctionalNode({
-						oDataASTNode: nextNodeExpression
+						oDataASTNode: nextNodeExpression,
 					})[0],
-					operatorName: NotOperators.NotContains
-				}
+					operatorName: NotOperators.NotContains,
+				},
 			] as unknown as Criteria[];
 		}
 	}
@@ -1532,9 +1581,11 @@ const transformOperatorNode = ({oDataASTNode}: Context): Criterion[] => {
 
 	if (EDM_NUMBERS.includes(valueType)) {
 		value = parseFloat(value);
-	} else if (valueType === EDM_STRING) {
+	}
+	else if (valueType === EDM_STRING) {
 		value = unescapeSingleQuotes(value as string);
-	} else if (valueType === EDM_NULL) {
+	}
+	else if (valueType === EDM_NULL) {
 		value = null;
 	}
 
@@ -1545,8 +1596,8 @@ const transformOperatorNode = ({oDataASTNode}: Context): Criterion[] => {
 			rowId: generateRowId(),
 			touched: false,
 			valid: true,
-			value
-		}
+			value,
+		},
 	] as unknown as Criterion[];
 };
 
@@ -1563,7 +1614,7 @@ export const wrapInCriteriaGroup = (
 ): CriterionGroup => ({
 	conjunctionName: Conjunctions.And,
 	criteriaGroupId: generateGroupId(),
-	items: criteriaArray
+	items: criteriaArray,
 });
 
 export {buildQueryString, translateQueryToCriteria};

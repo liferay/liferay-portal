@@ -34,7 +34,7 @@ export async function fetchAccountTopAssets({
 	channelId,
 	groupId,
 	objectType,
-	selectedMetric
+	selectedMetric,
 }: IFetchAccountTopAssets): Promise<{items: ITopAsset[]}> {
 	return sendRequest({
 		data: {
@@ -43,10 +43,10 @@ export async function fetchAccountTopAssets({
 			pageSize: 5,
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
-			...(objectType && {objectType})
+			...(objectType && {objectType}),
 		},
 		method: 'GET',
-		path: `contacts/${groupId}/asset-summary`
+		path: `contacts/${groupId}/asset-summary`,
 	});
 }
 
@@ -63,7 +63,7 @@ export async function searchTypes({
 	groupId,
 	page = 1,
 	pageSize = 10,
-	rangeKey = Number(RangeKeyTimeRanges.Last30Days)
+	rangeKey = Number(RangeKeyTimeRanges.Last30Days),
 }: ISearchAssetTypes): Promise<{
 	items: Array<{id: string; name: string}>;
 	totalCount: number;
@@ -71,6 +71,6 @@ export async function searchTypes({
 	return sendRequest({
 		data: {channelId, page, pageSize, rangeKey},
 		method: 'GET',
-		path: `contacts/${groupId}/asset-summary-types`
+		path: `contacts/${groupId}/asset-summary-types`,
 	});
 }

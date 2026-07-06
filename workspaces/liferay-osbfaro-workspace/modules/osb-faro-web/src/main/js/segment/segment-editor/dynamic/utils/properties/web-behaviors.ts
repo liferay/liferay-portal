@@ -5,7 +5,7 @@ import {PropertyTypes} from '../constants';
 
 const createWebProperty = ({
 	label,
-	name
+	name,
 }: {
 	label: string;
 	name: string;
@@ -15,7 +15,7 @@ const createWebProperty = ({
 		label,
 		name,
 		propertyKey: 'web',
-		type: PropertyTypes.Behavior
+		type: PropertyTypes.Behavior,
 	});
 
 const WEB_BEHAVIORS = List(
@@ -25,10 +25,10 @@ const WEB_BEHAVIORS = List(
 		{label: Liferay.Language.get('download'), name: EventNames.Download},
 		{
 			label: Liferay.Language.get('impression'),
-			name: EventNames.Impression
+			name: EventNames.Impression,
 		},
 		{label: Liferay.Language.get('submit'), name: EventNames.Submit},
-		{label: Liferay.Language.get('view'), name: EventNames.View}
+		{label: Liferay.Language.get('view'), name: EventNames.View},
 	].map(createWebProperty)
 );
 

@@ -31,7 +31,7 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.Vocabulary]: 'text',
 	[PropertyTypes.Interest]: 'check',
 	[PropertyTypes.Tag]: 'text',
-	[PropertyTypes.Text]: 'text'
+	[PropertyTypes.Text]: 'text',
 };
 
 /**
@@ -44,7 +44,7 @@ const beginDrag = ({
 	defaultValue,
 	name,
 	property,
-	type
+	type,
 }: {
 	defaultValue: any;
 	name: string;
@@ -60,24 +60,28 @@ const beginDrag = ({
 	if (type === PropertyTypes.Behavior) {
 		touched = {asset: false, dateFilter: false, occurenceCount: false};
 		valid = {asset: true, dateFilter: true, occurenceCount: true};
-	} else if (type === PropertyTypes.Event) {
+	}
+	else if (type === PropertyTypes.Event) {
 		touched = {
 			attributeValue: false,
-			occurenceCount: false
+			occurenceCount: false,
 		};
 		valid = {
 			attributeValue: false,
-			occurenceCount: true
+			occurenceCount: true,
 		};
-	} else if (type === PropertyTypes.SessionGeolocation) {
+	}
+	else if (type === PropertyTypes.SessionGeolocation) {
 		touched = {country: false, dateFilter: false};
 		valid = {country: false, dateFilter: true};
-	} else if (
+	}
+	else if (
 		[PropertyTypes.SessionNumber, PropertyTypes.SessionText].includes(type)
 	) {
 		touched = {customInput: false, dateFilter: false};
 		valid = {customInput: false, dateFilter: true};
-	} else if (
+	}
+	else if (
 		[
 			PropertyTypes.AccountNumber,
 			PropertyTypes.AccountText,
@@ -87,7 +91,7 @@ const beginDrag = ({
 			PropertyTypes.OrganizationSelectText,
 			PropertyTypes.OrganizationText,
 			PropertyTypes.SelectText,
-			PropertyTypes.Text
+			PropertyTypes.Text,
 		].includes(type)
 	) {
 		valid = false;
@@ -100,9 +104,9 @@ const beginDrag = ({
 			rowId: generateRowId(),
 			touched,
 			type,
-			valid
+			valid,
 		},
-		property
+		property,
 	};
 };
 
@@ -131,14 +135,14 @@ export class CriteriaSidebarItem extends React.Component<ICriteriaSidebarItemPro
 
 		return connectDragSource(
 			<li className={classes} data-testid={`criteria-item-${label}`}>
-				<span className='inline-item'>
-					<ClayIcon className='icon-root' symbol='drag' />
+				<span className="inline-item">
+					<ClayIcon className="icon-root" symbol="drag" />
 				</span>
 
-				<span className='criteria-sidebar-item-type sticker'>
-					<span className='inline-item'>
+				<span className="criteria-sidebar-item-type sticker">
+					<span className="inline-item">
 						<ClayIcon
-							className='icon-root'
+							className="icon-root"
 							symbol={
 								TYPE_ICON_MAP[
 									type as keyof typeof TYPE_ICON_MAP
@@ -148,7 +152,7 @@ export class CriteriaSidebarItem extends React.Component<ICriteriaSidebarItemPro
 					</span>
 				</span>
 
-				<span className='criteria-sidebar-item-label'>{label}</span>
+				<span className="criteria-sidebar-item-label">{label}</span>
 			</li>
 		);
 	}
@@ -157,10 +161,10 @@ export class CriteriaSidebarItem extends React.Component<ICriteriaSidebarItemPro
 export default dragSource(
 	DragTypes.Property,
 	{
-		beginDrag
+		beginDrag,
 	},
 	(connect, monitor) => ({
 		connectDragSource: connect.dragSource(),
-		dragging: monitor.isDragging()
+		dragging: monitor.isDragging(),
 	})
 )(CriteriaSidebarItem);

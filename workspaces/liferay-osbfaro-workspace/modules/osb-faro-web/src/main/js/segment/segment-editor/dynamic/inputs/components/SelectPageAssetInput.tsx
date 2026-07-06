@@ -9,11 +9,11 @@ import {connect, ConnectedProps} from 'react-redux';
 import {COUNT, createOrderIOMap} from 'shared/util/pagination';
 import {
 	activityAssetsListColumns,
-	detailsListColumns
+	detailsListColumns,
 } from 'shared/util/table-columns';
 import {
 	getEventId,
-	getSupportedApplicationIds
+	getSupportedApplicationIds,
 } from '../../utils/activity-keys';
 import {Option, Picker} from '@clayui/core';
 import {OrderedMap} from 'immutable';
@@ -56,7 +56,7 @@ const ASSET_ONLY_ACTIONS = [
 	'comment',
 	'download',
 	'impression',
-	'submit'
+	'submit',
 ];
 
 // Maps an asset-summary type id to its analytics applicationId. Known DXP types
@@ -70,7 +70,7 @@ const APPLICATION_ID_MAP: {[key: string]: string} = {
 	documentsandmedia: 'Document',
 	form: 'Form',
 	forms: 'Form',
-	webcontent: 'WebContent'
+	webcontent: 'WebContent',
 };
 
 const getCanonicalKey = (value: string): string =>
@@ -92,14 +92,14 @@ const DXP_ASSET_TYPES: {
 	Document: {
 		id: 'document',
 		label: Liferay.Language.get('documents-and-media'),
-		name: 'document'
+		name: 'document',
 	},
 	Form: {id: 'forms', label: Liferay.Language.get('forms'), name: 'forms'},
 	WebContent: {
 		id: 'webContent',
 		label: Liferay.Language.get('web-content'),
-		name: 'webContent'
-	}
+		name: 'webContent',
+	},
 };
 
 // A predefined DXP type id maps to its friendly label; every other type (e.g.
@@ -129,14 +129,14 @@ export const getCompatibleAssetTypes = (
 	const supportedApplicationIds = getSupportedApplicationIds(action);
 
 	const dxpTypes = supportedApplicationIds
-		.map(applicationId => DXP_ASSET_TYPES[applicationId])
+		.map((applicationId) => DXP_ASSET_TYPES[applicationId])
 		.filter(Boolean);
 
 	const objectDefinitionTypes = supportedApplicationIds.includes(
 		'ObjectEntry'
 	)
 		? assetSummaryTypes.filter(
-				type => resolveApplicationId(type.id) === 'ObjectEntry'
+				(type) => resolveApplicationId(type.id) === 'ObjectEntry'
 			)
 		: [];
 
@@ -158,7 +158,7 @@ const buildActivityKey = (
 const COUNT_COLUMN_BY_ACTION: {[key: string]: {[key: string]: any}} = {
 	comment: activityAssetsListColumns.commentCount,
 	download: activityAssetsListColumns.downloadCount,
-	submit: activityAssetsListColumns.submissionCount
+	submit: activityAssetsListColumns.submissionCount,
 };
 
 const getCountColumn = (action?: string) =>
@@ -175,13 +175,13 @@ const getColumns = (groupId: string, action?: string) => [
 	{
 		...detailsListColumns.getDataSourceName(groupId),
 		className: 'table-cell-expand',
-		sortable: false
-	}
+		sortable: false,
+	},
 ];
 
 const PAGE_OR_ASSET_TYPE_OPTIONS = [
 	{label: Liferay.Language.get('page'), value: 'page'},
-	{label: Liferay.Language.get('asset-type'), value: 'assetType'}
+	{label: Liferay.Language.get('asset-type'), value: 'assetType'},
 ];
 
 const connector = connect(null, {close, open});
@@ -209,13 +209,14 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	groupId,
 	onSelectionsChange,
 	open,
-	selectedItems = []
+	selectedItems = [],
 }) => {
 	const isAssetOnly = !!action && ASSET_ONLY_ACTIONS.includes(action);
 
 	const [selectorType, setSelectorType] = useState<SelectorType>(
 		isAssetOnly || applicationId !== 'Page' ? 'assetType' : 'page'
 	);
+
 	// The type the picker starts on: the DXP slug for the applicationId hint (on
 	// drop/reload) or, failing that, the first type the event supports.
 	// ObjectEntry has no synchronous slug, so it falls back and the reload effect
@@ -259,15 +260,15 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		},
 		{items: AssetSummaryType[]}
 	>({
-		dataSourceFn: variables => API.assets.searchTypes(variables),
+		dataSourceFn: (variables) => API.assets.searchTypes(variables),
 		skipRequest: !shouldRequestAssetTypes,
 		variables: {
 			channelId,
 			groupId,
 			page: 1,
 			pageSize: 100,
-			rangeKey: -1
-		}
+			rangeKey: -1,
+		},
 	});
 
 	const compatibleAssetTypes = useMemo(
@@ -282,7 +283,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		() =>
 			compatibleAssetTypes.map(({id, name}) => ({
 				label: getAssetTypeLabel(id, name),
-				value: id
+				value: id,
 			})),
 		[compatibleAssetTypes]
 	);
@@ -303,7 +304,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		}
 
 		const matchingType = compatibleAssetTypes.find(
-			type => resolveApplicationId(type.id) === applicationId
+			(type) => resolveApplicationId(type.id) === applicationId
 		);
 
 		if (matchingType) {
@@ -315,7 +316,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		applicationId,
 		assetTypesData,
 		compatibleAssetTypes,
-		shouldRequestAssetTypes
+		shouldRequestAssetTypes,
 	]);
 
 	const isPage = !isAssetOnly && selectorType === 'page';
@@ -337,17 +338,18 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		onSelectionsChange?.({
 			applicationId,
 			eventId: getEventId(applicationId, action),
-			selections: items.map(item => ({
+			selections: items.map((item) => ({
 				activityKey:
 					item.activityKey ??
 					buildActivityKey(applicationId, action, item.id),
 				id: item.id,
-				name: item.name
-			}))
+				name: item.name,
+			})),
 		});
 	};
 
 	const handleOpenModal = () => {
+
 		// Pages and assets both list from the activity/asset endpoint, keyed by
 		// the same id the activityKey stores. currentApplicationId drives both
 		// the listing query and the activityKey built on submit, so the rows,
@@ -363,7 +365,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			delta = 10,
 			orderIOMap,
 			page = 1,
-			query
+			query,
 		}: {
 			[key: string]: any;
 		}): Promise<{items: PageAssetItem[]; total: number}> => {
@@ -380,10 +382,10 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 				// backend can narrow the listing to it (backend support pending).
 
 				...(currentApplicationId === 'ObjectEntry' && {
-					objectDefinitionName: assetType
+					objectDefinitionName: assetType,
 				}),
 				orderIOMap,
-				query: query ?? ''
+				query: query ?? '',
 			});
 
 			return {
@@ -392,13 +394,13 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 					dataSourceAssetPK: item.dataSourceAssetPK,
 					dataSourceName: item.dataSourceName,
 					id: item.id,
-					name: item.name
+					name: item.name,
 				})),
 
 				// activity/asset returns `total`; a falsy total disables the
 				// modal's "select all" checkbox.
 
-				total: result.total ?? result.totalCount ?? 0
+				total: result.total ?? result.totalCount ?? 0,
 			};
 		};
 
@@ -414,20 +416,20 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 					items
 						.valueSeq()
 						.filter(Boolean)
-						.map(item => ({id: item!.id, name: item!.name}))
+						.map((item) => ({id: item!.id, name: item!.name}))
 						.toArray()
 				);
 
 				close();
 			},
 			orderByOptions: [
-				{label: getCountColumn(action).label, value: COUNT}
+				{label: getCountColumn(action).label, value: COUNT},
 			],
 			rowIdentifier: 'id',
 			submitMessage: Liferay.Language.get('select'),
 			title: isPage
 				? Liferay.Language.get('select-page')
-				: Liferay.Language.get('select-asset')
+				: Liferay.Language.get('select-asset'),
 		});
 	};
 
@@ -457,21 +459,21 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 	return (
 		<>
-			<Form.GroupItem className='entity-name mr-0' label shrink>
+			<Form.GroupItem className="entity-name mr-0" label shrink>
 				{Liferay.Language.get('on').toLowerCase()}
 			</Form.GroupItem>
 
 			{isAssetOnly ? (
-				<Form.GroupItem className='display-value' label shrink>
+				<Form.GroupItem className="display-value" label shrink>
 					<b>{Liferay.Language.get('asset-type')}</b>
 				</Form.GroupItem>
 			) : (
 				<Form.GroupItem shrink>
 					<Picker
 						aria-label={Liferay.Language.get('page-or-asset-type')}
-						className='operator-input'
+						className="operator-input"
 						items={PAGE_OR_ASSET_TYPE_OPTIONS}
-						onSelectionChange={value =>
+						onSelectionChange={(value) =>
 							handleSelectorTypeChange(value as SelectorType)
 						}
 						selectedKey={selectorType}
@@ -487,9 +489,9 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 				<Form.GroupItem shrink>
 					<Picker
 						aria-label={Liferay.Language.get('asset-type')}
-						className='operator-input'
+						className="operator-input"
 						items={assetTypeOptions}
-						onSelectionChange={value =>
+						onSelectionChange={(value) =>
 							handleAssetTypeChange(value as string)
 						}
 						selectedKey={assetType}
@@ -503,24 +505,24 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 			{selectedItems.length > 0 ? (
 				<>
-					<div className='w-100' />
+					<div className="w-100" />
 
-					<Form.GroupItem className='mt-2' shrink>
+					<Form.GroupItem className="mt-2" shrink>
 						<div
-							className='input-group-item input-list-root'
+							className="input-group-item input-list-root"
 							style={{maxWidth: '52rem', width: 'fit-content'}}
 						>
 							<div
-								className='form-control form-control-tag-group'
+								className="form-control form-control-tag-group"
 								style={{
 									maxWidth: '52rem',
 									overflowY: 'auto',
-									width: 'fit-content'
+									width: 'fit-content',
 								}}
 							>
-								{selectedItems.map(item => (
+								{selectedItems.map((item) => (
 									<Label
-										display='secondary'
+										display="secondary"
 										key={item.id}
 										onRemove={() =>
 											emit(
@@ -536,22 +538,22 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 								<ClayButton
 									aria-label={Liferay.Language.get('clear')}
-									className='button-root text-secondary'
-									displayType='unstyled'
+									className="button-root text-secondary"
+									displayType="unstyled"
 									onClick={() => emit([])}
 								>
 									<ClayIcon
-										className='icon-root'
-										symbol='times-circle'
+										className="icon-root"
+										symbol="times-circle"
 									/>
 								</ClayButton>
 							</div>
 						</div>
 					</Form.GroupItem>
 
-					<Form.GroupItem className='mt-2' shrink>
+					<Form.GroupItem className="mt-2" shrink>
 						<ClayButton
-							displayType='secondary'
+							displayType="secondary"
 							onClick={handleOpenModal}
 						>
 							{Liferay.Language.get('select')}
@@ -561,13 +563,13 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			) : (
 				<Form.GroupItem shrink>
 					<ClayButton
-						className='button-root'
-						displayType='secondary'
+						className="button-root"
+						displayType="secondary"
 						onClick={handleOpenModal}
 					>
-						<ClayIcon symbol='plus' />
+						<ClayIcon symbol="plus" />
 
-						<span className='ml-2'>{selectLabel}</span>
+						<span className="ml-2">{selectLabel}</span>
 					</ClayButton>
 				</Form.GroupItem>
 			)}

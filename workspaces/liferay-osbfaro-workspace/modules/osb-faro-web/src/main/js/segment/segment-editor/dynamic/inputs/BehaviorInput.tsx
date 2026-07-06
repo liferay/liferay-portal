@@ -4,27 +4,27 @@ import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
 import React from 'react';
 import SelectPageAssetInput, {
 	BehaviorSelection,
-	PageAssetItem
+	PageAssetItem,
 } from './components/SelectPageAssetInput';
 import {
 	ACTIVITY_KEY,
 	Conjunctions,
 	FunctionalOperators,
-	RelationalOperators
+	RelationalOperators,
 } from '../utils/constants';
 import {SegmentTypes} from 'shared/util/constants';
 import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
 import {CustomValue} from 'shared/util/records';
 import {
 	EntityType,
-	ReferencedObjectsContext
+	ReferencedObjectsContext,
 } from '../context/referencedObjects';
 import {fromJS, List, Map} from 'immutable';
 import {
 	getActivityKeysFromValue,
 	getFilterCriterionIMapByPropertyName,
 	getFilterValueByPropertyName,
-	getIndexFromPropertyName
+	getIndexFromPropertyName,
 } from '../utils/custom-inputs';
 import {isBoolean, isNil, isNull} from 'lodash';
 import {Modal} from 'shared/types/Modal';
@@ -92,7 +92,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		const {value} = this.props;
 		const {referencedEntities} = this.context;
 
-		return getActivityKeysFromValue(value).map(activityKey => {
+		return getActivityKeysFromValue(value).map((activityKey) => {
 			const {id} = parseActivityKey(activityKey);
 
 			const entity = referencedEntities.getIn([
@@ -101,7 +101,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 					id,
 					referencedEntities,
 					EntityType.Assets
-				)
+				),
 			]);
 
 			return {activityKey, id, name: entity ? entity.get('name') : id};
@@ -111,11 +111,11 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 	handlePageAssetSelect({
 		applicationId,
 		eventId,
-		selections
+		selections,
 	}: BehaviorSelection) {
 		const {
 			context: {addEntities},
-			props: {onChange, touched, valid, value}
+			props: {onChange, touched, valid, value},
 		} = this;
 
 		const activityKeys = selections.map(({activityKey}) => activityKey);
@@ -123,7 +123,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		if (selections.length) {
 			addEntities?.({
 				entityType: EntityType.Assets,
-				payload: selections.map(({id, name}) => Map({id, name}))
+				payload: selections.map(({id, name}) => Map({id, name})),
 			});
 		}
 
@@ -136,29 +136,29 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 					activityKeys.length > 1
 						? {
 								conjunctionName: Conjunctions.Or,
-								items: activityKeys.map(activityKey => ({
+								items: activityKeys.map((activityKey) => ({
 									operatorName: RelationalOperators.EQ,
 									propertyName: ACTIVITY_KEY,
-									value: activityKey
-								}))
+									value: activityKey,
+								})),
 							}
 						: {
 								operatorName: RelationalOperators.EQ,
 								propertyName: ACTIVITY_KEY,
-								value: activityKeys[0]
-							}
+								value: activityKeys[0],
+							},
 				]
 			: [
 					{
 						operatorName: RelationalOperators.EQ,
 						propertyName: 'applicationId',
-						value: applicationId
+						value: applicationId,
 					},
 					{
 						operatorName: RelationalOperators.EQ,
 						propertyName: 'eventId',
-						value: eventId
-					}
+						value: eventId,
+					},
 				];
 
 		const items = value.getIn(['criterionGroup', 'items']) as List<any>;
@@ -173,10 +173,10 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 			value: value.setIn(
 				['criterionGroup', 'items'],
 				List([
-					...assetItems.map(item => fromJS(item)),
-					...(dayItem ? [dayItem] : [])
+					...assetItems.map((item) => fromJS(item)),
+					...(dayItem ? [dayItem] : []),
 				])
-			) as CustomValue
+			) as CustomValue,
 		});
 	}
 
@@ -196,15 +196,17 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 				nextValue = value.deleteIn([
 					'criterionGroup',
 					'items',
-					dayIndex
+					dayIndex,
 				]) as CustomValue;
 			}
-		} else if (dayIndex >= 0) {
+		}
+		else if (dayIndex >= 0) {
 			nextValue = value.mergeIn(
 				['criterionGroup', 'items', dayIndex],
 				fromJS(criterion)
 			) as CustomValue;
-		} else {
+		}
+		else {
 			nextValue = value.updateIn(
 				['criterionGroup', 'items'],
 				(items: any) => (items as List<any>).push(fromJS(criterion))
@@ -214,14 +216,14 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		onChange({
 			touched: {...touched, dateFilter: criterion && criterion.touched},
 			valid: {...valid, dateFilter: isNull(criterion) || criterion.valid},
-			value: nextValue
+			value: nextValue,
 		});
 	}
 
 	handleOccurenceConjunctionChange({
 		criterion,
 		touched: occurenceCountTouched,
-		valid: occurenceCountValid
+		valid: occurenceCountValid,
 	}: {
 		criterion?: Criterion;
 		touched?: boolean;
@@ -231,7 +233,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 
 		let params: {touched?: Touched; valid?: Valid; value?: CustomValue} = {
 			touched,
-			valid
+			valid,
 		};
 
 		if (criterion?.operatorName) {
@@ -240,29 +242,30 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 				value: valueIMap.mergeIn(
 					['operator'],
 					criterion.operatorName
-				) as CustomValue
+				) as CustomValue,
 			};
-		} else if (!isNil(criterion?.value)) {
+		}
+		else if (!isNil(criterion?.value)) {
 			params = {
 				...params,
 				value: valueIMap.mergeIn(
 					['value'],
 					criterion.value
-				) as CustomValue
+				) as CustomValue,
 			};
 		}
 
 		if (isBoolean(occurenceCountTouched)) {
 			params = {
 				...params,
-				touched: {...touched, occurenceCount: occurenceCountTouched}
+				touched: {...touched, occurenceCount: occurenceCountTouched},
 			};
 		}
 
 		if (isBoolean(occurenceCountValid)) {
 			params = {
 				...params,
-				valid: {...valid, occurenceCount: occurenceCountValid}
+				valid: {...valid, occurenceCount: occurenceCountValid},
 			};
 		}
 
@@ -279,7 +282,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 			segmentType,
 			touched,
 			valid,
-			value
+			value,
 		} = this.props;
 
 		const conjunctionCriterion = (
@@ -288,19 +291,19 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		).toJS();
 
 		return (
-			<div className='criteria-statement'>
-				<Form.Group autoFit className='page-asset-criteria'>
-					<Form.GroupItem className='entity-name' label shrink>
+			<div className="criteria-statement">
+				<Form.Group autoFit className="page-asset-criteria">
+					<Form.GroupItem className="entity-name" label shrink>
 						{property.entityName}
 					</Form.GroupItem>
 
 					<OperatorDropdown />
 
-					<Form.GroupItem className='entity-name' label shrink>
+					<Form.GroupItem className="entity-name" label shrink>
 						{Liferay.Language.get('triggered').toLowerCase()}
 					</Form.GroupItem>
 
-					<Form.GroupItem className='display-value' label shrink>
+					<Form.GroupItem className="display-value" label shrink>
 						<b>{displayValue}</b>
 					</Form.GroupItem>
 
