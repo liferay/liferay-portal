@@ -19,6 +19,8 @@ interface ILifecycleFilters extends ILifecycleFilterValues {
 interface ILifecycleContext {
 	filters: ILifecycleFilters;
 	lifecycleId: string;
+	selectStage: (stage: LifecycleStages) => void;
+	stageSelectionNonce: number;
 	updateFilters: (newFilters: Partial<ILifecycleFilterValues>) => void;
 	resetFilters: () => void;
 }
@@ -32,6 +34,8 @@ const LifecycleContext = createContext<ILifecycleContext>({
 	},
 	lifecycleId: '',
 	resetFilters: () => {},
+	selectStage: () => {},
+	stageSelectionNonce: 0,
 	updateFilters: () => {},
 });
 
@@ -56,6 +60,8 @@ export const LifecycleContextProvider = ({
 	const [filterValues, setFilterValues] =
 		useState<ILifecycleFilterValues>(initialValues);
 
+	const [stageSelectionNonce, setStageSelectionNonce] = useState(0);
+
 	const filters = useMemo<ILifecycleFilters>(
 		() => ({
 			...filterValues,
@@ -70,11 +76,30 @@ export const LifecycleContextProvider = ({
 		[]
 	);
 
+	const selectStage = useCallback((stage: LifecycleStages) => {
+		setFilterValues((prev) => ({...prev, lifecycleStageFilter: stage}));
+		setStageSelectionNonce((prev) => prev + 1);
+	}, []);
+
 	const resetFilters = useCallback(() => setFilterValues(initialValues), []);
 
 	const value = useMemo(
-		() => ({filters, lifecycleId, resetFilters, updateFilters}),
-		[filters, lifecycleId, resetFilters, updateFilters]
+		() => ({
+			filters,
+			lifecycleId,
+			resetFilters,
+			selectStage,
+			stageSelectionNonce,
+			updateFilters,
+		}),
+		[
+			filters,
+			lifecycleId,
+			resetFilters,
+			selectStage,
+			stageSelectionNonce,
+			updateFilters,
+		]
 	);
 
 	return (

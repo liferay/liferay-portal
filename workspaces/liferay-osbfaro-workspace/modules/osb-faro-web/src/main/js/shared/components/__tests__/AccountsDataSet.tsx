@@ -52,6 +52,7 @@ type FakeCustomDataRenderers = {
 let lastApiURL: string | undefined;
 let lastCustomDataRenderers: FakeCustomDataRenderers | undefined;
 let lastFilters: FakeFilter[] | undefined;
+let mountCount = 0;
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
@@ -70,6 +71,10 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		lastCustomDataRenderers = customDataRenderers;
 		lastFilters = filters;
 
+		React.useEffect(() => {
+			mountCount += 1;
+		}, []);
+
 		return <div data-testid="fds-component" id={id} />;
 	},
 }));
@@ -81,6 +86,7 @@ describe('AccountsDataSet', () => {
 		lastApiURL = undefined;
 		lastCustomDataRenderers = undefined;
 		lastFilters = undefined;
+		mountCount = 0;
 	});
 
 	afterEach(cleanup);
@@ -281,5 +287,33 @@ describe('AccountsDataSet', () => {
 			'href',
 			'/workspace/23/123/contacts/accounts/abc'
 		);
+	});
+
+	it('should remount the FrontendDataSet when stageSelectionNonce changes even if lifecycleStageFilter is unchanged', () => {
+		const {rerender} = render(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				lifecycleStageFilter={LifecycleStages.AWARE}
+				stageSelectionNonce={0}
+			/>
+		);
+
+		expect(mountCount).toBe(1);
+
+		rerender(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				lifecycleStageFilter={LifecycleStages.AWARE}
+				stageSelectionNonce={1}
+			/>
+		);
+
+		expect(mountCount).toBe(2);
 	});
 });

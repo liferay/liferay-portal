@@ -24,6 +24,7 @@ interface IAccountsDataSetProps {
 	groupId: string;
 	industryFilter?: string;
 	lifecycleStageFilter?: LifecycleStages;
+	stageSelectionNonce?: number;
 }
 
 interface ILifecycleStageFieldValue {
@@ -47,6 +48,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	groupId,
 	industryFilter,
 	lifecycleStageFilter,
+	stageSelectionNonce,
 }) => {
 	const {data: lifecycleStageFieldValues} = useRequest({
 		dataSourceFn: API.accounts.fetchLifecycleStageFieldValues,
@@ -176,6 +178,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					countryFilter,
 					industryFilter,
 					lifecycleStageFilter,
+					stageSelectionNonce,
 					lifecycleStages.length,
 				].join()}
 				pagination={pagination}

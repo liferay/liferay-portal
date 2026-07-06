@@ -80,4 +80,29 @@ describe('LifecycleContext', () => {
 			lifecycleStageFilter: LifecycleStages.AT_RISK,
 		});
 	});
+
+	it('should set the stage and bump stageSelectionNonce when selectStage is called', () => {
+		const {result} = renderHook(() => useLifecycle(), {wrapper});
+
+		expect(result.current.stageSelectionNonce).toBe(0);
+
+		act(() => result.current.selectStage(LifecycleStages.AWARE));
+
+		expect(result.current.filters.lifecycleStageFilter).toBe(
+			LifecycleStages.AWARE
+		);
+		expect(result.current.stageSelectionNonce).toBe(1);
+	});
+
+	it('should bump stageSelectionNonce even when selectStage is called with the same stage', () => {
+		const {result} = renderHook(() => useLifecycle(), {wrapper});
+
+		act(() => result.current.selectStage(LifecycleStages.AWARE));
+		act(() => result.current.selectStage(LifecycleStages.AWARE));
+
+		expect(result.current.filters.lifecycleStageFilter).toBe(
+			LifecycleStages.AWARE
+		);
+		expect(result.current.stageSelectionNonce).toBe(2);
+	});
 });

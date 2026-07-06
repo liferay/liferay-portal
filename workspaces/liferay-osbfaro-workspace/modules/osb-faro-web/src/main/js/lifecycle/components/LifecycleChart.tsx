@@ -202,7 +202,7 @@ interface ILifecycleChartProps {
 }
 
 const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
-	const {updateFilters} = useLifecycle();
+	const {selectStage} = useLifecycle();
 
 	const isEmpty = error || !stages?.length;
 
@@ -213,7 +213,7 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 			)!;
 
 	const onFilterClick = (stageType: LifecycleStages) =>
-		updateFilters({lifecycleStageFilter: stageType});
+		selectStage(stageType);
 
 	const refPct = Math.max(
 		...resolvedStages.map((stage) => stage.percentage),
