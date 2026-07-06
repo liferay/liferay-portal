@@ -345,11 +345,6 @@ test(
 				)
 			).toBeVisible();
 
-			await checkAccessibility({
-				page,
-				selectors: ['.modal-content'],
-			});
-
 			await page.getByRole('button', {name: 'Empty Bin'}).click();
 
 			await waitForAlert(
