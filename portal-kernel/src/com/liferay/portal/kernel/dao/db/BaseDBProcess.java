@@ -14,6 +14,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.db.UpgradeExecutorServiceUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,7 +30,6 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.NotificationThreadLocal;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -61,7 +61,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -430,7 +429,7 @@ public abstract class BaseDBProcess implements DBProcess {
 		Iterator<Map.Entry<K, V>> iterator = set.iterator();
 
 		_processConcurrently(
-			null,
+			map.size(), null,
 			() -> {
 				if (!iterator.hasNext()) {
 					return null;
@@ -474,9 +473,11 @@ public abstract class BaseDBProcess implements DBProcess {
 
 			unsafeConsumer.accept(preparedStatement);
 
+			_connectionCount.incrementAndGet();
+
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				_processConcurrently(
-					updateSQL,
+					Integer.MAX_VALUE, updateSQL,
 					() -> {
 						if (resultSet.next()) {
 							return unsafeFunction.apply(resultSet);
@@ -485,6 +486,9 @@ public abstract class BaseDBProcess implements DBProcess {
 						return null;
 					},
 					null, unsafeBiConsumer, exceptionMessage);
+			}
+			finally {
+				_connectionCount.decrementAndGet();
 			}
 		}
 	}
@@ -499,9 +503,11 @@ public abstract class BaseDBProcess implements DBProcess {
 		try (Statement statement = connection.createStatement()) {
 			statement.setFetchSize(PropsValues.UPGRADE_CONCURRENT_FETCH_SIZE);
 
+			_connectionCount.incrementAndGet();
+
 			try (ResultSet resultSet = statement.executeQuery(sql)) {
 				_processConcurrently(
-					null,
+					Integer.MAX_VALUE, null,
 					() -> {
 						if (resultSet.next()) {
 							return unsafeFunction.apply(resultSet);
@@ -510,6 +516,9 @@ public abstract class BaseDBProcess implements DBProcess {
 						return null;
 					},
 					unsafeConsumer, null, exceptionMessage);
+			}
+			finally {
+				_connectionCount.decrementAndGet();
 			}
 		}
 	}
@@ -522,7 +531,7 @@ public abstract class BaseDBProcess implements DBProcess {
 		AtomicInteger atomicInteger = new AtomicInteger();
 
 		_processConcurrently(
-			null,
+			array.length, null,
 			() -> {
 				int index = atomicInteger.getAndIncrement();
 
@@ -688,50 +697,6 @@ public abstract class BaseDBProcess implements DBProcess {
 		}
 	}
 
-	private int _getFixedThreadPoolSize() {
-		if (_fixedThreadPoolSize.get() != 0) {
-			return _fixedThreadPoolSize.get();
-		}
-
-		DB db = DBManagerUtil.getDB();
-
-		if (db.getDBType() == DBType.HYPERSONIC) {
-			_fixedThreadPoolSize.set(1);
-
-			return _fixedThreadPoolSize.get();
-		}
-
-		long[] companyIds = PortalInstancePool.getCompanyIds();
-
-		int maximumPoolSize = GetterUtil.getInteger(
-			PropsUtil.get("jdbc.default.maximumPoolSize"));
-
-		Runtime runtime = Runtime.getRuntime();
-
-		int expectedMaxConnectionsCount =
-			Math.min(companyIds.length - 1, runtime.availableProcessors()) *
-				runtime.availableProcessors();
-
-		if (expectedMaxConnectionsCount > (0.9 * maximumPoolSize)) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"The database is close to reaching ", maximumPoolSize,
-						" connections. Consider increasing the property ",
-						"\"jdbc.default.maximumPoolSize\" to improve ",
-						"performance. Upgrade processes will continue in ",
-						"single threaded mode."));
-			}
-
-			_fixedThreadPoolSize.set(1);
-		}
-		else {
-			_fixedThreadPoolSize.set(runtime.availableProcessors());
-		}
-
-		return _fixedThreadPoolSize.get();
-	}
-
 	private InputStream _getInputStream(String path) {
 		ClassLoader classLoader = PortalClassLoaderUtil.getClassLoader();
 
@@ -753,8 +718,46 @@ public abstract class BaseDBProcess implements DBProcess {
 		return inputStream;
 	}
 
-	private <T> void _processConcurrently(
+	private <T> void _process(
 			String updateSQL, UnsafeSupplier<T, Exception> unsafeSupplier,
+			UnsafeConsumer<T, Exception> unsafeConsumer,
+			UnsafeBiConsumer<T, PreparedStatement, Exception> unsafeBiConsumer,
+			Map<Thread, PreparedStatement> preparedStatementHashMap)
+		throws Exception {
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			T t = unsafeSupplier.get();
+
+			while (t != null) {
+				if (Validator.isNull(updateSQL)) {
+					unsafeConsumer.accept(t);
+				}
+				else {
+					preparedStatement = _getConcurrentPreparedStatement(
+						updateSQL, preparedStatementHashMap);
+
+					unsafeBiConsumer.accept(t, preparedStatement);
+				}
+
+				t = unsafeSupplier.get();
+			}
+
+			if (preparedStatement != null) {
+				preparedStatement.executeBatch();
+			}
+		}
+		finally {
+			if (preparedStatement != null) {
+				preparedStatement.close();
+			}
+		}
+	}
+
+	private <T> void _processConcurrently(
+			int itemCount, String updateSQL,
+			UnsafeSupplier<T, Exception> unsafeSupplier,
 			UnsafeConsumer<T, Exception> unsafeConsumer,
 			UnsafeBiConsumer<T, PreparedStatement, Exception> unsafeBiConsumer,
 			String exceptionMessage)
@@ -769,68 +772,89 @@ public abstract class BaseDBProcess implements DBProcess {
 			Objects.requireNonNull(unsafeBiConsumer);
 		}
 
-		int fixedThreadPoolSize = _getFixedThreadPoolSize();
+		DB db = DBManagerUtil.getDB();
 
-		ExecutorService executorService = Executors.newFixedThreadPool(
-			fixedThreadPoolSize);
+		int size = 0;
+
+		if (db.getDBType() != DBType.HYPERSONIC) {
+			int parallelCompanies = 1;
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
+				long[] companyIds = PortalInstancePool.getCompanyIds();
+
+				Runtime runtime = Runtime.getRuntime();
+
+				parallelCompanies = Math.min(
+					companyIds.length - 1, runtime.availableProcessors());
+			}
+
+			int availableConnectionCount =
+				UpgradeExecutorServiceUtil.getDataExecutorServicePoolSize() -
+					_connectionCount.get();
+
+			size = Math.min(
+				itemCount,
+				availableConnectionCount / Math.max(1, parallelCompanies));
+		}
+
+		if (size <= 0) {
+			_process(
+				updateSQL, unsafeSupplier, unsafeConsumer, unsafeBiConsumer,
+				new ConcurrentHashMap<>());
+
+			return;
+		}
 
 		List<Future<Void>> futures = new ArrayList<>();
 		Map<Thread, PreparedStatement> preparedStatementHashMap =
 			new ConcurrentHashMap<>();
 		ThrowableCollector throwableCollector = new ThrowableCollector();
 
-		try {
-			AtomicBoolean producerFinished = new AtomicBoolean();
-			BlockingQueue<T> queue = new ArrayBlockingQueue<>(
-				fixedThreadPoolSize);
+		AtomicBoolean producerFinished = new AtomicBoolean();
+		BlockingQueue<T> queue = new ArrayBlockingQueue<>(size);
 
-			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
-			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
+		boolean notificationEnabled = NotificationThreadLocal.isEnabled();
+		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
-			Callable<Void> callable = () -> {
+		Callable<Void> callable = () -> {
+			_connectionCount.incrementAndGet();
+
+			try {
 				NotificationThreadLocal.setEnabled(notificationEnabled);
 				WorkflowThreadLocal.setEnabled(workflowEnabled);
 
-				Thread currentThread = Thread.currentThread();
+				_process(
+					updateSQL,
+					() -> {
+						while (!producerFinished.get() || !queue.isEmpty()) {
+							T t = queue.poll(1, TimeUnit.SECONDS);
 
-				try {
-					PreparedStatement preparedStatement = null;
-
-					while (!producerFinished.get() || !queue.isEmpty()) {
-						T t = queue.poll(1, TimeUnit.SECONDS);
-
-						if (t == null) {
-							continue;
+							if (t != null) {
+								return t;
+							}
 						}
 
-						if (Validator.isNull(updateSQL)) {
-							unsafeConsumer.accept(t);
-						}
-						else {
-							preparedStatement = _getConcurrentPreparedStatement(
-								updateSQL, preparedStatementHashMap);
+						return null;
+					},
+					unsafeConsumer, unsafeBiConsumer, preparedStatementHashMap);
+			}
+			catch (Exception exception) {
+				throwableCollector.collect(exception);
+			}
+			finally {
+				closeConnections(Thread.currentThread());
 
-							unsafeBiConsumer.accept(t, preparedStatement);
-						}
-					}
+				_connectionCount.decrementAndGet();
+			}
 
-					if (preparedStatement != null) {
-						preparedStatement.executeBatch();
+			return null;
+		};
 
-						preparedStatement.close();
-					}
-				}
-				catch (Exception exception) {
-					throwableCollector.collect(exception);
-				}
-				finally {
-					closeConnections(currentThread);
-				}
+		ExecutorService executorService =
+			UpgradeExecutorServiceUtil.getDataExecutorService();
 
-				return null;
-			};
-
-			for (int i = 0; i < fixedThreadPoolSize; i++) {
+		try {
+			for (int i = 0; i < size; i++) {
 				futures.add(
 					executorService.submit(
 						new CompanyInheritableThreadLocalCallable<>(callable)));
@@ -853,31 +877,25 @@ public abstract class BaseDBProcess implements DBProcess {
 			}
 		}
 		finally {
-			try {
-				for (Future<Void> future : futures) {
-					future.get();
-				}
-
-				Throwable throwable = throwableCollector.getThrowable();
-
-				if (throwable != null) {
-					if (exceptionMessage != null) {
-						throw new Exception(exceptionMessage, throwable);
-					}
-
-					ReflectionUtil.throwException(throwable);
-				}
+			for (Future<Void> future : futures) {
+				future.get();
 			}
-			finally {
-				executorService.shutdown();
+
+			Throwable throwable = throwableCollector.getThrowable();
+
+			if (throwable != null) {
+				if (exceptionMessage != null) {
+					throw new Exception(exceptionMessage, throwable);
+				}
+
+				ReflectionUtil.throwException(throwable);
 			}
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(BaseDBProcess.class);
 
-	private static final AtomicInteger _fixedThreadPoolSize = new AtomicInteger(
-		0);
+	private static final AtomicInteger _connectionCount = new AtomicInteger();
 
 	private final Map<Connection, Boolean> _autoCommits =
 		new ConcurrentHashMap<>();
