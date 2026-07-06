@@ -13,6 +13,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {searchPageTest} from '../../../fixtures/searchPageTest';
 import getRandomString from '../../../utils/getRandomString';
+import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {reloadUntilVisible} from '../../../utils/reloadUntilVisible';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
@@ -23,6 +24,85 @@ export const test = mergeTests(
 	pageEditorPagesTest,
 	searchPageTest
 );
+
+test.describe('Result Detail Navigation', () => {
+	test('Navigates to the asset edit page from the search result details @LPS-112599', async ({
+		apiHelpers,
+		page,
+		searchPage,
+		site,
+	}) => {
+		const content = getRandomString();
+		const title = getRandomString();
+
+		let siteLayout: Layout;
+
+		await test.step('Create a basic web content article', async () => {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				content,
+				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+				groupId: site.id,
+				titleMap: {en_US: title},
+			});
+		});
+
+		await test.step('Build a search page on the site', async () => {
+			siteLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				options: {type: 'portlet'},
+				title: getRandomString(),
+			});
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`
+			);
+
+			await searchPage.addPortlet('Search Bar', 'Search');
+
+			await searchPage.addPortlet('Search Results', 'Search');
+		});
+
+		const resultLink = searchPage.searchResults.getByRole('link', {
+			name: title,
+		});
+
+		await test.step('Search for the article', async () => {
+			await expect(async () => {
+				await page.goto(
+					`/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`
+				);
+
+				await searchPage.searchKeywordInMainContent(title);
+
+				await expect(resultLink).toBeVisible({timeout: 2000});
+			}).toPass({timeout: 30000});
+		});
+
+		await test.step('Open the result details in context', async () => {
+			await resultLink.click();
+
+			await expect(
+				searchPage.searchResults.locator('.asset-title')
+			).toHaveText(title);
+		});
+
+		await test.step('Click Edit and assert the article edit page loads with its content', async () => {
+			await hoverAndExpectToBeVisible({
+				autoClick: true,
+				target: searchPage.searchResults
+					.locator('.component-title')
+					.getByRole('link'),
+				trigger: searchPage.searchResults.locator('.component-title'),
+			});
+
+			await expect(page).toHaveURL(/mvcRenderCommandName.*edit_article/);
+
+			await expect(
+				page.locator('.ck-editor__editable').filter({hasText: content})
+			).toBeVisible();
+		});
+	});
+});
 
 test.describe('Results Display', () => {
 	test('Search results image thumbnail for PDFs render correctly @LPD-71503', async ({

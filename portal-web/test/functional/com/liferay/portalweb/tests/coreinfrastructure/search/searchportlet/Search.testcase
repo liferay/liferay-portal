@@ -1352,35 +1352,6 @@ definition {
 			searchAssetType = "Web Content Article");
 	}
 
-	@description = "This is a use case for LPS-112599."
-	@priority = 3
-	test NavigateToAssetEditPageViaSearchResults {
-		property portal.acceptance = "quarantine";
-
-		JSONWebcontent.addWebContent(
-			content = "WC Content",
-			groupName = "Guest",
-			title = "WC Title");
-
-		SearchPage.searchEmbedded(searchTerm = "WC");
-
-		SearchPage.gotoResultDetails(searchAssetTitle = "WC Title");
-
-		SearchPage.viewResultDetails(searchAssetTitle = "WC Title");
-
-		Click(locator1 = "SearchPage#ASSET_DETAILS_EDIT_BUTTON");
-
-		AssertVisible(locator1 = "WCEditWebContent#SIDEBAR");
-
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Content",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "CKEditor#BODY",
-			value1 = "WC Content");
-	}
-
 	@priority = 4
 	test NavigateToSearchResultsViaURL {
 		JSONBlog.addEntry(
