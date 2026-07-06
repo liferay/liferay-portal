@@ -61,11 +61,7 @@ public class ChatbotSerDes {
 
 			sb.append("\"avatar\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(chatbot.getAvatar()));
-
-			sb.append("\"");
+			sb.append(_toJSON(chatbot.getAvatar()));
 		}
 
 		if (chatbot.getDisclaimerMessage() != null) {
@@ -255,7 +251,7 @@ public class ChatbotSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "avatar")) {
-				return false;
+				return true;
 			}
 			else if (Objects.equals(jsonParserFieldName, "disclaimerMessage")) {
 				return false;
@@ -297,7 +293,7 @@ public class ChatbotSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "avatar")) {
 				if (jsonParserFieldValue != null) {
-					chatbot.setAvatar((String)jsonParserFieldValue);
+					chatbot.setAvatar((Map<String, ?>)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "disclaimerMessage")) {
@@ -419,4 +415,4 @@ public class ChatbotSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1527032100
+// LIFERAY-REST-BUILDER-HASH:-1593085211

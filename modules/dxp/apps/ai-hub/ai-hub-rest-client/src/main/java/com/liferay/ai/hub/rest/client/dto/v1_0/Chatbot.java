@@ -12,6 +12,7 @@ import jakarta.annotation.Generated;
 
 import java.io.Serializable;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -46,16 +47,16 @@ public class Chatbot implements Cloneable, Serializable {
 
 	protected Boolean active;
 
-	public String getAvatar() {
+	public Map<String, ?> getAvatar() {
 		return avatar;
 	}
 
-	public void setAvatar(String avatar) {
+	public void setAvatar(Map<String, ?> avatar) {
 		this.avatar = avatar;
 	}
 
 	public void setAvatar(
-		UnsafeSupplier<String, Exception> avatarUnsafeSupplier) {
+		UnsafeSupplier<Map<String, ?>, Exception> avatarUnsafeSupplier) {
 
 		try {
 			avatar = avatarUnsafeSupplier.get();
@@ -65,7 +66,7 @@ public class Chatbot implements Cloneable, Serializable {
 		}
 	}
 
-	protected String avatar;
+	protected Map<String, ?> avatar;
 
 	public String getDisclaimerMessage() {
 		return disclaimerMessage;
@@ -225,4 +226,4 @@ public class Chatbot implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-387793772
+// LIFERAY-REST-BUILDER-HASH:-1342302770

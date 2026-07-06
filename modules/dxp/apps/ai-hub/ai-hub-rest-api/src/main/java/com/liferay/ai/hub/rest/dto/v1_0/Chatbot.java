@@ -18,6 +18,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.Valid;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -88,7 +90,8 @@ public class Chatbot implements Serializable {
 	private Supplier<Boolean> _activeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getAvatar() {
+	@Valid
+	public Map<String, ?> getAvatar() {
 		if (_avatarSupplier != null) {
 			avatar = _avatarSupplier.get();
 
@@ -98,7 +101,7 @@ public class Chatbot implements Serializable {
 		return avatar;
 	}
 
-	public void setAvatar(String avatar) {
+	public void setAvatar(Map<String, ?> avatar) {
 		this.avatar = avatar;
 
 		_avatarSupplier = null;
@@ -106,7 +109,7 @@ public class Chatbot implements Serializable {
 
 	@JsonIgnore
 	public void setAvatar(
-		UnsafeSupplier<String, Exception> avatarUnsafeSupplier) {
+		UnsafeSupplier<Map<String, ?>, Exception> avatarUnsafeSupplier) {
 
 		_avatarSupplier = () -> {
 			try {
@@ -123,10 +126,10 @@ public class Chatbot implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String avatar;
+	protected Map<String, ?> avatar;
 
 	@JsonIgnore
-	private Supplier<String> _avatarSupplier;
+	private Supplier<Map<String, ?>> _avatarSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getDisclaimerMessage() {
@@ -413,7 +416,7 @@ public class Chatbot implements Serializable {
 			sb.append(active);
 		}
 
-		String avatar = getAvatar();
+		Map<String, ?> avatar = getAvatar();
 
 		if (avatar != null) {
 			if (sb.length() > 1) {
@@ -422,11 +425,7 @@ public class Chatbot implements Serializable {
 
 			sb.append("\"avatar\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(avatar));
-
-			sb.append("\"");
+			sb.append(_toJSON(avatar));
 		}
 
 		String disclaimerMessage = getDisclaimerMessage();
@@ -626,4 +625,4 @@ public class Chatbot implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1626177627
+// LIFERAY-REST-BUILDER-HASH:2078847285

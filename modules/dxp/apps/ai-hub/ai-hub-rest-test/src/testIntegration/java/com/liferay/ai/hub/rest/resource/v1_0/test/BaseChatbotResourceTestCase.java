@@ -167,7 +167,6 @@ public abstract class BaseChatbotResourceTestCase {
 
 		Chatbot chatbot = randomChatbot();
 
-		chatbot.setAvatar(regex);
 		chatbot.setDisclaimerMessage(regex);
 		chatbot.setExternalReferenceCode(regex);
 		chatbot.setIntroMessage(regex);
@@ -181,7 +180,6 @@ public abstract class BaseChatbotResourceTestCase {
 
 		chatbot = ChatbotSerDes.toDTO(json);
 
-		Assert.assertEquals(regex, chatbot.getAvatar());
 		Assert.assertEquals(regex, chatbot.getDisclaimerMessage());
 		Assert.assertEquals(regex, chatbot.getExternalReferenceCode());
 		Assert.assertEquals(regex, chatbot.getIntroMessage());
@@ -477,8 +475,8 @@ public abstract class BaseChatbotResourceTestCase {
 			}
 
 			if (Objects.equals("avatar", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						chatbot1.getAvatar(), chatbot2.getAvatar())) {
+				if (!equals(
+						(Map)chatbot1.getAvatar(), (Map)chatbot2.getAvatar())) {
 
 					return false;
 				}
@@ -672,49 +670,8 @@ public abstract class BaseChatbotResourceTestCase {
 		}
 
 		if (entityFieldName.equals("avatar")) {
-			Object object = chatbot.getAvatar();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("disclaimerMessage")) {
@@ -1041,7 +998,6 @@ public abstract class BaseChatbotResourceTestCase {
 		return new Chatbot() {
 			{
 				active = RandomTestUtil.randomBoolean();
-				avatar = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				disclaimerMessage = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -1277,4 +1233,4 @@ public abstract class BaseChatbotResourceTestCase {
 		_chatbotResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-741125367
+// LIFERAY-REST-BUILDER-HASH:705595240
