@@ -37,7 +37,7 @@ function main {
 
 		if [[ ${test_files} ]]
 		then
-			helm dependency update --skip-refresh "${cloud_dir}/helm/${chart}"
+			helm dependency update "${cloud_dir}/helm/${chart}"
 
 			helm unittest \
 				--output-file "${test_reports_dir}/helm-unittest-${chart}.xml" \
