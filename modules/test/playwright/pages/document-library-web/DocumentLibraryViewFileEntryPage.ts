@@ -6,12 +6,15 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 export class DocumentLibraryViewFileEntryPage {
+	readonly infoButton: Locator;
 	readonly infoPanel: Locator;
 	readonly infoPanelButton: Locator;
 	readonly infoPanelTab: Locator;
+	readonly manageCollaboratorsButton: Locator;
 	readonly page: Page;
 
 	constructor(page: Page) {
+		this.infoButton = page.getByRole('button', {exact: true, name: 'Info'});
 		this.infoPanel = page.locator(
 			'[id="_com_liferay_document_library_web_portlet_DLAdminPortlet_ContextualSidebar"]'
 		);
@@ -21,7 +24,30 @@ export class DocumentLibraryViewFileEntryPage {
 		this.infoPanelTab = page.locator(
 			'[id^=_com_liferay_document_library_web_portlet_DLAdminPortlet_tabs_]'
 		);
+		this.manageCollaboratorsButton = page.getByRole('button', {
+			name: 'Manage Collaborators',
+		});
 		this.page = page;
+	}
+
+	collaboratorAvatar(userFullName: string) {
+		return this.page.locator(
+			`.lfr-portal-tooltip[data-title="${userFullName}"]`
+		);
+	}
+
+	async openInfoTab() {
+		await this.infoButton.click();
+
+		await expect(
+			this.page.getByRole('tab', {name: 'Details'})
+		).toBeVisible();
+	}
+
+	async openManageCollaborators() {
+		await this.openInfoTab();
+
+		await this.manageCollaboratorsButton.click();
 	}
 
 	async openInfoPanel(entryTitle: string, tabName: 'Details' | 'Versions') {

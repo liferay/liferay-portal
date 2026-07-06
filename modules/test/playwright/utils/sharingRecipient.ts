@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Browser, expect} from '@playwright/test';
+import {Browser, Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../helpers/ApiHelpers';
 import {PersonalMenuPage} from '../pages/users-admin-web/PersonalMenuPage';
@@ -19,6 +19,30 @@ export async function createRecipient(apiHelpers: DataApiHelpers) {
 	};
 
 	return user;
+}
+
+/**
+ * Runs the callback in a fresh browser context signed in as the given user,
+ * closing the context afterwards. Use it to drive a second user (a sharing
+ * recipient) alongside the admin on the default `page`.
+ */
+export async function withRecipientPage(
+	browser: Browser,
+	screenName: string,
+	callback: (recipientPage: Page) => Promise<void>
+) {
+	const context = await browser.newContext();
+
+	const recipientPage = await context.newPage();
+
+	try {
+		await performLoginViaApi({page: recipientPage, screenName});
+
+		await callback(recipientPage);
+	}
+	finally {
+		await context.close();
+	}
 }
 
 export async function expectShareNotification(

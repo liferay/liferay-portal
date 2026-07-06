@@ -63,6 +63,24 @@ export class BlogsPage {
 		});
 	}
 
+	async assertBlogEntryActionAbsent(action: string, title: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Delete',
+			}),
+			trigger: this.page
+				.locator('.card')
+				.filter({hasText: title})
+				.getByLabel('More actions'),
+		});
+
+		await expect(
+			this.page.getByRole('menuitem', {exact: true, name: action})
+		).toBeHidden();
+	}
+
 	async assertBlogEntryPermissions(
 		permissions: {enabled: boolean; locator: string}[],
 		title: string
