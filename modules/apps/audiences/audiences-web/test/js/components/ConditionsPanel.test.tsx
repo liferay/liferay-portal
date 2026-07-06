@@ -4,6 +4,8 @@
  */
 
 import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
+
+import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -38,6 +40,10 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 
 const RULES: Rule[] = [
 	{attribute: 'age', id: 'rule-age', operator: 'gt', value: '18'},
+];
+
+const RULES_WITH_REMOVED: Rule[] = [
+	{attribute: 'removed', id: 'rule-removed', operator: 'eq', value: ''},
 ];
 
 function renderConditionsPanel({
@@ -83,5 +89,29 @@ describe('ConditionsPanel', () => {
 			index: 0,
 			type: 'DUPLICATE_RULE',
 		});
+	});
+
+	it('uppercases and dispatches the conjunction', async () => {
+		const {dispatch} = renderConditionsPanel({rules: RULES});
+
+		const conjunction = screen.getByLabelText('conjunction');
+
+		expect(conjunction).toHaveClass('text-uppercase');
+
+		await userEvent.click(conjunction);
+		await userEvent.click(screen.getByRole('option', {name: 'or'}));
+
+		expect(dispatch).toHaveBeenCalledWith({
+			conjunction: 'OR',
+			type: 'SET_CONJUNCTION',
+		});
+	});
+
+	it('shows an error state for a removed criteria', () => {
+		renderConditionsPanel({rules: RULES_WITH_REMOVED});
+
+		expect(
+			screen.getByText('the-criteria-is-no-longer-available')
+		).toBeTruthy();
 	});
 });
