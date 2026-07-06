@@ -15,6 +15,7 @@ public interface DataMaskEngine {
 	public void evictPattern(String regex);
 
 	public String redact(
-		long companyId, List<String> maskExternalReferenceCodes, String text);
+		long companyId, List<String> dataMaskExternalReferenceCodes,
+		String text);
 
 }

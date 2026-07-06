@@ -45,10 +45,11 @@ public class DataMaskEngineImpl implements DataMaskEngine {
 
 	@Override
 	public String redact(
-		long companyId, List<String> maskExternalReferenceCodes, String text) {
+		long companyId, List<String> dataMaskExternalReferenceCodes,
+		String text) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63311") ||
-			ListUtil.isEmpty(maskExternalReferenceCodes) ||
+			ListUtil.isEmpty(dataMaskExternalReferenceCodes) ||
 			Validator.isNull(text)) {
 
 			return text;
@@ -65,14 +66,16 @@ public class DataMaskEngineImpl implements DataMaskEngine {
 
 		List<DataMask> dataMasks = new ArrayList<>();
 
-		for (String maskExternalReferenceCode : maskExternalReferenceCodes) {
-			if (Validator.isNull(maskExternalReferenceCode)) {
+		for (String dataMaskExternalReferenceCode :
+				dataMaskExternalReferenceCodes) {
+
+			if (Validator.isNull(dataMaskExternalReferenceCode)) {
 				continue;
 			}
 
 			ObjectEntry maskObjectEntry =
 				_objectEntryLocalService.fetchObjectEntry(
-					maskExternalReferenceCode, 0,
+					dataMaskExternalReferenceCode, 0,
 					maskObjectDefinition.getObjectDefinitionId());
 
 			if (maskObjectEntry == null) {
@@ -80,7 +83,7 @@ public class DataMaskEngineImpl implements DataMaskEngine {
 					_log.warn(
 						StringBundler.concat(
 							"No data mask was resolved for external reference ",
-							"code \"", maskExternalReferenceCode, "\""));
+							"code \"", dataMaskExternalReferenceCode, "\""));
 				}
 
 				continue;

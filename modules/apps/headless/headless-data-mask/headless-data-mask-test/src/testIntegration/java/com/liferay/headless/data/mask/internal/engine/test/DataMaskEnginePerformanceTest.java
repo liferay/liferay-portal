@@ -49,7 +49,7 @@ public class DataMaskEnginePerformanceTest {
 	public void testRedactPerformance() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
-		List<String> maskExternalReferenceCodes = Arrays.asList(
+		List<String> dataMaskExternalReferenceCodes = Arrays.asList(
 			"L_DATA_MASK_CREDIT_CARD_NUMBER", "L_DATA_MASK_EMAIL_ADDRESS",
 			"L_DATA_MASK_IBAN", "L_DATA_MASK_IPV4", "L_DATA_MASK_IPV6",
 			"L_DATA_MASK_NATIONAL_ID_BSN", "L_DATA_MASK_NATIONAL_ID_DNI_NIF",
@@ -70,7 +70,7 @@ public class DataMaskEnginePerformanceTest {
 
 		for (int i = 0; i < 5; i++) {
 			_dataMaskEngine.redact(
-				companyId, maskExternalReferenceCodes, payload);
+				companyId, dataMaskExternalReferenceCodes, payload);
 		}
 
 		int iterations = 50;
@@ -81,7 +81,7 @@ public class DataMaskEnginePerformanceTest {
 
 			for (int i = 0; i < iterations; i++) {
 				_dataMaskEngine.redact(
-					companyId, maskExternalReferenceCodes, payload);
+					companyId, dataMaskExternalReferenceCodes, payload);
 			}
 		}
 	}

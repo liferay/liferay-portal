@@ -179,11 +179,13 @@ public class DataMaskEngineTest {
 			text, _redact(Arrays.asList("L_UNKNOWN_DATA_MASK"), text));
 	}
 
-	private String _redact(List<String> maskExternalReferenceCodes, String text)
+	private String _redact(
+			List<String> dataMaskExternalReferenceCodes, String text)
 		throws Exception {
 
 		return _dataMaskEngine.redact(
-			TestPropsValues.getCompanyId(), maskExternalReferenceCodes, text);
+			TestPropsValues.getCompanyId(), dataMaskExternalReferenceCodes,
+			text);
 	}
 
 	private static final String _SAMPLE_EMAIL = "contact@example.com";
