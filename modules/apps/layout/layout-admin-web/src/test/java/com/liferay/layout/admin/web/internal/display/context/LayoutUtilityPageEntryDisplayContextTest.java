@@ -86,7 +86,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 	public void testGetLayoutUtilityPageEntrySearchContainer() {
 		_testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate();
 		_testGetLayoutUtilityPageEntrySearchContainerOrderByName();
-		_testGetLayoutUtilityPageEntrySearchContainerWithoutOrderByComparator();
+		_testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol();
 	}
 
 	private OrderByComparator<LayoutUtilityPageEntry>
@@ -139,7 +139,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 			"LayoutUtilityPageEntry.name DESC", orderByComparator.getOrderBy());
 	}
 
-	private void _testGetLayoutUtilityPageEntrySearchContainerWithoutOrderByComparator() {
+	private void _testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol() {
 		Assert.assertNull(
 			_getSearchContainerOrderByComparator(
 				RandomTestUtil.randomString(), "asc"));
