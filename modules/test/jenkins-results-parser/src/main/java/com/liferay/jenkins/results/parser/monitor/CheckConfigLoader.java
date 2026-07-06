@@ -1,0 +1,159 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.jenkins.results.parser.monitor;
+
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * @author Brittney Nguyen
+ */
+public class CheckConfigLoader {
+
+	public static List<CheckConfig> getCheckConfigs() throws IOException {
+		return getCheckConfigs(JenkinsResultsParserUtil.getBuildProperties());
+	}
+
+	public static List<CheckConfig> getCheckConfigs(
+		Properties buildProperties) {
+
+		List<CheckConfig> checkConfigs = new ArrayList<>();
+
+		for (String id : _getIds(buildProperties)) {
+			checkConfigs.add(_getCheckConfig(buildProperties, id));
+		}
+
+		return checkConfigs;
+	}
+
+	private static long _getCadence(Properties buildProperties, String id) {
+		String cadenceString = JenkinsResultsParserUtil.getProperty(
+			buildProperties, _getKey(id, "cadence"));
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(cadenceString)) {
+			return 0;
+		}
+
+		try {
+			return Long.parseLong(cadenceString);
+		}
+		catch (NumberFormatException numberFormatException) {
+			throw new IllegalArgumentException(
+				"Invalid cadence for " + _getKey(id, "cadence") + ": " +
+					cadenceString,
+				numberFormatException);
+		}
+	}
+
+	private static CheckConfig _getCheckConfig(
+		Properties buildProperties, String id) {
+
+		String type = JenkinsResultsParserUtil.getProperty(
+			buildProperties, _getKey(id, "type"));
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(type)) {
+			throw new IllegalArgumentException(
+				"Missing required property " + _getKey(id, "type"));
+		}
+
+		return new CheckConfig(
+			id, type, _getSeverity(buildProperties, id),
+			_getCadence(buildProperties, id),
+			_getParameters(buildProperties, id),
+			_getThresholds(buildProperties, id));
+	}
+
+	private static TreeSet<String> _getIds(Properties buildProperties) {
+		TreeSet<String> ids = new TreeSet<>();
+
+		for (String propertyName : buildProperties.stringPropertyNames()) {
+			Matcher matcher = _checkPropertyPattern.matcher(propertyName);
+
+			if (matcher.matches()) {
+				ids.add(matcher.group("id"));
+			}
+		}
+
+		return ids;
+	}
+
+	private static Map<String, String> _getIndexedProperties(
+		Properties buildProperties, String id, String category) {
+
+		Map<String, String> indexedProperties = new LinkedHashMap<>();
+
+		for (String propertyName : buildProperties.stringPropertyNames()) {
+			Matcher matcher = _indexedPropertyPattern.matcher(propertyName);
+
+			if (matcher.matches() && id.equals(matcher.group("id")) &&
+				category.equals(matcher.group("category"))) {
+
+				indexedProperties.put(
+					matcher.group("name"),
+					JenkinsResultsParserUtil.getProperty(
+						buildProperties, propertyName));
+			}
+		}
+
+		return indexedProperties;
+	}
+
+	private static String _getKey(String id, String suffix) {
+		return "monitor.check[" + id + "]." + suffix;
+	}
+
+	private static Map<String, String> _getParameters(
+		Properties buildProperties, String id) {
+
+		return _getIndexedProperties(buildProperties, id, "parameter");
+	}
+
+	private static CheckConfig.Severity _getSeverity(
+		Properties buildProperties, String id) {
+
+		String severityString = JenkinsResultsParserUtil.getProperty(
+			buildProperties, _getKey(id, "severity"));
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(severityString)) {
+			return CheckConfig.Severity.MEDIUM;
+		}
+
+		try {
+			return CheckConfig.Severity.valueOf(
+				severityString.toUpperCase(Locale.ENGLISH));
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			throw new IllegalArgumentException(
+				"Invalid severity for " + _getKey(id, "severity") + ": " +
+					severityString,
+				illegalArgumentException);
+		}
+	}
+
+	private static Map<String, String> _getThresholds(
+		Properties buildProperties, String id) {
+
+		return _getIndexedProperties(buildProperties, id, "threshold");
+	}
+
+	private static final Pattern _checkPropertyPattern = Pattern.compile(
+		"monitor\\.check\\[(?<id>[^\\]]+)\\]\\..+");
+	private static final Pattern _indexedPropertyPattern = Pattern.compile(
+		"monitor\\.check\\[(?<id>[^\\]]+)\\]\\.(?<category>[^\\[]+)\\[" +
+			"(?<name>[^\\]]+)\\]");
+
+}
