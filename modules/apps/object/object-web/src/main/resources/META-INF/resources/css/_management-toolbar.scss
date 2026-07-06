@@ -32,7 +32,8 @@
 
 		.data-set .management-bar-wrapper {
 			top: calc(
-				var(--control-menu-container-height, 56px) + 1.5rem + 4rem + 48px
+				var(--control-menu-container-height, 56px) + 1.5rem + 4rem +
+					48px
 			);
 		}
 
@@ -43,7 +44,9 @@
 		}
 
 		.page-header {
-			top: calc(var(--control-menu-container-height, 56px) + 1.5rem + 4rem);
+			top: calc(
+				var(--control-menu-container-height, 56px) + 1.5rem + 4rem
+			);
 		}
 	}
 }
