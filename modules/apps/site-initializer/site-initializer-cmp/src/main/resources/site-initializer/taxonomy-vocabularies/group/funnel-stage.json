@@ -14,5 +14,6 @@
 		"en_US": "Funnel Stage"
 	},
 	"system": true,
-	"viewableBy": "Anyone"
+	"viewableBy": "Anyone",
+	"visibilityType": "INTERNAL"
 }
