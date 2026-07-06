@@ -171,7 +171,7 @@ public class ObjectDefinitionUtil {
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
 		"com.liferay.headless.builder.impl",
-		"com.liferay.headless.data.masking.impl", "com.liferay.launch.impl",
+		"com.liferay.headless.data.mask.impl", "com.liferay.launch.impl",
 		"com.liferay.list.type.service", "com.liferay.mcp.server.rest.impl",
 		"com.liferay.notification.service", "com.liferay.object.service",
 		"com.liferay.seo.studio.site.initializer",
