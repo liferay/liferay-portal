@@ -11,6 +11,15 @@ import {dmSettingsPagesTest} from './fixtures/dmSettingsPagesTest';
 
 const test = mergeTests(dmSettingsPagesTest, isolatedSiteTest, loginTest());
 
+test.afterEach(async ({fileSizeLimitsInstanceSettingsPage}) => {
+	await fileSizeLimitsInstanceSettingsPage.goto();
+
+	await fileSizeLimitsInstanceSettingsPage.modifyInputAndSave(
+		'Maximum File Upload Size',
+		'0'
+	);
+});
+
 test(
 	'Updating Maximum File Upload Size at Instance level, not overrides site configuration',
 	{tag: '@LPD-17827'},
