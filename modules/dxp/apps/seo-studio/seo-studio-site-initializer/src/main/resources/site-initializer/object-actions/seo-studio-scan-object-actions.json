@@ -2,6 +2,22 @@
 	"object-actions": [
 		{
 			"active": true,
+			"conditionExpression": "state == 'cancelled' || state == 'completed' || state == 'failed'",
+			"errorMessage": {
+				"en_US": "Scan metrics calculation failed. Please try again later or contact support."
+			},
+			"externalReferenceCode": "L_SEO_STUDIO_SCAN_CALCULATE_SCAN_METRICS",
+			"label": {
+				"en_US": "Calculate Scan Metrics"
+			},
+			"name": "calculateScanMetrics",
+			"objectActionExecutorKey": "calculate-seo-studio-scan-metrics",
+			"objectActionTriggerKey": "onAfterUpdate",
+			"parameters": {
+			}
+		},
+		{
+			"active": true,
 			"conditionExpression": "scanType == 'crawler'",
 			"errorMessage": {
 				"en_US": "Crawler scan failed. Please try again later or contact support."
