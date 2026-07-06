@@ -89,8 +89,9 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 		_testGetLayoutUtilityPageEntrySearchContainerWithoutOrderByComparator();
 	}
 
-	private OrderByComparator<LayoutUtilityPageEntry> _getOrderByComparator(
-		String orderByCol, String orderByType) {
+	private OrderByComparator<LayoutUtilityPageEntry>
+		_getSearchContainerOrderByComparator(
+			String orderByCol, String orderByType) {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
@@ -123,7 +124,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate() {
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
-			_getOrderByComparator("create-date", "asc");
+			_getSearchContainerOrderByComparator("create-date", "asc");
 
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.createDate ASC",
@@ -132,7 +133,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByName() {
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
-			_getOrderByComparator("name", "desc");
+			_getSearchContainerOrderByComparator("name", "desc");
 
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.name DESC", orderByComparator.getOrderBy());
@@ -140,7 +141,8 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerWithoutOrderByComparator() {
 		Assert.assertNull(
-			_getOrderByComparator(RandomTestUtil.randomString(), "asc"));
+			_getSearchContainerOrderByComparator(
+				RandomTestUtil.randomString(), "asc"));
 	}
 
 	private MockedStatic<LayoutUtilityPageEntryServiceUtil>
