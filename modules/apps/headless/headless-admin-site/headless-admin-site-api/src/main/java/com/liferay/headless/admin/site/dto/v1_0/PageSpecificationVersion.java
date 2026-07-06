@@ -44,11 +44,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A versioned snapshot of a site page's page specification.",
+	description = "A page specification version of a content page.",
 	value = "PageSpecificationVersion"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A versioned snapshot of a site page's page specification."
+	description = "A page specification version of a content page."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PageSpecificationVersion")
@@ -774,4 +774,4 @@ public class PageSpecificationVersion implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-653157707
+// LIFERAY-REST-BUILDER-HASH:1023824597
