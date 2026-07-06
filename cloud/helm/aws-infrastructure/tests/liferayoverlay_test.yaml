@@ -1,0 +1,76 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: LiferayOverlay
+templates:
+    -   templates/liferayoverlay.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: apiVersion
+                    value: aws.liferay.com/v1alpha1
+            -   equal:
+                    path: metadata.name
+                    value: my-release
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: LiferayOverlay
+        it: Names the LiferayOverlay after the release
+        set:
+            overlay.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the LiferayOverlay when the overlay is disabled
+        set:
+            overlay.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.forceDestroy
+                    value: false
+            -   equal:
+                    path: spec.orphanOnDelete
+                    value: false
+        it: Defaults force destroy and orphan on delete to false
+        set:
+            overlay.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.projectId
+                    value: proj-456
+            -   equal:
+                    path: spec.region
+                    value: us-east-1
+        it: Propagates the project and region into the spec
+        set:
+            overlay.enabled: true
+            projectId: proj-456
+            region: us-east-1
+    -   asserts:
+            -   equal:
+                    path: spec.commonTags.ProjectId
+                    value: proj-456
+            -   equal:
+                    path: spec.commonTags.team
+                    value: platform
+        it: Merges the project identifier with the overlay common tags
+        set:
+            overlay.commonTags.team: platform
+            overlay.enabled: true
+            projectId: proj-456
+    -   asserts:
+            -   equal:
+                    path: spec.forceDestroy
+                    value: true
+            -   equal:
+                    path: spec.orphanOnDelete
+                    value: true
+        it: Reflects the force destroy and orphan on delete toggles
+        set:
+            overlay.enabled: true
+            overlay.forceDestroy: true
+            overlay.orphanOnDelete: true
