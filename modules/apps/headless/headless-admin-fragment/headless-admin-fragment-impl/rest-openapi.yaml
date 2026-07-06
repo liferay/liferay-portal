@@ -59,7 +59,7 @@ components:
                 fragmentSet:
                     $ref: "#/components/schemas/FragmentSet"
                     description:
-                        The fragment's set.
+                        The fragment's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist.
                 fragmentVersions:
                     description:
                         The fragment's versions. A fragment can have up to 2 versions, one draft and one published (approved).
