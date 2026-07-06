@@ -122,19 +122,20 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 	}
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate() {
+		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
+			_getOrderByComparator("create-date", "asc");
+
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.createDate ASC",
-			_getOrderByComparator(
-				"create-date", "asc"
-			).getOrderBy());
+			orderByComparator.getOrderBy());
 	}
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByName() {
+		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
+			_getOrderByComparator("name", "desc");
+
 		Assert.assertEquals(
-			"LayoutUtilityPageEntry.name DESC",
-			_getOrderByComparator(
-				"name", "desc"
-			).getOrderBy());
+			"LayoutUtilityPageEntry.name DESC", orderByComparator.getOrderBy());
 	}
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerWithoutOrderByComparator() {
