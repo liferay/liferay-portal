@@ -100,6 +100,17 @@ public class ResourceFolderResourceTest
 	@Override
 	@Test
 	@TestInfo("LPD-88489")
+	public void testDeleteSiteResourceFolder() throws Exception {
+		super.testDeleteSiteResourceFolder();
+
+		_testDeleteSiteResourceFolderChildResourceFolder();
+		_testDeleteSiteResourceFolderPortletFolderProblemException();
+		_testDeleteSiteResourceFolderWithoutPermissionsProblemException();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-88489")
 	public void testGetSiteFragmentSetResourceFoldersPage() throws Exception {
 		super.testGetSiteFragmentSetResourceFoldersPage();
 
@@ -459,6 +470,76 @@ public class ResourceFolderResourceTest
 			parentResourceFolder.getExternalReferenceCode());
 
 		return resourceFolder;
+	}
+
+	private void _testDeleteSiteResourceFolderChildResourceFolder()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder parentResourceFolder = _postSiteResourceFolder(
+			fragmentCollection.getExternalReferenceCode());
+
+		ResourceFolder childResourceFolder = _postSiteResourceFolder(
+			parentResourceFolder);
+
+		resourceFolderResource.deleteSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			parentResourceFolder.getExternalReferenceCode());
+
+		try {
+			resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				childResourceFolder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteResourceFolderPortletFolderProblemException()
+		throws Exception {
+
+		Folder folder = _addPortletFolder();
+
+		try {
+			resourceFolderResource.deleteSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteResourceFolderWithoutPermissionsProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		try {
+			_resourceFolderResource.deleteSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testGetSiteFragmentSetResourceFoldersPage() throws Exception {
