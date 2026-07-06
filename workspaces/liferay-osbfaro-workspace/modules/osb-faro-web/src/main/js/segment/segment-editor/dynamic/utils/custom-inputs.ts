@@ -1,8 +1,8 @@
+import {ACTIVITY_KEY, Conjunctions, TIME_PERIOD_OPTIONS} from './constants';
 import {createNewGroup} from './utils';
 import {CustomValue} from 'shared/util/records';
-import {fromJS, Map} from 'immutable';
+import {fromJS, List, Map} from 'immutable';
 import {isArray} from 'lodash';
-import {TIME_PERIOD_OPTIONS} from './constants';
 
 /**
  * Create the valueIMap for a custom input.
@@ -17,8 +17,7 @@ export const createCustomValueMap = (
 	params.forEach(({key, value}) => {
 		if (isArray(value)) {
 			valueIMap = valueIMap.set(key, fromJS(createNewGroup(value)));
-		}
-		else {
+		} else {
 			valueIMap = valueIMap.set(key, value);
 		}
 	});
@@ -53,6 +52,72 @@ export const getIndexFromPropertyName = (
 		(entry: Map<string, any>) => entry.get('propertyName') === propertyName
 	);
 };
+
+/**
+ * Reads every activityKey out of a behavior criterion value. A single selection
+ * is stored as a flat activityKey item; N selections are stored as an "or" group
+ * of activityKey items. Returns the list of keys for either shape.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @returns {string[]} The activityKey values.
+ */
+export const getActivityKeysFromValue = (valueIMap: CustomValue): string[] => {
+	const items = valueIMap.getIn(['criterionGroup', 'items']) as any;
+
+	if (!items) return [];
+
+	const flatItem = items.find(
+		(item: any) => item.get?.('propertyName') === ACTIVITY_KEY
+	);
+
+	if (flatItem) {
+		const activityKey = flatItem.get('value');
+
+		return activityKey ? [activityKey] : [];
+	}
+
+	const orGroup = items.find(
+		(item: any) => item.get?.('conjunctionName') === Conjunctions.Or
+	);
+
+	if (orGroup) {
+		return ((orGroup.get('items') as List<any>) ?? List())
+			.filter((item: any) => item.get?.('propertyName') === ACTIVITY_KEY)
+			.map((item: any) => item.get('value'))
+			.toArray();
+	}
+
+	return [];
+};
+
+/**
+ * The criterion item with the given propertyName (e.g. the applicationId,
+ * eventId, or day item). Undefined when the item is absent.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @param {string} propertyName - The item's propertyName to find.
+ * @returns {Map|undefined} The criterion Map.
+ */
+export const getFilterCriterionIMapByPropertyName = (
+	valueIMap: CustomValue,
+	propertyName: string
+): any => {
+	const index = getIndexFromPropertyName(valueIMap, propertyName);
+
+	return index < 0 ? undefined : getFilterCriterionIMap(valueIMap, index);
+};
+
+/**
+ * The value of the criterion item with the given propertyName (e.g. the
+ * applicationId or eventId of a behavior criterion). Undefined when the item is
+ * absent.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @param {string} propertyName - The item's propertyName to read.
+ * @returns {*} The item's value.
+ */
+export const getFilterValueByPropertyName = (
+	valueIMap: CustomValue,
+	propertyName: string
+): any =>
+	getFilterCriterionIMapByPropertyName(valueIMap, propertyName)?.get('value');
 
 /**
  * Get the operator name from the criterion at the specified index in the valueIMap.
@@ -93,7 +158,7 @@ export const getPropertyValue = (
  */
 export const getTimePeriodLabel = (value: string): string => {
 	const timePeriod = TIME_PERIOD_OPTIONS.find(
-		(timePeriod) => timePeriod.value === value
+		timePeriod => timePeriod.value === value
 	);
 
 	return timePeriod ? timePeriod.label : '';

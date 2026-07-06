@@ -6,8 +6,9 @@ import {ASSET_TYPE_LANG_MAP} from 'shared/util/lang';
 import {CustomValue} from 'shared/util/records';
 import {EntityType} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {
-	getFilterCriterionIMap,
-	getPropertyValue,
+	getActivityKeysFromValue,
+	getFilterCriterionIMapByPropertyName,
+	getFilterValueByPropertyName
 } from 'segment/segment-editor/dynamic/utils/custom-inputs';
 import {getOperatorLabel, maybeFormatToKnownType} from '../utils';
 import {IDisplayComponentProps} from '../types';
@@ -18,7 +19,7 @@ import {SegmentTypes} from 'shared/util/constants';
 const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
-	segmentType,
+	segmentType
 }) => {
 	const {operatorName, value} = criterion;
 
@@ -26,9 +27,14 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 
 	const {entityName, label, type} = property;
 
-	const {id, objectType} = parseActivityKey(
-		getPropertyValue(valueIMap, 'value', 0)
-	);
+	const activityKeys = getActivityKeysFromValue(valueIMap);
+
+	// A behavior with no specific asset stores its applicationId; show it as the
+	// type label ("Documents and Media").
+
+	const singleApplicationId = activityKeys.length
+		? undefined
+		: getFilterValueByPropertyName(valueIMap, 'applicationId');
 
 	const operatorKey = maybeFormatToKnownType(operatorName ?? '', name);
 
@@ -39,7 +45,7 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 	const occurenceCount = valueIMap.get('value');
 
 	const conjunctionCriterion = (
-		getFilterCriterionIMap(valueIMap, 1) ||
+		getFilterCriterionIMapByPropertyName(valueIMap, 'day') ||
 		Map({propertyName: 'completeDate'})
 	).toJS();
 
@@ -51,15 +57,33 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 
 			<span>{label}</span>
 
-			<ReferencedEntityDisplay
-				id={id}
-				label={
-					ASSET_TYPE_LANG_MAP[
-						objectType as keyof typeof ASSET_TYPE_LANG_MAP
-					]
-				}
-				type={EntityType.Assets}
-			/>
+			{activityKeys.map((activityKey, index) => {
+				const {id, objectType} = parseActivityKey(activityKey);
+
+				return (
+					<React.Fragment key={activityKey}>
+						{index > 0 && <span>,</span>}
+
+						<ReferencedEntityDisplay
+							id={id}
+							label={
+								ASSET_TYPE_LANG_MAP[
+									objectType as keyof typeof ASSET_TYPE_LANG_MAP
+								]
+							}
+							type={EntityType.Assets}
+						/>
+					</React.Fragment>
+				);
+			})}
+
+			{singleApplicationId && (
+				<span>
+					{ASSET_TYPE_LANG_MAP[
+						singleApplicationId as keyof typeof ASSET_TYPE_LANG_MAP
+					] ?? singleApplicationId}
+				</span>
+			)}
 
 			{segmentType === SegmentTypes.Batch && (
 				<>

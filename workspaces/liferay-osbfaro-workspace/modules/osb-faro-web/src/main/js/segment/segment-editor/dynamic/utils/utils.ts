@@ -4,7 +4,7 @@ import {
 	INDIVIDUAL_PROPERTIES,
 	ORGANIZATION_PROPERTIES,
 	SESSION_PROPERTIES,
-	WEB_BEHAVIORS,
+	WEB_BEHAVIORS
 } from '../utils/properties';
 import {
 	Conjunctions,
@@ -17,10 +17,11 @@ import {
 	NotOperators,
 	PropertyTypes,
 	SequentialLimitState,
-	SUPPORTED_OPERATORS_MAP,
+	SUPPORTED_OPERATORS_MAP
 } from './constants';
 import {Criteria, Criterion, CriterionGroup, Operator} from './types';
 import {EntityType, ReferencedEntities} from '../context/referencedObjects';
+import {getActionFromEventId} from './activity-keys';
 import {Event} from 'event-analysis/utils/types';
 import {every, isBoolean, isString, isUndefined} from 'lodash';
 import {FieldContexts, FieldOwnerTypes} from 'shared/util/constants';
@@ -37,12 +38,12 @@ export const createInterestProperty = (name: string): Property =>
 		label: name,
 		name,
 		propertyKey: 'interest',
-		type: PropertyTypes.Interest,
+		type: PropertyTypes.Interest
 	});
 
 export const createVocabularyProperty = ({
 	id,
-	name,
+	name
 }: {
 	id: string;
 	name: string;
@@ -52,12 +53,12 @@ export const createVocabularyProperty = ({
 		label: name,
 		name: id,
 		propertyKey: 'vocabulary',
-		type: PropertyTypes.Vocabulary,
+		type: PropertyTypes.Vocabulary
 	});
 
 export function createTagProperty({
 	id,
-	name,
+	name
 }: {
 	id: string;
 	name: string;
@@ -67,7 +68,7 @@ export function createTagProperty({
 		label: name,
 		name: id,
 		propertyKey: 'tag',
-		type: PropertyTypes.Tag,
+		type: PropertyTypes.Tag
 	});
 }
 
@@ -80,7 +81,7 @@ export const createNewGroup = (
 ): CriterionGroup => ({
 	conjunctionName,
 	criteriaGroupId: generateGroupId(),
-	items,
+	items
 });
 
 /**
@@ -108,7 +109,7 @@ export const getChildGroupIds = (criteria: Criteria): string[] => {
 					? [
 							...groupIdList,
 							item.criteriaGroupId,
-							...getChildGroupIds(item),
+							...getChildGroupIds(item)
 						]
 					: groupIdList,
 			[] as string[]
@@ -190,7 +191,7 @@ export const hasNestedOrExceeded = (
 	!!criteria &&
 	isCriterionGroup(criteria) &&
 	criteria.items.some(
-		(item) =>
+		item =>
 			isCriterionGroup(item) &&
 			(getNestedOrLimitState(item) === 'exceedsLimit' ||
 				hasNestedOrExceeded(item))
@@ -235,7 +236,7 @@ export const objectToFormData = (
 ): FormData => {
 	const formData = new FormData();
 
-	Object.keys(dataObject).forEach((key) => {
+	Object.keys(dataObject).forEach(key => {
 		formData.set(key, dataObject[key]);
 	});
 
@@ -276,26 +277,52 @@ export const findPropertyByCriterion = (
 	if (
 		[
 			CustomFunctionOperators.ActivitiesFilterByCount,
-			NotOperators.NotActivitiesFilterByCount,
+			NotOperators.NotActivitiesFilterByCount
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		)
 	) {
-		const {eventId = propertyName} = parseActivityKey(
-			(value as Map<string, any>).getIn(
-				['criterionGroup', 'items', 0, 'value'],
-				''
-			)
+		const items = (value as Map<string, any>).getIn([
+			'criterionGroup',
+			'items'
+		]) as any;
+
+		const eventIdItem = items?.find?.(
+			(item: any) => item.get?.('propertyName') === 'eventId'
 		);
 
+		let eventId;
+
+		if (eventIdItem) {
+			const eventIds = eventIdItem.get('value');
+			const eventIdArray = eventIds?.toJS?.() ?? eventIds;
+
+			eventId = Array.isArray(eventIdArray)
+				? eventIdArray[0]
+				: eventIdArray;
+		} else {
+			const activityKeyValue =
+				(value as Map<string, any>).getIn(
+					['criterionGroup', 'items', 0, 'value'],
+					''
+				) ||
+				(value as Map<string, any>).getIn(
+					['criterionGroup', 'items', 0, 'items', 0, 'value'],
+					''
+				);
+
+			eventId = parseActivityKey(activityKeyValue).eventId;
+		}
+
+		const action = getActionFromEventId(eventId || propertyName);
+
 		return WEB_BEHAVIORS.find(
-			(property: Property | undefined) => property?.name === eventId
+			(property: Property | undefined) => property?.name === action
 		);
-	}
-	else if (
+	} else if (
 		[
 			CustomFunctionOperators.EventsFilterByCount,
-			NotOperators.NotEventsFilterByCount,
+			NotOperators.NotEventsFilterByCount
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		)
@@ -306,11 +333,10 @@ export const findPropertyByCriterion = (
 		);
 
 		return referencedPropertiesIMap.getIn(['event', eventId]);
-	}
-	else if (
+	} else if (
 		[
 			CustomFunctionOperators.AccountsFilter,
-			NotOperators.NotAccountsFilter,
+			NotOperators.NotAccountsFilter
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		)
@@ -326,15 +352,14 @@ export const findPropertyByCriterion = (
 			[
 				'account',
 				getPropertyContextFromRaw(propertyName) ?? '',
-				getPropertyNameFromRaw(propertyName),
+				getPropertyNameFromRaw(propertyName)
 			],
 			''
 		);
-	}
-	else if (
+	} else if (
 		[
 			NotOperators.NotOrganizationsFilter,
-			CustomFunctionOperators.OrganizationsFilter,
+			CustomFunctionOperators.OrganizationsFilter
 		].includes(
 			operatorName as unknown as CustomFunctionOperators & NotOperators
 		)
@@ -350,15 +375,14 @@ export const findPropertyByCriterion = (
 			[
 				'organization',
 				getPropertyContextFromRaw(propertyName) ?? '',
-				getPropertyNameFromRaw(propertyName),
+				getPropertyNameFromRaw(propertyName)
 			],
 			''
 		);
-	}
-	else if (
+	} else if (
 		[
 			CustomFunctionOperators.SessionsFilter,
-			NotOperators.NotSessionsFilter,
+			NotOperators.NotSessionsFilter
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		) ||
@@ -367,11 +391,10 @@ export const findPropertyByCriterion = (
 		return SESSION_PROPERTIES.find(
 			(property: Property | undefined) => property?.name === propertyName
 		);
-	}
-	else if (
+	} else if (
 		[
 			CustomFunctionOperators.VocabulariesFilter,
-			NotOperators.NotVocabulariesFilter,
+			NotOperators.NotVocabulariesFilter
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		)
@@ -392,14 +415,13 @@ export const findPropertyByCriterion = (
 						)
 						?.get('value') as string | undefined) ??
 					propertyName ??
-					'',
+					''
 			})
 		);
-	}
-	else if (
+	} else if (
 		[
 			CustomFunctionOperators.TagsFilter,
-			NotOperators.NotTagsFilter,
+			NotOperators.NotTagsFilter
 		].includes(
 			operatorName as unknown as CustomFunctionOperators | NotOperators
 		)
@@ -419,22 +441,19 @@ export const findPropertyByCriterion = (
 						)
 						?.get('value') as string | undefined) ??
 					propertyName ??
-					'',
+					''
 			})
 		);
-	}
-	else if (operatorName === CustomFunctionOperators.InterestsFilter) {
+	} else if (operatorName === CustomFunctionOperators.InterestsFilter) {
 		return createInterestProperty(propertyName ?? '');
-	}
-	else if (INDIVIDUAL_PROPERTIES.find(({name}) => name === propertyName)) {
+	} else if (INDIVIDUAL_PROPERTIES.find(({name}) => name === propertyName)) {
 		return INDIVIDUAL_PROPERTIES.find(({name}) => name === propertyName);
-	}
-	else {
+	} else {
 		return referencedPropertiesIMap.getIn(
 			[
 				'individual',
 				getPropertyContextFromRaw(propertyName) ?? '',
-				getPropertyNameFromRaw(propertyName),
+				getPropertyNameFromRaw(propertyName)
 			],
 			''
 		);
@@ -471,7 +490,7 @@ export const convertFieldMappingToAccountProperty = (
 		label: displayName || name,
 		name: id,
 		propertyKey: FieldOwnerTypes.Account,
-		type: `account-${type.toLowerCase()}` as PropertyTypes,
+		type: `account-${type.toLowerCase()}` as PropertyTypes
 	});
 };
 
@@ -508,7 +527,7 @@ export const convertFieldMappingToIndividualProperty = (
 		label: displayName || name,
 		name: context ? `${context}/${id}/value` : id,
 		propertyKey: FieldOwnerTypes.Individual,
-		type: type.toLowerCase(),
+		type: type.toLowerCase()
 	});
 };
 
@@ -545,7 +564,7 @@ export const convertFieldMappingToOrganizationProperty = (
 		label: displayName || name,
 		name: context ? `${context}/${id}/value` : id,
 		propertyKey: FieldOwnerTypes.Organization,
-		type: `organization-${type.toLowerCase()}` as PropertyTypes,
+		type: `organization-${type.toLowerCase()}` as PropertyTypes
 	});
 };
 
@@ -570,7 +589,7 @@ export const convertEventToProperty = (
 		name,
 		options: [{label: 'hidden', value: hidden}],
 		propertyKey: 'event',
-		type: PropertyTypes.Event,
+		type: PropertyTypes.Event
 	});
 };
 
@@ -585,17 +604,15 @@ export const convertFieldMappingsToProperties = (
 
 		if (key === FieldOwnerTypes.Account) {
 			conversionFn = convertFieldMappingToAccountProperty;
-		}
-		else if (key === FieldOwnerTypes.Individual) {
+		} else if (key === FieldOwnerTypes.Individual) {
 			conversionFn = convertFieldMappingToIndividualProperty;
-		}
-		else if (key === FieldOwnerTypes.Organization) {
+		} else if (key === FieldOwnerTypes.Organization) {
 			conversionFn = convertFieldMappingToOrganizationProperty;
 		}
 
 		if (conversionFn) {
 			const fn = conversionFn;
-			return ownerTypeGroup!.map((contextGroup) =>
+			return ownerTypeGroup!.map(contextGroup =>
 				contextGroup!.reduce(
 					(
 						acc?: Map<string, Property>,
@@ -648,16 +665,15 @@ export const invalidateCriterionWithMissingProperty = (
 		if (items.length) {
 			return {
 				...criteria,
-				items: items.map((criterion) =>
+				items: items.map(criterion =>
 					invalidateCriterionWithMissingProperty(
 						criterion,
 						referencedPropertiesIMap
 					)
-				),
+				)
 			};
 		}
-	}
-	else {
+	} else {
 		if (findPropertyByCriterion(criteria, referencedPropertiesIMap)) {
 			return criteria;
 		}
@@ -669,7 +685,7 @@ export const invalidateCriterionWithMissingProperty = (
 				: Object.keys(criteria.valid as object).reduce(
 						(acc, key) => ({...acc, [key]: false}),
 						{}
-					),
+					)
 		};
 	}
 
@@ -692,7 +708,7 @@ export const parseReferencedEntityId = (
 			referencedEntities.getIn([EntityType.Assets]).toObject()
 		);
 
-		parsedId = keys.find((key) => key.includes(id));
+		parsedId = keys.find(key => key.includes(id));
 	}
 
 	return parsedId;
@@ -708,8 +724,7 @@ export const validateSegmentInputs = (criteria: Criteria): boolean => {
 		if (items.length) {
 			return items.map(validateSegmentInputs).every(Boolean);
 		}
-	}
-	else if (criteria) {
+	} else if (criteria) {
 		if (isBoolean(criteria.valid)) {
 			return criteria.valid;
 		}

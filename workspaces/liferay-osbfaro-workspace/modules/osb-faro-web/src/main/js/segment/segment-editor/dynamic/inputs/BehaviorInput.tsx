@@ -1,77 +1,34 @@
-import * as API from 'shared/api';
 import DateFilterConjunctionInput from './components/DateFilterConjunctionInput';
 import Form from 'shared/components/form';
 import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
 import React from 'react';
-import SelectEntityFromModal from './components/SelectEntityFromModal';
+import SelectPageAssetInput, {
+	BehaviorSelection,
+	PageAssetItem
+} from './components/SelectPageAssetInput';
 import {
 	ACTIVITY_KEY,
+	Conjunctions,
 	FunctionalOperators,
-	RelationalOperators,
+	RelationalOperators
 } from '../utils/constants';
-import {activityAssetsListColumns} from 'shared/util/table-columns';
-import {EventNames, SegmentTypes} from 'shared/util/constants';
-import {COUNT, createOrderIOMap} from 'shared/util/pagination';
+import {SegmentTypes} from 'shared/util/constants';
 import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
 import {CustomValue} from 'shared/util/records';
 import {
 	EntityType,
-	ReferencedObjectsContext,
+	ReferencedObjectsContext
 } from '../context/referencedObjects';
-import {fromJS, Map} from 'immutable';
-import {get} from 'lodash';
+import {fromJS, List, Map} from 'immutable';
 import {
-	getFilterCriterionIMap,
-	getIndexFromPropertyName,
-	getPropertyValue,
-	setPropertyValue,
+	getActivityKeysFromValue,
+	getFilterCriterionIMapByPropertyName,
+	getFilterValueByPropertyName,
+	getIndexFromPropertyName
 } from '../utils/custom-inputs';
-import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {isBoolean, isNil, isNull} from 'lodash';
 import {Modal} from 'shared/types/Modal';
 import {parseActivityKey, parseReferencedEntityId} from '../utils/utils';
-
-export const AssetItem: React.FC<{
-	dataSourceAssetPK?: string;
-	name: string;
-}> = ({dataSourceAssetPK = '', name}) => (
-	<div className="asset-display-root" title={dataSourceAssetPK}>
-		<div className="asset-name text-truncate">{name}</div>
-
-		{!!dataSourceAssetPK && (
-			<div
-				data-tooltip
-				data-tooltip-align="top"
-				title={getSafeDecodedURIComponent(dataSourceAssetPK)}
-			>
-				<div className="asset-url text-secondary text-truncate">
-					{getSafeDecodedURIComponent(dataSourceAssetPK)}
-				</div>
-			</div>
-		)}
-	</div>
-);
-
-const ASSET_MODAL_CONFIG_MAP = {
-	[EventNames.Comment]: {
-		columns: [activityAssetsListColumns.commentCount],
-		label: Liferay.Language.get('comments'),
-	},
-	[EventNames.Download]: {
-		columns: [activityAssetsListColumns.downloadCount],
-		label: Liferay.Language.get('downloads'),
-	},
-	[EventNames.Submit]: {
-		columns: [activityAssetsListColumns.submissionCount],
-		label: Liferay.Language.get('submissions'),
-	},
-};
-
-type Asset = {
-	dataSourceAssetPK: string;
-	id: string;
-	name: string;
-};
 
 type Touched = {
 	asset: boolean;
@@ -99,164 +56,172 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 
 	constructor(props: IBehaviorInputProps) {
 		super(props);
-		this.assetsDataFn = this.assetsDataFn.bind(this);
-		this.handleAssetSelect = this.handleAssetSelect.bind(this);
+		this.handlePageAssetSelect = this.handlePageAssetSelect.bind(this);
 		this.handleDateFilterConjunctionChange =
 			this.handleDateFilterConjunctionChange.bind(this);
 		this.handleOccurenceConjunctionChange =
 			this.handleOccurenceConjunctionChange.bind(this);
 	}
 
-	componentDidUpdate() {
-		const {
-			id,
-			valid: {asset, dateFilter, occurenceCount},
-		} = this.props;
-
-		this.validateAsset();
-
-		const valid = asset && dateFilter && occurenceCount;
-
-		if (!id && valid && !this._completedAnalytics) {
-			this._completedAnalytics = true;
-		}
-	}
-
-	_completedAnalytics = false;
-
 	declare context: React.ContextType<typeof ReferencedObjectsContext>;
 
-	assetsDataFn({delta, orderIOMap, page, query}: {[key: string]: any}) {
-		const {
-			channelId,
-			groupId,
-			property: {entityType, name},
-		} = this.props;
+	getConjunctionDateFilterIMap(value: CustomValue) {
+		return getFilterCriterionIMapByPropertyName(value, 'day');
+	}
 
-		return API.activities.searchAssets({
-			applicationId: entityType,
-			channelId,
-			cur: page,
-			delta,
-			eventId: name,
-			groupId,
-			orderIOMap,
-			query,
+	// The applicationId hint the selector uses on reload to preselect the type:
+	// a specific-asset criterion yields the activityKey's applicationId,
+	// otherwise the stored applicationId.
+
+	getApplicationId(): string | undefined {
+		const {value} = this.props;
+
+		const [activityKey] = getActivityKeysFromValue(value);
+
+		if (activityKey) {
+			return parseActivityKey(activityKey).objectType;
+		}
+
+		return getFilterValueByPropertyName(value, 'applicationId');
+	}
+
+	// Resolves each selected activityKey back to a {id, name} chip, looking up
+	// the name in the referenced entities (falling back to the id).
+
+	getSelectedItems(): Array<PageAssetItem & {activityKey: string}> {
+		const {value} = this.props;
+		const {referencedEntities} = this.context;
+
+		return getActivityKeysFromValue(value).map(activityKey => {
+			const {id} = parseActivityKey(activityKey);
+
+			const entity = referencedEntities.getIn([
+				EntityType.Assets,
+				parseReferencedEntityId(
+					id,
+					referencedEntities,
+					EntityType.Assets
+				)
+			]);
+
+			return {activityKey, id, name: entity ? entity.get('name') : id};
 		});
 	}
 
-	createActivityKey(asset: {id: string}) {
-		const {property} = this.props;
-
-		return `${property.entityType}#${property.name}#${asset.id}`;
-	}
-
-	getAssetFromContext(): Asset | undefined {
+	handlePageAssetSelect({
+		applicationId,
+		eventId,
+		selections
+	}: BehaviorSelection) {
 		const {
-			context: {referencedEntities},
+			context: {addEntities},
+			props: {onChange, touched, valid, value}
 		} = this;
 
-		const reference = referencedEntities.getIn([
-			EntityType.Assets,
-			parseReferencedEntityId(
-				this.getAssetId(),
-				referencedEntities,
-				EntityType.Assets
-			),
-		]);
+		const activityKeys = selections.map(({activityKey}) => activityKey);
 
-		return reference && reference.toJS();
-	}
-
-	getAssetId() {
-		const {value} = this.props;
-
-		const activityKeyIndex = getIndexFromPropertyName(value, ACTIVITY_KEY);
-
-		const activityKey = getPropertyValue(value, 'value', activityKeyIndex);
-
-		const {id} = parseActivityKey(activityKey);
-
-		return id;
-	}
-
-	getConjunctionDateFilterIMap(value: CustomValue) {
-		const conjunctionDateFilterIndex = getIndexFromPropertyName(
-			value,
-			'day'
-		);
-
-		if (conjunctionDateFilterIndex >= 0) {
-			return getFilterCriterionIMap(value, conjunctionDateFilterIndex);
-		}
-	}
-
-	handleAssetSelect(items: import('immutable').OrderedMap<string, any>) {
-		const {
-			context: {addEntities, addEntity},
-			props: {onChange, touched, valid, value},
-		} = this;
-
-		const asset = items.first();
-
-		const propertyIndex = getIndexFromPropertyName(value, ACTIVITY_KEY);
-
-		if (items.size === 1) {
-			addEntity?.({entityType: EntityType.Assets, payload: Map(asset)});
-
-			onChange({
-				valid: {...valid, asset: true},
-				value: setPropertyValue(
-					value,
-					'value',
-					propertyIndex,
-					this.createActivityKey(asset)
-				),
-			});
-		}
-		else {
+		if (selections.length) {
 			addEntities?.({
 				entityType: EntityType.Assets,
-				payload: items.map(Map).valueSeq().toArray(),
+				payload: selections.map(({id, name}) => Map({id, name}))
 			});
-
-			onChange(
-				items
-					.valueSeq()
-					.map((assetItem: any) => ({
-						touched,
-						valid: {...valid, asset: true},
-						value: setPropertyValue(
-							value,
-							'value',
-							propertyIndex,
-							this.createActivityKey(assetItem)
-						),
-					}))
-					.toArray()
-			);
 		}
+
+		// Specific assets -> match them by activityKey (a flat item, or an "or"
+		// group for N). No specific asset -> match every asset of the selected
+		// type via applicationId + eventId ("triggered Download on Documents").
+
+		const assetItems = activityKeys.length
+			? [
+					activityKeys.length > 1
+						? {
+								conjunctionName: Conjunctions.Or,
+								items: activityKeys.map(activityKey => ({
+									operatorName: RelationalOperators.EQ,
+									propertyName: ACTIVITY_KEY,
+									value: activityKey
+								}))
+							}
+						: {
+								operatorName: RelationalOperators.EQ,
+								propertyName: ACTIVITY_KEY,
+								value: activityKeys[0]
+							}
+				]
+			: [
+					{
+						operatorName: RelationalOperators.EQ,
+						propertyName: 'applicationId',
+						value: applicationId
+					},
+					{
+						operatorName: RelationalOperators.EQ,
+						propertyName: 'eventId',
+						value: eventId
+					}
+				];
+
+		const items = value.getIn(['criterionGroup', 'items']) as List<any>;
+
+		const dayItem = items.find(
+			(item: any) => item.get?.('propertyName') === 'day'
+		);
+
+		onChange({
+			touched: {...touched, asset: true},
+			valid: {...valid, asset: true},
+			value: value.setIn(
+				['criterionGroup', 'items'],
+				List([
+					...assetItems.map(item => fromJS(item)),
+					...(dayItem ? [dayItem] : [])
+				])
+			) as CustomValue
+		});
 	}
 
 	handleDateFilterConjunctionChange(criterion: Criterion | null) {
 		const {onChange, touched, valid, value} = this.props;
 
+		// The day item's position varies (it follows the activityKey item(s), or
+		// the applicationId + eventId pair of a single-type criterion), so
+		// locate it by property name rather than a fixed index.
+
+		const dayIndex = getIndexFromPropertyName(value, 'day');
+
+		let nextValue = value;
+
+		if (isNull(criterion)) {
+			if (dayIndex >= 0) {
+				nextValue = value.deleteIn([
+					'criterionGroup',
+					'items',
+					dayIndex
+				]) as CustomValue;
+			}
+		} else if (dayIndex >= 0) {
+			nextValue = value.mergeIn(
+				['criterionGroup', 'items', dayIndex],
+				fromJS(criterion)
+			) as CustomValue;
+		} else {
+			nextValue = value.updateIn(
+				['criterionGroup', 'items'],
+				(items: any) => (items as List<any>).push(fromJS(criterion))
+			) as CustomValue;
+		}
+
 		onChange({
 			touched: {...touched, dateFilter: criterion && criterion.touched},
 			valid: {...valid, dateFilter: isNull(criterion) || criterion.valid},
-			value: isNull(criterion)
-				? value.deleteIn(['criterionGroup', 'items', 1])
-				: value.mergeIn(
-						['criterionGroup', 'items', 1],
-						fromJS(criterion)
-					),
+			value: nextValue
 		});
 	}
 
 	handleOccurenceConjunctionChange({
 		criterion,
 		touched: occurenceCountTouched,
-		valid: occurenceCountValid,
+		valid: occurenceCountValid
 	}: {
 		criterion?: Criterion;
 		touched?: boolean;
@@ -266,7 +231,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 
 		let params: {touched?: Touched; valid?: Valid; value?: CustomValue} = {
 			touched,
-			valid,
+			valid
 		};
 
 		if (criterion?.operatorName) {
@@ -275,73 +240,47 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 				value: valueIMap.mergeIn(
 					['operator'],
 					criterion.operatorName
-				) as CustomValue,
+				) as CustomValue
 			};
-		}
-		else if (!isNil(criterion?.value)) {
+		} else if (!isNil(criterion?.value)) {
 			params = {
 				...params,
 				value: valueIMap.mergeIn(
 					['value'],
 					criterion.value
-				) as CustomValue,
+				) as CustomValue
 			};
 		}
 
 		if (isBoolean(occurenceCountTouched)) {
 			params = {
 				...params,
-				touched: {...touched, occurenceCount: occurenceCountTouched},
+				touched: {...touched, occurenceCount: occurenceCountTouched}
 			};
 		}
 
 		if (isBoolean(occurenceCountValid)) {
 			params = {
 				...params,
-				valid: {...valid, occurenceCount: occurenceCountValid},
+				valid: {...valid, occurenceCount: occurenceCountValid}
 			};
 		}
 
 		onChange(params);
 	}
 
-	invalidateAsset() {
-		const {onChange, touched, valid} = this.props;
-
-		onChange({
-			touched: {...touched, asset: true},
-			valid: {...valid, asset: false},
-		});
-	}
-
-	validateAsset() {
-		const {valid} = this.props;
-
-		if (valid.asset && !this.getAssetFromContext()) {
-			this.invalidateAsset();
-		}
-	}
-
 	render() {
 		const {
+			channelId,
 			displayValue,
-			groupId,
+			groupId = '',
 			operatorRenderer: OperatorDropdown,
 			property,
 			segmentType,
 			touched,
 			valid,
-			value,
+			value
 		} = this.props;
-
-		const {
-			columns = [activityAssetsListColumns.viewCount],
-			label = Liferay.Language.get('views'),
-		}: {columns?: any; label?: any} = get(
-			ASSET_MODAL_CONFIG_MAP,
-			property.name,
-			{}
-		);
 
 		const conjunctionCriterion = (
 			this.getConjunctionDateFilterIMap(value) ||
@@ -349,44 +288,29 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		).toJS();
 
 		return (
-			<div className="criteria-statement">
-				<Form.Group autoFit>
-					<Form.GroupItem className="entity-name" label shrink>
+			<div className='criteria-statement'>
+				<Form.Group autoFit className='page-asset-criteria'>
+					<Form.GroupItem className='entity-name' label shrink>
 						{property.entityName}
 					</Form.GroupItem>
 
 					<OperatorDropdown />
 
-					<Form.GroupItem className="display-value" label shrink>
+					<Form.GroupItem className='entity-name' label shrink>
+						{Liferay.Language.get('triggered').toLowerCase()}
+					</Form.GroupItem>
+
+					<Form.GroupItem className='display-value' label shrink>
 						<b>{displayValue}</b>
 					</Form.GroupItem>
 
-					<SelectEntityFromModal
-						columns={[
-							activityAssetsListColumns.nameUrl,
-							...columns,
-						]}
-						dataSourceFn={
-							this.assetsDataFn as (params: {
-								[key: string]: any;
-							}) => Promise<any>
-						}
-						entity={this.getAssetFromContext()}
-						error={touched.asset && !valid.asset}
+					<SelectPageAssetInput
+						action={property.name}
+						applicationId={this.getApplicationId()}
+						channelId={channelId}
 						groupId={groupId}
-						initialOrderIOMap={createOrderIOMap(COUNT)}
-						noResultsIcon="web-content"
-						onSubmit={this.handleAssetSelect}
-						orderByOptions={[
-							{
-								label,
-								value: COUNT,
-							},
-						]}
-						renderEntity={(asset) => (
-							<AssetItem {...asset} title={label} />
-						)}
-						title={property.label}
+						onSelectionsChange={this.handlePageAssetSelect}
+						selectedItems={this.getSelectedItems()}
 					/>
 				</Form.Group>
 

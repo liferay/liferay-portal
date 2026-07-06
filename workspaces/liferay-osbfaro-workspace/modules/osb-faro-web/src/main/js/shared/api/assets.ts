@@ -1,4 +1,5 @@
 import sendRequest from 'shared/util/request';
+import {RangeKeyTimeRanges} from '../util/constants';
 
 export type TopAssetMetric =
 	| 'downloadsMetric'
@@ -33,7 +34,7 @@ export async function fetchAccountTopAssets({
 	channelId,
 	groupId,
 	objectType,
-	selectedMetric,
+	selectedMetric
 }: IFetchAccountTopAssets): Promise<{items: ITopAsset[]}> {
 	return sendRequest({
 		data: {
@@ -42,9 +43,34 @@ export async function fetchAccountTopAssets({
 			pageSize: 5,
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
-			...(objectType && {objectType}),
+			...(objectType && {objectType})
 		},
 		method: 'GET',
-		path: `contacts/${groupId}/asset-summary`,
+		path: `contacts/${groupId}/asset-summary`
+	});
+}
+
+interface ISearchAssetTypes {
+	channelId: string;
+	groupId: string;
+	page?: number;
+	pageSize?: number;
+	rangeKey?: number;
+}
+
+export async function searchTypes({
+	channelId,
+	groupId,
+	page = 1,
+	pageSize = 10,
+	rangeKey = Number(RangeKeyTimeRanges.Last30Days)
+}: ISearchAssetTypes): Promise<{
+	items: Array<{id: string; name: string}>;
+	totalCount: number;
+}> {
+	return sendRequest({
+		data: {channelId, page, pageSize, rangeKey},
+		method: 'GET',
+		path: `contacts/${groupId}/asset-summary-types`
 	});
 }
