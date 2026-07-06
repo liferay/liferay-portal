@@ -54,6 +54,13 @@ jobs:
             chart_name: liferay-gcp-infrastructure-provider
             image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
             working_directory: ./cloud/helm/gcp-infrastructure-provider
+    push-observability:
+        needs: set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: observability
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/observability
     set-up-variables:
         if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         outputs:

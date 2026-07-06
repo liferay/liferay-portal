@@ -22,6 +22,7 @@ function main {
 		gcp
 		gcp-infrastructure
 		gcp-infrastructure-provider
+		observability
 	)
 
 	for chart in "${charts[@]}"

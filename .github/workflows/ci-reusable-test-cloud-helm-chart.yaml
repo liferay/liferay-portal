@@ -46,6 +46,7 @@ jobs:
                     -   gcp
                     -   gcp-infrastructure
                     -   gcp-infrastructure-provider
+                    -   observability
 on:
     workflow_call:
 permissions:
