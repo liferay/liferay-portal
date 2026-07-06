@@ -62,6 +62,26 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 	@Override
+	public void deleteSiteResourceFolder(
+			String siteExternalReferenceCode,
+			String resourceFolderExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		Folder folder = _dlAppService.getFolderByExternalReferenceCode(
+			resourceFolderExternalReferenceCode,
+			GroupUtil.getStagingAwareGroupId(
+				true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
+
+		_checkResourceFolder(
+			_dlFolderLocalService.getDLFolder(folder.getFolderId()));
+
+		_dlAppService.deleteFolder(folder.getFolderId());
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
