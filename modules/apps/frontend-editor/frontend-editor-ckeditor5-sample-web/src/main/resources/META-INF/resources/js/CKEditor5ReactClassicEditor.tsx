@@ -37,6 +37,8 @@ const CKEditor5ReactClassicEditor = ({
 				'italic',
 				'underline',
 				'|',
+				'link',
+				'|',
 				'bookmark',
 				'|',
 				'headlessImageSelector',

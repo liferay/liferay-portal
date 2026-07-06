@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: 'cb972f3ea909b4ec7bd68d5532d04b60d06ff1572cd13ae5080da6270937522a',
+	hash: 'b9158ded8907272974044a71c81a99c5866d17c2e5395c2aeedf254f8e88174a',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -407,6 +407,7 @@ module.exports = {
 			'@ckeditor/ckeditor5-watchdog/dist/index.js',
 			'@ckeditor/ckeditor5-widget/dist/index.js',
 			'@ckeditor/ckeditor5-word-count/dist/index.js',
+			'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
 			'ckeditor5/ckeditor5.css',
 			'ckeditor5-premium-features/ckeditor5-premium-features.css',
 			'eventsource',
@@ -567,6 +568,9 @@ module.exports = {
 		'cropperjs': ['*', 'default'],
 		'dagre': ['*', 'default'],
 		'date-fns': ['*'],
+		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
+			'default',
+		],
 		'fuzzy': ['*', 'default'],
 		'graphql-hooks-memcache': ['*', 'default'],
 		'highlight.js': ['*', 'default'],

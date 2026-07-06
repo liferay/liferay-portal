@@ -7,6 +7,8 @@ module.exports = {
 	alias: {
 		'@ckeditor/ckeditor5-icons/dist/index.js':
 			'./src/main/resources/META-INF/resources/js/ckeditor5/icons.ts',
+		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector':
+			'./src/main/resources/META-INF/resources/js/ckeditor5/plugins/DocumentLinkSelector.ts',
 	},
 	exports: [
 		'@ckeditor/ckeditor5-adapter-ckfinder/dist/index.js',
@@ -81,9 +83,15 @@ module.exports = {
 		'@ckeditor/ckeditor5-watchdog/dist/index.js',
 		'@ckeditor/ckeditor5-widget/dist/index.js',
 		'@ckeditor/ckeditor5-word-count/dist/index.js',
+		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
 		'ckeditor5/ckeditor5.css',
 		'ckeditor5-premium-features/ckeditor5-premium-features.css',
 		'eventsource',
 	],
 	main: './src/main/resources/META-INF/resources/js/index.ts',
+	symbols: {
+		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
+			'default',
+		],
+	},
 };

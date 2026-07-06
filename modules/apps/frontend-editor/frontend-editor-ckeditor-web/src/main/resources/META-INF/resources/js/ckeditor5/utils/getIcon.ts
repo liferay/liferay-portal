@@ -4,8 +4,13 @@
  */
 
 const getIcon = ({symbol}: {symbol: string}): string => {
+	const spritemapUrl = new URL(Liferay.Icons.spritemap, window.location.href);
+
+	spritemapUrl.host = window.location.host;
+	spritemapUrl.protocol = window.location.protocol;
+
 	return `<svg xmlns="http://www.w3.org/2000/svg">
-		<use href="${Liferay.Icons.spritemap}#${symbol}" />
+		<use href="${spritemapUrl.toString()}#${symbol}" />
 	</svg>`;
 };
 
