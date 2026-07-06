@@ -13,7 +13,7 @@ import {
 	DateRangePreset,
 	IAnalyticsDateRangeFilter,
 } from '../../types';
-import {DATE_RANGE_PRESETS} from '../../utils';
+import {DATE_RANGE_PRESETS, DATE_RANGE_PRESET_LABELS} from '../../utils';
 
 interface IProps {
 	filter: IAnalyticsDateRangeFilter;
@@ -73,7 +73,11 @@ export default function DateRangeAnalyticsFilter({
 						{Object.keys(DATE_RANGE_PRESETS).map((key: string) => (
 							<ClaySelect.Option
 								key={key}
-								label={Liferay.Language.get(key)}
+								label={
+									DATE_RANGE_PRESET_LABELS[
+										key as DateRangePreset
+									]
+								}
 								value={key}
 							/>
 						))}

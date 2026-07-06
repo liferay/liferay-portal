@@ -38,6 +38,29 @@ export const DATE_RANGE_PRESETS: TDateRangePreset = {
 	[DateRangePreset.LAST_YEAR]: computePreset(1, 'year', 'day'),
 };
 
+export const DATE_RANGE_PRESET_LABELS: Record<DateRangePreset, string> = {
+	[DateRangePreset.ALL_TIME]: Liferay.Language.get('all-time'),
+	[DateRangePreset.CUSTOM_RANGE]: Liferay.Language.get('custom-range'),
+	[DateRangePreset.LAST_WEEK]: Liferay.Language.get('last-week'),
+	[DateRangePreset.LAST_2_WEEKS]: Liferay.Util.sub(
+		Liferay.Language.get('last-x-weeks'),
+		[2]
+	),
+	[DateRangePreset.LAST_30_DAYS]: Liferay.Util.sub(
+		Liferay.Language.get('last-x-days'),
+		[30]
+	),
+	[DateRangePreset.LAST_3_MONTHS]: Liferay.Util.sub(
+		Liferay.Language.get('last-x-months'),
+		[3]
+	),
+	[DateRangePreset.LAST_6_MONTHS]: Liferay.Util.sub(
+		Liferay.Language.get('last-x-months'),
+		[6]
+	),
+	[DateRangePreset.LAST_YEAR]: Liferay.Language.get('last-year'),
+};
+
 const DEFAULT_FILTERS: TAnalyticsFilter = {
 	[AnalyticsFilters.DATE_RANGE]: {
 		active: true,
