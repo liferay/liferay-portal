@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Changeset Service
 Bundle-SymbolicName: com.liferay.changeset.service
 Bundle-Version: 4.0.40
-Liferay-Require-SchemaVersion: 2.2.0
+Liferay-Require-SchemaVersion: 3.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

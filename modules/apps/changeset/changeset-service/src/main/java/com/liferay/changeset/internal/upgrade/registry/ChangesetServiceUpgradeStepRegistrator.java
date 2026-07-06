@@ -36,8 +36,8 @@ public class ChangesetServiceUpgradeStepRegistrator
 				"classExternalReferenceCode VARCHAR(1000) null"));
 
 		registry.register(
-			"2.1.0", "2.2.0",
-			new com.liferay.changeset.internal.upgrade.v2_2_0.
+			"2.1.0", "3.0.0",
+			new com.liferay.changeset.internal.upgrade.v3_0_0.
 				ChangesetEntryIndexedColumnSizeUpgradeProcess());
 	}
 

@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.changeset.internal.upgrade.v2_2_0;
+package com.liferay.oauth2.provider.internal.upgrade.v5_0_0;
 
 import com.liferay.portal.kernel.upgrade.BaseIndexedColumnSizeUpgradeProcess;
 
 /**
  * @author Roselaine Marques
  */
-public class ChangesetEntryIndexedColumnSizeUpgradeProcess
+public class OAuth2ApplicationIndexedColumnSizeUpgradeProcess
 	extends BaseIndexedColumnSizeUpgradeProcess {
 
 	@Override
 	protected String getColumnName() {
-		return "classExternalReferenceCode";
+		return "externalReferenceCode";
 	}
 
 	@Override
 	protected String[] getGroupByColumnNames() {
-		return new String[] {"changesetCollectionId", "classNameId"};
+		return new String[] {"companyId"};
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ChangesetEntryIndexedColumnSizeUpgradeProcess
 
 	@Override
 	protected String getTableName() {
-		return "ChangesetEntry";
+		return "OAuth2Application";
 	}
 
 }
