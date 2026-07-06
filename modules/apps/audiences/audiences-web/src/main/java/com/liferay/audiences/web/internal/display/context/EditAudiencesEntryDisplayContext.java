@@ -151,6 +151,8 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"backURLTitle", getBackURLTitle()
 		).put(
+			"externalReferenceCode", _getExternalReferenceCode()
+		).put(
 			"name", _getName()
 		).put(
 			"namespace", _renderResponse.getNamespace()
@@ -207,6 +209,23 @@ public class EditAudiencesEntryDisplayContext {
 		}
 
 		return null;
+	}
+
+	private String _getExternalReferenceCode() {
+		try {
+			AudiencesEntry audiencesEntry = _getAudiencesEntry();
+
+			if (audiencesEntry != null) {
+				return audiencesEntry.getExternalReferenceCode();
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private String _getName() {

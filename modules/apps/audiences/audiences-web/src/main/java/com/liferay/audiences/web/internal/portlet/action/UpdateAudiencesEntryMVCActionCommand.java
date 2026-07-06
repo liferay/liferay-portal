@@ -8,6 +8,7 @@ package com.liferay.audiences.web.internal.portlet.action;
 import com.liferay.audiences.constants.AudiencesPortletKeys;
 import com.liferay.audiences.exception.AudiencesEntryJSONException;
 import com.liferay.audiences.exception.AudiencesEntryNameException;
+import com.liferay.audiences.exception.DuplicateAudiencesEntryExternalReferenceCodeException;
 import com.liferay.audiences.exception.NoSuchAudiencesEntryException;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryService;
@@ -52,6 +53,8 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 		long audiencesEntryId = ParamUtil.getLong(
 			actionRequest, "audiencesEntryId");
 
+		String externalReferenceCode = ParamUtil.getString(
+			actionRequest, "externalReferenceCode");
 		String json = ParamUtil.getString(actionRequest, "json");
 		String name = ParamUtil.getString(actionRequest, "name");
 
@@ -63,11 +66,11 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 
 			if (audiencesEntryId <= 0) {
 				audiencesEntry = _audiencesEntryService.addAudiencesEntry(
-					null, json, name, serviceContext);
+					externalReferenceCode, json, name, serviceContext);
 			}
 			else {
 				audiencesEntry = _audiencesEntryService.updateAudiencesEntry(
-					audiencesEntryId, json, name);
+					audiencesEntryId, externalReferenceCode, json, name);
 			}
 
 			String redirect = ParamUtil.getString(actionRequest, "redirect");
@@ -97,7 +100,9 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 			}
 			else if (exception instanceof AudiencesEntryJSONException ||
-					 exception instanceof AudiencesEntryNameException) {
+					 exception instanceof AudiencesEntryNameException ||
+					 exception instanceof
+						 DuplicateAudiencesEntryExternalReferenceCodeException) {
 
 				SessionErrors.add(
 					actionRequest, exception.getClass(), exception);

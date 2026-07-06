@@ -26,6 +26,8 @@ renderResponse.setTitle(editAudiencesEntryDisplayContext.getTitle());
 
 <liferay-ui:error embed="<%= false %>" exception="<%= AudiencesEntryNameException.class %>" message="please-enter-a-valid-name" />
 
+<liferay-ui:error embed="<%= false %>" exception="<%= DuplicateAudiencesEntryExternalReferenceCodeException.class %>" message="please-enter-a-unique-external-reference-code" />
+
 <portlet:actionURL name="/audiences/update_audiences_entry" var="updateAudiencesEntryActionURL" />
 
 <aui:form action="<%= updateAudiencesEntryActionURL %>" method="post" name="fm">

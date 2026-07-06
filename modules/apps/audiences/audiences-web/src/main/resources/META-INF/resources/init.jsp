@@ -17,6 +17,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.audiences.exception.AudiencesEntryJSONException" %><%@
 page import="com.liferay.audiences.exception.AudiencesEntryNameException" %><%@
+page import="com.liferay.audiences.exception.DuplicateAudiencesEntryExternalReferenceCodeException" %><%@
 page import="com.liferay.audiences.exception.NoSuchAudiencesEntryException" %><%@
 page import="com.liferay.audiences.web.internal.constants.AudiencesFDSNames" %><%@
 page import="com.liferay.audiences.web.internal.display.context.AudiencesDisplayContext" %><%@
