@@ -31,6 +31,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,21 +61,20 @@ public class AMImageContentTransformerTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_amImageConfigurationEntry =
-			_amImageConfigurationHelper.addAMImageConfigurationEntry(
-				_group.getCompanyId(), StringUtil.randomString(),
-				StringUtil.randomString(), StringUtil.randomString(),
-				HashMapBuilder.put(
-					"max-height", "600"
-				).put(
-					"max-width", "800"
-				).build());
+		_amImageConfigurationEntries.add(
+			_addAMImageConfigurationEntry(300, 300));
+		_amImageConfigurationEntries.add(
+			_addAMImageConfigurationEntry(600, 800));
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
-			_group.getCompanyId(), _amImageConfigurationEntry.getUUID());
+		for (AMImageConfigurationEntry amImageConfigurationEntry :
+				_amImageConfigurationEntries) {
+
+			_amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
+				_group.getCompanyId(), amImageConfigurationEntry.getUUID());
+		}
 	}
 
 	@Test
@@ -109,6 +110,20 @@ public class AMImageContentTransformerTest {
 		Assert.assertTrue(transformedHTML, transformedHTML.matches(regex));
 
 		_assertMatcher(fileEntriesCount, regex, transformedHTML);
+	}
+
+	private AMImageConfigurationEntry _addAMImageConfigurationEntry(
+			int maxHeight, int maxWidth)
+		throws Exception {
+
+		return _amImageConfigurationHelper.addAMImageConfigurationEntry(
+			_group.getCompanyId(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			HashMapBuilder.put(
+				"max-height", String.valueOf(maxHeight)
+			).put(
+				"max-width", String.valueOf(maxWidth)
+			).build());
 	}
 
 	private FileEntry _addImageFileEntry(ServiceContext serviceContext)
@@ -166,7 +181,8 @@ public class AMImageContentTransformerTest {
 			"\\/><\\/picture>");
 	}
 
-	private AMImageConfigurationEntry _amImageConfigurationEntry;
+	private final List<AMImageConfigurationEntry> _amImageConfigurationEntries =
+		new ArrayList<>();
 
 	@Inject
 	private AMImageConfigurationHelper _amImageConfigurationHelper;
