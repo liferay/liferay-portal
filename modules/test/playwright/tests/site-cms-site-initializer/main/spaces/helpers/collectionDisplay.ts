@@ -246,7 +246,7 @@ export async function createDynamicCollectionWithFilterViaUI(
  * Creates a CMS vocabulary (available to all asset libraries / Spaces) with a
  * single category, and returns the category's id and name.
  */
-export async function createCmsCategory(apiHelpers: DataApiHelpers) {
+export async function createCMSCategory(apiHelpers: DataApiHelpers) {
 	const cmsSiteId = await apiHelpers.headlessAdminUser
 		.getSiteByFriendlyUrlPath('cms')
 		.then((response) => response.id);

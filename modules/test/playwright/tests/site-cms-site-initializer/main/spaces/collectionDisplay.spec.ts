@@ -17,7 +17,7 @@ import {
 	CMS_FILE_APPLICATION,
 	CMS_WEB_CONTENT_APPLICATION,
 	addMappedCollectionDisplay,
-	createCmsCategory,
+	createCMSCategory,
 	createDynamicCollection,
 	createDynamicCollectionWithFilterViaUI,
 	createEventStructure,
@@ -383,7 +383,7 @@ test(
 	}) => {
 		const space = await createSpace(apiHelpers);
 
-		const category = await createCmsCategory(apiHelpers);
+		const category = await createCMSCategory(apiHelpers);
 
 		const categorizedTitle = `Categorized ${getRandomString()}`;
 		const uncategorizedTitle = `Uncategorized ${getRandomString()}`;
