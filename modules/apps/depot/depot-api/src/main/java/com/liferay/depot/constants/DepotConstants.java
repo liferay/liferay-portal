@@ -18,8 +18,6 @@ public class DepotConstants {
 
 	public static final int TYPE_ASSET_LIBRARY = 0;
 
-	public static final int TYPE_CATALOG = 4;
-
 	public static final int TYPE_DESIGN_LIBRARY = 3;
 
 	public static final int TYPE_PROJECT = 2;

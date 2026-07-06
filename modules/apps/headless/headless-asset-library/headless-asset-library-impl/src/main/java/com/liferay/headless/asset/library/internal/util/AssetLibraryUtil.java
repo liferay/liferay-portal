@@ -22,9 +22,6 @@ public class AssetLibraryUtil {
 		if (depotEntryType == DepotConstants.TYPE_ASSET_LIBRARY) {
 			return AssetLibrary.Type.ASSET_LIBRARY;
 		}
-		else if (depotEntryType == DepotConstants.TYPE_CATALOG) {
-			return AssetLibrary.Type.CATALOG;
-		}
 		else if (depotEntryType == DepotConstants.TYPE_DESIGN_LIBRARY) {
 			return AssetLibrary.Type.DESIGN_LIBRARY;
 		}
@@ -38,9 +35,6 @@ public class AssetLibraryUtil {
 	public static int getDepotEntryType(AssetLibrary.Type assetLibraryType) {
 		if (Objects.equals(assetLibraryType, AssetLibrary.Type.ASSET_LIBRARY)) {
 			return DepotConstants.TYPE_ASSET_LIBRARY;
-		}
-		else if (Objects.equals(assetLibraryType, AssetLibrary.Type.CATALOG)) {
-			return DepotConstants.TYPE_CATALOG;
 		}
 		else if (Objects.equals(
 					assetLibraryType, AssetLibrary.Type.DESIGN_LIBRARY)) {
@@ -63,9 +57,6 @@ public class AssetLibraryUtil {
 		HashMapBuilder.put(
 			StringUtil.toLowerCase(AssetLibrary.Type.ASSET_LIBRARY.getValue()),
 			getDepotEntryType(AssetLibrary.Type.ASSET_LIBRARY)
-		).put(
-			StringUtil.toLowerCase(AssetLibrary.Type.CATALOG.getValue()),
-			getDepotEntryType(AssetLibrary.Type.CATALOG)
 		).put(
 			StringUtil.toLowerCase(AssetLibrary.Type.DESIGN_LIBRARY.getValue()),
 			getDepotEntryType(AssetLibrary.Type.DESIGN_LIBRARY)

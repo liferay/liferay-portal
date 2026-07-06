@@ -8,7 +8,9 @@ package com.liferay.site.pim.site.initializer.internal.feature.flag.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -58,15 +60,6 @@ public class PIMFeatureFlagListenerTest {
 			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
 				"L_PIM_PRODUCT_TYPES", companyId));
 
-		ObjectDefinition pimCatalogObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_PIM_CATALOG", companyId);
-
-		Assert.assertEquals(
-			ObjectDefinitionConstants.SCOPE_DEPOT,
-			pimCatalogObjectDefinition.getScope());
-
 		ObjectDefinition pimBaseSKUObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -75,10 +68,21 @@ public class PIMFeatureFlagListenerTest {
 		Assert.assertEquals(
 			ObjectDefinitionConstants.SCOPE_DEPOT,
 			pimBaseSKUObjectDefinition.getScope());
+
+		ObjectDefinitionSetting domainObjectDefinitionSetting =
+			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+				pimBaseSKUObjectDefinition.getObjectDefinitionId(), "domain");
+
+		Assert.assertEquals(
+			"space", domainObjectDefinitionSetting.getValue());
 	}
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
