@@ -81,6 +81,57 @@ definition {
 			threadSubject = "MB Thread Message Subject");
 	}
 
+	@priority = 3
+	@refactordone
+	test CanViewCorrectViewPermissionsInMessageBoardsQuickReplyInPrivateSite {
+		HeadlessSite.addSite(
+			membershipType = "Private",
+			siteName = "Blank Site Name");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Blank Site Name",
+			layoutName = "Site Page Name");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = 1,
+			groupName = "Blank Site Name",
+			layoutName = "Site Page Name",
+			widgetName = "Message Boards");
+
+		MessageboardsThread.openToAddThread(
+			groupName = "Blank Site Name",
+			layoutName = "site-page-name",
+			siteURLKey = "blank-site-name");
+
+		MessageboardsThread.addPGWithPermissions(
+			skipNavigation = "true",
+			threadBody = "MB Thread Message Body",
+			threadSubject = "MB Thread Message Subject",
+			viewableBySelection = "Owner");
+
+		JSONMBMessage.addMessageReply(
+			groupName = "Blank Site Name",
+			replyBody = "MB Thread Message Subject Reply",
+			threadSubject = "MB Thread Message Subject");
+
+		PermissionsInline.gotoMessageBoardsThreadReplyPG(
+			pageName = "Site Page Name",
+			siteName = "Blank Site Name",
+			siteURL = "true",
+			threadReplyBody = "MB Thread Message Subject Reply",
+			threadSubject = "MB Thread Message Subject");
+
+		for (var roleTitle : list "Power User,User") {
+			PermissionsInline.viewPermissionsRemoved(
+				permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
+				roleTitle = ${roleTitle});
+		}
+
+		PermissionsInline.viewPermissionsChecked(
+			permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
+			roleTitle = "Owner");
+	}
+
 	@description = "This test covers LPS-97376 and LPS-135908. It ensures that a user can view the subscribed message via the notification only when the user has the required permissions."
 	@priority = 4
 	test CanViewMessageViaNotificationOnContentPageOnlyWithPermissions {
@@ -188,57 +239,6 @@ definition {
 			locator1 = "MessageBoardsThread#THREAD_BODY");
 
 		Alert.viewErrorMessage(errorMessage = "Close Error:You do not have the required permissions.");
-	}
-
-	@priority = 3
-	@refactordone
-	test CanViewCorrectViewPermissionsInMessageBoardsQuickReplyInPrivateSite {
-		HeadlessSite.addSite(
-			membershipType = "Private",
-			siteName = "Blank Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Blank Site Name",
-			layoutName = "Site Page Name");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Blank Site Name",
-			layoutName = "Site Page Name",
-			widgetName = "Message Boards");
-
-		MessageboardsThread.openToAddThread(
-			groupName = "Blank Site Name",
-			layoutName = "site-page-name",
-			siteURLKey = "blank-site-name");
-
-		MessageboardsThread.addPGWithPermissions(
-			skipNavigation = "true",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject",
-			viewableBySelection = "Owner");
-
-		JSONMBMessage.addMessageReply(
-			groupName = "Blank Site Name",
-			replyBody = "MB Thread Message Subject Reply",
-			threadSubject = "MB Thread Message Subject");
-
-		PermissionsInline.gotoMessageBoardsThreadReplyPG(
-			pageName = "Site Page Name",
-			siteName = "Blank Site Name",
-			siteURL = "true",
-			threadReplyBody = "MB Thread Message Subject Reply",
-			threadSubject = "MB Thread Message Subject");
-
-		for (var roleTitle : list "Power User,User") {
-			PermissionsInline.viewPermissionsRemoved(
-				permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
-				roleTitle = ${roleTitle});
-		}
-
-		PermissionsInline.viewPermissionsChecked(
-			permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
-			roleTitle = "Owner");
 	}
 
 	@description = "This is a test for LPS-136933, LPS-136934, LPS-136936 and LPS-136938. It checks that a site member cannot delete, edit, or subscribe to message board content without permissions."
