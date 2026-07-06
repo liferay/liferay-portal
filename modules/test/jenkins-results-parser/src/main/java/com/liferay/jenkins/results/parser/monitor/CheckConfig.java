@@ -30,7 +30,7 @@ public class CheckConfig {
 		return _cadence;
 	}
 
-	public String getId() {
+	public String getID() {
 		return _id;
 	}
 

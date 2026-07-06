@@ -39,7 +39,7 @@ public class CheckConfigLoaderTest
 
 		CheckConfig checkConfig = checkConfigs.get(0);
 
-		Assert.assertEquals("masters", checkConfig.getId());
+		Assert.assertEquals("masters", checkConfig.getID());
 		Assert.assertEquals("http-endpoint", checkConfig.getType());
 		Assert.assertEquals(
 			CheckConfig.Severity.HIGH, checkConfig.getSeverity());

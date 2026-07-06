@@ -14,6 +14,6 @@ public interface Check {
 
 	public CheckConfig getCheckConfig();
 
-	public String getId();
+	public String getID();
 
 }

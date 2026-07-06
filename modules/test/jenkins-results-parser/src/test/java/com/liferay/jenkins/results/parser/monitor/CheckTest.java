@@ -35,14 +35,14 @@ public class CheckTest extends com.liferay.jenkins.results.parser.Test {
 			}
 
 			@Override
-			public String getId() {
-				return checkConfig.getId();
+			public String getID() {
+				return checkConfig.getID();
 			}
 
 		};
 
 		Assert.assertSame(checkResult, check.execute());
-		Assert.assertEquals("masters", check.getId());
+		Assert.assertEquals("masters", check.getID());
 		Assert.assertSame(checkConfig, check.getCheckConfig());
 	}
 
