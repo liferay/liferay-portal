@@ -81,7 +81,7 @@ definition {
 			threadSubject = "MB Thread Message Subject");
 	}
 
-	@description = "This test covers LPS-97376, This ensures that a user can not view the subscribed message via the notification without permissions."
+	@description = "This test covers LPS-97376 and LPS-135908. It ensures that a user can view the subscribed message via the notification only when the user has the required permissions."
 	@priority = 4
 	test CanViewMessageViaNotificationOnContentPageOnlyWithPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
@@ -146,6 +146,22 @@ definition {
 		MessageboardsThread.replyPG(
 			threadReplyBody = "MB Body Reply",
 			threadSubject = "MB Thread Message Subject");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Notifications.gotoNotifications();
+
+		Notifications.navigateToContent(contentBody = "MB Thread Message Subject");
+
+		AssertVisible(
+			key_threadBody = "MB Body Reply",
+			locator1 = "MessageBoardsThread#THREAD_BODY");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
 
 		Navigator.gotoPage(pageName = "Message Boards Page");
 
@@ -303,76 +319,6 @@ definition {
 		PermissionsInline.viewPermissionsChecked(
 			permissionDefinitionKey = "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX",
 			roleTitle = "Owner");
-	}
-
-	@description = "This test covers LPS-135908, This ensures that a user can view the reply message of a thread via the notification."
-	@priority = 3
-	test CanViewMessageViaNotificationOnContentPage {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Message Boards Page",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Message Boards Page",
-			siteName = "Guest");
-
-		PageEditor.addWidget(portletName = "Message Boards");
-
-		PageEditor.publish();
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		PermissionsInline.gotoMessageBoardsThreadPG(threadSubject = "MB Thread Message Subject");
-
-		PermissionsInline.addOrRemoveSubscribePermissionFromAllRoles(
-			addOrRemoveViewPermission = "Add",
-			roleList = "User");
-
-		PermissionsInline.addOrRemoveViewPermissionFromAllRoles(
-			addOrRemoveViewPermission = "Add",
-			roleList = "User");
-
-		JSONMBMessage.subscribeToMessage(
-			groupName = "Guest",
-			threadSubject = "MB Thread Message Subject",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.replyPG(
-			threadReplyBody = "MB Thread Reply Body",
-			threadSubject = "MB Thread Message Subject");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Notifications.gotoNotifications();
-
-		Notifications.navigateToContent(contentBody = "MB Thread Message Subject");
-
-		AssertVisible(
-			key_threadBody = "MB Thread Reply Body",
-			locator1 = "MessageBoardsThread#THREAD_BODY");
 	}
 
 	@description = "This is a test for LPS-136933, LPS-136934, LPS-136936 and LPS-136938. It checks that a site member cannot delete, edit, or subscribe to message board content without permissions."
