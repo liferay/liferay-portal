@@ -15,7 +15,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -33,18 +32,6 @@ public class AMImageConfigurationTest extends BaseAMImageConfigurationTestCase {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@Test
-	public void testEmptyConfiguration() throws Exception {
-		Iterable<AMImageConfigurationEntry> amImageConfigurationEntries =
-			_amImageConfigurationHelper.getAMImageConfigurationEntries(
-				TestPropsValues.getCompanyId());
-
-		Iterator<AMImageConfigurationEntry> iterator =
-			amImageConfigurationEntries.iterator();
-
-		Assert.assertFalse(iterator.hasNext());
-	}
 
 	@Test
 	public void testExistantConfigurationEntry() throws Exception {
@@ -88,16 +75,8 @@ public class AMImageConfigurationTest extends BaseAMImageConfigurationTestCase {
 			_amImageConfigurationHelper.getAMImageConfigurationEntries(
 				TestPropsValues.getCompanyId());
 
-		Assert.assertEquals(
-			amImageConfigurationEntries.toString(), 1,
-			amImageConfigurationEntries.size());
-
-		Iterator<AMImageConfigurationEntry> iterator =
-			amImageConfigurationEntries.iterator();
-
-		AMImageConfigurationEntry amImageConfigurationEntry = iterator.next();
-
-		Assert.assertEquals("1", amImageConfigurationEntry.getUUID());
+		assertContains(amImageConfigurationEntries, "1");
+		assertNotContains(amImageConfigurationEntries, "2");
 	}
 
 	@Test
@@ -128,20 +107,8 @@ public class AMImageConfigurationTest extends BaseAMImageConfigurationTestCase {
 				TestPropsValues.getCompanyId(),
 				amImageConfigurationEntry -> true);
 
-		Assert.assertEquals(
-			amImageConfigurationEntries.toString(), 2,
-			amImageConfigurationEntries.size());
-
-		Iterator<AMImageConfigurationEntry> iterator =
-			amImageConfigurationEntries.iterator();
-
-		AMImageConfigurationEntry amImageConfigurationEntry = iterator.next();
-
-		Assert.assertEquals("1", amImageConfigurationEntry.getUUID());
-
-		amImageConfigurationEntry = iterator.next();
-
-		Assert.assertEquals("2", amImageConfigurationEntry.getUUID());
+		assertContains(amImageConfigurationEntries, "1");
+		assertContains(amImageConfigurationEntries, "2");
 	}
 
 	@Test
@@ -174,13 +141,10 @@ public class AMImageConfigurationTest extends BaseAMImageConfigurationTestCase {
 				"max-width", "100"
 			).build());
 
-		Collection<AMImageConfigurationEntry> amImageConfigurationEntries =
+		assertContains(
 			_amImageConfigurationHelper.getAMImageConfigurationEntries(
-				TestPropsValues.getCompanyId());
-
-		Assert.assertFalse(
-			amImageConfigurationEntries.toString(),
-			amImageConfigurationEntries.isEmpty());
+				TestPropsValues.getCompanyId()),
+			"1");
 	}
 
 	@Test

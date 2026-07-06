@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -24,12 +26,30 @@ public abstract class BaseAMImageConfigurationTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		_deleteAllConfigurationEntries();
+		_initialAMImageConfigurationEntryUuids =
+			_getAMImageConfigurationEntryUuids();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_deleteAllConfigurationEntries();
+		AMImageConfigurationHelper amImageConfigurationHelper =
+			getAMImageConfigurationHelper();
+
+		for (String uuid : _getAMImageConfigurationEntryUuids()) {
+			if (!_initialAMImageConfigurationEntryUuids.contains(uuid)) {
+				amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
+					TestPropsValues.getCompanyId(), uuid);
+			}
+		}
+	}
+
+	protected void assertContains(
+		Collection<AMImageConfigurationEntry> amImageConfigurationEntries,
+		String uuid) {
+
+		Assert.assertTrue(
+			amImageConfigurationEntries.toString(),
+			_contains(amImageConfigurationEntries, uuid));
 	}
 
 	protected void assertDisabled(
@@ -46,6 +66,15 @@ public abstract class BaseAMImageConfigurationTestCase {
 		Assert.assertTrue(amImageConfigurationEntry.isEnabled());
 	}
 
+	protected void assertNotContains(
+		Collection<AMImageConfigurationEntry> amImageConfigurationEntries,
+		String uuid) {
+
+		Assert.assertFalse(
+			amImageConfigurationEntries.toString(),
+			_contains(amImageConfigurationEntries, uuid));
+	}
+
 	protected abstract AMImageConfigurationHelper
 		getAMImageConfigurationHelper();
 
@@ -56,7 +85,24 @@ public abstract class BaseAMImageConfigurationTestCase {
 
 	}
 
-	private void _deleteAllConfigurationEntries() throws Exception {
+	private boolean _contains(
+		Collection<AMImageConfigurationEntry> amImageConfigurationEntries,
+		String uuid) {
+
+		for (AMImageConfigurationEntry amImageConfigurationEntry :
+				amImageConfigurationEntries) {
+
+			if (uuid.equals(amImageConfigurationEntry.getUUID())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Set<String> _getAMImageConfigurationEntryUuids() throws Exception {
+		Set<String> uuids = new HashSet<>();
+
 		AMImageConfigurationHelper amImageConfigurationHelper =
 			getAMImageConfigurationHelper();
 
@@ -68,11 +114,13 @@ public abstract class BaseAMImageConfigurationTestCase {
 		for (AMImageConfigurationEntry amImageConfigurationEntry :
 				amImageConfigurationEntries) {
 
-			amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
-				TestPropsValues.getCompanyId(),
-				amImageConfigurationEntry.getUUID());
+			uuids.add(amImageConfigurationEntry.getUUID());
 		}
+
+		return uuids;
 	}
+
+	private Set<String> _initialAMImageConfigurationEntryUuids;
 
 	@Inject
 	private MessageBus _messageBus;
