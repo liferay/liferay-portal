@@ -116,8 +116,9 @@ export class ProductPublisherPage {
 		this.removeTagNameButton = async (tagName: string) => {
 			return this.configurationFrame.getByLabel(`Remove ${tagName}`);
 		};
-		this.tagsInput = this.configurationFrame.getByLabel('Tags', {
+		this.tagsInput = this.configurationFrame.getByRole('combobox', {
 			exact: true,
+			name: 'Tags',
 		});
 	}
 
