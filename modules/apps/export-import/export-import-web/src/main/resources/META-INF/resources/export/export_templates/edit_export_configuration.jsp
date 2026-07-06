@@ -7,6 +7,17 @@
 
 <%@ include file="/export/init.jsp" %>
 
+<%
+if (!FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-96546")) {
+%>
+
+	<liferay-util:include page="/export/view_export_layouts.jsp" servletContext="<%= application %>" />
+
+<%
+	return;
+}
+%>
+
 <liferay-staging:defineObjects />
 
 <%
