@@ -69,12 +69,11 @@ public class PIMFeatureFlagListenerTest {
 			ObjectDefinitionConstants.SCOPE_DEPOT,
 			pimBaseSKUObjectDefinition.getScope());
 
-		ObjectDefinitionSetting domainObjectDefinitionSetting =
+		ObjectDefinitionSetting objectDefinitionSetting =
 			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
 				pimBaseSKUObjectDefinition.getObjectDefinitionId(), "domain");
 
-		Assert.assertEquals(
-			"space", domainObjectDefinitionSetting.getValue());
+		Assert.assertEquals("space", objectDefinitionSetting.getValue());
 	}
 
 	@Inject
