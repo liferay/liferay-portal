@@ -1130,10 +1130,10 @@ public class JournalEditArticleDisplayContext {
 					return null;
 				}
 
+				String pattern = "yyyy-MM-dd HH:mm";
+
 				boolean formatAmPm = DateUtil.isFormatAmPm(
 					_themeDisplay.getLocale());
-
-				String pattern = "yyyy-MM-dd HH:mm";
 
 				if (formatAmPm) {
 					pattern = "yyyy-MM-dd hh:mm a";
