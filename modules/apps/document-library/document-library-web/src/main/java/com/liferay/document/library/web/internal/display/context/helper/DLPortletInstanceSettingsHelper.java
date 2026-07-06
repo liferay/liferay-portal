@@ -163,10 +163,11 @@ public class DLPortletInstanceSettingsHelper {
 		try {
 			ThemeDisplay themeDisplay = _dlRequestHelper.getThemeDisplay();
 
-			Group selectedGroup =
+			Group selectedGroup = _getSelectedGroup(
 				GroupLocalServiceUtil.getGroupByExternalReferenceCode(
 					selectedGroupExternalReferenceCode,
-					themeDisplay.getCompanyId());
+					themeDisplay.getCompanyId()),
+				themeDisplay);
 
 			String selectedRepositoryExternalReferenceCode =
 				dlPortletInstanceSettings.
@@ -254,9 +255,22 @@ public class DLPortletInstanceSettingsHelper {
 			return themeDisplay.getScopeGroup();
 		}
 
-		return GroupLocalServiceUtil.getGroupByExternalReferenceCode(
-			dlPortletInstanceSettings.getSelectedGroupExternalReferenceCode(),
-			themeDisplay.getCompanyId());
+		return _getSelectedGroup(
+			GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+				dlPortletInstanceSettings.
+					getSelectedGroupExternalReferenceCode(),
+				themeDisplay.getCompanyId()),
+			themeDisplay);
+	}
+
+	private Group _getSelectedGroup(Group group, ThemeDisplay themeDisplay) {
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
+		if (group.isStagingGroup() && !scopeGroup.isStagingGroup()) {
+			return group.getLiveGroup();
+		}
+
+		return group;
 	}
 
 	private void _populateDisplayViews() {
