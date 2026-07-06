@@ -1,4 +1,5 @@
 import ClayLink from '@clayui/link';
+import {ClayIconSpriteContext as PortalClayIconSpriteContext} from '@clayui/icon-runtime';
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
 import Label from '@clayui/label';
 import Loading from 'shared/components/Loading';
@@ -196,15 +197,21 @@ const FrontendDataSet = ({
 		return <Loading />;
 	}
 
+	// The bundled @clayui/icon context (provided in App.tsx) does not reach the
+	// FrontendDataSet, which renders with the DXP's runtime @clayui/icon. Feed
+	// that runtime context the same sprite so the data set's icons resolve.
+
 	return (
-		<BaseFrontendDataSet
-			{...props}
-			configInURLBehavior={configInURLBehavior}
-			snapshots={
-				snapshots as unknown as IBaseFrontendDataSetProps['snapshots']
-			}
-			snapshotsEnabled={snapshotsEnabled}
-		/>
+		<PortalClayIconSpriteContext.Provider value="/o/osb-faro-web/dist/sprite.svg">
+			<BaseFrontendDataSet
+				{...props}
+				configInURLBehavior={configInURLBehavior}
+				snapshots={
+					snapshots as unknown as IBaseFrontendDataSetProps['snapshots']
+				}
+				snapshotsEnabled={snapshotsEnabled}
+			/>
+		</PortalClayIconSpriteContext.Provider>
 	);
 };
 

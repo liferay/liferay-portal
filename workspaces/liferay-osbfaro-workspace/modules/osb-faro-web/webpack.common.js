@@ -1,5 +1,6 @@
 const AutoprefixerPlugin = require('autoprefixer');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const NormalizeCharsetPlugin = require('postcss-normalize-charset');
 const path = require('path');
@@ -29,6 +30,12 @@ const config = {
 	},
 	externals: [
 		{
+
+			// Bundle @clayui/icon like the rest of Clay, but expose the DXP's
+			// runtime @clayui/icon under this synthetic specifier so we can feed
+			// its ClayIconSpriteContext (the one FrontendDataSet reads).
+
+			'@clayui/icon-runtime': '@clayui/icon',
 			'@liferay/frontend-data-set-web':
 				'/o/frontend-data-set-web/__liferay__/index.js',
 			react: 'react',
@@ -194,6 +201,72 @@ const config = {
 	],
 	target: 'web',
 };
+
+// Warn when this app's bundled @clayui/icon diverges from the portal's
+// (liferay-portal/modules/node_modules). FrontendDataSet renders with the
+// portal's runtime @clayui/icon, and this app bridges the portal's
+// ClayIconSpriteContext (see the @clayui/icon-runtime external), so a divergent
+// @clayui/icon can break FrontendDataSet icons. Only @clayui/icon crosses that
+// boundary -- the rest of Clay is bundled and self-contained, and React is
+// external.
+
+function warnOnClayIconVersionMismatch() {
+	const readVersion = (...segments) => {
+		try {
+			return JSON.parse(
+				fs.readFileSync(path.resolve(__dirname, ...segments), 'utf8')
+			).version;
+		}
+		catch (error) {
+			return null;
+		}
+	};
+
+	const bundledVersion =
+		readVersion('node_modules', '@clayui', 'icon', 'package.json') ||
+		readVersion(
+			'..',
+			'..',
+			'node_modules',
+			'@clayui',
+			'icon',
+			'package.json'
+		);
+	const portalVersion = readVersion(
+		'..',
+		'..',
+		'..',
+		'..',
+		'modules',
+		'node_modules',
+		'@clayui',
+		'icon',
+		'package.json'
+	);
+
+	// The portal node_modules is absent in checkouts that install only the
+	// workspace (e.g. CI); skip the check but report why it did not run.
+
+	if (!portalVersion) {
+
+		// eslint-disable-next-line no-console
+		console.warn(
+			`\n[osb-faro-web] Unable to verify @clayui/icon parity: the portal node_modules (liferay-portal/modules/node_modules) is not installed, so the portal @clayui/icon version could not be read. FrontendDataSet uses the portal's @clayui/icon at runtime; verify it matches this app's bundled version (${bundledVersion || 'unknown'}) manually.\n`
+		);
+
+		return;
+	}
+
+	if (bundledVersion && bundledVersion !== portalVersion) {
+
+		// eslint-disable-next-line no-console
+		console.warn(
+			`\n[osb-faro-web] @clayui/icon version mismatch: this app bundles ${bundledVersion} but the portal provides ${portalVersion}. FrontendDataSet uses the portal's @clayui/icon at runtime and this app bridges its ClayIconSpriteContext, so a divergent version can break FrontendDataSet icons. Align this app's @clayui/icon with the portal.\n`
+		);
+	}
+}
+
+warnOnClayIconVersionMismatch();
 
 module.exports = {
 	config,
