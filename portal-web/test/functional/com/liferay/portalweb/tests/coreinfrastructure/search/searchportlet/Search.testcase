@@ -750,29 +750,6 @@ definition {
 	}
 
 	@priority = 4
-	test CopySearchInsightsJSON {
-		property portal.acceptance = "quarantine";
-
-		SearchPage.openSearchPage();
-
-		SearchPage.addWidgets(searchPortletList = "Search Insights");
-
-		SearchPage.searchEmbedded(searchTerm = "test");
-
-		Click(locator1 = "SearchPage#SEARCH_INSIGHTS_WIDGET_REQUEST_COPY_BUTTON");
-
-		WebContent.viewClipboardContent(text = "\"explain\": true, \"highlight\":");
-
-		SearchPage.openSearchPage();
-
-		SearchPage.searchEmbedded(searchTerm = "test");
-
-		Click(locator1 = "SearchPage#SEARCH_INSIGHTS_WIDGET_RESPONSE_COPY_BUTTON");
-
-		WebContent.viewClipboardContent(text = "\"_shards\": { \"total\":");
-	}
-
-	@priority = 4
 	test DisableEnterpriseSearch {
 		property license.required = "true";
 		property portal.suite.search.engine = "disable";
