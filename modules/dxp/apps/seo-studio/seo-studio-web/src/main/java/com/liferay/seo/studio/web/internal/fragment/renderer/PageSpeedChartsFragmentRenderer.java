@@ -72,13 +72,11 @@ public class PageSpeedChartsFragmentRenderer
 				Pagination.of(1, 1), null,
 				new Sort[] {new Sort("dateCreated", true)});
 
-			if (page != null) {
-				for (ObjectEntry objectEntry : page.getItems()) {
-					return objectEntry;
-				}
+			if (page == null) {
+				return null;
 			}
 
-			return null;
+			return page.fetchFirstItem();
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

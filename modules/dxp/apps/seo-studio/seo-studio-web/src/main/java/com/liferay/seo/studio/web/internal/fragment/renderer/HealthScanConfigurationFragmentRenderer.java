@@ -71,11 +71,11 @@ public class HealthScanConfigurationFragmentRenderer
 				getDTOConverterContext(objectDefinition), null,
 				Pagination.of(1, 1), null, null);
 
-			for (ObjectEntry objectEntry : page.getItems()) {
-				return objectEntry;
+			if (page == null) {
+				return null;
 			}
 
-			return null;
+			return page.fetchFirstItem();
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
