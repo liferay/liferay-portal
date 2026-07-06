@@ -109,12 +109,14 @@ public class AddFormInstanceRecordMVCActionCommandTest {
 				TestPropsValues.getUserId());
 
 		String value1 = RandomTestUtil.randomString();
+
+		_mockLiferayPortletActionRequest.addParameter(
+			"ddm$$TextField1$1$0$$pt_BR", value1);
+
 		String value2 = RandomTestUtil.randomString();
 
 		_mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField1$$0$$pt_BR", value1);
-		_mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField2$$0$$pt_BR", value2);
+			"ddm$$TextField2$2$0$$pt_BR", value2);
 
 		_mockLiferayPortletActionRequest.addParameter(
 			"defaultLanguageId", "pt_BR");
@@ -144,73 +146,21 @@ public class AddFormInstanceRecordMVCActionCommandTest {
 
 		_assertValue("TextField1", ddmFormFieldValuesMap, value1);
 		_assertValue("TextField2", ddmFormFieldValuesMap, value2);
-	}
-
-	@Test
-	public void testProcessActionKeepsInvisibleFieldValueOnEdit()
-		throws Exception {
-
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
-			DDMFormTestUtil.createAvailableLocales(
-				LocaleUtil.BRAZIL, LocaleUtil.US),
-			LocaleUtil.US);
-
-		DDMFormTestUtil.addDDMFormRule(
-			Collections.singletonList("setVisible('TextField2', true)"),
-			"not(isEmpty(getValue('TextField1')))", ddmForm);
-		DDMFormTestUtil.addTextDDMFormFields(
-			ddmForm, "TextField1", "TextField2");
-
-		DDMFormInstance ddmFormInstance =
-			DDMFormInstanceTestUtil.addDDMFormInstance(
-				ddmForm, _group,
-				DDMFormInstanceTestUtil.createSettingsDDMFormValues(false),
-				TestPropsValues.getUserId());
-
-		String value1 = RandomTestUtil.randomString();
-		String value2 = RandomTestUtil.randomString();
 
 		_mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField1$$0$$pt_BR", value1);
-		_mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField2$$0$$pt_BR", value2);
-		_mockLiferayPortletActionRequest.addParameter(
-			"defaultLanguageId", "pt_BR");
-		_mockLiferayPortletActionRequest.addParameter(
-			"formInstanceId",
-			String.valueOf(ddmFormInstance.getFormInstanceId()));
-
-		_addFormInstanceRecordMVCActionCommand.processAction(
-			_mockLiferayPortletActionRequest,
-			new MockLiferayPortletActionResponse());
-
-		List<DDMFormInstanceRecord> ddmFormInstanceRecords =
-			_ddmFormInstanceRecordLocalService.getFormInstanceRecords(
-				ddmFormInstance.getFormInstanceId());
-
-		DDMFormInstanceRecord ddmFormInstanceRecord =
-			ddmFormInstanceRecords.get(0);
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			_getMockLiferayPortletActionRequest();
+			"ddm$$TextField1$1$0$$pt_BR", StringPool.BLANK);
 
 		String value3 = RandomTestUtil.randomString();
 
-		mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField1$$0$$pt_BR", StringPool.BLANK);
-		mockLiferayPortletActionRequest.addParameter(
-			"ddm$$TextField2$$0$$pt_BR", value3);
-		mockLiferayPortletActionRequest.addParameter(
-			"defaultLanguageId", "pt_BR");
-		mockLiferayPortletActionRequest.addParameter(
-			"formInstanceId",
-			String.valueOf(ddmFormInstance.getFormInstanceId()));
-		mockLiferayPortletActionRequest.addParameter(
+		_mockLiferayPortletActionRequest.addParameter(
+			"ddm$$TextField2$2$0$$pt_BR", value3);
+
+		_mockLiferayPortletActionRequest.addParameter(
 			"formInstanceRecordId",
 			String.valueOf(ddmFormInstanceRecord.getFormInstanceRecordId()));
 
 		_addFormInstanceRecordMVCActionCommand.processAction(
-			mockLiferayPortletActionRequest,
+			_mockLiferayPortletActionRequest,
 			new MockLiferayPortletActionResponse());
 
 		ddmFormInstanceRecords =
@@ -219,7 +169,7 @@ public class AddFormInstanceRecordMVCActionCommandTest {
 
 		ddmFormInstanceRecord = ddmFormInstanceRecords.get(0);
 
-		DDMFormValues ddmFormValues = ddmFormInstanceRecord.getDDMFormValues();
+		ddmFormValues = ddmFormInstanceRecord.getDDMFormValues();
 
 		_assertValue(
 			"TextField2", ddmFormValues.getDDMFormFieldValuesMap(false),
