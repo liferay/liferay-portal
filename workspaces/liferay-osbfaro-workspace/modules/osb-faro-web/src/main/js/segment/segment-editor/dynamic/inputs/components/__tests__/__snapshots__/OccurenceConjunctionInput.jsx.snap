@@ -16,7 +16,9 @@ exports[`OccurenceConjunctionInput should render 1`] = `
       style=""
       tabindex="0"
       type="button"
-    />
+    >
+      Select an option
+    </button>
   </div>
   <div
     aria-hidden="true"

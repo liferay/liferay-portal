@@ -142,7 +142,7 @@ exports[`AssignSegments should render 1`] = `
                       tabindex="0"
                       type="button"
                     >
-                      Select an option
+                      Unassigned
                     </button>
                   </td>
                 </tr>
@@ -169,7 +169,7 @@ exports[`AssignSegments should render 1`] = `
                       tabindex="0"
                       type="button"
                     >
-                      Select an option
+                      Unassigned
                     </button>
                   </td>
                 </tr>
