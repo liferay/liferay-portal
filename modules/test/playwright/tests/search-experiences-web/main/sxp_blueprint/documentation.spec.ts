@@ -1,19 +1,19 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
-import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../fixtures/loginTest';
-import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
-import {searchExperiencesPagesTest} from '../../../fixtures/searchExperiencesPageTest';
-import {searchPageTest} from '../../../fixtures/searchPageTest';
-import {assertNewPageTitle} from './utils/assertNewPageTitle';
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
+import {searchExperiencesPagesTest} from '../../../../fixtures/searchExperiencesPageTest';
+import {searchPageTest} from '../../../../fixtures/searchPageTest';
+import {assertNewPageTitle} from '../utils/assertNewPageTitle';
 
 export const test = mergeTests(
 	isolatedLayoutTest({type: 'portlet'}),
@@ -28,7 +28,7 @@ export const test = mergeTests(
 	searchExperiencesPagesTest
 );
 
-test.describe('Documentation Links', () => {
+test.describe('Working Links', () => {
 	test('Blueprint and element editor have working links @LPS-147066', async ({
 		apiHelpers,
 		context,
