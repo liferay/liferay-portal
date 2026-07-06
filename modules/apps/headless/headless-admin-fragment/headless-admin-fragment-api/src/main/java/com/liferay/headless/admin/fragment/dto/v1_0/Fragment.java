@@ -289,7 +289,7 @@ public abstract class Fragment implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment's set."
+		description = "The fragment's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist."
 	)
 	@Valid
 	public FragmentSet getFragmentSet() {
@@ -325,7 +325,9 @@ public abstract class Fragment implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The fragment's set.")
+	@GraphQLField(
+		description = "The fragment's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected FragmentSet fragmentSet;
 
@@ -1069,4 +1071,4 @@ public abstract class Fragment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1466352401
+// LIFERAY-REST-BUILDER-HASH:1796289445
