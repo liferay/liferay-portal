@@ -21,15 +21,8 @@ public class CheckResult {
 
 		_status = status;
 		_message = message;
+		_metrics = _newUnmodifiableMap(metrics);
 		_timestamp = timestamp;
-
-		if (metrics == null) {
-			_metrics = Collections.emptyMap();
-		}
-		else {
-			_metrics = Collections.unmodifiableMap(
-				new LinkedHashMap<>(metrics));
-		}
 	}
 
 	public String getMessage() {
@@ -74,6 +67,14 @@ public class CheckResult {
 
 		private final int _severityRank;
 
+	}
+
+	private Map<String, String> _newUnmodifiableMap(Map<String, String> map) {
+		if (map == null) {
+			return Collections.emptyMap();
+		}
+
+		return Collections.unmodifiableMap(new LinkedHashMap<>(map));
 	}
 
 	private final String _message;
