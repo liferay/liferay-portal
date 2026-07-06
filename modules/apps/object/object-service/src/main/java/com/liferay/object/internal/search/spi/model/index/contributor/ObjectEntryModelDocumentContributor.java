@@ -489,6 +489,18 @@ public class ObjectEntryModelDocumentContributor
 			values = objectEntry.getIndexedValues();
 
 			for (ObjectField objectField : objectFields) {
+				if (StringUtil.equals(
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+					long fileEntryId = GetterUtil.getLong(
+						values.get(objectField.getName()));
+
+					if (fileEntryId != 0) {
+						_contributeFile(document, fileEntryId);
+					}
+				}
+
 				if (objectField.isLocalized()) {
 					Map<String, Object> localizedValues =
 						(Map<String, Object>)values.get(
@@ -561,16 +573,6 @@ public class ObjectEntryModelDocumentContributor
 
 			_contributeObjectEntryFolder(
 				document, objectEntry.getObjectEntryFolderId());
-
-			if (values == null) {
-				values = objectEntry.getIndexedValues();
-			}
-
-			long fileEntryId = GetterUtil.getLong(values.get("file"));
-
-			if (fileEntryId != 0) {
-				_contributeFile(document, fileEntryId);
-			}
 		}
 
 		if (objectDefinition.isCMP()) {

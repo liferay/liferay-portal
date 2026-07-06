@@ -150,6 +150,7 @@ public class ObjectEntryKeywordQueryContributor
 
 		_addHighlightFieldNames(
 			defaultLocale, searchContext.getQueryConfig(), searchContext);
+		_addTerm(booleanQuery, "extension", StringUtil.toLowerCase(keywords));
 
 		if (StringUtil.startsWith(keywords, CharPool.QUOTE) &&
 			StringUtil.endsWith(keywords, CharPool.QUOTE)) {
