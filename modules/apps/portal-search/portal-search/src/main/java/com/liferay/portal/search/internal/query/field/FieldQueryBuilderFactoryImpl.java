@@ -28,7 +28,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"description.fields=content|description", "title.fields=name|title"
+		"description.fields=content|description",
+		"title.fields=name|objectEntryTitle|title"
 	},
 	service = FieldQueryBuilderFactory.class
 )
@@ -86,6 +87,6 @@ public class FieldQueryBuilderFactoryImpl implements FieldQueryBuilderFactory {
 	private volatile Collection<String> _descriptionFieldNames = Arrays.asList(
 		"content", "description");
 	private volatile Collection<String> _titleFieldNames = new HashSet<>(
-		Arrays.asList("name", "title"));
+		Arrays.asList("name", "objectEntryTitle", "title"));
 
 }
