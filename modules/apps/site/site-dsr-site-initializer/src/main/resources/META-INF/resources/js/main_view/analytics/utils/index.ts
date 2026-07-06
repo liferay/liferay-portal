@@ -34,7 +34,7 @@ export const DATE_RANGE_PRESETS: TDateRangePreset = {
 	[DateRangePreset.LAST_2_WEEKS]: computePreset(2, 'week', 'day'),
 	[DateRangePreset.LAST_30_DAYS]: computePreset(30, 'day', 'day'),
 	[DateRangePreset.LAST_3_MONTHS]: computePreset(3, 'month', 'day'),
-	[DateRangePreset.LAST_6_MONTHS]: computePreset(6, 'week', 'day'),
+	[DateRangePreset.LAST_6_MONTHS]: computePreset(6, 'month', 'day'),
 	[DateRangePreset.LAST_YEAR]: computePreset(1, 'year', 'day'),
 };
 
