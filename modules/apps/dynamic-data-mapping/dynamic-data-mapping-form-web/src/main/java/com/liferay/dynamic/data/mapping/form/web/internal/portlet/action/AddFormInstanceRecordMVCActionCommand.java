@@ -27,6 +27,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
@@ -157,12 +158,28 @@ public class AddFormInstanceRecordMVCActionCommand
 			ddmStructure.getDDMFormLayout(),
 			ddmFormEvaluatorEvaluateResponse.getDisabledPagesIndexes());
 
+		long ddmFormInstanceRecordId = ParamUtil.getLong(
+			actionRequest, "formInstanceRecordId");
+
+		if (ddmFormInstanceRecordId > 0) {
+			DDMFormInstanceRecord ddmFormInstanceRecord =
+				_ddmFormInstanceRecordLocalService.getFormInstanceRecord(
+					ddmFormInstanceRecordId);
+
+			DDMFormValues persistedDDMFormValues =
+				ddmFormInstanceRecord.getDDMFormValues();
+
+			AddFormInstanceRecordMVCCommandUtil.
+				updateInvisibleDDMFormFieldValues(
+					ddmFormEvaluatorEvaluateResponse.
+						getDDMFormFieldsPropertyChanges(),
+					ddmFormValues.getDDMFormFieldValuesMap(true),
+					persistedDDMFormValues.getDDMFormFieldValuesMap(true));
+		}
+
 		AddFormInstanceRecordMVCCommandUtil.updateReadOnlyDDMFormFields(
 			ddmForm.getDDMFormFieldsMap(true),
 			ddmFormEvaluatorEvaluateResponse.getDDMFormFieldsPropertyChanges());
-
-		_updateInvisibleDDMFormFieldValues(
-			actionRequest, ddmFormEvaluatorEvaluateResponse, ddmFormValues);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMFormInstanceRecord.class.getName(), actionRequest);
@@ -292,28 +309,6 @@ public class AddFormInstanceRecordMVCActionCommand
 		}
 	}
 
-	private void _updateInvisibleDDMFormFieldValues(
-			ActionRequest actionRequest,
-			DDMFormEvaluatorEvaluateResponse ddmFormEvaluatorEvaluateResponse,
-			DDMFormValues ddmFormValues)
-		throws Exception {
-
-		long ddmFormInstanceRecordId = ParamUtil.getLong(
-			actionRequest, "formInstanceRecordId");
-
-		if (ddmFormInstanceRecordId == 0) {
-			return;
-		}
-
-		DDMFormInstanceRecord ddmFormInstanceRecord =
-			_ddmFormInstanceRecordService.getFormInstanceRecord(
-				ddmFormInstanceRecordId);
-
-		AddFormInstanceRecordMVCCommandUtil.updateInvisibleDDMFormFieldValues(
-			ddmFormEvaluatorEvaluateResponse.getDDMFormFieldsPropertyChanges(),
-			ddmFormValues, ddmFormInstanceRecord.getDDMFormValues());
-	}
-
 	private void _validateCaptcha(
 			ActionRequest actionRequest, DDMFormInstance ddmFormInstance)
 		throws Exception {
@@ -356,6 +351,10 @@ public class AddFormInstanceRecordMVCActionCommand
 
 	@Reference
 	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
+
+	@Reference
+	private DDMFormInstanceRecordLocalService
+		_ddmFormInstanceRecordLocalService;
 
 	@Reference
 	private DDMFormInstanceRecordService _ddmFormInstanceRecordService;
