@@ -30,7 +30,12 @@ export async function getExistingTags({
 
 	const base = `${Liferay.ThemeDisplay.getPortalURL()}${TAXONOMY_ENDPOINT}/sites`;
 
-	const url = `${base}/${cmsGroupId}/keywords`;
+	const url =
+		scopeId >= 0
+			? `${base}/${scopeId}/keywords`
+			: `${base}/${cmsGroupId}/keywords?filter=${encodeURIComponent(
+					`groupIds in ('${scopeId}')`
+				)}`;
 
 	const items = await getTaxonomyItems<KeywordItem>(url, max);
 

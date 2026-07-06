@@ -31,7 +31,7 @@ describe('getExistingTags', () => {
 		} as never;
 	});
 
-	it('queries the CMS group keywords endpoint and maps to names', async () => {
+	it('queries the site keywords endpoint and maps to names', async () => {
 		mockFetch.mockResolvedValue(
 			page([{name: 'Japan'}, {name: 'Travel'}]) as never
 		);
@@ -47,10 +47,10 @@ describe('getExistingTags', () => {
 			mockFetch.mock.calls[0][0] as string
 		);
 
-		expect(calledURL).toContain('/sites/20124/keywords');
+		expect(calledURL).toContain('/sites/555/keywords');
 	});
 
-	it('reads from the CMS group scope regardless of the asset scope', async () => {
+	it('uses the cmsGroupId with a groupIds filter for a negative scope', async () => {
 		mockFetch.mockResolvedValue(page([]) as never);
 
 		await getExistingTags({cmsGroupId: 20124, scopeId: -1});
@@ -60,6 +60,6 @@ describe('getExistingTags', () => {
 		);
 
 		expect(calledURL).toContain('/sites/20124/keywords');
-		expect(calledURL).not.toContain('groupIds');
+		expect(calledURL).toContain("groupIds in ('-1')");
 	});
 });

@@ -55,11 +55,15 @@ const AssetTags = ({
 		[assetLibraryId, cmsGroupId, objectEntry]
 	);
 
-	const apiURL = useMemo(
-		() =>
-			`${Liferay.ThemeDisplay.getPortalURL()}/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`,
-		[cmsGroupId]
-	);
+	const apiURL = useMemo(() => {
+		const baseURL = `${Liferay.ThemeDisplay.getPortalURL()}/o/headless-admin-taxonomy/v1.0/sites`;
+
+		if (scopeId >= 0) {
+			return `${baseURL}/${scopeId}/keywords`;
+		}
+
+		return `${baseURL}/${cmsGroupId}/keywords?filter=groupIds in ('${scopeId}')`;
+	}, [cmsGroupId, scopeId]);
 
 	useEffect(() => {
 		const checkPermission = async () => {
