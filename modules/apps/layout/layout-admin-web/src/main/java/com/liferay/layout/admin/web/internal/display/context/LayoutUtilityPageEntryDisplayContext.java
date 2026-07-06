@@ -85,9 +85,12 @@ public class LayoutUtilityPageEntryDisplayContext {
 				_renderRequest, _getPortletURL(), null,
 				"there-are-no-utility-pages");
 
+		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
+			_getOrderByComparator();
+
 		layoutUtilityPageEntrySearchContainer.setOrderByCol(getOrderByCol());
 		layoutUtilityPageEntrySearchContainer.setOrderByComparator(
-			_getOrderByComparator());
+			orderByComparator);
 		layoutUtilityPageEntrySearchContainer.setOrderByType(getOrderByType());
 
 		String[] types = TransformUtil.transformToArray(
@@ -104,8 +107,7 @@ public class LayoutUtilityPageEntryDisplayContext {
 							types,
 							layoutUtilityPageEntrySearchContainer.getStart(),
 							layoutUtilityPageEntrySearchContainer.getEnd(),
-							layoutUtilityPageEntrySearchContainer.
-								getOrderByComparator()),
+							orderByComparator),
 				LayoutUtilityPageEntryServiceUtil.
 					getLayoutUtilityPageEntriesCount(
 						_themeDisplay.getScopeGroupId(), _getKeywords(),
@@ -119,8 +121,7 @@ public class LayoutUtilityPageEntryDisplayContext {
 							_themeDisplay.getScopeGroupId(), types,
 							layoutUtilityPageEntrySearchContainer.getStart(),
 							layoutUtilityPageEntrySearchContainer.getEnd(),
-							layoutUtilityPageEntrySearchContainer.
-								getOrderByComparator()),
+							orderByComparator),
 				LayoutUtilityPageEntryServiceUtil.
 					getLayoutUtilityPageEntriesCount(
 						_themeDisplay.getScopeGroupId(), types));
