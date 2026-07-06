@@ -75,9 +75,14 @@ const buildAccountMetrics = (totalCount: number) =>
 
 const useRequestImpl =
 	({
+		lifecycles = [{id: '1'}],
 		metricsLoading = false,
 		totalCount = 1,
-	}: {metricsLoading?: boolean; totalCount?: number} = {}) =>
+	}: {
+		lifecycles?: {id: string}[];
+		metricsLoading?: boolean;
+		totalCount?: number;
+	} = {}) =>
 	({variables}: {variables?: {[key: string]: any}} = {}) =>
 		variables?.channelId !== undefined
 			? {
@@ -85,7 +90,7 @@ const useRequestImpl =
 					error: false,
 					loading: metricsLoading,
 				}
-			: {data: [{id: '1'}], error: false, loading: false};
+			: {data: lifecycles, error: false, loading: false};
 
 const store = mockStore();
 
@@ -239,5 +244,19 @@ describe('BaseLifecycle', () => {
 		expect(screen.getByTestId('accounts-dataset')).toBeInTheDocument();
 		expect(screen.getByTestId('global-filters')).toBeInTheDocument();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
+	});
+
+	it('renders the empty state and hides the filters when no lifecycle exists', () => {
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({lifecycles: [], totalCount: 5})
+		);
+
+		renderPage();
+
+		expect(
+			screen.getByText('No Account Data Available')
+		).toBeInTheDocument();
+		expect(screen.queryByTestId('overview-section')).toBeNull();
+		expect(screen.queryByTestId('global-filters')).toBeNull();
 	});
 });
