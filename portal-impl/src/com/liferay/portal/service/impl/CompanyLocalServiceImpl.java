@@ -106,7 +106,7 @@ import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.VirtualHostPersistence;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -481,7 +481,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 			Company finalCompany = company;
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					registerCompany(finalCompany);
 
@@ -1564,34 +1564,45 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			VirtualHost virtualHost = _virtualHostPersistence.fetchByHostname(
 				company.getVirtualHostname());
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
-					EntityCacheUtil.removeResult(
-						company.getClass(), company.getPrimaryKeyObj());
 
-					if (virtualHost != null) {
+					// The target company's partition is already dropped, so
+					// this cleanup runs under the system company instead of a
+					// scope that resolves to it.
+
+					try (SafeCloseable safeCloseable =
+							CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
+								CompanyConstants.SYSTEM)) {
+
 						EntityCacheUtil.removeResult(
-							virtualHost.getClass(),
-							virtualHost.getPrimaryKeyObj());
+							company.getClass(), company.getPrimaryKeyObj());
+
+						if (virtualHost != null) {
+							EntityCacheUtil.removeResult(
+								virtualHost.getClass(),
+								virtualHost.getPrimaryKeyObj());
+						}
+
+						PortalCacheHelperUtil.removePortalCaches(
+							PortalCacheManagerNames.MULTI_VM, companyId);
+
+						Store store = _storeSnapshot.get();
+
+						store.deleteDirectory(companyId);
+
+						PortalInstances.removeCompany(company.getCompanyId());
+
+						unregisterCompany(company);
+
+						_synchronizePortalInstances();
 					}
 
-					PortalCacheHelperUtil.removePortalCaches(
-						PortalCacheManagerNames.MULTI_VM, companyId);
+					// Back under the deleted company's scope, clear its
+					// sharded caches, which resolve per company from the
+					// scope, in production mode.
 
-					Store store = _storeSnapshot.get();
-
-					store.deleteDirectory(companyId);
-
-					PortalInstances.removeCompany(company.getCompanyId());
-
-					unregisterCompany(company);
-
-					_synchronizePortalInstances();
-
-					try (SafeCloseable safeCloseable1 =
-							CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
-								companyId);
-						SafeCloseable safeCloseable2 =
+					try (SafeCloseable safeCloseable =
 							CTCollectionThreadLocal.
 								setProductionModeWithSafeCloseable()) {
 
@@ -2380,7 +2391,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		// Portal instance
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				PortalInstances.removeCompany(company.getCompanyId());
 
