@@ -12,9 +12,9 @@ import java.util.Map;
 /**
  * @author Brittney Nguyen
  */
-public class CheckConfig {
+public class MonitorConfig {
 
-	public CheckConfig(
+	public MonitorConfig(
 		String id, String type, Severity severity, long cadence,
 		Map<String, String> parameters, Map<String, String> thresholds) {
 

@@ -13,9 +13,9 @@ import java.util.Map;
 /**
  * @author Brittney Nguyen
  */
-public class CheckResult {
+public class MonitorResult {
 
-	public CheckResult(
+	public MonitorResult(
 		Status status, String message, Map<String, String> metrics,
 		long timestamp) {
 

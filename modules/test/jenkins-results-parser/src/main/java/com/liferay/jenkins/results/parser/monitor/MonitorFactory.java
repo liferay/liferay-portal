@@ -8,11 +8,11 @@ package com.liferay.jenkins.results.parser.monitor;
 /**
  * @author Brittney Nguyen
  */
-public class CheckFactory {
+public class MonitorFactory {
 
-	public static Check newCheck(CheckConfig checkConfig) {
+	public static Monitor newMonitor(MonitorConfig monitorConfig) {
 		throw new IllegalArgumentException(
-			"Unknown check type: " + checkConfig.getType());
+			"Unknown monitor type: " + monitorConfig.getType());
 	}
 
 }

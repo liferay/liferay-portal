@@ -22,22 +22,23 @@ import java.util.regex.Pattern;
 /**
  * @author Brittney Nguyen
  */
-public class CheckConfigLoader {
+public class MonitorConfigLoader {
 
-	public static List<CheckConfig> getCheckConfigs() throws IOException {
-		return getCheckConfigs(JenkinsResultsParserUtil.getBuildProperties());
+	public static List<MonitorConfig> getMonitorConfigs() throws IOException {
+		return getMonitorConfigs(
+			JenkinsResultsParserUtil.getBuildProperties());
 	}
 
-	public static List<CheckConfig> getCheckConfigs(
+	public static List<MonitorConfig> getMonitorConfigs(
 		Properties buildProperties) {
 
-		List<CheckConfig> checkConfigs = new ArrayList<>();
+		List<MonitorConfig> monitorConfigs = new ArrayList<>();
 
 		for (String id : _getIds(buildProperties)) {
-			checkConfigs.add(_getCheckConfig(buildProperties, id));
+			monitorConfigs.add(_getMonitorConfig(buildProperties, id));
 		}
 
-		return checkConfigs;
+		return monitorConfigs;
 	}
 
 	private static long _getCadence(Properties buildProperties, String id) {
@@ -59,29 +60,11 @@ public class CheckConfigLoader {
 		}
 	}
 
-	private static CheckConfig _getCheckConfig(
-		Properties buildProperties, String id) {
-
-		String type = JenkinsResultsParserUtil.getProperty(
-			buildProperties, _getKey(id, "type"));
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(type)) {
-			throw new IllegalArgumentException(
-				"Missing required property " + _getKey(id, "type"));
-		}
-
-		return new CheckConfig(
-			id, type, _getSeverity(buildProperties, id),
-			_getCadence(buildProperties, id),
-			_getParameters(buildProperties, id),
-			_getThresholds(buildProperties, id));
-	}
-
 	private static TreeSet<String> _getIds(Properties buildProperties) {
 		TreeSet<String> ids = new TreeSet<>();
 
 		for (String propertyName : buildProperties.stringPropertyNames()) {
-			Matcher matcher = _checkPropertyPattern.matcher(propertyName);
+			Matcher matcher = _monitorPropertyPattern.matcher(propertyName);
 
 			if (matcher.matches()) {
 				ids.add(matcher.group("id"));
@@ -113,7 +96,25 @@ public class CheckConfigLoader {
 	}
 
 	private static String _getKey(String id, String suffix) {
-		return "monitor.check[" + id + "]." + suffix;
+		return "monitor[" + id + "]." + suffix;
+	}
+
+	private static MonitorConfig _getMonitorConfig(
+		Properties buildProperties, String id) {
+
+		String type = JenkinsResultsParserUtil.getProperty(
+			buildProperties, _getKey(id, "type"));
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(type)) {
+			throw new IllegalArgumentException(
+				"Missing required property " + _getKey(id, "type"));
+		}
+
+		return new MonitorConfig(
+			id, type, _getSeverity(buildProperties, id),
+			_getCadence(buildProperties, id),
+			_getParameters(buildProperties, id),
+			_getThresholds(buildProperties, id));
 	}
 
 	private static Map<String, String> _getParameters(
@@ -122,18 +123,18 @@ public class CheckConfigLoader {
 		return _getIndexedProperties(buildProperties, id, "parameter");
 	}
 
-	private static CheckConfig.Severity _getSeverity(
+	private static MonitorConfig.Severity _getSeverity(
 		Properties buildProperties, String id) {
 
 		String severityString = JenkinsResultsParserUtil.getProperty(
 			buildProperties, _getKey(id, "severity"));
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(severityString)) {
-			return CheckConfig.Severity.MEDIUM;
+			return MonitorConfig.Severity.MEDIUM;
 		}
 
 		try {
-			return CheckConfig.Severity.valueOf(
+			return MonitorConfig.Severity.valueOf(
 				severityString.toUpperCase(Locale.ENGLISH));
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
@@ -150,10 +151,10 @@ public class CheckConfigLoader {
 		return _getIndexedProperties(buildProperties, id, "threshold");
 	}
 
-	private static final Pattern _checkPropertyPattern = Pattern.compile(
-		"monitor\\.check\\[(?<id>[^\\]]+)\\]\\..+");
 	private static final Pattern _indexedPropertyPattern = Pattern.compile(
-		"monitor\\.check\\[(?<id>[^\\]]+)\\]\\.(?<category>[^\\[]+)\\[" +
+		"monitor\\[(?<id>[^\\]]+)\\]\\.(?<category>[^\\[]+)\\[" +
 			"(?<name>[^\\]]+)\\]");
+	private static final Pattern _monitorPropertyPattern = Pattern.compile(
+		"monitor\\[(?<id>[^\\]]+)\\]\\..+");
 
 }

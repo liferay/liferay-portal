@@ -11,15 +11,16 @@ import org.junit.Test;
 /**
  * @author Brittney Nguyen
  */
-public class CheckFactoryTest extends com.liferay.jenkins.results.parser.Test {
+public class MonitorFactoryTest
+	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testNewCheckUnknownTypeFailsLoud() {
-		CheckConfig checkConfig = new CheckConfig(
-			"a", "unknown-type", CheckConfig.Severity.MEDIUM, 0, null, null);
+	public void testNewMonitorUnknownTypeFailsLoud() {
+		MonitorConfig monitorConfig = new MonitorConfig(
+			"a", "unknown-type", MonitorConfig.Severity.MEDIUM, 0, null, null);
 
 		try {
-			CheckFactory.newCheck(checkConfig);
+			MonitorFactory.newMonitor(monitorConfig);
 
 			Assert.fail("Expected IllegalArgumentException");
 		}

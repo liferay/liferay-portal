@@ -8,12 +8,12 @@ package com.liferay.jenkins.results.parser.monitor;
 /**
  * @author Brittney Nguyen
  */
-public interface Check {
+public interface Monitor {
 
-	public CheckResult execute();
-
-	public CheckConfig getCheckConfig();
+	public MonitorResult execute();
 
 	public String getID();
+
+	public MonitorConfig getMonitorConfig();
 
 }
