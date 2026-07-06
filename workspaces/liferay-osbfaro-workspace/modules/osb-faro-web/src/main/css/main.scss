@@ -2,6 +2,10 @@
 
 @import '@clayui/css/src/scss/cadmin-variables';
 
+:root {
+	@include clay-css($cadmin-c-root);
+}
+
 @import 'variables';
 
 @import 'mixins';

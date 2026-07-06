@@ -28,15 +28,6 @@ const config = {
 		outputModule: true,
 	},
 	externals: [
-		({request}, callback) => {
-			if (
-				request?.startsWith('@clayui/') &&
-				!request?.startsWith('@clayui/css')
-			) {
-				return callback(null, request);
-			}
-			callback();
-		},
 		{
 			'@liferay/frontend-data-set-web':
 				'/o/frontend-data-set-web/__liferay__/index.js',

@@ -5,6 +5,10 @@
 	display: flex;
 	flex-direction: column;
 
+	&:hover {
+		box-shadow: none;
+	}
+
 	&.page-display {
 		min-height: 70vh;
 	}
@@ -17,11 +21,13 @@
 
 	.card-footer {
 		background-color: transparent;
+		border: 0;
 		padding: 12px 24px;
 	}
 
 	.card-header {
 		background-color: transparent;
+		border: 0;
 		padding: 16px 24px;
 
 		.secondary-info {
