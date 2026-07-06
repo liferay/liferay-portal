@@ -1312,16 +1312,33 @@ public class ObjectDefinitionLocalServiceTest {
 				).name(
 					ObjectDefinitionSettingConstants.NAME_DOMAIN
 				).value(
-					DepotRolesConstants.SUBTYPE_PROJECT
+					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY
 				).build()));
 
 		_assertObjectDefinitionSettingsValues(
 			objectDefinition3.getObjectDefinitionSettings(),
 			Collections.singletonMap(
 				ObjectDefinitionSettingConstants.NAME_DOMAIN,
-				DepotRolesConstants.SUBTYPE_PROJECT));
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY));
 
 		ObjectDefinition objectDefinition4 = _publishCustomObjectDefinition(
+			ObjectDefinitionTestUtil.getRandomName(),
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_DOMAIN
+				).value(
+					DepotRolesConstants.SUBTYPE_PROJECT
+				).build()));
+
+		_assertObjectDefinitionSettingsValues(
+			objectDefinition4.getObjectDefinitionSettings(),
+			Collections.singletonMap(
+				ObjectDefinitionSettingConstants.NAME_DOMAIN,
+				DepotRolesConstants.SUBTYPE_PROJECT));
+
+		ObjectDefinition objectDefinition5 = _publishCustomObjectDefinition(
 			ObjectDefinitionTestUtil.getRandomName(),
 			ObjectDefinitionConstants.SCOPE_DEPOT,
 			Collections.singletonList(
@@ -1333,27 +1350,10 @@ public class ObjectDefinitionLocalServiceTest {
 				).build()));
 
 		_assertObjectDefinitionSettingsValues(
-			objectDefinition4.getObjectDefinitionSettings(),
-			Collections.singletonMap(
-				ObjectDefinitionSettingConstants.NAME_DOMAIN,
-				DepotRolesConstants.SUBTYPE_SPACE));
-
-		ObjectDefinition objectDefinition5 = _publishCustomObjectDefinition(
-			ObjectDefinitionTestUtil.getRandomName(),
-			ObjectDefinitionConstants.SCOPE_DEPOT,
-			Collections.singletonList(
-				new ObjectDefinitionSettingBuilder(
-				).name(
-					ObjectDefinitionSettingConstants.NAME_DOMAIN
-				).value(
-					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY
-				).build()));
-
-		_assertObjectDefinitionSettingsValues(
 			objectDefinition5.getObjectDefinitionSettings(),
 			Collections.singletonMap(
 				ObjectDefinitionSettingConstants.NAME_DOMAIN,
-				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY));
+				DepotRolesConstants.SUBTYPE_SPACE));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
