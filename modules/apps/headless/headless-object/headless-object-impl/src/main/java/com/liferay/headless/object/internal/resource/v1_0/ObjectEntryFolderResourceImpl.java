@@ -308,7 +308,7 @@ public class ObjectEntryFolderResourceImpl
 						booleanQuery.getPreBooleanFilter();
 
 					booleanFilter.add(
-						new TermFilter(Field.GROUP_ID, scopeKey),
+						new TermFilter(Field.GROUP_ID, String.valueOf(groupId)),
 						BooleanClauseOccur.MUST);
 				}
 			},
