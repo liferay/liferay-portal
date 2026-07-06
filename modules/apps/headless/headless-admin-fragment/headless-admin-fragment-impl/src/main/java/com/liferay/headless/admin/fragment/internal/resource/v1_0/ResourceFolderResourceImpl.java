@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
@@ -79,6 +80,47 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 				groupId, resourceFolder));
 	}
 
+	@Override
+	public ResourceFolder putSiteResourceFolder(
+			String siteExternalReferenceCode,
+			String resourceFolderExternalReferenceCode,
+			ResourceFolder resourceFolder)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getStagingAwareGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
+		DLFolder dlFolder =
+			_dlFolderLocalService.fetchDLFolderByExternalReferenceCode(
+				resourceFolderExternalReferenceCode, groupId);
+
+		if (dlFolder == null) {
+			resourceFolder.setExternalReferenceCode(
+				() -> resourceFolderExternalReferenceCode);
+
+			return _toResourceFolder(
+				_addDLFolder(
+					_getOrAddFragmentCollection(
+						resourceFolder.getFragmentSet(), groupId),
+					groupId, resourceFolder));
+		}
+
+		_checkResourceFolder(dlFolder);
+
+		Folder folder = _dlAppService.updateFolder(
+			dlFolder.getFolderId(), resourceFolder.getName(),
+			dlFolder.getDescription(),
+			ServiceContextUtil.getServiceContext(
+				contextCompany.getCompanyId(), resourceFolder.getDateCreated(),
+				groupId, contextHttpServletRequest,
+				resourceFolder.getDateModified(), contextUser.getUserId()));
+
+		return _toResourceFolder(
+			_dlFolderLocalService.getDLFolder(folder.getFolderId()));
+	}
+
 	private DLFolder _addDLFolder(
 			FragmentCollection fragmentCollection, long groupId,
 			ResourceFolder resourceFolder)
@@ -97,6 +139,14 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 				resourceFolder.getDateModified(), contextUser.getUserId()));
 
 		return _dlFolderLocalService.getDLFolder(folder.getFolderId());
+	}
+
+	private void _checkResourceFolder(DLFolder dlFolder) throws Exception {
+		if (_getFragmentCollection(dlFolder) == null) {
+			throw new NoSuchFolderException(
+				"No resource folder exists with external reference code " +
+					dlFolder.getExternalReferenceCode());
+		}
 	}
 
 	private FragmentCollection _getFragmentCollection(DLFolder dlFolder) {
