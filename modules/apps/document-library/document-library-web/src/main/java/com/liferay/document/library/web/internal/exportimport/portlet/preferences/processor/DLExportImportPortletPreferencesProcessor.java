@@ -20,13 +20,11 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
-import com.liferay.exportimport.kernel.staging.StagingURLHelperUtil;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
+import com.liferay.exportimport.portlet.preferences.processor.base.BaseExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryRegistryUtil;
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -38,23 +36,16 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.Repository;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.security.auth.HttpPrincipal;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFolder;
-import com.liferay.portal.service.http.GroupServiceHttp;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 
 import jakarta.portlet.PortletPreferences;
@@ -75,7 +66,7 @@ import org.osgi.service.component.annotations.Reference;
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class DLExportImportPortletPreferencesProcessor
-	implements ExportImportPortletPreferencesProcessor {
+	extends BaseExportImportPortletPreferencesProcessor {
 
 	@Override
 	public List<Capability> getExportCapabilities() {
@@ -523,6 +514,29 @@ public class DLExportImportPortletPreferencesProcessor
 		return portletPreferences;
 	}
 
+	@Override
+	protected String getExportPortletPreferencesValue(
+			PortletDataContext portletDataContext, Portlet portlet,
+			String className, long primaryKeyLong)
+		throws Exception {
+
+		// Unused: this processor does not use the base primary key drivers.
+
+		return null;
+	}
+
+	@Override
+	protected Long getImportPortletPreferencesNewValue(
+			PortletDataContext portletDataContext, Class<?> clazz,
+			long companyGroupId, Map<Long, Long> primaryKeys,
+			String portletPreferencesOldValue)
+		throws Exception {
+
+		// Unused: this processor does not use the base primary key drivers.
+
+		return null;
+	}
+
 	private JSONObject _fetchStagingPreferencesMappingJSONObject(
 			PortletDataContext portletDataContext)
 		throws PortletDataException {
@@ -626,104 +640,6 @@ public class DLExportImportPortletPreferencesProcessor
 		return group.getExternalReferenceCode();
 	}
 
-	private String _getMirrorGroupExternalReferenceCode(
-		PortletDataContext portletDataContext,
-		String groupExternalReferenceCode) {
-
-		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			groupExternalReferenceCode, portletDataContext.getCompanyId());
-
-		if (group == null) {
-			return groupExternalReferenceCode;
-		}
-
-		Group stagingGroup = group.getStagingGroup();
-
-		if (stagingGroup != null) {
-			return stagingGroup.getExternalReferenceCode();
-		}
-
-		if (ExportImportThreadLocal.isStagingInProcess() &&
-			group.isStagedRemotely()) {
-
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			String remoteGroupExternalReferenceCode =
-				typeSettingsUnicodeProperties.get(
-					"remoteGroupExternalReferenceCode");
-
-			if (Validator.isNull(remoteGroupExternalReferenceCode)) {
-				remoteGroupExternalReferenceCode =
-					_getRemoteGroupExternalReferenceCode(
-						typeSettingsUnicodeProperties);
-			}
-
-			if (Validator.isNotNull(remoteGroupExternalReferenceCode)) {
-				groupExternalReferenceCode = remoteGroupExternalReferenceCode;
-			}
-		}
-
-		Group liveGroup = _groupLocalService.fetchGroup(group.getLiveGroupId());
-
-		if (liveGroup == null) {
-			return groupExternalReferenceCode;
-		}
-
-		return liveGroup.getExternalReferenceCode();
-	}
-
-	private String _getRemoteGroupExternalReferenceCode(
-		UnicodeProperties typeSettingsUnicodeProperties) {
-
-		String remoteAddress = GetterUtil.getString(
-			typeSettingsUnicodeProperties.get("remoteAddress"));
-		long remoteGroupId = GetterUtil.getLong(
-			typeSettingsUnicodeProperties.get("remoteGroupId"));
-
-		if (Validator.isNull(remoteAddress) || (remoteGroupId <= 0)) {
-			return null;
-		}
-
-		int remotePort = GetterUtil.getInteger(
-			typeSettingsUnicodeProperties.get("remotePort"));
-		String remotePathContext = GetterUtil.getString(
-			typeSettingsUnicodeProperties.get("remotePathContext"));
-		boolean secureConnection = GetterUtil.getBoolean(
-			typeSettingsUnicodeProperties.get("secureConnection"));
-
-		String remoteURL = StagingURLHelperUtil.buildRemoteURL(
-			remoteAddress, remotePort, remotePathContext, secureConnection);
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		User user = permissionChecker.getUser();
-
-		try {
-			HttpPrincipal httpPrincipal = new HttpPrincipal(
-				remoteURL, user.getLogin(), user.getPassword(),
-				user.isPasswordEncrypted());
-
-			try (SafeCloseable safeCloseable =
-					ThreadContextClassLoaderUtil.swap(
-						PortalClassLoaderUtil.getClassLoader())) {
-
-				Group group = GroupServiceHttp.getGroup(
-					httpPrincipal, remoteGroupId);
-
-				return group.getExternalReferenceCode();
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return null;
-	}
-
 	private String _getRepositoryExternalReferenceCode(Folder folder) {
 		Repository repository = _repositoryLocalService.fetchRepository(
 			folder.getRepositoryId());
@@ -751,7 +667,7 @@ public class DLExportImportPortletPreferencesProcessor
 					rootFolderExternalReferenceCode
 				).put(
 					_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
-					_getMirrorGroupExternalReferenceCode(
+					getGroupExportPortletPreferencesExternalReferenceCode(
 						portletDataContext, selectedGroupExternalReferenceCode)
 				).put(
 					_PREFERENCE_KEY_SELECTED_REPOSITORY_EXTERNAL_REFERENCE_CODE,
