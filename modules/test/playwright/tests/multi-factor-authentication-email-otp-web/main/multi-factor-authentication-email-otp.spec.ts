@@ -10,6 +10,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {multiFactorAuthenticationPagesTest} from '../../../fixtures/multiFactorAuthenticationPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import signInAndReachMFAChallenge from '../../../utils/signInAndReachMFAChallenge';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -37,26 +38,15 @@ test(
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-		// Reach the MFA stage in a clean context, leaving the admin signed in
+		// Reach the email OTP challenge in a clean context, leaving the admin
+		// signed in
 
-		const userContext = await browser.newContext();
-		const userPage = await userContext.newPage();
+		const {userContext, userPage} = await signInAndReachMFAChallenge(
+			browser,
+			user.emailAddress
+		);
 
 		try {
-			await userPage.goto('/');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
-
-			await userPage.getByLabel('Email Address').fill(user.emailAddress);
-			await userPage.getByLabel('Password').fill('test');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
 
 			// Request a one-time password so the send button starts its cooldown
 
@@ -132,26 +122,15 @@ test(
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-		// Reach the MFA stage in a clean context, leaving the admin signed in
+		// Reach the email OTP challenge in a clean context, leaving the admin
+		// signed in
 
-		const userContext = await browser.newContext();
-		const userPage = await userContext.newPage();
+		const {userContext, userPage} = await signInAndReachMFAChallenge(
+			browser,
+			user.emailAddress
+		);
 
 		try {
-			await userPage.goto('/');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
-
-			await userPage.getByLabel('Email Address').fill(user.emailAddress);
-			await userPage.getByLabel('Password').fill('test');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
 
 			// Request a one-time password so the send button starts its cooldown
 
@@ -222,6 +201,99 @@ test(
 );
 
 test(
+	'LPD-97358 keeps the send button independent from the failed-attempts lockout',
+	{tag: ['@LPD-97358', '@LPP-64662']},
+	async ({
+		apiHelpers,
+		browser,
+		multiFactorAuthenticationConfigurationPage,
+	}) => {
+
+		// Enable email OTP with a resend cooldown that is much shorter than the
+		// failed-attempts retry lockout, so the resend cooldown elapses before
+		// the OTP is submitted. A single failed attempt triggers the lockout.
+
+		await multiFactorAuthenticationConfigurationPage.goto();
+
+		await multiFactorAuthenticationConfigurationPage.enable({
+			failedAttemptsAllowed: 1,
+			resendEmailTimeout: 2,
+			retryTimeout: 30,
+		});
+
+		// Create a user that will be challenged with email OTP when signing in
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		// Reach the email OTP challenge in a clean context, leaving the admin
+		// signed in
+
+		const {userContext, userPage} = await signInAndReachMFAChallenge(
+			browser,
+			user.emailAddress
+		);
+
+		try {
+			const sendEmailButton = userPage.locator('[id$="sendEmailButton"]');
+
+			const submitEmailButton = userPage.locator(
+				'[id$="submitEmailButton"]'
+			);
+
+			// Request a one-time password so the send button starts its cooldown,
+			// then wait for that short cooldown to elapse so the resend timer is
+			// no longer the reason the button could be disabled.
+
+			await expect(sendEmailButton).toHaveText('Send');
+
+			await clickAndExpectToBeVisible({
+				target: userPage.getByText(
+					'Your one-time password has been sent by email.'
+				),
+				trigger: sendEmailButton,
+			});
+
+			await expect(sendEmailButton).toBeEnabled({timeout: 15000});
+
+			// Submit an incorrect OTP to exhaust the single allowed attempt. The
+			// full-page re-render brings back the challenge with the retry
+			// lockout active on the submit button.
+
+			await userPage
+				.getByLabel('Enter the one-time password from the email')
+				.fill(getRandomString());
+
+			await submitEmailButton.click();
+
+			await expect(
+				userPage.getByText('Multi-factor authentication has failed.')
+			).toBeVisible();
+
+			// LPD-97358: the lockout governs only the submit button. With the
+			// resend cooldown already elapsed, the send button must stay usable
+			// so a new OTP can be requested while the submit lockout runs.
+
+			await expect(submitEmailButton).toBeDisabled();
+
+			await expect(submitEmailButton).toHaveText(/^\s*\d+\s*$/);
+
+			await expect(sendEmailButton).toBeEnabled();
+
+			await expect(sendEmailButton).toHaveText('Send');
+
+			await expect(sendEmailButton).not.toHaveClass(/\bdisabled\b/);
+		}
+		finally {
+			await userContext.close();
+
+			await multiFactorAuthenticationConfigurationPage.goto();
+
+			await multiFactorAuthenticationConfigurationPage.resetConfiguration();
+		}
+	}
+);
+
+test(
 	'LPD-96858 removes the sent-by-email message once the resend countdown finishes',
 	{tag: '@LPD-96858'},
 	async ({
@@ -244,27 +316,15 @@ test(
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-		// Reach the MFA stage in a clean context, leaving the admin signed in
+		// Reach the email OTP challenge in a clean context, leaving the admin
+		// signed in
 
-		const userContext = await browser.newContext();
-		const userPage = await userContext.newPage();
+		const {userContext, userPage} = await signInAndReachMFAChallenge(
+			browser,
+			user.emailAddress
+		);
 
 		try {
-			await userPage.goto('/');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
-
-			await userPage.getByLabel('Email Address').fill(user.emailAddress);
-			await userPage.getByLabel('Password').fill('test');
-
-			await userPage
-				.getByRole('button', {name: 'Sign In'})
-				.last()
-				.click();
-
 			const sendEmailButton = userPage.locator('[id$="sendEmailButton"]');
 
 			const sentMessage = userPage.getByText(
