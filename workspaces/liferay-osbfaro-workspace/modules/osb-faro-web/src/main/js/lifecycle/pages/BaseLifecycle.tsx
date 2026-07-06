@@ -184,7 +184,11 @@ const BaseLifecycle = () => {
 	const loading = dataSourcesLoading || lifecyclesLoading || !lifecycleId;
 
 	const hasContent =
-		!loading && !noDataSources && !accountMetricsLoading && !!totalAccounts;
+		!loading &&
+		!noDataSources &&
+		!accountMetricsLoading &&
+		!!totalAccounts &&
+		!!lifecycleId;
 
 	const renderBody = () => {
 		if (loading) {
