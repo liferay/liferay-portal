@@ -332,11 +332,8 @@ public class Scope implements Serializable {
 			}
 
 			sb.append("\"externalReferenceCode\": ");
-
 			sb.append("\"");
-
 			sb.append(_escape(externalReferenceCode));
-
 			sb.append("\"");
 		}
 
@@ -348,11 +345,8 @@ public class Scope implements Serializable {
 			}
 
 			sb.append("\"key\": ");
-
 			sb.append("\"");
-
 			sb.append(_escape(key));
-
 			sb.append("\"");
 		}
 
@@ -364,11 +358,8 @@ public class Scope implements Serializable {
 			}
 
 			sb.append("\"label\": ");
-
 			sb.append("\"");
-
 			sb.append(_escape(label));
-
 			sb.append("\"");
 		}
 
@@ -380,11 +371,8 @@ public class Scope implements Serializable {
 			}
 
 			sb.append("\"liveExternalReferenceCode\": ");
-
 			sb.append("\"");
-
 			sb.append(_escape(liveExternalReferenceCode));
-
 			sb.append("\"");
 		}
 
@@ -396,7 +384,6 @@ public class Scope implements Serializable {
 			}
 
 			sb.append("\"type\": ");
-
 			sb.append("\"");
 			sb.append(type);
 			sb.append("\"");
