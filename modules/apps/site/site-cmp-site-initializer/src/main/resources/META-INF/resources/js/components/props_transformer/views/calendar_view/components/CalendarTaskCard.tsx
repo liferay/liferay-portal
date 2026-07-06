@@ -14,6 +14,7 @@ import React from 'react';
 
 import getActionURL from '../../../../../utils/getActionURL';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
+import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
 import isOverdue from '../../../../../utils/isOverdue';
 import {ITaskObjectEntry} from '../../../../../utils/types';
 
@@ -23,28 +24,6 @@ interface CalendarTaskCardProps {
 	itemsActions?: IItemsActions[];
 	loadData: Function;
 	task: ITaskObjectEntry;
-}
-
-/**
- * Clicking the card views the task, but the card also contains the actions
- * kebab. The kebab's menu is rendered in a portal, so its clicks still bubble
- * to the card through the React tree. Skip viewing the task when the click
- * comes from the kebab button or its menu (anything outside the card).
- *
- * A "stopPropagation" on the kebab trigger does not solve this. ClayDropDown
- * clones the trigger and overrides its "onClick" with its own toggle handler,
- * so the trigger's "stopPropagation" is not guaranteed to run. And even when it
- * does, the menu is portaled: a menu item lives outside the card in the DOM but
- * is still a React descendant, so its click bubbles to the card's "onClick"
- * through the React tree, which "stopPropagation" on the trigger never sees.
- */
-function isActionsMenuEvent(event: React.SyntheticEvent) {
-	const target = event.target as HTMLElement;
-
-	return (
-		!event.currentTarget.contains(target) ||
-		Boolean(target.closest('[data-actions-menu]'))
-	);
 }
 
 export default function CalendarTaskCard({
