@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -537,7 +538,16 @@ public class FragmentCollectionLocalServiceImpl
 
 		_validate(name);
 
-		fragmentCollection.setModifiedDate(new Date());
+		Date modifiedDate = new Date();
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			modifiedDate = serviceContext.getModifiedDate(modifiedDate);
+		}
+
+		fragmentCollection.setModifiedDate(modifiedDate);
 		fragmentCollection.setName(name);
 		fragmentCollection.setDescription(description);
 
