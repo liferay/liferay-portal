@@ -189,15 +189,14 @@ public abstract class SecretsUtil {
 	}
 
 	private static byte[] _convertPEMToDER(String pem) {
-		String base64 = pem.replaceAll("-----BEGIN [^-]+-----", "");
+		pem = pem.replaceAll("-----BEGIN [^-]+-----", "");
+		pem = pem.replaceAll("-----END [^-]+-----", "");
 
-		base64 = base64.replaceAll("-----END [^-]+-----", "");
-
-		base64 = base64.replaceAll("\\s", "");
+		pem = pem.replaceAll("\\s", "");
 
 		Base64.Decoder decoder = Base64.getDecoder();
 
-		return decoder.decode(base64);
+		return decoder.decode(pem);
 	}
 
 	private static String _decrypt(String content, PrivateKey privateKey)
