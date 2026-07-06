@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -581,11 +582,26 @@ public class DDMFormDisplayContextTest {
 
 		_mockWorkflowDefinitionLinkLocalService(false);
 
-		DDMFormDisplayContext ddmFormDisplayContext =
-			_createDDMFormDisplayContext();
+		Locale themeDisplayLocale = LocaleThreadLocal.getThemeDisplayLocale();
 
-		Assert.assertEquals(
-			submitLabel, ddmFormDisplayContext.getSubmitLabel());
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.US);
+
+		try {
+			DDMFormDisplayContext ddmFormDisplayContext =
+				_createDDMFormDisplayContext();
+
+			Assert.assertEquals(
+				submitLabel, ddmFormDisplayContext.getSubmitLabel());
+
+			Mockito.verify(
+				_portal
+			).getResourceBundle(
+				LocaleUtil.SPAIN
+			);
+		}
+		finally {
+			LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+		}
 	}
 
 	@Test
@@ -952,8 +968,8 @@ public class DDMFormDisplayContextTest {
 			Mockito.mock(DDMFormValuesMerger.class), _ddmFormWebConfiguration,
 			Mockito.mock(DDMStorageAdapterRegistry.class),
 			_ddmStructureLocalService, _groupLocalService,
-			new JSONFactoryImpl(), null, null, null, null, null,
-			Mockito.mock(Portal.class), renderRequest, new MockRenderResponse(),
+			new JSONFactoryImpl(), null, null, null, null, null, _portal,
+			renderRequest, new MockRenderResponse(),
 			Mockito.mock(RoleLocalService.class),
 			Mockito.mock(UserLocalService.class),
 			_workflowDefinitionLinkLocalService);
@@ -1356,6 +1372,7 @@ public class DDMFormDisplayContextTest {
 		new MockHttpServletRequest();
 	private final MockHttpServletRequest _mockHttpServletRequest2 =
 		new MockHttpServletRequest();
+	private final Portal _portal = Mockito.mock(Portal.class);
 	private MockedStatic<PortletPermissionUtil>
 		_portletPermissionUtilMockedStatic;
 	private final MockedStatic<PrefsParamUtil> _prefsParamUtilMockedStatic =
