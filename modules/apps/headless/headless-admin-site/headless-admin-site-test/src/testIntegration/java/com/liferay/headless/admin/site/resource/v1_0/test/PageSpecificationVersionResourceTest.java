@@ -84,6 +84,14 @@ public class PageSpecificationVersionResourceTest
 	}
 
 	@Override
+	@Test
+	public void testGetSiteSitePagePageSpecificationVersionsPage()
+		throws Exception {
+
+		super.testGetSiteSitePagePageSpecificationVersionsPage();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"externalReferenceCode", "name"};
 	}
