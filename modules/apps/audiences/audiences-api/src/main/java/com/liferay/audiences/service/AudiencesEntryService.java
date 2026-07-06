@@ -83,8 +83,9 @@ public interface AudiencesEntryService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 	public AudiencesEntry updateAudiencesEntry(
-			long audiencesEntryId, String json, String name)
+			long audiencesEntryId, String externalReferenceCode, String json,
+			String name)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-927578154
+// LIFERAY-SERVICE-BUILDER-HASH:430037065
