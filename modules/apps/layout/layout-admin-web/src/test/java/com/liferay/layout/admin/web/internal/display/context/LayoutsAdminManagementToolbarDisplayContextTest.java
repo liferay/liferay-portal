@@ -157,10 +157,13 @@ public class LayoutsAdminManagementToolbarDisplayContextTest {
 		LayoutsAdminManagementToolbarDisplayContext
 			layoutsAdminManagementToolbarDisplayContext =
 				_createLayoutsAdminManagementToolbarDisplayContext(
-					false, RandomTestUtil.randomString(), true);
+					false, "create-date", true);
 
-		Assert.assertNotNull(
-			layoutsAdminManagementToolbarDisplayContext.getSortingURL());
+		String sortingURL =
+			layoutsAdminManagementToolbarDisplayContext.getSortingURL();
+
+		Assert.assertTrue(sortingURL.contains("=create-date"));
+		Assert.assertTrue(sortingURL.contains("=asc"));
 	}
 
 	private void _testGetSortingURLWhenSearchingFirstColumn() throws Exception {
