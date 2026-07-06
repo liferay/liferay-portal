@@ -92,19 +92,25 @@ public abstract class BasePostUpgradeDataCleanupProcessTestCase {
 			String logCaptureClass, String logLevel)
 		throws Exception {
 
-		initializeDataUnsafeRunnable.run();
+		try (LogCapture directoryWatcherLogCapture =
+				LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.portal.file.install.internal.DirectoryWatcher",
+					LoggerTestUtil.OFF)) {
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				logCaptureClass, logLevel)) {
+			initializeDataUnsafeRunnable.run();
 
-			_runPostUpgradeDataCleanUpVerifyProcess();
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					logCaptureClass, logLevel)) {
 
-			if (assertUnsafeConsumer != null) {
-				assertUnsafeConsumer.accept(logCapture);
+				_runPostUpgradeDataCleanUpVerifyProcess();
+
+				if (assertUnsafeConsumer != null) {
+					assertUnsafeConsumer.accept(logCapture);
+				}
 			}
-		}
-		finally {
-			cleanUpDataUnsafeRunnable.run();
+			finally {
+				cleanUpDataUnsafeRunnable.run();
+			}
 		}
 	}
 
