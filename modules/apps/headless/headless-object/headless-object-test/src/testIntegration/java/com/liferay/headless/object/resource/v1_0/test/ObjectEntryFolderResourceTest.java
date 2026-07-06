@@ -137,6 +137,14 @@ public class ObjectEntryFolderResourceTest
 
 	@Override
 	@Test
+	public void testGetScopeScopeKeyObjectEntryFoldersPage() throws Exception {
+		super.testGetScopeScopeKeyObjectEntryFoldersPage();
+
+		_testGetScopeScopeKeyObjectEntryFoldersPageWithGroupKey();
+	}
+
+	@Override
+	@Test
 	public void testGetScopeScopeKeyObjectEntryFoldersPageWithFilterDateTimeEquals()
 		throws Exception {
 
@@ -1183,6 +1191,27 @@ public class ObjectEntryFolderResourceTest
 		assertEquals(
 			Collections.singletonList(objectEntryFolder2),
 			(List<ObjectEntryFolder>)page.getItems());
+	}
+
+	@TestInfo("LPD-97230")
+	private void _testGetScopeScopeKeyObjectEntryFoldersPageWithGroupKey()
+		throws Exception {
+
+		ObjectEntryFolder objectEntryFolder =
+			testGetScopeScopeKeyObjectEntryFoldersPage_addObjectEntryFolder(
+				String.valueOf(_testDepotEntry.getGroupId()),
+				randomObjectEntryFolder());
+
+		Page<ObjectEntryFolder> page =
+			objectEntryFolderResource.getScopeScopeKeyObjectEntryFoldersPage(
+				_testDepotEntryGroup.getGroupKey(), null, null, null, null,
+				Pagination.of(1, 10), null);
+
+		assertContains(
+			objectEntryFolder, (List<ObjectEntryFolder>)page.getItems());
+
+		objectEntryFolderResource.deleteObjectEntryFolder(
+			objectEntryFolder.getId());
 	}
 
 	private void _testPatchScopeScopeKeyObjectEntryFolderByExternalReferenceCodeWithGroupKey()
