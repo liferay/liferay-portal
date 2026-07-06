@@ -6,11 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import getRandomString from '../../../utils/getRandomString';
-import {
-	performUserSwitch,
-	performUserSwitchViaApi,
-	userData,
-} from '../../../utils/performLogin';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {questionsTest} from './fixtures/questionsTest';
 
 const test = mergeTests(questionsTest);
@@ -138,7 +134,7 @@ test(
 			surname: subscriber.familyName,
 		};
 
-		await performUserSwitch(page, subscriber.alternateName);
+		await performUserSwitchViaApi(page, subscriber.alternateName);
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await page.locator('.navbar').getByText('Tags', {exact: true}).click();
@@ -153,7 +149,7 @@ test(
 
 		const secondQuestionTitle = getRandomString();
 
-		await performUserSwitch(page, 'test');
+		await performUserSwitchViaApi(page, 'test');
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await questionsTopicsPage.goToTopic(topicName);
@@ -163,7 +159,7 @@ test(
 			[tagName]
 		);
 
-		await performUserSwitch(page, subscriber.alternateName);
+		await performUserSwitchViaApi(page, subscriber.alternateName);
 
 		await expect(async () => {
 			await page.reload();
@@ -184,7 +180,7 @@ test(
 
 		const thirdQuestionTitle = getRandomString();
 
-		await performUserSwitch(page, 'test');
+		await performUserSwitchViaApi(page, 'test');
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await questionsTopicsPage.goToTopic(topicName);
@@ -192,7 +188,7 @@ test(
 			tagName,
 		]);
 
-		await performUserSwitch(page, subscriber.alternateName);
+		await performUserSwitchViaApi(page, subscriber.alternateName);
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await questionsTopicsPage.goToTopic(topicName);

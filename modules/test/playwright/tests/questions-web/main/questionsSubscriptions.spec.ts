@@ -7,7 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {questionsTest} from './fixtures/questionsTest';
 
 const test = mergeTests(questionsTest);
@@ -190,7 +190,7 @@ test(
 			surname: subscriber.familyName,
 		};
 
-		await performUserSwitch(page, subscriber.alternateName);
+		await performUserSwitchViaApi(page, subscriber.alternateName);
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await questionsTopicsPage.goToTopic(topicName);
@@ -203,7 +203,7 @@ test(
 
 		// Another user answers the question, asks a question and comments
 
-		await performUserSwitch(page, 'test');
+		await performUserSwitchViaApi(page, 'test');
 
 		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
 		await questionsTopicsPage.goToTopic(topicName);
@@ -225,7 +225,7 @@ test(
 
 		// The subscriber is notified about the three activities
 
-		await performUserSwitch(page, subscriber.alternateName);
+		await performUserSwitchViaApi(page, subscriber.alternateName);
 
 		await expect(async () => {
 			await page.reload();
