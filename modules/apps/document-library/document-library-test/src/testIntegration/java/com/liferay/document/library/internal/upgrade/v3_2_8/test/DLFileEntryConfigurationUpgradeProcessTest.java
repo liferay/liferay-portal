@@ -8,9 +8,11 @@ package com.liferay.document.library.internal.upgrade.v3_2_8.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -157,13 +159,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			TestPropsValues.getGroupId());
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -229,13 +225,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			ExtendedObjectClassDefinition.Scope.GROUP, 55555L);
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -289,13 +279,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			TestPropsValues.getCompanyId());
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -330,13 +314,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			TestPropsValues.getGroupId());
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -362,13 +340,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 
 	@Test
 	public void testUpgradeWithoutAnyConfiguration() throws Exception {
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-			UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-			upgradeProcess.upgrade();
-		}
+		_upgrade();
 
 		Assert.assertNull(
 			_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -392,13 +364,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			_createDictionary(_PREVIEWABLE_PROCESSOR_MAX_SIZE_KEY, 1000L));
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -428,13 +394,7 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			_createDictionary(_MAX_NUMBER_OF_PAGES_KEY, 10));
 
 		try {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
-
-				UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-				upgradeProcess.upgrade();
-			}
+			_upgrade();
 
 			Assert.assertNull(
 				_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
@@ -603,6 +563,19 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			});
 
 		return upgradeProcesses[0];
+	}
+
+	private void _upgrade() throws Exception {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setUpgradingPortalInstanceWithSafeCloseable(
+					true);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.OFF)) {
+
+			UpgradeProcess upgradeProcess = _getUpgradeProcess();
+
+			upgradeProcess.upgrade();
+		}
 	}
 
 	private static final String _CLASS_NAME_DL_FILE_ENTRY_CONFIGURATION =

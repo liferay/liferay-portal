@@ -8,11 +8,11 @@ package com.liferay.document.library.internal.configuration.persistence.listener
 import com.liferay.document.library.configuration.DLFileEntryConfiguration;
 import com.liferay.document.library.configuration.DLFileEntryConfigurationProvider;
 import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
-import com.liferay.document.library.internal.util.DLFileEntryConfigurationModelListenerThreadLocal;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 
@@ -35,9 +35,7 @@ public class DLFileEntryConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		if (!DLFileEntryConfigurationModelListenerThreadLocal.
-				isValidationEnabled()) {
-
+		if (CompanyThreadLocal.isUpgradingPortalInstance()) {
 			return;
 		}
 
