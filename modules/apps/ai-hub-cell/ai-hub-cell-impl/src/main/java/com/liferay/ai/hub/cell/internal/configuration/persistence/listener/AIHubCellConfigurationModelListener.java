@@ -87,7 +87,9 @@ public class AIHubCellConfigurationModelListener
 				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
 				company.getPortalURL(0), 0, null, "AI Hub Cell", null,
 				Arrays.asList(), false,
-				Arrays.asList("Liferay.Portal.Search.REST.everything.read"),
+				Arrays.asList(
+					"Liferay.Headless.Batch.Engine.everything",
+					"Liferay.Portal.Search.REST.everything.read"),
 				false, new ServiceContext());
 		}
 		catch (PortalException portalException) {
