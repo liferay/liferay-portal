@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -464,11 +463,8 @@ public class LiferayDynamicRegistrationService
 			_getOAuth2DynamicRegistrationConfiguration(long companyId)
 		throws ConfigurationException {
 
-		return _configurationProvider.getConfiguration(
-			OAuth2DynamicRegistrationConfiguration.class,
-			new CompanyServiceSettingsLocator(
-				companyId,
-				OAuth2DynamicRegistrationConfiguration.class.getName()));
+		return _configurationProvider.getCompanyConfiguration(
+			OAuth2DynamicRegistrationConfiguration.class, companyId);
 	}
 
 	private AuditMessage _getRejectAuditMessage(

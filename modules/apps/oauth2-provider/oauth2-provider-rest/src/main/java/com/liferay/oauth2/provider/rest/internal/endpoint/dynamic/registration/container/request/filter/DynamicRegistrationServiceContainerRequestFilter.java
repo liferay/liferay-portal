@@ -32,8 +32,8 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ProtectedPrincipal;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -350,7 +350,8 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			return httpServletRequest.getRemoteAddr();
 		}
 
-		String forwardedFor = httpServletRequest.getHeader("X-Forwarded-For");
+		String forwardedFor = httpServletRequest.getHeader(
+			HttpHeaders.X_FORWARDED_FOR);
 
 		if (!Validator.isBlank(forwardedFor)) {
 			int index = forwardedFor.indexOf(',');
@@ -424,11 +425,8 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			_getOAuth2DynamicRegistrationConfiguration(long companyId)
 		throws ConfigurationException {
 
-		return _configurationProvider.getConfiguration(
-			OAuth2DynamicRegistrationConfiguration.class,
-			new CompanyServiceSettingsLocator(
-				companyId,
-				OAuth2DynamicRegistrationConfiguration.class.getName()));
+		return _configurationProvider.getCompanyConfiguration(
+			OAuth2DynamicRegistrationConfiguration.class, companyId);
 	}
 
 	private AuditMessage _getRejectAuditMessage(
