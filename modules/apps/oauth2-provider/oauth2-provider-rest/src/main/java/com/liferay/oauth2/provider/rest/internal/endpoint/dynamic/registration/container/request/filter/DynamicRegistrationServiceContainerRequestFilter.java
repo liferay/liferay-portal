@@ -321,26 +321,26 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			return StringPool.BLANK;
 		}
 
-		String normalizedHost = host.trim();
+		host = host.trim();
 
-		if (normalizedHost.startsWith(StringPool.OPEN_BRACKET)) {
-			int index = normalizedHost.indexOf(StringPool.CLOSE_BRACKET);
+		if (host.startsWith(StringPool.OPEN_BRACKET)) {
+			int index = host.indexOf(StringPool.CLOSE_BRACKET);
 
 			if (index > 1) {
-				normalizedHost = normalizedHost.substring(1, index);
+				host = host.substring(1, index);
 			}
 		}
 		else {
-			int index = normalizedHost.indexOf(StringPool.COLON);
+			int index = host.indexOf(StringPool.COLON);
 
 			if ((index > 0) &&
-				(normalizedHost.indexOf(StringPool.COLON, index + 1) < 0)) {
+				(host.indexOf(StringPool.COLON, index + 1) < 0)) {
 
-				normalizedHost = normalizedHost.substring(0, index);
+				host = host.substring(0, index);
 			}
 		}
 
-		return StringUtil.toLowerCase(normalizedHost);
+		return StringUtil.toLowerCase(host);
 	}
 
 	private void _setSecurityContext(
