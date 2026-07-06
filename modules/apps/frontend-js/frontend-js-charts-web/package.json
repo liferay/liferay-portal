@@ -19,6 +19,7 @@
 	"name": "@liferay/frontend-js-charts-web",
 	"scripts": {
 		"build": "node-scripts build",
+		"buildMapChartData": "node src/main/resources/META-INF/resources/js/map_chart/geography/buildMapChartData.js",
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format",
 		"test": "node-scripts test"
