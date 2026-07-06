@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -137,6 +138,10 @@ public class AgentDefinitionResourceTest
 		_accountEntryUserRelLocalService.addAccountEntryUserRel(
 			_aiHubAccountEntry.getAccountEntryId(),
 			TestPropsValues.getUserId());
+
+		_seoStudioAccountEntry =
+			_accountEntryLocalService.getAccountEntryByExternalReferenceCode(
+				"L_SEO_STUDIO", TestPropsValues.getCompanyId());
 	}
 
 	@AfterClass
@@ -712,7 +717,11 @@ public class AgentDefinitionResourceTest
 			agentDefinitionResource.getAgentDefinitionsPage(
 				null, "(active eq false)", Pagination.of(1, 10), null);
 
-		assertEquals(List.of(), (List<AgentDefinition>)page.getItems());
+		assertEquals(
+			ListUtil.filter(
+				_systemAgentDefinitions,
+				systemAgentDefinition -> !systemAgentDefinition.getActive()),
+			(List<AgentDefinition>)page.getItems());
 
 		// Active as true
 
@@ -720,7 +729,9 @@ public class AgentDefinitionResourceTest
 			null, "(active eq true)", Pagination.of(1, 10), null);
 
 		assertEquals(
-			_systemAgentDefinitions, (List<AgentDefinition>)page.getItems());
+			ListUtil.filter(
+				_systemAgentDefinitions, AgentDefinition::getActive),
+			(List<AgentDefinition>)page.getItems());
 	}
 
 	private void _testGetAgentDefinitionsPageWithMissingWorkflowDefinition()
@@ -793,6 +804,8 @@ public class AgentDefinitionResourceTest
 
 		_accountEntryUserRelLocalService.addAccountEntryUserRel(
 			_aiHubAccountEntry.getAccountEntryId(), user.getUserId());
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			_seoStudioAccountEntry.getAccountEntryId(), user.getUserId());
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -862,12 +875,47 @@ public class AgentDefinitionResourceTest
 
 	private static String _originalName;
 	private static PermissionChecker _originalPermissionChecker;
+	private static AccountEntry _seoStudioAccountEntry;
 
 	@Inject
 	private static SiteInitializerRegistry _siteInitializerRegistry;
 
 	private static final List<AgentDefinition> _systemAgentDefinitions =
 		List.of(
+			new AgentDefinition() {
+				{
+					active = true;
+					externalReferenceCode = "L_AUTO_CATEGORIZE";
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "candidateCategories";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "content";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "count";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "suggestedCategories";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName = "Auto Categorize";
+				}
+			},
 			new AgentDefinition() {
 				{
 					active = true;
@@ -923,6 +971,40 @@ public class AgentDefinitionResourceTest
 					workflowDefinitionName =
 						WorkflowDefinitionConstants.
 							NAME_FIX_SPELLING_AND_GRAMMAR;
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = true;
+					externalReferenceCode = "L_GENERATE_TAGS";
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "content";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "count";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "existingTags";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "suggestedTags";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName = "Generate Tags";
 				}
 			},
 			new AgentDefinition() {
@@ -1023,6 +1105,56 @@ public class AgentDefinitionResourceTest
 					version = 1;
 					workflowDefinitionName =
 						WorkflowDefinitionConstants.NAME_MAKE_SHORTER;
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = true;
+					externalReferenceCode = "L_SEO_STUDIO_TITLE_GENERATOR";
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "pageContent";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "titleTag";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName = "SEO Studio Title Generator";
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = false;
+					externalReferenceCode = "L_SITE_BUILDER";
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "generationExternalReferenceCode";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "request";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "output";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName = "Site Builder";
 				}
 			});
 
