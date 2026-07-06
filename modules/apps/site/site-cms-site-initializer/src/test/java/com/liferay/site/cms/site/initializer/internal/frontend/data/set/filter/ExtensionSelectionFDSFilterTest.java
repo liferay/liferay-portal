@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.Bucket;
@@ -244,7 +245,8 @@ public class ExtensionSelectionFDSFilterTest {
 	}
 
 	private static final String _OBJECT_DEFINITION_CLASS_NAME =
-		"com.liferay.object.model.ObjectDefinition#TEST";
+		"com.liferay.object.model.ObjectDefinition#" +
+			RandomTestUtil.randomString();
 
 	@Mock
 	private Aggregations _aggregations;
