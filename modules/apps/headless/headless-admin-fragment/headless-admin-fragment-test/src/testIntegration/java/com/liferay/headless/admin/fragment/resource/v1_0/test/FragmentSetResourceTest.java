@@ -135,7 +135,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			postFragmentSet.getExternalReferenceCode());
 
 		_assertProblemException(
-			"BAD_REQUEST", "this-external-reference-code-is-already-in-use",
+			"CONFLICT", "this-external-reference-code-is-already-in-use",
 			() -> fragmentSetResource.postSiteFragmentSet(
 				testGroup.getExternalReferenceCode(), duplicateERCFragmentSet));
 

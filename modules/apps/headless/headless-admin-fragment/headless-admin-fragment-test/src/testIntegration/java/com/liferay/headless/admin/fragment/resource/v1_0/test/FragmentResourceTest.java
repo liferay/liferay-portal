@@ -224,6 +224,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentApprovedAndDraft();
 		_testPostSiteFragmentBatch();
 		_testPostSiteFragmentDraft();
+		_testPostSiteFragmentDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteFragmentDuplicateKeyProblemException();
 		_testPostSiteFragmentEmpty();
 		_testPostSiteFragmentFragmentSetExisting();
@@ -255,6 +256,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentSetFragmentApproved();
 		_testPostSiteFragmentSetFragmentApprovedAndDraft();
 		_testPostSiteFragmentSetFragmentDraft();
+		_testPostSiteFragmentSetFragmentDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteFragmentSetFragmentDuplicateKeyProblemException();
 		_testPostSiteFragmentSetFragmentEmpty();
 		_testPostSiteFragmentSetFragmentFragmentSetExisting();
@@ -1420,6 +1422,25 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostFragmentApproved(false, true, postFragmentUnsafeFunction);
 	}
 
+	private void
+			_testPostFragmentDuplicateExternalReferenceCodeProblemException(
+				UnsafeFunction<Fragment, Fragment, Exception>
+					postFragmentUnsafeFunction)
+		throws Exception {
+
+		Fragment postFragment = postFragmentUnsafeFunction.apply(
+			randomFragment());
+
+		Fragment duplicateFragment = randomFragment();
+
+		duplicateFragment.setExternalReferenceCode(
+			postFragment.getExternalReferenceCode());
+
+		_assertProblemException(
+			"CONFLICT", "this-external-reference-code-is-already-in-use",
+			() -> postFragmentUnsafeFunction.apply(duplicateFragment));
+	}
+
 	private void _testPostFragmentDuplicateKeyProblemException(
 			UnsafeFunction<Fragment, Fragment, Exception>
 				postFragmentUnsafeFunction)
@@ -1567,6 +1588,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	private void _testPostSiteFragmentDraft() throws Exception {
 		_testPostFragmentDraft(this::_postSiteFragment);
+	}
+
+	private void _testPostSiteFragmentDuplicateExternalReferenceCodeProblemException()
+		throws Exception {
+
+		_testPostFragmentDuplicateExternalReferenceCodeProblemException(
+			this::_postSiteFragment);
 	}
 
 	private void _testPostSiteFragmentDuplicateKeyProblemException()
@@ -1730,6 +1758,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	private void _testPostSiteFragmentSetFragmentDraft() throws Exception {
 		_testPostFragmentDraft(this::_postSiteFragmentSetFragment);
+	}
+
+	private void _testPostSiteFragmentSetFragmentDuplicateExternalReferenceCodeProblemException()
+		throws Exception {
+
+		_testPostFragmentDuplicateExternalReferenceCodeProblemException(
+			this::_postSiteFragmentSetFragment);
 	}
 
 	private void _testPostSiteFragmentSetFragmentDuplicateKeyProblemException()
