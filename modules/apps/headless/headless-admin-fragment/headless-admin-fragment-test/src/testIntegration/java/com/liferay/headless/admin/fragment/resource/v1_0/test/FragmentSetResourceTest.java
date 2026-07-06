@@ -23,10 +23,12 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -37,6 +39,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.InputStream;
+
+import java.text.DateFormat;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -247,6 +251,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				nullNameFragmentSet));
 
 		_testPutSiteFragmentSetBatch();
+		_testPutSiteFragmentSetWithDates();
 	}
 
 	@Override
@@ -482,6 +487,38 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		_assertFragmentCollection(fragmentSet1, irrelevantGroup);
 		_assertFragmentCollection(putFragmentSet, irrelevantGroup);
+	}
+
+	private void _testPutSiteFragmentSetWithDates() throws Exception {
+		FragmentSet fragmentSet = randomFragmentSet();
+
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd");
+
+		Date date = dateFormat.parse("2023-01-01");
+
+		fragmentSet.setDateCreated(date);
+		fragmentSet.setDateModified(date);
+
+		FragmentSet putFragmentSet = fragmentSetResource.putSiteFragmentSet(
+			testGroup.getExternalReferenceCode(),
+			fragmentSet.getExternalReferenceCode(), fragmentSet);
+
+		Assert.assertEquals(
+			fragmentSet.getDateCreated(), putFragmentSet.getDateCreated());
+		Assert.assertEquals(
+			fragmentSet.getDateModified(), putFragmentSet.getDateModified());
+
+		fragmentSet.setDateCreated(RandomTestUtil.nextDate());
+		fragmentSet.setDateModified(new Date(date.getTime() + Time.SECOND));
+
+		putFragmentSet = fragmentSetResource.putSiteFragmentSet(
+			testGroup.getExternalReferenceCode(),
+			fragmentSet.getExternalReferenceCode(), fragmentSet);
+
+		Assert.assertEquals(date, putFragmentSet.getDateCreated());
+		Assert.assertEquals(
+			fragmentSet.getDateModified(), putFragmentSet.getDateModified());
 	}
 
 	private JSONObject _waitForExportFinish(
