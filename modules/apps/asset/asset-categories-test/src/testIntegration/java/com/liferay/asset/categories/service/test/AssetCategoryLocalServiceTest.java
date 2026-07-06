@@ -523,6 +523,7 @@ public class AssetCategoryLocalServiceTest {
 			assetCategory, assetCategoryTitle);
 	}
 
+	@FeatureFlag("LPD-86291")
 	@Test
 	public void testDeleteCategories() throws Exception {
 		AssetCategory assetCategory = _addSystemCategory();
