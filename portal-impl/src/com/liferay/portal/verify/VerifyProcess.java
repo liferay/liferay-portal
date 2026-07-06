@@ -8,6 +8,7 @@ package com.liferay.portal.verify;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
+import com.liferay.portal.kernel.db.UpgradeExecutorServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
@@ -19,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -93,12 +93,10 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		throws Exception {
 
 		try {
-			ExecutorService executorService = Executors.newFixedThreadPool(
-				callables.size());
+			ExecutorService executorService =
+				UpgradeExecutorServiceUtil.getDataExecutorService();
 
 			List<Future<Void>> futures = executorService.invokeAll(callables);
-
-			executorService.shutdown();
 
 			UnsafeConsumer.accept(futures, Future::get);
 		}

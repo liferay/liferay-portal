@@ -5,7 +5,6 @@
 
 package com.liferay.portal.db.index;
 
-import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.StartupHelperUtil;
@@ -15,6 +14,7 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.db.DBResourceUtil;
+import com.liferay.portal.kernel.db.UpgradeExecutorServiceUtil;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
@@ -187,7 +186,8 @@ public class IndexUpdaterUtil {
 			return;
 		}
 
-		ExecutorService executorService = _getExecutorService();
+		ExecutorService executorService =
+			UpgradeExecutorServiceUtil.getSchemaExecutorService();
 
 		Map<String, String> tableIndexesSQLMap = _getTableIndexesSQLMap(
 			tablesSQL, indexesSQL);
@@ -259,16 +259,6 @@ public class IndexUpdaterUtil {
 		}
 
 		return duplicatesDeleted;
-	}
-
-	private static ExecutorService _getExecutorService() {
-		return _executorServiceDCLSingleton.getSingleton(
-			() -> {
-				Runtime runtime = Runtime.getRuntime();
-
-				return Executors.newFixedThreadPool(
-					runtime.availableProcessors());
-			});
 	}
 
 	private static Map<String, String> _getTableIndexesSQLMap(
@@ -373,8 +363,6 @@ public class IndexUpdaterUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		IndexUpdaterUtil.class);
 
-	private static final DCLSingleton<ExecutorService>
-		_executorServiceDCLSingleton = new DCLSingleton<>();
 	private static final List<Future<?>> _futures =
 		new CopyOnWriteArrayList<>();
 	private static final Set<String> _processedServletContextNames =
