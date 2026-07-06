@@ -76,6 +76,7 @@ import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -111,6 +112,7 @@ import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.MembershipRequestLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -170,6 +172,7 @@ import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.portal.model.impl.GroupModelImpl;
 import com.liferay.portal.model.impl.LayoutImpl;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
+import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.service.base.GroupLocalServiceBaseImpl;
 import com.liferay.portal.service.http.ClassNameServiceHttp;
 import com.liferay.portal.service.http.GroupServiceHttp;
@@ -1201,6 +1204,27 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 				for (ResourcePermission resourcePermission :
 						resourcePermissions) {
+
+					String name = resourcePermission.getName();
+
+					if ((resourcePermission.getScope() ==
+							ResourceConstants.SCOPE_INDIVIDUAL) &&
+						!name.equals(Group.class.getName())) {
+
+						PersistedModelLocalService persistedModelLocalService =
+							PersistedModelLocalServiceRegistryUtil.
+								getPersistedModelLocalService(name);
+
+						if (persistedModelLocalService != null) {
+							PersistedModel persistedModel =
+								persistedModelLocalService.fetchPersistedModel(
+									group.getGroupId());
+
+							if (persistedModel != null) {
+								continue;
+							}
+						}
+					}
 
 					_resourcePermissionLocalService.deleteResourcePermission(
 						resourcePermission);
