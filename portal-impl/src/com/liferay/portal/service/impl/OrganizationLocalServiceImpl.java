@@ -72,7 +72,7 @@ import com.liferay.portal.kernel.service.persistence.RegionPersistence;
 import com.liferay.portal.kernel.service.persistence.UserFinder;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.tree.TreeModelTasksAdapter;
 import com.liferay.portal.kernel.tree.TreePathUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -2602,7 +2602,7 @@ public class OrganizationLocalServiceImpl
 		if (ArrayUtil.isNotEmpty(userIds)) {
 			long companyId = organization.getCompanyId();
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					reindex(companyId, userIds);
 

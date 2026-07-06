@@ -233,7 +233,7 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
@@ -377,7 +377,7 @@ public class ObjectEntryLocalServiceImpl
 
 		serviceContext.setStrictAdd(true);
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				serviceContext.setStrictAdd(false);
 
@@ -3387,7 +3387,7 @@ public class ObjectEntryLocalServiceImpl
 			lastObjectEntry.getReviewDate(),
 			lastObjectEntry.getObjectEntryId());
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_companyIdReviewCheckpoint.put(companyId, nextReviewCheckpoint);
 

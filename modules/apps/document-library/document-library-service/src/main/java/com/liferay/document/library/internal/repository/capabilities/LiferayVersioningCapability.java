@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.repository.capabilities.Capability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.repository.capabilities.util.DLAppServiceAdapter;
 import com.liferay.portal.repository.util.LocalRepositoryWrapper;
 import com.liferay.portal.repository.util.RepositoryWrapper;
@@ -194,7 +194,7 @@ public class LiferayVersioningCapability
 			return fileEntry;
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			(Callable<Void>)() -> {
 				for (FileVersion fileVersion :
 						_versionPurger.getToPurgeFileVersions(fileEntry)) {

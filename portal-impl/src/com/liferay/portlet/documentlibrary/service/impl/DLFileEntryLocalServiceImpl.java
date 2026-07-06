@@ -128,7 +128,7 @@ import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.WebDAVPropsPersistence;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.trash.helper.TrashHelper;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -3736,7 +3736,7 @@ public class DLFileEntryLocalServiceImpl
 	private void _registerPWCDeletionCallback(
 		DLFileEntry dlFileEntry, String storeFileName) {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_deleteFile(
 					dlFileEntry.getCompanyId(),

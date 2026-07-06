@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 
 import org.osgi.framework.BundleContext;
@@ -46,7 +46,7 @@ public class AccountEntryOrganizationRelModelListener
 			AccountEntryOrganizationRel accountEntryOrganizationRel)
 		throws ModelListenerException {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_reindex(accountEntryOrganizationRel);
 
@@ -59,7 +59,7 @@ public class AccountEntryOrganizationRelModelListener
 			AccountEntryOrganizationRel accountEntryOrganizationRel)
 		throws ModelListenerException {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_reindex(accountEntryOrganizationRel);
 

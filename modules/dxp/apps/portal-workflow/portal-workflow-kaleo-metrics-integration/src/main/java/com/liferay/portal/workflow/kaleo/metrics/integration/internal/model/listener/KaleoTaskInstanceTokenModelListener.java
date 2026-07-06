@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.metrics.integration.internal.model.lis
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.workflow.kaleo.metrics.integration.internal.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
@@ -39,7 +39,7 @@ public class KaleoTaskInstanceTokenModelListener
 	public void onAfterCreate(KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws ModelListenerException {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				KaleoDefinitionVersion kaleoDefinitionVersion =
 					getKaleoDefinitionVersion(
@@ -64,7 +64,7 @@ public class KaleoTaskInstanceTokenModelListener
 			KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws ModelListenerException {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
 					_kaleoTaskAssignmentInstanceLocalService.

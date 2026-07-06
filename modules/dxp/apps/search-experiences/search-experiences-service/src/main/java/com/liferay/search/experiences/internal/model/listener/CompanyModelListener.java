@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.search.experiences.internal.util.SXPElementUtil;
 import com.liferay.search.experiences.service.SXPBlueprintLocalService;
 import com.liferay.search.experiences.service.SXPElementLocalService;
@@ -27,7 +27,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
 	public void onAfterCreate(Company company) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				try {
 					SXPElementUtil.addSXPElements(

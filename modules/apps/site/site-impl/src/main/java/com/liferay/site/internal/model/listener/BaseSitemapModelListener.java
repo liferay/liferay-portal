@@ -8,7 +8,7 @@ package com.liferay.site.internal.model.listener;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.GroupedModel;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.site.manager.SitemapManager;
 
 import org.osgi.service.component.annotations.Reference;
@@ -42,7 +42,7 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 	private void _scheduleRegenerateSitemap(T model) {
 		GroupedModel groupedModel = (GroupedModel)model;
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				sitemapManager.scheduleRegenerateSitemap(
 					getAssetTypeKey(), groupedModel.getCompanyId(),

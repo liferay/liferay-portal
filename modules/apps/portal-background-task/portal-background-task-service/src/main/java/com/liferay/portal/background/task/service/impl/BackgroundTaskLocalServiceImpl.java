@@ -35,7 +35,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -86,7 +86,7 @@ public class BackgroundTaskLocalServiceImpl
 
 		long backgroundTaskId = backgroundTask.getBackgroundTaskId();
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				backgroundTaskLocalService.triggerBackgroundTask(
 					backgroundTaskId);
@@ -225,7 +225,7 @@ public class BackgroundTaskLocalServiceImpl
 			}
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Message message = new Message();
 
@@ -768,7 +768,7 @@ public class BackgroundTaskLocalServiceImpl
 
 		backgroundTask = backgroundTaskPersistence.update(backgroundTask);
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				backgroundTaskLocalService.triggerBackgroundTask(
 					backgroundTaskId);

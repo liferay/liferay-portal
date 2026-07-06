@@ -50,7 +50,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import jakarta.mail.internet.InternetAddress;
@@ -233,7 +233,7 @@ public class SubscriptionSender implements Serializable {
 	}
 
 	public void flushNotificationsAsync() {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Thread currentThread = Thread.currentThread();
 

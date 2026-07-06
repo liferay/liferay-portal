@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.test.rule.Inject;
@@ -115,7 +115,7 @@ public class PortalPreferencesLocalServiceTest {
 							PortalPreferenceValue portalPreferenceValue)
 						throws ModelListenerException {
 
-						TransactionCommitCallbackUtil.registerCallback(
+						TransactionCallbackUtil.registerCommitCallback(
 							() -> {
 								countDownLatch3.countDown();
 

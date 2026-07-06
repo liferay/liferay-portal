@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.workflow.kaleo.definition.constants.WorkflowDefinitionDestinationNames;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 
@@ -59,7 +59,7 @@ public class KaleoDefinitionModelListener
 			return;
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				try {
 					Message message = new Message();

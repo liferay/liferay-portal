@@ -9,7 +9,7 @@ import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
@@ -24,7 +24,7 @@ public class ImportDefaultValuesUtil {
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		Company company) {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Locale defaultLocale = LocaleThreadLocal.getDefaultLocale();
 				Locale siteDefaultLocale =

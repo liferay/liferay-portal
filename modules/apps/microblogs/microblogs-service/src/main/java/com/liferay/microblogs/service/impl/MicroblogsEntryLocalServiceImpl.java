@@ -40,7 +40,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.social.kernel.service.SocialActivityLocalService;
@@ -565,7 +565,7 @@ public class MicroblogsEntryLocalServiceImpl
 
 		};
 
-		TransactionCommitCallbackUtil.registerCallback(callable);
+		TransactionCallbackUtil.registerCommitCallback(callable);
 	}
 
 	private void _subscribeUsers(

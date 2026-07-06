@@ -69,7 +69,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.RepositoryPersistence;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -3475,7 +3475,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			sourceFolder.getRepositoryId(), sourceFolder.getFolderId(),
 			targetFolder.getRepositoryId(), targetFolder.getFolderId());
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				for (FileEntry fileEntry : fileEntries) {
 					DLProcessorHelperUtil.trigger(fileEntry, null);

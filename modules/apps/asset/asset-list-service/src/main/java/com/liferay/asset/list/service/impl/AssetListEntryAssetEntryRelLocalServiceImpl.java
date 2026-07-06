@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Date;
@@ -288,7 +288,7 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 		long swapAssetListEntryAssetEntryRelId =
 			swapAssetListEntryAssetEntryRel.getAssetListEntryAssetEntryRelId();
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				AssetListEntryAssetEntryRel
 					callbackAssetListEntryAssetEntryRel =

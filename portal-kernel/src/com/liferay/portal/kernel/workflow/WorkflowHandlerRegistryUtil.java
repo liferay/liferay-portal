@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalServiceUtil;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -150,7 +150,7 @@ public class WorkflowHandlerRegistryUtil {
 		if (workflowDefinitionLink != null) {
 			Map<String, Serializable> tempWorkflowContext = workflowContext;
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					if (!_hasWorkflowInstanceInProgress(
 							companyId, groupId, className, classPK)) {

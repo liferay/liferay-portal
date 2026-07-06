@@ -68,7 +68,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
@@ -409,7 +409,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 			commerceOrder.getCommerceCurrencyCode(), commerceOrderId,
 			commerceOrder.getCompanyId());
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_bookQuantities(commerceOrderId);
 
@@ -558,7 +558,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		CommerceOrder originalCommerceOrder =
 			commerceOrder.cloneWithOriginalValues();
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				if ((orderStatus ==
 						CommerceOrderConstants.ORDER_STATUS_PENDING) &&

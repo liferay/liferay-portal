@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.security.auth.PasswordModificationThreadLocal;
 import com.liferay.portal.kernel.security.ldap.LDAPSettings;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.security.exportimport.UserExporter;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
 
@@ -85,7 +85,7 @@ public abstract class BaseLDAPExportModelListener<T extends BaseModel<T>>
 			callable.call();
 		}
 		else {
-			TransactionCommitCallbackUtil.registerCallback(callable);
+			TransactionCallbackUtil.registerCommitCallback(callable);
 		}
 	}
 

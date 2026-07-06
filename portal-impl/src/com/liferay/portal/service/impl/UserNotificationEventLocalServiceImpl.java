@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.base.UserNotificationEventLocalServiceBaseImpl;
 
@@ -663,7 +663,7 @@ public class UserNotificationEventLocalServiceImpl
 	}
 
 	protected void sendPushNotification(NotificationEvent notificationEvent) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Message message = new Message();
 

@@ -134,7 +134,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -2605,7 +2605,7 @@ public class CPDefinitionLocalServiceImpl
 						cProduct.getCProductId(),
 						cpDefinition.getCPDefinitionId());
 
-					TransactionCommitCallbackUtil.registerCallback(
+					TransactionCallbackUtil.registerCommitCallback(
 						() -> {
 							cpDefinitionLocalService.maintainVersionThreshold(
 								cProduct.getCompanyId(),

@@ -6,7 +6,7 @@
 package com.liferay.object.action.executor;
 
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
 /**
@@ -21,7 +21,7 @@ public abstract class BaseObjectActionExecutor implements ObjectActionExecutor {
 			JSONObject payloadJSONObject, long userId)
 		throws Exception {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				doExecute(
 					companyId, objectActionId, parametersUnicodeProperties,

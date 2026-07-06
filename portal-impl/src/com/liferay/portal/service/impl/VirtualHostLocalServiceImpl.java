@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -257,7 +257,7 @@ public class VirtualHostLocalServiceImpl
 		Company company = _companyPersistence.fetchByPrimaryKey(companyId);
 
 		if (company != null) {
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					EntityCacheUtil.removeResult(
 						company.getClass(), company.getPrimaryKeyObj());
@@ -283,7 +283,7 @@ public class VirtualHostLocalServiceImpl
 		if (layoutSet != null) {
 			_layoutSetPersistence.clearCache(layoutSet);
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					EntityCacheUtil.removeResult(
 						LayoutSetImpl.class, layoutSetId);

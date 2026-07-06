@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.PortalPreferences;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
@@ -666,7 +666,7 @@ public class PrefsPropsImpl implements PrefsProps {
 
 					_skipCache.set(true);
 
-					TransactionCommitCallbackUtil.registerCallback(
+					TransactionCallbackUtil.registerCommitCallback(
 						() -> {
 							_removePortletPreference(
 								portalPreferenceValue.getCompanyId());

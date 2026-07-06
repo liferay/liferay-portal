@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.security.exportimport.UserExporter;
 import com.liferay.portal.security.exportimport.UserOperation;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
@@ -77,7 +77,7 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 			return;
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			CallableUtil.getCallable(
 				expandoBridgeAttributes -> {
 					if ((_userLocalService.fetchUser(userId) == null) ||

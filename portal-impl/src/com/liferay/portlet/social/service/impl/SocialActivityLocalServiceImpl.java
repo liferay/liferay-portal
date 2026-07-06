@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portlet.asset.util.DeletedAssetEntryThreadLocal;
@@ -201,7 +201,7 @@ public class SocialActivityLocalServiceImpl
 
 		};
 
-		TransactionCommitCallbackUtil.registerCallback(callable);
+		TransactionCallbackUtil.registerCommitCallback(callable);
 	}
 
 	/**

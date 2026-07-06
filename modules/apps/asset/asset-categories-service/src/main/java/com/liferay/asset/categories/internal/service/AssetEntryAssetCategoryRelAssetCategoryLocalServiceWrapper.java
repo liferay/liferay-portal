@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.util.Collections;
@@ -168,7 +168,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 	}
 
 	private void _reindexAssetCategoryAssetEntries(long assetCategoryId) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Message message = new Message();
 

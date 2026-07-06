@@ -11,7 +11,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class CTMessageEventListener implements CTEventListener {
 
 	@Override
 	public void onAfterPublish(long ctCollectionId) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				List<Message> messages = _ctMessageLocalService.getMessages(
 					ctCollectionId);

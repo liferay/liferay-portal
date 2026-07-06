@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.security.exportimport.UserExporter;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
 
@@ -68,7 +68,7 @@ public class ContactModelListener extends BaseLDAPExportModelListener<Contact> {
 			return;
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			CallableUtil.getCallable(
 				expandoBridgeAttributes -> {
 					try {

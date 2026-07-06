@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
@@ -80,7 +80,7 @@ public final class AMAsyncProcessorImpl<M, T>
 			message.put("modelId", modelId);
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_messageBus.sendMessage(
 					AMDestinationNames.ADAPTIVE_MEDIA_PROCESSOR, message);
@@ -118,7 +118,7 @@ public final class AMAsyncProcessorImpl<M, T>
 			message.put("modelId", modelId);
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				_messageBus.sendMessage(
 					AMDestinationNames.ADAPTIVE_MEDIA_PROCESSOR, message);

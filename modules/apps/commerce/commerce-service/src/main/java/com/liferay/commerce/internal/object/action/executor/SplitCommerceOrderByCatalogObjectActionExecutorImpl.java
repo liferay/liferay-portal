@@ -24,7 +24,7 @@ import com.liferay.object.action.executor.ObjectActionExecutor;
 import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -57,7 +57,7 @@ public class SplitCommerceOrderByCatalogObjectActionExecutorImpl
 			JSONObject payloadJSONObject, long userId)
 		throws Exception {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				long commerceOrderId = payloadJSONObject.getLong("classPK");
 

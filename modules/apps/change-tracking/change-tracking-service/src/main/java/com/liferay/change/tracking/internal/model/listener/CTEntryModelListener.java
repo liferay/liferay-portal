@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import org.osgi.service.component.annotations.Component;
@@ -63,7 +63,7 @@ public class CTEntryModelListener extends BaseModelListener<CTEntry> {
 	}
 
 	private void _reindexCTEntry(CTEntry ctEntry, String type) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Message message = new Message();
 
@@ -84,7 +84,7 @@ public class CTEntryModelListener extends BaseModelListener<CTEntry> {
 	}
 
 	private void _updateCTScore(CTEntry ctEntry, boolean increment) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				Message message = new Message();
 

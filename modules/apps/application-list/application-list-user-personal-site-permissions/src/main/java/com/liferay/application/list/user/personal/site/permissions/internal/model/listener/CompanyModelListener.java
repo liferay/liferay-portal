@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
 	public void onAfterCreate(Company company) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				PanelCategoryHelper panelCategoryHelper =
 					new PanelCategoryHelper(_panelAppRegistry);

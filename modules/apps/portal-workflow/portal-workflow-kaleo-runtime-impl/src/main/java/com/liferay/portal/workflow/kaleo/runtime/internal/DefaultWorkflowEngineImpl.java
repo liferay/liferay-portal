@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -232,7 +232,7 @@ public class DefaultWorkflowEngineImpl
 					updateKaleoTimerInstanceToken(kaleoTimerInstanceToken);
 			}
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					_kaleoSignaler.signalExecute(
 						kaleoInstanceToken.getCurrentKaleoNode(),
@@ -601,7 +601,7 @@ public class DefaultWorkflowEngineImpl
 			ExecutionContext executionContext = new ExecutionContext(
 				kaleoInstanceToken, workflowContext, serviceContext);
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					try {
 						_kaleoSignaler.signalExit(

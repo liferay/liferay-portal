@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.upgrade.internal.model.listener.ReleaseModelListener;
 
@@ -99,7 +99,7 @@ public class ReleasePublisher {
 	}
 
 	public void unpublish(Release release) {
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				ServiceRegistration<Release> serviceRegistration =
 					_serviceConfiguratorRegistrations.remove(

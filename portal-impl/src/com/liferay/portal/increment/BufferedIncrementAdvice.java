@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.increment.Increment;
 import com.liferay.portal.kernel.increment.IncrementFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
@@ -86,7 +86,7 @@ public class BufferedIncrementAdvice extends ChainableMethodAdvice {
 				new BufferedIncreasableEntry(
 					aopMethodInvocation, arguments, batchKey, increment);
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					bufferedIncrementProcessor.process(
 						bufferedIncreasableEntry);

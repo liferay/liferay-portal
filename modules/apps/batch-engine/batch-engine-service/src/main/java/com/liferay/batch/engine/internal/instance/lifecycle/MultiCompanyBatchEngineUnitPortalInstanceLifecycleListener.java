@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -34,7 +34,7 @@ public class MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener
 		DB db = DBManagerUtil.getDB();
 
 		if (db.getDBType() == DBType.HYPERSONIC) {
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> _processBatchEngineUnits(company));
 		}
 		else {

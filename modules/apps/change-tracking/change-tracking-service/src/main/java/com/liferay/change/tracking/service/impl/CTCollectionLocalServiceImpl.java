@@ -96,7 +96,7 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -1431,7 +1431,7 @@ public class CTCollectionLocalServiceImpl
 		Indexer<?> indexer = _indexerRegistry.getIndexer(modelClass);
 
 		if (indexer != null) {
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					List<String> uids = new ArrayList<>(ctEntries.size());
 
@@ -1657,7 +1657,7 @@ public class CTCollectionLocalServiceImpl
 			ctService.getModelClass());
 
 		if (indexer != null) {
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					List<String> uids = new ArrayList<>(ctEntries.size());
 

@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -307,7 +307,7 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 			_getLayoutPageTemplateEntry(layout);
 
 		if (layoutPageTemplateEntry != null) {
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> _copyStructure(layoutPageTemplateEntry, layout));
 		}
 	}

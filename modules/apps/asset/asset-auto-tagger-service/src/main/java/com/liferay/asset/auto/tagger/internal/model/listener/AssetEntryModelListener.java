@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -79,7 +79,7 @@ public class AssetEntryModelListener extends BaseModelListener<AssetEntry> {
 		if (updateAutoTags ||
 			(assetEntryFromDatabase.getPublishDate() == null)) {
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				(Callable<Void>)() -> {
 					if (!updateAutoTags &&
 						((assetEntry.getPublishDate() == null) ||

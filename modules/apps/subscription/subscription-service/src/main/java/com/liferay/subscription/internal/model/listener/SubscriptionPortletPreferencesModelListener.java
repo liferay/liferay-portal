@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
@@ -46,7 +46,7 @@ public class SubscriptionPortletPreferencesModelListener
 				return;
 			}
 
-			TransactionCommitCallbackUtil.registerCallback(
+			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
 					PortletPreferences remainingPortletPreferences =
 						_portletPreferencesLocalService.fetchPortletPreferences(

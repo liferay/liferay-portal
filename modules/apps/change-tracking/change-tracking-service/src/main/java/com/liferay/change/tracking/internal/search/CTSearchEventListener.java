@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.model.uid.UIDFactory;
 
@@ -53,7 +53,7 @@ public class CTSearchEventListener implements CTEventListener {
 	public void onAfterCopy(
 		long sourceCTCollectionId, long targetCTCollectionId) {
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				try (SafeCloseable safeCloseable =
 						CTCollectionThreadLocal.
@@ -81,7 +81,7 @@ public class CTSearchEventListener implements CTEventListener {
 			return;
 		}
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				try (SafeCloseable safeCloseable =
 						CTCollectionThreadLocal.
