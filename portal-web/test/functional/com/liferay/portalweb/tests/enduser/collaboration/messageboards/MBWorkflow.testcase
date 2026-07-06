@@ -28,9 +28,9 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-136940. It checks that a comment in a thread submission can be modified."
+	@description = "This is a test for LPS-136940 and LPS-136941. It checks that a comment in a thread submission can be modified and that the thread submission can be updated."
 	@priority = 3
-	test CanModifyCommentInThreadSubmission {
+	test CanModifyThreadSubmissionAndComment {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
@@ -75,63 +75,6 @@ definition {
 			entryComment = "Can you update the entry title",
 			entryCommentEdit = "Can you update the entry title and description");
 
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Submissions");
-
-		Workflow.gotoAssetViaTableTitle(workflowAssetTitle = "Message Boards Thread");
-
-		Panel.expandPanel(panel = "comments");
-
-		Comments.viewPG(
-			commentCount = 1,
-			entryComment = "Can you update the entry title and description",
-			userFullName = "Test Test");
-	}
-
-	@description = "This is a test for LPS-136941. It checks that a thread submission can be updated."
-	@priority = 3
-	test CanModifyThreadSubmissionAndComment {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONUser.addUserToSite(
-			groupName = "Site Name",
-			userEmailAddress = "userea@liferay.com");
-
-		Workflow.openWorkflowAdmin(siteURLKey = "site-name");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Message Boards Message");
-
-		JSONMBMessage.addMessage(
-			groupName = "Site Name",
-			threadBody = "Message Boards Thread Body",
-			threadSubject = "Message Boards Thread",
-			userEmailAddress = "userea@liferay.com");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.assignToMeTaskByActions(
-			workflowAssetTitle = "Message Boards Thread",
-			workflowAssetType = "Message Boards Message",
-			workflowTask = "Review");
-
-		Workflow.gotoAssetViaTableTitle(workflowAssetTitle = "Message Boards Thread");
-
 		Workflow.gotoPreviewEdit();
 
 		MessageboardsThread.editCP(
@@ -154,6 +97,13 @@ definition {
 			workflowAssetTitle = "Message Boards Thread Edit",
 			workflowAssetType = "Message Boards Message",
 			workflowSubmissionTitle = "Single Approver: Message Boards Thread Edit");
+
+		Panel.expandPanel(panel = "comments");
+
+		Comments.viewPG(
+			commentCount = 1,
+			entryComment = "Can you update the entry title and description",
+			userFullName = "Test Test");
 	}
 
 }
