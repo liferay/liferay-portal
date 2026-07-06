@@ -520,8 +520,6 @@ public class DLExportImportPortletPreferencesProcessor
 			String className, long primaryKeyLong)
 		throws Exception {
 
-		// Unused: this processor does not use the base primary key drivers.
-
 		return null;
 	}
 
@@ -531,8 +529,6 @@ public class DLExportImportPortletPreferencesProcessor
 			long companyGroupId, Map<Long, Long> primaryKeys,
 			String portletPreferencesOldValue)
 		throws Exception {
-
-		// Unused: this processor does not use the base primary key drivers.
 
 		return null;
 	}
