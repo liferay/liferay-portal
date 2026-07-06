@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.service;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceWrapper;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -42,8 +43,11 @@ public class CMSAssetVocabularyServiceWrapper
 
 		List<AssetVocabulary> cmsAssetVocabularies = ListUtil.filter(
 			CMSAssetVocabularyUtil.getCMSAssetVocabularies(groupIds),
-			assetVocabulary -> ArrayUtil.contains(
-				visibilityTypes, assetVocabulary.getVisibilityType()));
+			assetVocabulary ->
+				(assetVocabulary.getVisibilityType() ==
+					AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC) &&
+				ArrayUtil.contains(
+					visibilityTypes, assetVocabulary.getVisibilityType()));
 
 		if (cmsAssetVocabularies.isEmpty()) {
 			return assetVocabularies;
