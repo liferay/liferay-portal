@@ -185,8 +185,8 @@ public class BatchEnginePortletDataHandlerUtilTest {
 			_getStagingGroupHelper(false));
 
 		Assert.assertEquals(
-			"customFields.attributeType,comments,permissions,nestedField1," +
-				"nestedField2",
+			"customFields.attributeType,systemProperties.comments," +
+				"permissions,nestedField1,nestedField2",
 			parameters.get("batchNestedFields"));
 	}
 
@@ -275,7 +275,7 @@ public class BatchEnginePortletDataHandlerUtilTest {
 					PortletDataHandlerKeys.PERMISSIONS, new String[] {"true"}
 				).build()));
 		Assert.assertEquals(
-			"comments",
+			"systemProperties.comments",
 			_getBatchRestrictFields(
 				HashMapBuilder.put(
 					PortletDataHandlerKeys.COMMENTS, new String[] {"false"}
@@ -283,13 +283,13 @@ public class BatchEnginePortletDataHandlerUtilTest {
 					PortletDataHandlerKeys.PERMISSIONS, new String[] {"true"}
 				).build()));
 		Assert.assertEquals(
-			"comments,permissions",
+			"systemProperties.comments,permissions",
 			_getBatchRestrictFields(
 				HashMapBuilder.put(
 					PortletDataHandlerKeys.COMMENTS, new String[] {"false"}
 				).build()));
 		Assert.assertEquals(
-			"comments,permissions",
+			"systemProperties.comments,permissions",
 			_getBatchRestrictFields(
 				HashMapBuilder.put(
 					PortletDataHandlerKeys.COMMENTS, new String[] {"false"}
@@ -297,7 +297,7 @@ public class BatchEnginePortletDataHandlerUtilTest {
 					PortletDataHandlerKeys.PERMISSIONS, new String[] {"false"}
 				).build()));
 		Assert.assertEquals(
-			"comments,permissions",
+			"systemProperties.comments,permissions",
 			_getBatchRestrictFields(
 				HashMapBuilder.put(
 					PortletDataHandlerKeys.PERMISSIONS, new String[] {"false"}
