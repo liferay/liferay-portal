@@ -84,6 +84,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 	@Test
 	@TestInfo("LPD-96674")
 	public void testGetLayoutUtilityPageEntrySearchContainer() {
+		_testGetLayoutUtilityPageEntrySearchContainerDefaultOrderByComparator();
 		_testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate();
 		_testGetLayoutUtilityPageEntrySearchContainerOrderByName();
 		_testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol();
@@ -120,6 +121,15 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 				getLayoutUtilityPageEntrySearchContainer();
 
 		return searchContainer.getOrderByComparator();
+	}
+
+	private void _testGetLayoutUtilityPageEntrySearchContainerDefaultOrderByComparator() {
+		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
+			_getSearchContainerOrderByComparator(null, null);
+
+		Assert.assertEquals(
+			"LayoutUtilityPageEntry.createDate ASC",
+			orderByComparator.getOrderBy());
 	}
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate() {
