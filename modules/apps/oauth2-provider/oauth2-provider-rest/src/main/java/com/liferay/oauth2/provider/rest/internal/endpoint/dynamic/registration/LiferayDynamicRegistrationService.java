@@ -308,21 +308,27 @@ public class LiferayDynamicRegistrationService
 			liferayClientRegistrationResponse.setJwksUri(jwksURI);
 		}
 
-		liferayClientRegistrationResponse.setRegistrationAccessToken(
-			properties.get("registration_access_token"));
+		// Open registration is create-only. Suppress the registration access
+		// token and management URI so the response does not advertise a client
+		// lifecycle that the endpoint does not support for open clients.
 
-		MessageContext messageContext = getMessageContext();
+		if (!_isOpenRegistration(client)) {
+			liferayClientRegistrationResponse.setRegistrationAccessToken(
+				properties.get("registration_access_token"));
 
-		UriInfo uriInfo = messageContext.getUriInfo();
+			MessageContext messageContext = getMessageContext();
 
-		UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+			UriInfo uriInfo = messageContext.getUriInfo();
 
-		liferayClientRegistrationResponse.setRegistrationClientUri(
-			uriBuilder.path(
-				client.getClientId()
-			).build(
-				new Object[0]
-			).toString());
+			UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+
+			liferayClientRegistrationResponse.setRegistrationClientUri(
+				uriBuilder.path(
+					client.getClientId()
+				).build(
+					new Object[0]
+				).toString());
+		}
 
 		if (ListUtil.isNotEmpty(client.getRegisteredScopes())) {
 			liferayClientRegistrationResponse.setScope(
