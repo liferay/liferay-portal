@@ -2047,7 +2047,7 @@ test(
 					},
 					{
 						DBType: 'String',
-						businessType: 'Text',
+						businessType: 'EmailAddress',
 						externalReferenceCode: 'plantEmailERC',
 						indexed: true,
 						indexedAsKeyword: false,
@@ -2245,14 +2245,6 @@ test(
 
 		await pageEditorPage.mapFormFragment(formId, 'Plant', 'all', {
 			addLocalizationSelect: true,
-		});
-
-		// Swap the Text fragment mapped to the Email field to the Email fragment
-
-		await pageEditorPage.swapFragment({
-			folder: 'Form Components',
-			fragmentId: await pageEditorPage.getFragmentId('Text', 1),
-			fragmentName: 'Email',
 		});
 
 		// Swap to Multiselector Checkbox fragment
