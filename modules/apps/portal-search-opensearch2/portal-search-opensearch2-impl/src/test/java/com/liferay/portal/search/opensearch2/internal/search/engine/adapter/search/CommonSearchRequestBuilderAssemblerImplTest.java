@@ -62,9 +62,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWhenAdditiveWillAppendToWhatMainQueryFindsFilterOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -87,9 +85,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWhenAdditiveWillAppendToWhatMainQueryFindsMustNotOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -112,9 +108,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWhenAdditiveWillAppendToWhatMainQueryFindsMustOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -137,9 +131,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWhenAdditiveWillAppendToWhatMainQueryFindsShouldOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -162,9 +154,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillModifyWhatMainQueryFindsFilterOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -188,9 +178,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillModifyWhatMainQueryFindsMustNotOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -214,9 +202,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillModifyWhatMainQueryFindsMustOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -240,9 +226,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillModifyWhatMainQueryFindsShouldOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -266,9 +250,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillNarrowDownWhatMainQueryFindsFilterOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -292,9 +274,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillNarrowDownWhatMainQueryFindsMustNotOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -318,9 +298,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillNarrowDownWhatMainQueryFindsMustOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -344,9 +322,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testPartsWillNarrowDownWhatMainQueryFindsShouldOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -368,9 +344,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 
 	@Test
 	public void testPrecedenceOfAdditiveFilterOccur() throws Exception {
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -392,9 +366,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 
 	@Test
 	public void testPrecedenceOfAdditiveMustNotOccur() throws Exception {
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -416,9 +388,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 
 	@Test
 	public void testPrecedenceOfAdditiveMustOccur() throws Exception {
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -440,9 +410,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 
 	@Test
 	public void testPrecedenceOfAdditiveShouldOccur() throws Exception {
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -466,9 +434,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testRootClauseWithParentNestsUnderNamedParentQuery()
 		throws Exception {
 
-		_index("alpha 1", "JournalArticle");
-		_index("alpha 2", "DLFileEntry");
-		_index("bravo 1", "DLFileEntry");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -495,9 +461,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testRootOnlyAppliedWhenMainQueryIsBooleanFilterOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -516,9 +480,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testRootOnlyAppliedWhenMainQueryIsBooleanMustNotOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -537,9 +499,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testRootOnlyAppliedWhenMainQueryIsBooleanMustOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -558,9 +518,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	public void testRootOnlyAppliedWhenMainQueryIsBooleanShouldOccur()
 		throws Exception {
 
-		_index("JournalArticle", "alpha 1");
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
+		_indexDocuments();
 
 		SearchSearchRequest searchSearchRequest = _createSearchSearchRequest();
 
@@ -700,6 +658,12 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 			).put(
 				"title", title
 			).build());
+	}
+
+	private void _indexDocuments() {
+		_index("DLFileEntry", "alpha 2");
+		_index("DLFileEntry", "bravo 1");
+		_index("JournalArticle", "alpha 1");
 	}
 
 	private final ComplexQueryPartBuilderFactory
