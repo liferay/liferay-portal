@@ -13,7 +13,6 @@ import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.GlobalCSSCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -42,33 +41,35 @@ import org.junit.runner.RunWith;
 public class CETManagerImplTest {
 
 	@Test
-	public void testGetCET() throws PortalException {
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.client.extension.type.internal.manager." +
-					"CETManagerImpl",
-				LoggerTestUtil.WARN)) {
-
-			String externalReferenceCode = RandomTestUtil.randomString();
-
-			Assert.assertNull(
-				_cetManager.getCET(
-					TestPropsValues.getCompanyId(), externalReferenceCode));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"No CET found for external reference code " +
-					externalReferenceCode,
-				logEntry.getMessage());
-		}
+	public void testGetCET() throws Exception {
+		_testGetCETIsCached();
+		_testGetCETIsRebuiltAfterUpdate();
+		_testGetCETsReturnsOnlyRequestedType();
+		_testGetCETWithMissingExternalReferenceCode();
 	}
 
-	@Test
-	public void testGetCETIsCached() throws Exception {
+	@Rule
+	public final AggregateTestRule aggregateTestRule =
+		new LiferayIntegrationTestRule();
+
+	private ClientExtensionEntry _addClientExtensionEntry(
+			String type, String url)
+		throws Exception {
+
+		return _clientExtensionEntryLocalService.addClientExtensionEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			StringPool.BLANK,
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			StringPool.BLANK, StringPool.BLANK, type,
+			UnicodePropertiesBuilder.create(
+				true
+			).put(
+				"url", url
+			).buildString());
+	}
+
+	private void _testGetCETIsCached() throws Exception {
 		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 			"http://example.com/a.css");
@@ -89,8 +90,7 @@ public class CETManagerImplTest {
 		Assert.assertEquals("http://example.com/a.css", globalCSSCET.getURL());
 	}
 
-	@Test
-	public void testGetCETIsRebuiltAfterUpdate() throws Exception {
+	private void _testGetCETIsRebuiltAfterUpdate() throws Exception {
 		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 			"http://example.com/a.css");
@@ -121,8 +121,7 @@ public class CETManagerImplTest {
 		Assert.assertEquals("http://example.com/b.css", globalCSSCET.getURL());
 	}
 
-	@Test
-	public void testGetCETsReturnsOnlyRequestedType() throws Exception {
+	private void _testGetCETsReturnsOnlyRequestedType() throws Exception {
 		ClientExtensionEntry globalCSSClientExtensionEntry =
 			_addClientExtensionEntry(
 				ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
@@ -157,25 +156,31 @@ public class CETManagerImplTest {
 		Assert.assertTrue(containsGlobalCSS);
 	}
 
-	@Rule
-	public final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
-
-	private ClientExtensionEntry _addClientExtensionEntry(
-			String type, String url)
+	private void _testGetCETWithMissingExternalReferenceCode()
 		throws Exception {
 
-		return _clientExtensionEntryLocalService.addClientExtensionEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			StringPool.BLANK,
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			StringPool.BLANK, StringPool.BLANK, type,
-			UnicodePropertiesBuilder.create(
-				true
-			).put(
-				"url", url
-			).buildString());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.client.extension.type.internal.manager." +
+					"CETManagerImpl",
+				LoggerTestUtil.WARN)) {
+
+			String externalReferenceCode = RandomTestUtil.randomString();
+
+			Assert.assertNull(
+				_cetManager.getCET(
+					TestPropsValues.getCompanyId(), externalReferenceCode));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"No CET found for external reference code " +
+					externalReferenceCode,
+				logEntry.getMessage());
+		}
 	}
 
 	@Inject
