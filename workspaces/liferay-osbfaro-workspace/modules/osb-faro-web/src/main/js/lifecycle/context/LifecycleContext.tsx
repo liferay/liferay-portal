@@ -50,12 +50,12 @@ const initialValues: ILifecycleFilterValues = {
 
 interface ILifecycleContextProviderProps {
 	children: ReactNode;
-	lifecycleId: string;
+	lifecycleId?: string;
 }
 
 export const LifecycleContextProvider = ({
 	children,
-	lifecycleId,
+	lifecycleId = '',
 }: ILifecycleContextProviderProps) => {
 	const [filterValues, setFilterValues] =
 		useState<ILifecycleFilterValues>(initialValues);
