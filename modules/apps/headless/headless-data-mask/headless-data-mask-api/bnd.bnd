@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.headless.data.mask.api
 Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.headless.data.mask.dto.v1_0,\
-	com.liferay.headless.data.mask.engine,\
 	com.liferay.headless.data.mask.resource.v1_0

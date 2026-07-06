@@ -7,11 +7,8 @@ package com.liferay.headless.data.mask.internal.resource.v1_0;
 
 import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewRequest;
 import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewResult;
-import com.liferay.headless.data.mask.internal.engine.DataMask;
+import com.liferay.headless.data.mask.internal.engine.DataMaskEngineUtil;
 import com.liferay.headless.data.mask.resource.v1_0.DataMaskResource;
-import com.liferay.portal.kernel.util.Validator;
-
-import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -29,36 +26,22 @@ public class DataMaskResourceImpl extends BaseDataMaskResourceImpl {
 	public DataMaskPreviewResult postDataMaskPreview(
 		DataMaskPreviewRequest dataMaskPreviewRequest) {
 
-		String detectionRegex = dataMaskPreviewRequest.getDetectionRegex();
-		String replacementValue = dataMaskPreviewRequest.getReplacementValue();
 		String sampleText = dataMaskPreviewRequest.getSampleText();
 
 		DataMaskPreviewResult dataMaskPreviewResult =
 			new DataMaskPreviewResult();
 
-		dataMaskPreviewResult.setOutput(() -> sampleText);
-
 		try {
-			Pattern detectionPattern = Pattern.compile(detectionRegex);
+			String output = DataMaskEngineUtil.redact(
+				dataMaskPreviewRequest.getDetectionRegex(),
+				dataMaskPreviewRequest.getReplacementRegex(),
+				dataMaskPreviewRequest.getReplacementValue(), sampleText);
 
-			String replacementRegex =
-				dataMaskPreviewRequest.getReplacementRegex();
-
-			Pattern replacementPattern =
-				Validator.isNull(replacementRegex) ? null :
-					Pattern.compile(replacementRegex);
-
-			dataMaskPreviewResult.setOutput(
-				() -> {
-					DataMask dataMask = new DataMask(
-						detectionPattern, "preview", replacementPattern,
-						replacementValue);
-
-					return dataMask.apply(sampleText);
-				});
+			dataMaskPreviewResult.setOutput(() -> output);
 		}
 		catch (RuntimeException runtimeException) {
 			dataMaskPreviewResult.setError(runtimeException::getMessage);
+			dataMaskPreviewResult.setOutput(() -> sampleText);
 		}
 
 		return dataMaskPreviewResult;

@@ -6,7 +6,7 @@
 package com.liferay.headless.data.mask.internal.model.listener;
 
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
-import com.liferay.headless.data.mask.engine.DataMaskEngine;
+import com.liferay.headless.data.mask.internal.engine.DataMaskEngineUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.petra.string.StringBundler;
@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jose Luis Navarro
@@ -108,10 +107,8 @@ public class DataMaskRelevantObjectEntryModelListener
 	}
 
 	private void _evictPatterns(Map<String, Serializable> values) {
-		_dataMaskEngine.evictPattern(
-			MapUtil.getString(values, "detectionRegex"));
-		_dataMaskEngine.evictPattern(
-			MapUtil.getString(values, "replacementRegex"));
+		DataMaskEngineUtil.evict(MapUtil.getString(values, "detectionRegex"));
+		DataMaskEngineUtil.evict(MapUtil.getString(values, "replacementRegex"));
 	}
 
 	private boolean _isDataMaskSeedImport() {
@@ -153,8 +150,5 @@ public class DataMaskRelevantObjectEntryModelListener
 			_validateRegex("replacementRegex", replacementRegex);
 		}
 	}
-
-	@Reference
-	private DataMaskEngine _dataMaskEngine;
 
 }
