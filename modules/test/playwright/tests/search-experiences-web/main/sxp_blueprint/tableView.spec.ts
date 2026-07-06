@@ -31,23 +31,22 @@ test.describe('Table Fields Selection', () => {
 	});
 
 	test.afterEach(async ({page, sxpBlueprintsAndElementsViewPage}) => {
-		await test.step('Select all blueprint table fields to view', async () => {
+		await test.step('Restore all blueprint table fields to view', async () => {
 			for (const tableField of tableFieldsList) {
-				const tableFieldMenuItem = page.getByRole('menuitem', {
-					exact: true,
-					name: tableField,
+				const columnMenuItem = page.getByRole('menuitem').filter({
+					has: page.getByText(tableField, {exact: true}),
 				});
 
-				if (!(await tableFieldMenuItem.isVisible())) {
+				if (!(await columnMenuItem.isVisible())) {
 					await sxpBlueprintsAndElementsViewPage.blueprintElementTableOpenFieldsMenuButton.click();
 				}
 
 				if (
-					!(await tableFieldMenuItem
-						.locator('.lexicon-icon-check')
+					!(await sxpBlueprintsAndElementsViewPage.blueprintElementTableHeading
+						.getByText(tableField, {exact: true})
 						.isVisible())
 				) {
-					await tableFieldMenuItem.click();
+					await columnMenuItem.click();
 				}
 
 				await expect(
@@ -78,25 +77,16 @@ test.describe('Table Fields Selection', () => {
 
 		await test.step('Toggle off blueprint table fields', async () => {
 			for (const tableField of tableFieldsList) {
-				const tableFieldMenuItem = page.getByRole('menuitem', {
-					exact: true,
-					name: tableField,
+				const columnMenuItem = page.getByRole('menuitem').filter({
+					has: page.getByText(tableField, {exact: true}),
 				});
 
-				if (!(await tableFieldMenuItem.isVisible())) {
+				if (!(await columnMenuItem.isVisible())) {
 					await sxpBlueprintsAndElementsViewPage.blueprintElementTableOpenFieldsMenuButton.click();
 				}
 
-				await tableFieldMenuItem.click();
+				await columnMenuItem.click();
 
-				await expect(
-					tableFieldMenuItem.locator('.lexicon-icon-check')
-				).not.toBeVisible();
-			}
-		});
-
-		await test.step('Assert blueprint table fields are not available', async () => {
-			for (const tableField of tableFieldsList) {
 				await expect(
 					sxpBlueprintsAndElementsViewPage.blueprintElementTableHeading
 				).not.toContainText(tableField);
