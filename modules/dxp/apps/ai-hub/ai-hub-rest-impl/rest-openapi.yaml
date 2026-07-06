@@ -79,8 +79,9 @@ components:
                 active:
                     type: boolean
                 avatar:
+                    additionalProperties: true
                     readOnly: true
-                    type: string
+                    type: object
                 disclaimerMessage:
                     readOnly: true
                     type: string

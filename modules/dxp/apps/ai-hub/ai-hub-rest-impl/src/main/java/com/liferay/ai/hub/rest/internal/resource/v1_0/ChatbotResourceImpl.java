@@ -8,6 +8,7 @@ package com.liferay.ai.hub.rest.internal.resource.v1_0;
 import com.liferay.ai.hub.rest.dto.v1_0.Chatbot;
 import com.liferay.ai.hub.rest.resource.v1_0.ChatbotResource;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
+import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -15,6 +16,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import java.util.Map;
 
@@ -59,11 +61,12 @@ public class ChatbotResourceImpl extends BaseChatbotResourceImpl {
 				() -> {
 					Object avatar = objectEntry.getPropertyValue("avatar");
 
-					if (avatar instanceof Map avatarMap) {
-						return GetterUtil.getString(avatarMap.get("fileURL"));
+					if (avatar instanceof FileEntry fileEntry) {
+						return ObjectMapperUtil.readValue(
+							Map.class, fileEntry.toString());
 					}
 
-					return GetterUtil.getString(avatar);
+					return null;
 				});
 			chatbot.setDisclaimerMessage(
 				() -> GetterUtil.getString(

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export type AvatarReference = {
+	externalReferenceCode: string;
+};
+
 export type AvatarUpload = {
 	fileBase64: string;
 	mimeType?: string;
@@ -11,7 +15,7 @@ export type AvatarUpload = {
 
 export type Chatbot = {
 	active: boolean;
-	avatar?: number | AvatarUpload | null;
+	avatar?: AvatarReference | AvatarUpload | null | number;
 	avatarFileName?: string;
 	description: string;
 	disclaimerMessage_i18n?: {[key: string]: string};

@@ -135,7 +135,6 @@ export default function ChatbotForm({
 		originalSelectedAgentDefinitions,
 		setOriginalSelectedAgentDefinitions,
 	] = useState<AgentDefinitionOption[]>([]);
-	const [avatarChanged, setAvatarChanged] = useState(false);
 	const [avatarLoading, setAvatarLoading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -214,8 +213,6 @@ export default function ChatbotForm({
 				},
 				avatarFileName: file.name,
 			}));
-
-			setAvatarChanged(true);
 		}
 		catch (error) {
 			openToast({
@@ -238,8 +235,6 @@ export default function ChatbotForm({
 			avatar: null,
 			avatarFileName: undefined,
 		}));
-
-		setAvatarChanged(true);
 	};
 
 	const handleCopyEmbedCode = () => {
@@ -258,17 +253,14 @@ export default function ChatbotForm({
 
 	const handleSubmit = async () => {
 		try {
-			const {avatar, ...rest} = formData;
-
 			const payload = {
-				...rest,
+				...formData,
 				r_accountToAIHubChatbots_accountEntryERC:
 					accountEntryExternalReferenceCode,
 				title:
 					formData.title_i18n?.['en_US'] ||
 					Object.values(formData.title_i18n ?? {})[0] ||
 					'',
-				...(avatarChanged && {avatar}),
 			};
 
 			let chatbotExternalReferenceCode =
@@ -328,8 +320,6 @@ export default function ChatbotForm({
 
 			setOriginalSelectedAgentDefinitions(selectedAgentDefinitions);
 
-			setAvatarChanged(false);
-
 			openToast({
 				message: Liferay.Language.get('chatbot-was-saved-successfully'),
 				type: 'success',
@@ -364,7 +354,6 @@ export default function ChatbotForm({
 
 				setSelectedAgentDefinitions([]);
 				setOriginalSelectedAgentDefinitions([]);
-				setAvatarChanged(false);
 
 				return;
 			}
@@ -383,7 +372,10 @@ export default function ChatbotForm({
 				setFormData({
 					active: chatbotDefinition.active ?? false,
 					avatar: avatarAttachment
-						? avatarAttachment.id
+						? {
+								externalReferenceCode:
+									avatarAttachment.externalReferenceCode,
+							}
 						: chatbotDefinition.avatar,
 					avatarFileName: avatarAttachment?.name,
 					description: chatbotDefinition.description,
@@ -410,7 +402,6 @@ export default function ChatbotForm({
 
 				setSelectedAgentDefinitions(agentDefinitions);
 				setOriginalSelectedAgentDefinitions(agentDefinitions);
-				setAvatarChanged(false);
 			}
 			catch (error) {
 				openToast({
