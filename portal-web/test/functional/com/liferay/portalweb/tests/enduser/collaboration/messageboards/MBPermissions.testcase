@@ -83,7 +83,7 @@ definition {
 
 	@description = "This test covers LPS-97376, This ensures that a user can not view the subscribed message via the notification without permissions."
 	@priority = 4
-	test CannotViewMessageViaNotificationWithoutPermissionsOnContentPage {
+	test CanViewMessageViaNotificationOnContentPageOnlyWithPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
 
