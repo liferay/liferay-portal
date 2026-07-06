@@ -557,12 +557,12 @@ public class ObjectRelationshipLocalServiceUtil {
 
 	public static void
 		registerObjectRelationshipsRelatedInfoCollectionProviders(
-			com.liferay.object.model.ObjectDefinition objectDefinition1,
+			com.liferay.object.model.ObjectDefinition objectDefinition,
 			ObjectDefinitionLocalService objectDefinitionLocalService,
 			List<ObjectRelationship> objectRelationships) {
 
 		getService().registerObjectRelationshipsRelatedInfoCollectionProviders(
-			objectDefinition1, objectDefinitionLocalService,
+			objectDefinition, objectDefinitionLocalService,
 			objectRelationships);
 	}
 
@@ -611,4 +611,4 @@ public class ObjectRelationshipLocalServiceUtil {
 			ObjectRelationshipLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-320288305
+// LIFERAY-SERVICE-BUILDER-HASH:2142959521

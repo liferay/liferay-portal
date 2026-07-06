@@ -652,14 +652,14 @@ public class ObjectRelationshipLocalServiceWrapper
 
 	@Override
 	public void registerObjectRelationshipsRelatedInfoCollectionProviders(
-		com.liferay.object.model.ObjectDefinition objectDefinition1,
+		com.liferay.object.model.ObjectDefinition objectDefinition,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		java.util.List<com.liferay.object.model.ObjectRelationship>
 			objectRelationships) {
 
 		_objectRelationshipLocalService.
 			registerObjectRelationshipsRelatedInfoCollectionProviders(
-				objectDefinition1, objectDefinitionLocalService,
+				objectDefinition, objectDefinitionLocalService,
 				objectRelationships);
 	}
 
@@ -722,4 +722,4 @@ public class ObjectRelationshipLocalServiceWrapper
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1817623923
+// LIFERAY-SERVICE-BUILDER-HASH:-2013795293
