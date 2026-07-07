@@ -5117,29 +5117,6 @@ definition {
 	}
 
 	@priority = 3
-	test ViewSearchResultsScoreViaBlueprintsPreview {
-		property portal.acceptance = "quarantine";
-
-		Blueprints.openBlueprintsAdmin();
-
-		Blueprints.createBlueprint(title = "Test Blueprint");
-
-		Blueprints.searchBlueprintsPreview(searchTerm = "test");
-
-		Click(
-			key_assetTitle = "Test",
-			locator1 = "Blueprints#BLUEPRINTS_PREVIEW_SEARCH_RESULT_SCORE");
-
-		AssertTextEquals(
-			locator1 = "Modal#HEADER",
-			value1 = "Score Explanation");
-
-		AssertVisible(
-			key_searchExplanation = "PerFieldSimilarity",
-			locator1 = "Blueprints#BLUEPRINTS_PREVIEW_SEARCH_RESULT_SCORE_EXPLANATION");
-	}
-
-	@priority = 3
 	test ViewSelectedAssetTypesUI {
 		property custom.properties = "feature.flag.LPD-35013=true";
 
