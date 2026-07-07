@@ -2,7 +2,7 @@ import {DataSourceTypes} from 'shared/util/constants';
 import {
 	getConnectorConfig,
 	listAvailableConnectors,
-	listConnectors,
+	listConnectors
 } from '../registry';
 import {SubscriptionNames} from 'shared/util/subscriptions';
 
@@ -25,11 +25,13 @@ describe('connector registry', () => {
 		});
 
 		it('returns the marketo config when looked up by enum value', () => {
-			const config = getConnectorConfig(DataSourceTypes.Marketo);
+			const config = getConnectorConfig(
+				DataSourceTypes.MarketoEventStream
+			);
 
 			expect(config).toBeDefined();
 			expect(config?.slug).toBe('marketo');
-			expect(config?.type).toBe(DataSourceTypes.Marketo);
+			expect(config?.type).toBe(DataSourceTypes.MarketoEventStream);
 		});
 
 		it('is case-insensitive on the lookup key', () => {
@@ -50,7 +52,7 @@ describe('connector registry', () => {
 	describe('listConnectors', () => {
 		it('returns every registered connector config', () => {
 			const slugs = listConnectors()
-				.map((c) => c.slug)
+				.map(c => c.slug)
 				.sort();
 
 			expect(slugs).toEqual(['demandbase', 'hubspot', 'marketo']);
@@ -64,7 +66,7 @@ describe('connector registry', () => {
 			const slugs = listAvailableConnectors(
 				existing,
 				SubscriptionNames.LiferayDataPlatformPrivateBeta
-			).map((c) => c.slug);
+			).map(c => c.slug);
 
 			expect(slugs).not.toContain('demandbase');
 			expect(slugs).toContain('hubspot');
@@ -75,7 +77,7 @@ describe('connector registry', () => {
 				new Set(),
 				SubscriptionNames.LiferayDataPlatformPrivateBeta
 			)
-				.map((c) => c.slug)
+				.map(c => c.slug)
 				.sort();
 
 			expect(slugs).toEqual(['demandbase', 'hubspot', 'marketo']);
@@ -85,13 +87,13 @@ describe('connector registry', () => {
 			const slugs = listAvailableConnectors(
 				new Set(),
 				SubscriptionNames.LiferayAnalyticsCloudEnterprise
-			).map((c) => c.slug);
+			).map(c => c.slug);
 
 			const ldpRequired = listConnectors()
-				.filter((config) => config.requiresLDP)
-				.map((c) => c.slug);
+				.filter(config => config.requiresLDP)
+				.map(c => c.slug);
 
-			ldpRequired.forEach((slug) => {
+			ldpRequired.forEach(slug => {
 				expect(slugs).not.toContain(slug);
 			});
 		});
@@ -101,7 +103,7 @@ describe('connector registry', () => {
 				new Set(),
 				SubscriptionNames.LiferayDataPlatformPrivateBeta
 			)
-				.map((c) => c.slug)
+				.map(c => c.slug)
 				.sort();
 
 			expect(slugs).toEqual(['demandbase', 'hubspot', 'marketo']);
@@ -109,7 +111,7 @@ describe('connector registry', () => {
 
 		it('hides LDP-only connectors while the subscription is still loading', () => {
 			const slugs = listAvailableConnectors(new Set(), null).map(
-				(c) => c.slug
+				c => c.slug
 			);
 
 			expect(slugs).toEqual([]);

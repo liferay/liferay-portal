@@ -4,7 +4,7 @@ import {Entity} from '../../types';
 import {fetchConnectorEntityCount} from 'shared/api/connector';
 
 jest.mock('shared/api/connector', () => ({
-	fetchConnectorEntityCount: jest.fn(() => Promise.resolve(123)),
+	fetchConnectorEntityCount: jest.fn(() => Promise.resolve(123))
 }));
 
 describe('marketo config', () => {
@@ -17,7 +17,7 @@ describe('marketo config', () => {
 	});
 
 	it('uses the marketo data source type enum', () => {
-		expect(marketoConfig.type).toBe(DataSourceTypes.Marketo);
+		expect(marketoConfig.type).toBe(DataSourceTypes.MarketoEventStream);
 	});
 
 	it('targets the marketo webhooks endpoint', () => {
@@ -40,12 +40,12 @@ describe('marketo config', () => {
 	it('delegates fetchCount to fetchConnectorEntityCount with the entity', async () => {
 		await marketoConfig.entities[0].fetchCount!({
 			groupId: '23',
-			id: 'data-source-1',
+			id: 'data-source-1'
 		});
 
 		expect(fetchConnectorEntityCount).toHaveBeenCalledWith(Entity.Events, {
 			groupId: '23',
-			id: 'data-source-1',
+			id: 'data-source-1'
 		});
 	});
 
