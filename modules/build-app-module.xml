@@ -134,6 +134,40 @@
 		</exec>
 	</target>
 
+	<target depends="get-artifact-properties,get-artifact-properties-releng" name="download-artifact-lpkg" unless="artifact.exclude">
+		<local name="artifact.location.dest.dir" />
+
+		<dirname file="${artifact.location.dest}" property="artifact.location.dest.dir" />
+
+		<mkdir dir="${artifact.location.dest.dir}" />
+
+		<if>
+			<and>
+				<or>
+					<contains string="${basedir}" substring="dxp${file.separator}" />
+					<istrue value="${download.artifact.private.override}" />
+				</or>
+				<not>
+					<equals arg1="${build.repository.private.username}" arg2="" />
+				</not>
+			</and>
+			<then>
+				<get
+					dest="${artifact.location.dest.dir}"
+					password="${build.repository.private.password}"
+					src="${artifact.url}"
+					username="${build.repository.private.username}"
+				/>
+			</then>
+			<else>
+				<get
+					dest="${artifact.location.dest.dir}"
+					src="${artifact.url}"
+				/>
+			</else>
+		</if>
+	</target>
+
 	<target depends="get-artifact-properties-releng" if="${download.artifact.sources}" name="download-artifact-sources" unless="download.artifact.sources.skip">
 		<mkdir dir="${dist.dir}/sources" />
 
