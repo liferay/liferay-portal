@@ -554,7 +554,6 @@ spec:
                         kind: Selection
                         metadata:
                             annotations:
-                                crossplane.io/external-name: {{ $baseName }}-by-tags-selection
                                 gotemplating.fn.crossplane.io/composition-resource-name: by-tags-selection
                             labels:
                                 app: liferay
