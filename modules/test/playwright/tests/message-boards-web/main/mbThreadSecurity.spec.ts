@@ -136,3 +136,61 @@ test(
 		expect(response.status()).toBe(400);
 	}
 );
+
+test('JavaScript in a user name is not executed when viewing a thread', async ({
+	apiHelpers,
+	messageBoardsEditThreadPage,
+	messageBoardsPage,
+	page,
+	site,
+}) => {
+	const dialogs: string[] = [];
+
+	page.on('dialog', async (dialog) => {
+		dialogs.push(dialog.message());
+
+		await dialog.dismiss();
+	});
+
+	const subject = getRandomString();
+
+	// Create a user whose last name carries a script payload
+
+	const user = await apiHelpers.headlessAdminUser.postUserAccount({
+		familyName: `${getRandomString()}<img src=x onerror=alert('XSS')>`,
+	});
+
+	const siteAdministratorRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Site Administrator');
+
+	await apiHelpers.headlessAdminUser.assignUserToSite(
+		siteAdministratorRole.id,
+		site.id,
+		user.id
+	);
+
+	// The user posts a thread, so their name is the author shown on the thread
+
+	await messageBoardsPage.goto(site.friendlyUrlPath);
+
+	await page.waitForURL(/MBAdminPortlet/);
+
+	const url = new URL(page.url());
+
+	url.searchParams.set('doAsUserId', String(user.id));
+
+	await page.goto(url.toString());
+
+	await messageBoardsPage.goToCreateNewThread();
+
+	await messageBoardsEditThreadPage.publishNewBasicThread(
+		subject,
+		getRandomString()
+	);
+
+	// The script in the author name is rendered as text, not executed
+
+	await expect(page.getByTestId('headerTitle')).toHaveText(subject);
+
+	expect(dialogs).toHaveLength(0);
+});
