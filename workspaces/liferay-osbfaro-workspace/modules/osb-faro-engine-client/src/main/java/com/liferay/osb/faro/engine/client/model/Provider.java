@@ -12,6 +12,7 @@ import com.liferay.osb.faro.engine.client.model.provider.CSVProvider;
 import com.liferay.osb.faro.engine.client.model.provider.DemandbaseProvider;
 import com.liferay.osb.faro.engine.client.model.provider.HubSpotProvider;
 import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
+import com.liferay.osb.faro.engine.client.model.provider.MarketoCampaignProvider;
 import com.liferay.osb.faro.engine.client.model.provider.MarketoProvider;
 import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 
@@ -29,6 +30,10 @@ import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 		),
 		@JsonSubTypes.Type(
 			name = LiferayProvider.TYPE, value = LiferayProvider.class
+		),
+		@JsonSubTypes.Type(
+			name = MarketoCampaignProvider.TYPE,
+			value = MarketoCampaignProvider.class
 		),
 		@JsonSubTypes.Type(
 			name = MarketoProvider.TYPE, value = MarketoProvider.class
