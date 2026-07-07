@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -17,6 +18,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -52,7 +54,7 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		throws PortalException {
 
 		_checkPermission(
-			className, classPK, AccountActionKeys.MANAGE_ADDRESSES);
+			className, classPK, true, AccountActionKeys.MANAGE_ADDRESSES);
 
 		return commerceAddressLocalService.addCommerceAddress(
 			externalReferenceCode, className, classPK, countryId, regionId,
@@ -67,7 +69,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		CommerceAddress commerceAddress =
 			commerceAddressLocalService.getCommerceAddress(commerceAddressId);
 
-		_checkPermission(commerceAddress, AccountActionKeys.MANAGE_ADDRESSES);
+		_checkPermission(
+			commerceAddress.getClassName(), commerceAddress.getClassPK(), false,
+			AccountActionKeys.MANAGE_ADDRESSES);
 
 		commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
 	}
@@ -80,7 +84,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			commerceAddressLocalService.fetchCommerceAddress(commerceAddressId);
 
 		if (commerceAddress != null) {
-			_checkPermission(commerceAddress, AccountActionKeys.VIEW_ADDRESSES);
+			_checkPermission(
+				commerceAddress.getClassName(), commerceAddress.getClassPK(),
+				true, AccountActionKeys.VIEW_ADDRESSES);
 		}
 
 		return commerceAddress;
@@ -97,7 +103,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 					externalReferenceCode, companyId);
 
 		if (commerceAddress != null) {
-			_checkPermission(commerceAddress, AccountActionKeys.VIEW_ADDRESSES);
+			_checkPermission(
+				commerceAddress.getClassName(), commerceAddress.getClassPK(),
+				true, AccountActionKeys.VIEW_ADDRESSES);
 		}
 
 		return commerceAddress;
@@ -108,7 +116,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long companyId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getBillingCommerceAddresses(
 			companyId, className, classPK);
@@ -119,7 +128,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long channelId, String className, long classPK, int start, int end)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getBillingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -132,7 +142,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			Sort sort)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getBillingCommerceAddresses(
 			companyId, className, classPK, commerceChannelId, keywords, start,
@@ -144,7 +155,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long channelId, String className, long classPK, int start, int end)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getBillingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -156,7 +168,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long commerceChannelId, String keywords)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getBillingCommerceAddressesCount(
 			companyId, className, classPK, commerceChannelId, keywords);
@@ -169,7 +182,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		CommerceAddress commerceAddress =
 			commerceAddressLocalService.getCommerceAddress(commerceAddressId);
 
-		_checkPermission(commerceAddress, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			commerceAddress.getClassName(), commerceAddress.getClassPK(), true,
+			AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddress;
 	}
@@ -183,7 +198,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long groupId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddresses(
 			groupId, className, classPK);
@@ -199,7 +215,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			OrderByComparator<CommerceAddress> orderByComparator)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddresses(
 			groupId, className, classPK, start, end, orderByComparator);
@@ -211,7 +228,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			OrderByComparator<CommerceAddress> orderByComparator)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddresses(
 			className, classPK, start, end, orderByComparator);
@@ -222,7 +240,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long companyId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddressesByCompanyId(
 			companyId, className, classPK);
@@ -234,7 +253,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			OrderByComparator<CommerceAddress> orderByComparator)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddressesByCompanyId(
 			companyId, className, classPK, start, end, orderByComparator);
@@ -249,7 +269,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long groupId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddressesCount(
 			groupId, className, classPK);
@@ -259,7 +280,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 	public int getCommerceAddressesCount(String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddressesCount(
 			className, classPK);
@@ -270,7 +292,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long companyId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getCommerceAddressesCountByCompanyId(
 			companyId, className, classPK);
@@ -281,7 +304,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long companyId, String className, long classPK)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getShippingCommerceAddresses(
 			companyId, className, classPK);
@@ -292,7 +316,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long channelId, String className, long classPK, int start, int end)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getShippingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -305,7 +330,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			Sort sort)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getShippingCommerceAddresses(
 			companyId, className, classPK, commerceChannelId, keywords, start,
@@ -317,7 +343,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long channelId, String className, long classPK, int start, int end)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getShippingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -329,7 +356,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			long commerceChannelId, String keywords)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.getShippingCommerceAddressesCount(
 			companyId, className, classPK, commerceChannelId, keywords);
@@ -345,7 +373,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			String keywords, int start, int end, Sort sort)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.searchCommerceAddresses(
 			companyId, groupId, className, classPK, keywords, start, end, sort);
@@ -357,7 +386,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			int start, int end, Sort sort)
 		throws PortalException {
 
-		_checkPermission(className, classPK, AccountActionKeys.VIEW_ADDRESSES);
+		_checkPermission(
+			className, classPK, true, AccountActionKeys.VIEW_ADDRESSES);
 
 		return commerceAddressLocalService.searchCommerceAddresses(
 			companyId, className, classPK, keywords, start, end, sort);
@@ -375,7 +405,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		CommerceAddress commerceAddress =
 			commerceAddressLocalService.getCommerceAddress(commerceAddressId);
 
-		_checkPermission(commerceAddress, AccountActionKeys.MANAGE_ADDRESSES);
+		_checkPermission(
+			commerceAddress.getClassName(), commerceAddress.getClassPK(), true,
+			AccountActionKeys.MANAGE_ADDRESSES);
 
 		return commerceAddressLocalService.updateCommerceAddress(
 			externalReferenceCode, commerceAddress.getCommerceAddressId(),
@@ -384,16 +416,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 	}
 
 	private void _checkPermission(
-			CommerceAddress commerceAddress, String actionId)
-		throws PortalException {
-
-		_checkPermission(
-			commerceAddress.getClassName(), commerceAddress.getClassPK(),
-			actionId);
-	}
-
-	private void _checkPermission(
-			String className, long classPK, String actionId)
+			String className, long classPK, boolean guestAllowed,
+			String actionId)
 		throws PortalException {
 
 		if (className.equals(CommerceOrder.class.getName())) {
@@ -404,16 +428,25 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 				_accountEntryLocalService.fetchAccountEntry(classPK);
 			}
 			else {
-				_accountEntryLocalService.getAccountEntry(classPK);
+				AccountEntry accountEntry =
+					_accountEntryLocalService.getAccountEntry(classPK);
+
+				if (guestAllowed && accountEntry.isGuestAccount()) {
+					return;
+				}
+
+				PermissionChecker permissionChecker = getPermissionChecker();
 
 				if (!Objects.equals(
 						actionId, AccountActionKeys.VIEW_ADDRESSES) ||
-					!_accountEntryModelResourcePermission.contains(
-						getPermissionChecker(), classPK,
-						AccountActionKeys.MANAGE_ADDRESSES)) {
+					(!_accountEntryModelResourcePermission.contains(
+						permissionChecker, classPK,
+						AccountActionKeys.MANAGE_ADDRESSES) &&
+					 !_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+						 classPK, permissionChecker.getUserId()))) {
 
 					_accountEntryModelResourcePermission.check(
-						getPermissionChecker(), classPK, actionId);
+						permissionChecker, classPK, actionId);
 				}
 			}
 		}
@@ -429,6 +462,9 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 	)
 	private volatile ModelResourcePermission<AccountEntry>
 		_accountEntryModelResourcePermission;
+
+	@Reference
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
