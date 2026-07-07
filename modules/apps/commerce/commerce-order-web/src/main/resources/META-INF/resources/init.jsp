@@ -22,6 +22,7 @@ taglib uri="http://liferay.com/tld/user" prefix="liferay-user" %>
 
 <%@ page import="com.liferay.account.model.AccountEntry" %><%@
 page import="com.liferay.commerce.constants.CommerceOrderPaymentConstants" %><%@
+page import="com.liferay.commerce.constants.CommerceOrderWebKeys" %><%@
 page import="com.liferay.commerce.constants.CommerceReturnConstants" %><%@
 page import="com.liferay.commerce.constants.CommerceShipmentFDSNames" %><%@
 page import="com.liferay.commerce.currency.model.CommerceCurrency" %><%@

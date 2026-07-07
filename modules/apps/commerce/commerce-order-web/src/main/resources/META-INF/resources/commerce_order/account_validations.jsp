@@ -12,7 +12,7 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 %>
 
 <div class="container-fluid container-fluid-max-xl p-4">
-	<c:if test='<%= GetterUtil.getBoolean(request.getAttribute("showValidationForm")) %>'>
+	<c:if test="<%= GetterUtil.getBoolean(request.getAttribute(CommerceOrderWebKeys.SHOW_ACCOUNT_VALIDATION_FORM)) %>">
 		<portlet:actionURL name="/commerce_order/add_commerce_order_account_validation" var="addAccountValidationActionURL" />
 
 		<portlet:renderURL var="redirectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">

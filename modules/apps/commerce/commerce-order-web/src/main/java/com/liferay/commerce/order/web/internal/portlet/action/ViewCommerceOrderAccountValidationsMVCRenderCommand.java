@@ -11,6 +11,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
+import com.liferay.commerce.constants.CommerceOrderWebKeys;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
@@ -131,7 +132,7 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 							getAccountEntryValidators()),
 					new AccountEntryValidatorResultSelectionFDSFilter()));
 
-			boolean showValidationForm = false;
+			boolean showAccountValidationForm = false;
 
 			Map<String, AccountEntryValidatorResult>
 				accountEntryValidatorResultMap =
@@ -150,14 +151,15 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 						 AccountEntryValidatorConstants.RESULT_SUCCESS,
 						 accountEntryValidatorResult.getResultStatus()))) {
 
-					showValidationForm = true;
+					showAccountValidationForm = true;
 
 					break;
 				}
 			}
 
 			renderRequest.setAttribute(
-				"showValidationForm", showValidationForm);
+				CommerceOrderWebKeys.SHOW_ACCOUNT_VALIDATION_FORM,
+				showAccountValidationForm);
 		}
 		catch (Exception exception) {
 			if (exception instanceof NoSuchOrderException ||

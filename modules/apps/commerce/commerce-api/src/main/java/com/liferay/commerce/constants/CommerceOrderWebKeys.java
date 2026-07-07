@@ -12,4 +12,7 @@ public class CommerceOrderWebKeys {
 
 	public static final String MERGE_GUEST_ORDER = "MERGE_GUEST_ORDER";
 
+	public static final String SHOW_ACCOUNT_VALIDATION_FORM =
+		"SHOW_ACCOUNT_VALIDATION_FORM";
+
 }
