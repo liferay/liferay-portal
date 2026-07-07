@@ -420,3 +420,157 @@ test.describe('Manual Creation', () => {
 		});
 	});
 });
+
+test.describe('Filter, Search, and Sort', () => {
+	test.beforeEach(
+		async ({
+			apiHelpers,
+			editSXPBlueprintPage,
+			sxpBlueprintsAndElementsViewPage,
+		}) => {
+			await test.step('Create blueprint with API', async () => {
+				const {title} =
+					await apiHelpers.searchExperiences.createSXPBlueprint();
+
+				await sxpBlueprintsAndElementsViewPage.goto();
+
+				await sxpBlueprintsAndElementsViewPage.selectTableLink(title);
+			});
+
+			await test.step('Open the clause contributors sidebar in "Customize"', async () => {
+				await editSXPBlueprintPage.expandPanel(
+					'Search Framework Query Contributors'
+				);
+
+				await editSXPBlueprintPage.selectSourceRadioProperty(
+					'Customize'
+				);
+
+				await editSXPBlueprintPage.openClauseContributorsSidebar();
+			});
+		}
+	);
+
+	test('Filters clause contributors by active and inactive status', async ({
+		editSXPBlueprintPage,
+	}) => {
+		await test.step('Disable two clause contributors', async () => {
+			await editSXPBlueprintPage.selectClauseContributors({
+				labels: [
+					'Account Entry Keyword Query Contributor',
+					'Address Model Pre Filter Contributor',
+				],
+				value: false,
+			});
+		});
+
+		await test.step('Filter by "Inactive" and see only the disabled contributors', async () => {
+			await editSXPBlueprintPage.filterClauseContributors('Inactive');
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AccountEntryKeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AddressModelPreFilterContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorNotPresent(
+				'AccountGroupKeywordQueryContributor'
+			);
+		});
+
+		await test.step('Filter by "Active" and see only the enabled contributors', async () => {
+			await editSXPBlueprintPage.clearClauseContributorFilters();
+
+			await editSXPBlueprintPage.filterClauseContributors('Active');
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AccountGroupKeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorNotPresent(
+				'AddressModelPreFilterContributor'
+			);
+		});
+	});
+
+	test('Filters clause contributors by category', async ({
+		editSXPBlueprintPage,
+	}) => {
+		await test.step('Filter by the keyword query contributor category', async () => {
+			await editSXPBlueprintPage.filterClauseContributors(
+				'KeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AccountEntryKeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorNotPresent(
+				'AddressModelPreFilterContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorNotPresent(
+				'GroupIdQueryPreFilterContributor'
+			);
+		});
+
+		await test.step('Filter by the model pre filter contributor category', async () => {
+			await editSXPBlueprintPage.clearClauseContributorFilters();
+
+			await editSXPBlueprintPage.filterClauseContributors(
+				'ModelPreFilterContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AddressModelPreFilterContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorNotPresent(
+				'AccountEntryKeywordQueryContributor'
+			);
+		});
+
+		await test.step('Dismiss the single category filter and restore the full list', async () => {
+			await editSXPBlueprintPage.clearClauseContributorFilter(
+				'ModelPreFilterContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AccountEntryKeywordQueryContributor'
+			);
+		});
+	});
+
+	test('Searches and sorts clause contributors', async ({
+		editSXPBlueprintPage,
+		page,
+	}) => {
+		const listItems = page.getByTestId('clauseContributorsSidebarListItem');
+
+		await test.step('Search narrows the list to a single match', async () => {
+			await editSXPBlueprintPage.searchClauseContributors(
+				'AccountEntryKeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorPresent(
+				'AccountEntryKeywordQueryContributor'
+			);
+
+			await editSXPBlueprintPage.assertClauseContributorCount(1);
+		});
+
+		await test.step('Reversing the sort direction reorders the list', async () => {
+			await editSXPBlueprintPage.clearClauseContributorFilters();
+
+			const firstItem = await listItems.first().innerText();
+
+			await editSXPBlueprintPage.reverseClauseContributorSort();
+
+			await expect(async () => {
+				expect(await listItems.first().innerText()).not.toBe(firstItem);
+			}).toPass({timeout: 5000});
+		});
+	});
+});
