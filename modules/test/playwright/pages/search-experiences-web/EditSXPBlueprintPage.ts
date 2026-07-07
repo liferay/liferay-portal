@@ -87,17 +87,23 @@ export class EditSXPBlueprintPage {
 	}
 
 	async expandPanel(title: string) {
+		await this.closeSidebars();
+
 		const panelButtonLocator = this.page.getByRole('button', {name: title});
 
-		if (
-			await panelButtonLocator.evaluate((elem) =>
-				elem.classList.contains('collapsed')
-			)
-		) {
-			await panelButtonLocator.click();
+		await expect(async () => {
+			if (
+				await panelButtonLocator.evaluate((element) =>
+					element.classList.contains('collapsed')
+				)
+			) {
+				await panelButtonLocator.dispatchEvent('click');
+			}
 
-			await expect(panelButtonLocator).not.toHaveClass(/collapsed/);
-		}
+			await expect(panelButtonLocator).not.toHaveClass(/collapsed/, {
+				timeout: 5000,
+			});
+		}).toPass({timeout: 30000});
 	}
 
 	async saveBlueprint() {
@@ -154,10 +160,13 @@ export class EditSXPBlueprintPage {
 		}
 	}
 
-	async closePreviewSidebar() {
-		if (await this.page.locator('.preview-sidebar.open').isVisible()) {
-			await this.previewSidebarButton.click();
-		}
+	async closeSidebars() {
+		const openSidebar = this.page.locator('.sidebar.open').first();
+
+		await clickAndExpectToBeHidden({
+			target: openSidebar,
+			trigger: openSidebar.getByRole('button', {name: 'Close'}),
+		});
 	}
 
 	async addPreviewAttributes(attributes: {key: string; value: string}[]) {
@@ -376,6 +385,73 @@ export class EditSXPBlueprintPage {
 				}
 			}
 		}
+	}
+
+	// Source - Clause Contributor Filter, Search, and Sort
+
+	async assertClauseContributorCount(count: number) {
+		await expect(
+			this.page.getByTestId('clauseContributorsSidebarListItem')
+		).toHaveCount(count);
+	}
+
+	async assertClauseContributorNotPresent(className: string) {
+		await expect(
+			this.page
+				.getByTestId('clauseContributorsSidebarListItem')
+				.filter({hasText: className})
+		).toHaveCount(0);
+	}
+
+	async assertClauseContributorPresent(className: string) {
+		await expect(
+			this.page
+				.getByTestId('clauseContributorsSidebarListItem')
+				.filter({hasText: className})
+		).toBeVisible();
+	}
+
+	async clearClauseContributorFilter(label: string) {
+		await this.clauseContributorsSidebar
+			.locator('.tbar-label')
+			.filter({hasText: label})
+			.getByRole('button')
+			.click();
+	}
+
+	async clearClauseContributorFilters() {
+		await this.clauseContributorsSidebar
+			.getByRole('button', {exact: true, name: 'Clear'})
+			.click();
+	}
+
+	async filterClauseContributors(label: string) {
+		await this.clauseContributorsSidebar
+			.getByRole('button', {name: 'Filter'})
+			.click();
+
+		await this.page
+			.getByRole('menuitem', {exact: true, name: label})
+			.click();
+	}
+
+	async reverseClauseContributorSort() {
+		await this.clauseContributorsSidebar
+			.getByTitle('Reverse Sort Direction')
+			.click();
+	}
+
+	async searchClauseContributors(keyword: string) {
+		const searchInput = this.clauseContributorsSidebar.getByRole(
+			'textbox',
+			{
+				name: 'Search',
+			}
+		);
+
+		await searchInput.fill(keyword);
+
+		await searchInput.press('Enter');
 	}
 
 	async selectScope({

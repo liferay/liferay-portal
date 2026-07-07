@@ -152,4 +152,16 @@ export class SearchExperiencesApiHelper {
 			`${this.apiHelpers.baseUrl}${this.basePath}/sxp-elements/${id}`
 		);
 	}
+
+	/**
+	 * It allows fetching an sxpBlueprint, including its configuration.
+	 *
+	 * @param id the id of the blueprint
+	 */
+
+	async getSXPBlueprint(id: number | string): Promise<SXPBlueprint> {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sxp-blueprints/${id}`
+		);
+	}
 }
