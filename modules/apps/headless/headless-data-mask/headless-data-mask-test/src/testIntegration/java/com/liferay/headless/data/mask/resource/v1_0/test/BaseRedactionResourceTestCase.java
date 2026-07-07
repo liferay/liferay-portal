@@ -5,10 +5,19 @@
 
 package com.liferay.headless.data.mask.resource.v1_0.test;
 
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewResult;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+
+import com.liferay.headless.data.mask.client.dto.v1_0.Redaction;
 import com.liferay.headless.data.mask.client.http.HttpInvoker;
 import com.liferay.headless.data.mask.client.pagination.Page;
-import com.liferay.headless.data.mask.client.resource.v1_0.DataMaskResource;
+import com.liferay.headless.data.mask.client.resource.v1_0.RedactionResource;
+import com.liferay.headless.data.mask.client.serdes.v1_0.RedactionSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -64,7 +73,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BaseDataMaskResourceTestCase {
+public abstract class BaseRedactionResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -85,12 +94,12 @@ public abstract class BaseDataMaskResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_dataMaskResource.setContextCompany(testCompany);
+		_redactionResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		dataMaskResource = DataMaskResource.builder(
+		redactionResource = RedactionResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -109,15 +118,80 @@ public abstract class BaseDataMaskResourceTestCase {
 	}
 
 	@Test
-	public void testPostDataMaskPreview() throws Exception {
-		Assert.assertTrue(true);
+	public void testClientSerDesToDTO() throws Exception {
+		ObjectMapper objectMapper = getClientSerDesObjectMapper();
+
+		Redaction redaction1 = randomRedaction();
+
+		String json = objectMapper.writeValueAsString(redaction1);
+
+		Redaction redaction2 = RedactionSerDes.toDTO(json);
+
+		Assert.assertTrue(equals(redaction1, redaction2));
 	}
 
-	protected void assertContains(Object dataMask, List<Object> dataMasks) {
+	@Test
+	public void testClientSerDesToJSON() throws Exception {
+		ObjectMapper objectMapper = getClientSerDesObjectMapper();
+
+		Redaction redaction = randomRedaction();
+
+		String json1 = objectMapper.writeValueAsString(redaction);
+		String json2 = RedactionSerDes.toJSON(redaction);
+
+		Assert.assertEquals(
+			objectMapper.readTree(json1), objectMapper.readTree(json2));
+	}
+
+	protected ObjectMapper getClientSerDesObjectMapper() {
+		return new ObjectMapper() {
+			{
+				configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+				configure(
+					SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+				enable(SerializationFeature.INDENT_OUTPUT);
+				setDateFormat(new ISO8601DateFormat());
+				setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+				setSerializationInclusion(JsonInclude.Include.NON_NULL);
+				setVisibility(
+					PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+				setVisibility(
+					PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
+			}
+		};
+	}
+
+	@Test
+	public void testEscapeRegexInStringFields() throws Exception {
+		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
+
+		Redaction redaction = randomRedaction();
+
+		redaction.setError(regex);
+		redaction.setOutput(regex);
+
+		String json = RedactionSerDes.toJSON(redaction);
+
+		Assert.assertFalse(json.contains(regex));
+
+		redaction = RedactionSerDes.toDTO(json);
+
+		Assert.assertEquals(regex, redaction.getError());
+		Assert.assertEquals(regex, redaction.getOutput());
+	}
+
+	@Test
+	public void testGetRedaction() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	protected void assertContains(
+		Redaction redaction, List<Redaction> redactions) {
+
 		boolean contains = false;
 
-		for (Object item : dataMasks) {
-			if (equals(dataMask, item)) {
+		for (Redaction item : redactions) {
+			if (equals(redaction, item)) {
 				contains = true;
 
 				break;
@@ -125,7 +199,7 @@ public abstract class BaseDataMaskResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			dataMasks + " does not contain " + dataMask, contains);
+			redactions + " does not contain " + redaction, contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -136,45 +210,35 @@ public abstract class BaseDataMaskResourceTestCase {
 			expectedHttpResponseStatusCode, actualHttpResponse.getStatusCode());
 	}
 
-	protected void assertEquals(Object dataMask1, Object dataMask2) {
+	protected void assertEquals(Redaction redaction1, Redaction redaction2) {
 		Assert.assertTrue(
-			dataMask1 + " does not equal " + dataMask2,
-			equals(dataMask1, dataMask2));
+			redaction1 + " does not equal " + redaction2,
+			equals(redaction1, redaction2));
 	}
 
 	protected void assertEquals(
-		List<Object> dataMasks1, List<Object> dataMasks2) {
+		List<Redaction> redactions1, List<Redaction> redactions2) {
 
-		Assert.assertEquals(dataMasks1.size(), dataMasks2.size());
+		Assert.assertEquals(redactions1.size(), redactions2.size());
 
-		for (int i = 0; i < dataMasks1.size(); i++) {
-			Object dataMask1 = dataMasks1.get(i);
-			Object dataMask2 = dataMasks2.get(i);
+		for (int i = 0; i < redactions1.size(); i++) {
+			Redaction redaction1 = redactions1.get(i);
+			Redaction redaction2 = redactions2.get(i);
 
-			assertEquals(dataMask1, dataMask2);
+			assertEquals(redaction1, redaction2);
 		}
 	}
 
-	protected void assertEquals(
-		DataMaskPreviewResult dataMaskPreviewResult1,
-		DataMaskPreviewResult dataMaskPreviewResult2) {
-
-		Assert.assertTrue(
-			dataMaskPreviewResult1 + " does not equal " +
-				dataMaskPreviewResult2,
-			equals(dataMaskPreviewResult1, dataMaskPreviewResult2));
-	}
-
 	protected void assertEqualsIgnoringOrder(
-		List<Object> dataMasks1, List<Object> dataMasks2) {
+		List<Redaction> redactions1, List<Redaction> redactions2) {
 
-		Assert.assertEquals(dataMasks1.size(), dataMasks2.size());
+		Assert.assertEquals(redactions1.size(), redactions2.size());
 
-		for (Object dataMask1 : dataMasks1) {
+		for (Redaction redaction1 : redactions1) {
 			boolean contains = false;
 
-			for (Object dataMask2 : dataMasks2) {
-				if (equals(dataMask1, dataMask2)) {
+			for (Redaction redaction2 : redactions2) {
+				if (equals(redaction1, redaction2)) {
 					contains = true;
 
 					break;
@@ -182,15 +246,31 @@ public abstract class BaseDataMaskResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				dataMasks2 + " does not contain " + dataMask1, contains);
+				redactions2 + " does not contain " + redaction1, contains);
 		}
 	}
 
-	protected void assertValid(Object dataMask) throws Exception {
+	protected void assertValid(Redaction redaction) throws Exception {
 		boolean valid = true;
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("error", additionalAssertFieldName)) {
+				if (redaction.getError() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("output", additionalAssertFieldName)) {
+				if (redaction.getOutput() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
@@ -200,18 +280,19 @@ public abstract class BaseDataMaskResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<Object> page) {
+	protected void assertValid(Page<Redaction> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<Object> page, Map<String, Map<String, String>> expectedActions) {
+		Page<Redaction> page,
+		Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<Object> dataMasks = page.getItems();
+		java.util.Collection<Redaction> redactions = page.getItems();
 
-		int size = dataMasks.size();
+		int size = redactions.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -242,46 +323,25 @@ public abstract class BaseDataMaskResourceTestCase {
 		}
 	}
 
-	protected void assertValid(DataMaskPreviewResult dataMaskPreviewResult) {
-		boolean valid = true;
-
-		for (String additionalAssertFieldName :
-				getAdditionalDataMaskPreviewResultAssertFieldNames()) {
-
-			if (Objects.equals("error", additionalAssertFieldName)) {
-				if (dataMaskPreviewResult.getError() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("output", additionalAssertFieldName)) {
-				if (dataMaskPreviewResult.getOutput() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			throw new IllegalArgumentException(
-				"Invalid additional assert field name " +
-					additionalAssertFieldName);
-		}
-
-		Assert.assertTrue(valid);
-	}
-
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[0];
-	}
-
-	protected String[] getAdditionalDataMaskPreviewResultAssertFieldNames() {
 		return new String[0];
 	}
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(
+					com.liferay.headless.data.mask.dto.v1_0.Redaction.class)) {
+
+			if (!ArrayUtil.contains(
+					getAdditionalAssertFieldNames(), field.getName())) {
+
+				continue;
+			}
+
+			graphQLFields.addAll(getGraphQLFields(field));
+		}
 
 		return graphQLFields;
 	}
@@ -320,13 +380,33 @@ public abstract class BaseDataMaskResourceTestCase {
 		return new String[0];
 	}
 
-	protected boolean equals(Object dataMask1, Object dataMask2) {
-		if (dataMask1 == dataMask2) {
+	protected boolean equals(Redaction redaction1, Redaction redaction2) {
+		if (redaction1 == redaction2) {
 			return true;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("error", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						redaction1.getError(), redaction2.getError())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("output", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						redaction1.getOutput(), redaction2.getOutput())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
@@ -362,47 +442,6 @@ public abstract class BaseDataMaskResourceTestCase {
 		return false;
 	}
 
-	protected boolean equals(
-		DataMaskPreviewResult dataMaskPreviewResult1,
-		DataMaskPreviewResult dataMaskPreviewResult2) {
-
-		if (dataMaskPreviewResult1 == dataMaskPreviewResult2) {
-			return true;
-		}
-
-		for (String additionalAssertFieldName :
-				getAdditionalDataMaskPreviewResultAssertFieldNames()) {
-
-			if (Objects.equals("error", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataMaskPreviewResult1.getError(),
-						dataMaskPreviewResult2.getError())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("output", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataMaskPreviewResult1.getOutput(),
-						dataMaskPreviewResult2.getOutput())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			throw new IllegalArgumentException(
-				"Invalid additional assert field name " +
-					additionalAssertFieldName);
-		}
-
-		return true;
-	}
-
 	protected java.lang.reflect.Field[] getDeclaredFields(Class clazz)
 		throws Exception {
 
@@ -425,13 +464,13 @@ public abstract class BaseDataMaskResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_dataMaskResource instanceof EntityModelResource)) {
+		if (!(_redactionResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_dataMaskResource;
+			(EntityModelResource)_redactionResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -464,7 +503,7 @@ public abstract class BaseDataMaskResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator, Object dataMask) {
+		EntityField entityField, String operator, Redaction redaction) {
 
 		StringBundler sb = new StringBundler();
 
@@ -475,6 +514,98 @@ public abstract class BaseDataMaskResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("error")) {
+			Object object = redaction.getError();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("output")) {
+			Object object = redaction.getOutput();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
 
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
@@ -520,18 +651,26 @@ public abstract class BaseDataMaskResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected DataMaskPreviewResult randomDataMaskPreviewResult()
-		throws Exception {
-
-		return new DataMaskPreviewResult() {
+	protected Redaction randomRedaction() throws Exception {
+		return new Redaction() {
 			{
-				error = RandomTestUtil.randomString();
-				output = RandomTestUtil.randomString();
+				error = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				output = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
 
-	protected DataMaskResource dataMaskResource;
+	protected Redaction randomIrrelevantRedaction() throws Exception {
+		Redaction randomIrrelevantRedaction = randomRedaction();
+
+		return randomIrrelevantRedaction;
+	}
+
+	protected Redaction randomPatchRedaction() throws Exception {
+		return randomRedaction();
+	}
+
+	protected RedactionResource redactionResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -730,15 +869,15 @@ public abstract class BaseDataMaskResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDataMaskResourceTestCase.class);
+		LogFactoryUtil.getLog(BaseRedactionResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.headless.data.mask.resource.v1_0.DataMaskResource
-		_dataMaskResource;
+	private com.liferay.headless.data.mask.resource.v1_0.RedactionResource
+		_redactionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-481199113
+// LIFERAY-REST-BUILDER-HASH:1109746333

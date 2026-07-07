@@ -5,8 +5,7 @@
 
 package com.liferay.headless.data.mask.resource.v1_0;
 
-import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewRequest;
-import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewResult;
+import com.liferay.headless.data.mask.dto.v1_0.Redaction;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -40,10 +39,11 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface DataMaskResource {
+public interface RedactionResource {
 
-	public DataMaskPreviewResult postDataMaskPreview(
-			DataMaskPreviewRequest dataMaskPreviewRequest)
+	public Redaction getRedaction(
+			String detectionRegex, String replacementRegex,
+			String replacementValue, String text)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -108,7 +108,7 @@ public interface DataMaskResource {
 	@ProviderType
 	public interface Builder {
 
-		public DataMaskResource build();
+		public RedactionResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -134,4 +134,4 @@ public interface DataMaskResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1967984762
+// LIFERAY-REST-BUILDER-HASH:-987843886

@@ -34,27 +34,26 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Outcome of applying the candidate data mask to the sample text.",
-	value = "DataMaskPreviewResult"
+	description = "Outcome of applying a candidate data mask to text.",
+	value = "Redaction"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Outcome of applying the candidate data mask to the sample text."
+	description = "Outcome of applying a candidate data mask to text."
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "DataMaskPreviewResult")
-public class DataMaskPreviewResult implements Serializable {
+@XmlRootElement(name = "Redaction")
+public class Redaction implements Serializable {
 
-	public static DataMaskPreviewResult toDTO(String json) {
-		return ObjectMapperUtil.readValue(DataMaskPreviewResult.class, json);
+	public static Redaction toDTO(String json) {
+		return ObjectMapperUtil.readValue(Redaction.class, json);
 	}
 
-	public static DataMaskPreviewResult unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(
-			DataMaskPreviewResult.class, json);
+	public static Redaction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Redaction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Set when the candidate regex failed to compile (or threw at apply time). A diagnostic message is shown inline in the admin UI. When present, output is the unredacted sampleText."
+		description = "Set when the candidate regex failed to compile (or threw at apply time). A diagnostic message is shown inline in the admin UI. When present, output is the unredacted text."
 	)
 	public String getError() {
 		if (_errorSupplier != null) {
@@ -90,7 +89,7 @@ public class DataMaskPreviewResult implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Set when the candidate regex failed to compile (or threw at apply time). A diagnostic message is shown inline in the admin UI. When present, output is the unredacted sampleText."
+		description = "Set when the candidate regex failed to compile (or threw at apply time). A diagnostic message is shown inline in the admin UI. When present, output is the unredacted text."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String error;
@@ -99,7 +98,7 @@ public class DataMaskPreviewResult implements Serializable {
 	private Supplier<String> _errorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The sample text after redaction. Equal to sampleText when no matches were found OR when an error occurred."
+		description = "The text after redaction. Equal to the input text when no matches were found OR when an error occurred."
 	)
 	public String getOutput() {
 		if (_outputSupplier != null) {
@@ -135,7 +134,7 @@ public class DataMaskPreviewResult implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The sample text after redaction. Equal to sampleText when no matches were found OR when an error occurred."
+		description = "The text after redaction. Equal to the input text when no matches were found OR when an error occurred."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String output;
@@ -149,14 +148,13 @@ public class DataMaskPreviewResult implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof DataMaskPreviewResult)) {
+		if (!(object instanceof Redaction)) {
 			return false;
 		}
 
-		DataMaskPreviewResult dataMaskPreviewResult =
-			(DataMaskPreviewResult)object;
+		Redaction redaction = (Redaction)object;
 
-		return Objects.equals(toString(), dataMaskPreviewResult.toString());
+		return Objects.equals(toString(), redaction.toString());
 	}
 
 	@Override
@@ -210,7 +208,7 @@ public class DataMaskPreviewResult implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewResult",
+		defaultValue = "com.liferay.headless.data.mask.dto.v1_0.Redaction",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -304,4 +302,4 @@ public class DataMaskPreviewResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-836133852
+// LIFERAY-REST-BUILDER-HASH:213012962

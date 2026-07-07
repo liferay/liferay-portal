@@ -5,9 +5,8 @@
 
 package com.liferay.headless.data.mask.internal.resource.v1_0;
 
-import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewRequest;
-import com.liferay.headless.data.mask.dto.v1_0.DataMaskPreviewResult;
-import com.liferay.headless.data.mask.resource.v1_0.DataMaskResource;
+import com.liferay.headless.data.mask.dto.v1_0.Redaction;
+import com.liferay.headless.data.mask.resource.v1_0.RedactionResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,30 +39,62 @@ import java.util.Map;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BaseDataMaskResourceImpl implements DataMaskResource {
+public abstract class BaseRedactionResourceImpl implements RedactionResource {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-data-mask/v1.0/data-masks/preview' -d $'{"detectionRegex": ___, "replacementRegex": ___, "replacementValue": ___, "sampleText": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-data-mask/v1.0/redaction'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Compile a candidate data mask and apply it to sample text, returning a preview of the redacted output and any compile/apply error. Used by the admin UI preview card so the regex is evaluated by the same java.util.regex.Pattern engine that runs in production &mdash; eliminating JavaScript vs Java regex divergence as a source of false positive validation.",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = DataMaskPreviewRequest.class)), description = "The candidate detection + replacement plus the sample input.")
+		description = "Compile a candidate data mask and apply it to text, returning a preview of the redacted output and any compile or apply error. Called by the data mask creation UI before the mask is saved, so the regex is evaluated by the same java.util.regex.Pattern engine that runs in production &mdash; eliminating JavaScript vs Java regex divergence as a source of false positive validation."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "detectionRegex"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "replacementRegex"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "replacementValue"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "text"
+			)
+		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "DataMask")}
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Redaction")}
 	)
-	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/data-masks/preview")
-	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/redaction")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public DataMaskPreviewResult postDataMaskPreview(
-			DataMaskPreviewRequest dataMaskPreviewRequest)
+	public Redaction getRedaction(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("detectionRegex")
+			String detectionRegex,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("replacementRegex")
+			String replacementRegex,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("replacementValue")
+			String replacementValue,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("text")
+			String text)
 		throws Exception {
 
-		return new DataMaskPreviewResult();
+		return new Redaction();
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -508,7 +539,7 @@ public abstract class BaseDataMaskResourceImpl implements DataMaskResource {
 	protected SortParserProvider sortParserProvider;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDataMaskResourceImpl.class);
+		LogFactoryUtil.getLog(BaseRedactionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1636022229
+// LIFERAY-REST-BUILDER-HASH:842957580

@@ -5,7 +5,7 @@
 
 package com.liferay.headless.data.mask.client.serdes.v1_0;
 
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewResult;
+import com.liferay.headless.data.mask.client.dto.v1_0.Redaction;
 import com.liferay.headless.data.mask.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -21,24 +21,22 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class DataMaskPreviewResultSerDes {
+public class RedactionSerDes {
 
-	public static DataMaskPreviewResult toDTO(String json) {
-		DataMaskPreviewResultJSONParser dataMaskPreviewResultJSONParser =
-			new DataMaskPreviewResultJSONParser();
+	public static Redaction toDTO(String json) {
+		RedactionJSONParser redactionJSONParser = new RedactionJSONParser();
 
-		return dataMaskPreviewResultJSONParser.parseToDTO(json);
+		return redactionJSONParser.parseToDTO(json);
 	}
 
-	public static DataMaskPreviewResult[] toDTOs(String json) {
-		DataMaskPreviewResultJSONParser dataMaskPreviewResultJSONParser =
-			new DataMaskPreviewResultJSONParser();
+	public static Redaction[] toDTOs(String json) {
+		RedactionJSONParser redactionJSONParser = new RedactionJSONParser();
 
-		return dataMaskPreviewResultJSONParser.parseToDTOs(json);
+		return redactionJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(DataMaskPreviewResult dataMaskPreviewResult) {
-		if (dataMaskPreviewResult == null) {
+	public static String toJSON(Redaction redaction) {
+		if (redaction == null) {
 			return "null";
 		}
 
@@ -46,7 +44,7 @@ public class DataMaskPreviewResultSerDes {
 
 		sb.append("{");
 
-		if (dataMaskPreviewResult.getError() != null) {
+		if (redaction.getError() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -55,12 +53,12 @@ public class DataMaskPreviewResultSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(dataMaskPreviewResult.getError()));
+			sb.append(_escape(redaction.getError()));
 
 			sb.append("\"");
 		}
 
-		if (dataMaskPreviewResult.getOutput() != null) {
+		if (redaction.getOutput() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -69,7 +67,7 @@ public class DataMaskPreviewResultSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(dataMaskPreviewResult.getOutput()));
+			sb.append(_escape(redaction.getOutput()));
 
 			sb.append("\"");
 		}
@@ -80,50 +78,45 @@ public class DataMaskPreviewResultSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		DataMaskPreviewResultJSONParser dataMaskPreviewResultJSONParser =
-			new DataMaskPreviewResultJSONParser();
+		RedactionJSONParser redactionJSONParser = new RedactionJSONParser();
 
-		return dataMaskPreviewResultJSONParser.parseToMap(json);
+		return redactionJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(
-		DataMaskPreviewResult dataMaskPreviewResult) {
-
-		if (dataMaskPreviewResult == null) {
+	public static Map<String, String> toMap(Redaction redaction) {
+		if (redaction == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (dataMaskPreviewResult.getError() == null) {
+		if (redaction.getError() == null) {
 			map.put("error", null);
 		}
 		else {
-			map.put("error", String.valueOf(dataMaskPreviewResult.getError()));
+			map.put("error", String.valueOf(redaction.getError()));
 		}
 
-		if (dataMaskPreviewResult.getOutput() == null) {
+		if (redaction.getOutput() == null) {
 			map.put("output", null);
 		}
 		else {
-			map.put(
-				"output", String.valueOf(dataMaskPreviewResult.getOutput()));
+			map.put("output", String.valueOf(redaction.getOutput()));
 		}
 
 		return map;
 	}
 
-	public static class DataMaskPreviewResultJSONParser
-		extends BaseJSONParser<DataMaskPreviewResult> {
+	public static class RedactionJSONParser extends BaseJSONParser<Redaction> {
 
 		@Override
-		protected DataMaskPreviewResult createDTO() {
-			return new DataMaskPreviewResult();
+		protected Redaction createDTO() {
+			return new Redaction();
 		}
 
 		@Override
-		protected DataMaskPreviewResult[] createDTOArray(int size) {
-			return new DataMaskPreviewResult[size];
+		protected Redaction[] createDTOArray(int size) {
+			return new Redaction[size];
 		}
 
 		@Override
@@ -140,19 +133,17 @@ public class DataMaskPreviewResultSerDes {
 
 		@Override
 		protected void setField(
-			DataMaskPreviewResult dataMaskPreviewResult,
-			String jsonParserFieldName, Object jsonParserFieldValue) {
+			Redaction redaction, String jsonParserFieldName,
+			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "error")) {
 				if (jsonParserFieldValue != null) {
-					dataMaskPreviewResult.setError(
-						(String)jsonParserFieldValue);
+					redaction.setError((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "output")) {
 				if (jsonParserFieldValue != null) {
-					dataMaskPreviewResult.setOutput(
-						(String)jsonParserFieldValue);
+					redaction.setOutput((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -236,4 +227,4 @@ public class DataMaskPreviewResultSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-679651579
+// LIFERAY-REST-BUILDER-HASH:-131554139

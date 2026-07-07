@@ -85,11 +85,11 @@ public class OpenAPIResourceImpl {
 
 	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
 		{
-			add(DataMaskResourceImpl.class);
+			add(RedactionResourceImpl.class);
 
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2060842898
+// LIFERAY-REST-BUILDER-HASH:1846128903

@@ -6,7 +6,7 @@
 package com.liferay.headless.data.mask.internal.resource.v1_0.factory;
 
 import com.liferay.headless.data.mask.internal.security.permission.LiberalPermissionChecker;
-import com.liferay.headless.data.mask.resource.v1_0.DataMaskResource;
+import com.liferay.headless.data.mask.resource.v1_0.RedactionResource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -55,28 +55,28 @@ import org.osgi.service.component.annotations.ReferenceScope;
  * @generated
  */
 @Component(
-	property = "resource.locator.key=/headless-data-mask/v1.0/DataMask",
-	service = DataMaskResource.Factory.class
+	property = "resource.locator.key=/headless-data-mask/v1.0/Redaction",
+	service = RedactionResource.Factory.class
 )
 @Generated("")
-public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
+public class RedactionResourceFactoryImpl implements RedactionResource.Factory {
 
 	@Override
-	public DataMaskResource.Builder create() {
-		return new DataMaskResource.Builder() {
+	public RedactionResource.Builder create() {
+		return new RedactionResource.Builder() {
 
 			@Override
-			public DataMaskResource build() {
+			public RedactionResource build() {
 				if (_user == null) {
 					throw new IllegalArgumentException("User is not set");
 				}
 
-				Function<InvocationHandler, DataMaskResource>
-					dataMaskResourceProxyProviderFunction =
+				Function<InvocationHandler, RedactionResource>
+					redactionResourceProxyProviderFunction =
 						ResourceProxyProviderFunctionHolder.
-							_dataMaskResourceProxyProviderFunction;
+							_redactionResourceProxyProviderFunction;
 
-				return dataMaskResourceProxyProviderFunction.apply(
+				return redactionResourceProxyProviderFunction.apply(
 					(proxy, method, arguments) -> _invoke(
 						method, arguments, _checkPermissions,
 						_httpServletRequest, _httpServletResponse,
@@ -84,7 +84,7 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 			}
 
 			@Override
-			public DataMaskResource.Builder checkPermissions(
+			public RedactionResource.Builder checkPermissions(
 				boolean checkPermissions) {
 
 				_checkPermissions = checkPermissions;
@@ -93,7 +93,7 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 			}
 
 			@Override
-			public DataMaskResource.Builder httpServletRequest(
+			public RedactionResource.Builder httpServletRequest(
 				HttpServletRequest httpServletRequest) {
 
 				_httpServletRequest = httpServletRequest;
@@ -102,7 +102,7 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 			}
 
 			@Override
-			public DataMaskResource.Builder httpServletResponse(
+			public RedactionResource.Builder httpServletResponse(
 				HttpServletResponse httpServletResponse) {
 
 				_httpServletResponse = httpServletResponse;
@@ -111,7 +111,7 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 			}
 
 			@Override
-			public DataMaskResource.Builder preferredLocale(
+			public RedactionResource.Builder preferredLocale(
 				Locale preferredLocale) {
 
 				_preferredLocale = preferredLocale;
@@ -120,14 +120,14 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 			}
 
 			@Override
-			public DataMaskResource.Builder uriInfo(UriInfo uriInfo) {
+			public RedactionResource.Builder uriInfo(UriInfo uriInfo) {
 				_uriInfo = uriInfo;
 
 				return this;
 			}
 
 			@Override
-			public DataMaskResource.Builder user(User user) {
+			public RedactionResource.Builder user(User user) {
 				_user = user;
 
 				return this;
@@ -143,15 +143,15 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 		};
 	}
 
-	private static Function<InvocationHandler, DataMaskResource>
+	private static Function<InvocationHandler, RedactionResource>
 		_getProxyProviderFunction() {
 
 		Class<?> proxyClass = ProxyUtil.getProxyClass(
-			DataMaskResource.class.getClassLoader(), DataMaskResource.class);
+			RedactionResource.class.getClassLoader(), RedactionResource.class);
 
 		try {
-			Constructor<DataMaskResource> constructor =
-				(Constructor<DataMaskResource>)proxyClass.getConstructor(
+			Constructor<RedactionResource> constructor =
+				(Constructor<RedactionResource>)proxyClass.getConstructor(
 					InvocationHandler.class);
 
 			return invocationHandler -> {
@@ -193,38 +193,38 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 				new LiberalPermissionChecker(user));
 		}
 
-		DataMaskResource dataMaskResource =
+		RedactionResource redactionResource =
 			_componentServiceObjects.getService();
 
-		dataMaskResource.setContextAcceptLanguage(
+		redactionResource.setContextAcceptLanguage(
 			new AcceptLanguageImpl(httpServletRequest, preferredLocale, user));
 
 		Company company = _companyLocalService.getCompany(user.getCompanyId());
 
-		dataMaskResource.setContextCompany(company);
+		redactionResource.setContextCompany(company);
 
-		dataMaskResource.setContextHttpServletRequest(httpServletRequest);
-		dataMaskResource.setContextHttpServletResponse(httpServletResponse);
-		dataMaskResource.setContextUriInfo(uriInfo);
-		dataMaskResource.setContextUser(user);
-		dataMaskResource.setExpressionConvert(_expressionConvert);
-		dataMaskResource.setFilterParserProvider(_filterParserProvider);
-		dataMaskResource.setGroupLocalService(_groupLocalService);
-		dataMaskResource.setResourceActionLocalService(
+		redactionResource.setContextHttpServletRequest(httpServletRequest);
+		redactionResource.setContextHttpServletResponse(httpServletResponse);
+		redactionResource.setContextUriInfo(uriInfo);
+		redactionResource.setContextUser(user);
+		redactionResource.setExpressionConvert(_expressionConvert);
+		redactionResource.setFilterParserProvider(_filterParserProvider);
+		redactionResource.setGroupLocalService(_groupLocalService);
+		redactionResource.setResourceActionLocalService(
 			_resourceActionLocalService);
-		dataMaskResource.setResourcePermissionLocalService(
+		redactionResource.setResourcePermissionLocalService(
 			_resourcePermissionLocalService);
-		dataMaskResource.setRoleLocalService(_roleLocalService);
-		dataMaskResource.setSortParserProvider(_sortParserProvider);
+		redactionResource.setRoleLocalService(_roleLocalService);
+		redactionResource.setSortParserProvider(_sortParserProvider);
 
 		try {
-			return method.invoke(dataMaskResource, arguments);
+			return method.invoke(redactionResource, arguments);
 		}
 		catch (InvocationTargetException invocationTargetException) {
 			throw invocationTargetException.getTargetException();
 		}
 		finally {
-			_componentServiceObjects.ungetService(dataMaskResource);
+			_componentServiceObjects.ungetService(redactionResource);
 
 			PrincipalThreadLocal.setName(name);
 
@@ -236,7 +236,7 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 	private CompanyLocalService _companyLocalService;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DataMaskResource> _componentServiceObjects;
+	private ComponentServiceObjects<RedactionResource> _componentServiceObjects;
 
 	@Reference
 	private PermissionCheckerFactory _defaultPermissionCheckerFactory;
@@ -269,8 +269,8 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 
 	private static class ResourceProxyProviderFunctionHolder {
 
-		private static final Function<InvocationHandler, DataMaskResource>
-			_dataMaskResourceProxyProviderFunction =
+		private static final Function<InvocationHandler, RedactionResource>
+			_redactionResourceProxyProviderFunction =
 				_getProxyProviderFunction();
 
 	}
@@ -326,4 +326,4 @@ public class DataMaskResourceFactoryImpl implements DataMaskResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:228927172
+// LIFERAY-REST-BUILDER-HASH:792659567

@@ -5,11 +5,10 @@
 
 package com.liferay.headless.data.mask.client.resource.v1_0;
 
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewRequest;
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewResult;
+import com.liferay.headless.data.mask.client.dto.v1_0.Redaction;
 import com.liferay.headless.data.mask.client.http.HttpInvoker;
 import com.liferay.headless.data.mask.client.problem.Problem;
-import com.liferay.headless.data.mask.client.serdes.v1_0.DataMaskPreviewResultSerDes;
+import com.liferay.headless.data.mask.client.serdes.v1_0.RedactionSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -27,18 +26,20 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface DataMaskResource {
+public interface RedactionResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public DataMaskPreviewResult postDataMaskPreview(
-			DataMaskPreviewRequest dataMaskPreviewRequest)
+	public Redaction getRedaction(
+			String detectionRegex, String replacementRegex,
+			String replacementValue, String text)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse postDataMaskPreviewHttpResponse(
-			DataMaskPreviewRequest dataMaskPreviewRequest)
+	public HttpInvoker.HttpResponse getRedactionHttpResponse(
+			String detectionRegex, String replacementRegex,
+			String replacementValue, String text)
 		throws Exception;
 
 	public static class Builder {
@@ -54,8 +55,8 @@ public interface DataMaskResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public DataMaskResource build() {
-			return new DataMaskResourceImpl(this);
+		public RedactionResource build() {
+			return new RedactionResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -147,14 +148,15 @@ public interface DataMaskResource {
 
 	}
 
-	public static class DataMaskResourceImpl implements DataMaskResource {
+	public static class RedactionResourceImpl implements RedactionResource {
 
-		public DataMaskPreviewResult postDataMaskPreview(
-				DataMaskPreviewRequest dataMaskPreviewRequest)
+		public Redaction getRedaction(
+				String detectionRegex, String replacementRegex,
+				String replacementValue, String text)
 			throws Exception {
 
-			HttpInvoker.HttpResponse httpResponse =
-				postDataMaskPreviewHttpResponse(dataMaskPreviewRequest);
+			HttpInvoker.HttpResponse httpResponse = getRedactionHttpResponse(
+				detectionRegex, replacementRegex, replacementValue, text);
 
 			String content = httpResponse.getContent();
 
@@ -204,7 +206,7 @@ public interface DataMaskResource {
 			}
 
 			try {
-				return DataMaskPreviewResultSerDes.toDTO(content);
+				return RedactionSerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -215,14 +217,12 @@ public interface DataMaskResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse postDataMaskPreviewHttpResponse(
-				DataMaskPreviewRequest dataMaskPreviewRequest)
+		public HttpInvoker.HttpResponse getRedactionHttpResponse(
+				String detectionRegex, String replacementRegex,
+				String replacementValue, String text)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(
-				dataMaskPreviewRequest.toString(), "application/json");
 
 			if (_builder._locale != null) {
 				httpInvoker.header(
@@ -241,12 +241,31 @@ public interface DataMaskResource {
 				httpInvoker.parameter(entry.getKey(), entry.getValue());
 			}
 
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (detectionRegex != null) {
+				httpInvoker.parameter(
+					"detectionRegex", String.valueOf(detectionRegex));
+			}
+
+			if (replacementRegex != null) {
+				httpInvoker.parameter(
+					"replacementRegex", String.valueOf(replacementRegex));
+			}
+
+			if (replacementValue != null) {
+				httpInvoker.parameter(
+					"replacementValue", String.valueOf(replacementValue));
+			}
+
+			if (text != null) {
+				httpInvoker.parameter("text", String.valueOf(text));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/headless-data-mask/v1.0/data-masks/preview");
+						"/o/headless-data-mask/v1.0/redaction");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -256,16 +275,16 @@ public interface DataMaskResource {
 			return httpInvoker.invoke();
 		}
 
-		private DataMaskResourceImpl(Builder builder) {
+		private RedactionResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			DataMaskResource.class.getName());
+			RedactionResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1288281954
+// LIFERAY-REST-BUILDER-HASH:-2124149564

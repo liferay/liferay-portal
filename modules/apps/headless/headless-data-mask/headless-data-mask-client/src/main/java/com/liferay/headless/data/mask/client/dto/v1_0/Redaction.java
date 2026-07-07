@@ -6,7 +6,7 @@
 package com.liferay.headless.data.mask.client.dto.v1_0;
 
 import com.liferay.headless.data.mask.client.function.UnsafeSupplier;
-import com.liferay.headless.data.mask.client.serdes.v1_0.DataMaskPreviewResultSerDes;
+import com.liferay.headless.data.mask.client.serdes.v1_0.RedactionSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class DataMaskPreviewResult implements Cloneable, Serializable {
+public class Redaction implements Cloneable, Serializable {
 
-	public static DataMaskPreviewResult toDTO(String json) {
-		return DataMaskPreviewResultSerDes.toDTO(json);
+	public static Redaction toDTO(String json) {
+		return RedactionSerDes.toDTO(json);
 	}
 
 	public String getError() {
@@ -68,8 +68,8 @@ public class DataMaskPreviewResult implements Cloneable, Serializable {
 	protected String output;
 
 	@Override
-	public DataMaskPreviewResult clone() throws CloneNotSupportedException {
-		return (DataMaskPreviewResult)super.clone();
+	public Redaction clone() throws CloneNotSupportedException {
+		return (Redaction)super.clone();
 	}
 
 	@Override
@@ -78,14 +78,13 @@ public class DataMaskPreviewResult implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof DataMaskPreviewResult)) {
+		if (!(object instanceof Redaction)) {
 			return false;
 		}
 
-		DataMaskPreviewResult dataMaskPreviewResult =
-			(DataMaskPreviewResult)object;
+		Redaction redaction = (Redaction)object;
 
-		return Objects.equals(toString(), dataMaskPreviewResult.toString());
+		return Objects.equals(toString(), redaction.toString());
 	}
 
 	@Override
@@ -96,8 +95,8 @@ public class DataMaskPreviewResult implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return DataMaskPreviewResultSerDes.toJSON(this);
+		return RedactionSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:688133814
+// LIFERAY-REST-BUILDER-HASH:1003522558
