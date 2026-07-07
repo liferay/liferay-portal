@@ -1041,6 +1041,58 @@
 		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">version=1.0</echo>
 	</target>
 
+	<target name="write-unlicensed-lpkg-marketplace-properties" unless="module.dirs.null">
+		<pathconvert pathsep="," property="lpkg.artifacts.list.all">
+			<chainedmapper>
+				<flattenmapper />
+
+				<regexpmapper from="^(.+?)-(\d.*?)\.jar$" to="\1#\2##" />
+			</chainedmapper>
+			<fileset
+				dir="${output.dir}"
+				includes="**/*.jar"
+			/>
+		</pathconvert>
+
+		<echo file="${lpkg.dir}/liferay-marketplace.properties">bundles=${lpkg.artifacts.list.all}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">category=${Liferay-Releng-Category}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">context-names=</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">description=${Liferay-Releng-App-Description}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">icon-url=</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">remote-app-id=${app.marketplace.id}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">required=${Liferay-Releng-Portal-Required}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">restart-required=${Liferay-Releng-Restart-Required}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">title=${Liferay-Releng-App-Title}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">${line.separator}</echo>
+
+		<echo append="true" file="${lpkg.dir}/liferay-marketplace.properties">version=${app.version}</echo>
+	</target>
+
 	<target depends="dist-module-artifacts,get-app-change-log,zip-app-sources-init" if="zip.app.sources" name="zip-app-sources">
 		<zip
 			basedir="${dist.dir}/sources"
