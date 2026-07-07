@@ -26,6 +26,7 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
@@ -33,6 +34,8 @@ import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -273,13 +276,22 @@ public class ExportProcessResourceTest
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		_testPostExportProcessWithObjectDefinition(
-			exportProcessResource::postExportProcess, companyGroup.getGroupId(),
-			objectDefinition,
-			_addObjectEntries(
-				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID));
+		try {
+			ObjectEntry[] objectEntries = _addObjectEntries(
+				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+			_testPostExportProcessWithObjectDefinition(
+				exportProcessResource::postExportProcess,
+				companyGroup.getGroupId(), objectDefinition, objectEntries);
+			_testPostExportProcessWithDateRange(
+				companyGroup.getGroupId(), objectDefinition, objectEntries);
+			_testPostExportProcessWithPermissions(
+				companyGroup.getGroupId(), objectDefinition, objectEntries);
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
 	}
 
 	@FeatureFlag("LPD-38869")
@@ -669,11 +681,83 @@ public class ExportProcessResourceTest
 		return group.getGroupId();
 	}
 
+	private JSONArray _getExportedJSONArray(
+			ExportProcess exportProcess, long groupId,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.getBackgroundTask(
+				exportProcess.getId());
+
+		List<FileEntry> fileEntries =
+			backgroundTask.getAttachmentsFileEntries();
+
+		Assert.assertEquals(fileEntries.toString(), 1, fileEntries.size());
+
+		FileEntry larFileEntry = fileEntries.get(0);
+
+		return ExportImportTestUtil.getExportedJSONArray(
+			objectDefinition.getExternalReferenceCode(), groupId,
+			larFileEntry.getContentStream());
+	}
+
 	private long _getGroupId(String externalReferenceCode) throws Exception {
 		Group group = _groupLocalService.getGroupByExternalReferenceCode(
 			externalReferenceCode, testCompany.getCompanyId());
 
 		return group.getGroupId();
+	}
+
+	private ExportProcess _postExportProcess(
+			UnsafeFunction<ExportProcessRequest, ExportProcess, Exception>
+				unsafeFunction,
+			ObjectDefinition objectDefinition,
+			UnsafeConsumer<ExportProcessRequest, Exception> unsafeConsumer)
+		throws Exception {
+
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+
+		exportProcessRequest.setName(RandomTestUtil.randomString());
+		exportProcessRequest.setRequestPortletDataHandlers(
+			new RequestPortletDataHandler[] {
+				new RequestPortletDataHandler() {
+					{
+						name =
+							"PORTLET_DATA_" + objectDefinition.getPortletId();
+					}
+				}
+			});
+
+		unsafeConsumer.accept(exportProcessRequest);
+
+		ExportProcess exportProcess = null;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineExportTaskExecutorImpl",
+				LoggerTestUtil.WARN)) {
+
+			exportProcess = unsafeFunction.apply(exportProcessRequest);
+
+			assertValid(exportProcess);
+
+			ExportProcess finalExportProcess = exportProcess;
+
+			ExportImportTestUtil.retryAssert(
+				1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+				() -> {
+					BackgroundTask backgroundTask =
+						_backgroundTaskLocalService.getBackgroundTask(
+							finalExportProcess.getId());
+
+					Assert.assertEquals(
+						BackgroundTaskConstants.STATUS_SUCCESSFUL,
+						backgroundTask.getStatus());
+				});
+		}
+
+		return exportProcess;
 	}
 
 	private ObjectDefinition _publishObjectDefinition(String scope)
@@ -698,6 +782,39 @@ public class ExportProcessResourceTest
 		}
 
 		return objectDefinition;
+	}
+
+	private void _testPostExportProcessWithDateRange(
+			long groupId, ObjectDefinition objectDefinition,
+			ObjectEntry[] objectEntries)
+		throws Exception {
+
+		long time = System.currentTimeMillis();
+
+		Assert.assertNull(
+			_getExportedJSONArray(
+				_postExportProcess(
+					exportProcessResource::postExportProcess, objectDefinition,
+					exportProcessRequest -> {
+						exportProcessRequest.setEndDate(
+							new Date(time - Time.DAY));
+						exportProcessRequest.setStartDate(
+							new Date(time - (2 * Time.DAY)));
+					}),
+				groupId, objectDefinition));
+
+		ExportProcess exportProcess = _postExportProcess(
+			exportProcessResource::postExportProcess, objectDefinition,
+			exportProcessRequest -> {
+				exportProcessRequest.setEndDate(new Date(time));
+				exportProcessRequest.setStartDate(new Date(time - Time.HOUR));
+			});
+
+		_assertExportedExternalReferenceCodes(
+			_backgroundTaskLocalService.getBackgroundTask(
+				exportProcess.getId()),
+			objectDefinition.getExternalReferenceCode(), groupId, objectEntries,
+			ObjectEntry::getExternalReferenceCode);
 	}
 
 	private void _testPostExportProcessWithInvalidDateRange(
@@ -790,50 +907,38 @@ public class ExportProcessResourceTest
 			ObjectEntry[] objectEntries)
 		throws Exception {
 
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
-		exportProcessRequest.setName(RandomTestUtil.randomString());
-		exportProcessRequest.setRequestPortletDataHandlers(
-			new RequestPortletDataHandler[] {
-				new RequestPortletDataHandler() {
-					{
-						name =
-							"PORTLET_DATA_" + objectDefinition.getPortletId();
-					}
-				}
+		ExportProcess exportProcess = _postExportProcess(
+			unsafeFunction, objectDefinition,
+			exportProcessRequest -> {
 			});
-
-		ExportProcess exportProcess = null;
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal." +
-					"BatchEngineExportTaskExecutorImpl",
-				LoggerTestUtil.WARN)) {
-
-			exportProcess = unsafeFunction.apply(exportProcessRequest);
-
-			assertValid(exportProcess);
-
-			ExportProcess finalExportProcess = exportProcess;
-
-			ExportImportTestUtil.retryAssert(
-				1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
-				() -> {
-					BackgroundTask backgroundTask =
-						_backgroundTaskLocalService.getBackgroundTask(
-							finalExportProcess.getId());
-
-					Assert.assertEquals(
-						BackgroundTaskConstants.STATUS_SUCCESSFUL,
-						backgroundTask.getStatus());
-				});
-		}
 
 		_assertExportedExternalReferenceCodes(
 			_backgroundTaskLocalService.getBackgroundTask(
 				exportProcess.getId()),
 			objectDefinition.getExternalReferenceCode(), groupId, objectEntries,
 			ObjectEntry::getExternalReferenceCode);
+	}
+
+	private void _testPostExportProcessWithPermissions(
+			long groupId, ObjectDefinition objectDefinition,
+			ObjectEntry[] objectEntries)
+		throws Exception {
+
+		JSONArray jsonArray = _getExportedJSONArray(
+			_postExportProcess(
+				exportProcessResource::postExportProcess, objectDefinition,
+				exportProcessRequest -> exportProcessRequest.setPermissions(
+					true)),
+			groupId, objectDefinition);
+
+		Assert.assertEquals(objectEntries.length, jsonArray.length());
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			Assert.assertTrue(
+				jsonObject.toString(), jsonObject.has("permissions"));
+		}
 	}
 
 	private static final String _LAYOUT_SET_LAYOUTS =
