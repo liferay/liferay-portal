@@ -125,9 +125,11 @@ public class IndexFactory
 	}
 
 	private synchronized void _initializeCompanyIndexes() {
-		_companyLocalService.forEachCompanyId(
-			companyId -> _initializeIndex(companyId),
-			IndexFactoryCompanyIdRegistryUtil.getCompanyIds());
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
+
+			_initializeIndex(companyId);
+		}
 	}
 
 	private void _initializeIndex(long companyId) {
