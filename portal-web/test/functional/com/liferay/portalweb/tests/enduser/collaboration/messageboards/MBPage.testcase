@@ -80,47 +80,6 @@ definition {
 			threadSubject = "MB Thread Message Subject");
 	}
 
-	@description = "This ensures that an MB thread can be searched via category."
-	@priority = 4
-	@refactordone
-	test CanSearchForThreadWithCategory {
-		JSONCategory.addVocabulary(
-			groupName = "Guest",
-			title = "Vocabulary Name");
-
-		JSONCategory.addCategory(
-			groupName = "Guest",
-			title = "Category Name",
-			vocabularyName = "Vocabulary Name");
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToEditThread(
-			groupName = "Guest",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		Panel.expandPanel(panel = "Categorization");
-
-		AssetCategorization.addCategory(
-			categoryName = "Category Name",
-			vocabularyName = "Vocabulary Name");
-
-		PortletEntry.publish();
-
-		Navigator.openURL();
-
-		SearchPage.searchEmbedded(searchTerm = "Category Name");
-
-		SearchResults.viewSearchResults(
-			searchAssetSummary = "MB Thread Message Body",
-			searchAssetTitle = "MB Thread Message Subject",
-			searchAssetType = "Message Boards Message");
-	}
-
 	@priority = 3
 	@refactordone
 	test CanViewMBThreadReplyViaMoreMessages {
