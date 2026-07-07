@@ -212,3 +212,29 @@ test(
 		await expect(page.getByRole('link', {name: headline})).toBeHidden();
 	}
 );
+
+test('A thread title over 255 characters is trimmed to 255', async ({
+	apiHelpers,
+	messageBoardsPage,
+	page,
+	site,
+}) => {
+	const trimmedSubject = getRandomString()
+		.replace(/-/g, '')
+		.repeat(8)
+		.slice(0, 255);
+	const overflowSubject = `${trimmedSubject}OVERFLOW`;
+
+	// Post a message whose subject exceeds 255 characters
+
+	await apiHelpers.jsonWebServicesMBApiHelper.addMessage({
+		groupId: site.id,
+		subject: overflowSubject,
+	});
+
+	await messageBoardsPage.goToThread(trimmedSubject, site.friendlyUrlPath);
+
+	// The stored title is trimmed to 255 characters
+
+	await expect(page.getByTestId('headerTitle')).toHaveText(trimmedSubject);
+});
