@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
@@ -129,6 +130,8 @@ public class CPSearchResultsPortletSharedSearchContributor
 			portletSharedSearchSettings.getSearchContext();
 
 		searchContext.setAttribute(CPField.PUBLISHED, Boolean.TRUE);
+		searchContext.setAttribute(
+			SearchContextAttributes.ATTRIBUTE_KEY_EXECUTE_SEARCH, Boolean.TRUE);
 		searchContext.setEntryClassNames(
 			new String[] {CPDefinition.class.getName()});
 
