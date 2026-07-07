@@ -20,6 +20,7 @@ export default function pageValidationReducer(state, action) {
 			let firstInvalidFieldLabel = null;
 			let firstInvalidFieldInput = null;
 			let firstInvalidFieldName;
+			let firstInvalidRichTextFieldWrapper = null;
 
 			const pages = visitor.mapFields(
 				(
@@ -42,13 +43,14 @@ export default function pageValidationReducer(state, action) {
 						firstInvalidFieldLabel = field.label;
 
 						if (field.type === 'rich_text') {
-							if (!Liferay.FeatureFlags['LPD-11235']) {
-								const fieldWrapper = document.querySelector(
+							firstInvalidRichTextFieldWrapper =
+								document.querySelector(
 									`[data-field-name='${field.name}']`
 								);
 
+							if (!Liferay.FeatureFlags['LPD-11235']) {
 								firstInvalidFieldInput =
-									fieldWrapper?.querySelector(
+									firstInvalidRichTextFieldWrapper?.querySelector(
 										'.ck-editor__editable[contenteditable="true"]'
 									);
 							}
@@ -82,6 +84,11 @@ export default function pageValidationReducer(state, action) {
 
 			if (firstInvalidFieldInput) {
 				if (firstInvalidFieldInput.type !== 'hidden') {
+					firstInvalidRichTextFieldWrapper?.scrollIntoView({
+						behavior: 'smooth',
+						block: 'center',
+					});
+
 					firstInvalidFieldInput.focus();
 				}
 				else {
