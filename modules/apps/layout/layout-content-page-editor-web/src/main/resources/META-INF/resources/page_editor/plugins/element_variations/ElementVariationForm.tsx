@@ -4,14 +4,15 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import {LanguagePicker} from '@clayui/core';
+import {LanguagePicker, Option, Picker} from '@clayui/core';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
 import {useId} from 'frontend-js-components-web';
 import React from 'react';
 
-import {ElementVariation} from './elementVariationsReducer';
+import {Action, ElementVariation} from './elementVariationsReducer';
+import {EditableElementOption} from './getEditableElementOptions';
 
 type ElementVariationFormData = Pick<
 	ElementVariation,
@@ -21,6 +22,8 @@ type ElementVariationFormData = Pick<
 interface Props {
 	audiences: Array<{label: string; value: string}>;
 	defaultLanguageId: string;
+	dispatch: React.Dispatch<Action>;
+	editableElementOptions: EditableElementOption[];
 	elementVariation: ElementVariationFormData;
 	languageId: string;
 	locales: Array<{id: string; label: string; symbol: string}>;
@@ -34,6 +37,8 @@ interface Props {
 export default function ElementVariationForm({
 	audiences,
 	defaultLanguageId,
+	dispatch,
+	editableElementOptions,
 	elementVariation,
 	languageId,
 	locales,
@@ -48,6 +53,19 @@ export default function ElementVariationForm({
 	const jsId = useId();
 	const nameId = useId();
 	const targetElementId = useId();
+
+	const targetElementItems = editableElementOptions.map(
+		(editableElementOption, index) => ({
+			key: String(index),
+			label: editableElementOption.label,
+			value: editableElementOption.value,
+		})
+	);
+
+	const selectedTargetElementItem = targetElementItems.find(
+		(targetElementItem) =>
+			targetElementItem.value === elementVariation.targetElement
+	);
 
 	return (
 		<>
@@ -121,14 +139,47 @@ export default function ElementVariationForm({
 						/>
 					</label>
 
-					<ClayInput
-						defaultValue={elementVariation.targetElement}
+					<Picker
+						aria-label={Liferay.Language.get('page-element')}
+						className="form-control-sm"
 						id={targetElementId}
-						onBlur={(event) =>
-							onChange({targetElement: event.target.value})
-						}
-						type="text"
-					/>
+						items={targetElementItems}
+						onSelectionChange={(selection) => {
+							const targetElementItem = targetElementItems.find(
+								(currentTargetElementItem) =>
+									currentTargetElementItem.key ===
+									String(selection)
+							);
+
+							onChange({
+								targetElement: targetElementItem?.value ?? '',
+							});
+						}}
+						selectedKey={selectedTargetElementItem?.key}
+					>
+						{(item) => (
+							<Option key={item.key} textValue={item.label}>
+								<span
+									className="d-block"
+									onMouseEnter={() =>
+										dispatch({
+											highlightedTargetElement:
+												item.value,
+											type: 'SET_HIGHLIGHTED_TARGET_ELEMENT',
+										})
+									}
+									onMouseLeave={() =>
+										dispatch({
+											highlightedTargetElement: null,
+											type: 'SET_HIGHLIGHTED_TARGET_ELEMENT',
+										})
+									}
+								>
+									{item.label}
+								</span>
+							</Option>
+						)}
+					</Picker>
 				</ClayForm.Group>
 
 				<ClayForm.Group small>

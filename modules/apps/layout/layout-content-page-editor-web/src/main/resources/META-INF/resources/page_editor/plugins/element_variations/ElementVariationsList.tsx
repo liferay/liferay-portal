@@ -8,9 +8,11 @@ import ClayList from '@clayui/list';
 import React from 'react';
 
 import {ElementVariation} from './elementVariationsReducer';
+import {EditableElementOption} from './getEditableElementOptions';
 
 interface Props {
 	audiences: Array<{label: string; value: string}>;
+	editableElementOptions: EditableElementOption[];
 	elementVariations: ElementVariation[];
 	onDeleteElementVariation: (elementVariation: ElementVariation) => void;
 	onEditElementVariation: (key: string) => void;
@@ -18,6 +20,7 @@ interface Props {
 
 export default function ElementVariationsList({
 	audiences,
+	editableElementOptions,
 	elementVariations,
 	onDeleteElementVariation,
 	onEditElementVariation,
@@ -44,7 +47,11 @@ export default function ElementVariationsList({
 					<ClayList className="mx-3" key={targetElement}>
 						{[
 							<ClayList.Header className="text-none" key="header">
-								{targetElement}
+								{editableElementOptions.find(
+									(editableElementOption) =>
+										editableElementOption.value ===
+										targetElement
+								)?.label ?? targetElement}
 							</ClayList.Header>,
 							...targetElementVariations.map(
 								(elementVariation) => (

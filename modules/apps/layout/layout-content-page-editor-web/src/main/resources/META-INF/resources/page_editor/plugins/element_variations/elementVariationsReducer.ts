@@ -5,6 +5,8 @@
 
 import {v4 as uuidv4} from 'uuid';
 
+import {EditableElementOption} from './getEditableElementOptions';
+
 export interface ElementVariation {
 	audienceEntryERCs: string[];
 	externalReferenceCode: string;
@@ -20,17 +22,29 @@ export interface ElementVariation {
 export interface State {
 	defaultLanguageId: string;
 	draftElementVariation: ElementVariation | null;
+	editableElementOptions: EditableElementOption[];
 	elementVariations: ElementVariation[];
+	experienceKey: string;
+	highlightedTargetElement: string | null;
 	languageId: string;
 }
 
-type Action =
+export type Action =
 	| {
 			draftElementVariation: ElementVariation;
 			type: 'CREATE_ELEMENT_VARIATION_DRAFT';
 	  }
 	| {key: string; type: 'DELETE_ELEMENT_VARIATION'}
 	| {key: string; type: 'EDIT_ELEMENT_VARIATION'}
+	| {
+			editableElementOptions: EditableElementOption[];
+			type: 'SET_EDITABLE_ELEMENT_OPTIONS';
+	  }
+	| {experienceKey: string; type: 'SET_EXPERIENCE_KEY'}
+	| {
+			highlightedTargetElement: string | null;
+			type: 'SET_HIGHLIGHTED_TARGET_ELEMENT';
+	  }
 	| {languageId: string; type: 'SET_LANGUAGE_ID'}
 	| {
 			properties: Partial<ElementVariation>;
@@ -61,13 +75,27 @@ export type LoadedElementVariation = Omit<ElementVariation, 'hide' | 'key'> & {
 export function createInitialState({
 	defaultLanguageId,
 	elementVariations,
+	experiences,
+	selectedSegmentsExperienceId,
 }: {
 	defaultLanguageId: string;
 	elementVariations: LoadedElementVariation[];
+	experiences: Array<{
+		label: string;
+		segmentsExperienceERC: string;
+		segmentsExperienceId: number;
+	}>;
+	selectedSegmentsExperienceId: number;
 }): State {
+	const selectedExperience = experiences.find(
+		(experience) =>
+			experience.segmentsExperienceId === selectedSegmentsExperienceId
+	);
+
 	return {
 		defaultLanguageId,
 		draftElementVariation: null,
+		editableElementOptions: [],
 		elementVariations: elementVariations.map((elementVariation) => ({
 			...elementVariation,
 			hide: Object.fromEntries(
@@ -80,6 +108,11 @@ export function createInitialState({
 			),
 			key: uuidv4(),
 		})),
+		experienceKey:
+			selectedExperience?.segmentsExperienceERC ??
+			experiences[0]?.segmentsExperienceERC ??
+			'',
+		highlightedTargetElement: null,
 		languageId: defaultLanguageId,
 	};
 }
@@ -143,6 +176,21 @@ export function reducer(state: State, action: Action): State {
 			return {
 				...state,
 				draftElementVariation: action.draftElementVariation,
+			};
+
+		case 'SET_EDITABLE_ELEMENT_OPTIONS':
+			return {
+				...state,
+				editableElementOptions: action.editableElementOptions,
+			};
+
+		case 'SET_EXPERIENCE_KEY':
+			return {...state, experienceKey: action.experienceKey};
+
+		case 'SET_HIGHLIGHTED_TARGET_ELEMENT':
+			return {
+				...state,
+				highlightedTargetElement: action.highlightedTargetElement,
 			};
 
 		case 'SET_LANGUAGE_ID':
