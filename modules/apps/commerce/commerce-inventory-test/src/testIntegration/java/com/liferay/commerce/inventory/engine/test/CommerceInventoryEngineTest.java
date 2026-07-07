@@ -13,17 +13,23 @@ import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseException;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.exception.NoSuchInventoryBookedQuantityException;
+import com.liferay.commerce.inventory.model.CommerceInventoryAudit;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
+import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelLocalService;
+import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
+import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
+import com.liferay.commerce.inventory.type.constants.CommerceInventoryAuditTypeConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
@@ -33,6 +39,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalServiceUtil;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
@@ -49,6 +56,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -239,6 +247,124 @@ public class CommerceInventoryEngineTest {
 	}
 
 	@Test
+	public void testConsumeBookedQuantityDoesNotRestock() throws Exception {
+		frutillaRule.scenario(
+			"Shipping an order consumes its booked quantity"
+		).given(
+			"A booked quantity against the full available stock"
+		).when(
+			"The booked quantity is consumed from the warehouse"
+		).then(
+			"The on order quantity is zero and the available stock stays zero"
+		);
+
+		_commerceInventoryWarehouseItem =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
+				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
+
+		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
+			_commerceInventoryBookedQuantityLocalService.
+				addCommerceInventoryBookedQuantity(
+					_user.getUserId(), null, BigDecimal.valueOf(3),
+					_cpInstance1.getSku(), StringPool.BLANK,
+					Collections.emptyMap());
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), StringPool.BLANK)));
+
+		_commerceInventoryEngine.consumeQuantity(
+			_user.getUserId(),
+			commerceInventoryBookedQuantity.
+				getCommerceInventoryBookedQuantityId(),
+			_cpInstance1.getGroupId(),
+			_commerceInventoryWarehouseItem.getCommerceInventoryWarehouseId(),
+			BigDecimal.valueOf(3), _cpInstance1.getSku(), StringPool.BLANK,
+			Collections.emptyMap());
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryBookedQuantityLocalService.
+					getCommerceInventoryBookedQuantity(
+						_group.getCompanyId(), _cpInstance1.getSku(),
+						StringPool.BLANK)));
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), StringPool.BLANK)));
+	}
+
+	@Test
+	public void testConsumeBookedQuantityDoesNotRestockWithUnitOfMeasure()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Shipping an order consumes its booked unit of measure quantity"
+		).given(
+			"A booked unit of measure quantity against the full available stock"
+		).when(
+			"The booked quantity is consumed from the warehouse"
+		).then(
+			"The on order quantity is zero and the available stock stays zero"
+		);
+
+		String unitOfMeasureKey = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), _cpInstance1.getCPInstanceId(),
+			unitOfMeasureKey, BigDecimal.ONE, _cpInstance1.getSku());
+
+		_commerceInventoryWarehouseItem =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
+				_cpInstance1.getSku(), unitOfMeasureKey, _serviceContext);
+
+		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
+			_commerceInventoryBookedQuantityLocalService.
+				addCommerceInventoryBookedQuantity(
+					_user.getUserId(), null, BigDecimal.valueOf(3),
+					_cpInstance1.getSku(), unitOfMeasureKey,
+					Collections.emptyMap());
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), unitOfMeasureKey)));
+
+		_commerceInventoryEngine.consumeQuantity(
+			_user.getUserId(),
+			commerceInventoryBookedQuantity.
+				getCommerceInventoryBookedQuantityId(),
+			_cpInstance1.getGroupId(),
+			_commerceInventoryWarehouseItem.getCommerceInventoryWarehouseId(),
+			BigDecimal.valueOf(3), _cpInstance1.getSku(), unitOfMeasureKey,
+			Collections.emptyMap());
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryBookedQuantityLocalService.
+					getCommerceInventoryBookedQuantity(
+						_group.getCompanyId(), _cpInstance1.getSku(),
+						unitOfMeasureKey)));
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), unitOfMeasureKey)));
+	}
+
+	@Test
 	public void testConsumeBookedQuantityFromMultipleWarehouses()
 		throws Exception {
 
@@ -367,7 +493,7 @@ public class CommerceInventoryEngineTest {
 			"The booked quantity record shall not be present"
 		);
 
-		_commerceInventoryWarehouseItem1 =
+		_commerceInventoryWarehouseItem =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
@@ -402,7 +528,7 @@ public class CommerceInventoryEngineTest {
 				commerceInventoryBookedQuantity.
 					getCommerceInventoryBookedQuantityId());
 
-		BigDecimal quantity = _commerceInventoryWarehouseItem1.getQuantity();
+		BigDecimal quantity = _commerceInventoryWarehouseItem.getQuantity();
 
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
@@ -418,11 +544,11 @@ public class CommerceInventoryEngineTest {
 			commerceInventoryBookedQuantity.
 				getCommerceInventoryBookedQuantityId(),
 			_cpInstance1.getGroupId(),
-			_commerceInventoryWarehouseItem1.getCommerceInventoryWarehouseId(),
+			_commerceInventoryWarehouseItem.getCommerceInventoryWarehouseId(),
 			bookQuantity, _cpInstance1.getSku(), StringPool.BLANK,
 			Collections.emptyMap());
 
-		quantity = _commerceInventoryWarehouseItem1.getQuantity();
+		quantity = _commerceInventoryWarehouseItem.getQuantity();
 
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
@@ -580,6 +706,161 @@ public class CommerceInventoryEngineTest {
 		Assert.assertEquals(
 			commerceInventoryWarehouse.getName(),
 			retrievedCommerceInventoryWarehouse.getName());
+	}
+
+	@Test
+	public void testDeleteOrderCreatesInventoryAudit() throws Exception {
+		frutillaRule.scenario(
+			"Deleting an order writes a delete booked quantity inventory audit"
+		).given(
+			"An order that booked stock against a SKU"
+		).when(
+			"The order is deleted"
+		).then(
+			"An inventory audit tagged with the deleted order id records the " +
+				"restock"
+		);
+
+		_commerceInventoryWarehouseItem =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
+				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
+
+		int auditCountBefore =
+			_commerceInventoryAuditLocalService.getCommerceInventoryAuditsCount(
+				_group.getCompanyId(), _cpInstance1.getSku(), StringPool.BLANK);
+
+		CommerceOrder commerceOrder = _addCommerceOrderWithBookedQuantity(
+			BigDecimal.valueOf(3), StringPool.BLANK);
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
+
+		List<CommerceInventoryAudit> commerceInventoryAudits =
+			_commerceInventoryAuditLocalService.getCommerceInventoryAudits(
+				_group.getCompanyId(), _cpInstance1.getSku(), StringPool.BLANK,
+				auditCountBefore, auditCountBefore + 10);
+
+		CommerceInventoryAudit orderDeletionCommerceInventoryAudit = null;
+
+		for (CommerceInventoryAudit commerceInventoryAudit :
+				commerceInventoryAudits) {
+
+			String logTypeSettings =
+				commerceInventoryAudit.getLogTypeSettings();
+
+			if ((logTypeSettings != null) &&
+				logTypeSettings.contains(
+					CommerceInventoryAuditTypeConstants.ORDER_ID) &&
+				logTypeSettings.contains(String.valueOf(commerceOrderId))) {
+
+				orderDeletionCommerceInventoryAudit = commerceInventoryAudit;
+
+				break;
+			}
+		}
+
+		Assert.assertNotNull(orderDeletionCommerceInventoryAudit);
+
+		Assert.assertEquals(
+			CommerceInventoryConstants.AUDIT_TYPE_DELETE_BOOKED_QUANTITY,
+			orderDeletionCommerceInventoryAudit.getLogType());
+
+		CommerceInventoryAuditType commerceInventoryAuditType =
+			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
+				orderDeletionCommerceInventoryAudit.getLogType());
+
+		String log = commerceInventoryAuditType.formatLog(
+			orderDeletionCommerceInventoryAudit.getUserId(),
+			orderDeletionCommerceInventoryAudit.getLogTypeSettings(),
+			LocaleUtil.getDefault());
+
+		Assert.assertTrue(log.contains(String.valueOf(commerceOrderId)));
+	}
+
+	@Test
+	public void testDeleteOrderRestocksBookedQuantity() throws Exception {
+		frutillaRule.scenario(
+			"Deleting an order restocks the booked quantity"
+		).given(
+			"An order that booked the full available stock"
+		).when(
+			"The order is deleted"
+		).then(
+			"The booked quantity is released and the available stock is " +
+				"restored"
+		);
+
+		_commerceInventoryWarehouseItem =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
+				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
+
+		CommerceOrder commerceOrder = _addCommerceOrderWithBookedQuantity(
+			BigDecimal.valueOf(3), StringPool.BLANK);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), StringPool.BLANK)));
+
+		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.valueOf(3),
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), StringPool.BLANK)));
+	}
+
+	@Test
+	public void testDeleteOrderRestocksBookedQuantityWithUnitOfMeasure()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Deleting an order restocks the booked unit of measure quantity"
+		).given(
+			"An order that booked the full available stock of a unit of measure"
+		).when(
+			"The order is deleted"
+		).then(
+			"The booked quantity is released and the available stock is " +
+				"restored"
+		);
+
+		String unitOfMeasureKey = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), _cpInstance1.getCPInstanceId(),
+			unitOfMeasureKey, BigDecimal.ONE, _cpInstance1.getSku());
+
+		_commerceInventoryWarehouseItem =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
+				_cpInstance1.getSku(), unitOfMeasureKey, _serviceContext);
+
+		CommerceOrder commerceOrder = _addCommerceOrderWithBookedQuantity(
+			BigDecimal.valueOf(3), unitOfMeasureKey);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), unitOfMeasureKey)));
+
+		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.valueOf(3),
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _cpInstance1.getGroupId(),
+					_cpInstance1.getSku(), unitOfMeasureKey)));
 	}
 
 	@Test
@@ -787,14 +1068,14 @@ public class CommerceInventoryEngineTest {
 			"The stock quantity is correctly retrieved"
 		);
 
-		_commerceInventoryWarehouseItem1 =
+		_commerceInventoryWarehouseItem =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
 
 		Assert.assertTrue(
 			BigDecimalUtil.eq(
-				_commerceInventoryWarehouseItem1.getQuantity(),
+				_commerceInventoryWarehouseItem.getQuantity(),
 				_commerceInventoryEngine.getStockQuantity(
 					_group.getCompanyId(), _accountEntry.getAccountEntryId(),
 					_cpInstance1.getGroupId(), _commerceChannel.getGroupId(),
@@ -815,7 +1096,7 @@ public class CommerceInventoryEngineTest {
 			"The stock quantity is correctly retrieved"
 		);
 
-		_commerceInventoryWarehouseItem1 =
+		_commerceInventoryWarehouseItem =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
@@ -824,7 +1105,7 @@ public class CommerceInventoryEngineTest {
 			addCommerceInventoryWarehouseRel(
 				_user.getUserId(), AccountEntry.class.getName(),
 				_accountEntry.getAccountEntryId(),
-				_commerceInventoryWarehouseItem1.
+				_commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseId());
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
@@ -867,7 +1148,7 @@ public class CommerceInventoryEngineTest {
 				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 				_accountEntry.getAccountEntryId(), _serviceContext);
 
-		_commerceInventoryWarehouseItem1 =
+		_commerceInventoryWarehouseItem =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
@@ -876,7 +1157,7 @@ public class CommerceInventoryEngineTest {
 			addCommerceInventoryWarehouseRel(
 				_user.getUserId(), AccountGroup.class.getName(),
 				accountGroup.getAccountGroupId(),
-				_commerceInventoryWarehouseItem1.
+				_commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseId());
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
@@ -1105,6 +1386,37 @@ public class CommerceInventoryEngineTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
+	private CommerceOrder _addCommerceOrderWithBookedQuantity(
+			BigDecimal quantity, String unitOfMeasureKey)
+		throws Exception {
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				_cpInstance1.getCPInstanceId(), null, quantity, 0,
+				BigDecimal.ZERO, unitOfMeasureKey, _commerceContext,
+				_serviceContext);
+
+		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
+			_commerceInventoryBookedQuantityLocalService.
+				addCommerceInventoryBookedQuantity(
+					_user.getUserId(), null, quantity, _cpInstance1.getSku(),
+					unitOfMeasureKey, Collections.emptyMap());
+
+		_commerceOrderItemLocalService.updateCommerceOrderItem(
+			commerceOrderItem.getCommerceOrderItemId(),
+			commerceInventoryBookedQuantity.
+				getCommerceInventoryBookedQuantityId());
+
+		return commerceOrder;
+	}
+
 	private AccountEntry _accountEntry;
 	private CommerceChannel _commerceChannel;
 
@@ -1117,13 +1429,21 @@ public class CommerceInventoryEngineTest {
 	private CommerceCurrency _commerceCurrency;
 
 	@Inject
+	private CommerceInventoryAuditLocalService
+		_commerceInventoryAuditLocalService;
+
+	@Inject
+	private CommerceInventoryAuditTypeRegistry
+		_commerceInventoryAuditTypeRegistry;
+
+	@Inject
 	private CommerceInventoryBookedQuantityLocalService
 		_commerceInventoryBookedQuantityLocalService;
 
 	@Inject
 	private CommerceInventoryEngine _commerceInventoryEngine;
 
-	private CommerceInventoryWarehouseItem _commerceInventoryWarehouseItem1;
+	private CommerceInventoryWarehouseItem _commerceInventoryWarehouseItem;
 
 	@Inject
 	private CommerceInventoryWarehouseItemLocalService
