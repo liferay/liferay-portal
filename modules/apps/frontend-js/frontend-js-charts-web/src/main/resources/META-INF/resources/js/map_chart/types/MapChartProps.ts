@@ -8,4 +8,5 @@ import {MapDatum} from './MapDatum';
 export interface MapChartProps {
 	data: MapDatum[];
 	title: string;
+	variant?: 'choropleth' | 'markers';
 }

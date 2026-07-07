@@ -11,7 +11,11 @@ import {MapChartProps} from './types/MapChartProps';
 
 import '../../css/MapChart.scss';
 
-export default function MapChart({data, title}: MapChartProps) {
+export default function MapChart({
+	data,
+	title,
+	variant = 'markers',
+}: MapChartProps) {
 	const baseId = useId();
 	const titleId = `${baseId}-title`;
 	const summaryId = `${baseId}-summary`;
@@ -33,7 +37,7 @@ export default function MapChart({data, title}: MapChartProps) {
 
 			<MapChartSummary data={data} id={summaryId} total={total} />
 
-			<MapChartPlot data={data} titleId={titleId} />
+			<MapChartPlot data={data} titleId={titleId} variant={variant} />
 		</figure>
 	);
 }

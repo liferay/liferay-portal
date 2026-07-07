@@ -25,6 +25,10 @@
 		fill: $light;
 		stroke: $light-d2;
 		stroke-width: 0.5;
+
+		&.is-data {
+			fill: var(--country-fill);
+		}
 	}
 
 	.chart-map-marker {

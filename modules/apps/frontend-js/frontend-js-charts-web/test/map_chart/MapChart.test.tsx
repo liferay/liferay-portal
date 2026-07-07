@@ -93,3 +93,63 @@ describe('MapChart', () => {
 		await checkAccessibility({bestPractices: true, context: container});
 	});
 });
+
+describe('MapChart choropleth variant', () => {
+	it('marks each data country with is-data and leaves the rest as base land', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		const dataCountries = container.querySelectorAll(
+			'path.chart-map-land.is-data'
+		);
+
+		expect(dataCountries).toHaveLength(DATA.length);
+
+		const allCountries = container.querySelectorAll('path.chart-map-land');
+
+		expect(allCountries.length).toBe(Object.keys(WORLD_MAP_DATA).length);
+	});
+
+	it('labels each data country with its display name and value', () => {
+		render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		expect(
+			screen.getByRole('img', {name: 'China: 14210'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('img', {name: 'United States: 12450'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('img', {name: 'India: 9870'})
+		).toBeInTheDocument();
+	});
+
+	it('does not mark non-data countries as data countries', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		const nonDataCountries = container.querySelectorAll(
+			'path.chart-map-land:not(.is-data)'
+		);
+
+		expect(nonDataCountries.length).toBe(
+			Object.keys(WORLD_MAP_DATA).length - DATA.length
+		);
+
+		nonDataCountries.forEach((path) => {
+			expect(path).not.toHaveAttribute('aria-label');
+		});
+	});
+
+	it('has no accessibility violations', async () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+});
