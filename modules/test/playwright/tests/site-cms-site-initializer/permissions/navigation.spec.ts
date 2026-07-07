@@ -12,6 +12,7 @@ import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitchViaApi} from '../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {RecycleBinPage} from '../main/pages/RecycleBinPage';
 import {registerUserCredentials} from '../main/spaces/helpers/roleMembership';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
@@ -388,6 +389,8 @@ test(
 			await page
 				.getByRole('button', {name: /Publish Basic Document/})
 				.click();
+
+			await waitForAlert(page, '');
 
 			await page.waitForURL(/\/web\/cms\/home/);
 		});
