@@ -4,6 +4,6 @@
  */
 
 export const config = {
-	name: 'sharing.main',
-	testDir: 'tests/e2e-cms-dxp/sharing/main',
+	name: 'e2e-cms-dxp.main',
+	testDir: 'tests/e2e-cms-dxp/main',
 };
