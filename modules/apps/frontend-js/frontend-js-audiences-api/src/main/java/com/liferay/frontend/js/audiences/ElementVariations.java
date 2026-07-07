@@ -5,10 +5,12 @@
 
 package com.liferay.frontend.js.audiences;
 
+import java.io.Serializable;
+
 /**
  * @author Iván Zaera Avellón
  */
-public class ElementVariations {
+public class ElementVariations implements Serializable {
 
 	public ElementVariations(String content, String hash) {
 		_content = content;
