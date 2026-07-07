@@ -18,7 +18,7 @@ interface Props {
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
 	onLeave: (index: number) => void;
-	setBarRef: (index: number, element: SVGRectElement | null) => void;
+	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
 	track: boolean;
 }
 

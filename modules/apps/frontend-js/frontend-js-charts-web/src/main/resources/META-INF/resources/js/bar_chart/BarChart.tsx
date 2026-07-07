@@ -4,17 +4,27 @@
  */
 
 import classNames from 'classnames';
-import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useId,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 
 import {getCategoricalColors} from '../palette';
 import {CHART_FAMILY_CLAY_PALETTE} from '../tokens';
 import BarChartLegend from './legend/BarChartLegend';
 import BarChartPlot from './plot/BarChartPlot';
-import {getBarChartGeometry} from './plot/geometry';
+import BarChartStackedPlot from './plot/BarChartStackedPlot';
+import {getBarChartGeometry, getStackedBarChartGeometry} from './plot/geometry';
 
 import '../../css/BarChart.scss';
 
 import type {BarChartProps} from './types';
+
+const DEFAULT_WIDTH = 480;
 
 export default function BarChart({
 	alignment = 'start',
@@ -30,9 +40,10 @@ export default function BarChart({
 	rounded = false,
 	scheme = 'blue',
 	size = 'default',
+	stacked = false,
 	title,
 	track = false,
-	width = 480,
+	width,
 }: BarChartProps) {
 	const reactId = useId();
 	const titleId = `${reactId}-title`;
@@ -41,17 +52,70 @@ export default function BarChart({
 	const [focusIndex, setFocusIndex] = useState<number | null>(null);
 	const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 	const activeIndex = focusIndex ?? hoverIndex;
-	const barRefs = useRef<Array<SVGRectElement | null>>([]);
+	const barRefs = useRef<Array<SVGGraphicsElement | null>>([]);
+	const rootRef = useRef<HTMLElement>(null);
+
+	// A stacked meter with no explicit `width` fills its container. We measure
+	// the root with a ResizeObserver and re-lay the segments in real pixels so
+	// the 8px thickness, 2px gaps and pill caps stay constant at any width (the
+	// viewBox tracks the measured width 1:1). Only this case observes; a fixed
+	// `width` scales uniformly and needs no measure.
+
+	const reflow = stacked && width === undefined;
+	const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
+
+	useEffect(() => {
+		if (!reflow) {
+			setMeasuredWidth(null);
+
+			return;
+		}
+
+		const element = rootRef.current;
+
+		if (!element || typeof ResizeObserver === 'undefined') {
+			return;
+		}
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				const nextWidth = entry.contentRect.width;
+
+				if (nextWidth > 0) {
+					setMeasuredWidth(nextWidth);
+				}
+			}
+		});
+
+		resizeObserver.observe(element);
+
+		return () => resizeObserver.disconnect();
+	}, [reflow]);
+
+	// A given `width` caps the canvas; omitting it falls back to the design
+	// default (non-stacked) or the measured container width (reflowing meter).
+
+	const cappedWidth = width ?? DEFAULT_WIDTH;
+	const effectiveWidth = reflow
+		? measuredWidth ?? DEFAULT_WIDTH
+		: cappedWidth;
 
 	const total = useMemo(
 		() => data.reduce((acc, d) => acc + Math.max(0, d.value), 0),
 		[data]
 	);
 
+	// Stacked segments must always read as distinct hues, so the mode forces
+	// the categorical palette (and its active styling) regardless of `scheme`.
+
+	const effectiveScheme = stacked ? 'categorical' : scheme;
+
 	const palette = useMemo(
 		() =>
-			scheme === 'categorical' ? getCategoricalColors(data.length) : null,
-		[scheme, data.length]
+			effectiveScheme === 'categorical'
+				? getCategoricalColors(data.length)
+				: null,
+		[effectiveScheme, data.length]
 	);
 
 	const colorFor = useCallback(
@@ -70,9 +134,21 @@ export default function BarChart({
 				orientation,
 				rounded,
 				size,
-				width,
+				width: cappedWidth,
 			}),
-		[data, height, orientation, rounded, size, width]
+		[data, height, orientation, rounded, size, cappedWidth]
+	);
+
+	const stackedGeometry = useMemo(
+		() =>
+			getStackedBarChartGeometry({
+				data,
+				height,
+				rounded,
+				size,
+				width: effectiveWidth,
+			}),
+		[data, height, rounded, size, effectiveWidth]
 	);
 
 	const summaryText = useMemo(() => {
@@ -99,7 +175,7 @@ export default function BarChart({
 	);
 
 	const setBarRef = useCallback(
-		(index: number, element: SVGRectElement | null) => {
+		(index: number, element: SVGGraphicsElement | null) => {
 			barRefs.current[index] = element;
 		},
 		[]
@@ -112,7 +188,7 @@ export default function BarChart({
 			className={classNames(
 				'charts-bar-chart',
 				`charts-bar-chart--${orientation}`,
-				`charts-bar-chart--${scheme}`,
+				`charts-bar-chart--${effectiveScheme}`,
 				`charts-bar-chart--legend-${legend}`,
 				`charts-bar-chart--size-${size}`,
 				`charts-bar-chart--align-${alignment}`,
@@ -120,11 +196,13 @@ export default function BarChart({
 					'charts-bar-chart--motion': animated,
 					'charts-bar-chart--no-swatch-border': !legendSwatchBorder,
 					'charts-bar-chart--rounded': rounded,
+					'charts-bar-chart--stacked': stacked,
 					'charts-bar-chart--track': track,
 				},
 				className
 			)}
-			style={{maxWidth: width}}
+			ref={rootRef}
+			style={reflow ? undefined : {maxWidth: cappedWidth}}
 		>
 			<figcaption className="charts-bar-chart__title" id={titleId}>
 				{title}
@@ -134,21 +212,37 @@ export default function BarChart({
 				{summaryText}
 			</p>
 
-			<BarChartPlot
-				data={data}
-				focusIndex={focusIndex}
-				geometry={geometry}
-				height={height}
-				hoverIndex={hoverIndex}
-				onFocus={setFocusIndex}
-				onHover={setHoverIndex}
-				onLeave={deactivate}
-				palette={palette}
-				setBarRef={setBarRef}
-				showAxis={size !== 'inline'}
-				track={track}
-				width={width}
-			/>
+			{stacked ? (
+				<BarChartStackedPlot
+					data={data}
+					focusIndex={focusIndex}
+					geometry={stackedGeometry}
+					height={height}
+					hoverIndex={hoverIndex}
+					onFocus={setFocusIndex}
+					onHover={setHoverIndex}
+					onLeave={deactivate}
+					palette={palette}
+					setBarRef={setBarRef}
+					width={effectiveWidth}
+				/>
+			) : (
+				<BarChartPlot
+					data={data}
+					focusIndex={focusIndex}
+					geometry={geometry}
+					height={height}
+					hoverIndex={hoverIndex}
+					onFocus={setFocusIndex}
+					onHover={setHoverIndex}
+					onLeave={deactivate}
+					palette={palette}
+					setBarRef={setBarRef}
+					showAxis={size !== 'inline'}
+					track={track}
+					width={cappedWidth}
+				/>
+			)}
 
 			<BarChartLegend
 				activeIndex={activeIndex}

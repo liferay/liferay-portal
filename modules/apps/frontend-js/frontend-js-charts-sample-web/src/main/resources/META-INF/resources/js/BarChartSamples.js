@@ -20,6 +20,14 @@ const BAR_DATA = [
 	{label: 'Referral', value: 900},
 ];
 
+const STACKED_DATA = [
+	{description: '17 assets pending', label: 'Pending', value: 17},
+	{description: '12 assets in review', label: 'In review', value: 12},
+	{description: '48 assets approved', label: 'Approved', value: 48},
+	{description: '22 assets published', label: 'Published', value: 22},
+	{description: '6 assets archived', label: 'Archived', value: 6},
+];
+
 export function BarChartSamples() {
 	return (
 		<>
@@ -52,6 +60,18 @@ export function BarChartSamples() {
 					size="inline"
 					title="Sessions by channel"
 					track
+				/>
+			</SampleContainer>
+
+			<SampleContainer label="Inline stacked (segmented meter, list legend)">
+				<BarChart
+					data={STACKED_DATA}
+					height={48}
+					legend="list"
+					rounded
+					size="inline"
+					stacked
+					title="Content progress"
 				/>
 			</SampleContainer>
 

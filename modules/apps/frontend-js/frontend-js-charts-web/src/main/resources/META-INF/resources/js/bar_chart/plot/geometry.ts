@@ -39,8 +39,39 @@ interface Options {
 	width: number;
 }
 
+/** Precomputed SVG coordinates for a single segment of the stacked meter. */
+export interface StackedSegmentLayout {
+	roundLeft: boolean;
+	roundRight: boolean;
+	rowY: number;
+	rx: number;
+	thickness: number;
+	width: number;
+	x: number;
+}
+
+export interface StackedBarChartGeometry {
+	segments: StackedSegmentLayout[];
+}
+
+interface StackedOptions {
+	data: BarDatum[];
+	height: number;
+	rounded: boolean;
+	size: 'default' | 'inline';
+	width: number;
+}
+
 const VERTICAL_PADDING = {bottom: 32, left: 40, right: 16, top: 28};
 const HORIZONTAL_PADDING = {bottom: 24, left: 96, right: 48, top: 16};
+
+// Stacked meters read edge-to-edge, so almost no side padding — the row spans
+// the full measured width. The tooltip is free to overflow the SVG (see the
+// `overflow: visible` rule) so it needs no reserved top room.
+
+const STACKED_PADDING = {bottom: 8, left: 2, right: 2, top: 8};
+
+const STACKED_GAP = 2;
 
 const VALUE_CHAR_WIDTH = 7.5;
 const VALUE_HEIGHT = 18;
@@ -121,4 +152,94 @@ export function getBarChartGeometry({
 		},
 		bars,
 	};
+}
+
+/**
+ * Path for a stacked segment with rounding on selectable sides. `<rect rx>`
+ * rounds all four corners, but a segmented meter reads as a single pill: only
+ * the first segment's left corners and the last segment's right corners should
+ * be rounded — every inner edge stays square. Left/right toggle independently
+ * so a lone segment gets a full pill.
+ */
+export function stackedSegmentPath(
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	r: number,
+	roundLeft: boolean,
+	roundRight: boolean
+): string {
+	const cap = Math.min(r, w / 2, h / 2);
+	const rl = roundLeft ? cap : 0;
+	const rr = roundRight ? cap : 0;
+
+	return [
+		`M ${x + rl} ${y}`,
+		`H ${x + w - rr}`,
+		rr && `A ${rr} ${rr} 0 0 1 ${x + w} ${y + rr}`,
+		`V ${y + h - rr}`,
+		rr && `A ${rr} ${rr} 0 0 1 ${x + w - rr} ${y + h}`,
+		`H ${x + rl}`,
+		rl && `A ${rl} ${rl} 0 0 1 ${x} ${y + h - rl}`,
+		`V ${y + rl}`,
+		rl && `A ${rl} ${rl} 0 0 1 ${x + rl} ${y}`,
+		'Z',
+	]
+		.filter(Boolean)
+		.join(' ');
+}
+
+/**
+ * Turns the chart props into the per-segment coordinates for the stacked meter:
+ * every datum becomes a slice of one horizontal row, sized to its share of the
+ * total, with a fixed gap between adjacent segments and the row centered
+ * vertically in the plot area.
+ */
+export function getStackedBarChartGeometry({
+	data,
+	height,
+	rounded,
+	size,
+	width,
+}: StackedOptions): StackedBarChartGeometry {
+	const pad = STACKED_PADDING;
+
+	const plotWidth = Math.max(0, width - pad.left - pad.right);
+	const plotHeight = Math.max(0, height - pad.top - pad.bottom);
+
+	const thickness = size === 'inline' ? 8 : Math.max(4, plotHeight * 0.6);
+	const rx = rounded ? thickness / 2 : 2;
+
+	const total = data.reduce(
+		(acc, datum) => acc + Math.max(0, datum.value),
+		0
+	);
+
+	const count = data.length;
+	const gapTotal = Math.max(0, (count - 1) * STACKED_GAP);
+	const available = Math.max(0, plotWidth - gapTotal);
+	const rowY = pad.top + (plotHeight - thickness) / 2;
+
+	let cursor = pad.left;
+
+	const segments = data.map((datum, index): StackedSegmentLayout => {
+		const share = total === 0 ? 0 : Math.max(0, datum.value) / total;
+		const segmentWidth = share * available;
+		const x = cursor;
+
+		cursor += segmentWidth + STACKED_GAP;
+
+		return {
+			roundLeft: index === 0,
+			roundRight: index === count - 1,
+			rowY,
+			rx,
+			thickness,
+			width: segmentWidth,
+			x,
+		};
+	});
+
+	return {segments};
 }

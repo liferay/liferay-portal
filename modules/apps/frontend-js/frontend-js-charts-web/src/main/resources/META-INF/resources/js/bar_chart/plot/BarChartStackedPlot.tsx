@@ -5,15 +5,15 @@
 
 import React from 'react';
 
-import BarChartBar from './BarChartBar';
+import BarChartStackedSegment from './BarChartStackedSegment';
 
 import type {BarDatum} from '../types';
-import type {BarChartGeometry} from './geometry';
+import type {StackedBarChartGeometry} from './geometry';
 
 interface Props {
 	data: BarDatum[];
 	focusIndex: number | null;
-	geometry: BarChartGeometry;
+	geometry: StackedBarChartGeometry;
 	height: number;
 	hoverIndex: number | null;
 	onFocus: (index: number) => void;
@@ -21,12 +21,10 @@ interface Props {
 	onLeave: (index: number) => void;
 	palette: string[] | null;
 	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
-	showAxis: boolean;
-	track: boolean;
 	width: number;
 }
 
-export default function BarChartPlot({
+export default function BarChartStackedPlot({
 	data,
 	focusIndex,
 	geometry,
@@ -37,8 +35,6 @@ export default function BarChartPlot({
 	onLeave,
 	palette,
 	setBarRef,
-	showAxis,
-	track,
 	width,
 }: Props) {
 	return (
@@ -48,29 +44,19 @@ export default function BarChartPlot({
 			viewBox={`0 0 ${width} ${height}`}
 			width="100%"
 		>
-			{showAxis && (
-				<line
-					className="charts-bar-chart__axis"
-					x1={geometry.axis.x1}
-					x2={geometry.axis.x2}
-					y1={geometry.axis.y1}
-					y2={geometry.axis.y2}
-				/>
-			)}
-
 			{data.map((datum, index) => (
-				<BarChartBar
+				<BarChartStackedSegment
 					active={focusIndex === index || hoverIndex === index}
 					datum={datum}
 					fill={palette ? palette[index] : null}
 					index={index}
 					key={`${datum.label}-${index}`}
-					layout={geometry.bars[index]}
+					layout={geometry.segments[index]}
 					onFocus={onFocus}
 					onHover={onHover}
 					onLeave={onLeave}
 					setBarRef={setBarRef}
-					track={track}
+					width={width}
 				/>
 			))}
 		</svg>

@@ -88,6 +88,34 @@ describe('BarChart', () => {
 		).toBeInTheDocument();
 	});
 
+	it('lays the stacked meter out as one accessible segment per datum', () => {
+		render(<BarChart data={DATA} stacked title="Monthly visits" />);
+
+		const segments = screen.getAllByRole('img');
+
+		expect(segments).toHaveLength(DATA.length);
+		expect(segments[0]).toHaveAttribute('aria-label', 'Jan: 12');
+	});
+
+	it('forces the categorical scheme and drops the axis when stacked', () => {
+		const {container} = render(
+			<BarChart
+				data={DATA}
+				scheme="blue"
+				stacked
+				title="Monthly visits"
+			/>
+		);
+
+		const figure = screen.getByRole('figure');
+
+		expect(figure).toHaveClass('charts-bar-chart--stacked');
+		expect(figure).toHaveClass('charts-bar-chart--categorical');
+		expect(
+			container.querySelector('.charts-bar-chart__axis')
+		).not.toBeInTheDocument();
+	});
+
 	it('shows the datum share in the list legend by default', () => {
 		render(<BarChart data={DATA} legend="list" title="Monthly visits" />);
 
@@ -149,6 +177,19 @@ describe('BarChart', () => {
 	it('has no accessibility violations', async () => {
 		const {container} = render(
 			<BarChart data={DATA} legend="list" title="Monthly visits" />
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('has no accessibility violations when stacked', async () => {
+		const {container} = render(
+			<BarChart
+				data={DATA}
+				legend="list"
+				stacked
+				title="Monthly visits"
+			/>
 		);
 
 		await checkAccessibility({bestPractices: true, context: container});

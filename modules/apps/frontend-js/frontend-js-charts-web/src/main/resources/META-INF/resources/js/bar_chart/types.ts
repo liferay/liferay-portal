@@ -99,6 +99,16 @@ export interface BarChartProps {
 	 */
 	size?: 'default' | 'inline';
 
+	/**
+	 * Lay every datum out end-to-end in a single horizontal row, each segment
+	 * sized to its share of the total (a segmented meter, not a bar per band).
+	 * Implies a horizontal, single-line layout and always colors segments from
+	 * the categorical palette so they read as distinct. Pairs naturally with
+	 * `size="inline"` and `rounded`. On hover / focus a segment surfaces a dark
+	 * tooltip with its label and value (or its `description`). Off by default.
+	 */
+	stacked?: boolean;
+
 	/** Accessible name for the chart as a whole. */
 	title: string;
 

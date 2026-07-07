@@ -99,6 +99,28 @@
 		}
 	}
 
+	// Stacked segmented meter (stacked={true}): a single horizontal row split
+	// into per-datum segments. The dark tooltip surfaces the segment's
+	// label/value on hover or focus, floating above the row.
+
+	&--stacked svg {
+		overflow: visible;
+	}
+
+	&__tip {
+		pointer-events: none;
+	}
+
+	&__tip-bg {
+		fill: $dark;
+	}
+
+	&__tip-text {
+		fill: $white;
+		font-size: 0.8125rem;
+		font-weight: 400;
+	}
+
 	// Alignment: place the capped chart block within its container. `start`
 	// (default) needs no rule — block flow keeps it flush-left, matching the
 	// other charts.
@@ -135,6 +157,14 @@
 		}
 
 		&.charts-bar-chart--horizontal .charts-bar-chart__bar {
+			animation-name: charts-bar-grow-x;
+			transform-origin: left center;
+		}
+
+		// Stacked is always a horizontal row regardless of `orientation`, so
+		// each segment grows from its left edge, not up from the axis.
+
+		&.charts-bar-chart--stacked .charts-bar-chart__bar {
 			animation-name: charts-bar-grow-x;
 			transform-origin: left center;
 		}
