@@ -272,7 +272,6 @@ spec:
                         kind: AccessKey
                         metadata:
                             annotations:
-                                crossplane.io/external-name: {{ $overlayBucketName }}-ci-uploader-access-key
                                 gotemplating.fn.crossplane.io/composition-resource-name: overlay-ci-uploader-access-key
                             name: {{ $overlayBucketName }}-ci-uploader
                             namespace: {{ $namespace }}
