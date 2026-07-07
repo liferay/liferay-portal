@@ -10,7 +10,6 @@ import com.liferay.headless.admin.server.resource.v1_0.DatabaseSchemaExportResou
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExportResult;
 import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExporter;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -42,7 +41,6 @@ public class DatabaseSchemaExportResourceImpl
 			DatabaseSchemaExport databaseSchemaExport)
 		throws Exception {
 
-		_checkFeatureFlag();
 		_checkPermission();
 
 		String exportFilesPath = databaseSchemaExport.getExportFilesPath();
@@ -85,14 +83,6 @@ public class DatabaseSchemaExportResourceImpl
 		}
 
 		return resultDatabaseSchemaExport;
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-23840")) {
-
-			throw new UnsupportedOperationException();
-		}
 	}
 
 	private void _checkPermission() {

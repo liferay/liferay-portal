@@ -11,7 +11,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -97,13 +96,6 @@ public class ServerDisplayContext {
 		return new NavigationItemList() {
 			{
 				for (String tabs1Name : _TABS1_NAMES) {
-					if (tabs1Name.equals("database-migration") &&
-						!FeatureFlagManagerUtil.isEnabled(
-							themeDisplay.getCompanyId(), "LPD-23840")) {
-
-						continue;
-					}
-
 					add(
 						navigationItem -> {
 							navigationItem.setActive(tabs1.equals(tabs1Name));

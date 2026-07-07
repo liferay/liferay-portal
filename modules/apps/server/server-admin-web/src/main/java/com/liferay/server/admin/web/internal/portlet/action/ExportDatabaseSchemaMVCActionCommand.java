@@ -7,7 +7,6 @@ package com.liferay.server.admin.web.internal.portlet.action;
 
 import com.liferay.captcha.util.CaptchaUtil;
 import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExporter;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -54,12 +53,6 @@ public class ExportDatabaseSchemaMVCActionCommand extends BaseMVCActionCommand {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-23840")) {
-
-			return;
-		}
 
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
