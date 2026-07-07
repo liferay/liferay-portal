@@ -124,7 +124,7 @@ public abstract class BaseAMImageConfigurationTestCase {
 		return uuids;
 	}
 
-	private Set<String> _initialAMImageConfigurationEntryUuids;
+	private Set<String> _initialAMImageConfigurationEntryUUIDs;
 
 	@Inject
 	private MessageBus _messageBus;
