@@ -14,9 +14,10 @@ import java.util.List;
 public class AudiencesCriteriaType {
 
 	public AudiencesCriteriaType(
-		List<AudiencesCriteria> audiencesCriterias, String label) {
+		List<AudiencesCriteria> audiencesCriterias, String key, String label) {
 
 		_audiencesCriterias = Collections.unmodifiableList(audiencesCriterias);
+		_key = key;
 		_label = label;
 	}
 
@@ -24,11 +25,16 @@ public class AudiencesCriteriaType {
 		return _audiencesCriterias;
 	}
 
+	public String getKey() {
+		return _key;
+	}
+
 	public String getLabel() {
 		return _label;
 	}
 
 	private final List<AudiencesCriteria> _audiencesCriterias;
+	private final String _key;
 	private final String _label;
 
 }

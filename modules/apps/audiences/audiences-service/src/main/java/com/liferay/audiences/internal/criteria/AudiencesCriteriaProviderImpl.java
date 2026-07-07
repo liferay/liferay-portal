@@ -6,6 +6,7 @@
 package com.liferay.audiences.internal.criteria;
 
 import com.liferay.audiences.constants.AudiencesCriteriaKeys;
+import com.liferay.audiences.constants.AudiencesCriteriaTypeKeys;
 import com.liferay.audiences.criteria.AudiencesCriteria;
 import com.liferay.audiences.criteria.AudiencesCriteriaBuilder;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
@@ -236,7 +237,9 @@ public class AudiencesCriteriaProviderImpl
 				).setType(
 					AudiencesCriteria.Type.STRING
 				).build()),
-			_language.get(locale, "browser-attributes"));
+			AudiencesCriteriaTypeKeys.BROWSER_ATTRIBUTES,
+			_language.get(
+				locale, AudiencesCriteriaTypeKeys.BROWSER_ATTRIBUTES));
 	}
 
 	private AudiencesCriteriaType _getCustomAudiencesCriteriaType(
@@ -289,7 +292,8 @@ public class AudiencesCriteriaProviderImpl
 			}
 
 			return new AudiencesCriteriaType(
-				audiencesCriterias, _language.get(locale, "custom"));
+				audiencesCriterias, AudiencesCriteriaTypeKeys.CUSTOM,
+				_language.get(locale, AudiencesCriteriaTypeKeys.CUSTOM));
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -329,7 +333,8 @@ public class AudiencesCriteriaProviderImpl
 				).setType(
 					AudiencesCriteria.Type.STRING
 				).build()),
-			_language.get(locale, "general"));
+			AudiencesCriteriaTypeKeys.GENERAL,
+			_language.get(locale, AudiencesCriteriaTypeKeys.GENERAL));
 	}
 
 	private AudiencesCriteria.InputType _getInputType(
