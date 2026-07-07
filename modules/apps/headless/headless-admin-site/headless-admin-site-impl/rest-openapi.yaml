@@ -4912,6 +4912,253 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/design-libraries/{designLibraryExternalReferenceCode}/style-books":
+        get:
+            # @review
+            description:
+                Retrieves the style books of a design library.
+            operationId: getDesignLibraryStyleBooksPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: aggregationTerms
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/StyleBook"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/StyleBook"
+                                type: array
+            tags: ["StyleBook"]
+        post:
+            # @review
+            description:
+                Adds a new style book to a design library.
+            operationId: postDesignLibraryStyleBook
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+            # @review
+            tags: ["StyleBook"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes a specific style book of a design library.
+            operationId: deleteDesignLibraryStyleBook
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: styleBookExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["StyleBook"]
+        get:
+            # @review
+            description:
+                Retrieves a specific style book of a design library.
+            operationId: getDesignLibraryStyleBook
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: styleBookExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+            tags: ["StyleBook"]
+        patch:
+            # @review
+            description:
+                Updates only the fields received in the request body, leaving any other fields untouched.
+            operationId: patchDesignLibraryStyleBook
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: styleBookExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+            tags: ["StyleBook"]
+        put:
+            # @review
+            description:
+                Updates the style book with the given external reference code, or creates it if it does not exist.
+            operationId: putDesignLibraryStyleBook
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: styleBookExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/StyleBook"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+            tags: ["StyleBook"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders":
         get:
             # @review
