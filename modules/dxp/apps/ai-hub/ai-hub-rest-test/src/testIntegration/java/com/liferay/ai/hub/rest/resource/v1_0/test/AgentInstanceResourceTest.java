@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -305,11 +306,13 @@ public class AgentInstanceResourceTest
 						TestPropsValues.getCompanyId(),
 						VertexAIConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"location", TestPropsValues.VERTEX_AI_LOCATION
+							"location", TestPropsUtil.get("vertex.ai.location")
 						).put(
-							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+							"modelName",
+							TestPropsUtil.get("vertex.ai.model.name")
 						).put(
-							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+							"projectId",
+							TestPropsUtil.get("vertex.ai.project.id")
 						).build())) {
 
 			_testPostAgentInstance();

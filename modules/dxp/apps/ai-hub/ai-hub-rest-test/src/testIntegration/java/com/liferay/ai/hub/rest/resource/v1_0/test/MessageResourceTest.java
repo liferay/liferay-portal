@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -138,11 +139,13 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 						TestPropsValues.getCompanyId(),
 						VertexAIConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"location", TestPropsValues.VERTEX_AI_LOCATION
+							"location", TestPropsUtil.get("vertex.ai.location")
 						).put(
-							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+							"modelName",
+							TestPropsUtil.get("vertex.ai.model.name")
 						).put(
-							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+							"projectId",
+							TestPropsUtil.get("vertex.ai.project.id")
 						).build())) {
 
 			CountDownLatch countDownLatch1 = new CountDownLatch(4);
@@ -253,11 +256,13 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 						TestPropsValues.getCompanyId(),
 						VertexAIConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"location", TestPropsValues.VERTEX_AI_LOCATION
+							"location", TestPropsUtil.get("vertex.ai.location")
 						).put(
-							"modelName", TestPropsValues.VERTEX_AI_MODEL_NAME
+							"modelName",
+							TestPropsUtil.get("vertex.ai.model.name")
 						).put(
-							"projectId", TestPropsValues.VERTEX_AI_PROJECT_ID
+							"projectId",
+							TestPropsUtil.get("vertex.ai.project.id")
 						).build())) {
 
 			CountDownLatch countDownLatch1 = new CountDownLatch(4);
