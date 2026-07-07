@@ -178,6 +178,10 @@ export class AssetsPage {
 		await this.dataSetFragmentPage.expectBulkItemActionHidden({action});
 	}
 
+	async expectItemActionHidden(action: string, filter: string) {
+		await this.dataSetFragmentPage.expectItemActionHidden({action, filter});
+	}
+
 	async bulkCopyTo(args: CopyOrMoveDestinationArgs) {
 		await this.page
 			.getByRole('button', {exact: true, name: 'Copy To'})
