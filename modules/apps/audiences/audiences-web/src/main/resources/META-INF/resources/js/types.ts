@@ -19,6 +19,7 @@ export interface AudiencesCriteriaRulesGroup {
 
 export interface AudiencesCriteriaType {
 	audiencesCriterias: AudiencesCriteria[];
+	key: string;
 	label: string;
 }
 

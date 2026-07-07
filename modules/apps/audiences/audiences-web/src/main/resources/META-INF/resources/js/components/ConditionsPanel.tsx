@@ -10,7 +10,10 @@ import classNames from 'classnames';
 import React, {Dispatch, Fragment} from 'react';
 import {useDrop} from 'react-dnd';
 
-import {CATEGORY_ICON_COLORS} from '../constants/categoryIconColors';
+import {
+	CATEGORY_ICON_COLORS,
+	DEFAULT_ICON_COLOR,
+} from '../constants/categoryIconColors';
 import {DRAG_TYPES} from '../constants/dragTypes';
 import {Action} from '../reducer';
 import {AudiencesCriteria, AudiencesCriteriaType, Rule} from '../types';
@@ -47,11 +50,12 @@ export default function ConditionsPanel({
 		);
 
 	const iconColorsByKey: Record<string, string> = Object.fromEntries(
-		audiencesCriteriaTypes.flatMap((audiencesCriteriaType, index) =>
+		audiencesCriteriaTypes.flatMap((audiencesCriteriaType) =>
 			audiencesCriteriaType.audiencesCriterias.map(
 				(audiencesCriteria) => [
 					audiencesCriteria.key,
-					CATEGORY_ICON_COLORS[index] ?? CATEGORY_ICON_COLORS[0],
+					CATEGORY_ICON_COLORS[audiencesCriteriaType.key] ??
+						DEFAULT_ICON_COLOR,
 				]
 			)
 		)

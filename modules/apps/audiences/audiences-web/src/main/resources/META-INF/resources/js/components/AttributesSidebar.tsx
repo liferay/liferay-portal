@@ -8,7 +8,10 @@ import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import {SearchForm} from '@liferay/layout-js-components-web';
 import React, {useState} from 'react';
 
-import {CATEGORY_ICON_COLORS} from '../constants/categoryIconColors';
+import {
+	CATEGORY_ICON_COLORS,
+	DEFAULT_ICON_COLOR,
+} from '../constants/categoryIconColors';
 import {AudiencesCriteriaType} from '../types';
 import AttributeListItem from './AttributeListItem';
 
@@ -21,6 +24,8 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 	const [query, setQuery] = useState('');
 
 	const normalizedQuery = query.trim().toLowerCase();
+
+	const selectedKey = audiencesCriteriaTypes[selectedIndex]?.key ?? '';
 
 	const audiencesCriterias =
 		audiencesCriteriaTypes[selectedIndex]?.audiencesCriterias?.filter(
@@ -64,8 +69,8 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 						<AttributeListItem
 							audiencesCriteria={audiencesCriteria}
 							iconColor={
-								CATEGORY_ICON_COLORS[selectedIndex] ??
-								CATEGORY_ICON_COLORS[0]
+								CATEGORY_ICON_COLORS[selectedKey] ??
+								DEFAULT_ICON_COLOR
 							}
 							key={audiencesCriteria.key}
 						/>
