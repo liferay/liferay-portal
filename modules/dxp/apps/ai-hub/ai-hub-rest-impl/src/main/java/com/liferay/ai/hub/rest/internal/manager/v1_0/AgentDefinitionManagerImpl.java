@@ -75,13 +75,13 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 			companyId, dtoConverterContext, externalReferenceCode,
 			_getObjectDefinition(companyId), null);
 
-		String workflowDefinitionName = GetterUtil.getString(
-			objectEntry.getPropertyValue("workflowDefinitionName"));
-
 		_objectEntryManager.deleteObjectEntry(
 			companyId, dtoConverterContext,
 			objectEntry.getExternalReferenceCode(),
 			_getObjectDefinition(companyId), null);
+
+		String workflowDefinitionName = GetterUtil.getString(
+			objectEntry.getPropertyValue("workflowDefinitionName"));
 
 		if (_hasAgentDefinitionWithWorkflowDefinitionName(
 				companyId, dtoConverterContext, workflowDefinitionName)) {
@@ -294,9 +294,7 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 		throws Exception {
 
 		AccountEntry accountEntry = _getUserAccountEntry(dtoConverterContext);
-
 		String workflowDefinitionContent = _getWorkflowDefinitionContent();
-
 		String workflowDefinitionName = PortalUUIDUtil.generate();
 
 		WorkflowDefinition workflowDefinition =
@@ -414,11 +412,11 @@ public class AgentDefinitionManagerImpl implements AgentDefinitionManager {
 
 		Locale locale = dtoConverterContext.getLocale();
 
-		com.liferay.object.rest.dto.v1_0.Status status =
+		com.liferay.object.rest.dto.v1_0.Status dtoStatus =
 			objectEntry.getStatus();
 
-		if ((status != null) &&
-			(status.getCode() == WorkflowConstants.STATUS_DRAFT)) {
+		if ((dtoStatus != null) &&
+			(dtoStatus.getCode() == WorkflowConstants.STATUS_DRAFT)) {
 
 			return _toStatus("draft", locale);
 		}
