@@ -216,8 +216,9 @@ export default function ContentEditorToolbar({
 				<>
 					<Toolbar.Item>
 						<AIAssistantChat
-							getContext={() => ({})}
+							hideTriggerLabel
 							instructionDefinitionScope="cms"
+							triggerRound
 						/>
 					</Toolbar.Item>
 

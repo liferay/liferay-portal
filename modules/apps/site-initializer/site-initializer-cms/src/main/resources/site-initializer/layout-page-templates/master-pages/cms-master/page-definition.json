@@ -118,6 +118,29 @@
 											}
 										],
 										"type": "FragmentDropZone"
+									},
+									{
+										"definition": {
+											"fragmentDropZoneId": "aiAssistant"
+										},
+										"id": "1df5fa1b-ebb8-45d4-99f8-9ed204ccf341",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.AIAssistantIconComponentSectionFragmentRenderer"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "00a73886-650d-429d-af1a-6dc596a83151",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
 									}
 								],
 								"type": "Fragment"

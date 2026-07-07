@@ -9,6 +9,7 @@ import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import classNames from 'classnames';
 import {EventSource} from 'eventsource';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -49,19 +50,27 @@ type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
 interface AIAssistantChatProps {
 	aiState?: AIState;
 	embedded?: boolean;
-	getContext: () => ChatContext;
+	getContext?: () => ChatContext;
+	hideTriggerLabel?: boolean;
 	initialMessage?: string;
 	instructionDefinitionScope: string;
 	quickActions?: string[];
+	triggerClassName?: string;
+	triggerLabel?: string;
+	triggerRound?: boolean;
 }
 
 const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	aiState,
 	embedded = false,
-	getContext,
+	getContext = () => ({}),
+	hideTriggerLabel = false,
 	initialMessage,
 	instructionDefinitionScope,
 	quickActions,
+	triggerRound = true,
+	triggerClassName,
+	triggerLabel = Liferay.Language.get('ai-assistant'),
 }) => {
 	const [active, setActive] = useState<boolean>(false);
 	const [feedbackGiven, setFeedbackGiven] = useState<Record<number, boolean>>(
@@ -516,21 +525,29 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 			onActiveChange={setActive}
 			trigger={
 				<ClayButton
-					aria-label={Liferay.Language.get('ai-assistant')}
+					aria-label={triggerLabel}
 					borderless
-					className="text-primary"
+					className={classNames(
+						'ai-assistant-chat__trigger',
+						triggerClassName
+					)}
 					displayType="secondary"
+					monospaced={triggerRound && hideTriggerLabel}
 					ref={triggerRef}
+					rounded={triggerRound}
 				>
 					<ClayIcon
-						className="mr-2"
 						height={16}
 						spritemap={Liferay.Icons.spritemap}
 						symbol="stars"
 						width={16}
 					/>
 
-					{Liferay.Language.get('ai-assistant')}
+					{!hideTriggerLabel && (
+						<span className="ai-assistant-chat__trigger-label ml-2">
+							{triggerLabel}
+						</span>
+					)}
 				</ClayButton>
 			}
 		>
