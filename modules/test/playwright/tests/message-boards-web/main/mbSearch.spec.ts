@@ -4,6 +4,7 @@
  */
 
 import {Page, expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -77,6 +78,34 @@ test('Can search for a thread by its category', async ({
 		site,
 		layout,
 		categoryName,
+		threadSubject
+	);
+});
+
+test('Can search for a thread by its attachment content', async ({
+	messageBoardsEditThreadPage,
+	messageBoardsWidgetPage,
+	page,
+	site,
+}) => {
+	const threadSubject = getRandomString();
+
+	// The attachment carries the text "This is a *.doc file."
+
+	await messageBoardsEditThreadPage.gotoAndPublishNewBasicThread(
+		threadSubject,
+		getRandomString(),
+		site.friendlyUrlPath,
+		path.join(__dirname, '/dependencies/Document_1.doc')
+	);
+
+	const layout = await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+	await expectThreadFoundBySearch(
+		page,
+		site,
+		layout,
+		'doc file',
 		threadSubject
 	);
 });

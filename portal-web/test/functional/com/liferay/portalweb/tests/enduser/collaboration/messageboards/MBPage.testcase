@@ -45,43 +45,6 @@ definition {
 
 	@priority = 3
 	@refactordone
-	test CanSearchForAttachment {
-		property portal.acceptance = "false";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Message Boards Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Message Boards Page",
-			widgetName = "Message Boards");
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		JSONMBMessage.addAttachmentToMessage(
-			fileName = "Document_1.doc",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			threadSubject = "MB Thread Message Subject");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		Search.searchPG(
-			portletName = "Message Boards",
-			searchTerm = "This is a *.doc file.");
-
-		MessageboardsPortlet.viewSearchResultPG(
-			mbThreadAttachment = "Document_1.doc",
-			threadSubject = "MB Thread Message Subject");
-	}
-
-	@priority = 3
-	@refactordone
 	test CanViewMBThreadReplyViaMoreMessages {
 		property custom.properties = "discussion.comments.delta.value=5";
 		property portal.acceptance = "false";
