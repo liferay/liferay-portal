@@ -109,11 +109,7 @@ public class ModulesBatchBuildTestrayCaseResult
 			errorMessage = buildReport.getFailureMessage();
 		}
 
-		if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-			return "Failed for unknown reason";
-		}
-
-		errorMessage = errorMessage.trim();
+		errorMessage = formatErrorMessage(errorMessage);
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
 			return "Failed for unknown reason";

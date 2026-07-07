@@ -94,7 +94,8 @@ public class PlaywrightBatchBuildTestrayCaseResult
 				errors = "Unable to run test on CI";
 			}
 
-			String failureMessage = buildReport.getFailureMessage();
+			String failureMessage = formatErrorMessage(
+				buildReport.getFailureMessage());
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(failureMessage)) {
 				return errors;
@@ -136,11 +137,7 @@ public class PlaywrightBatchBuildTestrayCaseResult
 			return stackTrace.substring(index, 500);
 		}
 
-		if (errors.contains("\n")) {
-			errors = errors.substring(0, errors.indexOf("\n"));
-		}
-
-		errors = errors.trim();
+		errors = formatErrorMessage(errors);
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
 			return "Failed for unknown reason";

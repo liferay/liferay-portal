@@ -113,16 +113,7 @@ public class JUnitBatchBuildTestrayCaseResult
 				errorMessage = null; //buildReport.getFailureMessage();
 			}
 
-			if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-				errorMessage = "Failed for unknown reason";
-			}
-
-			if (errorMessage.contains("\n")) {
-				errorMessage = errorMessage.substring(
-					0, errorMessage.indexOf("\n"));
-			}
-
-			errorMessage = errorMessage.trim();
+			errorMessage = formatErrorMessage(errorMessage);
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
 				errorMessage = "Failed for unknown reason";
