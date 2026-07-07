@@ -411,6 +411,10 @@ public class Test {
 		errorCollector.checkThat(actual, CoreMatchers.equalTo(expected));
 	}
 
+	protected void testSame(Object expected, Object actual) {
+		errorCollector.checkThat(actual, CoreMatchers.sameInstance(expected));
+	}
+
 	protected String toURLString(File file) throws Exception {
 		URI uri = file.toURI();
 
