@@ -7,11 +7,11 @@ package com.liferay.document.library.internal.configuration.persistence.listener
 
 import com.liferay.document.library.configuration.DLFileEntryConfigurationProvider;
 import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
-import com.liferay.document.library.internal.util.DLFileEntryConfigurationModelListenerThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -187,10 +187,10 @@ public class DLFileEntryConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testOnBeforeSaveWithValidationDisabled() throws Exception {
+	public void testOnBeforeSaveWithUpgradingPortalInstance() throws Exception {
 		try (SafeCloseable safeCloseable =
-				DLFileEntryConfigurationModelListenerThreadLocal.
-					setValidationEnabledWithSafeCloseable(false)) {
+				CompanyThreadLocal.setUpgradingPortalInstanceWithSafeCloseable(
+					true)) {
 
 			_dlFileEntryConfigurationModelListener.onBeforeSave(
 				RandomTestUtil.randomString(),

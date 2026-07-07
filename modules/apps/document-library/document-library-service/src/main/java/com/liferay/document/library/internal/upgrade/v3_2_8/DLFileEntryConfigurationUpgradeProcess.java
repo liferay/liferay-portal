@@ -6,8 +6,6 @@
 package com.liferay.document.library.internal.upgrade.v3_2_8;
 
 import com.liferay.document.library.internal.upgrade.helper.DLConfigurationUpgradeHelper;
-import com.liferay.document.library.internal.util.DLFileEntryConfigurationModelListenerThreadLocal;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
 /**
@@ -23,25 +21,19 @@ public class DLFileEntryConfigurationUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try (SafeCloseable safeCloseable =
-				DLFileEntryConfigurationModelListenerThreadLocal.
-					setValidationEnabledWithSafeCloseable(false)) {
-
-			long systemPreviewableProcessorMaxSize =
-				_dlConfigurationUpgradeHelper.
-					getDLFileEntryConfigurationPreviewableProcessorMaxSize();
-
+		long systemPreviewableProcessorMaxSize =
 			_dlConfigurationUpgradeHelper.
-				updateDLFileEntryConfigurationSystemConfiguration(
-					systemPreviewableProcessorMaxSize);
+				getDLFileEntryConfigurationPreviewableProcessorMaxSize();
 
-			_dlConfigurationUpgradeHelper.updateScopedConfigurations(
+		_dlConfigurationUpgradeHelper.
+			updateDLFileEntryConfigurationSystemConfiguration(
 				systemPreviewableProcessorMaxSize);
 
-			_dlConfigurationUpgradeHelper.deleteConfigurations(
-				DLConfigurationUpgradeHelper.
-					CLASS_NAME_PDF_PREVIEW_CONFIGURATION);
-		}
+		_dlConfigurationUpgradeHelper.updateScopedConfigurations(
+			systemPreviewableProcessorMaxSize);
+
+		_dlConfigurationUpgradeHelper.deleteConfigurations(
+			DLConfigurationUpgradeHelper.CLASS_NAME_PDF_PREVIEW_CONFIGURATION);
 	}
 
 	private final DLConfigurationUpgradeHelper _dlConfigurationUpgradeHelper;
