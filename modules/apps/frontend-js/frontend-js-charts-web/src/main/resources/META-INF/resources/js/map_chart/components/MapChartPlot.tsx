@@ -3,22 +3,26 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef} from 'react';
 
+import {MARKER_RADIUS} from '../constants';
 import {WORLD_MAP_DATA, WORLD_MAP_VIEW_BOX} from '../geography/mapChartData';
+import {useElementWidth} from '../hooks/useElementWidth';
 import {MapDatum} from '../types/MapDatum';
+import {computeDataBoundingBox} from '../utils/computeDataBoundingBox';
+import {computeMarkerHitRadius} from '../utils/computeMarkerHitRadius';
+import {computeMarkerRadius} from '../utils/computeMarkerRadius';
 import {getMatchedDataIndices} from '../utils/getMatchedDataIndices';
+import {getViewBoxWidth} from '../utils/getViewBoxWidth';
 import MapChartCountryFill from './MapChartCountryFill';
 import MapChartCountryFocus from './MapChartCountryFocus';
 import MapChartCountryOutline from './MapChartCountryOutline';
 import MapChartMarker from './MapChartMarker';
+import MapChartMarkerOverlay from './MapChartMarkerOverlay';
 
 const WORLD_MAP_ENTRIES = Object.entries(WORLD_MAP_DATA);
-const MARKER_RADIUS = 6;
-const MARKER_OVERLAY_RADIUS = 7.5;
-const MARKER_FOCUS_RING_OUTER_RADIUS = 10.5;
-const MARKER_FOCUS_RING_INNER_RADIUS = 8.5;
 const STAGGER_DELAY_MS = 20;
+const WORLD_VIEW_BOX_WIDTH = getViewBoxWidth(WORLD_MAP_VIEW_BOX);
 
 function getStaggerDelayMs(dataIndex: number, validIndices: number[]): number {
 	return validIndices.indexOf(dataIndex) * STAGGER_DELAY_MS;
@@ -35,11 +39,34 @@ function getValidFocusIndex(
 	return focusIndex;
 }
 
+function getViewBox(fit: 'data' | 'world', data: MapDatum[]): string {
+	if (fit === 'world') {
+		return WORLD_MAP_VIEW_BOX;
+	}
+
+	const boundingBox = computeDataBoundingBox(data);
+
+	return `${boundingBox.minX} ${boundingBox.minY} ${boundingBox.width} ${boundingBox.height}`;
+}
+
+function getMarkerRadius(fit: 'data' | 'world', viewBoxWidth: number): number {
+	if (fit === 'world') {
+		return MARKER_RADIUS;
+	}
+
+	return computeMarkerRadius(
+		MARKER_RADIUS,
+		viewBoxWidth,
+		WORLD_VIEW_BOX_WIDTH
+	);
+}
+
 interface MapChartPlotProps {
 	activeIndex: number | null;
 	baseId: string;
 	colors: string[];
 	data: MapDatum[];
+	fit: 'data' | 'world';
 	focusIndex: number | null;
 	focusableIndex: number | null;
 	itemRefFactory: (
@@ -59,6 +86,7 @@ export default function MapChartPlot({
 	baseId,
 	colors,
 	data,
+	fit,
 	focusIndex,
 	focusableIndex,
 	itemRefFactory,
@@ -70,7 +98,27 @@ export default function MapChartPlot({
 	titleId,
 	variant,
 }: MapChartPlotProps) {
+	const svgRef = useRef<SVGSVGElement>(null);
+	const renderedWidthPx = useElementWidth(svgRef);
+
 	const validIndices = useMemo(() => getMatchedDataIndices(data), [data]);
+
+	const viewBox = useMemo(() => getViewBox(fit, data), [fit, data]);
+
+	const viewBoxWidth = useMemo(() => getViewBoxWidth(viewBox), [viewBox]);
+
+	const markerRadius = useMemo(
+		() => getMarkerRadius(fit, viewBoxWidth),
+		[fit, viewBoxWidth]
+	);
+
+	const markerScale = markerRadius / MARKER_RADIUS;
+
+	const markerHitRadius = useMemo(
+		() =>
+			computeMarkerHitRadius(markerRadius, renderedWidthPx, viewBoxWidth),
+		[markerRadius, renderedWidthPx, viewBoxWidth]
+	);
 
 	const dataIndexByCountry = useMemo(
 		() =>
@@ -129,7 +177,8 @@ export default function MapChartPlot({
 			aria-labelledby={titleId}
 			className="chart-map-svg"
 			preserveAspectRatio="xMidYMid meet"
-			viewBox={WORLD_MAP_VIEW_BOX}
+			ref={svgRef}
+			viewBox={viewBox}
 		>
 			{WORLD_MAP_ENTRIES.map(([countryCode, country]) => {
 				const dataIndex = dataIndexByCountry.get(countryCode);
@@ -177,6 +226,7 @@ export default function MapChartPlot({
 							color={colors[index]}
 							datum={data[index]}
 							delayMs={getStaggerDelayMs(index, validIndices)}
+							hitRadius={markerHitRadius}
 							index={index}
 							isActive={index === activeIndex}
 							isFocusable={focusableIndex === index}
@@ -186,28 +236,19 @@ export default function MapChartPlot({
 							onHover={onHover}
 							onHoverEnd={onHoverEnd}
 							onKeyDown={onKeyDown}
-							radius={MARKER_RADIUS}
+							radius={markerRadius}
 							ref={itemRefFactory(index)}
 						/>
 					))
 				: null}
 
 			{activeMarker ? (
-				<g aria-hidden="true" pointerEvents="none">
-					<circle
-						className="chart-map-marker-focus-ring-outer"
-						cx={focusedMarkerCentroid[0]}
-						cy={focusedMarkerCentroid[1]}
-						r={MARKER_FOCUS_RING_OUTER_RADIUS}
-					/>
-
-					<circle
-						className="chart-map-marker-focus-ring-inner"
-						cx={focusedMarkerCentroid[0]}
-						cy={focusedMarkerCentroid[1]}
-						r={MARKER_FOCUS_RING_INNER_RADIUS}
-					/>
-				</g>
+				<MapChartMarkerOverlay
+					centroid={activeMarker.centroid}
+					color={activeMarker.color}
+					focused={activeMarker.focused}
+					markerScale={markerScale}
+				/>
 			) : null}
 		</svg>
 	);

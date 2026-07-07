@@ -34,6 +34,7 @@ function getSchemeColor(
 
 export default function MapChart({
 	data,
+	fit = 'world',
 	legend = 'none',
 	scheme = 'blue',
 	steps = 5,
@@ -143,6 +144,7 @@ export default function MapChart({
 					baseId={baseId}
 					colors={colors}
 					data={data}
+					fit={fit}
 					focusIndex={focusIndex}
 					focusableIndex={focusableIndex}
 					itemRefFactory={itemRefFactory}

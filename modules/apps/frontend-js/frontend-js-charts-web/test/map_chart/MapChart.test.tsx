@@ -12,7 +12,10 @@ import '@testing-library/jest-dom';
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 
 import MapChart from '../../src/main/resources/META-INF/resources/js/map_chart/MapChart';
-import {WORLD_MAP_DATA} from '../../src/main/resources/META-INF/resources/js/map_chart/geography/mapChartData';
+import {
+	WORLD_MAP_DATA,
+	WORLD_MAP_VIEW_BOX,
+} from '../../src/main/resources/META-INF/resources/js/map_chart/geography/mapChartData';
 import {MapDatum} from '../../src/main/resources/META-INF/resources/js/map_chart/types/MapDatum';
 import {getBlueSchemeColor} from '../../src/main/resources/META-INF/resources/js/map_chart/utils/blueSchemeColors';
 import {getCategoricalSchemeColor} from '../../src/main/resources/META-INF/resources/js/map_chart/utils/categoricalSchemeColors';
@@ -93,7 +96,7 @@ describe('MapChart', () => {
 
 		DATA.forEach((datum, index) => {
 			const marker = container.querySelector(
-				`circle[aria-label="${datum.label}: ${datum.value}"]`
+				`circle.chart-map-marker[data-country="${datum.country}"]`
 			) as SVGCircleElement;
 
 			expect(marker.style.getPropertyValue('--marker-fill')).toBe(
@@ -112,7 +115,7 @@ describe('MapChart', () => {
 
 		DATA.forEach((datum, index) => {
 			const marker = container.querySelector(
-				`circle[aria-label="${datum.label}: ${datum.value}"]`
+				`circle.chart-map-marker[data-country="${datum.country}"]`
 			) as SVGCircleElement;
 
 			expect(marker.style.getPropertyValue('--marker-fill')).toBe(
@@ -131,7 +134,7 @@ describe('MapChart', () => {
 		expect(bucketCount).toBe(3);
 
 		const marker = container.querySelector(
-			'circle[aria-label="China: 14210"]'
+			'circle.chart-map-marker[data-country="CN"]'
 		) as SVGCircleElement;
 
 		expect(marker.style.getPropertyValue('--marker-fill')).toBe(
@@ -151,6 +154,108 @@ describe('MapChart', () => {
 		const {container} = render(<MapChart data={DATA} title="Population" />);
 
 		await checkAccessibility({bestPractices: true, context: container});
+	});
+});
+
+describe('MapChart fit prop', () => {
+	const EUROPE_DATA: MapDatum[] = [
+		{country: 'FR', label: 'France', value: 40},
+		{country: 'DE', label: 'Germany', value: 10},
+	];
+
+	function parseViewBox(viewBox: string): {
+		height: number;
+		minX: number;
+		minY: number;
+		width: number;
+	} {
+		const [minX, minY, width, height] = viewBox.split(' ').map(Number);
+
+		return {height, minX, minY, width};
+	}
+
+	it('renders the full world viewBox by default', () => {
+		const {container} = render(
+			<MapChart data={EUROPE_DATA} title="Population" />
+		);
+
+		expect(container.querySelector('svg')).toHaveAttribute(
+			'viewBox',
+			WORLD_MAP_VIEW_BOX
+		);
+	});
+
+	it('crops the viewBox to the data bounding box when fit is data', () => {
+		const {container} = render(
+			<MapChart data={EUROPE_DATA} fit="data" title="Population" />
+		);
+
+		const world = parseViewBox(WORLD_MAP_VIEW_BOX);
+		const cropped = parseViewBox(
+			container.querySelector('svg')?.getAttribute('viewBox') ?? ''
+		);
+
+		expect(cropped.width).toBeLessThan(world.width);
+		expect(cropped.height).toBeLessThan(world.height);
+	});
+
+	it('keeps the base marker radius when fit is world', () => {
+		const {container} = render(
+			<MapChart data={EUROPE_DATA} title="Population" />
+		);
+
+		const marker = container.querySelector(
+			'circle.chart-map-marker[data-country="FR"]'
+		) as SVGCircleElement;
+
+		expect(marker).toHaveAttribute('r', '6');
+	});
+
+	it('counter-scales the marker radius by the crop factor when fit is data', () => {
+		const {container} = render(
+			<MapChart data={EUROPE_DATA} fit="data" title="Population" />
+		);
+
+		const world = parseViewBox(WORLD_MAP_VIEW_BOX);
+		const cropped = parseViewBox(
+			container.querySelector('svg')?.getAttribute('viewBox') ?? ''
+		);
+
+		const marker = container.querySelector(
+			'circle.chart-map-marker[data-country="FR"]'
+		) as SVGCircleElement;
+
+		const scale = Math.max(0.45, Math.min(1, cropped.width / world.width));
+		const expectedRadius = 6 * scale;
+
+		expect(Number(marker.getAttribute('r'))).toBeCloseTo(expectedRadius);
+		expect(Number(marker.getAttribute('r'))).toBeLessThan(6);
+	});
+
+	it('counter-scales the marker focus ring radii by the crop factor when fit is data', () => {
+		const {container} = render(
+			<MapChart data={EUROPE_DATA} fit="data" title="Population" />
+		);
+
+		const world = parseViewBox(WORLD_MAP_VIEW_BOX);
+		const cropped = parseViewBox(
+			container.querySelector('svg')?.getAttribute('viewBox') ?? ''
+		);
+		const scale = Math.max(0.45, Math.min(1, cropped.width / world.width));
+
+		fireEvent.focus(screen.getByRole('img', {name: 'France: 40'}));
+
+		const outerRing = container.querySelector(
+			'.chart-map-marker-focus-ring-outer'
+		) as SVGCircleElement;
+		const innerRing = container.querySelector(
+			'.chart-map-marker-focus-ring-inner'
+		) as SVGCircleElement;
+
+		expect(Number(outerRing.getAttribute('r'))).toBeCloseTo(10.5 * scale);
+		expect(Number(innerRing.getAttribute('r'))).toBeCloseTo(8.5 * scale);
+		expect(Number(outerRing.getAttribute('r'))).toBeLessThan(10.5);
+		expect(Number(innerRing.getAttribute('r'))).toBeLessThan(8.5);
 	});
 });
 
@@ -304,6 +409,29 @@ describe('MapChart interaction', () => {
 		expect(clippedGroup?.getAttribute('clip-path')).toMatch(/^url\(#.+\)$/);
 	});
 
+	it('paints the focused-country overlay above every country fill', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		fireEvent.focus(screen.getByRole('img', {name: 'China: 14210'}));
+
+		const svgChildren = Array.from(
+			(container.querySelector('svg') as SVGSVGElement).children
+		);
+		const focusGroup = container
+			.querySelector('.chart-map-country-focus-halo')
+			?.closest('g') as SVGGElement;
+
+		const lastFillIndex = Math.max(
+			...Array.from(
+				container.querySelectorAll('path.chart-map-land.is-data')
+			).map((fill) => svgChildren.indexOf(fill))
+		);
+
+		expect(svgChildren.indexOf(focusGroup)).toBeGreaterThan(lastFillIndex);
+	});
+
 	it('marks a hovered marker as active without rendering a focus ring', () => {
 		const {container} = render(<MapChart data={DATA} title="Population" />);
 
@@ -311,7 +439,11 @@ describe('MapChart interaction', () => {
 
 		fireEvent.pointerEnter(marker);
 
-		expect(marker).toHaveClass('is-active');
+		expect(
+			container.querySelector(
+				'circle.chart-map-marker[data-country="CN"]'
+			)
+		).toHaveClass('is-active');
 		expect(
 			container.querySelector('.chart-map-marker-focus-ring-outer')
 		).not.toBeInTheDocument();
@@ -346,6 +478,19 @@ describe('MapChart interaction', () => {
 		).toHaveClass('is-focused');
 	});
 
+	it('paints the active marker overlay above every marker', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
+
+		const svg = container.querySelector('svg') as SVGSVGElement;
+		const overlayGroup = container
+			.querySelector('.chart-map-marker-overlay')
+			?.closest('g') as SVGGElement;
+
+		expect(svg.lastElementChild).toBe(overlayGroup);
+	});
+
 	it('marks a hovered country as active without rendering an inset ring', () => {
 		const {container} = render(
 			<MapChart data={DATA} title="Population" variant="choropleth" />
@@ -377,16 +522,16 @@ describe('MapChart interaction', () => {
 			<MapChart data={dataWithGaps} title="Population" />
 		);
 
-		const getMarkerDelay = (label: string) =>
+		const getMarkerDelay = (countryCode: string) =>
 			(
 				container.querySelector(
-					`circle[aria-label="${label}"]`
+					`circle.chart-map-marker[data-country="${countryCode}"]`
 				) as SVGCircleElement
 			).style.getPropertyValue('--marker-delay');
 
-		expect(getMarkerDelay('China: 14210')).toBe('0ms');
-		expect(getMarkerDelay('United States: 12450')).toBe('20ms');
-		expect(getMarkerDelay('India: 9870')).toBe('40ms');
+		expect(getMarkerDelay('CN')).toBe('0ms');
+		expect(getMarkerDelay('US')).toBe('20ms');
+		expect(getMarkerDelay('IN')).toBe('40ms');
 	});
 
 	it('keeps country entrance stagger contiguous despite unmatched countries between data rows', () => {

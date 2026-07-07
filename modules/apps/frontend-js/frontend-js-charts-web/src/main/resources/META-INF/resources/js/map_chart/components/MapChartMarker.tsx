@@ -14,6 +14,7 @@ interface MapChartMarkerProps {
 	color: string;
 	datum: MapDatum;
 	delayMs: number;
+	hitRadius: number;
 	index: number;
 	isActive: boolean;
 	isFocusable: boolean;
@@ -31,6 +32,7 @@ const MapChartMarker = forwardRef<SVGCircleElement, MapChartMarkerProps>(
 			color,
 			datum,
 			delayMs,
+			hitRadius,
 			index,
 			isActive,
 			isFocusable,
@@ -56,22 +58,36 @@ const MapChartMarker = forwardRef<SVGCircleElement, MapChartMarkerProps>(
 		});
 
 		return (
-			<circle
-				{...focusableProps}
-				className={classNames('chart-map-marker', {
-					'is-active': isActive,
-				})}
-				cx={centroid[0]}
-				cy={centroid[1]}
-				r={radius}
-				ref={ref}
-				style={
-					{
-						'--marker-delay': `${delayMs}ms`,
-						'--marker-fill': color,
-					} as React.CSSProperties
-				}
-			/>
+			<>
+				<circle
+					aria-hidden="true"
+					className={classNames('chart-map-marker', {
+						'is-active': isActive,
+					})}
+					cx={centroid[0]}
+					cy={centroid[1]}
+					data-country={datum.country}
+					pointerEvents="none"
+					r={radius}
+					style={
+						{
+							'--marker-delay': `${delayMs}ms`,
+							'--marker-fill': color,
+						} as React.CSSProperties
+					}
+				/>
+
+				<circle
+					{...focusableProps}
+					className="chart-map-marker-hit-area"
+					cx={centroid[0]}
+					cy={centroid[1]}
+					fill="transparent"
+					pointerEvents="all"
+					r={hitRadius}
+					ref={ref}
+				/>
+			</>
 		);
 	}
 );
