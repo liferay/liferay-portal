@@ -32,7 +32,10 @@ function buildState(properties: Partial<State> = {}): State {
 	return {
 		defaultLanguageId: 'en_US',
 		draftElementVariation: null,
+		editableElementOptions: [],
 		elementVariations: [],
+		experienceKey: '',
+		highlightedTargetElement: null,
 		languageId: 'en_US',
 		...properties,
 	};
@@ -60,11 +63,16 @@ describe('elementVariationsReducer', () => {
 				createInitialState({
 					defaultLanguageId: 'en_US',
 					elementVariations: [],
+					experiences: [],
+					selectedSegmentsExperienceId: 0,
 				})
 			).toEqual({
 				defaultLanguageId: 'en_US',
 				draftElementVariation: null,
+				editableElementOptions: [],
 				elementVariations: [],
+				experienceKey: '',
+				highlightedTargetElement: null,
 				languageId: 'en_US',
 			});
 		});
@@ -85,6 +93,8 @@ describe('elementVariationsReducer', () => {
 							targetElement: '#main',
 						},
 					],
+					experiences: [],
+					selectedSegmentsExperienceId: 0,
 				});
 
 			expect(draftElementVariation).toBeNull();
@@ -127,6 +137,37 @@ describe('elementVariationsReducer', () => {
 			});
 
 			expect(state.languageId).toBe('es_ES');
+		});
+
+		it('sets the editable element options on SET_EDITABLE_ELEMENT_OPTIONS', () => {
+			const editableElementOptions = [
+				{label: 'Heading (element-text)', value: '.selector'},
+			];
+
+			const state = reducer(buildState(), {
+				editableElementOptions,
+				type: 'SET_EDITABLE_ELEMENT_OPTIONS',
+			});
+
+			expect(state.editableElementOptions).toBe(editableElementOptions);
+		});
+
+		it('sets the experience key on SET_EXPERIENCE_KEY', () => {
+			const state = reducer(buildState(), {
+				experienceKey: 'experience-2',
+				type: 'SET_EXPERIENCE_KEY',
+			});
+
+			expect(state.experienceKey).toBe('experience-2');
+		});
+
+		it('sets the highlighted target element on SET_HIGHLIGHTED_TARGET_ELEMENT', () => {
+			const state = reducer(buildState(), {
+				highlightedTargetElement: '.selector',
+				type: 'SET_HIGHLIGHTED_TARGET_ELEMENT',
+			});
+
+			expect(state.highlightedTargetElement).toBe('.selector');
 		});
 
 		it('appends a new draft and clears it on SAVE_ELEMENT_VARIATION_DRAFT', () => {
