@@ -548,6 +548,7 @@ public class FragmentCollectionLocalServiceImpl
 		}
 
 		fragmentCollection.setModifiedDate(modifiedDate);
+
 		fragmentCollection.setName(name);
 		fragmentCollection.setDescription(description);
 
