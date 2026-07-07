@@ -39,7 +39,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 	if (config.editorType === 'ckeditor5') {
 		return {
 			...config,
-			toolbar: ['accessibilityHelp', '|', 'undo', 'redo'],
+			toolbar: ['accessibilityHelp', '|', 'undo', 'redo', '|', 'alignment'],
 		};
 	}
 
