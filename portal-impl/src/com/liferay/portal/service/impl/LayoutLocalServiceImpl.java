@@ -799,7 +799,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		if (type.equals(LayoutConstants.TYPE_EMBEDDED) ||
-			type.equals(LayoutConstants.TYPE_LINK_TO_LAYOUT)) {
+			type.equals(LayoutConstants.TYPE_URL)) {
 
 			throw new LayoutTypeException(
 				type, LayoutTypeException.TYPE_NOT_ALLOWED);
