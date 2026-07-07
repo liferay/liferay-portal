@@ -12,11 +12,15 @@ import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.List;
 
@@ -51,7 +55,12 @@ public class AudiencesDefinitionProviderImpl
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		for (AudiencesEntry audiencesEntry : audiencesEntries) {
-			audiencesJSONArray.put(audiencesEntry);
+			JSONObject jsonObject = _getAudiencesEntryJSONObject(
+				audiencesEntry);
+
+			audiencesJSONArray.put(
+				jsonObject.put(
+					"id", audiencesEntry.getExternalReferenceCode()));
 		}
 
 		String json = JSONUtil.put(
@@ -77,6 +86,24 @@ public class AudiencesDefinitionProviderImpl
 	protected void deactivate() {
 		_multiVMPool.removePortalCache(AudiencesEntry.class.getName());
 	}
+
+	private JSONObject _getAudiencesEntryJSONObject(
+		AudiencesEntry audiencesEntry) {
+
+		try {
+			return _jsonFactory.createJSONObject(audiencesEntry.getJSON());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return _jsonFactory.createJSONObject();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AudiencesDefinitionProviderImpl.class);
 
 	@Reference
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
