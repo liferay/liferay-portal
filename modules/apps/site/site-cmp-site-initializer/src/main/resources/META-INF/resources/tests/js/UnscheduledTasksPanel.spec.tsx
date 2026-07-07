@@ -11,8 +11,6 @@ import UnscheduledTasksPanel from '../../js/components/props_transformer/views/c
 import getTaskItemsActions from '../../js/utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../js/utils/types';
 
-let mockUnscheduledTasks: ITaskObjectEntry[] = [];
-
 jest.mock('../../js/utils/getTaskItemsActions', () => ({
 	__esModule: true,
 	default: jest.fn(() => []),
@@ -42,10 +40,6 @@ jest.mock('@clayui/core', () => {
 	return {...(jest.requireActual('@clayui/core') as {}), SidePanel};
 });
 
-jest.mock('@liferay/frontend-js-state-web/react', () => ({
-	useLiferayState: () => [mockUnscheduledTasks, jest.fn()],
-}));
-
 jest.mock('@liferay/object-dynamic-data-mapping-form-field-type', () => ({
 	AssigneeAvatar: ({name}: {name: string}) => <span>{name}</span>,
 }));
@@ -66,22 +60,27 @@ function createTask(overrides: Partial<ITaskObjectEntry> = {}) {
 	} as ITaskObjectEntry;
 }
 
-describe('UnscheduledTasksPanel', () => {
-	afterEach(() => {
-		mockUnscheduledTasks = [];
-	});
+function renderUnscheduledTasksPanel(tasks: ITaskObjectEntry[]) {
+	return render(
+		<UnscheduledTasksPanel
+			containerRef={{current: null}}
+			onOpenChange={jest.fn()}
+			open
+			tasks={tasks}
+		/>
+	);
+}
 
+describe('UnscheduledTasksPanel', () => {
 	beforeEach(() => {
 		(getTaskItemsActions as jest.Mock).mockReturnValue([]);
 	});
 
 	it('filters the tasks by title as the user types', () => {
-		mockUnscheduledTasks = [
+		const {getByTestId, queryByText} = renderUnscheduledTasksPanel([
 			createTask({id: 1, title: 'Alpha'}),
 			createTask({id: 2, title: 'Beta'}),
-		];
-
-		const {getByTestId, queryByText} = render(<UnscheduledTasksPanel />);
+		]);
 
 		fireEvent.change(getByTestId('calendarUnscheduledTasksSearch'), {
 			target: {value: 'alph'},
@@ -92,7 +91,7 @@ describe('UnscheduledTasksPanel', () => {
 	});
 
 	it('orders tasks by blocked, in progress, not started, then done', () => {
-		mockUnscheduledTasks = [
+		const {getAllByTestId} = renderUnscheduledTasksPanel([
 			createTask({
 				id: 1,
 				state: {key: 'done', name: 'Done'},
@@ -113,9 +112,7 @@ describe('UnscheduledTasksPanel', () => {
 				state: {key: 'blocked', name: 'Blocked'},
 				title: 'BlockedTask',
 			}),
-		];
-
-		const {getAllByTestId} = render(<UnscheduledTasksPanel />);
+		]);
 
 		const titles = getAllByTestId('calendarUnscheduledTaskTitle').map(
 			(element) => element.textContent
@@ -130,12 +127,10 @@ describe('UnscheduledTasksPanel', () => {
 	});
 
 	it('renders a row for each unscheduled task', () => {
-		mockUnscheduledTasks = [
+		const {getByText} = renderUnscheduledTasksPanel([
 			createTask({id: 1, title: 'Alpha'}),
 			createTask({id: 2, title: 'Beta'}),
-		];
-
-		const {getByText} = render(<UnscheduledTasksPanel />);
+		]);
 
 		expect(getByText('Alpha')).toBeInTheDocument();
 		expect(getByText('Beta')).toBeInTheDocument();
@@ -146,28 +141,24 @@ describe('UnscheduledTasksPanel', () => {
 			{label: 'edit', onClick: jest.fn()},
 		]);
 
-		mockUnscheduledTasks = [
+		const {getAllByLabelText} = renderUnscheduledTasksPanel([
 			createTask({id: 1, title: 'Alpha'}),
 			createTask({id: 2, title: 'Beta'}),
-		];
-
-		const {getAllByLabelText} = render(<UnscheduledTasksPanel />);
+		]);
 
 		expect(getAllByLabelText('actions')).toHaveLength(2);
 	});
 
 	it('renders the state label for a task', () => {
-		mockUnscheduledTasks = [createTask()];
-
-		const {getByText} = render(<UnscheduledTasksPanel />);
+		const {getByText} = renderUnscheduledTasksPanel([createTask()]);
 
 		expect(getByText('In Progress')).toBeInTheDocument();
 	});
 
 	it('shows the empty state when the search matches no tasks', () => {
-		mockUnscheduledTasks = [createTask({title: 'Alpha'})];
-
-		const {getByTestId, getByText} = render(<UnscheduledTasksPanel />);
+		const {getByTestId, getByText} = renderUnscheduledTasksPanel([
+			createTask({title: 'Alpha'}),
+		]);
 
 		fireEvent.change(getByTestId('calendarUnscheduledTasksSearch'), {
 			target: {value: 'zzz'},
@@ -177,9 +168,7 @@ describe('UnscheduledTasksPanel', () => {
 	});
 
 	it('shows the empty state when there are no unscheduled tasks', () => {
-		mockUnscheduledTasks = [];
-
-		const {getByText} = render(<UnscheduledTasksPanel />);
+		const {getByText} = renderUnscheduledTasksPanel([]);
 
 		expect(getByText('no-results-found')).toBeInTheDocument();
 	});
