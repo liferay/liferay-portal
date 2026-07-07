@@ -11,7 +11,8 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import getRandomString from '../../../utils/getRandomString';
-import performLoginViaApi, {
+import {
+	performLoginViaApi,
 	performUserSwitchViaApi,
 	userData,
 } from '../../../utils/performLogin';
@@ -34,7 +35,7 @@ test.beforeAll(async ({browser}) => {
 
 	const recycleBinPage = new RecycleBinPage(newPage);
 
-	await performLoginViaApi(newPage, 'test');
+	await performLoginViaApi({page: newPage, screenName: 'test'});
 
 	await recycleBinPage.goto();
 
@@ -278,7 +279,12 @@ test(
 				{first: true}
 			);
 
-			await expect(page.getByText('No Assets Yet')).toBeVisible();
+			await expect(
+				page.getByRole('cell', {name: contentName1})
+			).toBeHidden();
+			await expect(
+				page.getByRole('cell', {name: contentName2})
+			).toBeHidden();
 		});
 	}
 );
