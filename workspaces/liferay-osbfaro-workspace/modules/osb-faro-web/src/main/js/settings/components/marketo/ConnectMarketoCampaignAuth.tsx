@@ -51,14 +51,14 @@ interface IConnectMarketoCampaignAuthProps {
 	 * When disabled, the form renders with all inputs
 	 * read-only and without any buttons.
 	 */
-	disabled?: boolean;
 	addAlert: any;
-	dataSource?: DataSource;
-	onCancel?: () => void;
-	onSubmit: (dataSource: DataSource) => void;
 	buttonProps?: {
 		[key: string]: any;
 	};
+	dataSource?: DataSource;
+	disabled?: boolean;
+	onCancel?: () => void;
+	onSubmit: (dataSource: DataSource) => void;
 }
 
 const ConnectMarketoCampaignAuth: React.FC<
