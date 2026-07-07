@@ -1,8 +1,13 @@
 import React from 'react';
-import {DataSourceName, disableRow, StatusRenderer} from '../DataSourceList';
+import {
+	AddDataSourceNav,
+	DataSourceName,
+	disableRow,
+	StatusRenderer
+} from '../DataSourceList';
 import {DataSourceStates, DataSourceTypes} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router-dom';
-import {render} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
@@ -22,6 +27,43 @@ describe('DataSourceList exports', () => {
 			expect(disableRow({state: DataSourceStates.Disconnected})).toBe(
 				false
 			);
+		});
+	});
+
+	describe('AddDataSourceNav', () => {
+		it('renders a button that navigates directly when only one data source option is available', () => {
+			const onClick = jest.fn();
+
+			const {container, getByText} = render(
+				<AddDataSourceNav items={[{label: 'Liferay DXP', onClick}]} />
+			);
+
+			expect(getByText('Add Data Source')).toBeInTheDocument();
+
+			fireEvent.click(container.querySelector('button'));
+
+			expect(onClick).toHaveBeenCalledTimes(1);
+		});
+
+		it('renders a dropdown that does not navigate directly when more than one data source option is available', () => {
+			const firstOnClick = jest.fn();
+			const secondOnClick = jest.fn();
+
+			const {container, getByText} = render(
+				<AddDataSourceNav
+					items={[
+						{label: 'Liferay DXP', onClick: firstOnClick},
+						{label: 'Salesforce', onClick: secondOnClick}
+					]}
+				/>
+			);
+
+			expect(getByText('Add Data Source')).toBeInTheDocument();
+
+			fireEvent.click(container.querySelector('button'));
+
+			expect(firstOnClick).not.toHaveBeenCalled();
+			expect(secondOnClick).not.toHaveBeenCalled();
 		});
 	});
 

@@ -175,6 +175,40 @@ const typeFormatter = (type: DataSourceTypes): string => {
 	}
 };
 
+interface IDataSourceNavItem {
+	label: string;
+	onClick: () => void;
+}
+
+interface IAddDataSourceNavProps {
+	items: IDataSourceNavItem[];
+}
+
+export const AddDataSourceNav: React.FC<IAddDataSourceNavProps> = ({items}) => {
+	if (items.length === 1) {
+		const [{onClick}] = items;
+
+		return (
+			<ClayButton displayType="primary" onClick={onClick} size="sm">
+				{Liferay.Language.get('add-data-source')}
+			</ClayButton>
+		);
+	}
+
+	return (
+		<ClayDropDownWithItems
+			items={items}
+			trigger={
+				<ClayButton displayType="primary" size="sm">
+					{Liferay.Language.get('add-data-source')}
+
+					<ClayIcon className="ml-2" symbol="caret-bottom" />
+				</ClayButton>
+			}
+		/>
+	);
+};
+
 interface IDataSourceListProps extends React.HTMLAttributes<HTMLElement> {}
 
 const DataSourceList: React.FC<IDataSourceListProps> = ({className}) => {
@@ -276,17 +310,8 @@ const DataSourceList: React.FC<IDataSourceListProps> = ({className}) => {
 		},
 	}));
 
-	const renderDataSourcesDropdown = () => (
-		<ClayDropDownWithItems
-			items={[...dataSourceItems, ...connectorItems]}
-			trigger={
-				<ClayButton displayType="primary" size="sm">
-					{Liferay.Language.get('add-data-source')}
-
-					<ClayIcon className="ml-2" symbol="caret-bottom" />
-				</ClayButton>
-			}
-		/>
+	const renderAddDataSourceNav = () => (
+		<AddDataSourceNav items={[...dataSourceItems, ...connectorItems]} />
 	);
 
 	const renderNoResults = () => {
@@ -407,7 +432,7 @@ const DataSourceList: React.FC<IDataSourceListProps> = ({className}) => {
 					page={page}
 					query={query}
 					renderNav={
-						currentUser.isAdmin() ? renderDataSourcesDropdown : null
+						currentUser.isAdmin() ? renderAddDataSourceNav : null
 					}
 					rowIdentifier="id"
 					showCheckbox={false}
