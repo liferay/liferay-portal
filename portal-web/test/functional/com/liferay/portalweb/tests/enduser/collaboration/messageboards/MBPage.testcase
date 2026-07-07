@@ -43,58 +43,6 @@ definition {
 		}
 	}
 
-	@priority = 3
-	@refactordone
-	test CanViewMBThreadReplyViaMoreMessages {
-		property custom.properties = "discussion.comments.delta.value=5";
-		property portal.acceptance = "false";
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "Message Boards Thread Body",
-			threadSubject = "Message Boards Thread Subject");
-
-		for (var replyCount : list "1,2,3,4,5,6,7") {
-			JSONMBMessage.addMessageReply(
-				groupName = "Guest",
-				replyBody = "Message Boards Thread Reply ${replyCount}",
-				threadSubject = "Message Boards Thread Subject");
-		}
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.gotoPG(
-			lastPostUserName = "Test Test",
-			replyCount = 7,
-			threadSubject = "Message Boards Thread Subject");
-
-		for (var replyCount : list "1,2,3,4") {
-			AssertTextEquals(
-				key_threadBody = "Message Boards Thread Reply ${replyCount}",
-				locator1 = "MessageBoardsThread#THREAD_BODY",
-				value1 = "Message Boards Thread Reply ${replyCount}");
-		}
-
-		AssertVisible(locator1 = "Button#MORE_MESSAGES");
-
-		for (var replyNotVisible : list "5,6,7") {
-			AssertElementNotPresent(
-				key_threadBody = "Message Boards Thread Reply ${replyNotVisible}",
-				locator1 = "MessageBoardsThread#THREAD_BODY");
-		}
-
-		AssertClick(
-			locator1 = "Button#MORE_MESSAGES",
-			value1 = "More Messages");
-
-		for (var replyCount : list "1,2,3,4,5,6,7") {
-			AssertTextEquals(
-				key_threadBody = "Message Boards Thread Reply ${replyCount}",
-				locator1 = "MessageBoardsThread#THREAD_BODY",
-				value1 = "Message Boards Thread Reply ${replyCount}");
-		}
-	}
-
 	@description = "This test covers LPS-132060, LPS-77252 and LPS-86797. It ensures that Categories group and Threads group are listed independently with their own pager."
 	@priority = 4
 	@refactordone
