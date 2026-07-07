@@ -411,6 +411,54 @@
 		</subant>
 	</target>
 
+	<target depends="get-osgi-static-modules,init-build-app" name="dist-module-artifacts-unlicensed-lpkg" unless="module.dirs.null">
+		<if>
+			<and>
+				<isset property="Liferay-Releng-Suite" />
+				<not>
+					<equals arg1="${Liferay-Releng-Suite}" arg2="" />
+				</not>
+			</and>
+			<then>
+				<sequential>
+					<loadproperties srcFile="${modules.dir}/suites/${Liferay-Releng-Suite}/suite.bnd">
+						<filterchain>
+							<linecontains>
+								<contains value="Liferay-Releng-Suite-Title" />
+							</linecontains>
+						</filterchain>
+					</loadproperties>
+
+					<property name="lpkg.title.prefix" value="${Liferay-Releng-Suite-Title} - " />
+				</sequential>
+			</then>
+			<else>
+				<property name="lpkg.title.prefix" value="" />
+			</else>
+		</if>
+
+		<delete dir="${dist.dir}/lpkg" />
+
+		<mkdir dir="${dist.dir}/lpkg" />
+
+		<property name="output.dir" value="${dist.dir}/lpkg" />
+
+		<subant genericantfile="${modules.dir}/build-app-module.xml" target="download-artifact-lpkg">
+			<dirset
+				dir="${modules.dir}"
+				excludes="${build.modules.excludes}"
+				includes="${app.module.dirs}"
+			/>
+			<property name="liferay.releng.app.title" value="${Liferay-Releng-App-Title}" />
+			<property name="lp.version.major" value="${lp.version.major}" />
+			<property name="lpkg.title.prefix" value="${lpkg.title.prefix}" />
+			<property name="osgi.dir" value="${osgi.dir}" />
+			<property name="osgi.static.modules" value="${osgi.static.modules}" />
+			<property name="output.dir" value="${output.dir}" />
+			<property name="project.dir" value="${project.dir}" />
+		</subant>
+	</target>
+
 	<target depends="init-build-app,get-app-version" name="get-app-artifacts" unless="module.dirs.null">
 		<pathconvert pathsep=",\${line.separator}&#x0009;" property="module.versions.list">
 			<flattenmapper />
