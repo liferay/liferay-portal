@@ -15,10 +15,39 @@
 		text-align: start;
 	}
 
+	.chart-map-body {
+		position: relative;
+	}
+
 	.chart-map-svg {
 		block-size: auto;
 		display: block;
 		inline-size: 100%;
+	}
+
+	.chart-map-tooltip {
+		align-items: baseline;
+		background: $primary;
+		border-radius: 4px;
+		color: $white;
+		display: inline-flex;
+		font-size: 0.8125rem;
+		font-variant-numeric: tabular-nums;
+		gap: 0.5rem;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		max-inline-size: 100%;
+		padding: 0.25rem 0.625rem;
+		pointer-events: none;
+		position: absolute;
+	}
+
+	.chart-map-tooltip-label {
+		font-weight: 400;
+	}
+
+	.chart-map-tooltip-value {
+		font-weight: 700;
 	}
 
 	.chart-map-land {
@@ -27,13 +56,92 @@
 		stroke-width: 0.5;
 
 		&.is-data {
+			animation: country-in 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+			animation-delay: var(--country-delay, 0ms);
+			cursor: pointer;
 			fill: var(--country-fill);
+			outline: none;
+			transition: filter 150ms ease;
+
+			&:hover,
+			&.is-active {
+				filter: brightness(1.08) saturate(1.05);
+			}
 		}
 	}
 
+	.chart-map-country-focus-halo {
+		fill: none;
+		stroke: $white;
+		stroke-width: 8;
+	}
+
+	.chart-map-country-focus-ring {
+		fill: none;
+		stroke: $primary-l0;
+		stroke-width: 4;
+	}
+
 	.chart-map-marker {
+		animation: marker-in 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		animation-delay: var(--marker-delay, 0ms);
+		cursor: pointer;
 		fill: var(--marker-fill);
+		outline: none;
 		stroke: $white;
 		stroke-width: 1;
+		transition: filter 150ms ease;
+
+		&.is-active {
+			filter: brightness(1.05);
+		}
+	}
+
+	.chart-map-marker-focus-ring-outer {
+		fill: none;
+		stroke: $primary;
+		stroke-width: 2;
+	}
+
+	.chart-map-marker-focus-ring-inner {
+		fill: none;
+		stroke: $white;
+		stroke-width: 2;
+	}
+}
+
+@keyframes marker-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes country-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chart-map-marker,
+	.chart-map-land.is-data {
+		animation: none;
+		transition: none;
+	}
+}
+
+body.c-prefers-reduced-motion {
+	.chart-map-marker,
+	.chart-map-land.is-data {
+		animation: none;
+		transition: none;
 	}
 }

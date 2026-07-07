@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -252,6 +252,299 @@ describe('MapChart choropleth variant', () => {
 		const {container} = render(
 			<MapChart data={DATA} title="Population" variant="choropleth" />
 		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+});
+
+describe('MapChart interaction', () => {
+	it('renders two concentric focus ring circles when a marker gains keyboard focus', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		const marker = screen.getByRole('img', {name: 'China: 14210'});
+
+		expect(
+			container.querySelector('.chart-map-marker-focus-ring-outer')
+		).not.toBeInTheDocument();
+
+		fireEvent.focus(marker);
+
+		expect(
+			container.querySelector('.chart-map-marker-focus-ring-outer')
+		).toBeInTheDocument();
+		expect(
+			container.querySelector('.chart-map-marker-focus-ring-inner')
+		).toBeInTheDocument();
+	});
+
+	it('renders an inset halo and ring silhouette clipped to the focused country', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		const country = screen.getByRole('img', {name: 'China: 14210'});
+
+		fireEvent.focus(country);
+
+		const halo = container.querySelector(
+			'.chart-map-country-focus-halo'
+		) as SVGPathElement;
+		const ring = container.querySelector(
+			'.chart-map-country-focus-ring'
+		) as SVGPathElement;
+
+		expect(halo).toBeInTheDocument();
+		expect(ring).toBeInTheDocument();
+		expect(halo.getAttribute('d')).toBe(country.getAttribute('d'));
+		expect(ring.getAttribute('d')).toBe(country.getAttribute('d'));
+
+		const clippedGroup = halo.closest('g[clip-path]');
+
+		expect(clippedGroup).not.toBeNull();
+		expect(clippedGroup?.getAttribute('clip-path')).toMatch(/^url\(#.+\)$/);
+	});
+
+	it('marks a hovered marker as active without rendering a focus ring', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		const marker = screen.getByRole('img', {name: 'China: 14210'});
+
+		fireEvent.pointerEnter(marker);
+
+		expect(marker).toHaveClass('is-active');
+		expect(
+			container.querySelector('.chart-map-marker-focus-ring-outer')
+		).not.toBeInTheDocument();
+		expect(
+			container.querySelector('.chart-map-marker-focus-ring-inner')
+		).not.toBeInTheDocument();
+	});
+
+	it('paints an enlarged active overlay marker on hover and marks it focused on keyboard focus', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		const marker = screen.getByRole('img', {name: 'China: 14210'});
+
+		expect(
+			container.querySelector('.chart-map-marker-overlay')
+		).not.toBeInTheDocument();
+
+		fireEvent.pointerEnter(marker);
+
+		const overlay = container.querySelector(
+			'.chart-map-marker-overlay'
+		) as SVGCircleElement;
+
+		expect(overlay).toBeInTheDocument();
+		expect(Number(overlay.getAttribute('r'))).toBeGreaterThan(6);
+		expect(overlay).not.toHaveClass('is-focused');
+
+		fireEvent.focus(marker);
+
+		expect(
+			container.querySelector('.chart-map-marker-overlay')
+		).toHaveClass('is-focused');
+	});
+
+	it('marks a hovered country as active without rendering an inset ring', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		const country = screen.getByRole('img', {name: 'China: 14210'});
+
+		fireEvent.pointerEnter(country);
+
+		expect(country).toHaveClass('is-active');
+		expect(
+			container.querySelector('.chart-map-country-focus-halo')
+		).not.toBeInTheDocument();
+		expect(
+			container.querySelector('.chart-map-country-focus-ring')
+		).not.toBeInTheDocument();
+	});
+
+	it('keeps marker entrance stagger contiguous despite unmatched countries between data rows', () => {
+		const dataWithGaps: MapDatum[] = [
+			{country: 'CN', label: 'China', value: 14210},
+			{country: 'ZZ', label: 'Unmapped', value: 1},
+			{country: 'US', label: 'United States', value: 12450},
+			{country: 'YY', label: 'Unmapped 2', value: 1},
+			{country: 'IN', label: 'India', value: 9870},
+		];
+
+		const {container} = render(
+			<MapChart data={dataWithGaps} title="Population" />
+		);
+
+		const getMarkerDelay = (label: string) =>
+			(
+				container.querySelector(
+					`circle[aria-label="${label}"]`
+				) as SVGCircleElement
+			).style.getPropertyValue('--marker-delay');
+
+		expect(getMarkerDelay('China: 14210')).toBe('0ms');
+		expect(getMarkerDelay('United States: 12450')).toBe('20ms');
+		expect(getMarkerDelay('India: 9870')).toBe('40ms');
+	});
+
+	it('keeps country entrance stagger contiguous despite unmatched countries between data rows', () => {
+		const dataWithGaps: MapDatum[] = [
+			{country: 'CN', label: 'China', value: 14210},
+			{country: 'ZZ', label: 'Unmapped', value: 1},
+			{country: 'US', label: 'United States', value: 12450},
+			{country: 'YY', label: 'Unmapped 2', value: 1},
+			{country: 'IN', label: 'India', value: 9870},
+		];
+
+		const {container} = render(
+			<MapChart
+				data={dataWithGaps}
+				title="Population"
+				variant="choropleth"
+			/>
+		);
+
+		const getCountryDelay = (countryCode: string) =>
+			(
+				container.querySelector(
+					`path[data-country="${countryCode}"]`
+				) as SVGPathElement
+			).style.getPropertyValue('--country-delay');
+
+		expect(getCountryDelay('CN')).toBe('0ms');
+		expect(getCountryDelay('US')).toBe('20ms');
+		expect(getCountryDelay('IN')).toBe('40ms');
+	});
+
+	it('only tabs to the currently focusable marker, keeping the rest out of tab order', () => {
+		render(<MapChart data={DATA} title="Population" />);
+
+		const focusedMarker = screen.getByRole('img', {name: 'China: 14210'});
+		const otherMarker = screen.getByRole('img', {
+			name: 'United States: 12450',
+		});
+
+		expect(focusedMarker).toHaveAttribute('tabindex', '0');
+		expect(otherMarker).toHaveAttribute('tabindex', '-1');
+
+		fireEvent.focus(focusedMarker);
+		fireEvent.keyDown(focusedMarker, {key: 'ArrowRight'});
+
+		expect(otherMarker).toHaveAttribute('tabindex', '0');
+		expect(focusedMarker).toHaveAttribute('tabindex', '-1');
+	});
+
+	it('renders markers and data countries as targets of the body.c-prefers-reduced-motion animation override', () => {
+		document.body.classList.add('c-prefers-reduced-motion');
+
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		expect(document.body).toHaveClass('c-prefers-reduced-motion');
+		expect(
+			container.querySelectorAll('circle.chart-map-marker')
+		).toHaveLength(DATA.length);
+
+		document.body.classList.remove('c-prefers-reduced-motion');
+	});
+
+	it('renders data countries as targets of the body.c-prefers-reduced-motion animation override', () => {
+		document.body.classList.add('c-prefers-reduced-motion');
+
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		expect(document.body).toHaveClass('c-prefers-reduced-motion');
+		expect(
+			container.querySelectorAll('path.chart-map-land.is-data')
+		).toHaveLength(DATA.length);
+
+		document.body.classList.remove('c-prefers-reduced-motion');
+	});
+
+	it('has no accessibility violations while a marker is focused', async () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.focus(screen.getByRole('img', {name: 'China: 14210'}));
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('has no accessibility violations while a country is focused', async () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		fireEvent.focus(screen.getByRole('img', {name: 'China: 14210'}));
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('renders no tooltip when nothing is hovered or focused', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		expect(
+			container.querySelector('.chart-map-tooltip')
+		).not.toBeInTheDocument();
+	});
+
+	it('renders the tooltip with the hovered datum label and value', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
+
+		const tooltip = container.querySelector('.chart-map-tooltip');
+
+		expect(tooltip).toBeInTheDocument();
+		expect(tooltip).toHaveTextContent('China');
+		expect(tooltip).toHaveTextContent('14210');
+	});
+
+	it('renders the tooltip with the keyboard-focused datum label and value', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		fireEvent.focus(screen.getByRole('img', {name: 'India: 9870'}));
+
+		const tooltip = container.querySelector('.chart-map-tooltip');
+
+		expect(tooltip).toBeInTheDocument();
+		expect(tooltip).toHaveTextContent('India');
+		expect(tooltip).toHaveTextContent('9870');
+	});
+
+	it('keeps the tooltip free of the active datum bucket fill color', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
+
+		const tooltip = container.querySelector(
+			'.chart-map-tooltip'
+		) as HTMLElement;
+
+		expect(tooltip.style.getPropertyValue('--marker-fill')).toBe('');
+		expect(tooltip.style.backgroundColor).toBe('');
+		expect(tooltip).not.toHaveAttribute('style');
+	});
+
+	it('marks the tooltip as aria-hidden', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
+
+		expect(container.querySelector('.chart-map-tooltip')).toHaveAttribute(
+			'aria-hidden',
+			'true'
+		);
+	});
+
+	it('has no accessibility violations while the tooltip is visible', async () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});

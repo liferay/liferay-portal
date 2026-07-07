@@ -3,32 +3,76 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import classNames from 'classnames';
+import React, {forwardRef} from 'react';
 
 import {MapDatum} from '../types/MapDatum';
+import {getMapChartFocusableProps} from '../utils/getMapChartFocusableProps';
 
 interface MapChartCountryFillProps {
 	color: string;
 	countryCode: string;
 	countryPath: string;
 	datum: MapDatum;
+	delayMs: number;
+	index: number;
+	isActive: boolean;
+	isFocusable: boolean;
+	onBlur: () => void;
+	onFocus: (index: number) => void;
+	onHover: (index: number) => void;
+	onHoverEnd: () => void;
+	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 }
 
-export default function MapChartCountryFill({
-	color,
-	countryCode,
-	countryPath,
-	datum,
-}: MapChartCountryFillProps) {
+const MapChartCountryFill = forwardRef<
+	SVGPathElement,
+	MapChartCountryFillProps
+>(function MapChartCountryFill(
+	{
+		color,
+		countryCode,
+		countryPath,
+		datum,
+		delayMs,
+		index,
+		isActive,
+		isFocusable,
+		onBlur,
+		onFocus,
+		onHover,
+		onHoverEnd,
+		onKeyDown,
+	},
+	ref
+) {
+	const focusableProps = getMapChartFocusableProps(datum, {
+		index,
+		isFocusable,
+		onBlur,
+		onFocus,
+		onHover,
+		onHoverEnd,
+		onKeyDown,
+	});
+
 	return (
 		<path
-			aria-label={`${datum.label}: ${datum.value}`}
-			className="chart-map-land is-data"
+			{...focusableProps}
+			className={classNames('chart-map-land', 'is-data', {
+				'is-active': isActive,
+			})}
 			d={countryPath}
 			data-country={countryCode}
-			role="img"
-			style={{'--country-fill': color} as React.CSSProperties}
-			tabIndex={0}
+			ref={ref}
+			style={
+				{
+					'--country-delay': `${delayMs}ms`,
+					'--country-fill': color,
+				} as React.CSSProperties
+			}
 		/>
 	);
-}
+});
+
+export default MapChartCountryFill;

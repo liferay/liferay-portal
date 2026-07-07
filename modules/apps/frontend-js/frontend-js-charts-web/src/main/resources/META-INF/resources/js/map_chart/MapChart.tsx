@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React, {useId, useMemo} from 'react';
+import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import MapChartPlot from './components/MapChartPlot';
 import MapChartSummary from './components/MapChartSummary';
+import MapChartTooltip from './components/MapChartTooltip';
+import {useMapKeyboardNav} from './hooks/useMapKeyboardNav';
 import {MapChartProps} from './types/MapChartProps';
 import {getBlueSchemeColor} from './utils/blueSchemeColors';
 import {getCategoricalSchemeColor} from './utils/categoricalSchemeColors';
@@ -15,6 +17,7 @@ import {
 	getEffectiveBucketCount,
 } from './utils/computeQuantileBuckets';
 import {getClampedSteps} from './utils/getClampedSteps';
+import {getMatchedDataIndices} from './utils/getMatchedDataIndices';
 
 import '../../css/MapChart.scss';
 
@@ -38,6 +41,16 @@ export default function MapChart({
 	const baseId = useId();
 	const titleId = `${baseId}-title`;
 	const summaryId = `${baseId}-summary`;
+
+	const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+	const [focusIndex, setFocusIndex] = useState<number | null>(null);
+
+	const activeIndex = focusIndex ?? hoverIndex;
+
+	const itemRefs = useRef<(SVGGraphicsElement | null)[]>([]);
+	const itemRefCallbacks = useRef<
+		((element: SVGGraphicsElement | null) => void)[]
+	>([]);
 
 	const total = useMemo(
 		() => data.reduce((sum, datum) => sum + Math.max(0, datum.value), 0),
@@ -64,6 +77,50 @@ export default function MapChart({
 		[data, scheme, bucketCount, buckets]
 	);
 
+	const validIndices = useMemo(() => getMatchedDataIndices(data), [data]);
+
+	const focusableIndex =
+		focusIndex !== null && validIndices.includes(focusIndex)
+			? focusIndex
+			: validIndices[0] ?? null;
+
+	const focusItem = useCallback((index: number) => {
+		setFocusIndex(index);
+
+		itemRefs.current[index]?.focus();
+	}, []);
+
+	const onKeyDown = useMapKeyboardNav(validIndices, focusItem);
+
+	const itemRefFactory = useCallback((index: number) => {
+		if (!itemRefCallbacks.current[index]) {
+			itemRefCallbacks.current[index] = (element) => {
+				itemRefs.current[index] = element;
+			};
+		}
+
+		return itemRefCallbacks.current[index];
+	}, []);
+
+	const clearFocus = useCallback(() => setFocusIndex(null), []);
+	const clearHover = useCallback(() => setHoverIndex(null), []);
+
+	const legendElement = (
+		<MapChartLegend
+			activeIndex={activeIndex}
+			bucketCount={bucketCount}
+			colors={colors}
+			data={data}
+			legend={legend}
+			onFocus={focusItem}
+			onHover={setHoverIndex}
+			onHoverEnd={clearHover}
+			scheme={scheme}
+			titleId={titleId}
+			total={total}
+		/>
+	);
+
 	return (
 		<figure
 			aria-describedby={summaryId}
@@ -76,12 +133,30 @@ export default function MapChart({
 
 			<MapChartSummary data={data} id={summaryId} total={total} />
 
-			<MapChartPlot
-				colors={colors}
-				data={data}
-				titleId={titleId}
-				variant={variant}
-			/>
+			<div className="chart-map-body">
+				<MapChartPlot
+					activeIndex={activeIndex}
+					baseId={baseId}
+					colors={colors}
+					data={data}
+					focusIndex={focusIndex}
+					focusableIndex={focusableIndex}
+					itemRefFactory={itemRefFactory}
+					onBlur={clearFocus}
+					onFocus={focusItem}
+					onHover={setHoverIndex}
+					onHoverEnd={clearHover}
+					onKeyDown={onKeyDown}
+					titleId={titleId}
+					variant={variant}
+				/>
+
+				{activeIndex !== null && data[activeIndex] ? (
+					<MapChartTooltip datum={data[activeIndex]} />
+				) : null}
+			</div>
+
+			{legend === 'list' ? null : legendElement}
 		</figure>
 	);
 }
