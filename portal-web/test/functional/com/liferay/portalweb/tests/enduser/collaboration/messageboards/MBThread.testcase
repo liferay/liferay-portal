@@ -168,46 +168,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanMoveMBCategory1ThreadToCategory2 {
-		JSONMBMessage.addCategory(
-			categoryDescription = "MB Category Description",
-			categoryName = "MB Category1 Name",
-			userEmailAddress = "test@liferay.com");
-
-		JSONMBMessage.addCategory(
-			categoryDescription = "MB Category Description",
-			categoryName = "MB Category2 Name",
-			userEmailAddress = "test@liferay.com");
-
-		JSONMBMessage.addMessage(
-			categoryName = "MB Category1 Name",
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.movePG(
-			categoryName = "MB Category2 Name",
-			categoryName1 = "MB Category1 Name",
-			categoryName2 = "MB Category2 Name",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToThread(
-			categoryName = "MB Category2 Name",
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.viewPG(
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-	}
-
-	@priority = 4
-	@refactordone
 	test CanRestoreThreadWithAttachment {
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",

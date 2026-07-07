@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -193,4 +194,63 @@ test('Can cancel editing a thread', async ({
 	// The original subject is preserved
 
 	await expect(page.getByTestId('headerTitle')).toHaveText(headline);
+});
+
+test('Can move a thread from one category to another', async ({
+	apiHelpers,
+	messageBoardsPage,
+	page,
+	site,
+}) => {
+	const sourceCategory =
+		await apiHelpers.headlessDelivery.postSiteMessageBoardSection({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+	const targetCategory =
+		await apiHelpers.headlessDelivery.postSiteMessageBoardSection({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+	const headline = getRandomString();
+
+	await apiHelpers.headlessDelivery.postMessageBoardSectionMessageBoardThread(
+		{
+			articleBody: getRandomString(),
+			headline,
+			messageBoardSectionId: String(sourceCategory.id),
+		}
+	);
+
+	await messageBoardsPage.goto(site.friendlyUrlPath);
+
+	// Open the source category and move its thread to the target category
+
+	await page.getByRole('link', {name: sourceCategory.title}).click();
+
+	await page.waitForLoadState('networkidle');
+
+	await openThreadRowAction({name: 'Move', page});
+
+	await page.getByRole('button', {exact: true, name: 'Select'}).click();
+
+	await page
+		.frameLocator('iframe[title="Select Category"]')
+		.getByRole('row', {name: targetCategory.title})
+		.getByRole('button', {name: 'Select'})
+		.click();
+
+	await page.getByRole('button', {exact: true, name: 'Move'}).click();
+
+	await waitForAlert(page);
+
+	// The thread now lives under the target category
+
+	await messageBoardsPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: targetCategory.title}).click();
+
+	await expect(page.getByRole('link', {name: headline})).toBeVisible();
 });
