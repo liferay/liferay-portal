@@ -2,6 +2,6 @@
 
 <Configuration strict="true">
 	<Loggers>
-		<Logger level="INFO" name="com.liferay.portal.db.migration.schema.exporter.internal.exporter.DBMigrationSchemaExport" />
+		<Logger level="INFO" name="com.liferay.portal.db.migration.schema.exporter.internal.exporter.DBMigrationSchemaExporterImpl" />
 	</Loggers>
 </Configuration>
