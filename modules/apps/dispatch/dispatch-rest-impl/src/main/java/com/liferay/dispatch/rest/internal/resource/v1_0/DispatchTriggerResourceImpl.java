@@ -67,10 +67,11 @@ public class DispatchTriggerResourceImpl
 
 		Message message = new Message();
 
-		com.liferay.dispatch.model.DispatchTrigger dispatchTrigger =
-			_dispatchTriggerService.getDispatchTrigger(dispatchTriggerId);
+		com.liferay.dispatch.model.DispatchTrigger
+			serviceBuilderDispatchTrigger =
+				_dispatchTriggerService.getDispatchTrigger(dispatchTriggerId);
 
-		message.put("companyId", dispatchTrigger.getCompanyId());
+		message.put("companyId", serviceBuilderDispatchTrigger.getCompanyId());
 
 		message.setPayload(
 			JSONUtil.put(
