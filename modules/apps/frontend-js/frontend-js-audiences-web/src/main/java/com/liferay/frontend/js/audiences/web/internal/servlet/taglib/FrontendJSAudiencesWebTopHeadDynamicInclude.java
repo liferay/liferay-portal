@@ -55,10 +55,10 @@ public class FrontendJSAudiencesWebTopHeadDynamicInclude
 			return;
 		}
 
-		String layoutMode = ParamUtil.getString(
+		String mode = ParamUtil.getString(
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
-		if (!Objects.equals(layoutMode, Constants.VIEW)) {
+		if (!Objects.equals(mode, Constants.VIEW)) {
 			return;
 		}
 
