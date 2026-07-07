@@ -718,6 +718,12 @@ public class ObjectServiceUpgradeStepRegistrator
 			"12.1.1", "13.0.0",
 			new com.liferay.object.internal.upgrade.v13_0_0.
 				ObjectEntryIndexedColumnSizeUpgradeProcess());
+
+		registry.register(
+			"13.0.0", "13.1.0",
+			new com.liferay.object.internal.upgrade.v13_1_0.
+				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
+					_systemObjectDefinitionManagerRegistry));
 	}
 
 	@Reference
