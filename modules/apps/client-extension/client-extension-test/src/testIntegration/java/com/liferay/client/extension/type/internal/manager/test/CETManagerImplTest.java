@@ -44,8 +44,8 @@ public class CETManagerImplTest {
 	public void testGetCET() throws Exception {
 		_testGetCETIsCached();
 		_testGetCETIsRebuiltAfterUpdate();
-		_testGetCETsReturnsOnlyRequestedType();
 		_testGetCETWithMissingExternalReferenceCode();
+		_testGetCETsReturnsOnlyRequestedType();
 	}
 
 	@Rule
