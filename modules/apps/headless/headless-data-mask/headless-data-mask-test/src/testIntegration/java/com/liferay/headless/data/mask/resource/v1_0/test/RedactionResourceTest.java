@@ -6,8 +6,7 @@
 package com.liferay.headless.data.mask.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewRequest;
-import com.liferay.headless.data.mask.client.dto.v1_0.DataMaskPreviewResult;
+import com.liferay.headless.data.mask.client.dto.v1_0.Redaction;
 import com.liferay.headless.data.mask.client.problem.Problem;
 
 import org.junit.Assert;
@@ -18,73 +17,62 @@ import org.junit.runner.RunWith;
  * @author Jose Luis Navarro
  */
 @RunWith(Arquillian.class)
-public class DataMaskResourceTest extends BaseDataMaskResourceTestCase {
+public class RedactionResourceTest extends BaseRedactionResourceTestCase {
 
 	@Override
 	@Test
-	public void testPostDataMaskPreview() throws Exception {
-		super.testPostDataMaskPreview();
-
+	public void testGetRedaction() throws Exception {
 		_testRedactsWithReplacementRegex();
 		_testReturnsErrorForInvalidRegex();
 		_testThrowsForMissingRequiredFields();
 	}
 
-	private DataMaskPreviewResult _previewDataMask(
+	private Redaction _getRedaction(
 			String detectionRegex, String replacementRegex,
-			String replacementValue, String sampleText)
+			String replacementValue, String text)
 		throws Exception {
 
-		DataMaskPreviewRequest dataMaskPreviewRequest =
-			new DataMaskPreviewRequest();
-
-		dataMaskPreviewRequest.setDetectionRegex(detectionRegex);
-		dataMaskPreviewRequest.setReplacementRegex(replacementRegex);
-		dataMaskPreviewRequest.setReplacementValue(replacementValue);
-		dataMaskPreviewRequest.setSampleText(sampleText);
-
-		return dataMaskResource.postDataMaskPreview(dataMaskPreviewRequest);
+		return redactionResource.getRedaction(
+			detectionRegex, replacementRegex, replacementValue, text);
 	}
 
 	private void _testRedactsWithReplacementRegex() throws Exception {
-		DataMaskPreviewResult dataMaskPreviewResult = _previewDataMask(
+		Redaction redaction = _getRedaction(
 			"\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b",
 			"(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\.\\d{1,3}", "$1.0/24",
 			"Connected from 192.168.1.42");
 
-		Assert.assertNull(dataMaskPreviewResult.getError());
+		Assert.assertNull(redaction.getError());
 		Assert.assertEquals(
-			"Connected from 192.168.1.0/24", dataMaskPreviewResult.getOutput());
+			"Connected from 192.168.1.0/24", redaction.getOutput());
 	}
 
 	private void _testReturnsErrorForInvalidRegex() throws Exception {
-		DataMaskPreviewResult dataMaskPreviewResult = _previewDataMask(
+		Redaction redaction = _getRedaction(
 			"[unclosed", null, "[REDACTED]", "anything");
 
-		Assert.assertNotNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals("anything", dataMaskPreviewResult.getOutput());
+		Assert.assertNotNull(redaction.getError());
+		Assert.assertEquals("anything", redaction.getOutput());
 
-		dataMaskPreviewResult = _previewDataMask(
+		redaction = _getRedaction(
 			_EMAIL_DETECTION_REGEX, "[unclosed", "[REDACTED]",
 			"alice@example.com");
 
-		Assert.assertNotNull(dataMaskPreviewResult.getError());
-		Assert.assertEquals(
-			"alice@example.com", dataMaskPreviewResult.getOutput());
+		Assert.assertNotNull(redaction.getError());
+		Assert.assertEquals("alice@example.com", redaction.getOutput());
 	}
 
 	private void _testThrowsForMissingRequiredFields() {
 		Assert.assertThrows(
 			Problem.ProblemException.class,
-			() -> _previewDataMask(null, null, "[REDACTED]", "anything"));
+			() -> _getRedaction(null, null, "[REDACTED]", "anything"));
 		Assert.assertThrows(
 			Problem.ProblemException.class,
-			() -> _previewDataMask(
+			() -> _getRedaction(
 				_EMAIL_DETECTION_REGEX, null, null, "anything"));
 		Assert.assertThrows(
 			Problem.ProblemException.class,
-			() -> _previewDataMask(
-				_EMAIL_DETECTION_REGEX, null, "[EMAIL]", null));
+			() -> _getRedaction(_EMAIL_DETECTION_REGEX, null, "[EMAIL]", null));
 	}
 
 	private static final String _EMAIL_DETECTION_REGEX =
