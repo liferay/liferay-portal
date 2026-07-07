@@ -70,10 +70,10 @@ public class MCPServerDataMaskingTest {
 		MCPServerDataMaskTestUtil.updateMCPServerConfiguration(true);
 
 		String dataMaskingPrefix =
-			".com.liferay.headless.data.masking.internal.batch.";
+			".com.liferay.headless.data.mask.internal.batch.";
 
 		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.headless.data.masking.impl",
+			"com.liferay.headless.data.mask.impl",
 			MCPServerDataMaskingTest.class,
 			new String[] {
 				dataMaskingPrefix + "01.list.type.definition",
