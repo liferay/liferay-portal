@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeServiceWrapper;
 import com.liferay.portal.kernel.service.ServiceWrapper;
@@ -33,8 +35,13 @@ public class DepotLayoutSetPrototypeServiceWrapper
 		OrderByComparator<LayoutSetPrototype> orderByComparator) {
 
 		try {
-			if (PermissionUtil.hasCMSAdministratorRole(companyId) ||
-				PermissionUtil.isDepotGroupAdminOrOwner(companyId)) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			long userId = permissionChecker.getUserId();
+
+			if (PermissionUtil.hasCMSAdministratorRole(companyId, userId) ||
+				PermissionUtil.isDepotGroupAdminOrOwner(companyId, userId)) {
 
 				return _layoutSetPrototypeLocalService.search(
 					companyId, active, start, end, orderByComparator);
@@ -54,8 +61,13 @@ public class DepotLayoutSetPrototypeServiceWrapper
 	@Override
 	public int searchCount(long companyId, Boolean active) {
 		try {
-			if (PermissionUtil.hasCMSAdministratorRole(companyId) ||
-				PermissionUtil.isDepotGroupAdminOrOwner(companyId)) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			long userId = permissionChecker.getUserId();
+
+			if (PermissionUtil.hasCMSAdministratorRole(companyId, userId) ||
+				PermissionUtil.isDepotGroupAdminOrOwner(companyId, userId)) {
 
 				return _layoutSetPrototypeLocalService.searchCount(
 					companyId, active);

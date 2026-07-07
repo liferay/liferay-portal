@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
@@ -21,7 +20,7 @@ import com.liferay.portal.security.permission.PermissionCacheUtil;
  */
 public class PermissionUtil {
 
-	public static boolean hasCMSAdministratorRole(long companyId)
+	public static boolean hasCMSAdministratorRole(long companyId, long userId)
 		throws PortalException {
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
@@ -29,23 +28,20 @@ public class PermissionUtil {
 		}
 
 		Boolean value = PermissionCacheUtil.getUserPrimaryKeyRole(
-			GuestOrUserUtil.getUserId(), companyId,
-			RoleConstants.CMS_ADMINISTRATOR);
+			userId, companyId, RoleConstants.CMS_ADMINISTRATOR);
 
 		if (value == null) {
 			value = RoleLocalServiceUtil.hasUserRole(
-				GuestOrUserUtil.getUserId(), companyId,
-				RoleConstants.CMS_ADMINISTRATOR, true);
+				userId, companyId, RoleConstants.CMS_ADMINISTRATOR, true);
 
 			PermissionCacheUtil.putUserPrimaryKeyRole(
-				GuestOrUserUtil.getUserId(), companyId,
-				RoleConstants.CMS_ADMINISTRATOR, value);
+				userId, companyId, RoleConstants.CMS_ADMINISTRATOR, value);
 		}
 
 		return value;
 	}
 
-	public static boolean isDepotGroupAdminOrOwner(long companyId)
+	public static boolean isDepotGroupAdminOrOwner(long companyId, long userId)
 		throws PortalException {
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
@@ -58,8 +54,7 @@ public class PermissionUtil {
 			companyId, DepotRolesConstants.ASSET_LIBRARY_OWNER);
 
 		for (UserGroupRole userGroupRole :
-				UserGroupRoleLocalServiceUtil.getUserGroupRoles(
-					GuestOrUserUtil.getUserId())) {
+				UserGroupRoleLocalServiceUtil.getUserGroupRoles(userId)) {
 
 			long roleId = userGroupRole.getRoleId();
 

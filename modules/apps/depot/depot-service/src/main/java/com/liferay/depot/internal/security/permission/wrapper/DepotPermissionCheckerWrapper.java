@@ -265,9 +265,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 			else if (actionId.equals(ActionKeys.VIEW) && group.isSite()) {
 				try {
 					return PermissionUtil.hasCMSAdministratorRole(
-						group.getCompanyId()) ||
+						group.getCompanyId(), getUserId()) ||
 						   PermissionUtil.isDepotGroupAdminOrOwner(
-							   group.getCompanyId());
+							   group.getCompanyId(), getUserId());
 				}
 				catch (PortalException portalException) {
 					_log.error(portalException);
@@ -284,7 +284,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 				try {
 					if (PermissionUtil.hasCMSAdministratorRole(
-							getCompanyId())) {
+							getCompanyId(), getUserId())) {
 
 						return true;
 					}
@@ -352,7 +352,8 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 			return false;
 		}
 
-		return PermissionUtil.hasCMSAdministratorRole(group.getCompanyId());
+		return PermissionUtil.hasCMSAdministratorRole(
+			group.getCompanyId(), getUserId());
 	}
 
 	private boolean _isContentReviewer(Group group) throws PortalException {
