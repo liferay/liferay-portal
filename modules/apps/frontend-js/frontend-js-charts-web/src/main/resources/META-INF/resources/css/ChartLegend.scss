@@ -1,0 +1,157 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'atlas-custom-properties/_variables';
+
+// Shared legend styling for every chart. Each chart supplies its own row visual
+// (a color swatch, a line marker) as an opaque node; everything else — the
+// compact list, the detail table, the active/hover states — is common.
+
+.charts-legend {
+	display: grid;
+	font-size: 0.8125rem;
+	gap: 0.25rem 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	list-style: none;
+	margin: 0.75rem 0 0;
+	padding: 0;
+
+	&__item {
+		align-items: center;
+		border-radius: 4px;
+		color: $dark;
+		cursor: pointer;
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: auto 1fr auto;
+		padding: 0.125rem 0.375rem;
+		transition:
+			background 140ms ease,
+			color 140ms ease;
+
+		&.is-active {
+			background: $primary;
+			color: $white;
+
+			.charts-legend__value {
+				color: $white;
+			}
+
+			.charts-legend__swatch {
+				border-color: $white;
+			}
+		}
+	}
+
+	&__swatch {
+		border: 1px solid $dark-d1;
+		border-radius: 2px;
+		display: inline-block;
+		height: 12px;
+		vertical-align: middle;
+		width: 12px;
+	}
+
+	&__label {
+		font-weight: 400;
+	}
+
+	&__value {
+		color: $dark;
+		font-variant-numeric: tabular-nums;
+		font-weight: 700;
+	}
+}
+
+.charts-legend-table {
+	border-collapse: collapse;
+	color: $dark;
+	font-size: 0.8125rem;
+	font-variant-numeric: tabular-nums;
+	margin-top: 1rem;
+	max-width: 720px;
+	width: 100%;
+
+	&__th {
+		border-bottom: 1px solid $light-d1;
+		color: $dark;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		opacity: 0.7;
+		padding: 0.375rem 0.625rem;
+		text-align: left;
+		text-transform: uppercase;
+		white-space: nowrap;
+
+		&--rank {
+			text-align: right;
+			width: 2.5rem;
+		}
+
+		&--visual {
+			padding-left: 0;
+			padding-right: 0;
+			width: 2rem;
+		}
+
+		&--number {
+			text-align: right;
+		}
+	}
+
+	&__row {
+		cursor: pointer;
+		transition:
+			background 140ms ease,
+			color 140ms ease;
+
+		&:hover {
+			background: $light;
+		}
+
+		&.is-active {
+			background: $primary;
+			color: $white;
+
+			.charts-legend__swatch {
+				border-color: $white;
+			}
+
+			.charts-legend-table__cell {
+				color: $white;
+			}
+		}
+	}
+
+	&__cell {
+		border-bottom: 1px solid $light-d1;
+		color: $dark;
+		font-weight: 400;
+		padding: 0.375rem 0.625rem;
+
+		&--rank {
+			opacity: 0.75;
+			text-align: right;
+			width: 2.5rem;
+		}
+
+		&--visual {
+			padding-left: 0;
+			padding-right: 0;
+			vertical-align: middle;
+			width: 2rem;
+		}
+
+		&--label {
+			font-weight: 500;
+			text-align: left;
+		}
+
+		&--number {
+			text-align: right;
+		}
+	}
+}

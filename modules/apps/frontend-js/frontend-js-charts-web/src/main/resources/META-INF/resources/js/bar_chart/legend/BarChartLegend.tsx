@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import React, {useMemo} from 'react';
 
-import BarChartLegendList from './BarChartLegendList';
-import BarChartLegendTable from './BarChartLegendTable';
+import ChartLegend from '../../chart_legend/ChartLegend';
 
+import type {
+	ChartLegendColumn,
+	ChartLegendItem,
+} from '../../chart_legend/types';
 import type {BarChartLegend as BarChartLegendType, BarDatum} from '../types';
 
 interface Props {
@@ -22,6 +25,10 @@ interface Props {
 	total: number;
 }
 
+function formatShare(value: number, total: number): string {
+	return `${(total === 0 ? 0 : (value / total) * 100).toFixed(1)}%`;
+}
+
 export default function BarChartLegend({
 	activeIndex,
 	colorFor,
@@ -33,34 +40,47 @@ export default function BarChartLegend({
 	titleId,
 	total,
 }: Props) {
-	if (layout === 'list') {
-		return (
-			<BarChartLegendList
-				activeIndex={activeIndex}
-				colorFor={colorFor}
-				data={data}
-				onActivate={onActivate}
-				onDeactivate={onDeactivate}
-				onSelect={onSelect}
-				total={total}
-			/>
-		);
-	}
+	const items = useMemo<ChartLegendItem[]>(
+		() =>
+			data.map((datum, index) => ({
+				active: activeIndex === index,
+				id: index,
+				label: datum.label,
+				listValue: formatShare(datum.value, total),
+				sortValue: datum.value,
+				visual: (
+					<span
+						className="charts-legend__swatch"
+						style={{background: colorFor(index)}}
+					/>
+				),
+			})),
+		[activeIndex, colorFor, data, total]
+	);
 
-	if (layout === 'table') {
-		return (
-			<BarChartLegendTable
-				activeIndex={activeIndex}
-				colorFor={colorFor}
-				data={data}
-				onActivate={onActivate}
-				onDeactivate={onDeactivate}
-				onSelect={onSelect}
-				titleId={titleId}
-				total={total}
-			/>
-		);
-	}
+	const columns = useMemo<ChartLegendColumn[]>(
+		() => [
+			{
+				label: Liferay.Language.get('value'),
+				render: (item) => data[item.id].value.toLocaleString(),
+			},
+			{
+				label: Liferay.Language.get('share'),
+				render: (item) => formatShare(data[item.id].value, total),
+			},
+		],
+		[data, total]
+	);
 
-	return null;
+	return (
+		<ChartLegend
+			columns={columns}
+			items={items}
+			layout={layout}
+			onActivate={onActivate}
+			onDeactivate={onDeactivate}
+			onSelect={onSelect}
+			titleId={titleId}
+		/>
+	);
 }
