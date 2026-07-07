@@ -5,6 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.resource.v1_0.StyleBookResource;
@@ -61,6 +64,8 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 		_checkFeatureFlag();
 
+		_getDesignLibraryGroupId(designLibraryExternalReferenceCode);
+
 		StyleBookEntry styleBookEntry = _getStyleBookEntry(
 			designLibraryExternalReferenceCode, styleBookExternalReferenceCode);
 
@@ -91,6 +96,8 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 		_checkFeatureFlag();
 
+		_getDesignLibraryGroupId(designLibraryExternalReferenceCode);
+
 		return _toStyleBook(
 			_getStyleBookEntry(
 				designLibraryExternalReferenceCode,
@@ -106,7 +113,8 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 		_checkFeatureFlag();
 
-		long groupId = _getGroupId(designLibraryExternalReferenceCode);
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
 
 		OrderByComparator<StyleBookEntry> orderByComparator =
 			_getStyleBookEntryOrderByComparator(sorts);
@@ -261,6 +269,26 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		}
 	}
 
+	private long _getDesignLibraryGroupId(
+			String designLibraryExternalReferenceCode)
+		throws Exception {
+
+		long groupId = _getGroupId(designLibraryExternalReferenceCode);
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			groupId);
+
+		if ((depotEntry == null) ||
+			(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+			throw new NotFoundException(
+				"Unable to find design library with external reference code '" +
+					designLibraryExternalReferenceCode + "'");
+		}
+
+		return groupId;
+	}
+
 	private long _getGroupId(String siteExternalReferenceCode) {
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
 			siteExternalReferenceCode, contextCompany.getCompanyId());
@@ -399,6 +427,9 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 		return styleBook;
 	}
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

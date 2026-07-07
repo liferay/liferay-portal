@@ -10,6 +10,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
@@ -34,6 +35,24 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-57283")
 @RunWith(Arquillian.class)
 public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWhenGroupIsNotDesignLibrary()
+		throws Exception {
+
+		try {
+			styleBookResource.getDesignLibraryStyleBooksPage(
+				testGroup.getExternalReferenceCode(), null, null, null,
+				Pagination.of(1, 10), null);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
 
 	@Override
 	@Test
