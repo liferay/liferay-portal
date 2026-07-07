@@ -120,6 +120,16 @@
 		font-weight: 600;
 	}
 
+	// The corner chip is pinned to the canvas rather than anchored to a point,
+	// so it reads as primary (matching the legend active state) instead of the
+	// dark popover surface. White text keeps ~5:1 contrast on `$primary`.
+
+	&__tooltip--corner {
+		.charts-line-chart__tooltip-box {
+			fill: $primary;
+		}
+	}
+
 	// Marker legend icon (the series visual passed to the shared legend).
 
 	&__legend-icon {
