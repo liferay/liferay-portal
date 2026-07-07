@@ -501,6 +501,14 @@ test(
 				).toBeVisible();
 			}
 		});
+
+		await test.step('Switching to another view hides the panel', async () => {
+			await tasksPage.viewSelectorButton.click();
+
+			await tasksPage.dropdownTableViewButton.click();
+
+			await expect(calendarView.unscheduledTasksPanel).toBeHidden();
+		});
 	}
 );
 
