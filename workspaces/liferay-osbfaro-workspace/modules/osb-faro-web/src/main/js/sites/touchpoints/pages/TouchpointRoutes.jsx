@@ -21,6 +21,7 @@ import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {Switch, useHistory} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 const KnownIndividuals = lazy(() =>
@@ -74,6 +75,7 @@ function TouchpointRoutes({className, router}) {
 	const [selectedSegment, setSelectedSegment] = useState({});
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);
 	const history = useHistory();
+	const LDPEnabled = useLDPEnabled({groupId});
 
 	useEffect(() => {
 		setPathRangeSelectors(rangeSelectors);
@@ -124,14 +126,16 @@ function TouchpointRoutes({className, router}) {
 
 			{matchedRoute === Routes.SITES_TOUCHPOINTS_OVERVIEW && (
 				<BasePage.SubHeader>
-					<ExperienceDropdown
-						groupId={groupId}
-						onChange={experienceId => {
-							history.push(setUriQueryValues({experienceId}));
+					{LDPEnabled && (
+						<ExperienceDropdown
+							groupId={groupId}
+							onChange={experienceId => {
+								history.push(setUriQueryValues({experienceId}));
 
-							setExperienceId(experienceId);
-						}}
-					/>
+								setExperienceId(experienceId);
+							}}
+						/>
+					)}
 
 					<div className='d-flex justify-content-end w-100'>
 						<DropdownRangeKey
