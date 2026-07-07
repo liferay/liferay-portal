@@ -7,17 +7,17 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 import path from 'path';
 
-import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {loginTest} from '../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
-import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitchViaApi} from '../../../utils/performLogin';
-import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForAlert} from '../../../utils/waitForAlert';
-import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
-import {registerUserCredentials} from '../main/spaces/helpers/roleMembership';
-import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import getRandomString from '../../../../utils/getRandomString';
+import {performUserSwitchViaApi} from '../../../../utils/performLogin';
+import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {waitForAlert} from '../../../../utils/waitForAlert';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
+import {registerUserCredentials} from '../../../site-cms-site-initializer/main/spaces/helpers/roleMembership';
+import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -30,7 +30,7 @@ const test = mergeTests(
 );
 
 const IMAGE_BASE64 = readFileSync(
-	path.join(__dirname, '../main/dependencies/sample_small_wide_400x300.jpg')
+	path.join(__dirname, '../../dependencies/sample_small_wide_400x300.jpg')
 ).toString('base64');
 
 async function createSpace(apiHelpers: DataApiHelpers) {
@@ -75,31 +75,10 @@ async function addSpaceUser(
 	return user;
 }
 
-async function resolvePasswordResetWall(page: Page) {
-	const heading = page.getByRole('heading', {name: 'Change Password'});
-
-	const onWall = await heading
-		.waitFor({state: 'visible', timeout: 3000})
-		.then(() => true)
-		.catch(() => false);
-
-	if (!onWall) {
-		return;
-	}
-
-	await page.getByLabel('Password', {exact: true}).fill('newpassword1');
-	await page.getByLabel('Reenter Password').fill('newpassword1');
-	await page.getByRole('button', {name: 'Save'}).click();
-
-	await expect(heading).toBeHidden({timeout: 10000});
-}
-
 async function startSessionAs(page: Page, alternateName: string) {
 	await performUserSwitchViaApi(page, alternateName);
 
 	await page.goto(PORTLET_URLS.cmsHome, {waitUntil: 'domcontentloaded'});
-
-	await resolvePasswordResetWall(page);
 }
 
 // Publishing a structure edit that may impact stored data (such as removing a
