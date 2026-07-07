@@ -1271,6 +1271,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			widgetPageSettings.getLayoutTemplateId());
 	}
 
+	private Layout _createEmptyLayout(
+			ServiceContext serviceContext, SitePage sitePage)
+		throws Exception {
+
+		Layout layout;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			layout = _layoutLocalService.getOrAddEmptyLayout(
+				sitePage.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+				serviceContext);
+		}
+
+		Assert.assertEquals(WorkflowConstants.STATUS_EMPTY, layout.getStatus());
+
+		return layout;
+	}
+
 	private ObjectFieldSetting _createObjectFieldSetting(
 		String name, String value) {
 
@@ -3612,18 +3632,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		Layout layout;
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			layout = _layoutLocalService.getOrAddEmptyLayout(
-				sitePage.getExternalReferenceCode(),
-				TestPropsValues.getUserId(), testGroup.getGroupId(), false,
-				serviceContext);
-		}
-
-		Assert.assertEquals(WorkflowConstants.STATUS_EMPTY, layout.getStatus());
+		_createEmptyLayout(serviceContext, sitePage);
 
 		SitePage putSitePage = sitePageResource.putSiteSitePage(
 			testGroup.getExternalReferenceCode(),
@@ -3632,7 +3641,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		assertEquals(sitePage, putSitePage);
 		assertValid(putSitePage);
 
-		layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
 			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
 
 		_assertSitePage(layout, putSitePage);
@@ -3652,18 +3661,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		Layout layout;
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			layout = _layoutLocalService.getOrAddEmptyLayout(
-				sitePage.getExternalReferenceCode(),
-				TestPropsValues.getUserId(), testGroup.getGroupId(), false,
-				serviceContext);
-		}
-
-		Assert.assertEquals(WorkflowConstants.STATUS_EMPTY, layout.getStatus());
+		Layout layout = _createEmptyLayout(serviceContext, sitePage);
 
 		_assertProblemException(
 			"CONFLICT",
