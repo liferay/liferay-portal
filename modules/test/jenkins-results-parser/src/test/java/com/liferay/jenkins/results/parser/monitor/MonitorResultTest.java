@@ -47,24 +47,24 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testGetMostSevere() {
-		Assert.assertEquals(
+		testEquals(
 			MonitorResult.Status.UNKNOWN,
 			MonitorResult.Status.getMostSevere(
 				Collections.<MonitorResult.Status>emptyList()));
 
-		Assert.assertEquals(
+		testEquals(
 			MonitorResult.Status.OK,
 			MonitorResult.Status.getMostSevere(
 				Arrays.asList(
 					MonitorResult.Status.OK, MonitorResult.Status.OK)));
 
-		Assert.assertEquals(
+		testEquals(
 			MonitorResult.Status.UNKNOWN,
 			MonitorResult.Status.getMostSevere(
 				Arrays.asList(
 					MonitorResult.Status.OK, MonitorResult.Status.UNKNOWN)));
 
-		Assert.assertEquals(
+		testEquals(
 			MonitorResult.Status.CRITICAL,
 			MonitorResult.Status.getMostSevere(
 				Arrays.asList(

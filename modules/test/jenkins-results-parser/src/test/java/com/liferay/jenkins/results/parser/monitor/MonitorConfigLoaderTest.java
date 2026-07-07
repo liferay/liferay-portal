@@ -38,21 +38,20 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		Assert.assertEquals("masters", monitorConfig.getID());
-		Assert.assertEquals("http-endpoint", monitorConfig.getType());
-		Assert.assertEquals(
-			MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
-		Assert.assertEquals(900L, monitorConfig.getCadence());
+		testEquals("masters", monitorConfig.getID());
+		testEquals("http-endpoint", monitorConfig.getType());
+		testEquals(MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
+		testEquals(900L, monitorConfig.getCadence());
 
 		Map<String, String> parameters = monitorConfig.getParameters();
 
-		Assert.assertEquals(
+		testEquals(
 			"https://test-1-0.liferay.com/computer/api/json",
 			parameters.get("target"));
 
 		Map<String, String> thresholds = monitorConfig.getThresholds();
 
-		Assert.assertEquals("85", thresholds.get("disk"));
+		testEquals("85", thresholds.get("disk"));
 	}
 
 	@Test
