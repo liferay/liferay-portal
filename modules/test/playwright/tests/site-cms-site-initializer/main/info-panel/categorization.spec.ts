@@ -9,8 +9,8 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {
-	performLogout,
+import {
+	performUserSwitchViaApi,
 	userData,
 } from '../../../../utils/performLogin';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
@@ -22,6 +22,7 @@ const test = mergeTests(
 		'LPD-11235': {enabled: false},
 		'LPD-17564': {enabled: true},
 		'LPD-34594': {enabled: true},
+		'LPD-58677': {enabled: true},
 	}),
 	loginTest()
 );
@@ -196,9 +197,7 @@ test(
 			});
 
 			await test.step('Login as a space member and go to Info Panel Categorization tab', async () => {
-				await performLogout(page);
-
-				await performLogin(page, user.alternateName);
+				await performUserSwitchViaApi(page, user.alternateName);
 
 				await assetsPage.gotoAll();
 
@@ -236,9 +235,7 @@ test(
 			});
 		}
 		finally {
-			await performLogout(page);
-
-			await performLogin(page, 'test');
+			await performUserSwitchViaApi(page, 'test');
 
 			if (objectEntry?.id) {
 				await apiHelpers.objectEntry.deleteObjectEntry(
