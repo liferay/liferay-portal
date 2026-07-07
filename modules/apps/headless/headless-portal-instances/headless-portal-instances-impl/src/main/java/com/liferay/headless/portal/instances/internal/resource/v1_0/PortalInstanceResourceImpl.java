@@ -7,21 +7,43 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.Admin;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CompanyService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.EmailAddressValidatorFactory;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.felix.cm.file.ConfigurationHandler;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -128,6 +150,52 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 	}
 
 	@Override
+	public PortalInstanceExport postPortalInstanceExport(
+			String portalInstanceId)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-11342")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
+
+		Company company = _companyService.getCompanyByWebId(portalInstanceId);
+
+		long companyId = company.getCompanyId();
+
+		try {
+			_companyLocalService.exportCompany(companyId);
+
+			_exportConfigurations(companyId);
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to export portal instance " + portalInstanceId,
+				exception);
+
+			throw exception;
+		}
+
+		return new PortalInstanceExport() {
+			{
+				setExportedPartitionName(() -> "lexported_" + companyId);
+				setSourcePartitionName(
+					() ->
+						PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX +
+							companyId);
+			}
+		};
+	}
+
+	@Override
 	public void putPortalInstanceActivate(String portalInstanceId)
 		throws Exception {
 
@@ -147,6 +215,130 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		_companyService.updateCompany(
 			company.getCompanyId(), company.getVirtualHostname(),
 			company.getMx(), company.getMaxUsers(), false);
+	}
+
+	private void _exportConfigurations(long companyId) throws Exception {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			return;
+		}
+
+		Map<String, String> configurations = DBPartitionUtil.getConfigurations(
+			CompanyConstants.SYSTEM);
+
+		for (Map.Entry<String, String> entry : configurations.entrySet()) {
+			try {
+				ScopedConfiguration scopedConfiguration =
+					_getScopedConfiguration(entry.getKey(), entry.getValue());
+
+				if ((scopedConfiguration == null) ||
+					!_isApplicable(companyId, scopedConfiguration)) {
+
+					continue;
+				}
+
+				DBPartitionUtil.exportConfiguration(
+					companyId, scopedConfiguration.getConfigurationId(),
+					scopedConfiguration.getEncodedDictionary());
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to export configuration " + entry.getKey(),
+						exception);
+				}
+			}
+		}
+	}
+
+	private ScopedConfiguration _getScopedConfiguration(
+			String configurationId, String encodedDictionary)
+		throws Exception {
+
+		if (Validator.isNull(encodedDictionary)) {
+			return null;
+		}
+
+		Dictionary<String, String> dictionary = ConfigurationHandler.read(
+			new UnsyncByteArrayInputStream(
+				encodedDictionary.getBytes(StringPool.UTF8)));
+
+		Object value = dictionary.get(
+			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey());
+
+		if (value != null) {
+			return new ScopedConfiguration(
+				configurationId, encodedDictionary,
+				ExtendedObjectClassDefinition.Scope.GROUP,
+				GetterUtil.getLong(value));
+		}
+
+		value = dictionary.get(
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
+
+		if (value != null) {
+			return new ScopedConfiguration(
+				configurationId, encodedDictionary,
+				ExtendedObjectClassDefinition.Scope.COMPANY,
+				GetterUtil.getLong(value));
+		}
+
+		value = dictionary.get(
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+				getPropertyKey());
+
+		if (value != null) {
+			return new ScopedConfiguration(
+				configurationId, encodedDictionary,
+				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE,
+				GetterUtil.getString(value));
+		}
+
+		return null;
+	}
+
+	private boolean _isApplicable(
+			long companyId, ScopedConfiguration scopedConfiguration)
+		throws Exception {
+
+		if (Objects.equals(
+				scopedConfiguration.getScope(),
+				ExtendedObjectClassDefinition.Scope.COMPANY)) {
+
+			if (companyId == (long)scopedConfiguration.getScopePK()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (Objects.equals(
+				scopedConfiguration.getScope(),
+				ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+			long groupId = (long)scopedConfiguration.getScopePK();
+
+			Group group = _groupLocalService.fetchGroup(groupId);
+
+			if (group == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to export configuration ",
+							scopedConfiguration.getConfigurationId(),
+							" because group ", groupId, " does not exist"));
+				}
+
+				return false;
+			}
+
+			if (group.getCompanyId() == companyId) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 	private PortalInstance _toPortalInstance(Company company) {
@@ -178,7 +370,51 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		PortalInstanceResourceImpl.class);
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
 	@Reference
 	private CompanyService _companyService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	private static class ScopedConfiguration {
+
+		public ScopedConfiguration(
+			String configurationId, String encodedDictionary,
+			ExtendedObjectClassDefinition.Scope scope, Object scopePK) {
+
+			_configurationId = configurationId;
+			_encodedDictionary = encodedDictionary;
+			_scope = scope;
+			_scopePK = scopePK;
+		}
+
+		public String getConfigurationId() {
+			return _configurationId;
+		}
+
+		public String getEncodedDictionary() {
+			return _encodedDictionary;
+		}
+
+		public ExtendedObjectClassDefinition.Scope getScope() {
+			return _scope;
+		}
+
+		public Object getScopePK() {
+			return _scopePK;
+		}
+
+		private final String _configurationId;
+		private final String _encodedDictionary;
+		private final ExtendedObjectClassDefinition.Scope _scope;
+		private final Object _scopePK;
+
+	}
 
 }
