@@ -13,6 +13,7 @@ export class ProjectPage {
 	readonly assetsTab: Locator;
 	readonly deleteButton: Locator;
 	readonly detailsTab: Locator;
+	readonly matrixFilterButton: Locator;
 	readonly moreActionsButton: Locator;
 	readonly newButton: Locator;
 	readonly newTaskButton: Locator;
@@ -29,6 +30,9 @@ export class ProjectPage {
 		this.detailsTab = page.getByRole('tab', {
 			name: 'Details',
 		});
+		this.matrixFilterButton = page
+			.locator('.lfr-cmp__content-gap-cell-actions')
+			.getByRole('button', {name: 'Filter'});
 		this.moreActionsButton = page.getByRole('button', {
 			name: 'More Actions',
 		});
@@ -53,7 +57,31 @@ export class ProjectPage {
 		await this.getBreadcrumbAction('Edit').click();
 	}
 
+	async filterByMatrixCell(
+		persona: string,
+		funnelStage: string,
+		count: number
+	) {
+		await clickAndExpectToBeVisible({
+			target: this.matrixFilterButton,
+			trigger: this.getMatrixCell(persona, funnelStage, count),
+		});
+
+		await this.matrixFilterButton.click();
+	}
+
 	getBreadcrumbAction(filter: BreadcrumbActions) {
 		return this.page.getByRole('menuitem', {name: filter});
+	}
+
+	getMatrixCell(
+		persona: string,
+		funnelStage: string,
+		count: number
+	): Locator {
+		return this.page.getByRole('gridcell', {
+			exact: true,
+			name: `${persona}, ${funnelStage}: ${count}`,
+		});
 	}
 }
