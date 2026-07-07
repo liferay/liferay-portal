@@ -159,47 +159,6 @@ definition {
 
 	@priority = 3
 	@refactordone
-	test CanSplitThread {
-		property portal.acceptance = "false";
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		JSONMBMessage.addMessageReply(
-			groupName = "Guest",
-			replyBody = "MB Thread Reply Body",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToThread(
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.splitThreadPG(
-			threadBody = "MB Thread Message Body",
-			threadReplyBody = "MB Thread Reply Body",
-			threadSplitReplyBody = "Split Reply Thread Body",
-			threadSplitReplySubject = "Split Reply Thread Subject",
-			threadSplitSubject = "MB Thread Split Subject",
-			threadSubject = "MB Thread Message Subject");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.viewSplitThreadPG(
-			pageName = "Message Boards Page",
-			threadBody = "MB Thread Message Body",
-			threadReplyBody = "MB Thread Reply Body",
-			threadSplitReplyBody = "Split Reply Thread Body",
-			threadSplitReplySubject = "Split Reply Thread Subject",
-			threadSplitSubject = "MB Thread Split Subject",
-			threadSubject = "MB Thread Message Subject");
-	}
-
-	@priority = 3
-	@refactordone
 	test CanViewMBThreadReplyViaMoreMessages {
 		property custom.properties = "discussion.comments.delta.value=5";
 		property portal.acceptance = "false";
