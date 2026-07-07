@@ -1,16 +1,23 @@
-// The shared CMS `.fds-info-panel` rule offsets the panel by the breadcrumb
-// height alone. The project tasks views nest the FDS inside a tab navigation,
-// which adds a row above the table, so without accounting for it the panel is
-// left with a gap at its top. Pull it up by the tab navigation height as well.
-
 $cms-breadcrumb-height: 72px;
 $cms-tab-navigation-height: 48px;
 
 .lfr__cmp-unscheduled-tasks-panel {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	min-height: 0;
+	// Span the full right side of the page. The panel anchors to the top of
+	// the FDS container, so pull it up past the CMS breadcrumb and the
+	// project tab navigation above it.
+
+	top: -($cms-breadcrumb-height + $cms-tab-navigation-height);
+
+	// Match the panel width to the FDS container space. When the panel
+	// opens, the CMS increases the right padding of the FDS container by
+	// --cms-info-panel-width (472px), while the panel width comes from
+	// --sidebar-layout-width (defaults to 280px). Raise the width variable
+	// to the padding variable so the panel fills the padded space, on the
+	// same breakpoint the CMS uses.
+
+	@media (min-width: 576px) {
+		--sidebar-layout-width: var(--cms-info-panel-width);
+	}
 
 	.sidebar-body {
 		display: flex;
@@ -29,20 +36,5 @@ $cms-tab-navigation-height: 48px;
 	&-search {
 		flex-shrink: 0;
 		margin-bottom: 1rem;
-	}
-}
-
-.component-tabs {
-	.lfr-tooltip-scope
-		+ .cms-section
-		.fds-info-panel:has(.lfr__cmp-unscheduled-tasks-panel),
-	.lfr-tooltip-scope
-		+ .table-root
-		.fds-info-panel:has(.lfr__cmp-unscheduled-tasks-panel) {
-		top: -($cms-breadcrumb-height + $cms-tab-navigation-height);
-	}
-
-	button.nav-link-monospaced:has(.lexicon-icon-info-circle-open) {
-		display: none;
 	}
 }

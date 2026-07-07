@@ -11,7 +11,6 @@ import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayList from '@clayui/list';
 import {FrontendDataSetContext} from '@liferay/frontend-data-set-web';
-import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
 import React, {useContext, useMemo, useState} from 'react';
 
@@ -19,14 +18,23 @@ import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../../../../utils/types';
 import StateLabel from '../../../../StateLabel';
 import sortTasksByPriority from '../utils/sortTasksByPriority';
-import {unscheduledTasksAtom} from '../utils/unscheduledTasksAtom';
 
 import './UnscheduledTasksPanel.scss';
 
-export default function UnscheduledTasksPanel() {
-	const {itemsActions, loadData} = useContext(FrontendDataSetContext);
+interface UnscheduledTasksPanelProps {
+	containerRef: React.RefObject<HTMLElement>;
+	onOpenChange: (open: boolean) => void;
+	open: boolean;
+	tasks: ITaskObjectEntry[];
+}
 
-	const [tasks] = useLiferayState<ITaskObjectEntry[]>(unscheduledTasksAtom);
+export default function UnscheduledTasksPanel({
+	containerRef,
+	onOpenChange,
+	open,
+	tasks,
+}: UnscheduledTasksPanelProps) {
+	const {itemsActions, loadData} = useContext(FrontendDataSetContext);
 
 	const [query, setQuery] = useState('');
 
@@ -41,9 +49,12 @@ export default function UnscheduledTasksPanel() {
 	}, [query, tasks]);
 
 	return (
-		<div
+		<SidePanel
 			className="lfr__cmp-unscheduled-tasks-panel"
+			containerRef={containerRef}
 			data-testid="calendarUnscheduledTasksPanel"
+			onOpenChange={onOpenChange}
+			open={open}
 		>
 			<SidePanel.Header>
 				<SidePanel.Title>
@@ -153,6 +164,6 @@ export default function UnscheduledTasksPanel() {
 					</ClayEmptyState>
 				)}
 			</SidePanel.Body>
-		</div>
+		</SidePanel>
 	);
 }

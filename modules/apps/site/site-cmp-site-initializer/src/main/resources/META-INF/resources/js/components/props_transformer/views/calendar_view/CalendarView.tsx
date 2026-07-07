@@ -13,7 +13,6 @@ import {
 	FrontendDataSetContext,
 	IItemsActions,
 } from '@liferay/frontend-data-set-web';
-import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import classNames from 'classnames';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
@@ -25,7 +24,7 @@ import CreateTaskModal from '../../../modal/CreateTaskModal';
 import {UPDATE_TASKS_QUICK_FILTER_VISIBILITY} from '../../../task/TasksQuickFilters';
 import CalendarMoreLinkPopover from './components/CalendarMoreLinkPopover';
 import CalendarTaskCard from './components/CalendarTaskCard';
-import {unscheduledTasksAtom} from './utils/unscheduledTasksAtom';
+import UnscheduledTasksPanel from './components/UnscheduledTasksPanel';
 
 import './CalendarView.scss';
 
@@ -50,21 +49,20 @@ export default function CalendarView({
 	projectId,
 	projectObjectDefinitionId,
 }: CalendarViewProps) {
-	const {loadData, onInfoPanelToggleButtonClick} = useContext(
-		FrontendDataSetContext
-	);
+	const {loadData} = useContext(FrontendDataSetContext);
 
 	const calendarRef = useRef<FullCalendar>(null);
 	const calendarViewRef = useRef<HTMLDivElement>(null);
 
 	const [datePickerExpanded, setDatePickerExpanded] = useState(false);
 	const [datePickerValue, setDatePickerValue] = useState('');
+	const [fdsContainerElement, setFDSContainerElement] =
+		useState<HTMLElement | null>(null);
 	const [moreLinkPopover, setMoreLinkPopover] =
 		useState<MoreLinkPopover | null>(null);
 	const [title, setTitle] = useState('');
-
-	const [, setUnscheduledTasks] =
-		useLiferayState<ITaskObjectEntry[]>(unscheduledTasksAtom);
+	const [unscheduledTasksPanelOpen, setUnscheduledTasksPanelOpen] =
+		useState(false);
 
 	const events = useMemo(
 		() =>
@@ -94,12 +92,44 @@ export default function CalendarView({
 		[items]
 	);
 
-	// Share the unscheduled tasks with the info panel component, since the FDS
-	// core provides the info panel with only the currently selected items.
+	// The unscheduled tasks panel pushes the whole FDS container aside, not
+	// just the calendar, so it anchors to the FDS root element. The FDS core
+	// does not expose that element, so resolve it from the DOM. Store it in
+	// state, not a ref: the panel reads the container in a layout effect
+	// that runs before this component's effects, and a ref mutation would
+	// never re-trigger it.
 
 	useEffect(() => {
-		setUnscheduledTasks(unscheduledTasks);
-	}, [setUnscheduledTasks, unscheduledTasks]);
+		setFDSContainerElement(
+			calendarViewRef.current?.closest<HTMLElement>('.fds') ?? null
+		);
+	}, []);
+
+	// The panel removes its layout classes from the FDS container only through
+	// the close transition, which never runs when this view unmounts with the
+	// panel open. Remove them on unmount so other views are not narrowed by
+	// leftover padding.
+
+	useEffect(() => {
+		if (!fdsContainerElement) {
+			return;
+		}
+
+		return () => {
+			fdsContainerElement.classList.remove(
+				'c-slideout-container',
+				'c-slideout-push-end',
+				'c-slideout-transition',
+				'c-slideout-transition-in',
+				'c-slideout-transition-out'
+			);
+		};
+	}, [fdsContainerElement]);
+
+	const fdsContainerRef = useMemo(
+		() => ({current: fdsContainerElement}),
+		[fdsContainerElement]
+	);
 
 	useEffect(() => {
 		Liferay.fire(UPDATE_TASKS_QUICK_FILTER_VISIBILITY, {visible: false});
@@ -161,8 +191,11 @@ export default function CalendarView({
 				>
 					{!!unscheduledTasks.length && (
 						<ClayButton
+							aria-pressed={unscheduledTasksPanelOpen}
 							displayType="warning"
-							onClick={() => onInfoPanelToggleButtonClick()}
+							onClick={() =>
+								setUnscheduledTasksPanelOpen((open) => !open)
+							}
 							outline
 							size="sm"
 						>
@@ -380,6 +413,15 @@ export default function CalendarView({
 					loadData={loadData}
 					onClose={() => setMoreLinkPopover(null)}
 					tasks={moreLinkPopover.tasks}
+				/>
+			)}
+
+			{fdsContainerElement && (
+				<UnscheduledTasksPanel
+					containerRef={fdsContainerRef}
+					onOpenChange={setUnscheduledTasksPanelOpen}
+					open={unscheduledTasksPanelOpen}
+					tasks={unscheduledTasks}
 				/>
 			)}
 		</div>
