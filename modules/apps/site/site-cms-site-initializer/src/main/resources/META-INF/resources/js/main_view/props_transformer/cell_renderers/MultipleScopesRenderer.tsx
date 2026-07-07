@@ -103,27 +103,23 @@ export default function MultipleScopesRenderer({
 		);
 	}
 
+	const scopesDisplay = (
+		<ScopesDisplay
+			allScopesLabel={Liferay.Language.get('all-spaces')}
+			availableInScopeLabel={Liferay.Language.get(
+				'available-in-spaces-x'
+			)}
+			scopes={spaceScopes}
+		/>
+	);
+
 	if (!renderProjects) {
-		return (
-			<ScopesDisplay
-				allScopesLabel={Liferay.Language.get('all-spaces')}
-				availableInScopeLabel={Liferay.Language.get(
-					'available-in-spaces-x'
-				)}
-				scopes={spaceScopes}
-			/>
-		);
+		return scopesDisplay;
 	}
 
 	return (
 		<span className="align-items-center c-gap-3 d-flex flex-wrap">
-			<ScopesDisplay
-				allScopesLabel={Liferay.Language.get('all-spaces')}
-				availableInScopeLabel={Liferay.Language.get(
-					'available-in-spaces-x'
-				)}
-				scopes={spaceScopes}
-			/>
+			{scopesDisplay}
 
 			<ScopesDisplay
 				allScopesLabel={Liferay.Language.get('all-projects')}
