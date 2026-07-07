@@ -22,6 +22,7 @@ import {
 import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
 import {useHistory, useLocation, useParams} from 'react-router-dom';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 const {cur: DEFAULT_CUR} = FaroConstants.pagination;
@@ -140,6 +141,7 @@ const List = () => {
 	const {selectedChannel} = useChannelContext();
 	const {channelId, groupId} = useParams();
 	const initialRangeSelectors = useQueryRangeSelectors();
+	const LDPEnabled = useLDPEnabled({groupId: groupId!});
 
 	const searchParams = new URLSearchParams(search);
 	const accountId = searchParams.get('accountId');
@@ -163,35 +165,42 @@ const List = () => {
 
 	const filters = useMemo(
 		() => [
-			{
-				apiURL: `/o/faro/contacts/${groupId}/account/search?channelId=${channelId}&filter=(rangeKey eq '${rangeSelectors.rangeKey}')`,
-				autocompleteEnabled: true,
-				entityFieldType: 'string',
-				id: 'accountIds',
-				itemKey: 'id',
-				itemLabel: 'accountName',
-				label: Liferay.Language.get('accounts'),
-				multiple: true,
-				...(accountId && {
-					preloadedData: {
-						selectedItems: [
-							{label: accountName || accountId, value: accountId},
-						],
-					},
-				}),
-				type: 'selection',
-			},
-			{
-				apiURL: `/o/faro/contacts/${groupId}/individual_segment/search?channelId=${channelId}&${rangeSelectorParams}`,
-				autocompleteEnabled: true,
-				entityFieldType: 'string',
-				id: 'segmentIds',
-				itemKey: 'id',
-				itemLabel: 'name',
-				label: Liferay.Language.get('segments'),
-				multiple: true,
-				type: 'selection',
-			},
+			...(LDPEnabled
+				? [
+						{
+							apiURL: `/o/faro/contacts/${groupId}/account/search?channelId=${channelId}&filter=(rangeKey eq '${rangeSelectors.rangeKey}')`,
+							autocompleteEnabled: true,
+							entityFieldType: 'string',
+							id: 'accountIds',
+							itemKey: 'id',
+							itemLabel: 'accountName',
+							label: Liferay.Language.get('accounts'),
+							multiple: true,
+							...(accountId && {
+								preloadedData: {
+									selectedItems: [
+										{
+											label: accountName || accountId,
+											value: accountId,
+										},
+									],
+								},
+							}),
+							type: 'selection',
+						},
+						{
+							apiURL: `/o/faro/contacts/${groupId}/individual_segment/search?channelId=${channelId}&${rangeSelectorParams}`,
+							autocompleteEnabled: true,
+							entityFieldType: 'string',
+							id: 'segmentIds',
+							itemKey: 'id',
+							itemLabel: 'name',
+							label: Liferay.Language.get('segments'),
+							multiple: true,
+							type: 'selection',
+						},
+					]
+				: []),
 			{
 				apiURL: `/o/faro/contacts/${groupId}/asset-summary-types?channelId=${channelId}&${rangeSelectorParams}`,
 				autocompleteEnabled: true,
@@ -237,7 +246,14 @@ const List = () => {
 				type: 'selection',
 			},
 		],
-		[accountId, accountName, channelId, groupId, rangeSelectorParams]
+		[
+			accountId,
+			accountName,
+			channelId,
+			groupId,
+			LDPEnabled,
+			rangeSelectorParams,
+		]
 	);
 
 	return (
@@ -315,10 +331,19 @@ const List = () => {
 								],
 								label: Liferay.Language.get('filter-by'),
 							},
-							{
-								filters: ['accountIds', 'segmentIds'],
-								label: Liferay.Language.get('filter-by-people'),
-							},
+							...(LDPEnabled
+								? [
+										{
+											filters: [
+												'accountIds',
+												'segmentIds',
+											],
+											label: Liferay.Language.get(
+												'filter-by-people'
+											),
+										},
+									]
+								: []),
 						]}
 						id="assetTable"
 						itemsActions={[
