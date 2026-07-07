@@ -122,8 +122,9 @@ public class ActivityFaroController extends BaseFaroController {
 			@QueryParam("query") String query,
 			@QueryParam("applicationId") String applicationId,
 			@QueryParam("channelId") String channelId,
-			@QueryParam("eventId") String eventId, @QueryParam("cur") int cur,
-			@QueryParam("delta") int delta,
+			@QueryParam("eventId") String eventId,
+			@QueryParam("objectDefinitionName") String objectDefinitionName,
+			@QueryParam("cur") int cur, @QueryParam("delta") int delta,
 			@DefaultValue(StringPool.BLANK) @QueryParam("orderByFields")
 				FaroParam<List<OrderByField>> orderByFieldsFaroParam)
 		throws Exception {
@@ -131,8 +132,8 @@ public class ActivityFaroController extends BaseFaroController {
 		return new FaroResultsDisplay(
 			contactsEngineClient.getActivityAssets(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId), query,
-				applicationId, channelId, eventId, cur, delta,
-				orderByFieldsFaroParam.getValue()));
+				applicationId, channelId, eventId, objectDefinitionName, cur,
+				delta, orderByFieldsFaroParam.getValue()));
 	}
 
 	@Path("/search")
