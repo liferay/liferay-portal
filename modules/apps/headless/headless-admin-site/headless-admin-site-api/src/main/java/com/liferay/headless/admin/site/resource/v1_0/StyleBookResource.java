@@ -46,9 +46,27 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface StyleBookResource {
 
+	public void deleteDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception;
+
 	public void deleteSiteStyleBook(
 			String siteExternalReferenceCode,
 			String styleBookExternalReferenceCode)
+		throws Exception;
+
+	public StyleBook getDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception;
+
+	public Page<StyleBook> getDesignLibraryStyleBooksPage(
+			String designLibraryExternalReferenceCode, String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public StyleBook getSiteStyleBook(
@@ -64,9 +82,18 @@ public interface StyleBookResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public StyleBook patchDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode, StyleBook styleBook)
+		throws Exception;
+
 	public StyleBook patchSiteStyleBook(
 			String siteExternalReferenceCode,
 			String styleBookExternalReferenceCode, StyleBook styleBook)
+		throws Exception;
+
+	public StyleBook postDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode, StyleBook styleBook)
 		throws Exception;
 
 	public StyleBook postSiteStyleBook(
@@ -82,6 +109,11 @@ public interface StyleBookResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public StyleBook putDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode, StyleBook styleBook)
 		throws Exception;
 
 	public StyleBook putSiteStyleBook(
@@ -185,4 +217,4 @@ public interface StyleBookResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:547836133
+// LIFERAY-REST-BUILDER-HASH:133354348

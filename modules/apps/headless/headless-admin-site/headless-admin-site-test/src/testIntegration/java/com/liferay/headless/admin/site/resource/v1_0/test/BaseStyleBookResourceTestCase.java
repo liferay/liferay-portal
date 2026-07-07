@@ -209,6 +209,44 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDesignLibraryStyleBook() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		StyleBook styleBook = testDeleteDesignLibraryStyleBook_addStyleBook();
+
+		assertHttpResponseStatusCode(
+			204,
+			styleBookResource.deleteDesignLibraryStyleBookHttpResponse(
+				testDeleteDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+				styleBook.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			styleBookResource.getDesignLibraryStyleBookHttpResponse(
+				testDeleteDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+				styleBook.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			styleBookResource.getDesignLibraryStyleBookHttpResponse(
+				testDeleteDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+				"-"));
+	}
+
+	protected StyleBook testDeleteDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook());
+	}
+
+	protected String
+			testDeleteDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteSiteStyleBook() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StyleBook styleBook = testDeleteSiteStyleBook_addStyleBook();
@@ -241,6 +279,453 @@ public abstract class BaseStyleBookResourceTestCase {
 		throws Exception {
 
 		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBook() throws Exception {
+		StyleBook postStyleBook = testGetDesignLibraryStyleBook_addStyleBook();
+
+		StyleBook getStyleBook = styleBookResource.getDesignLibraryStyleBook(
+			testGetDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+			postStyleBook.getExternalReferenceCode());
+
+		assertEquals(postStyleBook, getStyleBook);
+		assertValid(getStyleBook);
+	}
+
+	protected StyleBook testGetDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook());
+	}
+
+	protected String
+			testGetDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPage() throws Exception {
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode();
+		String irrelevantDesignLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getIrrelevantDesignLibraryExternalReferenceCode();
+
+		Page<StyleBook> page = styleBookResource.getDesignLibraryStyleBooksPage(
+			designLibraryExternalReferenceCode, null, null, null,
+			Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantDesignLibraryExternalReferenceCode != null) {
+			StyleBook irrelevantStyleBook =
+				testGetDesignLibraryStyleBooksPage_addStyleBook(
+					irrelevantDesignLibraryExternalReferenceCode,
+					randomIrrelevantStyleBook());
+
+			page = styleBookResource.getDesignLibraryStyleBooksPage(
+				irrelevantDesignLibraryExternalReferenceCode, null, null, null,
+				Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantStyleBook, (List<StyleBook>)page.getItems());
+			assertValid(
+				page,
+				testGetDesignLibraryStyleBooksPage_getExpectedActions(
+					irrelevantDesignLibraryExternalReferenceCode));
+		}
+
+		StyleBook styleBook1 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		StyleBook styleBook2 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		page = styleBookResource.getDesignLibraryStyleBooksPage(
+			designLibraryExternalReferenceCode, null, null, null,
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(styleBook1, (List<StyleBook>)page.getItems());
+		assertContains(styleBook2, (List<StyleBook>)page.getItems());
+		assertValid(
+			page,
+			testGetDesignLibraryStyleBooksPage_getExpectedActions(
+				designLibraryExternalReferenceCode));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetDesignLibraryStyleBooksPage_getExpectedActions(
+				String designLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode();
+
+		StyleBook styleBook1 = randomStyleBook();
+
+		styleBook1 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, styleBook1);
+
+		for (EntityField entityField : entityFields) {
+			Page<StyleBook> page =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null,
+					getFilterString(entityField, "between", styleBook1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(styleBook1),
+				(List<StyleBook>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithFilterStringContains()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetDesignLibraryStyleBooksPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode();
+
+		StyleBook styleBook1 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		StyleBook styleBook2 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		for (EntityField entityField : entityFields) {
+			Page<StyleBook> page =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null,
+					getFilterString(entityField, operator, styleBook1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(styleBook1),
+				(List<StyleBook>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithPagination()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode();
+
+		Page<StyleBook> styleBooksPage =
+			styleBookResource.getDesignLibraryStyleBooksPage(
+				designLibraryExternalReferenceCode, null, null, null, null,
+				null);
+
+		int totalCount = GetterUtil.getInteger(styleBooksPage.getTotalCount());
+
+		StyleBook styleBook1 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		StyleBook styleBook2 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		StyleBook styleBook3 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, randomStyleBook());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<StyleBook> page1 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(styleBook1, (List<StyleBook>)page1.getItems());
+
+			Page<StyleBook> page2 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(styleBook2, (List<StyleBook>)page2.getItems());
+
+			Page<StyleBook> page3 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(styleBook3, (List<StyleBook>)page3.getItems());
+		}
+		else {
+			Page<StyleBook> page1 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<StyleBook> styleBooks1 = (List<StyleBook>)page1.getItems();
+
+			Assert.assertEquals(
+				styleBooks1.toString(), totalCount + 2, styleBooks1.size());
+
+			Page<StyleBook> page2 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<StyleBook> styleBooks2 = (List<StyleBook>)page2.getItems();
+
+			Assert.assertEquals(styleBooks2.toString(), 1, styleBooks2.size());
+
+			Page<StyleBook> page3 =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(styleBook1, (List<StyleBook>)page3.getItems());
+			assertContains(styleBook2, (List<StyleBook>)page3.getItems());
+			assertContains(styleBook3, (List<StyleBook>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithSortDateTime()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, styleBook1, styleBook2) -> {
+				BeanTestUtil.setProperty(
+					styleBook1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithSortDouble()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, styleBook1, styleBook2) -> {
+				BeanTestUtil.setProperty(
+					styleBook1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					styleBook2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithSortInteger()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, styleBook1, styleBook2) -> {
+				BeanTestUtil.setProperty(styleBook1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(styleBook2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryStyleBooksPageWithSortString()
+		throws Exception {
+
+		testGetDesignLibraryStyleBooksPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, styleBook1, styleBook2) -> {
+				Class<?> clazz = styleBook1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						styleBook1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						styleBook2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						styleBook1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						styleBook2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						styleBook1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						styleBook2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetDesignLibraryStyleBooksPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer<EntityField, StyleBook, StyleBook, Exception>
+				unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode();
+
+		StyleBook styleBook1 = randomStyleBook();
+		StyleBook styleBook2 = randomStyleBook();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, styleBook1, styleBook2);
+		}
+
+		styleBook1 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, styleBook1);
+
+		styleBook2 = testGetDesignLibraryStyleBooksPage_addStyleBook(
+			designLibraryExternalReferenceCode, styleBook2);
+
+		Page<StyleBook> page = styleBookResource.getDesignLibraryStyleBooksPage(
+			designLibraryExternalReferenceCode, null, null, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<StyleBook> ascPage =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(styleBook1, (List<StyleBook>)ascPage.getItems());
+			assertContains(styleBook2, (List<StyleBook>)ascPage.getItems());
+
+			Page<StyleBook> descPage =
+				styleBookResource.getDesignLibraryStyleBooksPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(styleBook2, (List<StyleBook>)descPage.getItems());
+			assertContains(styleBook1, (List<StyleBook>)descPage.getItems());
+		}
+	}
+
+	protected StyleBook testGetDesignLibraryStyleBooksPage_addStyleBook(
+			String designLibraryExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		return styleBookResource.postDesignLibraryStyleBook(
+			designLibraryExternalReferenceCode, styleBook);
+	}
+
+	protected String
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryStyleBooksPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -674,6 +1159,38 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	@Test
+	public void testPatchDesignLibraryStyleBook() throws Exception {
+		StyleBook postStyleBook =
+			testPatchDesignLibraryStyleBook_addStyleBook();
+
+		StyleBook randomPatchStyleBook = randomPatchStyleBook();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		StyleBook patchStyleBook =
+			styleBookResource.patchDesignLibraryStyleBook(
+				null, postStyleBook.getExternalReferenceCode(),
+				randomPatchStyleBook);
+
+		StyleBook expectedPatchStyleBook = postStyleBook.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchStyleBook, expectedPatchStyleBook);
+
+		StyleBook getStyleBook = styleBookResource.getDesignLibraryStyleBook(
+			null, patchStyleBook.getExternalReferenceCode());
+
+		assertEquals(expectedPatchStyleBook, getStyleBook);
+		assertValid(getStyleBook);
+	}
+
+	protected StyleBook testPatchDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Test
 	public void testPatchSiteStyleBook() throws Exception {
 		StyleBook postStyleBook = testPatchSiteStyleBook_addStyleBook();
 
@@ -702,6 +1219,25 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	@Test
+	public void testPostDesignLibraryStyleBook() throws Exception {
+		StyleBook randomStyleBook = randomStyleBook();
+
+		StyleBook postStyleBook = testPostDesignLibraryStyleBook_addStyleBook(
+			randomStyleBook);
+
+		assertEquals(randomStyleBook, postStyleBook);
+		assertValid(postStyleBook);
+	}
+
+	protected StyleBook testPostDesignLibraryStyleBook_addStyleBook(
+			StyleBook styleBook)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostSiteStyleBook() throws Exception {
 		StyleBook randomStyleBook = randomStyleBook();
 
@@ -713,6 +1249,42 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	protected StyleBook testPostSiteStyleBook_addStyleBook(StyleBook styleBook)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutDesignLibraryStyleBook() throws Exception {
+		StyleBook postStyleBook = testPutDesignLibraryStyleBook_addStyleBook();
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		StyleBook putStyleBook = styleBookResource.putDesignLibraryStyleBook(
+			testPutDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+			postStyleBook.getExternalReferenceCode(), randomStyleBook);
+
+		assertEquals(randomStyleBook, putStyleBook);
+		assertValid(putStyleBook);
+
+		StyleBook getStyleBook = styleBookResource.getDesignLibraryStyleBook(
+			testPutDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode(),
+			putStyleBook.getExternalReferenceCode());
+
+		assertEquals(randomStyleBook, getStyleBook);
+		assertValid(getStyleBook);
+	}
+
+	protected StyleBook testPutDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook());
+	}
+
+	protected String
+			testPutDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1958,4 +2530,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-625264837
+// LIFERAY-REST-BUILDER-HASH:-1928839878
