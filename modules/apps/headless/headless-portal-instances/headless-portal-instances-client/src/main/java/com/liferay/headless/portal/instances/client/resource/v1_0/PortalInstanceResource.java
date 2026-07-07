@@ -6,9 +6,11 @@
 package com.liferay.headless.portal.instances.client.resource.v1_0;
 
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.pagination.Page;
 import com.liferay.headless.portal.instances.client.problem.Problem;
+import com.liferay.headless.portal.instances.client.serdes.v1_0.PortalInstanceExportSerDes;
 import com.liferay.headless.portal.instances.client.serdes.v1_0.PortalInstanceSerDes;
 
 import jakarta.annotation.Generated;
@@ -66,6 +68,14 @@ public interface PortalInstanceResource {
 
 	public HttpInvoker.HttpResponse postPortalInstanceHttpResponse(
 			PortalInstance portalInstance)
+		throws Exception;
+
+	public PortalInstanceExport postPortalInstanceExport(
+			String portalInstanceId)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse postPortalInstanceExportHttpResponse(
+			String portalInstanceId)
 		throws Exception;
 
 	public void putPortalInstanceActivate(String portalInstanceId)
@@ -723,6 +733,114 @@ public interface PortalInstanceResource {
 			return httpInvoker.invoke();
 		}
 
+		public PortalInstanceExport postPortalInstanceExport(
+				String portalInstanceId)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postPortalInstanceExportHttpResponse(portalInstanceId);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return PortalInstanceExportSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse postPortalInstanceExportHttpResponse(
+				String portalInstanceId)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body("[]", "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-portal-instances/v1.0/portal-instances/{portalInstanceId}/export");
+
+			httpInvoker.path("portalInstanceId", portalInstanceId);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
 		public void putPortalInstanceActivate(String portalInstanceId)
 			throws Exception {
 
@@ -949,4 +1067,4 @@ public interface PortalInstanceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2031700361
+// LIFERAY-REST-BUILDER-HASH:-795160208

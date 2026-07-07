@@ -6,6 +6,7 @@
 package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -205,6 +206,41 @@ public abstract class BasePortalInstanceResourceImpl
 		throws Exception {
 
 		return new PortalInstance();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-portal-instances/v1.0/portal-instances/{portalInstanceId}/export'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Exports the portal instance"
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "portalInstanceId"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
+		}
+	)
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}/export")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public PortalInstanceExport postPortalInstanceExport(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
+			String portalInstanceId)
+		throws Exception {
+
+		return new PortalInstanceExport();
 	}
 
 	/**
@@ -718,4 +754,4 @@ public abstract class BasePortalInstanceResourceImpl
 		LogFactoryUtil.getLog(BasePortalInstanceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-745623835
+// LIFERAY-REST-BUILDER-HASH:-2056159458
