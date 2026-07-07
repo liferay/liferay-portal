@@ -6198,6 +6198,61 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testGetObjectEntriesPageWithFilterOnManyToManyRelatedLocalizedObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition1 = _publishLocalizedObjectDefinition(
+			_OBJECT_FIELD_NAME_TEXT);
+		String objectEntryValue1 = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition1,
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, objectEntryValue1
+			).put(
+				_OBJECT_FIELD_NAME_TEXT + "_i18n",
+				HashMapBuilder.<String, Serializable>put(
+					"en_US", objectEntryValue1
+				).build()
+			).build());
+
+		ObjectDefinition objectDefinition2 = _publishLocalizedObjectDefinition(
+			_OBJECT_FIELD_NAME_TEXT);
+		String objectEntryValue2 = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition2,
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, objectEntryValue2
+			).put(
+				_OBJECT_FIELD_NAME_TEXT + "_i18n",
+				HashMapBuilder.<String, Serializable>put(
+					"en_US", objectEntryValue2
+				).build()
+			).build());
+
+		ObjectRelationship objectRelationship =
+			_addObjectRelationshipAndRelateObjectEntries(
+				objectDefinition1, objectDefinition2,
+				objectEntry1.getObjectEntryId(),
+				objectEntry2.getObjectEntryId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_assertObjectEntriesPageWithFilterOnRelatedLocalizedObjectField(
+			objectEntryValue1, objectDefinition1, objectRelationship,
+			objectEntryValue2);
+		_assertObjectEntriesPageWithFilterOnRelatedLocalizedObjectField(
+			objectEntryValue2, objectDefinition2, objectRelationship,
+			objectEntryValue1);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
+	}
+
+	@Test
 	public void testGetObjectEntriesPageWithLocalizedObjectField()
 		throws Exception {
 
@@ -16281,6 +16336,43 @@ public class ObjectEntryResourceTest {
 	private void _assertNotFound(JSONObject jsonObject) {
 		Assert.assertEquals("NOT_FOUND", jsonObject.getString("status"));
 		Assert.assertNull(jsonObject.get("title"));
+	}
+
+	private void
+			_assertObjectEntriesPageWithFilterOnRelatedLocalizedObjectField(
+				String expectedObjectFieldValue,
+				ObjectDefinition objectDefinition,
+				ObjectRelationship objectRelationship,
+				String relatedObjectFieldValue)
+		throws Exception {
+
+		String filterString = StringBundler.concat(
+			objectRelationship.getName(), "/", _OBJECT_FIELD_NAME_TEXT, " eq '",
+			relatedObjectFieldValue, "'");
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				objectDefinition.getRESTContextPath(), "?filter=",
+				URLCodec.encodeURL(filterString), "&nestedFields=",
+				objectRelationship.getName()),
+			Http.Method.GET);
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(
+			itemsJSONArray.toString(), 1, itemsJSONArray.length());
+
+		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			expectedObjectFieldValue,
+			itemJSONObject.getString(_OBJECT_FIELD_NAME_TEXT));
+		Assert.assertEquals(
+			relatedObjectFieldValue,
+			JSONUtil.getValueAsString(
+				itemJSONObject, "JSONArray/" + objectRelationship.getName(),
+				"Object/0", "Object/" + _OBJECT_FIELD_NAME_TEXT));
 	}
 
 	private void _assertObjectEntryField(
