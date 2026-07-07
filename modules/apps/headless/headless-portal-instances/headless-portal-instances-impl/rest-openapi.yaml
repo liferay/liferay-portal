@@ -232,3 +232,30 @@ paths:
                     description:
                         default response
             tags: ["PortalInstance"]
+    /portal-instances/{portalInstanceId}/export:
+        post:
+            description:
+                Exports the portal instance
+            operationId: postPortalInstanceExport
+            parameters:
+                -   in: path
+                    name: portalInstanceId
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                description:
+                                    The DB partition schema name created by the export (e.g., lexported_12345). The prefix is controlled by the portal property database.partition.schema.name.prefix.
+                                type: string
+                        application/xml:
+                            schema:
+                                description:
+                                    The DB partition schema name created by the export (e.g., lexported_12345). The prefix is controlled by the portal property database.partition.schema.name.prefix.
+                                type: string
+                    description:
+                        Schema name of the exported portal instance
+            tags: ["PortalInstance"]
