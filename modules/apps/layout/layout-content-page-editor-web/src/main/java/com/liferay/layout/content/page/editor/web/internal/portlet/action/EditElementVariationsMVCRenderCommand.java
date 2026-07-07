@@ -6,6 +6,7 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.audiences.service.AudiencesEntryService;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.display.context.EditElementVariationsDisplayContext;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationService;
@@ -39,7 +40,7 @@ public class EditElementVariationsMVCRenderCommand implements MVCRenderCommand {
 		renderRequest.setAttribute(
 			EditElementVariationsDisplayContext.class.getName(),
 			new EditElementVariationsDisplayContext(
-				_audiencesEntryService,
+				_audiencesEntryService, _fragmentEntryLinkLocalService,
 				_portal.getHttpServletRequest(renderRequest),
 				_layoutLocalService,
 				_layoutPageTemplateStructureRelElementVariationService, _portal,
@@ -50,6 +51,9 @@ public class EditElementVariationsMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private AudiencesEntryService _audiencesEntryService;
+
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

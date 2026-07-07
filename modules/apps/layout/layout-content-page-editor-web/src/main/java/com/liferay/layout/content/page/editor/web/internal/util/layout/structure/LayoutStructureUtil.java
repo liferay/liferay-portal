@@ -74,6 +74,19 @@ public class LayoutStructureUtil {
 		}
 	}
 
+	public static FragmentEntry getFragmentEntry(
+		FragmentEntryLink fragmentEntryLink) {
+
+		FragmentEntry fragmentEntry = fragmentEntryLink.fetchFragmentEntry();
+
+		if (fragmentEntry == null) {
+			return FragmentCollectionContributorRegistryUtil.getFragmentEntry(
+				fragmentEntryLink.getRendererKey());
+		}
+
+		return fragmentEntry;
+	}
+
 	public static LayoutStructure getLayoutStructure(
 			long groupId, long plid, long segmentsExperienceId)
 		throws PortalException {
@@ -131,19 +144,6 @@ public class LayoutStructureUtil {
 		return dataJSONObject;
 	}
 
-	private static FragmentEntry _getFragmentEntry(
-		FragmentEntryLink fragmentEntryLink) {
-
-		FragmentEntry fragmentEntry = fragmentEntryLink.fetchFragmentEntry();
-
-		if (fragmentEntry == null) {
-			return FragmentCollectionContributorRegistryUtil.getFragmentEntry(
-				fragmentEntryLink.getRendererKey());
-		}
-
-		return fragmentEntry;
-	}
-
 	private static boolean _hasMissingFragmentEntryFragmentEntryLinks(
 		List<String> itemIds, LayoutStructure layoutStructure) {
 
@@ -172,7 +172,7 @@ public class LayoutStructureUtil {
 				FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
 					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
-			FragmentEntry fragmentEntry = _getFragmentEntry(fragmentEntryLink);
+			FragmentEntry fragmentEntry = getFragmentEntry(fragmentEntryLink);
 
 			if (fragmentEntry != null) {
 				continue;
