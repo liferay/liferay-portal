@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 public class MonitorConfigLoader {
 
 	public static List<MonitorConfig> getMonitorConfigs() throws IOException {
-		return getMonitorConfigs(
-			JenkinsResultsParserUtil.getBuildProperties());
+		return getMonitorConfigs(JenkinsResultsParserUtil.getBuildProperties());
 	}
 
 	public static List<MonitorConfig> getMonitorConfigs(
