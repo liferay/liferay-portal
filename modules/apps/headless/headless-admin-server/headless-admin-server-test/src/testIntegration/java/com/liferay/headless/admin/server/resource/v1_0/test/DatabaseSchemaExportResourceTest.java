@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 
 import java.io.File;
 
@@ -37,7 +35,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Luis Ortiz
  */
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-23840"))
 @RunWith(Arquillian.class)
 public class DatabaseSchemaExportResourceTest
 	extends BaseDatabaseSchemaExportResourceTestCase {

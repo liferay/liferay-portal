@@ -5,16 +5,11 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import {databaseMigrationPagesTest} from './fixtures/databaseMigrationPagesTest';
 
-export const test = mergeTests(
-	databaseMigrationPagesTest,
-	featureFlagsTest({'LPD-23840': {enabled: true, system: true}}),
-	loginTest()
-);
+export const test = mergeTests(databaseMigrationPagesTest, loginTest());
 
 test(
 	'LPD-92611 - Exporting the database schema to a writable path shows a success message.',

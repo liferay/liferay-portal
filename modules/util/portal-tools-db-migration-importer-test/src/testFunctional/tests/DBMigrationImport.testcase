@@ -3,7 +3,6 @@ definition {
 
 	property app.server.types = "tomcat";
 	property browser.chrome.version = "139.0";
-	property custom.properties = "LPD-23840=true";
 	property database.types = "db2,mariadb,mysql,oracle,sqlserver";
 	property portal.release = "true";
 	property portal.upstream = "true";
@@ -60,7 +59,7 @@ definition {
 
 	@priority = 5
 	test CanImportPartitionedDatabaseToPostgreSQL {
-		property custom.properties = "database.partition.enabled=true${line.separator}feature.flag.LPD-23840=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property custom.properties = "database.partition.enabled=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 
