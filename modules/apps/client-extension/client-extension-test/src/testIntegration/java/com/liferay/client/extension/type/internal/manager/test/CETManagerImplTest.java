@@ -70,9 +70,10 @@ public class CETManagerImplTest {
 	}
 
 	private void _testGetCETIsCached() throws Exception {
+		String url = RandomTestUtil.randomString();
+
 		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
-			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
-			"http://example.com/a.css");
+			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS, url);
 
 		CET cet1 = _cetManager.getCET(
 			TestPropsValues.getCompanyId(),
@@ -87,23 +88,25 @@ public class CETManagerImplTest {
 
 		GlobalCSSCET globalCSSCET = (GlobalCSSCET)cet1;
 
-		Assert.assertEquals("http://example.com/a.css", globalCSSCET.getURL());
+		Assert.assertEquals(url, globalCSSCET.getURL());
 	}
 
 	private void _testGetCETIsRebuiltAfterUpdate() throws Exception {
 		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
-			"http://example.com/a.css");
+			RandomTestUtil.randomString());
 
 		CET cet1 = _cetManager.getCET(
 			TestPropsValues.getCompanyId(),
 			clientExtensionEntry.getExternalReferenceCode());
 
+		String url = RandomTestUtil.randomString();
+
 		clientExtensionEntry.setTypeSettings(
 			UnicodePropertiesBuilder.create(
 				true
 			).put(
-				"url", "http://example.com/b.css"
+				"url", url
 			).buildString());
 
 		clientExtensionEntry =
@@ -118,18 +121,18 @@ public class CETManagerImplTest {
 
 		GlobalCSSCET globalCSSCET = (GlobalCSSCET)cet2;
 
-		Assert.assertEquals("http://example.com/b.css", globalCSSCET.getURL());
+		Assert.assertEquals(url, globalCSSCET.getURL());
 	}
 
 	private void _testGetCETsReturnsOnlyRequestedType() throws Exception {
 		ClientExtensionEntry globalCSSClientExtensionEntry =
 			_addClientExtensionEntry(
 				ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
-				"http://example.com/a.css");
+				RandomTestUtil.randomString());
 		ClientExtensionEntry globalJSClientExtensionEntry =
 			_addClientExtensionEntry(
 				ClientExtensionEntryConstants.TYPE_GLOBAL_JS,
-				"http://example.com/a.js");
+				RandomTestUtil.randomString());
 
 		List<CET> cets = _cetManager.getCETs(
 			TestPropsValues.getCompanyId(), null,
