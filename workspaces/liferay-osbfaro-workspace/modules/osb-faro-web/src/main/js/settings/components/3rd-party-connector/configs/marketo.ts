@@ -13,15 +13,15 @@ const marketoConfig: ConnectorConfig = {
 	entities: [
 		{
 			entity: Entity.Events,
-			fetchCount: params =>
-				fetchConnectorEntityCount(Entity.Events, params)
-		}
+			fetchCount: (params) =>
+				fetchConnectorEntityCount(Entity.Events, params),
+		},
 	],
 	languages: buildLanguages(displayName),
 	requiresLDP: true,
 	singleton: true,
 	slug: SLUG,
-	type: DataSourceTypes.MarketoEventStream
+	type: DataSourceTypes.MarketoEventStream,
 };
 
 export default marketoConfig;

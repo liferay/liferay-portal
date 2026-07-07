@@ -6,7 +6,7 @@ import React, {useRef, useState} from 'react';
 import {Alert} from 'shared/types';
 import {
 	createMarketoCampaign,
-	updateMarketoCampaign
+	updateMarketoCampaign,
 } from 'shared/api/data-source';
 import {DataSource} from 'shared/util/records';
 import {DataSourceStatuses, DataSourceTypes} from 'shared/util/constants';
@@ -33,7 +33,7 @@ const MARKETO_AUTH_ERROR_MESSAGE_MAP: Record<number, string> = {
 	),
 	422: Liferay.Language.get(
 		'the-credentials-are-invalid-or-have-expired.-verify-your-credentials-and-try-again'
-	)
+	),
 };
 
 function marketoAuthErrorMessage(status?: number) {
@@ -46,6 +46,7 @@ function marketoAuthErrorMessage(status?: number) {
 }
 
 interface IConnectMarketoCampaignAuthProps {
+
 	/**
 	 * When disabled, the form renders with all inputs
 	 * read-only and without any buttons.
@@ -76,7 +77,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 			initialValues={{
 				clientId: dataSource?.credentials?.get('oAuthClientId'),
 				clientSecret: dataSource?.credentials?.get('oAuthClientSecret'),
-				marketoDataSource: dataSource?.url
+				marketoDataSource: dataSource?.url,
 			}}
 			innerRef={_formRef}
 			onSubmit={(values: any) => {
@@ -88,7 +89,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 					oAuthAuthorizationURL: baseURL,
 					oAuthClientId: values.clientId,
 					oAuthClientSecret: values.clientSecret,
-					type: 'OAuth 2 Authentication'
+					type: 'OAuth 2 Authentication',
 				};
 
 				const url = baseURL;
@@ -96,7 +97,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 				const handleError = (error: any) => {
 					addAlert({
 						alertType: Alert.Types.Error,
-						message: marketoAuthErrorMessage(error?.status)
+						message: marketoAuthErrorMessage(error?.status),
 					});
 				};
 
@@ -107,7 +108,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 						id: dataSource.id,
 						name: dataSource.name,
 						status: DataSourceStatuses.Active,
-						url
+						url,
 					} as any;
 
 					return updateMarketoCampaign(updatedDataSource)
@@ -116,7 +117,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 								alertType: Alert.Types.Success,
 								message: Liferay.Language.get(
 									'connection-established-successfully'
-								)
+								),
 							});
 
 							onSubmit(updatedDataSource);
@@ -132,14 +133,14 @@ const ConnectMarketoCampaignAuth: React.FC<
 					groupId,
 					name: DataSourceTypes.MarketoCampaign,
 					status: DataSourceStatuses.Active,
-					url
+					url,
 				})
-					.then(response => {
+					.then((response) => {
 						addAlert({
 							alertType: Alert.Types.Success,
 							message: Liferay.Language.get(
 								'connection-established-successfully'
-							)
+							),
 						});
 
 						onSubmit(response);
@@ -152,7 +153,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 		>
 			{({handleSubmit, isSubmitting, isValid, values}) => (
 				<Form.Form
-					className='oauth-form-root'
+					className="oauth-form-root"
 					onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
 						if (!isValid) {
 							const emptyFields = [];
@@ -180,7 +181,8 @@ const ConnectMarketoCampaignAuth: React.FC<
 							}
 
 							setMissingFields(emptyFields);
-						} else {
+						}
+						else {
 							setMissingFields([]);
 						}
 
@@ -189,15 +191,15 @@ const ConnectMarketoCampaignAuth: React.FC<
 				>
 					{missingFields.length > 0 && (
 						<ClayAlert
-							displayType='danger'
+							displayType="danger"
 							title={Liferay.Language.get('error')}
 						>
 							{Liferay.Language.get(
 								'please-review-the-following-fields-before-saving'
 							)}
 
-							<ul className='mb-0'>
-								{missingFields.map(field => (
+							<ul className="mb-0">
+								{missingFields.map((field) => (
 									<li key={field}>{field}</li>
 								))}
 							</ul>
@@ -205,13 +207,13 @@ const ConnectMarketoCampaignAuth: React.FC<
 					)}
 
 					<Form.Input
-						className='mb-3'
-						id='marketoDataSource'
+						className="mb-3"
+						id="marketoDataSource"
 						label={Liferay.Language.get('data-source-url')}
-						name='marketoDataSource'
+						name="marketoDataSource"
 						readOnly={disabled}
 						required
-						type='text'
+						type="text"
 						validate={sequence([
 							(value: string) =>
 								validateRequired(
@@ -223,16 +225,16 @@ const ConnectMarketoCampaignAuth: React.FC<
 										[
 											Liferay.Language.get(
 												'data-source-url'
-											)
+											),
 										]
 									) as string
 								),
-							validateMarketoDomain
+							validateMarketoDomain,
 						])}
 					/>
 
 					<Form.Input
-						className='mb-3'
+						className="mb-3"
 						contentAfter={
 							<ClayButton
 								aria-label={
@@ -240,7 +242,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 										? Liferay.Language.get('view')
 										: Liferay.Language.get('hidden')
 								}
-								displayType='secondary'
+								displayType="secondary"
 								onClick={() => setShowClientId(!showClientId)}
 							>
 								<ClayIcon
@@ -249,9 +251,9 @@ const ConnectMarketoCampaignAuth: React.FC<
 							</ClayButton>
 						}
 						contentAfterEnableMagnet
-						id='clientId'
+						id="clientId"
 						label={Liferay.Language.get('consumer-key-client-id')}
-						name='clientId'
+						name="clientId"
 						readOnly={disabled}
 						required
 						type={showClientId ? 'text' : 'password'}
@@ -265,7 +267,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 									[
 										Liferay.Language.get(
 											'consumer-key-client-id'
-										)
+										),
 									]
 								) as string
 							)
@@ -273,7 +275,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 					/>
 
 					<Form.Input
-						className='mb-4'
+						className="mb-4"
 						contentAfter={
 							<ClayButton
 								aria-label={
@@ -281,7 +283,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 										? Liferay.Language.get('view')
 										: Liferay.Language.get('hidden')
 								}
-								displayType='secondary'
+								displayType="secondary"
 								onClick={() =>
 									setShowClientSecret(!showClientSecret)
 								}
@@ -294,11 +296,11 @@ const ConnectMarketoCampaignAuth: React.FC<
 							</ClayButton>
 						}
 						contentAfterEnableMagnet
-						id='clientSecret'
+						id="clientSecret"
 						label={Liferay.Language.get(
 							'consumer-secret-client-secret'
 						)}
-						name='clientSecret'
+						name="clientSecret"
 						readOnly={disabled}
 						required
 						type={showClientSecret ? 'text' : 'password'}
@@ -312,7 +314,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 									[
 										Liferay.Language.get(
 											'consumer-secret-client-secret'
-										)
+										),
 									]
 								) as string
 							)
@@ -325,7 +327,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 								{...buttonProps}
 								disabled={isSubmitting}
 								loading={isSubmitting}
-								type='submit'
+								type="submit"
 							>
 								{Liferay.Language.get('connect')}
 							</ClayButton>
@@ -334,7 +336,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 								<ClayButton
 									block
 									borderless
-									displayType='secondary'
+									displayType="secondary"
 									onClick={onCancel}
 								>
 									{Liferay.Language.get('cancel')}

@@ -10,9 +10,9 @@ const steps: Step[] = [
 			'to-connect-your-data-source-with-liferay-data-platform-enter-their-url-the-client-id-and-secret'
 		),
 		title: sub(Liferay.Language.get('connect-x'), [
-			Liferay.Language.get('marketo')
-		]) as string
-	}
+			Liferay.Language.get('marketo'),
+		]) as string,
+	},
 ];
 
 const ConnectMarketoCampaign = () => <WizardPage steps={steps} />;

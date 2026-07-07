@@ -26,7 +26,7 @@ const ConnectMarketoCampaignStep = ({
 	close,
 	groupId,
 	onNext,
-	open
+	open,
 }: IConnectMarketoCampaignStepProps) => {
 	const history = useHistory();
 	const {dataSource, refetchDataSource} = useWizardPage();
@@ -39,11 +39,11 @@ const ConnectMarketoCampaignStep = ({
 				onCancel={() => {
 					history.push(
 						toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {
-							groupId
+							groupId,
 						})
 					);
 				}}
-				onSubmit={dataSource => {
+				onSubmit={(dataSource) => {
 					updateSearchParams(history, 'dataSourceId', dataSource.id);
 
 					onNext();
@@ -55,14 +55,14 @@ const ConnectMarketoCampaignStep = ({
 	if (dataSource.get('status') === DataSourceStatuses.Active) {
 		return (
 			<ClayForm
-				onSubmit={event => {
+				onSubmit={(event) => {
 					event.preventDefault();
 
 					onNext();
 				}}
 			>
 				<ClayAlert
-					displayType='success'
+					displayType="success"
 					title={Liferay.Language.get('success')}
 				>
 					{Liferay.Language.get(
@@ -83,7 +83,7 @@ const ConnectMarketoCampaignStep = ({
 					onCancel={() => {
 						open(modalTypes.CONFIRMATION_MODAL, {
 							message: (
-								<Text as='p' size={4}>
+								<Text as="p" size={4}>
 									{Liferay.Language.get(
 										'this-action-will-stop-syncing-data-from-this-data-source-to-this-liferay-data-platform-workspace.-the-data-that-was-already-synced-will-remain-available-in-the-properties-the-data-source-was-connected-to.-are-you-sure-you-want-to-continue'
 									)}
@@ -95,7 +95,7 @@ const ConnectMarketoCampaignStep = ({
 								try {
 									await disconnect({
 										groupId,
-										id: dataSource.id
+										id: dataSource.id,
 									});
 
 									refetchDataSource(dataSource.id || '');
@@ -104,16 +104,17 @@ const ConnectMarketoCampaignStep = ({
 										alertType: Alert.Types.Success,
 										message: Liferay.Language.get(
 											'data-source-disconnected'
-										)
+										),
 									});
 
 									close();
-								} catch (error) {
+								}
+								catch (error) {
 									addAlert({
 										alertType: Alert.Types.Error,
 										message: Liferay.Language.get(
 											'there-was-an-error-processing-your-request.-try-again.-if-the-problem-persists-please-contact-support'
-										)
+										),
 									});
 								}
 							},
@@ -122,7 +123,7 @@ const ConnectMarketoCampaignStep = ({
 							title: Liferay.Language.get(
 								'disconnect-data-source'
 							),
-							titleIcon: 'warning-full'
+							titleIcon: 'warning-full',
 						});
 					}}
 					prevButtonLabel={Liferay.Language.get(
@@ -141,7 +142,7 @@ const ConnectMarketoCampaignStep = ({
 			onCancel={() => {
 				history.push(
 					toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {
-						groupId
+						groupId,
 					})
 				);
 			}}

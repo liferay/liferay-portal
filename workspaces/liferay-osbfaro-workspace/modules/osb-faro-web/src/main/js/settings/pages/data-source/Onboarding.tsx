@@ -11,7 +11,7 @@ import {useParams} from 'react-router-dom';
 const PAGE_MAP = {
 	[DataSourceTypes.Liferay]: ConnectLiferayDXP,
 	[DataSourceTypes.MarketoCampaign]: ConnectMarketoCampaign,
-	[DataSourceTypes.Salesforce]: ConnectSalesforce
+	[DataSourceTypes.Salesforce]: ConnectSalesforce,
 };
 
 const DataSourceOnboarding = () => {

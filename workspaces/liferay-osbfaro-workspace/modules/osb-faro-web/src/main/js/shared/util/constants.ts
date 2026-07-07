@@ -3,7 +3,7 @@ import {POSITIONS as ALIGN_POSITIONS} from './align';
 export enum AcquisitionTypes {
 	Channel = 'CHANNEL',
 	Referrer = 'REFERRER',
-	SourceMedium = 'SOURCE_MEDIUM'
+	SourceMedium = 'SOURCE_MEDIUM',
 }
 
 export enum ActivityActions {
@@ -11,12 +11,12 @@ export enum ActivityActions {
 	Downloads = 0,
 	Impressions = 4,
 	Submissions = 1,
-	Visits = 2
+	Visits = 2,
 }
 
 export enum Applications {
 	Contacts = 'contacts',
-	Main = 'main'
+	Main = 'main',
 }
 
 export enum EventNames {
@@ -25,7 +25,7 @@ export enum EventNames {
 	Download = 'download',
 	Impression = 'impression',
 	Submit = 'submit',
-	View = 'view'
+	View = 'view',
 }
 
 export enum AssetTypes {
@@ -36,12 +36,12 @@ export enum AssetTypes {
 	Journal = 'Journal',
 	ObjectEntry = 'ObjectEntry',
 	WebContent = 'WebContent',
-	WebPage = 'Page'
+	WebPage = 'Page',
 }
 
 export enum ChannelPermissionTypes {
 	AllUsers = 0,
-	SelectUsers = 1
+	SelectUsers = 1,
 }
 
 export enum CompositionTypes {
@@ -50,19 +50,19 @@ export enum CompositionTypes {
 	IndividualInterests = 'individualInterests',
 	SearchTerms = 'searchTerms',
 	SegmentInterests = 'individualSegmentInterests',
-	SiteInterests = 'siteInterests'
+	SiteInterests = 'siteInterests',
 }
 
 export enum ConjunctionKey {
 	And = 'and',
 	Or = 'or',
-	Then = 'then'
+	Then = 'then',
 }
 
 export enum CredentialTypes {
 	OAuth1 = 'OAuth 1 Authentication',
 	OAuth2 = 'OAuth 2 Authentication',
-	Token = 'Token Authentication'
+	Token = 'Token Authentication',
 }
 
 export enum DataSourceDisplayStatuses {
@@ -70,14 +70,14 @@ export enum DataSourceDisplayStatuses {
 	Configuring = 'CONFIGURING',
 	DeleteError = 'DELETE_ERROR',
 	InDeletion = 'IN_DELETION',
-	Inactive = 'INACTIVE'
+	Inactive = 'INACTIVE',
 }
 
 export enum DataSourceProgressStatuses {
 	Completed = 'COMPLETED',
 	Failed = 'FAILED',
 	InProgress = 'IN_PROGRESS',
-	Started = 'STARTED'
+	Started = 'STARTED',
 }
 
 export enum DataSourceStates {
@@ -91,14 +91,14 @@ export enum DataSourceStates {
 	UndefinedError = 'UNDEFINED_ERROR',
 	Ready = 'READY',
 	UrlInvalid = 'URL_INVALID',
-	Unconfigured = 'UNCONFIGURED'
+	Unconfigured = 'UNCONFIGURED',
 }
 export enum DataSourceStatuses {
 	Active = 'ACTIVE',
 	Authenticated = 'AUTHENTICATED',
 	Configuring = 'CONFIGURING',
 	Inactive = 'INACTIVE',
-	OauthExpired = 'OAUTH_EXPIRED'
+	OauthExpired = 'OAUTH_EXPIRED',
 }
 
 export enum DataSourceTypes {
@@ -108,7 +108,7 @@ export enum DataSourceTypes {
 	Liferay = 'LIFERAY',
 	MarketoCampaign = 'MARKETO_CAMPAIGN',
 	MarketoEventStream = 'MARKETO_EVENT_STREAM',
-	Salesforce = 'SALESFORCE'
+	Salesforce = 'SALESFORCE',
 }
 
 export enum EntityTypes {
@@ -118,20 +118,20 @@ export enum EntityTypes {
 	DataSource = 1,
 	Individual = 2,
 	IndividualsSegment = 4,
-	Page = 6
+	Page = 6,
 }
 
 export enum ExpirationPeriod {
 	In30Days = '2592000',
 	In6Months = '15778800',
 	In1Year = '31557600',
-	Indefinite = '3155760000'
+	Indefinite = '3155760000',
 }
 
 export enum FaroEnv {
 	Local = 'local',
 	Production = 'prd',
-	Staging = 'stg'
+	Staging = 'stg',
 }
 
 export enum FieldContexts {
@@ -139,20 +139,20 @@ export enum FieldContexts {
 	Custom = 'custom',
 	Demographics = 'demographics',
 	Interests = 'interests',
-	Organization = 'organization'
+	Organization = 'organization',
 }
 
 export enum FieldOwnerTypes {
 	Account = 'account',
 	Individual = 'individual',
-	Organization = 'organization'
+	Organization = 'organization',
 }
 
 export enum FieldTypes {
 	Boolean = 'Boolean',
 	Date = 'Date',
 	Number = 'Number',
-	String = 'Text'
+	String = 'Text',
 }
 
 export enum GDPRRequestStatuses {
@@ -160,35 +160,35 @@ export enum GDPRRequestStatuses {
 	Error = 'ERROR',
 	Expired = 'EXPIRED',
 	Pending = 'PENDING',
-	Running = 'RUNNING'
+	Running = 'RUNNING',
 }
 
 export enum GDPRRequestTypes {
 	Access = 'ACCESS',
 	Delete = 'DELETE',
 	Suppress = 'SUPPRESS',
-	Unsuppress = 'UNSUPPRESS'
+	Unsuppress = 'UNSUPPRESS',
 }
 
 export enum JobRunDataPeriods {
 	Last7Days = 'LAST_7_DAYS',
 	Last30Days = 'LAST_30_DAYS',
 	Last180Days = 'LAST_180_DAYS',
-	Last365Days = 'LAST_365_DAYS'
+	Last365Days = 'LAST_365_DAYS',
 }
 
 export enum JobRunFrequencies {
 	Every7Days = 'EVERY_7_DAYS',
 	Every14Days = 'EVERY_14_DAYS',
 	Every30Days = 'EVERY_30_DAYS',
-	Manual = 'MANUAL'
+	Manual = 'MANUAL',
 }
 
 export enum JobRunStatuses {
 	Completed = 'COMPLETED',
 	Failed = 'FAILED',
 	Published = 'PUBLISHED',
-	Running = 'RUNNING'
+	Running = 'RUNNING',
 }
 
 export enum JobStatuses {
@@ -196,18 +196,18 @@ export enum JobStatuses {
 	Pending = 'PENDING',
 	Ready = 'READY',
 	Running = 'RUNNING',
-	Scheduled = 'SCHEDULED'
+	Scheduled = 'SCHEDULED',
 }
 
 export enum JobTypes {
-	ItemSimilarity = 'CONTENT_RECOMMENDATION_ITEM_SIMILARITY'
+	ItemSimilarity = 'CONTENT_RECOMMENDATION_ITEM_SIMILARITY',
 }
 
 export enum LanguageIds {
 	English = 'en_US',
 	Japanese = 'ja_JP',
 	Portuguese = 'pt_BR',
-	Spanish = 'es_ES'
+	Spanish = 'es_ES',
 }
 
 /**
@@ -225,17 +225,17 @@ export enum NetworkState {
 	Loading = 1,
 	Polling = 3,
 	Refetch = 2,
-	Unused = 4
+	Unused = 4,
 }
 
 export enum OrderByDirections {
 	Ascending = 'ASC',
-	Descending = 'DESC'
+	Descending = 'DESC',
 }
 
 export enum PreferencesScopes {
 	User = 'user',
-	Group = 'group'
+	Group = 'group',
 }
 
 export enum ProjectStates {
@@ -247,7 +247,7 @@ export enum ProjectStates {
 	Ready = 'READY',
 	Scheduled = 'SCHEDULED',
 	Unavailable = 'UNAVAILABLE',
-	Unconfigured = 'UNCONFIGURED'
+	Unconfigured = 'UNCONFIGURED',
 }
 
 export enum RangeKeyTimeRanges {
@@ -259,33 +259,33 @@ export enum RangeKeyTimeRanges {
 	Last7Days = '7',
 	Last90Days = '90',
 	LastYear = '365',
-	Yesterday = '1'
+	Yesterday = '1',
 }
 
 export enum SegmentActivationScheduleTypes {
 	Batch = 'BATCH',
-	RealTime = 'REAL_TIME'
+	RealTime = 'REAL_TIME',
 }
 
 export enum SegmentActivationFrequencyTypes {
 	Between = 'BETWEEN',
-	Indefinitely = 'INDEFINITELY'
+	Indefinitely = 'INDEFINITELY',
 }
 
 export enum SegmentStates {
 	Disabled = 'DISABLED',
 	InProgress = 'IN_PROGRESS',
-	Ready = 'READY'
+	Ready = 'READY',
 }
 
 export enum SegmentTypes {
 	Batch = 'BATCH',
-	RealTime = 'REAL_TIME'
+	RealTime = 'REAL_TIME',
 }
 
 export enum SessionEntityTypes {
 	Account = 'ACCOUNT',
-	Individual = 'INDIVIDUAL'
+	Individual = 'INDIVIDUAL',
 }
 
 export enum Sizes {
@@ -294,13 +294,13 @@ export enum Sizes {
 	Large = 'lg',
 	XLarge = 'xl',
 	XXLarge = 'xxl',
-	XXXLarge = 'xxxl'
+	XXXLarge = 'xxxl',
 }
 
 export enum SubscriptionStatuses {
 	Approaching = 1,
 	Ok = 0,
-	Over = 2
+	Over = 2,
 }
 
 export enum TimeIntervals {
@@ -308,7 +308,7 @@ export enum TimeIntervals {
 	Month = 'month',
 	Quarter = 'quarter',
 	Week = 'week',
-	Year = 'year'
+	Year = 'year',
 }
 
 export enum TimeSpans {
@@ -320,19 +320,19 @@ export enum TimeSpans {
 	Last30Days = 'last30Days',
 	Last90Days = 'last90Days',
 	Today = 'today',
-	Yesterday = 'yesterday'
+	Yesterday = 'yesterday',
 }
 
 export enum UserRoleNames {
 	Administrator = 'Site Administrator',
 	Member = 'Site Member',
-	Owner = 'Site Owner'
+	Owner = 'Site Owner',
 }
 
 export enum UserStatuses {
 	Approved = 0,
 	Pending = 1,
-	Requested = 2
+	Requested = 2,
 }
 
 export const ALIGNMENTS_MAP = {
@@ -343,7 +343,7 @@ export const ALIGNMENTS_MAP = {
 	right: ALIGN_POSITIONS.RightCenter,
 	top: ALIGN_POSITIONS.TopCenter,
 	'top-left': ALIGN_POSITIONS.TopLeft,
-	'top-right': ALIGN_POSITIONS.TopRight
+	'top-right': ALIGN_POSITIONS.TopRight,
 };
 
 export const ASSET_METRICS = [
@@ -353,7 +353,7 @@ export const ASSET_METRICS = [
 			'form-abandonment'
 		)} (${Liferay.Language.get('ratio').toLowerCase()})`,
 		title: Liferay.Language.get('form-abandonment'),
-		type: 'percentage'
+		type: 'percentage',
 	},
 	{
 		key: 'clicksMetric',
@@ -361,7 +361,7 @@ export const ASSET_METRICS = [
 			'asset-clicks'
 		)} (${Liferay.Language.get('sum').toLowerCase()})`,
 		title: Liferay.Language.get('clicks'),
-		type: 'number'
+		type: 'number',
 	},
 	{
 		key: 'completionTimeMetric',
@@ -369,7 +369,7 @@ export const ASSET_METRICS = [
 			'form-completion-time'
 		)} (${Liferay.Language.get('average').toLowerCase()})`,
 		title: Liferay.Language.get('completion-time'),
-		type: 'time'
+		type: 'time',
 	},
 	{
 		key: 'downloadsMetric',
@@ -377,7 +377,7 @@ export const ASSET_METRICS = [
 			'asset-downloads'
 		)} (${Liferay.Language.get('sum').toLowerCase()})`,
 		title: Liferay.Language.get('downloads'),
-		type: 'number'
+		type: 'number',
 	},
 	{
 		key: 'readingTimeMetric',
@@ -385,7 +385,7 @@ export const ASSET_METRICS = [
 			'asset-interaction-time'
 		)} (${Liferay.Language.get('average').toLowerCase()})`,
 		title: Liferay.Language.get('interaction-time'),
-		type: 'time'
+		type: 'time',
 	},
 	{
 		key: 'submissionsMetric',
@@ -393,7 +393,7 @@ export const ASSET_METRICS = [
 			'form-submissions'
 		)} (${Liferay.Language.get('sum').toLowerCase()})`,
 		title: Liferay.Language.get('form-submissions'),
-		type: 'number'
+		type: 'number',
 	},
 	{
 		key: 'viewsMetric',
@@ -401,8 +401,8 @@ export const ASSET_METRICS = [
 			'asset-views'
 		)} (${Liferay.Language.get('sum').toLowerCase()})`,
 		title: Liferay.Language.get('views'),
-		type: 'number'
-	}
+		type: 'number',
+	},
 ];
 
 export const DATA_RETENTION_PERIOD_KEY = 'data-retention-period';
@@ -418,26 +418,26 @@ export const EXPIRATION_DATE_LABELS = {
 	[ExpirationPeriod.In30Days]: Liferay.Language.get('30-days'),
 	[ExpirationPeriod.In6Months]: Liferay.Language.get('6-months'),
 	[ExpirationPeriod.In1Year]: Liferay.Language.get('1-year'),
-	[ExpirationPeriod.Indefinite]: Liferay.Language.get('indefinite')
+	[ExpirationPeriod.Indefinite]: Liferay.Language.get('indefinite'),
 };
 
 export const LANGUAGES = [
 	{
 		id: LanguageIds.English,
-		label: Liferay.Language.get('english')
+		label: Liferay.Language.get('english'),
 	},
 	{
 		id: LanguageIds.Japanese,
-		label: Liferay.Language.get('japanese')
+		label: Liferay.Language.get('japanese'),
 	},
 	{
 		id: LanguageIds.Portuguese,
-		label: Liferay.Language.get('portuguese')
+		label: Liferay.Language.get('portuguese'),
 	},
 	{
 		id: LanguageIds.Spanish,
-		label: Liferay.Language.get('spanish')
-	}
+		label: Liferay.Language.get('spanish'),
+	},
 ];
 
 export const ONE_DAY = '86400000';
@@ -452,7 +452,7 @@ export const POSITIONS = [
 	'bottom',
 	'bottom',
 	'left',
-	'top'
+	'top',
 ];
 
 export const SEVEN_MONTHS = '18144000000';
@@ -467,7 +467,7 @@ export const TIME_RANGE_LABELS = {
 	[RangeKeyTimeRanges.Last7Days]: Liferay.Language.get('last-seven-days'),
 	[RangeKeyTimeRanges.Last90Days]: Liferay.Language.get('last-90-days'),
 	[RangeKeyTimeRanges.LastYear]: Liferay.Language.get('last-year'),
-	[RangeKeyTimeRanges.Yesterday]: Liferay.Language.get('yesterday')
+	[RangeKeyTimeRanges.Yesterday]: Liferay.Language.get('yesterday'),
 };
 
 export const TWO_DAYS = '172800000';

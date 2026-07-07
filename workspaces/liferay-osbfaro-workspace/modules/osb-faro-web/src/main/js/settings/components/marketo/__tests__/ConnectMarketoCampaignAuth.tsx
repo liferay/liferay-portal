@@ -2,12 +2,12 @@ jest.unmock('react-dom');
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useParams: () => ({groupId: '23'})
+	useParams: () => ({groupId: '23'}),
 }));
 
 jest.mock('shared/api/data-source', () => ({
 	createMarketoCampaign: jest.fn(),
-	updateMarketoCampaign: jest.fn()
+	updateMarketoCampaign: jest.fn(),
 }));
 
 import {Alert} from 'shared/types';
@@ -18,7 +18,7 @@ import {fireEvent, render, waitFor} from '@testing-library/react';
 const fillAndSubmit = (container: HTMLElement) => {
 	const setValue = (name: string, value: string) =>
 		fireEvent.change(container.querySelector(`input[name="${name}"]`)!, {
-			target: {value}
+			target: {value},
 		});
 
 	setValue('marketoDataSource', 'https://example.mktorest.com');
@@ -62,7 +62,7 @@ describe('ConnectMarketoCampaignAuth', () => {
 				alertType: Alert.Types.Error,
 				message: Liferay.Language.get(
 					'the-credentials-are-invalid-or-have-expired.-verify-your-credentials-and-try-again'
-				)
+				),
 			})
 		);
 	});
@@ -86,7 +86,7 @@ describe('ConnectMarketoCampaignAuth', () => {
 				alertType: Alert.Types.Error,
 				message: Liferay.Language.get(
 					'your-account-or-organization-is-not-eligible.-verify-your-data-source-configuration-and-try-again'
-				)
+				),
 			})
 		);
 	});
@@ -110,7 +110,7 @@ describe('ConnectMarketoCampaignAuth', () => {
 				alertType: Alert.Types.Error,
 				message: Liferay.Language.get(
 					'there-was-an-error-processing-your-request.-try-again.-if-the-problem-persists,-please-contact-support'
-				)
+				),
 			})
 		);
 	});
