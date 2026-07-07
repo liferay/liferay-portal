@@ -1032,8 +1032,6 @@ test.describe('Categorization Panel', () => {
 
 				const firstTagName = getRandomString();
 
-				tagNames.push(firstTagName);
-
 				await selectTag({page, tagName: firstTagName});
 
 				let tagLabel = page.locator('.label-item', {
@@ -1060,8 +1058,6 @@ test.describe('Categorization Panel', () => {
 
 				const secondTagName = getRandomString();
 
-				tagNames.push(secondTagName);
-
 				tagLabel = page.locator('.label-item', {
 					hasText: secondTagName,
 				});
@@ -1072,6 +1068,8 @@ test.describe('Categorization Panel', () => {
 				await expect(tagLabel).toBeAttached();
 
 				await contentsPage.publishButton.click();
+
+				tagNames.push(secondTagName);
 
 				// Edit the content and check that the categorization is still there
 
