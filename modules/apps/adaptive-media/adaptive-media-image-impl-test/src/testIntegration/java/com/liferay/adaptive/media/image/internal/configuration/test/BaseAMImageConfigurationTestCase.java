@@ -32,6 +32,10 @@ public abstract class BaseAMImageConfigurationTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		if (_initialAMImageConfigurationEntryUuids == null) {
+			return;
+		}
+
 		AMImageConfigurationHelper amImageConfigurationHelper =
 			getAMImageConfigurationHelper();
 
