@@ -9,7 +9,6 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
-import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -1847,6 +1846,12 @@ public class ObjectDefinitionLocalServiceImpl
 				objectDefinitionSetting.getValue());
 		}
 
+		if (!_hasEdgeObjectRelationship(objectDefinition)) {
+			objectDefinitionSettingsValuesMap.remove(
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY);
+		}
+
 		_validateObjectDefinitionSettings(
 			objectDefinition, objectDefinitionSettingsValuesMap);
 
@@ -1898,6 +1903,14 @@ public class ObjectDefinitionLocalServiceImpl
 
 			if (!objectDefinitionSettingsValuesMap.containsKey(
 					oldObjectDefinitionSetting.getName())) {
+
+				if (StringUtil.equals(
+						ObjectDefinitionSettingConstants.
+							NAME_ALLOW_STANDALONE_OBJECT_ENTRY,
+						oldObjectDefinitionSetting.getName())) {
+
+					continue;
+				}
 
 				_objectDefinitionSettingLocalService.
 					deleteObjectDefinitionSetting(oldObjectDefinitionSetting);
@@ -2475,6 +2488,19 @@ public class ObjectDefinitionLocalServiceImpl
 		ObjectDefinitionValidationThreadLocal.addValidationError(
 			ObjectDefinition.class.getName(), exception, propertyName,
 			propertyValue);
+	}
+
+	private boolean _hasEdgeObjectRelationship(
+		ObjectDefinition objectDefinition) {
+
+		int count = _objectRelationshipPersistence.countByODI2_E(
+			objectDefinition.getObjectDefinitionId(), true);
+
+		if (count > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _hasObjectField(
@@ -3600,21 +3626,6 @@ public class ObjectDefinitionLocalServiceImpl
 			Map<String, String> objectDefinitionSettingsValuesMap)
 		throws PortalException {
 
-		if (!BatchEngineThreadLocal.isBatchImportInProcess() &&
-			objectDefinition.isRootDescendantNode() &&
-			!objectDefinitionSettingsValuesMap.containsKey(
-				ObjectDefinitionSettingConstants.
-					NAME_ALLOW_STANDALONE_OBJECT_ENTRY)) {
-
-			_handleException(
-				new ObjectDefinitionSettingNameException.RequiredNames(
-					objectDefinition.getShortName(),
-					Set.of(
-						ObjectDefinitionSettingConstants.
-							NAME_ALLOW_STANDALONE_OBJECT_ENTRY)),
-				"objectDefinitionSettings", null);
-		}
-
 		if (objectDefinitionSettingsValuesMap.isEmpty()) {
 			return;
 		}
@@ -3645,19 +3656,6 @@ public class ObjectDefinitionLocalServiceImpl
 					ObjectDefinitionSettingConstants.
 						NAME_ALLOW_STANDALONE_OBJECT_ENTRY,
 					objectDefinitionSettingsValue.getKey())) {
-
-				if (!BatchEngineThreadLocal.isBatchImportInProcess() &&
-					!objectDefinition.isRootDescendantNode()) {
-
-					_handleException(
-						new ObjectDefinitionSettingNameException.
-							NotAllowedNames(
-								objectDefinition.getShortName(),
-								Set.of(
-									ObjectDefinitionSettingConstants.
-										NAME_ALLOW_STANDALONE_OBJECT_ENTRY)),
-						"objectDefinitionSettings", null);
-				}
 
 				String allowStandaloneObjectEntry =
 					objectDefinitionSettingsValue.getValue();

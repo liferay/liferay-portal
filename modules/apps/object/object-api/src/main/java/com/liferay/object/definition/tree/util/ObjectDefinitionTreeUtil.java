@@ -146,6 +146,9 @@ public class ObjectDefinitionTreeUtil {
 			}
 		}
 		else {
+			_addAllowStandaloneObjectEntrySetting(
+				objectDefinition2, objectDefinitionSettingLocalService);
+
 			if (ArrayUtil.isNotEmpty(
 					getRootObjectDefinitionIds(
 						objectDefinition2.getObjectDefinitionId(),
