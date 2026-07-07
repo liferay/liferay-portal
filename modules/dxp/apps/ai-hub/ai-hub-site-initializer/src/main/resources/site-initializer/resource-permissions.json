@@ -125,34 +125,34 @@
 		"actionIds": [
 			"VIEW"
 		],
+		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Guardrail Confidence Levels$]",
+		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
+		"roleName": "User",
+		"scope": "4"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Guardrail Responsible AI Levels$]",
+		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
+		"roleName": "User",
+		"scope": "4"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Guardrail Types$]",
+		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
+		"roleName": "User",
+		"scope": "4"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
 		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Instruction Definition Scopes$]",
-		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
-		"roleName": "User",
-		"scope": "4"
-	},
-	{
-		"actionIds": [
-			"VIEW"
-		],
-		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Model Armor Template Confidence Levels$]",
-		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
-		"roleName": "User",
-		"scope": "4"
-	},
-	{
-		"actionIds": [
-			"VIEW"
-		],
-		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Model Armor Template Guardrail Types$]",
-		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
-		"roleName": "User",
-		"scope": "4"
-	},
-	{
-		"actionIds": [
-			"VIEW"
-		],
-		"primKey": "[$LIST_TYPE_DEFINITION_ID:AI Hub Model Armor Template Responsible AI Levels$]",
 		"resourceName": "com.liferay.list.type.model.ListTypeDefinition",
 		"roleName": "User",
 		"scope": "4"
