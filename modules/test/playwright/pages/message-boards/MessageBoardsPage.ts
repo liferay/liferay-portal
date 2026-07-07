@@ -88,6 +88,24 @@ export class MessageBoardsPage {
 		await this.goToConfigurationTab('Thread Priorities', siteUrl);
 	}
 
+	async disableEmailNotifications(siteUrl?: Site['friendlyUrlPath']) {
+		for (const tabName of [
+			'Message Added Email',
+			'Message Updated Email',
+		]) {
+			await this.goToConfigurationTab(tabName, siteUrl);
+
+			await this.page.getByLabel('Enabled').uncheck();
+
+			await this.page.getByRole('button', {name: 'Save'}).click();
+
+			// Saving submits the form and reloads the configuration screen;
+			// wait for it before navigating away
+
+			await this.page.waitForLoadState('networkidle');
+		}
+	}
+
 	async banReplyAuthor() {
 		await this._clickThreadMenuItem(
 			this.page.locator('.panel-heading .dropdown-toggle').last(),
