@@ -929,8 +929,8 @@ public class ObjectRelationshipLocalServiceImpl
 			}
 
 			try {
-				ObjectDefinition objectDefinition1;
-				ObjectDefinition objectDefinition2;
+				ObjectDefinition objectDefinition1 = null;
+				ObjectDefinition objectDefinition2 = null;
 
 				if (objectRelationship.getObjectDefinitionId1() ==
 						objectDefinitionId) {
