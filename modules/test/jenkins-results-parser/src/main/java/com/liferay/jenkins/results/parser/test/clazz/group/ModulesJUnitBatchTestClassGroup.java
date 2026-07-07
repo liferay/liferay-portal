@@ -89,6 +89,24 @@ public class ModulesJUnitBatchTestClassGroup extends JUnitBatchTestClassGroup {
 	}
 
 	@Override
+	protected void addTestClass(TestClass testClass) {
+		String testClassFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			testClass.getTestClassFile());
+
+		File modulesDir = new File(
+			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
+
+		String modulesDirPath = JenkinsResultsParserUtil.getCanonicalPath(
+			modulesDir);
+
+		if (!testClassFilePath.startsWith(modulesDirPath + "/")) {
+			return;
+		}
+
+		super.addTestClass(testClass);
+	}
+
+	@Override
 	protected List<JobProperty> getDefaultExcludesJobProperties() {
 		List<JobProperty> excludesJobProperties = new ArrayList<>();
 
