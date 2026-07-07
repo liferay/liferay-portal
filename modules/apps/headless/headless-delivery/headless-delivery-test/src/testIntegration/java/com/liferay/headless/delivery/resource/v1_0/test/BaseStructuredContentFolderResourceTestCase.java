@@ -1528,18 +1528,9 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryStructuredContentFoldersPage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryStructuredContentFolders",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryStructuredContentFoldersPageAssetLibraryStructuredContentFolder_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -1609,6 +1600,25 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 				StructuredContentFolderSerDes.toDTOs(
 					assetLibraryStructuredContentFoldersJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryStructuredContentFoldersPageAssetLibraryStructuredContentFolder_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryStructuredContentFolders",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2321,18 +2331,9 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 
 		Long siteId = testGetSiteStructuredContentFoldersPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"structuredContentFolders",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteStructuredContentFoldersPageSiteStructuredContentFolder_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -2393,6 +2394,25 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			Arrays.asList(
 				StructuredContentFolderSerDes.toDTOs(
 					structuredContentFoldersJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteStructuredContentFoldersPageSiteStructuredContentFolder_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"structuredContentFolders",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3296,20 +3316,9 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		Long parentStructuredContentFolderId =
 			testGetStructuredContentFolderStructuredContentFoldersPage_getParentStructuredContentFolderId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"structuredContentFolderStructuredContentFolders",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"parentStructuredContentFolderId",
-						parentStructuredContentFolderId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetStructuredContentFolderStructuredContentFoldersPageStructuredContentFolder_getGraphQLField(
+				parentStructuredContentFolderId);
 
 		// No namespace
 
@@ -3381,6 +3390,27 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 				StructuredContentFolderSerDes.toDTOs(
 					structuredContentFolderStructuredContentFoldersJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetStructuredContentFolderStructuredContentFoldersPageStructuredContentFolder_getGraphQLField(
+				Long parentStructuredContentFolderId)
+		throws Exception {
+
+		return new GraphQLField(
+			"structuredContentFolderStructuredContentFolders",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"parentStructuredContentFolderId",
+						parentStructuredContentFolderId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected StructuredContentFolder
@@ -5626,4 +5656,4 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:679966151
+// LIFERAY-REST-BUILDER-HASH:-1611070687

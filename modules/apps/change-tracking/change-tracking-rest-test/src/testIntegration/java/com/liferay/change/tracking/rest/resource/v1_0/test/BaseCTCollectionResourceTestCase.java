@@ -1366,17 +1366,8 @@ public abstract class BaseCTCollectionResourceTestCase {
 
 	@Test
 	public void testGraphQLGetCTCollectionsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"cTCollections",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetCTCollectionsPageCTCollection_getGraphQLField();
 
 		// No namespace
 
@@ -1431,6 +1422,23 @@ public abstract class BaseCTCollectionResourceTestCase {
 			Arrays.asList(
 				CTCollectionSerDes.toDTOs(
 					cTCollectionsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetCTCollectionsPageCTCollection_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"cTCollections",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3060,4 +3068,4 @@ public abstract class BaseCTCollectionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1928810216
+// LIFERAY-REST-BUILDER-HASH:-2134770516

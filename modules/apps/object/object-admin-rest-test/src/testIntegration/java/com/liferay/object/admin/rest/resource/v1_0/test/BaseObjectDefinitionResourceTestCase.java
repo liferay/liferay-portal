@@ -1255,17 +1255,8 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 
 	@Test
 	public void testGraphQLGetObjectDefinitionsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"objectDefinitions",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectDefinitionsPageObjectDefinition_getGraphQLField();
 
 		// No namespace
 
@@ -1322,6 +1313,23 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 			Arrays.asList(
 				ObjectDefinitionSerDes.toDTOs(
 					objectDefinitionsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectDefinitionsPageObjectDefinition_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"objectDefinitions",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -4262,4 +4270,4 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1553812422
+// LIFERAY-REST-BUILDER-HASH:354045556

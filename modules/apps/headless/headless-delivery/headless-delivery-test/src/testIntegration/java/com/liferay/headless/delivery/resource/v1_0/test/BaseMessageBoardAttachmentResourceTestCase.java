@@ -1070,15 +1070,9 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		Long messageBoardMessageId =
 			testGetMessageBoardMessageMessageBoardAttachmentsPage_getMessageBoardMessageId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardMessageMessageBoardAttachments",
-			new HashMap<String, Object>() {
-				{
-					put("messageBoardMessageId", messageBoardMessageId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardMessageMessageBoardAttachmentsPageMessageBoardMessageMessageBoardAttachment_getGraphQLField(
+				messageBoardMessageId);
 
 		// No namespace
 
@@ -1148,6 +1142,22 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 				MessageBoardAttachmentSerDes.toDTOs(
 					messageBoardMessageMessageBoardAttachmentsJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardMessageMessageBoardAttachmentsPageMessageBoardMessageMessageBoardAttachment_getGraphQLField(
+				Long messageBoardMessageId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardMessageMessageBoardAttachments",
+			new HashMap<String, Object>() {
+				{
+					put("messageBoardMessageId", messageBoardMessageId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1277,15 +1287,9 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		Long messageBoardThreadId =
 			testGetMessageBoardThreadMessageBoardAttachmentsPage_getMessageBoardThreadId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardThreadMessageBoardAttachments",
-			new HashMap<String, Object>() {
-				{
-					put("messageBoardThreadId", messageBoardThreadId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardThreadMessageBoardAttachmentsPageMessageBoardThreadMessageBoardAttachment_getGraphQLField(
+				messageBoardThreadId);
 
 		// No namespace
 
@@ -1355,6 +1359,22 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 				MessageBoardAttachmentSerDes.toDTOs(
 					messageBoardThreadMessageBoardAttachmentsJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardThreadMessageBoardAttachmentsPageMessageBoardThreadMessageBoardAttachment_getGraphQLField(
+				Long messageBoardThreadId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardThreadMessageBoardAttachments",
+			new HashMap<String, Object>() {
+				{
+					put("messageBoardThreadId", messageBoardThreadId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3042,4 +3062,4 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1321063250
+// LIFERAY-REST-BUILDER-HASH:-1820335740

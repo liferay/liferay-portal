@@ -1435,17 +1435,8 @@ public abstract class BaseUserGroupResourceTestCase {
 
 	@Test
 	public void testGraphQLGetUserGroupsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"userGroups",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetUserGroupsPageUserGroup_getGraphQLField();
 
 		// No namespace
 
@@ -1500,6 +1491,23 @@ public abstract class BaseUserGroupResourceTestCase {
 			Arrays.asList(
 				UserGroupSerDes.toDTOs(
 					userGroupsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetUserGroupsPageUserGroup_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"userGroups",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3072,4 +3080,4 @@ public abstract class BaseUserGroupResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:961087040
+// LIFERAY-REST-BUILDER-HASH:-1610159096

@@ -529,15 +529,9 @@ public abstract class BaseTaskResourceTestCase {
 	public void testGraphQLGetProcessTasksPage() throws Exception {
 		Long processId = testGetProcessTasksPage_getProcessId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"processTasks",
-			new HashMap<String, Object>() {
-				{
-					put("processId", processId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetProcessTasksPageProcessTask_getGraphQLField(
+				processId);
 
 		// No namespace
 
@@ -586,6 +580,22 @@ public abstract class BaseTaskResourceTestCase {
 			task2,
 			Arrays.asList(
 				TaskSerDes.toDTOs(processTasksJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetProcessTasksPageProcessTask_getGraphQLField(
+				Long processId)
+		throws Exception {
+
+		return new GraphQLField(
+			"processTasks",
+			new HashMap<String, Object>() {
+				{
+					put("processId", processId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2157,4 +2167,4 @@ public abstract class BaseTaskResourceTestCase {
 		_taskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-339135258
+// LIFERAY-REST-BUILDER-HASH:-2007048050

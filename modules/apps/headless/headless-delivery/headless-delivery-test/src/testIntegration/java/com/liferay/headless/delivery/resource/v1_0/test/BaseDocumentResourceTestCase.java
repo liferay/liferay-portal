@@ -1492,18 +1492,9 @@ public abstract class BaseDocumentResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryDocumentsPage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryDocuments",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryDocumentsPageAssetLibraryDocument_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -1561,6 +1552,25 @@ public abstract class BaseDocumentResourceTestCase {
 			Arrays.asList(
 				DocumentSerDes.toDTOs(
 					assetLibraryDocumentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryDocumentsPageAssetLibraryDocument_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryDocuments",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1746,17 +1756,9 @@ public abstract class BaseDocumentResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryDocumentsRatedByMePage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryDocumentsRatedByMe",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryDocumentsRatedByMePageAssetLibraryDocument_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -1821,6 +1823,24 @@ public abstract class BaseDocumentResourceTestCase {
 				DocumentSerDes.toDTOs(
 					assetLibraryDocumentsRatedByMeJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryDocumentsRatedByMePageAssetLibraryDocument_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryDocumentsRatedByMe",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2557,18 +2577,9 @@ public abstract class BaseDocumentResourceTestCase {
 		Long documentFolderId =
 			testGetDocumentFolderDocumentsPage_getDocumentFolderId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"documentFolderDocuments",
-			new HashMap<String, Object>() {
-				{
-					put("documentFolderId", documentFolderId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetDocumentFolderDocumentsPageDocumentFolderDocument_getGraphQLField(
+				documentFolderId);
 
 		// No namespace
 
@@ -2627,6 +2638,25 @@ public abstract class BaseDocumentResourceTestCase {
 			Arrays.asList(
 				DocumentSerDes.toDTOs(
 					documentFolderDocumentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetDocumentFolderDocumentsPageDocumentFolderDocument_getGraphQLField(
+				Long documentFolderId)
+		throws Exception {
+
+		return new GraphQLField(
+			"documentFolderDocuments",
+			new HashMap<String, Object>() {
+				{
+					put("documentFolderId", documentFolderId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3266,18 +3296,8 @@ public abstract class BaseDocumentResourceTestCase {
 	public void testGraphQLGetSiteDocumentsPage() throws Exception {
 		Long siteId = testGetSiteDocumentsPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"documents",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteDocumentsPageSiteDocument_getGraphQLField(siteId);
 
 		// No namespace
 
@@ -3328,6 +3348,25 @@ public abstract class BaseDocumentResourceTestCase {
 			document2,
 			Arrays.asList(
 				DocumentSerDes.toDTOs(documentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteDocumentsPageSiteDocument_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"documents",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3496,17 +3535,9 @@ public abstract class BaseDocumentResourceTestCase {
 	public void testGraphQLGetSiteDocumentsRatedByMePage() throws Exception {
 		Long siteId = testGetSiteDocumentsRatedByMePage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"documentsRatedByMe",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteDocumentsRatedByMePageSiteDocument_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -3561,6 +3592,24 @@ public abstract class BaseDocumentResourceTestCase {
 			Arrays.asList(
 				DocumentSerDes.toDTOs(
 					documentsRatedByMeJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteDocumentsRatedByMePageSiteDocument_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"documentsRatedByMe",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -6583,4 +6632,4 @@ public abstract class BaseDocumentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-293638472
+// LIFERAY-REST-BUILDER-HASH:993960568

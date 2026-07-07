@@ -623,16 +623,9 @@ public abstract class BaseSitePageResourceTestCase {
 		String friendlyUrlPath =
 			testGetSiteSitePagesExperiencesPage_getFriendlyUrlPath();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"sitePagesExperiences",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("friendlyUrlPath", "\"" + friendlyUrlPath + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteSitePagesExperiencesPageSiteSitePage_getGraphQLField(
+				siteId, friendlyUrlPath);
 
 		// No namespace
 
@@ -692,6 +685,23 @@ public abstract class BaseSitePageResourceTestCase {
 			Arrays.asList(
 				SitePageSerDes.toDTOs(
 					sitePagesExperiencesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteSitePagesExperiencesPageSiteSitePage_getGraphQLField(
+				Long siteId, String friendlyUrlPath)
+		throws Exception {
+
+		return new GraphQLField(
+			"sitePagesExperiences",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("friendlyUrlPath", "\"" + friendlyUrlPath + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected SitePage
@@ -1085,18 +1095,8 @@ public abstract class BaseSitePageResourceTestCase {
 	public void testGraphQLGetSiteSitePagesPage() throws Exception {
 		Long siteId = testGetSiteSitePagesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"sitePages",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteSitePagesPageSiteSitePage_getGraphQLField(siteId);
 
 		// No namespace
 
@@ -1147,6 +1147,25 @@ public abstract class BaseSitePageResourceTestCase {
 			sitePage2,
 			Arrays.asList(
 				SitePageSerDes.toDTOs(sitePagesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteSitePagesPageSiteSitePage_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"sitePages",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2730,4 +2749,4 @@ public abstract class BaseSitePageResourceTestCase {
 		_sitePageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1297248474
+// LIFERAY-REST-BUILDER-HASH:1005889955

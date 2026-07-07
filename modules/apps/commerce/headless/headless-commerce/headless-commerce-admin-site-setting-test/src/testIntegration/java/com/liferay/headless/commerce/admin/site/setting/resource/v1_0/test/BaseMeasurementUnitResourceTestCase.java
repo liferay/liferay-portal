@@ -1586,19 +1586,9 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 		String measurementUnitType =
 			testGetMeasurementUnitsByType_getMeasurementUnitType();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"measurementUnitsByType",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"measurementUnitType",
-						"\"" + measurementUnitType + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMeasurementUnitsByTypeMeasurementUnit_getGraphQLField(
+				measurementUnitType);
 
 		// No namespace
 
@@ -1661,6 +1651,26 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 			Arrays.asList(
 				MeasurementUnitSerDes.toDTOs(
 					measurementUnitsByTypeJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMeasurementUnitsByTypeMeasurementUnit_getGraphQLField(
+				String measurementUnitType)
+		throws Exception {
+
+		return new GraphQLField(
+			"measurementUnitsByType",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"measurementUnitType",
+						"\"" + measurementUnitType + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected MeasurementUnit
@@ -2048,16 +2058,8 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 
 	@Test
 	public void testGraphQLGetMeasurementUnitsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"measurementUnits",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMeasurementUnitsPageMeasurementUnit_getGraphQLField();
 
 		// No namespace
 
@@ -2116,6 +2118,22 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 			Arrays.asList(
 				MeasurementUnitSerDes.toDTOs(
 					measurementUnitsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMeasurementUnitsPageMeasurementUnit_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"measurementUnits",
+			new HashMap<String, Object>() {
+				{
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3425,4 +3443,4 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1729057933
+// LIFERAY-REST-BUILDER-HASH:-878412798

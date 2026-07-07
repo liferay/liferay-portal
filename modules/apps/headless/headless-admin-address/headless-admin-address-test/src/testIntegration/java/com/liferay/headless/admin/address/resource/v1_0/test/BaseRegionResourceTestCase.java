@@ -949,18 +949,9 @@ public abstract class BaseRegionResourceTestCase {
 	public void testGraphQLGetCountryRegionsPage() throws Exception {
 		Long countryId = testGetCountryRegionsPage_getCountryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"countryRegions",
-			new HashMap<String, Object>() {
-				{
-					put("countryId", countryId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetCountryRegionsPageCountryRegion_getGraphQLField(
+				countryId);
 
 		// No namespace
 
@@ -1015,6 +1006,25 @@ public abstract class BaseRegionResourceTestCase {
 			Arrays.asList(
 				RegionSerDes.toDTOs(
 					countryRegionsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetCountryRegionsPageCountryRegion_getGraphQLField(
+				Long countryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"countryRegions",
+			new HashMap<String, Object>() {
+				{
+					put("countryId", countryId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3163,4 +3173,4 @@ public abstract class BaseRegionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1021205880
+// LIFERAY-REST-BUILDER-HASH:-497217834

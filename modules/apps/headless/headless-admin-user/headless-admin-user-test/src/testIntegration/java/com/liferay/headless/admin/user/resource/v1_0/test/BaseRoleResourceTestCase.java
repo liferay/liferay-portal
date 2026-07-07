@@ -1806,17 +1806,8 @@ public abstract class BaseRoleResourceTestCase {
 
 	@Test
 	public void testGraphQLGetRolesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"roles",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetRolesPageRole_getGraphQLField();
 
 		// No namespace
 
@@ -1865,6 +1856,22 @@ public abstract class BaseRoleResourceTestCase {
 			role2,
 			Arrays.asList(
 				RoleSerDes.toDTOs(rolesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetRolesPageRole_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"roles",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3669,4 +3676,4 @@ public abstract class BaseRoleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1390689137
+// LIFERAY-REST-BUILDER-HASH:1486184605

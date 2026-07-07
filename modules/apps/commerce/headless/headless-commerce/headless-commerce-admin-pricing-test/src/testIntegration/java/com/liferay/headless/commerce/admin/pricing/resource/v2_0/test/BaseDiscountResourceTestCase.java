@@ -1275,17 +1275,8 @@ public abstract class BaseDiscountResourceTestCase {
 
 	@Test
 	public void testGraphQLGetDiscountsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"discounts",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetDiscountsPageDiscount_getGraphQLField();
 
 		// No namespace
 
@@ -1335,6 +1326,22 @@ public abstract class BaseDiscountResourceTestCase {
 			discount2,
 			Arrays.asList(
 				DiscountSerDes.toDTOs(discountsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetDiscountsPageDiscount_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"discounts",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3504,4 +3511,4 @@ public abstract class BaseDiscountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1980164423
+// LIFERAY-REST-BUILDER-HASH:2147478175

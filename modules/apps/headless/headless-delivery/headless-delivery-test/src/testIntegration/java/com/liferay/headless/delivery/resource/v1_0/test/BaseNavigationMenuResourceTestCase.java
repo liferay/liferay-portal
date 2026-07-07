@@ -1556,18 +1556,9 @@ public abstract class BaseNavigationMenuResourceTestCase {
 	public void testGraphQLGetSiteNavigationMenusPage() throws Exception {
 		Long siteId = testGetSiteNavigationMenusPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"navigationMenus",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteNavigationMenusPageSiteNavigationMenu_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -1624,6 +1615,25 @@ public abstract class BaseNavigationMenuResourceTestCase {
 			Arrays.asList(
 				NavigationMenuSerDes.toDTOs(
 					navigationMenusJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteNavigationMenusPageSiteNavigationMenu_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"navigationMenus",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3133,4 +3143,4 @@ public abstract class BaseNavigationMenuResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1507684290
+// LIFERAY-REST-BUILDER-HASH:-1593718326

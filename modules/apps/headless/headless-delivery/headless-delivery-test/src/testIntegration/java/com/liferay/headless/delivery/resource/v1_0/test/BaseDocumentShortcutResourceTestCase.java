@@ -780,17 +780,9 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryDocumentShortcutsPage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryDocumentShortcuts",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryDocumentShortcutsPageAssetLibraryDocumentShortcut_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -855,6 +847,24 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 				DocumentShortcutSerDes.toDTOs(
 					assetLibraryDocumentShortcutsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryDocumentShortcutsPageAssetLibraryDocumentShortcut_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryDocumentShortcuts",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1532,17 +1542,9 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 	public void testGraphQLGetSiteDocumentShortcutsPage() throws Exception {
 		Long siteId = testGetSiteDocumentShortcutsPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"documentShortcuts",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteDocumentShortcutsPageSiteDocumentShortcut_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -1599,6 +1601,24 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			Arrays.asList(
 				DocumentShortcutSerDes.toDTOs(
 					documentShortcutsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteDocumentShortcutsPageSiteDocumentShortcut_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"documentShortcuts",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3192,4 +3212,4 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1902295865
+// LIFERAY-REST-BUILDER-HASH:1242620895

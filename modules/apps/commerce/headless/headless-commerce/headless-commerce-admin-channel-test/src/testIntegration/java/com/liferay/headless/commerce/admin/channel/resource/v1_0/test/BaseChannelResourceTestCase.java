@@ -1397,17 +1397,8 @@ public abstract class BaseChannelResourceTestCase {
 
 	@Test
 	public void testGraphQLGetChannelsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"channels",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetChannelsPageChannel_getGraphQLField();
 
 		// No namespace
 
@@ -1457,6 +1448,22 @@ public abstract class BaseChannelResourceTestCase {
 			channel2,
 			Arrays.asList(
 				ChannelSerDes.toDTOs(channelsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetChannelsPageChannel_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"channels",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2929,4 +2936,4 @@ public abstract class BaseChannelResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:934595126
+// LIFERAY-REST-BUILDER-HASH:-1134979776

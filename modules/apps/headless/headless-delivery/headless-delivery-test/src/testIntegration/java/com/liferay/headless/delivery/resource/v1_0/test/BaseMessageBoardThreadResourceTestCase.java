@@ -1033,18 +1033,9 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 		Long messageBoardSectionId =
 			testGetMessageBoardSectionMessageBoardThreadsPage_getMessageBoardSectionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardSectionMessageBoardThreads",
-			new HashMap<String, Object>() {
-				{
-					put("messageBoardSectionId", messageBoardSectionId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardSectionMessageBoardThreadsPageMessageBoardSectionMessageBoardThread_getGraphQLField(
+				messageBoardSectionId);
 
 		// No namespace
 
@@ -1114,6 +1105,25 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 				MessageBoardThreadSerDes.toDTOs(
 					messageBoardSectionMessageBoardThreadsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardSectionMessageBoardThreadsPageMessageBoardSectionMessageBoardThread_getGraphQLField(
+				Long messageBoardSectionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardSectionMessageBoardThreads",
+			new HashMap<String, Object>() {
+				{
+					put("messageBoardSectionId", messageBoardSectionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1811,22 +1821,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 
 	@Test
 	public void testGraphQLGetMessageBoardThreadsRankedPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardThreadsRanked",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"dateCreated",
-						getGraphQLValue(RandomTestUtil.nextDate()));
-					put(
-						"dateModified",
-						getGraphQLValue(RandomTestUtil.nextDate()));
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardThreadsRankedPageMessageBoardThread_getGraphQLField();
 
 		// No namespace
 
@@ -1887,6 +1883,28 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			Arrays.asList(
 				MessageBoardThreadSerDes.toDTOs(
 					messageBoardThreadsRankedJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardThreadsRankedPageMessageBoardThread_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardThreadsRanked",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"dateCreated",
+						getGraphQLValue(RandomTestUtil.nextDate()));
+					put(
+						"dateModified",
+						getGraphQLValue(RandomTestUtil.nextDate()));
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected MessageBoardThread
@@ -2583,18 +2601,9 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 	public void testGraphQLGetSiteMessageBoardThreadsPage() throws Exception {
 		Long siteId = testGetSiteMessageBoardThreadsPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardThreads",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteMessageBoardThreadsPageSiteMessageBoardThread_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -2654,6 +2663,25 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			Arrays.asList(
 				MessageBoardThreadSerDes.toDTOs(
 					messageBoardThreadsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteMessageBoardThreadsPageSiteMessageBoardThread_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardThreads",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -5257,4 +5285,4 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-147785886
+// LIFERAY-REST-BUILDER-HASH:-1181139108

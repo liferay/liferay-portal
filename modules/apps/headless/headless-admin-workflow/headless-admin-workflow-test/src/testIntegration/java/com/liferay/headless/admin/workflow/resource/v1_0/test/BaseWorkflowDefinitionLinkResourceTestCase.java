@@ -653,17 +653,9 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		Long workflowDefinitionId =
 			testGetWorkflowDefinitionWorkflowDefinitionLinksPage_getWorkflowDefinitionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"workflowDefinitionWorkflowDefinitionLinks",
-			new HashMap<String, Object>() {
-				{
-					put("workflowDefinitionId", workflowDefinitionId);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetWorkflowDefinitionWorkflowDefinitionLinksPageWorkflowDefinitionWorkflowDefinitionLink_getGraphQLField(
+				workflowDefinitionId);
 
 		// No namespace
 
@@ -734,6 +726,24 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 				WorkflowDefinitionLinkSerDes.toDTOs(
 					workflowDefinitionWorkflowDefinitionLinksJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetWorkflowDefinitionWorkflowDefinitionLinksPageWorkflowDefinitionWorkflowDefinitionLink_getGraphQLField(
+				Long workflowDefinitionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"workflowDefinitionWorkflowDefinitionLinks",
+			new HashMap<String, Object>() {
+				{
+					put("workflowDefinitionId", workflowDefinitionId);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1997,4 +2007,4 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		WorkflowDefinitionLinkResource _workflowDefinitionLinkResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-947174397
+// LIFERAY-REST-BUILDER-HASH:-890742207

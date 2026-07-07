@@ -1217,20 +1217,9 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 		Long parentMessageBoardSectionId =
 			testGetMessageBoardSectionMessageBoardSectionsPage_getParentMessageBoardSectionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardSectionMessageBoardSections",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"parentMessageBoardSectionId",
-						parentMessageBoardSectionId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardSectionMessageBoardSectionsPageMessageBoardSection_getGraphQLField(
+				parentMessageBoardSectionId);
 
 		// No namespace
 
@@ -1300,6 +1289,27 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 				MessageBoardSectionSerDes.toDTOs(
 					messageBoardSectionMessageBoardSectionsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardSectionMessageBoardSectionsPageMessageBoardSection_getGraphQLField(
+				Long parentMessageBoardSectionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardSectionMessageBoardSections",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"parentMessageBoardSectionId",
+						parentMessageBoardSectionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected MessageBoardSection
@@ -2054,18 +2064,9 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 	public void testGraphQLGetSiteMessageBoardSectionsPage() throws Exception {
 		Long siteId = testGetSiteMessageBoardSectionsPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardSections",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteMessageBoardSectionsPageSiteMessageBoardSection_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -2125,6 +2126,25 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 			Arrays.asList(
 				MessageBoardSectionSerDes.toDTOs(
 					messageBoardSectionsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteMessageBoardSectionsPageSiteMessageBoardSection_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardSections",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3860,4 +3880,4 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-539812710
+// LIFERAY-REST-BUILDER-HASH:460151248

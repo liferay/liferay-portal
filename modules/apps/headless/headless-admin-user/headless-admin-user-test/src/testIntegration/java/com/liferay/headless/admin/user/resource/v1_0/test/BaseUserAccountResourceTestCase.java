@@ -2060,20 +2060,9 @@ public abstract class BaseUserAccountResourceTestCase {
 		String externalReferenceCode =
 			testGetAccountUserAccountsByExternalReferenceCodePage_getExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"accountUserAccountsByExternalReferenceCode",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"externalReferenceCode",
-						"\"" + externalReferenceCode + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAccountUserAccountsByExternalReferenceCodePageAccountUserAccount_getGraphQLField(
+				externalReferenceCode);
 
 		// No namespace
 
@@ -2143,6 +2132,27 @@ public abstract class BaseUserAccountResourceTestCase {
 				UserAccountSerDes.toDTOs(
 					accountUserAccountsByExternalReferenceCodeJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAccountUserAccountsByExternalReferenceCodePageAccountUserAccount_getGraphQLField(
+				String externalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"accountUserAccountsByExternalReferenceCode",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected UserAccount
@@ -2591,18 +2601,9 @@ public abstract class BaseUserAccountResourceTestCase {
 	public void testGraphQLGetAccountUserAccountsPage() throws Exception {
 		Long accountId = testGetAccountUserAccountsPage_getAccountId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"accountUserAccounts",
-			new HashMap<String, Object>() {
-				{
-					put("accountId", accountId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAccountUserAccountsPageAccountUserAccount_getGraphQLField(
+				accountId);
 
 		// No namespace
 
@@ -2660,6 +2661,25 @@ public abstract class BaseUserAccountResourceTestCase {
 			Arrays.asList(
 				UserAccountSerDes.toDTOs(
 					accountUserAccountsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAccountUserAccountsPageAccountUserAccount_getGraphQLField(
+				Long accountId)
+		throws Exception {
+
+		return new GraphQLField(
+			"accountUserAccounts",
+			new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -5001,18 +5021,9 @@ public abstract class BaseUserAccountResourceTestCase {
 	public void testGraphQLGetUserAccountsByStatusPage() throws Exception {
 		String status = testGetUserAccountsByStatusPage_getStatus();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"userAccountsByStatus",
-			new HashMap<String, Object>() {
-				{
-					put("status", "\"" + status + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetUserAccountsByStatusPageUserAccount_getGraphQLField(
+				status);
 
 		// No namespace
 
@@ -5072,6 +5083,25 @@ public abstract class BaseUserAccountResourceTestCase {
 			Arrays.asList(
 				UserAccountSerDes.toDTOs(
 					userAccountsByStatusJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetUserAccountsByStatusPageUserAccount_getGraphQLField(
+				String status)
+		throws Exception {
+
+		return new GraphQLField(
+			"userAccountsByStatus",
+			new HashMap<String, Object>() {
+				{
+					put("status", "\"" + status + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected UserAccount
@@ -5425,17 +5455,8 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	@Test
 	public void testGraphQLGetUserAccountsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"userAccounts",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetUserAccountsPageUserAccount_getGraphQLField();
 
 		// No namespace
 
@@ -5490,6 +5511,23 @@ public abstract class BaseUserAccountResourceTestCase {
 			Arrays.asList(
 				UserAccountSerDes.toDTOs(
 					userAccountsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetUserAccountsPageUserAccount_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"userAccounts",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -9600,4 +9638,4 @@ public abstract class BaseUserAccountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-82242425
+// LIFERAY-REST-BUILDER-HASH:816838257

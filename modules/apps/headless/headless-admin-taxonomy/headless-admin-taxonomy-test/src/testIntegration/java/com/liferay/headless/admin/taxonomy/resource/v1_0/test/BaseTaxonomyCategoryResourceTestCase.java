@@ -1402,18 +1402,9 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryTaxonomyCategoriesPage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryTaxonomyCategories",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryTaxonomyCategoriesPageAssetLibraryTaxonomyCategory_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -1481,6 +1472,25 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				TaxonomyCategorySerDes.toDTOs(
 					assetLibraryTaxonomyCategoriesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryTaxonomyCategoriesPageAssetLibraryTaxonomyCategory_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryTaxonomyCategories",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2138,18 +2148,9 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	public void testGraphQLGetSiteTaxonomyCategoriesPage() throws Exception {
 		Long siteId = testGetSiteTaxonomyCategoriesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"taxonomyCategories",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteTaxonomyCategoriesPageSiteTaxonomyCategory_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -2206,6 +2207,25 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			Arrays.asList(
 				TaxonomyCategorySerDes.toDTOs(
 					taxonomyCategoriesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteTaxonomyCategoriesPageSiteTaxonomyCategory_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"taxonomyCategories",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2526,16 +2546,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 	@Test
 	public void testGraphQLGetTaxonomyCategoriesRankedPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"taxonomyCategoriesRanked",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetTaxonomyCategoriesRankedPageTaxonomyCategory_getGraphQLField();
 
 		// No namespace
 
@@ -2596,6 +2608,22 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			Arrays.asList(
 				TaxonomyCategorySerDes.toDTOs(
 					taxonomyCategoriesRankedJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetTaxonomyCategoriesRankedPageTaxonomyCategory_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"taxonomyCategoriesRanked",
+			new HashMap<String, Object>() {
+				{
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected TaxonomyCategory
@@ -3281,20 +3309,9 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		String parentTaxonomyCategoryId =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_getParentTaxonomyCategoryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"taxonomyCategoryTaxonomyCategories",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"parentTaxonomyCategoryId",
-						"\"" + parentTaxonomyCategoryId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetTaxonomyCategoryTaxonomyCategoriesPageTaxonomyCategory_getGraphQLField(
+				parentTaxonomyCategoryId);
 
 		// No namespace
 
@@ -3362,6 +3379,27 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				TaxonomyCategorySerDes.toDTOs(
 					taxonomyCategoryTaxonomyCategoriesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetTaxonomyCategoryTaxonomyCategoriesPageTaxonomyCategory_getGraphQLField(
+				String parentTaxonomyCategoryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"taxonomyCategoryTaxonomyCategories",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"parentTaxonomyCategoryId",
+						"\"" + parentTaxonomyCategoryId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected TaxonomyCategory
@@ -3888,18 +3926,9 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		Long taxonomyVocabularyId =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_getTaxonomyVocabularyId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"taxonomyVocabularyTaxonomyCategories",
-			new HashMap<String, Object>() {
-				{
-					put("taxonomyVocabularyId", taxonomyVocabularyId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetTaxonomyVocabularyTaxonomyCategoriesPageTaxonomyVocabularyTaxonomyCategory_getGraphQLField(
+				taxonomyVocabularyId);
 
 		// No namespace
 
@@ -3970,6 +3999,25 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 				TaxonomyCategorySerDes.toDTOs(
 					taxonomyVocabularyTaxonomyCategoriesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetTaxonomyVocabularyTaxonomyCategoriesPageTaxonomyVocabularyTaxonomyCategory_getGraphQLField(
+				Long taxonomyVocabularyId)
+		throws Exception {
+
+		return new GraphQLField(
+			"taxonomyVocabularyTaxonomyCategories",
+			new HashMap<String, Object>() {
+				{
+					put("taxonomyVocabularyId", taxonomyVocabularyId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -6933,4 +6981,4 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			TaxonomyCategoryResource _taxonomyCategoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1689225875
+// LIFERAY-REST-BUILDER-HASH:-1919811996

@@ -1206,17 +1206,9 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 	public void testGraphQLGetReplenishmentItemsPage() throws Exception {
 		String sku = testGetReplenishmentItemsPage_getSku();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"replenishmentItems",
-			new HashMap<String, Object>() {
-				{
-					put("sku", "\"" + sku + "\"");
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetReplenishmentItemsPageReplenishmentItem_getGraphQLField(
+				sku);
 
 		// No namespace
 
@@ -1274,6 +1266,24 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 			Arrays.asList(
 				ReplenishmentItemSerDes.toDTOs(
 					replenishmentItemsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetReplenishmentItemsPageReplenishmentItem_getGraphQLField(
+				String sku)
+		throws Exception {
+
+		return new GraphQLField(
+			"replenishmentItems",
+			new HashMap<String, Object>() {
+				{
+					put("sku", "\"" + sku + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected ReplenishmentItem
@@ -1488,17 +1498,9 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 		Long warehouseId =
 			testGetWarehouseIdReplenishmentItemsPage_getWarehouseId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"warehouseIdReplenishmentItems",
-			new HashMap<String, Object>() {
-				{
-					put("warehouseId", warehouseId);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetWarehouseIdReplenishmentItemsPageReplenishmentItem_getGraphQLField(
+				warehouseId);
 
 		// No namespace
 
@@ -1564,6 +1566,24 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 				ReplenishmentItemSerDes.toDTOs(
 					warehouseIdReplenishmentItemsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetWarehouseIdReplenishmentItemsPageReplenishmentItem_getGraphQLField(
+				Long warehouseId)
+		throws Exception {
+
+		return new GraphQLField(
+			"warehouseIdReplenishmentItems",
+			new HashMap<String, Object>() {
+				{
+					put("warehouseId", warehouseId);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected ReplenishmentItem
@@ -2964,4 +2984,4 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-250795444
+// LIFERAY-REST-BUILDER-HASH:749594213

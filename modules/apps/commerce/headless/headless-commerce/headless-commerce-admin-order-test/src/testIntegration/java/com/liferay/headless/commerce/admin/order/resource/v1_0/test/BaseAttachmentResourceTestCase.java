@@ -1647,20 +1647,9 @@ public abstract class BaseAttachmentResourceTestCase {
 		String externalReferenceCode =
 			testGetOrderByExternalReferenceCodeAttachmentsPage_getExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"orderByExternalReferenceCodeAttachments",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"externalReferenceCode",
-						"\"" + externalReferenceCode + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetOrderByExternalReferenceCodeAttachmentsPageOrderAttachment_getGraphQLField(
+				externalReferenceCode);
 
 		// No namespace
 
@@ -1731,6 +1720,27 @@ public abstract class BaseAttachmentResourceTestCase {
 				AttachmentSerDes.toDTOs(
 					orderByExternalReferenceCodeAttachmentsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetOrderByExternalReferenceCodeAttachmentsPageOrderAttachment_getGraphQLField(
+				String externalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"orderByExternalReferenceCodeAttachments",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected Attachment
@@ -3263,4 +3273,4 @@ public abstract class BaseAttachmentResourceTestCase {
 			AttachmentResource _attachmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1282012896
+// LIFERAY-REST-BUILDER-HASH:-1023658281

@@ -1480,17 +1480,8 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 
 	@Test
 	public void testGraphQLGetProductConfigurationListsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"productConfigurationLists",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetProductConfigurationListsPageProductConfigurationList_getGraphQLField();
 
 		// No namespace
 
@@ -1552,6 +1543,23 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 			Arrays.asList(
 				ProductConfigurationListSerDes.toDTOs(
 					productConfigurationListsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetProductConfigurationListsPageProductConfigurationList_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"productConfigurationLists",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3160,4 +3168,4 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:278589690
+// LIFERAY-REST-BUILDER-HASH:309415702

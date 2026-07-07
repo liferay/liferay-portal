@@ -1257,17 +1257,8 @@ public abstract class BaseCatalogResourceTestCase {
 
 	@Test
 	public void testGraphQLGetCatalogsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"catalogs",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetCatalogsPageCatalog_getGraphQLField();
 
 		// No namespace
 
@@ -1317,6 +1308,22 @@ public abstract class BaseCatalogResourceTestCase {
 			catalog2,
 			Arrays.asList(
 				CatalogSerDes.toDTOs(catalogsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetCatalogsPageCatalog_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"catalogs",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2973,4 +2980,4 @@ public abstract class BaseCatalogResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1820977679
+// LIFERAY-REST-BUILDER-HASH:754594411

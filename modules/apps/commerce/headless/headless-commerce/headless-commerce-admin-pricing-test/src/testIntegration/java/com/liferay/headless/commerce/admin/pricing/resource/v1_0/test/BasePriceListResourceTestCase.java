@@ -1288,16 +1288,8 @@ public abstract class BasePriceListResourceTestCase {
 
 	@Test
 	public void testGraphQLGetPriceListsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"priceLists",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetPriceListsPagePriceList_getGraphQLField();
 
 		// No namespace
 
@@ -1353,6 +1345,22 @@ public abstract class BasePriceListResourceTestCase {
 			Arrays.asList(
 				PriceListSerDes.toDTOs(
 					priceListsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetPriceListsPagePriceList_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"priceLists",
+			new HashMap<String, Object>() {
+				{
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2764,4 +2772,4 @@ public abstract class BasePriceListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1070731472
+// LIFERAY-REST-BUILDER-HASH:330525512

@@ -950,17 +950,8 @@ public abstract class BaseObjectFolderResourceTestCase {
 
 	@Test
 	public void testGraphQLGetObjectFoldersPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"objectFolders",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectFoldersPageObjectFolder_getGraphQLField();
 
 		// No namespace
 
@@ -1015,6 +1006,23 @@ public abstract class BaseObjectFolderResourceTestCase {
 			Arrays.asList(
 				ObjectFolderSerDes.toDTOs(
 					objectFoldersJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectFoldersPageObjectFolder_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"objectFolders",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2280,4 +2288,4 @@ public abstract class BaseObjectFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:277154760
+// LIFERAY-REST-BUILDER-HASH:-1128321070

@@ -764,21 +764,9 @@ public abstract class BaseInstanceResourceTestCase {
 	public void testGraphQLGetProcessInstancesPage() throws Exception {
 		Long processId = testGetProcessInstancesPage_getProcessId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"processInstances",
-			new HashMap<String, Object>() {
-				{
-					put("processId", processId);
-					put("dateEnd", getGraphQLValue(RandomTestUtil.nextDate()));
-					put(
-						"dateStart",
-						getGraphQLValue(RandomTestUtil.nextDate()));
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetProcessInstancesPageProcessInstance_getGraphQLField(
+				processId);
 
 		// No namespace
 
@@ -833,6 +821,28 @@ public abstract class BaseInstanceResourceTestCase {
 			Arrays.asList(
 				InstanceSerDes.toDTOs(
 					processInstancesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetProcessInstancesPageProcessInstance_getGraphQLField(
+				Long processId)
+		throws Exception {
+
+		return new GraphQLField(
+			"processInstances",
+			new HashMap<String, Object>() {
+				{
+					put("processId", processId);
+					put("dateEnd", getGraphQLValue(RandomTestUtil.nextDate()));
+					put(
+						"dateStart",
+						getGraphQLValue(RandomTestUtil.nextDate()));
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2367,4 +2377,4 @@ public abstract class BaseInstanceResourceTestCase {
 			_instanceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-591524331
+// LIFERAY-REST-BUILDER-HASH:-1291175069

@@ -494,27 +494,9 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 	public void testGraphQLGetSiteDSEnvelopesPage() throws Exception {
 		Long siteId = testGetSiteDSEnvelopesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"dSEnvelopes",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put(
-						"fromDate",
-						getGraphQLValue(RandomTestUtil.randomString()));
-					put("keywords", null);
-					put(
-						"order",
-						getGraphQLValue(RandomTestUtil.randomString()));
-					put(
-						"status",
-						getGraphQLValue(RandomTestUtil.randomString()));
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteDSEnvelopesPageSiteDSEnvelope_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -569,6 +551,34 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 			Arrays.asList(
 				DSEnvelopeSerDes.toDTOs(
 					dSEnvelopesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteDSEnvelopesPageSiteDSEnvelope_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"dSEnvelopes",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put(
+						"fromDate",
+						getGraphQLValue(RandomTestUtil.randomString()));
+					put("keywords", null);
+					put(
+						"order",
+						getGraphQLValue(RandomTestUtil.randomString()));
+					put(
+						"status",
+						getGraphQLValue(RandomTestUtil.randomString()));
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1854,4 +1864,4 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 		_dsEnvelopeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1814703680
+// LIFERAY-REST-BUILDER-HASH:179629646

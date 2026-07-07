@@ -1194,17 +1194,8 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 
 	@Test
 	public void testGraphQLGetSXPBlueprintsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"sXPBlueprints",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSXPBlueprintsPageSXPBlueprint_getGraphQLField();
 
 		// No namespace
 
@@ -1259,6 +1250,23 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 			Arrays.asList(
 				SXPBlueprintSerDes.toDTOs(
 					sXPBlueprintsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSXPBlueprintsPageSXPBlueprint_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"sXPBlueprints",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3049,4 +3057,4 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1951086847
+// LIFERAY-REST-BUILDER-HASH:-1000985083

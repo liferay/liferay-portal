@@ -839,17 +839,8 @@ public abstract class BaseCurrencyResourceTestCase {
 
 	@Test
 	public void testGraphQLGetCurrenciesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"currencies",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetCurrenciesPageCurrency_getGraphQLField();
 
 		// No namespace
 
@@ -903,6 +894,23 @@ public abstract class BaseCurrencyResourceTestCase {
 			Arrays.asList(
 				CurrencySerDes.toDTOs(
 					currenciesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetCurrenciesPageCurrency_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"currencies",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2685,4 +2693,4 @@ public abstract class BaseCurrencyResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:928659869
+// LIFERAY-REST-BUILDER-HASH:-2070873009

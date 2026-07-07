@@ -1510,20 +1510,9 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		Long parentKnowledgeBaseArticleId =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_getParentKnowledgeBaseArticleId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"knowledgeBaseArticleKnowledgeBaseArticles",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"parentKnowledgeBaseArticleId",
-						parentKnowledgeBaseArticleId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetKnowledgeBaseArticleKnowledgeBaseArticlesPageKnowledgeBaseArticle_getGraphQLField(
+				parentKnowledgeBaseArticleId);
 
 		// No namespace
 
@@ -1593,6 +1582,27 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 				KnowledgeBaseArticleSerDes.toDTOs(
 					knowledgeBaseArticleKnowledgeBaseArticlesJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetKnowledgeBaseArticleKnowledgeBaseArticlesPageKnowledgeBaseArticle_getGraphQLField(
+				Long parentKnowledgeBaseArticleId)
+		throws Exception {
+
+		return new GraphQLField(
+			"knowledgeBaseArticleKnowledgeBaseArticles",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"parentKnowledgeBaseArticleId",
+						parentKnowledgeBaseArticleId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected KnowledgeBaseArticle
@@ -2177,18 +2187,9 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		Long knowledgeBaseFolderId =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_getKnowledgeBaseFolderId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"knowledgeBaseFolderKnowledgeBaseArticles",
-			new HashMap<String, Object>() {
-				{
-					put("knowledgeBaseFolderId", knowledgeBaseFolderId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetKnowledgeBaseFolderKnowledgeBaseArticlesPageKnowledgeBaseFolderKnowledgeBaseArticle_getGraphQLField(
+				knowledgeBaseFolderId);
 
 		// No namespace
 
@@ -2258,6 +2259,25 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 				KnowledgeBaseArticleSerDes.toDTOs(
 					knowledgeBaseFolderKnowledgeBaseArticlesJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetKnowledgeBaseFolderKnowledgeBaseArticlesPageKnowledgeBaseFolderKnowledgeBaseArticle_getGraphQLField(
+				Long knowledgeBaseFolderId)
+		throws Exception {
+
+		return new GraphQLField(
+			"knowledgeBaseFolderKnowledgeBaseArticles",
+			new HashMap<String, Object>() {
+				{
+					put("knowledgeBaseFolderId", knowledgeBaseFolderId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2951,18 +2971,9 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testGraphQLGetSiteKnowledgeBaseArticlesPage() throws Exception {
 		Long siteId = testGetSiteKnowledgeBaseArticlesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"knowledgeBaseArticles",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteKnowledgeBaseArticlesPageSiteKnowledgeBaseArticle_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -3022,6 +3033,25 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			Arrays.asList(
 				KnowledgeBaseArticleSerDes.toDTOs(
 					knowledgeBaseArticlesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteKnowledgeBaseArticlesPageSiteKnowledgeBaseArticle_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"knowledgeBaseArticles",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -5728,4 +5758,4 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1532918089
+// LIFERAY-REST-BUILDER-HASH:-93206707

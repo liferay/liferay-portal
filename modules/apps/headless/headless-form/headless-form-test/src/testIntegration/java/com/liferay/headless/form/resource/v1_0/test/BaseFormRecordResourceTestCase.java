@@ -506,17 +506,9 @@ public abstract class BaseFormRecordResourceTestCase {
 	public void testGraphQLGetFormFormRecordsPage() throws Exception {
 		Long formId = testGetFormFormRecordsPage_getFormId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"formFormRecords",
-			new HashMap<String, Object>() {
-				{
-					put("formId", formId);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetFormFormRecordsPageFormFormRecord_getGraphQLField(
+				formId);
 
 		// No namespace
 
@@ -571,6 +563,24 @@ public abstract class BaseFormRecordResourceTestCase {
 			Arrays.asList(
 				FormRecordSerDes.toDTOs(
 					formFormRecordsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetFormFormRecordsPageFormFormRecord_getGraphQLField(
+				Long formId)
+		throws Exception {
+
+		return new GraphQLField(
+			"formFormRecords",
+			new HashMap<String, Object>() {
+				{
+					put("formId", formId);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1925,4 +1935,4 @@ public abstract class BaseFormRecordResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-313708047
+// LIFERAY-REST-BUILDER-HASH:481599057

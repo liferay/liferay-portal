@@ -1263,17 +1263,8 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 
 	@Test
 	public void testGraphQLGetListTypeDefinitionsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"listTypeDefinitions",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetListTypeDefinitionsPageListTypeDefinition_getGraphQLField();
 
 		// No namespace
 
@@ -1333,6 +1324,23 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 			Arrays.asList(
 				ListTypeDefinitionSerDes.toDTOs(
 					listTypeDefinitionsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetListTypeDefinitionsPageListTypeDefinition_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"listTypeDefinitions",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2817,4 +2825,4 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-291678679
+// LIFERAY-REST-BUILDER-HASH:2092135309

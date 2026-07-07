@@ -908,17 +908,8 @@ public abstract class BaseCTRemoteResourceTestCase {
 
 	@Test
 	public void testGraphQLGetCTRemotesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"cTRemotes",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetCTRemotesPageCTRemote_getGraphQLField();
 
 		// No namespace
 
@@ -967,6 +958,22 @@ public abstract class BaseCTRemoteResourceTestCase {
 			ctRemote2,
 			Arrays.asList(
 				CTRemoteSerDes.toDTOs(cTRemotesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetCTRemotesPageCTRemote_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"cTRemotes",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2355,4 +2362,4 @@ public abstract class BaseCTRemoteResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1137224183
+// LIFERAY-REST-BUILDER-HASH:-210878787

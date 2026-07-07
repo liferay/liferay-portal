@@ -1292,17 +1292,8 @@ public abstract class BaseOrderRuleResourceTestCase {
 
 	@Test
 	public void testGraphQLGetOrderRulesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"orderRules",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetOrderRulesPageOrderRule_getGraphQLField();
 
 		// No namespace
 
@@ -1358,6 +1349,23 @@ public abstract class BaseOrderRuleResourceTestCase {
 			Arrays.asList(
 				OrderRuleSerDes.toDTOs(
 					orderRulesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetOrderRulesPageOrderRule_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"orderRules",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3120,4 +3128,4 @@ public abstract class BaseOrderRuleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2080332030
+// LIFERAY-REST-BUILDER-HASH:-653715214

@@ -2502,17 +2502,8 @@ public abstract class BaseAccountResourceTestCase {
 
 	@Test
 	public void testGraphQLGetAccountsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"accounts",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAccountsPageAccount_getGraphQLField();
 
 		// No namespace
 
@@ -2561,6 +2552,22 @@ public abstract class BaseAccountResourceTestCase {
 			account2,
 			Arrays.asList(
 				AccountSerDes.toDTOs(accountsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField testGraphQLGetAccountsPageAccount_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"accounts",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3877,20 +3884,9 @@ public abstract class BaseAccountResourceTestCase {
 		String organizationExternalReferenceCode =
 			testGetOrganizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCodePage_getOrganizationExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"organizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCode",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"organizationExternalReferenceCode",
-						"\"" + organizationExternalReferenceCode + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetOrganizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCodePageAccount_getGraphQLField(
+				organizationExternalReferenceCode);
 
 		// No namespace
 
@@ -3961,6 +3957,27 @@ public abstract class BaseAccountResourceTestCase {
 				AccountSerDes.toDTOs(
 					organizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCodeJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetOrganizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCodePageAccount_getGraphQLField(
+				String organizationExternalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"organizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountsByExternalReferenceCode",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"organizationExternalReferenceCode",
+						"\"" + organizationExternalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected Account
@@ -6527,4 +6544,4 @@ public abstract class BaseAccountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2060527496
+// LIFERAY-REST-BUILDER-HASH:-618723767

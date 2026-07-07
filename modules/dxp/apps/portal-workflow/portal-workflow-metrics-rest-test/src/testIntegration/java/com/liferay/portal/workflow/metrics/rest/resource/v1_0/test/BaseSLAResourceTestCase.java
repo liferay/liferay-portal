@@ -513,17 +513,8 @@ public abstract class BaseSLAResourceTestCase {
 	public void testGraphQLGetProcessSLAsPage() throws Exception {
 		Long processId = testGetProcessSLAsPage_getProcessId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"processSLAs",
-			new HashMap<String, Object>() {
-				{
-					put("processId", processId);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetProcessSLAsPageProcessSLA_getGraphQLField(processId);
 
 		// No namespace
 
@@ -572,6 +563,24 @@ public abstract class BaseSLAResourceTestCase {
 			sla2,
 			Arrays.asList(
 				SLASerDes.toDTOs(processSLAsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetProcessSLAsPageProcessSLA_getGraphQLField(
+				Long processId)
+		throws Exception {
+
+		return new GraphQLField(
+			"processSLAs",
+			new HashMap<String, Object>() {
+				{
+					put("processId", processId);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2106,4 +2115,4 @@ public abstract class BaseSLAResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1539871616
+// LIFERAY-REST-BUILDER-HASH:961617990

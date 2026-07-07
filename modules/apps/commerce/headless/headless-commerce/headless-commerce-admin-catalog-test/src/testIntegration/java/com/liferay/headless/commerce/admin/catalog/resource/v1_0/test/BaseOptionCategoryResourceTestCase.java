@@ -918,16 +918,8 @@ public abstract class BaseOptionCategoryResourceTestCase {
 
 	@Test
 	public void testGraphQLGetOptionCategoriesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"optionCategories",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetOptionCategoriesPageOptionCategory_getGraphQLField();
 
 		// No namespace
 
@@ -983,6 +975,22 @@ public abstract class BaseOptionCategoryResourceTestCase {
 			Arrays.asList(
 				OptionCategorySerDes.toDTOs(
 					optionCategoriesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetOptionCategoriesPageOptionCategory_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"optionCategories",
+			new HashMap<String, Object>() {
+				{
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2637,4 +2645,4 @@ public abstract class BaseOptionCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1502872318
+// LIFERAY-REST-BUILDER-HASH:2145626966

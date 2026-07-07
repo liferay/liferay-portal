@@ -1283,17 +1283,8 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 
 	@Test
 	public void testGraphQLGetNotificationTemplatesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"notificationTemplates",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetNotificationTemplatesPageNotificationTemplate_getGraphQLField();
 
 		// No namespace
 
@@ -1353,6 +1344,23 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 			Arrays.asList(
 				NotificationTemplateSerDes.toDTOs(
 					notificationTemplatesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetNotificationTemplatesPageNotificationTemplate_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"notificationTemplates",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3252,4 +3260,4 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1112938660
+// LIFERAY-REST-BUILDER-HASH:118640018

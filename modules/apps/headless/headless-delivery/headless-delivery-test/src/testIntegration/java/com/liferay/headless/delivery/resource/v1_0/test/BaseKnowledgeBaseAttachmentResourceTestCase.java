@@ -747,15 +747,9 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 		Long knowledgeBaseArticleId =
 			testGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage_getKnowledgeBaseArticleId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"knowledgeBaseArticleKnowledgeBaseAttachments",
-			new HashMap<String, Object>() {
-				{
-					put("knowledgeBaseArticleId", knowledgeBaseArticleId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPageKnowledgeBaseArticleKnowledgeBaseAttachment_getGraphQLField(
+				knowledgeBaseArticleId);
 
 		// No namespace
 
@@ -825,6 +819,22 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 				KnowledgeBaseAttachmentSerDes.toDTOs(
 					knowledgeBaseArticleKnowledgeBaseAttachmentsJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPageKnowledgeBaseArticleKnowledgeBaseAttachment_getGraphQLField(
+				Long knowledgeBaseArticleId)
+		throws Exception {
+
+		return new GraphQLField(
+			"knowledgeBaseArticleKnowledgeBaseAttachments",
+			new HashMap<String, Object>() {
+				{
+					put("knowledgeBaseArticleId", knowledgeBaseArticleId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2726,4 +2736,4 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:589176070
+// LIFERAY-REST-BUILDER-HASH:275806126

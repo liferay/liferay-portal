@@ -1248,15 +1248,9 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		Long wikiPageId =
 			testGetWikiPageWikiPageAttachmentsPage_getWikiPageId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"wikiPageWikiPageAttachments",
-			new HashMap<String, Object>() {
-				{
-					put("wikiPageId", wikiPageId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetWikiPageWikiPageAttachmentsPageWikiPageWikiPageAttachment_getGraphQLField(
+				wikiPageId);
 
 		// No namespace
 
@@ -1317,6 +1311,22 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 			Arrays.asList(
 				WikiPageAttachmentSerDes.toDTOs(
 					wikiPageWikiPageAttachmentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetWikiPageWikiPageAttachmentsPageWikiPageWikiPageAttachment_getGraphQLField(
+				Long wikiPageId)
+		throws Exception {
+
+		return new GraphQLField(
+			"wikiPageWikiPageAttachments",
+			new HashMap<String, Object>() {
+				{
+					put("wikiPageId", wikiPageId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2688,4 +2698,4 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:869947813
+// LIFERAY-REST-BUILDER-HASH:-1503383195

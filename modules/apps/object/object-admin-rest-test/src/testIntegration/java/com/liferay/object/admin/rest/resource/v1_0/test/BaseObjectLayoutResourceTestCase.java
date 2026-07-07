@@ -744,20 +744,9 @@ public abstract class BaseObjectLayoutResourceTestCase {
 		String externalReferenceCode =
 			testGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPage_getExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"objectDefinitionByExternalReferenceCodeObjectLayouts",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"externalReferenceCode",
-						"\"" + externalReferenceCode + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_getGraphQLField(
+				externalReferenceCode);
 
 		// No namespace
 
@@ -828,6 +817,27 @@ public abstract class BaseObjectLayoutResourceTestCase {
 				ObjectLayoutSerDes.toDTOs(
 					objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_getGraphQLField(
+				String externalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"objectDefinitionByExternalReferenceCodeObjectLayouts",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected ObjectLayout
@@ -1204,18 +1214,9 @@ public abstract class BaseObjectLayoutResourceTestCase {
 		Long objectDefinitionId =
 			testGetObjectDefinitionObjectLayoutsPage_getObjectDefinitionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"objectDefinitionObjectLayouts",
-			new HashMap<String, Object>() {
-				{
-					put("objectDefinitionId", objectDefinitionId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectDefinitionObjectLayoutsPageObjectDefinitionObjectLayout_getGraphQLField(
+				objectDefinitionId);
 
 		// No namespace
 
@@ -1280,6 +1281,25 @@ public abstract class BaseObjectLayoutResourceTestCase {
 				ObjectLayoutSerDes.toDTOs(
 					objectDefinitionObjectLayoutsJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectDefinitionObjectLayoutsPageObjectDefinitionObjectLayout_getGraphQLField(
+				Long objectDefinitionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"objectDefinitionObjectLayouts",
+			new HashMap<String, Object>() {
+				{
+					put("objectDefinitionId", objectDefinitionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2846,4 +2866,4 @@ public abstract class BaseObjectLayoutResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1771700183
+// LIFERAY-REST-BUILDER-HASH:-618223422

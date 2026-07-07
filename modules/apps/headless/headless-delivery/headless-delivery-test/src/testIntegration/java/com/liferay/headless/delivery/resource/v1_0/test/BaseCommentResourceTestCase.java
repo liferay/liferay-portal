@@ -1592,18 +1592,9 @@ public abstract class BaseCommentResourceTestCase {
 	public void testGraphQLGetBlogPostingCommentsPage() throws Exception {
 		Long blogPostingId = testGetBlogPostingCommentsPage_getBlogPostingId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"blogPostingComments",
-			new HashMap<String, Object>() {
-				{
-					put("blogPostingId", blogPostingId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetBlogPostingCommentsPageBlogPostingComment_getGraphQLField(
+				blogPostingId);
 
 		// No namespace
 
@@ -1661,6 +1652,25 @@ public abstract class BaseCommentResourceTestCase {
 			Arrays.asList(
 				CommentSerDes.toDTOs(
 					blogPostingCommentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetBlogPostingCommentsPageBlogPostingComment_getGraphQLField(
+				Long blogPostingId)
+		throws Exception {
+
+		return new GraphQLField(
+			"blogPostingComments",
+			new HashMap<String, Object>() {
+				{
+					put("blogPostingId", blogPostingId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2735,18 +2745,9 @@ public abstract class BaseCommentResourceTestCase {
 	public void testGraphQLGetDocumentCommentsPage() throws Exception {
 		Long documentId = testGetDocumentCommentsPage_getDocumentId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"documentComments",
-			new HashMap<String, Object>() {
-				{
-					put("documentId", documentId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetDocumentCommentsPageDocumentComment_getGraphQLField(
+				documentId);
 
 		// No namespace
 
@@ -2801,6 +2802,25 @@ public abstract class BaseCommentResourceTestCase {
 			Arrays.asList(
 				CommentSerDes.toDTOs(
 					documentCommentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetDocumentCommentsPageDocumentComment_getGraphQLField(
+				Long documentId)
+		throws Exception {
+
+		return new GraphQLField(
+			"documentComments",
+			new HashMap<String, Object>() {
+				{
+					put("documentId", documentId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -4044,18 +4064,9 @@ public abstract class BaseCommentResourceTestCase {
 		Long structuredContentId =
 			testGetStructuredContentCommentsPage_getStructuredContentId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"structuredContentComments",
-			new HashMap<String, Object>() {
-				{
-					put("structuredContentId", structuredContentId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetStructuredContentCommentsPageStructuredContentComment_getGraphQLField(
+				structuredContentId);
 
 		// No namespace
 
@@ -4114,6 +4125,25 @@ public abstract class BaseCommentResourceTestCase {
 			Arrays.asList(
 				CommentSerDes.toDTOs(
 					structuredContentCommentsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetStructuredContentCommentsPageStructuredContentComment_getGraphQLField(
+				Long structuredContentId)
+		throws Exception {
+
+		return new GraphQLField(
+			"structuredContentComments",
+			new HashMap<String, Object>() {
+				{
+					put("structuredContentId", structuredContentId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -5927,4 +5957,4 @@ public abstract class BaseCommentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1319366438
+// LIFERAY-REST-BUILDER-HASH:1074758882

@@ -798,20 +798,9 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 		String externalReferenceCode =
 			testGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPage_getExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"objectDefinitionByExternalReferenceCodeObjectValidationRules",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"externalReferenceCode",
-						"\"" + externalReferenceCode + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_getGraphQLField(
+				externalReferenceCode);
 
 		// No namespace
 
@@ -882,6 +871,27 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 				ObjectValidationRuleSerDes.toDTOs(
 					objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_getGraphQLField(
+				String externalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"objectDefinitionByExternalReferenceCodeObjectValidationRules",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected ObjectValidationRule
@@ -1303,18 +1313,9 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 		Long objectDefinitionId =
 			testGetObjectDefinitionObjectValidationRulesPage_getObjectDefinitionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"objectDefinitionObjectValidationRules",
-			new HashMap<String, Object>() {
-				{
-					put("objectDefinitionId", objectDefinitionId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetObjectDefinitionObjectValidationRulesPageObjectDefinitionObjectValidationRule_getGraphQLField(
+				objectDefinitionId);
 
 		// No namespace
 
@@ -1384,6 +1385,25 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 				ObjectValidationRuleSerDes.toDTOs(
 					objectDefinitionObjectValidationRulesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetObjectDefinitionObjectValidationRulesPageObjectDefinitionObjectValidationRule_getGraphQLField(
+				Long objectDefinitionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"objectDefinitionObjectValidationRules",
+			new HashMap<String, Object>() {
+				{
+					put("objectDefinitionId", objectDefinitionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3397,4 +3417,4 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-830770811
+// LIFERAY-REST-BUILDER-HASH:-429495116

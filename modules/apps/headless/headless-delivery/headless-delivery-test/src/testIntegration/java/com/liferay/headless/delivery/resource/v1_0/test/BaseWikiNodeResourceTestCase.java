@@ -1087,18 +1087,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	public void testGraphQLGetSiteWikiNodesPage() throws Exception {
 		Long siteId = testGetSiteWikiNodesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"wikiNodes",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteWikiNodesPageSiteWikiNode_getGraphQLField(siteId);
 
 		// No namespace
 
@@ -1149,6 +1139,25 @@ public abstract class BaseWikiNodeResourceTestCase {
 			wikiNode2,
 			Arrays.asList(
 				WikiNodeSerDes.toDTOs(wikiNodesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteWikiNodesPageSiteWikiNode_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"wikiNodes",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3054,4 +3063,4 @@ public abstract class BaseWikiNodeResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:477574466
+// LIFERAY-REST-BUILDER-HASH:-491229712

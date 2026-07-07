@@ -1356,17 +1356,8 @@ public abstract class BaseSpecificationResourceTestCase {
 
 	@Test
 	public void testGraphQLGetSpecificationsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"specifications",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSpecificationsPageSpecification_getGraphQLField();
 
 		// No namespace
 
@@ -1422,6 +1413,23 @@ public abstract class BaseSpecificationResourceTestCase {
 			Arrays.asList(
 				SpecificationSerDes.toDTOs(
 					specificationsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSpecificationsPageSpecification_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"specifications",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2779,4 +2787,4 @@ public abstract class BaseSpecificationResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-537257451
+// LIFERAY-REST-BUILDER-HASH:-946427203

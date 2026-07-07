@@ -1518,18 +1518,9 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 	public void testGraphQLGetSiteBlogPostingImagesPage() throws Exception {
 		Long siteId = testGetSiteBlogPostingImagesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"blogPostingImages",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteBlogPostingImagesPageSiteBlogPostingImage_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -1586,6 +1577,25 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			Arrays.asList(
 				BlogPostingImageSerDes.toDTOs(
 					blogPostingImagesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteBlogPostingImagesPageSiteBlogPostingImage_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"blogPostingImages",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3015,4 +3025,4 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-743896481
+// LIFERAY-REST-BUILDER-HASH:-196558501

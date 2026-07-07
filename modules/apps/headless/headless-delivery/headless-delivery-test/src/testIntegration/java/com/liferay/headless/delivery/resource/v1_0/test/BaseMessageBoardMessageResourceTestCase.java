@@ -2025,18 +2025,9 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		Long messageBoardThreadId =
 			testGetMessageBoardThreadMessageBoardMessagesPage_getMessageBoardThreadId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"messageBoardThreadMessageBoardMessages",
-			new HashMap<String, Object>() {
-				{
-					put("messageBoardThreadId", messageBoardThreadId);
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetMessageBoardThreadMessageBoardMessagesPageMessageBoardThreadMessageBoardMessage_getGraphQLField(
+				messageBoardThreadId);
 
 		// No namespace
 
@@ -2106,6 +2097,25 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 				MessageBoardMessageSerDes.toDTOs(
 					messageBoardThreadMessageBoardMessagesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetMessageBoardThreadMessageBoardMessagesPageMessageBoardThreadMessageBoardMessage_getGraphQLField(
+				Long messageBoardThreadId)
+		throws Exception {
+
+		return new GraphQLField(
+			"messageBoardThreadMessageBoardMessages",
+			new HashMap<String, Object>() {
+				{
+					put("messageBoardThreadId", messageBoardThreadId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -5720,4 +5730,4 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-788315504
+// LIFERAY-REST-BUILDER-HASH:-778766806

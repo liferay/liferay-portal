@@ -670,17 +670,9 @@ public abstract class BasePostalAddressResourceTestCase {
 		String externalReferenceCode =
 			testGetAccountByExternalReferenceCodePostalAddressesPage_getExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"accountByExternalReferenceCodePostalAddresses",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"externalReferenceCode",
-						"\"" + externalReferenceCode + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAccountByExternalReferenceCodePostalAddressesPageAccountPostalAddress_getGraphQLField(
+				externalReferenceCode);
 
 		// No namespace
 
@@ -750,6 +742,24 @@ public abstract class BasePostalAddressResourceTestCase {
 				PostalAddressSerDes.toDTOs(
 					accountByExternalReferenceCodePostalAddressesJSONObject.
 						getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAccountByExternalReferenceCodePostalAddressesPageAccountPostalAddress_getGraphQLField(
+				String externalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"accountByExternalReferenceCodePostalAddresses",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	protected PostalAddress
@@ -857,15 +867,9 @@ public abstract class BasePostalAddressResourceTestCase {
 	public void testGraphQLGetAccountPostalAddressesPage() throws Exception {
 		Long accountId = testGetAccountPostalAddressesPage_getAccountId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"accountPostalAddresses",
-			new HashMap<String, Object>() {
-				{
-					put("accountId", accountId);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAccountPostalAddressesPageAccountPostalAddress_getGraphQLField(
+				accountId);
 
 		// No namespace
 
@@ -926,6 +930,22 @@ public abstract class BasePostalAddressResourceTestCase {
 			Arrays.asList(
 				PostalAddressSerDes.toDTOs(
 					accountPostalAddressesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAccountPostalAddressesPageAccountPostalAddress_getGraphQLField(
+				Long accountId)
+		throws Exception {
+
+		return new GraphQLField(
+			"accountPostalAddresses",
+			new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -3841,4 +3861,4 @@ public abstract class BasePostalAddressResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1195882055
+// LIFERAY-REST-BUILDER-HASH:1333195172

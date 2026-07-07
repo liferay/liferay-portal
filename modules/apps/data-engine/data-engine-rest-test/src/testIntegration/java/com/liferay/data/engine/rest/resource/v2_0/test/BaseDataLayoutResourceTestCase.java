@@ -807,18 +807,9 @@ public abstract class BaseDataLayoutResourceTestCase {
 		Long dataDefinitionId =
 			testGetDataDefinitionDataLayoutsPage_getDataDefinitionId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"dataDefinitionDataLayouts",
-			new HashMap<String, Object>() {
-				{
-					put("dataDefinitionId", dataDefinitionId);
-					put("keywords", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetDataDefinitionDataLayoutsPageDataDefinitionDataLayout_getGraphQLField(
+				dataDefinitionId);
 
 		// No namespace
 
@@ -879,6 +870,25 @@ public abstract class BaseDataLayoutResourceTestCase {
 			Arrays.asList(
 				DataLayoutSerDes.toDTOs(
 					dataDefinitionDataLayoutsJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetDataDefinitionDataLayoutsPageDataDefinitionDataLayout_getGraphQLField(
+				Long dataDefinitionId)
+		throws Exception {
+
+		return new GraphQLField(
+			"dataDefinitionDataLayouts",
+			new HashMap<String, Object>() {
+				{
+					put("dataDefinitionId", dataDefinitionId);
+					put("keywords", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2731,4 +2741,4 @@ public abstract class BaseDataLayoutResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-502886291
+// LIFERAY-REST-BUILDER-HASH:1947012903

@@ -236,14 +236,8 @@ public abstract class BaseDispatchTriggerResourceTestCase {
 
 	@Test
 	public void testGraphQLGetDispatchTriggersPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"dispatchTriggers",
-			new HashMap<String, Object>() {
-				{
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetDispatchTriggersPageDispatchTrigger_getGraphQLField();
 
 		// No namespace
 
@@ -299,6 +293,20 @@ public abstract class BaseDispatchTriggerResourceTestCase {
 			Arrays.asList(
 				DispatchTriggerSerDes.toDTOs(
 					dispatchTriggersJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetDispatchTriggersPageDispatchTrigger_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"dispatchTriggers",
+			new HashMap<String, Object>() {
+				{
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1712,4 +1720,4 @@ public abstract class BaseDispatchTriggerResourceTestCase {
 		_dispatchTriggerResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1067200783
+// LIFERAY-REST-BUILDER-HASH:-1624823235

@@ -1010,17 +1010,8 @@ public abstract class BaseWarehouseResourceTestCase {
 
 	@Test
 	public void testGraphQLGetWarehousesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"warehouses",
-			new HashMap<String, Object>() {
-				{
-					put("search", null);
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetWarehousesPageWarehouse_getGraphQLField();
 
 		// No namespace
 
@@ -1076,6 +1067,23 @@ public abstract class BaseWarehouseResourceTestCase {
 			Arrays.asList(
 				WarehouseSerDes.toDTOs(
 					warehousesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetWarehousesPageWarehouse_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"warehouses",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2718,4 +2726,4 @@ public abstract class BaseWarehouseResourceTestCase {
 		WarehouseResource _warehouseResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:814461372
+// LIFERAY-REST-BUILDER-HASH:739381314
