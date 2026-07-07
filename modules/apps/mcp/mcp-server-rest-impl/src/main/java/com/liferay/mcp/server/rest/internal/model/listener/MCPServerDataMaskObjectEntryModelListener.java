@@ -53,6 +53,10 @@ public class MCPServerDataMaskObjectEntryModelListener
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					objectEntry.getCompanyId());
 
+		if (objectDefinition == null) {
+			return;
+		}
+
 		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 
 		for (ObjectEntry profileDataMaskObjectEntry :
