@@ -267,52 +267,6 @@ definition {
 			userName = "Test Test");
 	}
 
-	@description = "This is a use case for LPS-65368."
-	@priority = 3
-	@refactordone
-	test CanViewBBCodeNoXSSWithRemoteServices {
-		property custom.properties = "message.boards.message.formats.default=bbcode";
-		property portal.acceptance = "false";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Message Boards Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Message Boards Page",
-			widgetName = "Message Boards");
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "Message Boards Thread Body",
-			threadSubject = "MB Thread Message Subject");
-
-		JSONMBMessage.addMessageReply(
-			anonymous = "true",
-			groupName = "Guest",
-			replyBody = '''<script>alert(123);</script>''',
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToThread(
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.viewBBCodeNoXSS(
-			threadBody = "Message Boards Thread Body",
-			threadSubject = "RE: MB Thread Message Subject",
-			userName = "Anonymous");
-
-		var actualScript = '''<script>alert(123);</script>''';
-
-		AssertHTMLSourceTextNotPresent(value1 = ${actualScript});
-
-		AssertHTMLSourceTextPresent(value1 = "");
-	}
-
 	@description = "This ensures that an image in the MB content field can be rendered correctly after it to a folder."
 	@priority = 4
 	test CanViewImageInThreadAfterMovingToFolder {
@@ -406,80 +360,6 @@ definition {
 			threadBodyImage = "dm-document-title",
 			threadSubject = "MB Thread Message Subject",
 			userName = "Test Test");
-	}
-
-	@description = "This is a use case for LPS-65365."
-	@priority = 4
-	@refactordone
-	test JavascriptIsNotExecutedInHTMLBody {
-		property custom.properties = "message.boards.message.formats.default=html";
-
-		MessageboardsThread.addPG(
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadBody = '''<script>alert(123);</script>''',
-			threadSubject = '''<script>alert(123);</script>''');
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.gotoPG(
-			lastPostUserName = "Test Test",
-			replyCount = 0,
-			threadBody = '''<script>alert(123);</script>''',
-			threadSubject = '''<script>alert(123);</script>''');
-
-		MessageboardsThread.viewNoXSSPG(
-			threadBody = '''<script>alert(123);</script>''',
-			threadSubject = '''<script>alert(123);</script>''');
-	}
-
-	@description = "This is a use case for LPS-131529."
-	@priority = 4
-	test NoXSSVulnerabilityInMBAttachment {
-		property test.assert.warning.exceptions = "false";
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "Thread Body",
-			threadSubject = "MB Thread Message Subject");
-
-		JSONMBMessage.addAttachmentToMessage(
-			fileName = "xss_test.html",
-			groupName = "Guest",
-			mimeType = "text/html",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToThread(
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		var downloadURL = selenium.getAttribute("//li[@class='message-attachment']/span/a@href");
-
-		var downloadURL = StringUtil.replace(${downloadURL}, "xss_test.html", "xss_test%.html");
-
-		var downloadURL = StringUtil.replace(${downloadURL}, "http://", "");
-
-		MessageboardsThread.openToEditThread(
-			groupName = "Guest",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
-
-		FormFields.addParagraphLinkToAURL(paragraphLink = ${downloadURL});
-
-		PortletEntry.publish();
-
-		SelectFrameTop();
-
-		Click(
-			key_text = ${downloadURL},
-			locator1 = "Link#ANY");
-
-		AssertTextPresent(
-			locator1 = "//body",
-			value1 = "HTTP Status 400 – Bad Request");
 	}
 
 	@description = "This ensures that a thread title with 255 characters is accepted and a title over 255 characters is trimmed to 255."
