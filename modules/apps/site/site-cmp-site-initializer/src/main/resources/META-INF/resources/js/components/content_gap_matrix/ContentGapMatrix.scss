@@ -30,7 +30,8 @@ $content-gap-cell-tiers: (
 		}
 	}
 
-	&--active {
+	&--active,
+	&--selected {
 		border-color: $primary;
 		box-shadow: 0 0 0 0.125rem rgba($primary, 0.25);
 	}

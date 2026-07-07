@@ -14,11 +14,16 @@ import {useCallback, useMemo} from 'react';
 import {TaxonomyTerm} from './types';
 
 /**
- * Id of the asset data set's category filter
- *  which spans the persona and funnel-stage
- * vocabularies.
+ * The related-assets data set's vocabulary-scoped category filters (added in
+ * LPD-97796). The matrix writes the persona and funnel stage to these as
+ * SEPARATE filters so their clauses are AND'd — a cell then matches only the
+ * assets tagged with that persona AND that funnel stage. Values within a single
+ * filter are OR'd, so the older combined "taxonomyCategoryIds" filter cannot
+ * express the AND; the matrix leaves it untouched for manual filtering.
  */
-const ASSET_CATEGORY_FILTER_ID = 'taxonomyCategoryIds';
+const PERSONA_FILTER_ID = 'cmpPersonaCategoryIds';
+
+const FUNNEL_STAGE_FILTER_ID = 'cmpFunnelStageCategoryIds';
 
 interface CoverageFilter {
 
@@ -27,12 +32,19 @@ interface CoverageFilter {
 	 * category.
 	 */
 	applyFilter: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
+
+	/**
+	 * Category ids currently selected across the data set's category filters,
+	 * used to highlight the matching cell. Empty when the filters are inactive or
+	 * set to exclude.
+	 */
+	selectedCategoryIds: Set<string>;
 }
 
 /**
  * Bridges the matrix to the project's asset data set: it writes to the data
- * set's own state atom, resolved by its id, to filter it by the clicked cell's
- * persona and funnel-stage categories.
+ * set's own state atom, resolved by its id, and reads back which categories are
+ * filtered so the matrix can highlight the selected cell.
  */
 export function useCoverageFilter(assetFDSId: string): CoverageFilter {
 	const assetFDSAtom = useMemo(
@@ -49,24 +61,39 @@ export function useCoverageFilter(assetFDSId: string): CoverageFilter {
 				...assetFDSState,
 				filters: (assetFDSState?.filters ?? []).map(
 					(filter: IBaseFilterState) => {
-						if (filter.id !== ASSET_CATEGORY_FILTER_ID) {
-							return filter;
+						if (filter.id === PERSONA_FILTER_ID) {
+							return {
+								...filter,
+								active: true,
+								selectedData: {
+									exclude: false,
+									selectedItems: [
+										{
+											label: persona.name,
+											value: persona.id,
+										},
+									],
+								},
+							};
 						}
 
-						return {
-							...filter,
-							active: true,
-							selectedData: {
-								exclude: false,
-								selectedItems: [
-									{label: persona.name, value: persona.id},
-									{
-										label: funnelStage.name,
-										value: funnelStage.id,
-									},
-								],
-							},
-						};
+						if (filter.id === FUNNEL_STAGE_FILTER_ID) {
+							return {
+								...filter,
+								active: true,
+								selectedData: {
+									exclude: false,
+									selectedItems: [
+										{
+											label: funnelStage.name,
+											value: funnelStage.id,
+										},
+									],
+								},
+							};
+						}
+
+						return filter;
 					}
 				),
 			});
@@ -74,5 +101,34 @@ export function useCoverageFilter(assetFDSId: string): CoverageFilter {
 		[assetFDSState, setAssetFDSState]
 	);
 
-	return {applyFilter};
+	const selectedCategoryIds = useMemo(() => {
+		const categoryFilters = (assetFDSState?.filters ?? []).filter(
+			(filter: IBaseFilterState) =>
+				filter.id === PERSONA_FILTER_ID ||
+				filter.id === FUNNEL_STAGE_FILTER_ID
+		);
+
+		return new Set<string>(
+			categoryFilters
+				.filter((filter) => filter.active)
+				.flatMap((filter) => {
+					const selectedData = filter.selectedData as
+						| {
+								exclude?: boolean;
+								selectedItems?: Array<{value: string}>;
+						  }
+						| undefined;
+
+					if (selectedData?.exclude) {
+						return [];
+					}
+
+					return (selectedData?.selectedItems ?? []).map((item) =>
+						String(item.value)
+					);
+				})
+		);
+	}, [assetFDSState]);
+
+	return {applyFilter, selectedCategoryIds};
 }

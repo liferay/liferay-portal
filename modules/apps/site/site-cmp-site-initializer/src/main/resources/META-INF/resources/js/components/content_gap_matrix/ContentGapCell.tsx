@@ -15,6 +15,7 @@ interface ContentGapCellProps {
 	maxRealCount: number;
 	onFilter?: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
 	persona: TaxonomyTerm;
+	selected?: boolean;
 	totalCount: number;
 }
 
@@ -23,6 +24,7 @@ export default function ContentGapCell({
 	maxRealCount,
 	onFilter,
 	persona,
+	selected,
 	totalCount,
 }: ContentGapCellProps) {
 	const [active, setActive] = useState(false);
@@ -44,6 +46,7 @@ export default function ContentGapCell({
 		'lfr-cmp__content-gap-cell--active': active,
 		'lfr-cmp__content-gap-cell--clickable': clickable,
 		'lfr-cmp__content-gap-cell--gap': gap,
+		'lfr-cmp__content-gap-cell--selected': selected,
 		[`lfr-cmp__content-gap-cell--tier-${tier}`]: tier > 0,
 	});
 
