@@ -120,7 +120,6 @@ modules/apps/headless/headless-batch-engine/    @liferay-headless
 modules/apps/headless/headless-builder/    @liferay-headless
 modules/apps/headless/headless-common-spi/
 modules/apps/headless/headless-delivery/    @liferay-content-management
-modules/apps/headless/headless-design-library/    @liferay-platform-experience
 modules/apps/headless/headless-discovery/    @liferay-headless
 modules/apps/headless/headless-form/    @liferay-bpm
 modules/apps/headless/headless-portal-instances/    @liferay-database-infra
