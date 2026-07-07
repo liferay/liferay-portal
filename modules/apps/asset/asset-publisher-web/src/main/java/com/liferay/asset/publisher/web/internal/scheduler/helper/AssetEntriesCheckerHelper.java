@@ -20,7 +20,12 @@ import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectio
 import com.liferay.asset.publisher.web.internal.helper.AssetPublisherWebHelper;
 import com.liferay.asset.publisher.web.internal.util.AssetPublisherUtil;
 import com.liferay.asset.util.AssetHelper;
+import com.liferay.info.collection.provider.CollectionQuery;
+import com.liferay.info.collection.provider.InfoCollectionProvider;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.pagination.InfoPage;
+import com.liferay.info.pagination.Pagination;
+import com.liferay.layout.util.LayoutServiceContextHelperUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -257,10 +262,14 @@ public class AssetEntriesCheckerHelper {
 
 		if (Objects.equals(
 				selectionStyle,
-				AssetPublisherSelectionStyleConstants.TYPE_ASSET_LIST)) {
+				AssetPublisherSelectionStyleConstants.TYPE_ASSET_LIST) ||
+			Objects.equals(
+				selectionStyle,
+				AssetPublisherSelectionStyleConstants.
+					TYPE_ASSET_LIST_PROVIDER)) {
 
 			return _getAssetListEntrySelectedAssetEntries(
-				layout.getCompanyId(), layout.getGroupId(), portletPreferences);
+				layout, portletPreferences);
 		}
 		else if (Objects.equals(
 					selectionStyle,
@@ -274,24 +283,29 @@ public class AssetEntriesCheckerHelper {
 	}
 
 	private List<AssetEntry> _getAssetListEntrySelectedAssetEntries(
-		long companyId, long groupId, PortletPreferences portletPreferences) {
+		Layout layout, PortletPreferences portletPreferences) {
 
 		List<AssetEntry> assetEntries = new ArrayList<>();
 
-		try {
+		try (AutoCloseable autoCloseable =
+				LayoutServiceContextHelperUtil.getServiceContextAutoCloseable(
+					layout)) {
+
 			AssetListEntry assetListEntry =
 				AssetPublisherUtil.getAssetListEntry(
-					false, companyId, groupId, portletPreferences);
+					false, layout.getCompanyId(), layout.getGroupId(),
+					portletPreferences);
 
 			if (assetListEntry == null) {
-				return Collections.emptyList();
+				return _getInfoCollectionProviderSelectedAssetEntries(
+					layout, portletPreferences);
 			}
 
 			long[] segmentsEntryIds = {SegmentsEntryConstants.ID_DEFAULT};
 
 			try {
 				if (_segmentsConfigurationProvider.isSegmentationEnabled(
-						groupId)) {
+						layout.getGroupId())) {
 
 					segmentsEntryIds = ArrayUtil.toLongArray(
 						TransformUtil.transform(
@@ -389,6 +403,48 @@ public class AssetEntriesCheckerHelper {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private List<AssetEntry> _getInfoCollectionProviderSelectedAssetEntries(
+			Layout layout, PortletPreferences portletPreferences)
+		throws PortalException {
+
+		String infoListProviderKey = GetterUtil.getString(
+			portletPreferences.getValue("infoListProviderKey", null));
+
+		if (Validator.isNull(infoListProviderKey)) {
+			return Collections.emptyList();
+		}
+
+		InfoCollectionProvider<AssetEntry> infoCollectionProvider =
+			_infoItemServiceRegistry.getInfoItemService(
+				InfoCollectionProvider.class, infoListProviderKey);
+
+		if (infoCollectionProvider == null) {
+			return Collections.emptyList();
+		}
+
+		AssetPublisherWebConfiguration assetPublisherWebConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				AssetPublisherWebConfiguration.class, layout.getCompanyId());
+
+		int end = assetPublisherWebConfiguration.dynamicSubscriptionLimit();
+
+		int start = 0;
+
+		if (end == 0) {
+			end = QueryUtil.ALL_POS;
+			start = QueryUtil.ALL_POS;
+		}
+
+		CollectionQuery collectionQuery = new CollectionQuery();
+
+		collectionQuery.setPagination(Pagination.of(end, start));
+
+		InfoPage<AssetEntry> infoPage =
+			infoCollectionProvider.getCollectionInfoPage(collectionQuery);
+
+		return (List<AssetEntry>)infoPage.getPageItems();
 	}
 
 	private List<AssetEntry> _getManuallySelectedAssetEntries(
@@ -613,6 +669,9 @@ public class AssetEntriesCheckerHelper {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
 	private Language _language;
