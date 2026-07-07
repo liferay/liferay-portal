@@ -64,6 +64,12 @@ public abstract class BaseObjectRelatedModelsPredicateProviderImplTestCase {
 		);
 
 		Mockito.when(
+			objectDefinition.getLocalizationDBTableName()
+		).thenReturn(
+			dbTableName + "_l"
+		);
+
+		Mockito.when(
 			objectDefinition.getObjectDefinitionId()
 		).thenReturn(
 			objectDefinitionId
