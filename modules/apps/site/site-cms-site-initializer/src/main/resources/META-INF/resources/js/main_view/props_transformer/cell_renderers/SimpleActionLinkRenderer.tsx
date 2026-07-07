@@ -8,7 +8,7 @@ import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
-import React from 'react';
+import React, {useId} from 'react';
 
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../../common/utils/constants';
 import {getFileMimeTypeObjectDefinitionStickerValue} from '../utils/transformViewsItemProps';
@@ -43,6 +43,7 @@ export default function SimpleActionLinkRenderer({
 	value: string;
 }) {
 	const {actionId} = options;
+	const systemIconId = useId();
 	const title =
 		value && value !== '' ? value : Liferay.Language.get('untitled-asset');
 
@@ -104,13 +105,19 @@ export default function SimpleActionLinkRenderer({
 		</ClaySticker>
 	);
 
+	const showSystemIcon = Boolean(itemData.system && systemIconLabel);
+
 	const systemIcon = itemData.system && systemIconLabel && (
-		<ClayIcon
-			aria-label={systemIconLabel}
+		<span
 			className="c-ml-2 lfr-portal-tooltip text-secondary"
 			data-title={systemIconLabel}
-			symbol="lock"
-		/>
+		>
+			<ClayIcon symbol="lock" />
+
+			<span className="sr-only" id={systemIconId}>
+				{systemIconLabel}
+			</span>
+		</span>
 	);
 
 	if (shouldOpenModal) {
@@ -119,6 +126,7 @@ export default function SimpleActionLinkRenderer({
 				{stickerElement}
 
 				<ClayLink
+					aria-describedby={showSystemIcon ? systemIconId : undefined}
 					aria-label={title}
 					data-senna-off
 					href="#"
@@ -158,7 +166,12 @@ export default function SimpleActionLinkRenderer({
 		<div className="align-items-center d-flex table-list-title">
 			{stickerElement}
 
-			<ClayLink aria-label={title} data-senna-off href={formattedHref}>
+			<ClayLink
+				aria-describedby={showSystemIcon ? systemIconId : undefined}
+				aria-label={title}
+				data-senna-off
+				href={formattedHref}
+			>
 				{title}
 
 				{systemIcon}
