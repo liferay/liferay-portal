@@ -11,6 +11,7 @@ import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -40,7 +41,10 @@ public class DepotRoleUtil {
 	}
 
 	public static List<Role> filter(List<Role> roles, String subtype) {
-		if (Validator.isNull(subtype)) {
+		if (Validator.isNull(subtype) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96750")) {
+
 			return roles;
 		}
 

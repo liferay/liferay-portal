@@ -760,10 +760,12 @@ public class PortletConfigurationPermissionsDisplayContext {
 			return null;
 		}
 
-		if (!FeatureFlagManagerUtil.isEnabled(
+		if ((!FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-17564") &&
+			 !FeatureFlagManagerUtil.isEnabled(
+				 _themeDisplay.getCompanyId(), "LPD-58677")) ||
 			!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-58677")) {
+				_themeDisplay.getCompanyId(), "LPD-96750")) {
 
 			return null;
 		}
