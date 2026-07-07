@@ -109,10 +109,14 @@ test('Can lock and unlock a thread', async ({
 
 	await openThreadRowAction({name: 'Unlock', page});
 
-	await apiHelpers.headlessDelivery.postMessageBoardMessage({
-		articleBody: replyBody,
-		messageBoardThreadId: String(thread.id),
-	});
+	// The unlock is applied asynchronously, so retry the reply until it lands
+
+	await expect(async () => {
+		await apiHelpers.headlessDelivery.postMessageBoardMessage({
+			articleBody: replyBody,
+			messageBoardThreadId: String(thread.id),
+		});
+	}).toPass({timeout: 10000});
 
 	await messageBoardsPage.goto(site.friendlyUrlPath);
 
