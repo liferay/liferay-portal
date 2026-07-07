@@ -5,14 +5,18 @@
 
 package com.liferay.audiences.frontend.js.audiences.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -20,9 +24,6 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -44,13 +45,13 @@ public class AudiencesDefinitionProviderTest {
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-93951"))
 	@Test
 	public void testGetAudiencesDefinition() throws Exception {
-		String name = RandomTestUtil.randomString();
-
-		_audiencesEntries.add(
+		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
-				null, "{\"conjunction\": \"AND\", \"rules\": []}", name,
+				RandomTestUtil.randomString(),
+				"{\"conjunction\": \"AND\", \"rules\": []}",
+				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId())));
+					TestPropsValues.getGroupId()));
 
 		AudiencesDefinition audiencesDefinition =
 			_audiencesDefinitionProvider.getAudiencesDefinition(
@@ -58,7 +59,21 @@ public class AudiencesDefinitionProviderTest {
 
 		String content = audiencesDefinition.getContent();
 
-		Assert.assertTrue(content.contains(name));
+		JSONObject audiencesEntryJSONObject = JSONFactoryUtil.createJSONObject(
+			audiencesEntry.getJSON());
+
+		JSONObject expectedContentJSONObject = JSONUtil.put(
+			"audiences",
+			JSONUtil.putAll(
+				audiencesEntryJSONObject.put(
+					"id", audiencesEntry.getExternalReferenceCode())));
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		Assert.assertEquals(
+			objectMapper.readTree(expectedContentJSONObject.toString()),
+			objectMapper.readTree(content));
+
 		Assert.assertEquals(
 			HashedFilesUtil.computeHash(content),
 			audiencesDefinition.getHash());
@@ -66,9 +81,6 @@ public class AudiencesDefinitionProviderTest {
 
 	@Inject
 	private AudiencesDefinitionProvider _audiencesDefinitionProvider;
-
-	@DeleteAfterTestRun
-	private final List<AudiencesEntry> _audiencesEntries = new ArrayList<>();
 
 	@Inject
 	private AudiencesEntryLocalService _audiencesEntryLocalService;

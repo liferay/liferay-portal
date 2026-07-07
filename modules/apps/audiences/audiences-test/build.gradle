@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
 	testIntegrationImplementation project(":apps:audiences:audiences-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
 	testIntegrationImplementation project(":apps:frontend-js:frontend-js-audiences-api")
