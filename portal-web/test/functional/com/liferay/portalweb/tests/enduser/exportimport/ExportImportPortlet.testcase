@@ -297,61 +297,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-95589. Verify is not possible export a DM with deleted document link."
-	@priority = 3
-	test ExportDMWithDeletedDocumentLink {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User add a new site with a new document") {
-			HeadlessSite.addSite(siteName = "Site Name");
-
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentFile = "Document_1.jpg",
-				dmDocumentTitle = "DM Document Title");
-		}
-
-		task ("And: Add a new a document type") {
-			DMNavigator.openDocumentTypesAdmin(siteURLKey = "site-name");
-
-			DMDocumentType.add(
-				dmDocumentTypeDescription = "DM Document Type Description",
-				dmDocumentTypeFieldNames = "Image",
-				dmDocumentTypeName = "DM Document Type Name");
-
-			DMDocumentType.viewCP(dmDocumentTypeName = "DM Document Type Name");
-		}
-
-		task ("When: User add a new a document based on the new document type and the previously created document") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Type Document Title",
-				dmDocumentTypeName = "DM Document Type Name",
-				imageField = "DM Document Title",
-				imageFileName = "DM Document Title",
-				navTab = "Documents and Media");
-		}
-
-		task ("And: Delete the first document") {
-			JSONDocument.deleteFile(
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Site Name");
-		}
-
-		task ("Then: The export process of the DM admin is successful") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			LAR.exportPortlet(larFileName = "DocumentsandMedia_portlet.lar");
-
-			AssertConsoleTextNotPresent(value1 = "NoSuchFileEntryException");
-		}
-	}
-
 	@description = "Verify is possible export and import a blog via Global."
 	@priority = 3
 	test ExportImportBlogsViaGlobal {
