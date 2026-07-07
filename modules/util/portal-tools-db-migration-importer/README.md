@@ -1,8 +1,7 @@
 # Database Migration Importer Tool
 
 This tool imports database schema and its data between different databases in
-the same network. This tool is a beta feature. It is experimental and not
-supported.
+the same network.
 
 ## Requirements
 

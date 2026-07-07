@@ -69,10 +69,6 @@ public class DBMigrationImport {
 		}
 
 		try {
-			System.out.println(
-				"This tool is a beta feature. It is experimental and not " +
-					"supported.");
-
 			ConnectionConfigUtil.setBatchSize(
 				commandLine.getOptionValue("jdbc-batch-size"));
 			ConnectionConfigUtil.setFetchSize(
@@ -152,9 +148,7 @@ public class DBMigrationImport {
 	private static void _printHelpAndExit(Options options) {
 		new HelpFormatter(
 		).printHelp(
-			"Liferay Portal Tools Database Migration Importer. This tool is " +
-				"a beta feature. It is experimental and not supported.",
-			options
+			"Liferay Portal Tools Database Migration Importer.", options
 		);
 
 		System.exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
