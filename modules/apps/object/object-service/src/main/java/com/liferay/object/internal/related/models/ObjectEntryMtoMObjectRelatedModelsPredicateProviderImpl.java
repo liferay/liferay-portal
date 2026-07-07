@@ -10,6 +10,8 @@ import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
+import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectRelationshipMappingTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectRelationshipMappingTableFactory;
@@ -58,6 +60,10 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImpl
 			dynamicObjectRelationshipMappingTableColumn =
 				dynamicObjectRelationshipMappingTable.getPrimaryKeyColumn2();
 
+		DynamicObjectDefinitionLocalizationTable
+			relatedDynamicObjectDefinitionLocalizationTable =
+				DynamicObjectDefinitionLocalizationTableFactory.create(
+					relatedObjectDefinition, objectFieldLocalService);
 		DynamicObjectDefinitionTable relatedDynamicObjectDefinitionTable =
 			getDynamicObjectDefinitionTable(relatedObjectDefinition);
 		DynamicObjectDefinitionTable relatedObjectDefinitionExtensionTable =
@@ -89,6 +95,12 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImpl
 							relatedObjectDefinitionExtensionTable.
 								getPrimaryKeyColumn()
 						)
+					).leftJoinOn(
+						relatedDynamicObjectDefinitionLocalizationTable,
+						ObjectEntrySearchUtil.
+							getLeftJoinLocalizationTablePredicate(
+								relatedDynamicObjectDefinitionLocalizationTable,
+								relatedDynamicObjectDefinitionTable, null)
 					).where(
 						ObjectEntrySearchUtil.getObjectEntryIndexPredicate(
 							groupIds, relatedObjectDefinition, predicate)
