@@ -1,5 +1,6 @@
 import ConnectConnector from './ConnectConnector';
 import ConnectLiferayDXP from './ConnectLiferayDXP';
+import ConnectMarketoCampaign from './ConnectMarketoCampaign';
 import ConnectSalesforce from './ConnectSalesforce';
 import React from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
@@ -9,7 +10,8 @@ import {useParams} from 'react-router-dom';
 
 const PAGE_MAP = {
 	[DataSourceTypes.Liferay]: ConnectLiferayDXP,
-	[DataSourceTypes.Salesforce]: ConnectSalesforce,
+	[DataSourceTypes.MarketoCampaign]: ConnectMarketoCampaign,
+	[DataSourceTypes.Salesforce]: ConnectSalesforce
 };
 
 const DataSourceOnboarding = () => {

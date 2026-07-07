@@ -11,7 +11,7 @@ import {isLDPPlan} from 'shared/util/subscriptions';
 const connectorRegistry: Record<string, ConnectorConfig> = {
 	[DataSourceTypes.Demandbase]: demandbaseConfig,
 	[DataSourceTypes.Hubspot]: hubspotConfig,
-	[DataSourceTypes.Marketo]: marketoConfig,
+	[DataSourceTypes.MarketoEventStream]: marketoConfig
 };
 
 export function getConnectorConfig(
@@ -34,7 +34,7 @@ export function listAvailableConnectors(
 ): ConnectorConfig[] {
 	const ldpAllowed = isLDPPlan(subscriptionName);
 
-	return listConnectors().filter((config) => {
+	return listConnectors().filter(config => {
 		if (config.singleton && existingTypes.has(config.type)) {
 			return false;
 		}
