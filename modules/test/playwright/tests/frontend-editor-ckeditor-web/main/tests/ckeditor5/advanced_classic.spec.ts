@@ -315,6 +315,26 @@ test(
 );
 
 test(
+	'Enhanced source editing button is shown for DXP licensed installations',
+	{tag: '@LPD-83978'},
+	async ({classicPage}) => {
+		await expect(
+			classicPage.toolbar.container.getByRole('button', {
+				exact: true,
+				name: 'Edit source',
+			})
+		).toBeVisible();
+
+		await expect(
+			classicPage.toolbar.container.getByRole('button', {
+				exact: true,
+				name: 'Source',
+			})
+		).toHaveCount(0);
+	}
+);
+
+test(
 	'Can view HTML in source mode formatted in wysiwyg view',
 	{tag: '@LRQA-67229'},
 	async ({classicPage}) => {
