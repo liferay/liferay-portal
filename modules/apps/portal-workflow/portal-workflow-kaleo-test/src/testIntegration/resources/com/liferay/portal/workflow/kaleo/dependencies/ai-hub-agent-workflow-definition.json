@@ -1,0 +1,95 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "AI Hub Agent Workflow Definition"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "created"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "review"
+				},
+				{
+					"#tag-name": "agent-definition-external-reference-code",
+					"#value": "L_FIX_SPELLING_AND_GRAMMAR"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "approve"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "approved"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "ai-hub-agent"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "approved"
+				}
+			],
+			"#tag-name": "state"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}
