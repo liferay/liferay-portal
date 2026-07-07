@@ -1,0 +1,21 @@
+{{- if .Values.network.gke.enabled }}
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+    labels:
+        app: {{ include "liferay.name" . }}
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ include "liferay.name" . }}
+    namespace: {{ include "liferay.namespace" . }}
+spec:
+    default:
+        config:
+            type: HTTP
+            httpHealthCheck:
+                port: {{ .Values.network.gke.healthCheck.port }}
+                requestPath: {{ .Values.network.gke.healthCheck.path }}
+    targetRef:
+        group: ""
+        kind: Service
+        name: {{ include "liferay.name" . }}
+{{- end }}

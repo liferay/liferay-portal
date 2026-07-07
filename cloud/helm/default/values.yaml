@@ -298,7 +298,17 @@ network:
     extraRules: []
     forceHttpsRedirect: false
     gatewayName: ""
+    gke:
+        backendConfig:
+            timeoutSec: 300
+        enabled: false
+        healthCheck:
+            path: /c/portal/robots
+            port: 8080
     hostnames: []
+    hsts:
+        enabled: true
+        value: "max-age=31536000; includeSubDomains; preload"
     perHostnameRoutes: false
     securityPolicyAuthorizationSpec: {}
     timeouts: {}

@@ -1,4 +1,5 @@
 {{- if and .Values.enabled .Values.gateway.className .Values.gateway.name }}
+{{- if include "liferay.gateway.isEnvoy" . }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: ClientTrafficPolicy
 metadata:
@@ -21,6 +22,7 @@ spec:
             matchLabels:
                 name: {{ .Values.gateway.name }}
 ---
+{{- end }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:

@@ -37,3 +37,9 @@
 {{- printf "liferay-licenses-%s" $trimmed -}}
 {{- end }}
 {{- end -}}
+
+{{- define "liferay.gateway.isEnvoy" -}}
+{{- if hasPrefix "envoy-gateway" (.Values.gateway.className | default "") -}}
+true
+{{- end -}}
+{{- end -}}
