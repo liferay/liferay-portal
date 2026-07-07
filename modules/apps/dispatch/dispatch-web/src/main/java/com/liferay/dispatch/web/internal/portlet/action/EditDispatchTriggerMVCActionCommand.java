@@ -237,10 +237,10 @@ public class EditDispatchTriggerMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private void _sendMessage(long dispatchTriggerId) throws PortalException {
+		Message message = new Message();
+
 		DispatchTrigger dispatchTrigger =
 			_dispatchTriggerLocalService.getDispatchTrigger(dispatchTriggerId);
-
-		Message message = new Message();
 
 		message.put("companyId", dispatchTrigger.getCompanyId());
 

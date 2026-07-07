@@ -65,10 +65,10 @@ public class DispatchTriggerResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), dispatchTriggerId,
 			ActionKeys.UPDATE);
 
+		Message message = new Message();
+
 		com.liferay.dispatch.model.DispatchTrigger dispatchTrigger =
 			_dispatchTriggerService.getDispatchTrigger(dispatchTriggerId);
-
-		Message message = new Message();
 
 		message.put("companyId", dispatchTrigger.getCompanyId());
 
