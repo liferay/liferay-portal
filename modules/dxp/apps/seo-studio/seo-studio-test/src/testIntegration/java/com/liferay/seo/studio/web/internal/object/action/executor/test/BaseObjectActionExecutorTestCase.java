@@ -126,6 +126,27 @@ public abstract class BaseObjectActionExecutorTestCase {
 		return objectEntry;
 	}
 
+	protected ObjectEntry addSEOStudioDomainObjectEntry(
+			String hostname, String scanConfigJSON)
+		throws Exception {
+
+		return addObjectEntry(
+			seoStudioDomainObjectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"hostname", hostname
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"r_accountToSEOStudioDomains_accountEntryId",
+				accountEntry.getAccountEntryId()
+			).put(
+				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
+				seoStudioInstanceObjectEntry.getObjectEntryId()
+			).put(
+				"scanConfig", scanConfigJSON
+			).build());
+	}
+
 	protected static Group group;
 	protected static ObjectDefinition seoStudioDomainObjectDefinition;
 

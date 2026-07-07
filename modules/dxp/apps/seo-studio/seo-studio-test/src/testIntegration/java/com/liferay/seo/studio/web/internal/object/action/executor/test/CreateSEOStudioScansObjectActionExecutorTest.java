@@ -48,7 +48,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 		int maxPagesPerScan = RandomTestUtil.randomInt();
 		String scope = RandomTestUtil.randomString();
 
-		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry(
+		seoStudioDomainObjectEntry = addSEOStudioDomainObjectEntry(
 			hostname,
 			JSONUtil.put(
 				"engines",
@@ -137,7 +137,7 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 
 	@Test
 	public void testExecuteWithNoEnabledEngines() throws Exception {
-		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry(
+		seoStudioDomainObjectEntry = addSEOStudioDomainObjectEntry(
 			RandomTestUtil.randomString(),
 			JSONUtil.put(
 				"engines",
@@ -156,27 +156,6 @@ public class CreateSEOStudioScansObjectActionExecutorTest
 
 		Assert.assertNull(
 			_fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry));
-	}
-
-	private ObjectEntry _addSEOStudioDomainObjectEntry(
-			String hostname, String scanConfigJSON)
-		throws Exception {
-
-		return addObjectEntry(
-			seoStudioDomainObjectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				"hostname", hostname
-			).put(
-				"name", RandomTestUtil.randomString()
-			).put(
-				"r_accountToSEOStudioDomains_accountEntryId",
-				accountEntry.getAccountEntryId()
-			).put(
-				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
-				seoStudioInstanceObjectEntry.getObjectEntryId()
-			).put(
-				"scanConfig", scanConfigJSON
-			).build());
 	}
 
 	private void _executeCreateScans() throws Exception {
