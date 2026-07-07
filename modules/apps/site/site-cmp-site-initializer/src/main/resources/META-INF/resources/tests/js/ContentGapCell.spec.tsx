@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
 import ContentGapCell from '../../js/components/content_gap_matrix/ContentGapCell';
@@ -26,6 +26,26 @@ const STAGE: TaxonomyTerm = {
 };
 
 describe('ContentGapCell', () => {
+	it('applies the persona and funnel-stage filter when a real cell is clicked', () => {
+		const onFilter = jest.fn();
+
+		const {getByLabelText} = render(
+			<ContentGapCell
+				funnelStage={STAGE}
+				maxRealCount={40}
+				onFilter={onFilter}
+				persona={PERSONA}
+				totalCount={24}
+			/>
+		);
+
+		fireEvent.click(getByLabelText('Champion, Awareness: 24'));
+
+		fireEvent.click(screen.getByText('filter'));
+
+		expect(onFilter).toHaveBeenCalledWith(PERSONA, STAGE);
+	});
+
 	it('colors a real cell by its tier', () => {
 		const {container} = render(
 			<ContentGapCell
@@ -56,6 +76,38 @@ describe('ContentGapCell', () => {
 		expect(cell?.className).toContain('lfr-cmp__content-gap-cell--tier-');
 		expect(cell?.className).not.toContain('--gap');
 		expect(cell?.className).not.toContain('--sentinel');
+	});
+
+	it('does not open a filter menu on a sentinel cell', () => {
+		const {container} = render(
+			<ContentGapCell
+				funnelStage={STAGE}
+				maxRealCount={40}
+				onFilter={jest.fn()}
+				persona={NO_PERSONA}
+				totalCount={24}
+			/>
+		);
+
+		expect(
+			container.querySelector('.lfr-cmp__content-gap-cell--clickable')
+		).toBeNull();
+	});
+
+	it('highlights the cell whose filter is applied', () => {
+		const {container} = render(
+			<ContentGapCell
+				funnelStage={STAGE}
+				maxRealCount={40}
+				persona={PERSONA}
+				selected
+				totalCount={24}
+			/>
+		);
+
+		expect(
+			container.querySelector('.lfr-cmp__content-gap-cell--selected')
+		).not.toBeNull();
 	});
 
 	it('marks a zero cell as a gap with no tier fill', () => {
