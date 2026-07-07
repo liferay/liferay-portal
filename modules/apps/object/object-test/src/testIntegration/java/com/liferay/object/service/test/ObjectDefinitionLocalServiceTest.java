@@ -3841,6 +3841,243 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateObjectDefinitionWithAllowStandaloneObjectEntry()
+		throws Exception {
+
+		// Invalid value
+
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		ObjectDefinition childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		ObjectDefinition finalChildObjectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				childObjectDefinition.getObjectDefinitionId());
+
+		String value = RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingValueException.InvalidValue.class,
+			StringBundler.concat(
+				"The value ", value, " of setting \"",
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY,
+				"\" is invalid for object definition \"",
+				finalChildObjectDefinition.getShortName(), "\""),
+			() -> _updateCustomObjectDefinition(
+				finalChildObjectDefinition.getClassName(),
+				finalChildObjectDefinition,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.
+							NAME_ALLOW_STANDALONE_OBJECT_ENTRY
+					).value(
+						value
+					).build())));
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				finalChildObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		// The object definition can be updated after any publish ordering
+
+		parentObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+		childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			parentObjectDefinition.getObjectDefinitionId());
+
+		_testUpdateObjectDefinitionWithAllowStandaloneObjectEntry(
+			childObjectDefinition);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		childObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			childObjectDefinition.getObjectDefinitionId());
+
+		_testUpdateObjectDefinitionWithAllowStandaloneObjectEntry(
+			childObjectDefinition);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		parentObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+		childObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			childObjectDefinition.getObjectDefinitionId());
+
+		_testUpdateObjectDefinitionWithAllowStandaloneObjectEntry(
+			childObjectDefinition);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		parentObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+		childObjectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			parentObjectDefinition.getObjectDefinitionId());
+
+		_testUpdateObjectDefinitionWithAllowStandaloneObjectEntry(
+			childObjectDefinition);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		// The setting is not persisted when the object definition is not a
+		// root descendant
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		objectDefinition = _updateCustomObjectDefinition(
+			objectDefinition.getClassName(), objectDefinition,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.
+						NAME_ALLOW_STANDALONE_OBJECT_ENTRY
+				).value(
+					StringPool.FALSE
+				).build()));
+
+		Assert.assertNull(
+			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// The setting is persisted when the object definition is a root
+		// descendant
+
+		parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		TreeTestUtil.bind(
+			parentObjectDefinition.getObjectDefinitionId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		childObjectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				childObjectDefinition.getObjectDefinitionId());
+
+		_updateCustomObjectDefinition(
+			childObjectDefinition.getClassName(), childObjectDefinition,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.
+						NAME_ALLOW_STANDALONE_OBJECT_ENTRY
+				).value(
+					StringPool.FALSE
+				).build()));
+
+		childObjectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				childObjectDefinition.getObjectDefinitionId());
+
+		_updateCustomObjectDefinition(
+			childObjectDefinition.getClassName(), childObjectDefinition,
+			Collections.emptyList());
+
+		ObjectDefinitionSetting objectDefinitionSetting =
+			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+				childObjectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY);
+
+		Assert.assertEquals(
+			StringPool.FALSE, objectDefinitionSetting.getValue());
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+	}
+
+	@Test
 	public void testUpdateObjectFolderId() throws Exception {
 		ObjectDefinition objectDefinition = _addCustomObjectDefinition(
 			ObjectDefinitionTestUtil.getRandomName());
@@ -5196,6 +5433,35 @@ public class ObjectDefinitionLocalServiceTest {
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition2);
 		}
+	}
+
+	private void _testUpdateObjectDefinitionWithAllowStandaloneObjectEntry(
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		objectDefinition = _objectDefinitionLocalService.getObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
+
+		String value = String.valueOf(RandomTestUtil.randomBoolean());
+
+		_updateCustomObjectDefinition(
+			objectDefinition.getClassName(), objectDefinition,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.
+						NAME_ALLOW_STANDALONE_OBJECT_ENTRY
+				).value(
+					value
+				).build()));
+
+		ObjectDefinitionSetting objectDefinitionSetting =
+			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY);
+
+		Assert.assertEquals(value, objectDefinitionSetting.getValue());
 	}
 
 	private void

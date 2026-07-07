@@ -12,6 +12,7 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
@@ -19,12 +20,14 @@ import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -589,6 +592,48 @@ public class ObjectDefinitionTreeUtilTest {
 			).build(),
 			_objectDefinitionTreeFactory.create(rootNodeB.getPrimaryKey()),
 			_objectDefinitionLocalService);
+	}
+
+	@Test
+	public void testBindObjectDefinitionsWithAllowStandaloneObjectEntrySetting()
+		throws Exception {
+
+		// Bind a draft object definition to a published object definition
+
+		ObjectDefinition objectDefinitionA =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition("A");
+		ObjectDefinition objectDefinitionAA =
+			_addAndPublishCustomObjectDefinition("AA");
+
+		TreeTestUtil.bind(
+			objectDefinitionA.getObjectDefinitionId(),
+			objectDefinitionAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_assertAllowStandaloneObjectEntrySetting(
+			objectDefinitionAA, StringPool.TRUE);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService, new String[] {"C_A", "C_AA"},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
+		// Bind a published object definition to a draft object definition
+
+		objectDefinitionA = _addAndPublishCustomObjectDefinition("A");
+		objectDefinitionAA = ObjectDefinitionTestUtil.addCustomObjectDefinition(
+			"AA");
+
+		TreeTestUtil.bind(
+			objectDefinitionA.getObjectDefinitionId(),
+			objectDefinitionAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_assertAllowStandaloneObjectEntrySetting(
+			objectDefinitionAA, StringPool.TRUE);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService, new String[] {"C_A", "C_AA"},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -2531,6 +2576,21 @@ public class ObjectDefinitionTreeUtilTest {
 			null, values, ServiceContextTestUtil.getServiceContext());
 	}
 
+	private void _assertAllowStandaloneObjectEntrySetting(
+		ObjectDefinition objectDefinition,
+		String expectedAllowStandaloneObjectEntrySetting) {
+
+		ObjectDefinitionSetting objectDefinitionSetting =
+			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.
+					NAME_ALLOW_STANDALONE_OBJECT_ENTRY);
+
+		Assert.assertEquals(
+			expectedAllowStandaloneObjectEntrySetting,
+			objectDefinitionSetting.getValue());
+	}
+
 	private void _assertRootObjectEntryIds(Map<ObjectEntry, Long> expectedMap)
 		throws Exception {
 
@@ -2743,6 +2803,10 @@ public class ObjectDefinitionTreeUtilTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 
 	private ObjectDefinitionTreeFactory _objectDefinitionTreeFactory;
 
