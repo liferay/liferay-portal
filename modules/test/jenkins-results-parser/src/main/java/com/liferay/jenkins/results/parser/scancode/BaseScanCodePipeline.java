@@ -377,7 +377,7 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		String subject = "ScanCode pipeline is complete";
 
 		if (hasFailedScan()) {
-			subject = "ScanCode pipeline has failed :red-circle:";
+			subject = "ScanCode pipeline has failed :red_circle:";
 		}
 		else if (_hasErrors()) {
 			subject = ":red-alert: Release blocker :red-alert:";
