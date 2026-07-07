@@ -53,6 +53,8 @@ public class TokenTestUtil {
 			).put(
 				"clientSecret", oAuth2Application.getClientSecret()
 			).put(
+				"companyId", user.getCompanyId()
+			).put(
 				"serviceURL",
 				"http://localhost:" + PortalUtil.getPortalServerPort(false)
 			).build());
