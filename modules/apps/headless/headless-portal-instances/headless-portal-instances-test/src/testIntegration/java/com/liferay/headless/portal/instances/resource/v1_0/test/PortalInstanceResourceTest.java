@@ -8,11 +8,15 @@ package com.liferay.headless.portal.instances.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.portal.instances.client.dto.v1_0.Admin;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.pagination.Page;
 import com.liferay.headless.portal.instances.client.problem.Problem;
+import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceResource;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -20,15 +24,21 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,6 +103,15 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithoutAdmin();
 		_testPostPortalInstanceWithAdmin();
 		_testPostPortalInstanceWithAdminAndCompanyStrangers();
+	}
+
+	@FeatureFlag("LPD-11342")
+	@Override
+	@Test
+	public void testPostPortalInstanceExport() throws Exception {
+		_testPostPortalInstanceExportForbidden();
+		_testPostPortalInstanceExportNonexistent();
+		_testPostPortalInstanceExportExisting();
 	}
 
 	@Override
@@ -371,6 +390,71 @@ public class PortalInstanceResourceTest
 		_testPatchPortalInstace(portalInstance, false, false, false);
 	}
 
+	private void _testPostPortalInstanceExportExisting() throws Exception {
+		Assume.assumeTrue(_db.isSupportsDBPartition());
+
+		HttpInvoker.HttpResponse httpResponse =
+			portalInstanceResource.postPortalInstanceExportHttpResponse(
+				_portalInstance.getPortalInstanceId());
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+		Assert.assertTrue(
+			httpResponse.getContent(
+			).contains(
+				PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX +
+					_portalInstance.getCompanyId()
+			));
+	}
+
+	private void _testPostPortalInstanceExportForbidden() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		try {
+			_userLocalService.updatePassword(
+				user.getUserId(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				PropsValues.DEFAULT_ADMIN_PASSWORD, false);
+
+			PortalInstanceResource userPortalInstanceResource =
+				PortalInstanceResource.builder(
+				).authentication(
+					user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+				).endpoint(
+					testCompany.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+			userPortalInstanceResource.postPortalInstanceExport(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+		finally {
+			_userLocalService.deleteUser(user.getUserId());
+		}
+	}
+
+	private void _testPostPortalInstanceExportNonexistent() throws Exception {
+		try {
+			portalInstanceResource.postPortalInstanceExport(
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertNull(problem.getTitle());
+		}
+	}
+
 	private void _testPostPortalInstanceWithAdmin() throws Exception {
 		PortalInstance randomPortalInstance = randomPortalInstance();
 
@@ -443,6 +527,9 @@ public class PortalInstanceResourceTest
 	private static CompanyLocalService _companyLocalService;
 
 	private static PortalInstance _portalInstance;
+
+	@Inject
+	private DB _db;
 
 	@Inject
 	private UserLocalService _userLocalService;
