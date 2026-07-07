@@ -252,10 +252,12 @@ export class HeadlessDeliveryApiHelper {
 		articleBody,
 		headline,
 		siteId,
+		taxonomyCategoryIds,
 	}: {
 		articleBody: string;
 		headline: string;
 		siteId: string;
+		taxonomyCategoryIds?: number[];
 	}): Promise<MessageBoardThread> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/message-board-threads`,
@@ -263,6 +265,7 @@ export class HeadlessDeliveryApiHelper {
 				data: {
 					articleBody,
 					headline,
+					taxonomyCategoryIds,
 				},
 				failOnStatusCode: true,
 			}
