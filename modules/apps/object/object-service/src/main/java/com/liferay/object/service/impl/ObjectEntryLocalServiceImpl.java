@@ -7596,7 +7596,10 @@ public class ObjectEntryLocalServiceImpl
 				groupId, scope);
 		}
 
-		if (StringUtil.equals(scope, ObjectDefinitionConstants.SCOPE_DEPOT)) {
+		if (StringUtil.equals(scope, ObjectDefinitionConstants.SCOPE_DEPOT) &&
+			FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-96750")) {
+
 			String domain = ObjectDefinitionSettingUtil.getValue(
 				ObjectDefinitionSettingConstants.NAME_DOMAIN,
 				objectDefinition.getObjectDefinitionSettings());

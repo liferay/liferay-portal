@@ -982,6 +982,7 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@FeatureFlag("LPD-96750")
 	@Test
 	public void testAddObjectDefinitionWithObjectDefinitionSettings()
 		throws Exception {
