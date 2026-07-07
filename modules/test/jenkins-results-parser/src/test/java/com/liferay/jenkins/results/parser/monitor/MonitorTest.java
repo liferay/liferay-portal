@@ -5,7 +5,6 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -41,9 +40,9 @@ public class MonitorTest extends com.liferay.jenkins.results.parser.Test {
 
 		};
 
-		Assert.assertSame(monitorResult, monitor.execute());
-		Assert.assertEquals("masters", monitor.getID());
-		Assert.assertSame(monitorConfig, monitor.getMonitorConfig());
+		testSame(monitorResult, monitor.execute());
+		testEquals("masters", monitor.getID());
+		testSame(monitorConfig, monitor.getMonitorConfig());
 	}
 
 }
