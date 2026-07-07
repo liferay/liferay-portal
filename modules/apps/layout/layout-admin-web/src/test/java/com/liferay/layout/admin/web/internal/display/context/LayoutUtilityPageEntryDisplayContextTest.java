@@ -42,13 +42,6 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_layoutUtilityPageEntryServiceUtilMockedStatic = Mockito.mockStatic(
-			LayoutUtilityPageEntryServiceUtil.class);
-
-		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic =
-			Mockito.mockStatic(
-				LayoutUtilityPageEntryViewRendererRegistryUtil.class);
-
 		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic.when(
 			LayoutUtilityPageEntryViewRendererRegistryUtil::
 				getLayoutUtilityPageEntryViewRenderers
@@ -155,9 +148,12 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 				RandomTestUtil.randomString(), "asc"));
 	}
 
-	private MockedStatic<LayoutUtilityPageEntryServiceUtil>
-		_layoutUtilityPageEntryServiceUtilMockedStatic;
-	private MockedStatic<LayoutUtilityPageEntryViewRendererRegistryUtil>
-		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic;
+	private final MockedStatic<LayoutUtilityPageEntryServiceUtil>
+		_layoutUtilityPageEntryServiceUtilMockedStatic = Mockito.mockStatic(
+			LayoutUtilityPageEntryServiceUtil.class);
+	private final MockedStatic<LayoutUtilityPageEntryViewRendererRegistryUtil>
+		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic =
+			Mockito.mockStatic(
+				LayoutUtilityPageEntryViewRendererRegistryUtil.class);
 
 }

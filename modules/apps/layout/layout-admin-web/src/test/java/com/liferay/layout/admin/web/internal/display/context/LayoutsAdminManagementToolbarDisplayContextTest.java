@@ -17,7 +17,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletURL;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,11 +39,6 @@ public class LayoutsAdminManagementToolbarDisplayContextTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
-		_portletURLUtilMockedStatic.close();
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		_portletURLUtilMockedStatic.when(
@@ -61,6 +56,11 @@ public class LayoutsAdminManagementToolbarDisplayContextTest {
 		).thenReturn(
 			new MockLiferayPortletURL()
 		);
+	}
+
+	@After
+	public void tearDown() {
+		_portletURLUtilMockedStatic.close();
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public class LayoutsAdminManagementToolbarDisplayContextTest {
 			layoutsAdminManagementToolbarDisplayContext.getSortingURL());
 	}
 
-	private static final MockedStatic<PortletURLUtil>
-		_portletURLUtilMockedStatic = Mockito.mockStatic(PortletURLUtil.class);
+	private final MockedStatic<PortletURLUtil> _portletURLUtilMockedStatic =
+		Mockito.mockStatic(PortletURLUtil.class);
 
 }
