@@ -36,6 +36,7 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 				type: 'string',
 			},
 		],
+		key: 'user',
 		label: 'User',
 	},
 	{
@@ -49,6 +50,7 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 				type: 'string',
 			},
 		],
+		key: 'session',
 		label: 'Session',
 	},
 ];

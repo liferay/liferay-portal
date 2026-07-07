@@ -34,6 +34,7 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 				type: 'number',
 			},
 		],
+		key: 'user',
 		label: 'User',
 	},
 ];
