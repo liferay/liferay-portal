@@ -16,13 +16,16 @@
 	}
 
 	.chart-map-body {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
 		position: relative;
 	}
 
 	.chart-map-svg {
 		block-size: auto;
 		display: block;
-		inline-size: 100%;
+		flex: 1 1 320px;
 	}
 
 	.chart-map-tooltip {
@@ -107,6 +110,39 @@
 		fill: none;
 		stroke: $white;
 		stroke-width: 2;
+	}
+
+	.chart-map-legend-scale {
+		align-items: center;
+		display: flex;
+		gap: 0.5rem;
+		margin-block-start: 0.75rem;
+	}
+
+	.chart-map-legend-scale-label {
+		font-size: 0.75rem;
+	}
+
+	.chart-map-legend-scale-swatches {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.chart-map-legend-scale-swatch {
+		block-size: 0.75rem;
+		inline-size: 1.5rem;
+
+		&:first-child {
+			border-end-start-radius: 9999px;
+			border-start-start-radius: 9999px;
+		}
+
+		&:last-child {
+			border-end-end-radius: 9999px;
+			border-start-end-radius: 9999px;
+		}
 	}
 }
 

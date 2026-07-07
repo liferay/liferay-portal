@@ -549,3 +549,190 @@ describe('MapChart interaction', () => {
 		await checkAccessibility({bestPractices: true, context: container});
 	});
 });
+
+describe('MapChart legend', () => {
+	it('renders no legend by default', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		expect(
+			container.querySelector('.charts-legend')
+		).not.toBeInTheDocument();
+		expect(
+			container.querySelector('.charts-legend-table')
+		).not.toBeInTheDocument();
+		expect(
+			container.querySelector('.chart-map-legend-scale')
+		).not.toBeInTheDocument();
+	});
+
+	it('renders one list item per datum', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="list" title="Population" />
+		);
+
+		expect(container.querySelectorAll('.charts-legend__item')).toHaveLength(
+			DATA.length
+		);
+	});
+
+	it('renders one table row per datum', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="table" title="Population" />
+		);
+
+		expect(
+			container.querySelectorAll('.charts-legend-table__row')
+		).toHaveLength(DATA.length);
+
+		const headerRow = container.querySelector(
+			'.charts-legend-table thead tr'
+		);
+
+		expect(headerRow).toHaveTextContent('country');
+
+		const shareCell = container.querySelector(
+			'.charts-legend-table__row:first-child .charts-legend-table__cell--number:last-child'
+		);
+
+		expect(shareCell).toHaveTextContent('38.9%');
+	});
+
+	it('sorts the list legend by value descending regardless of input order', () => {
+		const unsortedData: MapDatum[] = [
+			{country: 'FR', label: 'France', value: 100},
+			{country: 'DE', label: 'Germany', value: 500},
+			{country: 'BR', label: 'Brazil', value: 300},
+		];
+
+		const {container} = render(
+			<MapChart data={unsortedData} legend="list" title="Population" />
+		);
+
+		const labels = Array.from(
+			container.querySelectorAll('.charts-legend__label')
+		).map((label) => label.textContent);
+
+		expect(labels).toEqual(['Germany', 'Brazil', 'France']);
+	});
+
+	it('sorts the table legend by value descending with a matching 1..N rank regardless of input order', () => {
+		const unsortedData: MapDatum[] = [
+			{country: 'FR', label: 'France', value: 100},
+			{country: 'DE', label: 'Germany', value: 500},
+			{country: 'BR', label: 'Brazil', value: 300},
+		];
+
+		const {container} = render(
+			<MapChart data={unsortedData} legend="table" title="Population" />
+		);
+
+		const labels = Array.from(
+			container.querySelectorAll('.charts-legend-table__cell--label')
+		).map((label) => label.textContent);
+
+		expect(labels).toEqual(['Germany', 'Brazil', 'France']);
+
+		const ranks = Array.from(
+			container.querySelectorAll('.charts-legend-table__cell--rank')
+		).map((rank) => rank.textContent);
+
+		expect(ranks).toEqual(['1', '2', '3']);
+	});
+
+	it('renders a scale swatch per effective bucket, matching the map instead of the requested steps', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="scale" steps={6} title="Population" />
+		);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 6);
+
+		expect(bucketCount).toBe(3);
+
+		const swatches = container.querySelectorAll(
+			'.chart-map-legend-scale-swatch'
+		);
+
+		expect(swatches).toHaveLength(bucketCount);
+
+		const markerFills = new Set(
+			Array.from(
+				container.querySelectorAll('circle.chart-map-marker')
+			).map((marker) =>
+				(marker as SVGCircleElement).style.getPropertyValue(
+					'--marker-fill'
+				)
+			)
+		);
+
+		expect(markerFills.size).toBe(bucketCount);
+
+		expect(screen.getByText('less')).toBeInTheDocument();
+		expect(screen.getByText('more')).toBeInTheDocument();
+	});
+
+	it('marks the hovered marker as active in the list legend', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="list" title="Population" />
+		);
+
+		const marker = screen.getByRole('img', {name: 'China: 14210'});
+		const legendItems = container.querySelectorAll('.charts-legend__item');
+
+		expect(legendItems[0]).not.toHaveClass('is-active');
+
+		fireEvent.pointerEnter(marker);
+
+		expect(legendItems[0]).toHaveClass('is-active');
+	});
+
+	it('marks the keyboard-focused marker as active in the table legend', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="table" title="Population" />
+		);
+
+		const marker = screen.getByRole('img', {name: 'India: 9870'});
+		const legendRows = container.querySelectorAll(
+			'.charts-legend-table__row'
+		);
+
+		fireEvent.focus(marker);
+
+		expect(legendRows[2]).toHaveClass('is-active');
+	});
+
+	it('focuses the corresponding marker when a list legend item is clicked', () => {
+		render(<MapChart data={DATA} legend="list" title="Population" />);
+
+		const legendItem = screen.getByText('United States').closest('li');
+
+		fireEvent.click(legendItem as HTMLLIElement);
+
+		expect(
+			screen.getByRole('img', {name: 'United States: 12450'})
+		).toHaveFocus();
+	});
+
+	it('has no accessibility violations with the list legend', async () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="list" title="Population" />
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('has no accessibility violations with the table legend', async () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="table" title="Population" />
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('has no accessibility violations with the scale legend', async () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="scale" title="Population" />
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+});

@@ -5,6 +5,7 @@
 
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
+import MapChartLegend from './components/MapChartLegend';
 import MapChartPlot from './components/MapChartPlot';
 import MapChartSummary from './components/MapChartSummary';
 import MapChartTooltip from './components/MapChartTooltip';
@@ -33,6 +34,7 @@ function getSchemeColor(
 
 export default function MapChart({
 	data,
+	legend = 'none',
 	scheme = 'blue',
 	steps = 5,
 	title,
@@ -105,6 +107,8 @@ export default function MapChart({
 	const clearFocus = useCallback(() => setFocusIndex(null), []);
 	const clearHover = useCallback(() => setHoverIndex(null), []);
 
+	const isLegendInline = legend === 'list';
+
 	const legendElement = (
 		<MapChartLegend
 			activeIndex={activeIndex}
@@ -154,9 +158,11 @@ export default function MapChart({
 				{activeIndex !== null && data[activeIndex] ? (
 					<MapChartTooltip datum={data[activeIndex]} />
 				) : null}
+
+				{isLegendInline ? legendElement : null}
 			</div>
 
-			{legend === 'list' ? null : legendElement}
+			{isLegendInline ? null : legendElement}
 		</figure>
 	);
 }
