@@ -6,13 +6,12 @@
 package com.liferay.headless.data.mask.internal.model.listener;
 
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
-import com.liferay.headless.data.mask.internal.engine.DataMaskEngineUtil;
+import com.liferay.headless.data.mask.internal.engine.RedactUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -42,7 +41,7 @@ public class DataMaskRelevantObjectEntryModelListener
 	public void onAfterRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_evictPatterns(objectEntry.getValues());
+		_evict(objectEntry);
 	}
 
 	@Override
@@ -50,36 +49,36 @@ public class DataMaskRelevantObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_evictPatterns(originalObjectEntry.getValues());
+		_evict(originalObjectEntry);
 	}
 
 	@Override
 	public void onBeforeCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		if (_isDataMaskSeedImport()) {
+		if (_isBatchEngineBundle()) {
 			return;
 		}
 
-		if (_isSystemMask(objectEntry.getValues())) {
+		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				new PrincipalException("Unable to create system data masks"));
+				"Unable to create system data masks");
 		}
 
-		_validateRegexes(objectEntry.getValues());
+		_validate(objectEntry);
 	}
 
 	@Override
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		if (_isDataMaskSeedImport()) {
+		if (_isBatchEngineBundle()) {
 			return;
 		}
 
-		if (_isSystemMask(objectEntry.getValues())) {
+		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				new PrincipalException("Unable to delete system data masks"));
+				"Unable to delete system data masks");
 		}
 	}
 
@@ -88,41 +87,59 @@ public class DataMaskRelevantObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		if (_isDataMaskSeedImport()) {
+		if (_isBatchEngineBundle()) {
 			return;
 		}
 
-		if (_isSystemMask(originalObjectEntry.getValues())) {
+		if (_isSystem(originalObjectEntry)) {
 			throw new ModelListenerException(
-				new PrincipalException("Unable to update system data masks"));
+				"Unable to update system data masks");
 		}
 
-		if (_isSystemMask(objectEntry.getValues())) {
+		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				new PrincipalException(
-					"Unable to convert data masks to system data masks"));
+				"Unable to convert data mask to system data mask");
 		}
 
-		_validateRegexes(objectEntry.getValues());
+		_validate(objectEntry);
 	}
 
-	private void _evictPatterns(Map<String, Serializable> values) {
-		DataMaskEngineUtil.evict(MapUtil.getString(values, "detectionRegex"));
-		DataMaskEngineUtil.evict(MapUtil.getString(values, "replacementRegex"));
+	private void _evict(ObjectEntry objectEntry) {
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		RedactUtil.evict(MapUtil.getString(values, "detectionRegex"));
+		RedactUtil.evict(MapUtil.getString(values, "replacementRegex"));
 	}
 
-	private boolean _isDataMaskSeedImport() {
+	private boolean _isBatchEngineBundle() {
 		String fileName = BatchEngineUnitThreadLocal.getFileName();
 
 		return fileName.startsWith("com.liferay.headless.data.mask.impl_");
 	}
 
-	private boolean _isSystemMask(Map<String, Serializable> values) {
+	private boolean _isSystem(ObjectEntry objectEntry) {
+		Map<String, Serializable> values = objectEntry.getValues();
+
 		return Objects.equals(values.get("maskType"), "system");
 	}
 
-	private void _validateRegex(String fieldLabel, String regex)
+	private void _validate(ObjectEntry objectEntry)
 		throws ModelListenerException {
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		_validateRegex("detectionRegex", values);
+		_validateRegex("replacementRegex", values);
+	}
+
+	private void _validateRegex(String name, Map<String, Serializable> values)
+		throws ModelListenerException {
+
+		String regex = MapUtil.getString(values, name);
+
+		if (Validator.isNull(regex)) {
+			return;
+		}
 
 		try {
 			Pattern.compile(regex);
@@ -130,24 +147,8 @@ public class DataMaskRelevantObjectEntryModelListener
 		catch (PatternSyntaxException patternSyntaxException) {
 			throw new ModelListenerException(
 				StringBundler.concat(
-					"Invalid \"", fieldLabel, "\": ",
+					"Invalid \"", name, "\": ",
 					patternSyntaxException.getMessage()));
-		}
-	}
-
-	private void _validateRegexes(Map<String, Serializable> values)
-		throws ModelListenerException {
-
-		String detectionRegex = MapUtil.getString(values, "detectionRegex");
-
-		if (Validator.isNotNull(detectionRegex)) {
-			_validateRegex("detectionRegex", detectionRegex);
-		}
-
-		String replacementRegex = MapUtil.getString(values, "replacementRegex");
-
-		if (Validator.isNotNull(replacementRegex)) {
-			_validateRegex("replacementRegex", replacementRegex);
 		}
 	}
 

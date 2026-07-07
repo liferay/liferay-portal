@@ -5,7 +5,7 @@
 
 package com.liferay.headless.data.mask.internal.jaxrs.writer.interceptor;
 
-import com.liferay.headless.data.mask.internal.engine.DataMaskEngineUtil;
+import com.liferay.headless.data.mask.internal.engine.RedactUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -39,9 +39,6 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +75,25 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			return;
 		}
 
+		long companyId = _portal.getCompanyId(_httpServletRequest);
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63311")) {
+			writerInterceptorContext.proceed();
+
+			return;
+		}
+
+		String header = _httpServletRequest.getHeader("X-Liferay-Data-Masks");
+
+		if (Validator.isNull(header)) {
+			writerInterceptorContext.proceed();
+
+			return;
+		}
+
 		List<String> dataMaskExternalReferenceCodes =
-			_getDataMaskExternalReferenceCodes(
-				_httpServletRequest.getHeader("X-Liferay-Data-Masks"));
+			TransformUtil.transformToList(
+				StringUtil.split(header), String::trim);
 
 		if (ListUtil.isEmpty(dataMaskExternalReferenceCodes)) {
 			writerInterceptorContext.proceed();
@@ -88,9 +101,23 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			return;
 		}
 
-		List<ObjectEntry> objectEntries = _getObjectEntries(
-			_portal.getCompanyId(_httpServletRequest),
-			dataMaskExternalReferenceCodes);
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", companyId);
+
+		if (objectDefinition == null) {
+			writerInterceptorContext.proceed();
+
+			return;
+		}
+
+		List<ObjectEntry> objectEntries = TransformUtil.transform(
+			dataMaskExternalReferenceCodes,
+			dataMaskExternalReferenceCode ->
+				_objectEntryLocalService.fetchObjectEntry(
+					dataMaskExternalReferenceCode, 0,
+					objectDefinition.getObjectDefinitionId()));
 
 		if (ListUtil.isEmpty(objectEntries)) {
 			writerInterceptorContext.proceed();
@@ -98,8 +125,7 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			return;
 		}
 
-		OutputStream originalOutputStream =
-			writerInterceptorContext.getOutputStream();
+		OutputStream outputStream = writerInterceptorContext.getOutputStream();
 
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
@@ -112,17 +138,13 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			Charset charset = _getCharset(
 				writerInterceptorContext.getMediaType());
 
-			String body = byteArrayOutputStream.toString(charset);
+			String output = _redact(
+				objectEntries, byteArrayOutputStream.toString(charset));
 
-			originalOutputStream.write(
-				_redact(
-					objectEntries, body
-				).getBytes(
-					charset
-				));
+			outputStream.write(output.getBytes(charset));
 		}
 		finally {
-			writerInterceptorContext.setOutputStream(originalOutputStream);
+			writerInterceptorContext.setOutputStream(outputStream);
 		}
 	}
 
@@ -133,79 +155,13 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 
 		Map<String, String> parameters = mediaType.getParameters();
 
-		String charset = parameters.get(MediaType.CHARSET_PARAMETER);
+		String charsetParameter = parameters.get(MediaType.CHARSET_PARAMETER);
 
-		if (Validator.isNull(charset)) {
+		if (Validator.isNull(charsetParameter)) {
 			return StandardCharsets.UTF_8;
 		}
 
-		return Charset.forName(charset);
-	}
-
-	private List<String> _getDataMaskExternalReferenceCodes(
-		String headerValue) {
-
-		if (Validator.isNull(headerValue)) {
-			return Collections.emptyList();
-		}
-
-		return TransformUtil.transform(
-			Arrays.asList(StringUtil.split(headerValue, ',')),
-			token -> {
-				String trimmedString = token.trim();
-
-				if (trimmedString.isEmpty()) {
-					return null;
-				}
-
-				return trimmedString;
-			});
-	}
-
-	private List<ObjectEntry> _getObjectEntries(
-		long companyId, List<String> dataMaskExternalReferenceCodes) {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63311")) {
-			return Collections.emptyList();
-		}
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_MASK", companyId);
-
-		if (objectDefinition == null) {
-			return Collections.emptyList();
-		}
-
-		List<ObjectEntry> objectEntries = new ArrayList<>();
-
-		for (String dataMaskExternalReferenceCode :
-				dataMaskExternalReferenceCodes) {
-
-			if (Validator.isNull(dataMaskExternalReferenceCode)) {
-				continue;
-			}
-
-			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-				dataMaskExternalReferenceCode, 0,
-				objectDefinition.getObjectDefinitionId());
-
-			if (objectEntry == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						StringBundler.concat(
-							"No data mask was resolved for external reference ",
-							"code \"", dataMaskExternalReferenceCode, "\""));
-				}
-
-				continue;
-			}
-
-			objectEntries.add(objectEntry);
-		}
-
-		return objectEntries;
+		return Charset.forName(charsetParameter);
 	}
 
 	private String _redact(List<ObjectEntry> objectEntries, String text) {
@@ -223,7 +179,7 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			}
 
 			try {
-				text = DataMaskEngineUtil.redact(
+				text = RedactUtil.redact(
 					detectionRegex,
 					MapUtil.getString(values, "replacementRegex"),
 					replacementValue, text);

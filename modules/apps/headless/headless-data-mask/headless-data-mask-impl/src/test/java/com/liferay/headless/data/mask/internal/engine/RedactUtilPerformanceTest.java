@@ -17,7 +17,7 @@ import org.junit.Test;
 /**
  * @author Jose Luis Navarro
  */
-public class DataMaskEngineUtilPerformanceTest {
+public class RedactUtilPerformanceTest {
 
 	@ClassRule
 	@Rule
@@ -73,7 +73,7 @@ public class DataMaskEngineUtilPerformanceTest {
 		int iterations = 50;
 
 		try (PerformanceTimer performanceTimer = new PerformanceTimer(
-				DataMaskEngineUtilPerformanceTest.class,
+				RedactUtilPerformanceTest.class,
 				_MAX_OVERHEAD_MILLISECONDS * iterations, "redact")) {
 
 			for (int i = 0; i < iterations; i++) {
@@ -84,7 +84,7 @@ public class DataMaskEngineUtilPerformanceTest {
 
 	private String _redact(String[][] dataMasks, String text) {
 		for (String[] dataMask : dataMasks) {
-			text = DataMaskEngineUtil.redact(
+			text = RedactUtil.redact(
 				dataMask[0], dataMask[1], dataMask[2], text);
 		}
 

@@ -15,6 +15,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -29,8 +31,6 @@ import java.io.Serializable;
 
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class DataMaskRelevantObjectEntryModelListenerTest {
 
@@ -50,184 +51,198 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		DataMaskTestUtil.processBatchEngineUnits();
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeCreate() throws Exception {
-		ObjectDefinition objectDefinition = _fetchDataMaskObjectDefinition();
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", TestPropsValues.getCompanyId());
 
-		try {
-			_addSystemMask(objectDefinition);
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString(_SYSTEM_DATA_MASKS_MESSAGE));
-		}
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"Invalid \"detectionRegex\": Unclosed character class near index " +
+				"0\n[\n^",
+			() -> _addCustomDataMaskObjectEntry(objectDefinition, "[", null));
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"Invalid \"replacementRegex\": Unclosed character class near " +
+				"index 0\n[\n^",
+			() -> _addCustomDataMaskObjectEntry(objectDefinition, "\\w+", "["));
+		AssertUtils.assertFailure(
+			ModelListenerException.class, "Unable to create system data masks",
+			() -> _addSystemDataMaskObjectEntry(objectDefinition));
 
 		BatchEngineUnitThreadLocal.setFileName(_DATA_MASK_BATCH_FILE_NAME);
 
-		ObjectEntry systemMaskObjectEntry = null;
-
 		try {
-			systemMaskObjectEntry = _addSystemMask(objectDefinition);
+			ObjectEntry objectEntry = _addSystemDataMaskObjectEntry(
+				objectDefinition);
 
 			Assert.assertNotNull(
 				_objectEntryLocalService.fetchObjectEntry(
-					systemMaskObjectEntry.getObjectEntryId()));
+					objectEntry.getObjectEntryId()));
 		}
 		finally {
-			if (systemMaskObjectEntry != null) {
-				_objectEntryLocalService.deleteObjectEntry(
-					systemMaskObjectEntry.getObjectEntryId());
-			}
-
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
 		}
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
+		ObjectEntry objectEntry1 = DataMaskTestUtil.addDataMaskObjectEntry(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
 		_objectEntryLocalService.deleteObjectEntry(
-			customMaskObjectEntry.getObjectEntryId());
+			objectEntry1.getObjectEntryId());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				customMaskObjectEntry.getObjectEntryId()));
+				objectEntry1.getObjectEntryId()));
 
-		ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
+		ObjectEntry objectEntry2 = _getDataMaskObjectEntry("Email Address");
 
-		try {
-			_objectEntryLocalService.deleteObjectEntry(
-				emailMaskObjectEntry.getObjectEntryId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString(_SYSTEM_DATA_MASKS_MESSAGE));
-		}
-
+		AssertUtils.assertFailure(
+			ModelListenerException.class, "Unable to delete system data masks",
+			() -> _objectEntryLocalService.deleteObjectEntry(
+				objectEntry2.getObjectEntryId()));
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				emailMaskObjectEntry.getObjectEntryId()));
+				objectEntry2.getObjectEntryId()));
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
+		ObjectEntry objectEntry1 = DataMaskTestUtil.addDataMaskObjectEntry(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
 		String replacementValue = RandomTestUtil.randomString();
 
-		ObjectEntry updatedCustomMaskObjectEntry = _updateReplacementValue(
-			customMaskObjectEntry, replacementValue);
+		objectEntry1 = _updateDataMaskObjectEntry(
+			objectEntry1, replacementValue);
 
-		Map<String, Serializable> values =
-			updatedCustomMaskObjectEntry.getValues();
+		Map<String, Serializable> values = objectEntry1.getValues();
 
 		Assert.assertEquals(replacementValue, values.get("replacementValue"));
 
-		ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
+		ObjectEntry finalObjectEntry1 = objectEntry1;
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"Invalid \"detectionRegex\": Unclosed character class near index " +
+				"0\n[\n^",
+			() -> _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(),
+				finalObjectEntry1.getObjectEntryId(), 0,
+				HashMapBuilder.putAll(
+					finalObjectEntry1.getValues()
+				).put(
+					"detectionRegex", "["
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class, "Unable to update system data masks",
+			() -> _updateDataMaskObjectEntry(
+				_getDataMaskObjectEntry("Email Address"),
+				RandomTestUtil.randomString()));
+
+		BatchEngineUnitThreadLocal.setFileName(RandomTestUtil.randomString());
 
 		try {
-			_updateReplacementValue(
-				emailMaskObjectEntry, RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString(_SYSTEM_DATA_MASKS_MESSAGE));
-		}
-
-		BatchEngineUnitThreadLocal.setFileName(
-			"com.liferay.example.impl_1.0.0 [2]");
-
-		try {
-			_updateReplacementValue(
-				emailMaskObjectEntry, RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString(_SYSTEM_DATA_MASKS_MESSAGE));
+			AssertUtils.assertFailure(
+				ModelListenerException.class,
+				"Unable to update system data masks",
+				() -> _updateDataMaskObjectEntry(
+					_getDataMaskObjectEntry("Email Address"),
+					RandomTestUtil.randomString()));
 		}
 		finally {
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
 		}
 
-		Assert.assertEquals(
-			"[EMAIL_ADDRESS]",
-			_getReplacementValue(emailMaskObjectEntry.getObjectEntryId()));
+		ObjectEntry emailAddressDataMaskObjectEntry = _getDataMaskObjectEntry(
+			"Email Address");
+
+		values = emailAddressDataMaskObjectEntry.getValues();
+
+		Assert.assertEquals("[EMAIL_ADDRESS]", values.get("replacementValue"));
 
 		BatchEngineUnitThreadLocal.setFileName(_DATA_MASK_BATCH_FILE_NAME);
 
 		try {
-			String emailReplacementValue = RandomTestUtil.randomString();
+			replacementValue = RandomTestUtil.randomString();
 
-			_updateReplacementValue(
-				emailMaskObjectEntry, emailReplacementValue);
+			emailAddressDataMaskObjectEntry = _updateDataMaskObjectEntry(
+				emailAddressDataMaskObjectEntry, replacementValue);
+
+			values = emailAddressDataMaskObjectEntry.getValues();
 
 			Assert.assertEquals(
-				emailReplacementValue,
-				_getReplacementValue(emailMaskObjectEntry.getObjectEntryId()));
-
-			_updateReplacementValue(
-				_objectEntryLocalService.getObjectEntry(
-					emailMaskObjectEntry.getObjectEntryId()),
-				"[EMAIL_ADDRESS]");
+				replacementValue, values.get("replacementValue"));
 		}
 		finally {
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
 		}
-	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
-	@Test
-	public void testOnBeforeUpdateCustomMaskToSystem() throws Exception {
-		ObjectEntry customMaskObjectEntry = DataMaskTestUtil.addDataMask(
+		ObjectEntry objectEntry2 = DataMaskTestUtil.addDataMaskObjectEntry(
 			RandomTestUtil.randomString(), "\\d{4}",
 			RandomTestUtil.randomString());
 
-		try {
-			_updateMaskType(customMaskObjectEntry, "system");
+		ObjectEntry finalObjectEntry2 = objectEntry2;
 
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString(_SYSTEM_DATA_MASKS_MESSAGE));
-		}
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"Unable to convert data mask to system data mask",
+			() -> _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(),
+				finalObjectEntry2.getObjectEntryId(), 0,
+				HashMapBuilder.<String, Serializable>putAll(
+					finalObjectEntry2.getValues()
+				).put(
+					"maskType", "system"
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
 
-		ObjectEntry reloadedCustomMaskObjectEntry =
-			_objectEntryLocalService.getObjectEntry(
-				customMaskObjectEntry.getObjectEntryId());
+		objectEntry2 = _objectEntryLocalService.getObjectEntry(
+			objectEntry2.getObjectEntryId());
 
-		Map<String, Serializable> values =
-			reloadedCustomMaskObjectEntry.getValues();
+		values = objectEntry2.getValues();
 
 		Assert.assertEquals("custom", values.get("maskType"));
 	}
 
-	private ObjectEntry _addSystemMask(ObjectDefinition objectDefinition)
+	private ObjectEntry _addCustomDataMaskObjectEntry(
+			ObjectDefinition objectDefinition, String detectionRegex,
+			String replacementRegex)
+		throws Exception {
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"detectionRegex", detectionRegex
+			).put(
+				"maskType", "custom"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"replacementRegex", replacementRegex
+			).put(
+				"replacementValue", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addSystemDataMaskObjectEntry(
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
@@ -247,18 +262,11 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private ObjectDefinition _fetchDataMaskObjectDefinition() throws Exception {
-		return _objectDefinitionLocalService.
-			fetchObjectDefinitionByExternalReferenceCode(
-				"L_DATA_MASK", TestPropsValues.getCompanyId());
-	}
-
-	private ObjectEntry _findSystemMask(String name) throws Exception {
-		ObjectDefinition objectDefinition = _fetchDataMaskObjectDefinition();
-
-		if (objectDefinition == null) {
-			return null;
-		}
+	private ObjectEntry _getDataMaskObjectEntry(String name) throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", TestPropsValues.getCompanyId());
 
 		for (ObjectEntry objectEntry :
 				_objectEntryLocalService.getObjectEntries(
@@ -275,32 +283,7 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		return null;
 	}
 
-	private Serializable _getReplacementValue(long objectEntryId)
-		throws Exception {
-
-		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			objectEntryId);
-
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		return values.get("replacementValue");
-	}
-
-	private ObjectEntry _updateMaskType(
-			ObjectEntry objectEntry, String maskType)
-		throws Exception {
-
-		return _objectEntryLocalService.updateObjectEntry(
-			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), 0,
-			HashMapBuilder.<String, Serializable>putAll(
-				objectEntry.getValues()
-			).put(
-				"maskType", maskType
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ObjectEntry _updateReplacementValue(
+	private ObjectEntry _updateDataMaskObjectEntry(
 			ObjectEntry objectEntry, String replacementValue)
 		throws Exception {
 
@@ -316,9 +299,6 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 
 	private static final String _DATA_MASK_BATCH_FILE_NAME =
 		"com.liferay.headless.data.mask.impl_1.0.0 [1]";
-
-	private static final String _SYSTEM_DATA_MASKS_MESSAGE =
-		"system data masks";
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

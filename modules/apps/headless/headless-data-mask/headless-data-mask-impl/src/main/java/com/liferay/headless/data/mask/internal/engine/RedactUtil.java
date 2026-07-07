@@ -15,19 +15,17 @@ import java.util.regex.Pattern;
 /**
  * @author Jose Luis Navarro
  */
-public class DataMaskEngineUtil {
+public class RedactUtil {
 
 	public static void evict(String regex) {
-		if (regex != null) {
-			_patterns.remove(regex);
-		}
+		_patterns.remove(regex);
 	}
 
 	public static String redact(
 		String detectionRegex, String replacementRegex, String replacementValue,
 		String text) {
 
-		if (Validator.isNull(text)) {
+		if (text == null) {
 			return text;
 		}
 
@@ -37,31 +35,22 @@ public class DataMaskEngineUtil {
 			return text;
 		}
 
-		Pattern replacementPattern = _getPattern(replacementRegex);
+		StringBuffer sb = new StringBuffer();
 
 		Matcher matcher = detectionPattern.matcher(text);
 
-		StringBuffer sb = new StringBuffer();
+		Pattern replacementPattern = _getPattern(replacementRegex);
 
 		boolean found = false;
 
 		while (matcher.find()) {
 			found = true;
 
-			if (replacementPattern == null) {
-				matcher.appendReplacement(
-					sb, Matcher.quoteReplacement(replacementValue));
-			}
-			else {
-				matcher.appendReplacement(
-					sb,
-					Matcher.quoteReplacement(
-						replacementPattern.matcher(
-							matcher.group()
-						).replaceAll(
-							replacementValue
-						)));
-			}
+			matcher.appendReplacement(
+				sb,
+				Matcher.quoteReplacement(
+					_getReplacement(
+						matcher, replacementPattern, replacementValue)));
 		}
 
 		if (!found) {
@@ -79,6 +68,19 @@ public class DataMaskEngineUtil {
 		}
 
 		return _patterns.computeIfAbsent(regex, Pattern::compile);
+	}
+
+	private static String _getReplacement(
+		Matcher matcher, Pattern replacementPattern, String replacementValue) {
+
+		if (replacementPattern == null) {
+			return replacementValue;
+		}
+
+		Matcher replacementMatcher = replacementPattern.matcher(
+			matcher.group());
+
+		return replacementMatcher.replaceAll(replacementValue);
 	}
 
 	private static final Map<String, Pattern> _patterns =

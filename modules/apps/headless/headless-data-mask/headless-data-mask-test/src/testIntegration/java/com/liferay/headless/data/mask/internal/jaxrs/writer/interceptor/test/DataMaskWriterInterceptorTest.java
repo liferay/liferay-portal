@@ -52,7 +52,7 @@ public class DataMaskWriterInterceptorTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		DataMaskTestUtil.processBatchEngineUnits();
 
 		Bundle bundle = FrameworkUtil.getBundle(
@@ -85,7 +85,6 @@ public class DataMaskWriterInterceptorTest {
 			"The value is secret.",
 			HTTPTestUtil.invokeToString(
 				null, "test-data-mask/test", Http.Method.GET));
-
 		Assert.assertEquals(
 			"The value is [REDACTED].",
 			HTTPTestUtil.invokeToString(
@@ -93,9 +92,10 @@ public class DataMaskWriterInterceptorTest {
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks",
 					() -> {
-						ObjectEntry objectEntry = DataMaskTestUtil.addDataMask(
-							RandomTestUtil.randomString(), "secret",
-							"[REDACTED]");
+						ObjectEntry objectEntry =
+							DataMaskTestUtil.addDataMaskObjectEntry(
+								RandomTestUtil.randomString(), "secret",
+								"[REDACTED]");
 
 						return objectEntry.getExternalReferenceCode();
 					}
@@ -115,9 +115,10 @@ public class DataMaskWriterInterceptorTest {
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks",
 					() -> {
-						ObjectEntry objectEntry = DataMaskTestUtil.addDataMask(
-							RandomTestUtil.randomString(), "secret",
-							"[REDACTED]");
+						ObjectEntry objectEntry =
+							DataMaskTestUtil.addDataMaskObjectEntry(
+								RandomTestUtil.randomString(), "secret",
+								"[REDACTED]");
 
 						return objectEntry.getExternalReferenceCode();
 					}

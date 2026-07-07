@@ -6,7 +6,7 @@
 package com.liferay.headless.data.mask.internal.resource.v1_0;
 
 import com.liferay.headless.data.mask.dto.v1_0.Redaction;
-import com.liferay.headless.data.mask.internal.engine.DataMaskEngineUtil;
+import com.liferay.headless.data.mask.internal.engine.RedactUtil;
 import com.liferay.headless.data.mask.resource.v1_0.RedactionResource;
 
 import org.osgi.service.component.annotations.Component;
@@ -29,7 +29,7 @@ public class RedactionResourceImpl extends BaseRedactionResourceImpl {
 		Redaction redaction = new Redaction();
 
 		try {
-			String output = DataMaskEngineUtil.redact(
+			String output = RedactUtil.redact(
 				detectionRegex, replacementRegex, replacementValue, text);
 
 			redaction.setOutput(() -> output);
