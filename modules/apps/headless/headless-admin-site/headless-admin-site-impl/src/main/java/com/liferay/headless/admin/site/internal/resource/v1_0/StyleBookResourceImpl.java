@@ -354,14 +354,14 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		return groupId;
 	}
 
-	private long _getGroupId(String siteExternalReferenceCode) {
+	private long _getGroupId(String externalReferenceCode) {
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			siteExternalReferenceCode, contextCompany.getCompanyId());
+			externalReferenceCode, contextCompany.getCompanyId());
 
 		if (group == null) {
 			throw new NotFoundException(
 				"Unable to find group with external reference code '" +
-					siteExternalReferenceCode + "'");
+					externalReferenceCode + "'");
 		}
 
 		return group.getGroupId();
@@ -396,14 +396,14 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 	}
 
 	private StyleBookEntry _getStyleBookEntry(
-			String siteExternalReferenceCode,
+			String groupExternalReferenceCode,
 			String styleBookExternalReferenceCode)
 		throws Exception {
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.fetchStyleBookEntryByExternalReferenceCode(
 				styleBookExternalReferenceCode,
-				_getGroupId(siteExternalReferenceCode));
+				_getGroupId(groupExternalReferenceCode));
 
 		if (styleBookEntry == null) {
 			throw new NotFoundException(
