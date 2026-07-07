@@ -199,6 +199,36 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 	}
 
 	@Override
+	public StyleBook postDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.addStyleBookEntry(
+				styleBook.getExternalReferenceCode(), groupId,
+				styleBook.getDefaultStyleBook(),
+				styleBook.getFrontendTokensValues(), styleBook.getName(),
+				styleBook.getKey(), styleBook.getThemeId(),
+				_getServiceContext(groupId));
+
+		long previewFileEntryId = _getPreviewFileEntryId(
+			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
+
+		if (previewFileEntryId != 0) {
+			styleBookEntry = _styleBookEntryService.updatePreviewFileEntryId(
+				styleBookEntry.getStyleBookEntryId(), previewFileEntryId,
+				_getServiceContext(groupId));
+		}
+
+		return _toStyleBook(styleBookEntry);
+	}
+
+	@Override
 	public StyleBook postSiteStyleBook(
 			String siteExternalReferenceCode, StyleBook styleBook)
 		throws Exception {
@@ -225,6 +255,41 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		}
 
 		return _toStyleBook(styleBookEntry);
+	}
+
+	@Override
+	public StyleBook putDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		styleBook.setExternalReferenceCode(
+			() -> styleBookExternalReferenceCode);
+
+		long groupId = _getDesignLibraryGroupId(
+			designLibraryExternalReferenceCode);
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.fetchStyleBookEntryByExternalReferenceCode(
+				styleBookExternalReferenceCode, groupId);
+
+		if (styleBookEntry == null) {
+			return postDesignLibraryStyleBook(
+				designLibraryExternalReferenceCode, styleBook);
+		}
+
+		return _toStyleBook(
+			_styleBookEntryService.updateStyleBookEntry(
+				styleBookEntry.getStyleBookEntryId(),
+				styleBook.getDefaultStyleBook(),
+				styleBook.getFrontendTokensValues(), styleBook.getName(),
+				styleBook.getKey(),
+				_getPreviewFileEntryId(
+					groupId,
+					styleBook.getPreviewFileEntryExternalReferenceCode()),
+				_getServiceContext(groupId)));
 	}
 
 	@Override

@@ -75,6 +75,13 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 	@Override
 	@Test
+	public void testPatchDesignLibraryStyleBook() throws Exception {
+		_testPatchDesignLibraryStyleBook();
+		_testPatchDesignLibraryStyleBookForNonexistingStyleBook();
+	}
+
+	@Override
+	@Test
 	public void testPatchSiteStyleBook() throws Exception {
 		_testPatchSiteStyleBook();
 		_testPatchSiteStyleBookForNonexistingStyleBook();
@@ -222,6 +229,47 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		}
 
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
+	}
+
+	private void _testPatchDesignLibraryStyleBook() throws Exception {
+		StyleBook postStyleBook =
+			testPatchDesignLibraryStyleBook_addStyleBook();
+
+		StyleBook randomPatchStyleBook = randomPatchStyleBook();
+
+		StyleBook patchStyleBook =
+			styleBookResource.patchDesignLibraryStyleBook(
+				_getDesignLibraryExternalReferenceCode(),
+				postStyleBook.getExternalReferenceCode(), randomPatchStyleBook);
+
+		StyleBook expectedPatchStyleBook = postStyleBook.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchStyleBook, expectedPatchStyleBook);
+
+		StyleBook getStyleBook = styleBookResource.getDesignLibraryStyleBook(
+			_getDesignLibraryExternalReferenceCode(),
+			patchStyleBook.getExternalReferenceCode());
+
+		assertEquals(expectedPatchStyleBook, getStyleBook);
+		assertValid(getStyleBook);
+	}
+
+	private void _testPatchDesignLibraryStyleBookForNonexistingStyleBook()
+		throws Exception {
+
+		try {
+			styleBookResource.patchDesignLibraryStyleBook(
+				_getDesignLibraryExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomPatchStyleBook());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	private void _testPatchSiteStyleBook() throws Exception {
