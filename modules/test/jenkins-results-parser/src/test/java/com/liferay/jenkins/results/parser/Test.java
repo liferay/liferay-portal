@@ -26,6 +26,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
+import org.hamcrest.CoreMatchers;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -405,23 +407,8 @@ public class Test {
 		);
 	}
 
-	protected void testEquals(String expected, String actual) {
-		if (!((expected == null) ^ (actual == null))) {
-			if ((expected != null) && !expected.equals(actual)) {
-				errorCollector.addError(
-					new Throwable(
-						JenkinsResultsParserUtil.combine(
-							"String mismatch\nExpected:", expected, "\nActual:",
-							actual)));
-			}
-		}
-		else {
-			errorCollector.addError(
-				new Throwable(
-					JenkinsResultsParserUtil.combine(
-						"String mismatch\nExpected:", expected, "\nActual:",
-						actual)));
-		}
+	protected void testEquals(Object expected, Object actual) {
+		errorCollector.checkThat(actual, CoreMatchers.equalTo(expected));
 	}
 
 	protected String toURLString(File file) throws Exception {
