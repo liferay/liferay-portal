@@ -9,6 +9,11 @@ export class ClassicPage {
 	readonly editable: Locator;
 	readonly itemSelectorFrame: FrameLocator;
 	readonly sourceEditable: Locator;
+	readonly sourceEditingEnhancedDialog: {
+		cancelButton: Locator;
+		editable: Locator;
+		saveButton: Locator;
+	};
 	readonly toolbar: {
 		buttonLabels: Locator;
 		container: Locator;
@@ -25,6 +30,22 @@ export class ClassicPage {
 		this.sourceEditable = page.locator(
 			'.ck-source-editing-area > textarea'
 		);
+
+		const sourceEditingEnhancedDialog = page.getByRole('dialog', {
+			name: 'Edit source',
+		});
+
+		this.sourceEditingEnhancedDialog = {
+			cancelButton: sourceEditingEnhancedDialog.getByRole('button', {
+				exact: true,
+				name: 'Cancel',
+			}),
+			editable: sourceEditingEnhancedDialog.locator('.cm-content'),
+			saveButton: sourceEditingEnhancedDialog.getByRole('button', {
+				exact: true,
+				name: 'Save',
+			}),
+		};
 
 		const toolbarContainer = page.getByLabel('Editor toolbar');
 

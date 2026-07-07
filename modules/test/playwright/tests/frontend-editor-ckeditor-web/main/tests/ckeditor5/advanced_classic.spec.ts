@@ -307,7 +307,7 @@ test(
 		await expect(imageButton).toBeDisabled();
 		await expect(videoButton).toBeDisabled();
 
-		await sourceButton.click();
+		await classicPage.sourceEditingEnhancedDialog.cancelButton.click();
 
 		await expect(imageButton).toBeEnabled();
 		await expect(videoButton).toBeEnabled();
@@ -315,22 +315,18 @@ test(
 );
 
 test(
-	'Enhanced source editing button is shown for DXP licensed installations',
+	'Enhanced source editing opens the source view in a modal for DXP licensed installations',
 	{tag: '@LPD-83978'},
-	async ({classicPage}) => {
-		await expect(
-			classicPage.toolbar.container.getByRole('button', {
-				exact: true,
-				name: 'Edit source',
-			})
-		).toBeVisible();
+	async ({classicPage, page}) => {
+		await classicPage.toolbar.container
+			.getByRole('button', {exact: true, name: 'Source'})
+			.click();
 
 		await expect(
-			classicPage.toolbar.container.getByRole('button', {
-				exact: true,
-				name: 'Source',
-			})
-		).toHaveCount(0);
+			page.getByRole('dialog', {name: 'Edit source'})
+		).toBeVisible();
+
+		await expect(page.locator('.cm-editor')).toBeVisible();
 	}
 );
 
@@ -344,11 +340,11 @@ test(
 
 		await sourceButton.click();
 
-		await classicPage.sourceEditable.fill(
+		await classicPage.sourceEditingEnhancedDialog.editable.fill(
 			'<h2>Heading Two</h2><p>Paragraph with <i>italic</i> text.</p>'
 		);
 
-		await sourceButton.click();
+		await classicPage.sourceEditingEnhancedDialog.saveButton.click();
 
 		await expect(classicPage.editable.locator('h2')).toContainText(
 			'Heading Two'
