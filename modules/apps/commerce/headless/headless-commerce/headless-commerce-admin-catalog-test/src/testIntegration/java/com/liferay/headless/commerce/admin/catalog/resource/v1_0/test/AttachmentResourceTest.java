@@ -13,7 +13,6 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
-import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -692,9 +691,6 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 	@DeleteAfterTestRun
 	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
-
-	@Inject
-	private CPDefinitionService _cpDefinitionService;
 
 	@DeleteAfterTestRun
 	private CProduct _cProduct;

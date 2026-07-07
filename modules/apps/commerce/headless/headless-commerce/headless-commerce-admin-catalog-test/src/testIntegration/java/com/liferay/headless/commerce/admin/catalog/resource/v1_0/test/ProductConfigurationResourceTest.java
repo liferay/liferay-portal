@@ -17,7 +17,6 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
-import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -79,7 +78,6 @@ public class ProductConfigurationResourceTest
 				_masterCPConfigurationList.getCPConfigurationListId(), false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
 				0, true, new ServiceContext());
-
 	}
 
 	@Override
@@ -566,7 +564,6 @@ public class ProductConfigurationResourceTest
 	private CProductLocalService _cProductLocalService;
 
 	private CPConfigurationList _masterCPConfigurationList;
-
 	private User _user;
 
 }

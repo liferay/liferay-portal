@@ -91,10 +91,11 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		CSDiagramSetting csDiagramSetting =
 			_csDiagramSettingService.getCSDiagramSetting(diagramId);
 
+		CPDefinition csDiagramSettingCPDefinition =
+			csDiagramSetting.getCPDefinition();
+
 		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			_cpDefinitionService,
-			csDiagramSetting.getCPDefinition(
-			).getCProductId());
+			_cpDefinitionService, csDiagramSettingCPDefinition.getCProductId());
 
 		DiagramUtil.updateCSDiagramSetting(
 			contextCompany.getCompanyId(), _cpAttachmentFileEntryService,
