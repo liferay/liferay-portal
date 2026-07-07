@@ -285,6 +285,9 @@ const getDefaultEditorConfig = ({
 			previewsInData: true,
 		},
 		plugins: advancedPlugins,
+		sourceEditingEnhanced: {
+			theme: 'dark',
+		},
 		style: {
 			definitions: [
 				{
