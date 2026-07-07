@@ -651,7 +651,7 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 		};
 	}
 
-	private void _index(String entryClassName, String title) {
+	private void _indexDocument(String entryClassName, String title) {
 		_liferayIndexFixture.index(
 			HashMapBuilder.<String, Object>put(
 				"entryClassName", entryClassName
@@ -661,9 +661,9 @@ public class CommonSearchRequestBuilderAssemblerImplTest {
 	}
 
 	private void _indexDocuments() {
-		_index("DLFileEntry", "alpha 2");
-		_index("DLFileEntry", "bravo 1");
-		_index("JournalArticle", "alpha 1");
+		_indexDocument("DLFileEntry", "alpha 2");
+		_indexDocument("DLFileEntry", "bravo 1");
+		_indexDocument("JournalArticle", "alpha 1");
 	}
 
 	private final ComplexQueryPartBuilderFactory
