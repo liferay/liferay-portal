@@ -43,6 +43,8 @@ const BalloonEditor = ({
 					showAICreator: config?.showAICreator,
 					showPasteFromOfficeEnhanced:
 						config?.showPasteFromOfficeEnhanced,
+					showSourceEditingEnhanced:
+						config?.showSourceEditingEnhanced,
 				}),
 				...config,
 			}}

@@ -35,6 +35,7 @@ export interface LiferayEditorConfig extends EditorConfig {
 	preset?: EEditorConfigPreset;
 	showAICreator?: boolean;
 	showPasteFromOfficeEnhanced?: boolean;
+	showSourceEditingEnhanced?: boolean;
 }
 
 export type TEditor = BalloonEditor | ClassicEditor;

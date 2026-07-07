@@ -38,6 +38,7 @@ import {Paragraph} from '@ckeditor/ckeditor5-paragraph/dist/index.js';
 import {PasteFromOfficeEnhanced} from '@ckeditor/ckeditor5-paste-from-office-enhanced/dist/index.js';
 import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office/dist/index.js';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format/dist/index.js';
+import {SourceEditingEnhanced} from '@ckeditor/ckeditor5-source-editing-enhanced/dist/index.js';
 import {SourceEditing} from '@ckeditor/ckeditor5-source-editing/dist/index.js';
 import {Style} from '@ckeditor/ckeditor5-style/dist/index.js';
 import {
@@ -60,11 +61,13 @@ const getDefaultEditorConfig = ({
 	preset,
 	showAICreator,
 	showPasteFromOfficeEnhanced,
+	showSourceEditingEnhanced,
 }: {
 	editorVariant: EEditorVariant;
 	preset: EEditorConfigPreset;
 	showAICreator?: boolean;
 	showPasteFromOfficeEnhanced?: boolean;
+	showSourceEditingEnhanced?: boolean;
 }): EditorConfig => {
 	const basicPlugins = [
 		BlockToolbar,
@@ -163,7 +166,9 @@ const getDefaultEditorConfig = ({
 	}
 
 	if (editorVariant === EEditorVariant.CLASSIC) {
-		advancedPlugins.push(SourceEditing);
+		advancedPlugins.push(
+			showSourceEditingEnhanced ? SourceEditingEnhanced : SourceEditing
+		);
 	}
 
 	if (Liferay.FeatureFlags['LPD-62272']) {
@@ -216,7 +221,11 @@ const getDefaultEditorConfig = ({
 
 	if (editorVariant === EEditorVariant.CLASSIC) {
 		toolbarItems.push('|');
-		toolbarItems.push('sourceEditing');
+		toolbarItems.push(
+			showSourceEditingEnhanced
+				? 'sourceEditingEnhanced'
+				: 'sourceEditing'
+		);
 	}
 
 	const advancedEditorConfig: EditorConfig = {
