@@ -16,6 +16,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -27,8 +28,11 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -90,10 +94,11 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 			return;
 		}
 
-		List<ObjectEntry> seoStudioScanObjectEntries =
-			_getSEOStudioScanRunRelatedObjectEntries(
-				companyId, seoStudioScanRunObjectEntry,
-				"seoStudioScanRunToSEOStudioScans");
+		List<ObjectEntry> seoStudioScanObjectEntries = _getRelatedObjectEntries(
+			seoStudioScanRunObjectEntry,
+			_fetchObjectRelationship(
+				companyId, "L_SEO_STUDIO_SCAN_RUN",
+				"seoStudioScanRunToSEOStudioScans"));
 
 		if (ListUtil.isEmpty(seoStudioScanObjectEntries)) {
 			return;
@@ -103,8 +108,7 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 				seoStudioScanObjectEntries) {
 
 			Map<String, Serializable> values =
-				_objectEntryLocalService.getValues(
-					seoStudioScanObjectEntry.getObjectEntryId());
+				seoStudioScanObjectEntry.getValues();
 
 			String seoStudioScanState = GetterUtil.getString(
 				values.get("state"));
@@ -126,25 +130,69 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 		}
 
 		List<ObjectEntry> seoStudioScanMetricObjectEntries =
-			_getSEOStudioScanRunRelatedObjectEntries(
-				companyId, seoStudioScanRunObjectEntry,
-				"seoStudioScanRunToSEOStudioScanMetrics");
+			_getRelatedObjectEntries(
+				seoStudioScanRunObjectEntry,
+				_fetchObjectRelationship(
+					companyId, "L_SEO_STUDIO_SCAN_RUN",
+					"seoStudioScanRunToSEOStudioScanMetrics"));
 
-		if (seoStudioScanMetricObjectEntries.isEmpty()) {
-			_addOnPageSEOStudioScanMetric(
-				companyId, userId, seoStudioScanRunObjectEntry,
-				seoStudioScanRunValues);
+		if (ListUtil.isEmpty(seoStudioScanMetricObjectEntries)) {
+			_addSEOStudioScanMetrics(
+				companyId, seoStudioScanObjectEntries,
+				seoStudioScanRunObjectEntry, seoStudioScanRunValues, userId);
 		}
 
 		_partialUpdateSEOStudioScanRunState(
 			seoStudioScanRunObjectEntry, "completed", userId);
 	}
 
-	private void _addOnPageSEOStudioScanMetric(
-			long companyId, long userId,
+	private void _addSEOStudioScanMetric(
+			Set<Long> affectedPageIds, long companyId,
+			Map<String, Map<String, Integer>> impactMixMap, String scope,
 			ObjectEntry seoStudioScanRunObjectEntry,
-			Map<String, Serializable> seoStudioScanRunValues)
+			Map<String, Serializable> seoStudioScanRunValues, long userId)
 		throws Exception {
+
+		JSONObject categoryBreakdownJSONObject =
+			_jsonFactory.createJSONObject();
+		JSONObject impactMixJSONObject = _jsonFactory.createJSONObject();
+
+		int criticalInsights = 0;
+		int totalInsights = 0;
+
+		for (Map.Entry<String, Map<String, Integer>> entry :
+				impactMixMap.entrySet()) {
+
+			String category = entry.getKey();
+			Map<String, Integer> categoryImpactMixMap = entry.getValue();
+
+			JSONObject categoryImpactMixJSONObject =
+				_jsonFactory.createJSONObject();
+
+			int categoryTotalInsights = 0;
+
+			for (Map.Entry<String, Integer> impactCountEntry :
+					categoryImpactMixMap.entrySet()) {
+
+				categoryImpactMixJSONObject.put(
+					impactCountEntry.getKey(), impactCountEntry.getValue());
+
+				categoryTotalInsights += impactCountEntry.getValue();
+			}
+
+			criticalInsights += categoryImpactMixMap.getOrDefault("3", 0);
+			totalInsights += categoryTotalInsights;
+
+			categoryBreakdownJSONObject.put(category, categoryTotalInsights);
+			impactMixJSONObject.put(category, categoryImpactMixJSONObject);
+		}
+
+		double averageInsightsPerAffectedPage = 0.0;
+
+		if (!affectedPageIds.isEmpty()) {
+			averageInsightsPerAffectedPage =
+				(double)totalInsights / affectedPageIds.size();
+		}
 
 		ObjectDefinition seoStudioScanMetricObjectDefinition =
 			_objectDefinitionLocalService.
@@ -162,17 +210,17 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
-				"affectedPagesCount", 0
+				"affectedPagesCount", affectedPageIds.size()
 			).put(
-				"averageInsightsPerAffectedPage", 0.0D
+				"averageInsightsPerAffectedPage", averageInsightsPerAffectedPage
 			).put(
-				"categoryBreakdown", "{}"
+				"categoryBreakdown", categoryBreakdownJSONObject.toString()
 			).put(
 				"computedDate", new Date()
 			).put(
-				"criticalInsights", 0
+				"criticalInsights", criticalInsights
 			).put(
-				"impactMix", "{}"
+				"impactMix", impactMixJSONObject.toString()
 			).put(
 				"r_accountToSEOStudioScanMetrics_accountEntryId",
 				GetterUtil.getLong(
@@ -182,33 +230,139 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 				"r_seoStudioScanRunToSEOStudioScanMetrics_seoStudioScanRunId",
 				seoStudioScanRunObjectEntry.getObjectEntryId()
 			).put(
-				"scope", "onPage"
+				"scope", scope
 			).put(
-				"totalInsights", 0
+				"totalInsights", totalInsights
 			).build(),
 			serviceContext);
 	}
 
-	private List<ObjectEntry> _getSEOStudioScanRunRelatedObjectEntries(
-			long companyId, ObjectEntry seoStudioScanRunObjectEntry,
+	private void _addSEOStudioScanMetrics(
+			long companyId, List<ObjectEntry> seoStudioScanObjectEntries,
+			ObjectEntry seoStudioScanRunObjectEntry,
+			Map<String, Serializable> seoStudioScanRunValues, long userId)
+		throws Exception {
+
+		Map<String, Set<Long>> affectedPageIdsMapByScope = new HashMap<>();
+		Map<String, Map<String, Map<String, Integer>>> impactMixMapByScope =
+			new HashMap<>();
+
+		for (String scope : _categoriesMapByScope.keySet()) {
+			affectedPageIdsMapByScope.put(scope, new HashSet<>());
+			impactMixMapByScope.put(scope, new HashMap<>());
+		}
+
+		ObjectRelationship objectRelationship = _fetchObjectRelationship(
+			companyId, "L_SEO_STUDIO_SCAN",
+			"seoStudioScanToSEOStudioScanInsights");
+
+		Map<Long, Map<String, Serializable>> seoStudioInsightTypeValuesMap =
+			new HashMap<>();
+
+		for (ObjectEntry seoStudioScanObjectEntry :
+				seoStudioScanObjectEntries) {
+
+			for (ObjectEntry seoStudioScanInsightObjectEntry :
+					_getRelatedObjectEntries(
+						seoStudioScanObjectEntry, objectRelationship)) {
+
+				Map<String, Serializable> seoStudioScanInsightValues =
+					seoStudioScanInsightObjectEntry.getValues();
+
+				long seoStudioInsightTypeId = GetterUtil.getLong(
+					seoStudioScanInsightValues.get(
+						"r_seoStudioInsightTypeToScanInsights_" +
+							"seoStudioInsightTypeId"));
+
+				Map<String, Serializable> seoStudioInsightTypeValues =
+					seoStudioInsightTypeValuesMap.get(seoStudioInsightTypeId);
+
+				if (seoStudioInsightTypeValues == null) {
+					seoStudioInsightTypeValues =
+						_objectEntryLocalService.getValues(
+							seoStudioInsightTypeId);
+
+					seoStudioInsightTypeValuesMap.put(
+						seoStudioInsightTypeId, seoStudioInsightTypeValues);
+				}
+
+				String category = GetterUtil.getString(
+					seoStudioInsightTypeValues.get("category"));
+
+				String scope = _getScope(category);
+
+				if (scope == null) {
+					continue;
+				}
+
+				Map<String, Map<String, Integer>> impactMixMap =
+					impactMixMapByScope.get(scope);
+
+				Map<String, Integer> categoryImpactMixMap =
+					impactMixMap.computeIfAbsent(
+						category, categoryKey -> new HashMap<>());
+
+				categoryImpactMixMap.merge(
+					GetterUtil.getString(
+						seoStudioInsightTypeValues.get("severity")),
+					1, Integer::sum);
+
+				Set<Long> affectedPageIds = affectedPageIdsMapByScope.get(
+					scope);
+
+				affectedPageIds.add(
+					GetterUtil.getLong(
+						seoStudioScanInsightValues.get(
+							"r_seoStudioPageToSEOStudioScanInsights_" +
+								"seoStudioPageId")));
+			}
+		}
+
+		for (String scope : _categoriesMapByScope.keySet()) {
+			_addSEOStudioScanMetric(
+				affectedPageIdsMapByScope.get(scope), companyId,
+				impactMixMapByScope.get(scope), scope,
+				seoStudioScanRunObjectEntry, seoStudioScanRunValues, userId);
+		}
+	}
+
+	private ObjectRelationship _fetchObjectRelationship(
+			long companyId, String objectDefinitionExternalReferenceCode,
 			String relationshipName)
 		throws Exception {
 
-		ObjectDefinition seoStudioScanRunObjectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_SEO_STUDIO_SCAN_RUN", companyId);
+					objectDefinitionExternalReferenceCode, companyId);
 
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				seoStudioScanRunObjectDefinition.getObjectDefinitionId(),
-				relationshipName);
+		return _objectRelationshipLocalService.fetchObjectRelationship(
+			objectDefinition.getObjectDefinitionId(), relationshipName);
+	}
+
+	private List<ObjectEntry> _getRelatedObjectEntries(
+			ObjectEntry objectEntry, ObjectRelationship objectRelationship)
+		throws Exception {
 
 		return _objectEntryLocalService.getOneToManyObjectEntries(
-			seoStudioScanRunObjectEntry.getGroupId(),
+			objectEntry.getGroupId(),
 			objectRelationship.getObjectRelationshipId(), null, true,
-			seoStudioScanRunObjectEntry.getObjectEntryId(), true, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	private String _getScope(String category) {
+		for (Map.Entry<String, Set<String>> entry :
+				_categoriesMapByScope.entrySet()) {
+
+			Set<String> categories = entry.getValue();
+
+			if (categories.contains(category)) {
+				return entry.getKey();
+			}
+		}
+
+		return null;
 	}
 
 	private void _partialUpdateSEOStudioScanRunState(
@@ -228,6 +382,12 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorImpl
 			).build(),
 			serviceContext);
 	}
+
+	private static final Map<String, Set<String>> _categoriesMapByScope =
+		Map.of("onPage", Set.of("contentStructure", "images", "metadata"));
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
