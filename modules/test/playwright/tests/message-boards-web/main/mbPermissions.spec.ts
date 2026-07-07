@@ -27,8 +27,8 @@ const test = mergeTests(
 );
 
 test(
-	'A site member cannot edit or delete a thread without permissions',
-	{tag: ['@LPS-136934', '@LPS-136936']},
+	'A site member cannot edit or delete threads or categories without permissions',
+	{tag: ['@LPS-136933', '@LPS-136934', '@LPS-136936', '@LPS-136938']},
 	async ({
 		apiHelpers,
 		messageBoardsEditThreadPage,
@@ -36,12 +36,15 @@ test(
 		page,
 		site,
 	}) => {
+		const categoryName = getRandomString();
 		const headline = getRandomString();
 
 		const layout =
 			await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
 
-		// The administrator creates a thread through the UI
+		// The administrator creates a category and a thread through the UI
+
+		await messageBoardsWidgetPage.addCategory(site, layout, categoryName);
 
 		await messageBoardsEditThreadPage.gotoAndPublishNewBasicThread(
 			headline,
@@ -72,30 +75,54 @@ test(
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-		// The member can see the thread
+		// The member can see the category and the thread
 
+		await expect(
+			page.getByRole('link', {name: categoryName}).first()
+		).toBeVisible();
 		await expect(
 			page.getByRole('link', {name: headline}).first()
 		).toBeVisible();
 
+		const messageBoards = page.locator(
+			'.portlet-boundary_com_liferay_message_boards_web_portlet_MBPortlet_'
+		);
+
+		const dropdownMenu = page.locator('.dropdown-menu:visible');
+
 		// The thread action menu offers Subscribe but not Edit or Delete
 
-		const dropdownMenu = page.locator('.dropdown-menu');
+		const threadActions = messageBoards
+			.locator('.list-group-item')
+			.filter({hasText: headline})
+			.getByTitle('Actions');
 
-		await expect(async () => {
-			await page
-				.locator('a.component-action.dropdown-toggle')
-				.first()
-				.click();
-
-			await expect(
-				dropdownMenu.getByText('Subscribe', {exact: true}).first()
-			).toBeVisible({timeout: 3000});
-		}).toPass();
+		await clickAndExpectToBeVisible({
+			target: dropdownMenu.getByText('Subscribe', {exact: true}),
+			trigger: threadActions,
+		});
 
 		await expect(dropdownMenu.getByText('Edit', {exact: true})).toHaveCount(
 			0
 		);
+		await expect(
+			dropdownMenu.getByText('Delete', {exact: true})
+		).toHaveCount(0);
+
+		await page.keyboard.press('Escape');
+
+		// The category action menu does not offer Delete
+
+		const categoryActions = messageBoards
+			.locator('.list-group-item')
+			.filter({hasText: categoryName})
+			.getByTitle('Actions');
+
+		await clickAndExpectToBeVisible({
+			target: dropdownMenu,
+			trigger: categoryActions,
+		});
+
 		await expect(
 			dropdownMenu.getByText('Delete', {exact: true})
 		).toHaveCount(0);
