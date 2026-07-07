@@ -30,9 +30,7 @@ describe('PieChartLegend', () => {
 			<PieChartLegend {...DEFAULT_PROPS} legend="list" />
 		);
 
-		expect(
-			container.querySelector('ul.chart-pie-legend')
-		).toBeInTheDocument();
+		expect(container.querySelector('ul.charts-legend')).toBeInTheDocument();
 		expect(screen.queryByRole('table')).not.toBeInTheDocument();
 	});
 
@@ -43,7 +41,7 @@ describe('PieChartLegend', () => {
 
 		expect(screen.getByRole('table')).toBeInTheDocument();
 		expect(
-			container.querySelector('ul.chart-pie-legend')
+			container.querySelector('ul.charts-legend')
 		).not.toBeInTheDocument();
 	});
 
@@ -60,7 +58,7 @@ describe('PieChartLegend', () => {
 			<PieChartLegend {...DEFAULT_PROPS} activeIndex={1} legend="list" />
 		);
 
-		const items = container.querySelectorAll('.chart-pie-legend-item');
+		const items = container.querySelectorAll('.charts-legend__item');
 
 		expect(items[0]).not.toHaveClass('is-active');
 		expect(items[1]).toHaveClass('is-active');

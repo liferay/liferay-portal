@@ -117,7 +117,7 @@ describe('PieChart', () => {
 			row?.querySelector(':scope > .chart-pie-body')
 		).toBeInTheDocument();
 		expect(
-			row?.querySelector(':scope > ul.chart-pie-legend')
+			row?.querySelector(':scope > ul.charts-legend')
 		).toBeInTheDocument();
 	});
 
@@ -191,12 +191,12 @@ describe('PieChart', () => {
 			<PieChart data={DATA} legend="list" title="Sales" />
 		);
 
-		const list = container.querySelector('ul.chart-pie-legend');
+		const list = container.querySelector('ul.charts-legend');
 
 		expect(list).toBeInTheDocument();
-		expect(
-			container.querySelectorAll('.chart-pie-legend-item')
-		).toHaveLength(DATA.length);
+		expect(container.querySelectorAll('.charts-legend__item')).toHaveLength(
+			DATA.length
+		);
 	});
 
 	it('ranks the table legend rows by value descending', () => {
@@ -229,7 +229,7 @@ describe('PieChart', () => {
 		);
 
 		expect(
-			container.querySelector('.chart-pie-legend')
+			container.querySelector('.charts-legend')
 		).not.toBeInTheDocument();
 		expect(screen.queryByRole('table')).not.toBeInTheDocument();
 	});
@@ -269,7 +269,7 @@ describe('PieChart', () => {
 			<PieChart data={DATA} legend="list" title="Sales" />
 		);
 
-		const items = container.querySelectorAll('.chart-pie-legend-item');
+		const items = container.querySelectorAll('.charts-legend__item');
 
 		await userEvent.hover(items[1]);
 

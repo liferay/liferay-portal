@@ -3,29 +3,82 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import React, {useMemo} from 'react';
 
-import {PieChartLegendBaseProps} from '../types/PieChartLegendBaseProps';
-import PieChartLegendList from './PieChartLegendList';
-import PieChartLegendTable from './PieChartLegendTable';
+import ChartLegend from '../../chart_legend/ChartLegend';
+import {PieDatum} from '../types/PieDatum';
+import {toPercent} from '../utils/percent';
 
-interface PieChartLegendProps extends PieChartLegendBaseProps {
-	legend: 'list' | 'none' | 'table';
+import type {
+	ChartLegendColumn,
+	ChartLegendItem,
+	ChartLegendLayout,
+} from '../../chart_legend/types';
+
+interface PieChartLegendProps {
+	activeIndex: number | null;
+	colors: string[];
+	data: PieDatum[];
+	legend: ChartLegendLayout;
+	onFocus: (index: number) => void;
+	onHover: (index: number) => void;
+	onHoverEnd: () => void;
 	titleId: string;
+	total: number;
 }
 
 export default function PieChartLegend({
+	activeIndex,
+	colors,
+	data,
 	legend,
+	onFocus,
+	onHover,
+	onHoverEnd,
 	titleId,
-	...props
+	total,
 }: PieChartLegendProps) {
-	if (legend === 'list') {
-		return <PieChartLegendList {...props} />;
-	}
+	const items = useMemo<ChartLegendItem[]>(
+		() =>
+			data.map((datum, index) => ({
+				active: activeIndex === index,
+				id: index,
+				label: datum.label,
+				listValue: `${toPercent(datum.value, total)}%`,
+				sortValue: datum.value,
+				visual: (
+					<span
+						className="charts-legend__swatch"
+						style={{background: colors[index]}}
+					/>
+				),
+			})),
+		[activeIndex, colors, data, total]
+	);
 
-	if (legend === 'table') {
-		return <PieChartLegendTable {...props} titleId={titleId} />;
-	}
+	const columns = useMemo<ChartLegendColumn[]>(
+		() => [
+			{
+				label: Liferay.Language.get('value'),
+				render: (item) => data[item.id].value.toLocaleString(),
+			},
+			{
+				label: Liferay.Language.get('share'),
+				render: (item) => `${toPercent(data[item.id].value, total)}%`,
+			},
+		],
+		[data, total]
+	);
 
-	return null;
+	return (
+		<ChartLegend
+			columns={columns}
+			items={items}
+			layout={legend}
+			onActivate={onHover}
+			onDeactivate={() => onHoverEnd()}
+			onSelect={onFocus}
+			titleId={titleId}
+		/>
+	);
 }
