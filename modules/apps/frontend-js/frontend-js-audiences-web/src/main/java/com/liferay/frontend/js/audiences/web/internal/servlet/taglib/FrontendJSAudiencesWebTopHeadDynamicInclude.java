@@ -83,7 +83,8 @@ public class FrontendJSAudiencesWebTopHeadDynamicInclude
 
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
-		printWriter.print("<script data-senna-track=\"temporary\"");
+		printWriter.print(
+			"<script data-senna-track=\"permanent\" id=\"audiencesBootstrap\"");
 		printWriter.print(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
