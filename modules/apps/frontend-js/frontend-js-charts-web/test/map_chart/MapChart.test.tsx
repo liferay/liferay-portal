@@ -14,6 +14,12 @@ import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__
 import MapChart from '../../src/main/resources/META-INF/resources/js/map_chart/MapChart';
 import {WORLD_MAP_DATA} from '../../src/main/resources/META-INF/resources/js/map_chart/geography/mapChartData';
 import {MapDatum} from '../../src/main/resources/META-INF/resources/js/map_chart/types/MapDatum';
+import {getBlueSchemeColor} from '../../src/main/resources/META-INF/resources/js/map_chart/utils/blueSchemeColors';
+import {getCategoricalSchemeColor} from '../../src/main/resources/META-INF/resources/js/map_chart/utils/categoricalSchemeColors';
+import {
+	computeQuantileBuckets,
+	getEffectiveBucketCount,
+} from '../../src/main/resources/META-INF/resources/js/map_chart/utils/computeQuantileBuckets';
 
 const DATA: MapDatum[] = [
 	{country: 'CN', label: 'China', value: 14210},
@@ -79,6 +85,60 @@ describe('MapChart', () => {
 		expect(summary).toHaveTextContent('India: 9870');
 	});
 
+	it('colors each marker with its blue scheme quantile bucket', () => {
+		const {container} = render(<MapChart data={DATA} title="Population" />);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 5);
+		const buckets = computeQuantileBuckets(DATA, bucketCount);
+
+		DATA.forEach((datum, index) => {
+			const marker = container.querySelector(
+				`circle[aria-label="${datum.label}: ${datum.value}"]`
+			) as SVGCircleElement;
+
+			expect(marker.style.getPropertyValue('--marker-fill')).toBe(
+				getBlueSchemeColor(bucketCount, buckets[index])
+			);
+		});
+	});
+
+	it('colors each marker with its categorical scheme quantile bucket', () => {
+		const {container} = render(
+			<MapChart data={DATA} scheme="categorical" title="Population" />
+		);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 5);
+		const buckets = computeQuantileBuckets(DATA, bucketCount);
+
+		DATA.forEach((datum, index) => {
+			const marker = container.querySelector(
+				`circle[aria-label="${datum.label}: ${datum.value}"]`
+			) as SVGCircleElement;
+
+			expect(marker.style.getPropertyValue('--marker-fill')).toBe(
+				getCategoricalSchemeColor(bucketCount, buckets[index])
+			);
+		});
+	});
+
+	it('colors the highest-value marker with the darkest blue ramp step even when steps exceeds the distinct value count', () => {
+		const {container} = render(
+			<MapChart data={DATA} steps={6} title="Population" />
+		);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 6);
+
+		expect(bucketCount).toBe(3);
+
+		const marker = container.querySelector(
+			'circle[aria-label="China: 14210"]'
+		) as SVGCircleElement;
+
+		expect(marker.style.getPropertyValue('--marker-fill')).toBe(
+			getBlueSchemeColor(bucketCount, 2)
+		);
+	});
+
 	it('gives the svg an accessible name derived from the title', () => {
 		const {container} = render(<MapChart data={DATA} title="Population" />);
 
@@ -125,6 +185,49 @@ describe('MapChart choropleth variant', () => {
 		expect(
 			screen.getByRole('img', {name: 'India: 9870'})
 		).toBeInTheDocument();
+	});
+
+	it('fills each data country with its blue scheme quantile bucket color', () => {
+		const {container} = render(
+			<MapChart data={DATA} title="Population" variant="choropleth" />
+		);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 5);
+		const buckets = computeQuantileBuckets(DATA, bucketCount);
+
+		DATA.forEach((datum, index) => {
+			const path = container.querySelector(
+				`path[data-country="${datum.country}"]`
+			) as SVGPathElement;
+
+			expect(path.style.getPropertyValue('--country-fill')).toBe(
+				getBlueSchemeColor(bucketCount, buckets[index])
+			);
+		});
+	});
+
+	it('fills each data country with its categorical scheme quantile bucket color', () => {
+		const {container} = render(
+			<MapChart
+				data={DATA}
+				scheme="categorical"
+				title="Population"
+				variant="choropleth"
+			/>
+		);
+
+		const bucketCount = getEffectiveBucketCount(DATA, 5);
+		const buckets = computeQuantileBuckets(DATA, bucketCount);
+
+		DATA.forEach((datum, index) => {
+			const path = container.querySelector(
+				`path[data-country="${datum.country}"]`
+			) as SVGPathElement;
+
+			expect(path.style.getPropertyValue('--country-fill')).toBe(
+				getCategoricalSchemeColor(bucketCount, buckets[index])
+			);
+		});
 	});
 
 	it('does not mark non-data countries as data countries', () => {

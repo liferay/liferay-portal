@@ -5,7 +5,6 @@
 
 import React, {useMemo} from 'react';
 
-import {CHART_FAMILY_CLAY_PALETTE} from '../../tokens';
 import {WORLD_MAP_DATA, WORLD_MAP_VIEW_BOX} from '../geography/mapChartData';
 import {MapDatum} from '../types/MapDatum';
 import {getMatchedDataIndices} from '../utils/getMatchedDataIndices';
@@ -14,17 +13,17 @@ import MapChartCountryOutline from './MapChartCountryOutline';
 import MapChartMarker from './MapChartMarker';
 
 const WORLD_MAP_ENTRIES = Object.entries(WORLD_MAP_DATA);
-const MARKER_COLOR = CHART_FAMILY_CLAY_PALETTE.blue;
 const MARKER_RADIUS = 5;
-const COUNTRY_FILL_COLOR = CHART_FAMILY_CLAY_PALETTE.blue;
 
 interface MapChartPlotProps {
+	colors: string[];
 	data: MapDatum[];
 	titleId: string;
 	variant: 'choropleth' | 'markers';
 }
 
 export default function MapChartPlot({
+	colors,
 	data,
 	titleId,
 	variant,
@@ -54,7 +53,7 @@ export default function MapChartPlot({
 				if (variant === 'choropleth' && dataIndex !== undefined) {
 					return (
 						<MapChartCountryFill
-							color={COUNTRY_FILL_COLOR}
+							color={colors[dataIndex]}
 							countryCode={countryCode}
 							countryPath={country.d}
 							datum={data[dataIndex]}
@@ -75,7 +74,7 @@ export default function MapChartPlot({
 			{variant === 'markers'
 				? validIndices.map((index) => (
 						<MapChartMarker
-							color={MARKER_COLOR}
+							color={colors[index]}
 							datum={data[index]}
 							index={index}
 							key={index}

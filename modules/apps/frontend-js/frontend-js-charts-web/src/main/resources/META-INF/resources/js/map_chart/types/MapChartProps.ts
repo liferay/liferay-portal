@@ -7,6 +7,8 @@ import {MapDatum} from './MapDatum';
 
 export interface MapChartProps {
 	data: MapDatum[];
+	scheme?: 'blue' | 'categorical';
+	steps?: number;
 	title: string;
 	variant?: 'choropleth' | 'markers';
 }
