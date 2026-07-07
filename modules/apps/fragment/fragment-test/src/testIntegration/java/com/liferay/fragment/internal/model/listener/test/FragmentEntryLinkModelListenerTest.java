@@ -114,7 +114,7 @@ public class FragmentEntryLinkModelListenerTest {
 		_testAddFragmentEntryLinkSanitizesLinkFieldScriptContent();
 		_testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField();
 		_testAddFragmentEntryLinkWithEmbeddedPortlet();
-		_testAddFragmentEntryLinkWithHtmlField();
+		_testAddFragmentEntryLinkWithHTMLField();
 		_testAddFragmentEntryLinkWithMappedTextField();
 		_testAddFragmentEntryLinkWithRichTextField();
 		_testAddFragmentEntryLinkWithTextField();
@@ -254,7 +254,12 @@ public class FragmentEntryLinkModelListenerTest {
 		String editableValues = fragmentEntryLink.getEditableValues();
 
 		Assert.assertTrue(editableValues, editableValues.contains("<svg"));
+		Assert.assertTrue(editableValues, editableValues.contains("viewbox"));
 		Assert.assertTrue(editableValues, editableValues.contains("<path"));
+		Assert.assertTrue(
+			editableValues,
+			editableValues.contains("M12 2L2 7l10 5 10-5-10-5z"));
+		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
 	}
 
 	private void _testAddFragmentEntryLinkSanitizesLinkFieldScriptContent()
@@ -282,9 +287,14 @@ public class FragmentEntryLinkModelListenerTest {
 	private void _testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField()
 		throws Exception {
 
-		String editableFieldValue =
-			"<svg viewBox=\"0 0 24 24\"><script>alert('xss');</script>" +
-				"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>";
+		String expectedURL = "https://example.com/sprite#x";
+
+		String editableFieldValue = StringBundler.concat(
+			"<svg onload=\"alert('xss');\" viewBox=\"0 0 24 24\">",
+			"<script>alert('xss');</script>",
+			"<foreignObject><script>alert('xss');</script></foreignObject>",
+			"<use href=\"", expectedURL, "\"></use>",
+			"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.security.antisamy.internal." +
@@ -300,6 +310,13 @@ public class FragmentEntryLinkModelListenerTest {
 			String editableValues = fragmentEntryLink.getEditableValues();
 
 			Assert.assertTrue(editableValues, editableValues.contains("<svg"));
+			Assert.assertTrue(editableValues, editableValues.contains("<path"));
+			Assert.assertFalse(
+				editableValues, editableValues.contains("alert"));
+			Assert.assertFalse(
+				editableValues, editableValues.contains(expectedURL));
+			Assert.assertFalse(
+				editableValues, editableValues.contains("onload"));
 			Assert.assertFalse(
 				editableValues, editableValues.contains("<script"));
 		}
@@ -352,7 +369,7 @@ public class FragmentEntryLinkModelListenerTest {
 			portletPreferences.toString(), 0, portletPreferences.size());
 	}
 
-	private void _testAddFragmentEntryLinkWithHtmlField() throws Exception {
+	private void _testAddFragmentEntryLinkWithHTMLField() throws Exception {
 		String editableValues = _createEditableValues(
 			"element-html", "<script>alert('xss');</script>HTML Example");
 
