@@ -101,3 +101,86 @@ test(
 		await expect(page.getByText(product2.name.en_US)).toBeVisible();
 	}
 );
+
+test(
+	'Commerce search results should still display when a search bar on the same page targets a different destination',
+	{tag: ['@LPD-97403']},
+	async ({apiHelpers, page, searchPage, site}) => {
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const searchLayout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_search_web_internal_portlet_CPSearchResultsPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetConfig: {
+						allowEmptySearches: 'true',
+						destination: searchLayout.friendlyUrlPath,
+						keywordsParameterName: 'q',
+						searchScope: 'everything',
+					},
+					widgetName:
+						'com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet',
+				}),
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetConfig: {
+						allowEmptySearches: 'true',
+					},
+					widgetName:
+						'com_liferay_portal_search_web_search_options_portlet_SearchOptionsPortlet',
+				}),
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_search_web_internal_portlet_CPSearchResultsPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
+
+		await expect(searchPage.searchBarInputInMainContent).toBeVisible();
+
+		await expect(page.getByText(product1.name.en_US)).toBeVisible();
+
+		await expect(page.getByText(product2.name.en_US)).toBeVisible();
+
+		await searchPage.searchBarInputInMainContent.fill(product2.name.en_US);
+		await searchPage.searchBarInputInMainContent.press('Enter');
+
+		await page.waitForURL(`**${searchLayout.friendlyUrlPath}**`);
+
+		await expect(page.getByText(product2.name.en_US)).toBeVisible();
+
+		await expect(page.getByText(product1.name.en_US)).not.toBeVisible();
+	}
+);
