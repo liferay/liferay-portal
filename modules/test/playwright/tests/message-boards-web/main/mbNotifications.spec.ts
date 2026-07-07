@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -19,6 +19,26 @@ const test = mergeTests(
 	loginTest(),
 	messageBoardsPagesTest
 );
+
+async function openThreadActionItem(
+	page: Page,
+	itemName: string
+): Promise<Locator> {
+	const messageBoards = page.locator(
+		'.portlet-boundary_com_liferay_message_boards_web_portlet_MBPortlet_'
+	);
+
+	const item = page
+		.locator('.dropdown-menu:visible')
+		.getByText(itemName, {exact: true});
+
+	await clickAndExpectToBeVisible({
+		target: item,
+		trigger: messageBoards.getByTitle('Actions').first(),
+	});
+
+	return item;
+}
 
 test('Can view a website notification for a new thread in a subscribed category', async ({
 	apiHelpers,
@@ -104,3 +124,133 @@ test('Can view a website notification for a new thread in a subscribed category'
 		page.getByText('Test Test added a new message boards message.')
 	).toBeVisible();
 });
+
+test(
+	'A subscriber can read a message only while keeping its view permission',
+	{tag: ['@LPS-97376', '@LPS-135908']},
+	async ({
+		apiHelpers,
+		messageBoardsPage,
+		messageBoardsWidgetPage,
+		page,
+		site,
+	}) => {
+		const replyBody = getRandomString();
+		const threadSubject = getRandomString();
+
+		const layout =
+			await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+		// A thread seeded through the API is viewable by its owner only
+
+		await apiHelpers.headlessDelivery.postMessageBoardThread({
+			articleBody: getRandomString(),
+			headline: threadSubject,
+			siteId: site.id,
+		});
+
+		// Grant the regular user role view and subscribe on the thread
+
+		await messageBoardsPage.setThreadRolePermissions(
+			threadSubject,
+			'user',
+			{subscribe: true, view: true},
+			site.friendlyUrlPath
+		);
+
+		// A second user subscribes to the thread
+
+		const subscriber = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[subscriber.alternateName] = {
+			name: subscriber.givenName,
+			password: 'test',
+			surname: subscriber.familyName,
+		};
+
+		await performUserSwitch(page, subscriber.alternateName);
+
+		await messageBoardsWidgetPage.goToThread(site, layout, threadSubject);
+
+		await (await openThreadActionItem(page, 'Subscribe')).click();
+
+		await page.waitForLoadState('networkidle');
+
+		await expect(
+			await openThreadActionItem(page, 'Unsubscribe')
+		).toBeVisible();
+
+		// The administrator replies to the thread
+
+		await performUserSwitch(page, 'test');
+
+		await messageBoardsWidgetPage.replyToThread(
+			site,
+			layout,
+			threadSubject,
+			replyBody
+		);
+
+		await expect(page.getByText(replyBody)).toBeVisible();
+
+		// Grant the regular user role view on the reply, which is created with
+		// the owner only permissions of its thread
+
+		const replyCard = page
+			.locator('.card-tab.message-container')
+			.filter({hasText: replyBody});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page
+				.locator('.dropdown-menu:visible')
+				.getByText('Permissions', {exact: true}),
+			trigger: replyCard.locator('a.component-action.dropdown-toggle'),
+		});
+
+		const replyPermissionsFrame = page.frameLocator(
+			'iframe[title="Permissions"]'
+		);
+
+		await replyPermissionsFrame.locator('#user_ACTION_VIEW').check();
+
+		await replyPermissionsFrame.getByRole('button', {name: 'Save'}).click();
+
+		await expect(
+			page.getByText('Your request completed successfully.')
+		).toBeVisible();
+
+		// The subscriber opens the thread and can read the reply
+
+		await performUserSwitch(page, subscriber.alternateName);
+
+		await messageBoardsWidgetPage.goToThread(site, layout, threadSubject);
+
+		const messageURL = page.url();
+
+		await expect(page.getByText(replyBody)).toBeVisible();
+
+		// The administrator revokes the user role view and subscribe permissions
+
+		await performUserSwitch(page, 'test');
+
+		await messageBoardsPage.setThreadRolePermissions(
+			threadSubject,
+			'user',
+			{subscribe: false, view: false},
+			site.friendlyUrlPath
+		);
+
+		// The subscriber can no longer read the message
+
+		await performUserSwitch(page, subscriber.alternateName);
+
+		await page.goto(messageURL);
+
+		await expect(page.getByText(replyBody)).toBeHidden();
+
+		await expect(
+			page.getByText('You do not have the required permissions.')
+		).toBeVisible();
+	}
+);
