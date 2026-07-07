@@ -145,7 +145,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 	private void _testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol() {
 		Assert.assertNull(
 			_getSearchContainerOrderByComparator(
-				RandomTestUtil.randomString(), "asc"));
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 	}
 
 	private final MockedStatic<LayoutUtilityPageEntryServiceUtil>
