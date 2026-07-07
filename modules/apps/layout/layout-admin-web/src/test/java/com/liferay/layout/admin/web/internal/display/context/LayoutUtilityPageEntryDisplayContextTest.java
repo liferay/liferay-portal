@@ -42,13 +42,6 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic.when(
-			LayoutUtilityPageEntryViewRendererRegistryUtil::
-				getLayoutUtilityPageEntryViewRenderers
-		).thenReturn(
-			Collections.emptyList()
-		);
-
 		_layoutUtilityPageEntryServiceUtilMockedStatic.when(
 			() -> LayoutUtilityPageEntryServiceUtil.getLayoutUtilityPageEntries(
 				Mockito.anyLong(), Mockito.any(String[].class),
@@ -65,6 +58,13 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 						Mockito.anyLong(), Mockito.any(String[].class))
 		).thenReturn(
 			0
+		);
+
+		_layoutUtilityPageEntryViewRendererRegistryUtilMockedStatic.when(
+			LayoutUtilityPageEntryViewRendererRegistryUtil::
+				getLayoutUtilityPageEntryViewRenderers
+		).thenReturn(
+			Collections.emptyList()
 		);
 	}
 
