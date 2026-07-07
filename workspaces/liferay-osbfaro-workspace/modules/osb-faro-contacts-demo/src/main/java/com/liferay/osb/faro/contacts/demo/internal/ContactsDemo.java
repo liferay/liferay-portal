@@ -50,14 +50,7 @@ public class ContactsDemo extends BasePortalInstanceLifecycleListener {
 			_log.error(exception);
 		}
 
-		if (StringUtil.equals(
-				FaroPropsValues.FARO_DEMO_CREATOR_METHOD, "nanite")) {
-
-			_naniteDemoCreatorService.createDemo();
-		}
-		else {
-			_snapshotDemoCreatorService.createDemo();
-		}
+		_naniteDemoCreatorService.createDemo();
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Completed demo data creation");
@@ -74,8 +67,5 @@ public class ContactsDemo extends BasePortalInstanceLifecycleListener {
 
 	@Reference(target = "(jakarta.portlet.name=faro_portlet)")
 	private Portlet _portlet;
-
-	@Reference
-	private SnapshotDemoCreatorService _snapshotDemoCreatorService;
 
 }

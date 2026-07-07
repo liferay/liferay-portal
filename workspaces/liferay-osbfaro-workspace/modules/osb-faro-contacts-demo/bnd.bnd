@@ -20,5 +20,4 @@ Import-Package:\
 	\
 	*
 -dsannotations-options: inherit
--includeresource: elasticsearch-snapshot-*.zip
 -fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=ignore
