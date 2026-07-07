@@ -167,10 +167,9 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				mockLiferayPortletActionRequest,
 				"accountValidationsAlreadySucceeded"));
 
-		List<Long> primaryKeysList = _getPrimaryKeys();
+		List<Long> primaryKeys = _getPrimaryKeys();
 
-		Assert.assertEquals(
-			primaryKeysList.toString(), 1, primaryKeysList.size());
+		Assert.assertEquals(primaryKeys.toString(), 1, primaryKeys.size());
 
 		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
 
@@ -184,7 +183,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			_commerceOrder.getShippingAddressId(),
 			jsonObject.getLong("shippingAddressId"));
 
-		for (long objectEntryId : primaryKeysList) {
+		for (long objectEntryId : primaryKeys) {
 			_objectEntryLocalService.deleteObjectEntry(objectEntryId);
 		}
 
@@ -217,10 +216,9 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				mockLiferayPortletActionRequest,
 				"accountValidationsAlreadySucceeded"));
 
-		primaryKeysList = _getPrimaryKeys();
+		primaryKeys = _getPrimaryKeys();
 
-		Assert.assertEquals(
-			primaryKeysList.toString(), 0, primaryKeysList.size());
+		Assert.assertEquals(primaryKeys.toString(), 0, primaryKeys.size());
 	}
 
 	private MockLiferayPortletActionRequest

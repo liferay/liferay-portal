@@ -94,18 +94,18 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 									<c:if test="<%= commerceOrderEditDisplayContext.isValidationButtonVisible() %>">
 
 										<%
-										String validationButtonClass = commerceOrderEditDisplayContext.getValidationButtonClass();
+										String validationButtonCssClass = commerceOrderEditDisplayContext.getValidationButtonCssClass();
 
 										String validationButtonIcon = "check-circle-full";
 										String validationButtonLabel = "all-account-validations-have-succeeded";
 										String validationButtonTextClass = "text-success";
 
-										if (validationButtonClass.equals("failure")) {
+										if (Objects.equals(validationButtonCssClass, "failure")) {
 											validationButtonIcon = "warning-full";
 											validationButtonLabel = "one-or-more-validations-have-failed-for-this-account";
 											validationButtonTextClass = "text-warning";
 										}
-										else if (validationButtonClass.equals("pending")) {
+										else if (Objects.equals(validationButtonCssClass, "pending")) {
 											validationButtonIcon = "time";
 											validationButtonLabel = "one-or-more-account-validations-are-pending";
 											validationButtonTextClass = "text-secondary";
