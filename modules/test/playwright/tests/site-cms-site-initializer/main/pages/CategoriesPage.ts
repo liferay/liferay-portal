@@ -111,7 +111,7 @@ export class CategoriesPage {
 	}
 
 	getItemSystemIcon(filter: string) {
-		return this.getItem(filter).getByLabel('System Category');
+		return this.getItem(filter).getByText('System Category', {exact: true});
 	}
 
 	async goto(vocabularyId: string | number, vocabularyName: string) {

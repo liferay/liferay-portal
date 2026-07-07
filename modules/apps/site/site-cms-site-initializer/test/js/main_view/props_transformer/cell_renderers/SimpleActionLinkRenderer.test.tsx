@@ -189,7 +189,7 @@ describe('SimpleActionLinkRenderer. Show lock icon.', () => {
 		).toHaveAttribute('aria-label', testBaseProps.value);
 	});
 
-	it('shows lock icon labeled with the system icon label for system links', () => {
+	it('shows a decorative lock icon and describes system links with the system icon label', () => {
 		const {container} = render(
 			<SimpleActionLinkRenderer
 				{...testBaseProps}
@@ -201,12 +201,14 @@ describe('SimpleActionLinkRenderer. Show lock icon.', () => {
 			/>
 		);
 
-		const lockIcon = container.querySelector('.lexicon-icon-lock');
+		const link = screen.getByRole('link', {name: testBaseProps.value});
 
-		expect(lockIcon).toHaveAttribute('aria-label', 'system-vocabulary');
-		expect(lockIcon).toHaveAttribute('data-title', 'system-vocabulary');
-		expect(
-			screen.getByRole('link', {name: testBaseProps.value})
-		).toHaveAttribute('aria-label', testBaseProps.value);
+		expect(link).toHaveAccessibleDescription('system-vocabulary');
+		expect(link).toHaveAttribute('aria-label', testBaseProps.value);
+		expect(container.querySelector('.lfr-portal-tooltip')).toHaveAttribute(
+			'data-title',
+			'system-vocabulary'
+		);
+		expect(screen.getByText('system-vocabulary')).toHaveClass('sr-only');
 	});
 });
