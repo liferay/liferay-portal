@@ -303,11 +303,6 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		test.fail(
-			true,
-			'Fails due to LPD-96296: a tag-filtered collection returns no CMS content on the published page'
-		);
-
 		const space = await createSpace(apiHelpers);
 
 		const tag = `tag${getRandomString()}`.toLowerCase();
