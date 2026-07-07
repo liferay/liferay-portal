@@ -68,10 +68,12 @@ type ITimelineItemProps = {
 	groupId?: string;
 	initialExpanded?: boolean;
 	item: ITEM_SHAPE;
+	LDPEnabled?: boolean;
 	timeZoneId: string;
 };
 
 const TimelineItem: FC<ITimelineItemProps> = ({
+	LDPEnabled,
 	className,
 	initialExpanded = false,
 	item: {
@@ -140,6 +142,7 @@ const TimelineItem: FC<ITimelineItemProps> = ({
 								browserName={browserName}
 								device={device}
 								itemCount={nestedItems.length}
+								LDPEnabled={LDPEnabled}
 								userAgent={userAgent}
 							/>
 						)}
@@ -160,6 +163,7 @@ const TimelineItem: FC<ITimelineItemProps> = ({
 				{nestedItems && (
 					<VerticalTimeline
 						items={nestedItems}
+						LDPEnabled={LDPEnabled}
 						nested
 						timeZoneId={timeZoneId}
 					/>
@@ -206,8 +210,16 @@ const TimelinePanelBodyContentDetails: FC<{
 	browserName: string;
 	device: string;
 	itemCount: number;
+	LDPEnabled?: boolean;
 	userAgent: string;
-}> = ({applicationId, browserName, device, itemCount, userAgent}) => {
+}> = ({
+	LDPEnabled,
+	applicationId,
+	browserName,
+	device,
+	itemCount,
+	userAgent,
+}) => {
 	const {title: deviceIconTitle, ...otherIconAttributes} =
 		(DEVICE_ICONS_MAP as any)[device.toLowerCase()] || DEVICE_ICONS_MAP.any;
 
@@ -216,7 +228,7 @@ const TimelinePanelBodyContentDetails: FC<{
 	return (
 		<div className="timeline-panel-body-content-details">
 			<div className="align-items-center d-flex icon-group">
-				{applicationId && (
+				{LDPEnabled && applicationId && (
 					<div>
 						<ClayLabel
 							className={getCN('label-lg mr-5', {
@@ -372,6 +384,7 @@ type IVerticalTimelineProps = {
 	groupId?: string;
 	initialExpanded?: boolean;
 	items: ITEM_SHAPE[];
+	LDPEnabled?: boolean;
 	loading?: boolean;
 	nested?: boolean;
 	timeZoneId: string;
@@ -381,6 +394,7 @@ const VerticalTimeline: FC<IVerticalTimelineProps> = ({
 	groupId,
 	initialExpanded,
 	items = [],
+	LDPEnabled = true,
 	loading = false,
 	nested = false,
 	timeZoneId,
@@ -400,6 +414,7 @@ const VerticalTimeline: FC<IVerticalTimelineProps> = ({
 						initialExpanded={initialExpanded}
 						item={item}
 						key={i}
+						LDPEnabled={LDPEnabled}
 						timeZoneId={timeZoneId}
 					/>
 				))}

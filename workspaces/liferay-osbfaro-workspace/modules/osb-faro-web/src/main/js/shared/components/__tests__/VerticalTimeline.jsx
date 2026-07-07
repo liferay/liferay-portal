@@ -276,4 +276,38 @@ describe('VerticalTimeline', () => {
 		expect(getByText('MARKETO')).toBeInTheDocument();
 		expect(queryByText('DXP')).not.toBeInTheDocument();
 	});
+
+	it('hides the data source label when the workspace is not on the LDP plan', () => {
+		const {queryByText} = render(
+			<DefaultComponent
+				items={[
+					createDataSourceItem({
+						applicationId: 'WebContent',
+						userAgent:
+							'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+					})
+				]}
+				LDPEnabled={false}
+			/>
+		);
+
+		expect(queryByText('DXP')).not.toBeInTheDocument();
+	});
+
+	it('shows the data source label when the workspace is on the LDP plan', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				items={[
+					createDataSourceItem({
+						applicationId: 'WebContent',
+						userAgent:
+							'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+					})
+				]}
+				LDPEnabled
+			/>
+		);
+
+		expect(getByText('DXP')).toBeInTheDocument();
+	});
 });

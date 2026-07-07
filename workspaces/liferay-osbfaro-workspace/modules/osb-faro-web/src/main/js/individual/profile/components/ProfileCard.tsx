@@ -403,6 +403,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 				{...sessionsMappedResults}
 				delta={delta}
 				initialExpanded={false}
+				LDPEnabled={LDPEnabled}
 				noResultsRenderer={renderNoResults()}
 				onDeltaChange={onDeltaChange}
 				onPageChange={onPageChange}
