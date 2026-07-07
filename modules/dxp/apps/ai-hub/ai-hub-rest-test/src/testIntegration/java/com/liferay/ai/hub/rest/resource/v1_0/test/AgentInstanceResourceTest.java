@@ -313,6 +313,7 @@ public class AgentInstanceResourceTest
 			_testPostAgentInstanceWithTypeAIDecisionNodeWorkflowDefinition();
 			_testPostAgentInstanceWithTypeAutoCategorize();
 			_testPostAgentInstanceWithTypeFixSpellingAndGrammarWithInstruction();
+			_testPostAgentInstanceWithTypeGenerateContent();
 			_testPostAgentInstanceWithTypeGenerateTags();
 			_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinition();
 			_testPostAgentInstanceWithTypeLLMNodeWithRAGWorkflowDefinitionWithRestrictedUser();
@@ -807,6 +808,63 @@ public class AgentInstanceResourceTest
 			});
 
 		SseUtil.closeAll();
+	}
+
+	private void _testPostAgentInstanceWithTypeGenerateContent()
+		throws Exception {
+
+		String description = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"keywords", JSONUtil.putAll("AI-generated")
+				).put(
+					"objectEntryFolderExternalReferenceCode", "L_CONTENTS"
+				).put(
+					"properties",
+					JSONUtil.put(
+						"description", description
+					).put(
+						"name", name
+					)
+				).put(
+					"status", JSONUtil.put("code", 2)
+				)
+			).toString(),
+			_postAndAwaitAgentInstance(
+				"L_GENERATE_CONTENT",
+				JSONUtil.put(
+					"brief",
+					"Use the exact name \"" + name + "\" and description \"" +
+						description + "\"."
+				).put(
+					"count", "1"
+				).put(
+					"objectDefinitionName", _objectDefinition.getName()
+				).put(
+					"objectFields",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"businessType", "Text"
+						).put(
+							"name", "name"
+						).put(
+							"readOnly", "false"
+						),
+						JSONUtil.put(
+							"businessType", "LongText"
+						).put(
+							"name", "description"
+						).put(
+							"readOnly", "false"
+						)
+					).toString()
+				).put(
+					"spaceId", String.valueOf(TestPropsValues.getGroupId())
+				)),
+			JSONCompareMode.LENIENT);
 	}
 
 	private void _testPostAgentInstanceWithTypeGenerateTags() throws Exception {
