@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
@@ -78,6 +79,15 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 		}
 
 		return additionalProps;
+	}
+
+	public Map<String, Object> getAIAssistantChatProps() {
+		return HashMapBuilder.<String, Object>put(
+			"instructionDefinitionScope", "cms"
+		).put(
+			"triggerLabel",
+			LanguageUtil.get(httpServletRequest, "get-ai-insights")
+		).build();
 	}
 
 	@Override

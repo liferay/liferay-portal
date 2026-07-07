@@ -11,6 +11,15 @@
 ViewAllRelatedAssetsSectionDisplayContext viewAllRelatedAssetsSectionDisplayContext = (ViewAllRelatedAssetsSectionDisplayContext)request.getAttribute(ViewAllRelatedAssetsSectionDisplayContext.class.getName());
 %>
 
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-62272") %>'>
+	<div class="align-items-center d-flex justify-content-end mb-3">
+		<react:component
+			module="{AIAssistantChat} from ai-hub-cell-js-components-web"
+			props="<%= viewAllRelatedAssetsSectionDisplayContext.getAIAssistantChatProps() %>"
+		/>
+	</div>
+</c:if>
+
 <div class="cms-all-related-assets cms-section custom-empty-state"></div>
 	<frontend-data-set:headless-display
 		additionalProps="<%= viewAllRelatedAssetsSectionDisplayContext.getAdditionalProps() %>"

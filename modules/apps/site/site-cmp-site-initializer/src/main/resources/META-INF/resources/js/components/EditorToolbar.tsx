@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLink from '@clayui/link';
+import {AIAssistantChat} from '@liferay/ai-hub-cell-js-components-web';
 import {isCtrlOrMeta} from '@liferay/layout-js-components-web';
 import {Toolbar} from '@liferay/site-cms-site-initializer';
 import {sessionStorage, sub} from 'frontend-js-web';
@@ -77,6 +78,28 @@ export default function EditorToolbar({
 			className="content-editor__toolbar position-fixed"
 			title={title}
 		>
+			{Liferay.FeatureFlags['LPD-62272'] && (
+				<>
+					<Toolbar.Item>
+						<AIAssistantChat
+							hideTriggerLabel
+							instructionDefinitionScope="cms"
+							triggerRound
+						/>
+					</Toolbar.Item>
+
+					<div
+						className="align-self-center"
+						style={{
+							borderColor: '#A7A9BC',
+							borderStyle: 'solid',
+							borderWidth: 1,
+							height: 16,
+						}}
+					/>
+				</>
+			)}
+
 			<Toolbar.Item>
 				<ClayLink
 					aria-label={Liferay.Language.get('cancel')}

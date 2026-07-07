@@ -88,6 +88,9 @@ describe('EditorToolbar', () => {
 			Browser: {
 				isMac: jest.fn(() => false),
 			},
+			FeatureFlags: {
+				'LPD-62272': false,
+			},
 			Language: {
 				get: jest.fn((key: string) => {
 					if (key === 'x-was-created-successfully') {

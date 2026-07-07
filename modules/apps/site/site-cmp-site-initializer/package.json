@@ -36,6 +36,7 @@
 		"@fullcalendar/core": "6.1.20",
 		"@fullcalendar/daygrid": "6.1.20",
 		"@fullcalendar/react": "6.1.20",
+		"@liferay/ai-hub-cell-js-components-web": "*",
 		"@liferay/analytics-reports-js-components-web": "*",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-item-selector-web": "*",
