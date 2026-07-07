@@ -256,8 +256,8 @@ public interface ContactsEngineClient {
 
 	public Results<ActivityAsset> getActivityAssets(
 		FaroProject faroProject, String query, String applicationId,
-		String channelId, String eventId, int cur, int delta,
-		List<OrderByField> orderByFields);
+		String channelId, String eventId, String objectDefinitionName, int cur,
+		int delta, List<OrderByField> orderByFields);
 
 	public Results<ActivityGroup> getActivityGroups(
 		FaroProject faroProject, String channelId, String ownerId,

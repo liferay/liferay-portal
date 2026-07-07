@@ -1080,8 +1080,8 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<ActivityAsset> getActivityAssets(
 		FaroProject faroProject, String query, String applicationId,
-		String channelId, String eventId, int cur, int delta,
-		List<OrderByField> orderByFields) {
+		String channelId, String eventId, String objectDefinitionName, int cur,
+		int delta, List<OrderByField> orderByFields) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, orderByFields);
@@ -1096,6 +1096,9 @@ public class ContactsEngineClientImpl
 			Long.valueOf(channelId));
 		filterBuilder.addFilter(
 			"eventId", FilterConstants.COMPARISON_OPERATOR_EQUALS, eventId);
+		filterBuilder.addFilter(
+			"objectDefinitionName", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+			objectDefinitionName);
 		filterBuilder.addSearchFilter(query, "assetTitle");
 
 		uriVariables.put("filter", filterBuilder.build());
