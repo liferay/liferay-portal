@@ -26,21 +26,21 @@ public abstract class BaseAMImageConfigurationTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		_initialAMImageConfigurationEntryUuids =
-			_getAMImageConfigurationEntryUuids();
+		_initialAMImageConfigurationEntryUUIDs =
+			_getAMImageConfigurationEntryUUIDs();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		if (_initialAMImageConfigurationEntryUuids == null) {
+		if (_initialAMImageConfigurationEntryUUIDs == null) {
 			return;
 		}
 
 		AMImageConfigurationHelper amImageConfigurationHelper =
 			getAMImageConfigurationHelper();
 
-		for (String uuid : _getAMImageConfigurationEntryUuids()) {
-			if (!_initialAMImageConfigurationEntryUuids.contains(uuid)) {
+		for (String uuid : _getAMImageConfigurationEntryUUIDs()) {
+			if (!_initialAMImageConfigurationEntryUUIDs.contains(uuid)) {
 				amImageConfigurationHelper.forceDeleteAMImageConfigurationEntry(
 					TestPropsValues.getCompanyId(), uuid);
 			}
@@ -104,7 +104,7 @@ public abstract class BaseAMImageConfigurationTestCase {
 		return false;
 	}
 
-	private Set<String> _getAMImageConfigurationEntryUuids() throws Exception {
+	private Set<String> _getAMImageConfigurationEntryUUIDs() throws Exception {
 		Set<String> uuids = new HashSet<>();
 
 		AMImageConfigurationHelper amImageConfigurationHelper =
