@@ -8,7 +8,7 @@ package com.liferay.ai.hub.internal.agent;
 import com.liferay.ai.hub.agent.AgentContext;
 import com.liferay.ai.hub.agent.SupervisorAgent;
 import com.liferay.ai.hub.internal.exception.ContentInjectorException;
-import com.liferay.ai.hub.internal.langchain4j.model.chat.GoogleGenAiChatModelWrapper;
+import com.liferay.ai.hub.internal.langchain4j.model.chat.GoogleGenAiChatModel;
 import com.liferay.ai.hub.internal.memory.ChatMemoryProviderUtil;
 import com.liferay.ai.hub.quota.QuotaManager;
 import com.liferay.ai.hub.rest.resource.v1_0.util.SseUtil;
@@ -82,7 +82,7 @@ public class SupervisorAgentImpl implements SupervisorAgent {
 
 						_invoke(
 							agentContext,
-							new GoogleGenAiChatModelWrapper(
+							new GoogleGenAiChatModel(
 								_quotaManager,
 								agentContext.getServiceContext()),
 							internalAgents);

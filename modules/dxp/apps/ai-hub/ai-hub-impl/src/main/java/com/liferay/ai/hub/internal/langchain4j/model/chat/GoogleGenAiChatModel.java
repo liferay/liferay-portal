@@ -25,9 +25,9 @@ import java.util.Set;
 /**
  * @author Iliyan Peychev
  */
-public class GoogleGenAiChatModelWrapper implements ChatModel {
+public class GoogleGenAiChatModel implements ChatModel {
 
-	public GoogleGenAiChatModelWrapper(
+	public GoogleGenAiChatModel(
 			QuotaManager quotaManager, ServiceContext serviceContext)
 		throws ConfigurationException {
 
