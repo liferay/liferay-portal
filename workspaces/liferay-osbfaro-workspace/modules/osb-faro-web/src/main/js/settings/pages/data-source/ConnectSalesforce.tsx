@@ -10,7 +10,7 @@ const steps: Step[] = [
 	{
 		content: (props: any) => <ConnectSalesforceStep {...props} />,
 		description: Liferay.Language.get(
-			'to-connect-your-salesforce-environment-with-liferay-analytics-cloud,-generate-a-token-and-paste-the-code-on-the-input-below'
+			'to-connect-your-data-source-with-liferay-data-platform-enter-their-url-the-client-id-and-secret'
 		),
 		title: Liferay.Language.get('connect-salesforce'),
 	},

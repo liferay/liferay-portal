@@ -310,7 +310,9 @@ const ConnectSalesforceAuth: React.FC<IConnectSalesforceAuthProps> = ({
 					>
 						<label htmlFor="callbackURL">
 							<Text weight="semi-bold">
-								{Liferay.Language.get('target-url')}
+								{Liferay.Language.get(
+									'liferay-data-platform-callback-url'
+								)}
 							</Text>
 
 							<div>
@@ -321,7 +323,7 @@ const ConnectSalesforceAuth: React.FC<IConnectSalesforceAuthProps> = ({
 								>
 									{sub(
 										Liferay.Language.get(
-											'this-is-analytics-cloud-callback-url-x-will-redirect-to-after-a-user-authorizes-the-connection'
+											'this-is-the-callback-url-the-data-source-will-redirect-to-after-the-connection'
 										),
 										[Liferay.Language.get('salesforce')]
 									)}
@@ -363,7 +365,7 @@ const ConnectSalesforceAuth: React.FC<IConnectSalesforceAuthProps> = ({
 					<Form.Input
 						className="mb-3"
 						id="salesForceDataSource"
-						label={Liferay.Language.get('salesforce-url')}
+						label={Liferay.Language.get('data-source-url')}
 						name="salesForceDataSource"
 						readOnly={disabled}
 						required
