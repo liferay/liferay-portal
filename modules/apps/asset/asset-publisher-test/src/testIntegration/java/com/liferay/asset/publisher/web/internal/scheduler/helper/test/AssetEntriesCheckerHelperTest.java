@@ -33,8 +33,10 @@ import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -190,8 +192,10 @@ public class AssetEntriesCheckerHelperTest {
 					LayoutTestUtil.getPortletPreferences(_layout, _portletId),
 					_layout));
 
-			Assert.assertNotNull(
-				testInfoCollectionProvider.getPermissionChecker());
+			PermissionChecker permissionChecker =
+				testInfoCollectionProvider.getPermissionChecker();
+
+			Assert.assertTrue(permissionChecker.isCompanyAdmin());
 
 			ServiceContext serviceContext =
 				testInfoCollectionProvider.getServiceContext();
@@ -389,8 +393,12 @@ public class AssetEntriesCheckerHelperTest {
 			_assetEntriesCheckerHelper, "_infoItemServiceRegistry",
 			_infoItemServiceRegistry);
 		ReflectionTestUtil.setFieldValue(
+			_assetEntriesCheckerHelper, "_roleLocalService", _roleLocalService);
+		ReflectionTestUtil.setFieldValue(
 			_assetEntriesCheckerHelper, "_segmentsConfigurationProvider",
 			_segmentsConfigurationProvider);
+		ReflectionTestUtil.setFieldValue(
+			_assetEntriesCheckerHelper, "_userLocalService", _userLocalService);
 	}
 
 	private Object _assetEntriesCheckerHelper;
@@ -433,7 +441,13 @@ public class AssetEntriesCheckerHelperTest {
 	private String _portletId;
 
 	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
 	private SegmentsConfigurationProvider _segmentsConfigurationProvider;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	private static class TestInfoCollectionProvider
 		implements InfoCollectionProvider<AssetEntry> {
