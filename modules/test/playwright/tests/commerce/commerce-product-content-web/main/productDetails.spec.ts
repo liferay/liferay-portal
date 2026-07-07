@@ -1685,3 +1685,149 @@ test(
 		});
 	}
 );
+
+test(
+	'Verify the storefront product page reflects the calculated stock quantity',
+	{tag: ['@COMMERCE-11873']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: 'Product' + getRandomInt()},
+				productConfiguration: {
+					allowBackOrder: false,
+					displayAvailability: true,
+					displayStockQuantity: true,
+					maxOrderQuantity: 10000,
+					minOrderQuantity: 1,
+					minStockQuantity: 0,
+					multipleOrderQuantity: 1,
+				},
+				skus: [
+					{
+						cost: 0,
+						price: 10,
+						published: true,
+						purchasable: true,
+						sku: 'Sku' + getRandomInt(),
+					},
+				],
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: [{quantity: 3, sku: sku.sku}],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{
+					city: 'Test City',
+					countryISOCode: 'US',
+					defaultBilling: true,
+					defaultShipping: true,
+					name: 'Test Address',
+					regionISOCode: 'CA',
+					street1: 'Test Street',
+					zip: '12345',
+				}
+			);
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Details');
+
+		await test.step('Verify the product page shows the calculated stock', async () => {
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(page.getByText('3 in Stock')).toBeVisible();
+		});
+
+		await test.step('Verify ordering above the available stock is rejected', async () => {
+			await productDetailsPage.quantitySelector.fill('4');
+
+			await productDetailsPage.addToCartButton.click();
+
+			await waitForAlert(page, 'The specified quantity is unavailable.', {
+				autoClose: false,
+				type: 'danger',
+			});
+		});
+
+		await test.step('Place an order that consumes the available stock', async () => {
+			const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					billingAddressId: address.id,
+					cartItems: [{quantity: 3, skuId: Number(sku.id)}],
+					shippingAddressId: address.id,
+				},
+				channel.id
+			);
+
+			await apiHelpers.headlessCommerceDeliveryCart.checkoutCart(cart.id);
+		});
+
+		await test.step('Verify the product page shows no stock and disables ordering', async () => {
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(page.getByText('0 in Stock')).toBeVisible();
+
+			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+		});
+	}
+);

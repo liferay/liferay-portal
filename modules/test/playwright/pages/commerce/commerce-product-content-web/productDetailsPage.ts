@@ -43,6 +43,7 @@ export class ProductDetailsPage {
 		promoPrice: string,
 		container?: Locator | Page
 	) => Promise<Locator>;
+	readonly quantitySelector: Locator;
 	readonly replacementsSearchBar: Locator;
 	readonly replacementsSearchButton: Locator;
 	readonly replacementsTab: Locator;
@@ -131,6 +132,10 @@ export class ProductDetailsPage {
 		) => {
 			return container.getByText(promoPrice);
 		};
+		this.quantitySelector = page.getByRole('spinbutton', {
+			exact: true,
+			name: 'Quantity Selector',
+		});
 		this.replacementsSearchBar = page
 			.getByTestId('managementToolbar')
 			.getByPlaceholder('Search');
