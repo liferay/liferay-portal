@@ -8,19 +8,19 @@ import React, {useState} from 'react';
 
 import {BarChartSamples} from './BarChartSamples';
 import {LineChartSamples} from './LineChartSamples';
+import {MapChartSamples} from './MapChartSamples';
 import {PieChartSamples} from './PieChartSamples';
 import {StateWrapperSamples} from './StateWrapperSamples';
 
 // One tab per chart. Each chart's samples live in their own file and are
-// dropped in below; the remaining chart (LPD-95996) is a placeholder until it
-// lands.
+// dropped in below.
 
 const TABS = [
 	{Samples: StateWrapperSamples, label: 'State wrapper'},
 	{Samples: BarChartSamples, label: 'Bar Chart'},
 	{Samples: LineChartSamples, label: 'Line Chart'},
 	{Samples: PieChartSamples, label: 'Pie Chart'},
-	{label: 'Map Chart'},
+	{Samples: MapChartSamples, label: 'Map Chart'},
 ];
 
 export function App() {

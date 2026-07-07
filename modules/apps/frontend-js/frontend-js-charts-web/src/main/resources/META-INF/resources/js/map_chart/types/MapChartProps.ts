@@ -6,6 +6,7 @@
 import {MapDatum} from './MapDatum';
 
 export interface MapChartProps {
+	className?: string;
 	data: MapDatum[];
 	fit?: 'data' | 'world';
 	legend?: 'list' | 'none' | 'scale' | 'table';

@@ -155,6 +155,36 @@ describe('MapChart', () => {
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});
+
+	it('merges a passed className onto the root figure alongside chart-map', () => {
+		const {container} = render(
+			<MapChart className="mx-auto" data={DATA} title="Population" />
+		);
+
+		const figure = container.querySelector('figure');
+
+		expect(figure).toHaveClass('chart-map');
+		expect(figure).toHaveClass('mx-auto');
+	});
+
+	it('resolves a localized display name for a datum that omits label', () => {
+		const dataWithoutLabel: MapDatum[] = [{country: 'FR', value: 40}];
+
+		const {container} = render(
+			<MapChart
+				data={dataWithoutLabel}
+				legend="table"
+				title="Population"
+			/>
+		);
+
+		expect(
+			screen.getByRole('img', {name: 'country.france: 40'})
+		).toBeInTheDocument();
+		expect(
+			container.querySelector('.charts-legend-table')
+		).toHaveTextContent('country.france');
+	});
 });
 
 describe('MapChart fit prop', () => {

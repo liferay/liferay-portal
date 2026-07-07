@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import MapChartLegend from './components/MapChartLegend';
@@ -33,6 +34,7 @@ function getSchemeColor(
 }
 
 export default function MapChart({
+	className,
 	data,
 	fit = 'world',
 	legend = 'none',
@@ -130,7 +132,7 @@ export default function MapChart({
 		<figure
 			aria-describedby={summaryId}
 			aria-labelledby={titleId}
-			className="chart-map"
+			className={classNames('chart-map', className)}
 		>
 			<figcaption className="chart-map-caption" id={titleId}>
 				{title}
