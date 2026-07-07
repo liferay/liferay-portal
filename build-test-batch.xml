@@ -3414,7 +3414,9 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 								AntUtil.callTargetWithTimeout(projectDir, "build-common.xml", "gradle-execute-modules", parameters, timeout, true);
 							}
 							catch(Exception exception) {
-								throw new RuntimeException("Unable to run Gradle execute modules target.");
+								System.out.println("Unable to run Gradle execute modules target for " + entry.getKey());
+
+								exception.printStackTrace();
 							}
 						}
 					]]>
