@@ -889,6 +889,33 @@ test.describe('Schedule Panel', () => {
 });
 
 test.describe('Categorization Panel', () => {
+	const selectAutocompleteOption = async ({
+		option,
+		page,
+		placeholder,
+		value,
+	}: {
+		option: Locator;
+		page: Page;
+		placeholder: string;
+		value: string;
+	}) => {
+		const autocomplete = page.getByPlaceholder(placeholder);
+
+		const selectedLabel = page.locator('.label-item', {hasText: value});
+
+		await expect(async () => {
+			await autocomplete.fill('', {timeout: 3000});
+			await autocomplete.fill(value, {timeout: 3000});
+
+			await option.waitFor({timeout: 3000});
+
+			await option.dispatchEvent('click', undefined, {timeout: 3000});
+
+			await expect(selectedLabel).toBeAttached({timeout: 3000});
+		}).toPass();
+	};
+
 	const selectCategory = async ({
 		categoryName,
 		page,
@@ -896,14 +923,12 @@ test.describe('Categorization Panel', () => {
 		categoryName: string;
 		page: Page;
 	}) => {
-		const categoriesAutocomplete = page.getByPlaceholder('Add category');
-
-		await categoriesAutocomplete.fill(categoryName);
-
-		const option = page.getByRole('option', {name: categoryName});
-
-		await option.waitFor();
-		await option.click();
+		await selectAutocompleteOption({
+			option: page.getByRole('option', {name: categoryName}),
+			page,
+			placeholder: 'Add category',
+			value: categoryName,
+		});
 	};
 
 	const selectTag = async ({
@@ -913,16 +938,14 @@ test.describe('Categorization Panel', () => {
 		page: Page;
 		tagName: string;
 	}) => {
-		const tagsAutocomplete = page.getByPlaceholder('Add tag');
-
-		await tagsAutocomplete.fill(tagName);
-
-		const newTagOption = page.getByRole('option', {
-			name: 'Create New Tag:',
+		await selectAutocompleteOption({
+			option: page.getByRole('option', {
+				name: `Create New Tag: ${tagName}`,
+			}),
+			page,
+			placeholder: 'Add tag',
+			value: tagName,
 		});
-
-		await newTagOption.waitFor();
-		await newTagOption.click();
 	};
 
 	test(
