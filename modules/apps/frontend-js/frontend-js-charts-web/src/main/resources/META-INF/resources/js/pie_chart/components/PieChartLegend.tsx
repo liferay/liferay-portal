@@ -29,6 +29,22 @@ interface PieChartLegendProps {
 	total: number;
 }
 
+function getListValue(
+	legendValue: PieChartLegendValue,
+	value: number,
+	total: number
+): string | undefined {
+	if (legendValue === 'name') {
+		return undefined;
+	}
+
+	if (legendValue === 'value') {
+		return value.toLocaleString();
+	}
+
+	return `${toPercent(value, total)}%`;
+}
+
 export default function PieChartLegend({
 	activeIndex,
 	colors,
@@ -47,12 +63,7 @@ export default function PieChartLegend({
 				active: activeIndex === index,
 				id: index,
 				label: datum.label,
-				listValue:
-					legendValue === 'name'
-						? undefined
-						: legendValue === 'value'
-							? datum.value.toLocaleString()
-							: `${toPercent(datum.value, total)}%`,
+				listValue: getListValue(legendValue, datum.value, total),
 				sortValue: datum.value,
 				visual: (
 					<span
