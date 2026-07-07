@@ -466,6 +466,8 @@ public class SitePageResourceImpl
 
 			Layout draftLayout = _updateDraftLayout(layout);
 
+			layout = _layoutService.getLayout(layout.getPlid());
+
 			layout.setModifiedDate(draftLayout.getModifiedDate());
 
 			layout.setStatus(WorkflowConstants.STATUS_APPROVED);
