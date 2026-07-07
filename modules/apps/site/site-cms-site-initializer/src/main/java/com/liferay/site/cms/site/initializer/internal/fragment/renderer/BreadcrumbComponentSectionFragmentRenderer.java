@@ -36,13 +36,13 @@ public class BreadcrumbComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "breadcrumb";
+	protected String getComponentName() {
+		return "Breadcrumb";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "Breadcrumb";
+	protected String getLabelKey() {
+		return "breadcrumb";
 	}
 
 	@Override

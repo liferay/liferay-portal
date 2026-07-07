@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
@@ -49,7 +50,8 @@ public abstract class BaseComponentSectionFragmentRenderer
 			ComponentTag componentTag = new ComponentTag();
 
 			componentTag.setModule(
-				"{" + getModuleName() + "} from site-cms-site-initializer");
+				StringBundler.concat(
+					"{", getComponentName(), "} from ", getModuleName()));
 			componentTag.setPageContext(
 				PageContextFactoryUtil.create(
 					httpServletRequest, httpServletResponse));
@@ -71,9 +73,13 @@ public abstract class BaseComponentSectionFragmentRenderer
 		}
 	}
 
+	protected abstract String getComponentName();
+
 	protected abstract String getLabelKey();
 
-	protected abstract String getModuleName();
+	protected String getModuleName() {
+		return "site-cms-site-initializer";
+	}
 
 	protected abstract Map<String, Object> getProps(
 			FragmentRendererContext fragmentRendererContext,

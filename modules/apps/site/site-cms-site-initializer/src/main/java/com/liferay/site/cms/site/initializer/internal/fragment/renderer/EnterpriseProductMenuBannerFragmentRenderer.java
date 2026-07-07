@@ -52,13 +52,13 @@ public class EnterpriseProductMenuBannerFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "enterprise-product-menu-banner-label";
+	protected String getComponentName() {
+		return "EnterpriseProductMenuBanner";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "EnterpriseProductMenuBanner";
+	protected String getLabelKey() {
+		return "enterprise-product-menu-banner-label";
 	}
 
 	@Override

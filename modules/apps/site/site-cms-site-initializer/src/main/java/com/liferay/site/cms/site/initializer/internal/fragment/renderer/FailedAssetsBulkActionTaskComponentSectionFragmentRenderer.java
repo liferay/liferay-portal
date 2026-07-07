@@ -24,13 +24,13 @@ public class FailedAssetsBulkActionTaskComponentSectionFragmentRenderer
 	extends BaseBulkActionTaskComponentSectionFragmentRenderer {
 
 	@Override
-	protected String getLabelKey() {
-		return "bulk-action-task-failed-assets";
+	protected String getComponentName() {
+		return "BulkActionTaskAssets";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "BulkActionTaskAssets";
+	protected String getLabelKey() {
+		return "bulk-action-task-failed-assets";
 	}
 
 	@Override

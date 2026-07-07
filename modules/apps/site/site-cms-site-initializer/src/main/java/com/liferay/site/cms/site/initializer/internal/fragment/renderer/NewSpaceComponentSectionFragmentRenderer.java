@@ -38,13 +38,13 @@ public class NewSpaceComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "new-space";
+	protected String getComponentName() {
+		return "NewSpace";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "NewSpace";
+	protected String getLabelKey() {
+		return "new-space";
 	}
 
 	@Override

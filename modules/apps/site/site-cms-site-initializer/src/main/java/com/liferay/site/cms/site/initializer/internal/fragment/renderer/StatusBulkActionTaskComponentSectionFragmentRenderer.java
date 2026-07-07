@@ -27,13 +27,13 @@ public class StatusBulkActionTaskComponentSectionFragmentRenderer
 	extends BaseBulkActionTaskComponentSectionFragmentRenderer {
 
 	@Override
-	protected String getLabelKey() {
-		return "bulk-action-task-status";
+	protected String getComponentName() {
+		return "BulkActionTaskStatus";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "BulkActionTaskStatus";
+	protected String getLabelKey() {
+		return "bulk-action-task-status";
 	}
 
 	@Override

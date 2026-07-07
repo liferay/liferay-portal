@@ -41,13 +41,13 @@ public class SpaceSettingsComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "space-settings";
+	protected String getComponentName() {
+		return "SpaceSettings";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "SpaceSettings";
+	protected String getLabelKey() {
+		return "space-settings";
 	}
 
 	@Override

@@ -66,13 +66,13 @@ public class ContentEditorPreviewComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "content-editor-preview";
+	protected String getComponentName() {
+		return "ContentEditorPreview";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "ContentEditorPreview";
+	protected String getLabelKey() {
+		return "content-editor-preview";
 	}
 
 	@Override

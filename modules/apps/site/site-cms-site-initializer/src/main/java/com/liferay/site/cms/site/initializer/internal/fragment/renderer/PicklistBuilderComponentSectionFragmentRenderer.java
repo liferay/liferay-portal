@@ -32,13 +32,13 @@ public class PicklistBuilderComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "picklist-builder";
+	protected String getComponentName() {
+		return "PicklistBuilder";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "PicklistBuilder";
+	protected String getLabelKey() {
+		return "picklist-builder";
 	}
 
 	@Override

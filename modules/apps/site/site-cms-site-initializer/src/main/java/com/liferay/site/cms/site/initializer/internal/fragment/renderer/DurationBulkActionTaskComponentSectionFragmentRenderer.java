@@ -29,13 +29,13 @@ public class DurationBulkActionTaskComponentSectionFragmentRenderer
 	extends BaseBulkActionTaskComponentSectionFragmentRenderer {
 
 	@Override
-	protected String getLabelKey() {
-		return "bulk-action-task-duration";
+	protected String getComponentName() {
+		return "BulkActionTaskDuration";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "BulkActionTaskDuration";
+	protected String getLabelKey() {
+		return "bulk-action-task-duration";
 	}
 
 	@Override

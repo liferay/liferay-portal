@@ -71,13 +71,13 @@ public class ContentEditorToolbarComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "content-editor-management-bar";
+	protected String getComponentName() {
+		return "ContentEditorToolbar";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "ContentEditorToolbar";
+	protected String getLabelKey() {
+		return "content-editor-management-bar";
 	}
 
 	@Override

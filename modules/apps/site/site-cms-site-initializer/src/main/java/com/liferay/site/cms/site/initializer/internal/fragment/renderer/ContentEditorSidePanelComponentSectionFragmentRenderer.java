@@ -85,13 +85,13 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "content-editor-side-panel";
+	protected String getComponentName() {
+		return "ContentEditorSidePanel";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "ContentEditorSidePanel";
+	protected String getLabelKey() {
+		return "content-editor-side-panel";
 	}
 
 	@Override

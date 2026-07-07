@@ -33,13 +33,13 @@ public class BulkActionsMonitorComponentSectionFragmentRender
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "bulk-actions-monitor";
+	protected String getComponentName() {
+		return "BulkActionsMonitor";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "BulkActionsMonitor";
+	protected String getLabelKey() {
+		return "bulk-actions-monitor";
 	}
 
 	@Override

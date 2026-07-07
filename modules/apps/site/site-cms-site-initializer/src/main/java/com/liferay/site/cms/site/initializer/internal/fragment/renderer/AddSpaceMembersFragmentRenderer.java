@@ -39,13 +39,13 @@ public class AddSpaceMembersFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "add-members";
+	protected String getComponentName() {
+		return "AddSpaceMembers";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "AddSpaceMembers";
+	protected String getLabelKey() {
+		return "add-members";
 	}
 
 	@Override

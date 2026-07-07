@@ -34,13 +34,13 @@ public class ViewSpacesComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "spaces";
+	protected String getComponentName() {
+		return "SpacesNavigation";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "SpacesNavigation";
+	protected String getLabelKey() {
+		return "spaces";
 	}
 
 	@Override

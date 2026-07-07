@@ -63,7 +63,7 @@ public class StructureBuilderComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModuleName() {
+	protected String getComponentName() {
 		return "StructureBuilder";
 	}
 

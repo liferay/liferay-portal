@@ -31,13 +31,13 @@ public class EditFolderComponentSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getLabelKey() {
-		return "edit-folder";
+	protected String getComponentName() {
+		return "EditFolder";
 	}
 
 	@Override
-	protected String getModuleName() {
-		return "EditFolder";
+	protected String getLabelKey() {
+		return "edit-folder";
 	}
 
 	@Override
