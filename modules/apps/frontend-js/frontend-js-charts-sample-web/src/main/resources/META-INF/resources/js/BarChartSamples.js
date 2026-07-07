@@ -55,6 +55,18 @@ export function BarChartSamples() {
 				/>
 			</SampleContainer>
 
+			<SampleContainer label="List legend: raw value, borderless swatch, centered">
+				<BarChart
+					alignment="center"
+					data={BAR_DATA}
+					legend="list"
+					legendSwatchBorder={false}
+					legendValue="value"
+					scheme="categorical"
+					title="Sessions by channel"
+				/>
+			</SampleContainer>
+
 			<SampleContainer label="Trend indicator">
 				<div className="d-flex flex-wrap justify-content-center">
 					<TrendIndicator

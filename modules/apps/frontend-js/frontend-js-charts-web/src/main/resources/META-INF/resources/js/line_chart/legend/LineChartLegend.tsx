@@ -14,12 +14,13 @@ import type {
 	ChartLegendLayout,
 } from '../../chart_legend/types';
 import type {ResolvedSeriesStyle} from '../plot/LineChartPlot';
-import type {LineSeries} from '../types';
+import type {LineChartLegendValue, LineSeries} from '../types';
 
 interface Props {
 	activeSeriesIndex: number | null;
 	format: (value: number) => string;
 	layout: ChartLegendLayout;
+	legendValue: LineChartLegendValue;
 	onActivate: (seriesIndex: number) => void;
 	onDeactivate: (seriesIndex: number) => void;
 	onSelect: (seriesIndex: number) => void;
@@ -32,6 +33,7 @@ export default function LineChartLegend({
 	activeSeriesIndex,
 	format,
 	layout,
+	legendValue,
 	onActivate,
 	onDeactivate,
 	onSelect,
@@ -73,7 +75,9 @@ export default function LineChartLegend({
 					id: index,
 					label: line.label,
 					listValue:
-						latest === undefined ? undefined : format(latest),
+						legendValue === 'name' || latest === undefined
+							? undefined
+							: format(latest),
 					sortValue: total,
 					visual: (
 						<LineChartLegendIcon
@@ -84,7 +88,7 @@ export default function LineChartLegend({
 					),
 				};
 			}),
-		[activeSeriesIndex, format, metrics, series, styles]
+		[activeSeriesIndex, format, legendValue, metrics, series, styles]
 	);
 
 	const columns = useMemo<ChartLegendColumn[]>(

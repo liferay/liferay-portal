@@ -18,6 +18,18 @@ import {getPieChartSlicePathFactory} from './utils/getPieChartSlicePathFactory';
 import {toPercent} from './utils/percent';
 import {getPieSliceColors} from './utils/pieColors';
 
+/**
+ * What the `legend="list"` rows show next to each label.
+ *
+ * - `percent` (default): the slice's share of the total, e.g. `42.3%`.
+ * - `value`: the raw value, e.g. `68`.
+ * - `name`: nothing extra — just the swatch and label.
+ *
+ * No effect on `legend="table"`, which always breaks value and share into their
+ * own columns.
+ */
+export type PieChartLegendValue = 'name' | 'percent' | 'value';
+
 export interface PieChartProps {
 	animated?: boolean;
 	className?: string;
@@ -25,6 +37,15 @@ export interface PieChartProps {
 	description?: string;
 	innerRadius?: number;
 	legend?: 'list' | 'none' | 'table';
+
+	/**
+	 * Draw the 1px border around each legend color swatch (list and table).
+	 * Default `true`. Set `false` for borderless swatches.
+	 */
+	legendSwatchBorder?: boolean;
+
+	/** What the `legend="list"` rows show next to each label. Default `percent`. */
+	legendValue?: PieChartLegendValue;
 	size?: 'lg' | 'md' | 'sm' | 'xs' | number;
 	thickness?: 'lg' | 'md';
 	title: string;
@@ -56,6 +77,8 @@ export default function PieChart({
 	description,
 	innerRadius: innerRadiusRatio,
 	legend = 'list',
+	legendSwatchBorder = true,
+	legendValue = 'percent',
 	size = 'md',
 	thickness = 'md',
 	title,
@@ -124,7 +147,10 @@ export default function PieChart({
 			aria-labelledby={titleId}
 			className={classNames(
 				'chart-pie',
-				{'chart-pie-revealed': animated},
+				{
+					'chart-pie-no-swatch-border': !legendSwatchBorder,
+					'chart-pie-revealed': animated,
+				},
 				className
 			)}
 		>
@@ -172,6 +198,7 @@ export default function PieChart({
 					colors={colors}
 					data={data}
 					legend={legend}
+					legendValue={legendValue}
 					onFocus={focusSlice}
 					onHover={setHoverIndex}
 					onHoverEnd={() => setHoverIndex(null)}

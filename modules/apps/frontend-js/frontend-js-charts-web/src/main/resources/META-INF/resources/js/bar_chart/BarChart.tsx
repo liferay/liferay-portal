@@ -17,12 +17,15 @@ import '../../css/BarChart.scss';
 import type {BarChartProps} from './types';
 
 export default function BarChart({
+	alignment = 'start',
 	animated = true,
 	className,
 	data,
 	description,
 	height = 280,
 	legend = 'none',
+	legendSwatchBorder = true,
+	legendValue = 'percent',
 	orientation = 'vertical',
 	rounded = false,
 	scheme = 'blue',
@@ -112,8 +115,10 @@ export default function BarChart({
 				`charts-bar-chart--${scheme}`,
 				`charts-bar-chart--legend-${legend}`,
 				`charts-bar-chart--size-${size}`,
+				`charts-bar-chart--align-${alignment}`,
 				{
 					'charts-bar-chart--motion': animated,
+					'charts-bar-chart--no-swatch-border': !legendSwatchBorder,
 					'charts-bar-chart--rounded': rounded,
 					'charts-bar-chart--track': track,
 				},
@@ -150,6 +155,7 @@ export default function BarChart({
 				colorFor={colorFor}
 				data={data}
 				layout={legend}
+				legendValue={legendValue}
 				onActivate={setHoverIndex}
 				onDeactivate={deactivate}
 				onSelect={focusBar}

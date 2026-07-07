@@ -99,6 +99,32 @@
 		}
 	}
 
+	// Alignment: place the capped chart block within its container. `start`
+	// (default) needs no rule — block flow keeps it flush-left, matching the
+	// other charts.
+
+	&--align-center {
+		margin-inline: auto;
+	}
+
+	&--align-end {
+		margin-inline-end: 0;
+		margin-inline-start: auto;
+	}
+
+	// `legendSwatchBorder={false}`: drop the swatch outline (list + table).
+	// `transparent` keeps the 12x12 box so nothing shifts. The active variants
+	// out-specify the rules that would otherwise re-add a white edge on
+	// hover/focus.
+
+	&--no-swatch-border {
+		.charts-legend__swatch,
+		.charts-legend__item.is-active .charts-legend__swatch,
+		.charts-legend-table__row.is-active .charts-legend__swatch {
+			border-color: transparent;
+		}
+	}
+
 	// Motion: only when explicitly enabled by the component.
 
 	&--motion {

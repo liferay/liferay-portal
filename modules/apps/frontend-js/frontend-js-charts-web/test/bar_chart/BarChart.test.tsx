@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -86,6 +86,64 @@ describe('BarChart', () => {
 		expect(
 			screen.getByRole('rowheader', {name: 'Jan'})
 		).toBeInTheDocument();
+	});
+
+	it('shows the datum share in the list legend by default', () => {
+		render(<BarChart data={DATA} legend="list" title="Monthly visits" />);
+
+		// 12 of 39 total.
+
+		expect(screen.getByText('30.8%')).toBeInTheDocument();
+	});
+
+	it('shows the raw value in the list legend for legendValue="value"', () => {
+		render(
+			<BarChart
+				data={DATA}
+				legend="list"
+				legendValue="value"
+				title="Monthly visits"
+			/>
+		);
+
+		const legend = screen.getByRole('list', {hidden: true});
+
+		expect(within(legend).getByText('12')).toBeInTheDocument();
+		expect(within(legend).queryByText('30.8%')).not.toBeInTheDocument();
+	});
+
+	it('shows no trailing metric in the list legend for legendValue="name"', () => {
+		render(
+			<BarChart
+				data={DATA}
+				legend="list"
+				legendValue="name"
+				title="Monthly visits"
+			/>
+		);
+
+		const legend = screen.getByRole('list', {hidden: true});
+
+		expect(within(legend).getByText('Jan')).toBeInTheDocument();
+		expect(within(legend).queryByText('12')).not.toBeInTheDocument();
+		expect(within(legend).queryByText('30.8%')).not.toBeInTheDocument();
+	});
+
+	it('applies the alignment and swatch-border modifiers', () => {
+		render(
+			<BarChart
+				alignment="center"
+				data={DATA}
+				legend="list"
+				legendSwatchBorder={false}
+				title="Monthly visits"
+			/>
+		);
+
+		const figure = screen.getByRole('figure');
+
+		expect(figure).toHaveClass('charts-bar-chart--align-center');
+		expect(figure).toHaveClass('charts-bar-chart--no-swatch-border');
 	});
 
 	it('has no accessibility violations', async () => {

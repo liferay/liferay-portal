@@ -68,6 +68,17 @@ export function PieChartSamples() {
 				/>
 			</SampleContainer>
 
+			<SampleContainer label="List legend: raw value, borderless swatch">
+				<PieChart
+					className="mx-auto"
+					data={TRAFFIC_BY_SOURCE}
+					legend="list"
+					legendSwatchBorder={false}
+					legendValue="value"
+					title="Traffic by source"
+				/>
+			</SampleContainer>
+
 			<SampleContainer label="Wrapped in ChartState">
 				<ChartState empty={!DEVICES.length}>
 					<PieChart

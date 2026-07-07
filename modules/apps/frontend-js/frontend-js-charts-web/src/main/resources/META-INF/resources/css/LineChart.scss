@@ -149,6 +149,28 @@
 		stroke-width: 1;
 	}
 
+	// Alignment: place the capped chart block within its container. `start`
+	// (default) needs no rule — block flow keeps it flush-left.
+
+	&--align-center {
+		margin-inline: auto;
+	}
+
+	&--align-end {
+		margin-inline-end: 0;
+		margin-inline-start: auto;
+	}
+
+	// `legendSwatchBorder={false}`: drop the white ring (halo + marker border)
+	// that otherwise keeps the legend icon legible on the active background.
+
+	&--no-swatch-border {
+		.charts-line-chart__legend-icon-line-halo,
+		.charts-line-chart__legend-icon-marker {
+			stroke: transparent;
+		}
+	}
+
 	// Motion: only when the component opts in via the `--motion` modifier.
 
 	&--motion {

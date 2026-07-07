@@ -319,6 +319,21 @@ describe('PieChart', () => {
 		).not.toBeInTheDocument();
 	});
 
+	it('adds the borderless swatch modifier for legendSwatchBorder=false', () => {
+		const {container} = render(
+			<PieChart
+				data={DATA}
+				legend="list"
+				legendSwatchBorder={false}
+				title="Sales"
+			/>
+		);
+
+		expect(container.querySelector('.chart-pie')).toHaveClass(
+			'chart-pie-no-swatch-border'
+		);
+	});
+
 	it('has no accessibility violations', async () => {
 		const {container} = render(<PieChart data={DATA} title="Sales" />);
 

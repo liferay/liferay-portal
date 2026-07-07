@@ -26,6 +26,24 @@ export interface LineSeries {
 }
 
 /**
+ * Horizontal placement of the chart within its container when the `width` cap
+ * leaves free space. `start` (default) keeps it flush-left like the other
+ * charts; `center` / `end` shift the whole block.
+ */
+export type LineChartAlignment = 'center' | 'end' | 'start';
+
+/**
+ * What the `legend="list"` rows show next to each series name.
+ *
+ * - `value` (default): the series' latest value, formatted with `yFormat`.
+ * - `name`: nothing extra — just the marker icon and name.
+ *
+ * No effect on `legend="table"`, which always breaks total and average into
+ * their own columns.
+ */
+export type LineChartLegendValue = 'name' | 'value';
+
+/**
  * Color scheme.
  *
  * - `blue` (default): every series uses a shade of `--primary`; series stay
@@ -59,6 +77,11 @@ export type LineChartPointTooltip = 'corner' | 'none' | 'popover';
 
 export interface LineChartProps {
 
+	/**
+	 * Horizontal placement of the chart within its container. Default `start`.
+	 */
+	alignment?: LineChartAlignment;
+
 	/** Enable line and marker reveal animations (default `true`). */
 	animated?: boolean;
 
@@ -76,6 +99,15 @@ export interface LineChartProps {
 
 	/** Legend layout. Default `list`. */
 	legend?: LineChartLegend;
+
+	/**
+	 * Draw the white ring (halo + marker border) around each legend icon.
+	 * Default `true`. Set `false` for flat legend icons.
+	 */
+	legendSwatchBorder?: boolean;
+
+	/** What the `legend="list"` rows show next to each name. Default `value`. */
+	legendValue?: LineChartLegendValue;
 
 	/** Point tooltip placement. Default `popover`. */
 	pointTooltip?: LineChartPointTooltip;

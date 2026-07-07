@@ -37,12 +37,15 @@ const BLUE_SHADES = [
 ];
 
 export default function LineChart({
+	alignment = 'start',
 	animated = true,
 	categories,
 	className,
 	description,
 	height = 320,
 	legend = 'list',
+	legendSwatchBorder = true,
+	legendValue = 'value',
 	pointTooltip = 'popover',
 	scheme = 'blue',
 	series,
@@ -283,8 +286,10 @@ export default function LineChart({
 				`charts-line-chart--${scheme}`,
 				`charts-line-chart--legend-${legend}`,
 				`charts-line-chart--tooltip-${pointTooltip}`,
+				`charts-line-chart--align-${alignment}`,
 				{
 					'charts-line-chart--motion': animated,
+					'charts-line-chart--no-swatch-border': !legendSwatchBorder,
 				},
 				className
 			)}
@@ -322,6 +327,7 @@ export default function LineChart({
 				activeSeriesIndex={active?.seriesIndex ?? null}
 				format={format}
 				layout={legend}
+				legendValue={legendValue}
 				onActivate={(seriesIndex) => {
 					const target = nearestFinite(seriesIndex, 0);
 

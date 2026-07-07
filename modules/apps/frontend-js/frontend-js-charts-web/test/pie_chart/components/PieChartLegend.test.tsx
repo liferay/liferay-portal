@@ -17,6 +17,7 @@ const DEFAULT_PROPS = {
 	activeIndex: null,
 	colors: ['#000', '#fff'],
 	data: DATA,
+	legendValue: 'percent' as const,
 	onFocus: jest.fn(),
 	onHover: jest.fn(),
 	onHoverEnd: jest.fn(),
@@ -74,5 +75,40 @@ describe('PieChartLegend', () => {
 
 		expect(activeRow).toHaveClass('is-active');
 		expect(inactiveRow).not.toHaveClass('is-active');
+	});
+
+	it('shows the slice share in the list legend by default', () => {
+		render(<PieChartLegend {...DEFAULT_PROPS} legend="list" />);
+
+		// Alpha is 1 of 4.
+
+		expect(screen.getByText('25.0%')).toBeInTheDocument();
+	});
+
+	it('shows the raw value in the list legend for legendValue="value"', () => {
+		render(
+			<PieChartLegend
+				{...DEFAULT_PROPS}
+				legend="list"
+				legendValue="value"
+			/>
+		);
+
+		expect(screen.getByText('1')).toBeInTheDocument();
+		expect(screen.queryByText('25.0%')).not.toBeInTheDocument();
+	});
+
+	it('shows no trailing metric in the list legend for legendValue="name"', () => {
+		render(
+			<PieChartLegend
+				{...DEFAULT_PROPS}
+				legend="list"
+				legendValue="name"
+			/>
+		);
+
+		expect(screen.getByText('Alpha')).toBeInTheDocument();
+		expect(screen.queryByText('25.0%')).not.toBeInTheDocument();
+		expect(screen.queryByText('1')).not.toBeInTheDocument();
 	});
 });

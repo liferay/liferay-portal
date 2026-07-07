@@ -14,12 +14,14 @@ import type {
 	ChartLegendItem,
 	ChartLegendLayout,
 } from '../../chart_legend/types';
+import type {PieChartLegendValue} from '../PieChart';
 
 interface PieChartLegendProps {
 	activeIndex: number | null;
 	colors: string[];
 	data: PieDatum[];
 	legend: ChartLegendLayout;
+	legendValue: PieChartLegendValue;
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
 	onHoverEnd: () => void;
@@ -32,6 +34,7 @@ export default function PieChartLegend({
 	colors,
 	data,
 	legend,
+	legendValue,
 	onFocus,
 	onHover,
 	onHoverEnd,
@@ -44,7 +47,12 @@ export default function PieChartLegend({
 				active: activeIndex === index,
 				id: index,
 				label: datum.label,
-				listValue: `${toPercent(datum.value, total)}%`,
+				listValue:
+					legendValue === 'name'
+						? undefined
+						: legendValue === 'value'
+							? datum.value.toLocaleString()
+							: `${toPercent(datum.value, total)}%`,
 				sortValue: datum.value,
 				visual: (
 					<span
@@ -53,7 +61,7 @@ export default function PieChartLegend({
 					/>
 				),
 			})),
-		[activeIndex, colors, data, total]
+		[activeIndex, colors, data, legendValue, total]
 	);
 
 	const columns = useMemo<ChartLegendColumn[]>(

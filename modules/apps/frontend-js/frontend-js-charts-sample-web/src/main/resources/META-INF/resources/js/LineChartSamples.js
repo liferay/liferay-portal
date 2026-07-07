@@ -66,6 +66,19 @@ export function LineChartSamples() {
 				/>
 			</SampleContainer>
 
+			<SampleContainer label="Names-only legend, borderless icon, centered">
+				<LineChart
+					alignment="center"
+					categories={CATEGORIES}
+					legend="list"
+					legendSwatchBorder={false}
+					legendValue="name"
+					scheme="categorical"
+					series={SERIES}
+					title="Sessions by channel"
+				/>
+			</SampleContainer>
+
 			<SampleContainer label="Data gaps (null values), no legend">
 				<LineChart
 					categories={CATEGORIES}

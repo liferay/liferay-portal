@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -115,6 +115,58 @@ describe('LineChart', () => {
 		expect(
 			screen.getByRole('rowheader', {name: 'Visits'})
 		).toBeInTheDocument();
+	});
+
+	it('shows each series latest value in the list legend by default', () => {
+		render(
+			<LineChart
+				categories={CATEGORIES}
+				legend="list"
+				series={SERIES}
+				title="Traffic over time"
+			/>
+		);
+
+		const legend = screen.getByRole('list', {hidden: true});
+
+		// Visits latest = 9.
+
+		expect(within(legend).getByText('9')).toBeInTheDocument();
+	});
+
+	it('hides the list legend value for legendValue="name"', () => {
+		render(
+			<LineChart
+				categories={CATEGORIES}
+				legend="list"
+				legendValue="name"
+				series={SERIES}
+				title="Traffic over time"
+			/>
+		);
+
+		const legend = screen.getByRole('list', {hidden: true});
+
+		expect(within(legend).getByText('Visits')).toBeInTheDocument();
+		expect(within(legend).queryByText('9')).not.toBeInTheDocument();
+	});
+
+	it('applies the alignment and swatch-border modifiers', () => {
+		render(
+			<LineChart
+				alignment="center"
+				categories={CATEGORIES}
+				legend="list"
+				legendSwatchBorder={false}
+				series={SERIES}
+				title="Traffic over time"
+			/>
+		);
+
+		const figure = screen.getByRole('figure');
+
+		expect(figure).toHaveClass('charts-line-chart--align-center');
+		expect(figure).toHaveClass('charts-line-chart--no-swatch-border');
 	});
 
 	it('has no accessibility violations', async () => {
