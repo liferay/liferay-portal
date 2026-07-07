@@ -6,14 +6,22 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,11 +72,137 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	}
 
 	@Override
+	protected StyleBook testDeleteDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Override
+	protected String
+			testDeleteDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected StyleBook testGetDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected StyleBook testGetDesignLibraryStyleBooksPage_addStyleBook(
+			String designLibraryExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			designLibraryExternalReferenceCode, styleBook);
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryStyleBooksPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryStyleBooksPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getIrrelevantDesignLibraryExternalReferenceCode();
+	}
+
+	@Override
+	protected StyleBook testPatchDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Override
+	protected StyleBook testPostDesignLibraryStyleBook_addStyleBook(
+			StyleBook styleBook)
+		throws Exception {
+
+		return styleBookResource.postDesignLibraryStyleBook(
+			_getDesignLibraryExternalReferenceCode(), styleBook);
+	}
+
+	@Override
 	protected StyleBook testPostSiteStyleBook_addStyleBook(StyleBook styleBook)
 		throws Exception {
 
 		return styleBookResource.postSiteStyleBook(
 			testGroup.getExternalReferenceCode(), styleBook);
+	}
+
+	@Override
+	protected StyleBook testPutDesignLibraryStyleBook_addStyleBook()
+		throws Exception {
+
+		return styleBookResource.postSiteStyleBook(
+			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Override
+	protected String
+			testPutDesignLibraryStyleBook_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return _getDesignLibraryExternalReferenceCode();
+	}
+
+	private String _getDesignLibraryExternalReferenceCode() throws Exception {
+		if (_designLibraryGroup == null) {
+			DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				DepotConstants.TYPE_DESIGN_LIBRARY,
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId(), TestPropsValues.getUserId()));
+
+			_designLibraryGroup = depotEntry.getGroup();
+		}
+
+		return _designLibraryGroup.getExternalReferenceCode();
+	}
+
+	private String _getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		if (_irrelevantDesignLibraryGroup == null) {
+			DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				DepotConstants.TYPE_DESIGN_LIBRARY,
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId(), TestPropsValues.getUserId()));
+
+			_irrelevantDesignLibraryGroup = depotEntry.getGroup();
+		}
+
+		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
 	}
 
 	private void _testPatchSiteStyleBook() throws Exception {
@@ -177,6 +311,12 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				problemException.getMessage());
 		}
 	}
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	private Group _designLibraryGroup;
+	private Group _irrelevantDesignLibraryGroup;
 
 	@Inject
 	private Language _language;

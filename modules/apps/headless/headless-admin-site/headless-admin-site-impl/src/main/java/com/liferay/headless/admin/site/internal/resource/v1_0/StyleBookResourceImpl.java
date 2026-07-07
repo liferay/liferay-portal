@@ -54,6 +54,21 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 	@Override
+	public void deleteDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		StyleBookEntry styleBookEntry = _getStyleBookEntry(
+			designLibraryExternalReferenceCode, styleBookExternalReferenceCode);
+
+		_styleBookEntryService.deleteStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId());
+	}
+
+	@Override
 	public void deleteSiteStyleBook(
 			String siteExternalReferenceCode,
 			String styleBookExternalReferenceCode)
@@ -66,6 +81,57 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 
 		_styleBookEntryService.deleteStyleBookEntry(
 			styleBookEntry.getStyleBookEntryId());
+	}
+
+	@Override
+	public StyleBook getDesignLibraryStyleBook(
+			String designLibraryExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		return _toStyleBook(
+			_getStyleBookEntry(
+				designLibraryExternalReferenceCode,
+				styleBookExternalReferenceCode));
+	}
+
+	@Override
+	public Page<StyleBook> getDesignLibraryStyleBooksPage(
+			String designLibraryExternalReferenceCode, String search,
+			Aggregation aggregation, Filter filter, Pagination pagination,
+			Sort[] sorts)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		long groupId = _getGroupId(designLibraryExternalReferenceCode);
+
+		OrderByComparator<StyleBookEntry> orderByComparator =
+			_getStyleBookEntryOrderByComparator(sorts);
+
+		List<StyleBookEntry> styleBookEntries = null;
+		long totalCount = 0L;
+
+		if (Validator.isNull(search)) {
+			styleBookEntries = _styleBookEntryService.getStyleBookEntries(
+				groupId, pagination.getStartPosition(),
+				pagination.getEndPosition(), orderByComparator);
+			totalCount = _styleBookEntryService.getStyleBookEntriesCount(
+				groupId);
+		}
+		else {
+			styleBookEntries = _styleBookEntryService.getStyleBookEntries(
+				groupId, search, pagination.getStartPosition(),
+				pagination.getEndPosition(), orderByComparator);
+			totalCount = _styleBookEntryService.getStyleBookEntriesCount(
+				groupId, search);
+		}
+
+		return Page.of(
+			transform(styleBookEntries, this::_toStyleBook), pagination,
+			totalCount);
 	}
 
 	@Override
