@@ -1,0 +1,352 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import classNames from 'classnames';
+import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
+
+import {getCategoricalColors} from '../palette';
+import LineChartLegend from './legend/LineChartLegend';
+import LineChartPlot from './plot/LineChartPlot';
+import {getLineChartGeometry} from './plot/geometry';
+import {dashPatternFor, markerShapeFor} from './plot/markers';
+
+import '../../css/LineChart.scss';
+
+import type {ResolvedSeriesStyle} from './plot/LineChartPlot';
+import type {LineChartProps} from './types';
+
+interface ActivePoint {
+	categoryIndex: number;
+	seriesIndex: number;
+}
+
+/**
+ * Shades of blue for the `blue` scheme. Series stay a recognizable blue family
+ * while their marker shape and dash pattern carry the real distinction (so the
+ * chart survives monochrome printing). Each shade keeps the Clay token value as
+ * a fallback so the chart stays blue on themes that do not define the variable.
+ */
+const BLUE_SHADES = [
+	'var(--primary, light-dark(#0b5fff, #6198ff))',
+	'var(--blue-d2, light-dark(#005fcc, #94c4ff))',
+	'var(--blue-l2, light-dark(#66abff, #006be6))',
+	'var(--blue-d1, light-dark(#006be6, #70b1ff))',
+	'var(--blue-l3, light-dark(#97c5ff, #0056b8))',
+];
+
+export default function LineChart({
+	animated = true,
+	categories,
+	className,
+	description,
+	height = 320,
+	legend = 'list',
+	pointTooltip = 'popover',
+	scheme = 'blue',
+	series,
+	title,
+	width = 640,
+	yFormat,
+	yTicks = 5,
+}: LineChartProps) {
+	const reactId = useId();
+	const titleId = `${reactId}-title`;
+	const descId = `${reactId}-desc`;
+
+	const [focus, setFocus] = useState<ActivePoint | null>(null);
+	const [hover, setHover] = useState<ActivePoint | null>(null);
+	const active = focus ?? hover;
+
+	const pointRefs = useRef<Array<Array<SVGCircleElement | null>>>([]);
+
+	const format = useMemo(
+		() => yFormat ?? ((value: number) => String(value)),
+		[yFormat]
+	);
+
+	const geometry = useMemo(
+		() => getLineChartGeometry({categories, height, series, width, yTicks}),
+		[categories, height, series, width, yTicks]
+	);
+
+	const palette = useMemo(
+		() =>
+			scheme === 'categorical'
+				? getCategoricalColors(series.length)
+				: null,
+		[scheme, series.length]
+	);
+
+	const styles = useMemo<ResolvedSeriesStyle[]>(
+		() =>
+			series.map((line, index) => ({
+				color:
+					line.color ??
+					(palette
+						? palette[index]
+						: BLUE_SHADES[index % BLUE_SHADES.length]),
+				dasharray: line.dasharray ?? dashPatternFor(index),
+				marker: line.marker ?? markerShapeFor(index),
+			})),
+		[series, palette]
+	);
+
+	const summaryText = useMemo(() => {
+		if (description) {
+			return description;
+		}
+
+		return series.map((line) => line.description ?? line.label).join('. ');
+	}, [description, series]);
+
+	// Precompute the non-null point indices per series once per geometry, so the
+	// keyboard, legend and tabbable lookups stay O(1) instead of re-reducing on
+	// every focus and hover change.
+
+	const allFiniteIndices = useMemo(
+		() =>
+			geometry.series.map((seriesLayout) =>
+				seriesLayout.points.reduce<number[]>(
+					(accumulator, point, index) => {
+						if (point) {
+							accumulator.push(index);
+						}
+
+						return accumulator;
+					},
+					[]
+				)
+			),
+		[geometry]
+	);
+
+	const finiteIndices = useCallback(
+		(seriesIndex: number): number[] => allFiniteIndices[seriesIndex] ?? [],
+		[allFiniteIndices]
+	);
+
+	const tabbable = useMemo<ActivePoint | null>(() => {
+		if (active) {
+			return active;
+		}
+
+		for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
+			const indices = finiteIndices(seriesIndex);
+
+			if (indices.length) {
+				return {categoryIndex: indices[0], seriesIndex};
+			}
+		}
+
+		return null;
+	}, [active, finiteIndices, series.length]);
+
+	const setPointRef = useCallback(
+		(
+			seriesIndex: number,
+			categoryIndex: number,
+			element: SVGCircleElement | null
+		) => {
+			(pointRefs.current[seriesIndex] ??= [])[categoryIndex] = element;
+		},
+		[]
+	);
+
+	const focusPoint = useCallback(
+		(seriesIndex: number, categoryIndex: number) => {
+			pointRefs.current[seriesIndex]?.[categoryIndex]?.focus();
+		},
+		[]
+	);
+
+	const onFocusPoint = useCallback(
+		(seriesIndex: number, categoryIndex: number) =>
+			setFocus({categoryIndex, seriesIndex}),
+		[]
+	);
+
+	const onBlurPoint = useCallback(
+		(seriesIndex: number, categoryIndex: number) =>
+			setFocus((current) =>
+				current?.seriesIndex === seriesIndex &&
+				current?.categoryIndex === categoryIndex
+					? null
+					: current
+			),
+		[]
+	);
+
+	const onHoverPoint = useCallback(
+		(seriesIndex: number, categoryIndex: number) =>
+			setHover({categoryIndex, seriesIndex}),
+		[]
+	);
+
+	const onLeavePoint = useCallback(
+		(seriesIndex: number, categoryIndex: number) =>
+			setHover((current) =>
+				current?.seriesIndex === seriesIndex &&
+				current?.categoryIndex === categoryIndex
+					? null
+					: current
+			),
+		[]
+	);
+
+	const nearestFinite = useCallback(
+		(seriesIndex: number, categoryIndex: number): number | null => {
+			const indices = finiteIndices(seriesIndex);
+
+			if (!indices.length) {
+				return null;
+			}
+
+			return indices.reduce((best, index) =>
+				Math.abs(index - categoryIndex) < Math.abs(best - categoryIndex)
+					? index
+					: best
+			);
+		},
+		[finiteIndices]
+	);
+
+	const onKeyDownPoint = useCallback(
+		(
+			seriesIndex: number,
+			categoryIndex: number,
+			event: React.KeyboardEvent
+		) => {
+			const indices = finiteIndices(seriesIndex);
+			const position = indices.indexOf(categoryIndex);
+
+			const moveSeries = (direction: 1 | -1) => {
+				for (
+					let next = seriesIndex + direction;
+					next >= 0 && next < series.length;
+					next += direction
+				) {
+					const target = nearestFinite(next, categoryIndex);
+
+					if (target !== null) {
+						focusPoint(next, target);
+
+						return true;
+					}
+				}
+
+				return false;
+			};
+
+			let handled = true;
+
+			switch (event.key) {
+				case 'ArrowRight':
+					focusPoint(
+						seriesIndex,
+						indices[Math.min(position + 1, indices.length - 1)]
+					);
+					break;
+				case 'ArrowLeft':
+					focusPoint(seriesIndex, indices[Math.max(position - 1, 0)]);
+					break;
+				case 'ArrowDown':
+					moveSeries(1);
+					break;
+				case 'ArrowUp':
+					moveSeries(-1);
+					break;
+				case 'Home':
+					focusPoint(seriesIndex, indices[0]);
+					break;
+				case 'End':
+					focusPoint(seriesIndex, indices[indices.length - 1]);
+					break;
+				default:
+					handled = false;
+			}
+
+			if (handled) {
+				event.preventDefault();
+			}
+		},
+		[finiteIndices, focusPoint, nearestFinite, series.length]
+	);
+
+	return (
+		<figure
+			aria-describedby={descId}
+			aria-labelledby={titleId}
+			className={classNames(
+				'charts-line-chart',
+				`charts-line-chart--${scheme}`,
+				`charts-line-chart--legend-${legend}`,
+				`charts-line-chart--tooltip-${pointTooltip}`,
+				{
+					'charts-line-chart--motion': animated,
+				},
+				className
+			)}
+			style={{maxWidth: width}}
+		>
+			<figcaption className="charts-line-chart__title" id={titleId}>
+				{title}
+			</figcaption>
+
+			<p className="sr-only" id={descId}>
+				{summaryText}
+			</p>
+
+			<LineChartPlot
+				active={active}
+				categories={categories}
+				focus={focus}
+				format={format}
+				geometry={geometry}
+				height={height}
+				onBlurPoint={onBlurPoint}
+				onFocusPoint={onFocusPoint}
+				onHoverPoint={onHoverPoint}
+				onKeyDownPoint={onKeyDownPoint}
+				onLeavePoint={onLeavePoint}
+				pointTooltip={pointTooltip}
+				series={series}
+				setPointRef={setPointRef}
+				styles={styles}
+				tabbable={tabbable}
+				width={width}
+			/>
+
+			<LineChartLegend
+				activeSeriesIndex={active?.seriesIndex ?? null}
+				format={format}
+				layout={legend}
+				onActivate={(seriesIndex) => {
+					const target = nearestFinite(seriesIndex, 0);
+
+					setHover(
+						target === null
+							? null
+							: {categoryIndex: target, seriesIndex}
+					);
+				}}
+				onDeactivate={(seriesIndex) =>
+					setHover((current) =>
+						current?.seriesIndex === seriesIndex ? null : current
+					)
+				}
+				onSelect={(seriesIndex) => {
+					const target = nearestFinite(seriesIndex, 0);
+
+					if (target !== null) {
+						focusPoint(seriesIndex, target);
+					}
+				}}
+				series={series}
+				styles={styles}
+				titleId={titleId}
+			/>
+		</figure>
+	);
+}

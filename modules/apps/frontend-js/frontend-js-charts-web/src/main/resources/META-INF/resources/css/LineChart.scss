@@ -1,0 +1,203 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'atlas-custom-properties/_variables';
+
+// Shared legend styling lives in ChartLegend.scss; this file only holds what is
+// specific to the line plot and its marker legend icon.
+
+.charts-line-chart {
+	color: $dark;
+	display: block;
+	margin: 0;
+
+	// The SVG scales fluidly to the figure width; the figure is capped at the
+	// chart's natural width (set inline from the width prop) via max-width.
+
+	svg {
+		display: block;
+		height: auto;
+		width: 100%;
+	}
+
+	&__title {
+		font-size: 0.9375rem;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
+	}
+
+	&__axis {
+		stroke: $light-d2;
+		stroke-width: 1;
+	}
+
+	&__gridline {
+		stroke: $light-d1;
+		stroke-width: 1;
+	}
+
+	&__tick-label,
+	&__category-label {
+		fill: $dark;
+		font-size: 0.6875rem;
+		opacity: 0.7;
+	}
+
+	// Each series carries its color in `--charts-line-color`, set inline, so
+	// lines, markers and legend swatches all tint from one source.
+
+	&__line {
+		fill: none;
+		stroke: var(--charts-line-color, $primary);
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-width: 2;
+	}
+
+	// The white stroke rings the marker so it stays legible where it overlaps
+	// the line, another marker, or the legend's active/hover background.
+
+	&__marker {
+		fill: var(--charts-line-color, $primary);
+		stroke: $white;
+		stroke-width: 1;
+	}
+
+	// Transparent hit target sitting over each marker. It owns focus and pointer
+	// interaction; the visible marker is decorative.
+
+	&__point {
+		cursor: pointer;
+		fill: transparent;
+		outline: none;
+		stroke: transparent;
+	}
+
+	// Focus halo: concentric marker shapes behind the focused point (a primary
+	// ring under a white ring). It is driven by focus state, not CSS
+	// `:focus-visible`, so it also shows when a point is selected by mouse or
+	// from the legend — not only via the keyboard.
+
+	&__halo-outer {
+		fill: $primary;
+	}
+
+	&__halo-inner {
+		fill: $white;
+	}
+
+	// Dim the other series while one is active, so the focused line stands out.
+
+	&__series {
+		transition: opacity 140ms ease;
+	}
+
+	&:hover &__series:not(.is-active),
+	&:focus-within &__series:not(.is-active) {
+		opacity: 0.35;
+	}
+
+	// Tooltip chip.
+
+	&__tooltip {
+		pointer-events: none;
+	}
+
+	&__tooltip-box {
+		fill: $dark;
+	}
+
+	&__tooltip-arrow {
+		fill: $dark;
+	}
+
+	&__tooltip-text {
+		fill: $white;
+		font-size: 0.75rem;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+	}
+
+	// Marker legend icon (the series visual passed to the shared legend).
+
+	&__legend-icon {
+		--charts-line-color: #{$primary};
+
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	// A wider white line drawn behind the colored one (same dash pattern) rings
+	// each dash in white, matching the marker's white border so the whole icon
+	// stays legible on the legend's active/hover background.
+
+	&__legend-icon-line-halo {
+		stroke: $white;
+		stroke-width: 4;
+	}
+
+	&__legend-icon-line {
+		stroke: var(--charts-line-color, $primary);
+		stroke-width: 2;
+	}
+
+	&__legend-icon-marker {
+		fill: var(--charts-line-color, $primary);
+		stroke: $white;
+		stroke-width: 1;
+	}
+
+	// Motion: only when the component opts in via the `--motion` modifier.
+
+	&--motion {
+		.charts-line-chart__line {
+			animation: charts-line-fade 480ms ease-out backwards;
+		}
+
+		.charts-line-chart__marker-inner {
+			animation: charts-marker-pop 360ms ease-out backwards;
+			animation-delay: var(--charts-marker-delay, 0ms);
+			transform-box: fill-box;
+			transform-origin: center;
+		}
+	}
+}
+
+@keyframes charts-line-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes charts-marker-pop {
+	from {
+		opacity: 0;
+		transform: scale(0);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+// Strip animations under both the OS media query and the Clay
+// `c-prefers-reduced-motion` body class.
+
+@media (prefers-reduced-motion: reduce) {
+	.charts-line-chart__line,
+	.charts-line-chart__marker-inner {
+		animation: none !important;
+	}
+}
+
+body.c-prefers-reduced-motion .charts-line-chart__line,
+body.c-prefers-reduced-motion .charts-line-chart__marker-inner {
+	animation: none !important;
+}
