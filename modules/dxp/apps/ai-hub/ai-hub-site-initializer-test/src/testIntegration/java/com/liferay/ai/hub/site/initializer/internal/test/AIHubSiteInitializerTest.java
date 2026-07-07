@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -384,7 +385,7 @@ public class AIHubSiteInitializerTest {
 		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			TestPropsValues.getGroupId(), false, friendlyURL);
 
-		Assert.assertEquals(name, layout.getName());
+		Assert.assertEquals(name, layout.getName(LocaleUtil.getSiteDefault()));
 	}
 
 	private void _assertLayoutUtilityPageEntryExists(
