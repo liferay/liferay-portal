@@ -1,0 +1,35 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'atlas-custom-properties/_variables';
+
+.chart-map {
+	display: block;
+	margin: 0;
+
+	.chart-map-caption {
+		font-weight: 600;
+		margin-block-end: 0.5rem;
+		text-align: start;
+	}
+
+	.chart-map-svg {
+		block-size: auto;
+		display: block;
+		inline-size: 100%;
+	}
+
+	.chart-map-land {
+		fill: $light;
+		stroke: $light-d2;
+		stroke-width: 0.5;
+	}
+
+	.chart-map-marker {
+		fill: var(--marker-fill);
+		stroke: $white;
+		stroke-width: 1;
+	}
+}
