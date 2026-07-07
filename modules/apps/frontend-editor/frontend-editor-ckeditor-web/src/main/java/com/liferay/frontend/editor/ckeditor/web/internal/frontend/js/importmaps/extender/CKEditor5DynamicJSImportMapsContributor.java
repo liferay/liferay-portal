@@ -143,6 +143,10 @@ public class CKEditor5DynamicJSImportMapsContributor
 		"@ckeditor/ckeditor5-watchdog/dist/index.js",
 		"@ckeditor/ckeditor5-widget/dist/index.js",
 		"@ckeditor/ckeditor5-word-count/dist/index.js",
+		"@codemirror/autocomplete", "@codemirror/commands",
+		"@codemirror/lang-html", "@codemirror/lang-markdown",
+		"@codemirror/language", "@codemirror/state",
+		"@codemirror/theme-one-dark", "@codemirror/view",
 		"frontend-editor-ckeditor-web/plugins/DocumentLinkSelector"
 	};
 
