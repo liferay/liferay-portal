@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Portal Instances API
 Bundle-SymbolicName: com.liferay.headless.portal.instances.api
-Bundle-Version: 8.0.5
+Bundle-Version: 8.1.0
 Export-Package:\
 	com.liferay.headless.portal.instances.dto.v1_0,\
 	com.liferay.headless.portal.instances.resource.v1_0
