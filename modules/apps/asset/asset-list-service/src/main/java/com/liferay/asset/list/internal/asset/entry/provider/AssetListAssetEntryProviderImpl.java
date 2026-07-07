@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -971,6 +972,37 @@ public class AssetListAssetEntryProviderImpl
 		return searchContext;
 	}
 
+	private long[] _getReferencedModelsGroupIds(long[] groupIds) {
+		for (long groupId : groupIds) {
+			Group group = _groupLocalService.fetchGroup(groupId);
+
+			if (group == null) {
+				continue;
+			}
+
+			int depotEntryType = GetterUtil.getInteger(
+				group.getTypeSettingsProperty("depotEntryType"));
+
+			if ((depotEntryType != DepotConstants.TYPE_SPACE) ||
+				!FeatureFlagManagerUtil.isEnabled(
+					group.getCompanyId(), "LPD-17564")) {
+
+				continue;
+			}
+
+			Group cmsGroup = _groupLocalService.fetchGroup(
+				group.getCompanyId(), GroupConstants.CMS);
+
+			if (cmsGroup != null) {
+				return ArrayUtil.append(groupIds, cmsGroup.getGroupId());
+			}
+
+			break;
+		}
+
+		return groupIds;
+	}
+
 	private void _setCategoriesAndTagsAndKeywords(
 		AssetEntryQuery assetEntryQuery, UnicodeProperties unicodeProperties,
 		long[] overrideAllAssetCategoryIds, String[] overrideAllAssetTagNames,
@@ -1072,8 +1104,10 @@ public class AssetListAssetEntryProviderImpl
 			allAssetTagNames = overrideAllAssetTagNames;
 		}
 
-		long[] groupIds = GetterUtil.getLongValues(
-			StringUtil.split(unicodeProperties.getProperty("groupIds", null)));
+		long[] groupIds = _getReferencedModelsGroupIds(
+			GetterUtil.getLongValues(
+				StringUtil.split(
+					unicodeProperties.getProperty("groupIds", null))));
 
 		for (String assetTagName : allAssetTagNames) {
 			long[] allAssetTagIds = _assetTagLocalService.getTagIds(
