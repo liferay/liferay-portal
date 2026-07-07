@@ -544,6 +544,8 @@ public class ViewChangesDisplayContext {
 				_renderResponse
 			).setMVCRenderCommandName(
 				"/change_tracking/view_change"
+			).setBackURL(
+				_themeDisplay.getURLCurrent()
 			).setParameter(
 				"ctCollectionId", _ctCollection.getCtCollectionId()
 			).buildString()
