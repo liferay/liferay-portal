@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../utils/getRandomInt';
 import {waitForAlert} from '../../utils/waitForAlert';
 
@@ -140,11 +141,21 @@ export class EditDigitalSalesRoomPage {
 	}
 
 	async uploadDocument(filePath: string) {
+		await clickAndExpectToBeVisible({
+			target: this.newButton,
+			trigger: this.documentsMenuItem,
+		});
+		await clickAndExpectToBeVisible({
+			target: this.fileUploadButton,
+			trigger: this.newButton,
+		});
+		await clickAndExpectToBeVisible({
+			target: this.selectFileButton,
+			trigger: this.fileUploadButton,
+		});
+
 		const fileChooserPromise = this.page.waitForEvent('filechooser');
 
-		await this.documentsMenuItem.click();
-		await this.newButton.click();
-		await this.fileUploadButton.click();
 		await this.selectFileButton.click();
 
 		const fileChooser = await fileChooserPromise;
