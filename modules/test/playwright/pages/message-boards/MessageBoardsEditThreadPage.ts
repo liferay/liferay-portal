@@ -11,8 +11,14 @@ export class MessageBoardsEditThreadPage {
 	readonly allFilesReadyToBeSavedMessage: Locator;
 	readonly attachmentCollapse: Locator;
 	readonly bodyFrameLocator: FrameLocator;
+	readonly bodyImageButton: Locator;
+	readonly bodyLinkButton: Locator;
 	readonly bodyTextBox: Locator;
+	readonly browseServerButton: Locator;
 	readonly fileSelector: Locator;
+	readonly itemSelectorFrame: FrameLocator;
+	readonly linkDialogOKButton: Locator;
+	readonly linkDisplayTextSelector: Locator;
 	readonly messageBoardsPage: MessageBoardsPage;
 	readonly page: Page;
 	readonly publishButton: Locator;
@@ -27,8 +33,29 @@ export class MessageBoardsEditThreadPage {
 			name: 'Attachments',
 		});
 		this.bodyFrameLocator = page.frameLocator('iframe');
+		this.bodyImageButton = page.getByRole('button', {
+			exact: true,
+			name: 'Image',
+		});
+		this.bodyLinkButton = page.getByRole('button', {
+			exact: true,
+			name: 'Link',
+		});
 		this.bodyTextBox = this.bodyFrameLocator.getByRole('textbox');
+		this.browseServerButton = page.getByRole('button', {
+			name: 'Browse Server',
+		});
 		this.fileSelector = page.getByRole('button', {name: 'Select File'});
+		this.itemSelectorFrame = page.frameLocator(
+			'iframe[title="Select Item"]'
+		);
+		this.linkDialogOKButton = page.getByRole('button', {
+			exact: true,
+			name: 'OK',
+		});
+		this.linkDisplayTextSelector = page.getByRole('textbox', {
+			name: 'Display Text',
+		});
 		this.messageBoardsPage = new MessageBoardsPage(page);
 		this.page = page;
 		this.publishButton = page.getByRole('button', {
@@ -40,6 +67,40 @@ export class MessageBoardsEditThreadPage {
 			exact: true,
 			name: 'Submit for Workflow',
 		});
+	}
+
+	async insertBodyImage(documentTitle: string) {
+		await this.bodyImageButton.click();
+
+		await this._selectItemSelectorDocument(documentTitle);
+	}
+
+	async insertBodyLinkToDocument(displayText: string, documentTitle: string) {
+		await this.bodyLinkButton.click();
+
+		await this.linkDisplayTextSelector.fill(displayText);
+
+		await this.browseServerButton.click();
+
+		await this._selectItemSelectorDocument(documentTitle);
+
+		await this.linkDialogOKButton.click();
+	}
+
+	async insertBodyLinkToPage(displayText: string, pageName: string) {
+		await this.bodyLinkButton.click();
+
+		await this.linkDisplayTextSelector.fill(displayText);
+
+		await this.browseServerButton.click();
+
+		await this.itemSelectorFrame.getByRole('link', {name: 'Pages'}).click();
+
+		await this.itemSelectorFrame
+			.getByRole('treeitem', {name: pageName})
+			.click();
+
+		await this.linkDialogOKButton.click();
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
@@ -98,5 +159,18 @@ export class MessageBoardsEditThreadPage {
 		const fileChooser = await fileChooserPromise;
 		await fileChooser.setFiles(filePath);
 		await this.allFilesReadyToBeSavedMessage.waitFor();
+	}
+
+	async _selectItemSelectorDocument(documentTitle: string) {
+		const searchBox = this.itemSelectorFrame.getByRole('searchbox', {
+			name: 'Search for:',
+		});
+
+		await searchBox.fill(documentTitle);
+		await searchBox.press('Enter');
+
+		await this.itemSelectorFrame
+			.getByText(documentTitle, {exact: true})
+			.click();
 	}
 }
