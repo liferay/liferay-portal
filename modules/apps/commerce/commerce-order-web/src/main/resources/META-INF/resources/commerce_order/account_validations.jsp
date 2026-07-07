@@ -8,11 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
+CommerceOrderAccountValidationsDisplayContext commerceOrderAccountValidationsDisplayContext = (CommerceOrderAccountValidationsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
 long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 %>
 
 <div class="container-fluid container-fluid-max-xl p-4">
-	<c:if test="<%= GetterUtil.getBoolean(request.getAttribute(CommerceOrderWebKeys.SHOW_ACCOUNT_VALIDATION_FORM)) %>">
+	<c:if test="<%= commerceOrderAccountValidationsDisplayContext.isAccountValidationFormVisible() %>">
 		<portlet:actionURL name="/commerce_order/add_commerce_order_account_validation" var="addAccountValidationActionURL" />
 
 		<portlet:renderURL var="redirectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -40,8 +42,8 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 		title='<%= LanguageUtil.get(request, "history") %>'
 	>
 		<frontend-data-set:headless-display
-			apiURL='<%= (String)request.getAttribute("accountValidationsURL") %>'
-			fdsFilters='<%= (List<FDSFilter>)request.getAttribute("accountValidationsFDSFilters") %>'
+			apiURL="<%= commerceOrderAccountValidationsDisplayContext.getAccountValidationsURL() %>"
+			fdsFilters="<%= commerceOrderAccountValidationsDisplayContext.getFDSFilters() %>"
 			id="<%= CommerceOrderFDSNames.ACCOUNT_VALIDATIONS %>"
 			itemsPerPage="<%= 10 %>"
 			showManagementBar="<%= true %>"
