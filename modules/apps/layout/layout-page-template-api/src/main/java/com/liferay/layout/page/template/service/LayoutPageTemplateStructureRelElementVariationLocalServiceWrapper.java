@@ -413,6 +413,16 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceWrapper
 			getLayoutPageTemplateStructureRelElementVariations(plid);
 	}
 
+	@Override
+	public java.util.List<LayoutPageTemplateStructureRelElementVariation>
+		getLayoutPageTemplateStructureRelElementVariations(
+			long plid, String segmentsExperienceERC) {
+
+		return _layoutPageTemplateStructureRelElementVariationLocalService.
+			getLayoutPageTemplateStructureRelElementVariations(
+				plid, segmentsExperienceERC);
+	}
+
 	/**
 	 * Returns all the layout page template structure rel element variations matching the UUID and company.
 	 *
@@ -561,4 +571,4 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceWrapper
 		_layoutPageTemplateStructureRelElementVariationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-247877782
+// LIFERAY-SERVICE-BUILDER-HASH:-1279332914

@@ -134,6 +134,14 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 			findByPlid(plid);
 	}
 
+	public List<LayoutPageTemplateStructureRelElementVariation>
+		getLayoutPageTemplateStructureRelElementVariations(
+			long plid, String segmentsExperienceERC) {
+
+		return layoutPageTemplateStructureRelElementVariationPersistence.
+			findByP_SEERC(plid, segmentsExperienceERC);
+	}
+
 	private void _validate(
 			String[] audienceEntryERCs, String name, String targetElement)
 		throws PortalException {

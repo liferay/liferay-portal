@@ -306,6 +306,11 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 	public List<LayoutPageTemplateStructureRelElementVariation>
 		getLayoutPageTemplateStructureRelElementVariations(long plid);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<LayoutPageTemplateStructureRelElementVariation>
+		getLayoutPageTemplateStructureRelElementVariations(
+			long plid, String segmentsExperienceERC);
+
 	/**
 	 * Returns all the layout page template structure rel element variations matching the UUID and company.
 	 *
@@ -393,4 +398,4 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-734232431
+// LIFERAY-SERVICE-BUILDER-HASH:-2123153812
