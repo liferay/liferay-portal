@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
 import {
@@ -417,4 +418,60 @@ test('A guest granted reply permission can reply to a thread', async ({
 
 	await expect(page.getByText('test guest')).toBeVisible();
 	await expect(page.getByText('Anonymous')).toBeVisible();
+});
+
+test('A reply keeps the owner only view permissions of its thread', async ({
+	apiHelpers,
+	messageBoardsWidgetPage,
+	page,
+	site,
+}) => {
+	const replyBody = getRandomString();
+	const threadSubject = getRandomString();
+
+	const layout = await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+	// A thread and its reply created through the API are viewable by the owner
+	// only
+
+	const thread = await apiHelpers.headlessDelivery.postMessageBoardThread({
+		articleBody: getRandomString(),
+		headline: threadSubject,
+		siteId: site.id,
+	});
+
+	await apiHelpers.headlessDelivery.postMessageBoardMessage({
+		articleBody: replyBody,
+		messageBoardThreadId: String(thread.id),
+	});
+
+	await messageBoardsWidgetPage.goToThread(site, layout, threadSubject);
+
+	// Open the reply's inline permissions
+
+	const replyCard = page
+		.locator('.card-tab.message-container')
+		.filter({hasText: replyBody});
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page
+			.locator('.dropdown-menu:visible')
+			.getByText('Permissions', {
+				exact: true,
+			}),
+		trigger: replyCard.locator('a.component-action.dropdown-toggle'),
+	});
+
+	const permissionsFrame = page.frameLocator('iframe[title="Permissions"]');
+
+	// Only the owner keeps the view permission on the reply
+
+	await expect(permissionsFrame.locator('#owner_ACTION_VIEW')).toBeChecked();
+	await expect(
+		permissionsFrame.locator('#power-user_ACTION_VIEW')
+	).not.toBeChecked();
+	await expect(
+		permissionsFrame.locator('#user_ACTION_VIEW')
+	).not.toBeChecked();
 });
