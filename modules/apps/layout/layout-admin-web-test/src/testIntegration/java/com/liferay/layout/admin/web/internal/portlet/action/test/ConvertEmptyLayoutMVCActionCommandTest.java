@@ -102,7 +102,7 @@ public class ConvertEmptyLayoutMVCActionCommandTest {
 	@Test
 	public void testCannotConvertEmptyLayout() throws Exception {
 		_testCannotConvertEmptyLayout(LayoutConstants.TYPE_EMBEDDED);
-		_testCannotConvertEmptyLayout(LayoutConstants.TYPE_LINK_TO_LAYOUT);
+		_testCannotConvertEmptyLayout(LayoutConstants.TYPE_URL);
 	}
 
 	@Test
