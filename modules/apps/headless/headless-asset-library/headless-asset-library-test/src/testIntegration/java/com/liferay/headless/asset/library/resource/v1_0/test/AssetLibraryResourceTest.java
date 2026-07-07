@@ -474,10 +474,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		int depotEntryType = DepotConstants.TYPE_ASSET_LIBRARY;
 
-		if (assetLibrary.getType() == AssetLibrary.Type.CATALOG) {
-			depotEntryType = DepotConstants.TYPE_CATALOG;
-		}
-		else if (assetLibrary.getType() == AssetLibrary.Type.DESIGN_LIBRARY) {
+		if (assetLibrary.getType() == AssetLibrary.Type.DESIGN_LIBRARY) {
 			depotEntryType = DepotConstants.TYPE_DESIGN_LIBRARY;
 		}
 		else if (assetLibrary.getType() == AssetLibrary.Type.PROJECT) {
