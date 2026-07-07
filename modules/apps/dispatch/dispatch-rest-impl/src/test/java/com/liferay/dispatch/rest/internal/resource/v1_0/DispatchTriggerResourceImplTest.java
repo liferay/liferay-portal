@@ -11,6 +11,7 @@ import com.liferay.dispatch.service.DispatchTriggerService;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -21,10 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Magdalena Jedraszak
@@ -38,11 +36,21 @@ public class DispatchTriggerResourceImplTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+		ReflectionTestUtil.setFieldValue(
+			_dispatchTriggerResourceImpl,
+			"_dispatchTriggerModelResourcePermission",
+			_dispatchTriggerModelResourcePermission);
+		ReflectionTestUtil.setFieldValue(
+			_dispatchTriggerResourceImpl, "_dispatchTriggerService",
+			_dispatchTriggerService);
+		ReflectionTestUtil.setFieldValue(
+			_dispatchTriggerResourceImpl, "_messageBus", _messageBus);
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void testPostDispatchTriggerRunPropagatesCompanyId()
+		throws Exception {
+
 		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -61,36 +69,30 @@ public class DispatchTriggerResourceImplTest {
 
 		_dispatchTriggerResourceImpl.postDispatchTriggerRun(dispatchTriggerId);
 
-		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(
+		ArgumentCaptor<Message> argumentCaptor = ArgumentCaptor.forClass(
 			Message.class);
 
 		Mockito.verify(
 			_messageBus
 		).sendMessage(
 			Mockito.eq(DispatchConstants.EXECUTOR_DESTINATION_NAME),
-			messageArgumentCaptor.capture()
+			argumentCaptor.capture()
 		);
 
-		Message message = messageArgumentCaptor.getValue();
+		Message message = argumentCaptor.getValue();
 
 		Assert.assertEquals(companyId, message.getLong("companyId"));
 	}
 
-	@Mock
-	private DispatchTrigger _dispatchTrigger;
-
-	@Mock
-	private ModelResourcePermission<DispatchTrigger>
-		_dispatchTriggerModelResourcePermission;
-
-	@InjectMocks
+	private final DispatchTrigger _dispatchTrigger = Mockito.mock(
+		DispatchTrigger.class);
+	private final ModelResourcePermission<DispatchTrigger>
+		_dispatchTriggerModelResourcePermission = Mockito.mock(
+			ModelResourcePermission.class);
 	private final DispatchTriggerResourceImpl _dispatchTriggerResourceImpl =
 		new DispatchTriggerResourceImpl();
-
-	@Mock
-	private DispatchTriggerService _dispatchTriggerService;
-
-	@Mock
-	private MessageBus _messageBus;
+	private final DispatchTriggerService _dispatchTriggerService = Mockito.mock(
+		DispatchTriggerService.class);
+	private final MessageBus _messageBus = Mockito.mock(MessageBus.class);
 
 }

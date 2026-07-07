@@ -21,10 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Magdalena Jedraszak
@@ -38,11 +35,15 @@ public class EditDispatchTriggerMVCActionCommandTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+		ReflectionTestUtil.setFieldValue(
+			_editDispatchTriggerMVCActionCommand,
+			"_dispatchTriggerLocalService", _dispatchTriggerLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_editDispatchTriggerMVCActionCommand, "_messageBus", _messageBus);
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void testSendMessagePropagatesCompanyId() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -63,33 +64,28 @@ public class EditDispatchTriggerMVCActionCommandTest {
 			_editDispatchTriggerMVCActionCommand, "_sendMessage",
 			new Class<?>[] {long.class}, dispatchTriggerId);
 
-		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(
+		ArgumentCaptor<Message> argumentCaptor = ArgumentCaptor.forClass(
 			Message.class);
 
 		Mockito.verify(
 			_messageBus
 		).sendMessage(
 			Mockito.eq(DispatchConstants.EXECUTOR_DESTINATION_NAME),
-			messageArgumentCaptor.capture()
+			argumentCaptor.capture()
 		);
 
-		Message message = messageArgumentCaptor.getValue();
+		Message message = argumentCaptor.getValue();
 
 		Assert.assertEquals(companyId, message.getLong("companyId"));
 	}
 
-	@Mock
-	private DispatchTrigger _dispatchTrigger;
-
-	@Mock
-	private DispatchTriggerLocalService _dispatchTriggerLocalService;
-
-	@InjectMocks
+	private final DispatchTrigger _dispatchTrigger = Mockito.mock(
+		DispatchTrigger.class);
+	private final DispatchTriggerLocalService _dispatchTriggerLocalService =
+		Mockito.mock(DispatchTriggerLocalService.class);
 	private final EditDispatchTriggerMVCActionCommand
 		_editDispatchTriggerMVCActionCommand =
 			new EditDispatchTriggerMVCActionCommand();
-
-	@Mock
-	private MessageBus _messageBus;
+	private final MessageBus _messageBus = Mockito.mock(MessageBus.class);
 
 }
