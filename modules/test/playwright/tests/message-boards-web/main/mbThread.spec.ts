@@ -12,6 +12,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitch, userData} from '../../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -188,5 +189,81 @@ test(
 		await page.getByRole('button', {name: 'Reply'}).click();
 
 		await expect(messageBoardsEditThreadPage.bodyTextBox).toBeVisible();
+	}
+);
+
+test(
+	'Can distinguish read from unread threads',
+	{tag: '@LPS-77263'},
+	async ({
+		apiHelpers,
+		messageBoardsEditThreadPage,
+		messageBoardsWidgetPage,
+		page,
+		site,
+	}) => {
+		const readSubject = getRandomString();
+		const unreadSubject = getRandomString();
+
+		const layout =
+			await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+		// Create the threads through the UI so they carry site view permissions
+
+		for (const headline of [readSubject, unreadSubject]) {
+			await messageBoardsEditThreadPage.gotoAndPublishNewBasicThread(
+				headline,
+				getRandomString(),
+				site.friendlyUrlPath
+			);
+		}
+
+		// A fresh member starts with no read state on either thread
+
+		const siteMemberRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+		const member = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await apiHelpers.headlessAdminUser.assignUserToSite(
+			siteMemberRole.id,
+			site.id,
+			member.id
+		);
+
+		userData[member.alternateName] = {
+			name: member.givenName,
+			password: 'test',
+			surname: member.familyName,
+		};
+
+		await performUserSwitch(page, member.alternateName);
+
+		// Both threads are flagged unread
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await expect(
+			page.getByRole('link', {name: `Unread Thread: ${readSubject}`})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {name: `Unread Thread: ${unreadSubject}`})
+		).toBeVisible();
+
+		// Opening one thread marks only that thread as read
+
+		await messageBoardsWidgetPage.goToThread(site, layout, readSubject);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await expect(
+			page.getByRole('link', {exact: true, name: readSubject})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {name: `Unread Thread: ${readSubject}`})
+		).toBeHidden();
+		await expect(
+			page.getByRole('link', {name: `Unread Thread: ${unreadSubject}`})
+		).toBeVisible();
 	}
 );
