@@ -45,42 +45,6 @@ definition {
 
 	@priority = 3
 	@refactordone
-	test CanReplyToThreadAsGuest {
-		property portal.acceptance = "quarantine";
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.addPG(
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsPermissions.checkReplyToMessageForGuestPG(threadSubject = "MB Thread Message Subject");
-
-		User.logoutPG();
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.replyPG(
-			threadBody = "MB Thread Message Body",
-			threadReplyBody = "MB Thread Reply Body As Guest",
-			threadSubject = "MB Thread Message Subject");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.viewReplyPG(
-			guestReply = "true",
-			loggedOut = "true",
-			replyCount = 1,
-			threadBody = "MB Thread Message Body",
-			threadReplyBody = "MB Thread Reply Body As Guest",
-			threadSubject = "MB Thread Message Subject",
-			userName = "Anonymous");
-	}
-
-	@priority = 3
-	@refactordone
 	test CanSearchForAttachment {
 		property portal.acceptance = "false";
 

@@ -393,3 +393,28 @@ test('A regular role with portlet access can open the message boards admin', asy
 		page.getByText('There are no threads or categories.')
 	).toBeVisible();
 });
+
+test('A guest granted reply permission can reply to a thread', async ({
+	messageBoardsEditThreadPage,
+	messageBoardsPage,
+	messageBoardsWidgetPage,
+	page,
+	site,
+}) => {
+	await messageBoardsPage.setGuestCategoryPermissions(site.friendlyUrlPath);
+
+	await messageBoardsEditThreadPage.gotoAndPublishNewBasicThread(
+		'Thread Subject',
+		'Thread Body',
+		site.friendlyUrlPath
+	);
+
+	const layout = await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+	// The guest reply is posted and attributed to an anonymous author
+
+	await messageBoardsWidgetPage.addGuestReply(site, layout, 'Publish');
+
+	await expect(page.getByText('test guest')).toBeVisible();
+	await expect(page.getByText('Anonymous')).toBeVisible();
+});
