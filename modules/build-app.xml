@@ -256,6 +256,56 @@
 		<delete dir="${osgi.dir}/static" />
 	</target>
 
+	<target depends="dist-module-artifacts-unlicensed-lpkg,get-app-version,update-app-marketplace-version,write-app-change-log" name="build-app-unlicensed-lpkg" unless="module.dirs.null">
+		<property name="output.dir" value="${dist.dir}/lpkg" />
+
+		<for param="lpkg.dir">
+			<path>
+				<dirset
+					dir="${output.dir}"
+				>
+					<include name="*/**" />
+					<exclude name="override" />
+				</dirset>
+			</path>
+			<sequential>
+				<local name="lpkg.dir.name" />
+
+				<basename file="@{lpkg.dir}" property="lpkg.dir.name" />
+
+				<antcall target="write-unlicensed-lpkg-marketplace-properties">
+					<param name="lpkg.dir" value="@{lpkg.dir}" />
+				</antcall>
+
+				<zip
+					basedir="@{lpkg.dir}"
+					destfile="${output.dir}/${lpkg.dir.name}.lpkg"
+					includes="*.jar,*.war,liferay-marketplace.properties"
+				/>
+			</sequential>
+		</for>
+
+		<zip
+			destfile="${dist.dir}/${Liferay-Releng-App-Title} unlicensed.lpkg"
+		>
+			<fileset
+				dir="${output.dir}"
+			>
+				<include name="*${Liferay-Releng-App-Title}*.lpkg" />
+			</fileset>
+		</zip>
+
+		<delete dir="${output.dir}" />
+
+		<delete includeemptydirs="true">
+			<fileset
+				dir="${dist.dir}"
+				excludes="*.lpkg"
+				includes="**/*"
+			/>
+		</delete>
+	</target>
+
 	<target name="check-current-branch">
 		<loadproperties srcFile="${modules.dir}/../release.properties">
 			<filterchain>
