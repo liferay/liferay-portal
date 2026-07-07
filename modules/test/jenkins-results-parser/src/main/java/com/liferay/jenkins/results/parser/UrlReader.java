@@ -365,7 +365,8 @@ public class UrlReader {
 
 				Integer retryPeriodOverride = null;
 
-				if (exceptionMessage.matches(
+				if (gitHubAPICall &&
+					exceptionMessage.matches(
 						".*HTTP response code\\: 403 .*") &&
 					(urlConnection != null)) {
 
