@@ -8,13 +8,21 @@ import React from 'react';
 
 import ContentGapCell from './ContentGapCell';
 import {MatrixData} from './types';
+import {useCoverageFilter} from './useCoverageFilter';
 import {buildCountsByCellKey, getCellKey, getMaxRealCount} from './utils';
 
-export default function ContentGapMatrixGrid({data}: {data: MatrixData}) {
+export default function ContentGapMatrixGrid({
+	assetFDSId,
+	data,
+}: {
+	assetFDSId: string;
+	data: MatrixData;
+}) {
 	const {funnelStages, personas} = data;
 
 	const countsByCellKey = buildCountsByCellKey(data.cells);
 	const maxRealCount = getMaxRealCount(data);
+	const {applyFilter} = useCoverageFilter(assetFDSId);
 
 	const getCount = (personaId: string, funnelStageId: string) =>
 		countsByCellKey.get(getCellKey(personaId, funnelStageId)) ?? 0;
@@ -67,6 +75,7 @@ export default function ContentGapMatrixGrid({data}: {data: MatrixData}) {
 								funnelStage={funnelStage}
 								key={funnelStage.id}
 								maxRealCount={maxRealCount}
+								onFilter={applyFilter}
 								persona={persona}
 								totalCount={getCount(
 									persona.id,

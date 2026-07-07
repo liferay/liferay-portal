@@ -80,6 +80,9 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return HashMapBuilder.<String, Object>put(
+			"assetFDSId",
+			"com.liferay.site.cms.site.initializer-allRelatedAssetsSection"
+		).put(
 			"editProjectURL",
 			StringBundler.concat(
 				ActionUtil.getBaseEditProjectURL(

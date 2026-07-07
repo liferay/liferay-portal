@@ -1,5 +1,6 @@
 @import 'atlas-variables';
 
+$content-gap-cell-actions-background: #125449;
 $content-gap-cell-text: #125449;
 $content-gap-cell-text-gap: #863a00;
 $content-gap-cell-text-inverse: #ffffff;
@@ -16,9 +17,23 @@ $content-gap-cell-tiers: (
 	border-radius: 0.5rem;
 	display: flex;
 	justify-content: center;
-	min-height: 4rem;
+	min-height: 5rem;
 	overflow: hidden;
 	position: relative;
+
+	&--clickable {
+		cursor: pointer;
+
+		&:focus,
+		&:hover {
+			border-color: $primary;
+		}
+	}
+
+	&--active {
+		border-color: $primary;
+		box-shadow: 0 0 0 0.125rem rgba($primary, 0.25);
+	}
 
 	@each $tier, $color in $content-gap-cell-tiers {
 		&--tier-#{$tier} {
@@ -38,6 +53,44 @@ $content-gap-cell-tiers: (
 		.lfr-cmp__content-gap-cell-count {
 			color: $content-gap-cell-text-gap;
 		}
+	}
+}
+
+.lfr-cmp__content-gap-cell-actions {
+	background-color: $content-gap-cell-actions-background;
+	bottom: 0;
+	display: flex;
+	left: 0;
+	position: absolute;
+	right: 0;
+	white-space: nowrap;
+	z-index: 2;
+}
+
+.lfr-cmp__content-gap-cell-action.btn {
+	align-items: center;
+	color: $white;
+	display: flex;
+	flex: 1 1 0;
+	font-size: 0.75rem;
+	font-weight: 600;
+	justify-content: center;
+	padding: 0.1875rem 0.5rem;
+
+	& + & {
+		border-left: 0.0625rem solid rgba($white, 0.2);
+		border-radius: 0;
+	}
+
+	&:disabled {
+		color: $white;
+		opacity: 1;
+	}
+
+	&:not(:disabled):focus,
+	&:not(:disabled):hover {
+		background-color: rgba($white, 0.15);
+		color: $white;
 	}
 }
 
