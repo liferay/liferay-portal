@@ -13,6 +13,7 @@ import FragmentSetModal from '../../../src/main/resources/META-INF/resources/js/
 const renderComponent = ({
 	fragmentCollections = [],
 	onSubmitFragmentCollection,
+	showFragmentNameInput,
 } = {}) => {
 	const user = userEvent.setup({advanceTimers: jest.advanceTimersByTime});
 
@@ -20,6 +21,7 @@ const renderComponent = ({
 		<FragmentSetModal
 			fragmentCollections={fragmentCollections}
 			onSubmitFragmentCollection={onSubmitFragmentCollection}
+			showFragmentNameInput={showFragmentNameInput}
 		/>
 	);
 
@@ -138,5 +140,59 @@ describe('FragmentSetModal', () => {
 		await user.click(screen.getByText('save'));
 
 		expect(onSubmitFragmentCollection).toHaveBeenCalledWith(1);
+	});
+
+	it('submits the selected fragment collection with the fragment name when showFragmentNameInput is set', async () => {
+		const onSubmitFragmentCollection = jest.fn();
+		const user = renderComponent({
+			fragmentCollections: [
+				{fragmentCollectionId: 1, name: 'fragment-collection'},
+			],
+			onSubmitFragmentCollection,
+			showFragmentNameInput: true,
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		fireEvent.change(screen.getByLabelText('name'), {
+			target: {value: 'my-fragment'},
+		});
+
+		fireEvent.change(screen.getByLabelText('fragment-sets'), {
+			target: {value: '1'},
+		});
+
+		await user.click(screen.getByText('save'));
+
+		expect(onSubmitFragmentCollection).toHaveBeenCalledWith(
+			1,
+			'my-fragment'
+		);
+	});
+
+	it('shows required validation when the fragment name is empty and showFragmentNameInput is set', async () => {
+		const onSubmitFragmentCollection = jest.fn();
+		const user = renderComponent({
+			fragmentCollections: [
+				{fragmentCollectionId: 1, name: 'fragment-collection'},
+			],
+			onSubmitFragmentCollection,
+			showFragmentNameInput: true,
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		fireEvent.change(screen.getByLabelText('fragment-sets'), {
+			target: {value: '1'},
+		});
+
+		await user.click(screen.getByText('save'));
+
+		expect(onSubmitFragmentCollection).not.toHaveBeenCalled();
+		expect(screen.getByText('x-field-is-required')).toBeInTheDocument();
 	});
 });
