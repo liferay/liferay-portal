@@ -63,6 +63,7 @@ function CardBase({
 	return (
 		<Context.Provider value={{horizontal: false, interactive: false}}>
 			<div
+				aria-disabled={disabled || undefined}
 				className={classNames(
 					className,
 					{
