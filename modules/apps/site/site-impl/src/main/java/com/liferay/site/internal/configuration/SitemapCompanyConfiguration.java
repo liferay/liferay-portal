@@ -23,6 +23,11 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface SitemapCompanyConfiguration {
 
+	@Meta.AD(
+		deflt = "false", name = "cached-generation-enabled", required = false
+	)
+	public boolean cachedGenerationEnabled();
+
 	@Meta.AD(deflt = "", name = "company-sitemap-group-ids", required = false)
 	public String[] companySitemapGroupIds();
 
@@ -61,9 +66,27 @@ public interface SitemapCompanyConfiguration {
 	public String xmlSitemapIndexMode();
 
 	@Meta.AD(
-		deflt = "86400", name = "xml-sitemap-regeneration-delay",
+		deflt = "1", name = "xml-sitemap-regeneration-day-of-week",
 		required = false
 	)
-	public long xmlSitemapRegenerationDelay();
+	public String xmlSitemapRegenerationDayOfWeek();
+
+	@Meta.AD(
+		deflt = "daily", name = "xml-sitemap-regeneration-frequency",
+		required = false
+	)
+	public String xmlSitemapRegenerationFrequency();
+
+	@Meta.AD(
+		deflt = "00:00", name = "xml-sitemap-regeneration-time",
+		required = false
+	)
+	public String xmlSitemapRegenerationTime();
+
+	@Meta.AD(
+		deflt = "", name = "xml-sitemap-regeneration-time-zone-id",
+		required = false
+	)
+	public String xmlSitemapRegenerationTimeZoneId();
 
 }

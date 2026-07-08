@@ -22,4 +22,10 @@ public class SitemapConstants {
 
 	public static final String INDEX_MODE_PAGE_LAYOUT = "page-layout";
 
+	public static final String REGENERATION_FREQUENCY_DAILY = "daily";
+
+	public static final String REGENERATION_FREQUENCY_HOURLY = "hourly";
+
+	public static final String REGENERATION_FREQUENCY_WEEKLY = "weekly";
+
 }
