@@ -13,6 +13,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
+import {miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -188,3 +189,82 @@ test('LPD-29864 Cart updates when order is open', async ({apiHelpers}) => {
 
 	expect(order.total).toBe(30);
 });
+
+test(
+	'COMMERCE-7695 Clicking a cart item in the Cart widget redirects to the product details page',
+	{tag: '@COMMERCE-7695'},
+	async ({
+		apiHelpers,
+		commerceCartPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		widgetPagePage,
+	}) => {
+		test.setTimeout(120000);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			phoneNumber: '12345',
+			regionISOCode: 'LA',
+		});
+
+		const productName = (
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq 'ABS Sensor'`,
+				})
+			)
+		).items[0].name['en_US'];
+
+		await page.goto(`/web${site.friendlyUrlPath}`);
+
+		await commerceMiniCartPage.quickAddToCart(productName);
+
+		await expect(
+			commerceMiniCartPage.miniCartItem(productName)
+		).toHaveCount(1);
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Cart');
+
+		await (
+			await commerceCartPage.commerceOrderItemsTableRowProductLink(
+				productName
+			)
+		).click();
+
+		await expect(
+			await productDetailsPage.productNameHeading(productName)
+		).toBeVisible();
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		const quantityInput =
+			await commerceCartPage.commerceOrderItemsTableRowQuantityInput(
+				productName
+			);
+
+		await expect(async () => {
+			await quantityInput.fill('2');
+
+			await expect(quantityInput).toHaveValue('2', {timeout: 2000});
+		}).toPass();
+
+		await commerceCartPage.updateButton.dispatchEvent('click');
+
+		await expect(quantityInput).toHaveValue('2');
+	}
+);

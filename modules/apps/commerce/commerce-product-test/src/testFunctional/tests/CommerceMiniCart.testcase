@@ -261,46 +261,6 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-7695. As a buyer, I want to verify if I will be redirected to the product details when I click on the item in the minicart"
-	@priority = 3
-	test ClickOnCartItemWidgetRedirectToProductDetails {
-		property portal.acceptance = "false";
-
-		task ("Given a commerce account is created") {
-			ApplicationsMenu.gotoSite(site = "Minium");
-
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-			CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
-		}
-
-		task ("And Given a product in the cart") {
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-
-			CommerceNavigator.searchCatalog(productName = "U-Joint");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = 3);
-		}
-
-		task ("When a cart widget is added to pending orders page") {
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			Portlet.addPGCmd(portletName = "Cart");
-		}
-
-		task ("Then clicking on product in cart widget navigates to product detail page") {
-			CommerceNavigator.viewCartPortletEntry(productName = "U-Joint");
-
-			FrontStore.viewProductDetail(fsProductName = "U-Joint");
-
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			CommerceOrders.editCartPortletOrderQuantity(orderQuantity = 2);
-		}
-	}
-
 	@description = "COMMERCE-7736, As a buyer, I want to be able to view product details for more than one item in the cart"
 	@ignore = "true"
 	@priority = 3

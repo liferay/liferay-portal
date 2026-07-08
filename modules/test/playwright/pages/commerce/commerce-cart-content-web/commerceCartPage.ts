@@ -11,9 +11,13 @@ export class CommerceCartPage {
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly page: Page;
 	readonly commerceOrderItemsTable: Locator;
+	readonly commerceOrderItemsTableRowProductLink: (
+		productName: string
+	) => Promise<Locator>;
 	readonly commerceOrderItemsTableRowQuantityInput: (
 		productName: string
 	) => Promise<Locator>;
+	readonly updateButton: Locator;
 
 	constructor(page: Page) {
 		this.layoutsPage = new CommerceLayoutsPage(page);
@@ -21,6 +25,14 @@ export class CommerceCartPage {
 		this.commerceOrderItemsTable = page.locator(
 			`[data-searchcontainerid$=commerceOrderItems]`
 		);
+		this.commerceOrderItemsTableRowProductLink = async (productName) => {
+			const orderItemRowProductLink = this.commerceOrderItemsTable
+				.getByTestId('row')
+				.filter({hasText: productName})
+				.getByRole('link', {name: productName});
+
+			return orderItemRowProductLink;
+		};
 		this.commerceOrderItemsTableRowQuantityInput = async (productName) => {
 			const orderItemRowQuantityInput = this.commerceOrderItemsTable
 				.getByTestId('row')
@@ -30,6 +42,9 @@ export class CommerceCartPage {
 
 			return orderItemRowQuantityInput;
 		};
+		this.updateButton = this.commerceOrderItemsTable.getByRole('button', {
+			name: 'Update',
+		});
 	}
 
 	async addCartWidget() {
