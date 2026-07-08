@@ -10,17 +10,16 @@ Always.
 
 ## Command
 
-Run the SDK setup, then invoke the `format-source` skill:
+Run the SDK setup, then run the source formatter in `current-branch` mode:
 
 ```bash
 (cd "${REPO_ROOT}" && ant setup-sdk)
+(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m" ant format-source-current-branch)
 ```
-
-The skill runs the dual-mode formatter (automatically applies fixable violations and lists unfixable ones) and then applies the manual rules. Unfixable violations fail pr-check so the developer fixes them manually.
 
 ## Autocommit
 
-The formatter is dual-mode: it automatically applies fixable violations and lists unfixable ones as errors. When `git status --porcelain` is nonempty after the formatter (fixable subset applied), stage all changes (`git add --all`) and create a commit titled `<TICKET> SF`.
+When `git status --porcelain` is nonempty after the formatter (fixable subset applied to the working tree), stage all changes (`git add --all`) and create a commit titled `<TICKET> SF`.
 
 When the commit fails, record the failure and continue to the next validation.
 
@@ -32,4 +31,4 @@ Run **after** all drift validations so the formatter sees the regenerated tree.
 
 ## Time Estimate
 
-~1-2 min.
+~2-4 min, scaling with the number of changed files.
