@@ -1332,3 +1332,62 @@ test(
 		});
 	}
 );
+
+test(
+	'All section can be filtered by Tags',
+	{tag: ['@LPD-85551', '@LPD-87956']},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const taggedTitle = getRandomString();
+		const tagName = getRandomString();
+		const untaggedTitle = getRandomString();
+
+		await test.step('Create a tag and two contents, one tagged', async () => {
+			const site =
+				await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+					'cms'
+				);
+
+			await apiHelpers.headlessAdminTaxonomy.postSiteKeyword({
+				name: tagName,
+				siteId: site.id,
+			});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					keywords: [tagName],
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: taggedTitle,
+				},
+				applicationName,
+				'Default'
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: untaggedTitle,
+				},
+				applicationName,
+				'Default'
+			);
+		});
+
+		await test.step('Both contents are visible before filtering', async () => {
+			await assetsPage.gotoAll();
+
+			await expect(assetsPage.getItem(taggedTitle)).toBeVisible();
+			await expect(assetsPage.getItem(untaggedTitle)).toBeVisible();
+		});
+
+		await test.step('Filter by Tags and check only the tagged content is visible', async () => {
+			await applyFDSSelectionFilter(page, {
+				filter: 'Tags',
+				value: tagName,
+			});
+
+			await expect(assetsPage.getItem(taggedTitle)).toBeVisible();
+			await expect(assetsPage.getItem(untaggedTitle)).toBeHidden();
+		});
+	}
+);
