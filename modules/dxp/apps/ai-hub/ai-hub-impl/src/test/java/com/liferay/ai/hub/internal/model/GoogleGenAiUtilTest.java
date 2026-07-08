@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.google.genai.GoogleGenAiChatModel;
 import dev.langchain4j.model.google.genai.GoogleGenAiStreamingChatModel;
 
@@ -104,6 +105,8 @@ public class GoogleGenAiUtilTest {
 			googleGenAiChatModel.defaultRequestParameters();
 
 		Assert.assertEquals(_MODEL_NAME, defaultRequestParameters.modelName());
+		Assert.assertEquals(
+			ResponseFormat.JSON, defaultRequestParameters.responseFormat());
 
 		_assertSafetySettings(
 			ReflectionTestUtil.getFieldValue(
@@ -121,6 +124,7 @@ public class GoogleGenAiUtilTest {
 			googleGenAiStreamingChatModel.defaultRequestParameters();
 
 		Assert.assertEquals(_MODEL_NAME, defaultRequestParameters.modelName());
+		Assert.assertNull(defaultRequestParameters.responseFormat());
 
 		_assertSafetySettings(
 			ReflectionTestUtil.getFieldValue(
