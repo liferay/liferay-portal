@@ -1,0 +1,14 @@
+[
+	{
+		"layoutTemplateId": "1_column",
+		"name": "Category",
+		"portlets": [
+			{
+				"layoutColumnId": "column-1",
+				"layoutColumnPos": 0,
+				"portletName": "com_liferay_commerce_product_content_web_internal_portlet_CPCategoryContentPortlet"
+			}
+		],
+		"privateLayout": false
+	}
+]
