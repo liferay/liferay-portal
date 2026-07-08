@@ -216,8 +216,8 @@ public class ProductConfigurationResourceImpl
 
 		CPDefinition cpDefinition =
 			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-				_cpDefinitionService, externalReferenceCode,
-				contextCompany.getCompanyId());
+				externalReferenceCode, contextCompany.getCompanyId(),
+				_cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -341,7 +341,7 @@ public class ProductConfigurationResourceImpl
 		throws Exception {
 
 		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			_cpDefinitionService, id);
+			id, _cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -483,10 +483,9 @@ public class ProductConfigurationResourceImpl
 
 			CPDefinition cpDefinition =
 				ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-					_cpDefinitionService,
 					GetterUtil.getString(
 						productConfiguration.getEntityExternalReferenceCode()),
-					contextCompany.getCompanyId());
+					contextCompany.getCompanyId(), _cpDefinitionService);
 
 			if (cpDefinition == null) {
 				cpDefinition = _cpDefinitionService.getCPDefinition(classPK);

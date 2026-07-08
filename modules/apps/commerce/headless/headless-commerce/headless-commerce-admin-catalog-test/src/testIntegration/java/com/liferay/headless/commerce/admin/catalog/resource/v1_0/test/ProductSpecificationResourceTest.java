@@ -18,7 +18,6 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -312,11 +311,9 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				0,
@@ -334,19 +331,15 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_DRAFT));
 
 			CPDefinition cpDefinition2 =
 				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
@@ -377,19 +370,15 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_DRAFT));
 
 			CPDefinition cpDefinition3 =
 				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(

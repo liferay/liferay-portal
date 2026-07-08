@@ -91,11 +91,10 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		CSDiagramSetting csDiagramSetting =
 			_csDiagramSettingService.getCSDiagramSetting(diagramId);
 
-		CPDefinition csDiagramSettingCPDefinition =
-			csDiagramSetting.getCPDefinition();
+		CPDefinition cpDefinition = csDiagramSetting.getCPDefinition();
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			_cpDefinitionService, csDiagramSettingCPDefinition.getCProductId());
+		cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			cpDefinition.getCProductId(), _cpDefinitionService);
 
 		DiagramUtil.updateCSDiagramSetting(
 			contextCompany.getCompanyId(), _cpAttachmentFileEntryService,
@@ -115,8 +114,8 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 
 		CPDefinition cpDefinition =
 			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-				_cpDefinitionService, externalReferenceCode,
-				contextCompany.getCompanyId());
+				externalReferenceCode, contextCompany.getCompanyId(),
+				_cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -140,7 +139,7 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		throws Exception {
 
 		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			_cpDefinitionService, productId);
+			productId, _cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

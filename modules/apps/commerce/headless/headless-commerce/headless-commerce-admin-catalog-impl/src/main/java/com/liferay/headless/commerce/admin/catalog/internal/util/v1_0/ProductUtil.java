@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 public class ProductUtil {
 
 	public static CPDefinition fetchCPDefinitionByCProductExternalReferenceCode(
-			CPDefinitionService cpDefinitionService,
-			String externalReferenceCode, long companyId)
+			String externalReferenceCode, long companyId,
+			CPDefinitionService cpDefinitionService)
 		throws PortalException {
 
 		CPDefinition cpDefinition =
@@ -26,43 +26,35 @@ public class ProductUtil {
 				fetchCPDefinitionByCProductExternalReferenceCode(
 					externalReferenceCode, companyId, false);
 
-		if ((cpDefinition != null) &&
-			cpDefinitionService.isVersionable(cpDefinition) &&
-			!cpDefinition.isDraft()) {
-
-			CPDefinition draftCPDefinition =
-				cpDefinitionService.
-					fetchCPDefinitionByCProductExternalReferenceCode(
-						externalReferenceCode, companyId,
-						WorkflowConstants.STATUS_DRAFT);
-
-			if (draftCPDefinition != null) {
-				return draftCPDefinition;
-			}
+		if (cpDefinition == null) {
+			return cpDefinition;
 		}
 
-		return cpDefinition;
+		return fetchCPDefinitionByCProductId(
+			cpDefinition.getCProductId(), cpDefinitionService);
 	}
 
 	public static CPDefinition fetchCPDefinitionByCProductId(
-			CPDefinitionService cpDefinitionService, long cProductId)
+			long cProductId, CPDefinitionService cpDefinitionService)
 		throws PortalException {
 
 		CPDefinition cpDefinition =
 			cpDefinitionService.fetchCPDefinitionByCProductId(
 				cProductId, false);
 
-		if ((cpDefinition != null) &&
-			cpDefinitionService.isVersionable(cpDefinition) &&
-			!cpDefinition.isDraft()) {
+		if ((cpDefinition == null) ||
+			!cpDefinitionService.isVersionable(cpDefinition) ||
+			cpDefinition.isDraft()) {
 
-			CPDefinition draftCPDefinition =
-				cpDefinitionService.fetchCPDefinitionByCProductId(
-					cProductId, WorkflowConstants.STATUS_DRAFT);
+			return cpDefinition;
+		}
 
-			if (draftCPDefinition != null) {
-				return draftCPDefinition;
-			}
+		CPDefinition draftCPDefinition =
+			cpDefinitionService.fetchCPDefinitionByCProductId(
+				cProductId, WorkflowConstants.STATUS_DRAFT);
+
+		if (draftCPDefinition != null) {
+			return draftCPDefinition;
 		}
 
 		return cpDefinition;

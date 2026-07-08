@@ -124,6 +124,7 @@ import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -340,7 +341,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	@Override
 	public Product patchProduct(Long id, Product product) throws Exception {
 		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			_cpDefinitionService, id);
+			id, _cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -359,8 +360,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		CPDefinition cpDefinition =
 			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-				_cpDefinitionService, externalReferenceCode,
-				contextCompany.getCompanyId());
+				externalReferenceCode, contextCompany.getCompanyId(),
+				_cpDefinitionService);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -592,8 +593,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		CPDefinition cpDefinition =
 			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-				_cpDefinitionService, externalReferenceCode,
-				contextCompany.getCompanyId());
+				externalReferenceCode, contextCompany.getCompanyId(),
+				_cpDefinitionService);
 
 		Category[] categories = product.getCategories();
 
@@ -1671,7 +1672,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		Map<String, ?> expando = product.getExpando();
 
-		if ((expando != null) && !expando.isEmpty()) {
+		if (MapUtil.isNotEmpty(expando)) {
 			ExpandoUtil.updateExpando(
 				serviceContext.getCompanyId(), CPDefinition.class,
 				cpDefinition.getPrimaryKey(), expando);

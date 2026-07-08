@@ -434,7 +434,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				title = HashMapBuilder.put(
 					"en_US", RandomTestUtil.randomString(5)
 				).build();
-				type = RandomTestUtil.randomInt();
+				type = CPAttachmentFileEntryConstants.TYPE_IMAGE;
 			}
 		};
 	}
@@ -561,11 +561,9 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			long classNameId = _classNameLocalService.getClassNameId(
 				CPDefinition.class.getName());
@@ -586,33 +584,31 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				cpDefinition1.getCProductId(), attachment1);
 
 			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			List<CPDefinition> draftDefinitions =
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				draftDefinitions.toString(), 1, draftDefinitions.size());
-
-			CPDefinition cpDefinition2 = draftDefinitions.get(0);
-
-			_cpDefinitions.add(cpDefinition2);
-
-			Assert.assertEquals(
 				0,
 				_cpAttachmentFileEntryLocalService.
 					getCPAttachmentFileEntriesCount(
 						classNameId, cpDefinition1.getCPDefinitionId(),
 						CPAttachmentFileEntryConstants.TYPE_OTHER,
 						WorkflowConstants.STATUS_ANY));
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED));
+
+			List<CPDefinition> cpDefinitions =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				cpDefinitions.toString(), 1, cpDefinitions.size());
+
+			CPDefinition cpDefinition2 = cpDefinitions.get(0);
+
+			_cpDefinitions.add(cpDefinition2);
 
 			Assert.assertEquals(
 				1,

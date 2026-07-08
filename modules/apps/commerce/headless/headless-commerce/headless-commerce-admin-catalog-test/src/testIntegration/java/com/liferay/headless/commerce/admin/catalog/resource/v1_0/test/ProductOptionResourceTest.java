@@ -357,22 +357,20 @@ public class ProductOptionResourceTest
 
 			_cpDefinitions.add(cpDefinition1);
 
-			CPOption cpOption1 = CPTestUtil.addCPOption(
-				commerceCatalog.getGroupId(), true);
-
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				0,
 				_cpDefinitionOptionRelLocalService.
 					getCPDefinitionOptionRelsCount(
 						cpDefinition1.getCPDefinitionId()));
+
+			CPOption cpOption1 = CPTestUtil.addCPOption(
+				commerceCatalog.getGroupId(), true);
 
 			ProductOption productOption1 = randomProductOption();
 
@@ -384,30 +382,28 @@ public class ProductOptionResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			List<CPDefinition> draftDefinitions =
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				draftDefinitions.toString(), 1, draftDefinitions.size());
-
-			CPDefinition cpDefinition2 = draftDefinitions.get(0);
-
-			_cpDefinitions.add(cpDefinition2);
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				0,
 				_cpDefinitionOptionRelLocalService.
 					getCPDefinitionOptionRelsCount(
 						cpDefinition1.getCPDefinitionId()));
+
+			List<CPDefinition> cpDefinitions =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				cpDefinitions.toString(), 1, cpDefinitions.size());
+
+			CPDefinition cpDefinition2 = cpDefinitions.get(0);
+
+			_cpDefinitions.add(cpDefinition2);
 
 			Assert.assertEquals(
 				1,
@@ -428,19 +424,15 @@ public class ProductOptionResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
+					WorkflowConstants.STATUS_DRAFT));
 
 			CPDefinition cpDefinition3 =
 				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(

@@ -1889,6 +1889,11 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public int getCProductCPDefinitionsCount(long cProductId, int status) {
+		return cpDefinitionPersistence.countByC_S(cProductId, status);
+	}
+
+	@Override
 	public CPAttachmentFileEntry getDefaultImageCPAttachmentFileEntry(
 			long cpDefinitionId)
 		throws PortalException {
