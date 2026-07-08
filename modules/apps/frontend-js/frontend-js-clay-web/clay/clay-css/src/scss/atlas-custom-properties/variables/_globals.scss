@@ -244,6 +244,21 @@ $dark-d2: var(--dark-d2) !default;
 $dark-l1: var(--dark-l1) !default;
 $dark-l2: var(--dark-l2) !default;
 
+$chart-color-1: var(--chart-color-1) !default;
+$chart-color-2: var(--chart-color-2) !default;
+$chart-color-3: var(--chart-color-3) !default;
+$chart-color-4: var(--chart-color-4) !default;
+$chart-color-5: var(--chart-color-5) !default;
+$chart-color-6: var(--chart-color-6) !default;
+$chart-color-7: var(--chart-color-7) !default;
+$chart-color-8: var(--chart-color-8) !default;
+$chart-color-9: var(--chart-color-9) !default;
+$chart-color-10: var(--chart-color-10) !default;
+
+$chart-trend-negative: var(--chart-trend-negative) !default;
+$chart-trend-neutral: var(--chart-trend-neutral) !default;
+$chart-trend-positive: var(--chart-trend-positive) !default;
+
 $theme-colors: () !default;
 $theme-colors: map-merge(
 	(

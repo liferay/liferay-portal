@@ -2118,6 +2118,310 @@
 					],
 					"label": "theme-colors",
 					"name": "themeColors"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#ffd666",
+							"editorType": "ColorPicker",
+							"label": "chart-color-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-1"
+								}
+							],
+							"name": "chartColor1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#006eff",
+							"editorType": "ColorPicker",
+							"label": "chart-color-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-2"
+								}
+							],
+							"name": "chartColor2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffa166",
+							"editorType": "ColorPicker",
+							"label": "chart-color-3",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-3"
+								}
+							],
+							"name": "chartColor3",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#42d7be",
+							"editorType": "ColorPicker",
+							"label": "chart-color-4",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-4"
+								}
+							],
+							"name": "chartColor4",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ff80c8",
+							"editorType": "ColorPicker",
+							"label": "chart-color-5",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-5"
+								}
+							],
+							"name": "chartColor5",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#66ccff",
+							"editorType": "ColorPicker",
+							"label": "chart-color-6",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-6"
+								}
+							],
+							"name": "chartColor6",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ff6666",
+							"editorType": "ColorPicker",
+							"label": "chart-color-7",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-7"
+								}
+							],
+							"name": "chartColor7",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#bf66ff",
+							"editorType": "ColorPicker",
+							"label": "chart-color-8",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-8"
+								}
+							],
+							"name": "chartColor8",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#9de963",
+							"editorType": "ColorPicker",
+							"label": "chart-color-9",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-9"
+								}
+							],
+							"name": "chartColor9",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#b2baff",
+							"editorType": "ColorPicker",
+							"label": "chart-color-10",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-color-10"
+								}
+							],
+							"name": "chartColor10",
+							"type": "String"
+						}
+					],
+					"label": "chart-colors",
+					"name": "chartColors"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#da1414",
+							"editorType": "ColorPicker",
+							"label": "chart-trend-negative",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-trend-negative"
+								}
+							],
+							"name": "chartTrendNegative",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#6b6c7e",
+							"editorType": "ColorPicker",
+							"label": "chart-trend-neutral",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-trend-neutral"
+								}
+							],
+							"name": "chartTrendNeutral",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#287d3c",
+							"editorType": "ColorPicker",
+							"label": "chart-trend-positive",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-trend-positive"
+								}
+							],
+							"name": "chartTrendPositive",
+							"type": "String"
+						}
+					],
+					"label": "chart-trend-colors",
+					"name": "chartTrendColors"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#006be6",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-d1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-d1"
+								}
+							],
+							"name": "chartBlueD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#005fcc",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-d2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-d2"
+								}
+							],
+							"name": "chartBlueD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#0053b3",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-d3",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-d3"
+								}
+							],
+							"name": "chartBlueD3",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#004799",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-d4",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-d4"
+								}
+							],
+							"name": "chartBlueD4",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#338fff",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-l1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-l1"
+								}
+							],
+							"name": "chartBlueL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#66abff",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-l2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-l2"
+								}
+							],
+							"name": "chartBlueL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#97c5ff",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-l3",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-l3"
+								}
+							],
+							"name": "chartBlueL3",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#cce3ff",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-l4",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-l4"
+								}
+							],
+							"name": "chartBlueL4",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#e5f1ff",
+							"editorType": "ColorPicker",
+							"label": "chart-blue-l5",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "chart-blue-l5"
+								}
+							],
+							"name": "chartBlueL5",
+							"type": "String"
+						}
+					],
+					"label": "chart-blue-colors",
+					"name": "chartBlueColors"
 				}
 			],
 			"label": "color-system",
