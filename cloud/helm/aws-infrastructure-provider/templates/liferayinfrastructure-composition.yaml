@@ -1330,16 +1330,17 @@ spec:
                         {{- $namespace := $xr.metadata.namespace -}}
                         {{- $projectId := $xr.spec.projectId -}}
                         {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
+                        {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
 
                         {{- $overlayUidHash := printf "%s-%s-%s" $accountId $deploymentName $projectId | sha256sum | trunc 6 -}}
                         {{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
                         {{- $overlayBucketName := printf "%s-overlay-%s" $deploymentName $overlayBaseName -}}
 
                         {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
+
                         {{- $uidHash := printf "%s-%s-%s" $accountId $deploymentName $projectIdFull | sha256sum | trunc 6 -}}
                         {{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
 
-                        {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
                         {{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
                         {{- $activeDataPlane := $targetActiveDataPlane -}}
 

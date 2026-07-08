@@ -18,15 +18,14 @@
 {{- $namespace := $xr.metadata.namespace -}}
 {{- $overlay := $xr.spec.overlay | default dict -}}
 {{- $projectId := $xr.spec.projectId -}}
-
-{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
-{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
-{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
-
 {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
 {{- $searchName := printf "%s-es" $xr.metadata.name -}}
 {{- $storage := $xr.spec.storage | default dict -}}
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
+
+{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
+{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
 {{- $databaseIamUser := printf "%s@%s.iam" $gsaName $env.projectId -}}
