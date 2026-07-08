@@ -248,7 +248,8 @@ spec:
                             name: {{ $overlayBucketName }}-ci-uploader
                             namespace: {{ $namespace }}
                         spec:
-                            forProvider: {}
+                            forProvider:
+                                forceDestroy: {{ $forceDestroy }}
                         ---
                         apiVersion: iam.aws.m.upbound.io/v1beta1
                         kind: UserPolicyAttachment
