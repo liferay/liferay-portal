@@ -116,7 +116,6 @@ public class DepotExportImportTest {
 			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
 				journalArticle.getUuid(), _siteGroup.getGroupId());
 
-		Assert.assertNotNull(importedJournalArticle);
 		Assert.assertEquals(
 			journalArticle.getTitle(), importedJournalArticle.getTitle());
 	}
@@ -151,7 +150,6 @@ public class DepotExportImportTest {
 			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
 				journalArticle.getUuid(), _depotGroup.getGroupId());
 
-		Assert.assertNotNull(importedJournalArticle);
 		Assert.assertEquals(
 			journalArticle.getTitle(), importedJournalArticle.getTitle());
 	}
