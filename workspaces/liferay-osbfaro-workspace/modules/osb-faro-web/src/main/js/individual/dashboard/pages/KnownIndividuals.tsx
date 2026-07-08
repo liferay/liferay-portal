@@ -23,7 +23,7 @@ import {individualsListColumns} from 'shared/util/table-columns';
 import {isNil} from 'lodash';
 import {ProfileTypes} from 'segment/segment-editor/dynamic/utils/constants';
 import {Routes, toRoute} from 'shared/util/router';
-import {Sizes} from 'shared/util/constants';
+import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useParams} from 'react-router-dom';
@@ -173,6 +173,7 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = () => {
 			page,
 			profileTypes: [ProfileTypes.KNOWN],
 			query,
+			rangeKey: RangeKeyTimeRanges.LastYear,
 		},
 	});
 
