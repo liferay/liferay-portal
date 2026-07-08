@@ -261,61 +261,6 @@ definition {
 		}
 	}
 
-	@description = "Can move a WC folder with web content to the recycle bin and restore the web content within it."
-	@priority = 3
-	test RestoreWebContentFromFolderCP {
-		task ("Add a WC folder and a web content to it") {
-			JSONWebcontent.addFolder(
-				folderName = "WC Folder Name",
-				groupName = "Test Site Name");
-
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				folderName = "WC Folder Name",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Move WC folder to recycle bin and assert it exists in recycle bin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentFolder.moveToRecycleBinCP(
-				assetType = "Web Content Folder",
-				folderName = "WC Folder Name");
-
-			WebContent.viewDefaultCP(webContentTitle = "WC Folder Name");
-
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewCP(
-				assetName = "WC Folder Name",
-				assetType = "Web Content Folder",
-				deleteUser = "Test Test");
-		}
-
-		task ("Restore the WC from the folder in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.restoreContentFromFolderCP(
-				assetName = "WC Folder Name",
-				assetRestoreLocation = "Home",
-				assetType = "Web Content Folder",
-				assetType2 = "Web Content Article",
-				breadcrumbName = "Home",
-				documentName = "Web Content Title");
-		}
-
-		task ("Assert WC is restored") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.viewCP(
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-	}
-
 	@description = "Can restore web content with versions in recycle bin."
 	@priority = 3
 	test RestoreWebContentWithArticleVersions {

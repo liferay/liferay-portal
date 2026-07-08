@@ -323,3 +323,47 @@ test('Can view duplicate web content and folder names in the recycle bin', async
 
 	await recycleBinPage.assertEntryCount(folderName, 2);
 });
+
+test('Can restore a web content from a folder in the recycle bin', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const folderName = getRandomString();
+	const title = getRandomString();
+
+	const structuredContentFolder =
+		await apiHelpers.headlessDelivery.postStructuredContentFolder(site.id, {
+			name: folderName,
+		});
+
+	await apiHelpers.headlessDelivery.postStructuredContentFolderStructuredContent(
+		{
+			contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+			datePublished: null,
+			structuredContentFolderId: structuredContentFolder.id,
+			title,
+		}
+	);
+
+	const recycleBinPage = new RecycleBinPage(page);
+	const webContentPage = new WebContentPage(page);
+
+	// Move the whole folder, along with its web content, to the recycle bin
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.moveFolderToRecycleBin(folderName);
+
+	// Restore the web content out of the trashed folder to the site home
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.restoreContentFromFolder(folderName, title);
+
+	// The web content is back in the web content admin at the site home
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.assertEntryPresent(title);
+});
