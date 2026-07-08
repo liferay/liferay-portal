@@ -636,6 +636,12 @@ public class CPDefinitionLocalServiceUtil {
 			cProductId, status, start, end, orderByComparator);
 	}
 
+	public static int getCProductCPDefinitionsCount(
+		long cProductId, int status) {
+
+		return getService().getCProductCPDefinitionsCount(cProductId, status);
+	}
+
 	public static com.liferay.commerce.product.model.CPAttachmentFileEntry
 			getDefaultImageCPAttachmentFileEntry(long cpDefinitionId)
 		throws PortalException {
@@ -976,4 +982,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-126913895
+// LIFERAY-SERVICE-BUILDER-HASH:1263191931

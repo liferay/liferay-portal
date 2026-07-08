@@ -725,6 +725,12 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public int getCProductCPDefinitionsCount(long cProductId, int status) {
+		return _cpDefinitionLocalService.getCProductCPDefinitionsCount(
+			cProductId, status);
+	}
+
+	@Override
 	public com.liferay.commerce.product.model.CPAttachmentFileEntry
 			getDefaultImageCPAttachmentFileEntry(long cpDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1136,4 +1142,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1761798766
+// LIFERAY-SERVICE-BUILDER-HASH:463099188
