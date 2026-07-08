@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import REST API
 Bundle-SymbolicName: com.liferay.exportimport.rest.api
-Bundle-Version: 5.0.1
+Bundle-Version: 5.1.0
 Export-Package:\
 	com.liferay.exportimport.rest.dto.v1_0,\
 	com.liferay.exportimport.rest.resource.v1_0
