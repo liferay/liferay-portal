@@ -1595,10 +1595,16 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	public Group fetchUserPersonalSiteGroup(long companyId)
 		throws PortalException {
 
+		User user = _userLocalService.fetchGuestUser(companyId);
+
+		if (user == null) {
+			return null;
+		}
+
 		return groupPersistence.fetchByC_C_C(
 			companyId,
 			_classNameLocalService.getClassNameId(UserPersonalSite.class),
-			_userLocalService.getGuestUserId(companyId));
+			user.getUserId());
 	}
 
 	@Override
