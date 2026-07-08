@@ -10,6 +10,7 @@ import com.liferay.account.manager.AccountEntryValidatorResultManager;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -39,17 +40,18 @@ public abstract class BaseAccountEntryValidator
 
 		String classPK = getClassPK(accountEntry, jsonObject);
 
-		if (classPK == null) {
+		if (Validator.isNull(classPK)) {
 			return doValidate(accountEntry, jsonObject);
 		}
 
-		String className = getClass().getName();
+		Class<?> clazz = getClass();
 
 		AccountEntryValidatorResult accountEntryValidatorResult =
 			accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
-					accountEntry, className, classPK,
-					accountEntryValidatorConfiguration.checkInterval());
+					accountEntry,
+					accountEntryValidatorConfiguration.checkInterval(),
+					clazz.getName(), classPK);
 
 		if (accountEntryValidatorResult != null) {
 			return accountEntryValidatorResult;
@@ -59,7 +61,7 @@ public abstract class BaseAccountEntryValidator
 
 		if (accountEntryValidatorResult != null) {
 			accountEntryValidatorResultManager.addAccountEntryValidatorResult(
-				accountEntry, className, accountEntryValidatorResult);
+				accountEntry, accountEntryValidatorResult, clazz.getName());
 		}
 
 		return accountEntryValidatorResult;
