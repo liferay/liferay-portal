@@ -14,20 +14,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Base class for {@link AccountEntryValidator} implementations that caches
- * validation results. Before running the concrete validation it looks up the
- * latest persisted result; if that result is still valid (successful and
- * younger than the configured check interval) it is returned as is, skipping
- * revalidation. Otherwise the concrete {@link #doValidate} runs and its result
- * is persisted.
- *
- * <p>
- * Concrete validators implement {@link #doValidate}, {@link #getClassPK}, and
- * {@link #getConfiguration}. The bundle declaring the concrete
- * {@code @Component} must set <code>-dsannotations-options: inherit</code> so
- * the inherited {@link AccountEntryValidatorResultManager} reference binds.
- * </p>
- *
  * @author Tancredi Covioli
  */
 public abstract class BaseAccountEntryValidator
@@ -43,7 +29,7 @@ public abstract class BaseAccountEntryValidator
 		}
 
 		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration =
-			getConfiguration(accountEntry.getCompanyId());
+			getAccountEntryValidatorConfiguration(accountEntry.getCompanyId());
 
 		if ((accountEntryValidatorConfiguration == null) ||
 			!accountEntryValidatorConfiguration.enabled()) {
