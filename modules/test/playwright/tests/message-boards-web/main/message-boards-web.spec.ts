@@ -11,8 +11,10 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
+import {CommentsPage} from '../../../pages/comment/CommentsPage';
 import getRandomString from '../../../utils/getRandomString';
 import {nextPage, setItemsPerPage} from '../../../utils/pagination';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -276,5 +278,130 @@ test(
 		await searchInput.press('Enter');
 
 		await expect(searchInput).not.toBeDisabled();
+	}
+);
+
+test(
+	'A reviewer can edit the comment and update the thread of a workflow submission',
+	{tag: ['@LPS-136940', '@LPS-136941']},
+	async ({
+		apiHelpers,
+		messageBoardsEditThreadPage,
+		page,
+		personalMenuPage,
+		site,
+		workflowPage,
+		workflowTaskDetailsPage,
+		workflowTasksPage,
+	}) => {
+		const comment = 'Can you update the entry title';
+		const commentEdit = 'Can you update the entry title and description';
+		const threadSubject = getRandomString();
+		const threadBodyEdit = getRandomString();
+		const threadSubjectEdit = getRandomString();
+
+		// The comments panel starts, and reloads, collapsed; open it on demand
+
+		const expandComments = async (visibleText: string) => {
+			await expect(async () => {
+				const toggle = page
+					.getByRole('button', {name: 'Comments'})
+					.first();
+
+				if ((await toggle.getAttribute('aria-expanded')) !== 'true') {
+					await toggle.click();
+				}
+
+				await expect(
+					page.getByText(visibleText, {exact: true})
+				).toBeVisible({timeout: 2000});
+			}).toPass();
+		};
+
+		// A single approver workflow is assigned to message boards messages
+
+		await workflowPage.goto(site.friendlyUrlPath);
+
+		await workflowPage.changeWorkflow(
+			'Message Boards Message',
+			'Single Approver'
+		);
+
+		// A site member submits a thread for review
+
+		const siteMemberRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+		const member = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await apiHelpers.headlessAdminUser.assignUserToSite(
+			siteMemberRole.id,
+			site.id,
+			member.id
+		);
+
+		userData[member.alternateName] = {
+			name: member.givenName,
+			password: 'test',
+			surname: member.familyName,
+		};
+
+		await performUserSwitchViaApi(page, member.alternateName);
+
+		await apiHelpers.headlessDelivery.postMessageBoardThread({
+			articleBody: getRandomString(),
+			headline: threadSubject,
+			siteId: site.id,
+		});
+
+		// The reviewer assigns the review task and edits its comment
+
+		await performUserSwitchViaApi(page, 'test');
+
+		await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
+
+		await workflowTasksPage.assignToMe(threadSubject);
+
+		await workflowTasksPage.goto(site.friendlyUrlPath);
+
+		await workflowTaskDetailsPage.selectAsset(threadSubject);
+
+		const commentsPage = new CommentsPage(page);
+
+		await workflowTaskDetailsPage.addComment(comment);
+
+		await expandComments(comment);
+
+		await commentsPage.editComment(comment, commentEdit);
+
+		// The reviewer updates the thread through the workflow task
+
+		await workflowTaskDetailsPage.editAssetButton.click();
+
+		await messageBoardsEditThreadPage.subjectSelector.fill(
+			threadSubjectEdit
+		);
+
+		await messageBoardsEditThreadPage.bodyTextBox.fill(threadBodyEdit);
+
+		await page.getByRole('button', {exact: true, name: 'Save'}).click();
+
+		// The submitter sees the updated thread and comment in My Submissions
+
+		await performUserSwitchViaApi(page, member.alternateName);
+
+		await personalMenuPage.userPersonalMenuButton.click();
+
+		await personalMenuPage.menuItem('My Submissions').click();
+
+		await page
+			.getByRole('link', {name: threadSubjectEdit})
+			.click({force: true});
+
+		await expect(page.getByText(threadBodyEdit)).toBeVisible();
+
+		await expandComments(commentEdit);
+
+		await commentsPage.assertComment(commentEdit, 'Test Test', 1);
 	}
 );
