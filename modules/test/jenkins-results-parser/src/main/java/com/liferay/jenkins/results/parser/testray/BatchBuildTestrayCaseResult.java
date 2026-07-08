@@ -389,8 +389,10 @@ public class BatchBuildTestrayCaseResult
 		int errorMessageMaxLength = _getErrorMessageMaxLength();
 
 		if (errorMessage.length() > errorMessageMaxLength) {
-			errorMessage =
-				errorMessage.substring(0, errorMessageMaxLength - 4) + "\n...";
+			String truncatedErrorMessage = errorMessage.substring(
+				0, Math.max(0, errorMessageMaxLength - 4));
+
+			errorMessage = truncatedErrorMessage + "\n...";
 		}
 
 		return errorMessage;
