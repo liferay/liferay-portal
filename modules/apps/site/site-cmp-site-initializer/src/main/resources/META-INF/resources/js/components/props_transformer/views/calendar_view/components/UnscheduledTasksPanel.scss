@@ -9,11 +9,9 @@ $cms-tab-navigation-height: 48px;
 	top: -($cms-breadcrumb-height + $cms-tab-navigation-height);
 
 	// Match the panel width to the FDS container space. When the panel
-	// opens, the CMS increases the right padding of the FDS container by
-	// --cms-info-panel-width (472px), while the panel width comes from
-	// --sidebar-layout-width (defaults to 280px). Raise the width variable
-	// to the padding variable so the panel fills the padded space, on the
-	// same breakpoint the CMS uses.
+	// opens, the CMS pads the FDS container by --cms-info-panel-width;
+	// match the panel width to that padding (on the CMS breakpoint) so it
+	// fills the space, not the narrower default.
 
 	@media (min-width: 576px) {
 		--sidebar-layout-width: var(--cms-info-panel-width);

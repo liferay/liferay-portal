@@ -92,12 +92,13 @@ export default function CalendarView({
 		[items]
 	);
 
-	// The unscheduled tasks panel pushes the whole FDS container aside, not
-	// just the calendar, so it anchors to the FDS root element. The FDS core
-	// does not expose that element, so resolve it from the DOM. Store it in
-	// state, not a ref: the panel reads the container in a layout effect
-	// that runs before this component's effects, and a ref mutation would
-	// never re-trigger it.
+	// The panel should push the whole FDS container aside, not just the
+	// calendar, so anchor it to the FDS root. FDS does not expose that
+	// element, so resolve it from the DOM.
+	//
+	// Store it in state, not a ref: the panel reads the container in a
+	// layout effect that runs before this component's effects, and a ref
+	// mutation would never re-trigger it.
 
 	useEffect(() => {
 		setFDSContainerElement(
@@ -105,10 +106,8 @@ export default function CalendarView({
 		);
 	}, []);
 
-	// The panel removes its layout classes from the FDS container only through
-	// the close transition, which never runs when this view unmounts with the
-	// panel open. Remove them on unmount so other views are not narrowed by
-	// leftover padding.
+	// Anchor to the top of the FDS container, pulling up past the CMS
+	// breadcrumb and the project tab navigation above it.
 
 	useEffect(() => {
 		if (!fdsContainerElement) {
