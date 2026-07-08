@@ -60,6 +60,16 @@ export class RecycleBinPage {
 		await this._openRowAction(assetName, 'Restore');
 	}
 
+	async search(term: string) {
+		const searchbox = this.page.getByRole('searchbox', {
+			name: 'Search for:',
+		});
+
+		await searchbox.fill(term);
+
+		await searchbox.press('Enter');
+	}
+
 	async restoreContentFromFolder(folderName: string, documentName: string) {
 		await this._row(folderName)
 			.first()
