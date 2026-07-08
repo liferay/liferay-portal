@@ -936,7 +936,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
 			).name(
-				"A" + RandomTestUtil.randomString()
+				"a" + RandomTestUtil.randomString()
 			).objectDefinitionId(
 				objectDefinition.getObjectDefinitionId()
 			).build());
