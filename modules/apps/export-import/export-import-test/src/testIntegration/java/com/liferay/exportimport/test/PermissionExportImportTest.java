@@ -157,89 +157,86 @@ public class PermissionExportImportTest {
 	public void testDocumentLibraryFolderPermissionsExportImportForSiteRole()
 		throws Exception {
 
+		// Export
+
 		Group exportGroup = GroupTestUtil.addGroup();
 		Group importGroup = GroupTestUtil.addGroup();
 
 		Role role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_SITE);
 
-		try {
-			String resourceName = DLFolder.class.getName();
+		String resourceName = DLFolder.class.getName();
 
-			DLFolder exportDLFolder = DLTestUtil.addDLFolder(
-				exportGroup.getGroupId());
+		DLFolder exportDLFolder = DLTestUtil.addDLFolder(
+			exportGroup.getGroupId());
 
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
-				exportGroup.getCompanyId(), resourceName,
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(exportDLFolder.getFolderId()), role.getRoleId(),
-				_DL_FOLDER_ACTION_IDS);
+		ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			exportGroup.getCompanyId(), resourceName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(exportDLFolder.getFolderId()), role.getRoleId(),
+			_DL_FOLDER_ACTION_IDS);
 
-			// Export
+		TestReaderWriter testReaderWriter = _createTestReaderWriter();
 
-			TestReaderWriter testReaderWriter = _createTestReaderWriter();
+		PortletDataContext exportPortletDataContext =
+			PortletDataContextFactoryUtil.createExportPortletDataContext(
+				exportGroup.getCompanyId(), exportGroup.getGroupId(),
+				HashMapBuilder.put(
+					PortletDataHandlerKeys.PERMISSIONS,
+					new String[] {Boolean.TRUE.toString()}
+				).build(),
+				null, null, testReaderWriter);
 
-			PortletDataContext exportPortletDataContext =
-				PortletDataContextFactoryUtil.createExportPortletDataContext(
-					exportGroup.getCompanyId(), exportGroup.getGroupId(),
-					HashMapBuilder.put(
-						PortletDataHandlerKeys.PERMISSIONS,
-						new String[] {Boolean.TRUE.toString()}
-					).build(),
-					null, null, testReaderWriter);
+		exportPortletDataContext.addPermissions(
+			DLFolder.class, exportDLFolder.getFolderId());
 
-			exportPortletDataContext.addPermissions(
-				DLFolder.class, exportDLFolder.getFolderId());
+		exportPortletDataPermissions(exportPortletDataContext);
 
-			exportPortletDataPermissions(exportPortletDataContext);
+		// Import
 
-			// Import
+		DLFolder importDLFolder = DLTestUtil.addDLFolder(
+			importGroup.getGroupId());
 
-			DLFolder importDLFolder = DLTestUtil.addDLFolder(
-				importGroup.getGroupId());
+		ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			importGroup.getCompanyId(), resourceName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(importDLFolder.getFolderId()), role.getRoleId(),
+			new String[] {ActionKeys.DELETE});
 
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
-				importGroup.getCompanyId(), resourceName,
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(importDLFolder.getFolderId()), role.getRoleId(),
-				new String[] {ActionKeys.DELETE});
+		PortletDataContext importPortletDataContext =
+			PortletDataContextFactoryUtil.createImportPortletDataContext(
+				importGroup.getCompanyId(), importGroup.getGroupId(),
+				HashMapBuilder.put(
+					PortletDataHandlerKeys.PERMISSIONS,
+					new String[] {Boolean.TRUE.toString()}
+				).build(),
+				new TestUserIdStrategy(), testReaderWriter);
 
-			PortletDataContext importPortletDataContext =
-				PortletDataContextFactoryUtil.createImportPortletDataContext(
-					importGroup.getCompanyId(), importGroup.getGroupId(),
-					HashMapBuilder.put(
-						PortletDataHandlerKeys.PERMISSIONS,
-						new String[] {Boolean.TRUE.toString()}
-					).build(),
-					new TestUserIdStrategy(), testReaderWriter);
+		importPortletDataContext.setSourceGroupId(exportGroup.getGroupId());
 
-			importPortletDataContext.setSourceGroupId(exportGroup.getGroupId());
+		_permissionImporter.readPortletDataPermissions(
+			importPortletDataContext);
 
-			_permissionImporter.readPortletDataPermissions(
-				importPortletDataContext);
+		importPortletDataContext.importPermissions(
+			DLFolder.class, exportDLFolder.getFolderId(),
+			importDLFolder.getFolderId());
 
-			importPortletDataContext.importPermissions(
-				DLFolder.class, exportDLFolder.getFolderId(),
-				importDLFolder.getFolderId());
+		Assert.assertEquals(
+			Arrays.asList(_DL_FOLDER_ACTION_IDS),
+			ResourcePermissionLocalServiceUtil.
+				getAvailableResourcePermissionActionIds(
+					importGroup.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(importDLFolder.getFolderId()),
+					role.getRoleId(),
+					Arrays.asList(
+						ArrayUtil.append(
+							_DL_FOLDER_ACTION_IDS, ActionKeys.DELETE))));
 
-			Assert.assertEquals(
-				Arrays.asList(_DL_FOLDER_ACTION_IDS),
-				ResourcePermissionLocalServiceUtil.
-					getAvailableResourcePermissionActionIds(
-						importGroup.getCompanyId(), resourceName,
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(importDLFolder.getFolderId()),
-						role.getRoleId(),
-						Arrays.asList(
-							ArrayUtil.append(
-								_DL_FOLDER_ACTION_IDS, ActionKeys.DELETE))));
-		}
-		finally {
-			RoleLocalServiceUtil.deleteRole(role);
+		GroupTestUtil.deleteGroup(exportGroup);
+		GroupTestUtil.deleteGroup(importGroup);
 
-			GroupTestUtil.deleteGroup(exportGroup);
-			GroupTestUtil.deleteGroup(importGroup);
-		}
+		RoleLocalServiceUtil.deleteRole(role);
 	}
 
 	@Test
