@@ -34,9 +34,6 @@ public class BaseAccountEntryValidatorTest {
 	@Before
 	public void setUp() {
 		_accountEntry = Mockito.mock(AccountEntry.class);
-		_classPK = RandomTestUtil.randomString();
-		_jsonObject = JSONUtil.put(
-			"billingAddressId", RandomTestUtil.randomLong());
 
 		Mockito.when(
 			_accountEntry.getCompanyId()
@@ -48,40 +45,13 @@ public class BaseAccountEntryValidatorTest {
 			AccountEntryValidatorConfiguration.class);
 		_accountEntryValidatorResultManager = Mockito.mock(
 			AccountEntryValidatorResultManager.class);
+		_classPK = RandomTestUtil.randomString();
+		_jsonObject = JSONUtil.put(
+			"billingAddressId", RandomTestUtil.randomLong());
 	}
 
 	@Test
 	public void testValidate() throws Exception {
-		_testValidateWhenAccountEntryNull();
-		_testValidateWhenClassPKNull();
-		_testValidateWhenConfigurationDisabled();
-		_testValidateWhenConfigurationNull();
-		_testValidateWhenHistoryHit();
-		_testValidateWhenHistoryMiss();
-		_testValidateWhenResultNull();
-	}
-
-	private TestAccountEntryValidator _createTestAccountEntryValidator(
-		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration,
-		String classPK,
-		AccountEntryValidatorResult accountEntryValidatorResult) {
-
-		TestAccountEntryValidator testAccountEntryValidator =
-			new TestAccountEntryValidator(
-				accountEntryValidatorConfiguration, classPK,
-				accountEntryValidatorResult);
-
-		testAccountEntryValidator.accountEntryValidatorResultManager =
-			_accountEntryValidatorResultManager;
-
-		return testAccountEntryValidator;
-	}
-
-	private void _resetMocks() {
-		Mockito.reset(
-			_accountEntryValidatorConfiguration,
-			_accountEntryValidatorResultManager);
-
 		Mockito.when(
 			_accountEntryValidatorConfiguration.checkInterval()
 		).thenReturn(
@@ -93,48 +63,36 @@ public class BaseAccountEntryValidatorTest {
 		).thenReturn(
 			true
 		);
-	}
 
-	private void _testValidateWhenAccountEntryNull() throws Exception {
-		_resetMocks();
+		AccountEntryValidatorResult accountEntryValidatorResult1 =
+			AccountEntryValidatorResult.builder(
+				_classPK
+			).build();
 
 		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, _classPK,
-				AccountEntryValidatorResult.builder(
-					_classPK
-				).build());
+			new TestAccountEntryValidator();
+
+		testAccountEntryValidator.accountEntryValidatorResultManager =
+			_accountEntryValidatorResultManager;
+
+		testAccountEntryValidator.setAccountEntryValidatorConfiguration(
+			_accountEntryValidatorConfiguration);
+		testAccountEntryValidator.setAccountEntryValidatorResult(
+			accountEntryValidatorResult1);
+		testAccountEntryValidator.setClassPK(_classPK);
 
 		Assert.assertNull(
 			testAccountEntryValidator.validate(null, _jsonObject));
 		Assert.assertEquals(0, testAccountEntryValidator.getDoValidateCount());
 
-		Mockito.verifyNoInteractions(_accountEntryValidatorResultManager);
-	}
+		testAccountEntryValidator.setAccountEntryValidatorConfiguration(null);
 
-	private void _testValidateWhenClassPKNull() throws Exception {
-		_resetMocks();
-
-		AccountEntryValidatorResult accountEntryValidatorResult =
-			AccountEntryValidatorResult.builder(
-				RandomTestUtil.randomString()
-			).build();
-
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, null,
-				accountEntryValidatorResult);
-
-		Assert.assertSame(
-			accountEntryValidatorResult,
+		Assert.assertNull(
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
-		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
+		Assert.assertEquals(0, testAccountEntryValidator.getDoValidateCount());
 
-		Mockito.verifyNoInteractions(_accountEntryValidatorResultManager);
-	}
-
-	private void _testValidateWhenConfigurationDisabled() throws Exception {
-		_resetMocks();
+		testAccountEntryValidator.setAccountEntryValidatorConfiguration(
+			_accountEntryValidatorConfiguration);
 
 		Mockito.when(
 			_accountEntryValidatorConfiguration.enabled()
@@ -142,129 +100,79 @@ public class BaseAccountEntryValidatorTest {
 			false
 		);
 
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, _classPK,
-				AccountEntryValidatorResult.builder(
-					_classPK
-				).build());
-
 		Assert.assertNull(
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
 		Assert.assertEquals(0, testAccountEntryValidator.getDoValidateCount());
 
-		Mockito.verifyNoInteractions(_accountEntryValidatorResultManager);
-	}
+		Mockito.when(
+			_accountEntryValidatorConfiguration.enabled()
+		).thenReturn(
+			true
+		);
 
-	private void _testValidateWhenConfigurationNull() throws Exception {
-		_resetMocks();
+		testAccountEntryValidator.setClassPK(null);
 
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				null, _classPK,
-				AccountEntryValidatorResult.builder(
-					_classPK
-				).build());
-
-		Assert.assertNull(
+		Assert.assertSame(
+			accountEntryValidatorResult1,
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
-		Assert.assertEquals(0, testAccountEntryValidator.getDoValidateCount());
+		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
 
 		Mockito.verifyNoInteractions(_accountEntryValidatorResultManager);
-	}
 
-	private void _testValidateWhenHistoryHit() throws Exception {
-		_resetMocks();
+		testAccountEntryValidator.setClassPK(_classPK);
 
-		AccountEntryValidatorResult cachedAccountEntryValidatorResult =
+		AccountEntryValidatorResult accountEntryValidatorResult2 =
 			AccountEntryValidatorResult.builder(
 				_classPK
 			).build();
 
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, _classPK, null);
-
 		Mockito.when(
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
-					_accountEntry, testAccountEntryValidator.getClassName(),
-					_classPK, 30)
+					_accountEntry, 30, testAccountEntryValidator.getClassName(),
+					_classPK)
 		).thenReturn(
-			cachedAccountEntryValidatorResult
+			accountEntryValidatorResult2
 		);
 
 		Assert.assertSame(
-			cachedAccountEntryValidatorResult,
+			accountEntryValidatorResult2,
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
-		Assert.assertEquals(0, testAccountEntryValidator.getDoValidateCount());
 
-		Mockito.verify(
-			_accountEntryValidatorResultManager, Mockito.never()
-		).addAccountEntryValidatorResult(
-			Mockito.any(), Mockito.anyString(), Mockito.any()
-		);
-	}
-
-	private void _testValidateWhenHistoryMiss() throws Exception {
-		_resetMocks();
-
-		AccountEntryValidatorResult accountEntryValidatorResult =
-			AccountEntryValidatorResult.builder(
-				_classPK
-			).build();
-
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, _classPK,
-				accountEntryValidatorResult);
+		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
 
 		Mockito.when(
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
-					_accountEntry, testAccountEntryValidator.getClassName(),
-					_classPK, 30)
+					_accountEntry, 30, testAccountEntryValidator.getClassName(),
+					_classPK)
 		).thenReturn(
 			null
 		);
 
 		Assert.assertSame(
-			accountEntryValidatorResult,
+			accountEntryValidatorResult1,
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
-		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
+		Assert.assertEquals(2, testAccountEntryValidator.getDoValidateCount());
 
 		Mockito.verify(
 			_accountEntryValidatorResultManager
 		).addAccountEntryValidatorResult(
-			_accountEntry, testAccountEntryValidator.getClassName(),
-			accountEntryValidatorResult
+			_accountEntry, accountEntryValidatorResult1,
+			testAccountEntryValidator.getClassName()
 		);
-	}
 
-	private void _testValidateWhenResultNull() throws Exception {
-		_resetMocks();
-
-		TestAccountEntryValidator testAccountEntryValidator =
-			_createTestAccountEntryValidator(
-				_accountEntryValidatorConfiguration, _classPK, null);
-
-		Mockito.when(
-			_accountEntryValidatorResultManager.
-				getValidAccountEntryValidatorResult(
-					_accountEntry, testAccountEntryValidator.getClassName(),
-					_classPK, 30)
-		).thenReturn(
-			null
-		);
+		testAccountEntryValidator.setAccountEntryValidatorResult(null);
 
 		Assert.assertNull(
 			testAccountEntryValidator.validate(_accountEntry, _jsonObject));
-		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
+		Assert.assertEquals(3, testAccountEntryValidator.getDoValidateCount());
 
 		Mockito.verify(
-			_accountEntryValidatorResultManager, Mockito.never()
+			_accountEntryValidatorResultManager, Mockito.times(1)
 		).addAccountEntryValidatorResult(
-			Mockito.any(), Mockito.anyString(), Mockito.any()
+			_accountEntry, accountEntryValidatorResult1,
+			testAccountEntryValidator.getClassName()
 		);
 	}
 
@@ -303,6 +211,24 @@ public class BaseAccountEntryValidatorTest {
 			return _doValidateCount;
 		}
 
+		public void setAccountEntryValidatorConfiguration(
+			AccountEntryValidatorConfiguration
+				accountEntryValidatorConfiguration) {
+
+			_accountEntryValidatorConfiguration =
+				accountEntryValidatorConfiguration;
+		}
+
+		public void setAccountEntryValidatorResult(
+			AccountEntryValidatorResult accountEntryValidatorResult) {
+
+			_accountEntryValidatorResult = accountEntryValidatorResult;
+		}
+
+		public void setClassPK(String classPK) {
+			_classPK = classPK;
+		}
+
 		@Override
 		protected AccountEntryValidatorResult doValidate(
 			AccountEntry accountEntry, JSONObject jsonObject) {
@@ -312,22 +238,10 @@ public class BaseAccountEntryValidatorTest {
 			return _accountEntryValidatorResult;
 		}
 
-		private TestAccountEntryValidator(
-			AccountEntryValidatorConfiguration
-				accountEntryValidatorConfiguration,
-			String classPK,
-			AccountEntryValidatorResult accountEntryValidatorResult) {
-
-			_accountEntryValidatorConfiguration =
-				accountEntryValidatorConfiguration;
-			_classPK = classPK;
-			_accountEntryValidatorResult = accountEntryValidatorResult;
-		}
-
-		private final AccountEntryValidatorConfiguration
+		private AccountEntryValidatorConfiguration
 			_accountEntryValidatorConfiguration;
-		private final AccountEntryValidatorResult _accountEntryValidatorResult;
-		private final String _classPK;
+		private AccountEntryValidatorResult _accountEntryValidatorResult;
+		private String _classPK;
 		private int _doValidateCount;
 
 	}
