@@ -9,6 +9,4 @@
 
 {{- $labels := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "project-id" $projectId) -}}
 
-{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
-{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
-{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $projectId (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6)) -}}

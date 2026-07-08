@@ -23,9 +23,7 @@
 {{- $storage := $xr.spec.storage | default dict -}}
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
 
-{{- $overlayUidHash := printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6 -}}
-{{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
-{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName $overlayBaseName -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $projectId (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6)) -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
 {{- $databaseIamUser := printf "%s@%s.iam" $gsaName $env.projectId -}}
