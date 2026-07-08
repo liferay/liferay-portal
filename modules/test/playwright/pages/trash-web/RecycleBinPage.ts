@@ -66,6 +66,29 @@ export class RecycleBinPage {
 		await this._openRowAction(assetName, 'Restore');
 	}
 
+	async restoreRename(assetName: string, newName: string) {
+		await this.restore(assetName);
+
+		// The name collides with an existing entry, so a confirmation form
+		// offers to overwrite or to keep both and rename
+
+		await this.page
+			.getByLabel(
+				'Keep both entries and rename the entry from the Recycle Bin as'
+			)
+			.check();
+
+		await this.page.locator('[id$="TrashPortlet_newName"]').fill(newName);
+
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		// The confirmation form navigates back once the restore completes
+
+		await expect(this.page.getByRole('button', {name: 'Save'})).toHaveCount(
+			0
+		);
+	}
+
 	async search(term: string) {
 		const searchbox = this.page.getByRole('searchbox', {
 			name: 'Search for:',
