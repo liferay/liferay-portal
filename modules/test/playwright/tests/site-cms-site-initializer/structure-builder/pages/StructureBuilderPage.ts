@@ -609,37 +609,17 @@ export class StructureBuilderPage {
 	}
 
 	async publishStructure() {
+		await this.publishButton.click();
+
+		await waitForAlert(this.page, 'published successfully', {
+			timeout: 10000,
+		});
+
 		const url = new URL(this.page.url());
 
 		const objectDefinitionId = url.searchParams.get('objectDefinitionId');
 
-		const publish = async () => {
-			await this.publishButton.click();
-
-			await waitForAlert(this.page, 'published successfully', {
-				timeout: 10000,
-			});
-		};
-
-		if (objectDefinitionId) {
-			await publish();
-
-			return Number(objectDefinitionId);
-		}
-
-		const [response] = await Promise.all([
-			this.page.waitForResponse(
-				(response) =>
-					response.url().includes('object-definitions') &&
-					response.status() === 200,
-				{timeout: 10000}
-			),
-			await publish(),
-		]);
-
-		const {id} = await response.json();
-
-		return id;
+		return objectDefinitionId ? Number(objectDefinitionId) : undefined;
 	}
 
 	async saveStructure(
