@@ -99,6 +99,13 @@ export class RecycleBinPage {
 		await searchbox.press('Enter');
 	}
 
+	async viewEntry(assetName: string) {
+		await this._row(assetName)
+			.first()
+			.getByRole('link', {name: assetName})
+			.click();
+	}
+
 	async restoreContentFromFolder(
 		folderName: string,
 		documentName: string,
