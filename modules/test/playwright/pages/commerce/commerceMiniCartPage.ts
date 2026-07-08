@@ -18,6 +18,8 @@ export class CommerceMiniCartPage {
 	readonly miniCartItem: (productName: string) => Locator;
 	readonly miniCartItemsContainer: Locator;
 	readonly miniCartItemPrice: (text: RegExp) => Locator;
+	readonly miniCartItemReplacementLabel: (productName: string) => Locator;
+	readonly miniCartReplacementInfoMessage: Locator;
 	readonly miniCartSaveButton: Locator;
 	readonly miniCartSku: (skuName: string) => Locator;
 	readonly miniCartTotalPrice: Locator;
@@ -73,6 +75,13 @@ export class CommerceMiniCartPage {
 			page.locator('div.mini-cart-item').filter({hasText: productName});
 		this.miniCartItemPrice = (text: RegExp) =>
 			page.locator('div').filter({hasText: text}).first();
+		this.miniCartItemReplacementLabel = (productName: string) =>
+			this.miniCartItem(productName).getByText('Replacement', {
+				exact: true,
+			});
+		this.miniCartReplacementInfoMessage = page.getByText(
+			'There are replacement products in your cart.'
+		);
 		this.miniCartSaveButton = page
 			.locator('.mini-cart-footer')
 			.getByRole('button', {

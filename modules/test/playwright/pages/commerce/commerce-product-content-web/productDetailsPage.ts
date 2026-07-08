@@ -44,6 +44,7 @@ export class ProductDetailsPage {
 		container?: Locator | Page
 	) => Promise<Locator>;
 	readonly quantitySelector: Locator;
+	readonly replacementProductButton: Locator;
 	readonly replacementsSearchBar: Locator;
 	readonly replacementsSearchButton: Locator;
 	readonly replacementsTab: Locator;
@@ -61,6 +62,7 @@ export class ProductDetailsPage {
 		shortDescription: string
 	) => Promise<Locator>;
 	readonly skuField: (sku: string) => Promise<Locator>;
+	readonly unitOfMeasureSelect: Locator;
 	readonly uomCombobox: Locator;
 	readonly uomTable: (uomTableCell: string) => Promise<Locator>;
 	readonly viewButton: Locator;
@@ -136,6 +138,9 @@ export class ProductDetailsPage {
 			exact: true,
 			name: 'Quantity Selector',
 		});
+		this.replacementProductButton = page.getByRole('button', {
+			name: 'Replacement Product',
+		});
 		this.replacementsSearchBar = page
 			.getByTestId('managementToolbar')
 			.getByPlaceholder('Search');
@@ -169,6 +174,9 @@ export class ProductDetailsPage {
 		this.skuField = async (sku: string) => {
 			return page.getByText(sku, {exact: true});
 		};
+		this.unitOfMeasureSelect = page.locator(
+			'select.unit-of-measure-selector'
+		);
 		this.uomCombobox = page.getByRole('combobox', {exact: true});
 		this.uomTable = async (cellValue: string) => {
 			return page.getByRole('cell', {name: cellValue});

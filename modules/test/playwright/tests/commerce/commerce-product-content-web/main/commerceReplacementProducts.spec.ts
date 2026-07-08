@@ -160,3 +160,218 @@ test(
 		}
 	}
 );
+
+test(
+	'COMMERCE-12548 A SKU with a UOM can replace a discontinued SKU',
+	{tag: '@COMMERCE-12548'},
+	async ({
+		apiHelpers,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+		productDetailsPage,
+	}) => {
+		test.setTimeout(120000);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			[user.emailAddress]
+		);
+
+		const role = await apiHelpers.headlessAdminUser.postRole({
+			name: 'Buyer ' + getRandomString(),
+			rolePermissions: [
+				{
+					actionIds: ['MANAGE_ADDRESSES', 'VIEW_ADDRESSES'],
+					primaryKey: '0',
+					resourceName: 'com.liferay.account.model.AccountEntry',
+					scope: 3,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: await page.evaluate(() => {
+						return Liferay.ThemeDisplay.getCompanyId();
+					}),
+					resourceName:
+						'com.liferay.commerce.model.CommerceOrderType',
+					scope: 1,
+				},
+				{
+					actionIds: [
+						'ADD_COMMERCE_ORDER',
+						'CHECKOUT_OPEN_COMMERCE_ORDERS',
+						'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+						'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
+						'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
+						'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
+						'VIEW_BILLING_ADDRESS',
+						'VIEW_COMMERCE_ORDERS',
+						'VIEW_OPEN_COMMERCE_ORDERS',
+					],
+					primaryKey: '0',
+					resourceName: 'com.liferay.commerce.order',
+					scope: 3,
+				},
+			],
+		});
+
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			role.id,
+			Number(user.id)
+		);
+
+		apiHelpers.data.push({
+			id: `${role.id}_${user.id}`,
+			type: 'roleUserAccountAssociation',
+		});
+
+		await apiHelpers.jsonWebServicesUser.addGroupUsers(site.id, [user.id]);
+
+		const replacementSku =
+			await apiHelpers.headlessCommerceAdminCatalog.getSkuByName(
+				'MIN93015'
+			);
+
+		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+			replacementSku.id,
+			{
+				basePrice: 20,
+				incrementalOrderQuantity: 0.6,
+				key: 'UOM1KEY',
+				name: {en_US: 'UOM1'},
+				precision: 1,
+				priority: 4,
+			}
+		);
+		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+			replacementSku.id,
+			{
+				basePrice: 30,
+				incrementalOrderQuantity: 1.5,
+				key: 'UOM2KEY',
+				name: {en_US: 'UOM2'},
+				precision: 1,
+				priority: 1,
+			}
+		);
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			replacementSku.productId,
+			{
+				name: {en_US: 'ABS Sensor'},
+				productConfiguration: {
+					minOrderQuantity: 0.1,
+					multipleOrderQuantity: 0.1,
+				},
+			}
+		);
+
+		const discontinuedSku =
+			await apiHelpers.headlessCommerceAdminCatalog.getSkuByName(
+				'MIN55861'
+			);
+
+		const warehouses =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehousesPage();
+
+		for (const warehouse of warehouses.items) {
+			const warehouseItems =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehouseIdWarehouseItemsPage(
+					warehouse.id
+				);
+
+			const warehouseItem = warehouseItems.items.find(
+				(warehouseItem) => warehouseItem.sku === discontinuedSku.sku
+			);
+
+			if (warehouseItem) {
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.patchWarehouseItem(
+					warehouseItem.id,
+					{quantity: 0, sku: warehouseItem.sku}
+				);
+			}
+		}
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchSku(
+			discontinuedSku.id,
+			{
+				cost: discontinuedSku.cost,
+				discontinued: true,
+				price: discontinuedSku.price,
+				published: true,
+				purchasable: discontinuedSku.purchasable,
+				replacementSkuId: replacementSku.id,
+				sku: discontinuedSku.sku,
+			}
+		);
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			discontinuedSku.productId,
+			{
+				name: {en_US: 'U-Joint'},
+				productConfiguration: {
+					allowBackOrder: false,
+				},
+			}
+		);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: user.alternateName});
+
+		await page.goto(`/web/${site.name}/p/u-joint`);
+
+		await expect(productDetailsPage.addToCartButton).toBeDisabled();
+		await expect(
+			commerceThemeMiniumCatalogPage.quantitySelector(
+				page.locator('.product-detail')
+			)
+		).toBeDisabled();
+
+		await expect(productDetailsPage.replacementProductButton).toBeVisible();
+
+		await productDetailsPage.replacementProductButton.click();
+
+		await expect(page).toHaveURL(/\/p\/abs-sensor/);
+		await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue(
+			'UOM2KEY'
+		);
+		await expect(
+			commerceThemeMiniumCatalogPage.quantitySelector(
+				page.locator('.product-detail')
+			)
+		).toHaveValue('1.5');
+
+		await commerceMiniCartPage.quickAddToCart('MIN55861');
+
+		const cartItem = commerceMiniCartPage.miniCartItem('MIN93015');
+
+		await expect(cartItem).toBeVisible();
+		await expect(cartItem.getByText('UOM2KEY')).toBeVisible();
+		await expect(
+			commerceThemeMiniumCatalogPage.quantitySelector(cartItem)
+		).toHaveValue('1.5');
+		await expect(cartItem.getByText('$ 30.00')).toBeVisible();
+
+		await expect(
+			commerceMiniCartPage.miniCartReplacementInfoMessage
+		).toBeVisible();
+		await expect(
+			commerceMiniCartPage.miniCartItemReplacementLabel('MIN93015')
+		).toBeVisible();
+	}
+);
