@@ -9,7 +9,7 @@ import {FormEvent, useState} from 'react';
 import {patchDataMask} from '../services/patchDataMask';
 import {postDataMask} from '../services/postDataMask';
 import {DataMask} from '../types';
-import {isSystemMask, validateRegex} from '../utils';
+import {isSystemMask} from '../utils';
 
 interface Options {
 	dataMask: DataMask | null;
@@ -30,15 +30,8 @@ export function useEditDataMask({dataMask, onSaved}: Options) {
 	);
 	const [submitting, setSubmitting] = useState(false);
 
-	const detectionRegexError = validateRegex(detectionRegex);
-	const replacementRegexError = validateRegex(replacementRegex);
-
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
-
-		if (detectionRegexError || replacementRegexError) {
-			return;
-		}
 
 		setSubmitting(true);
 
@@ -74,12 +67,10 @@ export function useEditDataMask({dataMask, onSaved}: Options) {
 	return {
 		description,
 		detectionRegex,
-		detectionRegexError,
 		handleSubmit,
 		isSystemMask: isSystemMask(dataMask),
 		name,
 		replacementRegex,
-		replacementRegexError,
 		replacementValue,
 		setDescription,
 		setDetectionRegex,

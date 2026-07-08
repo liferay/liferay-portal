@@ -74,12 +74,10 @@ function EditDataMaskView({
 	const {
 		description,
 		detectionRegex,
-		detectionRegexError,
 		handleSubmit,
 		isSystemMask,
 		name,
 		replacementRegex,
-		replacementRegexError,
 		replacementValue,
 		setDescription,
 		setDetectionRegex,
@@ -125,7 +123,6 @@ function EditDataMaskView({
 
 			<DetectionConfigurationSection
 				detectionRegex={detectionRegex}
-				detectionRegexError={detectionRegexError}
 				readOnly={readOnly}
 				setDetectionRegex={setDetectionRegex}
 			/>
@@ -134,7 +131,6 @@ function EditDataMaskView({
 				detectionRegex={detectionRegex}
 				readOnly={readOnly}
 				replacementRegex={replacementRegex}
-				replacementRegexError={replacementRegexError}
 				replacementValue={replacementValue}
 				setReplacementRegex={setReplacementRegex}
 				setReplacementValue={setReplacementValue}
@@ -222,14 +218,12 @@ function MaskInformationSection({
 
 interface DetectionConfigurationSectionProps {
 	detectionRegex: string;
-	detectionRegexError: string;
 	readOnly: boolean;
 	setDetectionRegex: (value: string) => void;
 }
 
 function DetectionConfigurationSection({
 	detectionRegex,
-	detectionRegexError,
 	readOnly,
 	setDetectionRegex,
 }: DetectionConfigurationSectionProps) {
@@ -241,7 +235,6 @@ function DetectionConfigurationSection({
 
 			<FieldBase
 				disabled={readOnly}
-				errorMessage={detectionRegexError}
 				helpMessage={Liferay.Language.get(
 					'use-a-standard-regular-expression-named-capture-groups-are-supported'
 				)}
@@ -266,7 +259,6 @@ interface ReplacementConfigurationSectionProps {
 	detectionRegex: string;
 	readOnly: boolean;
 	replacementRegex: string;
-	replacementRegexError: string;
 	replacementValue: string;
 	setReplacementRegex: (value: string) => void;
 	setReplacementValue: (value: string) => void;
@@ -276,7 +268,6 @@ function ReplacementConfigurationSection({
 	detectionRegex,
 	readOnly,
 	replacementRegex,
-	replacementRegexError,
 	replacementValue,
 	setReplacementRegex,
 	setReplacementValue,
@@ -289,7 +280,6 @@ function ReplacementConfigurationSection({
 
 			<FieldBase
 				disabled={readOnly}
-				errorMessage={replacementRegexError}
 				helpMessage={Liferay.Language.get(
 					'leave-empty-to-replace-the-entire-detected-value-with-the-replacement-token'
 				)}

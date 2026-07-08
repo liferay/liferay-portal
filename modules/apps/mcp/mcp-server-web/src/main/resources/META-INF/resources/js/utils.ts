@@ -8,20 +8,3 @@ import {DataMask} from './types';
 export function isSystemMask(dataMask: DataMask | null): boolean {
 	return dataMask?.maskType?.key === 'system';
 }
-
-export function validateRegex(value: string): string {
-	if (!value) {
-		return '';
-	}
-
-	try {
-		new RegExp(value);
-
-		return '';
-	}
-	catch (error) {
-		return Liferay.Language.get(
-			'patterns-must-be-valid-regular-expressions'
-		);
-	}
-}
