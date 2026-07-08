@@ -88,7 +88,7 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.1.10.3";
 
-		task ("Given: The Export Templates feature flag is enabled") {
+		task ("Given: Export Templates feature flag is enabled") {
 			LAR.enableExportTemplatesFeatureFlag();
 		}
 
@@ -162,7 +162,7 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.2.10.1";
 
-		task ("Given: The Export Templates feature flag is enabled") {
+		task ("Given: Export Templates feature flag is enabled") {
 			LAR.enableExportTemplatesFeatureFlag();
 		}
 
@@ -236,7 +236,7 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.3.10.1";
 
-		task ("Given: The Export Templates feature flag is enabled") {
+		task ("Given: Export Templates feature flag is enabled") {
 			LAR.enableExportTemplatesFeatureFlag();
 		}
 
@@ -310,7 +310,7 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.0.10.16";
 
-		task ("Given: The Export Templates feature flag is enabled") {
+		task ("Given: Export Templates feature flag is enabled") {
 			LAR.enableExportTemplatesFeatureFlag();
 		}
 

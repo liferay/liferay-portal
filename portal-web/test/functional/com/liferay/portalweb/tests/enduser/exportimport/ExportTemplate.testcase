@@ -15,7 +15,7 @@ definition {
 			User.firstLoginPG();
 		}
 
-		task ("And: The Export Templates feature flag is enabled") {
+		task ("And: Export Templates feature flag is enabled") {
 			LAR.enableExportTemplatesFeatureFlag();
 		}
 
