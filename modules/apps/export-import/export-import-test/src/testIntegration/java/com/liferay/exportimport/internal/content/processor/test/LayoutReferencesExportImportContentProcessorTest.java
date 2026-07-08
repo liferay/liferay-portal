@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -302,6 +303,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPS-128533")
 	public void testExportDefaultGroupRelativeURLImportDefaultGroup()
 		throws Exception {
 

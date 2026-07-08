@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -152,6 +153,7 @@ public class PermissionExportImportTest {
 	}
 
 	@Test
+	@TestInfo("LPS-84290")
 	public void testExportImportDocumentLibraryFolderPermissionsForSiteRole()
 		throws Exception {
 

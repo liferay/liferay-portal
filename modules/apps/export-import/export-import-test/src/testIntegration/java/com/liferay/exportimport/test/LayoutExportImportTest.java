@@ -263,6 +263,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo({"LPS-88378", "LPS-128533", "LRQA-77950"})
 	public void testExportImportContentLayoutCircularLinkReference()
 		throws Exception {
 
@@ -296,6 +297,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPS-169440")
 	public void testExportImportContentLayoutWithBrokenImageReference()
 		throws Exception {
 
