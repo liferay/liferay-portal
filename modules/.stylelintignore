@@ -27,12 +27,6 @@
 ##
 
     #
-    # LRAC-12941 Temporarily ignore SF on FARO files.
-    #
-	dxp/apps/osb/osb-faro/osb-faro-web/
-	dxp/apps/osb/osb-faro/osb-faro-theme/
-
-    #
     # Ignore the Clay Docs Site for now.
     #
 	apps/frontend-js/frontend-js-clay-web/clay/clay-*

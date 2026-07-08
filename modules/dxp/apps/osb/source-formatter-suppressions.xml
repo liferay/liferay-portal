@@ -6,8 +6,6 @@
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/category-facet-widget-template/ddm-template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/navigation-widget-template/ddm-template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/starterkits-widget-template/ddm-template\.ftl" />
-		<suppress checks="JavaUpgradeCreateTableCheck" files="osb-faro/osb-faro-service/src/main/java/com/liferay/osb/faro/internal/upgrade/registry/FaroServiceUpgradeStepRegistrator\.java" />
-		<suppress checks="JavaUpgradeCreateTableCheck" files="osb-faro/osb-faro-service/src/main/java/com/liferay/osb/faro/internal/upgrade/v11_0_0/UpgradeFaroNotificationUpgradeProcess\.java" />
 		<suppress checks="LanguageKeysCheck" files="osb-patcher/osb-patcher-api/src/main/java/com/liferay/osb/patcher/util/HelpCenterUtil\.java" />
 		<suppress checks="LanguageKeysCheck" files="osb-patcher/osb-patcher-api/src/main/java/com/liferay/osb/patcher/util/PatcherScanUtil\.java" />
 	</source-check>

@@ -60,12 +60,6 @@
     **/*-client-js/src/utils/SerDes.ts
 
     #
-    # LRAC-12941 Temporarily ignore SF on FARO files.
-    #
-    dxp/apps/osb/osb-faro/osb-faro-web/
-    dxp/apps/osb/osb-faro/osb-faro-theme/
-
-    #
     # Ignore the copyright template files.
     #
     copyright.js

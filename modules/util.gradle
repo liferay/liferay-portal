@@ -408,7 +408,7 @@ private void _createSetUpPortalToolTasks() {
 }
 
 private void _createYarnTasks() {
-	FileTree yarnLockFileTree = fileTree(dir: rootDir, includes: ["apps/*/yarn.lock", "dxp/apps/osb/osb-faro/yarn.lock", "private/apps/*/yarn.lock", "private/yarn.lock", "yarn.lock"])
+	FileTree yarnLockFileTree = fileTree(dir: rootDir, includes: ["apps/*/yarn.lock", "private/apps/*/yarn.lock", "private/yarn.lock", "yarn.lock"])
 
 	yarnLockFileTree.each {
 		File yarnLockFile ->

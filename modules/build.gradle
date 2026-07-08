@@ -568,7 +568,7 @@ gradle.beforeProject {
 					}
 				}
 			}
-			else if (!project.path.startsWith(":dxp:apps:osb:osb-faro:") && !project.path.startsWith(":sdk:") && !project.path.startsWith(":test:") && !project.path.startsWith(":util:") && !project.path.contains("site-initializer-")) {
+			else if (!project.path.startsWith(":sdk:") && !project.path.startsWith(":test:") && !project.path.startsWith(":util:") && !project.path.contains("site-initializer-")) {
 				buildCSS {
 					enabled = false
 				}

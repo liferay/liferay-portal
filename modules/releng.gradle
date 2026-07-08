@@ -1421,7 +1421,7 @@ private List<File> _getPortalSourcesDependencies(List<File> relengProjectDirs) {
 		":" + it.replace(File.separatorChar, ':' as char) + ":jarSources"
 	}
 
-	String buildExcludeDirs = _setSystemProperty("build.exclude.dirs", "dxp/apps/osb/osb-faro")
+	String buildExcludeDirs = _setSystemProperty("build.exclude.dirs", "")
 
 	try {
 		_executeGradle(startParameter, true)
@@ -1607,7 +1607,7 @@ private List<File> _getRelengProjectDirs() {
 		":" + it.replace(File.separatorChar, ':' as char) + ":jar"
 	}
 
-	String buildExcludeDirs = _setSystemProperty("build.exclude.dirs", "dxp/apps/osb/osb-faro")
+	String buildExcludeDirs = _setSystemProperty("build.exclude.dirs", "")
 
 	try {
 		_executeGradle(startParameter, true)
