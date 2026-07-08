@@ -102,63 +102,6 @@ definition {
 		}
 	}
 
-	@description = "Restore blog entry from recycle bin."
-	@priority = 3
-	test RecycleBinBlogs {
-		task ("Add a blogs widget to page and an entry to blogs") {
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Site Name",
-				layoutName = "Test Page",
-				widgetName = "Blogs");
-
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content",
-				groupName = "Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Move blog entry to recycle bin") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page",
-				siteName = "Site Name");
-
-			BlogsEntry.moveToRecycleBinPG(
-				assetType = "Blogs Entry",
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title");
-		}
-
-		task ("Go to recycle bin to view entry and restore") {
-			ProductMenu.gotoPortlet(
-				category = "Recycle Bin",
-				portlet = "Recycle Bin");
-
-			RecycleBin.viewCP(
-				assetName = "Blogs Entry Title",
-				assetType = "Blogs Entry",
-				deleteUser = "Test Test");
-
-			RecycleBin.restoreCP(
-				assetName = "Blogs Entry Title",
-				assetRestoreLocation = "Blogs",
-				assetType = "Blogs Entry");
-		}
-
-		task ("Go to page and view the blog entry is restored") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page",
-				siteName = "Site Name");
-
-			BlogsNavigator.gotoPG(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title");
-
-			BlogsEntry.viewEntryPG(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title");
-		}
-	}
-
 	@description = "Restore MB attachment from recycle bin."
 	@priority = 3
 	test RecycleBinMBAttachment {
@@ -262,50 +205,6 @@ definition {
 			RecycleBin.openRecycleBinAdmin(siteURLKey = "site-name");
 
 			RecycleBin.viewDefaultCP(assetName = "Blogs Entry Title");
-		}
-	}
-
-	@description = "Assert 3 blog entries moved to recycle bin are searchable."
-	@priority = 3
-	test RecycleBinSearchBlogsEntries {
-		task ("Add blogs to page and 3 blog entries") {
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Site Name",
-				layoutName = "Test Page",
-				widgetName = "Blogs");
-
-			for (var n : list "1,2,3") {
-				HeadlessBlog.addBlogEntry(
-					content = "Blogs Entry Content ${n}",
-					groupName = "Site Name",
-					title = "Blogs Entry Title ${n}");
-			}
-		}
-
-		task ("Go to page and remove 3 blog entries") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page",
-				siteName = "Site Name");
-
-			for (var n : list "1,2,3") {
-				BlogsEntry.moveToRecycleBinPG(
-					assetType = "Blogs Entry",
-					entryContent = "Blogs Entry Content ${n}",
-					entryTitle = "Blogs Entry Title ${n}");
-			}
-		}
-
-		task ("View 3 blog entries in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "site-name");
-
-			for (var n : list "1,2,3") {
-				Search.searchCP(searchTerm = ${n});
-
-				RecycleBin.viewCP(
-					assetName = "Blogs Entry Title ${n}",
-					assetType = "Blogs Entry",
-					deleteUser = "Test Test");
-			}
 		}
 	}
 

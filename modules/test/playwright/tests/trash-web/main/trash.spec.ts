@@ -367,3 +367,71 @@ test('Can restore a web content from a folder in the recycle bin', async ({
 
 	await webContentPage.assertEntryPresent(title);
 });
+
+test('Can restore a blog entry from the recycle bin', async ({
+	apiHelpers,
+	blogsPage,
+	page,
+	site,
+}) => {
+	const headline = `Blog ${getRandomString()}`;
+
+	await apiHelpers.headlessDelivery.postBlog(site.id, {headline});
+
+	const recycleBinPage = new RecycleBinPage(page);
+
+	// Move the blog entry to the recycle bin
+
+	await blogsPage.goto(site.friendlyUrlPath);
+
+	await blogsPage.moveEntryToRecycleBin(headline);
+
+	// Restore it from the recycle bin
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.assertEntry(headline, 'Blogs Entry');
+
+	await recycleBinPage.restore(headline);
+
+	await recycleBinPage.assertEntryAbsent(headline);
+
+	// The blog entry is back in blogs
+
+	await blogsPage.goto(site.friendlyUrlPath);
+
+	await blogsPage.assertEntryPresent(headline);
+});
+
+test('Can search for blog entries in the recycle bin', async ({
+	apiHelpers,
+	blogsPage,
+	page,
+	site,
+}) => {
+	const headlines = [1, 2, 3].map(() => `Blog ${getRandomString()}`);
+
+	for (const headline of headlines) {
+		await apiHelpers.headlessDelivery.postBlog(site.id, {headline});
+	}
+
+	const recycleBinPage = new RecycleBinPage(page);
+
+	// Move the three blog entries to the recycle bin
+
+	await blogsPage.goto(site.friendlyUrlPath);
+
+	for (const headline of headlines) {
+		await blogsPage.moveEntryToRecycleBin(headline);
+	}
+
+	// Each entry is found by searching the recycle bin for it
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	for (const headline of headlines) {
+		await recycleBinPage.search(headline);
+
+		await recycleBinPage.assertEntry(headline, 'Blogs Entry');
+	}
+});
