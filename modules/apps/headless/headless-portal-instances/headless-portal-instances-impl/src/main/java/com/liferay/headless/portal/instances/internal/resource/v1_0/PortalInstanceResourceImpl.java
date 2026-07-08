@@ -154,18 +154,9 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			String portalInstanceId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-11342")) {
+		_checkFeatureFlag();
 
-			throw new UnsupportedOperationException();
-		}
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		if (!permissionChecker.isOmniadmin()) {
-			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
-		}
+		_checkPermission();
 
 		Company company = _companyService.getCompanyByWebId(portalInstanceId);
 
@@ -215,6 +206,23 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		_companyService.updateCompany(
 			company.getCompanyId(), company.getVirtualHostname(),
 			company.getMx(), company.getMaxUsers(), false);
+	}
+
+	private void _checkFeatureFlag() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-11342")) {
+
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private void _checkPermission() throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
 	}
 
 	private void _exportConfigurations(long companyId) throws Exception {
