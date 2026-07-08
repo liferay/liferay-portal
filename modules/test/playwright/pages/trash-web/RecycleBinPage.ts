@@ -99,7 +99,11 @@ export class RecycleBinPage {
 		await searchbox.press('Enter');
 	}
 
-	async restoreContentFromFolder(folderName: string, documentName: string) {
+	async restoreContentFromFolder(
+		folderName: string,
+		documentName: string,
+		targetFolderName?: string
+	) {
 		await this._row(folderName)
 			.first()
 			.getByRole('link', {name: folderName})
@@ -123,10 +127,22 @@ export class RecycleBinPage {
 		const selectRestoreFolderFrame =
 			'iframe[title="Select Restore Folder"]';
 
-		await this.page
-			.frameLocator(selectRestoreFolderFrame)
-			.getByRole('button', {name: 'Select Home'})
-			.click();
+		const selectRestoreFolder = this.page.frameLocator(
+			selectRestoreFolderFrame
+		);
+
+		if (targetFolderName) {
+			await selectRestoreFolder
+				.getByRole('row')
+				.filter({hasText: targetFolderName})
+				.getByRole('button', {name: 'Select'})
+				.click();
+		}
+		else {
+			await selectRestoreFolder
+				.getByRole('button', {name: 'Select Home'})
+				.click();
+		}
 
 		// Restoring reloads the page and detaches the dialog once it completes
 
