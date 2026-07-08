@@ -15,7 +15,7 @@ public class MonitorFactoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testNewMonitorUnknownTypeFailsLoud() {
+	public void testNewMonitorUnknownType() {
 		MonitorConfig monitorConfig = new MonitorConfig(
 			0, "a", null, MonitorConfig.Severity.MEDIUM, null, "unknown-type");
 
