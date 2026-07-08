@@ -4,12 +4,16 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {DocumentLibraryPage} from '../../../pages/document-library-web/DocumentLibraryPage';
 import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
 import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
+import {SizedFileType, createSizedFile} from '../../../utils/createSizedFile';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
@@ -23,6 +27,22 @@ const test = mergeTests(
 	blogsPagesTest,
 	loginTest()
 );
+
+function createDocument(
+	apiHelpers: DataApiHelpers,
+	siteId: string,
+	fileName: string
+) {
+	const type = fileName.split('.').pop() as SizedFileType;
+
+	return apiHelpers.headlessDelivery.postDocument(
+		siteId,
+		createReadStream(
+			createSizedFile(`${getRandomString()}.${type}`, type, 1024)
+		),
+		{fileName, title: fileName}
+	);
+}
 
 test(
 	'Cannot view trash entry from another site in current site recycle bin',
@@ -435,3 +455,121 @@ test('Can search for blog entries in the recycle bin', async ({
 		await recycleBinPage.assertEntry(headline, 'Blogs Entry');
 	}
 });
+
+test(
+	'Can bulk restore multiple assets from the recycle bin',
+	{tag: '@LPS-109555'},
+	async ({apiHelpers, blogsPage, page, site}) => {
+		const documentName = `${getRandomString()}.png`;
+		const headline = `Blog ${getRandomString()}`;
+		const title = getRandomString();
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+			datePublished: null,
+			siteId: site.id,
+			title,
+		});
+
+		await apiHelpers.headlessDelivery.postBlog(site.id, {headline});
+
+		await createDocument(apiHelpers, site.id, documentName);
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+		const webContentPage = new WebContentPage(page);
+
+		// Move the web content, blog entry and document to the recycle bin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await documentLibraryPage.moveToRecycleBin(documentName);
+
+		await blogsPage.goto(site.friendlyUrlPath);
+
+		await blogsPage.moveEntryToRecycleBin(headline);
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveToRecycleBin(title);
+
+		// Bulk restore all three from the recycle bin
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.assertEntry(documentName, 'Document');
+
+		await recycleBinPage.assertEntry(headline, 'Blogs Entry');
+
+		await recycleBinPage.assertEntry(title, 'Web Content Article');
+
+		await recycleBinPage.bulkRestore([documentName, headline, title]);
+
+		// Each asset is back in its own admin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {name: documentName})
+		).toBeVisible();
+
+		await blogsPage.goto(site.friendlyUrlPath);
+
+		await blogsPage.assertEntryPresent(headline);
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.assertEntryPresent(title);
+	}
+);
+
+test(
+	'Can automatically rename documents on bulk restore when the names already exist',
+	{tag: '@LPS-109555'},
+	async ({apiHelpers, page, site}) => {
+		const base = getRandomString();
+		const documentNames = [`${base}.png`, `${base}.pdf`];
+
+		for (const documentName of documentNames) {
+			await createDocument(apiHelpers, site.id, documentName);
+		}
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+
+		// Move both documents to the recycle bin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		for (const documentName of documentNames) {
+			await documentLibraryPage.moveToRecycleBin(documentName);
+		}
+
+		// Recreate documents with the same names so the restore collides
+
+		for (const documentName of documentNames) {
+			await createDocument(apiHelpers, site.id, documentName);
+		}
+
+		// Bulk restore both from the recycle bin
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.bulkRestore(documentNames);
+
+		// Both the existing and the auto-renamed copies are present
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		for (const documentName of [
+			`${base}.png`,
+			`${base}.pdf`,
+			`${base} (1).png`,
+			`${base} (1).pdf`,
+		]) {
+			await expect(
+				page.getByRole('link', {name: documentName})
+			).toBeVisible();
+		}
+	}
+);
