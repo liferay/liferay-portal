@@ -272,14 +272,15 @@ public class CETManagerImpl implements CETManager {
 			ClientExtensionEntry.class.getAnnotation(
 				ImplementationClassName.class);
 
-		Class<?> serviceClass = _clientExtensionEntryLocalService.getClass();
+		Class<?> clazz = _clientExtensionEntryLocalService.getClass();
 
-		ClassLoader classLoader = serviceClass.getClassLoader();
+		ClassLoader classLoader = clazz.getClassLoader();
 
-		Class<?> modelClass = classLoader.loadClass(
+		Class<?> implementationClass = classLoader.loadClass(
 			implementationClassName.value());
 
-		PortalCache<?, ?> portalCache = _entityCache.getPortalCache(modelClass);
+		PortalCache<?, ?> portalCache = _entityCache.getPortalCache(
+			implementationClass);
 
 		return (PortalCache<Long, Object>)
 			(PortalCache<?, ?>)PortalCacheHelperUtil.getPortalCache(
