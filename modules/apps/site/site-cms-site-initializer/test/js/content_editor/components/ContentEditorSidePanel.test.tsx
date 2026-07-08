@@ -257,7 +257,7 @@ describe('ContentEditorSidePanel', () => {
 
 		await act(async () => {
 			handlers['cms:aiAssistant:requestCategorize']({
-				agent: 'L_AUTO_CATEGORIZE',
+				actions: [{agent: 'categorize'}],
 			});
 		});
 
@@ -272,9 +272,58 @@ describe('ContentEditorSidePanel', () => {
 					cmsGroupId: '21000',
 					content: 'Japan',
 					scopeId: 555,
+					suppressUserMessage: true,
 				})
 			);
 		});
+	});
+
+	it('fetches the entry once and dispatches a categorize event per action in order', async () => {
+		const fireCalls: Array<{name: string; payload: any}> = [];
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn((name: string, payload: any) => {
+			fireCalls.push({name, payload});
+		});
+
+		renderComponent();
+
+		(ObjectEntryService.getObjectEntry as jest.Mock).mockClear();
+
+		await act(async () => {
+			handlers['cms:aiAssistant:requestCategorize']({
+				actions: [
+					{agent: 'categorize', count: 5, targets: ['Travel']},
+					{agent: 'tag', targets: ['kayaking']},
+				],
+			});
+		});
+
+		await waitFor(() => {
+			expect(fireCalls).toHaveLength(2);
+		});
+
+		expect(ObjectEntryService.getObjectEntry).toHaveBeenCalledTimes(1);
+		expect(fireCalls[0].payload).toEqual(
+			expect.objectContaining({
+				agent: 'L_AUTO_CATEGORIZE',
+				count: 5,
+				suppressUserMessage: true,
+				targets: ['Travel'],
+			})
+		);
+		expect(fireCalls[1].payload).toEqual(
+			expect.objectContaining({
+				agent: 'L_GENERATE_TAGS',
+				suppressUserMessage: true,
+				targets: ['kayaking'],
+			})
+		);
 	});
 
 	it('persists a tag commit while the categorization panel is closed', async () => {

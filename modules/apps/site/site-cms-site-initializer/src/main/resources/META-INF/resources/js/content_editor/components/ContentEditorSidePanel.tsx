@@ -22,6 +22,7 @@ import {
 	AUTO_CATEGORIZE_AGENT,
 	CATEGORIZE_EVENT,
 	COMMIT_EVENT,
+	CategorizationAction,
 	CategorizationCommitPayload,
 	CategorizeEventPayload,
 	GENERATE_TAGS_AGENT,
@@ -365,7 +366,7 @@ function SidePanel(props: SidePanelProps) {
 		props;
 
 	useEffect(() => {
-		const fireCategorize = async (agent: string) => {
+		const fireCategorize = async (actions: CategorizationAction[]) => {
 			const {data, error} =
 				await ObjectEntryService.getObjectEntry(contentAPIURL);
 
@@ -377,33 +378,43 @@ function SidePanel(props: SidePanelProps) {
 				return;
 			}
 
-			const payload: CategorizeEventPayload = {
-				agent,
-				cmsGroupId,
-				content: data.contentRawText ?? '',
-				scopeId:
-					agent === AUTO_CATEGORIZE_AGENT
-						? data.scopeId
-						: data.scopeId || assetLibraryId || cmsGroupId,
-			};
+			actions.forEach((action) => {
+				const agent =
+					action.agent === 'categorize'
+						? AUTO_CATEGORIZE_AGENT
+						: GENERATE_TAGS_AGENT;
 
-			if (agent === AUTO_CATEGORIZE_AGENT) {
-				payload.classNameId =
-					data.systemProperties?.objectDefinitionBrief?.classNameId ??
-					-1;
-				payload.currentCategoryIds = (
-					data.taxonomyCategoryBriefs || []
-				).map((brief) => brief.taxonomyCategoryId);
-			}
-			else {
-				payload.currentTagNames = data.keywords || [];
-			}
+				const payload: CategorizeEventPayload = {
+					agent,
+					cmsGroupId,
+					content: data.contentRawText ?? '',
+					count: action.count,
+					scopeId:
+						agent === AUTO_CATEGORIZE_AGENT
+							? data.scopeId
+							: data.scopeId || assetLibraryId || cmsGroupId,
+					suppressUserMessage: true,
+					targets: action.targets,
+				};
 
-			Liferay.fire(CATEGORIZE_EVENT, payload);
+				if (agent === AUTO_CATEGORIZE_AGENT) {
+					payload.classNameId =
+						data.systemProperties?.objectDefinitionBrief
+							?.classNameId ?? -1;
+					payload.currentCategoryIds = (
+						data.taxonomyCategoryBriefs || []
+					).map((brief) => brief.taxonomyCategoryId);
+				}
+				else {
+					payload.currentTagNames = data.keywords || [];
+				}
+
+				Liferay.fire(CATEGORIZE_EVENT, payload);
+			});
 		};
 
 		const handleRequestCategorize = (payload: RequestCategorizePayload) => {
-			fireCategorize(payload.agent);
+			fireCategorize(payload.actions);
 		};
 
 		const handleCommit = async ({

@@ -19,7 +19,7 @@ interface RawSuggestion {
 	name?: string;
 }
 
-function stripCodeFences(text: string): string {
+export function stripCodeFences(text: string): string {
 	const trimmed = text.trim();
 
 	const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);

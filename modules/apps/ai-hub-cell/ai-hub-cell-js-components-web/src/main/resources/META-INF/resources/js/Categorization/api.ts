@@ -6,7 +6,7 @@
 import {EventSource} from 'eventsource';
 import {fetch} from 'frontend-js-web';
 
-import {ECategorizationAgent} from './types';
+import {CATEGORIZATION_INTENT_AGENT, ECategorizationAgent} from './types';
 
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
 
@@ -88,7 +88,7 @@ export async function postCategorizationAgentInstance({
 	context,
 	sseEventSinkKey,
 }: {
-	agent: ECategorizationAgent;
+	agent: ECategorizationAgent | typeof CATEGORIZATION_INTENT_AGENT;
 	context: Record<string, unknown>;
 	sseEventSinkKey: string;
 }): Promise<void> {
