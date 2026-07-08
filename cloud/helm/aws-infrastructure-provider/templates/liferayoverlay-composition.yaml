@@ -76,11 +76,10 @@ spec:
                         {{- $xr := .observed.composite.resource -}}
 
                         {{- $forceDestroy := $xr.spec.forceDestroy -}}
-                        {{- $overlayRegion := $xr.spec.region -}}
-                        {{- $projectId := $xr.spec.projectId -}}
-
                         {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
                         {{- $namespace := $xr.metadata.namespace -}}
+                        {{- $projectId := $xr.spec.projectId -}}
+                        {{- $region := $xr.spec.region -}}
 
                         {{- $overlayUidHash := printf "%s-%s-%s" $accountId $deploymentName $projectId | sha256sum | trunc 6 -}}
                         {{- $overlayBaseName := printf "%.18s-%s" $projectId $overlayUidHash -}}
@@ -101,7 +100,7 @@ spec:
                         spec:
                             forProvider:
                                 forceDestroy: {{ $forceDestroy }}
-                                region: {{ $overlayRegion }}
+                                region: {{ $region }}
                                 tags:
                                     Name: {{ $overlayBucketName }}
                             managementPolicies: {{ $managementPolicies }}
@@ -122,7 +121,7 @@ spec:
                                         app: liferay
                                         component: overlay
                                         projectId: {{ $projectId }}
-                                region: {{ $overlayRegion }}
+                                region: {{ $region }}
                                 rule:
                                     -   abortIncompleteMultipartUpload:
                                             -   daysAfterInitiation: 7
@@ -153,7 +152,7 @@ spec:
                                         component: overlay
                                         projectId: {{ $projectId }}
                                 ignorePublicAcls: true
-                                region: {{ $overlayRegion }}
+                                region: {{ $region }}
                                 restrictPublicBuckets: true
                             managementPolicies: {{ $managementPolicies }}
                         ---
@@ -177,7 +176,7 @@ spec:
                                         component: overlay
                                         projectId: {{ $projectId }}
                                     namespace: {{ $namespace }}
-                                region: {{ $overlayRegion }}
+                                region: {{ $region }}
                                 versioningConfiguration:
                                     status: Enabled
                             managementPolicies: {{ $managementPolicies }}
