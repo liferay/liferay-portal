@@ -12,12 +12,24 @@ import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {datetimeUtils} from '@liferay/object-js-components-web';
 import {LiferayEditorConfig} from 'frontend-editor-ckeditor-web';
 import {openToast} from 'frontend-js-components-web';
-import {fetch, objectToFormData} from 'frontend-js-web';
+import {fetch, objectToFormData, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import VocabularyService from '../../common/services/VocabularyService';
 import {IAssetObjectEntry} from '../../common/types/AssetType';
 import focusInvalidElement from '../../common/utils/focusInvalidElement';
+import {
+	AUTO_CATEGORIZE_AGENT,
+	CATEGORIZE_EVENT,
+	COMMIT_EVENT,
+	CategorizationCommitPayload,
+	CategorizeEventPayload,
+	GENERATE_TAGS_AGENT,
+	OPEN_CATEGORIZATION_PANEL_EVENT,
+	REQUEST_CATEGORIZE_EVENT,
+	RequestCategorizePayload,
+} from '../../main_view/info_panel/components/categorizationAgentEvents';
+import CategorizationCommitService from '../../main_view/info_panel/services/CategorizationCommitService';
 import ObjectEntryService from '../../main_view/info_panel/services/ObjectEntryService';
 import {Comment} from '../services/CommentService';
 import {EVENT_VALIDATE_FORM} from './ContentEditorToolbar';
@@ -333,10 +345,172 @@ function SidePanel(props: SidePanelProps) {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<React.Key | null>(null);
 
+	const categorizationFieldsRef = useRef(props.categorizationFields);
+	const panelRef = useRef(panel);
+
+	useEffect(() => {
+		categorizationFieldsRef.current = props.categorizationFields;
+	}, [props.categorizationFields]);
+
+	useEffect(() => {
+		panelRef.current = panel;
+	}, [panel]);
+
 	const showErrorInPanel = useCallback((panelId: React.Key) => {
 		setPanel(panelId);
 		setHasError(true);
 	}, []);
+
+	const {assetLibraryId, cmsGroupId, contentAPIURL, onUpdateCategorization} =
+		props;
+
+	useEffect(() => {
+		const fireCategorize = async (agent: string) => {
+			const {data, error} =
+				await ObjectEntryService.getObjectEntry(contentAPIURL);
+
+			if (!data) {
+				if (error) {
+					console.error(error);
+				}
+
+				return;
+			}
+
+			const payload: CategorizeEventPayload = {
+				agent,
+				cmsGroupId,
+				content: data.contentRawText ?? '',
+				scopeId:
+					agent === AUTO_CATEGORIZE_AGENT
+						? data.scopeId
+						: data.scopeId || assetLibraryId || cmsGroupId,
+			};
+
+			if (agent === AUTO_CATEGORIZE_AGENT) {
+				payload.classNameId =
+					data.systemProperties?.objectDefinitionBrief?.classNameId ??
+					-1;
+				payload.currentCategoryIds = (
+					data.taxonomyCategoryBriefs || []
+				).map((brief) => brief.taxonomyCategoryId);
+			}
+			else {
+				payload.currentTagNames = data.keywords || [];
+			}
+
+			Liferay.fire(CATEGORIZE_EVENT, payload);
+		};
+
+		const handleRequestCategorize = (payload: RequestCategorizePayload) => {
+			fireCategorize(payload.agent);
+		};
+
+		const handleCommit = async ({
+			agent,
+			scopeId,
+			suggestions,
+		}: CategorizationCommitPayload) => {
+			const fields = categorizationFieldsRef.current;
+
+			if (panelRef.current === 'categorization' || !fields) {
+				return;
+			}
+
+			if (agent === AUTO_CATEGORIZE_AGENT) {
+				const currentBriefs = fields.assetCategoryIds.value;
+
+				const briefs =
+					await CategorizationCommitService.resolveNewCategoryBriefs(
+						suggestions,
+						currentBriefs.map(
+							({taxonomyCategoryId}) => taxonomyCategoryId
+						)
+					);
+
+				if (!briefs.length) {
+					return;
+				}
+
+				const value = [...currentBriefs, ...briefs];
+
+				onUpdateCategorization([
+					'assetCategoryIds',
+					{
+						serverValue: value
+							.map(({taxonomyCategoryId}) => taxonomyCategoryId)
+							.join(','),
+						value,
+					},
+				]);
+
+				openToast({
+					message: sub(
+						Liferay.Language.get(
+							'x-categories-have-been-successfully-added-to-the-selected-content'
+						),
+						`${briefs.length}`
+					),
+					type: 'success',
+				});
+			}
+			else if (agent === GENERATE_TAGS_AGENT) {
+				const names = await CategorizationCommitService.createTagNames(
+					suggestions,
+					{
+						assetLibraryId: scopeId || assetLibraryId || cmsGroupId,
+						cmsGroupId,
+					}
+				);
+
+				const currentNames = fields.assetTagNames.value;
+
+				const newNames = [
+					...new Set(
+						names.filter((name) => !currentNames.includes(name))
+					),
+				];
+
+				if (!newNames.length) {
+					return;
+				}
+
+				const keywords = [...currentNames, ...newNames];
+
+				onUpdateCategorization([
+					'assetTagNames',
+					{serverValue: keywords.join(','), value: keywords},
+				]);
+
+				openToast({
+					message: sub(
+						Liferay.Language.get(
+							'x-tags-have-been-successfully-added-to-the-selected-content'
+						),
+						`${newNames.length}`
+					),
+					type: 'success',
+				});
+			}
+		};
+
+		const openCategorizationPanel = () => {
+			setPanel('categorization');
+		};
+
+		Liferay.on(COMMIT_EVENT, handleCommit);
+		Liferay.on(REQUEST_CATEGORIZE_EVENT, handleRequestCategorize);
+		Liferay.on(OPEN_CATEGORIZATION_PANEL_EVENT, openCategorizationPanel);
+
+		return () => {
+			Liferay.detach(COMMIT_EVENT, handleCommit);
+			Liferay.detach(REQUEST_CATEGORIZE_EVENT, handleRequestCategorize);
+			Liferay.detach(
+				OPEN_CATEGORIZATION_PANEL_EVENT,
+				openCategorizationPanel
+			);
+		};
+	}, [assetLibraryId, cmsGroupId, contentAPIURL, onUpdateCategorization]);
 
 	useEffect(() => {
 		const validateScheduleFields = ({event}: {event: MouseEvent}) => {
@@ -357,8 +531,6 @@ function SidePanel(props: SidePanelProps) {
 			Liferay.detach(EVENT_VALIDATE_FORM, validateScheduleFields);
 		};
 	}, [props.scheduleFields, showErrorInPanel]);
-
-	const {onUpdateCategorization} = props;
 
 	useEffect(() => {
 		if (

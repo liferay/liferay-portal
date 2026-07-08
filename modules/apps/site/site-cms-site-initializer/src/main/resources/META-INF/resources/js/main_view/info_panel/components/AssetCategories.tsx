@@ -233,6 +233,9 @@ const AssetCategories = ({
 			classNameId,
 			cmsGroupId,
 			content: (objectEntry as IAssetObjectEntry).contentRawText ?? '',
+			currentCategoryIds: (objectEntry.taxonomyCategoryBriefs ?? []).map(
+				(brief) => brief.taxonomyCategoryId
+			),
 			scopeId,
 		});
 	}, [cmsGroupId, objectEntry]);

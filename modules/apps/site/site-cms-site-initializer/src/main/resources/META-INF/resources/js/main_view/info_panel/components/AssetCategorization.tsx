@@ -9,11 +9,11 @@ import {sub} from 'frontend-js-web';
 import React, {ComponentProps, useCallback, useEffect, useState} from 'react';
 
 import CategoryService from '../../../common/services/CategoryService';
-import TagService from '../../../common/services/TagService';
 import {
 	IAssetObjectEntry,
 	ITaxonomyCategoryBrief,
 } from '../../../common/types/AssetType';
+import CategorizationCommitService from '../services/CategorizationCommitService';
 import ObjectEntryService from '../services/ObjectEntryService';
 import AssetCategorizationSections from './AssetCategorizationSections';
 import {
@@ -160,32 +160,15 @@ export default function AssetCategorization({
 				({taxonomyCategoryId}) => taxonomyCategoryId
 			);
 
-			const newSuggestions = suggestions.filter(
-				(suggestion) =>
-					typeof suggestion.id === 'number' &&
-					!currentIds.includes(suggestion.id)
-			);
+			const briefs =
+				await CategorizationCommitService.resolveNewCategoryBriefs(
+					suggestions,
+					currentIds
+				);
 
-			if (!newSuggestions.length) {
+			if (!briefs.length) {
 				return;
 			}
-
-			const briefs = (
-				await Promise.all(
-					newSuggestions.map(async (suggestion) => {
-						const {data} = await CategoryService.getCategoryById(
-							suggestion.id as number
-						);
-
-						return data
-							? {
-									embeddedTaxonomyCategory: data,
-									taxonomyCategoryId: Number(data.id),
-								}
-							: null;
-					})
-				)
-			).filter(Boolean) as ITaxonomyCategoryBrief[];
 
 			const newObjectEntry = {
 				...objectEntry,
@@ -219,29 +202,10 @@ export default function AssetCategorization({
 				assetLibraryId ||
 				cmsGroupId;
 
-			const names = (
-				await Promise.all(
-					suggestions.map(async (suggestion) => {
-						if (suggestion.isNew) {
-							const {data, status} = await TagService.createTag({
-								assetLibraryId: scopeId,
-								cmsGroupId,
-								name: suggestion.name,
-							});
-
-							if (data?.name) {
-								return data.name;
-							}
-
-							return status === 'CONFLICT'
-								? suggestion.name
-								: null;
-						}
-
-						return suggestion.name;
-					})
-				)
-			).filter((name): name is string => Boolean(name));
+			const names = await CategorizationCommitService.createTagNames(
+				suggestions,
+				{assetLibraryId: scopeId, cmsGroupId}
+			);
 
 			const newObjectEntry = {
 				...objectEntry,

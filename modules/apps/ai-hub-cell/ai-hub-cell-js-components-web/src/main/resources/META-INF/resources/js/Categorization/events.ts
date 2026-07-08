@@ -9,16 +9,28 @@ export const CATEGORIZE_EVENT = 'cms:aiAssistant:categorize';
 
 export const COMMIT_EVENT = 'cms:aiAssistant:commit';
 
+export const OPEN_CATEGORIZATION_PANEL_EVENT =
+	'cms:aiAssistant:openCategorizationPanel';
+
+export const REQUEST_CATEGORIZE_EVENT = 'cms:aiAssistant:requestCategorize';
+
 export interface CategorizeEventPayload {
 	agent: ECategorizationAgent;
 	classNameId?: number;
 	cmsGroupId: number | string;
 	content: string;
 	count?: number;
+	currentCategoryIds?: number[];
+	currentTagNames?: string[];
 	scopeId: number;
 }
 
 export interface CommitEventPayload {
 	agent: ECategorizationAgent;
+	scopeId: number;
 	suggestions: Suggestion[];
+}
+
+export interface RequestCategorizePayload {
+	agent: ECategorizationAgent;
 }

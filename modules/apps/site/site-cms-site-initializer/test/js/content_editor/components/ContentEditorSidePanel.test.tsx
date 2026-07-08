@@ -4,11 +4,13 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, waitFor} from '@testing-library/react';
+import {act, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ContentEditorSidePanel from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ContentEditorSidePanel';
+import CategorizationCommitService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/CategorizationCommitService';
+import ObjectEntryService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 
 const EXPIRATION_DATE = '2025-08-14T00:01';
@@ -22,6 +24,12 @@ jest.mock('frontend-js-web', () => ({
 		getWeekdaysShort: jest.fn().mockReturnValue([]),
 	},
 }));
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService'
+);
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/CategorizationCommitService'
+);
 
 const renderComponent = ({isSubscribed = false} = {}) => {
 	return render(
@@ -54,6 +62,28 @@ describe('ContentEditorSidePanel', () => {
 		global.Liferay.ThemeDisplay.getTimeZone = jest
 			.fn()
 			.mockReturnValue('utc');
+		global.Liferay.ThemeDisplay.getSiteGroupId = jest
+			.fn()
+			.mockReturnValue('21000');
+
+		(ObjectEntryService.getObjectEntry as jest.Mock).mockResolvedValue({
+			data: {
+				contentRawText: 'Japan',
+				keywords: [],
+				scopeId: 555,
+				systemProperties: {
+					objectDefinitionBrief: {classNameId: 30982},
+				},
+				taxonomyCategoryBriefs: [],
+			},
+			error: null,
+		});
+	});
+
+	afterEach(() => {
+		(global as any).Liferay.on = () => {};
+		(global as any).Liferay.fire = () => {};
+		(global as any).Liferay.detach = () => {};
 	});
 
 	it('renders ContentEditorSidePanel', () => {
@@ -211,5 +241,101 @@ describe('ContentEditorSidePanel', () => {
 				screen.getByRole('textbox', {name: 'expiration-date'})
 			).toHaveValue('08/14/2025 12:01 AM');
 		});
+	});
+
+	it('fires the categorize event without opening the categorization panel when requested', async () => {
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn();
+
+		renderComponent();
+
+		await act(async () => {
+			handlers['cms:aiAssistant:requestCategorize']({
+				agent: 'L_AUTO_CATEGORIZE',
+			});
+		});
+
+		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
+
+		await waitFor(() => {
+			expect(global.Liferay.fire as jest.Mock).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({
+					agent: 'L_AUTO_CATEGORIZE',
+					classNameId: 30982,
+					cmsGroupId: '21000',
+					content: 'Japan',
+					scopeId: 555,
+				})
+			);
+		});
+	});
+
+	it('persists a tag commit while the categorization panel is closed', async () => {
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn();
+
+		(
+			CategorizationCommitService.createTagNames as jest.Mock
+		).mockResolvedValue(['Culture']);
+
+		await act(async () => {
+			renderComponent();
+		});
+
+		await act(async () => {
+			handlers['cms:aiAssistant:commit']({
+				agent: 'L_GENERATE_TAGS',
+				scopeId: 555,
+				suggestions: [{isNew: true, name: 'Culture'}],
+			});
+		});
+
+		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
+
+		await waitFor(() => {
+			expect(
+				CategorizationCommitService.createTagNames
+			).toHaveBeenCalledWith([{isNew: true, name: 'Culture'}], {
+				assetLibraryId: 555,
+				cmsGroupId: '21000',
+			});
+
+			const tagNamesInput: HTMLInputElement | null =
+				document.querySelector('[name="assetTagNames"]');
+
+			expect(tagNamesInput?.value).toBe('Culture');
+		});
+	});
+
+	it('opens the categorization panel when requested directly', async () => {
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn();
+
+		renderComponent();
+
+		await act(async () => {
+			handlers['cms:aiAssistant:openCategorizationPanel']({});
+		});
+
+		expect(screen.getByText('categorization')).toBeInTheDocument();
 	});
 });
