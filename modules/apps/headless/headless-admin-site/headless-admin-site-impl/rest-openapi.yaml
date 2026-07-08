@@ -3797,6 +3797,19 @@ components:
         StyleBook:
             # @review
             properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            description:
+                                The action's properties.
+                            type: string
+                        description:
+                            The action's name.
+                        type: object
+                    description:
+                        The actions and their permissions for this style book.
+                    readOnly: true
+                    type: object
                 creator:
                     $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
                     description:
@@ -3824,6 +3837,12 @@ components:
                     description:
                         The style book's tokens values.
                     type: string
+                id:
+                    description:
+                        The style book's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 key:
                     description:
                         The style book's key.
