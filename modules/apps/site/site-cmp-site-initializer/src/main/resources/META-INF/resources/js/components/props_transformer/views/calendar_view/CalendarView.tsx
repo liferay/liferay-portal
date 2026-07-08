@@ -8,6 +8,7 @@ import ClayDatePicker from '@clayui/date-picker';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import {
 	FrontendDataSetContext,
@@ -17,8 +18,13 @@ import classNames from 'classnames';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
+import {patchTaskById} from '../../../../utils/api';
 import {DEFAULT_TASK_STATE_KEY} from '../../../../utils/constants';
 import {openCMPModal} from '../../../../utils/openCMPModal';
+import {
+	displayDueDateSuccessToast,
+	displayErrorToast,
+} from '../../../../utils/toastUtil';
 import {ITask, ITaskObjectEntry} from '../../../../utils/types';
 import CreateTaskModal from '../../../modal/CreateTaskModal';
 import {UPDATE_TASKS_QUICK_FILTER_VISIBILITY} from '../../../task/TasksQuickFilters';
@@ -67,6 +73,14 @@ export default function CalendarView({
 		useState<HTMLElement | null>(null);
 	const [moreLinkPopover, setMoreLinkPopover] =
 		useState<MoreLinkPopover | null>(null);
+
+	// Overrides the due dates from the items prop after a drag,
+	// keyed by task id. For example: {12345: '2026-07-18'}
+
+	const [rescheduledDueDates, setRescheduledDueDates] = useState<
+		Record<number, string>
+	>({});
+
 	const [title, setTitle] = useState('');
 	const [unscheduledTasksPanelOpen, setUnscheduledTasksPanelOpen] =
 		useState(false);
@@ -74,20 +88,26 @@ export default function CalendarView({
 	const events = useMemo(
 		() =>
 			items
-				.filter((item) => item.embedded?.dueDate)
-				.map((item) => ({
+				.map((item) => item.embedded)
+				.filter(Boolean)
+				.map((task) => ({
+					...task,
+					dueDate: rescheduledDueDates[task.id] ?? task.dueDate,
+				}))
+				.filter((task) => task.dueDate)
+				.map((task) => ({
 					allDay: true,
 
 					// Attach the full task entry to the event so the custom
 					// renderers (eventContent and the "more" popover) can read
 					// it back through event.extendedProps.
 
-					extendedProps: {task: item.embedded},
-					id: String(item.embedded.id),
-					start: item.embedded.dueDate.slice(0, 10),
-					title: item.embedded.title,
+					extendedProps: {task},
+					id: String(task.id),
+					start: task.dueDate.slice(0, 10),
+					title: task.title,
 				})),
-		[items]
+		[items, rescheduledDueDates]
 	);
 
 	const unscheduledTasks = useMemo(
@@ -382,6 +402,30 @@ export default function CalendarView({
 						task={arg.event.extendedProps.task}
 					/>
 				)}
+				eventDrop={async (arg) => {
+					const task = arg.event.extendedProps.task;
+
+					const dueDate = arg.event.startStr;
+
+					const {error} = await patchTaskById({
+						body: {dueDate},
+						taskId: String(task.id),
+					});
+
+					if (!error) {
+						setRescheduledDueDates((dueDates) => ({
+							...dueDates,
+							[task.id]: dueDate,
+						}));
+
+						displayDueDateSuccessToast(task.title);
+					}
+					else {
+						arg.revert();
+						displayErrorToast(error);
+					}
+				}}
+				eventStartEditable
 				events={events}
 				fixedWeekCount={false}
 				headerToolbar={false}
@@ -419,7 +463,7 @@ export default function CalendarView({
 					</>
 				)}
 				moreLinkHint={Liferay.Language.get('view-all-tasks')}
-				plugins={[dayGridPlugin]}
+				plugins={[dayGridPlugin, interactionPlugin]}
 				ref={calendarRef}
 				{...(Liferay.FeatureFlags['LPD-69885'] && {
 					dayCellContent: (arg) => (
