@@ -244,3 +244,82 @@ test('Can view a recycle bin entry via the success message link', async ({
 
 	await expect(page.getByText(title).first()).toBeVisible();
 });
+
+test('Can move a web content to the recycle bin via the delete icon', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const title = getRandomString();
+
+	await apiHelpers.headlessDelivery.postStructuredContent({
+		contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+		datePublished: null,
+		siteId: site.id,
+		title,
+	});
+
+	const recycleBinPage = new RecycleBinPage(page);
+	const webContentPage = new WebContentPage(page);
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.moveToRecycleBinViaDeleteIcon(title);
+
+	// The web content is gone from the admin and now in the recycle bin
+
+	await webContentPage.assertEntryAbsent(title);
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.assertEntry(title, 'Web Content Article');
+});
+
+test('Can view duplicate web content and folder names in the recycle bin', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const folderName = getRandomString();
+	const title = getRandomString();
+
+	const contentStructureId = await getBasicWebContentStructureId(apiHelpers);
+
+	const recycleBinPage = new RecycleBinPage(page);
+	const webContentPage = new WebContentPage(page);
+
+	// Move two web content with the same title to the recycle bin
+
+	for (let i = 0; i < 2; i++) {
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentStructureId,
+			datePublished: null,
+			siteId: site.id,
+			title,
+		});
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveToRecycleBinViaDeleteIcon(title);
+	}
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.assertEntryCount(title, 2);
+
+	// Move two folders with the same name to the recycle bin
+
+	for (let i = 0; i < 2; i++) {
+		await apiHelpers.headlessDelivery.postStructuredContentFolder(site.id, {
+			name: folderName,
+		});
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveFolderToRecycleBin(folderName);
+	}
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.assertEntryCount(folderName, 2);
+});

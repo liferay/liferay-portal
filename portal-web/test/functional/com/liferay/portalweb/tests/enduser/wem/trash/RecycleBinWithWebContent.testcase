@@ -261,38 +261,6 @@ definition {
 		}
 	}
 
-	@description = "Can move web content to recycle bin via delete icon."
-	@priority = 3
-	test RecycleWebContentViaDeleteIcon {
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Move web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinViaDeleteIconCP();
-		}
-
-		task ("Assert asset does not exist in web content and exists in recycle bin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewDefaultCP(webContentTitle = "WC WebContent Title");
-		}
-
-		task ("Assert asset does not exist in web content and exists in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewCP(
-				assetName = "WC WebContent Title",
-				assetType = "Web Content Article",
-				deleteUser = "Test Test");
-		}
-	}
-
 	@description = "Can move a WC folder with web content to the recycle bin and restore the web content within it."
 	@priority = 3
 	test RestoreWebContentFromFolderCP {
@@ -459,86 +427,6 @@ definition {
 			WebContent.viewSpecificVersionHistoryCP(
 				webContentStatus = "DRAFT",
 				webContentTitle = "Web Content Title Edit Draft");
-		}
-	}
-
-	@description = "Can have 2 duplicate asset names in recycle bin."
-	@priority = 3
-	test ViewDuplicateNamesInRecycleBin {
-		task ("Add a web content and move it to recycle bin via delete icon") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinViaDeleteIconCP();
-		}
-
-		task ("View WC exists in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewCP(
-				assetName = "WC WebContent Title",
-				assetType = "Web Content Article",
-				deleteUser = "Test Test");
-		}
-
-		task ("Add a same title web content and move it to recycle bin via delete icon") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinViaDeleteIconCP();
-		}
-
-		task ("View 2 web content with same title exist") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewDuplicateNames(assetName = "WC WebContent Title");
-		}
-
-		task ("Add a web content folder and move it to recycle bin") {
-			JSONWebcontent.addFolder(
-				folderName = "WC Folder Name",
-				groupName = "Test Site Name");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentFolder.moveToRecycleBinCP(
-				assetType = "Web Content Folder",
-				folderName = "WC Folder Name");
-		}
-
-		task ("View folder exists in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewCP(
-				assetName = "WC Folder Name",
-				assetType = "Web Content Folder",
-				deleteUser = "Test Test");
-		}
-
-		task ("Add a same name folder and move it to recycle bin") {
-			JSONWebcontent.addFolder(
-				folderName = "WC Folder Name",
-				groupName = "Test Site Name");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentFolder.moveToRecycleBinCP(
-				assetType = "Web Content Folder",
-				folderName = "WC Folder Name");
-		}
-
-		task ("View 2 folders with same name exist") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewDuplicateNames(assetName = "WC Folder Name");
 		}
 	}
 
