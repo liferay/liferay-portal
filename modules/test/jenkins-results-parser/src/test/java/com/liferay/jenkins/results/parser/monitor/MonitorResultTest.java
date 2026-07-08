@@ -48,9 +48,11 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 	@Test
 	public void testGetMostSevere() {
 		testEquals(
-			MonitorResult.Status.UNKNOWN,
+			MonitorResult.Status.CRITICAL,
 			MonitorResult.Status.getMostSevere(
-				Collections.<MonitorResult.Status>emptyList()));
+				Arrays.asList(
+					MonitorResult.Status.OK, MonitorResult.Status.WARN,
+					MonitorResult.Status.CRITICAL)));
 
 		testEquals(
 			MonitorResult.Status.OK,
@@ -65,11 +67,9 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 					MonitorResult.Status.OK, MonitorResult.Status.UNKNOWN)));
 
 		testEquals(
-			MonitorResult.Status.CRITICAL,
+			MonitorResult.Status.UNKNOWN,
 			MonitorResult.Status.getMostSevere(
-				Arrays.asList(
-					MonitorResult.Status.OK, MonitorResult.Status.WARN,
-					MonitorResult.Status.CRITICAL)));
+				Collections.<MonitorResult.Status>emptyList()));
 	}
 
 }
