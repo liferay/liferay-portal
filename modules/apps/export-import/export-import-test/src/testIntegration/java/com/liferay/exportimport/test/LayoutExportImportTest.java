@@ -1026,13 +1026,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), group.getGroupId(), null,
-			RandomTestUtil.randomString(), null,
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				draftLayout.getPlid()),
-			draftLayout.getPlid(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, StringPool.BLANK,
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			StringUtil.replace(
 				_getContent(
 					"fragment_entry_link_editable_values_with_configuration." +
@@ -1045,9 +1039,11 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 					String.valueOf(linkedLayout.getLayoutId()),
 					linkedLayout.getUuid(), linkedLayout.getName("en_US")
 				}),
-			StringPool.BLANK, 0, StringPool.BLANK,
-			FragmentConstants.TYPE_COMPONENT,
-			ServiceContextTestUtil.getServiceContext());
+			draftLayout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 	}
 
 	private void _addMappedImageFragmentEntryLink(
@@ -1087,6 +1083,30 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	private void _assertFriendlyURL(Layout layout, String friendlyURL)
+		throws Exception {
+
+		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			layout.getUuid(), importedGroup.getGroupId(),
+			layout.isPrivateLayout());
+
+		Assert.assertEquals(
+			friendlyURL,
+			importedLayout.getFriendlyURL(LocaleUtil.getDefault()));
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				importedGroup.getGroupId(),
+				_layoutFriendlyURLEntryHelper.getClassNameId(
+					importedLayout.isPrivateLayout()),
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				friendlyURL);
+
+		Assert.assertEquals(
+			importedLayout.getPlid(), friendlyURLEntry.getClassPK());
+	}
+
 	private void _assertLayoutLinkFragmentEntryLink(
 			Layout layout, Layout expectedLinkedLayout)
 		throws Exception {
@@ -1115,43 +1135,18 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			editableValuesJSONObject.getJSONObject(
 				FragmentEntryProcessorConstants.
 					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
 		JSONObject linkJSONObject = editableProcessorJSONObject.getJSONObject(
 			"link");
+
 		JSONObject configJSONObject = linkJSONObject.getJSONObject("config");
+
 		JSONObject layoutJSONObject = configJSONObject.getJSONObject("layout");
 
 		Assert.assertEquals(
 			editableValuesJSONObject.toString(),
-			expectedLinkedLayout.getGroupId(),
-			layoutJSONObject.getLong("groupId"));
-		Assert.assertEquals(
-			editableValuesJSONObject.toString(),
-			expectedLinkedLayout.getLayoutId(),
-			layoutJSONObject.getLong("layoutId"));
-	}
-
-	private void _assertFriendlyURL(Layout layout, String friendlyURL)
-		throws Exception {
-
-		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
-			layout.getUuid(), importedGroup.getGroupId(),
-			layout.isPrivateLayout());
-
-		Assert.assertEquals(
-			friendlyURL,
-			importedLayout.getFriendlyURL(LocaleUtil.getDefault()));
-
-		FriendlyURLEntry friendlyURLEntry =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-				importedGroup.getGroupId(),
-				_layoutFriendlyURLEntryHelper.getClassNameId(
-					importedLayout.isPrivateLayout()),
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				friendlyURL);
-
-		Assert.assertEquals(
-			importedLayout.getPlid(), friendlyURLEntry.getClassPK());
+			expectedLinkedLayout.getExternalReferenceCode(),
+			layoutJSONObject.getString("externalReferenceCode"));
 	}
 
 	private String _getContent(String fileName) throws Exception {
