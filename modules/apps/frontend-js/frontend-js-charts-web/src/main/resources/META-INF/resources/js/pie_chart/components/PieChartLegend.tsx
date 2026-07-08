@@ -6,8 +6,8 @@
 import React, {useMemo} from 'react';
 
 import ChartLegend from '../../chart_legend/ChartLegend';
+import {toPercent} from '../../percent';
 import {PieDatum} from '../types/PieDatum';
-import {toPercent} from '../utils/percent';
 
 import type {
 	ChartLegendColumn,

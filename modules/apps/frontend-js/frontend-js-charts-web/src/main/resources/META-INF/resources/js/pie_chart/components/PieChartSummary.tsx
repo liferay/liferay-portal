@@ -6,8 +6,8 @@
 import {sub} from '@clayui/shared';
 import React from 'react';
 
+import {toPercent} from '../../percent';
 import {PieDatum} from '../types/PieDatum';
-import {toPercent} from '../utils/percent';
 
 interface PieChartSummaryProps {
 	data: PieDatum[];

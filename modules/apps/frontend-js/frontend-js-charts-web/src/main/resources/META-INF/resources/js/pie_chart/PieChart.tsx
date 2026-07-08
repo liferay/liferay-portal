@@ -12,10 +12,10 @@ import PieChartSummary from './components/PieChartSummary';
 import {SIZE_PRESETS, STROKE_INSET, THICKNESS_RATIOS} from './constants';
 
 import '../../css/PieChart.scss';
+import {toPercent} from '../percent';
 import {usePieKeyboardNav} from './hooks/usePieKeyboardNav';
 import {PieDatum} from './types/PieDatum';
 import {getPieChartSlicePathFactory} from './utils/getPieChartSlicePathFactory';
-import {toPercent} from './utils/percent';
 import {getPieSliceColors} from './utils/pieColors';
 
 /**

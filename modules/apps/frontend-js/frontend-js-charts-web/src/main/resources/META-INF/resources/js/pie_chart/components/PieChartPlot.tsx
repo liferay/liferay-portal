@@ -5,11 +5,11 @@
 
 import React, {useMemo} from 'react';
 
+import {toPercent} from '../../percent';
 import {PieDatum} from '../types/PieDatum';
 import {SliceAngles} from '../types/SliceAngles';
 import {computePrecedingTotals} from '../utils/computePrecedingTotals';
 import {computeSliceAngles} from '../utils/computeSliceAngles';
-import {toPercent} from '../utils/percent';
 import PieChartCenterLabel from './PieChartCenterLabel';
 import PieChartSlice from './PieChartSlice';
 

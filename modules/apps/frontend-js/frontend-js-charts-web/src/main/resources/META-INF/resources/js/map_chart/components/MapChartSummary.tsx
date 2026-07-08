@@ -5,9 +5,9 @@
 
 import React from 'react';
 
+import {toPercent} from '../../percent';
 import {MapDatum} from '../types/MapDatum';
 import {getCountryLabel} from '../utils/getCountryLabel';
-import {toPercent} from '../utils/percent';
 
 interface MapChartSummaryProps {
 	data: MapDatum[];
