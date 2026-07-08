@@ -651,12 +651,8 @@ definition {
 
 			RecycleBin.viewDuplicateNames(assetName = "WC WebContent Title");
 		}
-	}
 
-	@description = "Can have 2 duplicate folder names in recycle bin."
-	@priority = 4
-	test ViewDuplicateFolderNamesInRecycleBin {
-		task ("View 2 web content with same title exist") {
+		task ("Add a web content folder and move it to recycle bin") {
 			JSONWebcontent.addFolder(
 				folderName = "WC Folder Name",
 				groupName = "Test Site Name");
@@ -668,7 +664,7 @@ definition {
 				folderName = "WC Folder Name");
 		}
 
-		task ("View 2 web content with same title exist") {
+		task ("View folder exists in recycle bin") {
 			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
 
 			RecycleBin.viewCP(
@@ -677,7 +673,7 @@ definition {
 				deleteUser = "Test Test");
 		}
 
-		task ("View 2 web content with same title exist") {
+		task ("Add a same name folder and move it to recycle bin") {
 			JSONWebcontent.addFolder(
 				folderName = "WC Folder Name",
 				groupName = "Test Site Name");
@@ -689,7 +685,7 @@ definition {
 				folderName = "WC Folder Name");
 		}
 
-		task ("View 2 web content with same title exist") {
+		task ("View 2 folders with same name exist") {
 			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
 
 			RecycleBin.viewDuplicateNames(assetName = "WC Folder Name");
