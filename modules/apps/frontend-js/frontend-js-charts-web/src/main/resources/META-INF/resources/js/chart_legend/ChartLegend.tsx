@@ -21,6 +21,7 @@ interface Props {
 	/** Column descriptors for the `table` layout (header + cell renderer). */
 	columns: ChartLegendColumn[];
 	items: ChartLegendItem[];
+	labelColumnLabel?: string;
 	layout: ChartLegendLayout;
 	onActivate: (id: number) => void;
 	onDeactivate: (id: number) => void;
@@ -31,6 +32,7 @@ interface Props {
 export default function ChartLegend({
 	columns,
 	items,
+	labelColumnLabel,
 	layout,
 	onActivate,
 	onDeactivate,
@@ -53,6 +55,7 @@ export default function ChartLegend({
 			<ChartLegendTable
 				columns={columns}
 				items={items}
+				labelColumnLabel={labelColumnLabel}
 				onActivate={onActivate}
 				onDeactivate={onDeactivate}
 				onSelect={onSelect}
