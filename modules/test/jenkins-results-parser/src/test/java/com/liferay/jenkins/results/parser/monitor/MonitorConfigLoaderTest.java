@@ -55,36 +55,37 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsFailsLoud() {
-
-		// Invalid cadence
-
+	public void testGetMonitorConfigsCadence() {
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("monitor[a].cadence", "not-a-number");
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
-		_testGetMonitorConfigsFailsLoud(buildProperties);
+		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
+	}
 
-		// Invalid severity
+	@Test
+	public void testGetMonitorConfigsMissingType() {
+		Properties buildProperties = new Properties();
 
-		buildProperties = new Properties();
+		buildProperties.setProperty("monitor[a].severity", "high");
+
+		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
+	}
+
+	@Test
+	public void testGetMonitorConfigsSeverity() {
+		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("monitor[a].severity", "bogus");
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
-		_testGetMonitorConfigsFailsLoud(buildProperties);
-
-		// Missing type
-
-		buildProperties = new Properties();
-
-		buildProperties.setProperty("monitor[a].severity", "high");
-
-		_testGetMonitorConfigsFailsLoud(buildProperties);
+		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
 	}
 
-	private void _testGetMonitorConfigsFailsLoud(Properties buildProperties) {
+	private void _testGetMonitorConfigsExpectedIllegalArgumentException(
+		Properties buildProperties) {
+
 		try {
 			MonitorConfigLoader.getMonitorConfigs(buildProperties);
 
