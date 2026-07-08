@@ -28,6 +28,10 @@ export class RecycleBinPage {
 		await expect(this._row(assetName)).toHaveCount(0);
 	}
 
+	async assertEntryCount(assetName: string, count: number) {
+		await expect(this._row(assetName)).toHaveCount(count);
+	}
+
 	async bulkRestore(assetNames: string[]) {
 		for (const assetName of assetNames) {
 			await this._row(assetName).first().getByRole('checkbox').check();

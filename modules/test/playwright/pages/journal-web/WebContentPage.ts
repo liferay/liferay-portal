@@ -8,6 +8,9 @@ import {Locator, Page, expect} from '@playwright/test';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../utils/waitForAlert';
 
+const MOVED_TO_RECYCLE_BIN = (name: string) =>
+	`The element ${name} was moved to the Recycle Bin.`;
+
 export class WebContentPage {
 	readonly page: Page;
 
@@ -36,14 +39,40 @@ export class WebContentPage {
 			.click();
 	}
 
+	async moveFolderToRecycleBin(name: string) {
+		const row = this.page
+			.locator('[data-qa-id="row"][data-folder="true"]')
+			.filter({hasText: name})
+			.first();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu:visible')
+				.getByText('Delete', {exact: true}),
+			trigger: row.getByRole('button', {name: 'Show Actions'}),
+		});
+
+		await waitForAlert(this.page, MOVED_TO_RECYCLE_BIN(name));
+	}
+
 	async moveToRecycleBin(title: string, {autoClose = true} = {}) {
 		await this._openRowAction(title, 'Delete');
 
-		await waitForAlert(
-			this.page,
-			`The element ${title} was moved to the Recycle Bin.`,
-			{autoClose}
-		);
+		await waitForAlert(this.page, MOVED_TO_RECYCLE_BIN(title), {autoClose});
+	}
+
+	async moveToRecycleBinViaDeleteIcon(title: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('button', {
+				exact: true,
+				name: 'Delete',
+			}),
+			trigger: this.page.getByLabel('Select All Items on the Page'),
+		});
+
+		await waitForAlert(this.page, MOVED_TO_RECYCLE_BIN(title));
 	}
 
 	async undoMoveToRecycleBin() {
