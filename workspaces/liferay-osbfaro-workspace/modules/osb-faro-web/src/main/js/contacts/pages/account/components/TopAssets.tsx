@@ -333,6 +333,7 @@ const TopAssets: React.FC<ITopAssetsProps> = ({account, className}) => {
 									setUriQueryValues(
 										{
 											accountId,
+											orderBy: selectedMetric,
 											...(accountName && {accountName}),
 										},
 										toRoute(Routes.ASSETS, {

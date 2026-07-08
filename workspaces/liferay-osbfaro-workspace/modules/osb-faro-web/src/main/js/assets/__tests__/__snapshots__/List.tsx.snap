@@ -96,6 +96,11 @@ exports[`List rendering should match the snapshot 1`] = `
           id="assetTable"
         >
           <div
+            data-testid="fds-sorts"
+          >
+            null
+          </div>
+          <div
             data-testid="fds-empty-state"
           >
             <div

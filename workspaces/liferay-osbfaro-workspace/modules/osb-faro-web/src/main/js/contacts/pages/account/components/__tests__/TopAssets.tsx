@@ -377,6 +377,32 @@ describe('TopAssets', () => {
 			expect(pushedURL).toContain('accountId=acc-1');
 			expect(pushedURL).toContain('accountName=Acme');
 		});
+
+		it('should pass the default metric (Impressions) as the orderBy param', () => {
+			render(<TopAssets account={ACCOUNT} />);
+
+			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+
+			const pushedURL = mockPush.mock.calls[0][0];
+
+			expect(pushedURL).toContain('orderBy=impressionsMetric');
+		});
+
+		it('should pass the metric selected in the Group By picker as the orderBy param', () => {
+			render(<TopAssets account={ACCOUNT} />);
+
+			fireEvent.click(
+				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+			);
+
+			fireEvent.click(screen.getAllByRole('option', {name: 'Views'})[0]);
+
+			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+
+			const pushedURL = mockPush.mock.calls[0][0];
+
+			expect(pushedURL).toContain('orderBy=viewsMetric');
+		});
 	});
 
 	describe('loading state', () => {

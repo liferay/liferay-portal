@@ -135,6 +135,39 @@ const assetsEmptyStateDescription = (
 	</>
 );
 
+const TABLE_FIELDS = [
+	{
+		contentRenderer: 'assetTitleRenderer',
+		fieldName: 'assetTitle',
+		label: Liferay.Language.get('title'),
+		sortable: true,
+		truncate: true,
+	},
+	{
+		fieldName: 'assetType',
+		label: Liferay.Language.get('type'),
+		sortable: true,
+	},
+	{
+		contentRenderer: 'assetMetricRenderer',
+		fieldName: 'viewsMetric',
+		label: Liferay.Language.get('views'),
+		sortable: true,
+	},
+	{
+		contentRenderer: 'assetMetricRenderer',
+		fieldName: 'impressionsMetric',
+		label: Liferay.Language.get('impressions'),
+		sortable: true,
+	},
+	{
+		contentRenderer: 'assetMetricRenderer',
+		fieldName: 'downloadsMetric',
+		label: Liferay.Language.get('downloads'),
+		sortable: true,
+	},
+];
+
 const List = () => {
 	const history = useHistory();
 	const {search} = useLocation();
@@ -146,6 +179,18 @@ const List = () => {
 	const searchParams = new URLSearchParams(search);
 	const accountId = searchParams.get('accountId');
 	const accountName = searchParams.get('accountName');
+	const orderBy = searchParams.get('orderBy');
+
+	const sortableFields = TABLE_FIELDS.filter((field) => field.sortable);
+
+	const sorts = sortableFields.some((field) => field.fieldName === orderBy)
+		? sortableFields.map((field) => ({
+				active: field.fieldName === orderBy,
+				direction: 'desc' as const,
+				key: field.fieldName,
+				label: field.label,
+			}))
+		: undefined;
 
 	const [rangeSelectors, setRangeSelectors] = useState<RangeSelectors>(
 		initialRangeSelectors
@@ -380,6 +425,7 @@ const List = () => {
 						pagination={pagination}
 						showPagination
 						snapshotsEnabled
+						sorts={sorts}
 						views={[
 							{
 								contentRenderer: 'table',
@@ -387,50 +433,7 @@ const List = () => {
 								label: Liferay.Language.get('default-view'),
 								name: 'table',
 								schema: {
-									fields: [
-										{
-											contentRenderer:
-												'assetTitleRenderer',
-											fieldName: 'assetTitle',
-											label: Liferay.Language.get(
-												'title'
-											),
-											sortable: true,
-											truncate: true,
-										},
-										{
-											fieldName: 'assetType',
-											label: Liferay.Language.get('type'),
-											sortable: true,
-										},
-										{
-											contentRenderer:
-												'assetMetricRenderer',
-											fieldName: 'viewsMetric',
-											label: Liferay.Language.get(
-												'views'
-											),
-											sortable: true,
-										},
-										{
-											contentRenderer:
-												'assetMetricRenderer',
-											fieldName: 'impressionsMetric',
-											label: Liferay.Language.get(
-												'impressions'
-											),
-											sortable: true,
-										},
-										{
-											contentRenderer:
-												'assetMetricRenderer',
-											fieldName: 'downloadsMetric',
-											label: Liferay.Language.get(
-												'downloads'
-											),
-											sortable: true,
-										},
-									],
+									fields: TABLE_FIELDS,
 								},
 								thumbnail: 'table',
 							},

@@ -19,6 +19,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		groupedFilters,
 		id,
 		itemsActions,
+		sorts,
 	}: {
 		emptyState?: {
 			description?: React.ReactNode;
@@ -29,8 +30,11 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		groupedFilters?: any[];
 		id: string;
 		itemsActions?: Array<{onClick?: (item: any) => void}>;
+		sorts?: any[];
 	}) => (
 		<div data-testid="fds-component" id={id}>
+			<div data-testid="fds-sorts">{JSON.stringify(sorts ?? null)}</div>
+
 			{emptyState && (
 				<div data-testid="fds-empty-state">
 					<div data-testid="fds-empty-state-title">
@@ -434,6 +438,66 @@ describe('List', () => {
 				selectedItems: [{label: 'Acme Corp', value: 'acc-1'}],
 			});
 		});
+	});
+
+	describe('sort by metric (orderBy)', () => {
+		const SORTABLE_KEYS = [
+			'assetTitle',
+			'assetType',
+			'viewsMetric',
+			'impressionsMetric',
+			'downloadsMetric',
+		];
+
+		const getSorts = () =>
+			JSON.parse(screen.getByTestId('fds-sorts').textContent);
+
+		it('should not pass any sort when no orderBy is in the URL', () => {
+			renderList();
+
+			expect(getSorts()).toBeNull();
+		});
+
+		it('should ignore an unknown orderBy value', () => {
+			renderList({queryString: '?orderBy=bogusMetric'});
+
+			expect(getSorts()).toBeNull();
+		});
+
+		it('should offer every sortable column as a sort option', () => {
+			renderList({queryString: '?orderBy=viewsMetric'});
+
+			const sorts = getSorts();
+
+			expect(sorts.map((sort: {key: string}) => sort.key)).toEqual(
+				SORTABLE_KEYS
+			);
+
+			sorts.forEach((sort: {direction: string; label: string}) => {
+				expect(sort.direction).toBe('desc');
+				expect(sort.label).toBeTruthy();
+			});
+		});
+
+		['viewsMetric', 'impressionsMetric', 'downloadsMetric'].forEach(
+			(metric) => {
+				it(`should mark only the ${metric} column active when it is the orderBy`, () => {
+					renderList({queryString: `?orderBy=${metric}`});
+
+					const activeSorts = getSorts().filter(
+						(sort: {active: boolean}) => sort.active
+					);
+
+					expect(activeSorts).toEqual([
+						expect.objectContaining({
+							active: true,
+							direction: 'desc',
+							key: metric,
+						}),
+					]);
+				});
+			}
+		);
 	});
 
 	describe('filter by people (LDP gating)', () => {
