@@ -508,53 +508,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-109555 and LPS-33785. The error message should be shown when restore a document from recycle bin when it has the same name as existing document. Keep both document entries and rename the document entry from the Recycle Bin."
-	@priority = 4
-	test ViewErrorMessageWhenRestoreDocumentHasTheSameNameWithExistingOne {
-		task ("Add a document entry named DM Document Title") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Site Name",
-				mimeType = "image/png",
-				sourceFileName = "Document_1.png");
-		}
-
-		task ("Remove the document to the recycle bin") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			DMDocument.moveToRecycleBinCP(dmDocumentTitle = "DM Document Title");
-		}
-
-		task ("Add another document entry with the same name") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Site Name",
-				mimeType = "text/plain",
-				sourceFileName = "Document_1.txt");
-		}
-
-		task ("Keep both entries and rename the entry from the Recycle Bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "site-name");
-
-			RecycleBin.viewCP(
-				assetName = "DM Document Title",
-				assetType = "Document",
-				deleteUser = "Test Test");
-
-			RecycleBin.restoreRenameCP(
-				assetName = "DM Document Title",
-				newName = "Previous Document Title");
-		}
-
-		task ("View documents in Documents admin") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			for (var assetName : list "DM Document Title,Previous Document Title") {
-				DMDocument.viewCardTitle(dmDocumentTitle = ${assetName});
-			}
-		}
-	}
-
 	@description = "This is a test for LPS-44554. View restored document in subfolder after restore parent folder from the recycle bin."
 	@priority = 4
 	test ViewRestoredDocumentInSubFolderAfterRestoreParentFolder {

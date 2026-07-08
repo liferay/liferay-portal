@@ -573,3 +573,52 @@ test(
 		}
 	}
 );
+
+test(
+	'Can keep both entries by renaming a document restored from the recycle bin',
+	{tag: ['@LPS-33785', '@LPS-109555']},
+	async ({apiHelpers, page, site}) => {
+		const documentTitle = `Document ${getRandomString()}`;
+		const newName = `Previous Document ${getRandomString()}`;
+
+		const postDocument = () =>
+			apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					createSizedFile(`${getRandomString()}.png`, 'png', 1024)
+				),
+				{fileName: `${getRandomString()}.png`, title: documentTitle}
+			);
+
+		await postDocument();
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+
+		// Move the document to the recycle bin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await documentLibraryPage.moveToRecycleBin(documentTitle);
+
+		// Recreate a document with the same name so the restore collides
+
+		await postDocument();
+
+		// Restore the trashed document by keeping both and renaming it
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restoreRename(documentTitle, newName);
+
+		// Both the existing and the renamed restored document are present
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {name: documentTitle})
+		).toBeVisible();
+
+		await expect(page.getByRole('link', {name: newName})).toBeVisible();
+	}
+);
