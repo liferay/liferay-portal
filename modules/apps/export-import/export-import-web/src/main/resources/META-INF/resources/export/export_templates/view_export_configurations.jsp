@@ -7,128 +7,127 @@
 
 <%@ include file="/export/init.jsp" %>
 
-<%
-if (!FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-96546")) {
-%>
+<c:choose>
+	<c:when test='<%= !FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-96546") %>'>
+		<liferay-util:include page="/export/view_export_layouts.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:otherwise>
 
-	<liferay-util:include page="/export/view_export_layouts.jsp" servletContext="<%= application %>" />
+		<%
+		portletDisplay.setShowBackIcon(true);
 
-<%
-	return;
-}
+		portletDisplay.setURLBack(
+			PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(request, portletDisplay.getPortletName(), PortletRequest.RENDER_PHASE)
+			).setMVCPath(
+				"/export/view_export_layouts.jsp"
+			).buildString());
 
-portletDisplay.setShowBackIcon(true);
+		renderResponse.setTitle(LanguageUtil.get(request, "export-templates"));
+		%>
 
-portletDisplay.setURLBack(
-	PortletURLBuilder.create(
-		PortalUtil.getControlPanelPortletURL(request, portletDisplay.getPortletName(), PortletRequest.RENDER_PHASE)
-	).setMVCPath(
-		"/export/view_export_layouts.jsp"
-	).buildString());
+		<liferay-staging:defineObjects />
 
-renderResponse.setTitle(LanguageUtil.get(request, "export-templates"));
-%>
+		<%
+		if (liveGroup == null) {
+			liveGroup = group;
+			liveGroupId = groupId;
+		}
+		%>
 
-<liferay-staging:defineObjects />
+		<liferay-util:include page="/export/export_templates/navigation.jsp" servletContext="<%= application %>" />
 
-<%
-if (liveGroup == null) {
-	liveGroup = group;
-	liveGroupId = groupId;
-}
-%>
+		<liferay-portlet:renderURL varImpl="portletURL">
+			<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
+			<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+			<portlet:param name="liveGroupId" value="<%= String.valueOf(liveGroupId) %>" />
+			<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+		</liferay-portlet:renderURL>
 
-<liferay-util:include page="/export/export_templates/navigation.jsp" servletContext="<%= application %>" />
+		<portlet:actionURL name="/export_import/edit_export_configuration" var="restoreTrashEntriesURL">
+			<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
+			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
+		</portlet:actionURL>
 
-<liferay-portlet:renderURL varImpl="portletURL">
-	<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
-	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-	<portlet:param name="liveGroupId" value="<%= String.valueOf(liveGroupId) %>" />
-	<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
-</liferay-portlet:renderURL>
+		<liferay-trash:undo
+			portletURL="<%= restoreTrashEntriesURL %>"
+		/>
 
-<portlet:actionURL name="/export_import/edit_export_configuration" var="restoreTrashEntriesURL">
-	<portlet:param name="mvcRenderCommandName" value="/export_import/view_export_configurations" />
-	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
-</portlet:actionURL>
+		<%
+		ExportTemplatesToolbarDisplayContext exportTemplatesToolbarDisplayContext = new ExportTemplatesToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, liveGroupId, company, portletURL);
+		%>
 
-<liferay-trash:undo
-	portletURL="<%= restoreTrashEntriesURL %>"
-/>
+		<clay:management-toolbar
+			managementToolbarDisplayContext="<%= exportTemplatesToolbarDisplayContext %>"
+			searchFormName="searchFm"
+			selectable="<%= false %>"
+			showCreationMenu="<%= true %>"
+			showSearch="<%= true %>"
+		/>
 
-<%
-ExportTemplatesToolbarDisplayContext exportTemplatesToolbarDisplayContext = new ExportTemplatesToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, liveGroupId, company, portletURL);
-%>
-
-<clay:management-toolbar
-	managementToolbarDisplayContext="<%= exportTemplatesToolbarDisplayContext %>"
-	searchFormName="searchFm"
-	selectable="<%= false %>"
-	showCreationMenu="<%= true %>"
-	showSearch="<%= true %>"
-/>
-
-<clay:container-fluid>
-	<aui:form action="<%= portletURL %>">
-		<liferay-ui:search-container
-			searchContainer="<%= exportTemplatesToolbarDisplayContext.getSearchContainer() %>"
-		>
-			<liferay-ui:search-container-row
-				className="com.liferay.exportimport.kernel.model.ExportImportConfiguration"
-				keyProperty="exportImportConfigurationId"
-				modelVar="exportImportConfiguration"
-			>
-				<liferay-ui:search-container-column-text
-					cssClass="export-configuration-user-column"
-					name="user"
+		<clay:container-fluid>
+			<aui:form action="<%= portletURL %>">
+				<liferay-ui:search-container
+					searchContainer="<%= exportTemplatesToolbarDisplayContext.getSearchContainer() %>"
 				>
-					<liferay-user:user-portrait
-						userId="<%= exportImportConfiguration.getUserId() %>"
+					<liferay-ui:search-container-row
+						className="com.liferay.exportimport.kernel.model.ExportImportConfiguration"
+						keyProperty="exportImportConfigurationId"
+						modelVar="exportImportConfiguration"
+					>
+						<liferay-ui:search-container-column-text
+							cssClass="export-configuration-user-column"
+							name="user"
+						>
+							<liferay-user:user-portrait
+								userId="<%= exportImportConfiguration.getUserId() %>"
+							/>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-portlet:renderURL varImpl="rowURL">
+							<portlet:param name="mvcRenderCommandName" value="/export_import/edit_export_configuration" />
+							<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.UPDATE %>" />
+							<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
+							<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
+							<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+							<portlet:param name="liveGroupId" value="<%= String.valueOf(liveGroupId) %>" />
+							<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+						</liferay-portlet:renderURL>
+
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand"
+							href="<%= rowURL %>"
+							name="title"
+							value="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>"
+						/>
+
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand"
+							name="description"
+							value="<%= HtmlUtil.escape(exportImportConfiguration.getDescription()) %>"
+						/>
+
+						<liferay-ui:search-container-column-date
+							name="create-date"
+							value="<%= exportImportConfiguration.getCreateDate() %>"
+						/>
+
+						<%
+						request.setAttribute("view.jsp-groupId", groupId);
+						request.setAttribute("view.jsp-liveGroupId", liveGroupId);
+						request.setAttribute("view.jsp-privateLayout", privateLayout);
+						%>
+
+						<liferay-ui:search-container-column-jsp
+							path="/export/export_templates/actions.jsp"
+						/>
+					</liferay-ui:search-container-row>
+
+					<liferay-ui:search-iterator
+						markupView="lexicon"
 					/>
-				</liferay-ui:search-container-column-text>
-
-				<liferay-portlet:renderURL varImpl="rowURL">
-					<portlet:param name="mvcRenderCommandName" value="/export_import/edit_export_configuration" />
-					<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.UPDATE %>" />
-					<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
-					<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
-					<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-					<portlet:param name="liveGroupId" value="<%= String.valueOf(liveGroupId) %>" />
-					<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
-				</liferay-portlet:renderURL>
-
-				<liferay-ui:search-container-column-text
-					cssClass="table-cell-expand"
-					href="<%= rowURL %>"
-					name="title"
-					value="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>"
-				/>
-
-				<liferay-ui:search-container-column-text
-					cssClass="table-cell-expand"
-					name="description"
-					value="<%= HtmlUtil.escape(exportImportConfiguration.getDescription()) %>"
-				/>
-
-				<liferay-ui:search-container-column-date
-					name="create-date"
-					value="<%= exportImportConfiguration.getCreateDate() %>"
-				/>
-
-				<%
-				request.setAttribute("view.jsp-groupId", groupId);
-				request.setAttribute("view.jsp-liveGroupId", liveGroupId);
-				request.setAttribute("view.jsp-privateLayout", privateLayout);
-				%>
-
-				<liferay-ui:search-container-column-jsp
-					path="/export/export_templates/actions.jsp"
-				/>
-			</liferay-ui:search-container-row>
-
-			<liferay-ui:search-iterator
-				markupView="lexicon"
-			/>
-		</liferay-ui:search-container>
-	</aui:form>
-</clay:container-fluid>
+				</liferay-ui:search-container>
+			</aui:form>
+		</clay:container-fluid>
+	</c:otherwise>
+</c:choose>
