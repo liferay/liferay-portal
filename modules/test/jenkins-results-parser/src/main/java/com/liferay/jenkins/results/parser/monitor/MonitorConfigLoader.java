@@ -53,8 +53,9 @@ public class MonitorConfigLoader {
 		}
 		catch (NumberFormatException numberFormatException) {
 			throw new IllegalArgumentException(
-				"Invalid cadence for " + _getKey(id, "cadence") + ": " +
-					cadenceString,
+				JenkinsResultsParserUtil.combine(
+					"Invalid cadence for ", _getKey(id, "cadence"), ": ",
+					cadenceString),
 				numberFormatException);
 		}
 	}
@@ -95,7 +96,7 @@ public class MonitorConfigLoader {
 	}
 
 	private static String _getKey(String id, String suffix) {
-		return "monitor[" + id + "]." + suffix;
+		return JenkinsResultsParserUtil.combine("monitor[", id, "].", suffix);
 	}
 
 	private static MonitorConfig _getMonitorConfig(
@@ -138,8 +139,9 @@ public class MonitorConfigLoader {
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			throw new IllegalArgumentException(
-				"Invalid severity for " + _getKey(id, "severity") + ": " +
-					severityString,
+				JenkinsResultsParserUtil.combine(
+					"Invalid severity for ", _getKey(id, "severity"), ": ",
+					severityString),
 				illegalArgumentException);
 		}
 	}
