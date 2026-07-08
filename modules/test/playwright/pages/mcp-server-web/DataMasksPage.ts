@@ -95,6 +95,10 @@ export class DataMasksPage {
 		return this.page.locator('#dataMaskDescription');
 	}
 
+	get matchPatternInput(): Locator {
+		return this.page.locator('#dataMaskMatchPattern');
+	}
+
 	get regexPatternInput(): Locator {
 		return this.page.locator('#dataMaskRegexPattern');
 	}

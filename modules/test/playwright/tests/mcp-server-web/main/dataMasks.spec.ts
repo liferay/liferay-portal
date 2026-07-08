@@ -401,4 +401,89 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 			);
 		}
 	);
+
+	test(
+		'shows a required-field error on Title, Regex Pattern, and Replacement',
+		{tag: '@LPD-90205'},
+		async ({dataMasksPage}) => {
+			await dataMasksPage.goto();
+			await dataMasksPage.newDataMaskButton.click();
+
+			await dataMasksPage.saveButton.click();
+
+			await expect(dataMasksPage.nameInput).toHaveAccessibleDescription(
+				/This field is required\./
+			);
+			await expect(
+				dataMasksPage.regexPatternInput
+			).toHaveAccessibleDescription(/This field is required\./);
+			await expect(
+				dataMasksPage.replacementInput
+			).toHaveAccessibleDescription(/This field is required\./);
+		}
+	);
+
+	test(
+		'clears the required error once the field is filled',
+		{tag: '@LPD-90205'},
+		async ({dataMasksPage}) => {
+			await dataMasksPage.goto();
+			await dataMasksPage.newDataMaskButton.click();
+
+			await dataMasksPage.saveButton.click();
+
+			await expect(dataMasksPage.nameInput).toHaveAccessibleDescription(
+				/This field is required\./
+			);
+
+			await dataMasksPage.nameInput.fill(maskName());
+
+			await expect(
+				dataMasksPage.nameInput
+			).not.toHaveAccessibleDescription(/This field is required\./);
+		}
+	);
+
+	test(
+		'links field help text to its input as an accessible description',
+		{tag: '@LPD-90205'},
+		async ({dataMasksPage}) => {
+			await dataMasksPage.goto();
+			await dataMasksPage.newDataMaskButton.click();
+
+			await expect(
+				dataMasksPage.regexPatternInput
+			).toHaveAccessibleDescription(
+				'Use a standard regular expression. Named capture groups are supported.'
+			);
+			await expect(
+				dataMasksPage.matchPatternInput
+			).toHaveAccessibleDescription(
+				'Leave empty to replace the entire detected value with the replacement token.'
+			);
+		}
+	);
+
+	test(
+		'edits a custom mask and persists the change',
+		{tag: '@LPD-90205'},
+		async ({apiHelpers, dataMasksPage}) => {
+			const name = maskName();
+			await createCustomMask(apiHelpers, name);
+
+			await dataMasksPage.goto();
+			await dataMasksPage.search(name);
+			await dataMasksPage.clickAction(name, 'Edit');
+
+			await dataMasksPage.descriptionInput.fill('Edited by Playwright');
+			await dataMasksPage.saveButton.click();
+
+			await expect(dataMasksPage.row(name)).toBeVisible();
+
+			const response = await apiHelpers.get(
+				`${apiHelpers.baseUrl}${DATA_MASKS_API}?search=${name}&pageSize=5`
+			);
+			expect(response.items[0]?.description).toBe('Edited by Playwright');
+		}
+	);
 });

@@ -47,6 +47,8 @@ export function FormField({
 		>
 			<ClayInput
 				{...field}
+				aria-describedby={`${id}fieldFeedback`}
+				aria-invalid={meta.touched && meta.error ? true : undefined}
 				component={component}
 				disabled={disabled}
 				id={id}
