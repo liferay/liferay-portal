@@ -6,7 +6,12 @@
 package com.liferay.asset.publisher.nofications.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
+import com.liferay.info.collection.provider.CollectionQuery;
+import com.liferay.info.collection.provider.InfoCollectionProvider;
+import com.liferay.info.pagination.InfoPage;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -44,7 +49,10 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,8 +61,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+
 /**
  * @author Eudaldo Alonso
+ * @author Mikel Lorza
  */
 @RunWith(Arquillian.class)
 public class AssetPublisherUserNotificationTest {
@@ -118,6 +132,47 @@ public class AssetPublisherUserNotificationTest {
 	}
 
 	@Test
+	public void testUserNotificationForInfoCollectionProvider()
+		throws Exception {
+
+		AssetEntry assetEntry = _getAssetEntry();
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			AssetPublisherUserNotificationTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<InfoCollectionProvider<?>> serviceRegistration =
+			bundleContext.registerService(
+				(Class<InfoCollectionProvider<?>>)
+					(Class<?>)InfoCollectionProvider.class,
+				new TestInfoCollectionProvider(
+					Collections.singletonList(assetEntry)),
+				null);
+
+		try {
+			_updateInfoCollectionProviderPortletPreferences(
+				TestInfoCollectionProvider.class.getName());
+
+			UnsafeRunnable<Exception> unsafeRunnable =
+				_schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
+
+			unsafeRunnable.run();
+
+			_assertAssetPublisherNotifications(
+				_getExpectedMailBody(
+					assetEntry.getTitle(_user.getLocale()),
+					_portal.getPortletTitle(
+						AssetPublisherPortletKeys.ASSET_PUBLISHER,
+						_user.getLanguageId()),
+					_group.getDescriptiveName(_user.getLocale())));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	@Test
 	public void testUserNotificationWithDifferentUserLocale() throws Exception {
 		_user = _userLocalService.updateLanguageId(
 			_user.getUserId(), LanguageUtil.getLanguageId(LocaleUtil.SPAIN));
@@ -163,6 +218,16 @@ public class AssetPublisherUserNotificationTest {
 		Assert.assertEquals(expectedMailBody, mailMessage.getBody());
 	}
 
+	private AssetEntry _getAssetEntry() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		return _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+	}
+
 	private String _getExpectedMailBody(
 		String assetEntries, String portletTitle, String siteName) {
 
@@ -189,6 +254,20 @@ public class AssetPublisherUserNotificationTest {
 			portletPreferences.getPortletPreferencesId());
 	}
 
+	private void _updateInfoCollectionProviderPortletPreferences(
+			String infoListProviderKey)
+		throws Exception {
+
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
+			LayoutTestUtil.getPortletPreferences(_layout, _portletId);
+
+		jxPortletPreferences.setValue(
+			"infoListProviderKey", infoListProviderKey);
+		jxPortletPreferences.setValue("selectionStyle", "asset-list");
+
+		jxPortletPreferences.store();
+	}
+
 	private void _updatePortletPreferences() throws Exception {
 		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			LayoutTestUtil.getPortletPreferences(_layout, _portletId);
@@ -205,6 +284,9 @@ public class AssetPublisherUserNotificationTest {
 
 	private static final String _EMAIL_ASSET_ENTRY_ADDED_BODY =
 		"[$PORTLET_TITLE$]: [$SITE_NAME$]: [$ASSET_ENTRIES$]";
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
@@ -237,5 +319,28 @@ public class AssetPublisherUserNotificationTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	private static class TestInfoCollectionProvider
+		implements InfoCollectionProvider<AssetEntry> {
+
+		public TestInfoCollectionProvider(List<AssetEntry> assetEntries) {
+			_assetEntries = assetEntries;
+		}
+
+		@Override
+		public InfoPage<AssetEntry> getCollectionInfoPage(
+			CollectionQuery collectionQuery) {
+
+			return InfoPage.of(_assetEntries);
+		}
+
+		@Override
+		public String getLabel(Locale locale) {
+			return StringPool.BLANK;
+		}
+
+		private final List<AssetEntry> _assetEntries;
+
+	}
 
 }
