@@ -21,6 +21,7 @@ import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
@@ -46,6 +47,8 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
 import com.liferay.portal.kernel.exception.LocaleException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -294,6 +297,11 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 				importedGroup.getGroupId());
 
 		Assert.assertNotNull(importedContentLayoutB);
+
+		_assertLayoutLinkFragmentEntryLink(
+			importedContentLayoutA, importedContentLayoutB);
+		_assertLayoutLinkFragmentEntryLink(
+			importedContentLayoutB, importedContentLayoutA);
 	}
 
 	@Test
@@ -1077,6 +1085,49 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			StringPool.BLANK, 0, StringPool.BLANK,
 			FragmentConstants.TYPE_COMPONENT,
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _assertLayoutLinkFragmentEntryLink(
+			Layout layout, Layout expectedLinkedLayout)
+		throws Exception {
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				layout.getGroupId(), draftLayout.getPlid());
+
+		if (fragmentEntryLinks.isEmpty()) {
+			fragmentEntryLinks =
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid());
+		}
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			fragmentEntryLink.getEditableValues());
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+		JSONObject linkJSONObject = editableProcessorJSONObject.getJSONObject(
+			"link");
+		JSONObject configJSONObject = linkJSONObject.getJSONObject("config");
+		JSONObject layoutJSONObject = configJSONObject.getJSONObject("layout");
+
+		Assert.assertEquals(
+			editableValuesJSONObject.toString(),
+			expectedLinkedLayout.getGroupId(),
+			layoutJSONObject.getLong("groupId"));
+		Assert.assertEquals(
+			editableValuesJSONObject.toString(),
+			expectedLinkedLayout.getLayoutId(),
+			layoutJSONObject.getLong("layoutId"));
 	}
 
 	private void _assertFriendlyURL(Layout layout, String friendlyURL)
