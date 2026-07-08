@@ -10,7 +10,10 @@ import moment from 'moment';
 import React, {useId, useState} from 'react';
 
 import {bulkUpdateWorkflowTaskDueDate} from '../../utils/api';
-import {displayErrorToast} from '../../utils/toastUtil';
+import {
+	displayBulkDueDateSuccessToast,
+	displayErrorToast,
+} from '../../utils/toastUtil';
 import DateField, {dateConfig} from '../DateField';
 
 type FDSItem = {embedded: {id: number}};
@@ -54,6 +57,8 @@ export default function BulkEditWorkflowDueDateModalContent({
 		);
 
 		if (!error) {
+			displayBulkDueDateSuccessToast(items.length);
+
 			closeModal();
 
 			loadData();

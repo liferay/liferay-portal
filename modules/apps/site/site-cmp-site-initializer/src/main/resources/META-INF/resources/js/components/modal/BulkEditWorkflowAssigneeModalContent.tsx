@@ -13,7 +13,10 @@ import {
 	bulkAssignWorkflowTasks,
 	getAssignableUsersForWorkflowTasks,
 } from '../../utils/api';
-import {displayErrorToast} from '../../utils/toastUtil';
+import {
+	displayBulkAssignSuccessToast,
+	displayErrorToast,
+} from '../../utils/toastUtil';
 
 type Assignee = {
 	id: number;
@@ -89,6 +92,12 @@ export default function BulkEditWorkflowAssigneeModalContent({
 		);
 
 		if (!error) {
+			const assignee = assignableUsers.find(
+				(user) => user.id === selectedUserId
+			);
+
+			displayBulkAssignSuccessToast(assignee?.name ?? '', items.length);
+
 			closeModal();
 
 			loadData();
