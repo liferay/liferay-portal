@@ -5,7 +5,7 @@
 
 package com.liferay.server.admin.web.internal.production.readiness;
 
-import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -17,10 +17,7 @@ import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration;
-import com.liferay.portal.test.log.LogCapture;
-import com.liferay.portal.test.log.LogEntry;
-import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
@@ -1066,28 +1063,31 @@ public class ProductionReadinessCheckUtilTest {
 	}
 
 	@Test
-	public void testCheckSidecarDetectionProductionModeDisabledFail()
+	public void testCheckSidecarDetectionSidecarDetectedFail()
 		throws Exception {
 
-		try (MockedStatic<ConfigurationProviderUtil>
-				configurationProviderUtilMockedStatic = Mockito.mockStatic(
-					ConfigurationProviderUtil.class)) {
+		SearchEngineInformation searchEngineInformation = Mockito.mock(
+			SearchEngineInformation.class);
 
-			ElasticsearchConfiguration elasticsearchConfiguration =
-				Mockito.mock(ElasticsearchConfiguration.class);
+		Mockito.when(
+			searchEngineInformation.getVendorString()
+		).thenReturn(
+			"Elasticsearch (Sidecar)"
+		);
 
-			Mockito.when(
-				elasticsearchConfiguration.productionModeEnabled()
-			).thenReturn(
-				false
-			);
+		Snapshot<SearchEngineInformation> snapshot = Mockito.mock(
+			Snapshot.class);
 
-			configurationProviderUtilMockedStatic.when(
-				() -> ConfigurationProviderUtil.getSystemConfiguration(
-					ElasticsearchConfiguration.class)
-			).thenReturn(
-				elasticsearchConfiguration
-			);
+		Mockito.when(
+			snapshot.get()
+		).thenReturn(
+			searchEngineInformation
+		);
+
+		try (AutoCloseable closeable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					ProductionReadinessCheckUtil.class,
+					"_searchEngineInformationSnapshot", snapshot)) {
 
 			ProductionReadinessResult productionReadinessResult =
 				ReflectionTestUtil.invoke(
@@ -1101,28 +1101,31 @@ public class ProductionReadinessCheckUtilTest {
 	}
 
 	@Test
-	public void testCheckSidecarDetectionProductionModeEnabledPass()
+	public void testCheckSidecarDetectionSidecarNotDetectedPass()
 		throws Exception {
 
-		try (MockedStatic<ConfigurationProviderUtil>
-				configurationProviderUtilMockedStatic = Mockito.mockStatic(
-					ConfigurationProviderUtil.class)) {
+		SearchEngineInformation searchEngineInformation = Mockito.mock(
+			SearchEngineInformation.class);
 
-			ElasticsearchConfiguration elasticsearchConfiguration =
-				Mockito.mock(ElasticsearchConfiguration.class);
+		Mockito.when(
+			searchEngineInformation.getVendorString()
+		).thenReturn(
+			"Elasticsearch"
+		);
 
-			Mockito.when(
-				elasticsearchConfiguration.productionModeEnabled()
-			).thenReturn(
-				true
-			);
+		Snapshot<SearchEngineInformation> snapshot = Mockito.mock(
+			Snapshot.class);
 
-			configurationProviderUtilMockedStatic.when(
-				() -> ConfigurationProviderUtil.getSystemConfiguration(
-					ElasticsearchConfiguration.class)
-			).thenReturn(
-				elasticsearchConfiguration
-			);
+		Mockito.when(
+			snapshot.get()
+		).thenReturn(
+			searchEngineInformation
+		);
+
+		try (AutoCloseable closeable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					ProductionReadinessCheckUtil.class,
+					"_searchEngineInformationSnapshot", snapshot)) {
 
 			ProductionReadinessResult productionReadinessResult =
 				ReflectionTestUtil.invoke(
@@ -1132,44 +1135,6 @@ public class ProductionReadinessCheckUtilTest {
 			Assert.assertTrue(productionReadinessResult.isPass());
 			Assert.assertEquals(
 				"sidecar-detection", productionReadinessResult.getKey());
-		}
-	}
-
-	@Test
-	public void testCheckSidecarDetectionUnreadableConfigurationFail()
-		throws Exception {
-
-		try (MockedStatic<ConfigurationProviderUtil>
-				configurationProviderUtilMockedStatic = Mockito.mockStatic(
-					ConfigurationProviderUtil.class);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				ProductionReadinessCheckUtil.class.getName(),
-				LoggerTestUtil.WARN)) {
-
-			configurationProviderUtilMockedStatic.when(
-				() -> ConfigurationProviderUtil.getSystemConfiguration(
-					ElasticsearchConfiguration.class)
-			).thenThrow(
-				new RuntimeException()
-			);
-
-			ProductionReadinessResult productionReadinessResult =
-				ReflectionTestUtil.invoke(
-					ProductionReadinessCheckUtil.class,
-					"_checkSidecarDetection", new Class<?>[0]);
-
-			Assert.assertFalse(productionReadinessResult.isPass());
-			Assert.assertEquals(
-				"sidecar-detection", productionReadinessResult.getKey());
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertTrue(
-				logEntry.getThrowable() instanceof RuntimeException);
 		}
 	}
 

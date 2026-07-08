@@ -8,9 +8,9 @@ package com.liferay.server.admin.web.internal.production.readiness;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration;
+import com.liferay.portal.search.engine.SearchEngineInformation;
 
 import java.io.File;
 
@@ -601,31 +601,20 @@ public class ProductionReadinessCheckUtil {
 	}
 
 	private static ProductionReadinessResult _checkSidecarDetection() {
-		boolean productionModeEnabled = false;
+		SearchEngineInformation searchEngineInformation =
+			_searchEngineInformationSnapshot.get();
 
-		try {
-			ElasticsearchConfiguration elasticsearchConfiguration =
-				ConfigurationProviderUtil.getSystemConfiguration(
-					ElasticsearchConfiguration.class);
-
-			productionModeEnabled =
-				elasticsearchConfiguration.productionModeEnabled();
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
-		}
+		String vendorString = searchEngineInformation.getVendorString();
 
 		ProductionReadinessResult.Builder builder =
 			ProductionReadinessResult.builder(
 				"search-engine-connectivity-validation", "sidecar-detection");
 
-		if (productionModeEnabled) {
-			return builder.pass();
+		if (vendorString.contains("Sidecar")) {
+			return builder.fail();
 		}
 
-		return builder.fail();
+		return builder.pass();
 	}
 
 	private static MemoryUsage _getHeapMemoryUsage() {
@@ -811,5 +800,9 @@ public class ProductionReadinessCheckUtil {
 			"com.liferay.portal.store.gcs.GCSStore",
 			"com.liferay.portal.store.s3.IBMS3Store",
 			"com.liferay.portal.store.s3.S3Store");
+	private static final Snapshot<SearchEngineInformation>
+		_searchEngineInformationSnapshot = new Snapshot<>(
+			ProductionReadinessCheckUtil.class, SearchEngineInformation.class,
+			null, true);
 
 }
