@@ -154,6 +154,7 @@ export default function MapChart({
 					onHoverEnd={clearHover}
 					onKeyDown={onKeyDown}
 					titleId={titleId}
+					validIndices={validIndices}
 					variant={variant}
 				/>
 

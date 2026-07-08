@@ -12,7 +12,6 @@ import {MapDatum} from '../types/MapDatum';
 import {computeDataBoundingBox} from '../utils/computeDataBoundingBox';
 import {computeMarkerHitRadius} from '../utils/computeMarkerHitRadius';
 import {computeMarkerRadius} from '../utils/computeMarkerRadius';
-import {getMatchedDataIndices} from '../utils/getMatchedDataIndices';
 import {getViewBoxWidth} from '../utils/getViewBoxWidth';
 import MapChartCountryFill from './MapChartCountryFill';
 import MapChartCountryFocus from './MapChartCountryFocus';
@@ -78,6 +77,7 @@ interface MapChartPlotProps {
 	onHoverEnd: () => void;
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	titleId: string;
+	validIndices: number[];
 	variant: 'choropleth' | 'markers';
 }
 
@@ -96,12 +96,11 @@ export default function MapChartPlot({
 	onHoverEnd,
 	onKeyDown,
 	titleId,
+	validIndices,
 	variant,
 }: MapChartPlotProps) {
 	const svgRef = useRef<SVGSVGElement>(null);
 	const renderedWidthPx = useElementWidth(svgRef);
-
-	const validIndices = useMemo(() => getMatchedDataIndices(data), [data]);
 
 	const viewBox = useMemo(() => getViewBox(fit, data), [fit, data]);
 
