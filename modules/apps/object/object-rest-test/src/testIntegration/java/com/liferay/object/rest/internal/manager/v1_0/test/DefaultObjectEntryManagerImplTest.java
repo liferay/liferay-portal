@@ -1626,6 +1626,67 @@ public class DefaultObjectEntryManagerImplTest
 				).build()),
 			ObjectDefinitionConstants.SCOPE_SITE);
 
+		Group group = _groupLocalService.getGroup(
+			companyId, GroupConstants.GUEST);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		byte[] bytes = DLTestUtil.randomTextFileBytes();
+
+		String dlFileEntryExternalReferenceCode = RandomTestUtil.randomString();
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.addFileEntry(
+			dlFileEntryExternalReferenceCode, adminUser.getUserId(),
+			group.getGroupId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK,
+			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
+			null, new ByteArrayInputStream(bytes), bytes.length, null, null,
+			null, serviceContext);
+
+		long fileEntryId = dlFileEntry.getFileEntryId();
+
+		// Administrator
+
+		Assert.assertNotNull(
+			_defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName",
+							HashMapBuilder.<String, Object>put(
+								"id", fileEntryId
+							).build()
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId())));
+
+		Assert.assertNotNull(
+			_defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName",
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode",
+								dlFileEntryExternalReferenceCode
+							).build()
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId())));
+
+		// Regular user with permissions
+
 		_user = _addUser();
 
 		_addRoleUser(
@@ -1635,9 +1696,6 @@ public class DefaultObjectEntryManagerImplTest
 			objectDefinition, _user);
 
 		String fileName = RandomTestUtil.randomString() + ".txt";
-
-		Group group = _groupLocalService.getGroup(
-			companyId, GroupConstants.GUEST);
 
 		_defaultObjectEntryManager.addObjectEntry(
 			_simpleDTOConverterContext, objectDefinition,
@@ -1671,6 +1729,51 @@ public class DefaultObjectEntryManagerImplTest
 		Assert.assertNotNull(
 			_dlFileEntryService.getFileEntryByFileName(
 				group.getGroupId(), dlFolder.getFolderId(), fileName));
+
+		// Regular user without permissions
+
+		try {
+			_defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName",
+							HashMapBuilder.<String, Object>put(
+								"id", fileEntryId
+							).build()
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
+
+		try {
+			_defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName",
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode",
+								dlFileEntryExternalReferenceCode
+							).build()
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
 
 		objectDefinitionLocalService.deleteObjectDefinition(
 			objectDefinition.getObjectDefinitionId());
