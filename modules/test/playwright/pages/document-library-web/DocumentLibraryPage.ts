@@ -313,6 +313,18 @@ export class DocumentLibraryPage {
 		).toBeHidden();
 	}
 
+	async moveFolderToRecycleBin(folderName: string) {
+		await this.goToFolderAction('Delete', folderName);
+
+		await waitForAlert(this.page, 'was moved to the Recycle Bin');
+	}
+
+	async moveToRecycleBin(entryTitle: string) {
+		await this.goToFileEntryAction('Delete', entryTitle);
+
+		await waitForAlert(this.page, 'was moved to the Recycle Bin');
+	}
+
 	async openBulkEditCategoriesModal(titles: string[]) {
 		await this.selectFileEntries(titles);
 		await this.page.getByRole('button', {name: 'Edit Categories'}).click();
