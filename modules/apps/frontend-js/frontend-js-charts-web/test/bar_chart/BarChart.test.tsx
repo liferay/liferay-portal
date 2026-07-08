@@ -70,8 +70,7 @@ describe('BarChart', () => {
 		);
 
 		expect(screen.getAllByRole('img')[0]).toHaveStyle({
-			'--charts-bar-fill':
-				'var(--primary-l0, light-dark(#5791ff, #0f62ff))',
+			'--charts-bar-fill': 'var(--chart-color-1)',
 		});
 	});
 

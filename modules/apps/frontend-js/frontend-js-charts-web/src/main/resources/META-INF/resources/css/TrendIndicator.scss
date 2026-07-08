@@ -14,15 +14,15 @@
 	white-space: nowrap;
 
 	&--up {
-		color: $success;
+		color: $chart-trend-positive;
 	}
 
 	&--down {
-		color: $danger;
+		color: $chart-trend-negative;
 	}
 
 	&--neutral {
-		color: $secondary;
+		color: $chart-trend-neutral;
 	}
 
 	&__label {
