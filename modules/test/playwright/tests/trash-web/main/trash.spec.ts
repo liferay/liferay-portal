@@ -680,3 +680,55 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Cannot search a trashed blog entry by its comments',
+	{tag: '@LPS-44099'},
+	async ({apiHelpers, blogsPage, page, site}) => {
+		const comment = `Comment${getRandomString()}`;
+		const headlines = [1, 2].map(() => `Blog ${getRandomString()}`);
+
+		for (const headline of headlines) {
+			const blog = await apiHelpers.headlessDelivery.postBlog(site.id, {
+				headline,
+			});
+
+			await apiHelpers.post(
+				`${apiHelpers.baseUrl}headless-delivery/v1.0/blog-postings/${blog.id}/comments`,
+				{data: {text: comment}, failOnStatusCode: true}
+			);
+		}
+
+		// Both blog entries are found when searching by their comment
+
+		await blogsPage.goto(site.friendlyUrlPath);
+
+		await blogsPage.searchEntry(comment);
+
+		await expect(
+			page.getByText(`2 Results Found for "${comment}"`)
+		).toBeVisible();
+
+		for (const headline of headlines) {
+			await blogsPage.assertEntryPresent(headline);
+		}
+
+		// Move the first blog entry to the recycle bin
+
+		await blogsPage.goto(site.friendlyUrlPath);
+
+		await blogsPage.moveEntryToRecycleBin(headlines[0]);
+
+		// The trashed entry is no longer found by its comment
+
+		await blogsPage.searchEntry(comment);
+
+		await expect(
+			page.getByText(`1 Result Found for "${comment}"`)
+		).toBeVisible();
+
+		await blogsPage.assertEntryPresent(headlines[1]);
+
+		await blogsPage.assertEntryPresent(headlines[0], false);
+	}
+);
