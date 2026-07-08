@@ -87,7 +87,8 @@ public class MCPServerDataMaskingTest {
 			"com.liferay.mcp.server.rest.impl", MCPServerDataMaskingTest.class,
 			new String[] {
 				prefix + "01.object.definition",
-				prefix + "02.object.definition", prefix + "03.object.definition"
+				prefix + "02.object.definition",
+				prefix + "03.object.definition", prefix + "04.object.entry"
 			});
 	}
 
