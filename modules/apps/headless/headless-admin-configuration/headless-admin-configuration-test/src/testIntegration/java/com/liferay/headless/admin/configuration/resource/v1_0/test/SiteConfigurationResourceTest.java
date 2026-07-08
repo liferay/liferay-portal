@@ -8,13 +8,19 @@ package com.liferay.headless.admin.configuration.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.configuration.client.dto.v1_0.SiteConfiguration;
 import com.liferay.headless.admin.configuration.client.problem.Problem;
+import com.liferay.headless.admin.configuration.client.resource.v1_0.SiteConfigurationResource;
 import com.liferay.headless.admin.configuration.test.configuration.TestConfiguration;
 import com.liferay.headless.admin.configuration.test.configuration.TestFactoryConfiguration;
 import com.liferay.headless.admin.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -27,6 +33,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,12 +67,33 @@ public class SiteConfigurationResourceTest
 		}
 	}
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userSiteConfigurationResource = SiteConfigurationResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	@Override
 	@Test
 	public void testGetSiteSiteConfiguration() throws Exception {
 		super.testGetSiteSiteConfiguration();
 
 		_testGetSiteSiteConfigurationFromConfigurationScreen();
+		_testGetSiteSiteConfigurationWithoutPermission();
 		_testGetSiteSiteConfigurationWithPasswordKey();
 	}
 
@@ -114,6 +142,8 @@ public class SiteConfigurationResourceTest
 
 		assertEquals(randomSiteConfiguration, getSiteConfiguration);
 		assertValid(getSiteConfiguration);
+
+		_testPutSiteSiteConfigurationWithoutPermission();
 	}
 
 	@Override
@@ -217,6 +247,23 @@ public class SiteConfigurationResourceTest
 		assertValid(getSiteConfiguration);
 	}
 
+	private void _testGetSiteSiteConfigurationWithoutPermission()
+		throws Exception {
+
+		try {
+			_userSiteConfigurationResource.getSiteSiteConfiguration(
+				testGroup.getExternalReferenceCode(),
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
 	private void _testGetSiteSiteConfigurationWithPasswordKey()
 		throws Exception {
 
@@ -246,10 +293,32 @@ public class SiteConfigurationResourceTest
 		Assert.assertNull(properties.get("passwordStringKey"));
 	}
 
+	private void _testPutSiteSiteConfigurationWithoutPermission()
+		throws Exception {
+
+		SiteConfiguration siteConfiguration = randomSiteConfiguration();
+
+		try {
+			_userSiteConfigurationResource.putSiteSiteConfiguration(
+				testGroup.getExternalReferenceCode(),
+				siteConfiguration.getExternalReferenceCode(),
+				siteConfiguration);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
 	private static final List<SafeCloseable> _safeCloseables =
 		new ArrayList<>();
 
 	@Inject
 	private static SettingsLocatorHelper _settingsLocatorHelper;
+
+	private SiteConfigurationResource _userSiteConfigurationResource;
 
 }
