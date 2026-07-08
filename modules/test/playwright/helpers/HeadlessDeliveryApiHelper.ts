@@ -392,6 +392,30 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async postStructuredContentFolderStructuredContent({
+		contentStructureId,
+		datePublished,
+		structuredContentFolderId,
+		title,
+	}: {
+		contentStructureId: number;
+		datePublished: string;
+		structuredContentFolderId: number;
+		title: string;
+	}): Promise<StructuredContent> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/structured-content-folders/${structuredContentFolderId}/structured-contents`,
+			{
+				data: {
+					contentStructureId,
+					datePublished,
+					title,
+				},
+				failOnStatusCode: true,
+			}
+		);
+	}
+
 	async getStructuredContentByKey(
 		siteId: string,
 		key: string

@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 
 export class RecycleBinPage {
@@ -57,6 +58,42 @@ export class RecycleBinPage {
 
 	async restore(assetName: string) {
 		await this._openRowAction(assetName, 'Restore');
+	}
+
+	async restoreContentFromFolder(folderName: string, documentName: string) {
+		await this._row(folderName)
+			.first()
+			.getByRole('link', {name: folderName})
+			.click();
+
+		const documentRow = this.page
+			.getByRole('row')
+			.filter({hasText: documentName});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu.show')
+				.getByText('Restore', {exact: true}),
+			trigger: documentRow.getByRole('button', {name: 'Show Actions'}),
+		});
+
+		// The original folder no longer exists, so a dialog prompts for a new
+		// restore location
+
+		const selectRestoreFolderFrame =
+			'iframe[title="Select Restore Folder"]';
+
+		await this.page
+			.frameLocator(selectRestoreFolderFrame)
+			.getByRole('button', {name: 'Select Home'})
+			.click();
+
+		// Restoring reloads the page and detaches the dialog once it completes
+
+		await expect(this.page.locator(selectRestoreFolderFrame)).toHaveCount(
+			0
+		);
 	}
 
 	_row(assetName: string): Locator {
