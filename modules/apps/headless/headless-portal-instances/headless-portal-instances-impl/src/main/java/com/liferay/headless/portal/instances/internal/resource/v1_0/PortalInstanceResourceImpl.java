@@ -230,31 +230,37 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			return;
 		}
 
+		List<ScopedConfiguration> scopedConfigurations = new ArrayList<>();
+
 		Map<String, String> configurations = DBPartitionUtil.getConfigurations(
 			CompanyConstants.SYSTEM);
 
 		for (Map.Entry<String, String> entry : configurations.entrySet()) {
-			try {
-				ScopedConfiguration scopedConfiguration =
-					_getScopedConfiguration(entry.getKey(), entry.getValue());
+			ScopedConfiguration scopedConfiguration = _getScopedConfiguration(
+				entry.getKey(), entry.getValue());
 
-				if ((scopedConfiguration == null) ||
-					!_isApplicable(companyId, scopedConfiguration)) {
-
-					continue;
-				}
-
-				DBPartitionUtil.exportConfiguration(
-					companyId, scopedConfiguration.getConfigurationId(),
-					scopedConfiguration.getEncodedDictionary());
+			if (scopedConfiguration == null) {
+				continue;
 			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to export configuration " + entry.getKey(),
-						exception);
-				}
+
+			if (Objects.equals(
+					scopedConfiguration.getScope(),
+					ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE)) {
+
+				scopedConfigurations.add(scopedConfiguration);
+
+				continue;
 			}
+
+			if (_isApplicable(companyId, scopedConfiguration)) {
+				scopedConfigurations.add(scopedConfiguration);
+			}
+		}
+
+		for (ScopedConfiguration scopedConfiguration : scopedConfigurations) {
+			DBPartitionUtil.exportConfiguration(
+				companyId, scopedConfiguration.getConfigurationId(),
+				scopedConfiguration.getEncodedDictionary());
 		}
 	}
 
@@ -346,7 +352,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	private PortalInstance _toPortalInstance(Company company) {
