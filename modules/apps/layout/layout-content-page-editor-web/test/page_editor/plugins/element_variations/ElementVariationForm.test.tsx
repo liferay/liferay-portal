@@ -1,0 +1,140 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import '@testing-library/jest-dom';
+
+// eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import React from 'react';
+
+import ElementVariationForm from '../../../../src/main/resources/META-INF/resources/page_editor/plugins/element_variations/ElementVariationForm';
+
+type ElementVariationProp = React.ComponentProps<
+	typeof ElementVariationForm
+>['elementVariation'];
+
+const BASE_ELEMENT_VARIATION: ElementVariationProp = {
+	audienceEntryERCs: [],
+	hide: {},
+	html: {},
+	js: {},
+	name: 'My Variation',
+	targetElement: '',
+};
+
+const EDITABLE_ELEMENT_OPTIONS = [
+	{label: 'Title (title)', value: '.title'},
+	{label: 'Body (body)', value: '.body'},
+];
+
+const LOCALES = [{id: 'en_US', label: 'English', symbol: 'en-us'}];
+
+function renderForm(
+	elementVariation: Partial<ElementVariationProp> = {},
+	props: Partial<React.ComponentProps<typeof ElementVariationForm>> = {}
+) {
+	const onChange = jest.fn();
+
+	return {
+		onChange,
+		...render(
+			<ElementVariationForm
+				audiences={[]}
+				defaultLanguageId="en_US"
+				dispatch={jest.fn()}
+				editableElementOptions={EDITABLE_ELEMENT_OPTIONS}
+				elementVariation={{
+					...BASE_ELEMENT_VARIATION,
+					...elementVariation,
+				}}
+				languageId="en_US"
+				locales={LOCALES}
+				onCancel={jest.fn()}
+				onChange={onChange}
+				onLanguageIdChange={jest.fn()}
+				onReloadPreview={jest.fn()}
+				onSave={jest.fn()}
+				{...props}
+			/>
+		),
+	};
+}
+
+describe('ElementVariationForm', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	it('hides the toggle and the html and js fields until a page element is selected', () => {
+		renderForm({targetElement: ''});
+
+		expect(
+			screen.queryByLabelText('hide-element-for-this-audience')
+		).not.toBeInTheDocument();
+		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
+		expect(screen.queryByLabelText('javascript')).not.toBeInTheDocument();
+	});
+
+	it('shows the toggle and the html and js fields once a page element is selected', () => {
+		renderForm({targetElement: '.title'});
+
+		expect(
+			screen.getByLabelText('hide-element-for-this-audience')
+		).toBeInTheDocument();
+		expect(screen.getByLabelText('html')).toBeInTheDocument();
+		expect(screen.getByLabelText('javascript')).toBeInTheDocument();
+	});
+
+	it('keeps the toggle but hides the html and js fields while the element is hidden', () => {
+		renderForm({hide: {en_US: true}, targetElement: '.title'});
+
+		expect(
+			screen.getByLabelText('hide-element-for-this-audience')
+		).toBeChecked();
+		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
+		expect(screen.queryByLabelText('javascript')).not.toBeInTheDocument();
+	});
+
+	it('clears the html and js values when the element is hidden', async () => {
+		const {onChange} = renderForm({
+			html: {en_US: '<p>Hello</p>'},
+			js: {en_US: 'console.log("hi");'},
+			targetElement: '.title',
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('hide-element-for-this-audience')
+		);
+
+		expect(onChange).toHaveBeenCalledWith({
+			hide: {en_US: true},
+			html: {en_US: ''},
+			js: {en_US: ''},
+		});
+	});
+
+	it('preserves the html and js values when the element is shown again', async () => {
+		const {onChange} = renderForm({
+			hide: {en_US: true},
+			html: {en_US: '<p>Hello</p>'},
+			js: {en_US: 'console.log("hi");'},
+			targetElement: '.title',
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('hide-element-for-this-audience')
+		);
+
+		expect(onChange).toHaveBeenCalledWith({hide: {en_US: false}});
+	});
+
+	it('has no accessibility violations', async () => {
+		const {container} = renderForm({targetElement: '.title'});
+
+		await checkAccessibility({context: container});
+	});
+});
