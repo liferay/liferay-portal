@@ -125,6 +125,8 @@ public class CETManagerImplTest {
 	}
 
 	private void _testGetCETsReturnsOnlyRequestedType() throws Exception {
+		boolean containsGlobalCSS = false;
+
 		ClientExtensionEntry globalCSSClientExtensionEntry =
 			_addClientExtensionEntry(
 				ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
@@ -138,8 +140,6 @@ public class CETManagerImplTest {
 			TestPropsValues.getCompanyId(), null,
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 			Pagination.of(1, 200), null);
-
-		boolean containsGlobalCSS = false;
 
 		for (CET cet : cets) {
 			Assert.assertEquals(
