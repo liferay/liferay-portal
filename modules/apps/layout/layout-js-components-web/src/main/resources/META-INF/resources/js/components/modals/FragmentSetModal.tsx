@@ -29,6 +29,7 @@ export default function FragmentSetModal({
 	fragmentEntryIds = [],
 	onSubmitFragmentCollection,
 	portletNamespace,
+	showFragmentNameInput = false,
 }: {
 	addFragmentCollectionURL?: string;
 	contributedEntryKeys?: string[];
@@ -36,9 +37,11 @@ export default function FragmentSetModal({
 	fragmentCollections: FragmentSet[];
 	fragmentEntryIds?: string[];
 	onSubmitFragmentCollection?: (
-		fragmentCollectionId: number
+		fragmentCollectionId: number,
+		fragmentName?: string
 	) => Promise<void> | void;
 	portletNamespace: string;
+	showFragmentNameInput?: boolean;
 }) {
 	const [visible, setVisible] = useState(true);
 
@@ -47,6 +50,7 @@ export default function FragmentSetModal({
 	});
 
 	const [errors, setErrors] = useState<Errors>({});
+	const [fragmentName, setFragmentName] = useState('');
 	const [showFragmentSetForm, setShowFragmentSetForm] = useState(
 		!fragmentCollections.length
 	);
@@ -54,9 +58,26 @@ export default function FragmentSetModal({
 	const formId = `${portletNamespace}form`;
 
 	const submitFragmentCollection = (fragmentCollectionId: number) => {
+		if (showFragmentNameInput && !fragmentName) {
+			setErrors({
+				name: sub(
+					Liferay.Language.get('x-field-is-required'),
+					Liferay.Language.get('name')
+				),
+			});
+
+			return;
+		}
+
 		if (onSubmitFragmentCollection) {
 			onClose();
-			onSubmitFragmentCollection(fragmentCollectionId);
+
+			if (showFragmentNameInput) {
+				onSubmitFragmentCollection(fragmentCollectionId, fragmentName);
+			}
+			else {
+				onSubmitFragmentCollection(fragmentCollectionId);
+			}
 
 			return;
 		}
@@ -128,9 +149,11 @@ export default function FragmentSetModal({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{showFragmentSetForm
-					? Liferay.Language.get('add-fragment-set')
-					: Liferay.Language.get('select-fragment-set')}
+				{showFragmentNameInput
+					? Liferay.Language.get('add-fragment')
+					: showFragmentSetForm
+						? Liferay.Language.get('add-fragment-set')
+						: Liferay.Language.get('select-fragment-set')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
@@ -141,6 +164,26 @@ export default function FragmentSetModal({
 					>
 						{errors.error}
 					</ClayAlert>
+				)}
+
+				{showFragmentNameInput && (
+					<FormField
+						error={errors.name}
+						id={`${portletNamespace}fragmentName`}
+						name={Liferay.Language.get('name')}
+						required
+					>
+						<ClayInput
+							id={`${portletNamespace}fragmentName`}
+							onChange={(event) => {
+								setErrors({...errors, name: null});
+								setFragmentName(event.target.value);
+							}}
+							required
+							type="text"
+							value={fragmentName}
+						/>
+					</FormField>
 				)}
 
 				{showFragmentSetForm ? (
