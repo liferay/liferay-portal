@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -17,6 +17,7 @@ import {performUserSwitch} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {cmpPagesTest} from './fixtures/cmpPagesTest';
+import {toDateString} from './utils/toDateString';
 
 const test = mergeTests(
 	cmpPagesTest,
@@ -47,13 +48,6 @@ const generateTaskTag = () =>
  */
 const getMonthYearLabel = (date: Date): string =>
 	date.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
-
-/**
- * Formats a date as a "YYYY-MM-DD" string.
- * For example: toDateString(new Date(2026, 5, 15)) // "2026-06-15"
- */
-const toDateString = (date: Date): string =>
-	`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
 test.beforeEach(async ({apiHelpers}) => {
 	taskNames = [getRandomString(), getRandomString(), getRandomString()];
@@ -280,6 +274,172 @@ test(
 					page.getByRole('row', {name: 'Blocked'})
 				).toHaveCount(2);
 			}).toPass({timeout: 10000});
+		});
+	}
+);
+
+test(
+	'Calendar view can drag tasks to update their due dates',
+	{tag: ['@LPD-69885', '@LPD-93269']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const taskTitle = getRandomString();
+
+		const rescheduledDate = new Date();
+
+		rescheduledDate.setDate(18);
+
+		const scheduledDate = new Date();
+
+		scheduledDate.setDate(15);
+
+		const unscheduledTaskDate = new Date();
+
+		unscheduledTaskDate.setDate(20);
+
+		// FullCalendar tracks the mouse itself rather than using native drag
+		// events, so simulate the drag with manual mouse actions instead of
+		// Playwright's dragTo.
+
+		const dragToDayCell = async (source: Locator, dayCell: Locator) => {
+			const getCenter = async (locator: Locator) => {
+				const box = await locator.boundingBox();
+
+				if (!box) {
+					throw new Error('The dragged element is not visible');
+				}
+
+				return {x: box.x + box.width / 2, y: box.y + box.height / 2};
+			};
+
+			const sourceCenter = await getCenter(source);
+
+			await source.hover();
+
+			await page.mouse.down();
+
+			// FullCalendar starts the drag only after the pointer travels a few
+			// pixels, so nudge it near the source before crossing over to the
+			// target.
+
+			await page.mouse.move(sourceCenter.x + 10, sourceCenter.y + 10, {
+				steps: 5,
+			});
+
+			const dayCellCenter = await getCenter(dayCell);
+
+			await page.mouse.move(dayCellCenter.x, dayCellCenter.y, {
+				steps: 10,
+			});
+
+			await page.mouse.up();
+		};
+
+		const {calendarView} = tasksPage;
+
+		await test.step('Create a task with a due date', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					dueDate: `${toDateString(scheduledDate)}T00:00:00Z`,
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					title: taskTitle,
+				},
+				cmpTask,
+				project.scopeKey
+			);
+		});
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await expect(calendarView.title).toBeVisible();
+		});
+
+		await test.step('Dragging the task to another day updates its due date', async () => {
+			const sourceCell = tasksPage.getCalendarDayCell(scheduledDate);
+			const targetCell = tasksPage.getCalendarDayCell(rescheduledDate);
+
+			await dragToDayCell(
+				sourceCell.getByText(taskTitle, {exact: true}),
+				targetCell
+			);
+
+			await waitForAlert(
+				page,
+				`${taskTitle} due date was successfully updated.`
+			);
+
+			await expect(
+				targetCell.getByText(taskTitle, {exact: true})
+			).toBeVisible();
+
+			await expect(
+				sourceCell.getByText(taskTitle, {exact: true})
+			).toBeHidden();
+		});
+
+		await test.step('Dragging an unscheduled task into the calendar schedules it', async () => {
+			await expect(calendarView.unscheduledTasksButton).toContainText(
+				'3 Unscheduled Tasks'
+			);
+
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await dragToDayCell(
+				calendarView.unscheduledTasksPanel.getByText(taskNames[0], {
+					exact: true,
+				}),
+				tasksPage.getCalendarDayCell(unscheduledTaskDate)
+			);
+
+			await waitForAlert(
+				page,
+				`${taskNames[0]} due date was successfully updated.`
+			);
+
+			await expect(calendarView.unscheduledTasksPanel).toBeVisible();
+
+			await expect(
+				calendarView.unscheduledTasksPanel.getByText(taskNames[0], {
+					exact: true,
+				})
+			).toBeHidden();
+
+			await expect(calendarView.unscheduledTasksButton).toContainText(
+				'2 Unscheduled Tasks'
+			);
+		});
+
+		await test.step('The new due dates persist after the page reloads', async () => {
+			await page.reload();
+
+			await expect(calendarView.title).toBeVisible();
+
+			await expect(
+				tasksPage
+					.getCalendarDayCell(rescheduledDate)
+					.getByText(taskTitle, {exact: true})
+			).toBeVisible();
+
+			await expect(
+				tasksPage
+					.getCalendarDayCell(unscheduledTaskDate)
+					.getByText(taskNames[0], {exact: true})
+			).toBeVisible();
+
+			await expect(calendarView.unscheduledTasksButton).toContainText(
+				'2 Unscheduled Tasks'
+			);
 		});
 	}
 );

@@ -7,6 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
+import {toDateString} from '../utils/toDateString';
 
 interface ExecItemActionArgs {
 	action: 'Assign Task' | 'Delete' | 'Update Due Date' | 'Update State';
@@ -130,6 +131,10 @@ export class TasksPage {
 			name: /View Selected$/,
 		});
 		this.workflowTasksTab = page.getByRole('tab', {name: 'Workflow'});
+	}
+
+	getCalendarDayCell(date: Date): Locator {
+		return this.page.locator(`[data-date="${toDateString(date)}"]`);
 	}
 
 	getItem(filter: string) {
