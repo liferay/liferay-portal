@@ -110,8 +110,6 @@ export default function MapChart({
 	const clearFocus = useCallback(() => setFocusIndex(null), []);
 	const clearHover = useCallback(() => setHoverIndex(null), []);
 
-	const isLegendInline = legend === 'list';
-
 	const legendElement = (
 		<MapChartLegend
 			activeIndex={activeIndex}
@@ -163,10 +161,10 @@ export default function MapChart({
 					<MapChartTooltip datum={data[activeIndex]} />
 				) : null}
 
-				{isLegendInline ? legendElement : null}
+				{legend === 'list' && legendElement}
 			</div>
 
-			{isLegendInline ? null : legendElement}
+			{legend !== 'list' && legendElement}
 		</figure>
 	);
 }
