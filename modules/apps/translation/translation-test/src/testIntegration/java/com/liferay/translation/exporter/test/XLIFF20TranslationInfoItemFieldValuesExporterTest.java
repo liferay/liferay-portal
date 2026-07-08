@@ -88,18 +88,20 @@ public class XLIFF20TranslationInfoItemFieldValuesExporterTest {
 			_group, _ddmFormDeserializer);
 
 		Assert.assertEquals(
-			StringUtil.replace(
-				TranslationTestUtil.readFileToString(
-					"test-journal-article.xlf"),
-				"[$JOURNAL_ARTICLE_ID$]",
-				String.valueOf(journalArticle.getResourcePrimKey())),
-			StreamUtil.toString(
-				_xliffTranslationInfoItemFieldValuesExporter.
-					exportInfoItemFieldValues(
-						infoItemFieldValuesProvider.getInfoItemFieldValues(
-							journalArticle),
-						LocaleUtil.getDefault(),
-						LocaleUtil.fromLanguageId("es_ES"))));
+			TranslationTestUtil.toFormattedString(
+				StringUtil.replace(
+					TranslationTestUtil.readFileToString(
+						"test-journal-article.xlf"),
+					"[$JOURNAL_ARTICLE_ID$]",
+					String.valueOf(journalArticle.getResourcePrimKey()))),
+			TranslationTestUtil.toFormattedString(
+				StreamUtil.toString(
+					_xliffTranslationInfoItemFieldValuesExporter.
+						exportInfoItemFieldValues(
+							infoItemFieldValuesProvider.getInfoItemFieldValues(
+								journalArticle),
+							LocaleUtil.getDefault(),
+							LocaleUtil.fromLanguageId("es_ES")))));
 	}
 
 	@Inject(filter = "ddm.form.deserializer.type=json")
