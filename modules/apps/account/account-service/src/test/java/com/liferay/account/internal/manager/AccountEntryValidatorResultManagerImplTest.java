@@ -344,7 +344,7 @@ public class AccountEntryValidatorResultManagerImplTest {
 					_accountEntry, _className, _classPK, 30);
 
 		Assert.assertNotNull(accountEntryValidatorResult);
-		Assert.assertEquals(_classPK, accountEntryValidatorResult.getKey());
+		Assert.assertEquals(_classPK, accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			"message", accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(

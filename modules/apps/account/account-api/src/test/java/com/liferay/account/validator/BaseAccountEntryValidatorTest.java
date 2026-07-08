@@ -293,7 +293,7 @@ public class BaseAccountEntryValidatorTest {
 		}
 
 		@Override
-		public AccountEntryValidatorConfiguration getConfiguration(
+		public AccountEntryValidatorConfiguration getAccountEntryValidatorConfiguration(
 			long companyId) {
 
 			return _accountEntryValidatorConfiguration;
