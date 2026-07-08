@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -28,6 +30,10 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.style.book.constants.StyleBookActionKeys;
@@ -40,7 +46,9 @@ import com.liferay.style.book.util.comparator.StyleBookEntryNameComparator;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,9 +60,15 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/style-book.properties",
+	property = {
+		"crud.entity.class.name=com.liferay.headless.admin.site.dto.v1_0.StyleBook",
+		"crud.item.delegate=true"
+	},
 	scope = ServiceScope.PROTOTYPE, service = StyleBookResource.class
 )
-public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
+public class StyleBookResourceImpl
+	extends BaseStyleBookResourceImpl
+	implements VulcanCRUDItemDelegate<StyleBook> {
 
 	@Override
 	public void deleteDesignLibraryStyleBook(
@@ -140,6 +154,23 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		return Page.of(
 			transform(styleBookEntries, this::_toStyleBook), pagination,
 			totalCount);
+	}
+
+	@Override
+	public StyleBook getItem(Long id) throws Exception {
+		_checkFeatureFlag();
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.getStyleBookEntry(id);
+
+		return _styleBookDTOConverter.toDTO(
+			new DefaultDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(),
+				_getActions(styleBookEntry), _dtoConverterRegistry,
+				contextHttpServletRequest, styleBookEntry.getStyleBookEntryId(),
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser),
+			styleBookEntry);
 	}
 
 	@Override
@@ -334,6 +365,44 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		}
 	}
 
+	private Map<String, Map<String, String>> _getActions(
+		StyleBookEntry styleBookEntry) {
+
+		Group group = _groupLocalService.fetchGroup(
+			styleBookEntry.getGroupId());
+
+		if ((group == null) || !group.isDepot() ||
+			!_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(),
+				styleBookEntry.getGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Map<String, String>>put(
+			"delete",
+			_resolveActionHref(
+				addAction(
+					StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES,
+					"deleteDesignLibraryStyleBook",
+					StyleBookConstants.RESOURCE_NAME,
+					styleBookEntry.getGroupId()),
+				group.getExternalReferenceCode(),
+				styleBookEntry.getExternalReferenceCode())
+		).put(
+			"get",
+			_resolveActionHref(
+				addAction(
+					StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES,
+					"getDesignLibraryStyleBook",
+					StyleBookConstants.RESOURCE_NAME,
+					styleBookEntry.getGroupId()),
+				group.getExternalReferenceCode(),
+				styleBookEntry.getExternalReferenceCode())
+		).build();
+	}
+
 	private long _getDesignLibraryGroupId(
 			String designLibraryExternalReferenceCode)
 		throws Exception {
@@ -442,6 +511,30 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 		return orderByComparator;
 	}
 
+	private Map<String, String> _resolveActionHref(
+		Map<String, String> action, String designLibraryExternalReferenceCode,
+		String styleBookExternalReferenceCode) {
+
+		String href = action.get("href");
+
+		if (href != null) {
+			action.put(
+				"href",
+				StringUtil.replace(
+					href,
+					new String[] {
+						"{designLibraryExternalReferenceCode}",
+						"{styleBookExternalReferenceCode}"
+					},
+					new String[] {
+						designLibraryExternalReferenceCode,
+						styleBookExternalReferenceCode
+					}));
+		}
+
+		return action;
+	}
+
 	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry) {
 		StyleBook styleBook = new StyleBook();
 
@@ -468,6 +561,7 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 			styleBookEntry::getExternalReferenceCode);
 		styleBook.setFrontendTokensValues(
 			styleBookEntry::getFrontendTokensValues);
+		styleBook.setId(styleBookEntry::getStyleBookEntryId);
 		styleBook.setKey(styleBookEntry::getStyleBookEntryKey);
 		styleBook.setName(styleBookEntry::getName);
 		styleBook.setPreviewFileEntryExternalReferenceCode(
@@ -500,7 +594,20 @@ public class StyleBookResourceImpl extends BaseStyleBookResourceImpl {
 	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.StyleBookDTOConverter)"
+	)
+	private DTOConverter<StyleBookEntry, StyleBook> _styleBookDTOConverter;
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryService;
