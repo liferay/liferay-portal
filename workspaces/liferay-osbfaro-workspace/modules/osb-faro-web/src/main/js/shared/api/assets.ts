@@ -1,5 +1,4 @@
 import sendRequest from 'shared/util/request';
-import {RangeKeyTimeRanges} from '../util/constants';
 
 export type TopAssetMetric =
 	| 'downloadsMetric'
@@ -55,7 +54,7 @@ interface ISearchAssetTypes {
 	groupId: string;
 	page?: number;
 	pageSize?: number;
-	rangeKey?: number;
+	rangeKey?: number | null;
 }
 
 export async function searchTypes({
@@ -63,7 +62,7 @@ export async function searchTypes({
 	groupId,
 	page = 1,
 	pageSize = 10,
-	rangeKey = Number(RangeKeyTimeRanges.Last30Days),
+	rangeKey,
 }: ISearchAssetTypes): Promise<{
 	items: Array<{id: string; name: string}>;
 	totalCount: number;

@@ -615,6 +615,18 @@ describe('SelectPageAssetInput', () => {
 
 			expect(API.assets.searchTypes).toHaveBeenCalled();
 		});
+
+		it('should request asset-summary-types with a null rangeKey so recently tracked object definitions still list', () => {
+			// A null rangeKey lifts the time-range restriction (LPD-97671):
+			// CMS objects whose only activity is recent (e.g. the last 24
+			// hours) must still surface as selectable asset types.
+
+			renderAndFlush({action: 'download'});
+
+			expect(API.assets.searchTypes).toHaveBeenCalledWith(
+				expect.objectContaining({rangeKey: null})
+			);
+		});
 	});
 
 	describe('modal columns', () => {

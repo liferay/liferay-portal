@@ -256,7 +256,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			groupId: string;
 			page: number;
 			pageSize: number;
-			rangeKey: number;
+			rangeKey: null;
 		},
 		{items: AssetSummaryType[]}
 	>({
@@ -267,7 +267,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			groupId,
 			page: 1,
 			pageSize: 100,
-			rangeKey: -1,
+			rangeKey: null,
 		},
 	});
 
