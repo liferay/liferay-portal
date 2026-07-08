@@ -370,3 +370,99 @@ test('A subscriber sees a website notification when a subscribed category thread
 
 	await expect(accountNotificationsPage.notificationsCount).toBeHidden();
 });
+
+test('A subscriber with disabled website deliveries receives no notification for a subscribed category thread', async ({
+	apiHelpers,
+	messageBoardsEditThreadPage,
+	messageBoardsPage,
+	messageBoardsWidgetPage,
+	page,
+	site,
+}) => {
+	const categoryName = getRandomString();
+	const threadSubject = getRandomString();
+
+	const messageBoardSection =
+		await apiHelpers.headlessDelivery.postSiteMessageBoardSection({
+			siteId: site.id,
+			title: categoryName,
+		});
+
+	const layout = await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+	const administratorRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+	const subscriber = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	await apiHelpers.headlessAdminUser.assignUserToRole(
+		administratorRole.externalReferenceCode,
+		subscriber.id
+	);
+
+	userData[subscriber.alternateName] = {
+		name: subscriber.givenName,
+		password: 'test',
+		surname: subscriber.familyName,
+	};
+
+	// The subscriber disables its website deliveries for message boards and
+	// subscribes to the category
+
+	await performUserSwitchViaApi(page, subscriber.alternateName);
+
+	const accountNotificationsPage = new AccountNotificationsPage(page);
+
+	await accountNotificationsPage.disableWebsiteDeliveries('Message Boards', [
+		'Adds a new post in a thread or category you are subscribed to.',
+		'Updates a post you are subscribed to.',
+	]);
+
+	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+	await page.getByRole('link', {name: categoryName}).click();
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.locator('.dropdown-menu').getByText('Subscribe', {
+			exact: true,
+		}),
+		trigger: page.locator('a.component-action.dropdown-toggle').last(),
+	});
+
+	// The administrator adds and updates a thread in the category
+
+	await performUserSwitchViaApi(page, 'test');
+
+	await apiHelpers.headlessDelivery.postMessageBoardSectionMessageBoardThread(
+		{
+			articleBody: getRandomString(),
+			headline: threadSubject,
+			messageBoardSectionId: messageBoardSection.id,
+		}
+	);
+
+	await messageBoardsPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: categoryName}).click();
+
+	await page.getByRole('link', {name: threadSubject}).click();
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.locator('.dropdown-menu').getByText('Edit', {exact: true}),
+		trigger: page.locator('.panel-heading .dropdown-toggle'),
+	});
+
+	await messageBoardsEditThreadPage.subjectSelector.fill(getRandomString());
+	await messageBoardsEditThreadPage.bodyTextBox.fill(getRandomString());
+	await messageBoardsEditThreadPage.publishButton.click();
+
+	// The subscriber receives no website notification
+
+	await performUserSwitchViaApi(page, subscriber.alternateName);
+
+	await page.reload();
+
+	await expect(accountNotificationsPage.notificationsCount).toBeHidden();
+});
