@@ -2363,8 +2363,6 @@ definition {
 
 	@priority = 3
 	test SearchWithCopiedBlueprint {
-		property portal.acceptance = "quarantine";
-
 		JSONBlog.addEntry(
 			entryContent = "",
 			entryTitle = "apple apple apple");
@@ -2413,8 +2411,6 @@ definition {
 
 	@priority = 3
 	test SearchWithCopiedOOTBElement {
-		property portal.acceptance = "quarantine";
-
 		JSONWebcontent.addWebContent(
 			content = "",
 			groupName = "Guest",
@@ -2466,8 +2462,6 @@ definition {
 
 	@priority = 3
 	test SearchWithSelectedAssetType {
-		property portal.acceptance = "quarantine";
-
 		JSONWebcontent.addWebContent(
 			content = "",
 			groupName = "Guest",
@@ -3467,8 +3461,6 @@ definition {
 
 	@priority = 3
 	test ViewCustomElementsJSONValidation {
-		property portal.acceptance = "quarantine";
-
 		Blueprints.openBlueprintsAdmin();
 
 		Navigator.gotoNavItem(navItem = "Elements");
