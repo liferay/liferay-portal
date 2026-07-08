@@ -142,13 +142,6 @@ public class AccountEntryValidatorResultManagerTest {
 		extends BaseAccountEntryValidator {
 
 		@Override
-		public String getClassPK(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			return _classPK;
-		}
-
-		@Override
 		public AccountEntryValidatorConfiguration
 			getAccountEntryValidatorConfiguration(long companyId) {
 
@@ -165,6 +158,13 @@ public class AccountEntryValidatorResultManagerTest {
 				}
 
 			};
+		}
+
+		@Override
+		public String getClassPK(
+			AccountEntry accountEntry, JSONObject jsonObject) {
+
+			return _classPK;
 		}
 
 		public int getDoValidateCount() {
