@@ -85,12 +85,14 @@ public class LayoutUtilityPageEntryDisplayContext {
 				_renderRequest, _getPortletURL(), null,
 				"there-are-no-utility-pages");
 
+		layoutUtilityPageEntrySearchContainer.setOrderByCol(getOrderByCol());
+
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
 			_getOrderByComparator();
 
-		layoutUtilityPageEntrySearchContainer.setOrderByCol(getOrderByCol());
 		layoutUtilityPageEntrySearchContainer.setOrderByComparator(
 			orderByComparator);
+
 		layoutUtilityPageEntrySearchContainer.setOrderByType(getOrderByType());
 
 		String[] types = TransformUtil.transformToArray(

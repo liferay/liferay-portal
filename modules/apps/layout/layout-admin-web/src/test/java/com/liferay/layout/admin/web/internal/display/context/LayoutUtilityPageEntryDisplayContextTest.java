@@ -83,9 +83,8 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 		_testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol();
 	}
 
-	private OrderByComparator<LayoutUtilityPageEntry>
-		_getSearchContainerOrderByComparator(
-			String orderByCol, String orderByType) {
+	private OrderByComparator<LayoutUtilityPageEntry> _getOrderByComparator(
+		String orderByCol, String orderByType) {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
@@ -118,7 +117,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerDefaultOrderByComparator() {
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
-			_getSearchContainerOrderByComparator(null, null);
+			_getOrderByComparator(null, null);
 
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.createDate ASC",
@@ -127,7 +126,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByCreateDate() {
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
-			_getSearchContainerOrderByComparator("create-date", "asc");
+			_getOrderByComparator("create-date", "asc");
 
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.createDate ASC",
@@ -136,7 +135,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerOrderByName() {
 		OrderByComparator<LayoutUtilityPageEntry> orderByComparator =
-			_getSearchContainerOrderByComparator("name", "desc");
+			_getOrderByComparator("name", "desc");
 
 		Assert.assertEquals(
 			"LayoutUtilityPageEntry.name DESC", orderByComparator.getOrderBy());
@@ -144,7 +143,7 @@ public class LayoutUtilityPageEntryDisplayContextTest {
 
 	private void _testGetLayoutUtilityPageEntrySearchContainerUnknownOrderByCol() {
 		Assert.assertNull(
-			_getSearchContainerOrderByComparator(
+			_getOrderByComparator(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 	}
 
