@@ -66,6 +66,8 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 
 	@Test
 	public void testContribute() throws Exception {
+		Document document = new DocumentImpl();
+
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
@@ -73,11 +75,11 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_PIM_BASE_SKU", TestPropsValues.getCompanyId());
+
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
@@ -95,8 +97,6 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 				"name", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
-
-		Document document = new DocumentImpl();
 
 		_modelDocumentContributor.contribute(document, objectEntry);
 
