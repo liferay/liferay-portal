@@ -819,13 +819,13 @@ public class CompanyLocalServiceDBPartitionTest
 	public void testForEachCompanyIdSkipsGoneOrInDeletionCompanies()
 		throws Exception {
 
+		// A company in the deletion process is skipped
+
 		_company1 = CompanyTestUtil.addCompany();
 
 		long companyId = _company1.getCompanyId();
 
 		List<Long> companyIds = new ArrayList<>();
-
-		// A company in the deletion process is skipped
 
 		try (SafeCloseable safeCloseable =
 				PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
