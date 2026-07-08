@@ -24,10 +24,13 @@
 
 	&-content {
 		&-container {
+			align-items: center;
 			border-top: 1px solid $secondary-l3;
-			display: flex;
-			flex-direction: column;
-			padding: 0.5rem 0;
+			column-gap: 1rem;
+			display: grid;
+			grid-template-columns: max-content 1fr;
+			padding: 1rem 1.5rem;
+			row-gap: 1rem;
 
 			&--hidden {
 				display: none;
@@ -35,17 +38,14 @@
 		}
 
 		&-item {
-			align-items: center;
-			display: grid;
+			display: contents;
 			font-size: 0.875rem;
-			grid-template-columns: 100px 1fr;
-			padding: 0.5rem 1.5rem;
 
 			.form-group {
 				height: 32px;
 				margin-bottom: 0;
 				max-width: 12.5rem;
-				width: 11vw;
+				width: 100%;
 			}
 		}
 
@@ -55,7 +55,6 @@
 
 		&-value {
 			max-width: 12.5rem;
-			width: 11vw;
 		}
 	}
 
@@ -75,7 +74,7 @@
 			max-width: 12.5rem;
 			min-height: unset !important;
 			transition: opacity 0.2s;
-			width: 11vw;
+			width: 100%;
 		}
 	}
 }
