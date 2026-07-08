@@ -1732,6 +1732,7 @@ exports[`ClayCardWithHorizontal renders with radio button 1`] = `
 exports[`ClayCardWithInfo renders as disabled 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled file-card form-check-card form-check form-check-top-left card-type-asset"
   >
     <div
@@ -1818,6 +1819,7 @@ exports[`ClayCardWithInfo renders as disabled 1`] = `
 exports[`ClayCardWithInfo renders as file card specifying the displayType 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled file-card form-check-card form-check form-check-top-left card-type-asset"
   >
     <div
@@ -1904,6 +1906,7 @@ exports[`ClayCardWithInfo renders as file card specifying the displayType 1`] = 
 exports[`ClayCardWithInfo renders as image card specifying imageProps and not the displayType 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled form-check-card form-check form-check-top-left image-card card-type-asset"
   >
     <div
@@ -1983,6 +1986,7 @@ exports[`ClayCardWithInfo renders as image card specifying imageProps and not th
 exports[`ClayCardWithInfo renders as image card specifying the displayType and imageProps 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled form-check-card form-check form-check-top-left image-card card-type-asset"
   >
     <div
@@ -2062,6 +2066,7 @@ exports[`ClayCardWithInfo renders as image card specifying the displayType and i
 exports[`ClayCardWithInfo renders as image card specifying the displayType and no imageProps 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled form-check-card form-check form-check-top-left image-card card-type-asset"
   >
     <div
@@ -3024,6 +3029,7 @@ exports[`ClayCardWithUser renders ClayCardWithNavigation with image 1`] = `
 exports[`ClayCardWithUser renders as disabled 1`] = `
 <div>
   <div
+    aria-disabled="true"
     class="disabled form-check-card form-check form-check-top-left user-card card-type-asset"
   >
     <div
