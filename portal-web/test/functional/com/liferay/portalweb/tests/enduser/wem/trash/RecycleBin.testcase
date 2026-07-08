@@ -542,7 +542,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-190757. The Home folder of document should be visible on Warning modal."
+	@description = "This is a test for LPS-190757. The Home folder of document and web content should be visible on Warning modal."
 	@priority = 5
 	test RestoreContentToExistingFolder {
 		property portal.acceptance = "true";
@@ -606,11 +606,7 @@ definition {
 
 			DMDocument.viewCP(dmDocumentTitle = "DM Document Title 3");
 		}
-	}
 
-	@description = "This is a test for LPS-190757. The Home folder of web content should be visible on Warning modal."
-	@priority = 4
-	test RestoreWebContentToExistingFolder {
 		task ("Given a site administrator has folders with web contents") {
 			for (var i : list "1,2") {
 				JSONWebcontent.addFolder(
