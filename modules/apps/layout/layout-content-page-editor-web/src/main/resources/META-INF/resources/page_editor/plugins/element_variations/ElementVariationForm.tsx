@@ -228,81 +228,116 @@ export default function ElementVariationForm({
 					/>
 				</ClayForm.Group>
 
-				<ClayForm.Group>
-					<ClayToggle
-						label={Liferay.Language.get(
-							'hide-element-for-this-audience'
+				{elementVariation.targetElement ? (
+					<>
+						<ClayForm.Group>
+							<ClayToggle
+								label={Liferay.Language.get(
+									'hide-element-for-this-audience'
+								)}
+								onToggle={(hide) => {
+									const properties: Partial<ElementVariationFormData> =
+										{
+											hide: {
+												...elementVariation.hide,
+												[languageId]: hide,
+											},
+										};
+
+									if (hide) {
+										properties.html = {
+											...elementVariation.html,
+											[languageId]: '',
+										};
+										properties.js = {
+											...elementVariation.js,
+											[languageId]: '',
+										};
+									}
+
+									onChange(properties);
+								}}
+								toggled={Boolean(
+									elementVariation.hide[languageId]
+								)}
+							/>
+						</ClayForm.Group>
+
+						{elementVariation.hide[languageId] ? null : (
+							<>
+								<ClayForm.Group small>
+									<label htmlFor={htmlId}>
+										{Liferay.Language.get('html')}
+									</label>
+
+									<ClayInput
+										component="textarea"
+										defaultValue={
+											elementVariation.html[languageId] ??
+											''
+										}
+										id={htmlId}
+										key={languageId}
+										onBlur={(event) =>
+											onChange({
+												html: {
+													...elementVariation.html,
+													[languageId]:
+														event.target.value,
+												},
+											})
+										}
+									/>
+								</ClayForm.Group>
+
+								<ClayForm.Group small>
+									<label htmlFor={jsId}>
+										{Liferay.Language.get('javascript')}
+									</label>
+
+									<p className="mb-1 text-2 text-secondary">
+										{Liferay.Language.get(
+											'changes-persist-in-the-preview.-reload-to-update'
+										)}
+									</p>
+
+									<ClayInput
+										component="textarea"
+										defaultValue={
+											elementVariation.js[languageId] ??
+											''
+										}
+										id={jsId}
+										key={languageId}
+										onBlur={(event) =>
+											onChange({
+												js: {
+													...elementVariation.js,
+													[languageId]:
+														event.target.value,
+												},
+											})
+										}
+									/>
+
+									<ClayButton
+										className="mt-2"
+										displayType="secondary"
+										onClick={onReloadPreview}
+										size="sm"
+									>
+										<ClayIcon
+											className="mr-2"
+											symbol="reload"
+										/>
+
+										{Liferay.Language.get('reload')}
+									</ClayButton>
+								</ClayForm.Group>
+							</>
 						)}
-						onToggle={(hide) =>
-							onChange({
-								hide: {
-									...elementVariation.hide,
-									[languageId]: hide,
-								},
-							})
-						}
-						toggled={Boolean(elementVariation.hide[languageId])}
-					/>
-				</ClayForm.Group>
-
-				<ClayForm.Group small>
-					<label htmlFor={htmlId}>
-						{Liferay.Language.get('html')}
-					</label>
-
-					<ClayInput
-						component="textarea"
-						defaultValue={elementVariation.html[languageId] ?? ''}
-						id={htmlId}
-						key={languageId}
-						onBlur={(event) =>
-							onChange({
-								html: {
-									...elementVariation.html,
-									[languageId]: event.target.value,
-								},
-							})
-						}
-					/>
-				</ClayForm.Group>
-
-				<ClayForm.Group small>
-					<label htmlFor={jsId}>
-						{Liferay.Language.get('javascript')}
-					</label>
-
-					<p className="mb-1 text-2 text-secondary">
-						{Liferay.Language.get(
-							'changes-persist-in-the-preview.-reload-to-update'
-						)}
-					</p>
-
-					<ClayInput
-						component="textarea"
-						defaultValue={elementVariation.js[languageId] ?? ''}
-						id={jsId}
-						key={languageId}
-						onBlur={(event) =>
-							onChange({
-								js: {
-									...elementVariation.js,
-									[languageId]: event.target.value,
-								},
-							})
-						}
-					/>
-
-					<ClayButton
-						className="mt-2"
-						displayType="secondary"
-						onClick={onReloadPreview}
-						size="sm"
-					>
-						<ClayIcon className="mr-2" symbol="reload" />
-
-						{Liferay.Language.get('reload')}
-					</ClayButton>
-				</ClayForm.Group>
+					</>
+				) : null}
 			</div>
 
 			<div className="border-top d-flex flex-shrink-0 p-3">
