@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.model.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,7 +31,7 @@ public interface VulcanRequestForwarder {
 		}
 
 		public default Map<String, String> getHeaders() {
-			return Collections.emptyMap();
+			return null;
 		}
 
 		public String getMethod();
