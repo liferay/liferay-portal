@@ -28,6 +28,12 @@ jest.mock('../../js/components/DateField', () => ({
 	),
 }));
 
+const mockOpenToast = jest.fn();
+
+jest.mock('frontend-js-components-web', () => ({
+	openToast: (...args: any[]) => mockOpenToast(...args),
+}));
+
 const mockBulkUpdateWorkflowTaskDueDate = jest.fn();
 
 jest.mock('../../js/utils/api', () => ({
@@ -135,5 +141,29 @@ describe('BulkEditWorkflowDueDateModalContent', () => {
 		);
 
 		expect(getByText('save')).toBeDisabled();
+	});
+
+	it('shows a success toast on success', async () => {
+		mockBulkUpdateWorkflowTaskDueDate.mockResolvedValueOnce({error: null});
+
+		const {getByTestId, getByText} = render(
+			<BulkEditWorkflowDueDateModalContent
+				closeModal={mockCloseModal}
+				loadData={mockLoadData}
+				selectedData={mockSelectedData as any}
+			/>
+		);
+
+		fireEvent.change(getByTestId('mock-date-field'), {
+			target: {value: '06/05/2026'},
+		});
+
+		fireEvent.submit(getByText('save').closest('form')!);
+
+		await waitFor(() =>
+			expect(mockOpenToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'success'})
+			)
+		);
 	});
 });

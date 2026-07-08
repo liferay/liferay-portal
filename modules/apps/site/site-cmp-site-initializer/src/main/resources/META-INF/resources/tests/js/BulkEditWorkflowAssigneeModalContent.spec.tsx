@@ -156,6 +156,31 @@ describe('BulkEditWorkflowAssigneeModalContent', () => {
 		});
 	});
 
+	it('shows a success toast on success', async () => {
+		mockGetAssignableUsersForWorkflowTasks.mockResolvedValueOnce(
+			mockAssignableUsersResponse
+		);
+		mockBulkAssignWorkflowTasks.mockResolvedValueOnce({error: null});
+
+		const {getByText} = render(
+			<BulkEditWorkflowAssigneeModalContent
+				closeModal={mockCloseModal}
+				loadData={mockLoadData}
+				selectedData={mockSelectedData as any}
+			/>
+		);
+
+		await waitFor(() => getByText('User A'));
+
+		fireEvent.submit(getByText('save').closest('form')!);
+
+		await waitFor(() =>
+			expect(mockOpenToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'success'})
+			)
+		);
+	});
+
 	it('shows error toast and re-enables save when assign patch fails', async () => {
 		mockGetAssignableUsersForWorkflowTasks.mockResolvedValueOnce(
 			mockAssignableUsersResponse
