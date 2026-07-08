@@ -52,9 +52,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_bytes = RandomTestUtil.randomBytes();
-		_signatureKey = RandomTestUtil.randomString();
-
 		ReflectionTestUtil.setFieldValue(
 			_completePaymentAuthorizeNetServlet, "_commerceOrderLocalService",
 			_commerceOrderLocalService);
@@ -94,24 +91,25 @@ public class CompletePaymentAuthorizeNetServletTest {
 			ReflectionTestUtil.invoke(
 				_completePaymentAuthorizeNetServlet, "_isValidSignature",
 				new Class<?>[] {byte[].class, String.class, String.class},
-				_bytes, "sha512=" + RandomTestUtil.randomString(), null));
+				_BYTES, "sha512=" + RandomTestUtil.randomString(), null));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
 				_completePaymentAuthorizeNetServlet, "_isValidSignature",
 				new Class<?>[] {byte[].class, String.class, String.class},
-				_bytes, "sha512=" + RandomTestUtil.randomString(),
-				_signatureKey));
+				_BYTES, "sha512=" + RandomTestUtil.randomString(),
+				_SIGNATURE_KEY));
 
 		String signature = ReflectionTestUtil.invoke(
 			_completePaymentAuthorizeNetServlet, "_generateHMAC",
-			new Class<?>[] {byte[].class, String.class}, _bytes, _signatureKey);
+			new Class<?>[] {byte[].class, String.class}, _BYTES,
+			_SIGNATURE_KEY);
 
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
 				_completePaymentAuthorizeNetServlet, "_isValidSignature",
 				new Class<?>[] {byte[].class, String.class, String.class},
-				_bytes, "sha512=" + StringUtil.toUpperCase(signature),
-				_signatureKey));
+				_BYTES, "sha512=" + StringUtil.toUpperCase(signature),
+				_SIGNATURE_KEY));
 	}
 
 	private MockHttpServletResponse _get(boolean cancel, String redirect)
@@ -304,13 +302,13 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_mockConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_SIGNATURE_KEY);
 
 		String transactionId = RandomTestUtil.randomString();
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
 			_getAuthCaptureJSONObject(commerceOrderId, transactionId),
-			_signatureKey);
+			_SIGNATURE_KEY);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
@@ -335,13 +333,13 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_mockConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_SIGNATURE_KEY);
 
 		String transactionId = RandomTestUtil.randomString();
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
 			_getAuthCaptureJSONObject(commerceOrderId, transactionId),
-			_signatureKey);
+			_SIGNATURE_KEY);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
@@ -388,7 +386,7 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_mockConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_SIGNATURE_KEY);
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
 			_getAuthCaptureJSONObject(
@@ -403,13 +401,16 @@ public class CompletePaymentAuthorizeNetServletTest {
 	private void _testDoPostWithUnsupportedEventType() throws Exception {
 		MockHttpServletResponse mockHttpServletResponse = _post(
 			JSONUtil.put("eventType", RandomTestUtil.randomString()),
-			_signatureKey);
+			_SIGNATURE_KEY);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
-	private byte[] _bytes;
+	private static final byte[] _BYTES = RandomTestUtil.randomBytes();
+
+	private static final String _SIGNATURE_KEY = RandomTestUtil.randomString();
+
 	private final CommerceOrderLocalService _commerceOrderLocalService =
 		Mockito.mock(CommerceOrderLocalService.class);
 	private final CommercePaymentEngine _commercePaymentEngine = Mockito.mock(
@@ -423,6 +424,5 @@ public class CompletePaymentAuthorizeNetServletTest {
 		ConfigurationProvider.class);
 	private final JSONFactory _jsonFactory = new JSONFactoryImpl();
 	private final Portal _portal = Mockito.mock(Portal.class);
-	private String _signatureKey;
 
 }
