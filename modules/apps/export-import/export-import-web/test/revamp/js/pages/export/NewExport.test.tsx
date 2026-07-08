@@ -631,6 +631,74 @@ describe('NewExport', () => {
 		});
 	});
 
+	it('does not submit the permissions flag by default', async () => {
+		renderComponent();
+
+		await screen.findByText('loaded');
+
+		const nameInput = await screen.findByRole('textbox', {
+			name: /^name/i,
+		});
+
+		await userEvent.type(nameInput, 'test-file');
+
+		fetch.mockResponseOnce(JSON.stringify({}));
+
+		await userEvent.click(screen.getByRole('button', {name: /^export$/i}));
+
+		await waitFor(() => {
+			const exportCall = fetch.mock.calls.find(([, init]) => {
+				const body = init?.body;
+
+				return (
+					typeof body === 'string' &&
+					body.includes('"requestPortletDataHandlers"')
+				);
+			});
+
+			expect(exportCall).toBeDefined();
+
+			const body = JSON.parse(exportCall![1]!.body as string);
+
+			expect(body.permissions).toBe(false);
+		});
+	});
+
+	it('submits the permissions flag when the checkbox is checked', async () => {
+		renderComponent();
+
+		await screen.findByText('loaded');
+
+		const nameInput = await screen.findByRole('textbox', {
+			name: /^name/i,
+		});
+
+		await userEvent.type(nameInput, 'test-file');
+
+		await userEvent.click(screen.getByLabelText(/^export-permissions/));
+
+		fetch.mockResponseOnce(JSON.stringify({}));
+
+		await userEvent.click(screen.getByRole('button', {name: /^export$/i}));
+
+		await waitFor(() => {
+			const exportCall = fetch.mock.calls.find(([, init]) => {
+				const body = init?.body;
+
+				return (
+					typeof body === 'string' &&
+					body.includes('"requestPortletDataHandlers"')
+				);
+			});
+
+			expect(exportCall).toBeDefined();
+
+			const body = JSON.parse(exportCall![1]!.body as string);
+
+			expect(body.permissions).toBe(true);
+		});
+	});
+
 	it('submits the checked Comments and Ratings entries as request flags', async () => {
 		renderComponent({commentsAndRatingsEnabled: true});
 
