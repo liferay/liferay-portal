@@ -212,10 +212,10 @@ definition {
 			value1 = "No sites were found.");
 	}
 
-	@description = "This test ensures that documents can filter by the current site in the item selector."
+	@description = "This test covers LPS-118808. It ensures that images can be filtered by the current site and that an image in a connected depot folder can be viewed through the everywhere filter."
 	@priority = 5
 	@refactordone
-	test CanFilterByCurrentSite {
+	test FilterImagesByScope {
 		HeadlessSite.addSite(siteName = "Site Name");
 
 		JSONDepot.addDepot(
@@ -236,6 +236,19 @@ definition {
 			mimeType = "image/jpeg",
 			sourceFileName = "Document_2.jpg");
 
+		JSONFolder.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Test Depot Name");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_3.jpg",
+			folderName = "DM Folder Name",
+			groupName = "Test Depot Name",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_3.jpg");
+
 		JSONDepot.connectSite(
 			depotName = "Test Depot Name",
 			groupName = "Site Name");
@@ -249,6 +262,11 @@ definition {
 			navTab = "Documents and Media",
 			noImageFileName = "Document_1.jpg",
 			viewNoLocationInfo = "Site Name");
+
+		ItemSelector.viewEverywhereFilterResults(
+			dmFolderName = "DM Folder Name",
+			imageFileName = "Document_3.jpg",
+			navTab = "Documents and Media");
 	}
 
 	@description = "This ensures that a message is displayed in the preview section of the item selector when pasting an invalid URL."
@@ -679,43 +697,6 @@ definition {
 				navTab = "Documents and Media",
 				titleList = "Document_1.jpg,Document_2.jpg,DM Folder Name");
 		}
-	}
-
-	@description = "This test covers LPS-118808. It ensures that an image in the depot folder can be viewed through everywhere filter on a connected site."
-	@priority = 4
-	@refactordone
-	test CanViewFolderImageViaFilterResults {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			folderName = "DM Folder Name",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.viewEverywhereFilterResults(
-			dmFolderName = "DM Folder Name",
-			imageFileName = "Document_2.jpg",
-			navTab = "Documents and Media");
 	}
 
 	@description = "This ensures that the video thumbnails can be viewed in Item Selector."
