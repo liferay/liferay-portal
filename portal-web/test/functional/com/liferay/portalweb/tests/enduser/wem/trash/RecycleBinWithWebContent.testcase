@@ -462,49 +462,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-146835. The user cannot see the alert popup when delete a web content if the recycle bin is enabled and can undo move to recycle bin action."
-	@priority = 5
-	test UndoMoveToRecycleBin {
-		property portal.acceptance = "true";
-
-		task ("Given a site designer has a web conent and the recycle bin is enabled") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("When the site designer delete the web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEntryMenuItem(
-				entry = "Web Content Title",
-				menuItem = "Delete");
-		}
-
-		task ("Then the site designer cannot view the alert popup") {
-			AssertElementNotPresent(locator1 = "Modal#BODY");
-
-			AssertElementNotPresent(
-				key_webContentTitle = "Web Content Title",
-				locator1 = "WC#ENTRY_LIST_TITLE");
-
-			Alert.viewSuccessMessageText(successMessage = "The element Web Content Title was moved to the Recycle Bin.");
-		}
-
-		task ("When the site designer undo the action") {
-			RecycleBin.undoMoveToRecycleBin();
-		}
-
-		task ("Then the site designer could see the web content is recovered from recycle bin") {
-			WebContent.viewTitle(webContentTitle = "Web Content Title");
-
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewDefaultCP(assetName = "Web Content Title");
-		}
-	}
-
 	@description = "Can have 2 duplicate asset names in recycle bin."
 	@priority = 3
 	test ViewDuplicateNamesInRecycleBin {
@@ -582,31 +539,6 @@ definition {
 			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
 
 			RecycleBin.viewDuplicateNames(assetName = "WC Folder Name");
-		}
-	}
-
-	@description = "Can click success link to view the web content moved to recycle bin."
-	@priority = 3
-	test ViewRecycleBinEntryViaSuccessMessageLink {
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Move web content to recycle bin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinCP(
-				assetType = "Web Content Article",
-				webContentTitle = "WC WebContent Title");
-		}
-
-		task ("View web content via success message link") {
-			RecycleBin.gotoEntryViaSuccessMessage(assetName = "WC WebContent Title");
-
-			RecycleBin.viewEntry(assetName = "WC WebContent Title");
 		}
 	}
 

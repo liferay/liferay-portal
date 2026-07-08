@@ -29,13 +29,28 @@ export class WebContentPage {
 		);
 	}
 
-	async moveToRecycleBin(title: string) {
+	async gotoRecycleBinEntryViaSuccessMessage() {
+		await this.page
+			.locator('[id$="recycleBinAlert"]')
+			.getByRole('link', {name: 'Recycle Bin'})
+			.click();
+	}
+
+	async moveToRecycleBin(title: string, {autoClose = true} = {}) {
 		await this._openRowAction(title, 'Delete');
 
 		await waitForAlert(
 			this.page,
-			`The element ${title} was moved to the Recycle Bin.`
+			`The element ${title} was moved to the Recycle Bin.`,
+			{autoClose}
 		);
+	}
+
+	async undoMoveToRecycleBin() {
+		await this.page
+			.locator('[id$="recycleBinAlert"]')
+			.getByRole('button', {name: 'Undo'})
+			.click();
 	}
 
 	_row(title: string): Locator {

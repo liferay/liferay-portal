@@ -187,3 +187,60 @@ test('Can restore a web content from the recycle bin', async ({
 
 	await webContentPage.assertEntryPresent(title);
 });
+
+test(
+	'Can undo moving a web content to the recycle bin',
+	{tag: '@LPS-146835'},
+	async ({apiHelpers, page, site}) => {
+		const title = getRandomString();
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+			datePublished: null,
+			siteId: site.id,
+			title,
+		});
+
+		const recycleBinPage = new RecycleBinPage(page);
+		const webContentPage = new WebContentPage(page);
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveToRecycleBin(title, {autoClose: false});
+
+		await webContentPage.undoMoveToRecycleBin();
+
+		// The web content is recovered and not in the recycle bin
+
+		await webContentPage.assertEntryPresent(title);
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.assertEntryAbsent(title);
+	}
+);
+
+test('Can view a recycle bin entry via the success message link', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const title = getRandomString();
+
+	await apiHelpers.headlessDelivery.postStructuredContent({
+		contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+		datePublished: null,
+		siteId: site.id,
+		title,
+	});
+
+	const webContentPage = new WebContentPage(page);
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.moveToRecycleBin(title, {autoClose: false});
+
+	await webContentPage.gotoRecycleBinEntryViaSuccessMessage();
+
+	await expect(page.getByText(title).first()).toBeVisible();
+});
