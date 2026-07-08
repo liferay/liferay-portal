@@ -29,8 +29,6 @@ public class FieldQueryBuilderFactoryImplTest {
 
 	@Before
 	public void setUp() {
-		_fieldQueryBuilderFactoryImpl = new FieldQueryBuilderFactoryImpl();
-
 		_fieldQueryBuilderFactoryImpl.descriptionFieldQueryBuilder =
 			_descriptionFieldQueryBuilder;
 		_fieldQueryBuilderFactoryImpl.queryPreProcessConfiguration =
@@ -49,17 +47,19 @@ public class FieldQueryBuilderFactoryImplTest {
 	}
 
 	@Test
-	public void testGetQueryBuilderDescriptionFields() {
+	public void testGetQueryBuilder() {
+
+		// Description fields
+
 		Assert.assertSame(
 			_descriptionFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("content"));
 		Assert.assertSame(
 			_descriptionFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("description"));
-	}
 
-	@Test
-	public void testGetQueryBuilderObjectEntryTitleFields() {
+		// Object entry title fields
+
 		Assert.assertSame(
 			_titleFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("objectEntryTitle"));
@@ -67,10 +67,9 @@ public class FieldQueryBuilderFactoryImplTest {
 			_titleFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder(
 				"objectEntryTitle_en_US"));
-	}
 
-	@Test
-	public void testGetQueryBuilderSubstringField() {
+		// Substring field
+
 		Mockito.when(
 			_queryPreProcessConfiguration.isSubstringSearchAlways("extension")
 		).thenReturn(
@@ -80,27 +79,26 @@ public class FieldQueryBuilderFactoryImplTest {
 		Assert.assertSame(
 			_substringFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("extension"));
-	}
 
-	@Test
-	public void testGetQueryBuilderTitleFields() {
+		// Title fields
+
 		Assert.assertSame(
 			_titleFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("name"));
 		Assert.assertSame(
 			_titleFieldQueryBuilder,
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("title"));
-	}
 
-	@Test
-	public void testGetQueryBuilderUnmappedField() {
+		// Unmapped field
+
 		Assert.assertNull(
 			_fieldQueryBuilderFactoryImpl.getQueryBuilder("objectEntryId"));
 	}
 
 	private final FieldQueryBuilder _descriptionFieldQueryBuilder =
 		Mockito.mock(FieldQueryBuilder.class);
-	private FieldQueryBuilderFactoryImpl _fieldQueryBuilderFactoryImpl;
+	private final FieldQueryBuilderFactoryImpl _fieldQueryBuilderFactoryImpl =
+		new FieldQueryBuilderFactoryImpl();
 	private final QueryPreProcessConfiguration _queryPreProcessConfiguration =
 		Mockito.mock(QueryPreProcessConfiguration.class);
 	private final FieldQueryBuilder _substringFieldQueryBuilder = Mockito.mock(
