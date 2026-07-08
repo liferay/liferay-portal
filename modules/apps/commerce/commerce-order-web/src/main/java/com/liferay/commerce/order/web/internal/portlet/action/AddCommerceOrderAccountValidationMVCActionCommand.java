@@ -115,7 +115,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 				continue;
 			}
 
-			Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+			Class<? extends AccountEntryValidator> clazz =
 				accountEntryValidator.getClass();
 
 			_objectEntryLocalService.addObjectEntry(
@@ -125,7 +125,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
 				HashMapBuilder.<String, Serializable>put(
-					"className", accountEntryValidatorClass.getName()
+					"className", clazz.getName()
 				).put(
 					"classPK",
 					accountEntryValidator.getClassPK(accountEntry, jsonObject)

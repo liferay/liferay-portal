@@ -223,10 +223,10 @@ public class AccountEntryValidatorRegistryImplTest {
 			serviceWrappers
 		);
 
-		Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+		Class<? extends AccountEntryValidator> clazz =
 			accountEntryValidator.getClass();
 
-		String className = accountEntryValidatorClass.getName();
+		String className = clazz.getName();
 
 		accountEntryValidatorResultsMap =
 			_accountEntryValidatorRegistryImpl.

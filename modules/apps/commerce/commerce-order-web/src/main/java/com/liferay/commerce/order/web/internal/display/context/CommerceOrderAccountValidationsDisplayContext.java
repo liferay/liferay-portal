@@ -85,13 +85,12 @@ public class CommerceOrderAccountValidationsDisplayContext {
 				continue;
 			}
 
-			Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+			Class<? extends AccountEntryValidator> clazz =
 				accountEntryValidator.getClass();
 
 			validatorClauses.add(
 				StringBundler.concat(
-					"((className eq '", accountEntryValidatorClass.getName(),
-					"') and (classPK eq '",
+					"((className eq '", clazz.getName(), "') and (classPK eq '",
 					accountEntryValidator.getClassPK(
 						accountEntry, _getJSONObject()),
 					"'))"));

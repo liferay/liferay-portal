@@ -113,10 +113,10 @@ public class AccountEntryValidatorRegistryImpl
 				continue;
 			}
 
-			Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+			Class<? extends AccountEntryValidator> clazz =
 				accountEntryValidator.getClass();
 
-			String className = accountEntryValidatorClass.getName();
+			String className = clazz.getName();
 
 			String classPK = accountEntryValidator.getClassPK(
 				accountEntry, jsonObject);
