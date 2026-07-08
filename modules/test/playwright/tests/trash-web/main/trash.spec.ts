@@ -6,14 +6,23 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
+import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 
-const test = mergeTests(dataApiHelpersTest, blogsPagesTest, loginTest());
+const test = mergeTests(
+	dataApiHelpersTest,
+	isolatedSiteTest,
+	blogsPagesTest,
+	loginTest()
+);
 
 test(
 	'Cannot view trash entry from another site in current site recycle bin',
@@ -104,3 +113,77 @@ test(
 		});
 	}
 );
+
+test('Can permanently delete a web content in the recycle bin', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const title = getRandomString();
+
+	await apiHelpers.headlessDelivery.postStructuredContent({
+		contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+		datePublished: null,
+		siteId: site.id,
+		title,
+	});
+
+	const recycleBinPage = new RecycleBinPage(page);
+	const webContentPage = new WebContentPage(page);
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.moveToRecycleBin(title);
+
+	// Permanently delete the entry from the recycle bin
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.assertEntry(title, 'Web Content Article');
+
+	await recycleBinPage.delete(title);
+
+	await recycleBinPage.assertEntryAbsent(title);
+
+	// The web content no longer exists in the web content admin either
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.assertEntryAbsent(title);
+});
+
+test('Can restore a web content from the recycle bin', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const title = getRandomString();
+
+	await apiHelpers.headlessDelivery.postStructuredContent({
+		contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+		datePublished: null,
+		siteId: site.id,
+		title,
+	});
+
+	const recycleBinPage = new RecycleBinPage(page);
+	const webContentPage = new WebContentPage(page);
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.moveToRecycleBin(title);
+
+	// Restore the entry from the recycle bin
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	await recycleBinPage.restore(title);
+
+	await recycleBinPage.assertEntryAbsent(title);
+
+	// The web content is back in the web content admin
+
+	await webContentPage.goto(site.friendlyUrlPath);
+
+	await webContentPage.assertEntryPresent(title);
+});

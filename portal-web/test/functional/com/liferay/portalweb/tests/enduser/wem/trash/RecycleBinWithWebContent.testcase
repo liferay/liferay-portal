@@ -25,44 +25,6 @@ definition {
 		}
 	}
 
-	@description = "Delete web content in recycle bin."
-	@priority = 4
-	test DeleteWebcontent {
-		task ("Add a web content and move it to recycle bin") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinCP(
-				assetType = "Web Content Article",
-				webContentContent = "WC WebContent Content",
-				webContentTitle = "WC WebContent Title");
-		}
-
-		task ("Go to recycle bin and delete it") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.deleteCP(
-				assetName = "WC WebContent Title",
-				assetType = "Web Content Article");
-		}
-
-		task ("Assert asset is not existed in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.viewDefaultCP(assetName = "WC WebContent Title");
-		}
-
-		task ("Assert asset is not existed in web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewDefaultCP(webContentTitle = "WC WebContent Title");
-		}
-	}
-
 	@description = "Disable recycle bin and assert could not go to recycle bin after deleting."
 	@priority = 3
 	test DisableRecycleBin {
@@ -328,51 +290,6 @@ definition {
 				assetName = "WC WebContent Title",
 				assetType = "Web Content Article",
 				deleteUser = "Test Test");
-		}
-	}
-
-	@description = "Can restore a basic web content in recycle bin."
-	@priority = 5
-	test RestoreWebcontent {
-		property portal.acceptance = "true";
-
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Move web content to recycle bin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.moveToRecycleBinCP(
-				assetType = "Web Content Article",
-				webContentContent = "WC WebContent Content",
-				webContentTitle = "WC WebContent Title");
-		}
-
-		task ("Restore asset in recycle bin") {
-			RecycleBin.openRecycleBinAdmin(siteURLKey = "test-site-name");
-
-			RecycleBin.restoreCP(
-				assetName = "WC WebContent Title",
-				assetRestoreLocation = "Home",
-				assetType = "Web Content Article");
-		}
-
-		task ("Assert asset does not exist in recycle bin and exists in web content") {
-			RecycleBin.viewDefaultCP(assetName = "WC WebContent Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewTitle(webContentTitle = "WC WebContent Title");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
-
-			WebContent.viewCP(
-				webContentContent = "WC WebContent Content",
-				webContentTitle = "WC WebContent Title");
 		}
 	}
 
