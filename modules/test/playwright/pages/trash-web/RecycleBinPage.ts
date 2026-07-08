@@ -7,6 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class RecycleBinPage {
 	readonly page: Page;
@@ -39,6 +40,11 @@ export class RecycleBinPage {
 		}
 
 		await this.page.getByRole('button', {name: 'Restore'}).click();
+
+		// Wait for the restore to complete before returning, otherwise a
+		// following navigation aborts the in-flight request
+
+		await waitForAlert(this.page, 'was restored');
 	}
 
 	async delete(assetName: string) {
