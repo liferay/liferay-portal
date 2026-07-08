@@ -732,3 +732,49 @@ test(
 		await blogsPage.assertEntryPresent(headlines[0], false);
 	}
 );
+
+test('Can search for documents from a deleted folder in the recycle bin', async ({
+	apiHelpers,
+	page,
+	site,
+}) => {
+	const folderName = getRandomString();
+	const documentTitles = [
+		`Document ${getRandomString()}`,
+		`Document ${getRandomString()}`,
+	];
+
+	const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+		site.id,
+		{name: folderName}
+	);
+
+	for (const title of documentTitles) {
+		await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+			folder.id,
+			createReadStream(
+				createSizedFile(`${getRandomString()}.png`, 'png', 1024)
+			),
+			{fileName: `${getRandomString()}.png`, title}
+		);
+	}
+
+	const documentLibraryPage = new DocumentLibraryPage(page);
+	const recycleBinPage = new RecycleBinPage(page);
+
+	// Move the folder, with its documents, to the recycle bin
+
+	await documentLibraryPage.goto(site.friendlyUrlPath);
+
+	await documentLibraryPage.moveFolderToRecycleBin(folderName);
+
+	// Each document inside the deleted folder is found by searching for it
+
+	await recycleBinPage.goto(site.friendlyUrlPath);
+
+	for (const title of documentTitles) {
+		await recycleBinPage.search(title);
+
+		await recycleBinPage.assertEntry(title, 'Document');
+	}
+});
