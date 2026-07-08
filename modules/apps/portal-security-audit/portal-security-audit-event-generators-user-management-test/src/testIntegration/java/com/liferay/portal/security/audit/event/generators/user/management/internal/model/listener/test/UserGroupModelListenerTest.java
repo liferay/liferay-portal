@@ -101,21 +101,10 @@ public class UserGroupModelListenerTest {
 				_userGroup.getUserGroupId(), new long[] {_user.getUserId()});
 		}
 
-		AuditMessage assignAuditMessage = null;
+		AuditMessage auditMessage = _fetchAuditMessage(
+			User.class.getName(), EventTypes.ASSIGN);
 
-		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.ASSIGN.equals(auditMessage.getEventType()) &&
-				Objects.equals(
-					User.class.getName(), auditMessage.getClassName())) {
-
-				assignAuditMessage = auditMessage;
-
-				break;
-			}
-		}
-
-		Assert.assertEquals(
-			_user.getCompanyId(), assignAuditMessage.getCompanyId());
+		Assert.assertEquals(_user.getCompanyId(), auditMessage.getCompanyId());
 	}
 
 	@Test
@@ -135,21 +124,25 @@ public class UserGroupModelListenerTest {
 			_userGroup = _userGroupLocalService.updateUserGroup(_userGroup);
 		}
 
-		AuditMessage updateAuditMessage = null;
+		AuditMessage auditMessage = _fetchAuditMessage(
+			UserGroup.class.getName(), EventTypes.UPDATE);
+
+		Assert.assertEquals(
+			_userGroup.getCompanyId(), auditMessage.getCompanyId());
+	}
+
+	private AuditMessage _fetchAuditMessage(
+		String className, String eventType) {
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.UPDATE.equals(auditMessage.getEventType()) &&
-				Objects.equals(
-					UserGroup.class.getName(), auditMessage.getClassName())) {
+			if (Objects.equals(auditMessage.getClassName(), className) &&
+				Objects.equals(auditMessage.getEventType(), eventType)) {
 
-				updateAuditMessage = auditMessage;
-
-				break;
+				return auditMessage;
 			}
 		}
 
-		Assert.assertEquals(
-			_userGroup.getCompanyId(), updateAuditMessage.getCompanyId());
+		return null;
 	}
 
 	private List<AuditMessage> _auditMessages;

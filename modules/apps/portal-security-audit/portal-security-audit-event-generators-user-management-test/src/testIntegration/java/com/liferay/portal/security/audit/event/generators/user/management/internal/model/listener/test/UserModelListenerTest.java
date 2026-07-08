@@ -100,10 +100,11 @@ public class UserModelListenerTest {
 		AuditMessage agreedToTermsOfUseAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.AGREED_TO_TERMS_OF_USE.equals(
-					auditMessage.getEventType()) &&
+			if (Objects.equals(
+					auditMessage.getClassName(), User.class.getName()) &&
 				Objects.equals(
-					User.class.getName(), auditMessage.getClassName())) {
+					auditMessage.getEventType(),
+					EventTypes.AGREED_TO_TERMS_OF_USE)) {
 
 				agreedToTermsOfUseAuditMessage = auditMessage;
 

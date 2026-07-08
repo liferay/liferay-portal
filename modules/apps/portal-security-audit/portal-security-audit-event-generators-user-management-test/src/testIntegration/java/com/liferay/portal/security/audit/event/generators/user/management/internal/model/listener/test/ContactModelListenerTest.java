@@ -102,9 +102,10 @@ public class ContactModelListenerTest {
 		AuditMessage updateAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.UPDATE.equals(auditMessage.getEventType()) &&
+			if (Objects.equals(
+					auditMessage.getClassName(), User.class.getName()) &&
 				Objects.equals(
-					User.class.getName(), auditMessage.getClassName())) {
+					auditMessage.getEventType(), EventTypes.UPDATE)) {
 
 				updateAuditMessage = auditMessage;
 

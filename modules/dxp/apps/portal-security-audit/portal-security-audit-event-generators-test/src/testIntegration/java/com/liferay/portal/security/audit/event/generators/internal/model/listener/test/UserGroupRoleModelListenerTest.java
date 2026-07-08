@@ -108,9 +108,10 @@ public class UserGroupRoleModelListenerTest {
 		AuditMessage assignAuditMessage = null;
 
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (EventTypes.ASSIGN.equals(auditMessage.getEventType()) &&
+			if (Objects.equals(
+					auditMessage.getClassName(), User.class.getName()) &&
 				Objects.equals(
-					User.class.getName(), auditMessage.getClassName())) {
+					auditMessage.getEventType(), EventTypes.ASSIGN)) {
 
 				assignAuditMessage = auditMessage;
 
