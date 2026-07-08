@@ -8,6 +8,7 @@
 		"@clayui/modal": "^3.163.0",
 		"@clayui/tabs": "^3.163.0",
 		"@liferay/frontend-data-set-web": "*",
+		"formik": "2.1.4",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"

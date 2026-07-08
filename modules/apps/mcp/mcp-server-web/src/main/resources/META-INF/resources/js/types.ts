@@ -31,6 +31,14 @@ export type DataMaskPayload = {
 	replacementValue: string;
 };
 
+export type DataMaskFormValues = {
+	description: string;
+	detectionRegex: string;
+	name: string;
+	replacementRegex: string;
+	replacementValue: string;
+};
+
 export type ActionContext = {
 	itemData: DataMask;
 	loadData: () => void;

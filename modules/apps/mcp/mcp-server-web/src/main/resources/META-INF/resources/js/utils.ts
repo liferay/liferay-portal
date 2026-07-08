@@ -8,3 +8,9 @@ import {DataMask} from './types';
 export function isSystemMask(dataMask: DataMask | null): boolean {
 	return dataMask?.maskType?.key === 'system';
 }
+
+export function required(value: string): string | undefined {
+	return value?.trim()
+		? undefined
+		: Liferay.Language.get('this-field-is-required');
+}
