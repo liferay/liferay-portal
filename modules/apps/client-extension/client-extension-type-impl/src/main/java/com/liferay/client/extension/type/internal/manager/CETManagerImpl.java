@@ -266,7 +266,6 @@ public class CETManagerImpl implements CETManager {
 		return cetsMap;
 	}
 
-	@SuppressWarnings("unchecked")
 	private PortalCache<Long, Object> _getPortalCache() throws Exception {
 		ImplementationClassName implementationClassName =
 			ClientExtensionEntry.class.getAnnotation(
