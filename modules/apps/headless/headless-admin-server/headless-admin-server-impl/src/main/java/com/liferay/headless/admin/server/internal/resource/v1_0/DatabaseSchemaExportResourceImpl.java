@@ -12,13 +12,12 @@ import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExportRe
 import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExporter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotAuthorizedException;
-import jakarta.ws.rs.core.Response;
 
 import java.io.IOException;
 
@@ -85,12 +84,12 @@ public class DatabaseSchemaExportResourceImpl
 		return resultDatabaseSchemaExport;
 	}
 
-	private void _checkPermission() {
+	private void _checkPermission() throws Exception {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		if (!permissionChecker.isOmniadmin()) {
-			throw new NotAuthorizedException(Response.Status.UNAUTHORIZED);
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
 		}
 	}
 

@@ -19,6 +19,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
@@ -31,7 +32,6 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import jakarta.validation.ValidationException;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.Response;
@@ -215,14 +215,14 @@ public class InstanceConfigurationResourceImpl
 		}
 	}
 
-	private void _checkPermission() {
+	private void _checkPermission() throws Exception {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		if (!permissionChecker.isCompanyAdmin() &&
 			!permissionChecker.isOmniadmin()) {
 
-			throw new NotAuthorizedException(Response.Status.UNAUTHORIZED);
+			throw new PrincipalException.MustBeCompanyAdmin(permissionChecker);
 		}
 	}
 
