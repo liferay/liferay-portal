@@ -156,14 +156,13 @@ public class ElementVariationsProviderImpl
 				_getLocalizedValuesJSONObject(
 					layoutPageTemplateStructureRelElementVariation.getHtmlMap())
 			).put(
-				"js", _ELEMENT_VARIATION_JS_PLACEHOLDER
+				"js", "[$ELEMENT_VARIATION_JS$]"
 			).put(
 				"targetElement",
 				layoutPageTemplateStructureRelElementVariation.
 					getTargetElement()
 			).toString(),
-			StringPool.QUOTE + _ELEMENT_VARIATION_JS_PLACEHOLDER +
-				StringPool.QUOTE,
+			"\"[$ELEMENT_VARIATION_JS$]\"",
 			_getJSFunctions(layoutPageTemplateStructureRelElementVariation));
 	}
 
@@ -236,9 +235,6 @@ public class ElementVariationsProviderImpl
 					"AudiencesEntry", "createDate", true)),
 			AudiencesEntry::getExternalReferenceCode);
 	}
-
-	private static final String _ELEMENT_VARIATION_JS_PLACEHOLDER =
-		"[$ELEMENT_VARIATION_JS$]";
 
 	@Reference
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
