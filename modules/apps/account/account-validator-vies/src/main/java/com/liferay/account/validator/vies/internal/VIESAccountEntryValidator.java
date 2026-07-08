@@ -48,13 +48,13 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 	@Override
 	public AccountEntryValidatorResult doValidate(
-		AccountEntry accountEntry, JSONObject jsonObject)
+			AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException {
 
 		VIESAccountEntryValidatorConfiguration
 			viesAccountEntryValidatorConfiguration =
-			_getVIESAccountEntryValidatorConfiguration(
-				accountEntry, jsonObject);
+				_getVIESAccountEntryValidatorConfiguration(
+					accountEntry, jsonObject);
 
 		if (viesAccountEntryValidatorConfiguration == null) {
 			return null;

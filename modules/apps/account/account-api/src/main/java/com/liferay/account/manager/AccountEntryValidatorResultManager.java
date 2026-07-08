@@ -23,7 +23,7 @@ public interface AccountEntryValidatorResultManager {
 	 * Persists the validation result as a new
 	 * {@code L_ACCOUNT_VALIDATOR_RESULT} object entry related to the account
 	 * entry. The {@code classPK} is taken from
-	 * {@link AccountEntryValidatorResult#getKey()}. No-op when the object
+	 * {@link AccountEntryValidatorResult#getClassPK()}. No-op when the object
 	 * definition is absent.
 	 */
 	public void addAccountEntryValidatorResult(
