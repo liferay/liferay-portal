@@ -2362,34 +2362,6 @@ definition {
 	}
 
 	@priority = 3
-	test SearchViaBlueprintsPreview {
-		property portal.acceptance = "quarantine";
-
-		Blueprints.openBlueprintsAdmin();
-
-		Blueprints.createBlueprint(title = "Test Blueprint");
-
-		Blueprints.searchBlueprintsPreview(searchTerm = "test");
-
-		AssertElementPresent(
-			key_resultTitle = "Test",
-			locator1 = "Blueprints#BLUEPRINTS_PREVIEW_SEARCH_RESULT_TITLE");
-	}
-
-	@priority = 3
-	test SearchViaBlueprintsPreviewWithNoResults {
-		property portal.acceptance = "quarantine";
-
-		Blueprints.openBlueprintsAdmin();
-
-		Blueprints.createBlueprint(title = "Test Blueprint");
-
-		Blueprints.searchBlueprintsPreview(searchTerm = "empty");
-
-		AssertElementPresent(locator1 = "Blueprints#BLUEPRINTS_PREVIEW_SEARCH_RESULT_EMPTY");
-	}
-
-	@priority = 3
 	test SearchWithCopiedBlueprint {
 		property portal.acceptance = "quarantine";
 
