@@ -4,15 +4,12 @@
  */
 
 import {EVENT_TYPES} from '../../../../src/main/resources/META-INF/resources/js/core/actions/eventTypes.es';
-import reducer from '../../../../src/main/resources/META-INF/resources/js/core/reducers/pageValidationReducer.es';
+import pageValidationReducer from '../../../../src/main/resources/META-INF/resources/js/core/reducers/pageValidationReducer.es';
 
-const createAction = (fields) => ({
-	payload: {
-		newPages: [{rows: [{columns: [{fields}]}]}],
-		pageIndex: 0,
-	},
+const action = {
+	payload: {pageIndex: 0},
 	type: EVENT_TYPES.PAGE.VALIDATION_FAILED,
-});
+};
 
 const createField = (name, type) => ({
 	errorMessage: 'This field is required.',
@@ -20,6 +17,10 @@ const createField = (name, type) => ({
 	name,
 	type,
 	valid: false,
+});
+
+const createState = (fields) => ({
+	pages: [{rows: [{columns: [{fields}]}]}],
 });
 
 describe('page validation failed', () => {
@@ -40,7 +41,9 @@ describe('page validation failed', () => {
 
 		input.focus = jest.fn();
 
-		reducer({}, createAction([createField('textField', 'text')]));
+		const state = createState([createField('textField', 'text')]);
+
+		pageValidationReducer(state, action);
 
 		expect(input.focus).toHaveBeenCalled();
 	});
@@ -62,7 +65,9 @@ describe('page validation failed', () => {
 
 		wrapper.scrollIntoView = jest.fn();
 
-		reducer({}, createAction([createField('richTextField', 'rich_text')]));
+		const state = createState([createField('richTextField', 'rich_text')]);
+
+		pageValidationReducer(state, action);
 
 		expect(wrapper.scrollIntoView).toHaveBeenCalledWith({
 			behavior: 'smooth',
@@ -87,7 +92,9 @@ describe('page validation failed', () => {
 		editable.focus = jest.fn();
 		wrapper.scrollIntoView = jest.fn();
 
-		reducer({}, createAction([createField('richTextField', 'rich_text')]));
+		const state = createState([createField('richTextField', 'rich_text')]);
+
+		pageValidationReducer(state, action);
 
 		expect(wrapper.scrollIntoView).toHaveBeenCalledWith({
 			behavior: 'smooth',
@@ -106,7 +113,9 @@ describe('page validation failed', () => {
 
 		parentElement.scrollIntoView = jest.fn();
 
-		reducer({}, createAction([createField('hiddenField', 'text')]));
+		const state = createState([createField('hiddenField', 'text')]);
+
+		pageValidationReducer(state, action);
 
 		expect(parentElement.scrollIntoView).toHaveBeenCalled();
 	});
