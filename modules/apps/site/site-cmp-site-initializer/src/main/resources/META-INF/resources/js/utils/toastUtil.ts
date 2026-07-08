@@ -67,6 +67,16 @@ const displayDeleteSuccessToast = (title: string) => {
 	});
 };
 
+const displayDueDateSuccessToast = (title: string) => {
+	openToast({
+		message: sub(
+			Liferay.Language.get('x-due-date-was-successfully-updated'),
+			getFormattedLabel(title)
+		),
+		type: 'success',
+	});
+};
+
 const displayErrorToast = (errorMessage?: string) => {
 	openToast({
 		message:
@@ -89,6 +99,7 @@ export {
 	displayBulkAssignSuccessToast,
 	displayBulkDueDateSuccessToast,
 	displayDeleteSuccessToast,
+	displayDueDateSuccessToast,
 	displayErrorToast,
 	displayStateSuccessToast,
 };
