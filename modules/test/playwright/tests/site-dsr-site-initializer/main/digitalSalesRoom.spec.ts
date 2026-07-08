@@ -124,7 +124,7 @@ test(
 
 test(
 	'Update a digital sales room name, ERC and friendly URL from settings',
-	{tag: '@LPD-94454'},
+	{tag: ['@LPD-94454', '@LPD-97477']},
 	async ({
 		apiHelpers,
 		digitalSalesRoomSettingsPage,
@@ -162,6 +162,13 @@ test(
 		);
 
 		await expect(digitalSalesRoomSettingsPage.nameInput).toBeVisible();
+
+		await expect(
+			digitalSalesRoomSettingsPage.externalReferenceCodeInput
+		).toHaveAttribute('required');
+		await expect(
+			digitalSalesRoomSettingsPage.friendlyURLInput
+		).toHaveAttribute('required');
 
 		await digitalSalesRoomSettingsPage.updateRoomSettings({
 			externalReferenceCode: updatedExternalReferenceCode,
