@@ -22,13 +22,13 @@ public class MonitorConfigLoaderTest
 	public void testGetMonitorConfigs() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[masters].type", "http-endpoint");
-		buildProperties.setProperty("monitor[masters].severity", "high");
 		buildProperties.setProperty("monitor[masters].cadence", "900");
 		buildProperties.setProperty(
 			"monitor[masters].parameter[target]",
 			"https://test-1-0.liferay.com/computer/api/json");
+		buildProperties.setProperty("monitor[masters].severity", "high");
 		buildProperties.setProperty("monitor[masters].threshold[disk]", "85");
+		buildProperties.setProperty("monitor[masters].type", "http-endpoint");
 
 		List<MonitorConfig> monitorConfigs =
 			MonitorConfigLoader.getMonitorConfigs(buildProperties);
@@ -55,43 +55,36 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsInvalidCadenceFailsLoud() {
+	public void testGetMonitorConfigsFailsLoud() {
+
+		// Invalid cadence
+
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 		buildProperties.setProperty("monitor[a].cadence", "not-a-number");
-
-		try {
-			MonitorConfigLoader.getMonitorConfigs(buildProperties);
-
-			Assert.fail("Expected IllegalArgumentException");
-		}
-		catch (IllegalArgumentException illegalArgumentException) {
-		}
-	}
-
-	@Test
-	public void testGetMonitorConfigsInvalidSeverityFailsLoud() {
-		Properties buildProperties = new Properties();
-
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
+
+		_testGetMonitorConfigsFailsLoud(buildProperties);
+
+		// Invalid severity
+
+		buildProperties = new Properties();
+
 		buildProperties.setProperty("monitor[a].severity", "bogus");
+		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
-		try {
-			MonitorConfigLoader.getMonitorConfigs(buildProperties);
+		_testGetMonitorConfigsFailsLoud(buildProperties);
 
-			Assert.fail("Expected IllegalArgumentException");
-		}
-		catch (IllegalArgumentException illegalArgumentException) {
-		}
-	}
+		// Missing type
 
-	@Test
-	public void testGetMonitorConfigsMissingTypeFailsLoud() {
-		Properties buildProperties = new Properties();
+		buildProperties = new Properties();
 
 		buildProperties.setProperty("monitor[a].severity", "high");
 
+		_testGetMonitorConfigsFailsLoud(buildProperties);
+	}
+
+	private void _testGetMonitorConfigsFailsLoud(Properties buildProperties) {
 		try {
 			MonitorConfigLoader.getMonitorConfigs(buildProperties);
 
