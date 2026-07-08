@@ -4,6 +4,7 @@
  */
 
 export const config = {
+	dependencies: ['site-cms-site.main'],
 	name: 'e2e-cms-dxp.main',
 	testDir: 'tests/e2e-cms-dxp/main',
 };
