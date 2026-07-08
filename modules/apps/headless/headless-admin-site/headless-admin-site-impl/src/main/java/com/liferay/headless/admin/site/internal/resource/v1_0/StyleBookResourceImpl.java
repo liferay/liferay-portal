@@ -78,10 +78,9 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
-		_getDesignLibraryGroupId(designLibraryExternalReferenceCode);
-
 		StyleBookEntry styleBookEntry = _getStyleBookEntry(
-			designLibraryExternalReferenceCode, styleBookExternalReferenceCode);
+			_getDesignLibraryGroupId(designLibraryExternalReferenceCode),
+			styleBookExternalReferenceCode);
 
 		_styleBookEntryService.deleteStyleBookEntry(
 			styleBookEntry.getStyleBookEntryId());
@@ -110,11 +109,9 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
-		_getDesignLibraryGroupId(designLibraryExternalReferenceCode);
-
 		return _toStyleBook(
 			_getStyleBookEntry(
-				designLibraryExternalReferenceCode,
+				_getDesignLibraryGroupId(designLibraryExternalReferenceCode),
 				styleBookExternalReferenceCode));
 	}
 
@@ -127,14 +124,14 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
+		List<StyleBookEntry> styleBookEntries = null;
+		long totalCount = 0L;
+
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);
 
 		OrderByComparator<StyleBookEntry> orderByComparator =
 			_getStyleBookEntryOrderByComparator(sorts);
-
-		List<StyleBookEntry> styleBookEntries = null;
-		long totalCount = 0L;
 
 		if (Validator.isNull(search)) {
 			styleBookEntries = _styleBookEntryService.getStyleBookEntries(
@@ -199,6 +196,7 @@ public class StyleBookResourceImpl
 		long totalCount = 0L;
 
 		long groupId = _getGroupId(siteExternalReferenceCode);
+
 		OrderByComparator<StyleBookEntry> orderByComparator =
 			_getStyleBookEntryOrderByComparator(sorts);
 
@@ -242,7 +240,7 @@ public class StyleBookResourceImpl
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
-				styleBook.getDefaultStyleBook(),
+				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
@@ -314,7 +312,7 @@ public class StyleBookResourceImpl
 		return _toStyleBook(
 			_styleBookEntryService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
-				styleBook.getDefaultStyleBook(),
+				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
 				_getPreviewFileEntryId(
@@ -404,8 +402,7 @@ public class StyleBookResourceImpl
 	}
 
 	private long _getDesignLibraryGroupId(
-			String designLibraryExternalReferenceCode)
-		throws Exception {
+		String designLibraryExternalReferenceCode) {
 
 		long groupId = _getGroupId(designLibraryExternalReferenceCode);
 
@@ -465,14 +462,12 @@ public class StyleBookResourceImpl
 	}
 
 	private StyleBookEntry _getStyleBookEntry(
-			String groupExternalReferenceCode,
-			String styleBookExternalReferenceCode)
+			long groupId, String styleBookExternalReferenceCode)
 		throws Exception {
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.fetchStyleBookEntryByExternalReferenceCode(
-				styleBookExternalReferenceCode,
-				_getGroupId(groupExternalReferenceCode));
+				styleBookExternalReferenceCode, groupId);
 
 		if (styleBookEntry == null) {
 			throw new NotFoundException(
@@ -481,6 +476,16 @@ public class StyleBookResourceImpl
 		}
 
 		return styleBookEntry;
+	}
+
+	private StyleBookEntry _getStyleBookEntry(
+			String groupExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception {
+
+		return _getStyleBookEntry(
+			_getGroupId(groupExternalReferenceCode),
+			styleBookExternalReferenceCode);
 	}
 
 	private OrderByComparator<StyleBookEntry>
@@ -538,6 +543,7 @@ public class StyleBookResourceImpl
 	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry) {
 		StyleBook styleBook = new StyleBook();
 
+		styleBook.setActions(() -> _getActions(styleBookEntry));
 		styleBook.setCreator(
 			() -> {
 				User user = _userLocalService.fetchUser(

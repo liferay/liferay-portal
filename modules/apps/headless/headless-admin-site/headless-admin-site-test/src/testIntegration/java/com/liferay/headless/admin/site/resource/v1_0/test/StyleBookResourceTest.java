@@ -101,7 +101,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	protected StyleBook testDeleteDesignLibraryStyleBook_addStyleBook()
 		throws Exception {
 
-		return styleBookResource.postSiteStyleBook(
+		return styleBookResource.postDesignLibraryStyleBook(
 			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
 	}
 
@@ -117,7 +117,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	protected StyleBook testGetDesignLibraryStyleBook_addStyleBook()
 		throws Exception {
 
-		return styleBookResource.postSiteStyleBook(
+		return styleBookResource.postDesignLibraryStyleBook(
 			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
 	}
 
@@ -134,7 +134,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			String designLibraryExternalReferenceCode, StyleBook styleBook)
 		throws Exception {
 
-		return styleBookResource.postSiteStyleBook(
+		return styleBookResource.postDesignLibraryStyleBook(
 			designLibraryExternalReferenceCode, styleBook);
 	}
 
@@ -158,7 +158,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	protected StyleBook testPatchDesignLibraryStyleBook_addStyleBook()
 		throws Exception {
 
-		return styleBookResource.postSiteStyleBook(
+		return styleBookResource.postDesignLibraryStyleBook(
 			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
 	}
 
@@ -183,7 +183,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	protected StyleBook testPutDesignLibraryStyleBook_addStyleBook()
 		throws Exception {
 
-		return styleBookResource.postSiteStyleBook(
+		return styleBookResource.postDesignLibraryStyleBook(
 			_getDesignLibraryExternalReferenceCode(), randomStyleBook());
 	}
 
