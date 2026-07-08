@@ -141,6 +141,77 @@ public interface FriendlyURLEntryLocalizationPersistence
 		long friendlyURLEntryId, String languageId);
 
 	/**
+	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.friendly.url.model.impl.FriendlyURLEntryLocalizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @param start the lower bound of the range of friendly url entry localizations
+	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching friendly url entry localizations
+	 */
+	public java.util.List<FriendlyURLEntryLocalization> findByG_C_U(
+		long groupId, long classNameId, String urlTitle, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<FriendlyURLEntryLocalization> orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first friendly url entry localization in the ordered set where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching friendly url entry localization
+	 * @throws NoSuchFriendlyURLEntryLocalizationException if a matching friendly url entry localization could not be found
+	 */
+	public FriendlyURLEntryLocalization findByG_C_U_First(
+			long groupId, long classNameId, String urlTitle,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FriendlyURLEntryLocalization> orderByComparator)
+		throws NoSuchFriendlyURLEntryLocalizationException;
+
+	/**
+	 * Returns the first friendly url entry localization in the ordered set where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching friendly url entry localization, or <code>null</code> if a matching friendly url entry localization could not be found
+	 */
+	public FriendlyURLEntryLocalization fetchByG_C_U_First(
+		long groupId, long classNameId, String urlTitle,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<FriendlyURLEntryLocalization> orderByComparator);
+
+	/**
+	 * Removes all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 */
+	public void removeByG_C_U(long groupId, long classNameId, String urlTitle);
+
+	/**
+	 * Returns the number of friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @return the number of matching friendly url entry localizations
+	 */
+	public int countByG_C_U(long groupId, long classNameId, String urlTitle);
+
+	/**
 	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and urlTitle = &#63;.
 	 *
 	 * <p>
@@ -717,6 +788,69 @@ public interface FriendlyURLEntryLocalizationPersistence
 	}
 
 	/**
+	 * Returns all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @return the matching friendly url entry localizations
+	 */
+	public default java.util.List<FriendlyURLEntryLocalization> findByG_C_U(
+		long groupId, long classNameId, String urlTitle) {
+
+		return findByG_C_U(
+			groupId, classNameId, urlTitle,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.friendly.url.model.impl.FriendlyURLEntryLocalizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @param start the lower bound of the range of friendly url entry localizations
+	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
+	 * @return the range of matching friendly url entry localizations
+	 */
+	public default java.util.List<FriendlyURLEntryLocalization> findByG_C_U(
+		long groupId, long classNameId, String urlTitle, int start, int end) {
+
+		return findByG_C_U(
+			groupId, classNameId, urlTitle, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.friendly.url.model.impl.FriendlyURLEntryLocalizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param urlTitle the url title
+	 * @param start the lower bound of the range of friendly url entry localizations
+	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching friendly url entry localizations
+	 */
+	public default java.util.List<FriendlyURLEntryLocalization> findByG_C_U(
+		long groupId, long classNameId, String urlTitle, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<FriendlyURLEntryLocalization> orderByComparator) {
+
+		return findByG_C_U(
+			groupId, classNameId, urlTitle, start, end, orderByComparator,
+			true);
+	}
+
+	/**
 	 * Returns all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and urlTitle = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -924,4 +1058,4 @@ public interface FriendlyURLEntryLocalizationPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1155070658
+// LIFERAY-SERVICE-BUILDER-HASH:-979045191

@@ -294,6 +294,13 @@ public class FriendlyURLEntryLocalServiceUtil {
 			groupId, classNameId, parentClassPK, urlTitle);
 	}
 
+	public static FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, long classNameId, String urlTitle) {
+
+		return getService().fetchFriendlyURLEntry(
+			groupId, classNameId, urlTitle);
+	}
+
 	/**
 	 * Returns the friendly url entry matching the UUID and group.
 	 *
@@ -717,4 +724,4 @@ public class FriendlyURLEntryLocalServiceUtil {
 			FriendlyURLEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2066583604
+// LIFERAY-SERVICE-BUILDER-HASH:-1252061885

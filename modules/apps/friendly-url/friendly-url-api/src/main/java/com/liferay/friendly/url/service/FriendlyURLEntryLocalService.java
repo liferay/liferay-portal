@@ -248,6 +248,10 @@ public interface FriendlyURLEntryLocalService
 	public FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, long parentClassPK, String urlTitle);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, long classNameId, String urlTitle);
+
 	/**
 	 * Returns the friendly url entry matching the UUID and group.
 	 *
@@ -521,4 +525,4 @@ public interface FriendlyURLEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1460019721
+// LIFERAY-SERVICE-BUILDER-HASH:-1021384353
