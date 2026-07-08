@@ -129,6 +129,13 @@ const ConnectMarketoCampaignAuth: React.FC<
 				}
 
 				return createMarketoCampaign({
+					channelsConfiguration: {
+						channelIds: [],
+						enableAllChannels: false,
+					},
+					contactsConfiguration: {
+						enableAllLeads: false,
+					},
 					credentials,
 					groupId,
 					name: DataSourceTypes.MarketoCampaign,

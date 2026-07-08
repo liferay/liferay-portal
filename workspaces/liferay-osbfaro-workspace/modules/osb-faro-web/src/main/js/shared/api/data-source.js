@@ -245,6 +245,8 @@ export function createLiferay({
 }
 
 export function createMarketoCampaign({
+	channelsConfiguration,
+	contactsConfiguration,
 	credentials,
 	groupId,
 	name,
@@ -253,6 +255,8 @@ export function createMarketoCampaign({
 }) {
 	const data = pickBy(
 		{
+			channelsConfiguration,
+			contactsConfiguration,
 			credentials,
 			status,
 			url,
@@ -271,6 +275,8 @@ export function createMarketoCampaign({
 }
 
 export function updateMarketoCampaign({
+	channelsConfiguration,
+	contactsConfiguration,
 	credentials,
 	groupId,
 	id,
@@ -280,6 +286,8 @@ export function updateMarketoCampaign({
 }) {
 	const data = pickBy(
 		{
+			channelsConfiguration,
+			contactsConfiguration,
 			credentials,
 			status,
 			url,
