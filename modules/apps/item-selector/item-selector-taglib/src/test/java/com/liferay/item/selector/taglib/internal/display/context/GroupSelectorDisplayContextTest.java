@@ -91,12 +91,11 @@ public class GroupSelectorDisplayContextTest {
 
 	@AfterClass
 	public static void tearDownClass() {
+		_frameworkUtilMockedStatic.close();
 		_groupItemSelectorProviderServiceRegistration.unregister();
 		_itemSelectorServiceRegistration.unregister();
-		_spaceDepotGroupItemSelectorProviderServiceRegistration.unregister();
-
-		_frameworkUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
+		_spaceDepotGroupItemSelectorProviderServiceRegistration.unregister();
 	}
 
 	@After
