@@ -523,6 +523,35 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async postDocumentFolderDocument(
+		documentFolderId: number | string,
+		file: fs.ReadStream,
+		document?: TDocument
+	) {
+		document = {
+			description: getRandomString(),
+			externalReferenceCode: getRandomString(),
+			fileName: getRandomString(),
+			title: getRandomString(),
+			viewableBy: 'Anyone',
+			...(document || {}),
+		};
+
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/document-folders/${documentFolderId}/documents`,
+			{
+				failOnStatusCode: true,
+				headers: {
+					...(await this.apiHelpers.getCSRFTokenHeader()),
+				},
+				multipart: {
+					document: JSON.stringify(document),
+					file,
+				},
+			}
+		);
+	}
+
 	async postDocumentShortcut(
 		siteId: number | string,
 		documentShortcut?: TDocumentShortcut
