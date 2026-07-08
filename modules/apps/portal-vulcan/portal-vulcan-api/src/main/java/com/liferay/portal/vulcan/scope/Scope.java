@@ -320,7 +320,7 @@ public class Scope implements Serializable {
 	}
 
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(22);
 
 		sb.append("{");
 
@@ -331,8 +331,7 @@ public class Scope implements Serializable {
 				sb.append(", ");
 			}
 
-			sb.append("\"externalReferenceCode\": ");
-			sb.append("\"");
+			sb.append("\"externalReferenceCode\": \"");
 			sb.append(_escape(externalReferenceCode));
 			sb.append("\"");
 		}
@@ -344,8 +343,7 @@ public class Scope implements Serializable {
 				sb.append(", ");
 			}
 
-			sb.append("\"key\": ");
-			sb.append("\"");
+			sb.append("\"key\": \"");
 			sb.append(_escape(key));
 			sb.append("\"");
 		}
@@ -357,8 +355,7 @@ public class Scope implements Serializable {
 				sb.append(", ");
 			}
 
-			sb.append("\"label\": ");
-			sb.append("\"");
+			sb.append("\"label\": \"");
 			sb.append(_escape(label));
 			sb.append("\"");
 		}
@@ -370,8 +367,7 @@ public class Scope implements Serializable {
 				sb.append(", ");
 			}
 
-			sb.append("\"liveExternalReferenceCode\": ");
-			sb.append("\"");
+			sb.append("\"liveExternalReferenceCode\": \"");
 			sb.append(_escape(liveExternalReferenceCode));
 			sb.append("\"");
 		}
@@ -383,8 +379,7 @@ public class Scope implements Serializable {
 				sb.append(", ");
 			}
 
-			sb.append("\"type\": ");
-			sb.append("\"");
+			sb.append("\"type\": \"");
 			sb.append(type);
 			sb.append("\"");
 		}
