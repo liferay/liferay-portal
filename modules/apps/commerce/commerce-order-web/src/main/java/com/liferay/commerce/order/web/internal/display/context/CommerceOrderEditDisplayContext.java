@@ -684,15 +684,15 @@ public class CommerceOrderEditDisplayContext {
 		).buildPortletURL();
 	}
 
-	public String getValidationButtonCssClass() throws PortalException {
+	public String getValidationButtonTextClass() throws PortalException {
 		if (_commerceOrder == null) {
-			return "success";
+			return "text-success";
 		}
 
 		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
 
 		if (accountEntry == null) {
-			return "success";
+			return "text-success";
 		}
 
 		Map<String, AccountEntryValidatorResult>
@@ -719,12 +719,12 @@ public class CommerceOrderEditDisplayContext {
 					AccountEntryValidatorConstants.RESULT_SUCCESS,
 					resultStatus)) {
 
-				return "failure";
+				return "text-warning";
 			}
 		}
 
 		if (pending) {
-			return "pending";
+			return "text-secondary";
 		}
 
 		return "success";
