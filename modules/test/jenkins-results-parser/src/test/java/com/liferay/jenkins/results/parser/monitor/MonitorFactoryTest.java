@@ -17,7 +17,7 @@ public class MonitorFactoryTest
 	@Test
 	public void testNewMonitorUnknownTypeFailsLoud() {
 		MonitorConfig monitorConfig = new MonitorConfig(
-			"a", "unknown-type", MonitorConfig.Severity.MEDIUM, 0, null, null);
+			0, "a", null, MonitorConfig.Severity.MEDIUM, null, "unknown-type");
 
 		try {
 			MonitorFactory.newMonitor(monitorConfig);

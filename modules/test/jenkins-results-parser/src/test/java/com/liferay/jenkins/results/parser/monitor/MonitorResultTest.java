@@ -22,7 +22,7 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 		Map<String, String> metrics = Collections.singletonMap("disk", "88");
 
 		MonitorResult monitorResult = new MonitorResult(
-			MonitorResult.Status.WARN, "disk high", metrics, 1L);
+			"disk high", metrics, MonitorResult.Status.WARN, 1L);
 
 		Map<String, String> returnedMetrics = monitorResult.getMetrics();
 
@@ -38,7 +38,7 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 	@Test
 	public void testGetMetricsNullYieldsEmpty() {
 		MonitorResult monitorResult = new MonitorResult(
-			MonitorResult.Status.OK, "ok", null, 1L);
+			"ok", null, MonitorResult.Status.OK, 1L);
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 

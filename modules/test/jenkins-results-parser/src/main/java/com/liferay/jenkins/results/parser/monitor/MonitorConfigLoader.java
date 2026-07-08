@@ -74,7 +74,7 @@ public class MonitorConfigLoader {
 	}
 
 	private static Map<String, String> _getIndexedProperties(
-		Properties buildProperties, String id, String category) {
+		Properties buildProperties, String category, String id) {
 
 		Map<String, String> indexedProperties = new LinkedHashMap<>();
 
@@ -110,16 +110,16 @@ public class MonitorConfigLoader {
 		}
 
 		return new MonitorConfig(
-			id, type, _getSeverity(buildProperties, id),
-			_getCadence(buildProperties, id),
+			_getCadence(buildProperties, id), id,
 			_getParameters(buildProperties, id),
-			_getThresholds(buildProperties, id));
+			_getSeverity(buildProperties, id),
+			_getThresholds(buildProperties, id), type);
 	}
 
 	private static Map<String, String> _getParameters(
 		Properties buildProperties, String id) {
 
-		return _getIndexedProperties(buildProperties, id, "parameter");
+		return _getIndexedProperties(buildProperties, "parameter", id);
 	}
 
 	private static MonitorConfig.Severity _getSeverity(
@@ -147,7 +147,7 @@ public class MonitorConfigLoader {
 	private static Map<String, String> _getThresholds(
 		Properties buildProperties, String id) {
 
-		return _getIndexedProperties(buildProperties, id, "threshold");
+		return _getIndexedProperties(buildProperties, "threshold", id);
 	}
 
 	private static final Pattern _indexedPropertyPattern = Pattern.compile(

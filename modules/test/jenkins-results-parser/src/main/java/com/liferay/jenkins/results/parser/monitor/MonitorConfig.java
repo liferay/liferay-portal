@@ -15,15 +15,15 @@ import java.util.Map;
 public class MonitorConfig {
 
 	public MonitorConfig(
-		String id, String type, Severity severity, long cadence,
-		Map<String, String> parameters, Map<String, String> thresholds) {
+		long cadence, String id, Map<String, String> parameters,
+		Severity severity, Map<String, String> thresholds, String type) {
 
-		_id = id;
-		_type = type;
-		_severity = severity;
 		_cadence = cadence;
+		_id = id;
 		_parameters = _newUnmodifiableMap(parameters);
+		_severity = severity;
 		_thresholds = _newUnmodifiableMap(thresholds);
+		_type = type;
 	}
 
 	public long getCadence() {

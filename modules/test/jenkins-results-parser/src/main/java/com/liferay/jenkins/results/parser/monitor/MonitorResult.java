@@ -16,12 +16,12 @@ import java.util.Map;
 public class MonitorResult {
 
 	public MonitorResult(
-		Status status, String message, Map<String, String> metrics,
+		String message, Map<String, String> metrics, Status status,
 		long timestamp) {
 
-		_status = status;
 		_message = message;
 		_metrics = _newUnmodifiableMap(metrics);
+		_status = status;
 		_timestamp = timestamp;
 	}
 
