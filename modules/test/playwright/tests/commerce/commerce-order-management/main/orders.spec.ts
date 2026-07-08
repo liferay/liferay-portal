@@ -12,6 +12,7 @@ import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
+	performLogout,
 	performUserSwitch,
 	userData,
 } from '../../../../utils/performLogin';
@@ -1444,5 +1445,214 @@ test(
 			).toBeVisible();
 			await expect(page.getByText(printedNote)).toBeVisible();
 		});
+	}
+);
+
+test(
+	'Removing the manage delivery terms permission hides only the delivery controls',
+	{tag: ['@LPD-97544']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: 'Commerce Account ' + getRandomString(),
+			type: 'business',
+		});
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{
+					city: 'Test City',
+					countryISOCode: 'US',
+					defaultBilling: true,
+					defaultShipping: true,
+					name: 'Test Address',
+					regionISOCode: 'CA',
+					street1: 'Test Street',
+					zip: '12345',
+				}
+			);
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		await commerceAdminChannelDetailsPage.activatePaymentMethod(
+			'Money Order',
+			'Money Order'
+		);
+
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		const orderTermsRole = await apiHelpers.headlessAdminUser.postRole({
+			name: 'Order Terms Role ' + getRandomString(),
+			rolePermissions: [
+				{
+					actionIds: [
+						'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+						'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
+						'VIEW_COMMERCE_ORDERS',
+					],
+					primaryKey: companyId,
+					resourceName: 'com.liferay.commerce.order',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName: 'com.liferay.commerce.model.CommerceOrder',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com.liferay.commerce.model.CommerceOrderType',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com.liferay.commerce.product.model.CommerceChannel',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com.liferay.commerce.notification.model.CommerceNotificationTemplate',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW_CONTROL_PANEL'],
+					primaryKey: companyId,
+					resourceName: '90',
+					scope: 1,
+				},
+				{
+					actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet',
+					scope: 1,
+				},
+				{
+					actionIds: ['VIEW_COMMERCE_CHANNELS'],
+					primaryKey: companyId,
+					resourceName: 'com.liferay.commerce.channel',
+					scope: 1,
+				},
+			],
+		});
+
+		const buyerUser = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[buyerUser.alternateName] = {
+			name: buyerUser.givenName,
+			password: 'test',
+			surname: buyerUser.familyName,
+		};
+
+		await apiHelpers.headlessAdminUser.assignUserToRole(
+			orderTermsRole.externalReferenceCode,
+			buyerUser.id
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint'
+			);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			billingAddressId: address.id,
+			channelId: channel.id,
+			orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
+			orderStatus: '1',
+			paymentMethod: 'money-order',
+			paymentStatus: '2',
+			shippingAddressId: address.id,
+		});
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await commerceAdminOrdersPage.goto();
+
+		await (
+			await commerceAdminOrdersPage.tableRowLink({
+				colIndex: 1,
+				rowValue: order.id,
+			})
+		).click();
+
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Payment Terms Add',
+				'Add'
+			)
+		).toBeVisible();
+
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Delivery Terms Add',
+				'Add'
+			)
+		).toBeVisible();
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: 'test'});
+
+		await apiHelpers.jsonWebServicesResourcePermissionApiHelper.removeResourcePermission(
+			'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+			companyId,
+			'0',
+			'com.liferay.commerce.order',
+			String(companyId),
+			String(orderTermsRole.id),
+			'1'
+		);
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await commerceAdminOrdersPage.goto();
+
+		await (
+			await commerceAdminOrdersPage.tableRowLink({
+				colIndex: 1,
+				rowValue: order.id,
+			})
+		).click();
+
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Payment Terms Add',
+				'Add'
+			)
+		).toBeVisible();
+
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Delivery Terms Add',
+				'Add'
+			)
+		).toHaveCount(0);
 	}
 );
