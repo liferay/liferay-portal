@@ -145,14 +145,14 @@ public class LayoutPortletExportImportTest extends BaseExportImportTestCase {
 
 	@Test
 	public void testExportImportPortletPreferencesPreserved() throws Exception {
-		String columnCountValue = "3";
+		String entryColumnsValue = "3";
 
 		String portletId = LayoutTestUtil.addPortletToLayout(
 			layout, DLPortletKeys.DOCUMENT_LIBRARY,
 			HashMapBuilder.put(
 				"displayViews", new String[] {"list"}
 			).put(
-				"entryColumns", new String[] {columnCountValue}
+				"entryColumns", new String[] {entryColumnsValue}
 			).build());
 
 		exportImportLayouts(
@@ -170,7 +170,7 @@ public class LayoutPortletExportImportTest extends BaseExportImportTestCase {
 			"list",
 			portletPreferences.getValue("displayViews", StringPool.BLANK));
 		Assert.assertEquals(
-			columnCountValue,
+			entryColumnsValue,
 			portletPreferences.getValue("entryColumns", StringPool.BLANK));
 	}
 

@@ -305,7 +305,7 @@ public class PermissionExportImportTest {
 	}
 
 	protected void exportPortletDataPermissions(
-			PortletDataContext portletDataContext)
+			PortletDataContext exportPortletDataContext)
 		throws Exception {
 
 		Class<?> clazz = _permissionImporter.getClass();
@@ -321,7 +321,8 @@ public class PermissionExportImportTest {
 
 		ReflectionTestUtil.invoke(
 			field.get(null), "exportPortletDataPermissions",
-			new Class<?>[] {PortletDataContext.class}, portletDataContext);
+			new Class<?>[] {PortletDataContext.class},
+			exportPortletDataContext);
 	}
 
 	protected Element exportPortletPermissions(
