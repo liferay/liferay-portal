@@ -517,6 +517,7 @@ const ALLOWED_NON_GLOBAL_DEPENDENCIES = [
 	'@clayui/css',
 	'@fullcalendar/core',
 	'@fullcalendar/daygrid',
+	'@fullcalendar/interaction',
 	'@fullcalendar/react',
 	'@jsonurl/jsonurl',
 	'@liferay/amd-loader',
