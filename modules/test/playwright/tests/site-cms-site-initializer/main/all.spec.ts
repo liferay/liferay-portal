@@ -1552,3 +1552,38 @@ test(
 		});
 	}
 );
+
+test(
+	'All section renders content details in Cards view',
+	{tag: ['@LPD-85551', '@LPD-87956']},
+	async ({apiHelpers, assetsPage}) => {
+		const contentTitle = getRandomString();
+
+		await test.step('Create a content', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				'cms/basic-web-contents',
+				'Default'
+			);
+		});
+
+		await test.step('Switch to Cards view and check the card details', async () => {
+			await assetsPage.gotoAll();
+
+			await assetsPage.changeVisualizationMode('Cards');
+
+			const card = assetsPage.getCardItem(contentTitle);
+
+			await expect(card).toBeVisible();
+			await expect(
+				card.getByRole('link', {name: contentTitle})
+			).toBeVisible();
+			await expect(
+				card.getByText('Approved', {exact: true})
+			).toBeVisible();
+		});
+	}
+);
