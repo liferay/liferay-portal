@@ -56,116 +56,6 @@ describe('TasksQuickFilters', () => {
 		(fetch as jest.Mock).mockClear();
 	});
 
-	it('renders the appropriate counts when a projectId is provided', async () => {
-		await act(async () => {
-			render(<TasksQuickFilters projectId="123" />);
-		});
-
-		expect(fetch).toHaveBeenCalledWith(
-			'/o/headless-cmp/v1.0/projects/123/task-statistics/',
-			{
-				method: 'GET',
-			}
-		);
-
-		expect(screen.getByText('blocked').previousSibling).toHaveTextContent(
-			'1'
-		);
-		expect(
-			screen.getByText('in-progress').previousSibling
-		).toHaveTextContent('2');
-		expect(screen.getByText('overdue').previousSibling).toHaveTextContent(
-			'3'
-		);
-		expect(
-			screen.getByText('total-tasks').previousSibling
-		).toHaveTextContent('4');
-	});
-
-	it('renders the appropriate counts from multiple API calls', async () => {
-		await act(async () => {
-			render(<TasksQuickFilters />);
-		});
-
-		expect(fetch).toHaveBeenCalledWith(
-			'/o/headless-cmp/v1.0/task-statistics/',
-			{method: 'GET'}
-		);
-
-		expect(screen.getByText('blocked').previousSibling).toHaveTextContent(
-			'1'
-		);
-		expect(
-			screen.getByText('in-progress').previousSibling
-		).toHaveTextContent('2');
-		expect(screen.getByText('overdue').previousSibling).toHaveTextContent(
-			'3'
-		);
-		expect(
-			screen.getByText('total-tasks').previousSibling
-		).toHaveTextContent('4');
-	});
-
-	it('keeps the quick filter button active when an unrelated filter changes', async () => {
-		const {rerender} = render(<TasksQuickFilters />);
-
-		await screen.findByText('blocked');
-
-		await userEvent.click(
-			screen.getByText('blocked').closest('button') as HTMLButtonElement
-		);
-
-		expect(screen.getByText('blocked').closest('button')).toHaveClass(
-			'active'
-		);
-
-		// Simulate FDS applying the quick filter state (consumes isQuickFilterChangeRef)
-
-		mockTasksFDSState = {
-			...mockTasksFDSState,
-			filters: [
-				{
-					active: true,
-					id: 'cmpState',
-					selectedData: {
-						exclude: false,
-						selectedItems: [{label: 'blocked', value: 'blocked'}],
-					},
-				},
-				{active: false, id: 'cmpDueDate', selectedData: {}},
-			],
-		};
-
-		await act(async () => {
-			rerender(<TasksQuickFilters />);
-		});
-
-		// Simulate a search that triggers a new filters reference but leaves cmpState active
-
-		mockTasksFDSState = {
-			...mockTasksFDSState,
-			filters: [
-				{
-					active: true,
-					id: 'cmpState',
-					selectedData: {
-						exclude: false,
-						selectedItems: [{label: 'blocked', value: 'blocked'}],
-					},
-				},
-				{active: false, id: 'cmpDueDate', selectedData: {}},
-			],
-		};
-
-		await act(async () => {
-			rerender(<TasksQuickFilters />);
-		});
-
-		expect(screen.getByText('blocked').closest('button')).toHaveClass(
-			'active'
-		);
-	});
-
 	it('clears the quick filter button when the selection changes within the same filter', async () => {
 		const {rerender} = render(<TasksQuickFilters />);
 
@@ -229,6 +119,66 @@ describe('TasksQuickFilters', () => {
 		);
 	});
 
+	it('keeps the quick filter button active when an unrelated filter changes', async () => {
+		const {rerender} = render(<TasksQuickFilters />);
+
+		await screen.findByText('blocked');
+
+		await userEvent.click(
+			screen.getByText('blocked').closest('button') as HTMLButtonElement
+		);
+
+		expect(screen.getByText('blocked').closest('button')).toHaveClass(
+			'active'
+		);
+
+		// Simulate FDS applying the quick filter state (consumes isQuickFilterChangeRef)
+
+		mockTasksFDSState = {
+			...mockTasksFDSState,
+			filters: [
+				{
+					active: true,
+					id: 'cmpState',
+					selectedData: {
+						exclude: false,
+						selectedItems: [{label: 'blocked', value: 'blocked'}],
+					},
+				},
+				{active: false, id: 'cmpDueDate', selectedData: {}},
+			],
+		};
+
+		await act(async () => {
+			rerender(<TasksQuickFilters />);
+		});
+
+		// Simulate a search that triggers a new filters reference but leaves cmpState active
+
+		mockTasksFDSState = {
+			...mockTasksFDSState,
+			filters: [
+				{
+					active: true,
+					id: 'cmpState',
+					selectedData: {
+						exclude: false,
+						selectedItems: [{label: 'blocked', value: 'blocked'}],
+					},
+				},
+				{active: false, id: 'cmpDueDate', selectedData: {}},
+			],
+		};
+
+		await act(async () => {
+			rerender(<TasksQuickFilters />);
+		});
+
+		expect(screen.getByText('blocked').closest('button')).toHaveClass(
+			'active'
+		);
+	});
+
 	it('keeps the total tasks button active when an unrelated filter changes', async () => {
 		const {rerender} = render(<TasksQuickFilters />);
 
@@ -283,5 +233,55 @@ describe('TasksQuickFilters', () => {
 		expect(screen.getByText('total-tasks').closest('button')).toHaveClass(
 			'active'
 		);
+	});
+
+	it('renders the appropriate counts from multiple API calls', async () => {
+		await act(async () => {
+			render(<TasksQuickFilters />);
+		});
+
+		expect(fetch).toHaveBeenCalledWith(
+			'/o/headless-cmp/v1.0/task-statistics/',
+			{method: 'GET'}
+		);
+
+		expect(screen.getByText('blocked').previousSibling).toHaveTextContent(
+			'1'
+		);
+		expect(
+			screen.getByText('in-progress').previousSibling
+		).toHaveTextContent('2');
+		expect(screen.getByText('overdue').previousSibling).toHaveTextContent(
+			'3'
+		);
+		expect(
+			screen.getByText('total-tasks').previousSibling
+		).toHaveTextContent('4');
+	});
+
+	it('renders the appropriate counts when a projectId is provided', async () => {
+		await act(async () => {
+			render(<TasksQuickFilters projectId="123" />);
+		});
+
+		expect(fetch).toHaveBeenCalledWith(
+			'/o/headless-cmp/v1.0/projects/123/task-statistics/',
+			{
+				method: 'GET',
+			}
+		);
+
+		expect(screen.getByText('blocked').previousSibling).toHaveTextContent(
+			'1'
+		);
+		expect(
+			screen.getByText('in-progress').previousSibling
+		).toHaveTextContent('2');
+		expect(screen.getByText('overdue').previousSibling).toHaveTextContent(
+			'3'
+		);
+		expect(
+			screen.getByText('total-tasks').previousSibling
+		).toHaveTextContent('4');
 	});
 });
