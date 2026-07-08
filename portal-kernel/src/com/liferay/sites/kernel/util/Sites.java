@@ -18,9 +18,12 @@ import java.io.Serializable;
 
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Eudaldo Alonso
  */
+@ProviderType
 public interface Sites {
 
 	public static final String ANALYTICS_PREFIX = "analytics_";
