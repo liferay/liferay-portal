@@ -67,7 +67,8 @@
 												"key": "INPUTS-text-input"
 											},
 											"fragmentConfig": {
-												"inputFieldId": "ObjectEntry_externalReferenceCode"
+												"inputFieldId": "ObjectEntry_externalReferenceCode",
+												"inputRequired": true
 											},
 											"fragmentFields": [
 											],
@@ -85,7 +86,8 @@
 												"key": "INPUTS-text-input"
 											},
 											"fragmentConfig": {
-												"inputFieldId": "ObjectField_friendlyURL"
+												"inputFieldId": "ObjectField_friendlyURL",
+												"inputRequired": true
 											},
 											"fragmentFields": [
 											],
