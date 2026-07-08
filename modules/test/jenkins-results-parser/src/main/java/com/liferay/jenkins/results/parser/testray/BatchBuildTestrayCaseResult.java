@@ -692,14 +692,14 @@ public class BatchBuildTestrayCaseResult
 
 	private int _getErrorMessageMaxLength() {
 		try {
-			String errorMessageLengthMax =
+			String errorMessageMaxLength =
 				JenkinsResultsParserUtil.getBuildProperty(
 					"testray.case.result.error.message.max.length");
 
-			if ((errorMessageLengthMax != null) &&
-				errorMessageLengthMax.matches("\\d+")) {
+			if ((errorMessageMaxLength != null) &&
+				errorMessageMaxLength.matches("\\d+")) {
 
-				return Integer.parseInt(errorMessageLengthMax);
+				return Integer.parseInt(errorMessageMaxLength);
 			}
 
 			return _ERROR_MESSAGE_MAX_LENGTH_DEFAULT;
