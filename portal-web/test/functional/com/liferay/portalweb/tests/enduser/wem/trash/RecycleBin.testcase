@@ -544,7 +544,7 @@ definition {
 
 	@description = "This is a test for LPS-190757. The Home folder of document should be visible on Warning modal."
 	@priority = 5
-	test RestoreDocumentToExistingFolder {
+	test RestoreContentToExistingFolder {
 		property portal.acceptance = "true";
 
 		task ("Given a site administrator has folders with documents") {
