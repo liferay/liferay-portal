@@ -367,6 +367,7 @@ $cadmin-clay-popover-bottom: map-deep-merge(
 							#{$cadmin-popover-arrow-height} + #{$cadmin-popover-border-width}
 						) * -1
 				),
+
 			before: (
 				border-bottom-color: $cadmin-popover-arrow-outer-color,
 				border-width: 0px calc(#{$cadmin-popover-arrow-width} * 0.5)

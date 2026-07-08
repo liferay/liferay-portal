@@ -272,6 +272,7 @@ $clay-tooltip-top: map-deep-merge(
 			bottom: 0rem,
 			left: 50%,
 			margin-left: calc(#{$tooltip-arrow-width} * -0.5),
+
 			before: (
 				border-top-color: $tooltip-arrow-color,
 				border-width: $tooltip-arrow-height

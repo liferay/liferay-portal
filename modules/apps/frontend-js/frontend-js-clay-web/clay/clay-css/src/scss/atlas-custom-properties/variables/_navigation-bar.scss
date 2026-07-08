@@ -184,6 +184,7 @@ $navigation-bar-base: map-deep-merge(
 										null
 									),
 							),
+
 							dropdown-item: (
 								padding-bottom:
 									setter(
@@ -302,6 +303,7 @@ $navigation-bar-light: map-deep-merge(
 						--navigation-bar-light-nav-link-font-weight,
 						$font-weight-semi-bold
 					),
+
 				hover: (
 					color: $gray-900,
 				),
@@ -406,6 +408,7 @@ $navigation-bar-secondary: map-deep-merge(
 
 		navbar-brand: (
 			color: unquote('hsl(from #{$white} h s l / 0.9)'),
+
 			hover: (
 				color: unquote('hsl(from #{$white} h s l / 0.9)'),
 			),

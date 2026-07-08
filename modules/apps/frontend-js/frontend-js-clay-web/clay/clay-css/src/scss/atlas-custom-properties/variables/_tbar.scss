@@ -10,6 +10,7 @@ $tbar-stacked: map-deep-merge(
 		height: 100%,
 		padding-bottom: var(--tbar-stacked-padding-bottom, 8px),
 		padding-top: var(--tbar-stacked-padding-top, 8px),
+
 		tbar-nav: (
 			flex-direction: column,
 			min-width: 0,
@@ -76,6 +77,7 @@ $tbar-stacked: map-deep-merge(
 			padding-top: var(--tbar-stacked-tbar-btn-monospaced-padding-top, 0),
 			position: var(--tbar-stacked-tbar-btn-monospaced-position, relative),
 			width: var(--tbar-stacked-tbar-btn-monospaced-width, 40px),
+
 			focus: (
 				box-shadow: $component-focus-inset-box-shadow,
 			),
@@ -96,6 +98,7 @@ $tbar-inline-xs-down: () !default;
 $tbar-inline-xs-down: map-deep-merge(
 	(
 		breakpoint-down: nth(map-keys($grid-breakpoints), 1),
+
 		tbar-item: (
 			padding-left: 0,
 		),
@@ -107,6 +110,7 @@ $tbar-inline-sm-down: () !default;
 $tbar-inline-sm-down: map-deep-merge(
 	(
 		breakpoint-down: nth(map-keys($grid-breakpoints), 2),
+
 		tbar-item: (
 			padding-left: 0,
 		),
@@ -118,6 +122,7 @@ $tbar-inline-md-down: () !default;
 $tbar-inline-md-down: map-deep-merge(
 	(
 		breakpoint-down: nth(map-keys($grid-breakpoints), 3),
+
 		tbar-item: (
 			padding-left: 0,
 		),
@@ -129,6 +134,7 @@ $tbar-inline-lg-down: () !default;
 $tbar-inline-lg-down: map-deep-merge(
 	(
 		breakpoint-down: nth(map-keys($grid-breakpoints), 4),
+
 		tbar-item: (
 			padding-left: 0,
 		),
@@ -140,6 +146,7 @@ $tbar-inline-xl-down: () !default;
 $tbar-inline-xl-down: map-deep-merge(
 	(
 		breakpoint-down: nth(map-keys($grid-breakpoints), 5),
+
 		tbar-item: (
 			padding-left: 0,
 		),
@@ -338,6 +345,7 @@ $subnav-tbar-component-link: map-deep-merge(
 				--subnav-tbar-component-link-font-weight,
 				$font-weight-semi-bold
 			),
+
 		hover: (
 			color:
 				var(--subnav-tbar-component-link-hover-color, $link-hover-color),
@@ -362,6 +370,7 @@ $subnav-tbar: () !default;
 $subnav-tbar: map-deep-merge(
 	(
 		font-size: var(--subnav-tbar-font-size, 14px),
+
 		tbar-section: (
 			text-align: left,
 		),
@@ -445,6 +454,7 @@ $subnav-tbar-primary-component-link: () !default;
 $subnav-tbar-primary-component-link: map-deep-merge(
 	(
 		color: var(--subnav-tbar-primary-component-link-color, $gray-900),
+
 		hover: (
 			color:
 				var(--subnav-tbar-primary-component-link-hover-color, $gray-900),
@@ -515,6 +525,7 @@ $subnav-tbar-primary: map-deep-merge(
 		padding-left: var(--subnav-tbar-primary-padding-left, 4px),
 		padding-right: var(--subnav-tbar-primary-padding-right, 4px),
 		padding-top: var(--subnav-tbar-primary-padding-top, 10px),
+
 		tbar-item: (
 			justify-content: flex-start,
 			padding-left: var(--subnav-tbar-primary-item-padding-left, 4px),

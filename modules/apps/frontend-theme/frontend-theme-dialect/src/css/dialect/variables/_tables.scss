@@ -31,10 +31,12 @@ $table-title: (
 $table-title-link: (
 	color: var(--table-title-link-color),
 	text-decoration: var(--table-title-link-text-decoration),
+
 	hover: (
 		color: var(--table-title-link-color-hover),
 		text-decoration: var(--table-title-link-text-decoration-hover),
 	),
+
 );
 
 // Table Head
@@ -87,6 +89,7 @@ $table-spaced: (
 	border-radius: 0,
 	border-spacing: 0 var(--table-spaced-row-border-spacing),
 	box-shadow: none,
+
 	table-cell-end: (
 		border-bottom-right-radius:
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
@@ -95,6 +98,7 @@ $table-spaced: (
 		border-top-right-radius:
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
 	),
+
 	table-cell-start: (
 		border-bottom-left-radius:
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
@@ -103,11 +107,13 @@ $table-spaced: (
 		border-top-left-radius:
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
 	),
+
 	table-row: (
 		border-radius:
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
 		box-shadow: var(--table-spaced-row-box-shadow),
 	),
+
 );
 
 $table-spaced-cell: (

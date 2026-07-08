@@ -827,6 +827,7 @@ $cadmin-input-danger-readonly: map-deep-merge(
 	(
 		background-color: map-get($cadmin-input-readonly, background-color),
 		border-color: map-get($cadmin-input-readonly, border-color),
+
 		focus: (
 			border-color: $cadmin-input-focus-border-color,
 		),
@@ -893,6 +894,7 @@ $cadmin-has-error: map-deep-merge(
 				),
 				$cadmin-input-danger
 			),
+
 		form-feedback-item: (
 			color: $cadmin-form-feedback-invalid-color,
 		),
@@ -915,6 +917,7 @@ $cadmin-has-error: map-deep-merge(
 						$cadmin-input-danger-focus-box-shadow,
 						$cadmin-input-danger-box-shadow
 					),
+
 				input-group-inset: (
 					background-color:
 						setter(
@@ -926,6 +929,7 @@ $cadmin-has-error: map-deep-merge(
 							$cadmin-input-danger-focus-border-color,
 							$cadmin-input-danger-border-color
 						),
+
 					input-group-inset-item: (
 						background-color:
 							setter(
@@ -1014,6 +1018,7 @@ $cadmin-input-warning-readonly: map-deep-merge(
 	(
 		background-color: map-get($cadmin-input-readonly, background-color),
 		border-color: map-get($cadmin-input-readonly, border-color),
+
 		focus: (
 			border-color: $cadmin-input-focus-border-color,
 		),
@@ -1080,6 +1085,7 @@ $cadmin-has-warning: map-deep-merge(
 				),
 				$cadmin-input-warning
 			),
+
 		form-feedback-item: (
 			color: $cadmin-form-feedback-warning-color,
 		),
@@ -1102,6 +1108,7 @@ $cadmin-has-warning: map-deep-merge(
 						$cadmin-input-warning-focus-box-shadow,
 						$cadmin-input-warning-box-shadow
 					),
+
 				input-group-inset: (
 					background-color:
 						setter(
@@ -1113,6 +1120,7 @@ $cadmin-has-warning: map-deep-merge(
 							$cadmin-input-warning-focus-border-color,
 							$cadmin-input-warning-border-color
 						),
+
 					input-group-inset-item: (
 						background-color:
 							setter(
@@ -1201,6 +1209,7 @@ $cadmin-input-success-readonly: map-deep-merge(
 	(
 		background-color: map-get($cadmin-input-readonly, background-color),
 		border-color: map-get($cadmin-input-readonly, border-color),
+
 		focus: (
 			border-color: $cadmin-input-focus-border-color,
 		),
@@ -1267,6 +1276,7 @@ $cadmin-has-success: map-deep-merge(
 				),
 				$cadmin-input-success
 			),
+
 		form-feedback-item: (
 			color: $cadmin-form-feedback-valid-color,
 		),
@@ -1289,6 +1299,7 @@ $cadmin-has-success: map-deep-merge(
 						$cadmin-input-success-focus-box-shadow,
 						$cadmin-input-success-box-shadow
 					),
+
 				input-group-inset: (
 					background-color:
 						setter(
@@ -1300,6 +1311,7 @@ $cadmin-has-success: map-deep-merge(
 							$cadmin-input-success-focus-border-color,
 							$cadmin-input-success-border-color
 						),
+
 					input-group-inset-item: (
 						background-color:
 							setter(
@@ -1321,6 +1333,7 @@ $cadmin-has-success: map-deep-merge(
 					border-color: $cadmin-input-success-border-color,
 					box-shadow: $cadmin-input-success-box-shadow,
 				),
+
 				focus: (
 					box-shadow: none,
 
@@ -1430,6 +1443,7 @@ $cadmin-form-control-select: map-deep-merge(
 					color: inherit,
 					text-decoration: none,
 				),
+
 			)
 		)
 	),
@@ -1763,6 +1777,7 @@ $cadmin-input-group-item-focusable: map-deep-merge(
 	(
 		border-radius: clay-enable-rounded($cadmin-input-border-radius),
 		transition: clay-enable-transitions($cadmin-input-transition),
+
 		focus-within: (
 			background-color: $cadmin-input-focus-bg,
 			box-shadow: $cadmin-input-focus-box-shadow,

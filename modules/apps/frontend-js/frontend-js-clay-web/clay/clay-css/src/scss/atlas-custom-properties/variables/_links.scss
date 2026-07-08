@@ -3,6 +3,7 @@ $c-link: map-deep-merge(
 	(
 		text-decoration: none,
 		transition: clay-enable-transitions(box-shadow 0.15s ease-in-out),
+
 		hover: (
 			text-decoration: none,
 		),
@@ -45,6 +46,7 @@ $component-link: map-deep-merge(
 		color: var(--component-link-color, $gray-600),
 		transition:
 			var(--component-link-transition, box-shadow 0.15s ease-in-out),
+
 		hover: (
 			color: var(--component-link-hover-color, $gray-900),
 		),
@@ -68,6 +70,7 @@ $link-primary: map-deep-merge(
 		border-radius: 1px,
 		color: var(--link-primary-color, $primary),
 		transition: var(--link-primary-transition, box-shadow 0.15s ease-in-out),
+
 		hover: (
 			color: var(--link-primary-hover-color, $primary-d1),
 		),
@@ -396,6 +399,7 @@ $component-action: map-deep-merge(
 		transition: $component-transition,
 		vertical-align: middle,
 		width: var(--component-action-width, map-get($link-monospaced, width)),
+
 		hover: (
 			background-color:
 				var(
@@ -436,6 +440,7 @@ $component-action: map-deep-merge(
 					--component-action-disabled-opacity,
 					$component-disabled-opacity
 				),
+
 			active: (
 				pointer-events: none,
 			),
@@ -458,6 +463,7 @@ $component-icon: map-deep-merge(
 		height: var(--component-icon-height, 32px),
 		justify-content: center,
 		width: var(--component-icon-width, 32px),
+
 		lexicon-icon: (
 			margin-top: 0,
 		),

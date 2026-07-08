@@ -23,6 +23,7 @@ $btn: map-deep-merge(
 		padding-right: $btn-padding-x,
 		padding-top: $btn-padding-y,
 		transition: clay-enable-transitions($btn-transition),
+
 		focus: (
 			box-shadow: $btn-focus-box-shadow,
 		),
@@ -439,6 +440,7 @@ $btn-outline-primary: map-deep-merge(
 			background-color: rgba($primary, 0.12),
 			box-shadow: map-deep-get($btn-primary, active, box-shadow),
 			color: $primary-d1,
+
 			focus: (
 				box-shadow:
 					map-deep-get($btn-primary, active, focus, box-shadow),
@@ -511,6 +513,7 @@ $btn-outline-secondary: map-deep-merge(
 			border-color: transparent,
 			box-shadow: map-deep-get($btn-secondary, active, box-shadow),
 			color: map-deep-get($btn-secondary, active, color),
+
 			focus: (
 				box-shadow:
 					map-deep-get($btn-secondary, active, focus, box-shadow),
@@ -536,6 +539,7 @@ $btn-outline-info: map-deep-merge(
 		active: (
 			background-color: map-deep-get($btn-info, active, background-color),
 			box-shadow: map-deep-get($btn-info, active, box-shadow),
+
 			focus: (
 				box-shadow: map-deep-get($btn-info, active, focus, box-shadow),
 			),
@@ -563,6 +567,7 @@ $btn-outline-success: map-deep-merge(
 			background-color:
 				map-deep-get($btn-success, active, background-color),
 			box-shadow: map-deep-get($btn-success, active, box-shadow),
+
 			focus: (
 				box-shadow:
 					map-deep-get($btn-success, active, focus, box-shadow),
@@ -591,6 +596,7 @@ $btn-outline-warning: map-deep-merge(
 			background-color:
 				map-deep-get($btn-warning, active, background-color),
 			box-shadow: map-deep-get($btn-warning, active, box-shadow),
+
 			focus: (
 				box-shadow:
 					map-deep-get($btn-warning, active, focus, box-shadow),
@@ -617,6 +623,7 @@ $btn-outline-danger: map-deep-merge(
 			background-color:
 				map-deep-get($btn-danger, active, background-color),
 			box-shadow: map-deep-get($btn-danger, active, box-shadow),
+
 			focus: (
 				box-shadow: map-deep-get($btn-danger, active, focus, box-shadow),
 			),
@@ -641,6 +648,7 @@ $btn-outline-light: map-deep-merge(
 		active: (
 			background-color: map-deep-get($btn-light, active, background-color),
 			box-shadow: map-deep-get($btn-light, active, box-shadow),
+
 			focus: (
 				box-shadow: map-deep-get($btn-light, active, focus, box-shadow),
 			),
@@ -665,6 +673,7 @@ $btn-outline-dark: map-deep-merge(
 		active: (
 			background-color: map-deep-get($btn-dark, active, background-color),
 			box-shadow: map-deep-get($btn-dark, active, box-shadow),
+
 			focus: (
 				box-shadow: map-deep-get($btn-dark, active, focus, box-shadow),
 			),

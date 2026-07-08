@@ -205,6 +205,7 @@ $alert-indicator-start: map-deep-merge(
 	(
 		padding-left:
 			calc(#{$alert-indicator-font-size} + #{$alert-padding-x} + 0.5rem),
+
 		alert-fluid: (
 			container-fluid: (
 				padding-left:

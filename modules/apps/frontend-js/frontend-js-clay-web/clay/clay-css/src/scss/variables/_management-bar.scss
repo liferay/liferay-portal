@@ -59,6 +59,7 @@ $management-bar-light: map-deep-merge(
 						$navbar-light-color,
 						rgba($black, 0.5)
 					),
+
 				hover: (
 					color:
 						if(
@@ -106,6 +107,7 @@ $management-bar-primary: map-deep-merge(
 				$navbar-light-color,
 				rgba($black, 0.5)
 			),
+
 		navbar-nav: (
 			nav-link: (
 				color:
@@ -114,6 +116,7 @@ $management-bar-primary: map-deep-merge(
 						$navbar-light-color,
 						rgba($black, 0.5)
 					),
+
 				hover: (
 					color:
 						if(

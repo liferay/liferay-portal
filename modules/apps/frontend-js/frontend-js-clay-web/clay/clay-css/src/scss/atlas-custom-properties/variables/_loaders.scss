@@ -22,6 +22,7 @@ $loading-animation: map-deep-merge(
 		text-align: var(--loading-animation-text-align, left),
 		vertical-align: var(--loading-animation-vertical-align, middle),
 		width: var(--loading-animation-width, 1em),
+
 		before: (
 			animation:
 				var(

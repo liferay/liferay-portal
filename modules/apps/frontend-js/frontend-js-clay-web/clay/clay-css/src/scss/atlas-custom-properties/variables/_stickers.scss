@@ -30,13 +30,16 @@ $sticker: map-deep-merge(
 		text-align: center,
 		vertical-align: middle,
 		width: $sticker-size,
+
 		inline-item: (
 			font-size: $sticker-inline-item-font-size,
 			justify-content: center,
+
 			lexicon-icon: (
 				margin-top: 0,
 			),
 		),
+
 		lexicon-icon: (
 			margin-top: 0,
 		),
@@ -73,19 +76,23 @@ $sticker-sm: map-deep-merge(
 		height: var(--sticker-sm-height, 1.5rem),
 		line-height: var(--sticker-sm-line-height, 1.5rem),
 		width: var(--sticker-sm-width, 1.5rem),
+
 		sticker-outside: (
 			left: -0.75rem,
 			top: -0.75rem,
+
 			sticker-bottom-left: (
 				bottom: -0.75rem,
 				top: auto,
 			),
+
 			sticker-bottom-right: (
 				bottom: -0.75rem,
 				left: auto,
 				right: -0.75rem,
 				top: auto,
 			),
+
 			sticker-top-right: (
 				left: auto,
 				right: -0.75rem,
@@ -104,19 +111,23 @@ $sticker-lg: map-deep-merge(
 		height: var(--sticker-lg-height, 2.5rem),
 		line-height: var(--sticker-lg-line-height, 2.5rem),
 		width: var(--sticker-lg-width, 2.5rem),
+
 		sticker-outside: (
 			left: -1.25rem,
 			top: -1.25rem,
+
 			sticker-bottom-left: (
 				bottom: -1.25rem,
 				top: auto,
 			),
+
 			sticker-bottom-right: (
 				bottom: -1.25rem,
 				left: auto,
 				right: -1.25rem,
 				top: auto,
 			),
+
 			sticker-top-right: (
 				left: auto,
 				right: -1.25rem,
@@ -135,19 +146,23 @@ $sticker-xl: map-deep-merge(
 		height: var(--sticker-xl-height, 3rem),
 		line-height: var(--sticker-xl-line-height, 3rem),
 		width: var(--sticker-xl-width, 3rem),
+
 		sticker-outside: (
 			left: -1.5rem,
 			top: -1.5rem,
+
 			sticker-bottom-left: (
 				bottom: -1.5rem,
 				top: auto,
 			),
+
 			sticker-bottom-right: (
 				bottom: -1.5rem,
 				left: auto,
 				right: -1.5rem,
 				top: auto,
 			),
+
 			sticker-top-right: (
 				left: auto,
 				right: -1.5rem,
@@ -164,6 +179,7 @@ $sticker-xxl: map-deep-merge(
 		height: var(--sticker-xxl-height, 5rem),
 		line-height: var(--sticker-xxl-line-height, 5rem),
 		width: var(--sticker-xxl-width, 5rem),
+
 		lexicon-icon: (
 			font-size: 1.5rem,
 		),
@@ -182,6 +198,7 @@ $sticker-sizes: map-deep-merge(
 			line-height: var(--sticker-xs-line-height, 1rem),
 			width: var(--sticker-xs-width, 1rem),
 		),
+
 		sticker-sm: $sticker-sm,
 		sticker-lg: $sticker-lg,
 		sticker-xl: $sticker-xl,
@@ -256,16 +273,19 @@ $sticker-outside: map-deep-merge(
 	(
 		left: $sticker-outside-offset,
 		top: $sticker-outside-offset,
+
 		sticker-bottom-left: (
 			bottom: $sticker-outside-offset,
 			top: auto,
 		),
+
 		sticker-bottom-right: (
 			bottom: $sticker-outside-offset,
 			left: auto,
 			right: $sticker-outside-offset,
 			top: auto,
 		),
+
 		sticker-top-right: (
 			left: auto,
 			right: $sticker-outside-offset,

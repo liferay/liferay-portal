@@ -29,6 +29,7 @@ $c-kbd-group: () !default;
 $c-kbd-group: map-deep-merge(
 	(
 		font-size: var(--c-kbd-group-font-size, 14px),
+
 		c-kbd: (
 			font-size: inherit,
 		),

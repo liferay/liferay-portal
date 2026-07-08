@@ -232,6 +232,7 @@ $dropdown-item-base: map-deep-merge(
 			align-items: center,
 			padding-left: calc(#{$dropdown-item-padding-x} - 0.25rem),
 			padding-right: calc(#{$dropdown-item-padding-x} - 0.25rem),
+
 			autofit-col: (
 				padding-left: 0.25rem,
 				padding-right: 0.25rem,

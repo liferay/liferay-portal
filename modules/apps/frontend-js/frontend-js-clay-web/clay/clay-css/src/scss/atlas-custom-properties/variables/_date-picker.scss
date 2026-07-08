@@ -10,6 +10,7 @@ $date-picker-dropdown-menu: map-deep-merge(
 		padding-right: var(--date-picker-dropdown-menu-padding-right, 0),
 		padding-top: var(--date-picker-dropdown-menu-padding-top, 0),
 		width: var(--date-picker-dropdown-menu-width, 100%),
+
 		media-breakpoint-down: (
 			xs: (
 				font-size:
@@ -42,6 +43,7 @@ $date-picker-nav-btn: map-deep-merge(
 	(
 		color: var(--date-picker-nav-btn-color, $gray-600),
 		transition: var(--date-picker-nav-btn-transition, $component-transition),
+
 		hover: (
 			background-color:
 				var(--date-picker-nav-btn-hover-background-color, $gray-200),
@@ -84,6 +86,7 @@ $date-picker-nav-btn-monospaced: map-deep-merge(
 		margin-left: var(--date-picker-nav-btn-monospaced-margin-left, 2px),
 		margin-right: var(--date-picker-nav-btn-monospaced-margin-right, 2px),
 		margin-top: var(--date-picker-nav-btn-monospaced-margin-top, 0),
+
 		media-breakpoint-down: (
 			xs: (
 				font-size:
@@ -128,6 +131,7 @@ $date-picker-nav-select: map-deep-merge(
 		padding-bottom: var(--date-picker-nav-select-padding-bottom, 0),
 		padding-left: var(--date-picker-nav-select-padding-left, 8px),
 		padding-top: var(--date-picker-nav-select-padding-top, 0),
+
 		hover: (
 			background-color:
 				var(--date-picker-nav-select-hover-background-color, $gray-200),
@@ -174,6 +178,7 @@ $date-picker-row: map-deep-merge(
 		margin-bottom: var(--date-picker-row-margin-bottom, 8px),
 		margin-top: var(--date-picker-row-margin-top, 8px),
 		padding: var(--date-picker-row-padding, 0),
+
 		media-breakpoint-down: (
 			xs: (
 				margin-bottom: var(--date-picker-row-xs-down-margin-bottom, 4px),
@@ -258,6 +263,7 @@ $date-picker-days-row: map-deep-merge(
 	(
 		margin-bottom: var(--date-picker-days-row-margin-bottom, 16px),
 		margin-top: var(--date-picker-days-row-margin-top, 0),
+
 		media-breakpoint-down: (
 			xs: (
 				margin-bottom:
@@ -302,6 +308,7 @@ $date-picker-calendar-header-container: map-merge(
 			var(--date-picker-calendar-header-container-padding-right, 16px),
 		padding-top:
 			var(--date-picker-calendar-header-container-padding-top, 16px),
+
 		media-breakpoint-down: (
 			xs: (
 				padding-bottom:
@@ -339,6 +346,7 @@ $date-picker-calendar-body-container: map-merge(
 			var(--date-picker-calendar-body-container-padding-left, 8px),
 		padding-right:
 			var(--date-picker-calendar-body-container-padding-right, 8px),
+
 		media-breakpoint-down: (
 			xs: (
 				padding-bottom:
@@ -379,6 +387,7 @@ $date-picker-calendar-footer-container: map-merge(
 			var(--date-picker-calendar-footer-container-padding-right, 14px),
 		padding-top:
 			var(--date-picker-calendar-footer-container-padding-top, 8px),
+
 		media-breakpoint-down: (
 			xs: (
 				padding-left:
@@ -432,6 +441,7 @@ $date-picker-calendar-item: map-deep-merge(
 		vertical-align: middle,
 		white-space: nowrap,
 		width: var(--date-picker-calendar-item-width, 32px),
+
 		media-breakpoint-down: (
 			xs: (
 				height: var(--date-picker-calendar-item-xs-down-height, 24px),
@@ -491,6 +501,7 @@ $date-picker-previous-month-date: () !default;
 $date-picker-previous-month-date: map-deep-merge(
 	(
 		color: var(--date-picker-previous-month-date-color, $gray-600),
+
 		active: (
 			background-color:
 				var(
@@ -507,6 +518,7 @@ $date-picker-next-month-date: () !default;
 $date-picker-next-month-date: map-deep-merge(
 	(
 		color: var(--date-picker-next-month-date-color, $gray-600),
+
 		active: (
 			background-color:
 				var(
@@ -542,6 +554,7 @@ $date-picker-input-group-text: map-deep-merge(
 		min-width: var(--date-picker-input-group-text-min-width, 32px),
 		padding-left: var(--date-picker-input-group-text-padding-left, 4px),
 		padding-right: var(--date-picker-input-group-text-padding-right, 4px),
+
 		media-breakpoint-down: (
 			xs: (
 				font-size:

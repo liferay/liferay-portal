@@ -88,6 +88,7 @@ $cadmin-tbar-inline-xs-down: () !default;
 $cadmin-tbar-inline-xs-down: map-deep-merge(
 	(
 		breakpoint-down: 'xs',
+
 		tbar-item: (
 			padding-left: 0px,
 		),
@@ -99,6 +100,7 @@ $cadmin-tbar-inline-sm-down: () !default;
 $cadmin-tbar-inline-sm-down: map-deep-merge(
 	(
 		breakpoint-down: 'sm',
+
 		tbar-item: (
 			padding-left: 0px,
 		),
@@ -110,6 +112,7 @@ $cadmin-tbar-inline-md-down: () !default;
 $cadmin-tbar-inline-md-down: map-deep-merge(
 	(
 		breakpoint-down: 'md',
+
 		tbar-item: (
 			padding-left: 0px,
 		),
@@ -121,6 +124,7 @@ $cadmin-tbar-inline-lg-down: () !default;
 $cadmin-tbar-inline-lg-down: map-deep-merge(
 	(
 		breakpoint-down: 'lg',
+
 		tbar-item: (
 			padding-left: 0px,
 		),
@@ -132,6 +136,7 @@ $cadmin-tbar-inline-xl-down: () !default;
 $cadmin-tbar-inline-xl-down: map-deep-merge(
 	(
 		breakpoint-down: 'xl',
+
 		tbar-item: (
 			padding-left: 0px,
 		),

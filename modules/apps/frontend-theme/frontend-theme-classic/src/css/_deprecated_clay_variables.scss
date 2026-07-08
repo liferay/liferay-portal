@@ -525,6 +525,7 @@ $btn-primary: map-deep-merge(
 			background-image: $c-unset,
 			color: $c-unset,
 		),
+
 		active-bg: $c-unset,
 		active-border-color: $c-unset,
 		active-focus-box-shadow: $c-unset,
@@ -532,23 +533,29 @@ $btn-primary: map-deep-merge(
 		border-color: var(--btn-primary-border-color, $primary),
 		box-shadow: $c-unset,
 		color: var(--btn-primary-color, color-yiq($primary)),
+
 		disabled: (
 			background-image: $c-unset,
 			border-color: $c-unset,
 			color: $c-unset,
 		),
+
 		disabled-bg: $c-unset,
+
 		focus: (
 			background-image: $c-unset,
 			border-color: $c-unset,
 			color: $c-unset,
 		),
+
 		focus-bg: $c-unset,
 		focus-box-shadow: $c-unset,
+
 		hover: (
 			background-image: clay-enable-gradients($primary-d1),
 			color: var(--btn-primary-hover-color, color-yiq($primary-d1)),
 		),
+
 		hover-bg: var(--btn-primary-hover-background-color, $primary-d1),
 		hover-border-color: var(--btn-primary-hover-border-color, transparent),
 	),
@@ -561,6 +568,7 @@ $btn-outline-primary: map-deep-merge(
 		active: (
 			border-color: $c-unset,
 		),
+
 		active-bg: $c-unset,
 		active-box-shadow: $c-unset,
 		active-color: $c-unset,
@@ -573,10 +581,12 @@ $btn-outline-primary: map-deep-merge(
 		focus-bg: $c-unset,
 		focus-box-shadow: $c-unset,
 		focus-color: $c-unset,
+
 		hover: (
 			border-color:
 				var(--btn-outline-primary-hover-border-color, $primary),
 		),
+
 		hover-bg: var(--btn-outline-primary-hover-background-color, $primary-l3),
 		hover-color: var(--btn-outline-primary-hover-color, color-yiq($primary)),
 	),
@@ -595,22 +605,28 @@ $btn-secondary: map-deep-merge(
 		border-color: var(--btn-secondary-border-color, $secondary-l2),
 		box-shadow: $c-unset,
 		color: var(--btn-secondary-color, $secondary),
+
 		disabled: (
 			background-image: $c-unset,
 		),
+
 		disabled-bg: $c-unset,
 		disabled-border-color: $c-unset,
 		disabled-color: $c-unset,
+
 		focus: (
 			background-image: $c-unset,
 		),
+
 		focus-bg: $c-unset,
 		focus-border-color: $c-unset,
 		focus-box-shadow: $c-unset,
 		focus-color: $c-unset,
+
 		hover: (
 			background-image: clay-enable-gradients($gray-100),
 		),
+
 		hover-bg: var(--btn-secondary-hover-background-color, $gray-100),
 		hover-border-color:
 			var(--btn-secondary-hover-border-color, $secondary-l2),
@@ -667,23 +683,29 @@ $btn-link: map-deep-merge(
 		active: (
 			box-shadow: clay-enable-shadows([none]),
 		),
+
 		border-radius: 1px,
 		box-shadow: $c-unset,
 		color: var(--btn-link-color, $link-color),
+
 		disabled: (
 			box-shadow: none,
 			color: $c-unset,
 			text-decoration: none,
 		),
+
 		focus: (
 			box-shadow: $c-unset,
 			text-decoration: $link-decoration,
 		),
+
 		font-weight: $font-weight-normal,
+
 		hover: (
 			color: var(--btn-link-hover-color, $link-hover-color),
 			text-decoration: $link-hover-decoration,
 		),
+
 		text-decoration: $link-decoration,
 	),
 	$btn-link

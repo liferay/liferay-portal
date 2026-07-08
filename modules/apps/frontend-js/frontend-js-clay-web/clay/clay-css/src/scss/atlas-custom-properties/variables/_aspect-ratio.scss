@@ -5,18 +5,22 @@ $aspect-ratio-sizes: map-deep-merge(
 			height: 2,
 			width: 3,
 		),
+
 		aspect-ratio-4-to-3: (
 			height: 3,
 			width: 4,
 		),
+
 		aspect-ratio-8-to-3: (
 			height: 3,
 			width: 8,
 		),
+
 		aspect-ratio-8-to-5: (
 			height: 5,
 			width: 8,
 		),
+
 		aspect-ratio-16-to-9: (
 			height: 9,
 			width: 16,

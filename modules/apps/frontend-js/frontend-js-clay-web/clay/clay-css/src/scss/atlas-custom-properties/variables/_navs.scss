@@ -530,6 +530,7 @@ $nav-tabs: map-deep-merge(
 		padding-left: var(--nav-tabs-padding-left, 24px),
 		padding-right: var(--nav-tabs-padding-right, 24px),
 		padding-top: var(--nav-tabs-padding-top, 7px),
+
 		nav-item: (
 			margin-bottom: calc(#{$nav-tabs-border-width} * -1),
 		),

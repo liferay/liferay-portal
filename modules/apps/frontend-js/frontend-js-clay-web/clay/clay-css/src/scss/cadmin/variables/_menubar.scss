@@ -13,6 +13,7 @@ $cadmin-menubar-primary: map-deep-merge(
 				unquote(
 					'color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
 				),
+
 			before: (
 				bottom: 0px,
 				content: '',
@@ -223,6 +224,7 @@ $cadmin-menubar-vertical-transparent-md: map-deep-merge(
 				unquote(
 					'color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
 				),
+
 			before: (
 				border-radius: $cadmin-border-radius 0px 0px
 					$cadmin-border-radius,
@@ -535,6 +537,7 @@ $cadmin-menubar-vertical-transparent-lg: map-deep-merge(
 				unquote(
 					'color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
 				),
+
 			before: (
 				border-radius: $cadmin-border-radius 0px 0px
 					$cadmin-border-radius,
@@ -644,6 +647,7 @@ $cadmin-menubar-vertical-transparent-lg: map-deep-merge(
 
 					focus: (
 						background-color: transparent,
+
 						after: (
 							box-shadow: $cadmin-component-focus-inset-box-shadow,
 						),

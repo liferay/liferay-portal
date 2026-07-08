@@ -919,6 +919,7 @@ $label-inverse-primary: map-deep-merge(
 		background-color: $primary,
 		border-color: $primary,
 		color: color-yiq($primary),
+
 		href: (
 			hover: (
 				background-color: clay-darken($primary, 10%),
@@ -948,6 +949,7 @@ $label-inverse-secondary: map-deep-merge(
 		background-color: $secondary,
 		border-color: $secondary,
 		color: color-yiq($secondary),
+
 		href: (
 			hover: (
 				background-color: clay-darken($secondary, 10%),
@@ -977,6 +979,7 @@ $label-inverse-success: map-deep-merge(
 		background-color: $success,
 		border-color: $success,
 		color: color-yiq($success),
+
 		href: (
 			hover: (
 				background-color: clay-darken($success, 10%),
@@ -1006,6 +1009,7 @@ $label-inverse-info: map-deep-merge(
 		background-color: $info,
 		border-color: $info,
 		color: color-yiq($info),
+
 		href: (
 			hover: (
 				background-color: clay-darken($info, 10%),
@@ -1035,6 +1039,7 @@ $label-inverse-warning: map-deep-merge(
 		background-color: $warning,
 		border-color: $warning,
 		color: color-yiq($warning),
+
 		href: (
 			hover: (
 				background-color: clay-darken($warning, 10%),
@@ -1064,6 +1069,7 @@ $label-inverse-danger: map-deep-merge(
 		background-color: $danger,
 		border-color: $danger,
 		color: color-yiq($danger),
+
 		href: (
 			hover: (
 				background-color: clay-darken($danger, 10%),
@@ -1093,6 +1099,7 @@ $label-inverse-light: map-deep-merge(
 		background-color: $light,
 		border-color: $light,
 		color: color-yiq($light),
+
 		href: (
 			hover: (
 				background-color: clay-darken($light, 10%),
@@ -1122,6 +1129,7 @@ $label-inverse-dark: map-deep-merge(
 		background-color: $dark,
 		border-color: $dark,
 		color: color-yiq($dark),
+
 		href: (
 			hover: (
 				background-color: clay-darken($dark, 10%),

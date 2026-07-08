@@ -308,8 +308,10 @@ $cadmin-c-table: map-deep-merge(
 							padding-right: 0px,
 						),
 					),
+
 				)
 			),
+
 		table-column-start: (
 			padding-left: $cadmin-table-cell-gutters,
 		),
@@ -349,6 +351,7 @@ $cadmin-c-table: map-deep-merge(
 						border-top: calc(2 * #{$cadmin-table-border-width})
 							solid $cadmin-table-border-color,
 					),
+
 				)
 			),
 		tfoot: $cadmin-c-table-tfoot,
@@ -370,6 +373,7 @@ $cadmin-c-table: map-deep-merge(
 
 		table-active: (
 			background-color: $cadmin-table-active-bg,
+
 			quick-action-menu: (
 				background-color: $cadmin-table-quick-action-menu-active-bg,
 			),
@@ -494,6 +498,7 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 					inset 0 -2px 0 0 $cadmin-primary-l0,
 					inset 0 -4px 0 0 $cadmin-white,
 				),
+
 				bottom: calc(#{$cadmin-table-border-width} * -1),
 				content: '',
 				display: block,
@@ -511,6 +516,7 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 						inset 2px 0 0 0 $cadmin-primary-l0,
 						inset 4px 0 0 0 $cadmin-white,
 					),
+
 					bottom: $cadmin-table-border-width,
 					content: '',
 					display: block,
@@ -529,6 +535,7 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 						inset -2px 0 0 0 $cadmin-primary-l0,
 						inset -4px 0 0 0 $cadmin-white,
 					),
+
 					bottom: $cadmin-table-border-width,
 					content: '',
 					display: block,
@@ -926,6 +933,7 @@ $cadmin-c-table-list: map-merge(
 				$cadmin-c-table-list-thead,
 				(
 					background-color: $cadmin-table-list-head-bg,
+
 					table-cell: (
 						border-bottom-width: 0px,
 						font-size: $cadmin-table-list-head-font-size,
@@ -935,6 +943,7 @@ $cadmin-c-table-list: map-merge(
 							$cadmin-table-list-head-vertical-alignment,
 						href: $cadmin-table-list-head-link,
 					),
+
 				)
 			),
 		table-cell: $cadmin-c-table-list-cell,
@@ -946,6 +955,7 @@ $cadmin-c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
+
 				)
 			),
 		tfoot:
@@ -955,6 +965,7 @@ $cadmin-c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
+
 				)
 			),
 		caption: $cadmin-c-table-list-caption,
@@ -970,6 +981,7 @@ $cadmin-c-table-list: map-merge(
 
 		table-active: (
 			background-color: $cadmin-table-list-active-bg,
+
 			quick-action-menu: (
 				background-color: $cadmin-table-list-quick-action-menu-active-bg,
 			),

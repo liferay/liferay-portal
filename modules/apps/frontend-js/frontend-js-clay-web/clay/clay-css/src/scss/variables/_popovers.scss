@@ -128,6 +128,7 @@ $popovers: map-deep-merge(
 		popover-secondary:
 			(
 				box-shadow: 0 8px 16px 0 rgba($primary, 0.16),
+
 				popover-header: (
 					background-color: transparent,
 					border-color: transparent,
@@ -367,6 +368,7 @@ $clay-popover-bottom: map-deep-merge(
 			margin: 0rem 0rem 0rem calc(#{$popover-arrow-width} * -0.5),
 			top:
 				calc((#{$popover-arrow-height} + #{$popover-border-width}) * -1),
+
 			before: (
 				border-bottom-color: $popover-arrow-outer-color,
 				border-width: 0rem calc(#{$popover-arrow-width} * 0.5)

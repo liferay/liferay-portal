@@ -852,6 +852,7 @@ $cadmin-link: map-deep-merge(
 		text-decoration: $cadmin-link-decoration,
 		text-underline-offset: 0.23em,
 		transition: clay-enable-transitions($cadmin-component-transition),
+
 		hover: (
 			color: $cadmin-link-hover-color,
 			text-decoration: $cadmin-link-hover-decoration,

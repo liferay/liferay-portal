@@ -249,6 +249,7 @@ $panel-secondary: () !default;
 $panel-secondary: map-deep-merge(
 	(
 		border-color: rgba($black, 0.125),
+
 		panel-header: (
 			background-color: $gray-100,
 			border-color: rgba($black, 0.125),

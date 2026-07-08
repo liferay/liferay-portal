@@ -216,6 +216,7 @@ $card-interactive-secondary: map-deep-merge(
 			box-shadow: c-unset,
 			color: $gray-900,
 			transform: translateY(-0.25rem),
+
 			after: (
 				bottom: -0.25rem,
 				content: '',
@@ -242,6 +243,7 @@ $card-type-asset: map-deep-merge(
 
 		hover: (
 			transform: translateY(-0.25rem),
+
 			after: (
 				bottom: -0.25rem,
 				content: '',
@@ -275,6 +277,7 @@ $template-card: map-deep-merge(
 	(
 		hover: (
 			transform: translateY(-0.25rem),
+
 			after: (
 				bottom: -0.25rem,
 				content: '',

@@ -73,11 +73,14 @@ $card-type-asset: (
 	aspect-ratio: (
 		enabled: false,
 	),
+
 	aspect-ratio-border-bottom-width: 0,
 	aspect-ratio-border-width: 0,
+
 	card-body: (
 		padding-top: $card-body-padding-top,
 	),
+
 );
 
 // Card Variants
@@ -100,15 +103,18 @@ $card-elevated-interactive: map-deep-merge(
 			border-color: var(--card-elevated-border-color-active),
 			box-shadow: var(--card-elevated-box-shadow-active),
 		),
+
 		focus: (
 			border-color: null,
 			box-shadow: $component-focus-box-shadow,
 		),
+
 		hover: (
 			background-color: var(--card-elevated-background-color-hover),
 			border-color: var(--card-elevated-border-color-hover),
 			box-shadow: var(--card-elevated-box-shadow-hover),
 		),
+
 	)
 );
 
@@ -126,15 +132,18 @@ $card-outlined-interactive: map-deep-merge(
 			border-color: var(--card-outlined-border-color-active),
 			box-shadow: var(--card-outlined-box-shadow-active),
 		),
+
 		focus: (
 			border-color: null,
 			box-shadow: $component-focus-box-shadow,
 		),
+
 		hover: (
 			background-color: var(--card-outlined-background-color-hover),
 			border-color: var(--card-outlined-border-color-hover),
 			box-shadow: var(--card-outlined-box-shadow-hover),
 		),
+
 	)
 );
 
@@ -152,14 +161,17 @@ $card-flat-interactive: map-deep-merge(
 			border-color: var(--card-flat-border-color-active),
 			box-shadow: var(--card-flat-box-shadow-active),
 		),
+
 		focus: (
 			border-color: null,
 			box-shadow: $component-focus-box-shadow,
 		),
+
 		hover: (
 			background-color: var(--card-flat-background-color-hover),
 			border-color: var(--card-flat-border-color-hover),
 			box-shadow: var(--card-flat-box-shadow-hover),
 		),
+
 	)
 );

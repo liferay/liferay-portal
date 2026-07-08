@@ -507,8 +507,10 @@ $modal-success: map-deep-merge(
 			border-color:
 				var(--modal-success-modal-header-border-color, $success-l1),
 			color: var(--modal-success-modal-header-color, $success),
+
 			close: (
 				color: var(--modal-success-modal-header-close-color, $success),
+
 				hover: (
 					color:
 						var(
@@ -540,8 +542,10 @@ $modal-info: map-deep-merge(
 				var(--modal-info-modal-header-background-color, $info-l2),
 			border-color: var(--modal-info-modal-header-border-color, $info-l1),
 			color: var(--modal-info-modal-header-color, $info),
+
 			close: (
 				color: var(--modal-info-modal-header-close-color, $info),
+
 				hover: (
 					color:
 						var(
@@ -574,8 +578,10 @@ $modal-warning: map-deep-merge(
 			border-color:
 				var(--modal-warning-modal-header-border-color, $warning-l1),
 			color: var(--modal-warning-modal-header-color, $warning),
+
 			close: (
 				color: var(--modal-warning-modal-header-close-color, $warning),
+
 				hover: (
 					color:
 						var(
@@ -608,8 +614,10 @@ $modal-danger: map-deep-merge(
 			border-color:
 				var(--modal-danger-modal-header-border-color, $danger-l1),
 			color: var(--modal-danger-modal-header-color, $danger),
+
 			close: (
 				color: var(--modal-danger-modal-header-close-color, $danger),
+
 				hover: (
 					color:
 						var(

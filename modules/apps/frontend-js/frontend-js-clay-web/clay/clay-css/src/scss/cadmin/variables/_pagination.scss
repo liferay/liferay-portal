@@ -466,6 +466,7 @@ $cadmin-pagination-items-per-page-link: map-deep-merge(
 		disabled: $cadmin-pagination-items-per-page-link-disabled,
 
 		show: map-get($cadmin-pagination-link, show),
+
 		lexicon-icon: (
 			margin-left:
 				$cadmin-pagination-items-per-page-lexicon-icon-margin-left,
@@ -561,6 +562,7 @@ $cadmin-pagination-sm: map-deep-merge(
 		pagination-items-per-page: (
 			border-radius:
 				clay-enable-rounded($cadmin-pagination-link-border-radius-sm),
+
 			link: (
 				font-size: $cadmin-pagination-font-size-sm,
 				height: $cadmin-pagination-item-height-sm,
@@ -629,6 +631,7 @@ $cadmin-pagination-lg: map-deep-merge(
 		pagination-items-per-page: (
 			border-radius:
 				clay-enable-rounded($cadmin-pagination-link-border-radius-lg),
+
 			link: (
 				font-size: $cadmin-pagination-font-size-lg,
 				height: $cadmin-pagination-item-height-lg,

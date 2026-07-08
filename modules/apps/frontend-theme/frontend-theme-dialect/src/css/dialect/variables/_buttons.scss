@@ -40,6 +40,7 @@ $btn: (
 	--btn-active-color: $white,
 	--btn-default-border-color: transparent,
 	--btn-default-color: $white,
+
 	active: (
 		background-color:
 			var(
@@ -50,10 +51,12 @@ $btn: (
 			var(--btn-active-border-color, var(--btn-default-border-color)),
 		color: var(--btn-active-color),
 	),
+
 	background-color: var(--btn-default-background-color),
 	border-color: var(--btn-default-border-color),
 	box-shadow: var(--btn-box-shadow),
 	color: var(--btn-default-color),
+
 	disabled: (
 		background-color:
 			var(
@@ -64,12 +67,15 @@ $btn: (
 			var(--btn-disabled-border-color, var(--btn-default-border-color)),
 		color: var(--btn-disabled-color, var(--btn-default-color)),
 	),
+
 	focus: (
 		background-color: var(--btn-default-background-color),
 		border-color: var(--btn-default-border-color),
 		color: var(--btn-default-color),
 	),
+
 	font-weight: var(--btn-font-weight),
+
 	hover: (
 		background-color:
 			var(
@@ -80,6 +86,7 @@ $btn: (
 			var(--btn-hover-border-color, var(--btn-default-border-color)),
 		color: var(--btn-hover-color, var(--btn-default-color)),
 	),
+
 	padding-bottom: calc(#{$btn-padding-y} - #{$btn-border-width}),
 	padding-left: calc(#{$dialect-btn-padding-x} - #{$btn-border-width}),
 	padding-right: calc(#{$dialect-btn-padding-x} - #{$btn-border-width}),
@@ -118,62 +125,81 @@ $btn-outline-secondary: (
 
 $btn-link: (
 	color: $link-color,
+
 	hover: (
 		color: $link-hover-color,
 	),
+
 	disabled: (
 		color: var(--color-action-primary-disabled),
 	),
+
 );
 
 $btn-danger: (
 	active: (
 		color: c-unset,
 	),
+
 	color: c-unset,
+
 	focus: (
 		color: c-unset,
 	),
+
 	hover: (
 		color: c-unset,
 	),
+
 );
 
 $btn-info: (
 	active: (
 		color: c-unset,
 	),
+
 	color: c-unset,
+
 	focus: (
 		color: c-unset,
 	),
+
 	hover: (
 		color: c-unset,
 	),
+
 );
 
 $btn-success: (
 	active: (
 		color: c-unset,
 	),
+
 	color: c-unset,
+
 	focus: (
 		color: c-unset,
 	),
+
 	hover: (
 		color: c-unset,
 	),
+
 );
 
 $btn-warning: (
 	active: (
 		color: c-unset,
 	),
+
 	color: c-unset,
+
 	focus: (
 		color: c-unset,
 	),
+
 	hover: (
 		color: c-unset,
 	),
+
 );

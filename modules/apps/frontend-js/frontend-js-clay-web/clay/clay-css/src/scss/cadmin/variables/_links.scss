@@ -3,6 +3,7 @@ $cadmin-c-link: map-deep-merge(
 	(
 		text-decoration: none,
 		transition: clay-enable-transitions(box-shadow 0.15s ease-in-out),
+
 		hover: (
 			text-decoration: none,
 		),
@@ -379,6 +380,7 @@ $cadmin-component-action: map-deep-merge(
 		transition: $cadmin-component-transition,
 		vertical-align: middle,
 		width: map-get($cadmin-link-monospaced, width),
+
 		hover: (
 			background-color:
 				unquote('hsl(from #{$cadmin-gray-900} h s l / 0.03)'),

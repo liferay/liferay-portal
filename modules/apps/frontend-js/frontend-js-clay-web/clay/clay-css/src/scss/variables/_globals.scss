@@ -778,6 +778,7 @@ $link: map-deep-merge(
 		text-decoration: $link-decoration,
 		text-underline-offset: 0.23em,
 		transition: clay-enable-transitions($component-transition),
+
 		hover: (
 			color: $link-hover-color,
 			text-decoration: $link-hover-decoration,

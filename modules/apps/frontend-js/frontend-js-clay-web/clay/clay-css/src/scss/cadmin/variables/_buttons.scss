@@ -79,6 +79,7 @@ $cadmin-btn: map-deep-merge(
 
 		active: (
 			box-shadow: clay-enable-shadows($cadmin-btn-active-box-shadow),
+
 			focus: (
 				box-shadow: c-unset,
 			),
@@ -493,6 +494,7 @@ $cadmin-btn-primary: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-primary),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-primary-d1,
 			background-image: clay-enable-gradients($cadmin-primary-d1),
@@ -570,6 +572,7 @@ $cadmin-btn-success: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-success),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-success-d1,
 			background-image: clay-enable-gradients($cadmin-success-d1),
@@ -608,6 +611,7 @@ $cadmin-btn-info: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-info),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-info-d1,
 			background-image: clay-enable-gradients($cadmin-info-d1),
@@ -646,6 +650,7 @@ $cadmin-btn-warning: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-warning),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-warning-d1,
 			background-image: clay-enable-gradients($cadmin-warning-d1),
@@ -684,6 +689,7 @@ $cadmin-btn-danger: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-danger),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-danger-d1,
 			background-image: clay-enable-gradients($cadmin-danger-d1),
@@ -761,6 +767,7 @@ $cadmin-btn-dark: map-deep-merge(
 		background-image: clay-enable-gradients($cadmin-dark),
 		border-color: transparent,
 		color: $cadmin-white,
+
 		hover: (
 			background-color: $cadmin-dark-d1,
 			background-image: clay-enable-gradients($cadmin-dark-d1),
