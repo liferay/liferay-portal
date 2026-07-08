@@ -9,9 +9,14 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
+import {AccountNotificationsPage} from '../../../pages/portal-workflow-task-web/AccountNotificationsPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {
+	performUserSwitch,
+	performUserSwitchViaApi,
+	userData,
+} from '../../../utils/performLogin';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -254,3 +259,114 @@ test(
 		).toBeVisible();
 	}
 );
+
+test('A subscriber sees a website notification when a subscribed category thread is updated', async ({
+	apiHelpers,
+	messageBoardsEditThreadPage,
+	messageBoardsPage,
+	messageBoardsWidgetPage,
+	page,
+	site,
+}) => {
+	const categoryName = getRandomString();
+	const threadBodyEdit = getRandomString();
+	const threadSubject = getRandomString();
+	const threadSubjectEdit = getRandomString();
+
+	const messageBoardSection =
+		await apiHelpers.headlessDelivery.postSiteMessageBoardSection({
+			siteId: site.id,
+			title: categoryName,
+		});
+
+	const layout = await messageBoardsWidgetPage.addMessageBoardsPortlet(site);
+
+	// A subscriber subscribes to the category and posts a thread in it
+
+	const administratorRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+	const subscriber = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	await apiHelpers.headlessAdminUser.assignUserToRole(
+		administratorRole.externalReferenceCode,
+		subscriber.id
+	);
+
+	userData[subscriber.alternateName] = {
+		name: subscriber.givenName,
+		password: 'test',
+		surname: subscriber.familyName,
+	};
+
+	await performUserSwitchViaApi(page, subscriber.alternateName);
+
+	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+	await page.getByRole('link', {name: categoryName}).click();
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.locator('.dropdown-menu').getByText('Subscribe', {
+			exact: true,
+		}),
+		trigger: page.locator('a.component-action.dropdown-toggle').last(),
+	});
+
+	await apiHelpers.headlessDelivery.postMessageBoardSectionMessageBoardThread(
+		{
+			articleBody: getRandomString(),
+			headline: threadSubject,
+			messageBoardSectionId: messageBoardSection.id,
+		}
+	);
+
+	// The administrator updates the thread
+
+	await performUserSwitchViaApi(page, 'test');
+
+	await messageBoardsPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: categoryName}).click();
+
+	await page.getByRole('link', {name: threadSubject}).click();
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.locator('.dropdown-menu').getByText('Edit', {exact: true}),
+		trigger: page.locator('.panel-heading .dropdown-toggle'),
+	});
+
+	await messageBoardsEditThreadPage.subjectSelector.fill(threadSubjectEdit);
+	await messageBoardsEditThreadPage.bodyTextBox.fill(threadBodyEdit);
+	await messageBoardsEditThreadPage.publishButton.click();
+
+	await expect(page.getByTestId('headerTitle')).toHaveText(threadSubjectEdit);
+
+	// The subscriber is notified about the updated thread
+
+	const accountNotificationsPage = new AccountNotificationsPage(page);
+
+	await performUserSwitchViaApi(page, subscriber.alternateName);
+
+	await expect(async () => {
+		await page.reload();
+
+		await expect(accountNotificationsPage.notificationsCount).toHaveText(
+			'1',
+			{timeout: 5000}
+		);
+	}).toPass();
+
+	await accountNotificationsPage.notificationsCount.click();
+
+	await page.getByRole('link', {name: threadSubjectEdit}).click();
+
+	await expect(page.getByText(threadBodyEdit)).toBeVisible();
+
+	// Viewing the updated thread clears the notification
+
+	await page.reload();
+
+	await expect(accountNotificationsPage.notificationsCount).toBeHidden();
+});

@@ -223,69 +223,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanViewWebsiteNotificationForUpdatedThreadInCategory {
-		property portal.acceptance = "quarantine";
-
-		JSONMBMessage.addCategory(
-			categoryDescription = "MB Category Description",
-			categoryName = "MB Category Name",
-			userEmailAddress = "test@liferay.com");
-
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsCategory.subscribePG(categoryName = "MB Category Name");
-
-		JSONMBMessage.addMessage(
-			categoryName = "MB Category Name",
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsCategory.openToCategory(
-			categoryName = "MB Category Name",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		MessageboardsThread.viewCP(
-			replyCount = 0,
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject",
-			userName = "Test Test");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		MessageboardsThread.editPG(
-			categoryName = "MB Category Name",
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadBodyEdit = "MB Thread Message Body Edit",
-			threadSubject = "MB Thread Message Subject",
-			threadSubjectEdit = "MB Thread Message Subject Edit");
-
-		Notifications.viewBadgeCount(notificationCount = 0);
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		Notifications.viewBadgeCount(notificationCount = 1);
-
-		Notifications.gotoNotifications();
-
-		Notifications.navigateToContent(contentBody = "MB Thread Message Subject Edit");
-
-		MessageboardsThread.viewPG(
-			threadBody = "MB Thread Message Body Edit",
-			threadSubject = "MB Thread Message Subject Edit");
-
-		Notifications.viewBadgeCount(notificationCount = 0);
-	}
-
-	@priority = 4
-	@refactordone
 	test NoWebsiteNotificationAppearsForNewOrUpdatedThreadInCategory {
 		Navigator.gotoNotifications();
 
