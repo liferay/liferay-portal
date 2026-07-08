@@ -140,7 +140,7 @@ public class CETManagerImpl implements CETManager {
 	@Activate
 	protected void activate() throws Exception {
 		PortalCacheMapSynchronizeUtil.synchronize(
-			_getEntryPortalCache(), _cets,
+			_getPortalCache(), _cets,
 			new PortalCacheMapSynchronizeUtil.Synchronizer<Long, Object>() {
 
 				@Override
@@ -267,7 +267,7 @@ public class CETManagerImpl implements CETManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	private PortalCache<Long, Object> _getEntryPortalCache() throws Exception {
+	private PortalCache<Long, Object> _getPortalCache() throws Exception {
 		ImplementationClassName implementationClassName =
 			ClientExtensionEntry.class.getAnnotation(
 				ImplementationClassName.class);
