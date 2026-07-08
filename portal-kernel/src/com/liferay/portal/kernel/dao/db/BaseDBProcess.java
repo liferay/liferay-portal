@@ -808,10 +808,9 @@ public abstract class BaseDBProcess implements DBProcess {
 		List<Future<Void>> futures = new ArrayList<>();
 		Map<Thread, PreparedStatement> preparedStatementHashMap =
 			new ConcurrentHashMap<>();
-		ThrowableCollector throwableCollector = new ThrowableCollector();
-
 		AtomicBoolean producerFinished = new AtomicBoolean();
 		BlockingQueue<T> queue = new ArrayBlockingQueue<>(size);
+		ThrowableCollector throwableCollector = new ThrowableCollector();
 
 		boolean notificationEnabled = NotificationThreadLocal.isEnabled();
 		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
