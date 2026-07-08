@@ -23,15 +23,15 @@ const WORLD_MAP_ENTRIES = Object.entries(WORLD_MAP_DATA);
 const STAGGER_DELAY_MS = 20;
 const WORLD_VIEW_BOX_WIDTH = getViewBoxWidth(WORLD_MAP_VIEW_BOX);
 
-function getStaggerDelayMs(dataIndex: number, validIndices: number[]): number {
-	return validIndices.indexOf(dataIndex) * STAGGER_DELAY_MS;
+function getStaggerDelayMs(dataIndex: number, validIndexes: number[]): number {
+	return validIndexes.indexOf(dataIndex) * STAGGER_DELAY_MS;
 }
 
 function getValidFocusIndex(
 	focusIndex: number | null,
-	validIndices: number[]
+	validIndexes: number[]
 ): number | null {
-	if (focusIndex === null || !validIndices.includes(focusIndex)) {
+	if (focusIndex === null || !validIndexes.includes(focusIndex)) {
 		return null;
 	}
 
@@ -77,7 +77,7 @@ interface MapChartPlotProps {
 	onHoverEnd: () => void;
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	titleId: string;
-	validIndices: number[];
+	validIndexes: number[];
 	variant: 'choropleth' | 'markers';
 }
 
@@ -96,7 +96,7 @@ export default function MapChartPlot({
 	onHoverEnd,
 	onKeyDown,
 	titleId,
-	validIndices,
+	validIndexes,
 	variant,
 }: MapChartPlotProps) {
 	const svgRef = useRef<SVGSVGElement>(null);
@@ -122,11 +122,11 @@ export default function MapChartPlot({
 	const dataIndexByCountry = useMemo(
 		() =>
 			new Map(
-				validIndices.map(
+				validIndexes.map(
 					(index) => [data[index].country, index] as const
 				)
 			),
-		[data, validIndices]
+		[data, validIndexes]
 	);
 
 	const outlineElementsByCountry = useMemo(
@@ -146,7 +146,7 @@ export default function MapChartPlot({
 
 	const focusClipId = `${baseId}-country-focus-clip`;
 
-	const validFocusIndex = getValidFocusIndex(focusIndex, validIndices);
+	const validFocusIndex = getValidFocusIndex(focusIndex, validIndexes);
 
 	const focusedCountryPath =
 		variant === 'choropleth' && validFocusIndex !== null
@@ -156,7 +156,7 @@ export default function MapChartPlot({
 	const activeMarkerIndex =
 		variant === 'markers' &&
 		activeIndex !== null &&
-		validIndices.includes(activeIndex)
+		validIndexes.includes(activeIndex)
 			? activeIndex
 			: null;
 
@@ -189,7 +189,7 @@ export default function MapChartPlot({
 							countryCode={countryCode}
 							countryPath={country.d}
 							datum={data[dataIndex]}
-							delayMs={getStaggerDelayMs(dataIndex, validIndices)}
+							delayMs={getStaggerDelayMs(dataIndex, validIndexes)}
 							index={dataIndex}
 							isActive={activeIndex === dataIndex}
 							isFocusable={focusableIndex === dataIndex}
@@ -220,11 +220,11 @@ export default function MapChartPlot({
 			/>
 
 			{variant === 'markers'
-				? validIndices.map((index) => (
+				? validIndexes.map((index) => (
 						<MapChartMarker
 							color={colors[index]}
 							datum={data[index]}
-							delayMs={getStaggerDelayMs(index, validIndices)}
+							delayMs={getStaggerDelayMs(index, validIndexes)}
 							hitRadius={markerHitRadius}
 							index={index}
 							isActive={index === activeIndex}

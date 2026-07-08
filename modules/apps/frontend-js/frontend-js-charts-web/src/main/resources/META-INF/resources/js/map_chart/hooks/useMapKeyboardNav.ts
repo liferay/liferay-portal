@@ -19,16 +19,16 @@ function getStepOffset(key: string): number {
 	return 0;
 }
 
-export function useMapKeyboardNav(validIndices: number[], focus: FocusHandler) {
+export function useMapKeyboardNav(validIndexes: number[], focus: FocusHandler) {
 	return useCallback(
 		(event: React.KeyboardEvent, index: number) => {
-			const count = validIndices.length;
+			const count = validIndexes.length;
 
 			if (count <= 0) {
 				return;
 			}
 
-			const currentPosition = validIndices.indexOf(index);
+			const currentPosition = validIndexes.indexOf(index);
 
 			if (currentPosition === -1) {
 				return;
@@ -37,7 +37,7 @@ export function useMapKeyboardNav(validIndices: number[], focus: FocusHandler) {
 			if (event.key === 'Home') {
 				event.preventDefault();
 
-				focus(validIndices[0]);
+				focus(validIndexes[0]);
 
 				return;
 			}
@@ -45,7 +45,7 @@ export function useMapKeyboardNav(validIndices: number[], focus: FocusHandler) {
 			if (event.key === 'End') {
 				event.preventDefault();
 
-				focus(validIndices[count - 1]);
+				focus(validIndexes[count - 1]);
 
 				return;
 			}
@@ -58,8 +58,8 @@ export function useMapKeyboardNav(validIndices: number[], focus: FocusHandler) {
 
 			event.preventDefault();
 
-			focus(validIndices[(currentPosition + offset + count) % count]);
+			focus(validIndexes[(currentPosition + offset + count) % count]);
 		},
-		[validIndices, focus]
+		[validIndexes, focus]
 	);
 }

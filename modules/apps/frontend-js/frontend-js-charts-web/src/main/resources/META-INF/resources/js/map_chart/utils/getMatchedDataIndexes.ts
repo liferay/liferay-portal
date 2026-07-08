@@ -6,12 +6,12 @@
 import {WORLD_MAP_DATA} from '../geography/mapChartData';
 import {MapDatum} from '../types/MapDatum';
 
-export function getMatchedDataIndices(data: MapDatum[]): number[] {
-	return data.reduce<number[]>((indices, datum, index) => {
+export function getMatchedDataIndexes(data: MapDatum[]): number[] {
+	return data.reduce<number[]>((indexes, datum, index) => {
 		if (WORLD_MAP_DATA[datum.country]) {
-			indices.push(index);
+			indexes.push(index);
 		}
 
-		return indices;
+		return indexes;
 	}, []);
 }

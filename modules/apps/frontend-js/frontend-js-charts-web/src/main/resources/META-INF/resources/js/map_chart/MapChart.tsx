@@ -19,7 +19,7 @@ import {
 	getEffectiveBucketCount,
 } from './utils/computeQuantileBuckets';
 import {getClampedSteps} from './utils/getClampedSteps';
-import {getMatchedDataIndices} from './utils/getMatchedDataIndices';
+import {getMatchedDataIndexes} from './utils/getMatchedDataIndexes';
 
 import '../../css/MapChart.scss';
 
@@ -82,12 +82,12 @@ export default function MapChart({
 		[data, scheme, bucketCount, buckets]
 	);
 
-	const validIndices = useMemo(() => getMatchedDataIndices(data), [data]);
+	const validIndexes = useMemo(() => getMatchedDataIndexes(data), [data]);
 
 	const focusableIndex =
-		focusIndex !== null && validIndices.includes(focusIndex)
+		focusIndex !== null && validIndexes.includes(focusIndex)
 			? focusIndex
-			: validIndices[0] ?? null;
+			: validIndexes[0] ?? null;
 
 	const focusItem = useCallback((index: number) => {
 		setFocusIndex(index);
@@ -95,7 +95,7 @@ export default function MapChart({
 		itemRefs.current[index]?.focus();
 	}, []);
 
-	const onKeyDown = useMapKeyboardNav(validIndices, focusItem);
+	const onKeyDown = useMapKeyboardNav(validIndexes, focusItem);
 
 	const itemRefFactory = useCallback((index: number) => {
 		if (!itemRefCallbacks.current[index]) {
@@ -154,7 +154,7 @@ export default function MapChart({
 					onHoverEnd={clearHover}
 					onKeyDown={onKeyDown}
 					titleId={titleId}
-					validIndices={validIndices}
+					validIndexes={validIndexes}
 					variant={variant}
 				/>
 
