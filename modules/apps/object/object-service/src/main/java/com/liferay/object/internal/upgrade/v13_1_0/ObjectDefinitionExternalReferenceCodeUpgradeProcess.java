@@ -101,6 +101,7 @@ public class ObjectDefinitionExternalReferenceCodeUpgradeProcess
 				preparedStatement2.addBatch();
 
 				externalReferenceCodes.remove(oldExternalReferenceCode);
+
 				externalReferenceCodes.add(externalReferenceCode);
 			}
 
