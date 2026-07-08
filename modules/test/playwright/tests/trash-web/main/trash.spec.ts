@@ -927,3 +927,78 @@ test(
 		await webContentPage.assertEntryPresent(targetWebContentTitle);
 	}
 );
+
+test(
+	'Can access the recycle bin back button tooltip via the keyboard',
+	{tag: '@LPS-177777'},
+	async ({apiHelpers, blogsPage, page, site}) => {
+		const blogHeadline = `Blog ${getRandomString()}`;
+		const documentTitle = `Document ${getRandomString()}.png`;
+		const webContentTitle = `Web Content ${getRandomString()}`;
+
+		await apiHelpers.headlessDelivery.postBlog(site.id, {
+			headline: blogHeadline,
+		});
+
+		await createDocument(apiHelpers, site.id, documentTitle);
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentStructureId: await getBasicWebContentStructureId(apiHelpers),
+			datePublished: null,
+			siteId: site.id,
+			title: webContentTitle,
+		});
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+		const webContentPage = new WebContentPage(page);
+
+		// Move each asset to the recycle bin
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveToRecycleBin(webContentTitle);
+
+		await blogsPage.goto(site.friendlyUrlPath);
+
+		await blogsPage.moveEntryToRecycleBin(blogHeadline);
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await documentLibraryPage.moveToRecycleBin(documentTitle);
+
+		// Opening any trashed asset exposes a keyboard focusable back button
+		// whose tooltip reads "Go to Recycle Bin"
+
+		for (const assetName of [
+			webContentTitle,
+			blogHeadline,
+			documentTitle,
+		]) {
+			await recycleBinPage.goto(site.friendlyUrlPath);
+
+			await recycleBinPage.viewEntry(assetName);
+
+			const backButton = page.getByRole('link', {
+				name: 'Go to Recycle Bin',
+			});
+
+			const tooltip = page
+				.locator('.tooltip')
+				.getByText('Go to Recycle Bin');
+
+			await backButton.focus();
+
+			// The tooltip only appears on a keyboard driven focus, so tab away
+			// and back to land on the button through the keyboard
+
+			await expect(async () => {
+				await page.keyboard.press('Shift+Tab');
+
+				await page.keyboard.press('Tab');
+
+				await expect(tooltip).toBeVisible({timeout: 2000});
+			}).toPass();
+		}
+	}
+);
