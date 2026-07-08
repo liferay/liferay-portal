@@ -1492,3 +1492,63 @@ test(
 		});
 	}
 );
+
+test(
+	'All section can be filtered by Type',
+	{tag: ['@LPD-85551', '@LPD-87956', '@LPD-97359']},
+	async ({apiHelpers, assetsPage, page}) => {
+
+		// LPD-97359: the CMS Type filter (objectDefinitionExternalReferenceCode)
+		// returns "No Results Found" for a valid type, in both the Recycle Bin
+		// and the All section. Recorded as an expected failure until the fix
+		// lands, at which point this test turns green and test.fail() is removed.
+
+		test.fail();
+
+		const documentTitle = getRandomString();
+		const webContentTitle = getRandomString();
+
+		await test.step('Create one web content and one document', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: webContentTitle,
+				},
+				'cms/basic-web-contents',
+				'Default'
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64: _PNG_BASE64,
+						name: `${documentTitle}.png`,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: documentTitle,
+				},
+				'cms/basic-documents',
+				'Default'
+			);
+		});
+
+		await test.step('Both are visible before filtering', async () => {
+			await assetsPage.gotoAll();
+
+			await expect(assetsPage.getItem(webContentTitle)).toBeVisible();
+			await expect(assetsPage.getItem(documentTitle)).toBeVisible();
+		});
+
+		await test.step('Filtering by Type Basic Web Content shows only the web content', async () => {
+			await applyFDSSelectionFilter(page, {
+				filter: 'Type',
+				value: 'Basic Web Content',
+			});
+
+			await expect(assetsPage.getItem(webContentTitle)).toBeVisible({
+				timeout: 5000,
+			});
+			await expect(assetsPage.getItem(documentTitle)).toBeHidden();
+		});
+	}
+);
