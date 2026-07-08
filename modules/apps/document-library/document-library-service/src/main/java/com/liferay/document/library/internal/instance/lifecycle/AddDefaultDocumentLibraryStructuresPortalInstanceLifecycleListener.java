@@ -101,8 +101,7 @@ public class AddDefaultDocumentLibraryStructuresPortalInstanceLifecycleListener
 				locale, name
 			).build();
 
-			DDMForm ddmForm = DDMFormUtil.buildDDMForm(
-				_rawMetadataProcessor.getFieldNames(), locale);
+			DDMForm ddmForm = DDMFormUtil.buildDDMForm(locale);
 
 			DDMFormLayout ddmFormLayout = _ddm.getDefaultDDMFormLayout(ddmForm);
 
@@ -134,10 +133,6 @@ public class AddDefaultDocumentLibraryStructuresPortalInstanceLifecycleListener
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private com.liferay.portal.kernel.metadata.RawMetadataProcessor
-		_rawMetadataProcessor;
 
 	@Reference
 	private UserLocalService _userLocalService;

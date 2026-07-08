@@ -123,8 +123,9 @@ public class RawMetadataProcessorImpl
 				return;
 			}
 
-			rawMetadataMap = _rawMetadataProcessor.getRawMetadataMap(
-				fileVersion.getMimeType(), inputStream);
+			rawMetadataMap = DDMFormUtil.getDDMFormValuesMap(
+				_rawMetadataProcessor.getRawMetadata(
+					fileVersion.getMimeType(), inputStream));
 		}
 		catch (IOException ioException) {
 			if (_log.isWarnEnabled()) {

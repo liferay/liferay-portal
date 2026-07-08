@@ -6,9 +6,6 @@
 package com.liferay.portal.tika.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
-import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
-import com.liferay.dynamic.data.mapping.kernel.Value;
 import com.liferay.portal.kernel.metadata.RawMetadataProcessor;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -17,7 +14,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.ByteArrayInputStream;
 
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -38,29 +34,16 @@ public class TikaRawMetadataProcessorTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetRawMetadataMapWithXMatlab() throws Exception {
-		Map<String, DDMFormValues> rawMetadataMap =
-			_rawMetadataProcessor.getRawMetadataMap(
+	public void testGetRawMetadataWithXMatlab() throws Exception {
+		Map<String, String[]> rawMetadata =
+			_rawMetadataProcessor.getRawMetadata(
 				ContentTypes.APPLICATION_JAVASCRIPT,
 				new ByteArrayInputStream(
 					"function TikaRawMetadataProcessorTest() {}".getBytes()));
 
-		DDMFormValues ddmFormValues = rawMetadataMap.get(
-			RawMetadataProcessor.TIKA_RAW_METADATA);
+		String[] values = rawMetadata.get("Content-Type");
 
-		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
-			ddmFormValues.getDDMFormFieldValuesMap();
-
-		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
-			"HttpHeaders_CONTENT_TYPE");
-
-		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
-
-		Value value = ddmFormFieldValue.getValue();
-
-		String valueString = value.getString(value.getDefaultLocale());
-
-		Assert.assertTrue(valueString.startsWith("application/javascript;"));
+		Assert.assertTrue(values[0].startsWith("application/javascript;"));
 	}
 
 	@Inject
