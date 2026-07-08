@@ -154,7 +154,7 @@ public class PermissionExportImportTest {
 
 	@Test
 	@TestInfo("LPS-84290")
-	public void testExportImportDocumentLibraryFolderPermissionsForSiteRole()
+	public void testDocumentLibraryFolderPermissionsExportImportForSiteRole()
 		throws Exception {
 
 		Group exportGroup = GroupTestUtil.addGroup();
