@@ -778,3 +778,152 @@ test('Can search for documents from a deleted folder in the recycle bin', async 
 		await recycleBinPage.assertEntry(title, 'Document');
 	}
 });
+
+test(
+	'Can restore documents from a trashed folder to existing folders',
+	{tag: '@LPS-190757'},
+	async ({apiHelpers, page, site}) => {
+		const folderName = `Folder ${getRandomString()}`;
+		const targetFolderName = `Folder ${getRandomString()}`;
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id,
+			{name: folderName}
+		);
+
+		await apiHelpers.headlessDelivery.postDocumentFolder(site.id, {
+			name: targetFolderName,
+		});
+
+		const homeDocumentTitle = `Document ${getRandomString()}.png`;
+		const targetDocumentTitle = `Document ${getRandomString()}.png`;
+
+		for (const title of [homeDocumentTitle, targetDocumentTitle]) {
+			await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+				folder.id,
+				createReadStream(
+					createSizedFile(`${getRandomString()}.png`, 'png', 1024)
+				),
+				{fileName: `${getRandomString()}.png`, title}
+			);
+		}
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+
+		// Move the folder, with its documents, to the recycle bin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await documentLibraryPage.moveFolderToRecycleBin(folderName);
+
+		// Restore one document from the trashed folder to the site home
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restoreContentFromFolder(
+			folderName,
+			homeDocumentTitle
+		);
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {name: homeDocumentTitle})
+		).toBeVisible();
+
+		// Restore another document from the trashed folder to the second folder
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restoreContentFromFolder(
+			folderName,
+			targetDocumentTitle,
+			targetFolderName
+		);
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('link', {name: targetFolderName}).click();
+
+		await expect(
+			page.getByRole('link', {name: targetDocumentTitle})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can restore web content from a trashed folder to existing folders',
+	{tag: '@LPS-190757'},
+	async ({apiHelpers, page, site}) => {
+		const folderName = `Folder ${getRandomString()}`;
+		const targetFolderName = `Folder ${getRandomString()}`;
+
+		const structuredContentFolder =
+			await apiHelpers.headlessDelivery.postStructuredContentFolder(
+				site.id,
+				{
+					name: folderName,
+				}
+			);
+
+		await apiHelpers.headlessDelivery.postStructuredContentFolder(site.id, {
+			name: targetFolderName,
+		});
+
+		const contentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const homeWebContentTitle = `Web Content ${getRandomString()}`;
+		const targetWebContentTitle = `Web Content ${getRandomString()}`;
+
+		for (const title of [homeWebContentTitle, targetWebContentTitle]) {
+			await apiHelpers.headlessDelivery.postStructuredContentFolderStructuredContent(
+				{
+					contentStructureId,
+					datePublished: null,
+					structuredContentFolderId: structuredContentFolder.id,
+					title,
+				}
+			);
+		}
+
+		const recycleBinPage = new RecycleBinPage(page);
+		const webContentPage = new WebContentPage(page);
+
+		// Move the folder, with its web content, to the recycle bin
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.moveFolderToRecycleBin(folderName);
+
+		// Restore one web content from the trashed folder to the site home
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restoreContentFromFolder(
+			folderName,
+			homeWebContentTitle
+		);
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await webContentPage.assertEntryPresent(homeWebContentTitle);
+
+		// Restore another web content from the trashed folder to the second folder
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restoreContentFromFolder(
+			folderName,
+			targetWebContentTitle,
+			targetFolderName
+		);
+
+		await webContentPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('link', {name: targetFolderName}).click();
+
+		await webContentPage.assertEntryPresent(targetWebContentTitle);
+	}
+);
