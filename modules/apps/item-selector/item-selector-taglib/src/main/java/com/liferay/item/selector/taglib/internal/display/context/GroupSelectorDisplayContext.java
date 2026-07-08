@@ -242,6 +242,12 @@ public class GroupSelectorDisplayContext {
 		_selectedTab = ParamUtil.getString(
 			_liferayPortletRequest, "selectedTab");
 
+		if (Validator.isNull(_selectedTab)) {
+			_selectedTab = GetterUtil.getString(
+				_liferayPortletRequest.getAttribute(
+					"liferay-item-selector:group-selector:selectedTab"));
+		}
+
 		return _selectedTab;
 	}
 

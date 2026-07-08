@@ -5,6 +5,7 @@
 
 package com.liferay.item.selector.web.internal.portlet;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorRendering;
 import com.liferay.item.selector.constants.ItemSelectorPortletKeys;
@@ -12,6 +13,7 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.Portlet;
@@ -20,6 +22,8 @@ import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,7 +73,32 @@ public class ItemSelectorPortlet extends MVCPortlet {
 
 		localizedItemSelectorRendering.store(renderRequest);
 
+		_storeSelectedTab(renderRequest, localizedItemSelectorRendering);
+
 		super.render(renderRequest, renderResponse);
+	}
+
+	private void _storeSelectedTab(
+		RenderRequest renderRequest,
+		LocalizedItemSelectorRendering localizedItemSelectorRendering) {
+
+		NavigationItem activeNavigationItem =
+			localizedItemSelectorRendering.getActiveNavigationItem();
+
+		if (activeNavigationItem == null) {
+			return;
+		}
+
+		Map<String, Object> data =
+			(Map<String, Object>)activeNavigationItem.get("data");
+
+		if (data == null) {
+			return;
+		}
+
+		renderRequest.setAttribute(
+			"liferay-item-selector:group-selector:selectedTab",
+			MapUtil.getString(data, "id"));
 	}
 
 	@Reference
