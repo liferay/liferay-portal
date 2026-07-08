@@ -63,13 +63,20 @@ public class DataSetSnapshotSharingEntryInterpreterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		FrontendDataSetTestUtil.initialize(
-			DataSetSnapshotSharingEntryInterpreterTest.class);
-
 		_objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
+
+		if (_objectDefinition == null) {
+			FrontendDataSetTestUtil.initialize(
+				DataSetSnapshotSharingEntryInterpreterTest.class);
+
+			_objectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
+		}
 
 		Assert.assertNotNull(_objectDefinition);
 
