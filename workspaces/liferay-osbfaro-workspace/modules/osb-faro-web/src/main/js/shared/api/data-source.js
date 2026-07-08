@@ -6,33 +6,6 @@ import {
 } from 'shared/util/pagination';
 import {get, pickBy} from 'lodash';
 
-/**
- * Dedicated request wrapper for Marketo connector calls. Unlike the shared
- * `sendRequest`, it preserves the numeric HTTP status on the thrown error
- * (`error.status`) and does not reload the page on 401, so the connect form can
- * map each status to a user-facing message.
- */
-function sendMarketoCampaignRequest({data, method, path}) {
-	return window
-		.fetch(`/o/faro/${path}`, {
-			body: data ? getFormData(stringifyValues(data)) : undefined,
-			method,
-		})
-		.then(async (response) => {
-			const {status} = response;
-
-			if (status >= 200 && status < 300) {
-				return status === 204 ? {} : response.json();
-			}
-
-			const error = new Error('Request error');
-
-			error.status = status;
-
-			throw error;
-		});
-}
-
 export const clearData = ({groupId, id}) =>
 	sendRequest({
 		method: 'POST',
@@ -373,6 +346,37 @@ export function updateCSV({fieldMappingMaps, groupId, id, name, status}) {
 		method: 'PATCH',
 		path: `contacts/${groupId}/data_source/${id}/csv`,
 	});
+}
+
+/**
+ * Dedicated request wrapper for Marketo Campaign connector calls. Unlike the
+ * shared `sendRequest`, it preserves the numeric HTTP status on the thrown
+ * error (`error.status`) and does not reload the page on 401, so the connect
+ * form can map each status to a user-facing message.
+ */
+function sendMarketoCampaignRequest({data, method, path}) {
+
+	// Use `window.fetch` explicitly: this module exports its own `fetch`
+	// function, which would otherwise shadow the global one here.
+
+	return window
+		.fetch(`/o/faro/${path}`, {
+			body: data ? getFormData(stringifyValues(data)) : undefined,
+			method,
+		})
+		.then(async (response) => {
+			const {status} = response;
+
+			if (status >= 200 && status < 300) {
+				return status === 204 ? {} : response.json();
+			}
+
+			const error = new Error('Request error');
+
+			error.status = status;
+
+			throw error;
+		});
 }
 
 export function updateLiferay({
