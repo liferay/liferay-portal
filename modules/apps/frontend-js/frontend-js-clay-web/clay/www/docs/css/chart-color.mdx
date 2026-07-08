@@ -1,0 +1,69 @@
+---
+title: 'Chart Colors'
+description: 'Semantic color tokens for data visualization. The categorical palette provides ten distinct, accessible hues for charts, and the trend tokens signal positive, negative, and neutral change. Every token is themeable and can be overridden per instance through Style Books.'
+---
+
+export const Swatch = ({name, varName, light, dark}) => (
+	<div className="clay-site-swatch">
+		<div
+			className="clay-site-swatch-color"
+			style={{backgroundColor: `var(${varName})`}}
+		/>
+		<div className="clay-site-swatch-body">
+			<div className="clay-site-swatch-title">{name}</div>
+			<div className="autofit-row">
+				<div className="autofit-col clay-site-swatch-type">Var</div>
+				<div className="autofit-col autofit-col-expand clay-site-swatch-value">
+					<span className="clay-site-swatch-text clay-site-var">
+						{varName}
+					</span>
+				</div>
+			</div>
+			<div className="autofit-row">
+				<div className="autofit-col clay-site-swatch-type">Light</div>
+				<div className="autofit-col autofit-col-expand clay-site-swatch-value">
+					<span className="clay-site-hex clay-site-swatch-text">
+						{light}
+					</span>
+				</div>
+			</div>
+			<div className="autofit-row">
+				<div className="autofit-col clay-site-swatch-type">Dark</div>
+				<div className="autofit-col autofit-col-expand clay-site-swatch-value">
+					<span className="clay-site-hex clay-site-swatch-text">
+						{dark}
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+);
+
+The chart tokens are defined as CSS custom properties on `:root` and mapped through the frontend token definition, so they resolve automatically in the light, dark, and high-contrast schemes and can be edited in a Style Book without touching the components. Every value meets the WCAG 2.1 AA non-text contrast ratio (3:1) against both the light and dark theme backgrounds.
+
+## Categorical Palette
+
+Charts assign these ten colors to series in order. When a chart needs more than ten series, the palette cycles back through the same tokens.
+
+<div className="clay-site-swatches">
+	<Swatch dark="#b88600" light="#ffd666" name="Chart Color 1 (Yellow)" varName="--chart-color-1" />
+	<Swatch dark="#429aff" light="#006eff" name="Chart Color 2 (Blue)" varName="--chart-color-2" />
+	<Swatch dark="#8f3700" light="#ffa166" name="Chart Color 3 (Orange)" varName="--chart-color-3" />
+	<Swatch dark="#1b7e6e" light="#42d7be" name="Chart Color 4 (Teal)" varName="--chart-color-4" />
+	<Swatch dark="#fa008e" light="#ff80c8" name="Chart Color 5 (Pink)" varName="--chart-color-5" />
+	<Swatch dark="#006699" light="#66ccff" name="Chart Color 6 (Cyan)" varName="--chart-color-6" />
+	<Swatch dark="#f50000" light="#ff6666" name="Chart Color 7 (Red)" varName="--chart-color-7" />
+	<Swatch dark="#b54dff" light="#bf66ff" name="Chart Color 8 (Purple)" varName="--chart-color-8" />
+	<Swatch dark="#22430a" light="#9de963" name="Chart Color 9 (Green)" varName="--chart-color-9" />
+	<Swatch dark="#0019fa" light="#b2baff" name="Chart Color 10 (Indigo)" varName="--chart-color-10" />
+</div>
+
+## Trend Indicators
+
+Trend tokens default to the semantic success, danger, and secondary colors so that positive, negative, and neutral change read consistently with the rest of the theme.
+
+<div className="clay-site-swatches">
+	<Swatch dark="#3bb959" light="#287d3c" name="Trend Positive" varName="--chart-trend-positive" />
+	<Swatch dark="#f67474" light="#da1414" name="Trend Negative" varName="--chart-trend-negative" />
+	<Swatch dark="#b3b3c6" light="#6b6c7e" name="Trend Neutral" varName="--chart-trend-neutral" />
+</div>
