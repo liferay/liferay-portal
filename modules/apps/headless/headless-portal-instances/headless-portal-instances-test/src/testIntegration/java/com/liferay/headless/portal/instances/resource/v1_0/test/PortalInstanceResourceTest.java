@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
@@ -109,9 +111,11 @@ public class PortalInstanceResourceTest
 	@Override
 	@Test
 	public void testPostPortalInstanceExport() throws Exception {
-		_testPostPortalInstanceExportForbidden();
-		_testPostPortalInstanceExportNonexistent();
-		_testPostPortalInstanceExportExisting();
+		Assume.assumeTrue(_db.isSupportsDBPartition());
+
+		_testPostPortalInstanceExport();
+		_testPostPortalInstanceExportWithNonexistentPortalInstance();
+		_testPostPortalInstanceExportWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -390,9 +394,7 @@ public class PortalInstanceResourceTest
 		_testPatchPortalInstace(portalInstance, false, false, false);
 	}
 
-	private void _testPostPortalInstanceExportExisting() throws Exception {
-		Assume.assumeTrue(_db.isSupportsDBPartition());
-
+	private void _testPostPortalInstanceExport() throws Exception {
 		HttpInvoker.HttpResponse httpResponse =
 			portalInstanceResource.postPortalInstanceExportHttpResponse(
 				_portalInstance.getPortalInstanceId());
@@ -406,42 +408,14 @@ public class PortalInstanceResourceTest
 			));
 	}
 
-	private void _testPostPortalInstanceExportForbidden() throws Exception {
-		User user = UserTestUtil.addUser();
+	private void _testPostPortalInstanceExportWithNonexistentPortalInstance()
+		throws Exception {
 
-		try {
-			_userLocalService.updatePassword(
-				user.getUserId(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				PropsValues.DEFAULT_ADMIN_PASSWORD, false);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR)) {
 
-			PortalInstanceResource userPortalInstanceResource =
-				PortalInstanceResource.builder(
-				).authentication(
-					user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-				).endpoint(
-					testCompany.getVirtualHostname(),
-					PortalUtil.getPortalServerPort(false), "http"
-				).locale(
-					LocaleUtil.getDefault()
-				).build();
-
-			userPortalInstanceResource.postPortalInstanceExport(
-				_portalInstance.getPortalInstanceId());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
-		finally {
-			_userLocalService.deleteUser(user.getUserId());
-		}
-	}
-
-	private void _testPostPortalInstanceExportNonexistent() throws Exception {
-		try {
 			portalInstanceResource.postPortalInstanceExport(
 				RandomTestUtil.randomString());
 
@@ -452,6 +426,35 @@ public class PortalInstanceResourceTest
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
+		}
+	}
+
+	private void _testPostPortalInstanceExportWithoutOmniadminPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(testCompany, "test");
+
+		PortalInstanceResource userPortalInstanceResource =
+			PortalInstanceResource.builder(
+			).authentication(
+				user.getEmailAddress(), "test"
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		try {
+			userPortalInstanceResource.postPortalInstanceExport(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
