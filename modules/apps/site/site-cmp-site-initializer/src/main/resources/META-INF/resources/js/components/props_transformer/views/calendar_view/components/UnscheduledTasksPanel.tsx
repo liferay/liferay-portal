@@ -10,9 +10,10 @@ import ClayEmptyState from '@clayui/empty-state';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayList from '@clayui/list';
+import {Draggable} from '@fullcalendar/interaction';
 import {FrontendDataSetContext} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
-import React, {useContext, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../../../../utils/types';
@@ -20,6 +21,11 @@ import StateLabel from '../../../../StateLabel';
 import sortTasksByPriority from '../utils/sortTasksByPriority';
 
 import './UnscheduledTasksPanel.scss';
+
+// Marks the task rows the calendar Draggable picks up, and doubles as the
+// class name each row renders with so the two always match.
+
+const DRAGGABLE_ITEM_CLASS_NAME = 'lfr__cmp-unscheduled-tasks-panel-item';
 
 interface UnscheduledTasksPanelProps {
 	containerRef: React.RefObject<HTMLElement>;
@@ -47,6 +53,27 @@ export default function UnscheduledTasksPanel({
 			)
 		);
 	}, [query, tasks]);
+
+	// Make the task rows draggable into the calendar's day cells. The
+	// Draggable matches rows through the item selector at drag time, so one
+	// instance on the FDS container survives list filtering. With create
+	// disabled, FullCalendar fires only the calendar's drop callback instead
+	// of inserting an event itself.
+
+	useEffect(() => {
+		const containerElement = containerRef.current;
+
+		if (!containerElement) {
+			return;
+		}
+
+		const draggable = new Draggable(containerElement, {
+			eventData: {create: false},
+			itemSelector: `.${DRAGGABLE_ITEM_CLASS_NAME}`,
+		});
+
+		return () => draggable.destroy();
+	}, [containerRef]);
 
 	return (
 		<SidePanel
@@ -102,7 +129,12 @@ export default function UnscheduledTasksPanel({
 							);
 
 							return (
-								<ClayList.Item flex key={task.id}>
+								<ClayList.Item
+									className={DRAGGABLE_ITEM_CLASS_NAME}
+									data-task-id={task.id}
+									flex
+									key={task.id}
+								>
 									<ClayList.ItemField>
 										<AssigneeAvatar
 											name={task.assignTo?.name}
