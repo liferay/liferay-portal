@@ -711,14 +711,14 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 					playwrightBaseDir,
 					"npm run playwright test -- --list --reporter=json");
 
-				int index = result.indexOf("\n{");
+				Matcher matcher = _npmCommandOutputPattern.matcher(result);
 
-				if (index == -1) {
+				if (!matcher.find()) {
 					throw new RuntimeException(
 						"Invalid NPM command output: " + result);
 				}
 
-				result = result.substring(index);
+				result = result.substring(matcher.start(1));
 
 				result = result.replace(
 					"Finished executing Bash commands.", "");
@@ -947,6 +947,8 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 			"Playwright batch creation failure", "Liferay Playwright");
 	}
 
+	private static final Pattern _npmCommandOutputPattern = Pattern.compile(
+		"^\\s*(\\{)", Pattern.MULTILINE);
 	private static final Pattern _playwrightFileNamePattern = Pattern.compile(
 		"tests/(?<filePath>(?<projectName>.+)/[^/]*.spec.ts)");
 	private static JSONObject _playwrightJSONObject;
