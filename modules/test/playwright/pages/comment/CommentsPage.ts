@@ -33,6 +33,36 @@ export class CommentsPage {
 		await waitForAlert(this.page, 'Your request completed successfully.');
 	}
 
+	async editComment(currentText: string, newText: string) {
+		const comment = this.page
+			.locator('.comment-container')
+			.filter({hasText: currentText})
+			.first();
+
+		// The comment actions menu only appears on hover, so trigger it directly
+
+		await comment.getByTitle('Actions').dispatchEvent('click');
+
+		await this.page
+			.locator('.dropdown-menu:visible')
+			.getByText('Edit', {exact: true})
+			.click();
+
+		const editForm = comment.locator('.lfr-discussion-form-edit');
+
+		const editor = editForm.frameLocator('iframe').getByRole('textbox');
+
+		await editor.click();
+
+		await editor.press('ControlOrMeta+A');
+
+		await editor.pressSequentially(newText);
+
+		await editForm.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page, 'Your request completed successfully.');
+	}
+
 	async assertComment(comment: string, userFullName: string, count: number) {
 		await this.assertCommentCount(count);
 
