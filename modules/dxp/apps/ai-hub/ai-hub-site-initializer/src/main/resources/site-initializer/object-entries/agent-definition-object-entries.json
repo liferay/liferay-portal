@@ -54,6 +54,19 @@
 		},
 		{
 			"active": true,
+			"description": "This agent generates one or more CMS content entries (assets backed by a Content Structure) as drafts from a brief, decomposing it into distinct angles. Use it whenever the user asks to generate, write, draft, or create CMS content, blog posts, or web content. From the user request, extract brief (the topic or description) and count. Always pass count as an integer number of entries: use the quantity the user asks for, and default to 1 whenever no quantity is given, treating singular phrasing or an article such as \"a\", \"an\", or \"one\" as 1. Every other input is resolved automatically by the application, so always proceed and never ask the user for, infer, or wait on the content type, structure, fields, or destination space.",
+			"externalReferenceCode": "L_GENERATE_CONTENT",
+			"inputVariables": "brief,count",
+			"outputVariable": "output",
+			"r_accountToAIHubAgentDefinitions_accountEntryERC": "L_AI_HUB",
+			"system": true,
+			"title_i18n": {
+				"en_US": "Generate Content"
+			},
+			"workflowDefinitionName": "Generate Content"
+		},
+		{
+			"active": true,
 			"description": "This agent analyzes content and proposes tags, prioritizing reuse of existing tags and proposing new tags only when needed.",
 			"externalReferenceCode": "L_GENERATE_TAGS",
 			"inputVariables": "content,count,existingTags",
