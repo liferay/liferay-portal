@@ -6,33 +6,28 @@
 import {openModal, openToast} from 'frontend-js-components-web';
 
 import {deleteDataMask} from '../../services/deleteDataMask';
-import {getProfile} from '../../services/getProfile';
 import {getProfileDataMasks} from '../../services/getProfileDataMasks';
 import {ActionContext} from '../../types';
 
-const DATA_MASK_FK_FIELD = 'r_dataMaskToProfileDataMasks_mcpServerDataMaskId';
-
-async function getProfileNames(dataMaskId: number): Promise<string[]> {
-	const {data} = await getProfileDataMasks();
-
-	const profileIds = (data?.items ?? [])
-		.filter((item) => item[DATA_MASK_FK_FIELD] === dataMaskId)
-		.map((item) => item.mcpServerProfileId)
-		.filter((profileId): profileId is number => Boolean(profileId));
-
-	if (!profileIds.length) {
+async function getAssociatedProfiles(
+	dataMaskExternalReferenceCode?: string
+): Promise<string[]> {
+	if (!dataMaskExternalReferenceCode) {
 		return [];
 	}
 
-	const names = await Promise.all(
-		profileIds.map(async (profileId) => {
-			const {data: profile} = await getProfile(profileId);
+	const {data} = await getProfileDataMasks();
 
-			return profile?.name ?? null;
-		})
-	);
-
-	return names.filter((name): name is string => Boolean(name));
+	return (data?.items ?? [])
+		.filter(
+			(item) =>
+				item.dataMaskExternalReferenceCode ===
+				dataMaskExternalReferenceCode
+		)
+		.map((item) => item.mcpServerProfileExternalReferenceCode)
+		.filter((externalReferenceCode): externalReferenceCode is string =>
+			Boolean(externalReferenceCode)
+		);
 }
 
 function deleteBody(profileNames: string[]) {
@@ -55,13 +50,13 @@ export default async function confirmAndDeleteDataMaskAction({
 	itemData,
 	loadData,
 }: ActionContext) {
-	const {id, name} = itemData;
+	const {externalReferenceCode, id, name} = itemData;
 
 	if (id === undefined) {
 		return;
 	}
 
-	const profileNames = await getProfileNames(id);
+	const profileNames = await getAssociatedProfiles(externalReferenceCode);
 
 	openModal({
 		bodyHTML: deleteBody(profileNames),

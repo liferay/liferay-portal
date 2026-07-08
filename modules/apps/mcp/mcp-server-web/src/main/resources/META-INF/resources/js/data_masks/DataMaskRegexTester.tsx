@@ -37,7 +37,7 @@ export function DataMaskRegexTester({
 			detectionRegex,
 			replacementRegex,
 			replacementValue,
-			sampleText,
+			text: sampleText,
 		});
 
 		setResult(data ?? {error: error ?? '', output: ''});

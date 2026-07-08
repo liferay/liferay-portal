@@ -6,29 +6,21 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 
-const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-63311': {enabled: true},
-		'LPD-90204': {enabled: true},
-	}),
-	loginTest(),
-	mcpServerWebPagesTest
-);
+const test = mergeTests(dataApiHelpersTest, loginTest(), mcpServerWebPagesTest);
 
-const DATA_MASKS_API = 'mcp/server-data-masks';
+const DATA_MASKS_API = 'data-masks';
 
 const SYSTEM_MASK = 'Email Address';
 
 const TOKEN = 'pwmask';
 
 interface DataMaskEntry {
+	externalReferenceCode?: string;
 	id: number;
 	maskType?: {key?: string};
 	name?: string;
@@ -55,7 +47,7 @@ async function createCustomMask(
 
 async function associateMaskWithProfile(
 	apiHelpers: DataApiHelpers,
-	maskId: number
+	dataMaskExternalReferenceCode: string
 ) {
 	const profiles = await apiHelpers.get(
 		`${apiHelpers.baseUrl}mcp/server-profiles?pageSize=1`
@@ -65,8 +57,9 @@ async function associateMaskWithProfile(
 		`${apiHelpers.baseUrl}mcp/server-profile-data-masks`,
 		{
 			data: {
-				mcpServerProfileId: profiles.items[0].id,
-				r_dataMaskToProfileDataMasks_mcpServerDataMaskId: maskId,
+				dataMaskExternalReferenceCode,
+				mcpServerProfileExternalReferenceCode:
+					profiles.items[0].externalReferenceCode,
 			},
 		}
 	);
@@ -280,7 +273,10 @@ test.describe('Data Masks - List View', () => {
 			const name = maskName();
 			const mask = await createCustomMask(apiHelpers, name);
 
-			await associateMaskWithProfile(apiHelpers, mask.id);
+			await associateMaskWithProfile(
+				apiHelpers,
+				mask.externalReferenceCode ?? ''
+			);
 
 			await dataMasksPage.goto();
 			await dataMasksPage.search(name);

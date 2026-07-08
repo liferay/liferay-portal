@@ -34,7 +34,7 @@ public class ViewDataMasksDisplayContext {
 	}
 
 	public String getAPIURL() {
-		return "/o/mcp/server-data-masks";
+		return "/o/data-masks";
 	}
 
 	public CreationMenu getCreationMenu() {

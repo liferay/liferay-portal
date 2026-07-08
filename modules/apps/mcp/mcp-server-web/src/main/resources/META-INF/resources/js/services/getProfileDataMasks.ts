@@ -8,8 +8,8 @@ import ApiHelper, {RequestResult} from './ApiHelper';
 const PROFILE_DATA_MASKS_URL = '/o/mcp/server-profile-data-masks';
 
 export interface ProfileDataMaskAssociation {
-	mcpServerProfileId?: number;
-	r_dataMaskToProfileDataMasks_mcpServerDataMaskId?: number;
+	dataMaskExternalReferenceCode?: string;
+	mcpServerProfileExternalReferenceCode?: string;
 }
 
 export function getProfileDataMasks(): Promise<
