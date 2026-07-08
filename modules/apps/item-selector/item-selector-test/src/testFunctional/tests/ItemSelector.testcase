@@ -111,10 +111,10 @@ definition {
 		NavigationMenusAdmin.viewItem(itemName = "Test Page Name 2");
 	}
 
-	@description = "This test covers LPS-119899, It ensures that the search results can be cleared after filtering everywhere in the item selector."
+	@description = "This test covers LPS-119899 and LPS-119707. It ensures that the search results can be cleared after filtering everywhere in the item selector and that web content in a connected depot folder can be viewed through the everywhere filter."
 	@priority = 4
 	@refactordone
-	test CanClearFilterResults {
+	test FilterWebContentEverywhere {
 		JSONDepot.addDepot(
 			depotDescription = "This is the description of a depot",
 			depotName = "Test Depot Name");
@@ -124,6 +124,19 @@ definition {
 			groupName = "Test Depot Name",
 			site = "false",
 			title = "Web Content From Depot");
+
+		JSONWebcontent.addFolder(
+			folderDescription = "WC Folder Description",
+			folderName = "WC Folder Name",
+			groupName = "Test Depot Name",
+			site = "false");
+
+		JSONWebcontent.addWebContent(
+			content = "Webcontent Content",
+			folderName = "WC Folder Name",
+			groupName = "Test Depot Name",
+			site = "false",
+			title = "WC WebContent From Depot");
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
@@ -164,6 +177,13 @@ definition {
 		ItemSelector.clearFilterResults(
 			currentSiteWebContentTitle = "WC WebContent From Site",
 			webContentTitle = "Web Content From Depot");
+
+		ItemSelector.viewWCEverywhereFilterResults(
+			folderWebContentTitle = "WC WebContent From Depot",
+			siteName = "Test Depot Name",
+			viewFolderWc = "true",
+			wcFolderName = "WC Folder Name",
+			webContentTitle = "WC WebContent From Site");
 	}
 
 	@description = "This is a test for LPS-107014. It checks that the site pagination can be displayed correctly in item selector."
@@ -803,69 +823,6 @@ definition {
 			dmFolderName = "DM Folder Name",
 			imageFileName = "Document_2.jpg",
 			navTab = "Documents and Media");
-	}
-
-	@description = "This test covers LPS-119707. It ensures that the web content in the depot folder can be viewed through everywhere filter on a connected site."
-	@priority = 4
-	@refactordone
-	test CanViewFolderWCViaFilterResults {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONWebcontent.addFolder(
-			folderDescription = "WC Folder Description",
-			folderName = "WC Folder Name",
-			groupName = "Test Depot Name",
-			site = "false");
-
-		JSONWebcontent.addWebContent(
-			content = "Webcontent Content",
-			folderName = "WC Folder Name",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent From Depot");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Site",
-			groupName = "Site Name",
-			title = "WC WebContent From Site");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "WC Structure Description",
-			structureName = "WC Structure Name");
-
-		DataEngine.addField(
-			fieldFieldLabel = "Web Content",
-			fieldName = "Web Content");
-
-		WebContentStructures.saveCP(structureName = "WC Structure Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
-
-		Click(
-			fieldLabel = "Web Content",
-			locator1 = "Button#BUTTON_LABEL",
-			text = "Select");
-
-		ItemSelector.viewWCEverywhereFilterResults(
-			folderWebContentTitle = "WC WebContent From Depot",
-			siteName = "Test Depot Name",
-			viewFolderWc = "true",
-			wcFolderName = "WC Folder Name",
-			webContentTitle = "WC WebContent From Site");
 	}
 
 	@description = "This ensures that the video thumbnails can be viewed in Item Selector."
