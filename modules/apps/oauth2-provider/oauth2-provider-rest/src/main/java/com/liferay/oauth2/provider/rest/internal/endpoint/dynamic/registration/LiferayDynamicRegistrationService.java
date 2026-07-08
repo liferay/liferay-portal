@@ -820,6 +820,12 @@ public class LiferayDynamicRegistrationService
 		String[] allowedRedirectURIPatterns,
 		ClientRegistration clientRegistration) {
 
+		List<String> redirectURIs = clientRegistration.getRedirectUris();
+
+		if (ListUtil.isEmpty(redirectURIs)) {
+			return;
+		}
+
 		Set<String> normalizedAllowedRedirectURIPatterns =
 			_normalizeOpenRegistrationAllowedValues(
 				allowedRedirectURIPatterns,
@@ -827,12 +833,6 @@ public class LiferayDynamicRegistrationService
 				OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_REDIRECT_URI);
 
 		if (normalizedAllowedRedirectURIPatterns == null) {
-			return;
-		}
-
-		List<String> redirectURIs = clientRegistration.getRedirectUris();
-
-		if (ListUtil.isEmpty(redirectURIs)) {
 			return;
 		}
 
