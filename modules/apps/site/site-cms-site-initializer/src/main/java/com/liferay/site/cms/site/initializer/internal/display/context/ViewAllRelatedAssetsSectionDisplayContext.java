@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,6 +62,22 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectRelationship = objectRelationship;
+	}
+
+	@Override
+	public Map<String, Object> getAdditionalProps() {
+		Map<String, Object> additionalProps = super.getAdditionalProps();
+
+		try {
+			additionalProps.put("breadcrumbProps", getBreadcrumbProps());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return additionalProps;
 	}
 
 	@Override
