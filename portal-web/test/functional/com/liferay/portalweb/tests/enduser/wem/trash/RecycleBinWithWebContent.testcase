@@ -614,7 +614,7 @@ definition {
 
 	@description = "Can have 2 duplicate asset names in recycle bin."
 	@priority = 3
-	test ViewDuplicateAssetNamesInRecycleBin {
+	test ViewDuplicateNamesInRecycleBin {
 		task ("Add a web content and move it to recycle bin via delete icon") {
 			JSONWebcontent.addWebContent(
 				content = "WC WebContent Content",
