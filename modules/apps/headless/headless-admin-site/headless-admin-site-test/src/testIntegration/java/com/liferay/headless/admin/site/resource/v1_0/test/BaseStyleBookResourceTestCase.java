@@ -1464,8 +1464,20 @@ public abstract class BaseStyleBookResourceTestCase {
 			valid = false;
 		}
 
+		if (styleBook.getId() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (styleBook.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (styleBook.getCreator() == null) {
@@ -1600,6 +1612,8 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		graphQLFields.add(new GraphQLField("externalReferenceCode"));
 
+		graphQLFields.add(new GraphQLField("id"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.admin.site.dto.v1_0.StyleBook.class)) {
@@ -1657,6 +1671,17 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)styleBook1.getActions(),
+						(Map)styleBook2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1720,6 +1745,16 @@ public abstract class BaseStyleBookResourceTestCase {
 				if (!Objects.deepEquals(
 						styleBook1.getFrontendTokensValues(),
 						styleBook2.getFrontendTokensValues())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						styleBook1.getId(), styleBook2.getId())) {
 
 					return false;
 				}
@@ -1879,6 +1914,11 @@ public abstract class BaseStyleBookResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2037,6 +2077,11 @@ public abstract class BaseStyleBookResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("id")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("key")) {
@@ -2278,6 +2323,7 @@ public abstract class BaseStyleBookResourceTestCase {
 					RandomTestUtil.randomString());
 				frontendTokensValues = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				id = RandomTestUtil.randomLong();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				previewFileEntryExternalReferenceCode = StringUtil.toLowerCase(
@@ -2530,4 +2576,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1928839878
+// LIFERAY-REST-BUILDER-HASH:-1818783971

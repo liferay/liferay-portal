@@ -50,6 +50,16 @@ public class StyleBookSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (styleBook.getActions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(styleBook.getActions()));
+		}
+
 		if (styleBook.getCreator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -126,6 +136,16 @@ public class StyleBookSerDes {
 			sb.append(_escape(styleBook.getFrontendTokensValues()));
 
 			sb.append("\"");
+		}
+
+		if (styleBook.getId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(styleBook.getId());
 		}
 
 		if (styleBook.getKey() != null) {
@@ -206,6 +226,13 @@ public class StyleBookSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (styleBook.getActions() == null) {
+			map.put("actions", null);
+		}
+		else {
+			map.put("actions", String.valueOf(styleBook.getActions()));
+		}
+
 		if (styleBook.getCreator() == null) {
 			map.put("creator", null);
 		}
@@ -258,6 +285,13 @@ public class StyleBookSerDes {
 				String.valueOf(styleBook.getFrontendTokensValues()));
 		}
 
+		if (styleBook.getId() == null) {
+			map.put("id", null);
+		}
+		else {
+			map.put("id", String.valueOf(styleBook.getId()));
+		}
+
 		if (styleBook.getKey() == null) {
 			map.put("key", null);
 		}
@@ -306,7 +340,10 @@ public class StyleBookSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -326,6 +363,9 @@ public class StyleBookSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "frontendTokensValues")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "key")) {
@@ -352,7 +392,13 @@ public class StyleBookSerDes {
 			StyleBook styleBook, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				if (jsonParserFieldValue != null) {
+					styleBook.setActions(
+						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
 					styleBook.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
@@ -390,6 +436,11 @@ public class StyleBookSerDes {
 				if (jsonParserFieldValue != null) {
 					styleBook.setFrontendTokensValues(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
+				if (jsonParserFieldValue != null) {
+					styleBook.setId(Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "key")) {
@@ -497,4 +548,4 @@ public class StyleBookSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:57398793
+// LIFERAY-REST-BUILDER-HASH:-841545486
