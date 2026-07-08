@@ -622,3 +622,61 @@ test(
 		await expect(page.getByRole('link', {name: newName})).toBeVisible();
 	}
 );
+
+test(
+	'Can view a restored document in a subfolder after restoring the parent folder',
+	{tag: '@LPS-44554'},
+	async ({apiHelpers, page, site}) => {
+		const documentTitle = getRandomString();
+		const folderName = getRandomString();
+		const subfolderName = getRandomString();
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id,
+			{name: folderName}
+		);
+
+		const subfolder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id,
+			{name: subfolderName, parentDocumentFolderId: folder.id}
+		);
+
+		await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+			subfolder.id,
+			createReadStream(
+				createSizedFile(`${getRandomString()}.png`, 'png', 1024)
+			),
+			{fileName: `${getRandomString()}.png`, title: documentTitle}
+		);
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+		const recycleBinPage = new RecycleBinPage(page);
+
+		// Move the parent folder, with its subfolder and document, to the
+		// recycle bin
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await documentLibraryPage.moveFolderToRecycleBin(folderName);
+
+		// Restore the parent folder from the recycle bin
+
+		await recycleBinPage.goto(site.friendlyUrlPath);
+
+		await recycleBinPage.restore(folderName);
+
+		await recycleBinPage.assertEntryAbsent(folderName);
+
+		// The document is still inside the restored subfolder
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('link', {name: folderName}).click();
+
+		await page.getByRole('link', {name: subfolderName}).click();
+
+		await expect(
+			page.getByRole('link', {name: documentTitle})
+		).toBeVisible();
+	}
+);
