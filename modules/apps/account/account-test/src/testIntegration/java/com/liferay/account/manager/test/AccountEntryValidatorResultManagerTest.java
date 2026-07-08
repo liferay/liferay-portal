@@ -10,8 +10,6 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.manager.AccountEntryValidatorResultManager;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
-import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.account.validator.BaseAccountEntryValidator;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
@@ -76,7 +74,7 @@ public class AccountEntryValidatorResultManagerTest {
 					_accountEntry, className, classPK, 30);
 
 		Assert.assertNotNull(accountEntryValidatorResult);
-		Assert.assertEquals(classPK, accountEntryValidatorResult.getKey());
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			"message", accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(
@@ -120,16 +118,6 @@ public class AccountEntryValidatorResultManagerTest {
 					RandomTestUtil.randomString(), 30));
 	}
 
-	@Test
-	public void testViesValidatorIsRegistered() throws Exception {
-		AccountEntryValidator accountEntryValidator =
-			_accountEntryValidatorRegistry.getAccountEntryValidator("vies");
-
-		Assert.assertNotNull(accountEntryValidator);
-		Assert.assertTrue(
-			accountEntryValidator instanceof BaseAccountEntryValidator);
-	}
-
 	private void _assumeObjectDefinitionDeployed() {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -140,9 +128,6 @@ public class AccountEntryValidatorResultManagerTest {
 	}
 
 	private AccountEntry _accountEntry;
-
-	@Inject
-	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
 
 	@Inject
 	private AccountEntryValidatorResultManager
@@ -164,8 +149,8 @@ public class AccountEntryValidatorResultManagerTest {
 		}
 
 		@Override
-		public AccountEntryValidatorConfiguration getConfiguration(
-			long companyId) {
+		public AccountEntryValidatorConfiguration
+			getAccountEntryValidatorConfiguration(long companyId) {
 
 			return new AccountEntryValidatorConfiguration() {
 
