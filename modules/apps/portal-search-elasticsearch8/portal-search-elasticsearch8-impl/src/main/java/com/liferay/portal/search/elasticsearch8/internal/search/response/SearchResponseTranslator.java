@@ -156,9 +156,14 @@ public class SearchResponseTranslator {
 			fragments, StringPool.TRIPLE_PERIOD);
 
 		if (document.getField(snippetName) != null) {
+			String existingSnippetValue = document.get(snippetName);
+
+			if (snippetValue.equals(existingSnippetValue)) {
+				return;
+			}
+
 			snippetValue = StringBundler.concat(
-				document.get(snippetName), StringPool.TRIPLE_PERIOD,
-				snippetValue);
+				existingSnippetValue, StringPool.TRIPLE_PERIOD, snippetValue);
 		}
 
 		document.add(new Field(snippetName, snippetValue));
