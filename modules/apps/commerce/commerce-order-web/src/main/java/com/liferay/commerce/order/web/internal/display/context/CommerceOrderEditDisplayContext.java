@@ -684,7 +684,7 @@ public class CommerceOrderEditDisplayContext {
 		).buildPortletURL();
 	}
 
-	public String getValidationButtonTextClass() throws PortalException {
+	public String getValidationButtonCssClass() throws PortalException {
 		if (_commerceOrder == null) {
 			return "text-success";
 		}

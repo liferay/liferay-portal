@@ -94,16 +94,16 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 									<c:if test="<%= commerceOrderEditDisplayContext.isValidationButtonVisible() %>">
 
 										<%
-										String validationButtonTextClass = commerceOrderEditDisplayContext.getValidationButtonTextClass();
+										String validationButtonCssClass = commerceOrderEditDisplayContext.getValidationButtonCssClass();
 
 										String validationButtonIcon = "check-circle-full";
 										String validationButtonLabel = "all-account-validations-have-succeeded";
 
-										if (Objects.equals(validationButtonTextClass, "text-warning")) {
+										if (Objects.equals(validationButtonCssClass, "text-warning")) {
 											validationButtonIcon = "warning-full";
 											validationButtonLabel = "one-or-more-validations-have-failed-for-this-account";
 										}
-										else if (Objects.equals(validationButtonTextClass, "text-secondary")) {
+										else if (Objects.equals(validationButtonCssClass, "text-secondary")) {
 											validationButtonIcon = "time";
 											validationButtonLabel = "one-or-more-account-validations-are-pending";
 										}
@@ -111,7 +111,7 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 
 										<clay:button
 											aria-label="<%= LanguageUtil.get(request, validationButtonLabel) %>"
-											cssClass='<%= "ml-2 p-0 " + validationButtonTextClass %>'
+											cssClass='<%= "ml-2 p-0 " + validationButtonCssClass %>'
 											displayType="unstyled"
 											icon="<%= validationButtonIcon %>"
 											id='<%= liferayPortletResponse.getNamespace() + "accountValidationsWarning" %>'
