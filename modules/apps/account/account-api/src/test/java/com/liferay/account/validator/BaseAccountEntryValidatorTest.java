@@ -279,6 +279,13 @@ public class BaseAccountEntryValidatorTest {
 	private static class TestAccountEntryValidator
 		extends BaseAccountEntryValidator {
 
+		@Override
+		public AccountEntryValidatorConfiguration
+			getAccountEntryValidatorConfiguration(long companyId) {
+
+			return _accountEntryValidatorConfiguration;
+		}
+
 		public String getClassName() {
 			Class<?> clazz = getClass();
 
@@ -290,13 +297,6 @@ public class BaseAccountEntryValidatorTest {
 			AccountEntry accountEntry, JSONObject jsonObject) {
 
 			return _classPK;
-		}
-
-		@Override
-		public AccountEntryValidatorConfiguration getAccountEntryValidatorConfiguration(
-			long companyId) {
-
-			return _accountEntryValidatorConfiguration;
 		}
 
 		public int getDoValidateCount() {
