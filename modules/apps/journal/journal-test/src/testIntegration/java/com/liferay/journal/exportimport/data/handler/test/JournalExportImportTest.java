@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -312,6 +313,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPS-86608")
 	public void testExportImportJournalArticleWithRepeatableWebContentField()
 		throws Exception {
 
@@ -420,6 +422,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPS-88743")
 	public void testExportImportWebContentCircularReference() throws Exception {
 		String ddmStructureKey = _addDataDefinition(group.getGroupId());
 
@@ -522,6 +525,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPS-88893")
 	public void testExportImportWebContentWithSameTitleInTargetGroup()
 		throws Exception {
 
