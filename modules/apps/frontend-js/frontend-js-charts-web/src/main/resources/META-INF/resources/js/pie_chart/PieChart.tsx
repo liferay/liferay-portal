@@ -6,14 +6,14 @@
 import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
+import ChartSummary from '../chart_summary/ChartSummary';
 import PieChartLegend from './components/PieChartLegend';
 import PieChartPlot from './components/PieChartPlot';
-import PieChartSummary from './components/PieChartSummary';
 import {SIZE_PRESETS, STROKE_INSET, THICKNESS_RATIOS} from './constants';
 
 import '../../css/PieChart.scss';
+import {useChartKeyboardNav} from '../hooks/useChartKeyboardNav';
 import {toPercent} from '../percent';
-import {usePieKeyboardNav} from './hooks/usePieKeyboardNav';
 import {PieDatum} from './types/PieDatum';
 import {getPieChartSlicePathFactory} from './utils/getPieChartSlicePathFactory';
 import {getPieSliceColors} from './utils/pieColors';
@@ -125,7 +125,12 @@ export default function PieChart({
 		sliceRefs.current[index]?.focus();
 	}, []);
 
-	const onKeyDown = usePieKeyboardNav(data.length, focusSlice);
+	const focusableIndexes = useMemo(
+		() => Array.from({length: data.length}, (_, index) => index),
+		[data.length]
+	);
+
+	const onKeyDown = useChartKeyboardNav(focusableIndexes, focusSlice);
 
 	const sliceRefFactory = useCallback(
 		(index: number) => (element: SVGPathElement | null) => {
@@ -159,10 +164,11 @@ export default function PieChart({
 			</figcaption>
 
 			{legend === 'table' ? null : (
-				<PieChartSummary
-					data={data}
+				<ChartSummary
 					description={description}
 					id={summaryId}
+					items={data}
+					showPosition
 					total={total}
 				/>
 			)}

@@ -81,7 +81,7 @@ describe('MapChart', () => {
 	it('gives the sr-only summary a full data readout', () => {
 		const {container} = render(<MapChart data={DATA} title="Population" />);
 
-		const summary = container.querySelector('.chart-map-summary');
+		const summary = container.querySelector('.charts-summary');
 
 		expect(summary).toHaveTextContent('China: 14210');
 		expect(summary).toHaveTextContent('United States: 12450');

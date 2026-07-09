@@ -240,7 +240,7 @@ describe('PieChart', () => {
 		);
 
 		expect(
-			container.querySelector('.chart-pie-summary')
+			container.querySelector('.charts-summary')
 		).toBeInTheDocument();
 	});
 
@@ -250,7 +250,7 @@ describe('PieChart', () => {
 		);
 
 		expect(
-			container.querySelector('.chart-pie-summary')
+			container.querySelector('.charts-summary')
 		).not.toBeInTheDocument();
 	});
 

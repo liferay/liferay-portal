@@ -6,11 +6,11 @@
 import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
+import ChartSummary from '../chart_summary/ChartSummary';
+import {useChartKeyboardNav} from '../hooks/useChartKeyboardNav';
 import MapChartLegend from './components/MapChartLegend';
 import MapChartPlot from './components/MapChartPlot';
-import MapChartSummary from './components/MapChartSummary';
 import MapChartTooltip from './components/MapChartTooltip';
-import {useMapKeyboardNav} from './hooks/useMapKeyboardNav';
 import {MapChartProps} from './types/MapChartProps';
 import {getBlueSchemeColor} from './utils/blueSchemeColors';
 import {getCategoricalSchemeColor} from './utils/categoricalSchemeColors';
@@ -19,6 +19,7 @@ import {
 	getEffectiveBucketCount,
 } from './utils/computeQuantileBuckets';
 import {getClampedSteps} from './utils/getClampedSteps';
+import {getCountryLabel} from './utils/getCountryLabel';
 import {getMatchedDataIndexes} from './utils/getMatchedDataIndexes';
 
 import '../../css/MapChart.scss';
@@ -95,7 +96,16 @@ export default function MapChart({
 		itemRefs.current[index]?.focus();
 	}, []);
 
-	const onKeyDown = useMapKeyboardNav(validIndexes, focusItem);
+	const onKeyDown = useChartKeyboardNav(validIndexes, focusItem);
+
+	const summaryItems = useMemo(
+		() =>
+			data.map((datum) => ({
+				label: getCountryLabel(datum),
+				value: datum.value,
+			})),
+		[data]
+	);
 
 	const itemRefFactory = useCallback((index: number) => {
 		if (!itemRefCallbacks.current[index]) {
@@ -136,7 +146,7 @@ export default function MapChart({
 				{title}
 			</figcaption>
 
-			<MapChartSummary data={data} id={summaryId} total={total} />
+			<ChartSummary id={summaryId} items={summaryItems} total={total} />
 
 			<div className="chart-map-body">
 				<MapChartPlot
