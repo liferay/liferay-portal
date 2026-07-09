@@ -565,15 +565,15 @@ test(
 
 		await test.step('The tasks appear on their due date', async () => {
 			await expect(
-				page
-					.locator(`[data-date="${dueDate}"]`)
+				tasksPage
+					.getCalendarDayCell(tomorrow)
 					.getByText(taskTitles[0], {exact: true})
 			).toBeVisible();
 		});
 
 		await test.step('Clicking a task opens its view page', async () => {
-			await page
-				.locator(`[data-date="${dueDate}"]`)
+			await tasksPage
+				.getCalendarDayCell(tomorrow)
 				.getByText(taskTitles[0], {exact: true})
 				.click();
 
@@ -589,7 +589,7 @@ test(
 		});
 
 		await test.step('A More link reveals the tasks hidden in a dense day', async () => {
-			const dayCell = page.locator(`[data-date="${dueDate}"]`);
+			const dayCell = tasksPage.getCalendarDayCell(tomorrow);
 
 			await expect(
 				dayCell.getByText(taskTitles[1], {exact: true})
@@ -748,7 +748,7 @@ test(
 
 		const {calendarView} = tasksPage;
 
-		const dayCell = page.locator(`[data-date="${dueDate}"]`);
+		const dayCell = tasksPage.getCalendarDayCell(targetDate);
 
 		const kebab = dayCell.getByLabel('Actions');
 
@@ -818,9 +818,7 @@ test(
 
 		targetDate.setDate(15);
 
-		const dayCell = page.locator(
-			`[data-date="${toDateString(targetDate)}"]`
-		);
+		const dayCell = tasksPage.getCalendarDayCell(targetDate);
 
 		await test.step('View the project and open its calendar view', async () => {
 			await projectsPage.goto();
