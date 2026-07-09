@@ -3,8 +3,7 @@
 		"frontend-js-web": "*"
 	},
 	"main": "js/index.js",
-	"name": "site-pim-site-initializer",
-	"private": true,
+	"name": "@liferay/site-pim-site-initializer",
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
