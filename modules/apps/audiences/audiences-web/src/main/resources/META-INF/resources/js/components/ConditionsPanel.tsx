@@ -15,6 +15,7 @@ import {
 	DEFAULT_ICON_COLOR,
 } from '../constants/categoryIconColors';
 import {DRAG_TYPES} from '../constants/dragTypes';
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {Action} from '../reducer';
 import {AudiencesCriteria, AudiencesCriteriaType, Rule} from '../types';
 import RuleRow from './RuleRow';
@@ -62,6 +63,8 @@ export default function ConditionsPanel({
 	);
 
 	const announce = useScreenReaderAnnounce();
+
+	const {getItemProps} = useKeyboardNavigation({itemCount: rules.length});
 
 	const dndItems = rules.map((rule) => {
 		const audiencesCriteria = audiencesCriteriasByKey[rule.attribute];
@@ -167,7 +170,12 @@ export default function ConditionsPanel({
 						</span>
 					</div>
 
-					<div className="px-3 py-2">
+					<div
+						aria-label={Liferay.Language.get('conditions')}
+						aria-orientation="vertical"
+						className="px-3 py-2"
+						role="menu"
+					>
 						{rules.map((rule, index) => (
 							<Fragment key={rule.id}>
 								{index > 0 ? (
@@ -188,6 +196,7 @@ export default function ConditionsPanel({
 									iconColor={iconColorsByKey[rule.attribute]}
 									index={index}
 									items={dndItems}
+									navigationProps={getItemProps(index)}
 									onAddRule={handleAddRule}
 									onChange={(newRule) =>
 										dispatch({

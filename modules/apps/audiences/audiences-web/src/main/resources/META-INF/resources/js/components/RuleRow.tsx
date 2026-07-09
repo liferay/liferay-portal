@@ -15,6 +15,7 @@ import {DropTargetMonitor, useDrop} from 'react-dnd';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
 import {getOperatorLabel, getOperators} from '../constants/operators';
+import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
 import {AudiencesCriteria, Rule} from '../types';
 
 type DropPosition = 'bottom' | 'top' | null;
@@ -35,6 +36,7 @@ interface IProps {
 	iconColor: string;
 	index: number;
 	items: DragItem[];
+	navigationProps: NavigationItemProps;
 	onAddRule: (audiencesCriteria: AudiencesCriteria, index?: number) => void;
 	onChange: (rule: Rule) => void;
 	onDelete: () => void;
@@ -64,6 +66,7 @@ export default function RuleRow({
 	iconColor,
 	index,
 	items,
+	navigationProps,
 	onAddRule,
 	onChange,
 	onDelete,
@@ -73,6 +76,12 @@ export default function RuleRow({
 }: IProps) {
 	const dragHandlerRef = useRef<HTMLSpanElement>(null);
 	const dropItemRef = useRef<HTMLDivElement | null>(null);
+
+	const setRowRef = (element: HTMLDivElement | null) => {
+		dropItemRef.current = element;
+
+		navigationProps.ref(element);
+	};
 
 	const [dropPosition, setDropPosition] = useState<DropPosition>(null);
 
@@ -119,7 +128,11 @@ export default function RuleRow({
 					'the-criteria-is-no-longer-available'
 				)}
 				className="align-items-center audience-builder-rule audience-builder-rule--error d-flex justify-content-between p-3"
-				ref={dropItemRef}
+				onFocus={navigationProps.onFocus}
+				onKeyDown={navigationProps.onKeyDown}
+				ref={setRowRef}
+				role="menuitem"
+				tabIndex={navigationProps.tabIndex}
 			>
 				<div className="align-items-center c-gap-3 d-flex">
 					<ClayIcon
@@ -152,8 +165,9 @@ export default function RuleRow({
 	const operators = getOperators(inputType, type);
 
 	return (
-		<div ref={attributeDrop}>
+		<div ref={attributeDrop} role="none">
 			<div
+				aria-label={label}
 				className={classNames(
 					'align-items-center audience-builder-rule d-flex justify-content-between p-3',
 					`audience-builder-rule--${iconColor}`,
@@ -167,7 +181,11 @@ export default function RuleRow({
 							(isOver && dropPosition === 'top'),
 					}
 				)}
-				ref={dropItemRef}
+				onFocus={navigationProps.onFocus}
+				onKeyDown={navigationProps.onKeyDown}
+				ref={setRowRef}
+				role="menuitem"
+				tabIndex={navigationProps.tabIndex}
 			>
 				<div className="align-items-center c-gap-3 d-flex">
 					<span

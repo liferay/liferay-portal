@@ -10,16 +10,19 @@ import {useDrag} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
+import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
 import {AudiencesCriteria} from '../types';
 
 interface IProps {
 	audiencesCriteria: AudiencesCriteria;
 	iconColor: string;
+	navigationProps: NavigationItemProps;
 }
 
 export default function AttributeListItem({
 	audiencesCriteria,
 	iconColor,
+	navigationProps,
 }: IProps) {
 	const [{isDragging}, handlerRef, previewRef] = useDrag({
 		collect: (monitor) => ({
@@ -37,6 +40,12 @@ export default function AttributeListItem({
 		previewRef(getEmptyImage(), {captureDraggingState: true});
 	}, [previewRef]);
 
+	const setRefs = (element: HTMLDivElement | null) => {
+		handlerRef(element);
+
+		navigationProps.ref(element);
+	};
+
 	return (
 		<div
 			className={classNames(
@@ -45,7 +54,11 @@ export default function AttributeListItem({
 					'audience-builder-attribute--dragging': isDragging,
 				}
 			)}
-			ref={handlerRef}
+			onFocus={navigationProps.onFocus}
+			onKeyDown={navigationProps.onKeyDown}
+			ref={setRefs}
+			role="menuitem"
+			tabIndex={navigationProps.tabIndex}
 		>
 			<ClayIcon
 				className="audience-builder-attribute__grip text-secondary"

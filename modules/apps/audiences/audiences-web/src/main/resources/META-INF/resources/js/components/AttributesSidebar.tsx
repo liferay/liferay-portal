@@ -12,6 +12,7 @@ import {
 	CATEGORY_ICON_COLORS,
 	DEFAULT_ICON_COLOR,
 } from '../constants/categoryIconColors';
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {AudiencesCriteriaType} from '../types';
 import AttributeListItem from './AttributeListItem';
 
@@ -32,6 +33,10 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 			(audiencesCriteria) =>
 				audiencesCriteria.label.toLowerCase().includes(normalizedQuery)
 		) ?? [];
+
+	const {getItemProps} = useKeyboardNavigation({
+		itemCount: audiencesCriterias.length,
+	});
 
 	return (
 		<div className="d-flex flex-column flex-grow-0 h-100">
@@ -64,8 +69,13 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 			/>
 
 			{audiencesCriterias.length ? (
-				<div className="overflow-auto">
-					{audiencesCriterias.map((audiencesCriteria) => (
+				<div
+					aria-label={Liferay.Language.get('attributes')}
+					aria-orientation="vertical"
+					className="overflow-auto"
+					role="menu"
+				>
+					{audiencesCriterias.map((audiencesCriteria, index) => (
 						<AttributeListItem
 							audiencesCriteria={audiencesCriteria}
 							iconColor={
@@ -73,6 +83,7 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 								DEFAULT_ICON_COLOR
 							}
 							key={audiencesCriteria.key}
+							navigationProps={getItemProps(index)}
 						/>
 					))}
 				</div>
