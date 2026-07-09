@@ -37,6 +37,7 @@ export {getInternalRenderer as getFDSInternalRenderer} from './renderers/getInte
 
 export {ACTION_ITEM_TARGETS} from './utils/actionItems/constants';
 
+export {default as filterItemActions} from './utils/actionItems/filterItemActions';
 export {default as findAction} from './utils/actionItems/findAction';
 
 export {
