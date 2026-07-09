@@ -53,6 +53,19 @@ components:
                 virtualHost:
                     type: string
             type: object
+        PortalInstanceExport:
+            description:
+                The result of exporting a portal instance.
+            properties:
+                exportedPartitionName:
+                    description:
+                        The name of the schema created by the export (e.g., lexported_12345).
+                    type: string
+                sourcePartitionName:
+                    description:
+                        The name of the source partition that was exported (e.g., lpartition_12345).
+                    type: string
+            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.portal.instances.client', and version '1.0.33'."
@@ -248,14 +261,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                description:
-                                    The DB partition schema name created by the export (e.g., lexported_12345). The prefix is controlled by the portal property database.partition.schema.name.prefix.
-                                type: string
+                                $ref: "#/components/schemas/PortalInstanceExport"
                         application/xml:
                             schema:
-                                description:
-                                    The DB partition schema name created by the export (e.g., lexported_12345). The prefix is controlled by the portal property database.partition.schema.name.prefix.
-                                type: string
+                                $ref: "#/components/schemas/PortalInstanceExport"
                     description:
-                        Schema name of the exported portal instance
+                        The result of exporting the portal instance.
             tags: ["PortalInstance"]
