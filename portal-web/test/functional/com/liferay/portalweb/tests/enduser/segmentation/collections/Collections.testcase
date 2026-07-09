@@ -130,34 +130,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-143093. Add assets to manual collection for selected item types."
-	@priority = 4
-	test AddAssetsToManualCollectionForSelectedItemTypes {
-		task ("Given a user has a manual collection") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-			AssetListsAdmin.addManualSelection(assetListTitle = "Manual Collection");
-		}
-
-		task ("When the user selects item types") {
-			AssetListsAdmin.configureItemTypeInManualCollection(
-				itemType = "Select Types",
-				moveToAvailableItemTypeList = "Blogs Entry,Web Content Article");
-		}
-
-		task ("Then only selected types are shown on the dropdown menu") {
-			Button.clickSelect();
-
-			for (var menuItem : list "Calendar Event,Basic Document,Translation,Web Content Folder") {
-				MenuItem.verifyVisible(menuItem = ${menuItem});
-			}
-
-			for (var menuItem : list "Blogs Entry,Web Content Article") {
-				MenuItem.viewNotPresent(menuItem = ${menuItem});
-			}
-		}
-	}
-
 	@description = "This is a test for LPS-115236. Configure Filter by Field."
 	@priority = 5
 	@uitest

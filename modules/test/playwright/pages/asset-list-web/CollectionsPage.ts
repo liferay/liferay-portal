@@ -123,6 +123,51 @@ export class CollectionsPage {
 	}
 
 	/**
+	 * On a manual collection's edit page, restricts the collection to multiple
+	 * item types by choosing "Select Types" and moving the given types out of
+	 * the "In Use" list, then saves.
+	 */
+
+	async restrictManualCollectionItemTypes(excludedTypes: string[]) {
+		await this.page
+			.getByRole('combobox', {name: 'Item Type'})
+			.selectOption({label: 'Select Types'});
+
+		const itemTypesBox = this.page.locator('[id$="classNamesBoxes"]');
+
+		const inUseList = itemTypesBox.getByLabel('In Use', {exact: true});
+
+		for (const excludedType of excludedTypes) {
+			await inUseList.selectOption({label: excludedType});
+
+			await itemTypesBox
+				.getByRole('button', {
+					name: /move selected items from in use to available/i,
+				})
+				.click();
+		}
+
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page);
+	}
+
+	/**
+	 * On a manual collection's edit page, clicks "Select" to open the asset
+	 * entries item selector modal and returns the modal dialog locator.
+	 */
+
+	async openSelectItemsModal() {
+		await this.page.getByRole('button', {name: 'Select Items'}).click();
+
+		const modal = this.page.getByRole('dialog');
+
+		await modal.waitFor();
+
+		return modal;
+	}
+
+	/**
 	 * Configure a dynamic collection for Web Contents.
 	 */
 
