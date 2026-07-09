@@ -833,35 +833,17 @@ systemCategoryTest.describe('System category tests', () => {
 	);
 
 	systemCategoryTest(
-		'Add a subcategory to a system category',
-		{tag: '@LPD-96625'},
-		async ({categoriesPage, editCategoryPage, page}) => {
+		'Hide the add subcategory action for a system category',
+		{tag: '@LPD-97548'},
+		async ({categoriesPage}) => {
 			await categoriesPage.goto(systemVocabularyId, systemVocabularyName);
 
-			// Subcategories can still be added to a system category
+			// A subcategory cannot be added to a system category
 
-			await categoriesPage.execItemAction({
+			await categoriesPage.expectItemActionHidden({
 				action: 'Add Subcategory',
 				filter: systemCategoryName,
 			});
-
-			await expect(page.getByText('Basic Info')).toBeVisible();
-
-			const subcategoryName = getRandomString();
-
-			await editCategoryPage.fillName(subcategoryName);
-			await editCategoryPage.clickSave();
-
-			// The subcategory is created under the system category
-
-			await categoriesPage.gotoSubcategories(
-				systemCategoryId,
-				systemCategoryName,
-				systemVocabularyId,
-				systemVocabularyName
-			);
-
-			await expect(categoriesPage.getItem(subcategoryName)).toBeVisible();
 		}
 	);
 
