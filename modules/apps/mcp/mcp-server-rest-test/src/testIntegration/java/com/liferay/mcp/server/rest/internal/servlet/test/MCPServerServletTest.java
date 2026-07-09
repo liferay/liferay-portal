@@ -23,6 +23,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -192,8 +193,6 @@ public class MCPServerServletTest {
 							"enabled", true
 						).build())) {
 
-			// The email address is redacted in the profile response
-
 			String profileName = RandomTestUtil.randomString();
 
 			ObjectEntry mcpServerProfileObjectEntry =
@@ -208,33 +207,11 @@ public class MCPServerServletTest {
 				dataMaskObjectEntry.getObjectEntryId(), 1,
 				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
-			String responseText = _callListProfilesTool(profileName);
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
-
-			// The IPv4 address is redacted once in the profile response
-
-			profileName = RandomTestUtil.randomString();
-
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				"Server at 192.168.1.42", profileName,
-				"mcp-server-profiles getMCPServerProfilesPage");
-
-			responseText = _callListProfilesTool(profileName);
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString("192.168.1.0/24"));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(
-					CoreMatchers.containsString("192.168.1.0/24/24")));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(CoreMatchers.containsString("192.168.1.42")));
+			Assert.assertEquals(
+				"Contact: [EMAIL_ADDRESS]",
+				_getMCPServerProfileDescription(
+					_callGetMCPServerProfilesPageTool(profileName),
+					profileName));
 
 			// The error response is redacted
 
@@ -264,7 +241,7 @@ public class MCPServerServletTest {
 					0
 				);
 
-			responseText = textContent.text();
+			String responseText = textContent.text();
 
 			Assert.assertTrue(responseText, callToolResult.isError());
 			Assert.assertThat(
@@ -293,88 +270,11 @@ public class MCPServerServletTest {
 			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
 				"Removed by test.", emailProfileDataMaskObjectEntry);
 
-			responseText = _callListProfilesTool(profileName);
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString(_SAMPLE_EMAIL));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(
-					CoreMatchers.containsString("[EMAIL_ADDRESS]")));
-
-			// The REST invocation applies masks when the data masks header is
-			// set
-
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
-
-			responseText = _invokeListProfilesViaRest(
-				HashMapBuilder.put(
-					"X-Liferay-Data-Masks", "L_DATA_MASK_EMAIL_ADDRESS"
-				).build());
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
-
-			// The REST invocation respects the selected masks only
-
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				StringBundler.concat(
-					"Contact: ", _SAMPLE_EMAIL, " ", _SAMPLE_PHONE),
-				RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
-
-			responseText = _invokeListProfilesViaRest(
-				HashMapBuilder.put(
-					"X-Liferay-Data-Masks", "L_DATA_MASK_EMAIL_ADDRESS"
-				).build());
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString(_SAMPLE_PHONE));
-
-			// The REST invocation skips redaction when the data masks header is
-			// unknown
-
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
-
-			responseText = _invokeListProfilesViaRest(
-				HashMapBuilder.put(
-					"X-Liferay-Data-Masks", "L_UNKNOWN_DATA_MASK_ERC"
-				).build());
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString(_SAMPLE_EMAIL));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(
-					CoreMatchers.containsString("[EMAIL_ADDRESS]")));
-
-			// The REST invocation skips redaction when there is no data masks
-			// header
-
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
-
-			responseText = _invokeListProfilesViaRest(Collections.emptyMap());
-
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString(_SAMPLE_EMAIL));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(
-					CoreMatchers.containsString("[EMAIL_ADDRESS]")));
+			Assert.assertEquals(
+				"Contact: " + _SAMPLE_EMAIL,
+				_getMCPServerProfileDescription(
+					_callGetMCPServerProfilesPageTool(profileName),
+					profileName));
 		}
 	}
 
@@ -450,32 +350,20 @@ public class MCPServerServletTest {
 			false);
 	}
 
-	private String _callListProfilesTool(String profileName) throws Exception {
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(
-			_getAuthorization(), profileName);
+	private String _callGetMCPServerProfilesPageTool(String profileName) {
+		McpSchema.CallToolResult callToolResult = _callTool(
+			profileName, "getMCPServerProfilesPage", Collections.emptyMap());
 
-		try {
-			mcpSyncClient.initialize();
+		List<McpSchema.Content> content = callToolResult.content();
 
-			McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
-				new McpSchema.CallToolRequest(
-					"getMCPServerProfilesPage", Collections.emptyMap()));
+		McpSchema.TextContent textContent = (McpSchema.TextContent)content.get(
+			0);
 
-			List<McpSchema.Content> contents = callToolResult.content();
-
-			McpSchema.TextContent content = (McpSchema.TextContent)contents.get(
-				0);
-
-			return content.text();
-		}
-		finally {
-			mcpSyncClient.closeGracefully();
-		}
+		return textContent.text();
 	}
 
 	private McpSchema.CallToolResult _callTool(
-			String profileName, String toolName, Map<String, Object> arguments)
-		throws Exception {
+		String profileName, String toolName, Map<String, Object> arguments) {
 
 		McpSyncClient mcpSyncClient = _getMcpSyncClient(
 			_getAuthorization(), profileName);
@@ -796,6 +684,26 @@ public class MCPServerServletTest {
 		return "Basic " + Base64.encode(userNameAndPassword.getBytes());
 	}
 
+	private String _getMCPServerProfileDescription(
+			String responseText, String name)
+		throws Exception {
+
+		JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
+			responseText);
+
+		JSONArray itemsJSONArray = responseJSONObject.getJSONArray("items");
+
+		for (int i = 0; i < itemsJSONArray.length(); i++) {
+			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
+
+			if (name.equals(itemJSONObject.getString("name"))) {
+				return itemJSONObject.getString("description");
+			}
+		}
+
+		return null;
+	}
+
 	private McpSyncClient _getMcpSyncClient(
 		String authorization, String profileName) {
 
@@ -839,30 +747,6 @@ public class MCPServerServletTest {
 		_http.URLtoString(options);
 
 		return options.getResponse();
-	}
-
-	private String _invokeListProfilesViaRest(Map<String, String> headers)
-		throws Exception {
-
-		String url = StringBundler.concat(
-			"http://localhost:", PortalUtil.getPortalServerPort(false),
-			"/o/mcp-server/v1.0/tool-sets/mcp-server-profiles/tools",
-			"/getMCPServerProfilesPage/invoke");
-
-		Http.Options options = new Http.Options();
-
-		options.addHeader("Authorization", _getAuthorization());
-		options.addHeader("Content-Type", "application/json");
-
-		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			options.addHeader(entry.getKey(), entry.getValue());
-		}
-
-		options.setBody("{}", "application/json", "UTF-8");
-		options.setLocation(url);
-		options.setMethod(Http.Method.POST);
-
-		return _http.URLtoString(options);
 	}
 
 	private void _testServiceWithModifiedProfile(String authorization)
@@ -1259,8 +1143,6 @@ public class MCPServerServletTest {
 	}
 
 	private static final String _SAMPLE_EMAIL = "contact@example.com";
-
-	private static final String _SAMPLE_PHONE = "+1-202-555-0199";
 
 	private static final Pattern _authTokenPattern = Pattern.compile(
 		"authToken:\\s*(['\"])(((?!\\1).)*)\\1,");

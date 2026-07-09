@@ -101,6 +101,34 @@ public class DataMaskWriterInterceptorTest {
 					}
 				).build(),
 				Http.Method.GET));
+		Assert.assertEquals(
+			"The value is secret.",
+			HTTPTestUtil.invokeToString(
+				null, "test-data-mask/test",
+				HashMapBuilder.put(
+					"X-Liferay-Data-Masks", "L_UNKNOWN_DATA_MASK_ERC"
+				).build(),
+				Http.Method.GET));
+
+		DataMaskTestUtil.addDataMaskObjectEntry(
+			RandomTestUtil.randomString(), "value", "[HIDDEN]");
+
+		Assert.assertEquals(
+			"The value is [REDACTED].",
+			HTTPTestUtil.invokeToString(
+				null, "test-data-mask/test",
+				HashMapBuilder.put(
+					"X-Liferay-Data-Masks",
+					() -> {
+						ObjectEntry objectEntry =
+							DataMaskTestUtil.addDataMaskObjectEntry(
+								RandomTestUtil.randomString(), "secret",
+								"[REDACTED]");
+
+						return objectEntry.getExternalReferenceCode();
+					}
+				).build(),
+				Http.Method.GET));
 	}
 
 	@FeatureFlags(
