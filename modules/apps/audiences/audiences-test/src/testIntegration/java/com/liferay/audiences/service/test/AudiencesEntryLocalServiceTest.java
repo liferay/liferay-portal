@@ -79,21 +79,15 @@ public class AudiencesEntryLocalServiceTest {
 			() -> _addAudiencesEntry(
 				null, "{\"conjunction\": \"INVALID\", \"rules\": []}",
 				RandomTestUtil.randomString()));
-	}
-
-	@Test(
-		expected = DuplicateAudiencesEntryExternalReferenceCodeException.class
-	)
-	@TestInfo("LPD-95291")
-	public void testAddAudiencesEntryWithExistingExternalReferenceCode()
-		throws Exception {
-
-		AudiencesEntry audiencesEntry = _addAudiencesEntry(
-			null, StringPool.BLANK, RandomTestUtil.randomString());
-
-		_audiencesEntryLocalService.addAudiencesEntry(
-			audiencesEntry.getExternalReferenceCode(), StringPool.BLANK,
-			RandomTestUtil.randomString(), _serviceContext);
+		AssertUtils.assertFailure(
+			DuplicateAudiencesEntryExternalReferenceCodeException.class,
+			StringBundler.concat(
+				"Duplicate audiences entry with external reference code ",
+				externalReferenceCode, " and company ",
+				TestPropsValues.getCompanyId()),
+			() -> _addAudiencesEntry(
+				externalReferenceCode, StringPool.BLANK,
+				RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -145,25 +139,21 @@ public class AudiencesEntryLocalServiceTest {
 				updatedAudiencesEntry.getExternalReferenceCode(),
 				"{\"conjunction\": \"INVALID\", \"rules\": []}",
 				updatedAudiencesEntry.getName()));
-	}
 
-	@Test(
-		expected = DuplicateAudiencesEntryExternalReferenceCodeException.class
-	)
-	@TestInfo("LPD-95291")
-	public void testUpdateAudiencesEntryWithExistingExternalReferenceCode()
-		throws Exception {
-
-		AudiencesEntry audiencesEntry1 = _addAudiencesEntry(
+		audiencesEntry = _addAudiencesEntry(
 			null, StringPool.BLANK, RandomTestUtil.randomString());
 
-		AudiencesEntry audiencesEntry2 = _addAudiencesEntry(
-			null, StringPool.BLANK, RandomTestUtil.randomString());
+		long audiencesEntryId = audiencesEntry.getAudiencesEntryId();
 
-		_audiencesEntryLocalService.updateAudiencesEntry(
-			audiencesEntry2.getAudiencesEntryId(),
-			audiencesEntry1.getExternalReferenceCode(),
-			audiencesEntry2.getJSON(), audiencesEntry2.getName());
+		AssertUtils.assertFailure(
+			DuplicateAudiencesEntryExternalReferenceCodeException.class,
+			StringBundler.concat(
+				"Duplicate audiences entry with external reference code ",
+				externalReferenceCode, " and company ",
+				TestPropsValues.getCompanyId()),
+			() -> _audiencesEntryLocalService.updateAudiencesEntry(
+				audiencesEntryId, externalReferenceCode, StringPool.BLANK,
+				RandomTestUtil.randomString()));
 	}
 
 	private AudiencesEntry _addAudiencesEntry(
