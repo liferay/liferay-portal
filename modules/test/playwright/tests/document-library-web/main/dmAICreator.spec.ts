@@ -48,11 +48,17 @@ test(
 	}) => {
 		await aiCreatorInstanceSettingsPage.disableDalleCreateImages();
 
-		await documentLibraryPage.goto(site.friendlyUrlPath);
-		await documentLibraryPage.openNewButton();
-		await expect(
-			page.getByRole('menuitem', {name: 'Create AI Image'})
-		).not.toBeVisible();
+		await expect(async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openNewButton();
+
+			await expect(
+				page.getByRole('menuitem', {exact: true, name: 'Folder'})
+			).toBeVisible({timeout: 3000});
+			await expect(
+				page.getByRole('menuitem', {name: 'Create AI Image'})
+			).toBeHidden();
+		}).toPass();
 
 		await aiCreatorInstanceSettingsPage.enableDalleCreateImages();
 	}
