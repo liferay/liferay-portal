@@ -438,7 +438,10 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 								<filtermapper>
 									<replacestring from="/" to=":" />
 								</filtermapper>
-								<globmapper from="*" to=":*:deploy" />
+								<globmapper
+									from="*"
+									to=":*:deploy"
+								/>
 							</chainedmapper>
 						</pathconvert>
 
