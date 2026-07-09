@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless CMP API
 Bundle-SymbolicName: com.liferay.headless.cmp.api
-Bundle-Version: 2.0.5
+Bundle-Version: 2.1.0
 Export-Package:\
 	com.liferay.headless.cmp.dto.v1_0,\
 	com.liferay.headless.cmp.resource.v1_0
