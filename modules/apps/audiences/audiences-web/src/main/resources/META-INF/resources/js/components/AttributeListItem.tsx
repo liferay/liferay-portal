@@ -60,11 +60,6 @@ export default function AttributeListItem({
 			role="menuitem"
 			tabIndex={navigationProps.tabIndex}
 		>
-			<ClayIcon
-				className="audience-builder-attribute__grip text-secondary"
-				symbol="drag"
-			/>
-
 			<span
 				className={classNames(
 					'align-items-center audience-builder-attribute__icon d-inline-flex justify-content-center rounded',
