@@ -42,6 +42,7 @@ test(
 				'Accessibility help',
 				'Undo',
 				'Redo',
+				'Find and replace',
 				'Styles',
 				'Normal',
 				'Bold',
