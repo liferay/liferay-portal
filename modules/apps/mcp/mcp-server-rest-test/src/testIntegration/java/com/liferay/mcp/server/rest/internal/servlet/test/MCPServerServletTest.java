@@ -8,8 +8,7 @@ package com.liferay.mcp.server.rest.internal.servlet.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
-import com.liferay.mcp.server.rest.test.util.MCPServerDataMaskTestUtil;
+import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
 import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
@@ -99,15 +98,7 @@ public class MCPServerServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.mcp.server.rest.impl", MCPServerServletTest.class,
-			new String[] {
-				".com.liferay.mcp.server.rest.internal.batch.01.object." +
-					"definition",
-				".com.liferay.mcp.server.rest.internal.batch.02.object." +
-					"definition",
-				".com.liferay.mcp.server.rest.internal.batch.04.object.entry"
-			});
+		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
@@ -191,25 +182,7 @@ public class MCPServerServletTest {
 
 	@Test
 	public void testServiceWithDataMasks() throws Exception {
-		String dataMaskingPrefix =
-			".com.liferay.headless.data.mask.internal.batch.";
-
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.headless.data.mask.impl", MCPServerServletTest.class,
-			new String[] {
-				dataMaskingPrefix + "01.list.type.definition",
-				dataMaskingPrefix + "02.object.definition",
-				dataMaskingPrefix + "03.object.entry"
-			});
-
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.mcp.server.rest.impl", MCPServerServletTest.class,
-			new String[] {
-				".com.liferay.mcp.server.rest.internal.batch.03.object." +
-					"definition"
-			});
-
-		MCPServerDataMaskTestUtil.updateMCPServerConfiguration(true);
+		MCPServerTestUtil.updateMCPServerConfiguration(true);
 
 		try {
 
@@ -217,14 +190,13 @@ public class MCPServerServletTest {
 
 			String profileName = RandomTestUtil.randomString();
 
-			ObjectEntry profileObjectEntry =
-				MCPServerDataMaskTestUtil.addProfile(
-					profileName, "Contact: " + _SAMPLE_EMAIL,
-					"mcp-server-profiles getMCPServerProfilesPage");
+			ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
+				profileName, "Contact: " + _SAMPLE_EMAIL,
+				"mcp-server-profiles getMCPServerProfilesPage");
 
 			ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
 
-			MCPServerDataMaskTestUtil.addProfileDataMask(
+			MCPServerTestUtil.addProfileDataMask(
 				profileObjectEntry.getExternalReferenceCode(),
 				emailMaskObjectEntry.getObjectEntryId(), 1);
 
@@ -240,7 +212,7 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			MCPServerDataMaskTestUtil.addProfile(
+			MCPServerTestUtil.addProfile(
 				profileName, "Server at 192.168.1.42",
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -260,13 +232,13 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry = MCPServerDataMaskTestUtil.addProfile(
+			profileObjectEntry = MCPServerTestUtil.addProfile(
 				profileName, RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			emailMaskObjectEntry = _findSystemMask("Email Address");
 
-			MCPServerDataMaskTestUtil.addProfileDataMask(
+			MCPServerTestUtil.addProfileDataMask(
 				profileObjectEntry.getExternalReferenceCode(),
 				emailMaskObjectEntry.getObjectEntryId(), 1);
 
@@ -295,7 +267,7 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry = MCPServerDataMaskTestUtil.addProfile(
+			profileObjectEntry = MCPServerTestUtil.addProfile(
 				profileName, "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -305,7 +277,7 @@ public class MCPServerServletTest {
 				profileObjectEntry.getExternalReferenceCode(),
 				emailMaskObjectEntry.getObjectEntryId());
 
-			MCPServerDataMaskTestUtil.removeProfileDataMask(
+			MCPServerTestUtil.removeProfileDataMask(
 				emailProfileDataMaskObjectEntry, "Removed by test.");
 
 			responseText = _callListProfilesTool(profileName);
@@ -320,7 +292,7 @@ public class MCPServerServletTest {
 			// The REST invocation applies masks when the data masks header is
 			// set
 
-			MCPServerDataMaskTestUtil.addProfile(
+			MCPServerTestUtil.addProfile(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -337,7 +309,7 @@ public class MCPServerServletTest {
 
 			// The REST invocation respects the selected masks only
 
-			MCPServerDataMaskTestUtil.addProfile(
+			MCPServerTestUtil.addProfile(
 				RandomTestUtil.randomString(),
 				StringBundler.concat(
 					"Contact: ", _SAMPLE_EMAIL, " ", _SAMPLE_PHONE),
@@ -359,7 +331,7 @@ public class MCPServerServletTest {
 			// The REST invocation skips redaction when the data masks header is
 			// unknown
 
-			MCPServerDataMaskTestUtil.addProfile(
+			MCPServerTestUtil.addProfile(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -378,7 +350,7 @@ public class MCPServerServletTest {
 			// The REST invocation skips redaction when there is no data masks
 			// header
 
-			MCPServerDataMaskTestUtil.addProfile(
+			MCPServerTestUtil.addProfile(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -392,7 +364,7 @@ public class MCPServerServletTest {
 					CoreMatchers.containsString("[EMAIL_ADDRESS]")));
 		}
 		finally {
-			MCPServerDataMaskTestUtil.updateMCPServerConfiguration(false);
+			MCPServerTestUtil.updateMCPServerConfiguration(false);
 		}
 	}
 

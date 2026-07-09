@@ -5,6 +5,7 @@
 
 package com.liferay.mcp.server.rest.test.util;
 
+import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * @author Jose Luis Navarro
  */
-public class MCPServerDataMaskTestUtil {
+public class MCPServerTestUtil {
 
 	public static ObjectEntry addCustomMask(
 			String name, String detectionRegex, String replacementValue)
@@ -151,6 +152,29 @@ public class MCPServerDataMaskTestUtil {
 		}
 
 		return null;
+	}
+
+	public static void processBatchEngineUnits() {
+		String dataMaskPrefix =
+			".com.liferay.headless.data.mask.internal.batch.";
+
+		BatchEngineTestUtil.processBatchEngineUnits(
+			"com.liferay.headless.data.mask.impl", MCPServerTestUtil.class,
+			new String[] {
+				dataMaskPrefix + "01.list.type.definition",
+				dataMaskPrefix + "02.object.definition",
+				dataMaskPrefix + "03.object.entry"
+			});
+
+		String prefix = ".com.liferay.mcp.server.rest.internal.batch.";
+
+		BatchEngineTestUtil.processBatchEngineUnits(
+			"com.liferay.mcp.server.rest.impl", MCPServerTestUtil.class,
+			new String[] {
+				prefix + "01.object.definition",
+				prefix + "02.object.definition",
+				prefix + "03.object.definition", prefix + "04.object.entry"
+			});
 	}
 
 	public static void removeProfileDataMask(

@@ -6,8 +6,7 @@
 package com.liferay.mcp.server.rest.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
-import com.liferay.mcp.server.rest.test.util.MCPServerDataMaskTestUtil;
+import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
@@ -43,47 +42,25 @@ public class DataMaskObjectEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String dataMaskingPrefix =
-			".com.liferay.headless.data.mask.internal.batch.";
-
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.headless.data.mask.impl",
-			DataMaskObjectEntryModelListenerTest.class,
-			new String[] {
-				dataMaskingPrefix + "01.list.type.definition",
-				dataMaskingPrefix + "02.object.definition",
-				dataMaskingPrefix + "03.object.entry"
-			});
-
-		String prefix = ".com.liferay.mcp.server.rest.internal.batch.";
-
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.mcp.server.rest.impl",
-			DataMaskObjectEntryModelListenerTest.class,
-			new String[] {
-				prefix + "01.object.definition",
-				prefix + "02.object.definition",
-				prefix + "03.object.definition", prefix + "04.object.entry"
-			});
+		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry profileObjectEntry = MCPServerDataMaskTestUtil.addProfile(
+		ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
 			RandomTestUtil.randomString(), "no PII here",
 			"mcp-server-profiles getMCPServerProfilesPage");
 
-		ObjectEntry customMaskObjectEntry =
-			MCPServerDataMaskTestUtil.addCustomMask(
-				RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
+		ObjectEntry customMaskObjectEntry = MCPServerTestUtil.addCustomMask(
+			RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
 
 		ObjectEntry profileDataMaskObjectEntry =
-			MCPServerDataMaskTestUtil.addProfileDataMask(
+			MCPServerTestUtil.addProfileDataMask(
 				profileObjectEntry.getExternalReferenceCode(),
 				customMaskObjectEntry.getObjectEntryId(), 1);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				MCPServerDataMaskTestUtil.enableAuditPersistence()) {
+				MCPServerTestUtil.enableAuditPersistence()) {
 
 			PermissionChecker originalPermissionChecker =
 				PermissionThreadLocal.getPermissionChecker();
@@ -110,7 +87,7 @@ public class DataMaskObjectEntryModelListenerTest {
 
 			Assert.assertEquals(
 				"Data mask deleted.",
-				MCPServerDataMaskTestUtil.getAuditedDeleteReason(
+				MCPServerTestUtil.getAuditedDeleteReason(
 					profileDataMaskObjectEntry));
 		}
 	}
