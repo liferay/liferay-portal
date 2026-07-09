@@ -5,36 +5,29 @@ import React from 'react';
 import {ClayCheckbox} from '@clayui/form';
 import {sub} from 'shared/util/lang';
 
-/**
- * TODO [Marketo]: This component is derived from
- * SalesforceAccountsAndIndividuals. Replace the Salesforce-worded language key
- * ('represents-fields-from-the-contact-or-lead-object-within-salesforce') once
- * the Marketo Campaign copy is defined.
- */
-
 interface IMarketoCampaignEntitiesProps {
 	disabled?: boolean;
-	enabledIndividual: boolean;
+	enabledIndividuals: boolean;
 	individualsSyncedCount?: number;
 	loading?: boolean;
-	onIndividualChange: () => void;
+	onIndividualsChange: () => void;
 	type?: string;
 }
 
 const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 	disabled = false,
-	enabledIndividual,
+	enabledIndividuals,
 	individualsSyncedCount,
-	onIndividualChange,
+	onIndividualsChange,
 }) => (
 	<div className="pt-1">
 		<ClayList className="mb-0">
 			<ClayList.Item flex>
 				<ClayList.ItemField>
 					<ClayCheckbox
-						checked={enabledIndividual}
+						checked={enabledIndividuals}
 						disabled={disabled}
-						onChange={onIndividualChange}
+						onChange={onIndividualsChange}
 					/>
 				</ClayList.ItemField>
 
@@ -52,10 +45,9 @@ const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 						{Liferay.Language.get('individuals')}
 					</ClayList.ItemTitle>
 
-					{/* TODO [Marketo]: Salesforce-worded language key. */}
 					<ClayList.ItemText>
 						{Liferay.Language.get(
-							'represents-fields-from-the-contact-or-lead-object-within-salesforce'
+							'represents-fields-from-the-leads-and-companies-table-within-marketo'
 						)}
 					</ClayList.ItemText>
 

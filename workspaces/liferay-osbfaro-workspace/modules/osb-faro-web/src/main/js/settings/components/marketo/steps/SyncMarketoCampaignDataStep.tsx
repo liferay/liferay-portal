@@ -21,7 +21,7 @@ const SyncMarketoCampaignDataStep = ({
 	const [loading, setLoading] = useState(false);
 	const {dataSource} = useWizardPage();
 	const {groupId = ''} = useParams<{groupId: string}>();
-	const [enabledIndividual, setEnabledIndividual] = useState(false);
+	const [enabledIndividuals, setEnabledIndividuals] = useState(false);
 
 	useEffect(() => {
 		if (dataSource) {
@@ -31,7 +31,7 @@ const SyncMarketoCampaignDataStep = ({
 
 			const individuals = contactsConfiguration?.get('enableAllLeads');
 
-			setEnabledIndividual(individuals);
+			setEnabledIndividuals(individuals);
 		}
 	}, []);
 
@@ -49,7 +49,7 @@ const SyncMarketoCampaignDataStep = ({
 
 					await updateMarketoCampaign({
 						contactsConfiguration: {
-							enableAllLeads: enabledIndividual,
+							enableAllLeads: enabledIndividuals,
 						},
 						groupId,
 						id: dataSource.id,
@@ -78,9 +78,9 @@ const SyncMarketoCampaignDataStep = ({
 
 			{dataSource && (
 				<MarketoCampaignEntities
-					enabledIndividual={enabledIndividual}
-					onIndividualChange={() =>
-						setEnabledIndividual(!enabledIndividual)
+					enabledIndividuals={enabledIndividuals}
+					onIndividualsChange={() =>
+						setEnabledIndividuals(!enabledIndividuals)
 					}
 					type="checkbox"
 				/>

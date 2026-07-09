@@ -9,7 +9,7 @@ import {
 	updateMarketoCampaign,
 } from 'shared/api/data-source';
 import {DataSource} from 'shared/util/records';
-import {DataSourceStatuses, DataSourceTypes} from 'shared/util/constants';
+import {DataSourceStatuses} from 'shared/util/constants';
 import {FormikProps} from 'formik';
 import {sequence} from 'shared/util/promise';
 import {sub} from 'shared/util/lang';
@@ -138,7 +138,7 @@ const ConnectMarketoCampaignAuth: React.FC<
 					},
 					credentials,
 					groupId,
-					name: DataSourceTypes.MarketoCampaign,
+					name: Liferay.Language.get('marketo-campaign'),
 					status: DataSourceStatuses.Active,
 					url,
 				})
