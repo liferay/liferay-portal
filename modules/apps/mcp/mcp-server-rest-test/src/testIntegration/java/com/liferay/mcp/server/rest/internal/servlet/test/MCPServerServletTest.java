@@ -255,36 +255,39 @@ public class MCPServerServletTest {
 
 	private ObjectEntry _fetchMCPServerProfileDataMaskObjectEntry(
 			String mcpServerProfileExternalReferenceCode,
-			long maskObjectEntryId)
+			long dataMaskObjectEntryId)
 		throws Exception {
 
-		ObjectDefinition profileDataMaskObjectDefinition =
+		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_MCP_SERVER_PROFILE_DATA_MASK",
 					TestPropsValues.getCompanyId());
 
-		for (ObjectEntry profileDataMaskObjectEntry :
+		ObjectEntry dataMaskObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(dataMaskObjectEntryId);
+
+		for (ObjectEntry mcpServerProfileDataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
-					0, profileDataMaskObjectDefinition.getObjectDefinitionId(),
+					0,
+					mcpServerProfileDataMaskObjectDefinition.
+						getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			Map<String, Serializable> values =
-				profileDataMaskObjectEntry.getValues();
+				mcpServerProfileDataMaskObjectEntry.getValues();
 
-			String profileDataMaskERC = (String)values.get(
+			String dataMaskExternalReferenceCode = (String)values.get(
 				"dataMaskExternalReferenceCode");
 
 			if (Objects.equals(
-					mcpServerProfileExternalReferenceCode,
-					values.get("mcpServerProfileExternalReferenceCode")) &&
+					dataMaskExternalReferenceCode,
+					dataMaskObjectEntry.getExternalReferenceCode()) &&
 				Objects.equals(
-					profileDataMaskERC,
-					_objectEntryLocalService.fetchObjectEntry(
-						maskObjectEntryId
-					).getExternalReferenceCode())) {
+					mcpServerProfileExternalReferenceCode,
+					values.get("mcpServerProfileExternalReferenceCode"))) {
 
-				return profileDataMaskObjectEntry;
+				return mcpServerProfileDataMaskObjectEntry;
 			}
 		}
 
