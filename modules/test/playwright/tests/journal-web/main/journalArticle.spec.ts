@@ -285,7 +285,7 @@ baseTest(
 	}
 );
 
-baseTest(
+ckeditor5Test(
 	'Check that upload field is marked as translated',
 	{
 		tag: '@LPD-66008',
