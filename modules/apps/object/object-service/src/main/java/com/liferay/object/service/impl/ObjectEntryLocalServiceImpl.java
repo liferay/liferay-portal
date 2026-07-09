@@ -2628,6 +2628,9 @@ public class ObjectEntryLocalServiceImpl
 			objectField.getObjectFieldSettings());
 
 		if (Objects.equals(
+				fileSource,
+				ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT) ||
+			Objects.equals(
 				fileSource, ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA)) {
 
 			return;
@@ -2655,11 +2658,7 @@ public class ObjectEntryLocalServiceImpl
 
 		DLFolder dlFileEntryFolder = dlFileEntry.getFolder();
 
-		if ((groupId == 0) ||
-			Objects.equals(
-				fileSource,
-				ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT)) {
-
+		if (groupId == 0) {
 			groupId = dlFileEntry.getGroupId();
 		}
 
