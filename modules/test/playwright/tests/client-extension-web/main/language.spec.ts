@@ -48,6 +48,10 @@ testSample.describe('Samples', () => {
 				value: '¿Le gusta comer pizza con anchoas?',
 			},
 			{
+				languageId: 'es-ES',
+				value: '¿Le gusta comer pizza con anchoas?',
+			},
+			{
 				languageId: 'es-MX',
 				value: '¿Le gusta comer pizza con anchoas?',
 			},
@@ -127,10 +131,19 @@ testSample.describe('Samples', () => {
 			);
 
 			await testSample.step(
-				'Check that a translation with (Automatic Copy) was not imported',
+				'Check that a translation for a disabled locale was not imported',
 				async () => {
-					await languageOverridePage.assertLanguageKeyTranslationIsEmpty(
-						'es-ES'
+					await languageOverridePage.goto();
+
+					await languageOverridePage.changeFilter('Any Language');
+
+					await languageOverridePage.searchLanguageKey(
+						EXPECTED_LANGUAGE_KEY.key
+					);
+
+					await languageOverridePage.assertLanguageKeyHasNoOverrideForLocale(
+						EXPECTED_LANGUAGE_KEY.key,
+						'th-TH'
 					);
 				}
 			);

@@ -81,6 +81,15 @@ export class LanguageOverridePage {
 		}
 	}
 
+	async assertLanguageKeyHasNoOverrideForLocale(
+		key: string,
+		languageId: string
+	) {
+		await expect(
+			this.page.getByRole('link', {name: key})
+		).not.toContainText(languageId.replace('-', '_'));
+	}
+
 	async assertLanguageKeyNotInListView(key: string) {
 		await expect(this.page.getByRole('link', {name: key})).toBeHidden();
 	}
