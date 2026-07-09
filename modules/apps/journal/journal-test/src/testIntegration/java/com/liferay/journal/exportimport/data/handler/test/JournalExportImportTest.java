@@ -77,12 +77,17 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.Node;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -92,6 +97,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -204,12 +210,12 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		Assert.assertNotNull(importedArticle2);
 
-		_assertContains(
+		_assertClassPK(
 			importedArticle1.getContent(),
-			"\"classPK\":\"" + importedArticle2.getResourcePrimKey() + "\"");
-		_assertContains(
+			importedArticle2.getResourcePrimKey());
+		_assertClassPK(
 			importedArticle2.getContent(),
-			"\"classPK\":\"" + importedArticle1.getResourcePrimKey() + "\"");
+			importedArticle1.getResourcePrimKey());
 	}
 
 	@Test
@@ -380,10 +386,9 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		Assert.assertNotNull(importedArticle);
 
-		_assertContains(
+		_assertClassPK(
 			importedArticle.getContent(),
-			"\"classPK\":\"" + importedReferencedArticle.getResourcePrimKey() +
-				"\"");
+			importedReferencedArticle.getResourcePrimKey());
 	}
 
 	@Test
@@ -513,12 +518,8 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		String content = article.getContent();
 
-		_assertContains(
-			content,
-			"\"classPK\":\"" + referencedArticle1.getResourcePrimKey() + "\"");
-		_assertContains(
-			content,
-			"\"classPK\":\"" + referencedArticle2.getResourcePrimKey() + "\"");
+		_assertClassPK(content, referencedArticle1.getResourcePrimKey());
+		_assertClassPK(content, referencedArticle2.getResourcePrimKey());
 	}
 
 	@Test
@@ -744,9 +745,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		String liveArticle2Content = liveArticle2.getContent();
 
-		Assert.assertTrue(
-			liveArticle2Content.contains(
-				"\"classPK\":\"" + liveArticle1.getResourcePrimKey() + "\""));
+		_assertClassPK(liveArticle2Content, liveArticle1.getResourcePrimKey());
 
 		Changeset changeset = Changeset.create(
 		).addStagedModel(
@@ -772,9 +771,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		liveArticle2Content = liveArticle2.getContent();
 
-		Assert.assertTrue(
-			liveArticle2Content.contains(
-				"\"classPK\":\"" + liveArticle1.getResourcePrimKey() + "\""));
+		_assertClassPK(liveArticle2Content, liveArticle1.getResourcePrimKey());
 	}
 
 	@Override
@@ -1138,12 +1135,10 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			assetCategory.getName(), importedAssetCategory.getName());
 	}
 
-	private void _assertContains(String string, String substring) {
-		Assert.assertTrue(
-			StringBundler.concat(
-				"The string \"", string, "\" should contain the substring \"",
-				substring, "\""),
-			string.contains(substring));
+	private void _assertClassPK(String content, long classPK) throws Exception {
+		List<Long> classPKs = _getClassPKs(content);
+
+		Assert.assertTrue(classPKs.contains(classPK));
 	}
 
 	private String _buildXMLContent(String referenceJSON) {
@@ -1175,6 +1170,30 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		).put(
 			"type", "Web Content Article"
 		).toString();
+	}
+
+	private List<Long> _getClassPKs(String content) throws Exception {
+		List<Long> classPKs = new ArrayList<>();
+
+		Document document = SAXReaderUtil.read(content);
+
+		for (Node node : document.selectNodes("//dynamic-content")) {
+			String text = node.getText();
+
+			if (Validator.isNull(text)) {
+				continue;
+			}
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject(text);
+
+			if (jsonObject.has("classPK")) {
+				classPKs.add(
+					GetterUtil.getLong(
+						JSONUtil.getValue(jsonObject, "Object/classPK")));
+			}
+		}
+
+		return classPKs;
 	}
 
 	private String _read(String fileName) throws Exception {
