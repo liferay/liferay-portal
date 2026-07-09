@@ -98,6 +98,7 @@ public class TaxonomyCategoryDTOConverter
 				assetCategory.getCompanyId(), "LPD-86291") &&
 			assetCategory.isSystem()) {
 
+			actions.remove("add-category");
 			actions.remove("delete");
 			actions.remove("replace");
 			actions.remove("update");
