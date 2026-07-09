@@ -30,7 +30,7 @@ interface ActivePoint {
  * a fallback so the chart stays blue on themes that do not define the variable.
  */
 const BLUE_SHADES = [
-	'var(--primary, light-dark(#0b5fff, #6198ff))',
+	'var(--chart-color-2, light-dark(#006eff, #66abff))',
 	'var(--blue-d2, light-dark(#005fcc, #94c4ff))',
 	'var(--blue-l2, light-dark(#66abff, #006be6))',
 	'var(--blue-d1, light-dark(#006be6, #70b1ff))',

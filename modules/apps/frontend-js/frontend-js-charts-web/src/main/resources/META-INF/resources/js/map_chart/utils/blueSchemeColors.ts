@@ -8,7 +8,7 @@ const BLUE_RAMP: ReadonlyArray<string> = [
 	'--blue-l3',
 	'--blue-l2',
 	'--blue-l1',
-	'--blue',
+	'--chart-color-2',
 	'--blue-d1',
 	'--blue-d2',
 	'--blue-d3',

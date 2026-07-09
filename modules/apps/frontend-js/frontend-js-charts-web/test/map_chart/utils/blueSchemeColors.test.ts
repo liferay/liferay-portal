@@ -19,7 +19,7 @@ describe('getBlueSchemeColor', () => {
 	});
 
 	it('spreads intermediate buckets evenly across the ramp', () => {
-		expect(getBlueSchemeColor(5, 2)).toBe('var(--blue)');
+		expect(getBlueSchemeColor(5, 2)).toBe('var(--chart-color-2)');
 	});
 
 	it('resolves the darkest step even when the requested steps exceed the ramp length', () => {

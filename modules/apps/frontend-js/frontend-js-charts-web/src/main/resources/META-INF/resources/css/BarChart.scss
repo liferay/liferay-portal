@@ -35,7 +35,7 @@
 		// fallback keeps blue mode rendering with `--primary`.
 
 		cursor: pointer;
-		fill: var(--charts-bar-fill, $primary);
+		fill: var(--charts-bar-fill, var(--chart-color-2));
 		outline: none;
 		transform-box: fill-box;
 		transform-origin: center bottom;
