@@ -41,6 +41,19 @@
 		},
 		{
 			"active": true,
+			"description": "This agent searches the broader CMS for existing assets that match a content gap's persona and funnel stage so they can be reused to fill the gap. It never modifies content.",
+			"externalReferenceCode": "L_FIND_MATCHING_ASSETS",
+			"inputVariables": "cmsGroupId,funnelStageId,keywords,personaId,portalURL,tasks",
+			"outputVariable": "matchingAssets",
+			"r_accountToAIHubAgentDefinitions_accountEntryERC": "L_AI_HUB",
+			"system": true,
+			"title_i18n": {
+				"en_US": "Find Matching Assets"
+			},
+			"workflowDefinitionName": "Find Matching Assets"
+		},
+		{
+			"active": true,
 			"description": "This writing agent acts as an expert linguistic editor, correcting grammar and spelling errors while strictly preserving your original tone and style.",
 			"externalReferenceCode": "L_FIX_SPELLING_AND_GRAMMAR",
 			"inputVariables": "text",
