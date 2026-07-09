@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jose Luis Navarro
  */
 @Component(service = RelevantObjectEntryModelListener.class)
-public class MCPServerDataMaskObjectEntryModelListener
+public class DataMaskObjectEntryModelListener
 	extends BaseModelListener<ObjectEntry>
 	implements RelevantObjectEntryModelListener {
 
@@ -109,7 +109,7 @@ public class MCPServerDataMaskObjectEntryModelListener
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MCPServerDataMaskObjectEntryModelListener.class);
+		DataMaskObjectEntryModelListener.class);
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
