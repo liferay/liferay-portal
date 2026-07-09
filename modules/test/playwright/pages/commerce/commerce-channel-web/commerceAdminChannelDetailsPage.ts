@@ -778,6 +778,8 @@ export class CommerceAdminChannelDetailsPage {
 		await expect(this.channelCurrencySelect).toHaveValue(currency);
 
 		await this.saveButton.click();
+
+		await waitForAlert(this.page);
 	}
 
 	async editFixedTaxRate(newAmount: string, name: string) {
