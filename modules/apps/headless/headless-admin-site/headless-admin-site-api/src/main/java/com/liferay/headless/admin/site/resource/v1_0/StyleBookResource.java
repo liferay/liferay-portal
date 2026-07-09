@@ -69,6 +69,12 @@ public interface StyleBookResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public Page<StyleBook> getSitePageSpecificationStyleBooksPage(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode, String search,
+			Pagination pagination)
+		throws Exception;
+
 	public StyleBook getSiteStyleBook(
 			String siteExternalReferenceCode,
 			String styleBookExternalReferenceCode)
@@ -217,4 +223,4 @@ public interface StyleBookResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:133354348
+// LIFERAY-REST-BUILDER-HASH:181160648

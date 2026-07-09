@@ -536,6 +536,53 @@ public class StyleBook implements Serializable {
 	private Supplier<String> _previewFileEntryExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The style book's scope, identifying its owning site or asset library."
+	)
+	@Valid
+	public com.liferay.portal.vulcan.scope.Scope getScope() {
+		if (_scopeSupplier != null) {
+			scope = _scopeSupplier.get();
+
+			_scopeSupplier = null;
+		}
+
+		return scope;
+	}
+
+	public void setScope(com.liferay.portal.vulcan.scope.Scope scope) {
+		this.scope = scope;
+
+		_scopeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScope(
+		UnsafeSupplier<com.liferay.portal.vulcan.scope.Scope, Exception>
+			scopeUnsafeSupplier) {
+
+		_scopeSupplier = () -> {
+			try {
+				return scopeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The style book's scope, identifying its owning site or asset library."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected com.liferay.portal.vulcan.scope.Scope scope;
+
+	@JsonIgnore
+	private Supplier<com.liferay.portal.vulcan.scope.Scope> _scopeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The theme id or the themeCSS client extension external reference code this style book is based on."
 	)
 	public String getThemeId() {
@@ -771,6 +818,18 @@ public class StyleBook implements Serializable {
 			sb.append("\"");
 		}
 
+		com.liferay.portal.vulcan.scope.Scope scope = getScope();
+
+		if (scope != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scope\": ");
+
+			sb.append(scope);
+		}
+
 		String themeId = getThemeId();
 
 		if (themeId != null) {
@@ -888,4 +947,4 @@ public class StyleBook implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1262351687
+// LIFERAY-REST-BUILDER-HASH:304268656

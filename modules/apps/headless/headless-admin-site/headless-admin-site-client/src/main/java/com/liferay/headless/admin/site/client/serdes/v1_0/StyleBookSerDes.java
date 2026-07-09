@@ -191,6 +191,16 @@ public class StyleBookSerDes {
 			sb.append("\"");
 		}
 
+		if (styleBook.getScope() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scope\": ");
+
+			sb.append(styleBook.getScope());
+		}
+
 		if (styleBook.getThemeId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -316,6 +326,13 @@ public class StyleBookSerDes {
 					styleBook.getPreviewFileEntryExternalReferenceCode()));
 		}
 
+		if (styleBook.getScope() == null) {
+			map.put("scope", null);
+		}
+		else {
+			map.put("scope", String.valueOf(styleBook.getScope()));
+		}
+
 		if (styleBook.getThemeId() == null) {
 			map.put("themeId", null);
 		}
@@ -378,6 +395,9 @@ public class StyleBookSerDes {
 						jsonParserFieldName,
 						"previewFileEntryExternalReferenceCode")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "scope")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "themeId")) {
@@ -460,6 +480,13 @@ public class StyleBookSerDes {
 				if (jsonParserFieldValue != null) {
 					styleBook.setPreviewFileEntryExternalReferenceCode(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "scope")) {
+				if (jsonParserFieldValue != null) {
+					styleBook.setScope(
+						com.liferay.headless.admin.site.client.scope.Scope.
+							toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "themeId")) {
@@ -548,4 +575,4 @@ public class StyleBookSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-841545486
+// LIFERAY-REST-BUILDER-HASH:-1179295824

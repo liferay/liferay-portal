@@ -258,6 +258,31 @@ public class StyleBook implements Cloneable, Serializable {
 
 	protected String previewFileEntryExternalReferenceCode;
 
+	public com.liferay.headless.admin.site.client.scope.Scope getScope() {
+		return scope;
+	}
+
+	public void setScope(
+		com.liferay.headless.admin.site.client.scope.Scope scope) {
+
+		this.scope = scope;
+	}
+
+	public void setScope(
+		UnsafeSupplier
+			<com.liferay.headless.admin.site.client.scope.Scope, Exception>
+				scopeUnsafeSupplier) {
+
+		try {
+			scope = scopeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.headless.admin.site.client.scope.Scope scope;
+
 	public String getThemeId() {
 		return themeId;
 	}
@@ -311,4 +336,4 @@ public class StyleBook implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-141892310
+// LIFERAY-REST-BUILDER-HASH:642849199

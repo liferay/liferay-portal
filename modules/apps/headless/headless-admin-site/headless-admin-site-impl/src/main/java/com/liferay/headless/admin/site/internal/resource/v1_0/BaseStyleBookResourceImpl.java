@@ -290,6 +290,69 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/style-books'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the style books that can be assigned to the page specification."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteExternalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "pageSpecificationExternalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "StyleBook")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/style-books"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<StyleBook> getSitePageSpecificationStyleBooksPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
+			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("pageSpecificationExternalReferenceCode")
+			String pageSpecificationExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("search")
+			String search,
+			@jakarta.ws.rs.core.Context Pagination pagination)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
@@ -424,7 +487,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates only the fields received in the request body, leaving any other fields untouched."
@@ -514,6 +577,10 @@ public abstract class BaseStyleBookResourceImpl
 				styleBook.getPreviewFileEntryExternalReferenceCode());
 		}
 
+		if (styleBook.getScope() != null) {
+			existingStyleBook.setScope(styleBook.getScope());
+		}
+
 		if (styleBook.getThemeId() != null) {
 			existingStyleBook.setThemeId(styleBook.getThemeId());
 		}
@@ -528,7 +595,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates only the fields received in the request body, leaving any other fields untouched."
@@ -618,6 +685,10 @@ public abstract class BaseStyleBookResourceImpl
 				styleBook.getPreviewFileEntryExternalReferenceCode());
 		}
 
+		if (styleBook.getScope() != null) {
+			existingStyleBook.setScope(styleBook.getScope());
+		}
+
 		if (styleBook.getThemeId() != null) {
 			existingStyleBook.setThemeId(styleBook.getThemeId());
 		}
@@ -632,7 +703,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new style book to a design library."
@@ -669,7 +740,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new style book."
@@ -845,7 +916,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the style book with the given external reference code, or creates it if it does not exist."
@@ -902,7 +973,7 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "defaultStyleBook": ___, "externalReferenceCode": ___, "frontendTokensValues": ___, "key": ___, "name": ___, "previewFileEntryExternalReferenceCode": ___, "scope": ___, "themeId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the style book with the given external reference code, or creates it if it does not exist."
@@ -1708,4 +1779,4 @@ public abstract class BaseStyleBookResourceImpl
 		LogFactoryUtil.getLog(BaseStyleBookResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1723832510
+// LIFERAY-REST-BUILDER-HASH:-1687550409
