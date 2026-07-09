@@ -17,18 +17,17 @@ import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFo
 
 import java.util.Objects;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Stefano Motta
  */
-@Component(
-	property = "indexer.class.name=com.liferay.object.model.ObjectEntry",
-	service = ModelDocumentContributor.class
-)
 public class PIMProductObjectEntryModelDocumentContributor
 	implements ModelDocumentContributor<ObjectEntry> {
+
+	public PIMProductObjectEntryModelDocumentContributor(
+		ObjectEntryFolderLocalService objectEntryFolderLocalService) {
+
+		_objectEntryFolderLocalService = objectEntryFolderLocalService;
+	}
 
 	@Override
 	public void contribute(Document document, ObjectEntry objectEntry) {
@@ -81,7 +80,6 @@ public class PIMProductObjectEntryModelDocumentContributor
 			GetterUtil.getLong(parts[1]));
 	}
 
-	@Reference
-	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 }
