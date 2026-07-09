@@ -1,6 +1,16 @@
 @import 'cadmin-variables';
 
+@mixin ai-assistant-chat-gutter {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
 html#{$cadmin-selector} {
+	.ai-assistant-chat__dropdown {
+		display: flex;
+		padding: 0;
+	}
+
 	.ai-assistant-chat__trigger.btn {
 		align-items: center;
 		background-color: transparent;
@@ -16,6 +26,7 @@ html#{$cadmin-selector} {
 				#aa33ff 4.37%,
 				#0b5fff 98.53%
 			);
+			margin-left: 0.5rem;
 			-webkit-text-fill-color: transparent;
 		}
 
@@ -41,6 +52,7 @@ html#{$cadmin-selector} {
 html#{$cadmin-selector} .cadmin {
 	.ai-assistant-chat__embedded {
 		height: 100%;
+		padding-top: 1rem;
 
 		.ai-assistant-chat__messages-container {
 			min-height: 200px;
@@ -54,26 +66,42 @@ html#{$cadmin-selector} .cadmin {
 
 	.ai-assistant-chat__dropdown-container,
 	.ai-assistant-chat__embedded {
+		display: flex;
+		flex-direction: column;
 		height: 100%;
 		width: 100%;
 
-		.ai-assistant-chat__dropdown-title {
-			color: $cadmin-gray-900;
-		}
-
 		.ai-assistant-chat__dropdown-close-button {
 			color: $cadmin-gray-600;
-			height: 12;
-			width: 12;
+		}
+
+		.ai-assistant-chat__dropdown-header {
+			flex-shrink: 0;
+			margin-bottom: 1rem;
+			padding-left: 1.5rem;
+			padding-right: 1.5rem;
+			padding-top: 0.5rem;
+
+			&-row {
+				align-items: center;
+				border-bottom: $cadmin-border-width solid $cadmin-border-color;
+				justify-content: space-between;
+				padding-bottom: 0.5rem;
+			}
+		}
+
+		.ai-assistant-chat__dropdown-title {
+			color: $cadmin-gray-900;
+			font-weight: 600;
 		}
 
 		.ai-assistant-chat__footer-disclaimer {
+			@include ai-assistant-chat-gutter;
+
 			align-items: center;
 			display: flex;
 			flex-direction: row;
 			padding-bottom: 1rem;
-			padding-left: 1rem;
-			padding-right: 1rem;
 			padding-top: 0.5rem;
 
 			&-text {
@@ -84,30 +112,90 @@ html#{$cadmin-selector} .cadmin {
 		}
 
 		.ai-assistant-chat__messages-container {
+			@include ai-assistant-chat-gutter;
+
+			flex-grow: 1;
 			min-height: 0;
+			overflow: auto;
 		}
 
-		.ai-assistant-chat__quick-actions-button {
-			background: $cadmin-gray-100;
-			padding-bottom: 3px;
-			padding-top: 3px;
+		.ai-assistant-chat__generating-balloon {
+			border-radius: 0.25rem;
+			display: flex;
+			flex-direction: row;
+			margin-bottom: 0.5rem;
+
+			&-indicator {
+				align-items: center;
+				display: flex;
+				margin-left: 0.5rem;
+			}
+		}
+
+		.ai-assistant-chat__quick-actions {
+			@include ai-assistant-chat-gutter;
+
+			flex-shrink: 0;
+
+			&-title {
+				color: $cadmin-secondary;
+				font-size: 0.875em;
+			}
+
+			&-list {
+				display: flex;
+				flex-wrap: wrap;
+			}
+
+			&-button {
+				background: $cadmin-gray-100;
+				padding-bottom: 3px;
+				padding-top: 3px;
+
+				&:hover {
+					background: unquote(
+						'hsl(from #{$cadmin-gray-900} h s l / 0.08)'
+					);
+				}
+			}
+		}
+
+		.ai-assistant-chat__quick-action {
+			margin-bottom: 0.25rem;
+			margin-right: 0.25rem;
+
+			&-icon {
+				margin-right: 0.25rem;
+			}
+		}
+
+		.ai-assistant-chat__form {
+			@include ai-assistant-chat-gutter;
+
+			flex-shrink: 0;
+			padding-top: 1rem;
+		}
+
+		.ai-assistant-chat__input-row {
+			align-items: flex-end;
+			display: flex;
+			flex-direction: row;
 		}
 
 		.ai-assistant-chat__input {
 			height: auto;
+			margin-right: 0.5rem;
 			max-height: calc(1.25em * 4);
 			overflow-x: hidden;
 			overflow-y: auto;
 			resize: none;
 		}
 
-		.ai-assistant-chat__quick-actions-button:hover {
-			background: unquote('hsl(from #{$cadmin-gray-900} h s l / 0.08)');
-		}
-
 		.ai-assistant-chat__generating-loading-text {
 			align-self: center;
 			color: $cadmin-primary;
+			font-weight: 600;
+			margin: 0.5rem;
 		}
 		.ai-assistant-chat__ai-assistant-error-message-balloon {
 			background: $cadmin-danger-l2;

@@ -352,7 +352,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 
 	const chatSurface = (
 		<>
-			<div className="ai-assistant-chat__messages-container flex-grow-1 overflow-auto px-3">
+			<div className="ai-assistant-chat__messages-container">
 				{!initialMessage && (
 					<AIAssistantMessageBalloon
 						error={false}
@@ -407,12 +407,12 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 				})}
 
 				{isGenerating && (
-					<div className="ai-assistant-chat-balloon d-flex flex-row mb-2 rounded">
-						<div className="align-items-center d-flex ml-2">
+					<div className="ai-assistant-chat__generating-balloon">
+						<div className="ai-assistant-chat__generating-balloon-indicator">
 							<ClayLoadingIndicator />
 						</div>
 
-						<span className="ai-assistant-chat__generating-loading-text font-weight-semi-bold m-2 tex">
+						<span className="ai-assistant-chat__generating-loading-text">
 							{Liferay.Language.get('generating')}
 						</span>
 					</div>
@@ -422,15 +422,15 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 			</div>
 
 			{!!quickActions?.length && (
-				<div className="ai-assistant-chat__quick-actions flex-shrink-0 px-3">
-					<span className="ai-assistant-chat__quick-actions-title small text-secondary">
+				<div className="ai-assistant-chat__quick-actions">
+					<span className="ai-assistant-chat__quick-actions-title">
 						{Liferay.Language.get('quick-actions')}
 					</span>
 
-					<div className="d-flex flex-wrap">
+					<div className="ai-assistant-chat__quick-actions-list">
 						{quickActions.map((quickAction) => (
 							<ClayButton
-								className="mb-1 mr-1"
+								className="ai-assistant-chat__quick-action"
 								disabled={isGenerating}
 								displayType="secondary"
 								key={quickAction}
@@ -438,7 +438,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 								size="xs"
 							>
 								<ClayIcon
-									className="mr-1"
+									className="ai-assistant-chat__quick-action-icon"
 									height={12}
 									spritemap={Liferay.Icons.spritemap}
 									symbol="stars"
@@ -453,15 +453,15 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 			)}
 
 			<ClayForm
-				className="flex-shrink-0 pt-3 px-3"
+				className="ai-assistant-chat__form"
 				onSubmit={(event) => onSubmit(event)}
 			>
 				<div
-					className="align-items-end d-flex flex-row"
+					className="ai-assistant-chat__input-row"
 					data-ai-state={aiState}
 				>
 					<textarea
-						className="ai-assistant-chat__input form-control mr-2"
+						className="ai-assistant-chat__input form-control"
 						id="assistant-user-input"
 						onChange={(event) => {
 							setMessage(event.target.value);
@@ -500,7 +500,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 
 	if (embedded) {
 		return (
-			<div className="ai-assistant ai-assistant-chat__embedded d-flex flex-column pt-3">
+			<div className="ai-assistant ai-assistant-chat__embedded">
 				{chatSurface}
 			</div>
 		);
@@ -510,7 +510,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		<ClayDropDown
 			active={active}
 			alignmentPosition={4}
-			className="d-flex p-0"
+			className="ai-assistant-chat__dropdown"
 			hasRightSymbols={false}
 			menuElementAttrs={{
 				className: 'cadmin',
@@ -544,17 +544,17 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 					/>
 
 					{!hideTriggerLabel && (
-						<span className="ai-assistant-chat__trigger-label ml-2">
+						<span className="ai-assistant-chat__trigger-label">
 							{triggerLabel}
 						</span>
 					)}
 				</ClayButton>
 			}
 		>
-			<div className="ai-assistant ai-assistant-chat__dropdown-container d-flex flex-column">
-				<div className="flex-shrink-0 p-3">
-					<ClayLayout.ContentRow className="align-items-center border-bottom justify-content-between mb-3 pb-2">
-						<ClayLayout.ContentCol className="ai-assistant-chat__dropdown-title font-weight-semi-bold">
+			<div className="ai-assistant ai-assistant-chat__dropdown-container">
+				<div className="ai-assistant-chat__dropdown-header">
+					<ClayLayout.ContentRow className="ai-assistant-chat__dropdown-header-row">
+						<ClayLayout.ContentCol className="ai-assistant-chat__dropdown-title">
 							{Liferay.Language.get('ai-assistant')}
 						</ClayLayout.ContentCol>
 
