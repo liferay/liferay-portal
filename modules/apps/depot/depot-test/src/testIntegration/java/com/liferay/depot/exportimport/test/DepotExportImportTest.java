@@ -76,7 +76,7 @@ public class DepotExportImportTest {
 
 		_depotGroup = _depotEntry.getGroup();
 
-		_siteGroup = GroupTestUtil.addGroup();
+		_group = GroupTestUtil.addGroup();
 	}
 
 	@After
@@ -87,45 +87,45 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithDocumentToSite() throws Exception {
+	public void testExportImportDepotWithFileEntryToGroup() throws Exception {
 		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
 			_depotGroup.getGroupId());
 
 		_larFile = _export(_depotGroup.getGroupId());
 
-		_import(_siteGroup.getGroupId(), _larFile);
+		_import(_group.getGroupId(), _larFile);
 
 		FileEntry importedFileEntry =
 			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
-				fileEntry.getUuid(), _siteGroup.getGroupId());
+				fileEntry.getUuid(), _group.getGroupId());
 
 		Assert.assertEquals(fileEntry.getTitle(), importedFileEntry.getTitle());
 	}
 
 	@Test
-	public void testExportImportDepotWithWebContentToSite() throws Exception {
+	public void testExportImportDepotWithJournalArticleToGroup() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_depotGroup.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
 		_larFile = _export(_depotGroup.getGroupId());
 
-		_import(_siteGroup.getGroupId(), _larFile);
+		_import(_group.getGroupId(), _larFile);
 
 		JournalArticle importedJournalArticle =
 			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
-				journalArticle.getUuid(), _siteGroup.getGroupId());
+				journalArticle.getUuid(), _group.getGroupId());
 
 		Assert.assertEquals(
 			journalArticle.getTitle(), importedJournalArticle.getTitle());
 	}
 
 	@Test
-	public void testExportImportSiteWithDocumentToDepot() throws Exception {
+	public void testExportImportGroupWithFileEntryToDepot() throws Exception {
 		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-			_siteGroup.getGroupId());
+			_group.getGroupId());
 
-		_larFile = _export(_siteGroup.getGroupId());
+		_larFile = _export(_group.getGroupId());
 
 		_import(_depotGroup.getGroupId(), _larFile);
 
@@ -137,12 +137,12 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportSiteWithWebContentToDepot() throws Exception {
+	public void testExportImportGroupWithJournalArticleToDepot() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			_siteGroup.getGroupId(), RandomTestUtil.randomString(),
+			_group.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
-		_larFile = _export(_siteGroup.getGroupId());
+		_larFile = _export(_group.getGroupId());
 
 		_import(_depotGroup.getGroupId(), _larFile);
 
@@ -225,6 +225,6 @@ public class DepotExportImportTest {
 	private File _larFile;
 
 	@DeleteAfterTestRun
-	private Group _siteGroup;
+	private Group _group;
 
 }
