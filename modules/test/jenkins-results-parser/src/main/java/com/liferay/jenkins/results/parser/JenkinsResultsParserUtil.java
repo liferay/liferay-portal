@@ -6229,6 +6229,7 @@ public class JenkinsResultsParserUtil {
 						processBuilder.environment();
 
 					processEnvironment.clear();
+
 					processEnvironment.putAll(environments);
 
 					processBuilder.directory(baseDir);
