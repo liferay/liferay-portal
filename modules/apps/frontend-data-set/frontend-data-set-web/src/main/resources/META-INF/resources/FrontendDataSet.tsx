@@ -1758,7 +1758,10 @@ const FrontendDataSetContent = ({
 		items: any;
 	}): void {
 		const updatedItems = new Map(
-			[...items, ...itemsChanged].map((item) => [item[itemKey], item])
+			[...items, ...itemsChanged].map((item) => [
+				getObjectValueFromPath({object: item, path: itemKey}),
+				item,
+			])
 		);
 
 		setItems(Array.from(updatedItems.values()));
