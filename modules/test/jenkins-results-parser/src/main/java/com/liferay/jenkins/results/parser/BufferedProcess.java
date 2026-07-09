@@ -5,8 +5,12 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,6 +70,8 @@ public class BufferedProcess extends Process {
 		return _process.waitFor();
 	}
 
+	private static final int _MEMORY_THRESHOLD = 10 * 1024 * 1024;
+
 	private static final long _MILLIS_EXECUTION_TIME_MIN = 10;
 
 	private final Process _process;
@@ -88,9 +94,7 @@ public class BufferedProcess extends Process {
 					bytesRead = _inputStream.read(bytes);
 
 					if (bytesRead > 0) {
-						synchronized (_byteArrayOutputStream) {
-							_byteArrayOutputStream.write(bytes, 0, bytesRead);
-						}
+						_write(bytes, bytesRead);
 					}
 				}
 			}
@@ -99,14 +103,62 @@ public class BufferedProcess extends Process {
 			}
 		}
 
-		public InputStream toInputStream() {
-			return new ByteArrayInputStream(
-				_byteArrayOutputStream.toByteArray());
+		public synchronized InputStream toInputStream() {
+			if (_overflowFile == null) {
+				return new ByteArrayInputStream(
+					_byteArrayOutputStream.toByteArray());
+			}
+
+			try {
+				_overflowOutputStream.flush();
+
+				return new FileInputStream(_overflowFile);
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
 		}
 
-		private final ByteArrayOutputStream _byteArrayOutputStream =
+		private synchronized void _write(byte[] bytes, int length) {
+			try {
+				if (_overflowOutputStream != null) {
+					_overflowOutputStream.write(bytes, 0, length);
+
+					return;
+				}
+
+				if ((_byteArrayOutputStream.size() + length) <=
+						_MEMORY_THRESHOLD) {
+
+					_byteArrayOutputStream.write(bytes, 0, length);
+
+					return;
+				}
+
+				_overflowFile = File.createTempFile(
+					"buffered-process-overflow-", ".tmp");
+
+				_overflowFile.deleteOnExit();
+
+				_overflowOutputStream = new BufferedOutputStream(
+					new FileOutputStream(_overflowFile));
+
+				_byteArrayOutputStream.writeTo(_overflowOutputStream);
+
+				_byteArrayOutputStream = null;
+
+				_overflowOutputStream.write(bytes, 0, length);
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+		}
+
+		private ByteArrayOutputStream _byteArrayOutputStream =
 			new ByteArrayOutputStream();
 		private final InputStream _inputStream;
+		private File _overflowFile;
+		private OutputStream _overflowOutputStream;
 
 	}
 
