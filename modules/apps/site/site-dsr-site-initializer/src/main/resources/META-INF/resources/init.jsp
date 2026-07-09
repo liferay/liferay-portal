@@ -18,7 +18,8 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/user" prefix="liferay-user" %>
 
-<%@ page import="com.liferay.portal.kernel.exception.NoSuchTicketException" %><%@
+<%@ page import="com.liferay.portal.kernel.exception.NoSuchGroupException" %><%@
+page import="com.liferay.portal.kernel.exception.NoSuchTicketException" %><%@
 page import="com.liferay.portal.kernel.exception.UserEmailAddressException" %><%@
 page import="com.liferay.portal.kernel.exception.UserScreenNameException" %><%@
 page import="com.liferay.portal.kernel.model.Contact" %><%@

@@ -6,7 +6,11 @@
 package com.liferay.site.dsr.site.initializer.internal.portlet.action;
 
 import com.liferay.login.web.constants.LoginPortletKeys;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -16,16 +20,20 @@ import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRPortletKeys;
 import com.liferay.site.dsr.site.initializer.constants.DSRTicketConstants;
 import com.liferay.site.dsr.site.initializer.internal.display.context.InviteMemberDisplayContext;
@@ -62,9 +70,18 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 			WebKeys.THEME_DISPLAY);
 
 		try {
-			Ticket ticket = _getTicket(renderRequest);
+			String ticketKey = ParamUtil.getString(renderRequest, "ticketKey");
+
+			Ticket ticket = _getTicket(ticketKey);
 
 			if (ticket == null) {
+				if (Validator.isNotNull(ticketKey)) {
+					SessionErrors.add(
+						renderRequest, NoSuchTicketException.class);
+
+					return "/error.jsp";
+				}
+
 				HttpServletResponse httpServletResponse =
 					_portal.getHttpServletResponse(renderResponse);
 				Group group = themeDisplay.getSiteGroup();
@@ -84,10 +101,33 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 				return MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH;
 			}
 
+			Group group = _groupLocalService.fetchGroup(ticket.getClassPK());
+
+			if (group == null) {
+				SessionErrors.add(renderRequest, NoSuchGroupException.class);
+
+				return "/error.jsp";
+			}
+
+			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+				group.getClassPK());
+
+			if ((objectEntry != null) &&
+				(MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
+					WorkflowConstants.STATUS_INACTIVE)) {
+
+				SessionErrors.add(renderRequest, NoSuchTicketException.class);
+
+				return "/error.jsp";
+			}
+
 			if (themeDisplay.isSignedIn()) {
+				GroupPermissionUtil.check(
+					themeDisplay.getPermissionChecker(), group,
+					ActionKeys.VIEW);
+
 				HttpServletResponse httpServletResponse =
 					_portal.getHttpServletResponse(renderResponse);
-				Group group = _groupService.getGroup(ticket.getClassPK());
 
 				httpServletResponse.sendRedirect(
 					group.getDisplayURL(themeDisplay));
@@ -107,8 +147,7 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 				InviteMemberDisplayContext
 					inviteDigitalSalesRoomRoomUserDisplayContext =
 						new InviteMemberDisplayContext(
-							emailAddress,
-							_groupLocalService.getGroup(ticket.getClassPK()),
+							emailAddress, group,
 							_portal.getHttpServletRequest(renderRequest),
 							ticket.getClassPK(), themeDisplay, ticket.getKey());
 
@@ -119,7 +158,6 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 				return "/invite_member.jsp";
 			}
 
-			Group group = _groupLocalService.getGroup(ticket.getClassPK());
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(renderResponse);
 
@@ -142,9 +180,7 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 		}
 	}
 
-	private Ticket _getTicket(RenderRequest renderRequest) {
-		String ticketKey = ParamUtil.getString(renderRequest, "ticketKey");
-
+	private Ticket _getTicket(String ticketKey) {
 		if (Validator.isNull(ticketKey)) {
 			return null;
 		}
@@ -170,10 +206,10 @@ public class InviteMemberMVCRenderCommand implements MVCRenderCommand {
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private GroupService _groupService;
+	private JSONFactory _jsonFactory;
 
 	@Reference
-	private JSONFactory _jsonFactory;
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private Portal _portal;
