@@ -428,10 +428,18 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 									to="*/.lfrbuild-ci"
 								/>
 							</present>
+
+							<exclude name="**/node_modules/**" />
 						</dirset>
 
 						<pathconvert pathsep=" " property="ci.build.module.deploy.tasks" refid="lfrbuild-ci.dirs">
-							<regexpmapper from=".*modules/([^/]+)/([^/]+)$" to=":\1:\2:deploy" />
+							<chainedmapper>
+								<regexpmapper from=".*/modules/(.+)$" to="\1" />
+								<filtermapper>
+									<replacestring from="/" to=":" />
+								</filtermapper>
+								<globmapper from="*" to=":*:deploy" />
+							</chainedmapper>
 						</pathconvert>
 
 						<gradle-execute dir="${project.dir}/modules" task="${ci.build.module.deploy.tasks}">
