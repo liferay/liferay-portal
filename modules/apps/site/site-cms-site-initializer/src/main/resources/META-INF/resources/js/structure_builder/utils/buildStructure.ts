@@ -487,20 +487,18 @@ function getRelatedContentObjectRelationships(
 	const relationships: ObjectRelationship[] = [];
 
 	for (const objectDefinition of Object.values(objectDefinitions)) {
-		if (
-			mainObjectDefinition.externalReferenceCode ===
-			objectDefinition.externalReferenceCode
-		) {
-			continue;
-		}
-
 		for (const objectRelationship of objectDefinition.objectRelationships ||
 			[]) {
 			if (
 				objectRelationship.objectDefinitionExternalReferenceCode2 ===
 					mainObjectDefinition.externalReferenceCode &&
 				objectRelationship.type === 'oneToMany' &&
-				!objectRelationship.edge
+				!objectRelationship.edge &&
+				!(
+					objectDefinition.externalReferenceCode ===
+						mainObjectDefinition.externalReferenceCode &&
+					isRepeatableGroup(objectRelationship, objectDefinitions)
+				)
 			) {
 				relationships.push(objectRelationship);
 			}
