@@ -53,19 +53,16 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 				Arrays.asList(
 					MonitorResult.Status.OK, MonitorResult.Status.WARN,
 					MonitorResult.Status.CRITICAL)));
-
 		testEquals(
 			MonitorResult.Status.OK,
 			MonitorResult.Status.getMostSevere(
 				Arrays.asList(
 					MonitorResult.Status.OK, MonitorResult.Status.OK)));
-
 		testEquals(
 			MonitorResult.Status.UNKNOWN,
 			MonitorResult.Status.getMostSevere(
 				Arrays.asList(
 					MonitorResult.Status.OK, MonitorResult.Status.UNKNOWN)));
-
 		testEquals(
 			MonitorResult.Status.UNKNOWN,
 			MonitorResult.Status.getMostSevere(
