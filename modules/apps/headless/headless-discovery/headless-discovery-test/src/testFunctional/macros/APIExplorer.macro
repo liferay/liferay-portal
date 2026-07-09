@@ -215,6 +215,11 @@ definition {
 	macro expandAPIMethod(method = null, service = null) {
 		Variables.assertDefined(parameterList = "${service},${method}");
 
+		WaitForElementPresent(
+			locator1 = "OpenAPI#API_METHOD",
+			method = ${method},
+			service = ${service});
+
 		Click(
 			locator1 = "OpenAPI#API_METHOD",
 			method = ${method},
