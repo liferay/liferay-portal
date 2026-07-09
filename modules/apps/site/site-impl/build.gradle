@@ -21,6 +21,7 @@ dependencies {
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-background-task:portal-background-task-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	compileOnly project(":apps:portal-lock:portal-lock-api")
 	compileOnly project(":apps:redirect:redirect-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
