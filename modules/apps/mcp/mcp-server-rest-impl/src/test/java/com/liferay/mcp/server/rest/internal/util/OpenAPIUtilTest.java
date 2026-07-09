@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.http.VulcanRequestForwarder;
@@ -188,6 +189,16 @@ public class OpenAPIUtilTest {
 		Assert.assertEquals("1", _getFileItemValue(fileItems, "integer"));
 		Assert.assertEquals(
 			fileContent, _getFileItemValue(fileItems, "string"));
+
+		Map<String, String> headers = HashMapBuilder.put(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString()
+		).build();
+
+		request = OpenAPIUtil.getRequest(
+			StringPool.BLANK, headers, JSONUtil.put("itemId", "123"),
+			_openAPIJSONObject, "getItem", null);
+
+		Assert.assertEquals(headers, request.getHeaders());
 
 		AssertUtils.assertFailure(
 			IllegalArgumentException.class,
