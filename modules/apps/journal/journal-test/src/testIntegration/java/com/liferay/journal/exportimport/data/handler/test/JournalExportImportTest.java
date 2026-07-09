@@ -314,7 +314,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Test
 	@TestInfo("LPS-86608")
-	public void testExportImportJournalArticleWithRepeatableWebContentField()
+	public void testExportImportJournalArticleWithRepeatableJournalArticleField()
 		throws Exception {
 
 		DataDefinition dataDefinition = DataDefinition.toDTO(
@@ -423,7 +423,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Test
 	@TestInfo("LPS-88743")
-	public void testExportImportWebContentCircularReference() throws Exception {
+	public void testExportImportJournalArticleCircularReference() throws Exception {
 		String ddmStructureKey = _addDataDefinition(group.getGroupId());
 
 		JournalArticle article1 = JournalTestUtil.addArticleWithXMLContent(
@@ -486,7 +486,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
-	public void testExportImportWebContentWithNestedWebContentStructure()
+	public void testExportImportJournalArticleWithNestedDDMStructure()
 		throws Exception {
 
 		String ddmStructureKey = _addDataDefinition(group.getGroupId());
@@ -526,7 +526,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Test
 	@TestInfo("LPS-88893")
-	public void testExportImportWebContentWithSameTitleInTargetGroup()
+	public void testExportImportJournalArticleWithSameTitleInTargetGroup()
 		throws Exception {
 
 		String title = RandomTestUtil.randomString();
