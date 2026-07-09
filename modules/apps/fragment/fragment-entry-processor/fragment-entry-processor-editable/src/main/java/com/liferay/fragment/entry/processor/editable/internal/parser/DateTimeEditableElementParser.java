@@ -41,7 +41,7 @@ public class DateTimeEditableElementParser extends BaseEditableElementParser {
 
 	@Override
 	public void replace(Element element, String value) {
-		element.html(value);
+		replaceContent(element, value);
 	}
 
 	@Override

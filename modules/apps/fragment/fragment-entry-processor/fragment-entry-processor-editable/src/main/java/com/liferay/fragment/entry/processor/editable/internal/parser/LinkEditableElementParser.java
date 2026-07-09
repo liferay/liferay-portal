@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jürgen Kappler
  */
 @Component(property = "type=link", service = EditableElementParser.class)
-public class LinkEditableElementParser implements EditableElementParser {
+public class LinkEditableElementParser extends BaseEditableElementParser {
 
 	@Override
 	public JSONObject getAttributes(Element element) {
@@ -92,7 +92,7 @@ public class LinkEditableElementParser implements EditableElementParser {
 		Element replaceableElement = elements.get(0);
 
 		if (configJSONObject == null) {
-			replaceableElement.html(value);
+			replaceContent(replaceableElement, value);
 
 			return;
 		}
@@ -141,7 +141,7 @@ public class LinkEditableElementParser implements EditableElementParser {
 			}
 		}
 
-		replaceableElement.html(value);
+		replaceContent(replaceableElement, value);
 	}
 
 	@Override
