@@ -8,6 +8,8 @@ package com.liferay.site.dsr.site.initializer.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.login.web.constants.LoginPortletKeys;
+import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -17,11 +19,13 @@ import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -192,6 +196,62 @@ public class InviteMemberMVCRenderCommandTest {
 
 		Assert.assertEquals(
 			"/web/guest", mockHttpServletResponse.getRedirectedUrl());
+
+		ticket = _ticketLocalService.addTicket(
+			TestPropsValues.getCompanyId(), Group.class.getName(),
+			group.getGroupId(), DSRTicketConstants.TYPE_INVITE_MEMBER, null,
+			JSONUtil.put(
+				"emailAddress", RandomTestUtil.randomString() + "@liferay.com"
+			).toString(),
+			new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(48)),
+			new ServiceContext());
+
+		String ticketKey = ticket.getKey();
+
+		_ticketLocalService.deleteTicket(ticket);
+
+		mockLiferayPortletRenderRequest = _getMockLiferayPortletRenderRequest(
+			group, null);
+
+		mockLiferayPortletRenderRequest.addParameter("ticketKey", ticketKey);
+
+		Assert.assertEquals(
+			"/error.jsp",
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()));
+
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				NoSuchTicketException.class.getName()));
+
+		ticket = _ticketLocalService.addTicket(
+			TestPropsValues.getCompanyId(), Group.class.getName(),
+			RandomTestUtil.nextLong(), DSRTicketConstants.TYPE_INVITE_MEMBER,
+			null,
+			JSONUtil.put(
+				"emailAddress", RandomTestUtil.randomString() + "@liferay.com"
+			).toString(),
+			new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(48)),
+			new ServiceContext());
+
+		mockLiferayPortletRenderRequest = _getMockLiferayPortletRenderRequest(
+			group, null);
+
+		mockLiferayPortletRenderRequest.addParameter(
+			"ticketKey", ticket.getKey());
+
+		Assert.assertEquals(
+			"/error.jsp",
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()));
+
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				NoSuchGroupException.class.getName()));
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
@@ -231,6 +291,8 @@ public class InviteMemberMVCRenderCommandTest {
 		themeDisplay.setSiteGroupId(group.getGroupId());
 
 		if (user != null) {
+			themeDisplay.setPermissionChecker(
+				PermissionThreadLocal.getPermissionChecker());
 			themeDisplay.setSignedIn(true);
 			themeDisplay.setUser(user);
 		}
