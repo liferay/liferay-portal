@@ -570,11 +570,11 @@ public class LiferayDynamicRegistrationService
 		return false;
 	}
 
-	private Set<String> _normalizeAllowedValues(String[] allowedValues) {
-		Set<String> normalizedValues = new HashSet<>();
+	private Set<String> _parseAllowedValues(String[] allowedValues) {
+		Set<String> allowedValuesSet = new HashSet<>();
 
 		if (allowedValues == null) {
-			return normalizedValues;
+			return allowedValuesSet;
 		}
 
 		for (String allowedValue : allowedValues) {
@@ -584,12 +584,12 @@ public class LiferayDynamicRegistrationService
 
 			for (String part : allowedValue.split("\\s+")) {
 				if (!Validator.isBlank(part)) {
-					normalizedValues.add(part);
+					allowedValuesSet.add(part);
 				}
 			}
 		}
 
-		return normalizedValues;
+		return allowedValuesSet;
 	}
 
 	private void _setAllowedGrantTypes(Client client) {
@@ -742,23 +742,22 @@ public class LiferayDynamicRegistrationService
 	}
 
 	private void _validateOpenRegistrationAllowedValues(
-		String[] allowedValues, Collection<String> requestedValues,
-		String label, String emptyAllowedValuesMessage, String error) {
+		String[] allowedValues, String emptyAllowedValuesMessage, String error,
+		String label, Collection<String> requestedValues) {
 
-		Set<String> normalizedAllowedValues = _normalizeAllowedValues(
-			allowedValues);
+		Set<String> allowedValuesSet = _parseAllowedValues(allowedValues);
 
-		if (normalizedAllowedValues.contains(StringPool.STAR)) {
+		if (allowedValuesSet.contains(StringPool.STAR)) {
 			return;
 		}
 
-		if (normalizedAllowedValues.isEmpty()) {
+		if (allowedValuesSet.isEmpty()) {
 			OAuth2ErrorUtil.reportInvalidRequestError(
 				emptyAllowedValuesMessage, error, Response.Status.BAD_REQUEST);
 		}
 
 		for (String requestedValue : requestedValues) {
-			if (!normalizedAllowedValues.contains(requestedValue)) {
+			if (!allowedValuesSet.contains(requestedValue)) {
 				OAuth2ErrorUtil.reportInvalidRequestError(
 					StringBundler.concat(
 						label, StringPool.SPACE, requestedValue,
@@ -779,9 +778,10 @@ public class LiferayDynamicRegistrationService
 		}
 
 		_validateOpenRegistrationAllowedValues(
-			allowedGrantTypes, requestedGrantTypes, "Grant type",
+			allowedGrantTypes,
 			"Grant types are not allowed for open registration",
-			OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_CLIENT_METADATA);
+			OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_CLIENT_METADATA,
+			"Grant type", requestedGrantTypes);
 	}
 
 	private void _validateOpenRegistrationPolicy(
@@ -822,14 +822,14 @@ public class LiferayDynamicRegistrationService
 			return;
 		}
 
-		Set<String> normalizedAllowedRedirectURIPatterns =
-			_normalizeAllowedValues(allowedRedirectURIPatterns);
+		Set<String> allowedRedirectURIPatternsSet = _parseAllowedValues(
+			allowedRedirectURIPatterns);
 
-		if (normalizedAllowedRedirectURIPatterns.contains(StringPool.STAR)) {
+		if (allowedRedirectURIPatternsSet.contains(StringPool.STAR)) {
 			return;
 		}
 
-		if (normalizedAllowedRedirectURIPatterns.isEmpty()) {
+		if (allowedRedirectURIPatternsSet.isEmpty()) {
 			OAuth2ErrorUtil.reportInvalidRequestError(
 				"Redirect URIs are not allowed for open registration",
 				OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_REDIRECT_URI,
@@ -837,10 +837,9 @@ public class LiferayDynamicRegistrationService
 		}
 
 		List<Pattern> patterns = TransformUtil.transform(
-			normalizedAllowedRedirectURIPatterns,
-			normalizedAllowedRedirectURIPattern ->
-				_globPatterns.computeIfAbsent(
-					normalizedAllowedRedirectURIPattern, this::_toPattern));
+			allowedRedirectURIPatternsSet,
+			allowedRedirectURIPattern -> _globPatterns.computeIfAbsent(
+				allowedRedirectURIPattern, this::_toPattern));
 
 		for (String redirectURI : redirectURIs) {
 			if (Validator.isBlank(redirectURI)) {
@@ -888,9 +887,9 @@ public class LiferayDynamicRegistrationService
 		}
 
 		_validateOpenRegistrationAllowedValues(
-			allowedScopes, OAuthUtils.parseScope(scope), "Scope",
-			"Scopes are not allowed for open registration",
-			OAuthConstants.INVALID_SCOPE);
+			allowedScopes, "Scopes are not allowed for open registration",
+			OAuthConstants.INVALID_SCOPE, "Scope",
+			OAuthUtils.parseScope(scope));
 	}
 
 	private static final Map<String, String> _allowedResponseTypes =

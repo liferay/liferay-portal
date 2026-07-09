@@ -545,7 +545,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 
 		if (!normalizedAllowedHosts.contains(clientHost)) {
 			String message =
-				"Open registration is not allowed for host: " + clientHost;
+				"Host " + clientHost + " is not allowed for open registration";
 
 			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
 				_getRejectAuditMessage(
