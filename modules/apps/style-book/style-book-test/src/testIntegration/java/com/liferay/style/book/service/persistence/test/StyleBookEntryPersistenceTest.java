@@ -590,6 +590,42 @@ public class StyleBookEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_LikeN_T() throws Exception {
+		_persistence.countByG_LikeN_T(RandomTestUtil.nextLong(), "", "");
+
+		_persistence.countByG_LikeN_T(0L, "null", "null");
+
+		_persistence.countByG_LikeN_T(0L, (String)null, (String)null);
+	}
+
+	@Test
+	public void testCountByG_LikeN_TArrayable() throws Exception {
+		_persistence.countByG_LikeN_T(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testCountByG_LikeN_T_Head() throws Exception {
+		_persistence.countByG_LikeN_T_Head(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_LikeN_T_Head(
+			0L, "null", "null", RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_LikeN_T_Head(
+			0L, (String)null, (String)null, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByG_LikeN_T_HeadArrayable() throws Exception {
+		_persistence.countByG_LikeN_T_Head(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByERC_G() throws Exception {
 		_persistence.countByERC_G("", RandomTestUtil.nextLong());
 
@@ -1004,4 +1040,4 @@ public class StyleBookEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1918586398
+// LIFERAY-SERVICE-BUILDER-HASH:-1600151223

@@ -433,6 +433,22 @@ public class StyleBookEntryLocalServiceUtil {
 		return getService().getStyleBookEntries(groupIds, themeId);
 	}
 
+	public static List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getService().getStyleBookEntries(
+			groupIds, themeId, start, end, orderByComparator);
+	}
+
+	public static List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String name, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getService().getStyleBookEntries(
+			groupIds, name, themeId, start, end, orderByComparator);
+	}
+
 	public static List<StyleBookEntry> getStyleBookEntriesByUuidAndCompanyId(
 		String uuid, long companyId) {
 
@@ -455,6 +471,18 @@ public class StyleBookEntryLocalServiceUtil {
 
 	public static int getStyleBookEntriesCount(long groupId, String name) {
 		return getService().getStyleBookEntriesCount(groupId, name);
+	}
+
+	public static int getStyleBookEntriesCount(
+		long[] groupIds, String themeId) {
+
+		return getService().getStyleBookEntriesCount(groupIds, themeId);
+	}
+
+	public static int getStyleBookEntriesCount(
+		long[] groupIds, String name, String themeId) {
+
+		return getService().getStyleBookEntriesCount(groupIds, name, themeId);
 	}
 
 	/**
@@ -608,4 +636,4 @@ public class StyleBookEntryLocalServiceUtil {
 			StyleBookEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-168808778
+// LIFERAY-SERVICE-BUILDER-HASH:756067428

@@ -2113,6 +2113,211 @@ public class StyleBookEntryVersionPersistenceImpl
 			new Object[] {groupId, defaultStyleBookEntry, themeId, version});
 	}
 
+	private CollectionPersistenceFinder
+		<StyleBookEntryVersion, NoSuchEntryVersionException>
+			_collectionPersistenceFinderByG_LikeN_T;
+
+	/**
+	 * Returns an ordered range of all the style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>StyleBookEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param start the lower bound of the range of style book entry versions
+	 * @param end the upper bound of the range of style book entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching style book entry versions
+	 */
+	@Override
+	public List<StyleBookEntryVersion> findByG_LikeN_T(
+		long groupId, String name, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntryVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByG_LikeN_T.find(
+			finderCache, new Object[] {groupId, name, themeId}, start, end,
+			orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first style book entry version in the ordered set where groupId = &#63; and name = &#63; and themeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry version
+	 * @throws NoSuchEntryVersionException if a matching style book entry version could not be found
+	 */
+	@Override
+	public StyleBookEntryVersion findByG_LikeN_T_First(
+			long groupId, String name, String themeId,
+			OrderByComparator<StyleBookEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException {
+
+		return _collectionPersistenceFinderByG_LikeN_T.findFirst(
+			finderCache, new Object[] {groupId, name, themeId},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first style book entry version in the ordered set where groupId = &#63; and name = &#63; and themeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry version, or <code>null</code> if a matching style book entry version could not be found
+	 */
+	@Override
+	public StyleBookEntryVersion fetchByG_LikeN_T_First(
+		long groupId, String name, String themeId,
+		OrderByComparator<StyleBookEntryVersion> orderByComparator) {
+
+		return _collectionPersistenceFinderByG_LikeN_T.fetchFirst(
+			finderCache, new Object[] {groupId, name, themeId},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 */
+	@Override
+	public void removeByG_LikeN_T(long groupId, String name, String themeId) {
+		_collectionPersistenceFinderByG_LikeN_T.remove(
+			finderCache, new Object[] {groupId, name, themeId});
+	}
+
+	/**
+	 * Returns the number of style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @return the number of matching style book entry versions
+	 */
+	@Override
+	public int countByG_LikeN_T(long groupId, String name, String themeId) {
+		return _collectionPersistenceFinderByG_LikeN_T.count(
+			finderCache, new Object[] {groupId, name, themeId});
+	}
+
+	private CollectionPersistenceFinder
+		<StyleBookEntryVersion, NoSuchEntryVersionException>
+			_collectionPersistenceFinderByG_LikeN_T_Version;
+
+	/**
+	 * Returns an ordered range of all the style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63; and version = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>StyleBookEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param version the version
+	 * @param start the lower bound of the range of style book entry versions
+	 * @param end the upper bound of the range of style book entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching style book entry versions
+	 */
+	@Override
+	public List<StyleBookEntryVersion> findByG_LikeN_T_Version(
+		long groupId, String name, String themeId, int version, int start,
+		int end, OrderByComparator<StyleBookEntryVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByG_LikeN_T_Version.find(
+			finderCache, new Object[] {groupId, name, themeId, version}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first style book entry version in the ordered set where groupId = &#63; and name = &#63; and themeId = &#63; and version = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param version the version
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry version
+	 * @throws NoSuchEntryVersionException if a matching style book entry version could not be found
+	 */
+	@Override
+	public StyleBookEntryVersion findByG_LikeN_T_Version_First(
+			long groupId, String name, String themeId, int version,
+			OrderByComparator<StyleBookEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException {
+
+		return _collectionPersistenceFinderByG_LikeN_T_Version.findFirst(
+			finderCache, new Object[] {groupId, name, themeId, version},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first style book entry version in the ordered set where groupId = &#63; and name = &#63; and themeId = &#63; and version = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param version the version
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching style book entry version, or <code>null</code> if a matching style book entry version could not be found
+	 */
+	@Override
+	public StyleBookEntryVersion fetchByG_LikeN_T_Version_First(
+		long groupId, String name, String themeId, int version,
+		OrderByComparator<StyleBookEntryVersion> orderByComparator) {
+
+		return _collectionPersistenceFinderByG_LikeN_T_Version.fetchFirst(
+			finderCache, new Object[] {groupId, name, themeId, version},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63; and version = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param version the version
+	 */
+	@Override
+	public void removeByG_LikeN_T_Version(
+		long groupId, String name, String themeId, int version) {
+
+		_collectionPersistenceFinderByG_LikeN_T_Version.remove(
+			finderCache, new Object[] {groupId, name, themeId, version});
+	}
+
+	/**
+	 * Returns the number of style book entry versions where groupId = &#63; and name = &#63; and themeId = &#63; and version = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param name the name
+	 * @param themeId the theme ID
+	 * @param version the version
+	 * @return the number of matching style book entry versions
+	 */
+	@Override
+	public int countByG_LikeN_T_Version(
+		long groupId, String name, String themeId, int version) {
+
+		return _collectionPersistenceFinderByG_LikeN_T_Version.count(
+			finderCache, new Object[] {groupId, name, themeId, version});
+	}
+
 	public StyleBookEntryVersionPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -3255,6 +3460,102 @@ public class StyleBookEntryVersionPersistenceImpl
 					FinderColumn.Type.INTEGER, "=", true, true,
 					StyleBookEntryVersion::getVersion));
 
+		_collectionPersistenceFinderByG_LikeN_T =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeN_T",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findByG_LikeN_T",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId"}, 0, 6, true,
+					null),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_LikeN_T",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId"}, 0, 6, false,
+					null),
+				_SQL_SELECT_STYLEBOOKENTRYVERSION_WHERE,
+				_SQL_COUNT_STYLEBOOKENTRYVERSION_WHERE,
+				StyleBookEntryVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX, "", "", null,
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "groupId", FinderColumn.Type.LONG,
+					"=", true, true, StyleBookEntryVersion::getGroupId),
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "name", FinderColumn.Type.STRING,
+					"=", true, true, StyleBookEntryVersion::getName),
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "themeId",
+					FinderColumn.Type.STRING, "=", true, true,
+					StyleBookEntryVersion::getThemeId));
+
+		_collectionPersistenceFinderByG_LikeN_T_Version =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"findByG_LikeN_T_Version",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Integer.class.getName(),
+						Integer.class.getName(), Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId", "version"},
+					true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findByG_LikeN_T_Version",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId", "version"}, 0,
+					6, true, null),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_LikeN_T_Version",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "name", "themeId", "version"}, 0,
+					6, false, null),
+				_SQL_SELECT_STYLEBOOKENTRYVERSION_WHERE,
+				_SQL_COUNT_STYLEBOOKENTRYVERSION_WHERE,
+				StyleBookEntryVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX, "", "", null,
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "groupId", FinderColumn.Type.LONG,
+					"=", true, true, StyleBookEntryVersion::getGroupId),
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "name", FinderColumn.Type.STRING,
+					"=", true, true, StyleBookEntryVersion::getName),
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "themeId",
+					FinderColumn.Type.STRING, "=", true, true,
+					StyleBookEntryVersion::getThemeId),
+				new FinderColumn<>(
+					"styleBookEntryVersion.", "version",
+					FinderColumn.Type.INTEGER, "=", true, true,
+					StyleBookEntryVersion::getVersion));
+
 		StyleBookEntryVersionUtil.setPersistence(this);
 	}
 
@@ -3321,4 +3622,4 @@ public class StyleBookEntryVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:852721475
+// LIFERAY-SERVICE-BUILDER-HASH:-367747365

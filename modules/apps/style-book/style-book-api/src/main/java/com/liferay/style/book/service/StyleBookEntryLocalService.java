@@ -364,6 +364,16 @@ public interface StyleBookEntryLocalService
 		long[] groupIds, String themeId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String name, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<StyleBookEntry> getStyleBookEntriesByUuidAndCompanyId(
 		String uuid, long companyId);
 
@@ -380,6 +390,13 @@ public interface StyleBookEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getStyleBookEntriesCount(long groupId, String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getStyleBookEntriesCount(long[] groupIds, String themeId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getStyleBookEntriesCount(
+		long[] groupIds, String name, String themeId);
 
 	/**
 	 * Returns the style book entry with the primary key.
@@ -497,4 +514,4 @@ public interface StyleBookEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-763499819
+// LIFERAY-SERVICE-BUILDER-HASH:328729561

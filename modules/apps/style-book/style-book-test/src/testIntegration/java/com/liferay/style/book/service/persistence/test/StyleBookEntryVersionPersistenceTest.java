@@ -429,6 +429,26 @@ public class StyleBookEntryVersionPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_LikeN_T() throws Exception {
+		_persistence.countByG_LikeN_T(RandomTestUtil.nextLong(), "", "");
+
+		_persistence.countByG_LikeN_T(0L, "null", "null");
+
+		_persistence.countByG_LikeN_T(0L, (String)null, (String)null);
+	}
+
+	@Test
+	public void testCountByG_LikeN_T_Version() throws Exception {
+		_persistence.countByG_LikeN_T_Version(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextInt());
+
+		_persistence.countByG_LikeN_T_Version(0L, "null", "null", 0);
+
+		_persistence.countByG_LikeN_T_Version(
+			0L, (String)null, (String)null, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		StyleBookEntryVersion newStyleBookEntryVersion =
 			addStyleBookEntryVersion();
@@ -831,4 +851,4 @@ public class StyleBookEntryVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1781155025
+// LIFERAY-SERVICE-BUILDER-HASH:467862989
