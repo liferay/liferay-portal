@@ -587,6 +587,13 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testMetaAnnotationMissingName() throws Exception {
+		test(
+			"MetaAnnotationMissingName.testjava",
+			"Missing attribute \"name\" in \"@Meta.AD\"", 20);
+	}
+
+	@Test
 	public void testMethodEquals() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(

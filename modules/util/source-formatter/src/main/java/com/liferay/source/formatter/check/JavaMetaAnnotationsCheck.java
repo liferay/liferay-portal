@@ -40,6 +40,8 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		}
 
 		_checkDelimiters(fileName, fileContent, annotation);
+		_checkMissingNameAttribute(
+			fileName, absolutePath, fileContent, annotation);
 
 		if (isAttributeValue(_CHECK_CONFIGURATION_NAME_KEY, absolutePath)) {
 			_checkConfigurationNameValue(fileName, fileContent, annotation);
@@ -118,6 +120,26 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 			_checkDelimiter(
 				fileName, content, matcher, "name", StringPool.DASH,
 				StringPool.PERIOD);
+		}
+	}
+
+	private void _checkMissingNameAttribute(
+		String fileName, String absolutePath, String content,
+		String annotation) {
+
+		if (!annotation.contains("@Meta.AD") ||
+			!content.contains("@Meta.OCD") ||
+			content.contains("generateUI = false") ||
+			absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/")) {
+
+			return;
+		}
+
+		if (!annotation.contains("name = ")) {
+			addMessage(
+				fileName, "Missing attribute \"name\" in \"@Meta.AD\"",
+				getLineNumber(content, content.indexOf(annotation)));
 		}
 	}
 
