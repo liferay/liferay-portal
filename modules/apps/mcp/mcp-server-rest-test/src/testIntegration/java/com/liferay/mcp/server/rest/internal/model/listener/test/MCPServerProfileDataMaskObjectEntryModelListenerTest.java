@@ -9,14 +9,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import org.hamcrest.CoreMatchers;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,19 +57,12 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 				).getObjectEntryId(),
 				1);
 
-		try {
-			_objectEntryLocalService.deleteObjectEntry(
-				mcpServerProfileDataMaskObjectEntry.getObjectEntryId());
-
-			Assert.fail(
-				"Removing a profile data mask without a delete reason should " +
-					"have thrown");
-		}
-		catch (Exception exception) {
-			Assert.assertThat(
-				exception.getMessage(),
-				CoreMatchers.containsString("delete reason"));
-		}
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"jakarta.validation.ValidationException: Unable to remove a " +
+				"profile data mask without a delete reason",
+			() -> _objectEntryLocalService.deleteObjectEntry(
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
 
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
