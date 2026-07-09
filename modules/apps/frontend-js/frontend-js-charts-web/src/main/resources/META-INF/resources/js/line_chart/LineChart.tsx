@@ -31,10 +31,10 @@ interface ActivePoint {
  */
 const BLUE_SHADES = [
 	'var(--chart-color-2, light-dark(#006eff, #66abff))',
-	'var(--blue-d2, light-dark(#005fcc, #94c4ff))',
-	'var(--blue-l2, light-dark(#66abff, #006be6))',
-	'var(--blue-d1, light-dark(#006be6, #70b1ff))',
-	'var(--blue-l3, light-dark(#97c5ff, #0056b8))',
+	'var(--chart-blue-d2, light-dark(#005fcc, #94c4ff))',
+	'var(--chart-blue-l2, light-dark(#66abff, #006be6))',
+	'var(--chart-blue-d1, light-dark(#006be6, #70b1ff))',
+	'var(--chart-blue-l3, light-dark(#97c5ff, #0056b8))',
 ];
 
 export default function LineChart({

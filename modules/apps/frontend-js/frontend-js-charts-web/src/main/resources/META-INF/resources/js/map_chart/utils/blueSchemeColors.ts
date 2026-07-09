@@ -4,15 +4,15 @@
  */
 
 const BLUE_RAMP: ReadonlyArray<string> = [
-	'--blue-l4',
-	'--blue-l3',
-	'--blue-l2',
-	'--blue-l1',
+	'--chart-blue-l4',
+	'--chart-blue-l3',
+	'--chart-blue-l2',
+	'--chart-blue-l1',
 	'--chart-color-2',
-	'--blue-d1',
-	'--blue-d2',
-	'--blue-d3',
-	'--blue-d4',
+	'--chart-blue-d1',
+	'--chart-blue-d2',
+	'--chart-blue-d3',
+	'--chart-blue-d4',
 ];
 
 export function getBlueSchemeColor(steps: number, bucketIndex: number): string {

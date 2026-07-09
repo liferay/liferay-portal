@@ -7,15 +7,15 @@ import {getBlueSchemeColor} from '../../../src/main/resources/META-INF/resources
 
 describe('getBlueSchemeColor', () => {
 	it('returns the lightest ramp step when there is a single step', () => {
-		expect(getBlueSchemeColor(1, 0)).toBe('var(--blue-l4)');
+		expect(getBlueSchemeColor(1, 0)).toBe('var(--chart-blue-l4)');
 	});
 
 	it('returns the lightest ramp step for the lowest bucket', () => {
-		expect(getBlueSchemeColor(5, 0)).toBe('var(--blue-l4)');
+		expect(getBlueSchemeColor(5, 0)).toBe('var(--chart-blue-l4)');
 	});
 
 	it('returns the darkest ramp step for the highest bucket', () => {
-		expect(getBlueSchemeColor(5, 4)).toBe('var(--blue-d4)');
+		expect(getBlueSchemeColor(5, 4)).toBe('var(--chart-blue-d4)');
 	});
 
 	it('spreads intermediate buckets evenly across the ramp', () => {
@@ -23,6 +23,6 @@ describe('getBlueSchemeColor', () => {
 	});
 
 	it('resolves the darkest step even when the requested steps exceed the ramp length', () => {
-		expect(getBlueSchemeColor(9, 8)).toBe('var(--blue-d4)');
+		expect(getBlueSchemeColor(9, 8)).toBe('var(--chart-blue-d4)');
 	});
 });
