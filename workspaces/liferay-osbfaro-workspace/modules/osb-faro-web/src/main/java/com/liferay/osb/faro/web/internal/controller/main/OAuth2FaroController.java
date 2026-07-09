@@ -18,7 +18,6 @@ import com.liferay.osb.faro.web.internal.application.ApiApplication;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.model.display.main.TokenDisplay;
-import com.liferay.osb.faro.web.internal.util.AccessTokenExpiresInUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.BigEndianCodec;
 import com.liferay.petra.string.StringBundler;
@@ -106,47 +105,58 @@ public class OAuth2FaroController extends BaseFaroController {
 			}
 		}
 
-		try {
-			if (expiresIn == null) {
-				expiresIn = 3153600000L;
-			}
-
-			AccessTokenExpiresInUtil.setExpiresIn(expiresIn);
-
-			String tokensJSON = _localOAuthClient.requestTokens(
-				oAuth2Application,
-				oAuth2Application.getClientCredentialUserId());
-
-			if (tokensJSON == null) {
-				throw new PortalException(
-					"Unable to create access token for OAuth2 application " +
-						oAuth2Application.getOAuth2ApplicationId());
-			}
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject(tokensJSON);
-
-			OAuth2Authorization oAuth2Authorization =
-				_oAuth2AuthorizationLocalService.
-					fetchOAuth2AuthorizationByAccessTokenContent(
-						jsonObject.getString("access_token"));
-
-			if (oAuth2Authorization == null) {
-				throw new PortalException(
-					"Unable to get OAuth2 authorization for the created " +
-						"access token");
-			}
-
-			_setOAuth2AuthorizationGroupId(groupId, oAuth2Authorization);
-
-			if (Validator.isNotNull(type)) {
-				_setOAuth2AuthorizationType(oAuth2Authorization, type);
-			}
-
-			return _mapTokenDisplay(oAuth2Authorization);
+		if (expiresIn == null) {
+			expiresIn = 3153600000L;
 		}
-		finally {
-			AccessTokenExpiresInUtil.removeExpiresIn();
+
+		String tokensJSON = _localOAuthClient.requestTokens(
+			oAuth2Application, oAuth2Application.getClientCredentialUserId());
+
+		if (tokensJSON == null) {
+			throw new PortalException(
+				"Unable to create access token for OAuth2 application " +
+					oAuth2Application.getOAuth2ApplicationId());
 		}
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(tokensJSON);
+
+		OAuth2Authorization oAuth2Authorization =
+			_oAuth2AuthorizationLocalService.
+				fetchOAuth2AuthorizationByAccessTokenContent(
+					jsonObject.getString("access_token"));
+
+		if (oAuth2Authorization == null) {
+			throw new PortalException(
+				"Unable to get OAuth2 authorization for the created access " +
+					"token");
+		}
+
+		Date accessTokenCreateDate =
+			oAuth2Authorization.getAccessTokenCreateDate();
+
+		oAuth2Authorization.setAccessTokenExpirationDate(
+			new Date(accessTokenCreateDate.getTime() + (expiresIn * 1000)));
+
+		Date refreshTokenCreateDate =
+			oAuth2Authorization.getRefreshTokenCreateDate();
+
+		if (refreshTokenCreateDate != null) {
+			oAuth2Authorization.setRefreshTokenExpirationDate(
+				new Date(
+					refreshTokenCreateDate.getTime() + (expiresIn * 1000)));
+		}
+
+		oAuth2Authorization =
+			_oAuth2AuthorizationLocalService.updateOAuth2Authorization(
+				oAuth2Authorization);
+
+		_setOAuth2AuthorizationGroupId(groupId, oAuth2Authorization);
+
+		if (Validator.isNotNull(type)) {
+			_setOAuth2AuthorizationType(oAuth2Authorization, type);
+		}
+
+		return _mapTokenDisplay(oAuth2Authorization);
 	}
 
 	@Path("/tokens/{token}/revoke")
