@@ -46,6 +46,8 @@ export class AssetPublisherPage {
 	}
 
 	async changeAssetSelection(type: 'Collection' | 'Dynamic' | 'Manual') {
+		await this.openAssetSelectionTab();
+
 		await this.configurationIframe.getByLabel(type).click();
 
 		await waitForAlert(
