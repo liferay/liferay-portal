@@ -474,6 +474,7 @@ public class TaxonomyCategoryResourceTest
 		super.testPatchTaxonomyCategory();
 
 		_testPatchTaxonomyCategorySystem();
+		_testPatchTaxonomyCategorySystemParent();
 		_testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
 			testPatchTaxonomyCategory_addTaxonomyCategory(),
 			_addAssetVocabulary());
@@ -515,6 +516,27 @@ public class TaxonomyCategoryResourceTest
 		_testPostSiteTaxonomyCategoryBatch("INSERT");
 		_testPostSiteTaxonomyCategoryBatch("UPSERT");
 		_testPostSiteTaxonomyCategoryWithNonexistingTaxonomyVocabulary();
+	}
+
+	@FeatureFlag("LPD-86291")
+	@Override
+	@Test
+	public void testPostTaxonomyCategoryTaxonomyCategory() throws Exception {
+		super.testPostTaxonomyCategoryTaxonomyCategory();
+
+		TaxonomyCategory parentTaxonomyCategory = _addSystemTaxonomyCategory();
+
+		try {
+			taxonomyCategoryResource.postTaxonomyCategoryTaxonomyCategory(
+				parentTaxonomyCategory.getId(), randomTaxonomyCategory());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	@Override
@@ -1421,6 +1443,44 @@ public class TaxonomyCategoryResourceTest
 		try {
 			taxonomyCategoryResource.patchTaxonomyCategory(
 				postTaxonomyCategory.getId(), postTaxonomyCategory);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPatchTaxonomyCategorySystemParent() throws Exception {
+		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
+
+		randomTaxonomyCategory.setSystem(true);
+
+		TaxonomyCategory patchParentTaxonomyCategory =
+			taxonomyCategoryResource.postTaxonomyVocabularyTaxonomyCategory(
+				_assetVocabulary.getVocabularyId(), randomTaxonomyCategory);
+
+		TaxonomyCategory taxonomyCategory =
+			testPatchTaxonomyCategory_addTaxonomyCategory();
+
+		try {
+			taxonomyCategoryResource.patchTaxonomyCategory(
+				taxonomyCategory.getId(),
+				new TaxonomyCategory() {
+					{
+						parentTaxonomyCategory = new ParentTaxonomyCategory() {
+							{
+								externalReferenceCode =
+									patchParentTaxonomyCategory.
+										getExternalReferenceCode();
+								id = Long.valueOf(
+									patchParentTaxonomyCategory.getId());
+							}
+						};
+					}
+				});
 
 			Assert.fail();
 		}

@@ -274,6 +274,21 @@ public class AssetCategoryLocalServiceTest {
 			assetCategory.getTitleMap());
 	}
 
+	@FeatureFlag("LPD-86291")
+	@Test
+	public void testAddCategorySystemCategory() throws Exception {
+		AssetCategory assetCategory = _addSystemCategory();
+
+		AssertUtils.assertFailure(
+			SystemCategoryException.MustNotAddChild.class,
+			StringBundler.concat(
+				"Category ", assetCategory.getCategoryId(),
+				" cannot have child categories"),
+			() -> AssetTestUtil.addCategory(
+				_group.getGroupId(), _assetVocabulary.getVocabularyId(),
+				assetCategory.getCategoryId()));
+	}
+
 	@Test
 	public void testAddCategoryWithExternalReferenceCode() throws Exception {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
@@ -903,7 +918,7 @@ public class AssetCategoryLocalServiceTest {
 	@FeatureFlag("LPD-86291")
 	@Test
 	public void testMoveCategory() throws Exception {
-		AssetCategory assetCategory = _addSystemCategory();
+		AssetCategory assetCategory1 = _addSystemCategory();
 
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
@@ -915,12 +930,29 @@ public class AssetCategoryLocalServiceTest {
 		AssertUtils.assertFailure(
 			SystemCategoryException.MustNotModify.class,
 			StringBundler.concat(
-				"Category ", assetCategory.getCategoryId(),
+				"Category ", assetCategory1.getCategoryId(),
 				" cannot be modified"),
 			() -> _assetCategoryLocalService.moveCategory(
-				assetCategory.getCategoryId(),
+				assetCategory1.getCategoryId(),
 				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 				assetVocabulary.getVocabularyId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId())));
+
+		AssetCategory assetCategory2 = _addSystemCategory();
+
+		AssetCategory assetCategory3 = AssetTestUtil.addCategory(
+			_group.getGroupId(), _assetVocabulary.getVocabularyId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+
+		AssertUtils.assertFailure(
+			SystemCategoryException.MustNotAddChild.class,
+			StringBundler.concat(
+				"Category ", assetCategory2.getCategoryId(),
+				" cannot have child categories"),
+			() -> _assetCategoryLocalService.moveCategory(
+				assetCategory3.getCategoryId(), assetCategory2.getCategoryId(),
+				_assetVocabulary.getVocabularyId(),
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId())));
 	}
@@ -1298,6 +1330,7 @@ public class AssetCategoryLocalServiceTest {
 	public void testUpdateCategory() throws Exception {
 		_testUpdateCategorySystemDescription();
 		_testUpdateCategorySystemExternalReferenceCode();
+		_testUpdateCategorySystemParent();
 		_testUpdateCategorySystemRename();
 		_testUpdateCategorySystemWhenImporting();
 		_testUpdateCategorySystemWithNullDescription();
@@ -1428,6 +1461,28 @@ public class AssetCategoryLocalServiceTest {
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				assetCategory.getCategoryId(),
 				assetCategory.getParentCategoryId(),
+				assetCategory.getTitleMap(), assetCategory.getDescriptionMap(),
+				assetCategory.getVocabularyId(), null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId())));
+	}
+
+	private void _testUpdateCategorySystemParent() throws Exception {
+		AssetCategory parentAssetCategory = _addSystemCategory();
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			_group.getGroupId(), _assetVocabulary.getVocabularyId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+
+		AssertUtils.assertFailure(
+			SystemCategoryException.MustNotAddChild.class,
+			StringBundler.concat(
+				"Category ", parentAssetCategory.getCategoryId(),
+				" cannot have child categories"),
+			() -> _assetCategoryLocalService.updateCategory(
+				assetCategory.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), assetCategory.getCategoryId(),
+				parentAssetCategory.getCategoryId(),
 				assetCategory.getTitleMap(), assetCategory.getDescriptionMap(),
 				assetCategory.getVocabularyId(), null,
 				ServiceContextTestUtil.getServiceContext(
