@@ -32,7 +32,7 @@
 
 	&__bar {
 		// `--charts-bar-fill` is set inline only when `scheme="categorical"`. The
-		// fallback keeps blue mode rendering with `--primary`.
+		// fallback keeps blue mode rendering with `--chart-color-2`.
 
 		cursor: pointer;
 		fill: var(--charts-bar-fill, var(--chart-color-2));
@@ -53,10 +53,11 @@
 		pointer-events: none;
 	}
 
-	// Blue mode: darken the active bar (resting bars are already `--primary`).
+	// Blue mode: darken the active bar one step down the blue ramp (resting bars
+	// are already `--chart-color-2`).
 
 	&--blue &__bar-group.is-active .charts-bar-chart__bar {
-		fill: $primary-d2;
+		fill: $chart-blue-d1;
 	}
 
 	// Categorical mode: keep the per-bar hue and brighten slightly.
@@ -71,7 +72,7 @@
 	}
 
 	&--blue &__bar:focus-visible {
-		fill: $primary-d2;
+		fill: $chart-blue-d1;
 	}
 
 	&__label {
