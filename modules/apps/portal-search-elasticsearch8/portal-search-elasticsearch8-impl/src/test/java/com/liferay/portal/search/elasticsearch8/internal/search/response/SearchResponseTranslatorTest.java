@@ -64,18 +64,20 @@ public class SearchResponseTranslatorTest {
 
 	@Test
 	public void testAddSnippetsDoesNotDuplicateBaseAndLocalizedField() {
+		Hit.Builder<JsonData> builder = new Hit.Builder<>();
+
+		List<String> fragments = Collections.singletonList(
+			"<liferay-hl>alpha</liferay-hl> beta");
+
+		builder.highlight(fieldName, fragments);
+
 		String fieldName = RandomTestUtil.randomString();
 
 		String localizedFieldName = Field.getLocalizedName(
 			LocaleUtil.US, fieldName);
 
-		List<String> fragments = Collections.singletonList(
-			"<liferay-hl>alpha</liferay-hl> beta");
-
-		Hit.Builder<JsonData> builder = new Hit.Builder<>();
-
-		builder.highlight(fieldName, fragments);
 		builder.highlight(localizedFieldName, fragments);
+
 		builder.index("0");
 
 		Document document = _addSnippets(builder.build());
