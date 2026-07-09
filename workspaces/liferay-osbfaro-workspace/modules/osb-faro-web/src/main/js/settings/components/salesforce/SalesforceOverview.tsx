@@ -343,7 +343,7 @@ const AccountAndIndividuals = ({
 		enabledAllIndividuals: boolean;
 	}) => void;
 }) => {
-	const [enabledAllAccounts, setEnabledAllAccount] = useState(
+	const [enabledAllAccounts, setEnabledAllAccounts] = useState(
 		dataSource.provider?.getIn(
 			['accountsConfiguration', 'enableAllAccounts'],
 			false
@@ -425,20 +425,20 @@ const AccountAndIndividuals = ({
 			<SalesforceAccountsAndIndividuals
 				accountsSyncedCount={accountsCountResponse.data}
 				disabled={!dataSourceActive || !currentUser.isAdmin()}
-				enabledAccount={enabledAllAccounts}
-				enabledIndividual={enabledAllIndividuals}
+				enabledAccounts={enabledAllAccounts}
+				enabledIndividuals={enabledAllIndividuals}
 				individualsSyncedCount={userCountResponse.data}
-				onAccountChange={() => {
+				onAccountsChange={() => {
 					const newValue = !enabledAllAccounts;
 
-					setEnabledAllAccount(newValue);
+					setEnabledAllAccounts(newValue);
 
 					hasChangesRef.current =
 						enabledAllAccountsPrevValue.current !== newValue ||
 						enabledAllIndividualsPrevValue.current !==
 							enabledAllIndividuals;
 				}}
-				onIndividualChange={() => {
+				onIndividualsChange={() => {
 					const newValue = !enabledAllIndividuals;
 
 					setEnabledAllIndividuals(newValue);

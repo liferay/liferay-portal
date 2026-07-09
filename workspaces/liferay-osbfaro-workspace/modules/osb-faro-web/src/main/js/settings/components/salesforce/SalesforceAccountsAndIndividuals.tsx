@@ -8,12 +8,12 @@ import {sub} from 'shared/util/lang';
 interface ISalesforceAccountsAndIndividualsProps {
 	accountsSyncedCount?: number;
 	disabled?: boolean;
-	enabledAccount: boolean;
-	enabledIndividual: boolean;
+	enabledAccounts: boolean;
+	enabledIndividuals: boolean;
 	individualsSyncedCount?: number;
 	loading?: boolean;
-	onAccountChange: () => void;
-	onIndividualChange: () => void;
+	onAccountsChange: () => void;
+	onIndividualsChange: () => void;
 	type?: string;
 }
 
@@ -22,20 +22,20 @@ const SalesforceAccountsAndIndividuals: React.FC<
 > = ({
 	accountsSyncedCount,
 	disabled = false,
-	enabledAccount,
-	enabledIndividual,
+	enabledAccounts,
+	enabledIndividuals,
 	individualsSyncedCount,
-	onAccountChange,
-	onIndividualChange,
+	onAccountsChange,
+	onIndividualsChange,
 }) => (
 	<div className="pt-1">
 		<ClayList className="mb-0">
 			<ClayList.Item flex>
 				<ClayList.ItemField>
 					<ClayCheckbox
-						checked={enabledAccount}
+						checked={enabledAccounts}
 						disabled={disabled}
-						onChange={onAccountChange}
+						onChange={onAccountsChange}
 					/>
 				</ClayList.ItemField>
 
@@ -73,9 +73,9 @@ const SalesforceAccountsAndIndividuals: React.FC<
 			<ClayList.Item flex>
 				<ClayList.ItemField>
 					<ClayCheckbox
-						checked={enabledIndividual}
+						checked={enabledIndividuals}
 						disabled={disabled}
-						onChange={onIndividualChange}
+						onChange={onIndividualsChange}
 					/>
 				</ClayList.ItemField>
 

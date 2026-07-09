@@ -21,8 +21,8 @@ const SyncSalesforceDataStep = ({
 	const [loading, setLoading] = useState(false);
 	const {dataSource} = useWizardPage();
 	const {groupId = ''} = useParams<{groupId: string}>();
-	const [enabledAccount, setEnabledAccount] = useState(false);
-	const [enabledIndividual, setEnabledIndividual] = useState(false);
+	const [enabledAccounts, setEnabledAccounts] = useState(false);
+	const [enabledIndividuals, setEnabledIndividuals] = useState(false);
 
 	useEffect(() => {
 		if (dataSource) {
@@ -39,8 +39,8 @@ const SyncSalesforceDataStep = ({
 				contactsConfiguration?.get('enableAllContacts') &&
 				contactsConfiguration?.get('enableAllLeads');
 
-			setEnabledAccount(accounts);
-			setEnabledIndividual(individuals);
+			setEnabledAccounts(accounts);
+			setEnabledIndividuals(individuals);
 		}
 	}, []);
 
@@ -58,11 +58,11 @@ const SyncSalesforceDataStep = ({
 
 					await updateSalesforce({
 						accountsConfiguration: {
-							enableAllAccounts: enabledAccount,
+							enableAllAccounts: enabledAccounts,
 						},
 						contactsConfiguration: {
-							enableAllContacts: enabledIndividual,
-							enableAllLeads: enabledIndividual,
+							enableAllContacts: enabledIndividuals,
+							enableAllLeads: enabledIndividuals,
 						},
 						groupId,
 						id: dataSource.id,
@@ -91,11 +91,13 @@ const SyncSalesforceDataStep = ({
 
 			{dataSource && (
 				<SalesforceAccountsAndIndividuals
-					enabledAccount={enabledAccount}
-					enabledIndividual={enabledIndividual}
-					onAccountChange={() => setEnabledAccount(!enabledAccount)}
-					onIndividualChange={() =>
-						setEnabledIndividual(!enabledIndividual)
+					enabledAccounts={enabledAccounts}
+					enabledIndividuals={enabledIndividuals}
+					onAccountsChange={() =>
+						setEnabledAccounts(!enabledAccounts)
+					}
+					onIndividualsChange={() =>
+						setEnabledIndividuals(!enabledIndividuals)
 					}
 					type="checkbox"
 				/>
