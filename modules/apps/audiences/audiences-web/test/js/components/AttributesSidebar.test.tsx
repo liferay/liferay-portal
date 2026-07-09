@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -94,5 +95,32 @@ describe('AttributesSidebar', () => {
 		await waitFor(() =>
 			expect(screen.getByText('no-attributes-were-found')).toBeTruthy()
 		);
+	});
+
+	it('moves the focus through the attributes with the arrow keys', async () => {
+		render(
+			<DragAndDropProvider backend={HTML5Backend}>
+				<AttributesSidebar
+					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+				/>
+			</DragAndDropProvider>
+		);
+
+		const age = screen.getByText('Age').closest('[role="menuitem"]');
+		const city = screen.getByText('City').closest('[role="menuitem"]');
+
+		expect(age).toHaveAttribute('tabindex', '0');
+		expect(city).toHaveAttribute('tabindex', '-1');
+
+		await userEvent.click(age as HTMLElement);
+		await userEvent.keyboard('{ArrowDown}');
+
+		expect(city).toHaveFocus();
+		expect(city).toHaveAttribute('tabindex', '0');
+		expect(age).toHaveAttribute('tabindex', '-1');
+
+		await userEvent.keyboard('{ArrowUp}');
+
+		expect(age).toHaveFocus();
 	});
 });
