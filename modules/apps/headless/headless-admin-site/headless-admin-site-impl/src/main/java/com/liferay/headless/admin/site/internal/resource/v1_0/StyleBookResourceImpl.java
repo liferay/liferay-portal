@@ -11,11 +11,9 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.resource.v1_0.StyleBookResource;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -23,7 +21,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -157,17 +154,7 @@ public class StyleBookResourceImpl
 	public StyleBook getItem(Long id) throws Exception {
 		_checkFeatureFlag();
 
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryService.getStyleBookEntry(id);
-
-		return _styleBookDTOConverter.toDTO(
-			new DefaultDTOConverterContext(
-				contextAcceptLanguage.isAcceptAllLanguages(),
-				_getActions(styleBookEntry), _dtoConverterRegistry,
-				contextHttpServletRequest, styleBookEntry.getStyleBookEntryId(),
-				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
-				contextUser),
-			styleBookEntry);
+		return _toStyleBook(_styleBookEntryService.getStyleBookEntry(id));
 	}
 
 	@Override
@@ -540,57 +527,17 @@ public class StyleBookResourceImpl
 		return action;
 	}
 
-	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry) {
-		StyleBook styleBook = new StyleBook();
+	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry)
+		throws Exception {
 
-		styleBook.setActions(() -> _getActions(styleBookEntry));
-		styleBook.setCreator(
-			() -> {
-				User user = _userLocalService.fetchUser(
-					styleBookEntry.getUserId());
-
-				if (user == null) {
-					return null;
-				}
-
-				return new Creator() {
-					{
-						setExternalReferenceCode(
-							user::getExternalReferenceCode);
-					}
-				};
-			});
-		styleBook.setDateCreated(styleBookEntry::getCreateDate);
-		styleBook.setDateModified(styleBookEntry::getModifiedDate);
-		styleBook.setDefaultStyleBook(styleBookEntry::getDefaultStyleBookEntry);
-		styleBook.setExternalReferenceCode(
-			styleBookEntry::getExternalReferenceCode);
-		styleBook.setFrontendTokensValues(
-			styleBookEntry::getFrontendTokensValues);
-		styleBook.setId(styleBookEntry::getStyleBookEntryId);
-		styleBook.setKey(styleBookEntry::getStyleBookEntryKey);
-		styleBook.setName(styleBookEntry::getName);
-		styleBook.setPreviewFileEntryExternalReferenceCode(
-			() -> {
-				long previewFileEntryId =
-					styleBookEntry.getPreviewFileEntryId();
-
-				if (previewFileEntryId == 0) {
-					return null;
-				}
-
-				FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-					previewFileEntryId);
-
-				if (fileEntry == null) {
-					return null;
-				}
-
-				return fileEntry.getExternalReferenceCode();
-			});
-		styleBook.setThemeId(styleBookEntry::getThemeId);
-
-		return styleBook;
+		return _styleBookDTOConverter.toDTO(
+			new DefaultDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(),
+				_getActions(styleBookEntry), _dtoConverterRegistry,
+				contextHttpServletRequest, styleBookEntry.getStyleBookEntryId(),
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser),
+			styleBookEntry);
 	}
 
 	@Reference
@@ -617,8 +564,5 @@ public class StyleBookResourceImpl
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryService;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
