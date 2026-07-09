@@ -31,4 +31,4 @@ Run **after** all drift validations so the formatter sees the regenerated tree.
 
 ## Time Estimate
 
-~2-4 min, scaling with the number of changed files.
+~2-4 min. It scales with the number of changed files.
