@@ -114,30 +114,30 @@ describe('odata', () => {
 							{
 								operatorName: RelationalOperators.EQ,
 								propertyName: 'applicationId',
-								value: 'Blog'
+								value: 'Blog',
 							},
 							{
 								operatorName: RelationalOperators.EQ,
 								propertyName: 'eventId',
-								value: 'blogViewed'
+								value: 'blogViewed',
 							},
 							attributeItem,
 							{
 								operatorName: RelationalOperators.GT,
 								propertyName: 'day',
-								value: 'last24Hours'
-							}
-						]
+								value: 'last24Hours',
+							},
+						],
 					},
 					{key: 'operator', value: RelationalOperators.GE},
-					{key: 'value', value: 1}
+					{key: 'value', value: 1},
 				]);
 
 			it('should not serialize the empty attribute/ placeholder', () => {
 				const value = buildBehaviorValue({
 					operatorName: FunctionalOperators.Contains,
 					propertyName: ATTRIBUTE_PROPERTY_PREFIX,
-					value: ''
+					value: '',
 				});
 
 				expect(
@@ -146,8 +146,8 @@ describe('odata', () => {
 							operatorName:
 								CustomFunctionOperators.ActivitiesFilterByCount,
 							propertyName: 'applicationId',
-							value
-						}
+							value,
+						},
 					])
 				).toEqual(
 					"activities.filterByCount(filter='(applicationId eq ''Blog'' and eventId eq ''blogViewed'' and day gt ''last24Hours'')',operator='ge',value=1)"
@@ -158,7 +158,7 @@ describe('odata', () => {
 				const value = buildBehaviorValue({
 					operatorName: FunctionalOperators.Contains,
 					propertyName: `${ATTRIBUTE_PROPERTY_PREFIX}61727469636c654964`,
-					value: 'foo'
+					value: 'foo',
 				});
 
 				expect(
@@ -167,8 +167,8 @@ describe('odata', () => {
 							operatorName:
 								CustomFunctionOperators.ActivitiesFilterByCount,
 							propertyName: 'applicationId',
-							value
-						}
+							value,
+						},
 					])
 				).toEqual(
 					"activities.filterByCount(filter='(applicationId eq ''Blog'' and eventId eq ''blogViewed'' and contains(attribute/61727469636c654964, ''foo'') and day gt ''last24Hours'')',operator='ge',value=1)"
