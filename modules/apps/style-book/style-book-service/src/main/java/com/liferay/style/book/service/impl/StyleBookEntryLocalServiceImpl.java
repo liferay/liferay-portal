@@ -46,6 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  * @see    StyleBookEntryLocalServiceBaseImpl
  */
 @Component(
@@ -358,6 +359,34 @@ public class StyleBookEntryLocalServiceImpl
 	}
 
 	@Override
+	public List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		return styleBookEntryPersistence.findByG_T_Head(
+			groupIds, themeId, true, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, String name, String themeId, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		return styleBookEntryPersistence.findByG_LikeN_T_Head(
+			groupIds,
+			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], themeId,
+			true, start, end, orderByComparator);
+	}
+
+	@Override
 	public List<StyleBookEntry> getStyleBookEntriesByUuidAndCompanyId(
 		String uuid, long companyId) {
 
@@ -373,6 +402,30 @@ public class StyleBookEntryLocalServiceImpl
 	public int getStyleBookEntriesCount(long groupId, String name) {
 		return styleBookEntryPersistence.countByG_LikeN_Head(
 			groupId, _customSQL.keywords(name, false, WildcardMode.SURROUND)[0],
+			true);
+	}
+
+	@Override
+	public int getStyleBookEntriesCount(long[] groupIds, String themeId) {
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return 0;
+		}
+
+		return styleBookEntryPersistence.countByG_T_Head(
+			groupIds, themeId, true);
+	}
+
+	@Override
+	public int getStyleBookEntriesCount(
+		long[] groupIds, String name, String themeId) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return 0;
+		}
+
+		return styleBookEntryPersistence.countByG_LikeN_T_Head(
+			groupIds,
+			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], themeId,
 			true);
 	}
 
