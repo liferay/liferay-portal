@@ -15,10 +15,9 @@ import com.liferay.ai.hub.util.AccountEntryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
-
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,7 +62,11 @@ public class MessageResourceImpl extends BaseMessageResourceImpl {
 			).groupId(
 				AccountEntryUtil.getUserAccountEntryGroupId(user.getUserId())
 			).input(
-				Map.of("message", message.getText())
+				HashMapBuilder.<String, Object>putAll(
+					message.getContext()
+				).put(
+					"message", message.getText()
+				).build()
 			).instructionDefinitionScope(
 				message.getInstructionDefinitionScopeAsString()
 			).oAuth2ApplicationId(

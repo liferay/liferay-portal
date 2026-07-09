@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
@@ -142,6 +143,20 @@ public class InternalAgentImpl implements InternalAgent, InvocationHandler {
 
 				workflowContext.put(
 					name, MapUtil.getString(inputObjects, name));
+			}
+
+			Map<String, ?> input = _agentContext.getInput();
+
+			if (input != null) {
+				for (String key : input.keySet()) {
+					if (StringUtil.equals(key, "message") ||
+						workflowContext.containsKey(key)) {
+
+						continue;
+					}
+
+					workflowContext.put(key, MapUtil.getString(input, key));
+				}
 			}
 
 			Message message = new Message();
