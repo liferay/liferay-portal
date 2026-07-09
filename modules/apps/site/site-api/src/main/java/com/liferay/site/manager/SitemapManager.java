@@ -42,6 +42,9 @@ public interface SitemapManager {
 		UnicodeProperties typeSettingsUnicodeProperties, Date modifiedDate,
 		String canonicalURL, Map<Locale, String> alternateURLs, long groupId);
 
+	public void deleteRegenerateSitemapScheduledJobs(long companyId)
+		throws PortalException;
+
 	public String encodeXML(String input);
 
 	public Map<Locale, String> getAlternateURLs(

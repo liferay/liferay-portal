@@ -11,6 +11,7 @@ import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
@@ -245,6 +247,48 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	@Override
+	public void deleteRegenerateSitemapScheduledJobs(long companyId)
+		throws PortalException {
+
+		for (SchedulerResponse schedulerResponse :
+				_schedulerEngineHelper.getScheduledJobs(
+					StorageType.PERSISTED)) {
+
+			if (!Objects.equals(
+					schedulerResponse.getGroupName(),
+					SitemapDestinationNames.SITEMAP_REGENERATION)) {
+
+				continue;
+			}
+
+			Message message = schedulerResponse.getMessage();
+
+			if ((message == null) ||
+				(message.getLong("companyId") != companyId)) {
+
+				continue;
+			}
+
+			try {
+				_schedulerEngineHelper.delete(
+					schedulerResponse.getJobName(),
+					schedulerResponse.getGroupName(), StorageType.PERSISTED);
+			}
+			catch (SchedulerException schedulerException) {
+				SchedulerResponse existingSchedulerResponse =
+					_schedulerEngineHelper.getScheduledJob(
+						schedulerResponse.getJobName(),
+						schedulerResponse.getGroupName(),
+						StorageType.PERSISTED);
+
+				if (existingSchedulerResponse != null) {
+					throw schedulerException;
+				}
+			}
+		}
+	}
+
+	@Override
 	public String encodeXML(String input) {
 		return StringUtil.replace(
 			input, new char[] {'&', '<', '>', '\'', '\"'},
@@ -343,7 +387,9 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		long companyId = themeDisplay.getCompanyId();
 
-		if (_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+		if (_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+				companyId) &&
+			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
 				companyId) &&
 			StringUtil.equals(
 				_sitemapConfigurationManager.xmlSitemapIndexMode(companyId),
@@ -415,7 +461,9 @@ public class SitemapManagerImpl implements SitemapManager {
 		String assetTypeKey, long companyId, long groupId, Date startDate) {
 
 		try {
-			if (!_sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
+			if (!_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+					companyId) ||
+				!_sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
 					companyId)) {
 
 				return;
@@ -504,21 +552,22 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		element.remove(newElement);
 
-		String assetTypeKey = element.attributeValue(
-			_ATTRIBUTE_NAME_ASSET_TYPE_KEY);
-
-		long companyId = GetterUtil.getLong(
-			element.attributeValue(_ATTRIBUTE_NAME_COMPANY_ID));
-		long groupId = GetterUtil.getLong(
-			element.attributeValue(_ATTRIBUTE_NAME_GROUP_ID));
 		int page = GetterUtil.getInteger(
 			element.attributeValue(_ATTRIBUTE_NAME_PAGE));
 
-		_storePage(assetTypeKey, companyId, element, groupId, page);
+		_consumePage(element, page);
 
 		element.clearContent();
 
 		_initEntriesAndSize(element);
+
+		String assetTypeKey = element.attributeValue(
+			_ATTRIBUTE_NAME_ASSET_TYPE_KEY);
+		long companyId = GetterUtil.getLong(
+			element.attributeValue(_ATTRIBUTE_NAME_COMPANY_ID));
+		long groupId = GetterUtil.getLong(
+			element.attributeValue(_ATTRIBUTE_NAME_GROUP_ID));
+
 		_initPagination(assetTypeKey, companyId, element, groupId);
 
 		element.addAttribute(_ATTRIBUTE_NAME_PAGE, String.valueOf(page + 1));
@@ -565,6 +614,25 @@ public class SitemapManagerImpl implements SitemapManager {
 			Element lastmodElement = sitemapElement.addElement("lastmod");
 
 			lastmodElement.addText(iso8601DateFormat.format(modifiedDate));
+		}
+	}
+
+	private void _consumePage(Element element, int page) {
+		_removeEntriesAndSize(element);
+		_removePaginationAttributes(element);
+
+		Document document = element.getDocument();
+
+		try {
+			UnsafeBiConsumer<Integer, String, PortalException>
+				unsafeBiConsumer = _unsafeBiConsumerThreadLocal.get();
+
+			unsafeBiConsumer.accept(page, document.asXML());
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
 		}
 	}
 
@@ -704,6 +772,59 @@ public class SitemapManagerImpl implements SitemapManager {
 		return themeDisplay;
 	}
 
+	private void _generateAssetTypeSitemap(
+			long assetTypeClassNameId, long groupId, boolean privateLayout,
+			ThemeDisplay themeDisplay,
+			UnsafeBiConsumer<Integer, String, PortalException> unsafeBiConsumer)
+		throws PortalException {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_unsafeBiConsumerThreadLocal.set(unsafeBiConsumer);
+
+		try {
+			long companyId = themeDisplay.getCompanyId();
+
+			PermissionThreadLocal.setPermissionChecker(
+				_permissionCheckerFactory.create(
+					_userLocalService.getGuestUser(companyId)));
+
+			Document document = _createSitemapDocument(
+				"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+			Element rootElement = document.getRootElement();
+
+			_initEntriesAndSize(rootElement);
+
+			String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
+
+			_initPagination(assetTypeKey, companyId, rootElement, groupId);
+
+			SitemapURLProvider sitemapURLProvider =
+				_serviceTrackerMap.getService(assetTypeClassNameId);
+
+			for (LayoutSet curLayoutSet :
+					_getLayoutSets(
+						groupId, null, privateLayout, themeDisplay)) {
+
+				sitemapURLProvider.visitLayoutSet(
+					rootElement, curLayoutSet, themeDisplay);
+			}
+
+			_consumePage(
+				rootElement,
+				GetterUtil.getInteger(
+					rootElement.attributeValue(_ATTRIBUTE_NAME_PAGE)));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+
+			_unsafeBiConsumerThreadLocal.remove();
+		}
+	}
+
 	private Date _getAssetTypeModifiedDate(
 			long classNameId, long companyId, long groupId)
 		throws PortalException {
@@ -738,8 +859,25 @@ public class SitemapManagerImpl implements SitemapManager {
 			boolean privateLayout, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
 		long companyId = themeDisplay.getCompanyId();
+
+		if (!_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+				companyId)) {
+
+			String[] xml = {null};
+
+			_generateAssetTypeSitemap(
+				assetTypeClassNameId, groupId, privateLayout, themeDisplay,
+				(curPage, curXML) -> {
+					if (curPage == page) {
+						xml[0] = curXML;
+					}
+				});
+
+			return xml[0];
+		}
+
+		String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
 
 		if (!_sitemapStorageHelper.hasSitemapFile(
 				companyId, groupId, assetTypeKey, page)) {
@@ -834,6 +972,10 @@ public class SitemapManagerImpl implements SitemapManager {
 		String xmlSitemapIndexMode =
 			_sitemapConfigurationManager.xmlSitemapIndexMode(companyId);
 
+		boolean cachedGenerationCompanyEnabled =
+			_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+				companyId);
+
 		if (StringUtil.equals(
 				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
 
@@ -851,21 +993,35 @@ public class SitemapManagerImpl implements SitemapManager {
 					continue;
 				}
 
+				int assetTypePageCount = 0;
+
 				String assetTypeKey = entry.getValue();
 
-				if (!_sitemapStorageHelper.hasSitemapFile(
-						companyId, groupId, assetTypeKey, 1)) {
+				if (cachedGenerationCompanyEnabled) {
+					if (!_sitemapStorageHelper.hasSitemapFile(
+							companyId, groupId, assetTypeKey, 1)) {
 
-					_regenerateAssetTypeSitemap(
+						_regenerateAssetTypeSitemap(
+							assetTypeClassNameId, groupId, privateLayout,
+							themeDisplay);
+					}
+
+					assetTypePageCount = _getAssetTypePageCount(
+						assetTypeKey, companyId, groupId);
+				}
+				else {
+					int[] assetTypePageCountArray = {0};
+
+					_generateAssetTypeSitemap(
 						assetTypeClassNameId, groupId, privateLayout,
-						themeDisplay);
+						themeDisplay,
+						(page, xml) -> assetTypePageCountArray[0]++);
+
+					assetTypePageCount = assetTypePageCountArray[0];
 				}
 
 				Date assetTypeModifiedDate = _getAssetTypeModifiedDate(
 					assetTypeClassNameId, companyId, groupId);
-
-				int assetTypePageCount = _getAssetTypePageCount(
-					assetTypeKey, companyId, groupId);
 
 				if (assetTypePageCount <= 1) {
 					_addSitemapElement(
@@ -896,7 +1052,8 @@ public class SitemapManagerImpl implements SitemapManager {
 		String xml = document.asXML();
 
 		if (StringUtil.equals(
-				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
+				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE) &&
+			cachedGenerationCompanyEnabled) {
 
 			try {
 				_sitemapStorageHelper.storeSitemapFile(companyId, groupId, xml);
@@ -1079,57 +1236,24 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		long companyId = themeDisplay.getCompanyId();
+
+		String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
 
 		try {
-			long companyId = themeDisplay.getCompanyId();
-
-			PermissionThreadLocal.setPermissionChecker(
-				_permissionCheckerFactory.create(
-					_userLocalService.getGuestUser(companyId)));
-
-			Document document = _createSitemapDocument(
-				"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-			Element rootElement = document.getRootElement();
-
-			_initEntriesAndSize(rootElement);
-
-			String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
-
-			try {
-				_sitemapStorageHelper.deleteSitemaps(
-					companyId, groupId, assetTypeKey);
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(exception);
-				}
-			}
-
-			_initPagination(assetTypeKey, companyId, rootElement, groupId);
-
-			SitemapURLProvider sitemapURLProvider =
-				_serviceTrackerMap.getService(assetTypeClassNameId);
-
-			for (LayoutSet curLayoutSet :
-					_getLayoutSets(
-						groupId, null, privateLayout, themeDisplay)) {
-
-				sitemapURLProvider.visitLayoutSet(
-					rootElement, curLayoutSet, themeDisplay);
-			}
-
-			_storePage(
-				assetTypeKey, companyId, rootElement, groupId,
-				GetterUtil.getInteger(
-					rootElement.attributeValue(_ATTRIBUTE_NAME_PAGE)));
+			_sitemapStorageHelper.deleteSitemaps(
+				companyId, groupId, assetTypeKey);
 		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
 		}
+
+		_generateAssetTypeSitemap(
+			assetTypeClassNameId, groupId, privateLayout, themeDisplay,
+			(page, xml) -> _sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, assetTypeKey, page, xml));
 	}
 
 	private void _removeAttribute(Element element, String name) {
@@ -1256,26 +1380,6 @@ public class SitemapManagerImpl implements SitemapManager {
 				"Sitemap regeneration for group ", groupId, " and asset type ",
 				assetTypeKey),
 			SitemapDestinationNames.SITEMAP_REGENERATION, message);
-	}
-
-	private void _storePage(
-		String assetTypeKey, long companyId, Element element, long groupId,
-		int page) {
-
-		_removeEntriesAndSize(element);
-		_removePaginationAttributes(element);
-
-		Document document = element.getDocument();
-
-		try {
-			_sitemapStorageHelper.storeSitemapFile(
-				companyId, groupId, assetTypeKey, page, document.asXML());
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
-		}
 	}
 
 	private void _visitLayoutSet(
@@ -1448,6 +1552,10 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private TriggerFactory _triggerFactory;
+
+	private final ThreadLocal
+		<UnsafeBiConsumer<Integer, String, PortalException>>
+			_unsafeBiConsumerThreadLocal = new ThreadLocal<>();
 
 	@Reference
 	private UserLocalService _userLocalService;
