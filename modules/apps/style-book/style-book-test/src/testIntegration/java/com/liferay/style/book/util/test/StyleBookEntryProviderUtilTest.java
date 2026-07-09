@@ -29,6 +29,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
+import com.liferay.style.book.util.comparator.StyleBookEntryNameComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 @RunWith(Arquillian.class)
 public class StyleBookEntryProviderUtilTest {
@@ -75,6 +77,43 @@ public class StyleBookEntryProviderUtilTest {
 		_testGetStyleBookEntries(
 			true, depotEntryStyleBookEntry, otherThemeStyleBookEntry,
 			styleBookEntry);
+	}
+
+	@Test
+	public void testGetStyleBookEntriesPaginated() throws Exception {
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(
+			_group.getGroupId(), "Alpha", themeId);
+		StyleBookEntry styleBookEntry2 = _addStyleBookEntry(
+			_group.getGroupId(), "Beta", themeId);
+
+		Assert.assertEquals(
+			2,
+			StyleBookEntryProviderUtil.getStyleBookEntriesCount(
+				_group.getCompanyId(), _group.getGroupId(), null, themeId));
+
+		List<StyleBookEntry> styleBookEntries =
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				_group.getCompanyId(), _group.getGroupId(), null, themeId, 0, 1,
+				StyleBookEntryNameComparator.getInstance(true));
+
+		Assert.assertEquals(
+			styleBookEntries.toString(), 1, styleBookEntries.size());
+		Assert.assertEquals(styleBookEntry1, styleBookEntries.get(0));
+
+		Assert.assertEquals(
+			1,
+			StyleBookEntryProviderUtil.getStyleBookEntriesCount(
+				_group.getCompanyId(), _group.getGroupId(), "Beta", themeId));
+
+		styleBookEntries = StyleBookEntryProviderUtil.getStyleBookEntries(
+			_group.getCompanyId(), _group.getGroupId(), "Beta", themeId, 0, 10,
+			StyleBookEntryNameComparator.getInstance(true));
+
+		Assert.assertEquals(
+			styleBookEntries.toString(), 1, styleBookEntries.size());
+		Assert.assertEquals(styleBookEntry2, styleBookEntries.get(0));
 	}
 
 	@Test
@@ -150,9 +189,17 @@ public class StyleBookEntryProviderUtilTest {
 	private StyleBookEntry _addStyleBookEntry(long groupId, String themeId)
 		throws Exception {
 
+		return _addStyleBookEntry(
+			groupId, RandomTestUtil.randomString(), themeId);
+	}
+
+	private StyleBookEntry _addStyleBookEntry(
+			long groupId, String name, String themeId)
+		throws Exception {
+
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
-			false, null, RandomTestUtil.randomString(), null, themeId, null);
+			false, null, name, null, themeId, null);
 	}
 
 	private void _testGetStyleBookEntries(
