@@ -220,9 +220,9 @@ public class CompletePaymentAuthorizeNetServletTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		String jsonString = jsonObject.toString();
+		String json = jsonObject.toString();
 
-		byte[] bytes = jsonString.getBytes(StandardCharsets.UTF_8);
+		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
 		mockHttpServletRequest.setContent(bytes);
 
