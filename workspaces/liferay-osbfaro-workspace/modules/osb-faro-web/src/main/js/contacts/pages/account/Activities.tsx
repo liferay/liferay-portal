@@ -10,7 +10,7 @@ import {useParams} from 'react-router-dom';
 const Activities = () => {
 	const {selectedChannel} = useContext(ChannelContext);
 
-	const {channelId: routeChannelId, id} = useParams<{
+	const {channelId: routeChannelId, groupId, id} = useParams<{
 		channelId: string;
 		groupId: string;
 		id: string;
@@ -46,6 +46,7 @@ const Activities = () => {
 					<ActivityStreamCard
 						accountId={id}
 						channelId={channelId}
+						groupId={groupId}
 						interval={interval}
 						rangeSelectors={rangeSelectors}
 					/>

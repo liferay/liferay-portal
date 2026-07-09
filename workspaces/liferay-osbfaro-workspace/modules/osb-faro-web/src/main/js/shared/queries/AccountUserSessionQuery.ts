@@ -27,6 +27,7 @@ export interface AccountUserSession {
 	screenWidth: number;
 	timezoneOffset: string;
 	userAgent: string;
+	userId?: string;
 	userName: string | null;
 }
 

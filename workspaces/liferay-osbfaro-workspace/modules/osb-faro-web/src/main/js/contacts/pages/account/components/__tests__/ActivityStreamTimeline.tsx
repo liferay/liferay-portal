@@ -6,6 +6,7 @@ import ActivityStreamTimeline, {
 } from '../ActivityStreamTimeline';
 import React from 'react';
 import {AccountUserSession} from 'shared/queries/AccountUserSessionQuery';
+import {Routes, toRoute} from 'shared/util/router';
 import {fireEvent, render} from '@testing-library/react';
 
 jest.unmock('react-dom');
@@ -25,6 +26,7 @@ const buildSession = (
 	screenWidth: 1920,
 	timezoneOffset: '-03:00',
 	userAgent: 'Mozilla/5.0',
+	userId: 'user-1',
 	userName: 'Jane Doe',
 	...overrides,
 });
@@ -63,24 +65,40 @@ describe('ActivityStreamTimeline helpers', () => {
 			expect(groups[0].userGroups[0].userName).toBe('Anonymous');
 		});
 
-		it('groups multiple sessions by same userName into one user group', () => {
+		it('keeps anonymous sessions with different userIds in separate groups', () => {
+			const groups = groupByDate([
+				buildSession({userId: 'anon-1', userName: null}),
+				buildSession({userId: 'anon-2', userName: null}),
+			]);
+
+			expect(groups[0].userGroups).toHaveLength(2);
+			expect(groups[0].userGroups.map((u) => u.userId).sort()).toEqual([
+				'anon-1',
+				'anon-2',
+			]);
+		});
+
+		it('groups multiple sessions by same userId into one user group', () => {
 			const groups = groupByDate([
 				buildSession({
 					createDate: '2024-04-03T08:00:00.000Z',
+					userId: 'alice',
 					userName: 'Alice',
 				}),
 				buildSession({
 					createDate: '2024-04-03T10:00:00.000Z',
+					userId: 'alice',
 					userName: 'Alice',
 				}),
 				buildSession({
 					createDate: '2024-04-03T09:00:00.000Z',
+					userId: 'bob',
 					userName: 'Bob',
 				}),
 			]);
 
 			const userGroups = groups[0].userGroups;
-			const alice = userGroups.find((u) => u.userName === 'Alice');
+			const alice = userGroups.find((u) => u.userId === 'alice');
 
 			expect(userGroups).toHaveLength(2);
 			expect(alice?.sessions).toHaveLength(2);
@@ -184,7 +202,9 @@ describe('ActivityStreamTimeline helpers', () => {
 
 describe('ActivityStreamTimeline rendering', () => {
 	const baseProps = {
+		channelId: '123',
 		delta: 20,
+		groupId: 'liferay.com',
 		hasQuery: false,
 		loading: false,
 		onClearQuery: jest.fn(),
@@ -245,6 +265,7 @@ describe('ActivityStreamTimeline rendering', () => {
 						screenWidth: 1920,
 						timezoneOffset: '-03:00',
 						userAgent: 'Mozilla/5.0',
+						userId: 'user-1',
 						userName: 'Jane Doe',
 					},
 				]}
@@ -255,6 +276,44 @@ describe('ActivityStreamTimeline rendering', () => {
 		expect(
 			container.querySelector('use[href*="user"]')
 		).toBeInTheDocument();
+	});
+
+	it('links a known individual name to its profile page', () => {
+		const {getByRole} = render(
+			<ActivityStreamTimeline
+				{...baseProps}
+				sessions={[buildSession({userId: 'ind-1', userName: 'Jane Doe'})]}
+				totalItems={1}
+			/>
+		);
+
+		expect(getByRole('link', {name: 'Jane Doe'})).toHaveAttribute(
+			'href',
+			toRoute(Routes.CONTACTS_INDIVIDUAL, {
+				channelId: baseProps.channelId,
+				groupId: baseProps.groupId,
+				id: 'ind-1',
+			})
+		);
+	});
+
+	it('links an anonymous individual to its own profile page', () => {
+		const {getByRole} = render(
+			<ActivityStreamTimeline
+				{...baseProps}
+				sessions={[buildSession({userId: 'anon-1', userName: null})]}
+				totalItems={1}
+			/>
+		);
+
+		expect(getByRole('link', {name: 'Anonymous'})).toHaveAttribute(
+			'href',
+			toRoute(Routes.CONTACTS_INDIVIDUAL, {
+				channelId: baseProps.channelId,
+				groupId: baseProps.groupId,
+				id: 'anon-1',
+			})
+		);
 	});
 
 	it('renders an event canonicalUrl and not its raw url', () => {
@@ -338,6 +397,7 @@ describe('ActivityStreamTimeline rendering', () => {
 						screenWidth: 1920,
 						timezoneOffset: '-03:00',
 						userAgent: 'Mozilla/5.0',
+						userId: 'anon-1',
 						userName: null,
 					},
 				]}

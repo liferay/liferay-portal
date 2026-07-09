@@ -1,4 +1,5 @@
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import Loading from 'shared/components/Loading';
 import moment from 'moment';
@@ -9,12 +10,15 @@ import {
 	AccountUserSession,
 	AccountUserSessionEvent,
 } from 'shared/queries/AccountUserSessionQuery';
+import {Routes, toRoute} from 'shared/util/router';
 import {applyTimeZone, formatDateToTimeZone} from 'shared/util/date';
 import {Sizes} from 'shared/util/constants';
 import {Text} from '@clayui/core';
 
 interface IActivityStreamTimelineProps {
+	channelId: string;
 	delta: number;
+	groupId: string;
 	hasQuery: boolean;
 	loading: boolean;
 	onClearQuery: () => void;
@@ -29,6 +33,7 @@ interface IActivityStreamTimelineProps {
 interface UserGroup {
 	isAnonymous: boolean;
 	sessions: AccountUserSession[];
+	userId?: string;
 	userName: string;
 }
 
@@ -123,7 +128,10 @@ export const groupByDate = (
 			const byUser = new Map<string, AccountUserSession[]>();
 
 			daySessions.forEach((session) => {
-				const key = session.userName ?? ANONYMOUS_FALLBACK();
+				const key =
+					session.userId ??
+					session.userName ??
+					ANONYMOUS_FALLBACK();
 
 				const bucket = byUser.get(key) ?? [];
 
@@ -132,15 +140,16 @@ export const groupByDate = (
 				byUser.set(key, bucket);
 			});
 
-			const userGroups: UserGroup[] = Array.from(byUser.entries()).map(
-				([userName, userSessions]) => ({
+			const userGroups: UserGroup[] = Array.from(byUser.values()).map(
+				(userSessions) => ({
 					isAnonymous: userSessions[0].userName === null,
 					sessions: userSessions.sort(
 						(a, b) =>
 							moment(b.createDate).valueOf() -
 							moment(a.createDate).valueOf()
 					),
-					userName,
+					userId: userSessions[0].userId,
+					userName: userSessions[0].userName ?? ANONYMOUS_FALLBACK(),
 				})
 			);
 
@@ -158,7 +167,9 @@ export const groupByDate = (
 };
 
 const ActivityStreamTimeline: React.FC<IActivityStreamTimelineProps> = ({
+	channelId,
 	delta,
+	groupId,
 	hasQuery,
 	loading,
 	onClearQuery,
@@ -234,10 +245,15 @@ const ActivityStreamTimeline: React.FC<IActivityStreamTimelineProps> = ({
 					</header>
 
 					{userGroups.map(
-						({isAnonymous, sessions: userSessions, userName}) => (
+						({
+							isAnonymous,
+							sessions: userSessions,
+							userId,
+							userName,
+						}) => (
 							<div
 								className="mb-4"
-								key={`${dateKey}-${userName}`}
+								key={`${dateKey}-${userId ?? userName}`}
 							>
 								<div className="d-flex align-items-center">
 									<ClaySticker
@@ -256,7 +272,22 @@ const ActivityStreamTimeline: React.FC<IActivityStreamTimelineProps> = ({
 									</ClaySticker>
 
 									<Text color="primary" weight="semi-bold">
-										{userName}
+										{userId ? (
+											<ClayLink
+												href={toRoute(
+													Routes.CONTACTS_INDIVIDUAL,
+													{
+														channelId,
+														groupId,
+														id: userId,
+													}
+												)}
+											>
+												{userName}
+											</ClayLink>
+										) : (
+											userName
+										)}
 									</Text>
 								</div>
 

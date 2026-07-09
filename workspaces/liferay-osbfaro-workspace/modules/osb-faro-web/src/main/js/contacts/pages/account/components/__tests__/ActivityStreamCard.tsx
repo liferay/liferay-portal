@@ -41,6 +41,7 @@ const Wrapper: React.FC<WrapperProps> = ({mocks}) => (
 				<ActivityStreamCard
 					accountId="abc"
 					channelId="123123"
+					groupId="liferay.com"
 					interval="D"
 					rangeSelectors={{
 						rangeEnd: null,

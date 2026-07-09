@@ -81,6 +81,7 @@ interface IIndividualProfileRoutesCDPProps {
 		name?: string;
 		toJS: () => {
 			accountName: string;
+			accounts?: Array<{accountName?: string; id?: string}>;
 			lastSessionCountry: string;
 			properties: {email: string};
 		};
@@ -142,7 +143,10 @@ export const IndividualProfileRoutesCDP = ({
 				groupId={groupId}
 			>
 				<BasePage.Header.TitleSection
-					subtitle={buildHeaderSubtitle(individual.toJS())}
+					subtitle={buildHeaderSubtitle(individual.toJS(), {
+						channelId,
+						groupId,
+					})}
 					title={entityName}
 				/>
 

@@ -55,6 +55,7 @@ const formatTimestamp = (timestamp: number): string => {
 interface IActivityStreamCardProps {
 	accountId: string;
 	channelId: string;
+	groupId: string;
 	interval: Interval;
 	rangeSelectors: RangeSelectors;
 }
@@ -62,6 +63,7 @@ interface IActivityStreamCardProps {
 const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	accountId,
 	channelId,
+	groupId,
 	interval,
 	rangeSelectors,
 }) => {
@@ -392,7 +394,9 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 				/>
 
 				<ActivityStreamTimeline
+					channelId={channelId}
 					delta={delta}
+					groupId={groupId}
 					hasQuery={!!keywords}
 					loading={sessionsResponse.loading ?? false}
 					onClearQuery={handleClearSearch}

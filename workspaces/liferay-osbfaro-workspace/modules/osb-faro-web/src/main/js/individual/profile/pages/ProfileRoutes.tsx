@@ -74,6 +74,7 @@ interface IIndividualProfileRoutesProps {
 		name?: string;
 		toJS: () => {
 			accountName: string;
+			accounts?: Array<{accountName?: string; id?: string}>;
 			lastSessionCountry: string;
 			properties: {email: string};
 		};
@@ -135,7 +136,10 @@ export const IndividualProfileRoutes = ({
 				groupId={groupId}
 			>
 				<BasePage.Header.TitleSection
-					subtitle={buildHeaderSubtitle(individual.toJS())}
+					subtitle={buildHeaderSubtitle(individual.toJS(), {
+						channelId,
+						groupId,
+					})}
 					title={entityName}
 				/>
 
