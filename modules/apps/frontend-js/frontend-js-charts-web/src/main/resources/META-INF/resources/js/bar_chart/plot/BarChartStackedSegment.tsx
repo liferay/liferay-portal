@@ -23,6 +23,7 @@ interface Props {
 	layout: StackedSegmentLayout;
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
+	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	onLeave: (index: number) => void;
 	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
 
@@ -38,6 +39,7 @@ export default function BarChartStackedSegment({
 	layout,
 	onFocus,
 	onHover,
+	onKeyDown,
 	onLeave,
 	setBarRef,
 	width,
@@ -83,6 +85,7 @@ export default function BarChartStackedSegment({
 				)}
 				onBlur={() => onLeave(index)}
 				onFocus={() => onFocus(index)}
+				onKeyDown={(event) => onKeyDown(event, index)}
 				onMouseEnter={() => onHover(index)}
 				onMouseLeave={() => onLeave(index)}
 				ref={(element) => setBarRef(index, element)}

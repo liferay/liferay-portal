@@ -17,6 +17,7 @@ interface Props {
 	layout: BarLayout;
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
+	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	onLeave: (index: number) => void;
 	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
 	track: boolean;
@@ -30,6 +31,7 @@ export default function BarChartBar({
 	layout,
 	onFocus,
 	onHover,
+	onKeyDown,
 	onLeave,
 	setBarRef,
 	track,
@@ -59,6 +61,7 @@ export default function BarChartBar({
 				height={layout.height}
 				onBlur={() => onLeave(index)}
 				onFocus={() => onFocus(index)}
+				onKeyDown={(event) => onKeyDown(event, index)}
 				onMouseEnter={() => onHover(index)}
 				onMouseLeave={() => onLeave(index)}
 				ref={(element) => setBarRef(index, element)}

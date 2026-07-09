@@ -18,6 +18,7 @@ interface Props {
 	hoverIndex: number | null;
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
+	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	onLeave: (index: number) => void;
 	palette: string[] | null;
 	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
@@ -34,6 +35,7 @@ export default function BarChartPlot({
 	hoverIndex,
 	onFocus,
 	onHover,
+	onKeyDown,
 	onLeave,
 	palette,
 	setBarRef,
@@ -68,6 +70,7 @@ export default function BarChartPlot({
 					layout={geometry.bars[index]}
 					onFocus={onFocus}
 					onHover={onHover}
+					onKeyDown={onKeyDown}
 					onLeave={onLeave}
 					setBarRef={setBarRef}
 					track={track}

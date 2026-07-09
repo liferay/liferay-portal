@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen, within} from '@testing-library/react';
+import {fireEvent, render, screen, within} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -20,6 +20,18 @@ const DATA = [
 ];
 
 describe('BarChart', () => {
+	it('moves focus to the next bar with the arrow keys', () => {
+		render(<BarChart data={DATA} title="Monthly visits" />);
+
+		const bars = screen.getAllByRole('img');
+
+		bars[0].focus();
+
+		fireEvent.keyDown(bars[0], {key: 'ArrowRight'});
+
+		expect(bars[1]).toHaveFocus();
+	});
+
 	it('renders one accessible bar per datum', () => {
 		render(<BarChart data={DATA} title="Monthly visits" />);
 

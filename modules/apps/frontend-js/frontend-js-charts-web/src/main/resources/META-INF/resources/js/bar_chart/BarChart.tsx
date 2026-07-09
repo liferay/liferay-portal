@@ -13,6 +13,7 @@ import React, {
 	useState,
 } from 'react';
 
+import {useChartKeyboardNav} from '../hooks/useChartKeyboardNav';
 import {getCategoricalColors} from '../palette';
 import {CHART_FAMILY_CLAY_PALETTE} from '../tokens';
 import BarChartLegend from './legend/BarChartLegend';
@@ -168,6 +169,13 @@ export default function BarChart({
 		barRefs.current[index]?.focus();
 	}, []);
 
+	const focusableIndexes = useMemo(
+		() => Array.from({length: data.length}, (_, index) => index),
+		[data.length]
+	);
+
+	const onKeyDown = useChartKeyboardNav(focusableIndexes, focusBar);
+
 	const deactivate = useCallback(
 		(index: number) =>
 			setHoverIndex((current) => (current === index ? null : current)),
@@ -221,6 +229,7 @@ export default function BarChart({
 					hoverIndex={hoverIndex}
 					onFocus={setFocusIndex}
 					onHover={setHoverIndex}
+					onKeyDown={onKeyDown}
 					onLeave={deactivate}
 					palette={palette}
 					setBarRef={setBarRef}
@@ -235,6 +244,7 @@ export default function BarChart({
 					hoverIndex={hoverIndex}
 					onFocus={setFocusIndex}
 					onHover={setHoverIndex}
+					onKeyDown={onKeyDown}
 					onLeave={deactivate}
 					palette={palette}
 					setBarRef={setBarRef}
