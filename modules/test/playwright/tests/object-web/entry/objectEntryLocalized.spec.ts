@@ -1272,7 +1272,10 @@ test.describe('Localized object entries are saved correctly', () => {
 
 				await userPrefixDropdown.click();
 
-				await page.getByRole('option', {name: /United States/}).click();
+				await page
+					.getByRole('option', {name: /United States/})
+					.locator('..')
+					.click();
 
 				await expect(userPrefixDropdown).toHaveText(enUserPrefix);
 
@@ -1290,7 +1293,10 @@ test.describe('Localized object entries are saved correctly', () => {
 
 				await userPrefixDropdown.click();
 
-				await page.getByRole('option', {name: /Brazil/}).click();
+				await page
+					.getByRole('option', {name: /Brazil/})
+					.locator('..')
+					.click();
 
 				await expect(userPrefixDropdown).toHaveText(ptUserPrefix);
 
