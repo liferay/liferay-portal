@@ -162,7 +162,20 @@ public class ToolSetUtil {
 				httpServletRequest,
 				OpenAPIUtil.getRequest(
 					openAPIBrief._basePath,
-					_getDataMaskHeaders(dataMaskExternalReferenceCodes),
+					HashMapBuilder.put(
+						"X-Liferay-Data-Masks",
+						() -> {
+							if (ListUtil.isEmpty(
+									dataMaskExternalReferenceCodes)) {
+
+								return null;
+							}
+
+							return StringUtil.merge(
+								dataMaskExternalReferenceCodes,
+								StringPool.COMMA);
+						}
+					).build(),
 					inputJSONObject,
 					_getOpenAPIJSONObject(openAPIBrief, httpServletRequest),
 					toolName, _getUser(httpServletRequest)));
@@ -203,19 +216,6 @@ public class ToolSetUtil {
 
 			return content;
 		}
-	}
-
-	private static Map<String, String> _getDataMaskHeaders(
-		List<String> dataMaskExternalReferenceCodes) {
-
-		if (ListUtil.isEmpty(dataMaskExternalReferenceCodes)) {
-			return null;
-		}
-
-		return HashMapBuilder.put(
-			"X-Liferay-Data-Masks",
-			StringUtil.merge(dataMaskExternalReferenceCodes, StringPool.COMMA)
-		).build();
 	}
 
 	private static String _getDescription(Object service) {
