@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -111,22 +112,42 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 			_SYSTEM_MASK_COUNT,
 			_countProfileDataMasks(mcpServerProfileExternalReferenceCode));
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		ObjectEntry customMaskObjectEntry =
+			MCPServerDataMaskTestUtil.addCustomMask(
+				RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+		ObjectEntry profileDataMaskObjectEntry =
+			MCPServerDataMaskTestUtil.addProfileDataMask(
+				mcpServerProfileExternalReferenceCode,
+				customMaskObjectEntry.getObjectEntryId(), 1);
 
-			_objectEntryLocalService.deleteObjectEntry(profileObjectEntry);
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				MCPServerDataMaskTestUtil.enableAuditPersistence()) {
+
+			PermissionChecker originalPermissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			try {
+				PermissionThreadLocal.setPermissionChecker(
+					PermissionCheckerFactoryUtil.create(
+						TestPropsValues.getUser()));
+
+				_objectEntryLocalService.deleteObjectEntry(profileObjectEntry);
+			}
+			finally {
+				PermissionThreadLocal.setPermissionChecker(
+					originalPermissionChecker);
+			}
+
+			Assert.assertEquals(
+				0,
+				_countProfileDataMasks(mcpServerProfileExternalReferenceCode));
+
+			Assert.assertEquals(
+				"Profile deleted.",
+				MCPServerDataMaskTestUtil.getAuditedDeleteReason(
+					profileDataMaskObjectEntry));
 		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
-
-		Assert.assertEquals(
-			0, _countProfileDataMasks(mcpServerProfileExternalReferenceCode));
 	}
 
 	private int _countProfileDataMasks(

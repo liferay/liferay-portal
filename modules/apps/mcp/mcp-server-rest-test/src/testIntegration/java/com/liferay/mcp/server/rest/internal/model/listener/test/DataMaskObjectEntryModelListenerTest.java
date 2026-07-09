@@ -10,6 +10,7 @@ import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.mcp.server.rest.test.util.MCPServerDataMaskTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -81,27 +82,37 @@ public class DataMaskObjectEntryModelListenerTest {
 				profileObjectEntry.getExternalReferenceCode(),
 				customMaskObjectEntry.getObjectEntryId(), 1);
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				MCPServerDataMaskTestUtil.enableAuditPersistence()) {
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+			PermissionChecker originalPermissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
 
-			_objectEntryLocalService.deleteObjectEntry(
-				customMaskObjectEntry.getObjectEntryId());
+			try {
+				PermissionThreadLocal.setPermissionChecker(
+					PermissionCheckerFactoryUtil.create(
+						TestPropsValues.getUser()));
+
+				_objectEntryLocalService.deleteObjectEntry(
+					customMaskObjectEntry.getObjectEntryId());
+			}
+			finally {
+				PermissionThreadLocal.setPermissionChecker(
+					originalPermissionChecker);
+			}
+
+			Assert.assertNull(
+				_objectEntryLocalService.fetchObjectEntry(
+					customMaskObjectEntry.getObjectEntryId()));
+			Assert.assertNull(
+				_objectEntryLocalService.fetchObjectEntry(
+					profileDataMaskObjectEntry.getObjectEntryId()));
+
+			Assert.assertEquals(
+				"Data mask deleted.",
+				MCPServerDataMaskTestUtil.getAuditedDeleteReason(
+					profileDataMaskObjectEntry));
 		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
-
-		Assert.assertNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				customMaskObjectEntry.getObjectEntryId()));
-		Assert.assertNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				profileDataMaskObjectEntry.getObjectEntryId()));
 	}
 
 	@Inject

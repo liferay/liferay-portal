@@ -10,13 +10,22 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.security.audit.storage.model.AuditEvent;
+import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.util.List;
 
 /**
  * @author Jose Luis Navarro
@@ -101,6 +110,47 @@ public class MCPServerDataMaskTestUtil {
 				mcpServerProfileExternalReferenceCode
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	public static ConfigurationTemporarySwapper enableAuditPersistence()
+		throws Exception {
+
+		return new ConfigurationTemporarySwapper(
+			"com.liferay.portal.security.audit.router.configuration." +
+				"PersistentAuditMessageProcessorConfiguration",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"flushInterval", 1
+			).build());
+	}
+
+	public static String getAuditedDeleteReason(ObjectEntry objectEntry)
+		throws Exception {
+
+		String classPK = String.valueOf(objectEntry.getObjectEntryId());
+
+		for (int i = 0; i < 60; i++) {
+			List<AuditEvent> auditEvents =
+				AuditEventLocalServiceUtil.getAuditEvents(
+					0, 0, 0, null, null, null, null, null, classPK, null, null,
+					null, EventTypes.DELETE, null, 0, null, true,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			if (!auditEvents.isEmpty()) {
+				AuditEvent auditEvent = auditEvents.get(0);
+
+				JSONObject additionalInfoJSONObject =
+					JSONFactoryUtil.createJSONObject(
+						auditEvent.getAdditionalInfo());
+
+				return additionalInfoJSONObject.getString("deleteReason");
+			}
+
+			Thread.sleep(100);
+		}
+
+		return null;
 	}
 
 	public static void removeProfileDataMask(
