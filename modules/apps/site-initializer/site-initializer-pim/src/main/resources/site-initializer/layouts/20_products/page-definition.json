@@ -1,6 +1,19 @@
 {
 	"pageElement": {
 		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductsSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
 	},
