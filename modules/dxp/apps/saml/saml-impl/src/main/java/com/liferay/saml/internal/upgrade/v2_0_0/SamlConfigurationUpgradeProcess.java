@@ -347,7 +347,7 @@ public class SamlConfigurationUpgradeProcess extends UpgradeProcess {
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Unable to migrate filesystem SAML keystore", exception);
+					"Unable to migrate file system SAML keystore", exception);
 			}
 		}
 		finally {
