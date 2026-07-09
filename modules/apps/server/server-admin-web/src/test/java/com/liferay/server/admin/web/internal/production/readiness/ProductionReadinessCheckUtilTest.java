@@ -284,9 +284,7 @@ public class ProductionReadinessCheckUtilTest {
 
 				Assert.assertEquals(
 					impl, productionReadinessResult.getCurrentValue());
-				Assert.assertTrue(
-					"Expected PASS for " + impl,
-					productionReadinessResult.isPass());
+				Assert.assertTrue(productionReadinessResult.isPass());
 			}
 		}
 	}
