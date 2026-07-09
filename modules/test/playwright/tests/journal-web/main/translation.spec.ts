@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
+import {changeManagementToolbarView} from '../../../utils/changeManagementToolbarView';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../../utils/getGlobalSiteId';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
@@ -53,6 +54,8 @@ test(
 			});
 
 			await journalPage.goto(site.friendlyUrlPath);
+
+			await changeManagementToolbarView(page, 'List');
 
 			await clickAndExpectToBeVisible({
 				autoClick: true,
