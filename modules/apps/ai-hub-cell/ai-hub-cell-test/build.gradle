@@ -1,0 +1,5 @@
+dependencies {
+	testIntegrationImplementation project(":apps:ai-hub-cell:ai-hub-cell-api")
+	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
