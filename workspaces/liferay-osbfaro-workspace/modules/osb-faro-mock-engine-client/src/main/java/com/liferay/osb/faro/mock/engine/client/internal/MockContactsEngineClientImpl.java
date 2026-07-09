@@ -8,6 +8,7 @@ package com.liferay.osb.faro.mock.engine.client.internal;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.constants.FilterConstants;
+import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
@@ -41,6 +42,13 @@ public class MockContactsEngineClientImpl
 
 		return contactsEngineClient.getAccountIndividuals(
 			faroProject, accountId, channelId, query, cur, delta, sortString);
+	}
+
+	@Override
+	public Results<ApiUsageMetric> getApiUsageMetrics(
+		FaroProject faroProject, Date usageDate) {
+
+		return contactsEngineClient.getApiUsageMetrics(faroProject, usageDate);
 	}
 
 	@Override

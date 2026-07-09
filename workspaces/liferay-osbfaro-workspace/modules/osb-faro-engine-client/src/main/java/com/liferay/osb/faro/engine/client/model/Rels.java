@@ -63,6 +63,8 @@ public interface Rels {
 
 	public static final String ADMIN_NANITES = "admin-nanites";
 
+	public static final String API_USAGE_METRICS = "api-usage-metrics";
+
 	public static final String ASSET = "asset";
 
 	public static final String ASSET_SUMMARIES = "asset-summaries";

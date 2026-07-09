@@ -26,6 +26,7 @@ import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
 import com.liferay.osb.faro.engine.client.model.ActivityGroup;
+import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.AsahProject;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
@@ -1156,6 +1157,22 @@ public class ContactsEngineClientImpl
 				<EntityModelPagedModel<ActivityGroup>>() {
 			},
 			uriVariables);
+
+		return pagedModel.getResults();
+	}
+
+	@Override
+	public Results<ApiUsageMetric> getApiUsageMetrics(
+		FaroProject faroProject, Date usageDate) {
+
+		PagedModel<?, ApiUsageMetric> pagedModel = get(
+			faroProject, Rels.API_USAGE_METRICS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<ApiUsageMetric>>() {
+			},
+			HashMapBuilder.<String, Object>put(
+				"usageDate", usageDate
+			).build());
 
 		return pagedModel.getResults();
 	}
