@@ -62,6 +62,7 @@
 	<model name="com.liferay.commerce.model.CommerceAvailabilityEstimate">
 		<field name="mvccVersion" type="long" />
 		<field name="uuid" type="String" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="commerceAvailabilityEstimateId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
@@ -75,6 +76,7 @@
 			<validator name="number" />
 		</field>
 		<field name="lastPublishDate" type="Date" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.model.CommerceOrder">
 		<field name="mvccVersion" type="long" />

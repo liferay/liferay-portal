@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.service.persistence.impl;
 
+import com.liferay.commerce.exception.DuplicateCommerceAvailabilityEstimateExternalReferenceCodeException;
 import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.model.CommerceAvailabilityEstimateTable;
@@ -19,12 +20,20 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.FilterCollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
+import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -39,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -447,6 +457,75 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 			finderCache, new Object[] {companyId}, companyId, 0);
 	}
 
+	private UniquePersistenceFinder
+		<CommerceAvailabilityEstimate, NoSuchAvailabilityEstimateException>
+			_uniquePersistenceFinderByERC_C;
+
+	/**
+	 * Returns the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchAvailabilityEstimateException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce availability estimate
+	 * @throws NoSuchAvailabilityEstimateException if a matching commerce availability estimate could not be found
+	 */
+	@Override
+	public CommerceAvailabilityEstimate findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchAvailabilityEstimateException {
+
+		return _uniquePersistenceFinderByERC_C.find(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
+	/**
+	 * Returns the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce availability estimate, or <code>null</code> if a matching commerce availability estimate could not be found
+	 */
+	@Override
+	public CommerceAvailabilityEstimate fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByERC_C.fetch(
+			finderCache, new Object[] {externalReferenceCode, companyId},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce availability estimate that was removed
+	 */
+	@Override
+	public CommerceAvailabilityEstimate removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchAvailabilityEstimateException {
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate = findByERC_C(
+			externalReferenceCode, companyId);
+
+		return remove(commerceAvailabilityEstimate);
+	}
+
+	/**
+	 * Returns the number of commerce availability estimates where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce availability estimates
+	 */
+	@Override
+	public int countByERC_C(String externalReferenceCode, long companyId) {
+		return _uniquePersistenceFinderByERC_C.count(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
 	public CommerceAvailabilityEstimatePersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -574,6 +653,82 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 			String uuid = PortalUUIDUtil.generate();
 
 			commerceAvailabilityEstimate.setUuid(uuid);
+		}
+
+		if (Validator.isNull(
+				commerceAvailabilityEstimate.getExternalReferenceCode())) {
+
+			commerceAvailabilityEstimate.setExternalReferenceCode(
+				commerceAvailabilityEstimate.getUuid());
+		}
+		else {
+			if (!Objects.equals(
+					commerceAvailabilityEstimateModelImpl.
+						getColumnOriginalValue("externalReferenceCode"),
+					commerceAvailabilityEstimate.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId =
+						commerceAvailabilityEstimate.getCompanyId();
+
+					long groupId = 0;
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = commerceAvailabilityEstimate.getPrimaryKey();
+					}
+
+					try {
+						commerceAvailabilityEstimate.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								CommerceAvailabilityEstimate.class.getName(),
+								classPK, ContentTypes.TEXT_HTML,
+								Sanitizer.MODE_ALL,
+								commerceAvailabilityEstimate.
+									getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+
+			CommerceAvailabilityEstimate ercCommerceAvailabilityEstimate =
+				fetchByERC_C(
+					commerceAvailabilityEstimate.getExternalReferenceCode(),
+					commerceAvailabilityEstimate.getCompanyId());
+
+			if (isNew) {
+				if (ercCommerceAvailabilityEstimate != null) {
+					throw new DuplicateCommerceAvailabilityEstimateExternalReferenceCodeException(
+						"Duplicate commerce availability estimate with external reference code " +
+							commerceAvailabilityEstimate.
+								getExternalReferenceCode() + " and company " +
+									commerceAvailabilityEstimate.
+										getCompanyId());
+				}
+			}
+			else {
+				if ((ercCommerceAvailabilityEstimate != null) &&
+					(commerceAvailabilityEstimate.
+						getCommerceAvailabilityEstimateId() !=
+							ercCommerceAvailabilityEstimate.
+								getCommerceAvailabilityEstimateId())) {
+
+					throw new DuplicateCommerceAvailabilityEstimateExternalReferenceCodeException(
+						"Duplicate commerce availability estimate with external reference code " +
+							commerceAvailabilityEstimate.
+								getExternalReferenceCode() + " and company " +
+									commerceAvailabilityEstimate.
+										getCompanyId());
+				}
+			}
 		}
 
 		ServiceContext serviceContext =
@@ -779,6 +934,26 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceAvailabilityEstimate::getCompanyId));
 
+		_uniquePersistenceFinderByERC_C = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",
+				new String[] {String.class.getName(), Long.class.getName()},
+				new String[] {"externalReferenceCode", "companyId"}, 0, 1,
+				false,
+				convertNullFunction(
+					CommerceAvailabilityEstimate::getExternalReferenceCode),
+				CommerceAvailabilityEstimate::getCompanyId),
+			_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE, "",
+			new FinderColumn<>(
+				"commerceAvailabilityEstimate.", "externalReferenceCode",
+				FinderColumn.Type.STRING, "=", true, true,
+				CommerceAvailabilityEstimate::getExternalReferenceCode),
+			new FinderColumn<>(
+				"commerceAvailabilityEstimate.", "companyId",
+				FinderColumn.Type.LONG, "=", true, true,
+				CommerceAvailabilityEstimate::getCompanyId));
+
 		CommerceAvailabilityEstimateUtil.setPersistence(this);
 	}
 
@@ -843,4 +1018,4 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-224885197
+// LIFERAY-SERVICE-BUILDER-HASH:1944205224

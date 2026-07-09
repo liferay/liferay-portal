@@ -73,11 +73,13 @@ public class CommerceAvailabilityEstimateModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"uuid_", Types.VARCHAR},
+		{"externalReferenceCode", Types.VARCHAR},
 		{"commerceAvailabilityEstimateId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"title", Types.VARCHAR},
-		{"priority", Types.DOUBLE}, {"lastPublishDate", Types.TIMESTAMP}
+		{"priority", Types.DOUBLE}, {"lastPublishDate", Types.TIMESTAMP},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -86,6 +88,7 @@ public class CommerceAvailabilityEstimateModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commerceAvailabilityEstimateId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -95,10 +98,11 @@ public class CommerceAvailabilityEstimateModelImpl
 		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceAvailabilityEstimate (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,commerceAvailabilityEstimateId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,priority DOUBLE,lastPublishDate DATE null)";
+		"create table CommerceAvailabilityEstimate (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceAvailabilityEstimateId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,priority DOUBLE,lastPublishDate DATE null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommerceAvailabilityEstimate";
@@ -133,14 +137,20 @@ public class CommerceAvailabilityEstimateModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 2L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TITLE_COLUMN_BITMASK = 4L;
+	public static final long TITLE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -261,6 +271,9 @@ public class CommerceAvailabilityEstimateModelImpl
 			attributeGetterFunctions.put(
 				"uuid", CommerceAvailabilityEstimate::getUuid);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CommerceAvailabilityEstimate::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"commerceAvailabilityEstimateId",
 				CommerceAvailabilityEstimate::
 					getCommerceAvailabilityEstimateId);
@@ -281,6 +294,8 @@ public class CommerceAvailabilityEstimateModelImpl
 			attributeGetterFunctions.put(
 				"lastPublishDate",
 				CommerceAvailabilityEstimate::getLastPublishDate);
+			attributeGetterFunctions.put(
+				"status", CommerceAvailabilityEstimate::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -308,6 +323,10 @@ public class CommerceAvailabilityEstimateModelImpl
 				"uuid",
 				(BiConsumer<CommerceAvailabilityEstimate, String>)
 					CommerceAvailabilityEstimate::setUuid);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CommerceAvailabilityEstimate, String>)
+					CommerceAvailabilityEstimate::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"commerceAvailabilityEstimateId",
 				(BiConsumer<CommerceAvailabilityEstimate, Long>)
@@ -345,6 +364,10 @@ public class CommerceAvailabilityEstimateModelImpl
 				"lastPublishDate",
 				(BiConsumer<CommerceAvailabilityEstimate, Date>)
 					CommerceAvailabilityEstimate::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceAvailabilityEstimate, Integer>)
+					CommerceAvailabilityEstimate::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -394,6 +417,35 @@ public class CommerceAvailabilityEstimateModelImpl
 	@Deprecated
 	public String getOriginalUuid() {
 		return getColumnOriginalValue("uuid_");
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -664,6 +716,21 @@ public class CommerceAvailabilityEstimateModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -797,6 +864,8 @@ public class CommerceAvailabilityEstimateModelImpl
 
 		commerceAvailabilityEstimateImpl.setMvccVersion(getMvccVersion());
 		commerceAvailabilityEstimateImpl.setUuid(getUuid());
+		commerceAvailabilityEstimateImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		commerceAvailabilityEstimateImpl.setCommerceAvailabilityEstimateId(
 			getCommerceAvailabilityEstimateId());
 		commerceAvailabilityEstimateImpl.setCompanyId(getCompanyId());
@@ -808,6 +877,7 @@ public class CommerceAvailabilityEstimateModelImpl
 		commerceAvailabilityEstimateImpl.setPriority(getPriority());
 		commerceAvailabilityEstimateImpl.setLastPublishDate(
 			getLastPublishDate());
+		commerceAvailabilityEstimateImpl.setStatus(getStatus());
 
 		commerceAvailabilityEstimateImpl.resetOriginalValues();
 
@@ -823,6 +893,8 @@ public class CommerceAvailabilityEstimateModelImpl
 			this.<Long>getColumnOriginalValue("mvccVersion"));
 		commerceAvailabilityEstimateImpl.setUuid(
 			this.<String>getColumnOriginalValue("uuid_"));
+		commerceAvailabilityEstimateImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		commerceAvailabilityEstimateImpl.setCommerceAvailabilityEstimateId(
 			this.<Long>getColumnOriginalValue(
 				"commerceAvailabilityEstimateId"));
@@ -842,6 +914,8 @@ public class CommerceAvailabilityEstimateModelImpl
 			this.<Double>getColumnOriginalValue("priority"));
 		commerceAvailabilityEstimateImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		commerceAvailabilityEstimateImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceAvailabilityEstimateImpl;
 	}
@@ -932,6 +1006,18 @@ public class CommerceAvailabilityEstimateModelImpl
 			commerceAvailabilityEstimateCacheModel.uuid = null;
 		}
 
+		commerceAvailabilityEstimateCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			commerceAvailabilityEstimateCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			commerceAvailabilityEstimateCacheModel.externalReferenceCode = null;
+		}
+
 		commerceAvailabilityEstimateCacheModel.commerceAvailabilityEstimateId =
 			getCommerceAvailabilityEstimateId();
 
@@ -988,6 +1074,8 @@ public class CommerceAvailabilityEstimateModelImpl
 			commerceAvailabilityEstimateCacheModel.lastPublishDate =
 				Long.MIN_VALUE;
 		}
+
+		commerceAvailabilityEstimateCacheModel.status = getStatus();
 
 		return commerceAvailabilityEstimateCacheModel;
 	}
@@ -1054,6 +1142,7 @@ public class CommerceAvailabilityEstimateModelImpl
 
 	private long _mvccVersion;
 	private String _uuid;
+	private String _externalReferenceCode;
 	private long _commerceAvailabilityEstimateId;
 	private long _companyId;
 	private long _userId;
@@ -1065,6 +1154,7 @@ public class CommerceAvailabilityEstimateModelImpl
 	private String _titleCurrentLanguageId;
 	private double _priority;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1099,6 +1189,8 @@ public class CommerceAvailabilityEstimateModelImpl
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("uuid_", _uuid);
 		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
+		_columnOriginalValues.put(
 			"commerceAvailabilityEstimateId", _commerceAvailabilityEstimateId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
@@ -1108,6 +1200,7 @@ public class CommerceAvailabilityEstimateModelImpl
 		_columnOriginalValues.put("title", _title);
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1135,23 +1228,27 @@ public class CommerceAvailabilityEstimateModelImpl
 
 		columnBitmasks.put("uuid_", 2L);
 
-		columnBitmasks.put("commerceAvailabilityEstimateId", 4L);
+		columnBitmasks.put("externalReferenceCode", 4L);
 
-		columnBitmasks.put("companyId", 8L);
+		columnBitmasks.put("commerceAvailabilityEstimateId", 8L);
 
-		columnBitmasks.put("userId", 16L);
+		columnBitmasks.put("companyId", 16L);
 
-		columnBitmasks.put("userName", 32L);
+		columnBitmasks.put("userId", 32L);
 
-		columnBitmasks.put("createDate", 64L);
+		columnBitmasks.put("userName", 64L);
 
-		columnBitmasks.put("modifiedDate", 128L);
+		columnBitmasks.put("createDate", 128L);
 
-		columnBitmasks.put("title", 256L);
+		columnBitmasks.put("modifiedDate", 256L);
 
-		columnBitmasks.put("priority", 512L);
+		columnBitmasks.put("title", 512L);
 
-		columnBitmasks.put("lastPublishDate", 1024L);
+		columnBitmasks.put("priority", 1024L);
+
+		columnBitmasks.put("lastPublishDate", 2048L);
+
+		columnBitmasks.put("status", 4096L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1160,4 +1257,4 @@ public class CommerceAvailabilityEstimateModelImpl
 	private CommerceAvailabilityEstimate _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1989012644
+// LIFERAY-SERVICE-BUILDER-HASH:-1528991426

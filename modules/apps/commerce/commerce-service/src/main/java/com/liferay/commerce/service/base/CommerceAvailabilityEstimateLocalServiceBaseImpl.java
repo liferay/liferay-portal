@@ -276,6 +276,25 @@ public abstract class CommerceAvailabilityEstimateLocalServiceBaseImpl
 			uuid, companyId, null);
 	}
 
+	@Override
+	public CommerceAvailabilityEstimate
+		fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return commerceAvailabilityEstimatePersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public CommerceAvailabilityEstimate
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return commerceAvailabilityEstimatePersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the commerce availability estimate with the primary key.
 	 *
@@ -601,4 +620,4 @@ public abstract class CommerceAvailabilityEstimateLocalServiceBaseImpl
 		CommerceAvailabilityEstimateLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1934511558
+// LIFERAY-SERVICE-BUILDER-HASH:664773497

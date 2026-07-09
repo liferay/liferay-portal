@@ -214,6 +214,11 @@ public interface CommerceAvailabilityEstimateLocalService
 	public CommerceAvailabilityEstimate fetchCommerceAvailabilityEstimate(
 		long commerceAvailabilityEstimateId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceAvailabilityEstimate
+		fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode, long companyId);
+
 	/**
 	 * Returns the commerce availability estimate with the matching UUID and company.
 	 *
@@ -239,6 +244,12 @@ public interface CommerceAvailabilityEstimateLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceAvailabilityEstimate getCommerceAvailabilityEstimate(
 			long commerceAvailabilityEstimateId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceAvailabilityEstimate
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
 		throws PortalException;
 
 	/**
@@ -328,4 +339,4 @@ public interface CommerceAvailabilityEstimateLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-862533868
+// LIFERAY-SERVICE-BUILDER-HASH:-478493301

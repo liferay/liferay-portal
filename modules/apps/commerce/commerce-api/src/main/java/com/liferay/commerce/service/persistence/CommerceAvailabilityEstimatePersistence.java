@@ -301,6 +301,49 @@ public interface CommerceAvailabilityEstimatePersistence
 	public int filterCountByCompanyId(long companyId);
 
 	/**
+	 * Returns the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchAvailabilityEstimateException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce availability estimate
+	 * @throws NoSuchAvailabilityEstimateException if a matching commerce availability estimate could not be found
+	 */
+	public CommerceAvailabilityEstimate findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchAvailabilityEstimateException;
+
+	/**
+	 * Returns the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce availability estimate, or <code>null</code> if a matching commerce availability estimate could not be found
+	 */
+	public CommerceAvailabilityEstimate fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache);
+
+	/**
+	 * Removes the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce availability estimate that was removed
+	 */
+	public CommerceAvailabilityEstimate removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchAvailabilityEstimateException;
+
+	/**
+	 * Returns the number of commerce availability estimates where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce availability estimates
+	 */
+	public int countByERC_C(String externalReferenceCode, long companyId);
+
+	/**
 	 * Creates a new commerce availability estimate with the primary key. Does not add the commerce availability estimate to the database.
 	 *
 	 * @param commerceAvailabilityEstimateId the primary key for the new commerce availability estimate
@@ -342,6 +385,19 @@ public interface CommerceAvailabilityEstimatePersistence
 	 */
 	public CommerceAvailabilityEstimate fetchByPrimaryKey(
 		long commerceAvailabilityEstimateId);
+
+	/**
+	 * Returns the commerce availability estimate where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce availability estimate, or <code>null</code> if a matching commerce availability estimate could not be found
+	 */
+	public default CommerceAvailabilityEstimate fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return fetchByERC_C(externalReferenceCode, companyId, true);
+	}
 
 	/**
 	 * Returns all the commerce availability estimates where uuid = &#63;.
@@ -607,4 +663,4 @@ public interface CommerceAvailabilityEstimatePersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:754341257
+// LIFERAY-SERVICE-BUILDER-HASH:-1479959817

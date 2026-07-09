@@ -12,7 +12,7 @@ create index IX_64B9CFFC on CSOptionAccountEntryRel (commerceShippingOptionKey[$
 create unique index IX_9DD3ABD3 on CommerceAddressRestriction (classNameId, classPK, countryId);
 create index IX_AE21488 on CommerceAddressRestriction (countryId);
 
-create index IX_72527224 on CommerceAvailabilityEstimate (companyId);
+create unique index IX_3C615299 on CommerceAvailabilityEstimate (companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_B83AF5B0 on CommerceAvailabilityEstimate (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_12131FC1 on CommerceOrder (billingAddressId);

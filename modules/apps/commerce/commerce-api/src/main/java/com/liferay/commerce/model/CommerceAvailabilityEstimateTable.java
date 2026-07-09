@@ -30,6 +30,10 @@ public class CommerceAvailabilityEstimateTable
 			"mvccVersion", Long.class, Types.BIGINT, Column.FLAG_NULLITY);
 	public final Column<CommerceAvailabilityEstimateTable, String> uuid =
 		createColumn("uuid_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceAvailabilityEstimateTable, String>
+		externalReferenceCode = createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceAvailabilityEstimateTable, Long>
 		commerceAvailabilityEstimateId = createColumn(
 			"commerceAvailabilityEstimateId", Long.class, Types.BIGINT,
@@ -57,6 +61,9 @@ public class CommerceAvailabilityEstimateTable
 		lastPublishDate = createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
+	public final Column<CommerceAvailabilityEstimateTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceAvailabilityEstimateTable() {
 		super(
@@ -65,4 +72,4 @@ public class CommerceAvailabilityEstimateTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1870501601
+// LIFERAY-SERVICE-BUILDER-HASH:-1452020066

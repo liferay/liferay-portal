@@ -73,12 +73,14 @@ public class CommerceAvailabilityEstimateCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", commerceAvailabilityEstimateId=");
 		sb.append(commerceAvailabilityEstimateId);
 		sb.append(", companyId=");
@@ -97,6 +99,8 @@ public class CommerceAvailabilityEstimateCacheModel
 		sb.append(priority);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -114,6 +118,14 @@ public class CommerceAvailabilityEstimateCacheModel
 		}
 		else {
 			commerceAvailabilityEstimateImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			commerceAvailabilityEstimateImpl.setExternalReferenceCode("");
+		}
+		else {
+			commerceAvailabilityEstimateImpl.setExternalReferenceCode(
+				externalReferenceCode);
 		}
 
 		commerceAvailabilityEstimateImpl.setCommerceAvailabilityEstimateId(
@@ -161,6 +173,8 @@ public class CommerceAvailabilityEstimateCacheModel
 				new Date(lastPublishDate));
 		}
 
+		commerceAvailabilityEstimateImpl.setStatus(status);
+
 		commerceAvailabilityEstimateImpl.resetOriginalValues();
 
 		return commerceAvailabilityEstimateImpl;
@@ -170,6 +184,7 @@ public class CommerceAvailabilityEstimateCacheModel
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		commerceAvailabilityEstimateId = objectInput.readLong();
 
@@ -183,6 +198,8 @@ public class CommerceAvailabilityEstimateCacheModel
 
 		priority = objectInput.readDouble();
 		lastPublishDate = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -194,6 +211,13 @@ public class CommerceAvailabilityEstimateCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(commerceAvailabilityEstimateId);
@@ -221,10 +245,13 @@ public class CommerceAvailabilityEstimateCacheModel
 
 		objectOutput.writeDouble(priority);
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
 	public String uuid;
+	public String externalReferenceCode;
 	public long commerceAvailabilityEstimateId;
 	public long companyId;
 	public long userId;
@@ -234,6 +261,7 @@ public class CommerceAvailabilityEstimateCacheModel
 	public String title;
 	public double priority;
 	public long lastPublishDate;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-935368080
+// LIFERAY-SERVICE-BUILDER-HASH:2011772083

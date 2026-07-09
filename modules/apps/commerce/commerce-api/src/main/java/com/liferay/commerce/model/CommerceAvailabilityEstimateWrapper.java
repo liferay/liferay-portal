@@ -39,6 +39,7 @@ public class CommerceAvailabilityEstimateWrapper
 
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put(
 			"commerceAvailabilityEstimateId",
 			getCommerceAvailabilityEstimateId());
@@ -50,6 +51,7 @@ public class CommerceAvailabilityEstimateWrapper
 		attributes.put("title", getTitle());
 		attributes.put("priority", getPriority());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -66,6 +68,13 @@ public class CommerceAvailabilityEstimateWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long commerceAvailabilityEstimateId = (Long)attributes.get(
@@ -122,6 +131,12 @@ public class CommerceAvailabilityEstimateWrapper
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
 		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
+		}
 	}
 
 	@Override
@@ -167,6 +182,16 @@ public class CommerceAvailabilityEstimateWrapper
 	@Override
 	public String getDefaultLanguageId() {
 		return model.getDefaultLanguageId();
+	}
+
+	/**
+	 * Returns the external reference code of this commerce availability estimate.
+	 *
+	 * @return the external reference code of this commerce availability estimate
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
 	}
 
 	/**
@@ -217,6 +242,16 @@ public class CommerceAvailabilityEstimateWrapper
 	@Override
 	public double getPriority() {
 		return model.getPriority();
+	}
+
+	/**
+	 * Returns the status of this commerce availability estimate.
+	 *
+	 * @return the status of this commerce availability estimate
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -388,6 +423,16 @@ public class CommerceAvailabilityEstimateWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this commerce availability estimate.
+	 *
+	 * @param externalReferenceCode the external reference code of this commerce availability estimate
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets the last publish date of this commerce availability estimate.
 	 *
 	 * @param lastPublishDate the last publish date of this commerce availability estimate
@@ -435,6 +480,16 @@ public class CommerceAvailabilityEstimateWrapper
 	@Override
 	public void setPriority(double priority) {
 		model.setPriority(priority);
+	}
+
+	/**
+	 * Sets the status of this commerce availability estimate.
+	 *
+	 * @param status the status of this commerce availability estimate
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
 	}
 
 	/**
@@ -560,4 +615,4 @@ public class CommerceAvailabilityEstimateWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:230668399
+// LIFERAY-SERVICE-BUILDER-HASH:-1775784551

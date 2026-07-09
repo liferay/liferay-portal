@@ -267,6 +267,16 @@ public class CommerceAvailabilityEstimateLocalServiceWrapper
 			fetchCommerceAvailabilityEstimate(commerceAvailabilityEstimateId);
 	}
 
+	@Override
+	public com.liferay.commerce.model.CommerceAvailabilityEstimate
+		fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return _commerceAvailabilityEstimateLocalService.
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the commerce availability estimate with the matching UUID and company.
 	 *
@@ -306,6 +316,17 @@ public class CommerceAvailabilityEstimateLocalServiceWrapper
 
 		return _commerceAvailabilityEstimateLocalService.
 			getCommerceAvailabilityEstimate(commerceAvailabilityEstimateId);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceAvailabilityEstimate
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceAvailabilityEstimateLocalService.
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -475,4 +496,4 @@ public class CommerceAvailabilityEstimateLocalServiceWrapper
 		_commerceAvailabilityEstimateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-44610525
+// LIFERAY-SERVICE-BUILDER-HASH:963386869

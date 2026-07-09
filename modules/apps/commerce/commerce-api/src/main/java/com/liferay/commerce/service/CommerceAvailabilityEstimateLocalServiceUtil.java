@@ -236,6 +236,15 @@ public class CommerceAvailabilityEstimateLocalServiceUtil {
 			commerceAvailabilityEstimateId);
 	}
 
+	public static CommerceAvailabilityEstimate
+		fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return getService().
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the commerce availability estimate with the matching UUID and company.
 	 *
@@ -270,6 +279,16 @@ public class CommerceAvailabilityEstimateLocalServiceUtil {
 
 		return getService().getCommerceAvailabilityEstimate(
 			commerceAvailabilityEstimateId);
+	}
+
+	public static CommerceAvailabilityEstimate
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().
+			getCommerceAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -400,4 +419,4 @@ public class CommerceAvailabilityEstimateLocalServiceUtil {
 			CommerceAvailabilityEstimateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1548296548
+// LIFERAY-SERVICE-BUILDER-HASH:145088642

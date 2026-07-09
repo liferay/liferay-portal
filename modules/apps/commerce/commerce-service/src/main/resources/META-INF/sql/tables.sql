@@ -68,6 +68,7 @@ create table CommerceAddressRestriction (
 create table CommerceAvailabilityEstimate (
 	mvccVersion LONG default 0 not null,
 	uuid_ VARCHAR(75) null,
+	externalReferenceCode VARCHAR(75) null,
 	commerceAvailabilityEstimateId LONG not null primary key,
 	companyId LONG,
 	userId LONG,
@@ -76,7 +77,8 @@ create table CommerceAvailabilityEstimate (
 	modifiedDate DATE null,
 	title STRING null,
 	priority DOUBLE,
-	lastPublishDate DATE null
+	lastPublishDate DATE null,
+	status INTEGER
 );
 
 create table CommerceOrder (

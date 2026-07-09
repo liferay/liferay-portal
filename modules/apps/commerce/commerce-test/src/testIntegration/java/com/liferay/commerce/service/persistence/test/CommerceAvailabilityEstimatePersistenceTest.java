@@ -6,6 +6,7 @@
 package com.liferay.commerce.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.exception.DuplicateCommerceAvailabilityEstimateExternalReferenceCodeException;
 import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalServiceUtil;
@@ -17,7 +18,9 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -119,6 +122,9 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 
 		newCommerceAvailabilityEstimate.setUuid(RandomTestUtil.randomString());
 
+		newCommerceAvailabilityEstimate.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newCommerceAvailabilityEstimate.setCompanyId(RandomTestUtil.nextLong());
 
 		newCommerceAvailabilityEstimate.setUserId(RandomTestUtil.nextLong());
@@ -140,6 +146,8 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 		newCommerceAvailabilityEstimate.setLastPublishDate(
 			RandomTestUtil.nextDate());
 
+		newCommerceAvailabilityEstimate.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceAvailabilityEstimate = _persistence.update(
 			newCommerceAvailabilityEstimate);
 
@@ -155,6 +163,9 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 		Assert.assertEquals(
 			existingCommerceAvailabilityEstimate.getUuid(),
 			newCommerceAvailabilityEstimate.getUuid());
+		Assert.assertEquals(
+			existingCommerceAvailabilityEstimate.getExternalReferenceCode(),
+			newCommerceAvailabilityEstimate.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingCommerceAvailabilityEstimate.
 				getCommerceAvailabilityEstimateId(),
@@ -190,6 +201,35 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 				existingCommerceAvailabilityEstimate.getLastPublishDate()),
 			Time.getShortTimestamp(
 				newCommerceAvailabilityEstimate.getLastPublishDate()));
+		Assert.assertEquals(
+			existingCommerceAvailabilityEstimate.getStatus(),
+			newCommerceAvailabilityEstimate.getStatus());
+	}
+
+	@Test(
+		expected = DuplicateCommerceAvailabilityEstimateExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			addCommerceAvailabilityEstimate();
+
+		CommerceAvailabilityEstimate newCommerceAvailabilityEstimate =
+			addCommerceAvailabilityEstimate();
+
+		newCommerceAvailabilityEstimate.setCompanyId(
+			commerceAvailabilityEstimate.getCompanyId());
+
+		newCommerceAvailabilityEstimate = _persistence.update(
+			newCommerceAvailabilityEstimate);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newCommerceAvailabilityEstimate);
+
+		newCommerceAvailabilityEstimate.setExternalReferenceCode(
+			commerceAvailabilityEstimate.getExternalReferenceCode());
+
+		_persistence.update(newCommerceAvailabilityEstimate);
 	}
 
 	@Test
@@ -215,6 +255,15 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 		_persistence.countByCompanyId(RandomTestUtil.nextLong());
 
 		_persistence.countByCompanyId(0L);
+	}
+
+	@Test
+	public void testCountByERC_C() throws Exception {
+		_persistence.countByERC_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C("null", 0L);
+
+		_persistence.countByERC_C((String)null, 0L);
 	}
 
 	@Test
@@ -249,9 +298,10 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 
 		return OrderByComparatorFactoryUtil.create(
 			"CommerceAvailabilityEstimate", "mvccVersion", true, "uuid", true,
-			"commerceAvailabilityEstimateId", true, "companyId", true, "userId",
-			true, "userName", true, "createDate", true, "modifiedDate", true,
-			"title", true, "priority", true, "lastPublishDate", true);
+			"externalReferenceCode", true, "commerceAvailabilityEstimateId",
+			true, "companyId", true, "userId", true, "userName", true,
+			"createDate", true, "modifiedDate", true, "title", true, "priority",
+			true, "lastPublishDate", true, "status", true);
 	}
 
 	@Test
@@ -501,6 +551,76 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		CommerceAvailabilityEstimate newCommerceAvailabilityEstimate =
+			addCommerceAvailabilityEstimate();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(
+				newCommerceAvailabilityEstimate.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		CommerceAvailabilityEstimate newCommerceAvailabilityEstimate =
+			addCommerceAvailabilityEstimate();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			CommerceAvailabilityEstimate.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"commerceAvailabilityEstimateId",
+				newCommerceAvailabilityEstimate.
+					getCommerceAvailabilityEstimateId()));
+
+		List<CommerceAvailabilityEstimate> result =
+			_persistence.findWithDynamicQuery(dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate) {
+
+		Assert.assertEquals(
+			commerceAvailabilityEstimate.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				commerceAvailabilityEstimate, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(commerceAvailabilityEstimate.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				commerceAvailabilityEstimate, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+	}
+
 	protected CommerceAvailabilityEstimate addCommerceAvailabilityEstimate()
 		throws Exception {
 
@@ -510,6 +630,9 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 			_persistence.create(pk);
 
 		commerceAvailabilityEstimate.setUuid(RandomTestUtil.randomString());
+
+		commerceAvailabilityEstimate.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		commerceAvailabilityEstimate.setCompanyId(RandomTestUtil.nextLong());
 
@@ -528,6 +651,8 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 		commerceAvailabilityEstimate.setLastPublishDate(
 			RandomTestUtil.nextDate());
 
+		commerceAvailabilityEstimate.setStatus(RandomTestUtil.nextInt());
+
 		_commerceAvailabilityEstimates.add(
 			_persistence.update(commerceAvailabilityEstimate));
 
@@ -540,4 +665,4 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1002093147
+// LIFERAY-SERVICE-BUILDER-HASH:-1263925719
