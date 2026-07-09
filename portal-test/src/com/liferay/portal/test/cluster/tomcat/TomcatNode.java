@@ -198,6 +198,8 @@ public class TomcatNode {
 
 		builder.setBootstrapClassPath(_buildBoostrapClassPath());
 		builder.setEnvironment(System.getenv());
+		builder.setJavaExecutable(
+			System.getProperty("java.home") + "/bin/java");
 		builder.setReactClassLoader(PortalClassLoaderUtil.getClassLoader());
 		builder.setRuntimeClassPath(runtimeClassPath);
 
