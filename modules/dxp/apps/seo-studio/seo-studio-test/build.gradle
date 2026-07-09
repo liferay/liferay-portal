@@ -1,6 +1,12 @@
 dependencies {
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:ai-hub-cell:ai-hub-cell-api")
+	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
+	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":apps:object:object-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testIntegrationImplementation project(":apps:site:site-api")
+	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
