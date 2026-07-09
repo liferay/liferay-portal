@@ -108,18 +108,15 @@ public class AccountEntryValidatorResultManagerTest {
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
 					_accountEntry, 0, className, classPK));
-
 		Assert.assertNull(
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
 					_accountEntry, 30, RandomTestUtil.randomString(), classPK));
-
 		Assert.assertNull(
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
 					_accountEntry, 30, className,
 					RandomTestUtil.randomString()));
-
 		AccountEntryValidatorResult accountEntryValidatorResult =
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
