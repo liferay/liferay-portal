@@ -13,6 +13,7 @@ import {
 import {BlockQuote} from '@ckeditor/ckeditor5-block-quote/dist/index.js';
 import {EditorConfig} from '@ckeditor/ckeditor5-core/dist/index.js';
 import {Essentials} from '@ckeditor/ckeditor5-essentials/dist/index.js';
+import {FindAndReplace} from '@ckeditor/ckeditor5-find-and-replace/dist/index.js';
 import {Font} from '@ckeditor/ckeditor5-font/dist/index.js';
 import {Heading} from '@ckeditor/ckeditor5-heading/dist/index.js';
 import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line/dist/index.js';
@@ -131,6 +132,7 @@ const getDefaultEditorConfig = ({
 		...basicPlugins,
 		Alignment,
 		BlockQuote,
+		FindAndReplace,
 		Font,
 		Heading,
 		HeadlessItemSelector,
@@ -170,6 +172,7 @@ const getDefaultEditorConfig = ({
 		'|',
 		'undo',
 		'redo',
+		'findAndReplace',
 		'|',
 		'style',
 		'|',
