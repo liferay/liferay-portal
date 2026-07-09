@@ -9,7 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
@@ -17,7 +17,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -38,7 +38,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.File;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.junit.After;
@@ -67,10 +66,12 @@ public class DepotExportImportTest {
 	@Before
 	public void setUp() throws Exception {
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
@@ -96,7 +97,7 @@ public class DepotExportImportTest {
 		_import(_group.getGroupId(), _larFile);
 
 		FileEntry importedFileEntry =
-			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
 				fileEntry.getUuid(), _group.getGroupId());
 
 		Assert.assertEquals(fileEntry.getTitle(), importedFileEntry.getTitle());
@@ -115,7 +116,7 @@ public class DepotExportImportTest {
 		_import(_group.getGroupId(), _larFile);
 
 		JournalArticle importedJournalArticle =
-			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+			_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
 				journalArticle.getUuid(), _group.getGroupId());
 
 		Assert.assertEquals(
@@ -131,7 +132,7 @@ public class DepotExportImportTest {
 		_import(_depotGroup.getGroupId(), _larFile);
 
 		FileEntry importedFileEntry =
-			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
 				fileEntry.getUuid(), _depotGroup.getGroupId());
 
 		Assert.assertEquals(fileEntry.getTitle(), importedFileEntry.getTitle());
@@ -150,7 +151,7 @@ public class DepotExportImportTest {
 		_import(_depotGroup.getGroupId(), _larFile);
 
 		JournalArticle importedJournalArticle =
-			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+			_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
 				journalArticle.getUuid(), _depotGroup.getGroupId());
 
 		Assert.assertEquals(
@@ -219,6 +220,9 @@ public class DepotExportImportTest {
 	private Group _depotGroup;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private ExportImportConfigurationLocalService
 		_exportImportConfigurationLocalService;
 
@@ -227,6 +231,9 @@ public class DepotExportImportTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	private File _larFile;
 
