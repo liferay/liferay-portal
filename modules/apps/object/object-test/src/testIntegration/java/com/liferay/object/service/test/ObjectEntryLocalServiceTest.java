@@ -1639,13 +1639,23 @@ public class ObjectEntryLocalServiceTest {
 			MapUtil.getLong(objectEntry.getValues(), objectField1.getName()),
 			StringPool.BLANK, 0);
 
+		long cmsBasicDocumentFileEntryId = MapUtil.getLong(
+			cmsBasicDocumentObjectEntry.getValues(), "file");
+
+		DLFileEntry cmsBasicDocumentDLFileEntry =
+			_dlFileEntryLocalService.getFileEntry(cmsBasicDocumentFileEntryId);
+
 		objectEntry = _addObjectEntry(
-			MapUtil.getLong(cmsBasicDocumentObjectEntry.getValues(), "file"),
-			objectField2.getName());
+			cmsBasicDocumentFileEntryId, objectField2.getName());
+
+		Assert.assertEquals(
+			cmsBasicDocumentFileEntryId,
+			MapUtil.getLong(objectEntry.getValues(), objectField2.getName()));
 
 		_assertDLFileEntry(
-			MapUtil.getLong(objectEntry.getValues(), objectField2.getName()),
-			_objectDefinition.getClassName(), objectEntry.getObjectEntryId());
+			cmsBasicDocumentFileEntryId,
+			cmsBasicDocumentDLFileEntry.getClassName(),
+			cmsBasicDocumentDLFileEntry.getClassPK());
 	}
 
 	@Test
@@ -7593,6 +7603,63 @@ public class ObjectEntryLocalServiceTest {
 
 	@FeatureFlag("LPD-17564")
 	@Test
+	public void testUpdateObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		ObjectEntry cmsBasicDocumentObjectEntry =
+			_addCMSBasicDocumentObjectEntry();
+
+		long cmsBasicDocumentFileEntryId = MapUtil.getLong(
+			cmsBasicDocumentObjectEntry.getValues(), "file");
+
+		DLFileEntry cmsBasicDocumentDLFileEntry =
+			_dlFileEntryLocalService.getFileEntry(cmsBasicDocumentFileEntryId);
+
+		ObjectField objectField = _addAttachmentObjectField(
+			ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			cmsBasicDocumentFileEntryId, objectField.getName());
+
+		Assert.assertEquals(
+			cmsBasicDocumentFileEntryId,
+			MapUtil.getLong(objectEntry.getValues(), objectField.getName()));
+
+		for (int i = 0; i < 2; i++) {
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.putAll(
+					_objectEntryLocalService.getValues(objectEntry)
+				).put(
+					objectField.getName(), 0L
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.putAll(
+					_objectEntryLocalService.getValues(objectEntry)
+				).put(
+					objectField.getName(), cmsBasicDocumentFileEntryId
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.assertEquals(
+				cmsBasicDocumentFileEntryId,
+				MapUtil.getLong(
+					objectEntry.getValues(), objectField.getName()));
+		}
+
+		_assertDLFileEntry(
+			cmsBasicDocumentFileEntryId,
+			cmsBasicDocumentDLFileEntry.getClassName(),
+			cmsBasicDocumentDLFileEntry.getClassPK());
+	}
+
+	@FeatureFlag("LPD-17564")
+	@Test
 	public void testUpdateObjectEntryWithAttachmentObjectFieldAndEnableObjectEntryVersioning()
 		throws Exception {
 
@@ -8405,8 +8472,7 @@ public class ObjectEntryLocalServiceTest {
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
+			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
 
 		ObjectDefinition objectDefinition =
