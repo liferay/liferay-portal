@@ -73,7 +73,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
             class="subtitle"
           >
             <span
-              class="text-4 text-secondary"
+              class="text-3 text-secondary"
             />
           </div>
         </div>
