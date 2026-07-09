@@ -182,58 +182,63 @@ export default function ElementVariationForm({
 					</Picker>
 				</ClayForm.Group>
 
-				<ClayForm.Group small>
-					<label htmlFor={audienceId}>
-						{Liferay.Language.get('audience')}
-
-						<ClayIcon
-							className="mr-1 reference-mark"
-							symbol="asterisk"
-						/>
-					</label>
-
-					<ClayMultiSelect
-						id={audienceId}
-						items={audiences.filter((audience) =>
-							elementVariation.audienceEntryERCs.includes(
-								audience.value
-							)
-						)}
-						onItemsChange={(
-							items: Array<{label: string; value: string}>
-						) => {
-							const existingAudiences = items
-								.map((item) =>
-									audiences.find(
-										(audience) =>
-											audience.value === item.value
-									)
-								)
-								.filter(
-									(
-										audience
-									): audience is {
-										label: string;
-										value: string;
-									} => Boolean(audience)
-								);
-
-							onChange({
-								audienceEntryERCs: existingAudiences.map(
-									(audience) => audience.value
-								),
-							});
-						}}
-						sourceItems={audiences}
-					/>
-				</ClayForm.Group>
-
 				{elementVariation.targetElement ? (
 					<>
-						<ClayForm.Group>
+						<ClayForm.Group small>
+							<label htmlFor={audienceId}>
+								{Liferay.Language.get('audience')}
+
+								<ClayIcon
+									className="mr-1 reference-mark"
+									symbol="asterisk"
+								/>
+							</label>
+
+							<ClayMultiSelect
+								id={audienceId}
+								items={audiences.filter((audience) =>
+									elementVariation.audienceEntryERCs.includes(
+										audience.value
+									)
+								)}
+								onItemsChange={(
+									items: Array<{
+										label: string;
+										value: string;
+									}>
+								) => {
+									const existingAudiences = items
+										.map((item) =>
+											audiences.find(
+												(audience) =>
+													audience.value ===
+													item.value
+											)
+										)
+										.filter(
+											(
+												audience
+											): audience is {
+												label: string;
+												value: string;
+											} => Boolean(audience)
+										);
+
+									onChange({
+										audienceEntryERCs:
+											existingAudiences.map(
+												(audience) => audience.value
+											),
+									});
+								}}
+								sourceItems={audiences}
+							/>
+						</ClayForm.Group>
+
+						<ClayForm.Group className="my-4">
 							<ClayToggle
 								label={Liferay.Language.get(
-									'hide-element-for-this-audience'
+									'hide-page-element'
 								)}
 								onToggle={(hide) => {
 									const properties: Partial<ElementVariationFormData> =

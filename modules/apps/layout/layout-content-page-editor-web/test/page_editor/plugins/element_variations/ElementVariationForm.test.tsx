@@ -69,22 +69,22 @@ describe('ElementVariationForm', () => {
 		jest.clearAllMocks();
 	});
 
-	it('hides the toggle and the html and js fields until a page element is selected', () => {
+	it('hides the audience selector, the toggle, and the html and js fields until a page element is selected', () => {
 		renderForm({targetElement: ''});
 
+		expect(screen.queryByLabelText('audience')).not.toBeInTheDocument();
 		expect(
-			screen.queryByLabelText('hide-element-for-this-audience')
+			screen.queryByLabelText('hide-page-element')
 		).not.toBeInTheDocument();
 		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
 		expect(screen.queryByLabelText('javascript')).not.toBeInTheDocument();
 	});
 
-	it('shows the toggle and the html and js fields once a page element is selected', () => {
+	it('shows the audience selector, the toggle, and the html and js fields once a page element is selected', () => {
 		renderForm({targetElement: '.title'});
 
-		expect(
-			screen.getByLabelText('hide-element-for-this-audience')
-		).toBeInTheDocument();
+		expect(screen.getByLabelText('audience')).toBeInTheDocument();
+		expect(screen.getByLabelText('hide-page-element')).toBeInTheDocument();
 		expect(screen.getByLabelText('html')).toBeInTheDocument();
 		expect(screen.getByLabelText('javascript')).toBeInTheDocument();
 	});
@@ -92,9 +92,7 @@ describe('ElementVariationForm', () => {
 	it('keeps the toggle but hides the html and js fields while the element is hidden', () => {
 		renderForm({hide: {en_US: true}, targetElement: '.title'});
 
-		expect(
-			screen.getByLabelText('hide-element-for-this-audience')
-		).toBeChecked();
+		expect(screen.getByLabelText('hide-page-element')).toBeChecked();
 		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
 		expect(screen.queryByLabelText('javascript')).not.toBeInTheDocument();
 	});
@@ -106,9 +104,7 @@ describe('ElementVariationForm', () => {
 			targetElement: '.title',
 		});
 
-		await userEvent.click(
-			screen.getByLabelText('hide-element-for-this-audience')
-		);
+		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
 		expect(onChange).toHaveBeenCalledWith({
 			hide: {en_US: true},
@@ -125,9 +121,7 @@ describe('ElementVariationForm', () => {
 			targetElement: '.title',
 		});
 
-		await userEvent.click(
-			screen.getByLabelText('hide-element-for-this-audience')
-		);
+		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
 		expect(onChange).toHaveBeenCalledWith({hide: {en_US: false}});
 	});
