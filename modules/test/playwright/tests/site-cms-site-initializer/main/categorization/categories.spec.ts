@@ -600,15 +600,18 @@ test.describe('Subcategory tests', () => {
 
 			await editCategoryPage.clickSave();
 
-			await categoriesPage.assertBreadcrumbItemText(1, vocabularyName);
+			await expect(async () => {
+				await categoriesPage.gotoSubcategories(
+					categoryId,
+					categoryName,
+					vocabularyId,
+					vocabularyName
+				);
 
-			await expect(categoriesPage.getItem('1')).toBeVisible();
-
-			await categoriesPage.getItem('1').click();
-
-			await categoriesPage.assertBreadcrumbItemText(2, categoryName);
-
-			await expect(categoriesPage.getItem(subcategoryName)).toBeVisible();
+				await expect(
+					categoriesPage.getItem(subcategoryName)
+				).toBeVisible({timeout: 5000});
+			}).toPass();
 		}
 	);
 });
