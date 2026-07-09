@@ -214,7 +214,7 @@ export default function UnscheduledTasksPanel({
 							);
 						})}
 					</ClayList>
-				) : (
+				) : tasks.length ? (
 					<ClayEmptyState
 						description={Liferay.Language.get(
 							'review-your-search-and-try-again'
@@ -232,6 +232,13 @@ export default function UnscheduledTasksPanel({
 							{Liferay.Language.get('clear-search')}
 						</ClayButton>
 					</ClayEmptyState>
+				) : (
+					<ClayEmptyState
+						description=""
+						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cmp_empty_state_tasks.svg`}
+						small
+						title={Liferay.Language.get('no-unscheduled-tasks')}
+					/>
 				)}
 			</SidePanel.Body>
 		</SidePanel>

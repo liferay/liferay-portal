@@ -202,8 +202,9 @@ describe('UnscheduledTasksPanel', () => {
 	});
 
 	it('shows the empty state when there are no unscheduled tasks', () => {
-		const {getByText} = renderUnscheduledTasksPanel([]);
+		const {getByText, queryByText} = renderUnscheduledTasksPanel([]);
 
-		expect(getByText('no-results-found')).toBeInTheDocument();
+		expect(getByText('no-unscheduled-tasks')).toBeInTheDocument();
+		expect(queryByText('clear-search')).not.toBeInTheDocument();
 	});
 });
