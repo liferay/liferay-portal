@@ -7,6 +7,28 @@ templates:
 tests:
     -   asserts:
             -   equal:
+                    path: spec.forceDestroy
+                    value: false
+            -   equal:
+                    path: spec.orphanOnDelete
+                    value: false
+        it: Defaults force destroy and orphan on delete to false
+        set:
+            overlay.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.commonTags.project_id
+                    value: proj-456
+            -   equal:
+                    path: spec.commonTags.team
+                    value: platform
+        it: Merges the project identifier with the overlay common tags
+        set:
+            overlay.commonTags.team: platform
+            overlay.enabled: true
+            projectId: proj-456
+    -   asserts:
+            -   equal:
                     path: apiVersion
                     value: gcp.liferay.com/v1alpha1
             -   equal:
@@ -30,16 +52,6 @@ tests:
             overlay.enabled: false
     -   asserts:
             -   equal:
-                    path: spec.forceDestroy
-                    value: false
-            -   equal:
-                    path: spec.orphanOnDelete
-                    value: false
-        it: Defaults force destroy and orphan on delete to false
-        set:
-            overlay.enabled: true
-    -   asserts:
-            -   equal:
                     path: spec.projectId
                     value: proj-456
             -   equal:
@@ -50,18 +62,6 @@ tests:
             overlay.enabled: true
             projectId: proj-456
             region: us-central1
-    -   asserts:
-            -   equal:
-                    path: spec.commonTags.project_id
-                    value: proj-456
-            -   equal:
-                    path: spec.commonTags.team
-                    value: platform
-        it: Merges the project identifier with the overlay common tags
-        set:
-            overlay.commonTags.team: platform
-            overlay.enabled: true
-            projectId: proj-456
     -   asserts:
             -   equal:
                     path: spec.forceDestroy
