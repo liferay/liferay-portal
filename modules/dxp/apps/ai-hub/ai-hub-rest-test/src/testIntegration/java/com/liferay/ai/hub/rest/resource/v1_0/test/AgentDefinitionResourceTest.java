@@ -982,6 +982,61 @@ public class AgentDefinitionResourceTest
 					active = true;
 					externalReferenceCode =
 						WorkflowDefinitionConstants.
+							EXTERNAL_REFERENCE_CODE_FIND_MATCHING_ASSETS;
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "cmsGroupId";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "funnelStageId";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "keywords";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "personaId";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "portalURL";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "tasks";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "matchingAssets";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName =
+						WorkflowDefinitionConstants.NAME_FIND_MATCHING_ASSETS;
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = true;
+					externalReferenceCode =
+						WorkflowDefinitionConstants.
 							EXTERNAL_REFERENCE_CODE_FIX_SPELLING_AND_GRAMMAR;
 					inputVariables = new Variable[] {
 						new Variable() {
@@ -1001,6 +1056,37 @@ public class AgentDefinitionResourceTest
 					workflowDefinitionName =
 						WorkflowDefinitionConstants.
 							NAME_FIX_SPELLING_AND_GRAMMAR;
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = false;
+					externalReferenceCode =
+						WorkflowDefinitionConstants.
+							EXTERNAL_REFERENCE_CODE_GENERATE_IMAGE;
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "description";
+								type = "string";
+							}
+						},
+						new Variable() {
+							{
+								name = "style";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "imageBase64";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName =
+						WorkflowDefinitionConstants.NAME_GENERATE_IMAGE;
 				}
 			},
 			new AgentDefinition() {
