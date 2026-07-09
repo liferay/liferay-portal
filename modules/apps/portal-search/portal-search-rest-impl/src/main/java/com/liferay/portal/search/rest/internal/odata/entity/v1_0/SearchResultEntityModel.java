@@ -34,6 +34,10 @@ public class SearchResultEntityModel implements EntityModel {
 				new IntegerEntityField("groupIds", locale -> Field.GROUP_ID)),
 			new CollectionEntityField(
 				new IntegerEntityField(
+					"internalTaxonomyCategoryIds",
+					locale -> Field.ASSET_INTERNAL_CATEGORY_IDS)),
+			new CollectionEntityField(
+				new IntegerEntityField(
 					"taxonomyCategoryIds", locale -> "assetCategoryIds")),
 			new CollectionEntityField(
 				new StringEntityField(
