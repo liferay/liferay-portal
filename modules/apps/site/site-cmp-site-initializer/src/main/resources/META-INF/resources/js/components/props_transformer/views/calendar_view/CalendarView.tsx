@@ -19,7 +19,10 @@ import {dateUtils, sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 import {patchTaskById} from '../../../../utils/api';
-import {DEFAULT_TASK_STATE_KEY} from '../../../../utils/constants';
+import {
+	DEFAULT_TASK_STATE_KEY,
+	TASK_DRAGGING_CLASS_NAME,
+} from '../../../../utils/constants';
 import {openCMPModal} from '../../../../utils/openCMPModal';
 import {
 	displayDueDateSuccessToast,
@@ -433,6 +436,12 @@ export default function CalendarView({
 						task={arg.event.extendedProps.task}
 					/>
 				)}
+				eventDragStart={() =>
+					document.body.classList.add(TASK_DRAGGING_CLASS_NAME)
+				}
+				eventDragStop={() =>
+					document.body.classList.remove(TASK_DRAGGING_CLASS_NAME)
+				}
 				eventDrop={async (arg) => {
 					const task = arg.event.extendedProps.task;
 

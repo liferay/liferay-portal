@@ -107,6 +107,10 @@
 		margin-left: 0.25rem;
 	}
 
+	.fc-highlight {
+		border: 1px solid $primary-l0;
+	}
+
 	.fc-theme-standard .fc-scrollgrid {
 		border-left-width: 0;
 		border-right-width: 0;
@@ -161,5 +165,16 @@
 			display: flex;
 			gap: 0.5rem;
 		}
+	}
+}
+
+// Show the grabbing cursor everywhere while a task is dragged, including
+// over the task pills, which set their own cursor.
+
+body.lfr__cmp-task-dragging {
+	cursor: grabbing;
+
+	.fc-event {
+		cursor: grabbing;
 	}
 }

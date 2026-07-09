@@ -24,7 +24,10 @@ jest.mock('@clayui/drop-down', () => ({
 }));
 
 jest.mock('@fullcalendar/interaction', () => ({
-	Draggable: jest.fn(() => ({destroy: jest.fn()})),
+	Draggable: jest.fn(() => ({
+		destroy: jest.fn(),
+		dragging: {emitter: {off: jest.fn(), on: jest.fn()}},
+	})),
 }));
 
 jest.mock('@clayui/core', () => {

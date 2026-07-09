@@ -30,6 +30,7 @@ $cms-tab-navigation-height: 48px;
 
 		.list-group-item {
 			align-items: center;
+			cursor: grab;
 		}
 	}
 
@@ -39,13 +40,30 @@ $cms-tab-navigation-height: 48px;
 	}
 }
 
-// While a row is dragged, FullCalendar appends a clone of it to the body,
-// outside the panel's list, so the clone styles itself as a standalone card.
+// The row left in the list fades while its clone is dragged. The clone
+// carries the dragging class too, so leave it out here.
 
-.lfr__cmp-unscheduled-tasks-panel-item.fc-event-dragging {
+.lfr__cmp-unscheduled-tasks-panel-item-dragging:not(.fc-event-dragging) {
+	opacity: 0.5;
+}
+
+// Style the dragged clone as a standalone card. FullCalendar moves it onto
+// the page body, outside the panel list, so it keeps none of the list styling.
+// The :not() matches FullCalendar's own .fc-event-dragging:not(.fc-event-selected)
+// rule so this selector outweighs it and the card stays fully opaque.
+
+.lfr__cmp-unscheduled-tasks-panel-item.fc-event-dragging:not(
+		.fc-event-selected
+	) {
 	background-color: $white;
-	border: 1px solid $border-color;
+	border: 1px solid $primary-l0;
 	border-radius: $border-radius;
-	box-shadow: $box-shadow-sm;
+	box-shadow: $box-shadow;
 	list-style: none;
+	opacity: 1;
+	transform: scale(0.75);
+}
+
+body.lfr__cmp-task-dragging .lfr__cmp-unscheduled-tasks-panel-item {
+	cursor: grabbing;
 }
