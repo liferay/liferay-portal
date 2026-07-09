@@ -88,13 +88,13 @@ public class MCPServerProfileObjectEntryModelListener
 
 		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 
-		for (ObjectEntry profileDataMaskObjectEntry :
+		for (ObjectEntry mcpServerProfileDataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
 					0, objectDefinition.getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			Map<String, Serializable> values =
-				profileDataMaskObjectEntry.getValues();
+				mcpServerProfileDataMaskObjectEntry.getValues();
 
 			if (!Objects.equals(
 					externalReferenceCode,
@@ -112,22 +112,24 @@ public class MCPServerProfileObjectEntryModelListener
 					).build();
 
 				_objectEntryLocalService.updateObjectEntry(
-					profileDataMaskObjectEntry.getUserId(),
-					profileDataMaskObjectEntry.getObjectEntryId(),
-					profileDataMaskObjectEntry.getObjectEntryFolderId(),
+					mcpServerProfileDataMaskObjectEntry.getUserId(),
+					mcpServerProfileDataMaskObjectEntry.getObjectEntryId(),
+					mcpServerProfileDataMaskObjectEntry.
+						getObjectEntryFolderId(),
 					newValues, new ServiceContext());
 
-				profileDataMaskObjectEntry.setValues(newValues);
+				mcpServerProfileDataMaskObjectEntry.setValues(newValues);
 
 				_objectEntryLocalService.deleteObjectEntry(
-					profileDataMaskObjectEntry);
+					mcpServerProfileDataMaskObjectEntry);
 			}
 			catch (PortalException portalException) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						StringBundler.concat(
 							"Unable to delete profile data mask ",
-							profileDataMaskObjectEntry.getObjectEntryId(),
+							mcpServerProfileDataMaskObjectEntry.
+								getObjectEntryId(),
 							" for profile ", externalReferenceCode),
 						portalException);
 				}
