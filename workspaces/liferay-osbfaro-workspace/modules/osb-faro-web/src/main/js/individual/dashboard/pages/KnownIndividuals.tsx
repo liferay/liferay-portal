@@ -21,7 +21,7 @@ import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {individualsListColumns} from 'shared/util/table-columns';
 import {isNil} from 'lodash';
-import {ProfileTypes} from 'segment/segment-editor/dynamic/utils/constants';
+import {IndividualTypes} from 'segment/segment-editor/dynamic/utils/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -169,9 +169,9 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = () => {
 			channelId,
 			delta,
 			groupId,
+			individualTypes: [IndividualTypes.KNOWN],
 			orderIOMap,
 			page,
-			profileTypes: [ProfileTypes.KNOWN],
 			query,
 			rangeKey: RangeKeyTimeRanges.LastYear,
 		},

@@ -2,12 +2,12 @@ import AccountName from 'shared/components/table/cell-components/AccountName';
 import Checkbox from 'shared/components/Checkbox';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
+import IndividualType from 'shared/components/table/cell-components/IndividualTypes';
 import InfoPopover from 'shared/components/InfoPopover';
 import Label from 'shared/components/Label';
 import MemberCell from 'shared/components/table/cell-components/MemberCell';
 import MembershipChanges from 'shared/components/table/cell-components/MembershipChanges';
 import moment from 'moment';
-import ProfileType from 'shared/components/table/cell-components/ProfileTypes';
 import React from 'react';
 import SegmentSticker from 'segment/components/SegmentSticker';
 import SequentialEventOrderPopover from 'shared/components/SequentialEventOrderPopover';
@@ -272,7 +272,7 @@ export const membershipChangesColumns = {
 	},
 	profileType: {
 		accessor: 'profileType',
-		cellRenderer: ProfileType,
+		cellRenderer: IndividualType,
 		label: Liferay.Language.get('profile-type'),
 		sortable: true,
 	},
@@ -364,7 +364,7 @@ export const IndividualsListCDPColumns = {
 	},
 	profileType: {
 		accessor: 'profileType',
-		cellRenderer: ProfileType,
+		cellRenderer: IndividualType,
 		label: Liferay.Language.get('profile-type'),
 		sortable: true,
 	},

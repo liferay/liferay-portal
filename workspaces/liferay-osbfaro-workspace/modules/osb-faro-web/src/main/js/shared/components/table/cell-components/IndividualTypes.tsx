@@ -1,26 +1,26 @@
 import getCN from 'classnames';
 import React from 'react';
-import {ProfileTypes} from 'segment/segment-editor/dynamic/utils/constants';
+import {IndividualTypes} from 'segment/segment-editor/dynamic/utils/constants';
 
 interface IMembershipChanges {
 	className?: string;
 	data: {
-		profileType: ProfileTypes;
+		profileType: IndividualTypes;
 	};
 }
 
-const PROFILE_TYPE_LABEL_MAP: Record<ProfileTypes, string> = {
+const INDIVIDUAL_TYPE_LABEL_MAP: Record<IndividualTypes, string> = {
 	ANONYMOUS: Liferay.Language.get('anonymous'),
 	KNOWN: Liferay.Language.get('known'),
 };
 
-const ProfileType: React.FC<IMembershipChanges> = ({
+const IndividualType: React.FC<IMembershipChanges> = ({
 	className,
 	data: {profileType},
 }) => (
 	<td className={getCN('text-capitalize', className)}>
-		{PROFILE_TYPE_LABEL_MAP[profileType]}
+		{INDIVIDUAL_TYPE_LABEL_MAP[profileType]}
 	</td>
 );
 
-export default ProfileType;
+export default IndividualType;

@@ -76,7 +76,7 @@ describe('SegmentGrowthWithList', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(API.individuals.search).toHaveBeenCalledWith(
-			expect.objectContaining({profileTypes: ['KNOWN']})
+			expect.objectContaining({individualTypes: ['KNOWN']})
 		);
 	});
 });

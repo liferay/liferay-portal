@@ -10,13 +10,14 @@ import {
 	COUNTRY,
 	createOrderIOMap,
 	FIRST_ACTIVITY_DATE,
+	INDIVIDUAL_TYPE,
 	LAST_ACTIVITY_DATE,
 	NAME,
-	PROFILE_TYPE,
 } from 'shared/util/pagination';
 import {
+	AccountTypes,
 	Conjunctions,
-	ProfileTypes,
+	IndividualTypes,
 	RelationalOperators,
 } from 'segment/segment-editor/dynamic/utils/constants';
 import {FilterByType, FilterInputType, FilterOptionType} from 'shared/types';
@@ -51,8 +52,8 @@ const ORDER_BY_OPTIONS = [
 		value: LAST_ACTIVITY_DATE,
 	},
 	{
-		label: Liferay.Language.get('profile-type'),
-		value: PROFILE_TYPE,
+		label: Liferay.Language.get('individual-type'),
+		value: INDIVIDUAL_TYPE,
 	},
 ];
 
@@ -97,16 +98,30 @@ const DEFAULT_FILTER_BY_OPTIONS: FilterOptionType[] = [
 		],
 	},
 	{
-		key: 'profileTypes',
-		label: Liferay.Language.get('profile-type'),
+		key: 'individualTypes',
+		label: Liferay.Language.get('individual-type'),
 		values: [
 			{
-				label: Liferay.Language.get('known'),
-				value: ProfileTypes.KNOWN,
+				label: Liferay.Language.get('known-individuals'),
+				value: IndividualTypes.KNOWN,
 			},
 			{
-				label: Liferay.Language.get('anonymous'),
-				value: ProfileTypes.ANONYMOUS,
+				label: Liferay.Language.get('anonymous-individuals'),
+				value: IndividualTypes.ANONYMOUS,
+			},
+		],
+	},
+	{
+		key: 'accountTypes',
+		label: Liferay.Language.get('account-type'),
+		values: [
+			{
+				label: Liferay.Language.get('known-accounts'),
+				value: AccountTypes.KNOWN,
+			},
+			{
+				label: Liferay.Language.get('unknown-accounts'),
+				value: AccountTypes.UNKNOWN,
 			},
 		],
 	},
@@ -134,7 +149,7 @@ const IndividualsList: React.FC = () => {
 	const paginationParams = useStatefulPagination(undefined, {
 		initialFilterBy: Map({
 			activeUsers: Set([RangeKeyTimeRanges.Last30Days]),
-			profileTypes: Set([ProfileTypes.KNOWN]),
+			individualTypes: Set([IndividualTypes.KNOWN]),
 		}) as FilterByType,
 		initialOrderIOMap: createOrderIOMap(LAST_ACTIVITY_DATE),
 	});
@@ -175,11 +190,13 @@ const IndividualsList: React.FC = () => {
 	const rangeKey = activeUsersValue ? parseInt(activeUsersValue) : null;
 
 	const selectedFilters = {
+		accountTypes:
+			paginationParams.filterBy.get('accountTypes')?.toArray() || [],
 		filter: transformCountriesInQueryString(
 			paginationParams.filterBy.get('countries')?.toArray()
 		),
-		profileTypes:
-			paginationParams.filterBy.get('profileTypes')?.toArray() || [],
+		individualTypes:
+			paginationParams.filterBy.get('individualTypes')?.toArray() || [],
 	};
 
 	const renderNoResults = () => (
@@ -236,11 +253,15 @@ const IndividualsList: React.FC = () => {
 						]}
 						dataSourceFn={API.individuals.search}
 						dataSourceParams={{
+							accountTypes: selectedFilters.accountTypes.length
+								? selectedFilters.accountTypes
+								: undefined,
 							channelId,
 							filter: selectedFilters.filter,
 							groupId,
-							profileTypes: selectedFilters.profileTypes.length
-								? selectedFilters.profileTypes
+							individualTypes: selectedFilters.individualTypes
+								.length
+								? selectedFilters.individualTypes
 								: undefined,
 							rangeEnd: null,
 							rangeKey,

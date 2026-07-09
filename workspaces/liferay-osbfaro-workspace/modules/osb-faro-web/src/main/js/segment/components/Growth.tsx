@@ -46,7 +46,7 @@ import {INDIVIDUALS} from 'shared/util/router';
 import {OrderByDirections, RangeKeyTimeRanges} from 'shared/util/constants';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
-import {ProfileTypes} from 'segment/segment-editor/dynamic/utils/constants';
+import {IndividualTypes} from 'segment/segment-editor/dynamic/utils/constants';
 import {sub} from 'shared/util/lang';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
@@ -63,10 +63,10 @@ type Data = {
 	delta: number;
 	groupId: string;
 	id: string;
+	individualTypes?: string[];
 	modifiedDate: string;
 	orderIOMap: string;
 	page: number;
-	profileTypes?: string[];
 	query: string;
 };
 
@@ -85,9 +85,9 @@ const getAllMembers = (data: Data) => {
 		delta,
 		groupId,
 		id,
+		individualTypes,
 		orderIOMap,
 		page,
-		profileTypes,
 		query,
 	} = data;
 
@@ -96,9 +96,9 @@ const getAllMembers = (data: Data) => {
 		delta,
 		groupId,
 		individualSegmentId: id,
+		individualTypes,
 		orderIOMap,
 		page,
-		profileTypes,
 		query,
 	});
 };
@@ -703,7 +703,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 							id,
 							modifiedDate,
 							...(includeAnonymousUsers === false
-								? {profileTypes: [ProfileTypes.KNOWN]}
+								? {individualTypes: [IndividualTypes.KNOWN]}
 								: {}),
 						}}
 						entityType={INDIVIDUALS}

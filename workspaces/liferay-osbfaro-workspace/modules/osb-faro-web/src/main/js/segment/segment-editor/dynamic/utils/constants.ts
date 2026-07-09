@@ -48,9 +48,14 @@ export type SequentialLimitState = keyof typeof SEQUENTIAL_LIMIT_ALERT;
 export const isKnown = 'is-known';
 export const isUnknown = 'is-unknown';
 
-export enum ProfileTypes {
+export enum IndividualTypes {
 	ANONYMOUS = 'ANONYMOUS',
 	KNOWN = 'KNOWN',
+}
+
+export enum AccountTypes {
+	KNOWN = 'KNOWN',
+	UNKNOWN = 'UNKNOWN',
 }
 
 /**
