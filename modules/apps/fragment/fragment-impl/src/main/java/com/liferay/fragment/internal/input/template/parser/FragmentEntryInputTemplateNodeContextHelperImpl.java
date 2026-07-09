@@ -5,6 +5,9 @@
 
 package com.liferay.fragment.internal.input.template.parser;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.fragment.constants.FragmentConfigurationFieldDataType;
@@ -477,7 +480,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		Group group = themeDisplay.getScopeGroup();
 
-		inputTemplateNode.addAttribute("isCMS", group.isCMS());
+		inputTemplateNode.addAttribute("isCMS", _isCMSGroup(group));
 
 		String previewURL = _getPreviewURL(httpServletRequest, value);
 
@@ -1261,6 +1264,26 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			defaultValue, infoField, locale, infoFieldValue.getValue());
 	}
 
+	private boolean _isCMSGroup(Group group) {
+		if (group.isCMS()) {
+			return true;
+		}
+
+		if (group.isDepot()) {
+			DepotEntry depotEntry =
+				_depotEntryLocalService.fetchGroupDepotEntry(
+					group.getGroupId());
+
+			if ((depotEntry != null) &&
+				(depotEntry.getType() == DepotConstants.TYPE_SPACE)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private Object _parseValue(
 		String defaultValue, InfoField infoField, Locale locale, Object value) {
 
@@ -1438,6 +1461,9 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 	@Reference
 	private CountryLocalService _countryLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
