@@ -1,21 +1,21 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
-import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {loginTest} from '../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
-import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitchViaApi} from '../../../utils/performLogin';
-import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForAlert} from '../../../utils/waitForAlert';
-import {RecycleBinPage} from '../main/pages/RecycleBinPage';
-import {registerUserCredentials} from '../main/spaces/helpers/roleMembership';
-import {cmsPagesTest} from './fixtures/cmsPagesTest';
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import getRandomString from '../../../../utils/getRandomString';
+import {performUserSwitchViaApi} from '../../../../utils/performLogin';
+import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {waitForAlert} from '../../../../utils/waitForAlert';
+import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
+import {registerUserCredentials} from '../../../site-cms-site-initializer/main/spaces/helpers/roleMembership';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/permissions/fixtures/cmsPagesTest';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -110,31 +110,10 @@ async function createBasicWebContent(
 	);
 }
 
-async function resolvePasswordResetWall(page: Page) {
-	const heading = page.getByRole('heading', {name: 'Change Password'});
-
-	const onWall = await heading
-		.waitFor({state: 'visible', timeout: 3000})
-		.then(() => true)
-		.catch(() => false);
-
-	if (!onWall) {
-		return;
-	}
-
-	await page.getByLabel('Password', {exact: true}).fill('newpassword1');
-	await page.getByLabel('Reenter Password').fill('newpassword1');
-	await page.getByRole('button', {name: 'Save'}).click();
-
-	await expect(heading).toBeHidden({timeout: 10000});
-}
-
 async function startSessionAs(page: Page, alternateName: string) {
 	await performUserSwitchViaApi(page, alternateName);
 
 	await page.goto(PORTLET_URLS.cmsHome, {waitUntil: 'domcontentloaded'});
-
-	await resolvePasswordResetWall(page);
 }
 
 test(
