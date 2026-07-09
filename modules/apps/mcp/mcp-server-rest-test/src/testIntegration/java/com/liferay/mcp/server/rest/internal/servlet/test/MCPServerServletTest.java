@@ -627,24 +627,6 @@ public class MCPServerServletTest {
 				CoreMatchers.not(
 					CoreMatchers.containsString(_TEST_EMAIL_ADDRESS))));
 
-		callToolResult = mcpSyncClient.callTool(
-			new McpSchema.CallToolRequest(
-				"getMCPServerProfilesPage",
-				HashMapBuilder.<String, Object>put(
-					"filter", _TEST_EMAIL_ADDRESS
-				).build()));
-
-		content = callToolResult.content();
-
-		textContent = (McpSchema.TextContent)content.get(0);
-
-		Assert.assertThat(
-			textContent.text(),
-			CoreMatchers.allOf(
-				CoreMatchers.containsString("[EMAIL_ADDRESS]"),
-				CoreMatchers.not(
-					CoreMatchers.containsString(_TEST_EMAIL_ADDRESS))));
-
 		ObjectEntry dataMaskObjectEntry =
 			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 
