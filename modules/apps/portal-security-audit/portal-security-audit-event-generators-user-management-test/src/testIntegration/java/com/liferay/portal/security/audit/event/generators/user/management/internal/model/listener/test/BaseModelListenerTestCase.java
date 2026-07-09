@@ -41,8 +41,6 @@ public abstract class BaseModelListenerTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		auditMessages = new ArrayList<>();
-
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 
 		BundleContext bundleContext = bundle.getBundleContext();
@@ -77,7 +75,7 @@ public abstract class BaseModelListenerTestCase {
 		return null;
 	}
 
-	protected List<AuditMessage> auditMessages;
+	protected final List<AuditMessage> auditMessages = new ArrayList<>();
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
