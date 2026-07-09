@@ -384,6 +384,41 @@ describe('buildStructure', () => {
 		expect(fieldNames).not.toContain('content');
 	});
 
+	it('Restores a related content field referencing the same structure', () => {
+		const objectDefinition = createObjectDefinition({
+			externalReferenceCode: 'SELF_ERC',
+			objectRelationships: [
+				{
+					deletionType: 'disassociate',
+					externalReferenceCode: 'self-related-content',
+					label: {en_US: 'Self Related Content'},
+					name: 'selfRelatedContent',
+					objectDefinitionExternalReferenceCode1: 'SELF_ERC',
+					objectDefinitionExternalReferenceCode2: 'SELF_ERC',
+					type: 'oneToMany',
+				},
+			],
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {SELF_ERC: objectDefinition},
+		});
+
+		const relatedContents = Array.from(structure.children.values()).filter(
+			(child) => child.type === 'related-content'
+		);
+
+		expect(relatedContents).toEqual([
+			expect.objectContaining({
+				erc: 'self-related-content',
+				multiselection: false,
+				name: 'selfRelatedContent',
+				relatedStructureERC: 'SELF_ERC',
+			}),
+		]);
+	});
+
 	it('Includes only title and file system fields for custom object definitions', () => {
 		const objectDefinition = createObjectDefinition({
 			externalReferenceCode: 'CUSTOM_OBJECT_ERC',
