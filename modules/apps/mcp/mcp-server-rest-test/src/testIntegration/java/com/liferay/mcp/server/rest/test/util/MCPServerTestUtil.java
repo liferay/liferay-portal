@@ -11,14 +11,12 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
-import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceUtil;
@@ -128,19 +126,6 @@ public class MCPServerTestUtil {
 
 		ObjectEntryLocalServiceUtil.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
-	}
-
-	public static ConfigurationTemporarySwapper enableAuditPersistence()
-		throws Exception {
-
-		return new ConfigurationTemporarySwapper(
-			"com.liferay.portal.security.audit.router.configuration." +
-				"PersistentAuditMessageProcessorConfiguration",
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", true
-			).put(
-				"flushInterval", 1
-			).build());
 	}
 
 	public static ObjectEntry fetchDataMaskObjectEntry(String name)
