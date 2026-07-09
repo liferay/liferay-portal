@@ -51,7 +51,8 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onAfterCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(objectEntry, _getName(objectEntry));
+		_invalidateServlet(
+			objectEntry, MapUtil.getString(objectEntry.getValues(), "name"));
 
 		_addMCPServerProfileDataMasks(objectEntry);
 	}
@@ -60,7 +61,8 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onAfterRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(objectEntry, _getName(objectEntry));
+		_invalidateServlet(
+			objectEntry, MapUtil.getString(objectEntry.getValues(), "name"));
 	}
 
 	@Override
@@ -68,7 +70,9 @@ public class MCPServerProfileObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(objectEntry, _getName(originalObjectEntry));
+		_invalidateServlet(
+			objectEntry,
+			MapUtil.getString(originalObjectEntry.getValues(), "name"));
 	}
 
 	@Override
@@ -140,33 +144,33 @@ public class MCPServerProfileObjectEntryModelListener
 	private void _addMCPServerProfileDataMasks(ObjectEntry objectEntry) {
 		long companyId = objectEntry.getCompanyId();
 
-		ObjectDefinition maskObjectDefinition =
+		ObjectDefinition dataMaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					MCPServerConstants.EXTERNAL_REFERENCE_CODE_DATA_MASK,
 					companyId);
 
-		ObjectDefinition profileDataMaskObjectDefinition =
+		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					companyId);
 
-		if ((maskObjectDefinition == null) ||
-			(profileDataMaskObjectDefinition == null)) {
+		if ((dataMaskObjectDefinition == null) ||
+			(mcpServerProfileDataMaskObjectDefinition == null)) {
 
 			return;
 		}
 
 		int executionOrder = 1;
 
-		for (ObjectEntry maskObjectEntry :
+		for (ObjectEntry dataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
-					0, maskObjectDefinition.getObjectDefinitionId(),
+					0, dataMaskObjectDefinition.getObjectDefinitionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-			Map<String, Serializable> values = maskObjectEntry.getValues();
+			Map<String, Serializable> values = dataMaskObjectEntry.getValues();
 
 			if (!Objects.equals(values.get("maskType"), "system")) {
 				continue;
@@ -175,13 +179,14 @@ public class MCPServerProfileObjectEntryModelListener
 			try {
 				_objectEntryLocalService.addObjectEntry(
 					0, objectEntry.getUserId(),
-					profileDataMaskObjectDefinition.getObjectDefinitionId(),
+					mcpServerProfileDataMaskObjectDefinition.
+						getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null,
 					HashMapBuilder.<String, Serializable>put(
 						"dataMaskExternalReferenceCode",
-						maskObjectEntry.getExternalReferenceCode()
+						dataMaskObjectEntry.getExternalReferenceCode()
 					).put(
 						"executionOrder", executionOrder
 					).put(
@@ -205,16 +210,8 @@ public class MCPServerProfileObjectEntryModelListener
 		}
 	}
 
-	private String _getName(ObjectEntry objectEntry) {
-		return MapUtil.getString(objectEntry.getValues(), "name");
-	}
-
 	private void _invalidateServlet(
 		ObjectEntry objectEntry, String profileName) {
-
-		if (_servlet == null) {
-			return;
-		}
 
 		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
 
