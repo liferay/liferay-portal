@@ -571,6 +571,13 @@ describe('odata', () => {
 			testConversionToAndFrom(testQuery);
 		});
 
+		it('should be able to translate an ObjectEntry behavior query with objectDefinitionName to map and back to string', () => {
+			const testQuery =
+				"(activities.filterByCount(filter='(applicationId eq ''ObjectEntry'' and eventId eq ''objectEntryImpressionMade'' and objectDefinitionName eq ''CMSBasicWebContent'' and day gt ''last24Hours'')',operator='ge',value=1))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
 		it('should be able to translate a query string with "between" to a map and back to a string', () => {
 			const testQuery = "(between(date,'2020-2-2','2020-2-3'))";
 
