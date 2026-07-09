@@ -6233,6 +6233,12 @@ public class JenkinsResultsParserUtil {
 
 					processBuilder.directory(baseDir);
 
+					// Merge the error stream into the output stream so the
+					// single reader below drains both. An unread error stream
+					// blocks the process once its buffer fills.
+
+					processBuilder.redirectErrorStream(true);
+
 					Process process = processBuilder.start();
 
 					try (CountingInputStream countingInputStream =
