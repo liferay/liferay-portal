@@ -66,7 +66,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 		mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "no PII here",
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		Assert.assertEquals(
@@ -79,7 +79,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 	public void testOnBeforeRemove() throws Exception {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "no PII here",
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		String mcpServerProfileObjectEntryExternalReferenceCode =

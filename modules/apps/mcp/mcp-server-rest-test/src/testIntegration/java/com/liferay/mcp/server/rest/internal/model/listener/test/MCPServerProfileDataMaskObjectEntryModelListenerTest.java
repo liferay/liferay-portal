@@ -46,7 +46,7 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 	public void testOnBeforeRemove() throws Exception {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "no PII here",
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry dataMaskObjectEntry =
