@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -126,7 +125,7 @@ public class OpenAPIUtilTest {
 		String name = RandomTestUtil.randomString();
 
 		VulcanRequestForwarder.Request request = OpenAPIUtil.getRequest(
-			StringPool.BLANK, Collections.emptyMap(),
+			StringPool.BLANK, null,
 			JSONUtil.put(
 				"data",
 				JSONUtil.put(
@@ -167,7 +166,7 @@ public class OpenAPIUtilTest {
 		Assert.assertEquals(name, fileItem.getString());
 
 		request = OpenAPIUtil.getRequest(
-			StringPool.BLANK, Collections.emptyMap(),
+			StringPool.BLANK, null,
 			JSONUtil.put(
 				"boolean", true
 			).put(
@@ -198,7 +197,7 @@ public class OpenAPIUtilTest {
 				"as siblings of \"body\" rather than flattening the payload ",
 				"into the input map."),
 			() -> OpenAPIUtil.getRequest(
-				StringPool.BLANK, Collections.emptyMap(),
+				StringPool.BLANK, null,
 				JSONUtil.put(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString()),
@@ -404,8 +403,8 @@ public class OpenAPIUtilTest {
 		throws Exception {
 
 		VulcanRequestForwarder.Request request = OpenAPIUtil.getRequest(
-			StringPool.BLANK, Collections.emptyMap(), inputJSONObject,
-			_openAPIJSONObject, toolName, null);
+			StringPool.BLANK, null, inputJSONObject, _openAPIJSONObject,
+			toolName, null);
 
 		if (expectedBody == null) {
 			Assert.assertNull(request.getBody());
