@@ -603,7 +603,7 @@ public class MCPServerServletTest {
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				"Contact: " + _SAMPLE_EMAIL, profileName,
+				_TEST_EMAIL_ADDRESS, profileName,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		McpSyncClient mcpSyncClient = _getMcpSyncClient(
@@ -624,13 +624,14 @@ public class MCPServerServletTest {
 			textContent.text(),
 			CoreMatchers.allOf(
 				CoreMatchers.containsString("[EMAIL_ADDRESS]"),
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL))));
+				CoreMatchers.not(
+					CoreMatchers.containsString(_TEST_EMAIL_ADDRESS))));
 
 		callToolResult = mcpSyncClient.callTool(
 			new McpSchema.CallToolRequest(
 				"getMCPServerProfilesPage",
 				HashMapBuilder.<String, Object>put(
-					"filter", _SAMPLE_EMAIL
+					"filter", _TEST_EMAIL_ADDRESS
 				).build()));
 
 		content = callToolResult.content();
@@ -641,7 +642,8 @@ public class MCPServerServletTest {
 			textContent.text(),
 			CoreMatchers.allOf(
 				CoreMatchers.containsString("[EMAIL_ADDRESS]"),
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL))));
+				CoreMatchers.not(
+					CoreMatchers.containsString(_TEST_EMAIL_ADDRESS))));
 
 		ObjectEntry dataMaskObjectEntry =
 			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
@@ -663,7 +665,7 @@ public class MCPServerServletTest {
 		Assert.assertThat(
 			textContent.text(),
 			CoreMatchers.allOf(
-				CoreMatchers.containsString(_SAMPLE_EMAIL),
+				CoreMatchers.containsString(_TEST_EMAIL_ADDRESS),
 				CoreMatchers.not(
 					CoreMatchers.containsString("[EMAIL_ADDRESS]"))));
 
@@ -1063,7 +1065,7 @@ public class MCPServerServletTest {
 		mcpSyncClient.closeGracefully();
 	}
 
-	private static final String _SAMPLE_EMAIL = "contact@example.com";
+	private static final String _TEST_EMAIL_ADDRESS = "example@example.com";
 
 	private static final Pattern _authTokenPattern = Pattern.compile(
 		"authToken:\\s*(['\"])(((?!\\1).)*)\\1,");
