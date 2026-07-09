@@ -65,7 +65,6 @@ public class DepotLayoutSetPrototypeServiceWrapperTest {
 				Collections.singletonMap(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 				null, true, true, ServiceContextTestUtil.getServiceContext());
-
 		_user = UserTestUtil.addCompanyUser(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
 			RoleConstants.CMS_ADMINISTRATOR);
