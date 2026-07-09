@@ -8,6 +8,13 @@
 	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:SEOStudioInsightType$]",
 	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioScanInsight$]",
 	"objectDefinitionName2": "SEOStudioScanInsight",
+	"objectField": {
+		"businessType": "Relationship",
+		"externalReferenceCode": "SEO_STUDIO_INSIGHT_TYPE_TO_SEO_STUDIO_SCAN_INSIGHTS",
+		"name": "r_seoStudioInsightTypeToScanInsights_seoStudioInsightTypeId",
+		"readOnly": "false",
+		"required": true
+	},
 	"system": true,
 	"type": "oneToMany"
 }

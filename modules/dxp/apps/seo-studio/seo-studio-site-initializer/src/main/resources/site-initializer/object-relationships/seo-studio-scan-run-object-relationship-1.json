@@ -8,6 +8,13 @@
 	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:SEOStudioDomain$]",
 	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioScanRun$]",
 	"objectDefinitionName2": "SEOStudioScanRun",
+	"objectField": {
+		"businessType": "Relationship",
+		"externalReferenceCode": "SEO_STUDIO_DOMAIN_TO_SEO_STUDIO_SCAN_RUNS",
+		"name": "r_seoStudioDomainToSEOStudioScanRuns_seoStudioDomainId",
+		"readOnly": "false",
+		"required": true
+	},
 	"system": true,
 	"type": "oneToMany"
 }

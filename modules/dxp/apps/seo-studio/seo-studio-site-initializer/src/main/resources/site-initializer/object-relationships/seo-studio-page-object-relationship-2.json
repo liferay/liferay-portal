@@ -8,6 +8,13 @@
 	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:AccountEntry$]",
 	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioPage$]",
 	"objectDefinitionName2": "SEOStudioPage",
+	"objectField": {
+		"businessType": "Relationship",
+		"externalReferenceCode": "ACCOUNT_TO_SEO_STUDIO_PAGES",
+		"name": "r_accountToSEOStudioPages_accountEntryId",
+		"readOnly": "false",
+		"required": true
+	},
 	"system": true,
 	"type": "oneToMany"
 }
