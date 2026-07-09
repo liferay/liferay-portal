@@ -236,12 +236,16 @@ test(
 
 		// Create a space and connect it to the site
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			externalReferenceCode: getRandomString(),
-			name: `Space ${getRandomString()}`,
-			settings: {},
-			type: 'Space',
-		});
+		let space;
+
+		await expect(async () => {
+			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				externalReferenceCode: getRandomString(),
+				name: `Space ${getRandomString()}`,
+				settings: {},
+				type: 'Space',
+			});
+		}).toPass();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -333,28 +337,34 @@ test(
 
 		await pageEditorPage.publishPage();
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
-
 		const titleLocator = page
-			.locator(`[data-analytics-asset-title="${title}"]`)
+			.locator(
+				`[data-analytics-asset-title="${title}"][data-analytics-asset-type]`
+			)
 			.first();
 
-		await expect(titleLocator).toBeVisible();
+		await expect(async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
 
-		await expect(titleLocator).toHaveAttribute(
-			'data-analytics-asset-type',
-			'object-entry'
-		);
+			await expect(titleLocator).toBeVisible({timeout: 3000});
 
-		await expect(titleLocator).toHaveAttribute(
-			'data-analytics-external-reference-code',
-			/.+/
-		);
+			await expect(titleLocator).toHaveAttribute(
+				'data-analytics-asset-type',
+				'object-entry'
+			);
 
-		await expect(titleLocator).toHaveAttribute(
-			'data-analytics-object-definition-name',
-			'cms-basic-web-content'
-		);
+			await expect(titleLocator).toHaveAttribute(
+				'data-analytics-external-reference-code',
+				/.+/
+			);
+
+			await expect(titleLocator).toHaveAttribute(
+				'data-analytics-object-definition-name',
+				'cms-basic-web-content'
+			);
+		}).toPass();
 	}
 );
 
