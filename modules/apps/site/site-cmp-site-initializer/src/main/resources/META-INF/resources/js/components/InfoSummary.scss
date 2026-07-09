@@ -55,6 +55,7 @@
 
 		&-value {
 			max-width: 12.5rem;
+			min-width: 0;
 		}
 	}
 
@@ -65,6 +66,13 @@
 
 		.label {
 			text-transform: none;
+			white-space: nowrap;
+
+			.label-item-expand {
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 		}
 	}
 
