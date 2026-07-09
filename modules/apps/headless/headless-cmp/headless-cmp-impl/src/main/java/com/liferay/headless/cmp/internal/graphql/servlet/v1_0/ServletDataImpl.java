@@ -7,8 +7,10 @@ package com.liferay.headless.cmp.internal.graphql.servlet.v1_0;
 
 import com.liferay.headless.cmp.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.headless.cmp.internal.graphql.query.v1_0.Query;
+import com.liferay.headless.cmp.internal.resource.v1_0.ContentCoverageResourceImpl;
 import com.liferay.headless.cmp.internal.resource.v1_0.TaskAssigneeResourceImpl;
 import com.liferay.headless.cmp.internal.resource.v1_0.TaskStatisticsResourceImpl;
+import com.liferay.headless.cmp.resource.v1_0.ContentCoverageResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskAssigneeResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskStatisticsResource;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -36,6 +38,8 @@ public class ServletDataImpl implements ServletData {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
+		Query.setContentCoverageResourceComponentServiceObjects(
+			_contentCoverageResourceComponentServiceObjects);
 		Query.setTaskAssigneeResourceComponentServiceObjects(
 			_taskAssigneeResourceComponentServiceObjects);
 		Query.setTaskStatisticsResourceComponentServiceObjects(
@@ -77,6 +81,11 @@ public class ServletDataImpl implements ServletData {
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
 					put(
+						"query#projectContentCoverage",
+						new ObjectValuePair<>(
+							ContentCoverageResourceImpl.class,
+							"getProjectContentCoverage"));
+					put(
 						"query#taskAssignees",
 						new ObjectValuePair<>(
 							TaskAssigneeResourceImpl.class,
@@ -95,6 +104,10 @@ public class ServletDataImpl implements ServletData {
 			};
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<ContentCoverageResource>
+		_contentCoverageResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<TaskAssigneeResource>
 		_taskAssigneeResourceComponentServiceObjects;
 
@@ -103,4 +116,4 @@ public class ServletDataImpl implements ServletData {
 		_taskStatisticsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1438817288
+// LIFERAY-REST-BUILDER-HASH:-544864076
