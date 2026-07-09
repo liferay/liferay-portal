@@ -8,6 +8,9 @@ package com.liferay.osb.faro.web.internal.helper;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
+import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
+import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.DateUtil;
@@ -19,7 +22,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,15 +40,20 @@ public class ProjectUsageHelper {
 			String startDateString)
 		throws Exception {
 
+		List<FaroProject> faroProjects =
+			_faroProjectLocalService.getFaroProjects(
+				(page - 1) * pageSize, page * pageSize);
+
+		Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap =
+			_getApiUsageMetricsMap(faroProjects);
+
 		List<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplays =
 			new ArrayList<>();
 
-		for (FaroProject faroProject :
-				_faroProjectLocalService.getFaroProjects(
-					(page - 1) * pageSize, page * pageSize)) {
-
+		for (FaroProject faroProject : faroProjects) {
 			dataSourceUsageMetricDisplays.add(
-				_getDataSourceUsageMetricDisplay(faroProject));
+				_getDataSourceUsageMetricDisplay(
+					apiUsageMetricsMap, faroProject));
 		}
 
 		return Page.of(
@@ -51,9 +61,52 @@ public class ProjectUsageHelper {
 			_faroProjectLocalService.getFaroProjectsCount());
 	}
 
+	private Map<String, Map<String, ApiUsageMetric>> _getApiUsageMetricsMap(
+			List<FaroProject> faroProjects)
+		throws Exception {
+
+		Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap =
+			new HashMap<>();
+
+		for (FaroProject faroProject : faroProjects) {
+			String serverLocation = faroProject.getServerLocation();
+
+			if (apiUsageMetricsMap.containsKey(serverLocation)) {
+				continue;
+			}
+
+			Map<String, ApiUsageMetric> apiUsageMetricMap = new HashMap<>();
+
+			Results<ApiUsageMetric> results =
+				_contactsEngineClient.getApiUsageMetrics(faroProject, null);
+
+			for (ApiUsageMetric apiUsageMetric : results.getItems()) {
+				apiUsageMetricMap.put(
+					apiUsageMetric.getProjectId(), apiUsageMetric);
+			}
+
+			apiUsageMetricsMap.put(serverLocation, apiUsageMetricMap);
+		}
+
+		return apiUsageMetricsMap;
+	}
+
 	private DataSourceUsageMetricDisplay _getDataSourceUsageMetricDisplay(
+			Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap,
 			FaroProject faroProject)
 		throws Exception {
+
+		Map<String, ApiUsageMetric> apiUsageMetricMap = apiUsageMetricsMap.get(
+			faroProject.getServerLocation());
+
+		ApiUsageMetric apiUsageMetric = apiUsageMetricMap.get(
+			faroProject.getProjectId());
+
+		long apiCallsCount = 0;
+
+		if (apiUsageMetric != null) {
+			apiCallsCount = apiUsageMetric.getCallsCount();
+		}
 
 		List<DataSourceUsage> dataSourceUsages = ListUtil.fromArray(
 			new DataSourceUsage(
@@ -62,8 +115,9 @@ public class ProjectUsageHelper {
 				"10002", "Salesforce", _getDataSourceUsageMetrics(1)));
 
 		return new DataSourceUsageMetricDisplay(
-			5, dataSourceUsages.size(), faroProject.getCorpProjectName(),
-			faroProject.getCorpProjectUuid(), dataSourceUsages,
+			apiCallsCount, 5, dataSourceUsages.size(),
+			faroProject.getCorpProjectName(), faroProject.getCorpProjectUuid(),
+			dataSourceUsages,
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
 				DateUtil.PATTERN_DATE),
@@ -85,6 +139,9 @@ public class ProjectUsageHelper {
 				"2026-06-16", 98230 - (dataSourceIndex * 12000),
 				63 + (dataSourceIndex * 25)));
 	}
+
+	@Reference
+	private ContactsEngineClient _contactsEngineClient;
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;

@@ -13,12 +13,13 @@ import java.util.List;
 public class DataSourceUsageMetricDisplay {
 
 	public DataSourceUsageMetricDisplay(
-		long batchSegmentsCount, long connectedDataSourcesCount,
-		String corpProjectName, String corpProjectUuid,
-		List<DataSourceUsage> dataSourceUsages, String lastAccessDateString,
-		String lastAnniversaryDateString, boolean offline,
-		long realTimeSegmentsCount, String weDeployKey) {
+		long apiCallsCount, long batchSegmentsCount,
+		long connectedDataSourcesCount, String corpProjectName,
+		String corpProjectUuid, List<DataSourceUsage> dataSourceUsages,
+		String lastAccessDateString, String lastAnniversaryDateString,
+		boolean offline, long realTimeSegmentsCount, String weDeployKey) {
 
+		_apiCallsCount = apiCallsCount;
 		_batchSegmentsCount = batchSegmentsCount;
 		_connectedDataSourcesCount = connectedDataSourcesCount;
 		_corpProjectName = corpProjectName;
@@ -29,6 +30,10 @@ public class DataSourceUsageMetricDisplay {
 		_offline = offline;
 		_realTimeSegmentsCount = realTimeSegmentsCount;
 		_weDeployKey = weDeployKey;
+	}
+
+	public long getApiCallsCount() {
+		return _apiCallsCount;
 	}
 
 	public long getBatchSegmentsCount() {
@@ -71,6 +76,7 @@ public class DataSourceUsageMetricDisplay {
 		return _offline;
 	}
 
+	private final long _apiCallsCount;
 	private final long _batchSegmentsCount;
 	private final long _connectedDataSourcesCount;
 	private final String _corpProjectName;
