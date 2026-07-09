@@ -82,6 +82,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
@@ -6205,24 +6206,34 @@ public class JenkinsResultsParserUtil {
 
 					sb.append(command);
 
-					Runtime runtime = Runtime.getRuntime();
+					String bashCommand = sb.toString();
 
-					String[] environmentParameters =
-						new String[environments.size()];
-
-					int i = 0;
-
-					for (Map.Entry<String, String> environment :
-							environments.entrySet()) {
-
-						environmentParameters[i] = combine(
-							environment.getKey(), "=", environment.getValue());
-
-						i++;
+					if (bashCommand.isEmpty()) {
+						throw new IllegalArgumentException("Empty command");
 					}
 
-					Process process = runtime.exec(
-						sb.toString(), environmentParameters, baseDir);
+					StringTokenizer stringTokenizer = new StringTokenizer(
+						bashCommand);
+
+					String[] commands =
+						new String[stringTokenizer.countTokens()];
+
+					for (int i = 0; stringTokenizer.hasMoreTokens(); i++) {
+						commands[i] = stringTokenizer.nextToken();
+					}
+
+					ProcessBuilder processBuilder = new ProcessBuilder(
+						commands);
+
+					Map<String, String> processEnvironment =
+						processBuilder.environment();
+
+					processEnvironment.clear();
+					processEnvironment.putAll(environments);
+
+					processBuilder.directory(baseDir);
+
+					Process process = processBuilder.start();
 
 					try (CountingInputStream countingInputStream =
 							new CountingInputStream(process.getInputStream());
