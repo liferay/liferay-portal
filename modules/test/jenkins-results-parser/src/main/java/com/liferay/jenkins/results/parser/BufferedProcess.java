@@ -37,6 +37,9 @@ public class BufferedProcess extends Process {
 	@Override
 	public void destroy() {
 		_process.destroy();
+
+		_standardErrorInputStreamBuffer._close();
+		_standardOutInputStreamBuffer._close();
 	}
 
 	@Override
@@ -104,6 +107,10 @@ public class BufferedProcess extends Process {
 		}
 
 		public synchronized InputStream toInputStream() {
+			if (_closed) {
+				return new ByteArrayInputStream(new byte[0]);
+			}
+
 			if (_overflowFile == null) {
 				return new ByteArrayInputStream(
 					_byteArrayOutputStream.toByteArray());
@@ -119,7 +126,31 @@ public class BufferedProcess extends Process {
 			}
 		}
 
+		private synchronized void _close() {
+			if (_closed) {
+				return;
+			}
+
+			_closed = true;
+
+			if (_overflowOutputStream != null) {
+				try {
+					_overflowOutputStream.close();
+				}
+				catch (IOException ioException) {
+				}
+			}
+
+			if (_overflowFile != null) {
+				_overflowFile.delete();
+			}
+		}
+
 		private synchronized void _write(byte[] bytes, int length) {
+			if (_closed) {
+				return;
+			}
+
 			try {
 				if (_overflowOutputStream != null) {
 					_overflowOutputStream.write(bytes, 0, length);
@@ -156,6 +187,7 @@ public class BufferedProcess extends Process {
 
 		private ByteArrayOutputStream _byteArrayOutputStream =
 			new ByteArrayOutputStream();
+		private boolean _closed;
 		private final InputStream _inputStream;
 		private File _overflowFile;
 		private OutputStream _overflowOutputStream;
