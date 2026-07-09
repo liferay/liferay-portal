@@ -325,10 +325,10 @@ public class VirtualHostFilter extends BasePortalFilter {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
 
+		String parameters = StringPool.BLANK;
+
 		Map<String, String[]> parameterMap =
 			httpServletRequest.getParameterMap();
-
-		String parameters = StringPool.BLANK;
 
 		if (!parameterMap.isEmpty()) {
 			parameters = HttpComponentsUtil.parameterMapToString(parameterMap);
