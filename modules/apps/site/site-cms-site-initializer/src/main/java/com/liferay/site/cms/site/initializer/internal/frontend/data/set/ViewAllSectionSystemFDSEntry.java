@@ -9,12 +9,19 @@ import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.cms.site.initializer.contributor.CMSSectionTypeContributor;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.display.context.SectionDisplayContextUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Daniel Sanz
@@ -29,15 +36,34 @@ public class ViewAllSectionSystemFDSEntry implements SystemFDSEntry {
 	public String getAdditionalAPIURLParameters(
 		HttpServletRequest httpServletRequest) {
 
+		StringBundler sb = new StringBundler();
+
+		sb.append("(cmsSection eq 'contents' or cmsSection eq 'files'");
+
+		for (CMSSectionTypeContributor cmsSectionTypeContributor :
+				_cmsSectionTypeContributors) {
+
+			String cmsSectionType =
+				cmsSectionTypeContributor.getCMSSectionType();
+
+			if (Validator.isNull(cmsSectionType)) {
+				continue;
+			}
+
+			sb.append(" or cmsSection eq '");
+			sb.append(cmsSectionType);
+			sb.append("'");
+		}
+
+		sb.append(") and objectDefinitionExternalReferenceCode ne '");
+		sb.append(
+			ObjectEntryFolderConstants.
+				EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER);
+		sb.append("' and rootDescendantNode eq false");
+
 		String filterString = SectionDisplayContextUtil.appendStatus(
 			SectionDisplayContextUtil.appendGroupIds(
-				StringBundler.concat(
-					"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
-					"objectDefinitionExternalReferenceCode ne '",
-					ObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER,
-					"' and rootDescendantNode eq false"),
-				httpServletRequest));
+				sb.toString(), httpServletRequest));
 
 		String additionalAPIURLParameters =
 			SectionDisplayContextUtil.getAdditionalAPIURLParameters(
@@ -109,5 +135,12 @@ public class ViewAllSectionSystemFDSEntry implements SystemFDSEntry {
 	public String getTitle() {
 		return "All Section";
 	}
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<CMSSectionTypeContributor>
+		_cmsSectionTypeContributors;
 
 }
