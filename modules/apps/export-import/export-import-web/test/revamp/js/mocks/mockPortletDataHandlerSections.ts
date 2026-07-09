@@ -5,7 +5,7 @@
 
 import {PreviewPortletDataHandlerSection} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
 
-export const mockPortletDataHandlerSections: PreviewPortletDataHandlerSection[] =
+export const mockPreviewPortletDataHandlerSections: PreviewPortletDataHandlerSection[] =
 	[
 		{
 			label: 'Design',

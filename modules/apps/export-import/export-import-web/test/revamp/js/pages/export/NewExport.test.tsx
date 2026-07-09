@@ -587,7 +587,8 @@ describe('NewExport', () => {
 			expect(body.siteTemplateSettings).toBe(false);
 
 			const handlerNames = body.requestPortletDataHandlers.map(
-				(handler: {name: string}) => handler.name
+				(previewPortletDataHandler: {name: string}) =>
+					previewPortletDataHandler.name
 			);
 
 			expect(handlerNames).not.toContain('lookAndFeel');
@@ -666,7 +667,8 @@ describe('NewExport', () => {
 			expect(body.ratings).toBe(false);
 
 			const handlerNames = body.requestPortletDataHandlers.map(
-				(handler: {name: string}) => handler.name
+				(previewPortletDataHandler: {name: string}) =>
+					previewPortletDataHandler.name
 			);
 
 			expect(handlerNames).not.toContain('commentsAndRatings');

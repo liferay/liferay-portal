@@ -14,7 +14,7 @@ import {postImportPreview} from '../../../../../src/main/resources/META-INF/reso
 import {SCOPES} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/scope';
 import formatDate from '../../../../../src/main/resources/META-INF/resources/revamp/js/utils/formatDate';
 import {mockImportPreview} from '../../mocks/mockImportPreview';
-import {mockSectionsForFilterTest} from '../../mocks/mockSectionsForFilterTest';
+import {mockPreviewPortletDataHandlerSectionsForFilterTest} from '../../mocks/mockSectionsForFilterTest';
 
 jest.mock(
 	'../../../../../src/main/resources/META-INF/resources/revamp/js/services/postImportPreview',
@@ -378,7 +378,7 @@ describe('NewImport', () => {
 				data: {
 					...mockImportPreview,
 					previewPortletDataHandlerSections:
-						mockSectionsForFilterTest,
+						mockPreviewPortletDataHandlerSectionsForFilterTest,
 				},
 				error: null,
 			})

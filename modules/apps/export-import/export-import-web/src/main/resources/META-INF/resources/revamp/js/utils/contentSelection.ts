@@ -14,9 +14,9 @@ import {
 
 import type {ContentSelection} from '../components/forms/content_selector/ContentSelector';
 
-export type HandlerSelection =
+export type PortletDataHandlerSelection =
 	| {
-			[key: string]: HandlerSelection | boolean | number[];
+			[key: string]: PortletDataHandlerSelection | boolean | number[];
 	  }
 	| string
 	| true;
@@ -43,75 +43,111 @@ export const SECTION_KEY_CONTENT_AND_DATA =
 export const SECTION_KEY_SITE_BUILDER = 'category.site_administration.build';
 
 export function isAllLayoutsSelected(
-	value: HandlerSelection | undefined
+	portletDataHandlerSelection: PortletDataHandlerSelection | undefined
 ): boolean {
-	return typeof value === 'object' && !value.layoutIds;
+	return (
+		typeof portletDataHandlerSelection === 'object' &&
+		!portletDataHandlerSelection.layoutIds
+	);
 }
 
 export function isSelected(
-	value: HandlerSelection | undefined,
-	entry: PreviewPortletDataHandlerControl
+	portletDataHandlerSelection: PortletDataHandlerSelection | undefined,
+	previewPortletDataHandlerControl: PreviewPortletDataHandlerControl
 ): boolean {
-	if (!value) {
+	if (!portletDataHandlerSelection) {
 		return false;
 	}
 
-	if (entry.name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY) {
-		return isAllLayoutsSelected(value);
+	if (
+		previewPortletDataHandlerControl.name ===
+		LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+	) {
+		return isAllLayoutsSelected(portletDataHandlerSelection);
 	}
 
-	if (entry.type === 'Choice') {
+	if (previewPortletDataHandlerControl.type === 'Choice') {
 		return true;
 	}
 
 	if (
-		!entry.previewPortletDataHandlerControls?.length ||
-		typeof value !== 'object'
+		!previewPortletDataHandlerControl.previewPortletDataHandlerControls
+			?.length ||
+		typeof portletDataHandlerSelection !== 'object'
 	) {
 		return true;
 	}
 
-	return entry.previewPortletDataHandlerControls.every((control) =>
-		isSelected(value[control.name] as HandlerSelection, control)
+	return previewPortletDataHandlerControl.previewPortletDataHandlerControls.every(
+		(previewPortletDataHandlerControl) =>
+			isSelected(
+				portletDataHandlerSelection[
+					previewPortletDataHandlerControl.name
+				] as PortletDataHandlerSelection,
+				previewPortletDataHandlerControl
+			)
 	);
 }
 
-export function getHandlerSelection(
-	entry: PreviewPortletDataHandlerControl
-): HandlerSelection {
-	if (entry.name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY) {
+export function getPortletDataHandlerSelection(
+	previewPortletDataHandlerControl: PreviewPortletDataHandlerControl
+): PortletDataHandlerSelection {
+	if (
+		previewPortletDataHandlerControl.name ===
+		LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+	) {
 		return {privateLayout: false};
 	}
 
-	if (entry.type === 'Choice') {
-		return entry.choices[0].name;
+	if (previewPortletDataHandlerControl.type === 'Choice') {
+		return previewPortletDataHandlerControl.choices[0].name;
 	}
 
-	if (!entry.previewPortletDataHandlerControls?.length) {
+	if (
+		!previewPortletDataHandlerControl.previewPortletDataHandlerControls
+			?.length
+	) {
 		return true;
 	}
 
-	return getHandlerSelections(entry.previewPortletDataHandlerControls);
+	return getPortletDataHandlerSelections(
+		previewPortletDataHandlerControl.previewPortletDataHandlerControls
+	);
 }
 
-export function getHandlerSelections(
-	controls: PreviewPortletDataHandlerControl[]
-): Record<string, HandlerSelection> {
+export function getPortletDataHandlerSelections(
+	previewPortletDataHandlerControls: PreviewPortletDataHandlerControl[]
+): Record<string, PortletDataHandlerSelection> {
 	return Object.fromEntries(
-		controls.map((control) => [control.name, getHandlerSelection(control)])
+		previewPortletDataHandlerControls.map(
+			(previewPortletDataHandlerControl) => [
+				previewPortletDataHandlerControl.name,
+				getPortletDataHandlerSelection(
+					previewPortletDataHandlerControl
+				),
+			]
+		)
 	);
 }
 
 export function getSectionPreviewPortletDataHandlers(
-	section: PreviewPortletDataHandlerSection,
+	previewPortletDataHandlerSection: PreviewPortletDataHandlerSection,
 	{lookAndFeelEnabled = false}: {lookAndFeelEnabled?: boolean} = {}
 ): PreviewPortletDataHandlerBoolean[] {
 	const previewPortletDataHandlers =
-		section.previewPortletDataHandlers.map<PreviewPortletDataHandlerBoolean>(
-			(handler) => ({...handler, type: 'Boolean'})
+		previewPortletDataHandlerSection.previewPortletDataHandlers.map<PreviewPortletDataHandlerBoolean>(
+			(previewPortletDataHandler) => ({
+				...previewPortletDataHandler,
+				type: 'Boolean',
+			})
 		);
 
-	if (!(lookAndFeelEnabled && section.name === SECTION_KEY_SITE_BUILDER)) {
+	if (
+		!(
+			lookAndFeelEnabled &&
+			previewPortletDataHandlerSection.name === SECTION_KEY_SITE_BUILDER
+		)
+	) {
 		return previewPortletDataHandlers;
 	}
 
@@ -148,29 +184,35 @@ export function getSectionPreviewPortletDataHandlers(
 }
 
 export function getSectionSelection(
-	section: PreviewPortletDataHandlerSection,
+	previewPortletDataHandlerSection: PreviewPortletDataHandlerSection,
 	{
 		commentsAndRatingsEnabled = false,
 		lookAndFeelEnabled = false,
 	}: {commentsAndRatingsEnabled?: boolean; lookAndFeelEnabled?: boolean} = {}
-): Record<string, HandlerSelection> {
-	const selection = getHandlerSelections(
-		getSectionPreviewPortletDataHandlers(section, {lookAndFeelEnabled})
+): Record<string, PortletDataHandlerSelection> {
+	const portletDataHandlerSelections = getPortletDataHandlerSelections(
+		getSectionPreviewPortletDataHandlers(previewPortletDataHandlerSection, {
+			lookAndFeelEnabled,
+		})
 	);
 
 	if (
 		commentsAndRatingsEnabled &&
-		(section.name === SECTION_KEY_CONTENT ||
-			section.name === SECTION_KEY_CONTENT_AND_DATA)
+		(previewPortletDataHandlerSection.name === SECTION_KEY_CONTENT ||
+			previewPortletDataHandlerSection.name ===
+				SECTION_KEY_CONTENT_AND_DATA)
 	) {
-		selection.commentsAndRatings = {comments: true, ratings: true};
+		portletDataHandlerSelections.commentsAndRatings = {
+			comments: true,
+			ratings: true,
+		};
 	}
 
-	return selection;
+	return portletDataHandlerSelections;
 }
 
 export function getFullDataSelection(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	{
 		commentsAndRatingsEnabled = false,
 		lookAndFeelEnabled = false,
@@ -182,15 +224,16 @@ export function getFullDataSelection(
 	} = {}
 ): ContentSelection {
 	return Object.fromEntries(
-		getVisibleSections(sections, {lookAndFeelEnabled, showDeletions}).map(
-			(section) => [
-				section.name,
-				getSectionSelection(section, {
-					commentsAndRatingsEnabled,
-					lookAndFeelEnabled,
-				}),
-			]
-		)
+		getVisibleSections(previewPortletDataHandlerSections, {
+			lookAndFeelEnabled,
+			showDeletions,
+		}).map((previewPortletDataHandlerSection) => [
+			previewPortletDataHandlerSection.name,
+			getSectionSelection(previewPortletDataHandlerSection, {
+				commentsAndRatingsEnabled,
+				lookAndFeelEnabled,
+			}),
+		])
 	);
 }
 
@@ -206,12 +249,20 @@ export function updateSelection<V>(
 }
 
 export function getSelectionSummary(
-	controls: {label: string; name: string}[],
-	selection: Record<string, HandlerSelection>
+	previewPortletDataHandlerControls: {label: string; name: string}[],
+	portletDataHandlerSelections: Record<string, PortletDataHandlerSelection>
 ): string {
-	const selectedLabels = controls
-		.filter((control) => selection[control.name] !== undefined)
-		.map((control) => control.label);
+	const selectedLabels = previewPortletDataHandlerControls
+		.filter(
+			(previewPortletDataHandlerControl) =>
+				portletDataHandlerSelections[
+					previewPortletDataHandlerControl.name
+				] !== undefined
+		)
+		.map(
+			(previewPortletDataHandlerControl) =>
+				previewPortletDataHandlerControl.label
+		);
 
 	if (selectedLabels.length) {
 		return sub(
@@ -220,7 +271,10 @@ export function getSelectionSummary(
 		);
 	}
 
-	const labels = controls.map((control) => control.label);
+	const labels = previewPortletDataHandlerControls.map(
+		(previewPortletDataHandlerControl) =>
+			previewPortletDataHandlerControl.label
+	);
 
 	if (labels.length) {
 		return sub(Liferay.Language.get('select-x'), labels.join(', '));
@@ -230,15 +284,21 @@ export function getSelectionSummary(
 }
 
 export function withSiteBuilderSection(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	label = ''
 ): PreviewPortletDataHandlerSection[] {
-	if (sections.some((section) => section.name === SECTION_KEY_SITE_BUILDER)) {
-		return sections;
+	if (
+		previewPortletDataHandlerSections.some(
+			(previewPortletDataHandlerSection) =>
+				previewPortletDataHandlerSection.name ===
+				SECTION_KEY_SITE_BUILDER
+		)
+	) {
+		return previewPortletDataHandlerSections;
 	}
 
 	return [
-		...sections,
+		...previewPortletDataHandlerSections,
 		{
 			label,
 			name: SECTION_KEY_SITE_BUILDER,
@@ -248,15 +308,17 @@ export function withSiteBuilderSection(
 }
 
 export function getVisibleSections(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	{
 		lookAndFeelEnabled = false,
 		showDeletions = false,
 	}: {lookAndFeelEnabled?: boolean; showDeletions?: boolean} = {}
 ): PreviewPortletDataHandlerSection[] {
-	const filteredSections = sections.filter(
-		(section) =>
-			showDeletions || !!section.additionCount || !section.deletionCount
+	const filteredSections = previewPortletDataHandlerSections.filter(
+		(previewPortletDataHandlerSection) =>
+			showDeletions ||
+			!!previewPortletDataHandlerSection.additionCount ||
+			!previewPortletDataHandlerSection.deletionCount
 	);
 
 	return lookAndFeelEnabled
@@ -287,18 +349,19 @@ export function toProcessRequestFlags(
 	};
 }
 
-export function getLayoutSetHandler(
-	sections: PreviewPortletDataHandlerSection[]
+export function getLayoutSetPreviewPortletDataHandler(
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[]
 ): PreviewPortletDataHandler | undefined {
-	for (const section of sections) {
-		const handler = section.previewPortletDataHandlers?.find(
-			(previewPortletDataHandler) =>
-				previewPortletDataHandler.name ===
-				LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
-		);
+	for (const previewPortletDataHandlerSection of previewPortletDataHandlerSections) {
+		const previewPortletDataHandler =
+			previewPortletDataHandlerSection.previewPortletDataHandlers?.find(
+				(previewPortletDataHandler) =>
+					previewPortletDataHandler.name ===
+					LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+			);
 
-		if (handler) {
-			return handler;
+		if (previewPortletDataHandler) {
+			return previewPortletDataHandler;
 		}
 	}
 
@@ -306,20 +369,23 @@ export function getLayoutSetHandler(
 }
 
 export function getLayoutSetCount(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	privateLayout: boolean,
 	key: 'additionCount' | 'deletionCount' = 'additionCount'
 ): number | undefined {
-	const handler = getLayoutSetHandler(sections);
+	const previewPortletDataHandler = getLayoutSetPreviewPortletDataHandler(
+		previewPortletDataHandlerSections
+	);
 
-	if (!handler) {
+	if (!previewPortletDataHandler) {
 		return undefined;
 	}
 
-	const choiceControl = handler.previewPortletDataHandlerControls?.find(
-		(previewPortletDataHandlerControl) =>
-			previewPortletDataHandlerControl.type === 'Choice'
-	);
+	const choiceControl =
+		previewPortletDataHandler.previewPortletDataHandlerControls?.find(
+			(previewPortletDataHandlerControl) =>
+				previewPortletDataHandlerControl.type === 'Choice'
+		);
 
 	if (choiceControl?.type === 'Choice') {
 		const choiceName = privateLayout
@@ -335,7 +401,7 @@ export function getLayoutSetCount(
 		}
 	}
 
-	return handler[key];
+	return previewPortletDataHandler[key];
 }
 
 export function isPrivateLayoutSelected(
@@ -346,12 +412,15 @@ export function isPrivateLayoutSelected(
 	}
 
 	for (const sectionSelection of Object.values(contentSelection)) {
-		const selection = sectionSelection?.[
+		const portletDataHandlerSelection = sectionSelection?.[
 			LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
 		] as {privateLayout?: boolean} | undefined;
 
-		if (selection && typeof selection === 'object') {
-			return selection.privateLayout === true;
+		if (
+			portletDataHandlerSelection &&
+			typeof portletDataHandlerSelection === 'object'
+		) {
+			return portletDataHandlerSelection.privateLayout === true;
 		}
 	}
 
@@ -360,7 +429,7 @@ export function isPrivateLayoutSelected(
 
 export function getSelectedItemsCount(
 	additionCount: number | undefined,
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	contentSelection: ContentSelection | undefined
 ): number | undefined {
 	if (additionCount === undefined) {
@@ -369,13 +438,17 @@ export function getSelectedItemsCount(
 
 	return (
 		additionCount +
-		getLayoutSetCountDelta(sections, contentSelection, 'additionCount')
+		getLayoutSetCountDelta(
+			previewPortletDataHandlerSections,
+			contentSelection,
+			'additionCount'
+		)
 	);
 }
 
 export function getSelectedDeletionCount(
 	deletionCount: number | undefined,
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	contentSelection: ContentSelection | undefined
 ): number | undefined {
 	if (deletionCount === undefined) {
@@ -384,79 +457,98 @@ export function getSelectedDeletionCount(
 
 	return (
 		deletionCount +
-		getLayoutSetCountDelta(sections, contentSelection, 'deletionCount')
+		getLayoutSetCountDelta(
+			previewPortletDataHandlerSections,
+			contentSelection,
+			'deletionCount'
+		)
 	);
 }
 
 export function getLayoutSetCountDelta(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	contentSelection: ContentSelection | undefined,
 	key: 'additionCount' | 'deletionCount' = 'additionCount'
 ): number {
 	const privateLayout = isPrivateLayoutSelected(contentSelection);
 
-	const publicCount = getLayoutSetCount(sections, false, key) ?? 0;
-	const selectedCount = getLayoutSetCount(sections, privateLayout, key) ?? 0;
+	const publicCount =
+		getLayoutSetCount(previewPortletDataHandlerSections, false, key) ?? 0;
+	const selectedCount =
+		getLayoutSetCount(
+			previewPortletDataHandlerSections,
+			privateLayout,
+			key
+		) ?? 0;
 
 	return selectedCount - publicCount;
 }
 
 export function withSelectedLayoutSetCount(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	contentSelection: ContentSelection | undefined
 ): PreviewPortletDataHandlerSection[] {
 	const additionCountDelta = getLayoutSetCountDelta(
-		sections,
+		previewPortletDataHandlerSections,
 		contentSelection,
 		'additionCount'
 	);
 	const deletionCountDelta = getLayoutSetCountDelta(
-		sections,
+		previewPortletDataHandlerSections,
 		contentSelection,
 		'deletionCount'
 	);
 
 	if (!additionCountDelta && !deletionCountDelta) {
-		return sections;
+		return previewPortletDataHandlerSections;
 	}
 
 	const privateLayout = isPrivateLayoutSelected(contentSelection);
 
 	const selectedAdditionCount = getLayoutSetCount(
-		sections,
+		previewPortletDataHandlerSections,
 		privateLayout,
 		'additionCount'
 	);
 	const selectedDeletionCount = getLayoutSetCount(
-		sections,
+		previewPortletDataHandlerSections,
 		privateLayout,
 		'deletionCount'
 	);
 
-	return sections.map((section) => {
-		if (
-			!section.previewPortletDataHandlers?.some(
-				(handler) =>
-					handler.name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
-			)
-		) {
-			return section;
-		}
+	return previewPortletDataHandlerSections.map(
+		(previewPortletDataHandlerSection) => {
+			if (
+				!previewPortletDataHandlerSection.previewPortletDataHandlers?.some(
+					(previewPortletDataHandler) =>
+						previewPortletDataHandler.name ===
+						LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+				)
+			) {
+				return previewPortletDataHandlerSection;
+			}
 
-		return {
-			...section,
-			additionCount: (section.additionCount ?? 0) + additionCountDelta,
-			deletionCount: (section.deletionCount ?? 0) + deletionCountDelta,
-			previewPortletDataHandlers: section.previewPortletDataHandlers.map(
-				(handler) =>
-					handler.name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
-						? {
-								...handler,
-								additionCount: selectedAdditionCount,
-								deletionCount: selectedDeletionCount,
-							}
-						: handler
-			),
-		};
-	});
+			return {
+				...previewPortletDataHandlerSection,
+				additionCount:
+					(previewPortletDataHandlerSection.additionCount ?? 0) +
+					additionCountDelta,
+				deletionCount:
+					(previewPortletDataHandlerSection.deletionCount ?? 0) +
+					deletionCountDelta,
+				previewPortletDataHandlers:
+					previewPortletDataHandlerSection.previewPortletDataHandlers.map(
+						(previewPortletDataHandler) =>
+							previewPortletDataHandler.name ===
+							LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+								? {
+										...previewPortletDataHandler,
+										additionCount: selectedAdditionCount,
+										deletionCount: selectedDeletionCount,
+									}
+								: previewPortletDataHandler
+					),
+			};
+		}
+	);
 }

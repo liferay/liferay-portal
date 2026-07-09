@@ -15,7 +15,7 @@ import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection as PortletDataHandlerSectionType} from '../../../types/portletDataHandler';
 import {
 	COMPACT_SECTION_NAMES,
-	HandlerSelection,
+	PortletDataHandlerSelection,
 	SCROLLABLE_SECTION_NAMES,
 	SECTION_KEY_CONTENT,
 	SECTION_KEY_CONTENT_AND_DATA,
@@ -30,17 +30,17 @@ import PortletDataControl from './PortletDataControl';
 import SectionFooter from './SectionFooter';
 import SectionTags from './SectionTags';
 
-export type SectionSelection = Record<string, HandlerSelection>;
+export type SectionSelection = Record<string, PortletDataHandlerSelection>;
 
 interface ContentSectionProps {
 	commentsAndRatingsEnabled?: boolean;
 	lookAndFeelEnabled?: boolean;
 	onChange: (value: SectionSelection | undefined) => void;
 	pageTreeModalConfiguration?: PageTreeModalConfiguration;
+	previewPortletDataHandlerSection: PortletDataHandlerSectionType;
 	process?: ExportImportProcess;
-	section: PortletDataHandlerSectionType;
+	sectionSelection: SectionSelection | undefined;
 	showDeletions?: boolean;
-	value: SectionSelection | undefined;
 }
 
 export default function ContentSection({
@@ -48,17 +48,21 @@ export default function ContentSection({
 	lookAndFeelEnabled = false,
 	onChange,
 	pageTreeModalConfiguration,
+	previewPortletDataHandlerSection,
 	process = 'export',
-	section,
+	sectionSelection = {},
 	showDeletions,
-	value,
 }: ContentSectionProps) {
 	const bodyRef = useRef<HTMLDivElement>(null);
 	const checkboxId = useId();
 	const [overflowing, setOverflowing] = useState(false);
 
-	const compact = COMPACT_SECTION_NAMES.includes(section.name);
-	const scrollable = SCROLLABLE_SECTION_NAMES.includes(section.name);
+	const compact = COMPACT_SECTION_NAMES.includes(
+		previewPortletDataHandlerSection.name
+	);
+	const scrollable = SCROLLABLE_SECTION_NAMES.includes(
+		previewPortletDataHandlerSection.name
+	);
 
 	useEffect(() => {
 		const element = bodyRef.current;
@@ -78,29 +82,34 @@ export default function ContentSection({
 		}
 
 		return () => resizeObserver.disconnect();
-	}, [scrollable, section]);
+	}, [scrollable, previewPortletDataHandlerSection]);
 
 	const allPreviewPortletDataHandlers = getSectionPreviewPortletDataHandlers(
-		section,
+		previewPortletDataHandlerSection,
 		{lookAndFeelEnabled}
 	);
 
-	const sectionSelection = value || {};
-
-	const allSelected = allPreviewPortletDataHandlers.every((context) =>
-		isSelected(sectionSelection[context.name], context)
+	const allSelected = allPreviewPortletDataHandlers.every(
+		(previewPortletDataHandler) =>
+			isSelected(
+				sectionSelection[previewPortletDataHandler.name],
+				previewPortletDataHandler
+			)
 	);
 
 	const anySelected = allPreviewPortletDataHandlers.some(
-		(context) => sectionSelection[context.name] !== undefined
+		(previewPortletDataHandler) =>
+			sectionSelection[previewPortletDataHandler.name] !== undefined
 	);
 
 	const sectionFooters = [
 		{
 			applies:
 				commentsAndRatingsEnabled &&
-				(section.name === SECTION_KEY_CONTENT ||
-					section.name === SECTION_KEY_CONTENT_AND_DATA) &&
+				(previewPortletDataHandlerSection.name ===
+					SECTION_KEY_CONTENT ||
+					previewPortletDataHandlerSection.name ===
+						SECTION_KEY_CONTENT_AND_DATA) &&
 				anySelected,
 			fields: [
 				{key: 'comments', label: Liferay.Language.get('comments')},
@@ -135,11 +144,11 @@ export default function ContentSection({
 							expanded
 								? sub(
 										Liferay.Language.get('collapse-x'),
-										section.label
+										previewPortletDataHandlerSection.label
 									)
 								: sub(
 										Liferay.Language.get('expand-x'),
-										section.label
+										previewPortletDataHandlerSection.label
 									)
 						}
 						className="text-secondary"
@@ -150,20 +159,24 @@ export default function ContentSection({
 				indeterminate={
 					!allSelected &&
 					allPreviewPortletDataHandlers.some(
-						(context) =>
-							sectionSelection[context.name] !== undefined
+						(previewPortletDataHandler) =>
+							sectionSelection[previewPortletDataHandler.name] !==
+							undefined
 					)
 				}
-				label={section.label}
+				label={previewPortletDataHandlerSection.label}
 				labelClassName="font-weight-bold text-6"
 				onToggle={() =>
 					onChange(
 						allSelected
 							? undefined
-							: getSectionSelection(section, {
-									commentsAndRatingsEnabled,
-									lookAndFeelEnabled,
-								})
+							: getSectionSelection(
+									previewPortletDataHandlerSection,
+									{
+										commentsAndRatingsEnabled,
+										lookAndFeelEnabled,
+									}
+								)
 					)
 				}
 				selected={allSelected}
@@ -173,51 +186,65 @@ export default function ContentSection({
 				)}
 				tags={
 					<SectionTags
-						additionCount={section.additionCount}
+						additionCount={
+							previewPortletDataHandlerSection.additionCount
+						}
 						deletionCount={
-							showDeletions ? section.deletionCount : undefined
+							showDeletions
+								? previewPortletDataHandlerSection.deletionCount
+								: undefined
 						}
 					/>
 				}
 			>
-				{allPreviewPortletDataHandlers.map((context) => (
-					<PortletDataControl
-						compact={compact}
-						control={context}
-						key={context.name}
-						onChange={(controlValue) =>
-							onChange(
-								updateSelection(
-									sectionSelection,
-									context.name,
-									controlValue
+				{allPreviewPortletDataHandlers.map(
+					(previewPortletDataHandler) => (
+						<PortletDataControl
+							compact={compact}
+							key={previewPortletDataHandler.name}
+							onChange={(portletDataHandlerSelection) =>
+								onChange(
+									updateSelection(
+										sectionSelection,
+										previewPortletDataHandler.name,
+										portletDataHandlerSelection
+									)
 								)
-							)
-						}
-						pageTreeModalConfiguration={pageTreeModalConfiguration}
-						showDeletions={showDeletions}
-						topLevel
-						value={sectionSelection[context.name]}
-					/>
-				))}
+							}
+							pageTreeModalConfiguration={
+								pageTreeModalConfiguration
+							}
+							portletDataHandlerSelection={
+								sectionSelection[previewPortletDataHandler.name]
+							}
+							previewPortletDataHandlerControl={
+								previewPortletDataHandler
+							}
+							showDeletions={showDeletions}
+							topLevel
+						/>
+					)
+				)}
 
 				{sectionFooters.map((sectionFooter) => (
 					<SectionFooter
 						fields={sectionFooter.fields}
 						key={sectionFooter.name}
 						name={sectionFooter.name}
-						onChange={(sectionFooterValue) =>
+						onChange={(portletDataHandlerSelection) =>
 							onChange(
 								updateSelection(
 									sectionSelection,
 									sectionFooter.name,
-									sectionFooterValue
+									portletDataHandlerSelection
 								)
 							)
 						}
+						portletDataHandlerSelection={
+							sectionSelection[sectionFooter.name]
+						}
 						subtitle={sectionFooter.subtitle}
 						title={sectionFooter.title}
-						value={sectionSelection[sectionFooter.name]}
 					/>
 				))}
 			</CollapsibleGroup>

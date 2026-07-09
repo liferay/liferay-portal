@@ -4,7 +4,7 @@
  */
 
 import {ImportPreview} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
-import {mockPortletDataHandlerSections} from './mockPortletDataHandlerSections';
+import {mockPreviewPortletDataHandlerSections} from './mockPortletDataHandlerSections';
 
 export const mockImportPreview: ImportPreview = {
 	additionCount: 42,
@@ -13,5 +13,5 @@ export const mockImportPreview: ImportPreview = {
 	exportDate: '2000-07-27T00:00:00Z',
 	fileName: 'site.lar',
 	fileSize: 4096,
-	previewPortletDataHandlerSections: mockPortletDataHandlerSections,
+	previewPortletDataHandlerSections: mockPreviewPortletDataHandlerSections,
 };

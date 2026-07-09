@@ -16,7 +16,7 @@ import {
 	withSelectedLayoutSetCount,
 } from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
 
-function getSections(
+function getPreviewPortletDataHandlerSections(
 	publicAdditionCount: number,
 	privateAdditionCount: number,
 	publicDeletionCount = 0,
@@ -75,17 +75,35 @@ const publicSelection = {
 
 describe('contentSelection layout set counts', () => {
 	it('reads the public and private addition counts from the choices', () => {
-		const sections = getSections(2, 5);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5);
 
-		expect(getLayoutSetCount(sections, false)).toBe(2);
-		expect(getLayoutSetCount(sections, true)).toBe(5);
+		expect(
+			getLayoutSetCount(previewPortletDataHandlerSections, false)
+		).toBe(2);
+		expect(getLayoutSetCount(previewPortletDataHandlerSections, true)).toBe(
+			5
+		);
 	});
 
 	it('reads the public and private deletion counts from the choices', () => {
-		const sections = getSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
 
-		expect(getLayoutSetCount(sections, false, 'deletionCount')).toBe(1);
-		expect(getLayoutSetCount(sections, true, 'deletionCount')).toBe(3);
+		expect(
+			getLayoutSetCount(
+				previewPortletDataHandlerSections,
+				false,
+				'deletionCount'
+			)
+		).toBe(1);
+		expect(
+			getLayoutSetCount(
+				previewPortletDataHandlerSections,
+				true,
+				'deletionCount'
+			)
+		).toBe(3);
 	});
 
 	it('detects whether the private layout set is selected', () => {
@@ -95,43 +113,75 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('keeps the public counts in the totals when the public set is selected', () => {
-		const sections = getSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
 
-		expect(getSelectedItemsCount(10, sections, publicSelection)).toBe(10);
-		expect(getSelectedDeletionCount(4, sections, publicSelection)).toBe(4);
+		expect(
+			getSelectedItemsCount(
+				10,
+				previewPortletDataHandlerSections,
+				publicSelection
+			)
+		).toBe(10);
+		expect(
+			getSelectedDeletionCount(
+				4,
+				previewPortletDataHandlerSections,
+				publicSelection
+			)
+		).toBe(4);
 	});
 
 	it('swaps in the private counts in the totals when private is selected', () => {
-		const sections = getSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
 
-		expect(getSelectedItemsCount(10, sections, privateSelection)).toBe(13);
-		expect(getSelectedDeletionCount(4, sections, privateSelection)).toBe(6);
+		expect(
+			getSelectedItemsCount(
+				10,
+				previewPortletDataHandlerSections,
+				privateSelection
+			)
+		).toBe(13);
+		expect(
+			getSelectedDeletionCount(
+				4,
+				previewPortletDataHandlerSections,
+				privateSelection
+			)
+		).toBe(6);
 	});
 
 	it('leaves the sections untouched when the public set is selected', () => {
-		const sections = getSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
 
-		expect(withSelectedLayoutSetCount(sections, publicSelection)).toBe(
-			sections
-		);
+		expect(
+			withSelectedLayoutSetCount(
+				previewPortletDataHandlerSections,
+				publicSelection
+			)
+		).toBe(previewPortletDataHandlerSections);
 	});
 
 	it('adjusts the section and handler counts when private is selected', () => {
-		const sections = getSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections =
+			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
 
-		const [section] = withSelectedLayoutSetCount(
-			sections,
+		const [previewPortletDataHandlerSection] = withSelectedLayoutSetCount(
+			previewPortletDataHandlerSections,
 			privateSelection
 		);
 
-		expect(section.additionCount).toBe(5);
-		expect(section.deletionCount).toBe(3);
+		expect(previewPortletDataHandlerSection.additionCount).toBe(5);
+		expect(previewPortletDataHandlerSection.deletionCount).toBe(3);
 
-		const handler = section.previewPortletDataHandlers.find(
-			({name}) => name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
-		);
+		const previewPortletDataHandler =
+			previewPortletDataHandlerSection.previewPortletDataHandlers.find(
+				({name}) => name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+			);
 
-		expect(handler?.additionCount).toBe(5);
-		expect(handler?.deletionCount).toBe(3);
+		expect(previewPortletDataHandler?.additionCount).toBe(5);
+		expect(previewPortletDataHandler?.deletionCount).toBe(3);
 	});
 });

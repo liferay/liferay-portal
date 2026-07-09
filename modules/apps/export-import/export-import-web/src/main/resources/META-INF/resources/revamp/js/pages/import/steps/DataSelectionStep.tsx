@@ -54,8 +54,10 @@ export default function DataSelectionStep({
 				commentsAndRatingsEnabled={commentsAndRatingsEnabled}
 				lookAndFeelEnabled={lookAndFeelEnabled}
 				name="contentSelection"
+				previewPortletDataHandlerSections={
+					importPreview.previewPortletDataHandlerSections
+				}
 				process="import"
-				sections={importPreview.previewPortletDataHandlerSections}
 			/>
 		</>
 	);

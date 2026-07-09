@@ -13,7 +13,7 @@ import PageTreeModal, {
 	PageTreeModalConfiguration,
 } from '../../../pages/export/components/PageTreeModal';
 import {
-	HandlerSelection,
+	PortletDataHandlerSelection,
 	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
 import SectionTags from './SectionTags';
@@ -22,9 +22,9 @@ interface Props {
 	additionCount?: number;
 	deletionCount?: number;
 	label: string;
-	onChange: (value: HandlerSelection | undefined) => void;
+	onChange: (value: PortletDataHandlerSelection | undefined) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
-	value: HandlerSelection | undefined;
+	portletDataHandlerSelection: PortletDataHandlerSelection | undefined;
 }
 
 function SelectPagesButton({
@@ -98,7 +98,7 @@ export default function LayoutSetControl({
 	label,
 	onChange,
 	pageTreeModalConfiguration,
-	value,
+	portletDataHandlerSelection,
 }: Props) {
 	const {privateLayoutsEnabled, ...modalConfiguration} =
 		pageTreeModalConfiguration;
@@ -108,12 +108,14 @@ export default function LayoutSetControl({
 	const [showModal, setShowModal] = useState(false);
 
 	const {layoutIds = [], privateLayout = false} = (
-		typeof value === 'object' ? value : {}
+		typeof portletDataHandlerSelection === 'object'
+			? portletDataHandlerSelection
+			: {}
 	) as {layoutIds?: number[]; privateLayout?: boolean};
 
-	const isAll = isAllLayoutsSelected(value);
+	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
 
-	const selected = typeof value === 'object';
+	const selected = typeof portletDataHandlerSelection === 'object';
 
 	const openModal = () => setShowModal(true);
 
@@ -158,7 +160,9 @@ export default function LayoutSetControl({
 			{privateLayoutsEnabled && selected && (
 				<LayoutVisibilitySelector
 					label={label}
-					onSetMode={(next) => onChange({privateLayout: next})}
+					onSetMode={(nextPrivateLayout) =>
+						onChange({privateLayout: nextPrivateLayout})
+					}
 					privateLayout={privateLayout}
 				/>
 			)}
@@ -169,10 +173,12 @@ export default function LayoutSetControl({
 					initialAll={isAll}
 					initialSelectedIds={layoutIds.map(String)}
 					onClose={() => setShowModal(false)}
-					onSubmit={(result) => {
+					onSubmit={(selectedPortletDataHandlerSelection) => {
 						setShowModal(false);
 
-						onChange(result ?? undefined);
+						onChange(
+							selectedPortletDataHandlerSelection ?? undefined
+						);
 					}}
 					privateLayout={privateLayout}
 				/>

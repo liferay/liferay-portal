@@ -5,31 +5,32 @@
 
 import {PreviewPortletDataHandlerSection} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
 
-export const mockSectionsForFilterTest: PreviewPortletDataHandlerSection[] = [
-	{
-		additionCount: 5,
-		deletionCount: 0,
-		label: 'Additions Only',
-		name: 'additions-only',
-		previewPortletDataHandlers: [],
-	},
-	{
-		additionCount: 0,
-		deletionCount: 3,
-		label: 'Deletions Only',
-		name: 'deletions-only',
-		previewPortletDataHandlers: [],
-	},
-	{
-		additionCount: 2,
-		deletionCount: 4,
-		label: 'Both',
-		name: 'both',
-		previewPortletDataHandlers: [],
-	},
-	{
-		label: 'No Counts',
-		name: 'no-counts',
-		previewPortletDataHandlers: [],
-	},
-];
+export const mockPreviewPortletDataHandlerSectionsForFilterTest: PreviewPortletDataHandlerSection[] =
+	[
+		{
+			additionCount: 5,
+			deletionCount: 0,
+			label: 'Additions Only',
+			name: 'additions-only',
+			previewPortletDataHandlers: [],
+		},
+		{
+			additionCount: 0,
+			deletionCount: 3,
+			label: 'Deletions Only',
+			name: 'deletions-only',
+			previewPortletDataHandlers: [],
+		},
+		{
+			additionCount: 2,
+			deletionCount: 4,
+			label: 'Both',
+			name: 'both',
+			previewPortletDataHandlers: [],
+		},
+		{
+			label: 'No Counts',
+			name: 'no-counts',
+			previewPortletDataHandlers: [],
+		},
+	];

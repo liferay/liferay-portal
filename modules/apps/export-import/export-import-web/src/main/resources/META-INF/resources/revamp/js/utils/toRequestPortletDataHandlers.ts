@@ -11,14 +11,14 @@ import {
 	RequestPortletDataHandlerControl,
 } from '../types/portletDataHandler';
 import {
-	HandlerSelection,
 	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
 	PRIVATE_PAGES_CONTROL_NAME,
 	PUBLIC_PAGES_CONTROL_NAME,
+	PortletDataHandlerSelection,
 } from './contentSelection';
 
 export function toRequestPortletDataHandlers(
-	sections: PreviewPortletDataHandlerSection[],
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	contentSelection: ContentSelection | undefined
 ): RequestPortletDataHandler[] {
 	if (!contentSelection) {
@@ -27,35 +27,45 @@ export function toRequestPortletDataHandlers(
 
 	const requestPortletDataHandlers: RequestPortletDataHandler[] = [];
 
-	for (const section of sections) {
-		const sectionSelection = contentSelection[section.name];
+	for (const previewPortletDataHandlerSection of previewPortletDataHandlerSections) {
+		const sectionSelection =
+			contentSelection[previewPortletDataHandlerSection.name];
 
 		if (!sectionSelection) {
 			continue;
 		}
 
-		for (const handler of section.previewPortletDataHandlers ?? []) {
-			const handlerSelection = sectionSelection[handler.name];
+		for (const previewPortletDataHandler of previewPortletDataHandlerSection.previewPortletDataHandlers ??
+			[]) {
+			const portletDataHandlerSelection =
+				sectionSelection[previewPortletDataHandler.name];
 
-			if (!handlerSelection) {
+			if (!portletDataHandlerSelection) {
 				continue;
 			}
 
-			if (handler.name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY) {
+			if (
+				previewPortletDataHandler.name ===
+				LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+			) {
 				requestPortletDataHandlers.push(
-					toLayoutSetRequestHandler(handler.name, handlerSelection)
+					toLayoutSetRequestPortletDataHandler(
+						previewPortletDataHandler.name,
+						portletDataHandlerSelection
+					)
 				);
 
 				continue;
 			}
 
-			const requestPortletDataHandlerControls = toRequestControls(
-				handler.previewPortletDataHandlerControls,
-				handlerSelection
-			);
+			const requestPortletDataHandlerControls =
+				toRequestPortletDataHandlerControls(
+					previewPortletDataHandler.previewPortletDataHandlerControls,
+					portletDataHandlerSelection
+				);
 
 			requestPortletDataHandlers.push({
-				name: handler.name,
+				name: previewPortletDataHandler.name,
 				...(requestPortletDataHandlerControls.length && {
 					requestPortletDataHandlerControls,
 				}),
@@ -66,64 +76,81 @@ export function toRequestPortletDataHandlers(
 	return requestPortletDataHandlers;
 }
 
-function toRequestControls(
-	controls: PreviewPortletDataHandlerControl[] | undefined,
-	selection: HandlerSelection
+function toRequestPortletDataHandlerControls(
+	previewPortletDataHandlerControls:
+		| PreviewPortletDataHandlerControl[]
+		| undefined,
+	portletDataHandlerSelection: PortletDataHandlerSelection
 ): RequestPortletDataHandlerControl[] {
-	if (!controls || typeof selection !== 'object') {
+	if (
+		!previewPortletDataHandlerControls ||
+		typeof portletDataHandlerSelection !== 'object'
+	) {
 		return [];
 	}
 
-	const map = selection as Record<string, HandlerSelection>;
-	const result: RequestPortletDataHandlerControl[] = [];
+	const portletDataHandlerSelections = portletDataHandlerSelection as Record<
+		string,
+		PortletDataHandlerSelection
+	>;
+	const requestPortletDataHandlerControls: RequestPortletDataHandlerControl[] =
+		[];
 
-	for (const control of controls) {
-		const value = map[control.name];
+	for (const previewPortletDataHandlerControl of previewPortletDataHandlerControls) {
+		const nestedPortletDataHandlerSelection =
+			portletDataHandlerSelections[previewPortletDataHandlerControl.name];
 
-		if (!value) {
+		if (!nestedPortletDataHandlerSelection) {
 			continue;
 		}
 
-		if (typeof value === 'string') {
-			result.push({name: control.name, values: [value]});
+		if (typeof nestedPortletDataHandlerSelection === 'string') {
+			requestPortletDataHandlerControls.push({
+				name: previewPortletDataHandlerControl.name,
+				values: [nestedPortletDataHandlerSelection],
+			});
 
 			continue;
 		}
 
-		if (value === true) {
-			result.push({name: control.name});
+		if (nestedPortletDataHandlerSelection === true) {
+			requestPortletDataHandlerControls.push({
+				name: previewPortletDataHandlerControl.name,
+			});
 
 			continue;
 		}
 
-		const nested =
-			'previewPortletDataHandlerControls' in control
-				? toRequestControls(
-						control.previewPortletDataHandlerControls,
-						value as HandlerSelection
+		const nestedRequestPortletDataHandlerControls =
+			'previewPortletDataHandlerControls' in
+			previewPortletDataHandlerControl
+				? toRequestPortletDataHandlerControls(
+						previewPortletDataHandlerControl.previewPortletDataHandlerControls,
+						nestedPortletDataHandlerSelection as PortletDataHandlerSelection
 					)
 				: [];
 
-		result.push({
-			name: control.name,
-			...(nested.length && {
-				requestPortletDataHandlerControls: nested,
+		requestPortletDataHandlerControls.push({
+			name: previewPortletDataHandlerControl.name,
+			...(nestedRequestPortletDataHandlerControls.length && {
+				requestPortletDataHandlerControls:
+					nestedRequestPortletDataHandlerControls,
 			}),
 		});
 	}
 
-	return result;
+	return requestPortletDataHandlerControls;
 }
 
-function toLayoutSetRequestHandler(
+function toLayoutSetRequestPortletDataHandler(
 	name: string,
-	selection: HandlerSelection
+	portletDataHandlerSelection: PortletDataHandlerSelection
 ): RequestPortletDataHandler {
-	if (typeof selection !== 'object') {
+	if (typeof portletDataHandlerSelection !== 'object') {
 		return {name};
 	}
 
-	const {layoutIds, privateLayout = false} = selection as {
+	const {layoutIds, privateLayout = false} = portletDataHandlerSelection as {
 		layoutIds?: number[];
 		privateLayout?: boolean;
 	};

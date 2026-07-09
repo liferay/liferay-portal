@@ -64,20 +64,23 @@ export function NewExport({
 			setLoading(true);
 			setError(null);
 
-			getExportPreview(exportPreviewParams).then((result) => {
-				if (result.error !== null) {
-					setError(result.error);
-				}
-				else {
-					setPreview(result.data);
-
-					if (!initialPreviewRef.current) {
-						initialPreviewRef.current = result.data;
+			getExportPreview(exportPreviewParams).then(
+				(exportPreviewResponse) => {
+					if (exportPreviewResponse.error !== null) {
+						setError(exportPreviewResponse.error);
 					}
-				}
+					else {
+						setPreview(exportPreviewResponse.data);
 
-				setLoading(false);
-			});
+						if (!initialPreviewRef.current) {
+							initialPreviewRef.current =
+								exportPreviewResponse.data;
+						}
+					}
+
+					setLoading(false);
+				}
+			);
 		},
 		[]
 	);
@@ -94,7 +97,8 @@ export function NewExport({
 		return <ClayAlert displayType="danger">{error}</ClayAlert>;
 	}
 
-	const sections = preview?.previewPortletDataHandlerSections ?? [];
+	const previewPortletDataHandlerSections =
+		preview?.previewPortletDataHandlerSections ?? [];
 
 	const handleApplyFilter = (filterValues: DateFilterValues) => {
 		appliedDateFilterRef.current = normalizeDateFilter(filterValues);
@@ -134,7 +138,7 @@ export function NewExport({
 						permissions: !!values.permissions,
 						requestPortletDataHandlers:
 							toRequestPortletDataHandlers(
-								sections,
+								previewPortletDataHandlerSections,
 								values.contentSelection
 							),
 					},
@@ -186,12 +190,12 @@ export function NewExport({
 							}
 							deletionCount={getSelectedDeletionCount(
 								preview?.deletionCount,
-								sections,
+								previewPortletDataHandlerSections,
 								contentSelection
 							)}
 							itemsCount={getSelectedItemsCount(
 								preview?.additionCount,
-								sections,
+								previewPortletDataHandlerSections,
 								contentSelection
 							)}
 							loading={loading}
@@ -200,8 +204,8 @@ export function NewExport({
 							pageTreeModalConfiguration={
 								pageTreeModalConfiguration
 							}
-							sections={withSelectedLayoutSetCount(
-								sections,
+							previewPortletDataHandlerSections={withSelectedLayoutSetCount(
+								previewPortletDataHandlerSections,
 								contentSelection
 							)}
 						/>

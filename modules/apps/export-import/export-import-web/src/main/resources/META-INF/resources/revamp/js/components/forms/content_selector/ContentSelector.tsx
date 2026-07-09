@@ -20,37 +20,39 @@ export type ContentSelection = Record<string, SectionSelection>;
 interface ContentSelectorProps {
 	'aria-labelledby'?: string;
 	'commentsAndRatingsEnabled'?: boolean;
+	'contentSelection': ContentSelection | undefined;
 	'errorMessage'?: string;
 	'lookAndFeelEnabled'?: boolean;
 	'name': string;
 	'onChange': (value: ContentSelection | undefined) => void;
 	'pageTreeModalConfiguration'?: PageTreeModalConfiguration;
+	'previewPortletDataHandlerSections': PreviewPortletDataHandlerSection[];
 	'process'?: ExportImportProcess;
-	'sections': PreviewPortletDataHandlerSection[];
 	'showDeletions'?: boolean;
-	'value': ContentSelection | undefined;
 }
 
 export default function ContentSelector({
 	'aria-labelledby': ariaLabelledby,
 	commentsAndRatingsEnabled = false,
+	contentSelection = {},
 	errorMessage,
 	lookAndFeelEnabled = false,
 	name,
 	onChange,
 	pageTreeModalConfiguration,
 	process = 'export',
-	sections,
+	previewPortletDataHandlerSections,
 	showDeletions,
-	value,
 }: ContentSelectorProps) {
-	const currentValue = value || {};
 	const errorId = errorMessage ? `${name}-error-message` : undefined;
 
-	const visibleSections = getVisibleSections(sections, {
-		lookAndFeelEnabled,
-		showDeletions,
-	});
+	const visibleSections = getVisibleSections(
+		previewPortletDataHandlerSections,
+		{
+			lookAndFeelEnabled,
+			showDeletions,
+		}
+	);
 
 	return (
 		<div
@@ -61,25 +63,33 @@ export default function ContentSelector({
 			role="group"
 		>
 			{visibleSections.map(
-				(section: PreviewPortletDataHandlerSection) => (
+				(
+					previewPortletDataHandlerSection: PreviewPortletDataHandlerSection
+				) => (
 					<ContentSection
 						commentsAndRatingsEnabled={commentsAndRatingsEnabled}
-						key={section.name}
+						key={previewPortletDataHandlerSection.name}
 						lookAndFeelEnabled={lookAndFeelEnabled}
-						onChange={(sectionValue) =>
+						onChange={(sectionSelection) =>
 							onChange(
 								updateSelection(
-									currentValue,
-									section.name,
-									sectionValue
+									contentSelection,
+									previewPortletDataHandlerSection.name,
+									sectionSelection
 								)
 							)
 						}
 						pageTreeModalConfiguration={pageTreeModalConfiguration}
+						previewPortletDataHandlerSection={
+							previewPortletDataHandlerSection
+						}
 						process={process}
-						section={section}
+						sectionSelection={
+							contentSelection[
+								previewPortletDataHandlerSection.name
+							]
+						}
 						showDeletions={showDeletions}
-						value={currentValue[section.name]}
 					/>
 				)
 			)}

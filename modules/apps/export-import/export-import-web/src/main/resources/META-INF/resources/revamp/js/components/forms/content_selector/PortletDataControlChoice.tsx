@@ -11,30 +11,32 @@ import FieldSelectWithOption from '../FieldSelectWithOption';
 
 interface PortletDataControlChoiceProps {
 	className?: string;
-	control: PreviewPortletDataHandlerChoice;
 	onChange: (value: string) => void;
+	previewPortletDataHandlerChoice: PreviewPortletDataHandlerChoice;
 	value: string;
 }
 
 export default function PortletDataControlChoice({
 	className = 'ml-1',
-	control,
 	onChange,
+	previewPortletDataHandlerChoice,
 	value,
 }: PortletDataControlChoiceProps) {
 	return (
 		<FieldSelectWithOption
 			className="w-auto"
 			formGroupProps={{className: classnames('mb-0', className)}}
-			label={control.label}
-			name={control.name}
+			label={previewPortletDataHandlerChoice.label}
+			name={previewPortletDataHandlerChoice.name}
 			onChange={(event) => {
 				onChange(event.target.value);
 			}}
-			options={control.choices.map(({label, name}) => ({
-				label,
-				value: name,
-			}))}
+			options={previewPortletDataHandlerChoice.choices.map(
+				({label, name}) => ({
+					label,
+					value: name,
+				})
+			)}
 			value={value}
 		/>
 	);

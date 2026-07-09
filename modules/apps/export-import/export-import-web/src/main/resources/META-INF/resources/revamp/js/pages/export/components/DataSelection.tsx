@@ -27,7 +27,7 @@ export default function DataSelection({
 	lookAndFeelEnabled = false,
 	onApplyFilter,
 	pageTreeModalConfiguration,
-	sections,
+	previewPortletDataHandlerSections,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	deletionCount?: number;
@@ -36,7 +36,7 @@ export default function DataSelection({
 	lookAndFeelEnabled?: boolean;
 	onApplyFilter: (filterValues: DateFilterValues) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
-	sections: PreviewPortletDataHandlerSection[];
+	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];
 }) {
 	return (
 		<>
@@ -95,8 +95,10 @@ export default function DataSelection({
 						lookAndFeelEnabled={lookAndFeelEnabled}
 						name="contentSelection"
 						pageTreeModalConfiguration={pageTreeModalConfiguration}
+						previewPortletDataHandlerSections={
+							previewPortletDataHandlerSections
+						}
 						process="export"
-						sections={sections}
 					/>
 				)}
 			</div>

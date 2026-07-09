@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import {HandlerSelection} from '../../../utils/contentSelection';
+import {PortletDataHandlerSelection} from '../../../utils/contentSelection';
 import {FieldCheckbox} from '../FieldCheckbox';
 
 export interface SectionFooterField {
@@ -16,21 +16,25 @@ export interface SectionFooterField {
 interface SectionFooterProps {
 	fields: readonly SectionFooterField[];
 	name: string;
-	onChange: (value: HandlerSelection | undefined) => void;
+	onChange: (value: PortletDataHandlerSelection | undefined) => void;
+	portletDataHandlerSelection: PortletDataHandlerSelection | undefined;
 	subtitle?: string;
 	title: string;
-	value: HandlerSelection | undefined;
 }
 
 export default function SectionFooter({
 	fields,
 	name,
 	onChange,
+	portletDataHandlerSelection,
 	subtitle,
 	title,
-	value,
 }: SectionFooterProps) {
-	const selection = value && typeof value === 'object' ? value : undefined;
+	const portletDataHandlerSelections =
+		portletDataHandlerSelection &&
+		typeof portletDataHandlerSelection === 'object'
+			? portletDataHandlerSelection
+			: undefined;
 
 	return (
 		<>
@@ -49,28 +53,39 @@ export default function SectionFooter({
 					{fields.map((field) => (
 						<FieldCheckbox
 							bordered={false}
-							checked={Boolean(selection?.[field.key])}
+							checked={Boolean(
+								portletDataHandlerSelections?.[field.key]
+							)}
 							key={field.key}
 							label={field.label}
 							name={`${name}.${field.key}`}
 							onChange={(checked) => {
-								const nextSelection: Record<string, true> = {};
+								const nextPortletDataHandlerSelections: Record<
+									string,
+									true
+								> = {};
 
 								fields.forEach((otherField) => {
 									if (
 										otherField.key === field.key
 											? checked
 											: Boolean(
-													selection?.[otherField.key]
+													portletDataHandlerSelections?.[
+														otherField.key
+													]
 												)
 									) {
-										nextSelection[otherField.key] = true;
+										nextPortletDataHandlerSelections[
+											otherField.key
+										] = true;
 									}
 								});
 
 								onChange(
-									Object.keys(nextSelection).length
-										? (nextSelection as HandlerSelection)
+									Object.keys(
+										nextPortletDataHandlerSelections
+									).length
+										? (nextPortletDataHandlerSelections as PortletDataHandlerSelection)
 										: undefined
 								);
 							}}
