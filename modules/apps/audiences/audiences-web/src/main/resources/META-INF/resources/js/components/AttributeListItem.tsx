@@ -5,12 +5,17 @@
 
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useEffect} from 'react';
 import {useDrag} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
 import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
+import {
+	useMovementSource,
+	useSetMovementSource,
+} from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria} from '../types';
 
 interface IProps {
@@ -36,6 +41,13 @@ export default function AttributeListItem({
 		},
 	});
 
+	const movementSource = useMovementSource();
+	const setMovementSource = useSetMovementSource();
+
+	const isMovementSource =
+		!movementSource?.ruleId &&
+		movementSource?.audiencesCriteria?.key === audiencesCriteria.key;
+
 	useEffect(() => {
 		previewRef(getEmptyImage(), {captureDraggingState: true});
 	}, [previewRef]);
@@ -48,14 +60,33 @@ export default function AttributeListItem({
 
 	return (
 		<div
+			aria-label={sub(
+				Liferay.Language.get('add-x'),
+				audiencesCriteria.label
+			)}
 			className={classNames(
 				'align-items-center audience-builder-attribute c-gap-3 d-flex px-2 rounded',
 				{
-					'audience-builder-attribute--dragging': isDragging,
+					'audience-builder-attribute--dragging':
+						isDragging || isMovementSource,
 				}
 			)}
 			onFocus={navigationProps.onFocus}
-			onKeyDown={navigationProps.onKeyDown}
+			onKeyDown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+
+					setMovementSource({
+						audiencesCriteria,
+						icon: audiencesCriteria.icon,
+						name: audiencesCriteria.label,
+					});
+
+					return;
+				}
+
+				navigationProps.onKeyDown(event);
+			}}
 			ref={setRefs}
 			role="menuitem"
 			tabIndex={navigationProps.tabIndex}

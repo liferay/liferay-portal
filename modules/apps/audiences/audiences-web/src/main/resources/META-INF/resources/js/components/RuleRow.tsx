@@ -14,11 +14,15 @@ import React, {useRef, useState} from 'react';
 import {DropTargetMonitor, useDrop} from 'react-dnd';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
+import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
 import {getOperatorLabel, getOperators} from '../constants/operators';
 import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
+import {
+	useMovementSource,
+	useMovementTarget,
+	useSetMovementSource,
+} from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
-
-type DropPosition = 'bottom' | 'top' | null;
 
 interface DragItem {
 	icon: string;
@@ -48,7 +52,7 @@ interface IProps {
 const getDropPosition = (
 	ref: React.RefObject<HTMLElement>,
 	monitor: DropTargetMonitor
-): DropPosition => {
+): DropPosition | null => {
 	const clientOffset = monitor.getClientOffset();
 
 	if (!ref.current || !clientOffset) {
@@ -74,7 +78,7 @@ export default function RuleRow({
 	onReorder,
 	rule,
 }: IProps) {
-	const dragHandlerRef = useRef<HTMLSpanElement>(null);
+	const dragHandlerRef = useRef<HTMLButtonElement>(null);
 	const dropItemRef = useRef<HTMLDivElement | null>(null);
 
 	const setRowRef = (element: HTMLDivElement | null) => {
@@ -83,7 +87,22 @@ export default function RuleRow({
 		navigationProps.ref(element);
 	};
 
-	const [dropPosition, setDropPosition] = useState<DropPosition>(null);
+	const [dropPosition, setDropPosition] = useState<DropPosition | null>(null);
+
+	const movementSource = useMovementSource();
+	const movementTarget = useMovementTarget();
+	const setMovementSource = useSetMovementSource();
+
+	const isMovementSource = movementSource?.ruleId === rule.id;
+
+	const isMovementTarget =
+		Boolean(movementSource) && movementTarget.index === index;
+
+	const isMovementTargetBottomPosition =
+		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
+
+	const isMovementTargetTopPosition =
+		isMovementTarget && movementTarget.position === DROP_POSITIONS.top;
 
 	const {isDragging, isDropBottomPosition, isDropTopPosition} =
 		useDragAndDrop<DragItem>({
@@ -111,7 +130,7 @@ export default function RuleRow({
 			);
 		},
 		hover: (item, monitor) => {
-			let dropPosition: DropPosition = null;
+			let dropPosition: DropPosition | null = null;
 
 			if (isOver) {
 				dropPosition = getDropPosition(dropItemRef, monitor);
@@ -127,7 +146,16 @@ export default function RuleRow({
 				aria-label={Liferay.Language.get(
 					'the-criteria-is-no-longer-available'
 				)}
-				className="align-items-center audience-builder-rule audience-builder-rule--error d-flex justify-content-between p-3"
+				className={classNames(
+					'align-items-center audience-builder-rule audience-builder-rule--error d-flex justify-content-between p-3',
+					{
+						'audience-builder-rule--drop-bottom':
+							isDropBottomPosition ||
+							isMovementTargetBottomPosition,
+						'audience-builder-rule--drop-top':
+							isDropTopPosition || isMovementTargetTopPosition,
+					}
+				)}
 				onFocus={navigationProps.onFocus}
 				onKeyDown={navigationProps.onKeyDown}
 				ref={setRowRef}
@@ -172,13 +200,16 @@ export default function RuleRow({
 					'align-items-center audience-builder-rule d-flex justify-content-between p-3',
 					`audience-builder-rule--${iconColor}`,
 					{
-						'audience-builder-rule--dragging': isDragging,
+						'audience-builder-rule--dragging':
+							isDragging || isMovementSource,
 						'audience-builder-rule--drop-bottom':
 							isDropBottomPosition ||
-							(isOver && dropPosition === 'bottom'),
+							(isOver && dropPosition === 'bottom') ||
+							isMovementTargetBottomPosition,
 						'audience-builder-rule--drop-top':
 							isDropTopPosition ||
-							(isOver && dropPosition === 'top'),
+							(isOver && dropPosition === 'top') ||
+							isMovementTargetTopPosition,
 					}
 				)}
 				onFocus={navigationProps.onFocus}
@@ -188,20 +219,26 @@ export default function RuleRow({
 				tabIndex={navigationProps.tabIndex}
 			>
 				<div className="align-items-center c-gap-3 d-flex">
-					<span
-						aria-label={sub(
-							Liferay.Language.get('drag-x'),
-							Liferay.Language.get('condition')
-						)}
+					<ClayButtonWithIcon
+						aria-label={sub(Liferay.Language.get('move-x'), label)}
+						borderless
 						className="audience-builder-grip text-secondary"
+						displayType="secondary"
+						onClick={(event) => {
+							if (event.detail === 0) {
+								setMovementSource({
+									icon: audiencesCriteria.icon,
+									name: label,
+									ruleId: rule.id,
+								});
+							}
+						}}
 						ref={dragHandlerRef}
-						title={sub(
-							Liferay.Language.get('drag-x'),
-							Liferay.Language.get('condition')
-						)}
-					>
-						<ClayIcon symbol="drag" />
-					</span>
+						size="sm"
+						symbol="drag"
+						tabIndex={navigationProps.tabIndex}
+						title={sub(Liferay.Language.get('move-x'), label)}
+					/>
 
 					<span className="font-weight-semi-bold text-4 text-nowrap">
 						{label}
