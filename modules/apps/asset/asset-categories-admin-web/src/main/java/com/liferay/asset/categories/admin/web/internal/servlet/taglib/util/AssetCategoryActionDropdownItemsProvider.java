@@ -108,6 +108,7 @@ public class AssetCategoryActionDropdownItemsProvider {
 					DropdownItemListBuilder.add(
 						() ->
 							!_assetCategoriesLimitExceeded &&
+							!_isSystemCategory(category) &&
 							_hasPermission(category, ActionKeys.ADD_CATEGORY),
 						dropdownItem -> {
 							dropdownItem.setHref(
