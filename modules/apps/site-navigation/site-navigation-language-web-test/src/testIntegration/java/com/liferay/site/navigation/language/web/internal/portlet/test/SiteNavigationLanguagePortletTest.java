@@ -29,7 +29,7 @@ public class SiteNavigationLanguagePortletTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testPortletIsInstanceable() {
+	public void testIsInstanceable() {
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(
 			SiteNavigationLanguagePortletKeys.SITE_NAVIGATION_LANGUAGE);
 
