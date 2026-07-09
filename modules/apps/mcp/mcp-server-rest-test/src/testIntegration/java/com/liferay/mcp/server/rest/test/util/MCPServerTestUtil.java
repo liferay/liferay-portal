@@ -32,7 +32,7 @@ import java.util.Map;
 public class MCPServerTestUtil {
 
 	public static ObjectEntry addDataMaskObjectEntry(
-			String name, String detectionRegex, String replacementValue)
+			String detectionRegex, String name, String replacementValue)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -58,8 +58,8 @@ public class MCPServerTestUtil {
 	}
 
 	public static ObjectEntry addMCPServerProfileDataMaskObjectEntry(
-			String mcpServerProfileExternalReferenceCode,
-			long maskObjectEntryId, int executionOrder)
+			long dataMaskObjectEntryId, int executionOrder,
+			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -76,7 +76,7 @@ public class MCPServerTestUtil {
 			HashMapBuilder.<String, Serializable>put(
 				"dataMaskExternalReferenceCode",
 				ObjectEntryLocalServiceUtil.fetchObjectEntry(
-					maskObjectEntryId
+					dataMaskObjectEntryId
 				).getExternalReferenceCode()
 			).put(
 				"executionOrder", executionOrder
@@ -88,7 +88,7 @@ public class MCPServerTestUtil {
 	}
 
 	public static ObjectEntry addMCPServerProfileObjectEntry(
-			String name, String description, String... tools)
+			String description, String name, String... tools)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -112,7 +112,7 @@ public class MCPServerTestUtil {
 	}
 
 	public static void deleteMCPServerProfileDataMaskObjectEntry(
-			ObjectEntry objectEntry, String deleteReason)
+			String deleteReason, ObjectEntry objectEntry)
 		throws Exception {
 
 		ObjectEntryLocalServiceUtil.updateObjectEntry(
@@ -131,13 +131,13 @@ public class MCPServerTestUtil {
 	public static ObjectEntry fetchDataMaskObjectEntry(String name)
 		throws Exception {
 
-		return _fetchObjectEntry("L_DATA_MASK", name);
+		return _fetchObjectEntry(name, "L_DATA_MASK");
 	}
 
 	public static ObjectEntry fetchMCPServerProfileObjectEntry(String name)
 		throws Exception {
 
-		return _fetchObjectEntry("L_MCP_SERVER_PROFILE", name);
+		return _fetchObjectEntry(name, "L_MCP_SERVER_PROFILE");
 	}
 
 	public static String getAuditedDeleteReason(ObjectEntry objectEntry)
@@ -190,7 +190,7 @@ public class MCPServerTestUtil {
 	}
 
 	private static ObjectEntry _fetchObjectEntry(
-			String objectDefinitionExternalReferenceCode, String name)
+			String name, String objectDefinitionExternalReferenceCode)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =

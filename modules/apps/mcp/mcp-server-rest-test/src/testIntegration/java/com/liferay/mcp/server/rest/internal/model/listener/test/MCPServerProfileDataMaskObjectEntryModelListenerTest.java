@@ -54,8 +54,8 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				mcpServerProfileObjectEntry.getExternalReferenceCode(),
-				dataMaskObjectEntry.getObjectEntryId(), 1);
+				dataMaskObjectEntry.getObjectEntryId(), 1,
+				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
@@ -69,7 +69,7 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 				mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
 
 		MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
-			mcpServerProfileDataMaskObjectEntry, RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), mcpServerProfileDataMaskObjectEntry);
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(

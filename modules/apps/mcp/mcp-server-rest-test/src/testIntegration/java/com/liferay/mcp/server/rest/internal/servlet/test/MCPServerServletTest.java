@@ -196,17 +196,17 @@ public class MCPServerServletTest {
 
 			String profileName = RandomTestUtil.randomString();
 
-			ObjectEntry profileObjectEntry =
+			ObjectEntry mcpServerProfileObjectEntry =
 				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					profileName, "Contact: " + _SAMPLE_EMAIL,
+					"Contact: " + _SAMPLE_EMAIL, profileName,
 					"mcp-server-profiles getMCPServerProfilesPage");
 
-			ObjectEntry emailMaskObjectEntry =
+			ObjectEntry dataMaskObjectEntry =
 				MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				profileObjectEntry.getExternalReferenceCode(),
-				emailMaskObjectEntry.getObjectEntryId(), 1);
+				dataMaskObjectEntry.getObjectEntryId(), 1,
+				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
 			String responseText = _callListProfilesTool(profileName);
 
@@ -221,7 +221,7 @@ public class MCPServerServletTest {
 			profileName = RandomTestUtil.randomString();
 
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				profileName, "Server at 192.168.1.42",
+				"Server at 192.168.1.42", profileName,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			responseText = _callListProfilesTool(profileName);
@@ -240,17 +240,17 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry =
+			mcpServerProfileObjectEntry =
 				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					profileName, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), profileName,
 					"mcp-server-profiles getMCPServerProfilesPage");
 
-			emailMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
+			dataMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
 				"Email Address");
 
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				profileObjectEntry.getExternalReferenceCode(),
-				emailMaskObjectEntry.getObjectEntryId(), 1);
+				dataMaskObjectEntry.getObjectEntryId(), 1,
+				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
 			McpSchema.CallToolResult callToolResult = _callTool(
 				profileName, "getMCPServerProfilesPage",
@@ -277,21 +277,21 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry =
+			mcpServerProfileObjectEntry =
 				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					profileName, "Contact: " + _SAMPLE_EMAIL,
+					"Contact: " + _SAMPLE_EMAIL, profileName,
 					"mcp-server-profiles getMCPServerProfilesPage");
 
-			emailMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
+			dataMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
 				"Email Address");
 
 			ObjectEntry emailProfileDataMaskObjectEntry =
 				_fetchMCPServerProfileDataMaskObjectEntry(
-					profileObjectEntry.getExternalReferenceCode(),
-					emailMaskObjectEntry.getObjectEntryId());
+					mcpServerProfileObjectEntry.getExternalReferenceCode(),
+					dataMaskObjectEntry.getObjectEntryId());
 
 			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
-				emailProfileDataMaskObjectEntry, "Removed by test.");
+				"Removed by test.", emailProfileDataMaskObjectEntry);
 
 			responseText = _callListProfilesTool(profileName);
 
@@ -306,7 +306,7 @@ public class MCPServerServletTest {
 			// set
 
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
+				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			responseText = _invokeListProfilesViaRest(
@@ -323,9 +323,9 @@ public class MCPServerServletTest {
 			// The REST invocation respects the selected masks only
 
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(),
 				StringBundler.concat(
 					"Contact: ", _SAMPLE_EMAIL, " ", _SAMPLE_PHONE),
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			responseText = _invokeListProfilesViaRest(
@@ -345,7 +345,7 @@ public class MCPServerServletTest {
 			// unknown
 
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
+				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			responseText = _invokeListProfilesViaRest(
@@ -364,7 +364,7 @@ public class MCPServerServletTest {
 			// header
 
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
+				"Contact: " + _SAMPLE_EMAIL, RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 			responseText = _invokeListProfilesViaRest(Collections.emptyMap());

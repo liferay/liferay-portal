@@ -55,12 +55,12 @@ public class DataMaskObjectEntryModelListenerTest {
 
 		ObjectEntry customDataMaskObjectEntry =
 			MCPServerTestUtil.addDataMaskObjectEntry(
-				RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
+				"\\d{4}", RandomTestUtil.randomString(), "[REDACTED]");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				mcpServerProfileObjectEntry.getExternalReferenceCode(),
-				customDataMaskObjectEntry.getObjectEntryId(), 1);
+				customDataMaskObjectEntry.getObjectEntryId(), 1,
+				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
