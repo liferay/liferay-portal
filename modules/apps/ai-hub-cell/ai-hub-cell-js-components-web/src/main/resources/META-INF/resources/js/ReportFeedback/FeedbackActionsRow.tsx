@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -25,38 +26,46 @@ const FeedbackActionsRow: React.FC<FeedbackActionsRowProps> = ({
 	onThumbsUp,
 }) => {
 	return (
-		<div
-			className={classNames(
-				'ai-feedback-actions-row align-items-center d-inline-flex',
-				className
-			)}
-		>
-			<ClayButtonWithIcon
-				aria-label={Liferay.Language.get('good-response')}
-				borderless
-				disabled={feedbackGiven}
-				displayType="secondary"
-				onClick={onThumbsUp}
-				onMouseDown={stopMouseDown}
-				size="sm"
-				spritemap={Liferay.Icons.spritemap}
-				symbol="thumbs-up"
-				title={Liferay.Language.get('good-response')}
-			/>
+		<ClayTooltipProvider>
+			<div
+				className={classNames(
+					'ai-feedback-actions-row align-items-center d-inline-flex',
+					className
+				)}
+			>
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('give-positive-feedback')}
+					borderless
+					data-tooltip-align="top"
+					disabled={feedbackGiven}
+					displayType="secondary"
+					onClick={onThumbsUp}
+					onMouseDown={stopMouseDown}
+					size="sm"
+					spritemap={Liferay.Icons.spritemap}
+					symbol="thumbs-up"
+					title={Liferay.Language.get('give-positive-feedback')}
+				/>
 
-			<ClayButtonWithIcon
-				aria-label={Liferay.Language.get('report-bad-result')}
-				borderless
-				disabled={feedbackGiven}
-				displayType="secondary"
-				onClick={onReport}
-				onMouseDown={stopMouseDown}
-				size="sm"
-				spritemap={Liferay.Icons.spritemap}
-				symbol="thumbs-down"
-				title={Liferay.Language.get('report-bad-result')}
-			/>
-		</div>
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get(
+						'send-negative-feedback-or-report-legal-concern'
+					)}
+					borderless
+					data-tooltip-align="top"
+					disabled={feedbackGiven}
+					displayType="secondary"
+					onClick={onReport}
+					onMouseDown={stopMouseDown}
+					size="sm"
+					spritemap={Liferay.Icons.spritemap}
+					symbol="thumbs-down"
+					title={Liferay.Language.get(
+						'send-negative-feedback-or-report-legal-concern'
+					)}
+				/>
+			</div>
+		</ClayTooltipProvider>
 	);
 };
 

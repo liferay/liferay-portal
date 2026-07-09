@@ -118,12 +118,14 @@ describe('AIAssistantChat', () => {
 		});
 
 		expect(
-			screen.getByRole('button', {name: 'report-bad-result'})
+			screen.getByRole('button', {
+				name: 'send-negative-feedback-or-report-legal-concern',
+			})
 		).toBeInTheDocument();
 
 		await act(async () => {
 			fireEvent.click(
-				screen.getByRole('button', {name: 'good-response'})
+				screen.getByRole('button', {name: 'give-positive-feedback'})
 			);
 		});
 
@@ -150,10 +152,12 @@ describe('AIAssistantChat', () => {
 
 		expect(screen.getByText('Something went wrong')).toBeInTheDocument();
 		expect(
-			screen.queryByRole('button', {name: 'good-response'})
+			screen.queryByRole('button', {name: 'give-positive-feedback'})
 		).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole('button', {name: 'report-bad-result'})
+			screen.queryByRole('button', {
+				name: 'send-negative-feedback-or-report-legal-concern',
+			})
 		).not.toBeInTheDocument();
 	});
 });

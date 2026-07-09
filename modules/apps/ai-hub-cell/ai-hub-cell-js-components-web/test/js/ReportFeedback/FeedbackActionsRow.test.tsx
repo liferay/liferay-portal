@@ -18,12 +18,16 @@ describe('FeedbackActionsRow', () => {
 			<FeedbackActionsRow onReport={onReport} onThumbsUp={onThumbsUp} />
 		);
 
-		fireEvent.click(screen.getByRole('button', {name: 'good-response'}));
+		fireEvent.click(
+			screen.getByRole('button', {name: 'give-positive-feedback'})
+		);
 
 		expect(onThumbsUp).toHaveBeenCalledTimes(1);
 
 		fireEvent.click(
-			screen.getByRole('button', {name: 'report-bad-result'})
+			screen.getByRole('button', {
+				name: 'send-negative-feedback-or-report-legal-concern',
+			})
 		);
 
 		expect(onReport).toHaveBeenCalledTimes(1);
@@ -42,10 +46,10 @@ describe('FeedbackActionsRow', () => {
 		);
 
 		const thumbsUpButton = screen.getByRole('button', {
-			name: 'good-response',
+			name: 'give-positive-feedback',
 		});
 		const reportButton = screen.getByRole('button', {
-			name: 'report-bad-result',
+			name: 'send-negative-feedback-or-report-legal-concern',
 		});
 
 		expect(thumbsUpButton).toBeDisabled();
