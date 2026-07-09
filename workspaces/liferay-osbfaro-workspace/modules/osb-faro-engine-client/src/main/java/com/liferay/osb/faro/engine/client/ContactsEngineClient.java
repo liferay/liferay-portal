@@ -458,11 +458,11 @@ public interface ContactsEngineClient {
 		List<OrderByField> orderByFields);
 
 	public Results<Individual> getIndividuals(
-		FaroProject faroProject, String accountId, String activityStatus,
-		String channelId, String dataSourceId, List<String> fields,
-		String filterString, boolean includeAnonymousUsers,
-		String individualSegmentId, String interestName,
-		String notIndividualSegmentId, List<String> profileTypes, String query,
+		FaroProject faroProject, String accountId, List<String> accountTypes,
+		String activityStatus, String channelId, String dataSourceId,
+		List<String> fields, String filterString, boolean includeAnonymousUsers,
+		String individualSegmentId, List<String> individualTypes,
+		String interestName, String notIndividualSegmentId, String query,
 		String rangeEnd, Integer rangeKey, String rangeStart, int cur,
 		int delta, List<OrderByField> orderByFields);
 

@@ -2473,11 +2473,11 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<Individual> getIndividuals(
-		FaroProject faroProject, String accountId, String activityStatus,
-		String channelId, String dataSourceId, List<String> fields,
-		String filterString, boolean includeAnonymousUsers,
-		String individualSegmentId, String interestName,
-		String notIndividualSegmentId, List<String> profileTypes, String query,
+		FaroProject faroProject, String accountId, List<String> accountTypes,
+		String activityStatus, String channelId, String dataSourceId,
+		List<String> fields, String filterString, boolean includeAnonymousUsers,
+		String individualSegmentId, List<String> individualTypes,
+		String interestName, String notIndividualSegmentId, String query,
 		String rangeEnd, Integer rangeKey, String rangeStart, int cur,
 		int delta, List<OrderByField> orderByFields) {
 
@@ -2487,6 +2487,11 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(accountId)) {
 			uriVariables.put("accountId", accountId);
+		}
+
+		if (accountTypes != null) {
+			uriVariables.put(
+				"accountTypes", String.join(StringPool.COMMA, accountTypes));
 		}
 
 		if (Validator.isNotNull(activityStatus)) {
@@ -2511,17 +2516,18 @@ public class ContactsEngineClientImpl
 			uriVariables.put("segmentId", individualSegmentId);
 		}
 
+		if (individualTypes != null) {
+			uriVariables.put(
+				"individualTypes",
+				String.join(StringPool.COMMA, individualTypes));
+		}
+
 		if (Validator.isNotNull(interestName)) {
 			uriVariables.put("interestName", interestName);
 		}
 
 		if (Validator.isNotNull(notIndividualSegmentId)) {
 			uriVariables.put("notSegmentId", notIndividualSegmentId);
-		}
-
-		if (profileTypes != null) {
-			uriVariables.put(
-				"profileTypes", String.join(StringPool.COMMA, profileTypes));
 		}
 
 		if (Validator.isNotNull(query)) {
