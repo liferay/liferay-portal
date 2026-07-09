@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +58,8 @@ public class CommerceAvailabilityEstimateLocalServiceImpl
 		commerceAvailabilityEstimate.setUserName(user.getFullName());
 		commerceAvailabilityEstimate.setTitleMap(titleMap);
 		commerceAvailabilityEstimate.setPriority(priority);
+		commerceAvailabilityEstimate.setStatus(
+			WorkflowConstants.STATUS_APPROVED);
 
 		commerceAvailabilityEstimate =
 			commerceAvailabilityEstimatePersistence.update(
