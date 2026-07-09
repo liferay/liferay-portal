@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -164,17 +163,8 @@ public class ToolSetUtil {
 					openAPIBrief._basePath,
 					HashMapBuilder.put(
 						"X-Liferay-Data-Masks",
-						() -> {
-							if (ListUtil.isEmpty(
-									dataMaskExternalReferenceCodes)) {
-
-								return null;
-							}
-
-							return StringUtil.merge(
-								dataMaskExternalReferenceCodes,
-								StringPool.COMMA);
-						}
+						() -> StringUtil.merge(
+							dataMaskExternalReferenceCodes, StringPool.COMMA)
 					).build(),
 					inputJSONObject,
 					_getOpenAPIJSONObject(openAPIBrief, httpServletRequest),
