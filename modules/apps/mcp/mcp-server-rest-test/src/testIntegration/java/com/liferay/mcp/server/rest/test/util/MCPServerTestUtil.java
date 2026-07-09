@@ -13,7 +13,6 @@ import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -143,29 +142,24 @@ public class MCPServerTestUtil {
 	public static String getAuditedDeleteReason(ObjectEntry objectEntry)
 		throws Exception {
 
-		String classPK = String.valueOf(objectEntry.getObjectEntryId());
+		List<AuditEvent> auditEvents =
+			AuditEventLocalServiceUtil.getAuditEvents(
+				0, 0, 0, null, null, null, null, null,
+				String.valueOf(objectEntry.getObjectEntryId()), null, null,
+				null, EventTypes.DELETE, null, 0, null, true, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-		for (int i = 0; i < 60; i++) {
-			List<AuditEvent> auditEvents =
-				AuditEventLocalServiceUtil.getAuditEvents(
-					0, 0, 0, null, null, null, null, null, classPK, null, null,
-					null, EventTypes.DELETE, null, 0, null, true,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			if (!auditEvents.isEmpty()) {
-				AuditEvent auditEvent = auditEvents.get(0);
-
-				JSONObject additionalInfoJSONObject =
-					JSONFactoryUtil.createJSONObject(
-						auditEvent.getAdditionalInfo());
-
-				return additionalInfoJSONObject.getString("deleteReason");
-			}
-
-			Thread.sleep(100);
+		if (auditEvents.isEmpty()) {
+			return null;
 		}
 
-		return null;
+		AuditEvent auditEvent = auditEvents.get(0);
+
+		return JSONFactoryUtil.createJSONObject(
+			auditEvent.getAdditionalInfo()
+		).getString(
+			"deleteReason"
+		);
 	}
 
 	public static void processBatchEngineUnits() {

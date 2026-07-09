@@ -104,9 +104,9 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 					"com.liferay.portal.security.audit.router.configuration." +
 						"PersistentAuditMessageProcessorConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
-						"enabled", true
+						"bufferSize", 1
 					).put(
-						"flushInterval", 1
+						"enabled", true
 					).build())) {
 
 			PermissionChecker originalPermissionChecker =
