@@ -380,4 +380,4 @@ public interface CommerceAvailabilityEstimateModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-854608219
+// LIFERAY-SERVICE-BUILDER-HASH:773840063
