@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.Collections;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
 
@@ -50,8 +48,7 @@ public class ToolResourceImpl extends BaseToolResourceImpl {
 		}
 
 		return ToolSetUtil.invokeTool(
-			Collections.emptyList(), contextHttpServletRequest, object,
-			toolName, toolSetName);
+			null, contextHttpServletRequest, object, toolName, toolSetName);
 	}
 
 }

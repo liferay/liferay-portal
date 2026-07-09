@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -38,7 +39,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,8 +208,8 @@ public class ToolSetUtil {
 	private static Map<String, String> _getDataMaskHeaders(
 		List<String> dataMaskExternalReferenceCodes) {
 
-		if (dataMaskExternalReferenceCodes.isEmpty()) {
-			return Collections.emptyMap();
+		if (ListUtil.isEmpty(dataMaskExternalReferenceCodes)) {
+			return null;
 		}
 
 		return HashMapBuilder.put(
