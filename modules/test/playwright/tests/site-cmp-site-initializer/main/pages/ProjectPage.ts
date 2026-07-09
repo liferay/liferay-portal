@@ -10,6 +10,7 @@ import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVis
 type BreadcrumbActions = 'Edit' | 'Watch Project' | 'Delete';
 
 export class ProjectPage {
+	readonly assetsTab: Locator;
 	readonly deleteButton: Locator;
 	readonly detailsTab: Locator;
 	readonly moreActionsButton: Locator;
@@ -19,6 +20,9 @@ export class ProjectPage {
 	readonly tasksTab: Locator;
 
 	constructor(page: Page) {
+		this.assetsTab = page.getByRole('tab', {
+			name: 'Assets',
+		});
 		this.deleteButton = page.getByRole('button', {
 			name: 'Delete',
 		});
