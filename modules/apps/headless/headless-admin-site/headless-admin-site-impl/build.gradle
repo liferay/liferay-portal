@@ -48,6 +48,7 @@ dependencies {
 	compileOnly project(":apps:site-navigation:site-navigation-api")
 	compileOnly project(":apps:site-navigation:site-navigation-menu-item-api")
 	compileOnly project(":apps:site:site-api")
+	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:style-book:style-book-api")
 	compileOnly project(":core:petra:petra-function")

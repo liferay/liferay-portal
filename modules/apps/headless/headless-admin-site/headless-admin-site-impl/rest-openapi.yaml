@@ -3909,6 +3909,10 @@ components:
                     description:
                         The style book's preview file entry external reference code.
                     type: string
+                scope:
+                    description:
+                        The style book's scope, identifying its owning site or asset library.
+                    type: scope
                 themeId:
                     description:
                         The theme id or the themeCSS client extension external reference code this style book is based on.
@@ -7510,6 +7514,52 @@ paths:
                                 $ref: "#/components/schemas/PageSpecification"
             # @review
             tags: ["PageSpecification"]
+    "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/style-books":
+        get:
+            description:
+                Retrieves the style books that can be assigned to the page specification.
+            operationId: getSitePageSpecificationStyleBooksPage
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: pageSpecificationExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/StyleBook"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/StyleBook"
+                                type: array
+            tags: ["StyleBook"]
     "/sites/{siteExternalReferenceCode}/page-template-sets":
         get:
             # @review
