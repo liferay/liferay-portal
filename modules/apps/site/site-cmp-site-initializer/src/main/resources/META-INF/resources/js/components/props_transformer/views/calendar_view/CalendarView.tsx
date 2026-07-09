@@ -63,6 +63,8 @@ export default function CalendarView({
 
 	const calendarRef = useRef<FullCalendar>(null);
 	const calendarViewRef = useRef<HTMLDivElement>(null);
+	const fdsItemsStaleRef = useRef(false);
+	const loadDataRef = useRef(loadData);
 
 	const calendarViews = [
 		{label: Liferay.Language.get('day'), view: 'dayGridDay'},
@@ -187,6 +189,24 @@ export default function CalendarView({
 		});
 	}, [projectId]);
 
+	useEffect(() => {
+		loadDataRef.current = loadData;
+	}, [loadData]);
+
+	// The FDS serves its items to every view without refetching on a view
+	// switch, so after a drag the other views would show the old due dates.
+	// Refresh the FDS data when this view unmounts with rescheduled tasks.
+	// The refresh reads through refs because the effect registers only once.
+
+	useEffect(
+		() => () => {
+			if (fdsItemsStaleRef.current) {
+				loadDataRef.current();
+			}
+		},
+		[]
+	);
+
 	// Properly resize the calendar width when the unscheduled tasks panel is
 	// opened or closed. FullCalendar caches its layout and only recomputes on a
 	// window resize, so its width can go stale. Watch the container instead and
@@ -225,6 +245,34 @@ export default function CalendarView({
 			),
 			size: 'md',
 		});
+	};
+
+	// Persist the new due date and override it locally, without reloading
+	// the FDS data. Returns whether the update went through, so a drag can
+	// be reverted.
+
+	const rescheduleTask = async (task: ITaskObjectEntry, dueDate: string) => {
+		const {error} = await patchTaskById({
+			body: {dueDate},
+			taskId: String(task.id),
+		});
+
+		if (error) {
+			displayErrorToast(error);
+
+			return false;
+		}
+
+		fdsItemsStaleRef.current = true;
+
+		setRescheduledDueDates((dueDates) => ({
+			...dueDates,
+			[task.id]: dueDate,
+		}));
+
+		displayDueDateSuccessToast(task.title);
+
+		return true;
 	};
 
 	const currentYear = new Date().getFullYear();
@@ -423,25 +471,8 @@ export default function CalendarView({
 							arg.draggedEl.dataset.taskId
 					);
 
-					if (!task) {
-						return;
-					}
-
-					const {error} = await patchTaskById({
-						body: {dueDate: arg.dateStr},
-						taskId: String(task.id),
-					});
-
-					if (!error) {
-						setRescheduledDueDates((dueDates) => ({
-							...dueDates,
-							[task.id]: arg.dateStr,
-						}));
-
-						displayDueDateSuccessToast(task.title);
-					}
-					else {
-						displayErrorToast(error);
+					if (task) {
+						await rescheduleTask(task, arg.dateStr);
 					}
 				}}
 				droppable
@@ -460,26 +491,13 @@ export default function CalendarView({
 					document.body.classList.remove(TASK_DRAGGING_CLASS_NAME)
 				}
 				eventDrop={async (arg) => {
-					const task = arg.event.extendedProps.task;
+					const rescheduled = await rescheduleTask(
+						arg.event.extendedProps.task,
+						arg.event.startStr
+					);
 
-					const dueDate = arg.event.startStr;
-
-					const {error} = await patchTaskById({
-						body: {dueDate},
-						taskId: String(task.id),
-					});
-
-					if (!error) {
-						setRescheduledDueDates((dueDates) => ({
-							...dueDates,
-							[task.id]: dueDate,
-						}));
-
-						displayDueDateSuccessToast(task.title);
-					}
-					else {
+					if (!rescheduled) {
 						arg.revert();
-						displayErrorToast(error);
 					}
 				}}
 				eventStartEditable
