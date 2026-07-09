@@ -23,7 +23,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -172,109 +171,13 @@ public class MCPServerServletTest {
 							Base64.encode(userNameAndPassword.getBytes()),
 						"Bearer " + _getAccessToken())) {
 
+				_testServiceWithDataMasks(authorization);
 				_testServiceWithModifiedProfile(authorization);
 				_testServiceWithNoContentResponse(authorization);
 				_testServiceWithoutProfile(authorization);
 				_testServiceWithoutSession(authorization);
 				_testServiceWithProfile(authorization);
 			}
-		}
-	}
-
-	@Test
-	public void testServiceWithDataMasks() throws Exception {
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						"com.liferay.mcp.server.rest.internal.configuration." +
-							"MCPServerConfiguration",
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).build())) {
-
-			String profileName = RandomTestUtil.randomString();
-
-			ObjectEntry mcpServerProfileObjectEntry =
-				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					"Contact: " + _SAMPLE_EMAIL, profileName,
-					"mcp-server-profiles getMCPServerProfilesPage");
-
-			ObjectEntry dataMaskObjectEntry =
-				MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
-
-			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				dataMaskObjectEntry.getObjectEntryId(), 1,
-				mcpServerProfileObjectEntry.getExternalReferenceCode());
-
-			Assert.assertEquals(
-				"Contact: [EMAIL_ADDRESS]",
-				_getMCPServerProfileDescription(
-					_callGetMCPServerProfilesPageTool(profileName),
-					profileName));
-
-			// The error response is redacted
-
-			profileName = RandomTestUtil.randomString();
-
-			mcpServerProfileObjectEntry =
-				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					RandomTestUtil.randomString(), profileName,
-					"mcp-server-profiles getMCPServerProfilesPage");
-
-			dataMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
-				"Email Address");
-
-			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
-				dataMaskObjectEntry.getObjectEntryId(), 1,
-				mcpServerProfileObjectEntry.getExternalReferenceCode());
-
-			McpSchema.CallToolResult callToolResult = _callTool(
-				profileName, "getMCPServerProfilesPage",
-				HashMapBuilder.<String, Object>put(
-					"filter", _SAMPLE_EMAIL
-				).build());
-
-			McpSchema.TextContent textContent =
-				(McpSchema.TextContent)callToolResult.content(
-				).get(
-					0
-				);
-
-			String responseText = textContent.text();
-
-			Assert.assertTrue(responseText, callToolResult.isError());
-			Assert.assertThat(
-				responseText, CoreMatchers.containsString("[EMAIL_ADDRESS]"));
-			Assert.assertThat(
-				responseText,
-				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL)));
-
-			// The email address is not redacted when the association is removed
-
-			profileName = RandomTestUtil.randomString();
-
-			mcpServerProfileObjectEntry =
-				MCPServerTestUtil.addMCPServerProfileObjectEntry(
-					"Contact: " + _SAMPLE_EMAIL, profileName,
-					"mcp-server-profiles getMCPServerProfilesPage");
-
-			dataMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
-				"Email Address");
-
-			ObjectEntry emailProfileDataMaskObjectEntry =
-				_fetchMCPServerProfileDataMaskObjectEntry(
-					mcpServerProfileObjectEntry.getExternalReferenceCode(),
-					dataMaskObjectEntry.getObjectEntryId());
-
-			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
-				"Removed by test.", emailProfileDataMaskObjectEntry);
-
-			Assert.assertEquals(
-				"Contact: " + _SAMPLE_EMAIL,
-				_getMCPServerProfileDescription(
-					_callGetMCPServerProfilesPageTool(profileName),
-					profileName));
 		}
 	}
 
@@ -348,35 +251,6 @@ public class MCPServerServletTest {
 				tool.inputSchema()
 			),
 			false);
-	}
-
-	private String _callGetMCPServerProfilesPageTool(String profileName) {
-		McpSchema.CallToolResult callToolResult = _callTool(
-			profileName, "getMCPServerProfilesPage", Collections.emptyMap());
-
-		List<McpSchema.Content> content = callToolResult.content();
-
-		McpSchema.TextContent textContent = (McpSchema.TextContent)content.get(
-			0);
-
-		return textContent.text();
-	}
-
-	private McpSchema.CallToolResult _callTool(
-		String profileName, String toolName, Map<String, Object> arguments) {
-
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(
-			_getAuthorization(), profileName);
-
-		try {
-			mcpSyncClient.initialize();
-
-			return mcpSyncClient.callTool(
-				new McpSchema.CallToolRequest(toolName, arguments));
-		}
-		finally {
-			mcpSyncClient.closeGracefully();
-		}
 	}
 
 	private ObjectEntry _fetchMCPServerProfileDataMaskObjectEntry(
@@ -677,33 +551,6 @@ public class MCPServerServletTest {
 		);
 	}
 
-	private String _getAuthorization() {
-		String userNameAndPassword =
-			"test@liferay.com:" + PropsValues.DEFAULT_ADMIN_PASSWORD;
-
-		return "Basic " + Base64.encode(userNameAndPassword.getBytes());
-	}
-
-	private String _getMCPServerProfileDescription(
-			String responseText, String name)
-		throws Exception {
-
-		JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
-			responseText);
-
-		JSONArray itemsJSONArray = responseJSONObject.getJSONArray("items");
-
-		for (int i = 0; i < itemsJSONArray.length(); i++) {
-			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
-
-			if (name.equals(itemJSONObject.getString("name"))) {
-				return itemJSONObject.getString("description");
-			}
-		}
-
-		return null;
-	}
-
 	private McpSyncClient _getMcpSyncClient(
 		String authorization, String profileName) {
 
@@ -747,6 +594,80 @@ public class MCPServerServletTest {
 		_http.URLtoString(options);
 
 		return options.getResponse();
+	}
+
+	private void _testServiceWithDataMasks(String authorization)
+		throws Exception {
+
+		String profileName = RandomTestUtil.randomString();
+
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				"Contact: " + _SAMPLE_EMAIL, profileName,
+				"mcp-server-profiles getMCPServerProfilesPage");
+
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profileName);
+
+		mcpSyncClient.initialize();
+
+		McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getMCPServerProfilesPage", Collections.emptyMap()));
+
+		List<McpSchema.Content> content = callToolResult.content();
+
+		McpSchema.TextContent textContent = (McpSchema.TextContent)content.get(
+			0);
+
+		Assert.assertThat(
+			textContent.text(),
+			CoreMatchers.allOf(
+				CoreMatchers.containsString("[EMAIL_ADDRESS]"),
+				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL))));
+
+		callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getMCPServerProfilesPage",
+				HashMapBuilder.<String, Object>put(
+					"filter", _SAMPLE_EMAIL
+				).build()));
+
+		content = callToolResult.content();
+
+		textContent = (McpSchema.TextContent)content.get(0);
+
+		Assert.assertThat(
+			textContent.text(),
+			CoreMatchers.allOf(
+				CoreMatchers.containsString("[EMAIL_ADDRESS]"),
+				CoreMatchers.not(CoreMatchers.containsString(_SAMPLE_EMAIL))));
+
+		ObjectEntry dataMaskObjectEntry =
+			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
+
+		MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
+			"Removed by test.",
+			_fetchMCPServerProfileDataMaskObjectEntry(
+				mcpServerProfileObjectEntry.getExternalReferenceCode(),
+				dataMaskObjectEntry.getObjectEntryId()));
+
+		callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getMCPServerProfilesPage", Collections.emptyMap()));
+
+		content = callToolResult.content();
+
+		textContent = (McpSchema.TextContent)content.get(0);
+
+		Assert.assertThat(
+			textContent.text(),
+			CoreMatchers.allOf(
+				CoreMatchers.containsString(_SAMPLE_EMAIL),
+				CoreMatchers.not(
+					CoreMatchers.containsString("[EMAIL_ADDRESS]"))));
+
+		mcpSyncClient.closeGracefully();
 	}
 
 	private void _testServiceWithModifiedProfile(String authorization)
