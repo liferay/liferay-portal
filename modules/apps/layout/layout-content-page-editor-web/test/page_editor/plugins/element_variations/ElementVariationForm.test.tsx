@@ -33,6 +33,14 @@ const EDITABLE_ELEMENT_OPTIONS = [
 
 const LOCALES = [{id: 'en_US', label: 'English', symbol: 'en-us'}];
 
+const TRANSLATING_PROPS = {
+	languageId: 'es_ES',
+	locales: [
+		{id: 'en_US', label: 'English', symbol: 'en-us'},
+		{id: 'es_ES', label: 'Spanish', symbol: 'es-es'},
+	],
+};
+
 function renderForm(
 	elementVariation: Partial<ElementVariationProp> = {},
 	props: Partial<React.ComponentProps<typeof ElementVariationForm>> = {}
@@ -124,6 +132,35 @@ describe('ElementVariationForm', () => {
 		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
 		expect(onChange).toHaveBeenCalledWith({hide: {en_US: false}});
+	});
+
+	it('marks the not-localizable fields as read-only when translating', () => {
+		renderForm({targetElement: '.title'}, TRANSLATING_PROPS);
+
+		expect(screen.getAllByText('(not-localizable)')).toHaveLength(3);
+		expect(screen.getByDisplayValue('My Variation')).toHaveAttribute(
+			'readonly'
+		);
+	});
+
+	it('does not mark fields as not-localizable on the default language', () => {
+		renderForm({targetElement: '.title'});
+
+		expect(screen.queryByText('(not-localizable)')).not.toBeInTheDocument();
+	});
+
+	it('shows the default language html and javascript values when translating', () => {
+		renderForm(
+			{
+				html: {en_US: 'default html content'},
+				js: {en_US: 'default js content'},
+				targetElement: '.title',
+			},
+			TRANSLATING_PROPS
+		);
+
+		expect(screen.getByText('default html content')).toBeInTheDocument();
+		expect(screen.getByText('default js content')).toBeInTheDocument();
 	});
 
 	it('has no accessibility violations', async () => {
