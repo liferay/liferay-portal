@@ -154,6 +154,11 @@ export const getDefaultValue = (property: Property): any => {
 							value: getEventId(applicationId, name),
 						},
 						{
+							operatorName: FunctionalOperators.Contains,
+							propertyName: 'attribute/',
+							value: '',
+						},
+						{
 							operatorName: RelationalOperators.GT,
 							propertyName: 'day',
 							value: TimeSpans.Last24Hours,

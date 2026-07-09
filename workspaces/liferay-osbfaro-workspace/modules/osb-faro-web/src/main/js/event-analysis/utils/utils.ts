@@ -224,6 +224,9 @@ export const getFilterDisplay = (
 export const isAttribute = (item: Attribute | Event): boolean =>
 	(item as Attribute).dataType !== undefined;
 
+export const cloneAttributes = (attributes: Attribute[]): Attribute[] =>
+	attributes.map((attribute) => ({...attribute}));
+
 interface IBreakdownFnArgs {
 	attributeId: string;
 	attributeType: AttributeOwnerTypes;

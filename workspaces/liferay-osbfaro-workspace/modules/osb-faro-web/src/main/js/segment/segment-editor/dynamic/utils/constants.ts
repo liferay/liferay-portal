@@ -631,6 +631,7 @@ export const TIME_CONJUNCTION_OPTIONS = [
 ];
 
 export const ACTIVITY_KEY = 'activityKey';
+export const ATTRIBUTE_PROPERTY_PREFIX = 'attribute/';
 export const EVENT_KEY = 'eventId';
 
 export const ASSET_TYPE_APPLICATION_ID_MAP: Record<string, string> = {

@@ -1,4 +1,5 @@
 import {
+	ATTRIBUTE_PROPERTY_PREFIX,
 	Conjunctions,
 	CUSTOM_FUNCTION_OPERATOR_KEY_MAP,
 	CustomFunctionOperators,
@@ -264,6 +265,12 @@ const buildQueryString = (
 ): string =>
 	criteria
 		.filter(Boolean)
+		.filter(
+			(criterion) =>
+				isCriterionGroup(criterion) ||
+				(criterion as Criterion).propertyName !==
+					ATTRIBUTE_PROPERTY_PREFIX
+		)
 		.reduce((queryString: string, criterion: Criteria, index: number) => {
 			if (index > 0) {
 				queryString = queryString.concat(` ${queryConjunction} `);
@@ -934,7 +941,76 @@ const buildInnerFilterItems = (
 		} as unknown as Criterion);
 	}
 
+	const attributeItem = parseAttributeFilterItem(innerFilter);
+
+	if (attributeItem) {
+		items.push(attributeItem);
+	}
+
 	return {entityId, items, matchedType};
+};
+
+const buildAttributeCriterion = (
+	attributeId: string,
+	operatorName: string,
+	value: unknown
+): Criterion =>
+	({
+		operatorName,
+		propertyName: `attribute/${attributeId}`,
+		rowId: generateRowId(),
+		touched: false,
+		valid: true,
+		value,
+	}) as unknown as Criterion;
+
+const parseAttributeFilterItem = (
+	innerFilter: string
+): Criterion | undefined => {
+	const containsMatch = innerFilter.match(
+		/(not\s+)?contains\(attribute\/([^\s,]+),\s*'([^']*)'\)/
+	);
+
+	if (containsMatch) {
+		const [, notPrefix, attributeId, value] = containsMatch;
+
+		return buildAttributeCriterion(
+			attributeId,
+			notPrefix ? NotOperators.NotContains : FunctionalOperators.Contains,
+			value
+		);
+	}
+
+	const betweenMatch = innerFilter.match(
+		/between\(attribute\/([^\s,]+),'([^']*)','([^']*)'\)/
+	);
+
+	if (betweenMatch) {
+		const [, attributeId, start, end] = betweenMatch;
+
+		return buildAttributeCriterion(
+			attributeId,
+			FunctionalOperators.Between,
+			{end, start}
+		);
+	}
+
+	const relationalMatch = innerFilter.match(
+		/attribute\/([^\s,]+) (eq|ne|gt|lt|ge|le) (?:'([^']*)'|(-?\d+(?:\.\d+)?))/
+	);
+
+	if (relationalMatch) {
+		const [, attributeId, operatorName, quotedValue, numericValue] =
+			relationalMatch;
+
+		return buildAttributeCriterion(
+			attributeId,
+			operatorName,
+			quotedValue !== undefined ? quotedValue : Number(numericValue)
+		);
+	}
+
+	return undefined;
 };
 
 const parseRemoteFilterByCount = (
@@ -1322,6 +1398,19 @@ const transformConjunctionNode = (context: Context): Criteria[] => {
 			];
 };
 
+type BehaviorCriterionState = {
+	asset: boolean;
+	attribute: boolean;
+	attributeValue: boolean;
+	occurenceCount: boolean;
+};
+
+type EventCriterionState = {
+	attribute: boolean;
+	attributeValue: boolean;
+	occurenceCount: boolean;
+};
+
 /**
  * Transform a custom function expression node into a criterion for the criteria
  * builder.
@@ -1431,22 +1520,8 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 				detectedEntityId
 			: firstItemPropertyName;
 
-	let touched:
-		| boolean
-		| {asset: boolean; occurenceCount: boolean}
-		| {
-				attribute: boolean;
-				attributeValue: boolean;
-				occurenceCount: boolean;
-		  } = false;
-	let valid:
-		| boolean
-		| {asset: boolean; occurenceCount: boolean}
-		| {
-				attribute: boolean;
-				attributeValue: boolean;
-				occurenceCount: boolean;
-		  } = true;
+	let touched: boolean | BehaviorCriterionState | EventCriterionState = false;
+	let valid: boolean | BehaviorCriterionState | EventCriterionState = true;
 
 	// TODO: Prob need one here for PropertyTypes.Event
 
@@ -1455,8 +1530,18 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 			operatorName
 		)
 	) {
-		touched = {asset: false, occurenceCount: false};
-		valid = {asset: true, occurenceCount: true};
+		touched = {
+			asset: false,
+			attribute: false,
+			attributeValue: false,
+			occurenceCount: false,
+		};
+		valid = {
+			asset: true,
+			attribute: true,
+			attributeValue: true,
+			occurenceCount: true,
+		};
 	}
 	else if (
 		SUPPORTED_PROPERTY_TYPES_MAP[PropertyTypes.Event].includes(operatorName)

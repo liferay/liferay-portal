@@ -1,4 +1,5 @@
 import React from 'react';
+import {Attribute} from 'event-analysis/utils/types';
 import {
 	Conjunctions,
 	CustomFunctionOperators,
@@ -36,6 +37,18 @@ export type Criterion = {
 };
 
 export type Criteria = Criterion | CriterionGroup;
+
+export type AttributeFilterState = {
+	attribute: boolean;
+	attributeValue: boolean;
+};
+
+export type AttributeConjunctionChangeParams = {
+	attribute?: Attribute;
+	criterion: Criterion;
+	touched: AttributeFilterState;
+	valid: AttributeFilterState;
+};
 
 export type OnCriterionAdd = (index: number, criterion: Criterion) => void;
 

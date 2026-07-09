@@ -11,6 +11,38 @@ import {
 import {isNumber} from 'lodash';
 import {isValid} from '../../../utils/utils';
 
+export const encodeAttributeId = (name: string): string =>
+	Array.from(new TextEncoder().encode(name))
+		.map((byte) => byte.toString(16).padStart(2, '0'))
+		.join('');
+
+export const decodeAttributeId = (id: string): string => {
+	const byteStrings = id.match(/.{1,2}/g);
+
+	if (!byteStrings || id.length % 2 !== 0) {
+		return id;
+	}
+
+	try {
+		const bytes = Uint8Array.from(
+			byteStrings.map((byte) => {
+				const parsed = parseInt(byte, 16);
+
+				if (isNaN(parsed)) {
+					throw new Error('Invalid hex byte');
+				}
+
+				return parsed;
+			})
+		);
+
+		return new TextDecoder().decode(bytes);
+	}
+	catch {
+		return id;
+	}
+};
+
 const ATTRIBUTES_DATE_AND_DURATION_OPERATORS_LONGHAND_LABELS_MAP = {
 	[Operators.EQ]: Liferay.Language.get('is').toLowerCase(),
 	[Operators.GT]: Liferay.Language.get('is-after').toLowerCase(),

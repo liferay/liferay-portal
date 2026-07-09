@@ -40,7 +40,7 @@ const TYPE_ICON_MAP = {
  * @param {Object} props Component's current props
  * @returns {Object} The props to be passed to the drop target.
  */
-const beginDrag = ({
+export const beginDrag = ({
 	defaultValue,
 	name,
 	property,
@@ -62,14 +62,8 @@ const beginDrag = ({
 		valid = {asset: true, dateFilter: true, occurenceCount: true};
 	}
 	else if (type === PropertyTypes.Event) {
-		touched = {
-			attributeValue: false,
-			occurenceCount: false,
-		};
-		valid = {
-			attributeValue: false,
-			occurenceCount: true,
-		};
+		touched = {occurenceCount: false};
+		valid = {occurenceCount: true};
 	}
 	else if (type === PropertyTypes.SessionGeolocation) {
 		touched = {country: false, dateFilter: false};

@@ -1,4 +1,5 @@
 import Form from 'shared/components/form';
+import getCN from 'classnames';
 import React from 'react';
 import {Criterion} from '../../../utils/types';
 import {DataTypes} from 'event-analysis/utils/types';
@@ -13,12 +14,14 @@ interface IOperatorSelectProps {
 	dataType: DataTypes;
 	onChange: (params: {criterion: Criterion}) => void;
 	operatorName: Criterion['operatorName'];
+	small?: boolean;
 }
 
 const OperatorSelect: React.FC<IOperatorSelectProps> = ({
 	dataType,
 	onChange,
 	operatorName,
+	small,
 }) => {
 	if (dataType === DataTypes.Boolean) {
 		return (
@@ -31,7 +34,9 @@ const OperatorSelect: React.FC<IOperatorSelectProps> = ({
 	return (
 		<Form.GroupItem shrink>
 			<Picker
-				className="operator-input"
+				className={getCN('operator-input', {
+					'form-control-sm': small,
+				})}
 				items={
 					getOperatorOptions(dataType) as {
 						label: string;

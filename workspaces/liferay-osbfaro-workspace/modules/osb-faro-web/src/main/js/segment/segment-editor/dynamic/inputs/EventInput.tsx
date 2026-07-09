@@ -1,10 +1,8 @@
 import Alert from '@clayui/alert';
-import AttributeConjunctionInput from './components/attribute-conjunction-input';
+import AttributeFilterSection from './components/AttributeFilterSection';
+import ClayButton from '@clayui/button';
+import ClayIcon from '@clayui/icon';
 import DateFilterConjunctionInput from './components/DateFilterConjunctionInput';
-import EventPropertiesQuery, {
-	EventPropertiesData,
-	EventPropertiesVariables,
-} from '../queries/EventPropertiesQuery';
 import Form from 'shared/components/form';
 import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -12,19 +10,28 @@ import RealTimePeriodInput, {
 	DEFAULT_OPTIONS,
 } from './components/RealTimePeriodInput';
 import {Attribute, DataTypes} from 'event-analysis/utils/types';
-import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
+import {
+	AttributeConjunctionChangeParams,
+	Criterion,
+	ISegmentEditorCustomInputBase,
+} from '../utils/types';
 import {CustomValue} from 'shared/util/records';
 import {fromJS, Map} from 'immutable';
-import {FunctionalOperators, RelationalOperators} from '../utils/constants';
+import {
+	ATTRIBUTE_PROPERTY_PREFIX,
+	FunctionalOperators,
+	RelationalOperators,
+} from '../utils/constants';
 import {
 	getFilterCriterionIMap,
+	getFilterCriterionIMapByPropertyNamePrefix,
 	getIndexFromPropertyName,
+	getIndexFromPropertyNamePrefix,
+	hasAttributeFilterCriterion,
+	removeItemsByIndex,
 } from '../utils/custom-inputs';
 import {isBoolean, isNil} from 'lodash';
-import {NAME} from 'shared/util/pagination';
-import {OrderByDirections, SegmentTypes} from 'shared/util/constants';
-import {SafeResults} from 'shared/hoc/util';
-import {useQuery} from '@apollo/client';
+import {SegmentTypes} from 'shared/util/constants';
 
 type Touched = {
 	attribute: boolean;
@@ -58,6 +65,10 @@ const EventInput: React.FC<IEventInputProps> = ({
 }) => {
 	const [selectedCustomAttribute, setSelectedCustomAttribute] =
 		useState<Attribute | null>(null);
+
+	const [showAttributeFilter, setShowAttributeFilter] = useState(() =>
+		hasAttributeFilterCriterion(valueIMap, ATTRIBUTE_PROPERTY_PREFIX)
+	);
 	const {id: eventId, options} = property;
 
 	const getRealTimePeriodFromCriterion = useCallback((): {
@@ -174,19 +185,27 @@ const EventInput: React.FC<IEventInputProps> = ({
 			criterion,
 			touched: conjunctionTouched,
 			valid: conjunctionValid,
-		}: {
-			attribute?: Attribute;
-			criterion: Criterion;
-			touched: {attribute: boolean; attributeValue: boolean};
-			valid: {attribute: boolean; attributeValue: boolean};
-		}) => {
+		}: AttributeConjunctionChangeParams) => {
+			const attributeIndex = getIndexFromPropertyNamePrefix(
+				valueIMap,
+				ATTRIBUTE_PROPERTY_PREFIX
+			);
+
+			const nextValue =
+				attributeIndex >= 0
+					? valueIMap.mergeIn(
+							['criterionGroup', 'items', attributeIndex],
+							fromJS(criterion)
+						)
+					: valueIMap.updateIn(
+							['criterionGroup', 'items'],
+							(items: any) => items.push(fromJS(criterion))
+						);
+
 			onChange({
 				touched: {...touched, ...conjunctionTouched},
 				valid: {...valid, ...conjunctionValid},
-				value: valueIMap.mergeIn(
-					['criterionGroup', 'items', 1],
-					fromJS(criterion)
-				),
+				value: nextValue,
 			});
 
 			if (attribute) {
@@ -195,6 +214,30 @@ const EventInput: React.FC<IEventInputProps> = ({
 		},
 		[onChange, valueIMap, touched, valid]
 	);
+
+	const handleClearAttributeFilter = useCallback(() => {
+		const attributeIndex = getIndexFromPropertyNamePrefix(
+			valueIMap,
+			ATTRIBUTE_PROPERTY_PREFIX
+		);
+
+		const nextValue =
+			attributeIndex >= 0
+				? removeItemsByIndex(valueIMap, [attributeIndex])
+				: valueIMap;
+
+		setShowAttributeFilter(false);
+
+		onChange({
+			touched: {...touched, attribute: false, attributeValue: false},
+			valid: {...valid, attribute: true, attributeValue: true},
+			value: nextValue,
+		});
+	}, [onChange, valueIMap, touched, valid]);
+
+	const handleShowAttributeFilterClick = useCallback(() => {
+		setShowAttributeFilter(true);
+	}, []);
 
 	const handleDateFilterConjunctionChange = useCallback(
 		(criterion: Criterion | null) => {
@@ -307,22 +350,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 		);
 	}
 
-	const result = useQuery<EventPropertiesData, EventPropertiesVariables>(
-		EventPropertiesQuery,
-		{
-			variables: {
-				eventId,
-				keyword: '',
-				page: 0,
-				size: 25,
-				sort: {
-					column: NAME,
-					type: OrderByDirections.Ascending,
-				},
-			},
-		}
-	);
-
 	const isRealTime = segmentType === SegmentTypes.RealTime;
 	const isSelectedAttributeDateType =
 		selectedCustomAttribute?.dataType === DataTypes.Date;
@@ -331,136 +358,99 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 	return (
 		<div className="criteria-statement">
-			<SafeResults {...result} page={false} pageDisplay={false}>
-				{(data: any) => {
-					const rawAttributes =
-						data?.eventProperties?.eventProperties || [];
-					const attributes = rawAttributes.map((attr: Attribute) => ({
-						...attr,
-					}));
+			<Form.Group autoFit>
+				<Form.GroupItem
+					className="font-weight-semibold text-secondary"
+					label
+					shrink
+				>
+					{Liferay.Language.get('individual')}
+				</Form.GroupItem>
 
-					return (
-						<>
-							<Form.Group autoFit>
-								<Form.GroupItem
-									className="font-weight-semibold text-secondary"
-									label
-									shrink
-								>
-									{Liferay.Language.get('individual')}
-								</Form.GroupItem>
+				<OperatorDropdown />
 
-								<OperatorDropdown />
+				<Form.GroupItem className="entity-name" label shrink>
+					{Liferay.Language.get('triggered').toLowerCase()}
+				</Form.GroupItem>
 
-								<Form.GroupItem
-									className="entity-name"
-									label
-									shrink
-								>
-									{Liferay.Language.get(
-										'triggered'
-									).toLowerCase()}
-								</Form.GroupItem>
+				<Form.GroupItem className="display-value" label shrink>
+					<b>{displayValue}</b>
+				</Form.GroupItem>
 
-								<Form.GroupItem
-									className="display-value"
-									label
-									shrink
-								>
-									<b>{displayValue}</b>
-								</Form.GroupItem>
+				<OccurenceConjunctionInput
+					onChange={
+						handleOccurenceConjunctionChange as (params: {
+							criterion?: Criterion;
+							touched?: boolean;
+							valid?: boolean;
+						}) => void
+					}
+					operatorName={
+						valueIMap.get('operator') as FunctionalOperators &
+							RelationalOperators
+					}
+					touched={touched.occurenceCount}
+					valid={valid.occurenceCount}
+					value={valueIMap.get('value')}
+				/>
 
-								<OccurenceConjunctionInput
-									onChange={
-										handleOccurenceConjunctionChange as (params: {
-											criterion?: Criterion;
-											touched?: boolean;
-											valid?: boolean;
-										}) => void
-									}
-									operatorName={
-										valueIMap.get(
-											'operator'
-										) as FunctionalOperators &
-											RelationalOperators
-									}
-									touched={touched.occurenceCount}
-									valid={valid.occurenceCount}
-									value={valueIMap.get('value')}
-								/>
+				{isRealTime ? (
+					<RealTimePeriodInput
+						initialInterval={initialPeriod?.interval}
+						initialTimeWindow={initialPeriod?.timeWindow}
+						onChange={handleRealTimePeriodChange}
+					/>
+				) : (
+					<DateFilterConjunctionInput
+						conjunctionCriterion={dateFilterConjunctionCriterion}
+						onChange={handleDateFilterConjunctionChange}
+					/>
+				)}
+			</Form.Group>
 
-								{isRealTime ? (
-									<RealTimePeriodInput
-										initialInterval={
-											initialPeriod?.interval
-										}
-										initialTimeWindow={
-											initialPeriod?.timeWindow
-										}
-										onChange={handleRealTimePeriodChange}
-									/>
-								) : (
-									<DateFilterConjunctionInput
-										conjunctionCriterion={
-											dateFilterConjunctionCriterion
-										}
-										onChange={
-											handleDateFilterConjunctionChange
-										}
-									/>
-								)}
-							</Form.Group>
+			{showAttributeFilter ? (
+				<AttributeFilterSection
+					conjunctionCriterion={(
+						getFilterCriterionIMapByPropertyNamePrefix(
+							valueIMap,
+							ATTRIBUTE_PROPERTY_PREFIX
+						) || Map({propertyName: ATTRIBUTE_PROPERTY_PREFIX})
+					).toJS()}
+					eventId={eventId}
+					onChange={handleAttributeConjunctionChange}
+					onClear={handleClearAttributeFilter}
+					touched={{
+						attribute: touched.attribute,
+						attributeValue: touched.attributeValue,
+					}}
+					valid={{
+						attribute: valid.attribute,
+						attributeValue: valid.attributeValue,
+					}}
+				/>
+			) : (
+				<Form.Group autoFit>
+					<ClayButton
+						className="button-root"
+						displayType="secondary"
+						onClick={handleShowAttributeFilterClick}
+					>
+						<ClayIcon symbol="plus" />
 
-							{!!attributes.length && (
-								<Form.Group autoFit>
-									<Form.GroupItem
-										className="conjunction"
-										label
-										shrink
-									>
-										{Liferay.Language.get(
-											'where-attribute'
-										)}
-									</Form.GroupItem>
+						<span className="ml-2">
+							{Liferay.Language.get('add-event-attribute')}
+						</span>
+					</ClayButton>
+				</Form.Group>
+			)}
 
-									<AttributeConjunctionInput
-										attributes={attributes}
-										conjunctionCriterion={getFilterCriterionIMap(
-											valueIMap,
-											1
-										).toJS()}
-										onChange={
-											handleAttributeConjunctionChange
-										}
-										touched={{
-											attribute: touched.attribute,
-											attributeValue:
-												touched.attributeValue,
-										}}
-										valid={{
-											attribute: valid.attribute,
-											attributeValue:
-												valid.attributeValue,
-										}}
-									/>
-								</Form.Group>
-							)}
-
-							{isRealTime && isSelectedAttributeDateType && (
-								<Alert
-									className="mt-2"
-									displayType="info"
-									variant="feedback"
-								>
-									{Liferay.Language.get(
-										'event-date-attributes-may-create-time-conflicts-and-reduce-matching-users.-review-your-criteria-to-ensure-the-segment-behaves-as-expected'
-									)}
-								</Alert>
-							)}
-						</>
-					);
-				}}
-			</SafeResults>
+			{isRealTime && isSelectedAttributeDateType && (
+				<Alert className="mt-2" displayType="info" variant="feedback">
+					{Liferay.Language.get(
+						'event-date-attributes-may-create-time-conflicts-and-reduce-matching-users.-review-your-criteria-to-ensure-the-segment-behaves-as-expected'
+					)}
+				</Alert>
+			)}
 		</div>
 	);
 };

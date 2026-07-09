@@ -9,7 +9,10 @@ import {
 import {formatTime} from 'shared/util/time';
 import {formatUTCDate} from 'shared/util/date';
 import {FunctionalOperators} from 'segment/segment-editor/dynamic/utils/constants';
-import {getOperatorOptions} from 'segment/segment-editor/dynamic/inputs/components/attribute-conjunction-input/utils';
+import {
+	decodeAttributeId,
+	getOperatorOptions,
+} from 'segment/segment-editor/dynamic/inputs/components/attribute-conjunction-input/utils';
 
 interface IAttributeConjunctionDisplayProps {
 	conjunctionCriterion: Criterion;
@@ -22,10 +25,19 @@ const AttributeConjunctionDisplay: React.FC<
 
 	const [, id] = (propertyName ?? '').split('/');
 
+	if (!id) {
+		return (
+			<b className="undefined-entity">
+				{Liferay.Language.get('undefined-attribute')}
+			</b>
+		);
+	}
+
 	const attributeIMap = referencedEntities.getIn([EntityType.Attributes, id]);
 
-	const dataType = attributeIMap.get('dataType');
-	const displayName = attributeIMap.get('displayName');
+	const dataType = attributeIMap?.get('dataType') ?? DataTypes.String;
+	const displayName =
+		attributeIMap?.get('displayName') ?? decodeAttributeId(id);
 
 	const operatorOptions = getOperatorOptions(dataType);
 
@@ -67,18 +79,18 @@ const AttributeConjunctionDisplay: React.FC<
 
 	const displayValue = formatByDataType(value, dataType);
 
-	return attributeIMap ? (
+	return (
 		<>
-			<b>{displayName}</b>
+			<span className="text-nowrap">
+				{Liferay.Language.get('where-event-attribute').toLowerCase()}
+			</span>
 
-			<b>{label}</b>
+			<b className="text-secondary">{displayName}</b>
 
-			<b>{displayValue}</b>
+			<b className="text-secondary">{label}</b>
+
+			<b className="text-secondary">{displayValue}</b>
 		</>
-	) : (
-		<b className="undefined-entity">
-			{Liferay.Language.get('undefined-attribute')}
-		</b>
 	);
 };
 

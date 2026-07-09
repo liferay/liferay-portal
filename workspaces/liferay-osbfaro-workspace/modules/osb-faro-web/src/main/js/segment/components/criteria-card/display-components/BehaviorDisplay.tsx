@@ -1,3 +1,4 @@
+import AttributeConjunctionDisplay from './AttributeConjunctionDisplay';
 import DateFilterConjunctionDisplay from './DateFilterConjunctionDisplay';
 import OccurenceConjunctionDisplay from './OccurenceConjunctionDisplay';
 import React from 'react';
@@ -8,7 +9,9 @@ import {EntityType} from 'segment/segment-editor/dynamic/context/referencedObjec
 import {
 	getActivityKeysFromValue,
 	getFilterCriterionIMapByPropertyName,
+	getFilterCriterionIMapByPropertyNamePrefix,
 	getFilterValueByPropertyName,
+	hasAttributeFilterCriterion,
 } from 'segment/segment-editor/dynamic/utils/custom-inputs';
 import {getOperatorLabel, maybeFormatToKnownType} from '../utils';
 import {IDisplayComponentProps} from '../types';
@@ -48,6 +51,16 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 		getFilterCriterionIMapByPropertyName(valueIMap, 'day') ||
 		Map({propertyName: 'completeDate'})
 	).toJS();
+
+	const attributeCriterion = getFilterCriterionIMapByPropertyNamePrefix(
+		valueIMap,
+		'attribute/'
+	);
+
+	const hasAttributeFilter = hasAttributeFilterCriterion(
+		valueIMap,
+		'attribute/'
+	);
 
 	return (
 		<>
@@ -96,6 +109,12 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 						conjunctionCriterion={conjunctionCriterion}
 					/>
 				</>
+			)}
+
+			{hasAttributeFilter && (
+				<AttributeConjunctionDisplay
+					conjunctionCriterion={attributeCriterion.toJS()}
+				/>
 			)}
 		</>
 	);

@@ -2,6 +2,7 @@ import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import Form from 'shared/components/form';
+import getCN from 'classnames';
 import OperatorSelect from './OperatorSelect';
 import React, {useEffect, useState} from 'react';
 import Sticker from 'shared/components/Sticker';
@@ -13,9 +14,18 @@ import {
 	withReferencedObjectsConsumer,
 } from '../../../context/referencedObjects';
 import {Attribute} from 'event-analysis/utils/types';
-import {Criterion} from '../../../utils/types';
+import {
+	AttributeConjunctionChangeParams,
+	AttributeFilterState,
+	Criterion,
+} from '../../../utils/types';
 import {DATA_TYPE_ICONS_MAP} from 'event-analysis/utils/utils';
 import {
+	FunctionalOperators,
+	RelationalOperators,
+} from '../../../utils/constants';
+import {
+	encodeAttributeId,
 	getDefaultAttributeOperator,
 	getDefaultAttributeValue,
 	validateAttributeValue,
@@ -26,27 +36,12 @@ interface IAttributeFilterConjunctionInputProps {
 	addEntity: AddEntity;
 	attributes: Attribute[];
 	conjunctionCriterion: Criterion;
-	onChange: (params: {
-		attribute: Attribute;
-		criterion: Criterion;
-		touched: {
-			attribute: boolean;
-			attributeValue: boolean;
-		};
-		valid: {
-			attribute: boolean;
-			attributeValue: boolean;
-		};
-	}) => void;
+	onChange: (params: AttributeConjunctionChangeParams) => void;
+	onClear?: () => void;
 	referencedEntities: ReferencedEntities;
-	touched: {
-		attribute: boolean;
-		attributeValue: boolean;
-	};
-	valid: {
-		attribute: boolean;
-		attributeValue: boolean;
-	};
+	small?: boolean;
+	touched: AttributeFilterState;
+	valid: AttributeFilterState;
 }
 
 const AttributeFilterConjunctionInput: React.FC<
@@ -56,6 +51,8 @@ const AttributeFilterConjunctionInput: React.FC<
 	attributes,
 	conjunctionCriterion,
 	onChange,
+	onClear,
+	small,
 	touched,
 	valid,
 }) => {
@@ -75,8 +72,11 @@ const AttributeFilterConjunctionInput: React.FC<
 		const attributeId = getAttributeId();
 
 		return (
-			attributes.find((attribute) => attribute?.id === attributeId) ||
-			attributes[0]
+			attributes.find(
+				(attribute) =>
+					attribute &&
+					encodeAttributeId(attribute.name) === attributeId
+			) || attributes[0]
 		);
 	};
 
@@ -107,16 +107,18 @@ const AttributeFilterConjunctionInput: React.FC<
 	};
 
 	const setAttribute = (attribute: Attribute) => {
+		const encodedId = encodeAttributeId(attribute.name);
+
 		addEntity({
 			entityType: EntityType.Attributes,
-			payload: Map(attribute),
+			payload: Map({...attribute, id: encodedId}),
 		});
 
 		const defaultAttributeValue = getDefaultAttributeValue(
 			attribute.dataType,
 			conjunctionCriterion.operatorName as unknown as
-				| import('../../../utils/constants').RelationalOperators
-				| import('../../../utils/constants').FunctionalOperators
+				| RelationalOperators
+				| FunctionalOperators
 		);
 
 		const defaultAttributeOperator = getDefaultAttributeOperator(
@@ -128,7 +130,7 @@ const AttributeFilterConjunctionInput: React.FC<
 			criterion: {
 				operatorName:
 					defaultAttributeOperator as unknown as Criterion['operatorName'],
-				propertyName: `attribute/${attribute.id}`,
+				propertyName: `attribute/${encodedId}`,
 				value: defaultAttributeValue,
 			},
 			touched: {...touched, attribute: true, attributeValue: false},
@@ -154,7 +156,10 @@ const AttributeFilterConjunctionInput: React.FC<
 					closeOnClick
 					trigger={
 						<ClayButton
-							className="form-control form-control-select form-control-select-secondary"
+							className={getCN(
+								'form-control form-control-select form-control-select-secondary',
+								{'form-control-sm': small}
+							)}
 							displayType="secondary"
 						>
 							{attribute.displayName || attribute.name}
@@ -212,6 +217,7 @@ const AttributeFilterConjunctionInput: React.FC<
 					})
 				}
 				operatorName={operatorName}
+				small={small}
 			/>
 
 			<ValueInput
@@ -239,6 +245,17 @@ const AttributeFilterConjunctionInput: React.FC<
 				valid={valid.attributeValue}
 				value={value}
 			/>
+
+			{onClear && (
+				<ClayButton
+					aria-label={Liferay.Language.get('clear')}
+					className="attribute-filter-clear button-root ml-auto mr-2 text-secondary"
+					displayType="unstyled"
+					onClick={onClear}
+				>
+					<ClayIcon className="icon-root" symbol="times-circle" />
+				</ClayButton>
+			)}
 		</>
 	);
 };

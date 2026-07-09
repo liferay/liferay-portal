@@ -13,7 +13,7 @@ import {Criterion} from '../../../utils/types';
 import {DataTypes} from 'event-analysis/utils/types';
 import {FunctionalOperators} from '../../../utils/constants';
 import {isValid} from '../../../utils/utils';
-import {Option, Picker} from '@clayui/core';
+import {Icon, Option, Picker} from '@clayui/core';
 
 interface IValueInputProps {
 	dataType: DataTypes;
@@ -41,6 +41,16 @@ const ValueInput: React.FC<IValueInputProps> = ({
 			touched: {attributeValue: true},
 		});
 	};
+
+	const requiredFeedback = touched && !valid && (
+		<div className="form-feedback-group">
+			<div className="form-feedback-item">
+				<Icon className="mr-1" symbol="exclamation-full" />
+
+				{Liferay.Language.get('required')}
+			</div>
+		</div>
+	);
 
 	switch (dataType) {
 		case DataTypes.Boolean:
@@ -95,6 +105,8 @@ const ValueInput: React.FC<IValueInputProps> = ({
 							overlayAlignment="rightCenter"
 							value={value as DateRange}
 						/>
+
+						{requiredFeedback}
 					</Form.GroupItem>
 				);
 			}
@@ -126,6 +138,8 @@ const ValueInput: React.FC<IValueInputProps> = ({
 						showRetentionPeriod={false}
 						value={value}
 					/>
+
+					{requiredFeedback}
 				</Form.GroupItem>
 			);
 		case DataTypes.Duration:
@@ -148,6 +162,8 @@ const ValueInput: React.FC<IValueInputProps> = ({
 						}}
 						value={value as string}
 					/>
+
+					{requiredFeedback}
 				</Form.GroupItem>
 			);
 		case DataTypes.Number:
@@ -199,6 +215,8 @@ const ValueInput: React.FC<IValueInputProps> = ({
 						}}
 						value={value}
 					/>
+
+					{requiredFeedback}
 				</Form.GroupItem>
 			);
 	}

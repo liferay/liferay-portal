@@ -57,6 +57,12 @@
 				}
 			}
 
+			.attribute-filter-box {
+				border: 1px solid $mainLighten65;
+				border-left-width: 3px;
+				border-radius: 4px;
+			}
+
 			.conjunction,
 			.entity-name,
 			.operator,

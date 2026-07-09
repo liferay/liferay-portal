@@ -54,6 +54,43 @@ export const getIndexFromPropertyName = (
 	);
 };
 
+export const getIndexFromPropertyNamePrefix = (
+	valueIMap: CustomValue,
+	prefix: string
+): number => {
+	const items = valueIMap.getIn(['criterionGroup', 'items']);
+
+	if (!items) return -1;
+
+	return items.findIndex((entry: Map<string, any>) =>
+		entry.get('propertyName')?.startsWith(prefix)
+	);
+};
+
+export const getFilterCriterionIMapByPropertyNamePrefix = (
+	valueIMap: CustomValue,
+	prefix: string
+): any => {
+	const index = getIndexFromPropertyNamePrefix(valueIMap, prefix);
+
+	return index < 0 ? undefined : getFilterCriterionIMap(valueIMap, index);
+};
+
+export const hasAttributeFilterCriterion = (
+	valueIMap: CustomValue,
+	prefix: string
+): boolean => {
+	const attributeCriterion = getFilterCriterionIMapByPropertyNamePrefix(
+		valueIMap,
+		prefix
+	);
+
+	return (
+		!!attributeCriterion &&
+		attributeCriterion.get('propertyName') !== prefix
+	);
+};
+
 /**
  * Reads every activityKey out of a behavior criterion value. A single selection
  * is stored as a flat activityKey item; N selections are stored as an "or" group
