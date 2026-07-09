@@ -149,7 +149,7 @@ public class IndividualFaroController extends BaseFaroController {
 		throws Exception {
 
 		return search(
-			groupId, null, null, null, null, null, false,
+			groupId, null, null, null, null, null, null, false,
 			Collections.emptyList(), null, null, null, null,
 			faroSearchContext.getQuery(), null, null, null,
 			faroSearchContext.getCur(), faroSearchContext.getDelta(),
@@ -161,6 +161,8 @@ public class IndividualFaroController extends BaseFaroController {
 	public FaroResultsDisplay search(
 			@PathParam("groupId") long groupId,
 			@QueryParam("accountId") String accountId,
+			@DefaultValue(StringPool.BLANK) @QueryParam("accountTypes")
+				FaroParam<List<String>> accountTypesFaroParam,
 			@QueryParam("activityStatus") String activityStatus,
 			@QueryParam("channelId") String channelId,
 			@QueryParam("dataSourceId") String dataSourceId,
@@ -169,12 +171,12 @@ public class IndividualFaroController extends BaseFaroController {
 			@QueryParam("includePropertyNames") FaroParam<List<String>>
 				includePropertyNamesFaroParam,
 			@QueryParam("individualSegmentId") String individualSegmentId,
+			@DefaultValue(StringPool.BLANK) @QueryParam("individualTypes")
+				FaroParam<List<String>> individualTypesFaroParam,
 			@QueryParam("interestName") String interestName,
 			@DefaultValue(JSONConstants.NULL_JSON_ARRAY)
 			@QueryParam("notIndividualSegmentId")
 			String notIndividualSegmentId,
-			@DefaultValue(StringPool.BLANK) @QueryParam("profileTypes")
-				FaroParam<List<String>> profileTypesFaroParam,
 			@QueryParam("query") String query,
 			@QueryParam("rangeEnd") String rangeEnd,
 			@QueryParam("rangeKey") Integer rangeKey,
@@ -185,11 +187,11 @@ public class IndividualFaroController extends BaseFaroController {
 		throws Exception {
 
 		return search(
-			groupId, accountId, activityStatus, channelId, dataSourceId,
-			filterString, includeAnonymousUsers,
-			includePropertyNamesFaroParam.getValue(), individualSegmentId,
-			interestName, notIndividualSegmentId,
-			profileTypesFaroParam.getValue(), query, rangeEnd, rangeKey,
+			groupId, accountId, accountTypesFaroParam.getValue(),
+			activityStatus, channelId, dataSourceId, filterString,
+			includeAnonymousUsers, includePropertyNamesFaroParam.getValue(),
+			individualSegmentId, individualTypesFaroParam.getValue(),
+			interestName, notIndividualSegmentId, query, rangeEnd, rangeKey,
 			rangeStart, cur, delta, orderByFieldsFaroParam.getValue());
 	}
 
@@ -199,6 +201,8 @@ public class IndividualFaroController extends BaseFaroController {
 	public FaroResultsDisplay searchByForm(
 			@PathParam("groupId") long groupId,
 			@FormParam("accountId") String accountId,
+			@DefaultValue(StringPool.BLANK) @FormParam("accountTypes") FaroParam
+				<List<String>> accountTypesFaroParam,
 			@FormParam("activityStatus") String activityStatus,
 			@FormParam("channelId") String channelId,
 			@FormParam("dataSourceId") String dataSourceId,
@@ -209,10 +213,10 @@ public class IndividualFaroController extends BaseFaroController {
 			FaroParam
 				<List<String>> includePropertyNamesFaroParam,
 			@FormParam("individualSegmentId") String individualSegmentId,
+			@DefaultValue(StringPool.BLANK) @FormParam("individualTypes")
+				FaroParam<List<String>> individualTypesFaroParam,
 			@FormParam("interestName") String interestName,
 			@FormParam("notIndividualSegmentId") String notIndividualSegmentId,
-			@DefaultValue(StringPool.BLANK) @FormParam("profileTypes") FaroParam
-				<List<String>> profileTypesFaroParam,
 			@FormParam("query") String query,
 			@FormParam("rangeEnd") String rangeEnd,
 			@FormParam("rangeKey") Integer rangeKey,
@@ -223,11 +227,11 @@ public class IndividualFaroController extends BaseFaroController {
 		throws Exception {
 
 		return search(
-			groupId, accountId, activityStatus, channelId, dataSourceId,
-			filterString, includeAnonymousUsers,
-			includePropertyNamesFaroParam.getValue(), individualSegmentId,
-			interestName, notIndividualSegmentId,
-			profileTypesFaroParam.getValue(), query, rangeEnd, rangeKey,
+			groupId, accountId, accountTypesFaroParam.getValue(),
+			activityStatus, channelId, dataSourceId, filterString,
+			includeAnonymousUsers, includePropertyNamesFaroParam.getValue(),
+			individualSegmentId, individualTypesFaroParam.getValue(),
+			interestName, notIndividualSegmentId, query, rangeEnd, rangeKey,
 			rangeStart, cur, delta, orderByFieldsFaroParam.getValue());
 	}
 
@@ -252,24 +256,25 @@ public class IndividualFaroController extends BaseFaroController {
 
 	@SuppressWarnings("unchecked")
 	protected FaroResultsDisplay search(
-			long groupId, String accountId, String activityStatus,
-			String channelId, String dataSourceId, String filterString,
-			boolean includeAnonymousUsers, List<String> includePropertyNames,
-			String individualSegmentId, String interestName,
-			String notIndividualSegmentId, List<String> profileTypes,
-			String query, String rangeEnd, Integer rangeKey, String rangeStart,
-			int cur, int delta, List<OrderByField> orderByFields)
+			long groupId, String accountId, List<String> accountTypes,
+			String activityStatus, String channelId, String dataSourceId,
+			String filterString, boolean includeAnonymousUsers,
+			List<String> includePropertyNames, String individualSegmentId,
+			List<String> individualTypes, String interestName,
+			String notIndividualSegmentId, String query, String rangeEnd,
+			Integer rangeKey, String rangeStart, int cur, int delta,
+			List<OrderByField> orderByFields)
 		throws Exception {
 
 		FaroProject faroProject =
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
 		Results<Individual> results = contactsEngineClient.getIndividuals(
-			faroProject, accountId, activityStatus, channelId, dataSourceId,
-			FieldMappingConstants.getSearchFieldMappingNames(), filterString,
-			includeAnonymousUsers, individualSegmentId, interestName,
-			notIndividualSegmentId, profileTypes, query, rangeEnd, rangeKey,
-			rangeStart, cur, delta, orderByFields);
+			faroProject, accountId, accountTypes, activityStatus, channelId,
+			dataSourceId, FieldMappingConstants.getSearchFieldMappingNames(),
+			filterString, includeAnonymousUsers, individualSegmentId,
+			individualTypes, interestName, notIndividualSegmentId, query,
+			rangeEnd, rangeKey, rangeStart, cur, delta, orderByFields);
 
 		Function<Individual, IndividualDisplay> function = individual -> {
 			IndividualDisplay individualDisplay = new IndividualDisplay(
