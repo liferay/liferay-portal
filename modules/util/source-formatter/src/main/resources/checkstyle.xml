@@ -931,6 +931,7 @@
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds cases where `PortalUtil.getPortalServerPort` should be used." />
 			<property name="enabled" value="false" />
+			<message key="hard.coded.port.use" value="Use a hard-coded port instead of &quot;PortalUtil.getPortalServerPort&quot; as &quot;PortalUtil._portal&quot; is null in unit tests" />
 			<message key="method.use" value="Use &quot;PortalUtil.getPortalServerPort&quot; instead of the hard-coded port &quot;8080&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.TestClassMissingLiferayUnitTestRuleCheck">

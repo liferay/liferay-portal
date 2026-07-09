@@ -26,10 +26,25 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 	protected void doVisitToken(DetailAST detailAST) {
 		String absolutePath = getAbsolutePath();
 
-		if (!absolutePath.contains("/testIntegration/")) {
+		if (!absolutePath.endsWith("Test.java")) {
 			return;
 		}
 
+		if (absolutePath.contains("/testIntegration/")) {
+			_checkHardcodedPort(detailAST);
+
+			return;
+		}
+
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
+			detailAST, "PortalUtil", "getPortalServerPort");
+
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
+			log(methodCallDetailAST, _MSG_USE_HARD_CODED_PORT);
+		}
+	}
+
+	private void _checkHardcodedPort(DetailAST detailAST) {
 		List<DetailAST> childDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.NUM_INT, TokenTypes.STRING_LITERAL);
 
@@ -86,6 +101,9 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 
 		log(detailAST, _MSG_USE_METHOD);
 	}
+
+	private static final String _MSG_USE_HARD_CODED_PORT =
+		"hard.coded.port.use";
 
 	private static final String _MSG_USE_METHOD = "method.use";
 
