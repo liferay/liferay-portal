@@ -106,7 +106,7 @@ public class DataMaskWriterInterceptorTest {
 			HTTPTestUtil.invokeToString(
 				null, "test-data-mask/test",
 				HashMapBuilder.put(
-					"X-Liferay-Data-Masks", "L_UNKNOWN_DATA_MASK_ERC"
+					"X-Liferay-Data-Masks", RandomTestUtil.randomString()
 				).build(),
 				Http.Method.GET));
 
