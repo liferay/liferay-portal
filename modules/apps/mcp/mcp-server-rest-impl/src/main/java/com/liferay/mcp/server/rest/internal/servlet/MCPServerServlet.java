@@ -331,16 +331,8 @@ public class MCPServerServlet extends HttpServlet {
 					objectDefinition),
 				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				new Sort[] {new Sort("executionOrder", Sort.INT_TYPE, false)}),
-			values -> {
-				String externalReferenceCode = MapUtil.getString(
-					values, "dataMaskExternalReferenceCode");
-
-				if (Validator.isNotNull(externalReferenceCode)) {
-					return externalReferenceCode;
-				}
-
-				return null;
-			});
+			values -> MapUtil.getString(
+				values, "dataMaskExternalReferenceCode"));
 	}
 
 	private String _getMCPServerProfileName(
