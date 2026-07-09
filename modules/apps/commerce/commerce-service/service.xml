@@ -135,7 +135,7 @@
 			<finder-column name="countryId" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CommerceAvailabilityEstimate" remote-service="true" uuid="true">
+	<entity external-reference-code="company" local-service="true" name="CommerceAvailabilityEstimate" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
@@ -154,6 +154,7 @@
 		<column localized="true" name="title" type="String" />
 		<column name="priority" type="double" />
 		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
