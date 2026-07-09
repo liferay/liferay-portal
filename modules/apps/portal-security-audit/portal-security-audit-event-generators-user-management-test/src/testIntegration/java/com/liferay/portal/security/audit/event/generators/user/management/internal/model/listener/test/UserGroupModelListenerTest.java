@@ -34,11 +34,9 @@ public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
-		_user = UserTestUtil.addUser();
-
-		_userGroup = UserGroupTestUtil.addUserGroup();
-
 		_company = CompanyTestUtil.addCompany();
+		_user = UserTestUtil.addUser();
+		_userGroup = UserGroupTestUtil.addUserGroup();
 
 		auditMessages.clear();
 
@@ -58,9 +56,8 @@ public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		_userGroup = UserGroupTestUtil.addUserGroup();
-
 		_company = CompanyTestUtil.addCompany();
+		_userGroup = UserGroupTestUtil.addUserGroup();
 
 		auditMessages.clear();
 

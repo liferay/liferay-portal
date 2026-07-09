@@ -35,11 +35,9 @@ public class RoleModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
-		_user = UserTestUtil.addUser();
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
 		_company = CompanyTestUtil.addCompany();
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
 
 		auditMessages.clear();
 
@@ -59,9 +57,8 @@ public class RoleModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
 		_company = CompanyTestUtil.addCompany();
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		auditMessages.clear();
 

@@ -34,11 +34,9 @@ public class OrganizationModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
-		_user = UserTestUtil.addUser();
-
-		_organization = OrganizationTestUtil.addOrganization();
-
 		_company = CompanyTestUtil.addCompany();
+		_organization = OrganizationTestUtil.addOrganization();
+		_user = UserTestUtil.addUser();
 
 		auditMessages.clear();
 
@@ -59,9 +57,8 @@ public class OrganizationModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		_organization = OrganizationTestUtil.addOrganization();
-
 		_company = CompanyTestUtil.addCompany();
+		_organization = OrganizationTestUtil.addOrganization();
 
 		auditMessages.clear();
 

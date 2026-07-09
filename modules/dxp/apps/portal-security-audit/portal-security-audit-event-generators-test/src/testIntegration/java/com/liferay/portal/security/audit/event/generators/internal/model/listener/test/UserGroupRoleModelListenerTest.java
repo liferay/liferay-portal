@@ -35,13 +35,10 @@ public class UserGroupRoleModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeCreate() throws Exception {
-		_user = UserTestUtil.addUser();
-
-		_group = GroupTestUtil.addGroup();
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
-
 		_company = CompanyTestUtil.addCompany();
+		_group = GroupTestUtil.addGroup();
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+		_user = UserTestUtil.addUser();
 
 		auditMessages.clear();
 

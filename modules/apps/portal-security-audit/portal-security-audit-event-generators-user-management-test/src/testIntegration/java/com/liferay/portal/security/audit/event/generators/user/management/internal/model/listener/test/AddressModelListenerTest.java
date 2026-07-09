@@ -33,9 +33,9 @@ public class AddressModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser();
 
 		_address = _addressLocalService.addAddress(
 			null, _user.getUserId(), User.class.getName(), _user.getUserId(), 0,

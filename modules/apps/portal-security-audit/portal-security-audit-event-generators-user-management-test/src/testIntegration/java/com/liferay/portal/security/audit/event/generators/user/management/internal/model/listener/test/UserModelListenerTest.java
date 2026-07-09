@@ -32,9 +32,9 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser();
 
 		Assert.assertFalse(_user.isAgreedToTermsOfUse());
 
