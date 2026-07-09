@@ -4,8 +4,12 @@ import * as Utils from '../utils';
 import {
 	ALL_APPLICATION_IDS,
 	ALL_EVENT_IDS,
+	ATTRIBUTE_PROPERTY_PREFIX,
 	CustomFunctionOperators,
+	FunctionalOperators,
+	RelationalOperators,
 } from '../constants';
+import {createCustomValueMap} from '../custom-inputs';
 import {CustomValue} from 'shared/util/records';
 import {List, Map} from 'immutable';
 
@@ -99,6 +103,77 @@ describe('odata', () => {
 					data.mockNewCriteria(1, {value: 123}),
 				])
 			).toEqual('(firstName eq 123)');
+		});
+
+		describe('attribute placeholder exclusion', () => {
+			const buildBehaviorValue = (attributeItem) =>
+				createCustomValueMap([
+					{
+						key: 'criterionGroup',
+						value: [
+							{
+								operatorName: RelationalOperators.EQ,
+								propertyName: 'applicationId',
+								value: 'Blog'
+							},
+							{
+								operatorName: RelationalOperators.EQ,
+								propertyName: 'eventId',
+								value: 'blogViewed'
+							},
+							attributeItem,
+							{
+								operatorName: RelationalOperators.GT,
+								propertyName: 'day',
+								value: 'last24Hours'
+							}
+						]
+					},
+					{key: 'operator', value: RelationalOperators.GE},
+					{key: 'value', value: 1}
+				]);
+
+			it('should not serialize the empty attribute/ placeholder', () => {
+				const value = buildBehaviorValue({
+					operatorName: FunctionalOperators.Contains,
+					propertyName: ATTRIBUTE_PROPERTY_PREFIX,
+					value: ''
+				});
+
+				expect(
+					ODataUtil.buildQueryString([
+						{
+							operatorName:
+								CustomFunctionOperators.ActivitiesFilterByCount,
+							propertyName: 'applicationId',
+							value
+						}
+					])
+				).toEqual(
+					"activities.filterByCount(filter='(applicationId eq ''Blog'' and eventId eq ''blogViewed'' and day gt ''last24Hours'')',operator='ge',value=1)"
+				);
+			});
+
+			it('should still serialize a real attribute condition', () => {
+				const value = buildBehaviorValue({
+					operatorName: FunctionalOperators.Contains,
+					propertyName: `${ATTRIBUTE_PROPERTY_PREFIX}61727469636c654964`,
+					value: 'foo'
+				});
+
+				expect(
+					ODataUtil.buildQueryString([
+						{
+							operatorName:
+								CustomFunctionOperators.ActivitiesFilterByCount,
+							propertyName: 'applicationId',
+							value
+						}
+					])
+				).toEqual(
+					"activities.filterByCount(filter='(applicationId eq ''Blog'' and eventId eq ''blogViewed'' and contains(attribute/61727469636c654964, ''foo'') and day gt ''last24Hours'')',operator='ge',value=1)"
+				);
+			});
 		});
 	});
 
@@ -257,8 +332,18 @@ describe('odata', () => {
 						operatorName: 'activities-filter-by-count',
 						propertyName: 'activityKey',
 						rowId: 'row_01',
-						touched: {asset: false, occurenceCount: false},
-						valid: {asset: true, occurenceCount: true},
+						touched: {
+							asset: false,
+							attribute: false,
+							attributeValue: false,
+							occurenceCount: false,
+						},
+						valid: {
+							asset: true,
+							attribute: true,
+							attributeValue: true,
+							occurenceCount: true,
+						},
 						value: new CustomValue({
 							criterionGroup: new Map({
 								conjunctionName: 'and',
@@ -295,8 +380,18 @@ describe('odata', () => {
 						operatorName: 'not-activities-filter-by-count',
 						propertyName: 'activityKey',
 						rowId: 'row_01',
-						touched: {asset: false, occurenceCount: false},
-						valid: {asset: true, occurenceCount: true},
+						touched: {
+							asset: false,
+							attribute: false,
+							attributeValue: false,
+							occurenceCount: false,
+						},
+						valid: {
+							asset: true,
+							attribute: true,
+							attributeValue: true,
+							occurenceCount: true,
+						},
 						value: new CustomValue({
 							criterionGroup: new Map({
 								conjunctionName: 'and',
@@ -317,6 +412,94 @@ describe('odata', () => {
 						}),
 					},
 				],
+			});
+		});
+
+		describe('attribute filter parsing (attribute/<id>)', () => {
+			const getAttributeItem = (query) => {
+				const result = ODataUtil.translateQueryToCriteria(query);
+
+				return result.items[0].value
+					.getIn(['criterionGroup', 'items'])
+					.find((item) =>
+						item.get('propertyName')?.startsWith('attribute/')
+					)
+					.toJS();
+			};
+
+			it('should parse a "contains" attribute condition', () => {
+				expect(
+					getAttributeItem(
+						"activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and contains(attribute/2, ''euroroad.com''))',operator='ge',value=1)"
+					)
+				).toEqual({
+					operatorName: 'contains',
+					propertyName: 'attribute/2',
+					rowId: 'row_01',
+					touched: false,
+					valid: true,
+					value: 'euroroad.com',
+				});
+			});
+
+			it('should parse a "not contains" attribute condition', () => {
+				expect(
+					getAttributeItem(
+						"activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and (not contains(attribute/2, ''euroroad.com'')))',operator='ge',value=1)"
+					)
+				).toEqual({
+					operatorName: 'not-contains',
+					propertyName: 'attribute/2',
+					rowId: 'row_01',
+					touched: false,
+					valid: true,
+					value: 'euroroad.com',
+				});
+			});
+
+			it('should parse a "between" attribute condition', () => {
+				expect(
+					getAttributeItem(
+						"activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and between(attribute/4,''2020-2-2'',''2020-2-3''))',operator='ge',value=1)"
+					)
+				).toEqual({
+					operatorName: 'between',
+					propertyName: 'attribute/4',
+					rowId: 'row_01',
+					touched: false,
+					valid: true,
+					value: {end: '2020-2-3', start: '2020-2-2'},
+				});
+			});
+
+			it('should parse a relational attribute condition with a string value', () => {
+				expect(
+					getAttributeItem(
+						"activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and attribute/2 eq ''foo'')',operator='ge',value=1)"
+					)
+				).toEqual({
+					operatorName: 'eq',
+					propertyName: 'attribute/2',
+					rowId: 'row_01',
+					touched: false,
+					valid: true,
+					value: 'foo',
+				});
+			});
+
+			it('should parse a relational attribute condition with a numeric value', () => {
+				expect(
+					getAttributeItem(
+						"activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and attribute/3 gt 100)',operator='ge',value=1)"
+					)
+				).toEqual({
+					operatorName: 'gt',
+					propertyName: 'attribute/3',
+					rowId: 'row_01',
+					touched: false,
+					valid: true,
+					value: 100,
+				});
 			});
 		});
 
@@ -574,6 +757,27 @@ describe('odata', () => {
 		it('should be able to translate an ObjectEntry behavior query with objectDefinitionName to map and back to string', () => {
 			const testQuery =
 				"(activities.filterByCount(filter='(applicationId eq ''ObjectEntry'' and eventId eq ''objectEntryImpressionMade'' and objectDefinitionName eq ''CMSBasicWebContent'' and day gt ''last24Hours'')',operator='ge',value=1))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
+		it('should be able to translate a behavior query with an attribute "contains" condition to map and back to string', () => {
+			const testQuery =
+				"(activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and contains(attribute/2, ''euroroad.com''))',operator='ge',value=1))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
+		it('should be able to translate a behavior query with a "not contains" attribute condition to map and back to string', () => {
+			const testQuery =
+				"(activities.filterByCount(filter='(applicationId eq ''Document'' and eventId eq ''documentDownloaded'' and day gt ''last24Hours'' and (not contains(attribute/2, ''euroroad.com'')))',operator='ge',value=1))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
+		it('should be able to translate a custom event query with an attribute "contains" condition to map and back to string', () => {
+			const testQuery =
+				"(events.filterByCount(filter='(eventDefinitionId eq ''1'' and contains(attribute/2, ''euroroad.com'') and day gt ''last24Hours'')',operator='ge',value=1))";
 
 			testConversionToAndFrom(testQuery);
 		});

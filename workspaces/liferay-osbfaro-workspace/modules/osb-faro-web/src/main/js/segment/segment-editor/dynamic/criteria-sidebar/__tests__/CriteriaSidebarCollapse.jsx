@@ -6,7 +6,10 @@ import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {FieldOwnerTypes} from 'shared/util/constants';
-import {getIndexFromPropertyName} from '../../utils/custom-inputs';
+import {
+	getIndexFromPropertyName,
+	getIndexFromPropertyNamePrefix
+} from '../../utils/custom-inputs';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {List} from 'immutable';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
@@ -340,6 +343,19 @@ describe('getDefaultValue', () => {
 		);
 		expect(result.get('operator')).toBeTruthy();
 		expect(result.get('value')).toBe(1);
+
+		const attributeIdx = getIndexFromPropertyNamePrefix(
+			result,
+			'attribute/'
+		);
+
+		expect(attributeIdx).toBeGreaterThanOrEqual(0);
+		expect(
+			result.getIn(['criterionGroup', 'items', attributeIdx, 'propertyName'])
+		).toBe('attribute/');
+		expect(
+			result.getIn(['criterionGroup', 'items', attributeIdx, 'value'])
+		).toBe('');
 	});
 
 	it('should return CustomValueMap with eventId set to property name for PropertyTypes.Event', () => {

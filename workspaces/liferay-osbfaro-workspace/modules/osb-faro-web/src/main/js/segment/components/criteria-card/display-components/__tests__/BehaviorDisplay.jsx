@@ -4,6 +4,7 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {
 	CustomFunctionOperators,
+	FunctionalOperators,
 	PropertyTypes,
 	RelationalOperators,
 	TimeSpans
@@ -67,7 +68,7 @@ describe('BehaviorDisplay', () => {
 	afterEach(cleanup);
 
 	it('renders', () => {
-		const {container} = render(
+		const {container, queryByText} = render(
 			<WrappedBehaviorDisplay
 				criterion={mockCriterion}
 				property={mockProperty}
@@ -77,5 +78,73 @@ describe('BehaviorDisplay', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+		expect(queryByText('Foo Attribute String')).toBeNull();
+	});
+
+	it('renders the attribute filter when an attribute/<id> criterion is present', () => {
+		const mockSegmentWithAttribute = data.getImmutableMock(
+			Segment,
+			data.mockSegment,
+			0,
+			{
+				referencedObjects: {
+					assets: {
+						123: {
+							description: null,
+							id: '123',
+							name: 'Cool beans Page',
+							type: 'Page',
+							url: 'https://www.liferay.com'
+						}
+					},
+					attributes: {
+						2: {
+							dataType: 'STRING',
+							displayName: 'Foo Attribute String',
+							id: '2'
+						}
+					}
+				}
+			}
+		);
+
+		const mockCriterionWithAttribute = {
+			operatorName: CustomFunctionOperators.ActivitiesFilterByCount,
+			propertyName: 'activityKey',
+			value: Map({
+				criterionGroup: Map({
+					items: List([
+						Map({
+							operatorName: RelationalOperators.EQ,
+							propertyName: 'activityKey',
+							value: 'Page#pageViewed#123'
+						}),
+						Map({
+							operatorName: FunctionalOperators.Contains,
+							propertyName: 'attribute/2',
+							value: 'Test'
+						}),
+						Map({
+							operatorName: RelationalOperators.GT,
+							propertyName: 'day',
+							value: TimeSpans.Last24Hours
+						})
+					])
+				}),
+				operator: RelationalOperators.GE,
+				value: 2
+			})
+		};
+
+		const {queryByText} = render(
+			<WrappedBehaviorDisplay
+				criterion={mockCriterionWithAttribute}
+				property={mockProperty}
+				segment={mockSegmentWithAttribute}
+				segmentType={SegmentTypes.Batch}
+			/>
+		);
+
+		expect(queryByText('Foo Attribute String')).toBeTruthy();
 	});
 });

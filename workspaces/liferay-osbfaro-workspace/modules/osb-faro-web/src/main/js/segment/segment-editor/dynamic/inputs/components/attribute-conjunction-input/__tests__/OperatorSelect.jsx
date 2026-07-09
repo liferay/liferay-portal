@@ -26,4 +26,37 @@ describe('OperatorSelect', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('should apply the form-control-sm class when small is true', () => {
+		const {container} = render(
+			<OperatorSelect
+				dataType={DataTypes.Number}
+				onChange={jest.fn()}
+				operatorsName={
+					ATTRIBUTES_NUMBER_OPERATOR_LONGHAND_LABELS_MAP[Operators.EQ]
+				}
+				small
+			/>
+		);
+
+		expect(
+			container.querySelector('.operator-input.form-control-sm')
+		).toBeTruthy();
+	});
+
+	it('should not apply the form-control-sm class when small is not set', () => {
+		const {container} = render(
+			<OperatorSelect
+				dataType={DataTypes.Number}
+				onChange={jest.fn()}
+				operatorsName={
+					ATTRIBUTES_NUMBER_OPERATOR_LONGHAND_LABELS_MAP[Operators.EQ]
+				}
+			/>
+		);
+
+		expect(
+			container.querySelector('.form-control-sm')
+		).toBeNull();
+	});
 });

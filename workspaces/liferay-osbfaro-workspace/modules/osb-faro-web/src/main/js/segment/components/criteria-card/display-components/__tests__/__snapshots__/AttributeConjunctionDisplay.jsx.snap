@@ -2,13 +2,24 @@
 
 exports[`AttributeConjunctionDisplay should render 1`] = `
 <div>
-  <b>
+  <span
+    class="text-nowrap"
+  >
+    where event attribute
+  </span>
+  <b
+    class="text-secondary"
+  >
     Foo Attribute String
   </b>
-  <b>
+  <b
+    class="text-secondary"
+  >
     is
   </b>
-  <b>
+  <b
+    class="text-secondary"
+  >
     "Test"
   </b>
 </div>

@@ -202,6 +202,30 @@ exports[`BehaviorInput should render 1`] = `
         data-aria-hidden="true"
       />
     </div>
+    <div
+      aria-hidden="true"
+      class="form-group form-group-autofit"
+      data-aria-hidden="true"
+    >
+      <button
+        class="button-root btn btn-secondary"
+        type="button"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-plus"
+          role="presentation"
+        >
+          <use
+            href="#plus"
+          />
+        </svg>
+        <span
+          class="ml-2"
+        >
+          Add Event Attribute
+        </span>
+      </button>
+    </div>
   </div>
 </div>
 `;
@@ -389,6 +413,28 @@ exports[`BehaviorInput should render w/ data 1`] = `
       <div
         class="form-group-item form-group-item-shrink"
       />
+    </div>
+    <div
+      class="form-group form-group-autofit"
+    >
+      <button
+        class="button-root btn btn-secondary"
+        type="button"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-plus"
+          role="presentation"
+        >
+          <use
+            href="#plus"
+          />
+        </svg>
+        <span
+          class="ml-2"
+        >
+          Add Event Attribute
+        </span>
+      </button>
     </div>
   </div>
 </div>

@@ -33,5 +33,25 @@ exports[`EventDisplay renders 1`] = `
       Last 24 hours
     </strong>
   </span>
+  <span
+    class="text-nowrap"
+  >
+    where event attribute
+  </span>
+  <b
+    class="text-secondary"
+  >
+    Foo Attribute String
+  </b>
+  <b
+    class="text-secondary"
+  >
+    contains
+  </b>
+  <b
+    class="text-secondary"
+  >
+    "Test String"
+  </b>
 </div>
 `;

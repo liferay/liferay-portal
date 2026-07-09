@@ -2,6 +2,7 @@ import * as data from 'test/data';
 import AttributeConjunctionDisplay from '../AttributeConjunctionDisplay';
 import React from 'react';
 import {DataTypes} from 'event-analysis/utils/types';
+import {encodeAttributeId} from 'segment/segment-editor/dynamic/inputs/components/attribute-conjunction-input/utils';
 import {
 	FunctionalOperators,
 	NotOperators,
@@ -64,6 +65,34 @@ describe('AttributeConjunctionDisplay', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('should render the undefined-attribute fallback when the criterion has no attribute id', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				conjunctionCriterion={{
+					operatorName: RelationalOperators.EQ,
+					propertyName: 'attribute/',
+					value: 'Test'
+				}}
+			/>
+		);
+
+		expect(getByText('Undefined Attribute')).toBeTruthy();
+	});
+
+	it('should decode the attribute name from the hex id when it is not in referencedEntities', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				conjunctionCriterion={{
+					operatorName: FunctionalOperators.Contains,
+					propertyName: `attribute/${encodeAttributeId('articleId')}`,
+					value: 'foo'
+				}}
+			/>
+		);
+
+		expect(getByText('articleId')).toBeTruthy();
 	});
 
 	it.each`
