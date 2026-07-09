@@ -158,7 +158,7 @@ public abstract class BaseStandaloneBuildTestrayCaseResult
 
 		propertiesMap.put("testray.project.name", testrayProject.getName());
 
-		propertiesMap.put("testray.run.id", testrayRun.getRunIDString());
+		propertiesMap.put("testray.run.id", testrayRun.getRunIdString());
 
 		addPropertyElements(
 			rootElement.addElement("properties"), propertiesMap);

@@ -98,7 +98,7 @@ public class GenerateTestrayCSVUtil {
 					projectBuildDir,
 					JenkinsResultsParserUtil.combine(
 						"testray-results-",
-						String.valueOf(testrayBuild.getID()), ".csv")),
+						String.valueOf(testrayBuild.getId()), ".csv")),
 				sb.toString());
 		}
 		catch (IOException ioException) {

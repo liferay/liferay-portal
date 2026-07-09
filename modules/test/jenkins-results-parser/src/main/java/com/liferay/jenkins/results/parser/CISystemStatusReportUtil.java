@@ -390,15 +390,15 @@ public class CISystemStatusReportUtil {
 					buildReportJSONFilePath);
 
 				if (matcher.find()) {
-					int masterID = Integer.parseInt(matcher.group("masterID"));
+					int masterId = Integer.parseInt(matcher.group("masterId"));
 
 					if (JenkinsResultsParserUtil.isCloudCINode()) {
-						if (masterID <= 40) {
+						if (masterId <= 40) {
 							continue;
 						}
 					}
 					else {
-						if (masterID > 40) {
+						if (masterId > 40) {
 							continue;
 						}
 					}
@@ -779,7 +779,7 @@ public class CISystemStatusReportUtil {
 
 	private static final Properties _buildProperties;
 	private static final Pattern _buildReportFilePathPattern = Pattern.compile(
-		".*/?(?<dateString>\\d{4}-\\d{2})/test-\\d-(?<masterID>[\\w-]+)/.*");
+		".*/?(?<dateString>\\d{4}-\\d{2})/test-\\d-(?<masterId>[\\w-]+)/.*");
 	private static final List<String> _dateStrings = new ArrayList<>();
 	private static final ExecutorService _executorService =
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(20, true);

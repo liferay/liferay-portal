@@ -89,7 +89,7 @@ public class FunctionalPortalTestBatch
 				"https://", portalBatchBuildData.getTopLevelMasterHostname(),
 				".liferay.com/userContent/",
 				portalBatchBuildData.getUserContentRelativePath(),
-				portalBatchBuildData.getRunID(), "/", testName);
+				portalBatchBuildData.getRunId(), "/", testName);
 
 			sb.append("<li>");
 			sb.append(test);

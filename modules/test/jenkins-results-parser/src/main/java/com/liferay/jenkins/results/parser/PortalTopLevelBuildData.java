@@ -92,9 +92,9 @@ public class PortalTopLevelBuildData
 	}
 
 	protected PortalTopLevelBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
-		super(runID, jobName, buildURL);
+		super(runId, jobName, buildURL);
 
 		setPortalBranchSHA(_getPortalBranchSHA());
 		setPortalGitHubURL(_getPortalGitHubURL());

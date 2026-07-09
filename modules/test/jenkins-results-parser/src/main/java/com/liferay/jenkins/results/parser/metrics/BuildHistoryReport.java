@@ -162,13 +162,13 @@ public class BuildHistoryReport {
 				_getURL(awsTestrayBuildURL));
 
 			TestrayRun awsTestrayRun = awsTestrayBuild.getTestrayRun(
-				TestrayRun.getDefaultRunIDString());
+				TestrayRun.getDefaultRunIdString());
 
 			TestrayBuild testrayBuild = TestrayFactory.newTestrayBuild(
 				_getURL(testrayBuildURL));
 
 			TestrayRun testrayRun = testrayBuild.getTestrayRun(
-				TestrayRun.getDefaultRunIDString());
+				TestrayRun.getDefaultRunIdString());
 
 			if ((awsTestrayRun == null) || (testrayRun == null)) {
 				continue;

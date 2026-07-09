@@ -189,14 +189,14 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static void cancelQueuedItem(
-		long itemID, JenkinsMaster jenkinsMaster) {
+		long itemId, JenkinsMaster jenkinsMaster) {
 
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("def queue = Jenkins.instance.queue;\n");
 
 		sb.append("def items = queue.items.findAll{it.getId() == ");
-		sb.append(itemID);
+		sb.append(itemId);
 		sb.append("};\n");
 
 		sb.append("queue.cancel(items[0]);");
@@ -1203,7 +1203,7 @@ public class JenkinsResultsParserUtil {
 		return sb.toString();
 	}
 
-	public static String getBuildID(String topLevelBuildURL) {
+	public static String getBuildId(String topLevelBuildURL) {
 		Matcher matcher = _buildURLPattern.matcher(topLevelBuildURL);
 
 		matcher.find();
@@ -1451,8 +1451,8 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
-	public static String getBuildURLByBuildID(String buildID) {
-		Matcher matcher = _buildIDPattern.matcher(buildID);
+	public static String getBuildURLByBuildId(String buildId) {
+		Matcher matcher = _buildIdPattern.matcher(buildId);
 
 		matcher.find();
 
@@ -1481,7 +1481,7 @@ public class JenkinsResultsParserUtil {
 				String propertyValue = buildProperties.getProperty(
 					propertyName);
 
-				if (propertyValue.equals(matcher.group("jobID"))) {
+				if (propertyValue.equals(matcher.group("jobId"))) {
 					jobName = propertyName.substring(
 						7, propertyName.length() - 1);
 
@@ -6962,9 +6962,9 @@ public class JenkinsResultsParserUtil {
 
 	private static final Pattern _axisVariablePattern = Pattern.compile(
 		".*AXIS_VARIABLE=(?<axisVariable>\\d+).*");
-	private static final Pattern _buildIDPattern = Pattern.compile(
+	private static final Pattern _buildIdPattern = Pattern.compile(
 		"(?<cohortNumber>[\\d]{1})(?<masterNumber>[\\d]{2})" +
-			"(?<jobID>[\\d]+)_(?<buildNumber>[\\d]+)");
+			"(?<jobId>[\\d]+)_(?<buildNumber>[\\d]+)");
 	private static final Hashtable<Object, Object> _buildProperties =
 		new Hashtable<>();
 	private static String[] _buildPropertiesURLs;

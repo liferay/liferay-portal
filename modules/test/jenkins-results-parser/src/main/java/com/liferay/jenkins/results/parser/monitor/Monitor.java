@@ -12,7 +12,7 @@ public interface Monitor {
 
 	public MonitorResult execute();
 
-	public String getID();
+	public String getId();
 
 	public MonitorConfig getMonitorConfig();
 

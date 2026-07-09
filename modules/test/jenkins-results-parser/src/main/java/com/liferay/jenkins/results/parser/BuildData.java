@@ -60,7 +60,7 @@ public interface BuildData {
 
 	public String getMasterHostname();
 
-	public String getRunID();
+	public String getRunId();
 
 	public Long getStartTime();
 
@@ -76,7 +76,7 @@ public interface BuildData {
 
 	public String getTopLevelMasterHostname();
 
-	public String getTopLevelRunID();
+	public String getTopLevelRunId();
 
 	public String getUserContentRelativePath();
 

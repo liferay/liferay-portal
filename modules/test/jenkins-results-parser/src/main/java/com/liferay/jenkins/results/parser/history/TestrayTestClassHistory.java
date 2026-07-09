@@ -199,15 +199,15 @@ public class TestrayTestClassHistory extends BaseTestClassHistory {
 		TestrayProject testrayProject = _getTestrayProject();
 
 		if (testrayProject != null) {
-			long testrayCaseID = testrayProject.getTestrayCaseIDByName(
+			long testrayCaseId = testrayProject.getTestrayCaseIdByName(
 				getTestClassName());
 			TestrayServer testrayServer = testrayProject.getTestrayServer();
 
-			if ((testrayCaseID != 0) && (testrayServer != null)) {
+			if ((testrayCaseId != 0) && (testrayServer != null)) {
 				_testrayCaseURLString = JenkinsResultsParserUtil.combine(
 					String.valueOf(testrayServer.getURL()), "/#/project/",
-					String.valueOf(testrayProject.getID()), "/cases/",
-					String.valueOf(testrayCaseID));
+					String.valueOf(testrayProject.getId()), "/cases/",
+					String.valueOf(testrayCaseId));
 			}
 		}
 

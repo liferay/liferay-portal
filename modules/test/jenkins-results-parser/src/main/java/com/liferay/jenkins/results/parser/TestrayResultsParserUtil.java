@@ -136,11 +136,11 @@ public class TestrayResultsParserUtil {
 		}
 	}
 
-	private static String _getPartitionFilePath(File file, int partitionID) {
+	private static String _getPartitionFilePath(File file, int partitionId) {
 		String filePath = file.getAbsolutePath();
 
 		String partitionPredicate = JenkinsResultsParserUtil.combine(
-			"_partition_", String.valueOf(partitionID),
+			"_partition_", String.valueOf(partitionId),
 			_EXTENSION_TESTRAY_RESULT_FILE);
 
 		return filePath.replace(

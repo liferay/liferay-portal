@@ -18,7 +18,7 @@ public abstract class BaseTestrayFactor implements TestrayFactor {
 	}
 
 	@Override
-	public Long getID() {
+	public Long getId() {
 		JSONObject jsonObject = getJSONObject();
 
 		return jsonObject.getLong("id");

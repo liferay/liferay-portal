@@ -16,7 +16,7 @@ public class TestrayProductVersion {
 		"dateCreated", "dateModified", "id", "name"
 	};
 
-	public long getID() {
+	public long getId() {
 		return _jsonObject.getLong("id");
 	}
 

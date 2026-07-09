@@ -123,7 +123,7 @@ public class TestrayImporter {
 		Map<Long, TestrayBuild> testrayBuildMap = new HashMap<>();
 
 		for (TestrayBuild testrayBuild : _testrayBuilds.values()) {
-			testrayBuildMap.put(testrayBuild.getID(), testrayBuild);
+			testrayBuildMap.put(testrayBuild.getId(), testrayBuild);
 		}
 
 		int i = 0;
@@ -158,7 +158,7 @@ public class TestrayImporter {
 					testrayBuildTitle, testrayBuild.getName(),
 					String.valueOf(testrayBuild.getURL())),
 				_getJenkinsBuildDescriptionCodeElement(
-					"Testray Build ID", String.valueOf(testrayBuild.getID())));
+					"Testray Build ID", String.valueOf(testrayBuild.getId())));
 
 			i++;
 		}
@@ -259,15 +259,15 @@ public class TestrayImporter {
 		String testrayBuildSHA = getTestrayBuildSHA();
 
 		try {
-			String testrayBuildID = Environment.get("TESTRAY_BUILD_ID");
+			String testrayBuildId = Environment.get("TESTRAY_BUILD_ID");
 
 			TestrayRoutine testrayRoutine = getTestrayRoutine(testBaseDir);
 			TestrayProductVersion testrayProductVersion =
 				getTestrayProductVersion(testBaseDir);
 
-			if ((testrayBuildID != null) && testrayBuildID.matches("\\d+")) {
+			if ((testrayBuildId != null) && testrayBuildId.matches("\\d+")) {
 				testrayBuild = TestrayFactory.newTestrayBuild(
-					testrayRoutine, Long.parseLong(testrayBuildID));
+					testrayRoutine, Long.parseLong(testrayBuildId));
 			}
 
 			String testrayBuildName = Environment.get("TESTRAY_BUILD_NAME");
@@ -281,13 +281,13 @@ public class TestrayImporter {
 					testrayBuildDescription, testrayBuildSHA);
 			}
 
-			testrayBuildID = _getBuildParameter("TESTRAY_BUILD_ID");
+			testrayBuildId = _getBuildParameter("TESTRAY_BUILD_ID");
 
-			if ((testrayBuild == null) && (testrayBuildID != null) &&
-				testrayBuildID.matches("\\d+")) {
+			if ((testrayBuild == null) && (testrayBuildId != null) &&
+				testrayBuildId.matches("\\d+")) {
 
 				testrayBuild = TestrayFactory.newTestrayBuild(
-					testrayRoutine, Long.parseLong(testrayBuildID));
+					testrayRoutine, Long.parseLong(testrayBuildId));
 			}
 
 			testrayBuildName = _getBuildParameter("TESTRAY_BUILD_NAME");
@@ -305,13 +305,13 @@ public class TestrayImporter {
 				JobProperty jobProperty = _getJobProperty(
 					"testray.build.id", testBaseDir);
 
-				testrayBuildID = jobProperty.getValue();
+				testrayBuildId = jobProperty.getValue();
 
-				if ((testrayBuildID != null) &&
-					testrayBuildID.matches("\\d+")) {
+				if ((testrayBuildId != null) &&
+					testrayBuildId.matches("\\d+")) {
 
 					testrayBuild = TestrayFactory.newTestrayBuild(
-						testrayRoutine, Long.parseLong(testrayBuildID));
+						testrayRoutine, Long.parseLong(testrayBuildId));
 				}
 			}
 
@@ -487,15 +487,15 @@ public class TestrayImporter {
 		try {
 			TestrayProject testrayProject = getTestrayProject(testBaseDir);
 
-			String testrayProductVersionID = Environment.get(
+			String testrayProductVersionId = Environment.get(
 				"TESTRAY_PRODUCT_VERSION_ID");
 
-			if ((testrayProductVersionID != null) &&
-				testrayProductVersionID.matches("\\d+")) {
+			if ((testrayProductVersionId != null) &&
+				testrayProductVersionId.matches("\\d+")) {
 
 				testrayProductVersion =
-					testrayProject.getTestrayProductVersionByID(
-						Long.parseLong(testrayProductVersionID));
+					testrayProject.getTestrayProductVersionById(
+						Long.parseLong(testrayProductVersionId));
 			}
 
 			String testrayProductVersionName = Environment.get(
@@ -510,16 +510,16 @@ public class TestrayImporter {
 						_replaceEnvVars(testrayProductVersionName, true));
 			}
 
-			testrayProductVersionID = _getBuildParameter(
+			testrayProductVersionId = _getBuildParameter(
 				"TESTRAY_PRODUCT_VERSION_ID");
 
 			if ((testrayProductVersion == null) &&
-				(testrayProductVersionID != null) &&
-				testrayProductVersionID.matches("\\d+")) {
+				(testrayProductVersionId != null) &&
+				testrayProductVersionId.matches("\\d+")) {
 
 				testrayProductVersion =
-					testrayProject.getTestrayProductVersionByID(
-						Long.parseLong(testrayProductVersionID));
+					testrayProject.getTestrayProductVersionById(
+						Long.parseLong(testrayProductVersionId));
 			}
 
 			testrayProductVersionName = _getBuildParameter(
@@ -538,14 +538,14 @@ public class TestrayImporter {
 				JobProperty jobProperty = _getJobProperty(
 					"testray.product.version.id", testBaseDir);
 
-				testrayProductVersionID = jobProperty.getValue();
+				testrayProductVersionId = jobProperty.getValue();
 
-				if ((testrayProductVersionID != null) &&
-					testrayProductVersionID.matches("\\d+")) {
+				if ((testrayProductVersionId != null) &&
+					testrayProductVersionId.matches("\\d+")) {
 
 					testrayProductVersion =
-						testrayProject.getTestrayProductVersionByID(
-							Long.parseLong(testrayProductVersionID));
+						testrayProject.getTestrayProductVersionById(
+							Long.parseLong(testrayProductVersionId));
 				}
 			}
 
@@ -613,15 +613,15 @@ public class TestrayImporter {
 		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		try {
-			String testrayProjectID = Environment.get("TESTRAY_PROJECT_ID");
+			String testrayProjectId = Environment.get("TESTRAY_PROJECT_ID");
 
 			TestrayServer testrayServer = getTestrayServer(testBaseDir);
 
-			if ((testrayProjectID != null) &&
-				testrayProjectID.matches("\\d+")) {
+			if ((testrayProjectId != null) &&
+				testrayProjectId.matches("\\d+")) {
 
-				testrayProject = testrayServer.getTestrayProjectByID(
-					Long.parseLong(testrayProjectID));
+				testrayProject = testrayServer.getTestrayProjectById(
+					Long.parseLong(testrayProjectId));
 			}
 
 			String testrayProjectName = Environment.get("TESTRAY_PROJECT_NAME");
@@ -640,13 +640,13 @@ public class TestrayImporter {
 					_replaceEnvVars(testrayProjectName, true));
 			}
 
-			testrayProjectID = _getBuildParameter("TESTRAY_PROJECT_ID");
+			testrayProjectId = _getBuildParameter("TESTRAY_PROJECT_ID");
 
-			if ((testrayProject == null) && (testrayProjectID != null) &&
-				testrayProjectID.matches("\\d+")) {
+			if ((testrayProject == null) && (testrayProjectId != null) &&
+				testrayProjectId.matches("\\d+")) {
 
-				testrayProject = testrayServer.getTestrayProjectByID(
-					Long.parseLong(testrayProjectID));
+				testrayProject = testrayServer.getTestrayProjectById(
+					Long.parseLong(testrayProjectId));
 			}
 
 			testrayProjectName = _getBuildParameter("TESTRAY_PROJECT_NAME");
@@ -662,13 +662,13 @@ public class TestrayImporter {
 				JobProperty jobProperty = _getJobProperty(
 					"testray.project.id", testBaseDir);
 
-				testrayProjectID = jobProperty.getValue();
+				testrayProjectId = jobProperty.getValue();
 
-				if ((testrayProjectID != null) &&
-					testrayProjectID.matches("\\d+")) {
+				if ((testrayProjectId != null) &&
+					testrayProjectId.matches("\\d+")) {
 
-					testrayProject = testrayServer.getTestrayProjectByID(
-						Long.parseLong(testrayProjectID));
+					testrayProject = testrayServer.getTestrayProjectById(
+						Long.parseLong(testrayProjectId));
 				}
 			}
 
@@ -758,15 +758,15 @@ public class TestrayImporter {
 		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		try {
-			String testrayRoutineID = Environment.get("TESTRAY_ROUTINE_ID");
+			String testrayRoutineId = Environment.get("TESTRAY_ROUTINE_ID");
 
 			TestrayProject testrayProject = getTestrayProject(testBaseDir);
 
-			if ((testrayRoutineID != null) &&
-				testrayRoutineID.matches("\\d+")) {
+			if ((testrayRoutineId != null) &&
+				testrayRoutineId.matches("\\d+")) {
 
-				testrayRoutine = testrayProject.getTestrayRoutineByID(
-					Long.parseLong(testrayRoutineID));
+				testrayRoutine = testrayProject.getTestrayRoutineById(
+					Long.parseLong(testrayRoutineId));
 			}
 
 			String testrayRoutineName = Environment.get("TESTRAY_ROUTINE_NAME");
@@ -778,13 +778,13 @@ public class TestrayImporter {
 					_replaceEnvVars(testrayRoutineName, true));
 			}
 
-			testrayRoutineID = _getBuildParameter("TESTRAY_ROUTINE_ID");
+			testrayRoutineId = _getBuildParameter("TESTRAY_ROUTINE_ID");
 
-			if ((testrayRoutine == null) && (testrayRoutineID != null) &&
-				testrayRoutineID.matches("\\d+")) {
+			if ((testrayRoutine == null) && (testrayRoutineId != null) &&
+				testrayRoutineId.matches("\\d+")) {
 
-				testrayRoutine = testrayProject.getTestrayRoutineByID(
-					Long.parseLong(testrayRoutineID));
+				testrayRoutine = testrayProject.getTestrayRoutineById(
+					Long.parseLong(testrayRoutineId));
 			}
 
 			testrayRoutineName = _getBuildParameter("TESTRAY_ROUTINE_NAME");
@@ -809,13 +809,13 @@ public class TestrayImporter {
 				JobProperty jobProperty = _getJobProperty(
 					"testray.routine.id", testBaseDir);
 
-				testrayRoutineID = jobProperty.getValue();
+				testrayRoutineId = jobProperty.getValue();
 
-				if ((testrayRoutineID != null) &&
-					testrayRoutineID.matches("\\d+")) {
+				if ((testrayRoutineId != null) &&
+					testrayRoutineId.matches("\\d+")) {
 
-					testrayRoutine = testrayProject.getTestrayRoutineByID(
-						Long.parseLong(testrayRoutineID));
+					testrayRoutine = testrayProject.getTestrayRoutineById(
+						Long.parseLong(testrayRoutineId));
 				}
 			}
 
@@ -932,7 +932,7 @@ public class TestrayImporter {
 	}
 
 	public void postSlackNotification() {
-		List<Long> testrayBuildIDs = new ArrayList<>();
+		List<Long> testrayBuildIds = new ArrayList<>();
 
 		for (Map.Entry<File, TestrayBuild> testrayBuildEntry :
 				_testrayBuilds.entrySet()) {
@@ -941,11 +941,11 @@ public class TestrayImporter {
 
 			TestrayBuild testrayBuild = testrayBuildEntry.getValue();
 
-			if (testrayBuildIDs.contains(testrayBuild.getID())) {
+			if (testrayBuildIds.contains(testrayBuild.getId())) {
 				continue;
 			}
 
-			testrayBuildIDs.add(testrayBuild.getID());
+			testrayBuildIds.add(testrayBuild.getId());
 
 			String slackChannels = _getSlackChannels(testBaseDir);
 
@@ -1032,14 +1032,14 @@ public class TestrayImporter {
 			throw new RuntimeException(timeoutException);
 		}
 
-		List<Long> testrayBuildIDs = new ArrayList<>();
+		List<Long> testrayBuildIds = new ArrayList<>();
 
 		for (TestrayBuild testrayBuild : _testrayBuilds.values()) {
-			if (testrayBuildIDs.contains(testrayBuild.getID())) {
+			if (testrayBuildIds.contains(testrayBuild.getId())) {
 				continue;
 			}
 
-			testrayBuildIDs.add(testrayBuild.getID());
+			testrayBuildIds.add(testrayBuild.getId());
 
 			TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
@@ -1628,7 +1628,7 @@ public class TestrayImporter {
 
 		propertiesMap.put("testray.project.name", testrayProject.getName());
 
-		propertiesMap.put("testray.run.id", testrayRun.getRunIDString());
+		propertiesMap.put("testray.run.id", testrayRun.getRunIdString());
 		propertiesMap.put(
 			"testray.total.cpu.use.time",
 			JenkinsResultsParserUtil.toDurationString(

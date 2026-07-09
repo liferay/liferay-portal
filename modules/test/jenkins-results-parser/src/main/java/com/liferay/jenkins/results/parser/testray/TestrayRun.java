@@ -36,7 +36,7 @@ public class TestrayRun {
 		"dateCreated", "dateModified", "id", "name"
 	};
 
-	public static String getDefaultRunIDString() {
+	public static String getDefaultRunIdString() {
 		try {
 			return JenkinsResultsParserUtil.getBuildProperty(
 				"testray.environment.default[master]");
@@ -46,7 +46,7 @@ public class TestrayRun {
 		}
 	}
 
-	public static String getRunIDString(
+	public static String getRunIdString(
 		String batchName, String testSuiteName, Properties properties) {
 
 		List<String> factorValues = new ArrayList<>();
@@ -66,7 +66,7 @@ public class TestrayRun {
 		}
 
 		if (factorValues.isEmpty()) {
-			return getDefaultRunIDString();
+			return getDefaultRunIdString();
 		}
 
 		return JenkinsResultsParserUtil.join("|", factorValues);
@@ -78,11 +78,11 @@ public class TestrayRun {
 		for (TestrayFactor testrayFactor : getTestrayFactors()) {
 			TestrayFactor.Category category = testrayFactor.getCategory();
 
-			sb.append(category.getID());
+			sb.append(category.getId());
 
 			TestrayFactor.Option option = testrayFactor.getOption();
 
-			sb.append(option.getID());
+			sb.append(option.getId());
 		}
 
 		String environment = sb.toString();
@@ -109,7 +109,7 @@ public class TestrayRun {
 		return environmentsElement;
 	}
 
-	public long getID() {
+	public long getId() {
 		if (_id != null) {
 			return _id;
 		}
@@ -121,7 +121,7 @@ public class TestrayRun {
 		return _id;
 	}
 
-	public String getRunIDString() {
+	public String getRunIdString() {
 		return _name;
 	}
 
@@ -134,7 +134,7 @@ public class TestrayRun {
 			return _testrayFactors;
 		}
 
-		List<TestrayFactor> testrayFactors = _getTestrayFactorsByRunID();
+		List<TestrayFactor> testrayFactors = _getTestrayFactorsByRunId();
 
 		if (testrayFactors == null) {
 			testrayFactors = _getTestrayFactorsByName();
@@ -155,7 +155,7 @@ public class TestrayRun {
 		return testrayBuild.getTestrayServer();
 	}
 
-	public void setID(long id) {
+	public void setId(long id) {
 		_id = id;
 	}
 
@@ -180,8 +180,8 @@ public class TestrayRun {
 
 		final String filterString = JenkinsResultsParserUtil.combine(
 			"environmentHash eq '", getEnvironmentHash(), "' and name eq '",
-			getRunIDString(), "' and r_buildToRuns_c_buildId eq '",
-			String.valueOf(testrayBuild.getID()), "'");
+			getRunIdString(), "' and r_buildToRuns_c_buildId eq '",
+			String.valueOf(testrayBuild.getId()), "'");
 
 		Retryable<JSONObject> retryable = new Retryable<JSONObject>(
 			true, 3, 5, true) {
@@ -210,11 +210,11 @@ public class TestrayRun {
 					postRequestJSONObject.put(
 						"environmentHash", getEnvironmentHash()
 					).put(
-						"name", getRunIDString()
+						"name", getRunIdString()
 					).put(
 						"number", _getNextRunNumber()
 					).put(
-						"r_buildToRuns_c_buildId", testrayBuild.getID()
+						"r_buildToRuns_c_buildId", testrayBuild.getId()
 					);
 
 					return new JSONObject(
@@ -410,7 +410,7 @@ public class TestrayRun {
 
 		String filterString = JenkinsResultsParserUtil.combine(
 			"r_buildToRuns_c_buildId eq '",
-			String.valueOf(testrayBuild.getID()), "'");
+			String.valueOf(testrayBuild.getId()), "'");
 
 		try {
 			TestrayServer testrayServer = getTestrayServer();
@@ -430,7 +430,7 @@ public class TestrayRun {
 	private List<TestrayFactor> _getTestrayFactorsByName() {
 		List<TestrayFactor> testrayFactors = new ArrayList<>();
 
-		String name = getRunIDString();
+		String name = getRunIdString();
 
 		for (String optionName : name.split("\\|")) {
 			TestrayFactor.Option testrayFactorOption =
@@ -444,22 +444,22 @@ public class TestrayRun {
 		return testrayFactors;
 	}
 
-	private List<TestrayFactor> _getTestrayFactorsByRunID() {
-		long runID = 0;
+	private List<TestrayFactor> _getTestrayFactorsByRunId() {
+		long runId = 0;
 
 		if (_id != null) {
-			runID = _id;
+			runId = _id;
 		}
 		else if (_jsonObject != null) {
-			runID = _jsonObject.optLong("id");
+			runId = _jsonObject.optLong("id");
 		}
 
-		if (runID <= 0) {
+		if (runId <= 0) {
 			return null;
 		}
 
 		String filterString = JenkinsResultsParserUtil.combine(
-			"r_runToFactors_c_runId eq '", String.valueOf(runID), "'");
+			"r_runToFactors_c_runId eq '", String.valueOf(runId), "'");
 
 		try {
 			TestrayServer testrayServer = _testrayBuild.getTestrayServer();

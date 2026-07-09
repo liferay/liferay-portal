@@ -36,7 +36,7 @@ public abstract class BaseBatchBuildData
 
 		TopLevelBuildData topLevelBuildData =
 			BuildDataFactory.newTopLevelBuildData(
-				getTopLevelRunID(), topLevelJobName, null);
+				getTopLevelRunId(), topLevelJobName, null);
 
 		_topLevelBuildData = topLevelBuildData;
 
@@ -72,7 +72,7 @@ public abstract class BaseBatchBuildData
 	}
 
 	@Override
-	public String getTopLevelRunID() {
+	public String getTopLevelRunId() {
 		return optString("top_level_run_id");
 	}
 
@@ -87,35 +87,35 @@ public abstract class BaseBatchBuildData
 	}
 
 	protected BaseBatchBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
-		super(_getDefaultRunID(runID), jobName, buildURL);
+		super(_getDefaultRunId(runId), jobName, buildURL);
 
 		if (buildURL == null) {
 			return;
 		}
 
-		_setTopLevelRunID();
+		_setTopLevelRunId();
 
 		validateKeys(_KEYS_REQUIRED);
 	}
 
-	private static String _getDefaultRunID(String runID) {
-		if (runID != null) {
-			return runID;
+	private static String _getDefaultRunId(String runId) {
+		if (runId != null) {
+			return runId;
 		}
 
 		return "batch_" + JenkinsResultsParserUtil.getDistinctTimeStamp();
 	}
 
-	private void _setTopLevelRunID() {
-		String topLevelRunID = Environment.get("TOP_LEVEL_RUN_ID");
+	private void _setTopLevelRunId() {
+		String topLevelRunId = Environment.get("TOP_LEVEL_RUN_ID");
 
-		if (topLevelRunID == null) {
+		if (topLevelRunId == null) {
 			throw new RuntimeException("Please set TOP_LEVEL_RUN_ID");
 		}
 
-		put("top_level_run_id", topLevelRunID);
+		put("top_level_run_id", topLevelRunId);
 	}
 
 	private static final String[] _KEYS_REQUIRED = {

@@ -1806,10 +1806,10 @@ public abstract class BaseTopLevelBuild
 	protected Element getReevaluationDetailsElement(
 		TopLevelBuildReport upstreamTopLevelBuildReport) {
 
-		String buildID = JenkinsResultsParserUtil.getBuildID(getBuildURL());
+		String buildId = JenkinsResultsParserUtil.getBuildId(getBuildURL());
 
 		Element preElement = Dom4JUtil.getNewElement(
-			"pre", null, "ci:reevaluate:" + buildID);
+			"pre", null, "ci:reevaluate:" + buildId);
 
 		return Dom4JUtil.getNewElement(
 			"p", null, "This pull is eligible for reevaluation. When this ",

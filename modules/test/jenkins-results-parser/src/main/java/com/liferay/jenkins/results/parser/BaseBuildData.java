@@ -43,7 +43,7 @@ public abstract class BaseBuildData implements BuildData {
 
 	@Override
 	public File getArtifactDir() {
-		return new File(getWorkspaceDir(), getRunID());
+		return new File(getWorkspaceDir(), getRunId());
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public abstract class BaseBuildData implements BuildData {
 	}
 
 	@Override
-	public String getRunID() {
+	public String getRunId() {
 		return getString("run_id");
 	}
 
@@ -307,8 +307,8 @@ public abstract class BaseBuildData implements BuildData {
 		return false;
 	}
 
-	protected BaseBuildData(String runID, String jobName, String buildURL) {
-		JSONObject jsonObject = buildDatabase.getBuildDataJSONObject(runID);
+	protected BaseBuildData(String runId, String jobName, String buildURL) {
+		JSONObject jsonObject = buildDatabase.getBuildDataJSONObject(runId);
 
 		String json = jsonObject.toString();
 
@@ -318,7 +318,7 @@ public abstract class BaseBuildData implements BuildData {
 					new URL(buildURL));
 
 				if (jsonObject.has("run_id")) {
-					runID = jsonObject.getString("run_id");
+					runId = jsonObject.getString("run_id");
 				}
 			}
 			catch (MalformedURLException malformedURLException) {
@@ -328,7 +328,7 @@ public abstract class BaseBuildData implements BuildData {
 
 		_jsonObject = jsonObject;
 
-		put("run_id", runID);
+		put("run_id", runId);
 
 		if (jobName == null) {
 			throw new RuntimeException("Please set a job name");
@@ -449,7 +449,7 @@ public abstract class BaseBuildData implements BuildData {
 
 		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
 
-		buildDatabase.putBuildData(getRunID(), this);
+		buildDatabase.putBuildData(getRunId(), this);
 	}
 
 	protected void validateKeys(String[] requiredKeys) {

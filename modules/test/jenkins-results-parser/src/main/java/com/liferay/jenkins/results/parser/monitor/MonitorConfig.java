@@ -30,7 +30,7 @@ public class MonitorConfig {
 		return _cadence;
 	}
 
-	public String getID() {
+	public String getId() {
 		return _id;
 	}
 

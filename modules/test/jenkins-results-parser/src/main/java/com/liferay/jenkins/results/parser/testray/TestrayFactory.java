@@ -152,8 +152,8 @@ public class TestrayFactory {
 				testrayFactorOption.getCategory();
 
 			String key = JenkinsResultsParserUtil.combine(
-				String.valueOf(testrayBuild.getID()), "__",
-				testrayRun.getRunIDString(), "__",
+				String.valueOf(testrayBuild.getId()), "__",
+				testrayRun.getRunIdString(), "__",
 				testrayFactorCategory.getName(), "__",
 				testrayFactorOption.getName());
 
@@ -261,7 +261,7 @@ public class TestrayFactory {
 			String filterString = JenkinsResultsParserUtil.combine(
 				"id eq '", String.valueOf(id),
 				"' and r_routineToBuilds_c_routineId eq '",
-				String.valueOf(testrayRoutine.getID()), "'");
+				String.valueOf(testrayRoutine.getId()), "'");
 
 			TestrayServer testrayServer = testrayRoutine.getTestrayServer();
 
@@ -325,7 +325,7 @@ public class TestrayFactory {
 
 	public static TestrayBuild newTestrayBuild(URL url) {
 		synchronized (_testrayBuilds) {
-			long id = TestrayBuild.getID(url);
+			long id = TestrayBuild.getId(url);
 
 			if (id <= 0) {
 				return new TestrayBuild(url);
@@ -361,8 +361,8 @@ public class TestrayFactory {
 
 		synchronized (_testrayCases) {
 			String key = JenkinsResultsParserUtil.combine(
-				String.valueOf(testrayProject.getID()), "__",
-				String.valueOf(testrayCaseType.getID()), "__", name);
+				String.valueOf(testrayProject.getId()), "__",
+				String.valueOf(testrayCaseType.getId()), "__", name);
 
 			TestrayCase testrayCase = _testrayCases.get(key);
 
@@ -373,18 +373,18 @@ public class TestrayFactory {
 			final String filterString = JenkinsResultsParserUtil.combine(
 				"name eq '", name, "' and ",
 				"r_caseTypeToCases_c_caseTypeId eq '",
-				String.valueOf(testrayCaseType.getID()), "' and ",
+				String.valueOf(testrayCaseType.getId()), "' and ",
 				"r_projectToCases_c_projectId eq '",
-				String.valueOf(testrayProject.getID()), "'");
+				String.valueOf(testrayProject.getId()), "'");
 
 			final JSONObject requestJSONObject = new JSONObject();
 
 			requestJSONObject.put(
 				"name", name
 			).put(
-				"r_caseTypeToCases_c_caseTypeId", testrayCaseType.getID()
+				"r_caseTypeToCases_c_caseTypeId", testrayCaseType.getId()
 			).put(
-				"r_projectToCases_c_projectId", testrayProject.getID()
+				"r_projectToCases_c_projectId", testrayProject.getId()
 			);
 
 			Retryable<TestrayCase> retryable = new Retryable<TestrayCase>(
@@ -467,7 +467,7 @@ public class TestrayFactory {
 			long id = jsonObject.getLong("id");
 
 			TestrayFactor.Category testrayFactorCategory =
-				_testrayFactorCategoriesIDs.get(id);
+				_testrayFactorCategoriesIds.get(id);
 
 			if (testrayFactorCategory != null) {
 				return testrayFactorCategory;
@@ -476,7 +476,7 @@ public class TestrayFactory {
 			testrayFactorCategory = new TestrayFactor.Category(
 				jsonObject, testrayServer);
 
-			_testrayFactorCategoriesIDs.put(id, testrayFactorCategory);
+			_testrayFactorCategoriesIds.put(id, testrayFactorCategory);
 
 			_testrayFactorCategoriesNames.put(
 				testrayFactorCategory.getName(), testrayFactorCategory);
@@ -494,7 +494,7 @@ public class TestrayFactory {
 
 		synchronized (_testrayFactorCategoriesNames) {
 			TestrayFactor.Category testrayFactorCategory =
-				_testrayFactorCategoriesIDs.get(id);
+				_testrayFactorCategoriesIds.get(id);
 
 			if (testrayFactorCategory != null) {
 				return testrayFactorCategory;
@@ -503,7 +503,7 @@ public class TestrayFactory {
 			testrayFactorCategory = new TestrayFactor.Category(
 				id, testrayServer);
 
-			_testrayFactorCategoriesIDs.put(id, testrayFactorCategory);
+			_testrayFactorCategoriesIds.put(id, testrayFactorCategory);
 
 			String name = testrayFactorCategory.getName();
 
@@ -535,8 +535,8 @@ public class TestrayFactory {
 
 			_testrayFactorCategoriesNames.put(name, testrayFactorCategory);
 
-			_testrayFactorCategoriesIDs.put(
-				testrayFactorCategory.getID(), testrayFactorCategory);
+			_testrayFactorCategoriesIds.put(
+				testrayFactorCategory.getId(), testrayFactorCategory);
 
 			return testrayFactorCategory;
 		}
@@ -553,7 +553,7 @@ public class TestrayFactory {
 			long id = jsonObject.getLong("id");
 
 			TestrayFactor.Option testrayFactorOption =
-				_testrayFactorOptionsIDs.get(id);
+				_testrayFactorOptionsIds.get(id);
 
 			if (testrayFactorOption != null) {
 				return testrayFactorOption;
@@ -562,7 +562,7 @@ public class TestrayFactory {
 			testrayFactorOption = new TestrayFactor.Option(
 				jsonObject, testrayServer);
 
-			_testrayFactorOptionsIDs.put(id, testrayFactorOption);
+			_testrayFactorOptionsIds.put(id, testrayFactorOption);
 
 			_testrayFactorOptionsNames.put(
 				testrayFactorOption.getName(), testrayFactorOption);
@@ -580,7 +580,7 @@ public class TestrayFactory {
 
 		synchronized (_testrayFactorOptionsNames) {
 			TestrayFactor.Option testrayFactorOption =
-				_testrayFactorOptionsIDs.get(id);
+				_testrayFactorOptionsIds.get(id);
 
 			if (testrayFactorOption != null) {
 				return testrayFactorOption;
@@ -588,7 +588,7 @@ public class TestrayFactory {
 
 			testrayFactorOption = new TestrayFactor.Option(id, testrayServer);
 
-			_testrayFactorOptionsIDs.put(id, testrayFactorOption);
+			_testrayFactorOptionsIds.put(id, testrayFactorOption);
 
 			String name = testrayFactorOption.getName();
 
@@ -615,8 +615,8 @@ public class TestrayFactory {
 
 			_testrayFactorOptionsNames.put(name, testrayFactorOption);
 
-			_testrayFactorOptionsIDs.put(
-				testrayFactorOption.getID(), testrayFactorOption);
+			_testrayFactorOptionsIds.put(
+				testrayFactorOption.getId(), testrayFactorOption);
 
 			return testrayFactorOption;
 		}
@@ -678,7 +678,7 @@ public class TestrayFactory {
 
 		synchronized (_testrayRuns) {
 			String key =
-				testrayBuild.getID() + "__" + jsonObject.getString("name");
+				testrayBuild.getId() + "__" + jsonObject.getString("name");
 
 			TestrayRun testrayRun = _testrayRuns.get(key);
 
@@ -699,7 +699,7 @@ public class TestrayFactory {
 		Properties properties) {
 
 		synchronized (_testrayRuns) {
-			String name = TestrayRun.getRunIDString(
+			String name = TestrayRun.getRunIdString(
 				batchName, testSuiteName, properties);
 
 			if (name == null) {
@@ -707,7 +707,7 @@ public class TestrayFactory {
 					"Please set testray.environment.default[master]");
 			}
 
-			String key = testrayBuild.getID() + "__" + name;
+			String key = testrayBuild.getId() + "__" + name;
 
 			TestrayRun testrayRun = _testrayRuns.get(key);
 
@@ -762,10 +762,10 @@ public class TestrayFactory {
 			TestrayBuild testrayBuild,
 			TopLevelBuildReport topLevelBuildReport) {
 
-		Long testrayBuildID = testrayBuild.getID();
+		Long testrayBuildId = testrayBuild.getId();
 
-		if (_topLevelBuildTestrayCaseResults.containsKey(testrayBuildID)) {
-			return _topLevelBuildTestrayCaseResults.get(testrayBuildID);
+		if (_topLevelBuildTestrayCaseResults.containsKey(testrayBuildId)) {
+			return _topLevelBuildTestrayCaseResults.get(testrayBuildId);
 		}
 
 		if (testrayBuild == null) {
@@ -777,11 +777,11 @@ public class TestrayFactory {
 		}
 
 		_topLevelBuildTestrayCaseResults.put(
-			testrayBuildID,
+			testrayBuildId,
 			new TopLevelStandaloneBuildTestrayCaseResult(
 				testrayBuild, topLevelBuildReport));
 
-		return _topLevelBuildTestrayCaseResults.get(testrayBuildID);
+		return _topLevelBuildTestrayCaseResults.get(testrayBuildId);
 	}
 
 	private static final Map<String, RunTestrayFactor> _runTestrayFactors =
@@ -795,11 +795,11 @@ public class TestrayFactory {
 	private static final Map<String, TestrayCase> _testrayCases =
 		new ConcurrentHashMap<>();
 	private static final Map<Long, TestrayFactor.Category>
-		_testrayFactorCategoriesIDs = new ConcurrentHashMap<>();
+		_testrayFactorCategoriesIds = new ConcurrentHashMap<>();
 	private static final Map<String, TestrayFactor.Category>
 		_testrayFactorCategoriesNames = new ConcurrentHashMap<>();
 	private static final Map<Long, TestrayFactor.Option>
-		_testrayFactorOptionsIDs = new ConcurrentHashMap<>();
+		_testrayFactorOptionsIds = new ConcurrentHashMap<>();
 	private static final Map<String, TestrayFactor.Option>
 		_testrayFactorOptionsNames = new ConcurrentHashMap<>();
 	private static final Map<String, TestrayRoutine> _testrayRoutines =

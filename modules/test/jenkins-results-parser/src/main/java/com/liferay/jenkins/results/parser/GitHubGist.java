@@ -17,14 +17,14 @@ import org.json.JSONObject;
  */
 public class GitHubGist {
 
-	public GitHubGist(String gistID) {
+	public GitHubGist(String gistId) {
 		try {
 			_jsonObject = JenkinsResultsParserUtil.toJSONObject(
-				"https://api.github.com/gists/" + gistID);
+				"https://api.github.com/gists/" + gistId);
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
-				"Could not find gist https://gist.github.com/" + gistID,
+				"Could not find gist https://gist.github.com/" + gistId,
 				ioException);
 		}
 	}

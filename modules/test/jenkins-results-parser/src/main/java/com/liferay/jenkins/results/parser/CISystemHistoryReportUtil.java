@@ -428,9 +428,9 @@ public class CISystemHistoryReportUtil {
 
 		@Override
 		public int compareTo(DurationReport durationReport) {
-			String id = durationReport._getID();
+			String id = durationReport._getId();
 
-			return id.compareTo(_getID());
+			return id.compareTo(_getId());
 		}
 
 		public String getAllDurationsJavaScriptContent() {
@@ -451,7 +451,7 @@ public class CISystemHistoryReportUtil {
 
 		public String getAllDurationsJavaScriptVarName() {
 			return JenkinsResultsParserUtil.combine(
-				_getJavaScriptID(), "_all_durations");
+				_getJavaScriptId(), "_all_durations");
 		}
 
 		public String getAllDurationsJavaScriptVarValue() {
@@ -464,7 +464,7 @@ public class CISystemHistoryReportUtil {
 			).put(
 				"durations_dates", getDateJavaScriptVarNames()
 			).put(
-				"id", _getID()
+				"id", _getId()
 			).put(
 				"modification_date", _START_TIME
 			).put(
@@ -522,7 +522,7 @@ public class CISystemHistoryReportUtil {
 
 		public String getDateJavaScriptVarName(String dateString) {
 			return JenkinsResultsParserUtil.combine(
-				_getJavaScriptID(), "_date_", dateString.replaceAll("-", "_"));
+				_getJavaScriptId(), "_date_", dateString.replaceAll("-", "_"));
 		}
 
 		public List<String> getDateJavaScriptVarNames() {
@@ -559,7 +559,7 @@ public class CISystemHistoryReportUtil {
 
 		public String getDurationsJavaScriptVarName(String dateString) {
 			return JenkinsResultsParserUtil.combine(
-				_getJavaScriptID(), "_durations_",
+				_getJavaScriptId(), "_durations_",
 				dateString.replaceAll("-", "_"));
 		}
 
@@ -612,7 +612,7 @@ public class CISystemHistoryReportUtil {
 			return duration;
 		}
 
-		private String _getID() {
+		private String _getId() {
 			String id = _buildType + "-" + _durationReportType;
 
 			id = id.replaceAll("_", "-");
@@ -621,13 +621,13 @@ public class CISystemHistoryReportUtil {
 			return id;
 		}
 
-		private String _getJavaScriptID() {
-			String javaScriptID = _buildType + "_" + _durationReportType;
+		private String _getJavaScriptId() {
+			String javaScriptId = _buildType + "_" + _durationReportType;
 
-			javaScriptID = javaScriptID.replaceAll("-", "_");
-			javaScriptID = javaScriptID.replaceAll("\\.", "_");
+			javaScriptId = javaScriptId.replaceAll("-", "_");
+			javaScriptId = javaScriptId.replaceAll("\\.", "_");
 
-			return javaScriptID;
+			return javaScriptId;
 		}
 
 		private final String _buildType;

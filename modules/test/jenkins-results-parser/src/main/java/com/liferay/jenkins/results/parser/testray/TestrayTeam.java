@@ -23,7 +23,7 @@ public class TestrayTeam {
 		_testrayComponents.add(testrayComponent);
 	}
 
-	public Long getID() {
+	public Long getId() {
 		return _jsonObject.getLong("id");
 	}
 

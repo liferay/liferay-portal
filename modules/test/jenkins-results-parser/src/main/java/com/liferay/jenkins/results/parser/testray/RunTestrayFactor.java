@@ -56,19 +56,19 @@ public class RunTestrayFactor extends BaseTestrayFactor {
 
 		final String filterString = JenkinsResultsParserUtil.combine(
 			"r_factorCategoryToFactors_c_factorCategoryId eq '",
-			String.valueOf(category.getID()),
+			String.valueOf(category.getId()),
 			"' and r_factorOptionToFactors_c_factorOptionId eq '",
-			String.valueOf(option.getID()), "' and r_runToFactors_c_runId eq '",
-			String.valueOf(testrayRun.getID()), "'");
+			String.valueOf(option.getId()), "' and r_runToFactors_c_runId eq '",
+			String.valueOf(testrayRun.getId()), "'");
 
 		final JSONObject postRequestJSONObject = new JSONObject();
 
 		postRequestJSONObject.put(
-			"r_factorCategoryToFactors_c_factorCategoryId", category.getID()
+			"r_factorCategoryToFactors_c_factorCategoryId", category.getId()
 		).put(
-			"r_factorOptionToFactors_c_factorOptionId", option.getID()
+			"r_factorOptionToFactors_c_factorOptionId", option.getId()
 		).put(
-			"r_runToFactors_c_runId", testrayRun.getID()
+			"r_runToFactors_c_runId", testrayRun.getId()
 		);
 
 		Retryable<JSONObject> retryable = new Retryable<JSONObject>(

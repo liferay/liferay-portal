@@ -26,7 +26,7 @@ public interface TestrayFactor {
 
 	public Category getCategory();
 
-	public Long getID();
+	public Long getId();
 
 	public JSONObject getJSONObject();
 
@@ -36,7 +36,7 @@ public interface TestrayFactor {
 
 	public static class Category {
 
-		public Long getID() {
+		public Long getId() {
 			if (_id <= 0) {
 				JSONObject jsonObject = _getJSONObject();
 
@@ -164,7 +164,7 @@ public interface TestrayFactor {
 			return _category;
 		}
 
-		public Long getID() {
+		public Long getId() {
 			if (_cached || (_id > 0)) {
 				return _id;
 			}

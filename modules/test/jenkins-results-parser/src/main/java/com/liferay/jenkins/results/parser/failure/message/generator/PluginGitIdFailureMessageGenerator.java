@@ -17,7 +17,7 @@ import org.dom4j.Element;
 /**
  * @author Peter Yoo
  */
-public class PluginGitIDFailureMessageGenerator
+public class PluginGitIdFailureMessageGenerator
 	extends BaseFailureMessageGenerator {
 
 	@Override

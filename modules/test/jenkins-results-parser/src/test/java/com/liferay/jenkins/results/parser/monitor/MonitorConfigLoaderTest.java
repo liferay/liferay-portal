@@ -38,7 +38,7 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		testEquals("masters", monitorConfig.getID());
+		testEquals("masters", monitorConfig.getId());
 		testEquals("http-endpoint", monitorConfig.getType());
 		testEquals(MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
 		testEquals(900L, monitorConfig.getCadence());

@@ -56,7 +56,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		"dateModified", "dueStatus { key name }", "errors", "id", "startDate"
 	};
 
-	public static long getID(URL testrayBuildURL) {
+	public static long getId(URL testrayBuildURL) {
 		if (testrayBuildURL == null) {
 			return 0;
 		}
@@ -68,7 +68,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			return 0;
 		}
 
-		return Long.parseLong(matcher.group("buildID"));
+		return Long.parseLong(matcher.group("buildId"));
 	}
 
 	public int compareTo(TestrayBuild testrayBuild) {
@@ -76,9 +76,9 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			throw new NullPointerException("Testray build is null");
 		}
 
-		Long id = testrayBuild.getID();
+		Long id = testrayBuild.getId();
 
-		return id.compareTo(getID());
+		return id.compareTo(getId());
 	}
 
 	public String getDescription() {
@@ -110,7 +110,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		return getTestrayCaseResults(null, null, true);
 	}
 
-	public long getID() {
+	public long getId() {
 		return _jsonObject.getLong("id");
 	}
 
@@ -204,9 +204,9 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("r_buildToCaseResult_c_buildId eq '");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("' and r_caseToCaseResult_c_caseId eq '");
-		sb.append(testrayCase.getID());
+		sb.append(testrayCase.getId());
 		sb.append("'");
 
 		try {
@@ -243,14 +243,14 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 		StringBuilder sb = new StringBuilder();
 
-		if ((testrayRun != null) && (testrayRun.getID() > 0)) {
+		if ((testrayRun != null) && (testrayRun.getId() > 0)) {
 			sb.append("r_runToCaseResult_c_runId eq '");
-			sb.append(testrayRun.getID());
+			sb.append(testrayRun.getId());
 			sb.append("' and ");
 		}
 
 		sb.append("r_buildToCaseResult_c_buildId eq '");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("'");
 
 		if (filterbyFailures) {
@@ -277,8 +277,8 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 				if (testrayCaseType != null) {
 					if (Objects.equals(
-							testrayCaseType.getID(),
-							testrayCase.getTestrayCaseTypeID())) {
+							testrayCaseType.getId(),
+							testrayCase.getTestrayCaseTypeId())) {
 
 						testrayCaseResults.add(testrayCaseResult);
 					}
@@ -305,7 +305,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		JSONObject productVersionJSONObject = _jsonObject.getJSONObject(
 			"productVersionToBuilds");
 
-		_testrayProductVersion = _testrayProject.getTestrayProductVersionByID(
+		_testrayProductVersion = _testrayProject.getTestrayProductVersionById(
 			productVersionJSONObject.getLong("id"));
 
 		return _testrayProductVersion;
@@ -321,9 +321,9 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 	public synchronized TestrayRun getTestrayRun(String name) {
 		for (TestrayRun testrayRun : getTestrayRuns()) {
-			String runIDString = testrayRun.getRunIDString();
+			String runIdString = testrayRun.getRunIdString();
 
-			if (runIDString.equals(name)) {
+			if (runIdString.equals(name)) {
 				return testrayRun;
 			}
 		}
@@ -341,7 +341,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("/o/c/builds/");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("/buildToRuns?pageSize=100");
 
 		try {
@@ -475,7 +475,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			return new URL(
 				JenkinsResultsParserUtil.combine(
 					String.valueOf(_testrayRoutine.getURL()), "/build/",
-					String.valueOf(getID())));
+					String.valueOf(getId())));
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
@@ -500,13 +500,13 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		JSONObject projectJSONObject = jsonObject.getJSONObject(
 			"projectToBuilds");
 
-		_testrayProject = testrayServer.getTestrayProjectByID(
+		_testrayProject = testrayServer.getTestrayProjectById(
 			projectJSONObject.getLong("id"));
 
 		JSONObject routineJSONObject = jsonObject.getJSONObject(
 			"routineToBuilds");
 
-		_testrayRoutine = _testrayProject.getTestrayRoutineByID(
+		_testrayRoutine = _testrayProject.getTestrayRoutineById(
 			routineJSONObject.getLong("id"));
 	}
 
@@ -520,11 +520,11 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		_testrayServer = TestrayFactory.newTestrayServer(
 			matcher.group("serverURL"));
 
-		_testrayRoutine = _testrayServer.getTestrayRoutineByID(
-			Long.parseLong(matcher.group("routineID")));
+		_testrayRoutine = _testrayServer.getTestrayRoutineById(
+			Long.parseLong(matcher.group("routineId")));
 
 		String filterString = JenkinsResultsParserUtil.combine(
-			"id eq '", matcher.group("buildID"), "'");
+			"id eq '", matcher.group("buildId"), "'");
 
 		try {
 			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
@@ -551,7 +551,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("r_buildToCaseResult_c_buildId eq '");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("'");
 
 		Set<JSONObject> entityJSONObjects;
@@ -620,8 +620,8 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			"(?<topLevelMasterHostname>test-\\d+-\\d+)/",
 			"(?<topLevelJobName>[^/]+)/(?<topLevelBuildNumber>\\d+)/.*"));
 	private static final Pattern _testrayBuildURLPattern = Pattern.compile(
-		"(?<serverURL>https://[^/]+)/#/project/(?<projectID>\\d+)/routines/" +
-			"(?<routineID>\\d+)/build/(?<buildID>\\d+)");
+		"(?<serverURL>https://[^/]+)/#/project/(?<projectId>\\d+)/routines/" +
+			"(?<routineId>\\d+)/build/(?<buildId>\\d+)");
 
 	private final JSONObject _jsonObject;
 	private String _pullRequestSenderUsername;

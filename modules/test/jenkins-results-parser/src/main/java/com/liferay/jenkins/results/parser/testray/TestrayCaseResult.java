@@ -47,14 +47,14 @@ public class TestrayCaseResult {
 		return testrayAttachments.get("Build Result (Top Level)");
 	}
 
-	public String getCaseID() {
+	public String getCaseId() {
 		TestrayComponent testrayComponent = getTestrayComponent();
 
 		if (testrayComponent == null) {
 			return null;
 		}
 
-		return String.valueOf(testrayComponent.getID());
+		return String.valueOf(testrayComponent.getId());
 	}
 
 	public String getComponentName() {
@@ -93,7 +93,7 @@ public class TestrayCaseResult {
 		for (TestrayCaseResult previousTestrayCaseResult :
 				getTestrayCaseResultHistory(5, 5)) {
 
-			if (Objects.equals(getID(), previousTestrayCaseResult.getID())) {
+			if (Objects.equals(getId(), previousTestrayCaseResult.getId())) {
 				continue;
 			}
 
@@ -118,7 +118,7 @@ public class TestrayCaseResult {
 		}
 	}
 
-	public long getID() {
+	public long getId() {
 		return _jsonObject.optLong("id");
 	}
 
@@ -253,7 +253,7 @@ public class TestrayCaseResult {
 		TestrayCase testrayCase = getTestrayCase();
 
 		sb.append("r_caseToCaseResult_c_caseId eq '");
-		sb.append(testrayCase.getID());
+		sb.append(testrayCase.getId());
 		sb.append("'");
 
 		TestrayServer testrayServer = getTestrayServer();
@@ -331,7 +331,7 @@ public class TestrayCaseResult {
 			}
 
 			if (componentJSONObject != null) {
-				_testrayComponent = testrayProject.getTestrayComponentByID(
+				_testrayComponent = testrayProject.getTestrayComponentById(
 					componentJSONObject.getLong("id"));
 			}
 			else {
@@ -398,7 +398,7 @@ public class TestrayCaseResult {
 		TestrayBuild testrayBuild = getTestrayBuild();
 
 		try {
-			return new URL(testrayBuild.getURL() + "/case-result/" + getID());
+			return new URL(testrayBuild.getURL() + "/case-result/" + getId());
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
@@ -459,7 +459,7 @@ public class TestrayCaseResult {
 				BLOCKED, DIDNOTRUN, FAILED, INPROGRESS, TESTFIX, UNTESTED);
 		}
 
-		public Integer getID() {
+		public Integer getId() {
 			return _id;
 		}
 
@@ -476,7 +476,7 @@ public class TestrayCaseResult {
 
 		static {
 			for (Status status : values()) {
-				_statuses.put(status.getID(), status);
+				_statuses.put(status.getId(), status);
 			}
 		}
 
@@ -621,9 +621,9 @@ public class TestrayCaseResult {
 		}
 
 		requestJSONObject.put(
-			"r_buildToCaseResult_c_buildId", testrayBuild.getID()
+			"r_buildToCaseResult_c_buildId", testrayBuild.getId()
 		).put(
-			"r_caseToCaseResult_c_caseId", testrayCase.getID()
+			"r_caseToCaseResult_c_caseId", testrayCase.getId()
 		);
 
 		TestrayComponent testrayComponent = getTestrayComponent();
@@ -631,19 +631,19 @@ public class TestrayCaseResult {
 		if (testrayComponent != null) {
 			requestJSONObject.put(
 				"r_componentToCaseResult_c_componentId",
-				testrayComponent.getID());
+				testrayComponent.getId());
 		}
 
 		if (_testrayRun != null) {
 			requestJSONObject.put(
-				"r_runToCaseResult_c_runId", _testrayRun.getID());
+				"r_runToCaseResult_c_runId", _testrayRun.getId());
 		}
 
 		TestrayTeam testrayTeam = getTestrayTeam();
 
 		if (testrayTeam != null) {
 			requestJSONObject.put(
-				"r_teamToCaseResult_c_teamId", testrayTeam.getID());
+				"r_teamToCaseResult_c_teamId", testrayTeam.getId());
 		}
 
 		Retryable<URL> retryable = new Retryable<URL>(true, 3, 5, true) {
@@ -737,16 +737,16 @@ public class TestrayCaseResult {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("r_buildToCaseResult_c_buildId eq '");
-		sb.append(testrayBuild.getID());
+		sb.append(testrayBuild.getId());
 		sb.append("' and r_caseToCaseResult_c_caseId eq '");
-		sb.append(testrayCase.getID());
+		sb.append(testrayCase.getId());
 		sb.append("'");
 
 		TestrayComponent testrayComponent = getTestrayComponent();
 
 		if (testrayComponent != null) {
 			sb.append(" and r_componentToCaseResult_c_componentId eq '");
-			sb.append(testrayComponent.getID());
+			sb.append(testrayComponent.getId());
 			sb.append("'");
 		}
 
@@ -754,7 +754,7 @@ public class TestrayCaseResult {
 
 		if (testrayRun != null) {
 			sb.append(" and r_runToCaseResult_c_runId eq '");
-			sb.append(testrayRun.getID());
+			sb.append(testrayRun.getId());
 			sb.append("'");
 		}
 
@@ -762,7 +762,7 @@ public class TestrayCaseResult {
 
 		if (testrayTeam != null) {
 			sb.append(" and r_teamToCaseResult_c_teamId eq '");
-			sb.append(testrayTeam.getID());
+			sb.append(testrayTeam.getId());
 			sb.append("'");
 		}
 

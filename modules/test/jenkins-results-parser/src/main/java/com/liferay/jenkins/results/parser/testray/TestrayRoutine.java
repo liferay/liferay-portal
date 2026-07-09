@@ -79,11 +79,11 @@ public class TestrayRoutine {
 			"name", buildName
 		).put(
 			"r_productVersionToBuilds_c_productVersionId",
-			testrayProductVersion.getID()
+			testrayProductVersion.getId()
 		).put(
-			"r_projectToBuilds_c_projectId", _testrayProject.getID()
+			"r_projectToBuilds_c_projectId", _testrayProject.getId()
 		).put(
-			"r_routineToBuilds_c_routineId", getID()
+			"r_routineToBuilds_c_routineId", getId()
 		);
 
 		try {
@@ -100,7 +100,7 @@ public class TestrayRoutine {
 		}
 	}
 
-	public long getID() {
+	public long getId() {
 		return _jsonObject.getLong("id");
 	}
 
@@ -112,8 +112,8 @@ public class TestrayRoutine {
 		return _jsonObject.getString("name");
 	}
 
-	public TestrayBuild getTestrayBuildByID(long buildID) {
-		return TestrayFactory.newTestrayBuild(_testrayServer, buildID);
+	public TestrayBuild getTestrayBuildById(long buildId) {
+		return TestrayFactory.newTestrayBuild(_testrayServer, buildId);
 	}
 
 	public TestrayBuild getTestrayBuildByName(String buildName) {
@@ -131,12 +131,12 @@ public class TestrayRoutine {
 
 		if (testrayProject != null) {
 			sb.append(" and r_projectToBuilds_c_projectId eq '");
-			sb.append(testrayProject.getID());
+			sb.append(testrayProject.getId());
 			sb.append("'");
 		}
 
 		sb.append(" and r_routineToBuilds_c_routineId eq '");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("'");
 
 		try {
@@ -168,7 +168,7 @@ public class TestrayRoutine {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("r_routineToBuilds_c_routineId eq '");
-		sb.append(getID());
+		sb.append(getId());
 		sb.append("'");
 
 		if ((nameFilters != null) && (nameFilters.length > 0)) {
@@ -214,7 +214,7 @@ public class TestrayRoutine {
 		JSONObject projectJSONObject = _jsonObject.getJSONObject(
 			"routineToProjects");
 
-		_testrayProject = _testrayServer.getTestrayProjectByID(
+		_testrayProject = _testrayServer.getTestrayProjectById(
 			projectJSONObject.getLong("id"));
 
 		return _testrayProject;
@@ -233,7 +233,7 @@ public class TestrayRoutine {
 			url = new URL(
 				JenkinsResultsParserUtil.combine(
 					String.valueOf(_testrayProject.getURL()), "/",
-					String.valueOf(getID())));
+					String.valueOf(getId())));
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
@@ -290,7 +290,7 @@ public class TestrayRoutine {
 		setTestrayServer(testrayServer);
 
 		String filterString = JenkinsResultsParserUtil.combine(
-			"id eq '", matcher.group("routineID"), "'");
+			"id eq '", matcher.group("routineId"), "'");
 
 		try {
 			Set<JSONObject> entityJSONObjects = testrayServer.requestGraphQL(
@@ -313,8 +313,8 @@ public class TestrayRoutine {
 	protected URL url;
 
 	private static final Pattern _testrayRoutineURLPattern = Pattern.compile(
-		"(?<serverURL>https://[^/]+)/#/project/(?<projectID>\\d+)/routines/" +
-			"(?<routineID>\\d+)");
+		"(?<serverURL>https://[^/]+)/#/project/(?<projectId>\\d+)/routines/" +
+			"(?<routineId>\\d+)");
 
 	private JSONObject _jsonObject;
 	private TestrayProject _testrayProject;

@@ -24,7 +24,7 @@ public class TestrayCase {
 		return null;
 	}
 
-	public long getID() {
+	public long getId() {
 		return _jsonObject.getLong("id");
 	}
 
@@ -48,8 +48,8 @@ public class TestrayCase {
 		return _testrayCaseType;
 	}
 
-	public long getTestrayCaseTypeID() {
-		return _testrayCaseType.getID();
+	public long getTestrayCaseTypeId() {
+		return _testrayCaseType.getId();
 	}
 
 	public TestrayProject getTestrayProject() {
@@ -69,14 +69,14 @@ public class TestrayCase {
 		TestrayServer testrayServer = testrayProject.getTestrayServer();
 
 		if (jsonObject.has("r_caseTypeToCases_c_caseTypeId")) {
-			_testrayCaseType = testrayServer.getTestrayCaseTypeByID(
+			_testrayCaseType = testrayServer.getTestrayCaseTypeById(
 				jsonObject.getLong("r_caseTypeToCases_c_caseTypeId"));
 		}
 		else {
 			JSONObject caseTypeJSONObject = jsonObject.getJSONObject(
 				"caseTypeToCases");
 
-			_testrayCaseType = testrayServer.getTestrayCaseTypeByID(
+			_testrayCaseType = testrayServer.getTestrayCaseTypeById(
 				caseTypeJSONObject.getLong("id"));
 		}
 	}

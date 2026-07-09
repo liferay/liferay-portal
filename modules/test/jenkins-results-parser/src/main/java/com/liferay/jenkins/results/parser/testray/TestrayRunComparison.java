@@ -33,9 +33,9 @@ public class TestrayRunComparison {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("https://testray.liferay.com/#/compare-runs/");
-		sb.append(_testrayRunA.getID());
+		sb.append(_testrayRunA.getId());
 		sb.append("/");
-		sb.append(_testrayRunB.getID());
+		sb.append(_testrayRunB.getId());
 		sb.append("/teams");
 
 		try {
@@ -94,9 +94,9 @@ public class TestrayRunComparison {
 			sb.append(testrayServer.getURL());
 
 			sb.append("/o/testray-rest/v1.0/testray-run-comparisons/");
-			sb.append(_testrayRunA.getID());
+			sb.append(_testrayRunA.getId());
 			sb.append("/");
-			sb.append(_testrayRunB.getID());
+			sb.append(_testrayRunB.getId());
 			sb.append("/runs");
 
 			_jsonObject = JenkinsResultsParserUtil.toJSONObject(sb.toString());

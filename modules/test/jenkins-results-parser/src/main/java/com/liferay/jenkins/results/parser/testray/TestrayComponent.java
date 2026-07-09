@@ -16,7 +16,7 @@ public class TestrayComponent {
 		"dateCreated", "dateModified", "id", "name", "teamToComponents"
 	};
 
-	public Long getID() {
+	public Long getId() {
 		return _jsonObject.getLong("id");
 	}
 
@@ -45,7 +45,7 @@ public class TestrayComponent {
 		JSONObject teamJSONObject = jsonObject.getJSONObject(
 			"teamToComponents");
 
-		_testrayTeam = testrayProject.getTestrayTeamByID(
+		_testrayTeam = testrayProject.getTestrayTeamById(
 			teamJSONObject.getLong("id"));
 
 		_testrayTeam.addTestrayComponent(this);

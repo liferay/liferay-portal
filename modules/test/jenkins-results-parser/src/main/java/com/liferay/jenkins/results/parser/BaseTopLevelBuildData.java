@@ -23,16 +23,16 @@ public abstract class BaseTopLevelBuildData
 
 	@Override
 	public void addDownstreamBuildData(BuildData buildData) {
-		String downstreamRunIDs = optString("downstream_run_ids");
+		String downstreamRunIds = optString("downstream_run_ids");
 
-		if (downstreamRunIDs == null) {
-			downstreamRunIDs = buildData.getRunID();
+		if (downstreamRunIds == null) {
+			downstreamRunIds = buildData.getRunId();
 		}
 		else {
-			downstreamRunIDs += "," + buildData.getRunID();
+			downstreamRunIds += "," + buildData.getRunId();
 		}
 
-		put("downstream_run_ids", downstreamRunIDs);
+		put("downstream_run_ids", downstreamRunIds);
 	}
 
 	@Override
@@ -55,20 +55,20 @@ public abstract class BaseTopLevelBuildData
 	public List<BuildData> getDownstreamBuildDataList() {
 		List<BuildData> downstreamBuildDataList = new ArrayList<>();
 
-		String downstreamRunIDs = optString("downstream_run_ids");
+		String downstreamRunIds = optString("downstream_run_ids");
 
-		if (downstreamRunIDs == null) {
+		if (downstreamRunIds == null) {
 			return downstreamBuildDataList;
 		}
 
-		for (String downstreamRunID : downstreamRunIDs.split(",")) {
-			if ((downstreamRunID == null) || downstreamRunID.isEmpty()) {
+		for (String downstreamRunId : downstreamRunIds.split(",")) {
+			if ((downstreamRunId == null) || downstreamRunId.isEmpty()) {
 				continue;
 			}
 
 			downstreamBuildDataList.add(
 				BuildDataFactory.newBatchBuildData(
-					downstreamRunID, getJobName() + "-batch", null));
+					downstreamRunId, getJobName() + "-batch", null));
 		}
 
 		return downstreamBuildDataList;
@@ -105,8 +105,8 @@ public abstract class BaseTopLevelBuildData
 	}
 
 	@Override
-	public String getTopLevelRunID() {
-		return getRunID();
+	public String getTopLevelRunId() {
+		return getRunId();
 	}
 
 	@Override
@@ -119,21 +119,21 @@ public abstract class BaseTopLevelBuildData
 	}
 
 	protected BaseTopLevelBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
-		super(_getDefaultRunID(runID), jobName, buildURL);
+		super(_getDefaultRunId(runId), jobName, buildURL);
 
 		put("dist_nodes", _getDistNodes());
 		put("dist_path", _getDistPath());
 		put("s3_bucket_dist_path", _getS3BucketDistPath());
-		put("top_level_run_id", getRunID());
+		put("top_level_run_id", getRunId());
 
 		validateKeys(_KEYS_REQUIRED);
 	}
 
-	private static String _getDefaultRunID(String runID) {
-		if (runID != null) {
-			return runID;
+	private static String _getDefaultRunId(String runId) {
+		if (runId != null) {
+			return runId;
 		}
 
 		return "top_level_" + JenkinsResultsParserUtil.getDistinctTimeStamp();

@@ -11,29 +11,29 @@ package com.liferay.jenkins.results.parser;
 public class BuildDataFactory {
 
 	public static BatchBuildData newBatchBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
 		if (jobName.contains("portal") ||
 			jobName.contains("root-cause-analysis-tool")) {
 
-			return new PortalBatchBuildData(runID, jobName, buildURL);
+			return new PortalBatchBuildData(runId, jobName, buildURL);
 		}
 
-		return new DefaultBatchBuildData(runID, jobName, buildURL);
+		return new DefaultBatchBuildData(runId, jobName, buildURL);
 	}
 
 	public static BuildData newBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
 		if (jobName.endsWith("-batch")) {
-			return newBatchBuildData(runID, jobName, buildURL);
+			return newBatchBuildData(runId, jobName, buildURL);
 		}
 
-		return newTopLevelBuildData(runID, jobName, buildURL);
+		return newTopLevelBuildData(runId, jobName, buildURL);
 	}
 
 	public static TopLevelBuildData newTopLevelBuildData(
-		String runID, String jobName, String buildURL) {
+		String runId, String jobName, String buildURL) {
 
 		if (jobName.startsWith("archive-binaries-cache") ||
 			jobName.contains("portal") ||
@@ -44,13 +44,13 @@ public class BuildDataFactory {
 				jobName.contains("test-portal-upstream-controller")) {
 
 				return new ControllerPortalTopLevelBuildData(
-					runID, jobName, buildURL);
+					runId, jobName, buildURL);
 			}
 
-			return new PortalTopLevelBuildData(runID, jobName, buildURL);
+			return new PortalTopLevelBuildData(runId, jobName, buildURL);
 		}
 
-		return new DefaultTopLevelBuildData(runID, jobName, buildURL);
+		return new DefaultTopLevelBuildData(runId, jobName, buildURL);
 	}
 
 }

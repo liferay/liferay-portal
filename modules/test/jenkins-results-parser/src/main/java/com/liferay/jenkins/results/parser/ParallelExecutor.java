@@ -80,7 +80,7 @@ public class ParallelExecutor<T> {
 		return _description;
 	}
 
-	public String getID() {
+	public String getId() {
 		return String.valueOf(_id);
 	}
 
@@ -109,7 +109,7 @@ public class ParallelExecutor<T> {
 	@Override
 	public String toString() {
 		return JenkinsResultsParserUtil.combine(
-			"ParallelExecutor ", String.valueOf(getID()), " - ",
+			"ParallelExecutor ", String.valueOf(getId()), " - ",
 			getDescription());
 	}
 
