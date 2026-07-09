@@ -1109,6 +1109,20 @@ public class GitWorkingDirectory {
 			localGitBranch.getName(), true, localGitBranch.getSHA());
 	}
 
+	public void fetchGitCommitParentFromUpstream(String sha) {
+		GitRemote upstreamGitRemote = getUpstreamGitRemote();
+
+		if (upstreamGitRemote == null) {
+			return;
+		}
+
+		executeBashCommands(
+			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 15,
+			JenkinsResultsParserUtil.combine(
+				"git fetch -f --depth=2 ", upstreamGitRemote.getRemoteURL(),
+				" ", sha));
+	}
+
 	public Set<File> findFiles(String fileName, String fileContentSnippet) {
 		if (JenkinsResultsParserUtil.isNullOrEmpty(fileContentSnippet)) {
 			return null;
