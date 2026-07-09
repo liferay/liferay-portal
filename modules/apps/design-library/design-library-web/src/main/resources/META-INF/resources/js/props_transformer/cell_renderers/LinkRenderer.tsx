@@ -3,14 +3,19 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {findAction} from '@liferay/frontend-data-set-web';
-import React from 'react';
+import {
+	FrontendDataSetContext,
+	filterItemActions,
+	findAction,
+} from '@liferay/frontend-data-set-web';
+import React, {useContext} from 'react';
 
 import {ActionItem} from '../../types';
 import {BaseLinkRenderer, BaseLinkRendererProps} from './BaseLinkRenderer';
 
 export default function LinkRenderer({
 	actions,
+	itemData,
 	options: {actionId},
 	stickerClassName,
 	symbol,
@@ -21,12 +26,25 @@ export default function LinkRenderer({
 	stickerClassName: string;
 	symbol: string;
 }) {
-	const action = findAction(actions, actionId);
+	const {infoPanelOpen, selectable, selectedItemsKey, selectedItemsValue} =
+		useContext(FrontendDataSetContext);
+
+	const filteredActions = filterItemActions({
+		actions,
+		infoPanelOpen,
+		itemData,
+		selectable,
+		selectedItemsKey,
+		selectedItemsValue,
+	});
+
+	const action = findAction(filteredActions, actionId);
 
 	return (
 		<BaseLinkRenderer
 			{...props}
 			action={action}
+			itemData={itemData}
 			stickerClassName={stickerClassName}
 			symbol={symbol}
 		/>
