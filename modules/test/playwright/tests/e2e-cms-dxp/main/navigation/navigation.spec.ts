@@ -363,6 +363,12 @@ test(
 				name: `${title}.gif`,
 			});
 
+			// The upload field processes the file asynchronously. Wait for the
+			// file name to register before publishing, otherwise the form
+			// submits with an empty file and validation blocks the publish.
+
+			await expect(page.getByText(`${title}.gif`)).toBeVisible();
+
 			await page.getByPlaceholder('New Basic Document').fill(title);
 
 			await page
