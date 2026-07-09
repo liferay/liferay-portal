@@ -1,0 +1,404 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-69290",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"accountEntryRestricted": false,
+			"active": true,
+			"className": "com.liferay.object.model.ObjectDefinition#D5S2",
+			"enableCategorization": false,
+			"enableFormContainer": false,
+			"enableIndexSearch": true,
+			"externalReferenceCode": "L_DS_REQUEST_RECIPIENT",
+			"label": {
+				"en_US": "DS Request Recipient"
+			},
+			"modifiable": true,
+			"name": "DSRequestRecipient",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "EMAIL_ADDRESS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Email Address"
+					},
+					"name": "emailAddress",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_RECIPIENT_ID",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Recipient ID"
+					},
+					"name": "providerRecipientId",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "sent",
+					"externalReferenceCode": "REQUEST_RECIPIENT_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Request Recipient Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_DS_REQUEST_RECIPIENT_STATUSES",
+					"name": "requestRecipientStatus",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "SENT_DATE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Sent Date"
+					},
+					"name": "sentDate",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "STATUS_DATE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Status Date"
+					},
+					"name": "statusDateTime",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "USER_TO_DS_REQUEST_RECIPIENT",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "User to DS Request Recipient"
+					},
+					"name": "r_userToDSRequestRecipient_userId",
+					"objectDefinitionExternalReferenceCode1": "L_USER",
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "User"
+						},
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_userToDSRequestRecipient_userERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_USER_TO_L_DS_REQUEST_RECIPIENT",
+					"relationshipType": "oneToMany",
+					"required": false,
+					"system": true,
+					"type": "Long"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "DS Request Recipients"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "emailAddress"
+		},
+		{
+			"accountEntryRestricted": false,
+			"active": true,
+			"className": "com.liferay.object.model.ObjectDefinition#D5S3",
+			"enableCategorization": false,
+			"enableFormContainer": false,
+			"enableIndexSearch": true,
+			"externalReferenceCode": "L_DS_REQUEST_DOCUMENT",
+			"label": {
+				"en_US": "DS Request Document"
+			},
+			"modifiable": true,
+			"name": "DSRequestDocument",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "FILE_ENTRY_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "File Entry ID"
+					},
+					"name": "fileEntryId",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "DS Request Documents"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "fileEntryId"
+		},
+		{
+			"accountEntryRestricted": false,
+			"active": true,
+			"className": "com.liferay.object.model.ObjectDefinition#D5S1",
+			"enableCategorization": false,
+			"enableFormContainer": false,
+			"enableIndexSearch": true,
+			"externalReferenceCode": "L_DS_REQUEST",
+			"label": {
+				"en_US": "DS Request"
+			},
+			"modifiable": true,
+			"name": "DSRequest",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "EMAIL_SUBJECT",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Email Subject"
+					},
+					"name": "emailSubject",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "EXPIRATION_DATE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Expiration Date"
+					},
+					"name": "expirationDateTime",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_KEY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Key"
+					},
+					"name": "providerKey",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_REQUEST_ID",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Request ID"
+					},
+					"name": "providerRequestId",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "sent",
+					"externalReferenceCode": "REQUEST_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Request Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_DS_REQUEST_STATUSES",
+					"name": "requestStatus",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "STATUS_DATE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Status Date"
+					},
+					"name": "statusDateTime",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"externalReferenceCode": "L_DS_REQUEST_TO_L_DS_REQUEST_DOCUMENTS",
+					"label": {
+						"en_US": "DS Request to DS Request Documents"
+					},
+					"name": "dsRequestToDSRequestDocuments",
+					"objectDefinitionExternalReferenceCode1": "L_DS_REQUEST",
+					"objectDefinitionExternalReferenceCode2": "L_DS_REQUEST_DOCUMENT",
+					"objectDefinitionName2": "DSRequestDocument",
+					"objectDefinitionSystem2": true,
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				},
+				{
+					"deletionType": "cascade",
+					"externalReferenceCode": "L_DS_REQUEST_TO_L_DS_REQUEST_RECIPIENTS",
+					"label": {
+						"en_US": "DS Request to DS Request Recipients"
+					},
+					"name": "dsRequestToDSRequestRecipients",
+					"objectDefinitionExternalReferenceCode1": "L_DS_REQUEST",
+					"objectDefinitionExternalReferenceCode2": "L_DS_REQUEST_RECIPIENT",
+					"objectDefinitionName2": "DSRequestRecipient",
+					"objectDefinitionSystem2": true,
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "DS Requests"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "providerRequestId"
+		}
+	]
+}

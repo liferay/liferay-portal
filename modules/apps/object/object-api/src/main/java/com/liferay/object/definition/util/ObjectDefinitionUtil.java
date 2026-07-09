@@ -153,6 +153,7 @@ public class ObjectDefinitionUtil {
 		"com.liferay.ai.hub.pricing.site.initializer",
 		"com.liferay.ai.hub.site.initializer", "com.liferay.commerce.service",
 		"com.liferay.content.site.generator.impl", "com.liferay.cookies.impl",
+		"com.liferay.digital.signature.impl",
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
 		"com.liferay.headless.builder.impl",
@@ -250,6 +251,12 @@ public class ObjectDefinitionUtil {
 			"DataSetSort", "/data-set-admin/sorts"
 		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
+		).put(
+			"DSRequest", "/digital-signature/requests"
+		).put(
+			"DSRequestDocument", "/digital-signature/request-documents"
+		).put(
+			"DSRequestRecipient", "/digital-signature/request-recipients"
 		).put(
 			"DSRRoom", "/digital-sales-room/rooms"
 		).put(
