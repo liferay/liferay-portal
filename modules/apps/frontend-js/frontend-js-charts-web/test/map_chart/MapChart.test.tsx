@@ -661,7 +661,7 @@ describe('MapChart interaction', () => {
 		const {container} = render(<MapChart data={DATA} title="Population" />);
 
 		expect(
-			container.querySelector('.chart-map-tooltip')
+			container.querySelector('.charts-tooltip')
 		).not.toBeInTheDocument();
 	});
 
@@ -670,7 +670,7 @@ describe('MapChart interaction', () => {
 
 		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
 
-		const tooltip = container.querySelector('.chart-map-tooltip');
+		const tooltip = container.querySelector('.charts-tooltip');
 
 		expect(tooltip).toBeInTheDocument();
 		expect(tooltip).toHaveTextContent('China');
@@ -684,7 +684,7 @@ describe('MapChart interaction', () => {
 
 		fireEvent.focus(screen.getByRole('img', {name: 'India: 9870'}));
 
-		const tooltip = container.querySelector('.chart-map-tooltip');
+		const tooltip = container.querySelector('.charts-tooltip');
 
 		expect(tooltip).toBeInTheDocument();
 		expect(tooltip).toHaveTextContent('India');
@@ -697,7 +697,7 @@ describe('MapChart interaction', () => {
 		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
 
 		const tooltip = container.querySelector(
-			'.chart-map-tooltip'
+			'.charts-tooltip'
 		) as HTMLElement;
 
 		expect(tooltip.style.getPropertyValue('--marker-fill')).toBe('');
@@ -710,7 +710,7 @@ describe('MapChart interaction', () => {
 
 		fireEvent.pointerEnter(screen.getByRole('img', {name: 'China: 14210'}));
 
-		expect(container.querySelector('.chart-map-tooltip')).toHaveAttribute(
+		expect(container.querySelector('.charts-tooltip')).toHaveAttribute(
 			'aria-hidden',
 			'true'
 		);

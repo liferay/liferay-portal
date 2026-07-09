@@ -28,31 +28,6 @@
 		flex: 1 1 320px;
 	}
 
-	.chart-map-tooltip {
-		align-items: baseline;
-		background: $primary;
-		border-radius: 4px;
-		color: $white;
-		display: inline-flex;
-		font-size: 0.8125rem;
-		font-variant-numeric: tabular-nums;
-		gap: 0.5rem;
-		inset-block-start: 0;
-		inset-inline-start: 0;
-		max-inline-size: 100%;
-		padding: 0.25rem 0.625rem;
-		pointer-events: none;
-		position: absolute;
-	}
-
-	.chart-map-tooltip-label {
-		font-weight: 400;
-	}
-
-	.chart-map-tooltip-value {
-		font-weight: 700;
-	}
-
 	.chart-map-land {
 		fill: $light;
 		stroke: $light-d2;

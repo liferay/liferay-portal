@@ -239,9 +239,7 @@ describe('PieChart', () => {
 			<PieChart data={DATA} legend="list" title="Sales" />
 		);
 
-		expect(
-			container.querySelector('.charts-summary')
-		).toBeInTheDocument();
+		expect(container.querySelector('.charts-summary')).toBeInTheDocument();
 	});
 
 	it('suppresses the screen reader summary for the table legend', () => {

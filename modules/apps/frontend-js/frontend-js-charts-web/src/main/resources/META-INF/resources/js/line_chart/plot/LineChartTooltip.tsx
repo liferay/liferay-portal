@@ -12,7 +12,6 @@ const POINT_GAP = 12;
 
 interface Props {
 	color: string;
-	mode: 'corner' | 'popover';
 	plot: {height: number; width: number; x: number; y: number};
 	point: {x: number; y: number};
 	text: string;
@@ -22,41 +21,14 @@ function clamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max);
 }
 
-export default function LineChartTooltip({
-	color,
-	mode,
-	plot,
-	point,
-	text,
-}: Props) {
+/**
+ * The point-anchored popover: a value chip that sits above the active point
+ * (flipping below near the top edge) with a small arrow. It stays in SVG
+ * because it is positioned in the plot's coordinate space. The `corner`
+ * tooltip is instead the shared HTML `ChartTooltip`, rendered by `LineChart`.
+ */
+export default function LineChartTooltip({color, plot, point, text}: Props) {
 	const chipWidth = text.length * CHAR_WIDTH + CHIP_PADDING_X * 2;
-
-	if (mode === 'corner') {
-		return (
-			<g
-				className="charts-line-chart__tooltip charts-line-chart__tooltip--corner"
-				style={{'--charts-line-color': color} as React.CSSProperties}
-				transform={`translate(${plot.x + 4} ${plot.y + 4})`}
-			>
-				<rect
-					className="charts-line-chart__tooltip-box"
-					height={CHIP_HEIGHT}
-					rx={4}
-					width={chipWidth}
-					x={0}
-					y={0}
-				/>
-
-				<text
-					className="charts-line-chart__tooltip-text"
-					x={CHIP_PADDING_X}
-					y={CHIP_HEIGHT / 2 + 4}
-				>
-					{text}
-				</text>
-			</g>
-		);
-	}
 
 	const centerX = clamp(
 		point.x,

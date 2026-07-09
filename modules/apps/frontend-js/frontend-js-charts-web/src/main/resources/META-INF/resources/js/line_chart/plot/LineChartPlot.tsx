@@ -132,10 +132,9 @@ export default function LineChartPlot({
 				/>
 			))}
 
-			{pointTooltip !== 'none' && active && activePoint && (
+			{pointTooltip === 'popover' && active && activePoint && (
 				<LineChartTooltip
 					color={styles[active.seriesIndex].color}
-					mode={pointTooltip}
 					plot={geometry.plot}
 					point={{x: activePoint.x, y: activePoint.y}}
 					text={`${series[active.seriesIndex].label}: ${format(

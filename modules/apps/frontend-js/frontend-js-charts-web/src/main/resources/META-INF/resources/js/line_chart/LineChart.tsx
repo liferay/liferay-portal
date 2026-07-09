@@ -6,6 +6,7 @@
 import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
+import ChartTooltip from '../chart_tooltip/ChartTooltip';
 import {getCategoricalColors} from '../palette';
 import LineChartLegend from './legend/LineChartLegend';
 import LineChartPlot from './plot/LineChartPlot';
@@ -61,6 +62,11 @@ export default function LineChart({
 	const [focus, setFocus] = useState<ActivePoint | null>(null);
 	const [hover, setHover] = useState<ActivePoint | null>(null);
 	const active = focus ?? hover;
+
+	const activeValue =
+		active !== null
+			? series[active.seriesIndex].values[active.categoryIndex]
+			: null;
 
 	const pointRefs = useRef<Array<Array<SVGCircleElement | null>>>([]);
 
@@ -303,25 +309,36 @@ export default function LineChart({
 				{summaryText}
 			</p>
 
-			<LineChartPlot
-				active={active}
-				categories={categories}
-				focus={focus}
-				format={format}
-				geometry={geometry}
-				height={height}
-				onBlurPoint={onBlurPoint}
-				onFocusPoint={onFocusPoint}
-				onHoverPoint={onHoverPoint}
-				onKeyDownPoint={onKeyDownPoint}
-				onLeavePoint={onLeavePoint}
-				pointTooltip={pointTooltip}
-				series={series}
-				setPointRef={setPointRef}
-				styles={styles}
-				tabbable={tabbable}
-				width={width}
-			/>
+			<div className="charts-line-chart__plot">
+				<LineChartPlot
+					active={active}
+					categories={categories}
+					focus={focus}
+					format={format}
+					geometry={geometry}
+					height={height}
+					onBlurPoint={onBlurPoint}
+					onFocusPoint={onFocusPoint}
+					onHoverPoint={onHoverPoint}
+					onKeyDownPoint={onKeyDownPoint}
+					onLeavePoint={onLeavePoint}
+					pointTooltip={pointTooltip}
+					series={series}
+					setPointRef={setPointRef}
+					styles={styles}
+					tabbable={tabbable}
+					width={width}
+				/>
+
+				{pointTooltip === 'corner' &&
+					active !== null &&
+					activeValue !== null && (
+						<ChartTooltip
+							label={series[active.seriesIndex].label}
+							value={format(activeValue)}
+						/>
+					)}
+			</div>
 
 			<LineChartLegend
 				activeSeriesIndex={active?.seriesIndex ?? null}

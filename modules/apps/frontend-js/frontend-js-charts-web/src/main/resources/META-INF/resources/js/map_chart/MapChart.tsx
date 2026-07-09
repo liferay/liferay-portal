@@ -7,10 +7,10 @@ import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import ChartSummary from '../chart_summary/ChartSummary';
+import ChartTooltip from '../chart_tooltip/ChartTooltip';
 import {useChartKeyboardNav} from '../hooks/useChartKeyboardNav';
 import MapChartLegend from './components/MapChartLegend';
 import MapChartPlot from './components/MapChartPlot';
-import MapChartTooltip from './components/MapChartTooltip';
 import {MapChartProps} from './types/MapChartProps';
 import {getBlueSchemeColor} from './utils/blueSchemeColors';
 import {getCategoricalSchemeColor} from './utils/categoricalSchemeColors';
@@ -169,7 +169,10 @@ export default function MapChart({
 				/>
 
 				{activeIndex !== null && data[activeIndex] ? (
-					<MapChartTooltip datum={data[activeIndex]} />
+					<ChartTooltip
+						label={getCountryLabel(data[activeIndex])}
+						value={data[activeIndex].value}
+					/>
 				) : null}
 
 				{legend === 'list' && legendElement}
