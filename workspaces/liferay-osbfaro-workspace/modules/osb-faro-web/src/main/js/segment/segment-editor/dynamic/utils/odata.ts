@@ -884,6 +884,21 @@ const buildInnerFilterItems = (
 		}
 	}
 
+	const objectDefinitionNameMatch = innerFilter.match(
+		/objectDefinitionName eq '([^']+)'/
+	);
+
+	if (objectDefinitionNameMatch) {
+		items.push({
+			operatorName: RelationalOperators.EQ,
+			propertyName: 'objectDefinitionName',
+			rowId: generateRowId(),
+			touched: false,
+			valid: true,
+			value: objectDefinitionNameMatch[1],
+		} as unknown as Criterion);
+	}
+
 	if (matchedType?.supportsCategories) {
 		const catRegex =
 			/\(categories\/id eq '([^']+)' and categories\/name eq '([^']+)'\)/g;

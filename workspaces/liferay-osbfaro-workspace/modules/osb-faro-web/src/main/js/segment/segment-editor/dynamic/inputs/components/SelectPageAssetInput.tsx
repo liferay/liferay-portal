@@ -38,6 +38,7 @@ type PageAssetSelection = {
 export type BehaviorSelection = {
 	applicationId: string;
 	eventId: string;
+	objectDefinitionName?: string;
 	selections: PageAssetSelection[];
 };
 
@@ -161,17 +162,22 @@ const COUNT_COLUMN_BY_ACTION: {[key: string]: {[key: string]: any}} = {
 	submit: activityAssetsListColumns.submissionCount,
 };
 
-const getCountColumn = (action?: string) =>
-	COUNT_COLUMN_BY_ACTION[action ?? ''] ?? activityAssetsListColumns.viewCount;
+const getCountColumn = (action?: string, actionLabel?: string) => {
+	const column =
+		COUNT_COLUMN_BY_ACTION[action ?? ''] ??
+		activityAssetsListColumns.viewCount;
+
+	return actionLabel ? {...column, label: actionLabel} : column;
+};
 
 // Mirrors the base SelectEntityFromModal listing: name + data-source asset key,
 // the event count, and the data source. Shared by pages and assets since both
 // list from the same activity/asset endpoint (which keys items by the same id
 // the activityKey stores).
 
-const getColumns = (groupId: string, action?: string) => [
+const getColumns = (groupId: string, countColumn: {[key: string]: any}) => [
 	activityAssetsListColumns.nameUrl,
-	getCountColumn(action),
+	countColumn,
 	{
 		...detailsListColumns.getDataSourceName(groupId),
 		className: 'table-cell-expand',
@@ -190,6 +196,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 interface ISelectPageAssetInputProps extends PropsFromRedux {
 	action?: string;
+	actionLabel?: string;
 
 	// applicationId of the current selection, used on reload to infer Page vs
 	// Asset Type and preselect the type. Undefined only until a type resolves.
@@ -197,16 +204,19 @@ interface ISelectPageAssetInputProps extends PropsFromRedux {
 	applicationId?: string;
 	channelId: string;
 	groupId: string;
+	objectDefinitionName?: string;
 	onSelectionsChange?: (behaviorSelection: BehaviorSelection) => void;
 	selectedItems?: Array<PageAssetItem & {activityKey?: string}>;
 }
 
 const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	action,
+	actionLabel,
 	applicationId,
 	channelId,
 	close,
 	groupId,
+	objectDefinitionName,
 	onSelectionsChange,
 	open,
 	selectedItems = [],
@@ -303,8 +313,13 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			return;
 		}
 
-		const matchingType = compatibleAssetTypes.find(
-			(type) => resolveApplicationId(type.id) === applicationId
+		const matchByObjectDefinition =
+			applicationId === 'ObjectEntry' && objectDefinitionName;
+
+		const matchingType = compatibleAssetTypes.find((type) =>
+			matchByObjectDefinition
+				? type.id === objectDefinitionName
+				: resolveApplicationId(type.id) === applicationId
 		);
 
 		if (matchingType) {
@@ -316,6 +331,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		applicationId,
 		assetTypesData,
 		compatibleAssetTypes,
+		objectDefinitionName,
 		shouldRequestAssetTypes,
 	]);
 
@@ -338,6 +354,8 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		onSelectionsChange?.({
 			applicationId,
 			eventId: getEventId(applicationId, action),
+			objectDefinitionName:
+				applicationId === 'ObjectEntry' ? typeValue : undefined,
 			selections: items.map((item) => ({
 				activityKey:
 					item.activityKey ??
@@ -404,8 +422,10 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			};
 		};
 
+		const countColumn = getCountColumn(action, actionLabel);
+
 		open(modalTypes.SEARCHABLE_TABLE_MODAL, {
-			columns: getColumns(groupId, action),
+			columns: getColumns(groupId, countColumn),
 			dataSourceFn,
 			initialOrderIOMap: createOrderIOMap(COUNT),
 			initialSelectedItems: selectedItems,
@@ -422,9 +442,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 				close();
 			},
-			orderByOptions: [
-				{label: getCountColumn(action).label, value: COUNT},
-			],
+			orderByOptions: [{label: countColumn.label, value: COUNT}],
 			rowIdentifier: 'id',
 			submitMessage: Liferay.Language.get('select'),
 			title: isPage
@@ -454,8 +472,8 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	};
 
 	const selectLabel = isPage
-		? Liferay.Language.get('select-page')
-		: Liferay.Language.get('select-asset');
+		? Liferay.Language.get('add-pages')
+		: Liferay.Language.get('add-assets');
 
 	return (
 		<>

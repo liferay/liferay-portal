@@ -85,6 +85,13 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 		return getFilterValueByPropertyName(value, 'applicationId');
 	}
 
+	getObjectDefinitionName(): string | undefined {
+		return getFilterValueByPropertyName(
+			this.props.value,
+			'objectDefinitionName'
+		);
+	}
+
 	// Resolves each selected activityKey back to a {id, name} chip, looking up
 	// the name in the referenced entities (falling back to the id).
 
@@ -111,6 +118,7 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 	handlePageAssetSelect({
 		applicationId,
 		eventId,
+		objectDefinitionName,
 		selections,
 	}: BehaviorSelection) {
 		const {
@@ -174,6 +182,15 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 				['criterionGroup', 'items'],
 				List([
 					...assetItems.map((item) => fromJS(item)),
+					...(objectDefinitionName
+						? [
+								fromJS({
+									operatorName: RelationalOperators.EQ,
+									propertyName: 'objectDefinitionName',
+									value: objectDefinitionName,
+								}),
+							]
+						: []),
 					...(dayItem ? [dayItem] : []),
 				])
 			) as CustomValue,
@@ -309,9 +326,11 @@ export class BehaviorInput extends React.Component<IBehaviorInputProps> {
 
 					<SelectPageAssetInput
 						action={property.name}
+						actionLabel={displayValue}
 						applicationId={this.getApplicationId()}
 						channelId={channelId}
 						groupId={groupId}
+						objectDefinitionName={this.getObjectDefinitionName()}
 						onSelectionsChange={this.handlePageAssetSelect}
 						selectedItems={this.getSelectedItems()}
 					/>
