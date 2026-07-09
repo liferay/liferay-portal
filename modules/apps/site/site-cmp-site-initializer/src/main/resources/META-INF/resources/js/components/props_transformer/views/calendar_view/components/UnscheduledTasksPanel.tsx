@@ -15,6 +15,7 @@ import {FrontendDataSetContext} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
+import {TASK_DRAGGING_CLASS_NAME} from '../../../../../utils/constants';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../../../../utils/types';
 import StateLabel from '../../../../StateLabel';
@@ -71,6 +72,43 @@ export default function UnscheduledTasksPanel({
 			eventData: {create: false},
 			itemSelector: `.${DRAGGABLE_ITEM_CLASS_NAME}`,
 		});
+
+		// Dim the row left behind and switch to the grabbing cursor while a
+		// row is dragged. FullCalendar creates the dragged clone in its own
+		// drag start handlers, which run before this one, so the clone
+		// already exists here. Anchor its scale transform on the grab point
+		// so the card shrinks toward the cursor instead of away from it.
+
+		const handleDragStart = (event: {
+			pageX: number;
+			pageY: number;
+			subjectEl: HTMLElement;
+		}) => {
+			document.body.classList.add(TASK_DRAGGING_CLASS_NAME);
+
+			event.subjectEl.classList.add(
+				`${DRAGGABLE_ITEM_CLASS_NAME}-dragging`
+			);
+
+			const mirrorElement = draggable.dragging.mirror.getMirrorEl();
+
+			const rowRect = event.subjectEl.getBoundingClientRect();
+
+			mirrorElement.style.transformOrigin = `${
+				event.pageX - window.scrollX - rowRect.left
+			}px ${event.pageY - window.scrollY - rowRect.top}px`;
+		};
+
+		const handleDragEnd = (event: {subjectEl?: HTMLElement}) => {
+			document.body.classList.remove(TASK_DRAGGING_CLASS_NAME);
+
+			event.subjectEl?.classList.remove(
+				`${DRAGGABLE_ITEM_CLASS_NAME}-dragging`
+			);
+		};
+
+		draggable.dragging.emitter.on('dragstart', handleDragStart);
+		draggable.dragging.emitter.on('dragend', handleDragEnd);
 
 		return () => draggable.destroy();
 	}, [containerRef]);
