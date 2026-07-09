@@ -7,7 +7,7 @@ import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useContext} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
-import {buildHeaderSubtitle} from './utils/utils';
+import {buildHeaderSubtitle, IndividualHeaderData} from './utils/utils';
 import {ChannelContext} from 'shared/context/channel';
 import {compose, withIndividual} from 'shared/hoc';
 import {CSVType} from 'shared/components/download-report/utils';
@@ -72,11 +72,7 @@ interface IIndividualProfileRoutesProps {
 	individual: {
 		id: string;
 		name?: string;
-		toJS: () => {
-			accountName: string;
-			lastSessionCountry: string;
-			properties: {email: string};
-		};
+		toJS: () => IndividualHeaderData;
 	};
 }
 
@@ -135,7 +131,10 @@ export const IndividualProfileRoutes = ({
 				groupId={groupId}
 			>
 				<BasePage.Header.TitleSection
-					subtitle={buildHeaderSubtitle(individual.toJS())}
+					subtitle={buildHeaderSubtitle(individual.toJS(), {
+						channelId,
+						groupId,
+					})}
 					title={entityName}
 				/>
 
