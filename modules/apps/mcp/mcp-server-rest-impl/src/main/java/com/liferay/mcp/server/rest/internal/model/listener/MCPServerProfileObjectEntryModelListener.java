@@ -101,8 +101,8 @@ public class MCPServerProfileObjectEntryModelListener
 				mcpServerProfileDataMaskObjectEntry.getValues();
 
 			if (!Objects.equals(
-					externalReferenceCode,
-					values.get("mcpServerProfileExternalReferenceCode"))) {
+					values.get("mcpServerProfileExternalReferenceCode"),
+					externalReferenceCode)) {
 
 				continue;
 			}
