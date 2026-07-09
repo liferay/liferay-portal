@@ -67,6 +67,14 @@ export default function ElementVariationForm({
 			targetElementItem.value === elementVariation.targetElement
 	);
 
+	const translating = languageId !== defaultLanguageId;
+
+	const notLocalizableHint = translating ? (
+		<span className="element-variations__not-localizable-label font-weight-lighter">
+			({Liferay.Language.get('not-localizable')})
+		</span>
+	) : null;
+
 	return (
 		<>
 			<div className="align-items-center border-bottom d-flex flex-shrink-0 px-3 py-3">
@@ -119,12 +127,15 @@ export default function ElementVariationForm({
 							className="mr-1 reference-mark"
 							symbol="asterisk"
 						/>
+
+						{notLocalizableHint}
 					</label>
 
 					<ClayInput
 						defaultValue={elementVariation.name}
 						id={nameId}
 						onBlur={(event) => onChange({name: event.target.value})}
+						readOnly={translating}
 						type="text"
 					/>
 				</ClayForm.Group>
@@ -137,11 +148,14 @@ export default function ElementVariationForm({
 							className="mr-1 reference-mark"
 							symbol="asterisk"
 						/>
+
+						{notLocalizableHint}
 					</label>
 
 					<Picker
 						aria-label={Liferay.Language.get('page-element')}
 						className="form-control-sm"
+						disabled={translating}
 						id={targetElementId}
 						items={targetElementItems}
 						onSelectionChange={(selection) => {
@@ -192,9 +206,12 @@ export default function ElementVariationForm({
 									className="mr-1 reference-mark"
 									symbol="asterisk"
 								/>
+
+								{notLocalizableHint}
 							</label>
 
 							<ClayMultiSelect
+								disabled={translating}
 								id={audienceId}
 								items={audiences.filter((audience) =>
 									elementVariation.audienceEntryERCs.includes(
@@ -293,6 +310,17 @@ export default function ElementVariationForm({
 											})
 										}
 									/>
+
+									{translating &&
+									elementVariation.html[defaultLanguageId] ? (
+										<p className="element-variations__default-language-value font-italic mt-1 pl-2 text-3 text-break text-secondary">
+											{
+												elementVariation.html[
+													defaultLanguageId
+												]
+											}
+										</p>
+									) : null}
 								</ClayForm.Group>
 
 								<ClayForm.Group small>
@@ -324,6 +352,17 @@ export default function ElementVariationForm({
 											})
 										}
 									/>
+
+									{translating &&
+									elementVariation.js[defaultLanguageId] ? (
+										<p className="element-variations__default-language-value font-italic mt-1 pl-2 text-3 text-break text-secondary">
+											{
+												elementVariation.js[
+													defaultLanguageId
+												]
+											}
+										</p>
+									) : null}
 
 									<ClayButton
 										className="mt-2"

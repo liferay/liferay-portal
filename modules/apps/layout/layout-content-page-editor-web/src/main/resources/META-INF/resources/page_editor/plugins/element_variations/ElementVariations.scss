@@ -1,8 +1,20 @@
+@import 'functions/_global-functions';
+@import 'variables/_globals';
+
 .element-variations {
 	height: calc(100vh - var(--control-menu-container-height, 0px));
 
 	&__content {
 		min-height: 0;
+	}
+
+	&__default-language-value {
+		border-left: 2px solid $secondary;
+		border-radius: 2px;
+	}
+
+	&__not-localizable-label {
+		color: $secondary-l0;
 	}
 
 	&__sidebar {
