@@ -135,6 +135,8 @@ public class AssetCategoryLocalServiceImpl
 
 		validate(0, groupId, parentCategoryId, name, vocabularyId);
 
+		_checkSystemParentCategory(parentCategoryId);
+
 		AssetCategory parentCategory = null;
 
 		if (parentCategoryId > 0) {
@@ -936,6 +938,27 @@ public class AssetCategoryLocalServiceImpl
 		}
 	}
 
+	private void _checkSystemParentCategory(long parentCategoryId)
+		throws PortalException {
+
+		if (parentCategoryId <= 0) {
+			return;
+		}
+
+		AssetCategory parentCategory =
+			assetCategoryPersistence.findByPrimaryKey(parentCategoryId);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				parentCategory.getCompanyId(), "LPD-86291") ||
+			!parentCategory.isSystem() ||
+			ExportImportThreadLocal.isImportInProcess()) {
+
+			return;
+		}
+
+		throw new SystemCategoryException.MustNotAddChild(parentCategoryId);
+	}
+
 	private boolean _equals(
 		Map<Locale, String> map1, Map<Locale, String> map2) {
 
@@ -964,6 +987,8 @@ public class AssetCategoryLocalServiceImpl
 	private AssetCategory _moveCategory(
 			AssetCategory category, long parentCategoryId, long vocabularyId)
 		throws PortalException {
+
+		_checkSystemParentCategory(parentCategoryId);
 
 		validate(
 			category.getCategoryId(), category.getGroupId(), parentCategoryId,

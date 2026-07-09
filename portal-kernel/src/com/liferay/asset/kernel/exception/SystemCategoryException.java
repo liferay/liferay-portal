@@ -12,6 +12,20 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class SystemCategoryException extends PortalException {
 
+	public static class MustNotAddChild extends SystemCategoryException {
+
+		public MustNotAddChild(long categoryId) {
+			super(
+				String.format(
+					"Category %s cannot have child categories", categoryId));
+
+			this.categoryId = categoryId;
+		}
+
+		public long categoryId;
+
+	}
+
 	public static class MustNotDelete extends SystemCategoryException {
 
 		public MustNotDelete(long categoryId) {
