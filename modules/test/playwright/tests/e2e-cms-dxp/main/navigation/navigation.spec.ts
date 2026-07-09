@@ -179,6 +179,10 @@ test(
 			await page.goto(PORTLET_URLS.cms);
 
 			await expect(
+				page.getByRole('menuitem', {name: spaceA.name})
+			).toBeVisible();
+
+			await expect(
 				page.getByRole('menuitem', {name: spaceB.name})
 			).toBeHidden();
 		});
