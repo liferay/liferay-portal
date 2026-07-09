@@ -16,9 +16,11 @@ portletDisplay.setURLBack(editDataMaskDisplayContext.getBackURL());
 renderResponse.setTitle(editDataMaskDisplayContext.getTitle(request));
 %>
 
-<div class="container-fluid container-fluid-max-xl">
+<clay:container-fluid
+	cssClass="container-fluid-max-xl container-view"
+>
 	<react:component
 		module="{EditDataMask} from mcp-server-web"
 		props="<%= editDataMaskDisplayContext.getEditDataMaskProps() %>"
 	/>
-</div>
+</clay:container-fluid>

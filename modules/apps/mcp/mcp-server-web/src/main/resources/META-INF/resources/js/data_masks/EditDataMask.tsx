@@ -12,6 +12,7 @@ import {navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {FormField} from '../forms/FormField';
+import {FormSection} from '../forms/FormSection';
 import {getDataMask} from '../services/getDataMask';
 import {patchDataMask} from '../services/patchDataMask';
 import {postDataMask} from '../services/postDataMask';
@@ -129,9 +130,8 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 
 				<ReplacementConfigurationSection readOnly={readOnly} />
 
-				<div className="d-flex">
+				<ClayLayout.SheetFooter>
 					<ClayButton
-						className="mr-3"
 						displayType="secondary"
 						onClick={() => navigate(backURL)}
 						type="button"
@@ -150,7 +150,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					)}
-				</div>
+				</ClayLayout.SheetFooter>
 			</Form>
 		</FormikProvider>
 	);
@@ -158,11 +158,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 
 function MaskInformationSection({readOnly}: {readOnly: boolean}) {
 	return (
-		<ClayLayout.Sheet className="mb-4">
-			<h3 className="sheet-title">
-				{Liferay.Language.get('mask-information')}
-			</h3>
-
+		<FormSection title={Liferay.Language.get('mask-information')}>
 			<FormField
 				disabled={readOnly}
 				id="dataMaskName"
@@ -178,17 +174,16 @@ function MaskInformationSection({readOnly}: {readOnly: boolean}) {
 				label={Liferay.Language.get('description')}
 				name="description"
 			/>
-		</ClayLayout.Sheet>
+		</FormSection>
 	);
 }
 
 function DetectionConfigurationSection({readOnly}: {readOnly: boolean}) {
 	return (
-		<ClayLayout.Sheet className="mb-4">
-			<h3 className="sheet-title">
-				{Liferay.Language.get('detection-configuration')}
-			</h3>
-
+		<FormSection
+			className="mt-4"
+			title={Liferay.Language.get('detection-configuration')}
+		>
 			<FormField
 				disabled={readOnly}
 				helpMessage={Liferay.Language.get(
@@ -199,7 +194,7 @@ function DetectionConfigurationSection({readOnly}: {readOnly: boolean}) {
 				name="detectionRegex"
 				required
 			/>
-		</ClayLayout.Sheet>
+		</FormSection>
 	);
 }
 
@@ -211,11 +206,10 @@ function ReplacementConfigurationSection({readOnly}: {readOnly: boolean}) {
 	}>();
 
 	return (
-		<ClayLayout.Sheet className="mb-4">
-			<h3 className="sheet-title">
-				{Liferay.Language.get('replacement-configuration')}
-			</h3>
-
+		<FormSection
+			className="mt-4"
+			title={Liferay.Language.get('replacement-configuration')}
+		>
 			<FormField
 				disabled={readOnly}
 				helpMessage={Liferay.Language.get(
@@ -239,6 +233,6 @@ function ReplacementConfigurationSection({readOnly}: {readOnly: boolean}) {
 				replacementRegex={values.replacementRegex}
 				replacementValue={values.replacementValue}
 			/>
-		</ClayLayout.Sheet>
+		</FormSection>
 	);
 }
