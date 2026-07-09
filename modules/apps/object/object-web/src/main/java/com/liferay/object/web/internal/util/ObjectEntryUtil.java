@@ -26,6 +26,7 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
@@ -177,6 +178,13 @@ public class ObjectEntryUtil {
 			objectDefinition.getObjectDefinitionId());
 		serviceBuilderObjectEntry.setDefaultLanguageId(
 			objectEntry.getDefaultLanguageId());
+
+		Status status = objectEntry.getStatus();
+
+		if (status != null) {
+			serviceBuilderObjectEntry.setStatus(
+				GetterUtil.getInteger(status.getCode()));
+		}
 
 		return new ProxyObjectEntry(serviceBuilderObjectEntry, objectEntry);
 	}
