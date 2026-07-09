@@ -5,10 +5,19 @@
 
 import ClayIcon from '@clayui/icon';
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, {Components} from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import ChatbotAvatar from './ChatbotAvatar';
 import FeedbackActions from './FeedbackActions';
+
+const MARKDOWN_COMPONENTS: Components = {
+	a: ({node: _node, ...props}) => (
+		<a {...props} rel="noopener noreferrer" target="_blank" />
+	),
+};
+
+const REMARK_PLUGINS = [remarkGfm];
 
 interface AssistantMessageProps {
 	avatar?: string;
@@ -39,7 +48,12 @@ export default function AssistantMessage({
 			</div>
 
 			<div className="aihub-msg-assistant-text">
-				<ReactMarkdown>{text}</ReactMarkdown>
+				<ReactMarkdown
+					components={MARKDOWN_COMPONENTS}
+					remarkPlugins={REMARK_PLUGINS}
+				>
+					{text}
+				</ReactMarkdown>
 
 				{onThumbsDown && onThumbsUp && (
 					<FeedbackActions
