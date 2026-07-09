@@ -254,8 +254,8 @@ public class MCPServerServletTest {
 	}
 
 	private ObjectEntry _fetchMCPServerProfileDataMaskObjectEntry(
-			String mcpServerProfileExternalReferenceCode,
-			long dataMaskObjectEntryId)
+			long dataMaskObjectEntryId,
+			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
 		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
@@ -636,8 +636,8 @@ public class MCPServerServletTest {
 		MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
 			"Removed by test.",
 			_fetchMCPServerProfileDataMaskObjectEntry(
-				mcpServerProfileObjectEntry.getExternalReferenceCode(),
-				dataMaskObjectEntry.getObjectEntryId()));
+				dataMaskObjectEntry.getObjectEntryId(),
+				mcpServerProfileObjectEntry.getExternalReferenceCode()));
 
 		callToolResult = mcpSyncClient.callTool(
 			new McpSchema.CallToolRequest(
