@@ -12,7 +12,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
-import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -27,13 +26,14 @@ import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceU
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jose Luis Navarro
  */
 public class MCPServerTestUtil {
 
-	public static ObjectEntry addCustomMask(
+	public static ObjectEntry addDataMaskObjectEntry(
 			String name, String detectionRegex, String replacementValue)
 		throws Exception {
 
@@ -59,31 +59,7 @@ public class MCPServerTestUtil {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	public static ObjectEntry addProfile(
-			String name, String description, String... tools)
-		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionLocalServiceUtil.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
-
-		return ObjectEntryLocalServiceUtil.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				"description", description
-			).put(
-				"name", name
-			).put(
-				"tools", String.join("\n", tools)
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	public static ObjectEntry addProfileDataMask(
+	public static ObjectEntry addMCPServerProfileDataMaskObjectEntry(
 			String mcpServerProfileExternalReferenceCode,
 			long maskObjectEntryId, int executionOrder)
 		throws Exception {
@@ -113,6 +89,47 @@ public class MCPServerTestUtil {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	public static ObjectEntry addMCPServerProfileObjectEntry(
+			String name, String description, String... tools)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
+
+		return ObjectEntryLocalServiceUtil.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"description", description
+			).put(
+				"name", name
+			).put(
+				"tools", String.join("\n", tools)
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	public static void deleteMCPServerProfileDataMaskObjectEntry(
+			ObjectEntry objectEntry, String deleteReason)
+		throws Exception {
+
+		ObjectEntryLocalServiceUtil.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), 0,
+			HashMapBuilder.<String, Serializable>putAll(
+				objectEntry.getValues()
+			).put(
+				"deleteReason", deleteReason
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectEntryLocalServiceUtil.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+	}
+
 	public static ConfigurationTemporarySwapper enableAuditPersistence()
 		throws Exception {
 
@@ -124,6 +141,18 @@ public class MCPServerTestUtil {
 			).put(
 				"flushInterval", 1
 			).build());
+	}
+
+	public static ObjectEntry fetchDataMaskObjectEntry(String name)
+		throws Exception {
+
+		return _fetchObjectEntry("L_DATA_MASK", name);
+	}
+
+	public static ObjectEntry fetchMCPServerProfileObjectEntry(String name)
+		throws Exception {
+
+		return _fetchObjectEntry("L_MCP_SERVER_PROFILE", name);
 	}
 
 	public static String getAuditedDeleteReason(ObjectEntry objectEntry)
@@ -155,18 +184,16 @@ public class MCPServerTestUtil {
 	}
 
 	public static void processBatchEngineUnits() {
-		String dataMaskPrefix =
-			".com.liferay.headless.data.mask.internal.batch.";
+		String prefix = ".com.liferay.headless.data.mask.internal.batch.";
 
 		BatchEngineTestUtil.processBatchEngineUnits(
 			"com.liferay.headless.data.mask.impl", MCPServerTestUtil.class,
 			new String[] {
-				dataMaskPrefix + "01.list.type.definition",
-				dataMaskPrefix + "02.object.definition",
-				dataMaskPrefix + "03.object.entry"
+				prefix + "01.list.type.definition",
+				prefix + "02.object.definition", prefix + "03.object.entry"
 			});
 
-		String prefix = ".com.liferay.mcp.server.rest.internal.batch.";
+		prefix = ".com.liferay.mcp.server.rest.internal.batch.";
 
 		BatchEngineTestUtil.processBatchEngineUnits(
 			"com.liferay.mcp.server.rest.impl", MCPServerTestUtil.class,
@@ -177,34 +204,33 @@ public class MCPServerTestUtil {
 			});
 	}
 
-	public static void removeProfileDataMask(
-			ObjectEntry objectEntry, String deleteReason)
+	private static ObjectEntry _fetchObjectEntry(
+			String objectDefinitionExternalReferenceCode, String name)
 		throws Exception {
 
-		ObjectEntryLocalServiceUtil.updateObjectEntry(
-			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), 0,
-			HashMapBuilder.<String, Serializable>putAll(
-				objectEntry.getValues()
-			).put(
-				"deleteReason", deleteReason
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode,
+					TestPropsValues.getCompanyId());
 
-		ObjectEntryLocalServiceUtil.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
-	}
+		if (objectDefinition == null) {
+			return null;
+		}
 
-	public static void updateMCPServerConfiguration(boolean enabled)
-		throws Exception {
+		for (ObjectEntry objectEntry :
+				ObjectEntryLocalServiceUtil.getObjectEntries(
+					0, objectDefinition.getObjectDefinitionId(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		ConfigurationTestUtil.createFactoryConfiguration(
-			"com.liferay.mcp.server.rest.internal.configuration." +
-				"MCPServerConfiguration.scoped",
-			HashMapDictionaryBuilder.<String, Object>put(
-				"companyId", TestPropsValues.getCompanyId()
-			).put(
-				"enabled", enabled
-			).build());
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			if (name.equals(values.get("name"))) {
+				return objectEntry;
+			}
+		}
+
+		return null;
 	}
 
 }

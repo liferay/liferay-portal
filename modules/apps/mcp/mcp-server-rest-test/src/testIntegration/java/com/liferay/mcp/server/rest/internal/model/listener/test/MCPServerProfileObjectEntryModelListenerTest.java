@@ -49,54 +49,54 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-
-		// The system masks are seeded on the default profile
-
-		ObjectEntry defaultProfileObjectEntry = _findProfile("default");
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
 
 		Assert.assertEquals(
 			_SYSTEM_MASK_COUNT,
-			_countProfileDataMasks(
-				defaultProfileObjectEntry.getExternalReferenceCode()));
+			_getMCPServerProfileDataMasksCount(
+				mcpServerProfileObjectEntry.getExternalReferenceCode()));
 
-		// The system masks are auto attached on profile create
-
-		ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
-			RandomTestUtil.randomString(), "no PII here",
-			"mcp-server-profiles getMCPServerProfilesPage");
+		mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), "no PII here",
+				"mcp-server-profiles getMCPServerProfilesPage");
 
 		Assert.assertEquals(
 			_SYSTEM_MASK_COUNT,
-			_countProfileDataMasks(
-				profileObjectEntry.getExternalReferenceCode()));
+			_getMCPServerProfileDataMasksCount(
+				mcpServerProfileObjectEntry.getExternalReferenceCode()));
 	}
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
-			RandomTestUtil.randomString(), "no PII here",
-			"mcp-server-profiles getMCPServerProfilesPage");
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), "no PII here",
+				"mcp-server-profiles getMCPServerProfilesPage");
 
-		String mcpServerProfileExternalReferenceCode =
-			profileObjectEntry.getExternalReferenceCode();
+		String mcpServerProfileObjectEntryExternalReferenceCode =
+			mcpServerProfileObjectEntry.getExternalReferenceCode();
 
 		Assert.assertEquals(
 			_SYSTEM_MASK_COUNT,
-			_countProfileDataMasks(mcpServerProfileExternalReferenceCode));
+			_getMCPServerProfileDataMasksCount(
+				mcpServerProfileObjectEntryExternalReferenceCode));
 
-		ObjectEntry customMaskObjectEntry = MCPServerTestUtil.addCustomMask(
-			RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
+		ObjectEntry dataMaskObjectEntry =
+			MCPServerTestUtil.addDataMaskObjectEntry(
+				RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
 
-		ObjectEntry profileDataMaskObjectEntry =
-			MCPServerTestUtil.addProfileDataMask(
-				mcpServerProfileExternalReferenceCode,
-				customMaskObjectEntry.getObjectEntryId(), 1);
+		ObjectEntry mcpServerProfileDataMaskObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
+				mcpServerProfileObjectEntryExternalReferenceCode,
+				dataMaskObjectEntry.getObjectEntryId(), 1);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				MCPServerTestUtil.enableAuditPersistence()) {
@@ -109,7 +109,8 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 					PermissionCheckerFactoryUtil.create(
 						TestPropsValues.getUser()));
 
-				_objectEntryLocalService.deleteObjectEntry(profileObjectEntry);
+				_objectEntryLocalService.deleteObjectEntry(
+					mcpServerProfileObjectEntry);
 			}
 			finally {
 				PermissionThreadLocal.setPermissionChecker(
@@ -118,16 +119,17 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 			Assert.assertEquals(
 				0,
-				_countProfileDataMasks(mcpServerProfileExternalReferenceCode));
+				_getMCPServerProfileDataMasksCount(
+					mcpServerProfileObjectEntryExternalReferenceCode));
 
 			Assert.assertEquals(
 				"Profile deleted.",
 				MCPServerTestUtil.getAuditedDeleteReason(
-					profileDataMaskObjectEntry));
+					mcpServerProfileDataMaskObjectEntry));
 		}
 	}
 
-	private int _countProfileDataMasks(
+	private int _getMCPServerProfileDataMasksCount(
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
@@ -156,31 +158,6 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		}
 
 		return count;
-	}
-
-	private ObjectEntry _findProfile(String name) throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		for (ObjectEntry objectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			if (name.equals(values.get("name"))) {
-				return objectEntry;
-			}
-		}
-
-		return null;
 	}
 
 	private static final int _SYSTEM_MASK_COUNT = 9;

@@ -41,23 +41,25 @@ public class DataMaskObjectEntryModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
-			RandomTestUtil.randomString(), "no PII here",
-			"mcp-server-profiles getMCPServerProfilesPage");
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), "no PII here",
+				"mcp-server-profiles getMCPServerProfilesPage");
 
-		ObjectEntry customMaskObjectEntry = MCPServerTestUtil.addCustomMask(
-			RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
+		ObjectEntry customDataMaskObjectEntry =
+			MCPServerTestUtil.addDataMaskObjectEntry(
+				RandomTestUtil.randomString(), "\\d{4}", "[REDACTED]");
 
-		ObjectEntry profileDataMaskObjectEntry =
-			MCPServerTestUtil.addProfileDataMask(
-				profileObjectEntry.getExternalReferenceCode(),
-				customMaskObjectEntry.getObjectEntryId(), 1);
+		ObjectEntry mcpServerProfileDataMaskObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
+				mcpServerProfileObjectEntry.getExternalReferenceCode(),
+				customDataMaskObjectEntry.getObjectEntryId(), 1);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				MCPServerTestUtil.enableAuditPersistence()) {
@@ -71,24 +73,23 @@ public class DataMaskObjectEntryModelListenerTest {
 						TestPropsValues.getUser()));
 
 				_objectEntryLocalService.deleteObjectEntry(
-					customMaskObjectEntry.getObjectEntryId());
+					customDataMaskObjectEntry.getObjectEntryId());
 			}
 			finally {
 				PermissionThreadLocal.setPermissionChecker(
 					originalPermissionChecker);
 			}
 
-			Assert.assertNull(
-				_objectEntryLocalService.fetchObjectEntry(
-					customMaskObjectEntry.getObjectEntryId()));
-			Assert.assertNull(
-				_objectEntryLocalService.fetchObjectEntry(
-					profileDataMaskObjectEntry.getObjectEntryId()));
-
 			Assert.assertEquals(
 				"Data mask deleted.",
 				MCPServerTestUtil.getAuditedDeleteReason(
-					profileDataMaskObjectEntry));
+					mcpServerProfileDataMaskObjectEntry));
+			Assert.assertNull(
+				_objectEntryLocalService.fetchObjectEntry(
+					customDataMaskObjectEntry.getObjectEntryId()));
+			Assert.assertNull(
+				_objectEntryLocalService.fetchObjectEntry(
+					mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
 		}
 	}
 

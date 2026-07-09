@@ -97,7 +97,7 @@ public class MCPServerServletTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
@@ -182,21 +182,29 @@ public class MCPServerServletTest {
 
 	@Test
 	public void testServiceWithDataMasks() throws Exception {
-		MCPServerTestUtil.updateMCPServerConfiguration(true);
-
-		try {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"com.liferay.mcp.server.rest.internal.configuration." +
+							"MCPServerConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
 
 			// The email address is redacted in the profile response
 
 			String profileName = RandomTestUtil.randomString();
 
-			ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
-				profileName, "Contact: " + _SAMPLE_EMAIL,
-				"mcp-server-profiles getMCPServerProfilesPage");
+			ObjectEntry profileObjectEntry =
+				MCPServerTestUtil.addMCPServerProfileObjectEntry(
+					profileName, "Contact: " + _SAMPLE_EMAIL,
+					"mcp-server-profiles getMCPServerProfilesPage");
 
-			ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
+			ObjectEntry emailMaskObjectEntry =
+				MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 
-			MCPServerTestUtil.addProfileDataMask(
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
 				profileObjectEntry.getExternalReferenceCode(),
 				emailMaskObjectEntry.getObjectEntryId(), 1);
 
@@ -212,7 +220,7 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			MCPServerTestUtil.addProfile(
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				profileName, "Server at 192.168.1.42",
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -232,13 +240,15 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry = MCPServerTestUtil.addProfile(
-				profileName, RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
+			profileObjectEntry =
+				MCPServerTestUtil.addMCPServerProfileObjectEntry(
+					profileName, RandomTestUtil.randomString(),
+					"mcp-server-profiles getMCPServerProfilesPage");
 
-			emailMaskObjectEntry = _findSystemMask("Email Address");
+			emailMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
+				"Email Address");
 
-			MCPServerTestUtil.addProfileDataMask(
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
 				profileObjectEntry.getExternalReferenceCode(),
 				emailMaskObjectEntry.getObjectEntryId(), 1);
 
@@ -267,17 +277,20 @@ public class MCPServerServletTest {
 
 			profileName = RandomTestUtil.randomString();
 
-			profileObjectEntry = MCPServerTestUtil.addProfile(
-				profileName, "Contact: " + _SAMPLE_EMAIL,
-				"mcp-server-profiles getMCPServerProfilesPage");
+			profileObjectEntry =
+				MCPServerTestUtil.addMCPServerProfileObjectEntry(
+					profileName, "Contact: " + _SAMPLE_EMAIL,
+					"mcp-server-profiles getMCPServerProfilesPage");
 
-			emailMaskObjectEntry = _findSystemMask("Email Address");
+			emailMaskObjectEntry = MCPServerTestUtil.fetchDataMaskObjectEntry(
+				"Email Address");
 
-			ObjectEntry emailProfileDataMaskObjectEntry = _findProfileDataMask(
-				profileObjectEntry.getExternalReferenceCode(),
-				emailMaskObjectEntry.getObjectEntryId());
+			ObjectEntry emailProfileDataMaskObjectEntry =
+				_fetchMCPServerProfileDataMaskObjectEntry(
+					profileObjectEntry.getExternalReferenceCode(),
+					emailMaskObjectEntry.getObjectEntryId());
 
-			MCPServerTestUtil.removeProfileDataMask(
+			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
 				emailProfileDataMaskObjectEntry, "Removed by test.");
 
 			responseText = _callListProfilesTool(profileName);
@@ -292,7 +305,7 @@ public class MCPServerServletTest {
 			// The REST invocation applies masks when the data masks header is
 			// set
 
-			MCPServerTestUtil.addProfile(
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -309,7 +322,7 @@ public class MCPServerServletTest {
 
 			// The REST invocation respects the selected masks only
 
-			MCPServerTestUtil.addProfile(
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(),
 				StringBundler.concat(
 					"Contact: ", _SAMPLE_EMAIL, " ", _SAMPLE_PHONE),
@@ -331,7 +344,7 @@ public class MCPServerServletTest {
 			// The REST invocation skips redaction when the data masks header is
 			// unknown
 
-			MCPServerTestUtil.addProfile(
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -350,7 +363,7 @@ public class MCPServerServletTest {
 			// The REST invocation skips redaction when there is no data masks
 			// header
 
-			MCPServerTestUtil.addProfile(
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), "Contact: " + _SAMPLE_EMAIL,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
@@ -362,9 +375,6 @@ public class MCPServerServletTest {
 				responseText,
 				CoreMatchers.not(
 					CoreMatchers.containsString("[EMAIL_ADDRESS]")));
-		}
-		finally {
-			MCPServerTestUtil.updateMCPServerConfiguration(false);
 		}
 	}
 
@@ -481,7 +491,7 @@ public class MCPServerServletTest {
 		}
 	}
 
-	private ObjectEntry _findProfileDataMask(
+	private ObjectEntry _fetchMCPServerProfileDataMaskObjectEntry(
 			String mcpServerProfileExternalReferenceCode,
 			long maskObjectEntryId)
 		throws Exception {
@@ -513,31 +523,6 @@ public class MCPServerServletTest {
 					).getExternalReferenceCode())) {
 
 				return profileDataMaskObjectEntry;
-			}
-		}
-
-		return null;
-	}
-
-	private ObjectEntry _findSystemMask(String name) throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_MASK", TestPropsValues.getCompanyId());
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		for (ObjectEntry objectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			if (name.equals(values.get("name"))) {
-				return objectEntry;
 			}
 		}
 

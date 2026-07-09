@@ -7,22 +7,14 @@ package com.liferay.mcp.server.rest.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import java.io.Serializable;
-
-import java.util.Map;
 
 import org.hamcrest.CoreMatchers;
 
@@ -46,26 +38,28 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
-		ObjectEntry profileObjectEntry = MCPServerTestUtil.addProfile(
-			RandomTestUtil.randomString(), "no PII here",
-			"mcp-server-profiles getMCPServerProfilesPage");
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), "no PII here",
+				"mcp-server-profiles getMCPServerProfilesPage");
 
-		ObjectEntry emailMaskObjectEntry = _findSystemMask("Email Address");
-
-		ObjectEntry profileDataMaskObjectEntry =
-			MCPServerTestUtil.addProfileDataMask(
-				profileObjectEntry.getExternalReferenceCode(),
-				emailMaskObjectEntry.getObjectEntryId(), 1);
+		ObjectEntry mcpServerProfileDataMaskObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
+				mcpServerProfileObjectEntry.getExternalReferenceCode(),
+				MCPServerTestUtil.fetchDataMaskObjectEntry(
+					"Email Address"
+				).getObjectEntryId(),
+				1);
 
 		try {
 			_objectEntryLocalService.deleteObjectEntry(
-				profileDataMaskObjectEntry.getObjectEntryId());
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId());
 
 			Assert.fail(
 				"Removing a profile data mask without a delete reason should " +
@@ -79,43 +73,15 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				profileDataMaskObjectEntry.getObjectEntryId()));
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
 
-		MCPServerTestUtil.removeProfileDataMask(
-			profileDataMaskObjectEntry, RandomTestUtil.randomString());
+		MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
+			mcpServerProfileDataMaskObjectEntry, RandomTestUtil.randomString());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				profileDataMaskObjectEntry.getObjectEntryId()));
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
 	}
-
-	private ObjectEntry _findSystemMask(String name) throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_MASK", TestPropsValues.getCompanyId());
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		for (ObjectEntry objectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			if (name.equals(values.get("name"))) {
-				return objectEntry;
-			}
-		}
-
-		return null;
-	}
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
