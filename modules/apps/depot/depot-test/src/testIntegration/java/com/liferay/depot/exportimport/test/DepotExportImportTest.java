@@ -103,7 +103,9 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithJournalArticleToGroup() throws Exception {
+	public void testExportImportDepotWithJournalArticleToGroup()
+		throws Exception {
+
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_depotGroup.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
@@ -122,8 +124,7 @@ public class DepotExportImportTest {
 
 	@Test
 	public void testExportImportGroupWithFileEntryToDepot() throws Exception {
-		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-			_group.getGroupId());
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(_group.getGroupId());
 
 		_larFile = _export(_group.getGroupId());
 
@@ -137,7 +138,9 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportGroupWithJournalArticleToDepot() throws Exception {
+	public void testExportImportGroupWithJournalArticleToDepot()
+		throws Exception {
+
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
@@ -222,9 +225,9 @@ public class DepotExportImportTest {
 	@Inject
 	private ExportImportLocalService _exportImportLocalService;
 
-	private File _larFile;
-
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private File _larFile;
 
 }
