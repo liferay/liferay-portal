@@ -49,13 +49,13 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 				RandomTestUtil.randomString(), "no PII here",
 				"mcp-server-profiles getMCPServerProfilesPage");
 
+		ObjectEntry dataMaskObjectEntry =
+			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
+
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
 				mcpServerProfileObjectEntry.getExternalReferenceCode(),
-				MCPServerTestUtil.fetchDataMaskObjectEntry(
-					"Email Address"
-				).getObjectEntryId(),
-				1);
+				dataMaskObjectEntry.getObjectEntryId(), 1);
 
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
