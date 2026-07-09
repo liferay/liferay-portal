@@ -7,6 +7,7 @@ import {DataSourceStatuses} from 'shared/util/constants';
 import {disconnect} from 'shared/api/data-source';
 import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
+import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {updateSearchParams} from 'settings/components/base-page/utis';
 import {useHistory} from 'react-router-dom';
@@ -84,8 +85,11 @@ const ConnectMarketoCampaignStep = ({
 						open(modalTypes.CONFIRMATION_MODAL, {
 							message: (
 								<Text as="p" size={4}>
-									{Liferay.Language.get(
-										'this-action-will-stop-syncing-data-from-this-data-source-to-this-liferay-data-platform-workspace.-the-data-that-was-already-synced-will-remain-available-in-the-properties-the-data-source-was-connected-to.-are-you-sure-you-want-to-continue'
+									{sub(
+										Liferay.Language.get(
+											'this-action-will-stop-syncing-data-from-x-to-this-workspace.-the-data-that-was-already-synced-will-remain-available-in-the-properties-the-data-source-was-connected-to.-are-you-sure-you-want-to-continue'
+										),
+										[Liferay.Language.get('marketo')]
 									)}
 								</Text>
 							),
