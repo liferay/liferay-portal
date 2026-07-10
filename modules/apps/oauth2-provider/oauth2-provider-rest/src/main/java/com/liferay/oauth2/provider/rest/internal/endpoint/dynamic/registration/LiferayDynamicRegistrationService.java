@@ -427,20 +427,19 @@ public class LiferayDynamicRegistrationService
 				httpServletRequest.getHeader("User-Agent"));
 		}
 
-		String mode =
-			OAuth2ProviderRESTEndpointConstants.
-				DYNAMIC_REGISTRATION_MODE_AUTHENTICATED;
-
-		if (_isOpenRegistrationRequest(httpServletRequest)) {
-			mode =
-				OAuth2ProviderRESTEndpointConstants.
-					DYNAMIC_REGISTRATION_MODE_OPEN;
-		}
-
 		return JSONUtil.put(
 			"clientHost", clientHost
 		).put(
-			"mode", mode
+			"mode",
+			() -> {
+				if (_isOpenRegistrationRequest(httpServletRequest)) {
+					return OAuth2ProviderRESTEndpointConstants.
+						DYNAMIC_REGISTRATION_MODE_OPEN;
+				}
+
+				return OAuth2ProviderRESTEndpointConstants.
+					DYNAMIC_REGISTRATION_MODE_AUTHENTICATED;
+			}
 		).put(
 			"userAgent", userAgent
 		);
@@ -547,12 +546,10 @@ public class LiferayDynamicRegistrationService
 	private boolean _isOpenRegistration(Client client) {
 		Map<String, String> properties = client.getProperties();
 
-		String mode = properties.get(
-			OAuth2ProviderRESTEndpointConstants.
-				PROPERTY_KEY_DYNAMIC_REGISTRATION_MODE);
-
 		return Objects.equals(
-			mode,
+			properties.get(
+				OAuth2ProviderRESTEndpointConstants.
+					PROPERTY_KEY_DYNAMIC_REGISTRATION_MODE),
 			OAuth2ProviderRESTEndpointConstants.DYNAMIC_REGISTRATION_MODE_OPEN);
 	}
 
