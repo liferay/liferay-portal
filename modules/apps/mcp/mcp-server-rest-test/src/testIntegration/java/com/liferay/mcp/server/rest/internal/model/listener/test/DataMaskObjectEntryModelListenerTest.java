@@ -89,7 +89,7 @@ public class DataMaskObjectEntryModelListenerTest {
 			}
 
 			Assert.assertEquals(
-				"Data mask deleted.",
+				"Data mask was deleted.",
 				MCPServerTestUtil.getAuditedDeleteReason(
 					mcpServerProfileDataMaskObjectEntry));
 			Assert.assertNull(

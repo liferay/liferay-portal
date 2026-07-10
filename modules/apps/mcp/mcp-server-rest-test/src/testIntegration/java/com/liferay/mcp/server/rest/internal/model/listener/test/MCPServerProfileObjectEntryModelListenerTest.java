@@ -131,7 +131,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 					mcpServerProfileObjectEntryExternalReferenceCode));
 
 			Assert.assertEquals(
-				"Profile deleted.",
+				"MCP server profile was deleted.",
 				MCPServerTestUtil.getAuditedDeleteReason(
 					mcpServerProfileDataMaskObjectEntry));
 		}

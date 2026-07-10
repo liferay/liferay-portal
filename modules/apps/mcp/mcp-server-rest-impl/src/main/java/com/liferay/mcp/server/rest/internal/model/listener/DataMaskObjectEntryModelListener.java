@@ -79,7 +79,7 @@ public class DataMaskObjectEntryModelListener
 					HashMapBuilder.<String, Serializable>putAll(
 						values
 					).put(
-						"deleteReason", "Data mask deleted."
+						"deleteReason", "Data mask was deleted."
 					).build();
 
 				_objectEntryLocalService.updateObjectEntry(

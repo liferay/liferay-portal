@@ -112,7 +112,7 @@ public class MCPServerProfileObjectEntryModelListener
 					HashMapBuilder.<String, Serializable>putAll(
 						values
 					).put(
-						"deleteReason", "Profile deleted."
+						"deleteReason", "MCP server profile was deleted."
 					).build();
 
 				_objectEntryLocalService.updateObjectEntry(
