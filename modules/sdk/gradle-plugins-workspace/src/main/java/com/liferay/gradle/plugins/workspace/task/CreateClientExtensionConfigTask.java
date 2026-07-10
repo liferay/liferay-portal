@@ -947,6 +947,7 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 					put("parentSiteKey", "parentSiteKey");
 					put("siteExternalReferenceCode", "externalReferenceCode");
 					put("siteName", "name");
+					put("siteName_i18n", "name_i18n");
 				}
 			};
 
