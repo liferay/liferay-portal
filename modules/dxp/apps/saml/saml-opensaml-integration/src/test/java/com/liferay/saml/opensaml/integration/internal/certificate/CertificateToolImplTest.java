@@ -12,6 +12,7 @@ import com.liferay.saml.runtime.certificate.CertificateEntityId;
 import com.liferay.saml.runtime.certificate.CertificateTool;
 
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import java.util.Arrays;
@@ -51,6 +52,13 @@ public class CertificateToolImplTest {
 		x509Certificate.verify(_keyPair.getPublic());
 
 		x509Certificate.checkValidity();
+
+		PublicKey publicKey = _keyPair.getPublic();
+
+		PublicKey certificatePublicKey = x509Certificate.getPublicKey();
+
+		Assert.assertArrayEquals(
+			publicKey.getEncoded(), certificatePublicKey.getEncoded());
 
 		Assert.assertEquals(
 			x509Certificate.getIssuerX500Principal(),
