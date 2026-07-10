@@ -11,6 +11,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -77,6 +78,36 @@ public class DepotEntrySearchPermissionFilterContributor
 
 		if (!groupRolesTermsFilter.isEmpty()) {
 			booleanFilter.add(groupRolesTermsFilter, BooleanClauseOccur.SHOULD);
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+			return;
+		}
+
+		Role designLibraryMemberRole = _roleLocalService.fetchRole(
+			companyId, DepotRolesConstants.DESIGN_LIBRARY_MEMBER);
+
+		if (designLibraryMemberRole == null) {
+			return;
+		}
+
+		TermsFilter designLibraryGroupRolesTermsFilter = new TermsFilter(
+			Field.GROUP_ROLE_ID);
+
+		for (long groupId :
+				_depotEntryLocalService.getDepotEntryGroupIds(
+					permissionChecker.getCompanyId(), userId,
+					DepotConstants.TYPE_DESIGN_LIBRARY, true)) {
+
+			designLibraryGroupRolesTermsFilter.addValue(
+				StringBundler.concat(
+					groupId, StringPool.DASH,
+					designLibraryMemberRole.getRoleId()));
+		}
+
+		if (!designLibraryGroupRolesTermsFilter.isEmpty()) {
+			booleanFilter.add(
+				designLibraryGroupRolesTermsFilter, BooleanClauseOccur.SHOULD);
 		}
 	}
 

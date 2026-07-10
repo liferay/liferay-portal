@@ -7,6 +7,7 @@ package com.liferay.depot.internal.search.spi.model.permission.contributor;
 
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -37,6 +38,12 @@ public class DepotEntrySearchPermissionRoleContributor
 			groupRoleConsumer.accept(
 				_roleLocalService.getRole(
 					companyId, DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+
+			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+				groupRoleConsumer.accept(
+					_roleLocalService.getRole(
+						companyId, DepotRolesConstants.DESIGN_LIBRARY_MEMBER));
+			}
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);

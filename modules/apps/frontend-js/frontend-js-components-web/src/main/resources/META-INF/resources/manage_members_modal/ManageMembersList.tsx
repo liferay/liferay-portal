@@ -120,8 +120,20 @@ export function ManageMembersList({
 				renderAddMembersInput?.({
 					excludeMembers,
 					filter,
-					onAutocompleteItemSelected: (item) => {
-						return addMember(item, selectedOption);
+					onAutocompleteItemSelected: async (item) => {
+						const isAlreadyMember = excludeMembers.some(
+							(existingItem) => existingItem.id === item.id
+						);
+
+						await addMember(item, selectedOption);
+
+						if (!isAlreadyMember && defaultRole) {
+							updateMemberRoles(
+								item,
+								[defaultRole.name],
+								selectedOption
+							);
+						}
 					},
 					onSelectChange: setSelectedOption,
 					selectValue: selectedOption,

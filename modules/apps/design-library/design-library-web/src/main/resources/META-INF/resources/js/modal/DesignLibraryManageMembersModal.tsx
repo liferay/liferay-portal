@@ -9,11 +9,8 @@ import React from 'react';
 import AddMembersInput from '../components/members/AddMembersInput';
 
 const CONFIG: MembersConfig = {
-	defaultRoleExternalReferenceCode: 'L_ASSET_LIBRARY_MEMBER',
-	excludedRoleExternalReferenceCodes: [
-		'L_ASSET_LIBRARY_CONNECTED_SITE_MEMBER',
-		'L_ASSET_LIBRARY_OWNER',
-	],
+	defaultRoleExternalReferenceCode: 'L_DESIGN_LIBRARY_MEMBER',
+	excludedRoleExternalReferenceCodes: ['L_DESIGN_LIBRARY_OWNER'],
 	messages: {
 		addGroupError: Liferay.Language.get(
 			'failed-to-add-group-x-to-design-library'
@@ -48,13 +45,13 @@ const CONFIG: MembersConfig = {
 		),
 	},
 	roleNames: {
-		L_ASSET_LIBRARY_ADMINISTRATOR: Liferay.Language.get(
+		L_DESIGN_LIBRARY_ADMINISTRATOR: Liferay.Language.get(
 			'design-library-administrator'
 		),
-		L_ASSET_LIBRARY_CONTENT_REVIEWER: Liferay.Language.get(
+		L_DESIGN_LIBRARY_CONTENT_REVIEWER: Liferay.Language.get(
 			'design-library-content-reviewer'
 		),
-		L_ASSET_LIBRARY_MEMBER: Liferay.Language.get('design-library-member'),
+		L_DESIGN_LIBRARY_MEMBER: Liferay.Language.get('design-library-member'),
 	},
 };
 
