@@ -6,6 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {getTempDir} from '../../../../utils/temp';
 import {zipFolder} from '../../../../utils/zip';
 
@@ -97,6 +98,12 @@ export class ExportImportPage {
 		await this.nameInput.fill(name);
 
 		await this.exportButton.click();
+	}
+
+	async goToExport(siteFriendlyURLPath: string) {
+		await this.page.goto(
+			`/group${siteFriendlyURLPath}${PORTLET_URLS.export}`
+		);
 	}
 
 	async import(folderPath: string, name: string) {

@@ -11,13 +11,16 @@ export class ExportImportDataSelectionPage {
 	readonly collapseSectionButton: (name: string) => Locator;
 	readonly expandSectionButton: (name: string) => Locator;
 	readonly page: Page;
+	readonly section: Locator;
 
 	constructor(page: Page) {
-		this.collapseSectionButton = (name) =>
-			page.getByRole('button', {name: `Collapse ${name}`});
-		this.expandSectionButton = (name) =>
-			page.getByRole('button', {name: `Expand ${name}`});
 		this.page = page;
+		this.section = page.locator('[data-testid="data-selection-section"]');
+
+		this.collapseSectionButton = (name) =>
+			this.section.getByRole('button', {name: `Collapse ${name}`});
+		this.expandSectionButton = (name) =>
+			this.section.getByRole('button', {name: `Expand ${name}`});
 	}
 
 	async expandSection(name: string) {
