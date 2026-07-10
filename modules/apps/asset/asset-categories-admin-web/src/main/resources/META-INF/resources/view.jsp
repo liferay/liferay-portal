@@ -164,7 +164,7 @@
 					<div class="mb-5">
 						<div class="mb-2">
 							<span class="mr-1"><liferay-ui:message key="asset-types" />:</span>
-							<span class="text-secondary"><%= assetCategoriesDisplayContext.getAssetType(vocabulary) %></span>
+							<span class="text-secondary"><%= HtmlUtil.escape(assetCategoriesDisplayContext.getAssetType(vocabulary)) %></span>
 						</div>
 
 						<%
