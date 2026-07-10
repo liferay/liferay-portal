@@ -72,7 +72,7 @@ PortletURL previewURL = PortletURLBuilder.createRenderURL(
 			</div>
 
 			<div class="h6 text-default">
-				<span><%= membershipRequestUser.getEmailAddress() %></span>
+				<span><%= HtmlUtil.escape(membershipRequestUser.getEmailAddress()) %></span>
 			</div>
 		</liferay-ui:search-container-column-text>
 	</c:when>
