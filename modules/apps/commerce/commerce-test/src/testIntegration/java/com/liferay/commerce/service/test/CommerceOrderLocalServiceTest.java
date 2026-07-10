@@ -535,11 +535,24 @@ public class CommerceOrderLocalServiceTest {
 				_user.getUserId(), _commerceChannel.getGroupId(),
 				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
 				0);
+
+		commerceOrder1.setCreateDate(
+			new Date(System.currentTimeMillis() - Time.DAY));
+
+		commerceOrder1 = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder1);
+
 		CommerceOrder commerceOrder2 =
 			_commerceOrderLocalService.addCommerceOrder(
 				_user.getUserId(), _commerceChannel.getGroupId(),
 				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
 				0);
+
+		commerceOrder2.setCreateDate(
+			new Date(System.currentTimeMillis() - Time.HOUR));
+
+		commerceOrder2 = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder2);
 
 		List<CommerceOrder> commerceOrders =
 			_commerceOrderLocalService.getCommerceOrders(
@@ -554,17 +567,31 @@ public class CommerceOrderLocalServiceTest {
 		Assert.assertEquals(
 			commerceOrders.toString(), commerceOrder2, commerceOrders.get(1));
 
+		commerceOrders = _commerceOrderLocalService.getCommerceOrders(
+			_user.getCompanyId(), _commerceChannel.getGroupId(),
+			new long[] {_accountEntry.getAccountEntryId()}, null,
+			new int[] {CommerceOrderConstants.ORDER_STATUS_OPEN}, false,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, true));
+
+		Assert.assertEquals(
+			commerceOrders.toString(), commerceOrder1, commerceOrders.get(1));
+		Assert.assertEquals(
+			commerceOrders.toString(), commerceOrder2, commerceOrders.get(0));
+
 		commerceOrder1.setOrderDate(
 			new Date(System.currentTimeMillis() + Time.YEAR));
 		commerceOrder1.setOrderStatus(
 			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		commerceOrder1 = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder1);
+
 		commerceOrder2.setOrderDate(
 			new Date(System.currentTimeMillis() + Time.DAY));
 		commerceOrder2.setOrderStatus(
 			CommerceOrderConstants.ORDER_STATUS_PENDING);
 
-		commerceOrder1 = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder1);
 		commerceOrder2 = _commerceOrderLocalService.updateCommerceOrder(
 			commerceOrder2);
 

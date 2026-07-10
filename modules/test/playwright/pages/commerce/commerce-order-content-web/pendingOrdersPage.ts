@@ -15,7 +15,6 @@ import {CommerceLayoutsPage} from './commerceLayoutsPage';
 export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly approveButton: Locator;
 	readonly checkoutButton: Locator;
-	readonly createDateSortButton: Locator;
 	readonly deleteMenuItem: Locator;
 	readonly doneButton: Locator;
 	readonly editMenuItem: Locator;
@@ -57,9 +56,6 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 			name: 'Approve',
 		});
 		this.checkoutButton = page.getByText('Checkout');
-		this.createDateSortButton = page
-			.getByRole('columnheader', {name: 'Create Date'})
-			.getByRole('button');
 		this.doneButton = page.getByRole('button', {
 			exact: true,
 			name: 'Done',
