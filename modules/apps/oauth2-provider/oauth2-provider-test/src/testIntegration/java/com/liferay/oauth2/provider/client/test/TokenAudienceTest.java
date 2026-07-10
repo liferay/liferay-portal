@@ -126,7 +126,6 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 		JSONArray audJSONArray = jsonObject.getJSONArray("aud");
 
-		Assert.assertNotNull(audJSONArray);
 		Assert.assertEquals(1, audJSONArray.length());
 		Assert.assertEquals(_RESOURCE_URI, audJSONArray.getString(0));
 	}
@@ -200,7 +199,6 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 		JSONArray audJSONArray = jsonObject.getJSONArray("aud");
 
-		Assert.assertNotNull(audJSONArray);
 		Assert.assertEquals(resources.size(), audJSONArray.length());
 
 		List<String> audiencesList = JSONUtil.toStringList(audJSONArray);
