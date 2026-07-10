@@ -1,0 +1,8 @@
+@import 'functions/_global-functions';
+@import 'variables/_globals';
+
+.element-variations__code-editor-modal {
+	.lfr-objects__code-editor-source.form-control {
+		height: 100%;
+	}
+}
