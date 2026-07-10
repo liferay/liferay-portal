@@ -19,6 +19,7 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -31,11 +32,13 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.util.DefaultLanguageLabelsUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,10 +54,14 @@ import java.util.Map;
 public class StructureBuilderDisplayContext {
 
 	public StructureBuilderDisplayContext(
+		List<CMSStructureObjectFolderContributor>
+			cmsStructureObjectFolderContributors,
 		HttpServletRequest httpServletRequest, JSONFactory jsonFactory,
 		ObjectDefinitionResource.Factory objectDefinitionResourceFactory,
 		ObjectFieldBusinessTypeRegistry objectFieldBusinessTypeRegistry) {
 
+		_cmsStructureObjectFolderContributors =
+			cmsStructureObjectFolderContributors;
 		_httpServletRequest = httpServletRequest;
 		_jsonFactory = jsonFactory;
 		_objectDefinitionResourceFactory = objectDefinitionResourceFactory;
@@ -188,6 +195,8 @@ public class StructureBuilderDisplayContext {
 			).put(
 				"objectDefinitions", _getObjectDefinitionsJSONObject()
 			)
+		).put(
+			"systemObjectFieldNames", _getSystemObjectFieldNamesJSONObject()
 		).build();
 	}
 
@@ -253,22 +262,43 @@ public class StructureBuilderDisplayContext {
 			_themeDisplay.getUser()
 		).build();
 
+		StringBundler sb = new StringBundler();
+
+		sb.append("((objectFolderExternalReferenceCode eq '");
+		sb.append(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
+		sb.append("') or (objectFolderExternalReferenceCode eq '");
+		sb.append(ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
+		sb.append("') or (objectFolderExternalReferenceCode eq '");
+		sb.append(
+			ObjectFolderConstants.
+				EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS);
+		sb.append("')");
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			sb.append(" or (objectFolderExternalReferenceCode eq '");
+			sb.append(objectFolderExternalReferenceCode);
+			sb.append("')");
+		}
+
+		sb.append(") and (status/any(x:(x eq 0)))");
+
 		Page<ObjectDefinition> page =
 			objectDefinitionResource.getObjectDefinitionsPage(
 				null, null,
 				objectDefinitionResource.toFilter(
-					StringBundler.concat(
-						"((objectFolderExternalReferenceCode eq '",
-						ObjectFolderConstants.
-							EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-						"') or (objectFolderExternalReferenceCode eq '",
-						ObjectFolderConstants.
-							EXTERNAL_REFERENCE_CODE_FILE_TYPES,
-						"') or (objectFolderExternalReferenceCode eq '",
-						ObjectFolderConstants.
-							EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
-						"')) and (status/any(x:(x eq 0)))"),
-					Collections.emptyMap()),
+					sb.toString(), Collections.emptyMap()),
 				null, null);
 
 		_objectDefinitions = new ArrayList<>(page.getItems());
@@ -322,6 +352,38 @@ public class StructureBuilderDisplayContext {
 		return _objectFolderExternalReferenceCode;
 	}
 
+	private JSONObject _getSystemObjectFieldNamesJSONObject() {
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			Map<String, List<String>> systemObjectFieldNames =
+				cmsStructureObjectFolderContributor.getSystemObjectFieldNames();
+
+			if (MapUtil.isEmpty(systemObjectFieldNames)) {
+				continue;
+			}
+
+			for (Map.Entry<String, List<String>> entry :
+					systemObjectFieldNames.entrySet()) {
+
+				JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+				for (String name : entry.getValue()) {
+					jsonArray.put(name);
+				}
+
+				jsonObject.put(entry.getKey(), jsonArray);
+			}
+		}
+
+		return jsonObject;
+	}
+
+	private final List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 	private final HttpServletRequest _httpServletRequest;
 	private final JSONFactory _jsonFactory;
 	private ObjectDefinition _objectDefinition;

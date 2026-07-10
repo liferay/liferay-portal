@@ -21,6 +21,7 @@ ViewStructuresDisplayContext viewStructuresDisplayContext = (ViewStructuresDispl
 
 	<div>
 		<frontend-data-set:headless-display
+			additionalProps="<%= viewStructuresDisplayContext.getAdditionalProps() %>"
 			apiURL="<%= viewStructuresDisplayContext.getAPIURL() %>"
 			bulkActionDropdownItems="<%= viewStructuresDisplayContext.getBulkActionDropdownItems() %>"
 			creationMenu="<%= viewStructuresDisplayContext.getCreationMenu() %>"

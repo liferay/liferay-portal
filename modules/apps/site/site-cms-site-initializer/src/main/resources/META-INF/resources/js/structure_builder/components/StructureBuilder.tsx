@@ -22,6 +22,7 @@ import StateContextProvider, {useSelector} from '../contexts/StateContext';
 import selectStructureId from '../selectors/selectStructureId';
 import selectStructureStatus from '../selectors/selectStructureStatus';
 import buildState from '../utils/buildState';
+import {setSystemObjectFieldNames} from '../utils/isCustomObjectField';
 import HelpButton from './HelpButton';
 import ShortcutManager from './ShortcutManager';
 import Sidebar from './Sidebar';
@@ -32,6 +33,7 @@ export default function StructureBuilder({
 	config,
 	defaultLanguageLabels,
 	state,
+	systemObjectFieldNames,
 }: {
 	config: Config;
 	defaultLanguageLabels: DefaultLanguageLabels;
@@ -40,9 +42,11 @@ export default function StructureBuilder({
 		objectDefinitions: ObjectDefinitions;
 		relatedContentObjectRelationships: ObjectRelationship[];
 	};
+	systemObjectFieldNames: Record<string, string[]>;
 }) {
 	initializeConfig(config);
 	setDefaultLanguageLabels(defaultLanguageLabels);
+	setSystemObjectFieldNames(systemObjectFieldNames);
 
 	return (
 		<StateContextProvider initialState={buildState(state)}>

@@ -26,7 +26,9 @@ import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.site.cms.site.initializer.internal.util.ExportImportUtil;
 
@@ -35,6 +37,7 @@ import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,20 +46,77 @@ import java.util.Map;
  */
 public class ViewStructuresDisplayContext {
 
-	public ViewStructuresDisplayContext(HttpServletRequest httpServletRequest) {
+	public ViewStructuresDisplayContext(
+		List<CMSStructureObjectFolderContributor>
+			cmsStructureObjectFolderContributors,
+		HttpServletRequest httpServletRequest) {
+
+		_cmsStructureObjectFolderContributors =
+			cmsStructureObjectFolderContributors;
 		_httpServletRequest = httpServletRequest;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public Map<String, Object> getAdditionalProps() {
+		Map<String, String> objectFolderTypeLabels = new HashMap<>();
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			objectFolderTypeLabels.put(
+				objectFolderExternalReferenceCode,
+				LanguageUtil.get(
+					_httpServletRequest,
+					cmsStructureObjectFolderContributor.getLabel()));
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"objectFolderTypeLabels", objectFolderTypeLabels
+		).build();
+	}
+
 	public String getAPIURL() {
-		return StringBundler.concat(
-			"/o/object-admin/v1.0/object-definitions?filter=",
-			"(objectFolderExternalReferenceCode eq '",
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-			"' or objectFolderExternalReferenceCode eq '",
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, "')");
+		StringBundler sb = new StringBundler();
+
+		sb.append("/o/object-admin/v1.0/object-definitions?filter=");
+		sb.append("(objectFolderExternalReferenceCode eq '");
+		sb.append(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
+		sb.append("' or objectFolderExternalReferenceCode eq '");
+		sb.append(ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
+		sb.append("'");
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			sb.append(" or objectFolderExternalReferenceCode eq '");
+			sb.append(objectFolderExternalReferenceCode);
+			sb.append("'");
+		}
+
+		sb.append(")");
+
+		return sb.toString();
 	}
 
 	public Map<String, Object> getBreadcrumbProps() {
@@ -221,6 +281,8 @@ public class ViewStructuresDisplayContext {
 		return layout.getName(_themeDisplay.getLocale(), true);
 	}
 
+	private final List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 	private final HttpServletRequest _httpServletRequest;
 	private final ThemeDisplay _themeDisplay;
 

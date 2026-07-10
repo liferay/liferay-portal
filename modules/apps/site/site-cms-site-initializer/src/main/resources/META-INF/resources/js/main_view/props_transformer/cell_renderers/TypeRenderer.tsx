@@ -10,8 +10,16 @@ const CMS_TYPES: {[key: string]: string} = {
 	L_CMS_FILE_TYPES: Liferay.Language.get('file'),
 };
 
-const TypeRenderer = ({value}: {value: string}) => {
-	return <>{CMS_TYPES[value]}</>;
+const TypeRenderer = ({
+	objectFolderTypeLabels,
+	value,
+}: {
+	objectFolderTypeLabels?: {[key: string]: string};
+	value: string;
+}) => {
+	const labels = {...CMS_TYPES, ...objectFolderTypeLabels};
+
+	return <>{labels[value]}</>;
 };
 
 export default TypeRenderer;

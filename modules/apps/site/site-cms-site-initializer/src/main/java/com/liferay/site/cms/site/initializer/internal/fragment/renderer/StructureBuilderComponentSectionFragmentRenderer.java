@@ -11,16 +11,20 @@ import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.display.context.StructureBuilderDisplayContext;
 import com.liferay.taglib.ui.SuccessTag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Sandro Chinea
@@ -75,12 +79,19 @@ public class StructureBuilderComponentSectionFragmentRenderer
 
 		StructureBuilderDisplayContext structureBuilderDisplayContext =
 			new StructureBuilderDisplayContext(
-				httpServletRequest, _jsonFactory,
-				_objectDefinitionResourceFactory,
+				_cmsStructureObjectFolderContributors, httpServletRequest,
+				_jsonFactory, _objectDefinitionResourceFactory,
 				_objectFieldBusinessTypeRegistry);
 
 		return structureBuilderDisplayContext.getProps();
 	}
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 
 	@Reference
 	private JSONFactory _jsonFactory;

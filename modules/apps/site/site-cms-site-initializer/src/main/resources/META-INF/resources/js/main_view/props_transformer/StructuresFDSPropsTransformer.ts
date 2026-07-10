@@ -24,15 +24,18 @@ import TypeRenderer from './cell_renderers/TypeRenderer';
 import transformFDSBulkActions from './utils/transformFDSBulkActions';
 
 export default function StructuresFDSPropsTransformer({
+	additionalProps,
 	bulkActions = [],
 	...otherProps
 }: {
+	additionalProps?: any;
 	apiURL: string;
 	bulkActions: Array<IBulkActionItem>;
 	otherProps: any;
 }) {
 	return {
 		...otherProps,
+		additionalProps,
 		bulkActions: transformFDSBulkActions(bulkActions),
 		customRenderers: {
 			tableCell: [
@@ -58,7 +61,12 @@ export default function StructuresFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: TypeRenderer,
+					component: (props: any) =>
+						TypeRenderer({
+							...props,
+							objectFolderTypeLabels:
+								additionalProps?.objectFolderTypeLabels,
+						}),
 					name: 'typeTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,

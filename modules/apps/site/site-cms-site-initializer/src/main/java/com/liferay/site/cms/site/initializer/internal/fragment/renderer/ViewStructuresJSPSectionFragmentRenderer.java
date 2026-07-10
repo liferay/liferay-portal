@@ -6,11 +6,17 @@
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewStructuresDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Sam Ziemer
@@ -33,12 +39,20 @@ public class ViewStructuresJSPSectionFragmentRenderer
 	protected ViewStructuresDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewStructuresDisplayContext(httpServletRequest);
+		return new ViewStructuresDisplayContext(
+			_cmsStructureObjectFolderContributors, httpServletRequest);
 	}
 
 	@Override
 	protected String getJSPPath() {
 		return "/view_structures.jsp";
 	}
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 
 }

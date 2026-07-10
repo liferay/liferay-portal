@@ -22,6 +22,7 @@ export {
 } from './common/types/BulkActionTask';
 export {ObjectField, StateFlowValue} from './common/types/ObjectDefinition';
 export {type Space} from './common/types/Space';
+export {getScopeExternalReferenceCode} from './common/utils/getScopeExternalReferenceCode';
 export {
 	displayCreateSuccessToast,
 	displayCreateTaskErrorToast,
@@ -91,7 +92,9 @@ export {default as deleteAssetEntriesBulkAction} from './main_view/props_transfo
 export {default as deleteItemAction} from './main_view/props_transformer/actions/deleteItemAction';
 export {default as manageMembersAction} from './main_view/props_transformer/actions/manageMembersAction';
 export {triggerAssetBulkAction} from './main_view/props_transformer/actions/triggerAssetBulkAction';
+export {default as AuthorRenderer} from './main_view/props_transformer/cell_renderers/AuthorRenderer';
 export {default as SimpleActionLinkRenderer} from './main_view/props_transformer/cell_renderers/SimpleActionLinkRenderer';
+export {default as SpaceRendererWithCache} from './main_view/props_transformer/cell_renderers/SpaceRendererWithCache';
 export {default as addOnClickToCreationMenuItems} from './main_view/props_transformer/utils/addOnClickToCreationMenuItems';
 export {default as AllQuickFilters} from './main_view/quick_filters/AllQuickFilters';
 export {default as RecycleBinToolbar} from './main_view/recycle_bin/RecycleBinToolbar';
