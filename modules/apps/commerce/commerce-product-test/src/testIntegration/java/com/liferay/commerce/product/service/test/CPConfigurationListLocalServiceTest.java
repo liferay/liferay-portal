@@ -8,11 +8,14 @@ package com.liferay.commerce.product.service.test;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.CPConfigurationListParentCPConfigurationListGroupIdException;
+import com.liferay.commerce.product.exception.NoSuchCPConfigurationListException;
 import com.liferay.commerce.product.exception.RequiredCPConfigurationListException;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -23,6 +26,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -160,6 +164,88 @@ public class CPConfigurationListLocalServiceTest {
 		_addCPConfigurationList(
 			externalReferenceCode2, commerceCatalog.getGroupId(),
 			cpConfigurationList1.getCPConfigurationListId(), false, name2);
+	}
+
+	@Test
+	public void testGetOrAddEmptyCPConfigurationList() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty product configuration list"
+		).given(
+			"A group and an external reference code"
+		).when(
+			"An empty product configuration list is requested"
+		).then(
+			"A NoSuchCPConfigurationListException is thrown while lazy " +
+				"referencing is disabled"
+		).and(
+			"An empty stub with the given external reference code is " +
+				"returned while lazy referencing is enabled"
+		).and(
+			"The same product configuration list is resolved on subsequent " +
+				"requests"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_cpConfigurationListLocalService.getOrAddEmptyCPConfigurationList(
+				externalReferenceCode, _group.getCompanyId(), _user.getUserId(),
+				_group.getGroupId());
+
+			Assert.fail();
+		}
+		catch (NoSuchCPConfigurationListException
+					noSuchCPConfigurationListException) {
+
+			Assert.assertNotNull(noSuchCPConfigurationListException);
+		}
+
+		CPConfigurationList cpConfigurationList;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			cpConfigurationList =
+				_cpConfigurationListLocalService.
+					getOrAddEmptyCPConfigurationList(
+						externalReferenceCode, _group.getCompanyId(),
+						_user.getUserId(), _group.getGroupId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY,
+				cpConfigurationList.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				cpConfigurationList.getExternalReferenceCode());
+
+			CPConfigurationList resolvedCPConfigurationList =
+				_cpConfigurationListLocalService.
+					getOrAddEmptyCPConfigurationList(
+						externalReferenceCode, _group.getCompanyId(),
+						_user.getUserId(), _group.getGroupId());
+
+			Assert.assertEquals(
+				cpConfigurationList.getCPConfigurationListId(),
+				resolvedCPConfigurationList.getCPConfigurationListId());
+		}
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		cpConfigurationList =
+			_cpConfigurationListLocalService.updateCPConfigurationList(
+				externalReferenceCode,
+				cpConfigurationList.getCPConfigurationListId(),
+				_user.getUserId(), _group.getGroupId(), 0, false,
+				RandomTestUtil.randomString(), 0, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpConfigurationList.getStatus());
 	}
 
 	@Rule
