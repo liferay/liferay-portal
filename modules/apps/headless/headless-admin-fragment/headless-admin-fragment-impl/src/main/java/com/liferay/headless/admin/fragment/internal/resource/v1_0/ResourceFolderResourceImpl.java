@@ -12,7 +12,6 @@ import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
-import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFolderEntityModel;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
@@ -218,9 +217,8 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 		return _toResourceFolder(
 			_addDLFolder(
-				_getOrAddFragmentCollection(
-					resourceFolder.getFragmentSet(), groupId),
-				groupId, resourceFolder));
+				_getOrAddFragmentCollection(groupId, resourceFolder), groupId,
+				resourceFolder));
 	}
 
 	@Override
@@ -245,8 +243,7 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 			return _toResourceFolder(
 				_addDLFolder(
-					_getOrAddFragmentCollection(
-						resourceFolder.getFragmentSet(), groupId),
+					_getOrAddFragmentCollection(groupId, resourceFolder),
 					groupId, resourceFolder));
 		}
 
@@ -308,42 +305,17 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 	}
 
 	private FragmentCollection _getOrAddFragmentCollection(
-			FragmentSet fragmentSet, long groupId)
+			long groupId, ResourceFolder resourceFolder)
 		throws Exception {
 
-		if ((fragmentSet == null) ||
-			Validator.isNull(fragmentSet.getExternalReferenceCode())) {
-
-			throw new IllegalArgumentException(
-				_language.get(
-					contextAcceptLanguage.getPreferredLocale(),
-					"a-fragment-set-external-reference-code-is-required-to-" +
-						"create-a-new-resource-folder"));
-		}
-
-		FragmentCollection fragmentCollection =
-			_fragmentCollectionLocalService.
-				fetchFragmentCollectionByExternalReferenceCode(
-					fragmentSet.getExternalReferenceCode(), groupId);
-
-		if (fragmentCollection != null) {
-			return fragmentCollection;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			throw new IllegalArgumentException(
-				_language.format(
-					contextAcceptLanguage.getPreferredLocale(),
-					"no-fragment-set-was-found-with-external-reference-code-x",
-					fragmentSet.getExternalReferenceCode()));
-		}
-
-		return FragmentSetUtil.addFragmentCollection(
-			fragmentSet,
-			ServiceContextUtil.getServiceContext(
-				contextCompany.getCompanyId(), fragmentSet.getDateCreated(),
-				groupId, contextHttpServletRequest,
-				fragmentSet.getDateModified(), contextUser.getUserId()));
+		return FragmentSetUtil.getOrAddFragmentCollection(
+			contextCompany.getCompanyId(), resourceFolder.getFragmentSet(),
+			resourceFolder.getFragmentSetExternalReferenceCode(), groupId,
+			contextHttpServletRequest,
+			"a-fragment-set-external-reference-code-is-required-to-create-a-" +
+				"new-resource-folder",
+			contextAcceptLanguage.getPreferredLocale(),
+			contextUser.getUserId());
 	}
 
 	private DLFolder _getParentDLFolder(
@@ -389,8 +361,7 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			}
 
 			parentDLFolder = _addDLFolder(
-				_getOrAddFragmentCollection(
-					parentResourceFolder.getFragmentSet(), groupId),
+				_getOrAddFragmentCollection(groupId, parentResourceFolder),
 				groupId, parentResourceFolder);
 		}
 
