@@ -402,9 +402,11 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 							axisTestClassGroup);
 
 						if (axisCount > 1) {
+							String result = null;
+
 							StringBuilder sb = new StringBuilder();
 
-							sb.append("npx playwright test --project=");
+							sb.append("test --project=");
 							sb.append(projectName);
 							sb.append(" --shard=");
 							sb.append(axisIndex + 1);
@@ -412,8 +414,19 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 							sb.append(axisCount);
 							sb.append(" --list");
 
-							String result = _callNPMCommand(
-								getPlaywrightBaseDir(), sb.toString());
+							if (_hasRunPlaywrightGradleTask()) {
+								result = _callGradleCommand(
+									getPlaywrightBaseDir(),
+									JenkinsResultsParserUtil.combine(
+										"runPlaywright -Pplaywright.args=\"",
+										sb.toString(), "\""),
+									null);
+							}
+							else {
+								result = _callNPMCommand(
+									getPlaywrightBaseDir(),
+									"npx playwright " + sb);
+							}
 
 							for (TestClass testClass : testClasses) {
 								if (result.contains(testClass.getName())) {
@@ -458,6 +471,51 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		projectNames = projectNames.trim();
 
 		Collections.addAll(_projectNames, projectNames.split("\\s*,\\s*"));
+	}
+
+	private String _callGradleCommand(
+		File baseDir, String command,
+		Map<String, String> environmentVariables) {
+
+		StringBuilder sb = new StringBuilder();
+
+		if (JenkinsResultsParserUtil.isCINode()) {
+			sb.append("export CI=true\n");
+		}
+
+		sb.append("export npm_config_package_lock=false\n");
+
+		if (environmentVariables != null) {
+			for (Map.Entry<String, String> environmentVariable :
+					environmentVariables.entrySet()) {
+
+				sb.append("export ");
+				sb.append(environmentVariable.getKey());
+				sb.append("=");
+				sb.append(environmentVariable.getValue());
+				sb.append("\n");
+			}
+		}
+
+		sb.append(
+			JenkinsResultsParserUtil.getCanonicalPath(
+				new File(
+					portalGitWorkingDirectory.getWorkingDirectory(),
+					"gradlew")));
+
+		sb.append(" ");
+		sb.append(command);
+
+		try {
+			Process process = JenkinsResultsParserUtil.executeBashCommands(
+				true, baseDir, 1000 * 60 * 10, sb.toString());
+
+			return JenkinsResultsParserUtil.readInputStream(
+				process.getInputStream());
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	private String _callNPMCommand(File baseDir, String npmCommand) {
@@ -635,6 +693,35 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		return new ArrayList<>(testClassesMap.values());
 	}
 
+	private boolean _hasRunPlaywrightGradleTask() {
+		if (_hasRunPlaywrightGradleTask != null) {
+			return _hasRunPlaywrightGradleTask;
+		}
+
+		_hasRunPlaywrightGradleTask = false;
+
+		File buildGradleFile = new File(getPlaywrightBaseDir(), "build.gradle");
+
+		if (!buildGradleFile.exists()) {
+			return _hasRunPlaywrightGradleTask;
+		}
+
+		try {
+			String buildGradle = JenkinsResultsParserUtil.read(buildGradleFile);
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(buildGradle) &&
+				buildGradle.contains("task runPlaywright")) {
+
+				_hasRunPlaywrightGradleTask = true;
+			}
+		}
+		catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+
+		return _hasRunPlaywrightGradleTask;
+	}
+
 	private boolean _isPlaywrightInYarnWorkspace() throws IOException {
 		File packageJSONFile = new File(_getModulesDir(), "package.json");
 
@@ -702,35 +789,74 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 				return;
 			}
 
-			try {
-				if (!_isPlaywrightInYarnWorkspace()) {
-					_callNPMCommand(playwrightBaseDir, "npm install");
+			String playwrightArgs = "test --list --reporter=json";
+
+			if (_hasRunPlaywrightGradleTask()) {
+				File playwrightReportFile = new File(
+					playwrightBaseDir, "playwright.report.json");
+
+				try {
+					Map<String, String> environmentVariables = new HashMap<>();
+
+					environmentVariables.put(
+						"PLAYWRIGHT_JSON_OUTPUT_NAME",
+						JenkinsResultsParserUtil.getCanonicalPath(
+							playwrightReportFile));
+
+					_callGradleCommand(
+						playwrightBaseDir,
+						JenkinsResultsParserUtil.combine(
+							"runPlaywright -Pplaywright.args=\"",
+							playwrightArgs, "\""),
+						environmentVariables);
+
+					String result = JenkinsResultsParserUtil.read(
+						playwrightReportFile);
+
+					_playwrightJSONObject = new JSONObject(result.trim());
 				}
+				catch (Exception exception) {
+					_sendNotification("Unable to parse Playwright JSON object");
 
-				String result = _callNPMCommand(
-					playwrightBaseDir,
-					"npm run playwright test -- --list --reporter=json");
+					exception.printStackTrace();
 
-				Matcher matcher = _npmCommandOutputPattern.matcher(result);
-
-				if (!matcher.find()) {
-					throw new RuntimeException(
-						"Invalid NPM command output: " + result);
+					_playwrightJSONObject = new JSONObject();
 				}
-
-				result = result.substring(matcher.start(1));
-
-				result = result.replace(
-					"Finished executing Bash commands.", "");
-
-				_playwrightJSONObject = new JSONObject(result.trim());
+				finally {
+					JenkinsResultsParserUtil.delete(playwrightReportFile);
+				}
 			}
-			catch (Exception exception) {
-				_sendNotification("Unable to parse Playwright JSON object");
+			else {
+				try {
+					if (!_isPlaywrightInYarnWorkspace()) {
+						_callNPMCommand(playwrightBaseDir, "npm install");
+					}
 
-				exception.printStackTrace();
+					String result = _callNPMCommand(
+						playwrightBaseDir,
+						"npm run playwright -- " + playwrightArgs);
 
-				_playwrightJSONObject = new JSONObject();
+					Matcher matcher = _npmCommandOutputPattern.matcher(result);
+
+					if (!matcher.find()) {
+						throw new RuntimeException(
+							"Invalid NPM command output: " + result);
+					}
+
+					result = result.substring(matcher.start(1));
+
+					result = result.replace(
+						"Finished executing Bash commands.", "");
+
+					_playwrightJSONObject = new JSONObject(result.trim());
+				}
+				catch (Exception exception) {
+					_sendNotification("Unable to parse Playwright JSON object");
+
+					exception.printStackTrace();
+
+					_playwrightJSONObject = new JSONObject();
+				}
 			}
 
 			JSONArray errorsJSONArray = _playwrightJSONObject.optJSONArray(
@@ -955,6 +1081,7 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 	private static final AtomicBoolean _playwrightJSONObjectsLoaded =
 		new AtomicBoolean();
 
+	private Boolean _hasRunPlaywrightGradleTask;
 	private final Set<String> _projectNames = new HashSet<>();
 
 }
