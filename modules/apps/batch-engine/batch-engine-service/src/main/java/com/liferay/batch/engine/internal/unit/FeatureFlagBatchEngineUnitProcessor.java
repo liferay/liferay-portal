@@ -7,7 +7,10 @@ package com.liferay.batch.engine.internal.unit;
 
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Tuple;
 
@@ -64,6 +67,9 @@ public class FeatureFlagBatchEngineUnitProcessor {
 		return new Tuple(companyId, featureFlagKey);
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		FeatureFlagBatchEngineUnitProcessor.class);
+
 	@Reference
 	private PortalExecutorManager _portalExecutorManager;
 
@@ -108,7 +114,15 @@ public class FeatureFlagBatchEngineUnitProcessor {
 								completableFuture.get();
 							}
 							catch (Exception exception) {
-								throw new RuntimeException(exception);
+								_log.error(
+									StringBundler.concat(
+										"Unable to process batch engine units ",
+										"deferred for feature flag ",
+										featureFlagKey, " in company ",
+										companyId),
+									exception);
+
+								return;
 							}
 						}
 					});
