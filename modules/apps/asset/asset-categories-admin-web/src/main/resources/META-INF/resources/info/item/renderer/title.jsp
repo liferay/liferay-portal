@@ -12,5 +12,5 @@ AssetCategory assetCategory = (AssetCategory)request.getAttribute(AssetCategorie
 %>
 
 <div class="asset-summary">
-	<%= assetCategory.getTitle(locale) %>
+	<%= HtmlUtil.escape(assetCategory.getTitle(locale)) %>
 </div>
