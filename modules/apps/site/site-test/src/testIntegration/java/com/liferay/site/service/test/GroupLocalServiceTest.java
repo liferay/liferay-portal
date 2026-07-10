@@ -269,11 +269,11 @@ public class GroupLocalServiceTest {
 		_groupLocalService.deleteGroup(group1);
 
 		Assert.assertNull(
-			_assetVocabularyLocalService.fetchAssetVocabulary(
-				assetVocabulary.getVocabularyId()));
-		Assert.assertNull(
 			_assetCategoryLocalService.fetchAssetCategory(
 				assetCategory.getCategoryId()));
+		Assert.assertNull(
+			_assetVocabularyLocalService.fetchAssetVocabulary(
+				assetVocabulary.getVocabularyId()));
 		Assert.assertEquals(
 			0,
 			_resourcePermissionLocalService.getResourcePermissionsCount(
