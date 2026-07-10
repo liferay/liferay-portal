@@ -465,14 +465,6 @@ public class LiferayDynamicRegistrationService
 		return messageContext.getHttpServletRequest();
 	}
 
-	private OAuth2DynamicRegistrationConfiguration
-			_getOAuth2DynamicRegistrationConfiguration(long companyId)
-		throws ConfigurationException {
-
-		return _configurationProvider.getCompanyConfiguration(
-			OAuth2DynamicRegistrationConfiguration.class, companyId);
-	}
-
 	private AuditMessage _getRejectAuditMessage(
 		Exception exception,
 		LiferayClientRegistration liferayClientRegistration) {
@@ -787,7 +779,9 @@ public class LiferayDynamicRegistrationService
 		try {
 			OAuth2DynamicRegistrationConfiguration
 				oAuth2DynamicRegistrationConfiguration =
-					_getOAuth2DynamicRegistrationConfiguration(_getCompanyId());
+					_configurationProvider.getCompanyConfiguration(
+						OAuth2DynamicRegistrationConfiguration.class,
+						_getCompanyId());
 
 			_validateOpenRegistrationGrantTypes(
 				oAuth2DynamicRegistrationConfiguration.allowedGrantTypes(),
