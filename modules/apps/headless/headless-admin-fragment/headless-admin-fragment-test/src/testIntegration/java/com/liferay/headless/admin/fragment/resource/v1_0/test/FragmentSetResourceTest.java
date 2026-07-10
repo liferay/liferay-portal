@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -341,6 +342,24 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	}
 
 	@Override
+	protected FragmentSet testGetDesignLibraryFragmentSet_addFragmentSet()
+		throws Exception {
+
+		return _addDesignLibraryFragmentSet(
+			randomFragmentSet(), _depotEntry.getGroup());
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Map<String, Map<String, String>>
 			testGetSiteFragmentSetsPage_getExpectedActions(
 				String siteExternalReferenceCode)
@@ -365,6 +384,25 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			null, type,
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private FragmentSet _addDesignLibraryFragmentSet(
+			FragmentSet fragmentSet, Group group)
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.addFragmentCollection(
+				fragmentSet.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), group.getGroupId(),
+				fragmentSet.getKey(), fragmentSet.getName(),
+				fragmentSet.getDescription(),
+				GetterUtil.getBoolean(fragmentSet.getMarketplace()),
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId()));
+
+		return fragmentSetResource.getDesignLibraryFragmentSet(
+			group.getExternalReferenceCode(),
+			fragmentCollection.getExternalReferenceCode());
 	}
 
 	private FragmentCollection _addFragmentCollection(Group group)
