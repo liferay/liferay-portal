@@ -27,6 +27,7 @@ export const productAgreements = {
 		},
 		eula: `https://www.liferay.com/documents/d/guest/Liferay-EULA-2102602_GL`,
 		privacyPolicy: 'https://www.liferay.com/privacy-policy',
-		userAgreement: '',
+		userAgreement:
+			'https://www.liferay.com/documents/d/guest/Liferay-EULA-2102602_GL',
 	},
 };
