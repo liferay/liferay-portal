@@ -19,6 +19,8 @@ import com.liferay.batch.engine.unit.BatchEngineUnitMetaInfo;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.batch.engine.unit.BundleBatchEngineUnit;
+import com.liferay.petra.concurrent.BaseFutureListener;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
@@ -53,6 +55,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -171,6 +174,9 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			CompletableFuture<Void> completableFuture)
 		throws Exception {
 
+		DefaultNoticeableFuture<ServiceReference<Object>>
+			defaultNoticeableFuture = new DefaultNoticeableFuture<>();
+
 		ServiceTracker<Object, Object> serviceTracker =
 			new ServiceTracker<Object, Object>(
 				_bundleContext,
@@ -197,26 +203,63 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 				public Object addingService(
 					ServiceReference<Object> serviceReference) {
 
-					Object service = _bundleContext.getService(
-						serviceReference);
-
-					try {
-						_execute(
-							batchEngineUnit, batchEngineUnitConfiguration,
-							content, contentType, service, this);
-
-						completableFuture.complete(null);
-					}
-					catch (Exception exception) {
-						completableFuture.completeExceptionally(exception);
-					}
-
-					_bundleContext.ungetService(serviceReference);
+					defaultNoticeableFuture.set(serviceReference);
 
 					return null;
 				}
 
 			};
+
+		defaultNoticeableFuture.addFutureListener(
+			new BaseFutureListener<>() {
+
+				@Override
+				public void completeWithResult(
+					Future<ServiceReference<Object>> future,
+					ServiceReference<Object> serviceReference) {
+
+					try {
+						Object service = _bundleContext.getService(
+							serviceReference);
+
+						if (service == null) {
+							throw new IllegalStateException(
+								StringBundler.concat(
+									"Unable to get service ", serviceReference,
+									" to process ",
+									batchEngineUnit.getDataFileName()));
+						}
+
+						_execute(
+							batchEngineUnit, batchEngineUnitConfiguration,
+							content, contentType, service);
+
+						completableFuture.complete(null);
+					}
+					catch (Throwable throwable) {
+						completableFuture.completeExceptionally(throwable);
+					}
+
+					try {
+						_bundleContext.ungetService(serviceReference);
+					}
+					catch (Exception exception) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(exception);
+						}
+					}
+
+					try {
+						serviceTracker.close();
+					}
+					catch (Exception exception) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(exception);
+						}
+					}
+				}
+
+			});
 
 		return serviceTracker::open;
 	}
@@ -224,8 +267,7 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 	private void _execute(
 			BatchEngineUnit batchEngineUnit,
 			BatchEngineUnitConfiguration batchEngineUnitConfiguration,
-			byte[] content, String contentType, Object service,
-			ServiceTracker<Object, Object> serviceTracker)
+			byte[] content, String contentType, Object service)
 		throws Exception {
 
 		int importStrategy =
@@ -298,8 +340,6 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					batchEngineUnit.getFileName(), " ",
 					batchEngineUnit.getDataFileName()));
 		}
-
-		serviceTracker.close();
 	}
 
 	private long _getAdminUserId(long companyId) throws PortalException {
