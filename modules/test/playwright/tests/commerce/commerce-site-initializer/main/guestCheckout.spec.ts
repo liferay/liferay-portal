@@ -794,7 +794,6 @@ test(
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
 		commerceAdminChannelsPage,
-		commerceCartSummaryPage,
 		commerceMiniCartPage,
 		commerceThemeMiniumCatalogPage,
 		page,
@@ -866,7 +865,7 @@ test(
 			await performLogout(page);
 		});
 
-		await test.step('As a guest, open the order summary via View Details and continue to the authentication page', async () => {
+		await test.step('As a guest, proceed to checkout and continue to the authentication page', async () => {
 			await page.goto(`/web${site.friendlyUrlPath}/catalog`, {
 				waitUntil: 'networkidle',
 			});
@@ -893,11 +892,7 @@ test(
 				commerceMiniCartPage.miniCartItem(productName)
 			).toBeVisible();
 
-			await commerceMiniCartPage.viewDetailsButton.click();
-
-			await page.waitForLoadState('networkidle');
-
-			await commerceCartSummaryPage.checkoutButton.click();
+			await commerceMiniCartPage.proceedAsGuest.click();
 
 			await page.waitForLoadState('networkidle');
 		});
