@@ -53,7 +53,7 @@ DeliveryGroupDisplayContext deliveryGroupDisplayContext = (DeliveryGroupDisplayC
 			%>
 
 			<p>
-				<span><%= commerceAddress.getCity() %></span>
+				<span><%= HtmlUtil.escape(commerceAddress.getCity()) %></span>
 
 				<c:if test="<%= region != null %>">
 					<span><%= StringPool.COMMA_AND_SPACE %></span>
@@ -66,7 +66,7 @@ DeliveryGroupDisplayContext deliveryGroupDisplayContext = (DeliveryGroupDisplayC
 			%>
 
 			<p>
-				<span><%= commerceAddress.getZip() %></span>
+				<span><%= HtmlUtil.escape(commerceAddress.getZip()) %></span>
 
 				<c:if test="<%= country != null %>">
 					<span><%= StringPool.COMMA_AND_SPACE %></span>
