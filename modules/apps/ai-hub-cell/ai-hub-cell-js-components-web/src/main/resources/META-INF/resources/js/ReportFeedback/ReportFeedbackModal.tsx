@@ -58,7 +58,10 @@ const ReportFeedbackModal: React.FC<ReportFeedbackModalProps> = ({
 	}
 
 	return (
-		<ClayModal observer={observer}>
+		<ClayModal
+			observer={observer}
+			onKeyDown={(event) => event.stopPropagation()}
+		>
 			<ClayForm onSubmit={handleSubmit}>
 				<ClayModal.Header
 					closeButtonAriaLabel={Liferay.Language.get('close')}

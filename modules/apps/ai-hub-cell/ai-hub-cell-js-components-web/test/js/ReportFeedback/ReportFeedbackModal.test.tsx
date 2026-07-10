@@ -111,4 +111,22 @@ describe('ReportFeedbackModal', () => {
 		expect(await screen.findByText('submit failed')).toBeInTheDocument();
 		expect(openToast).not.toHaveBeenCalled();
 	});
+
+	it('does not propagate key events to surrounding components', async () => {
+		const onAncestorKeyDown = jest.fn();
+
+		render(
+			<div onKeyDown={onAncestorKeyDown}>
+				<ReportFeedbackModal
+					agentDefinitionExternalReferenceCodes={['agent-1']}
+					onClose={jest.fn()}
+					surface="aiAssistant"
+				/>
+			</div>
+		);
+
+		fireEvent.keyDown(await screen.findByRole('combobox'), {key: 'Tab'});
+
+		expect(onAncestorKeyDown).not.toHaveBeenCalled();
+	});
 });
