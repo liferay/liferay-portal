@@ -96,13 +96,13 @@ public class ProjectUsageHelper {
 			FaroProject faroProject)
 		throws Exception {
 
+		long apiCallsCount = 0;
+
 		Map<String, ApiUsageMetric> apiUsageMetricMap = apiUsageMetricsMap.get(
 			faroProject.getServerLocation());
 
 		ApiUsageMetric apiUsageMetric = apiUsageMetricMap.get(
 			faroProject.getProjectId());
-
-		long apiCallsCount = 0;
 
 		if (apiUsageMetric != null) {
 			apiCallsCount = apiUsageMetric.getCallsCount();
