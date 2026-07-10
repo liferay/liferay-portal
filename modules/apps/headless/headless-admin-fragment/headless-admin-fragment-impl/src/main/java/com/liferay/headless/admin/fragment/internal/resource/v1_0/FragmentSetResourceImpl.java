@@ -6,17 +6,25 @@
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.FragmentSetEntityModel;
+import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentCollectionActionUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.fragment.internal.util.EnabledUtil;
 import com.liferay.headless.admin.fragment.resource.v1_0.FragmentSetResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
+import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -31,6 +39,7 @@ import com.liferay.portal.vulcan.util.SearchUtil;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -89,10 +98,27 @@ public class FragmentSetResourceImpl
 
 	@Override
 	public FragmentSet getItem(Long id) throws Exception {
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionService.getFragmentCollection(id);
+
+		Group group = _groupLocalService.getGroup(
+			fragmentCollection.getGroupId());
+
+		if (group.isDepot()) {
+			EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+			return _toFragmentSet(
+				fragmentCollection,
+				_getDesignLibraryActionsUnsafeFunction(
+					group.getExternalReferenceCode(), group.getGroupId()));
+		}
+
+		EnabledUtil.checkEnabled(contextCompany);
 
 		return _toFragmentSet(
-			_fragmentCollectionService.getFragmentCollection(id));
+			fragmentCollection,
+			_getSiteActionsUnsafeFunction(
+				group.getGroupId(), group.getExternalReferenceCode()));
 	}
 
 	@Override
@@ -103,13 +129,15 @@ public class FragmentSetResourceImpl
 
 		EnabledUtil.checkEnabled(contextCompany);
 
+		long groupId = GroupUtil.getGroupId(
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
+
 		return _toFragmentSet(
 			_fragmentCollectionService.
 				getFragmentCollectionByExternalReferenceCode(
-					fragmentSetExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode)));
+					fragmentSetExternalReferenceCode, groupId),
+			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
 	}
 
 	@Override
@@ -123,6 +151,11 @@ public class FragmentSetResourceImpl
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
+
+		UnsafeFunction
+			<FragmentCollection, Map<String, Map<String, String>>, Exception>
+				unsafeFunction = _getSiteActionsUnsafeFunction(
+					groupId, siteExternalReferenceCode);
 
 		return SearchUtil.search(
 			Collections.emptyMap(),
@@ -145,7 +178,7 @@ public class FragmentSetResourceImpl
 					return null;
 				}
 
-				return _toFragmentSet(fragmentCollection);
+				return _toFragmentSet(fragmentCollection, unsafeFunction);
 			});
 	}
 
@@ -168,7 +201,8 @@ public class FragmentSetResourceImpl
 				ServiceContextUtil.getServiceContext(
 					contextCompany.getCompanyId(), fragmentSet.getDateCreated(),
 					groupId, contextHttpServletRequest,
-					fragmentSet.getDateModified(), contextUser.getUserId())));
+					fragmentSet.getDateModified(), contextUser.getUserId())),
+			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
 	}
 
 	@Override
@@ -199,7 +233,9 @@ public class FragmentSetResourceImpl
 						fragmentSet.getDateCreated(), groupId,
 						contextHttpServletRequest,
 						fragmentSet.getDateModified(),
-						contextUser.getUserId())));
+						contextUser.getUserId())),
+				_getSiteActionsUnsafeFunction(
+					groupId, siteExternalReferenceCode));
 		}
 
 		ServiceContextThreadLocal.pushServiceContext(
@@ -212,19 +248,60 @@ public class FragmentSetResourceImpl
 			return _toFragmentSet(
 				_fragmentCollectionService.updateFragmentCollection(
 					fragmentCollection.getFragmentCollectionId(),
-					fragmentSet.getName(), fragmentSet.getDescription()));
+					fragmentSet.getName(), fragmentSet.getDescription()),
+				_getSiteActionsUnsafeFunction(
+					groupId, siteExternalReferenceCode));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
-	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection)
+	private UnsafeFunction
+		<FragmentCollection, Map<String, Map<String, String>>, Exception>
+			_getDesignLibraryActionsUnsafeFunction(
+				String designLibraryExternalReferenceCode, long groupId) {
+
+		boolean manageFragmentEntries = _hasManageFragmentEntriesPermission(
+			groupId);
+
+		return fragmentCollection ->
+			FragmentCollectionActionUtil.getDesignLibraryActions(
+				contextScopeChecker, designLibraryExternalReferenceCode,
+				fragmentCollection, manageFragmentEntries, contextUriInfo);
+	}
+
+	private UnsafeFunction
+		<FragmentCollection, Map<String, Map<String, String>>, Exception>
+			_getSiteActionsUnsafeFunction(
+				long groupId, String siteExternalReferenceCode) {
+
+		boolean manageFragmentEntries = _hasManageFragmentEntriesPermission(
+			groupId);
+
+		return fragmentCollection ->
+			FragmentCollectionActionUtil.getSiteActions(
+				contextScopeChecker, fragmentCollection, manageFragmentEntries,
+				siteExternalReferenceCode, contextUriInfo);
+	}
+
+	private boolean _hasManageFragmentEntriesPermission(long groupId) {
+		return _portletResourcePermission.contains(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+	}
+
+	private FragmentSet _toFragmentSet(
+			FragmentCollection fragmentCollection,
+			UnsafeFunction
+				<FragmentCollection, Map<String, Map<String, String>>,
+				 Exception> unsafeFunction)
 		throws Exception {
 
 		return _fragmentSetDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
-				false, null, _dtoConverterRegistry, contextHttpServletRequest,
+				false, unsafeFunction.apply(fragmentCollection), null,
+				_dtoConverterRegistry, contextHttpServletRequest,
 				fragmentCollection.getFragmentCollectionId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser),
@@ -248,5 +325,13 @@ public class FragmentSetResourceImpl
 	)
 	private DTOConverter<FragmentCollection, FragmentSet>
 		_fragmentSetDTOConverter;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
