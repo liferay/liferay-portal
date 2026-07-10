@@ -124,6 +124,12 @@ public class DepotEntryUserNotificationHandler
 
 		Group group = depotEntry.getGroup();
 
+		if (depotEntry.getType() == DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return serviceContext.translate(
+				"you-have-been-invited-to-collaborate-in-the-x-design-library",
+				HtmlUtil.escape(group.getName(serviceContext.getLocale())));
+		}
+
 		if (depotEntry.getType() == DepotConstants.TYPE_PROJECT) {
 			return serviceContext.translate(
 				"you-have-been-invited-to-collaborate-in-the-x-project",
