@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderResponse;
@@ -225,7 +226,7 @@ public class EditAudiencesEntryDisplayContext {
 			}
 		}
 
-		return StringPool.BLANK;
+		return PortalUUIDUtil.generate();
 	}
 
 	private String _getName() {
