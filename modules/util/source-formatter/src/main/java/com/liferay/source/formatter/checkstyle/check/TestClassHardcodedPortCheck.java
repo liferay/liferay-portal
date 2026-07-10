@@ -40,7 +40,7 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 			detailAST, "PortalUtil", "getPortalServerPort");
 
 		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
-			log(methodCallDetailAST, _MSG_USE_HARD_CODED_PORT);
+			log(methodCallDetailAST, _MSG_PORTAL_UTIL_AVOID);
 		}
 	}
 
@@ -102,9 +102,8 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 		log(detailAST, _MSG_PORTAL_UTIL_USE);
 	}
 
-	private static final String _MSG_PORTAL_UTIL_USE = "portal.util.use";
+	private static final String _MSG_PORTAL_UTIL_AVOID = "portal.util.avoid";
 
-	private static final String _MSG_USE_HARD_CODED_PORT =
-		"hard.coded.port.use";
+	private static final String _MSG_PORTAL_UTIL_USE = "portal.util.use";
 
 }
