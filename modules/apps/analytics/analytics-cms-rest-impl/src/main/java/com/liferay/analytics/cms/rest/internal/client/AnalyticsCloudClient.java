@@ -24,7 +24,6 @@ import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceAssetConsumptionItem;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceOverviewMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAsset;
-import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAssetItem;
 import com.liferay.analytics.cms.rest.dto.v1_0.Trend;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.object.model.ObjectDefinition;
@@ -43,6 +42,8 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.io.InputStream;
 
@@ -73,8 +74,8 @@ public class AnalyticsCloudClient {
 
 	public InputStream getInputStream(
 			AnalyticsConfiguration analyticsConfiguration, String filterString,
-			List<Long> groupIds, String metricType, String path,
-			Integer rangeKey, Sort[] sorts)
+			List<Long> groupIds, String keywords, String metricType,
+			String path, Integer rangeKey, Sort[] sorts)
 		throws PortalException {
 
 		try {
@@ -85,7 +86,7 @@ public class AnalyticsCloudClient {
 			options.setLocation(
 				_getLocation(
 					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
-					null, filterString, null, groupIds,
+					null, filterString, null, groupIds, keywords,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					metricType, null, null, path, rangeKey, null, null, sorts,
 					null, null));
@@ -384,7 +385,7 @@ public class AnalyticsCloudClient {
 				_getLocation(
 					categoryId,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
-					null, groupBy, groupIds,
+					null, groupBy, groupIds, null,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					metricType, objectType, page, "/asset-consumption",
 					rangeKey, null, size, null, tagId, vocabularyId));
@@ -569,10 +570,10 @@ public class AnalyticsCloudClient {
 		}
 	}
 
-	public PerformanceTopAsset getPerformanceTopAsset(
+	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
 			AnalyticsConfiguration analyticsConfiguration, String filterString,
-			List<Long> groupIds, int page, Integer rangeKey, int size,
-			Sort[] sorts)
+			List<Long> groupIds, String keywords, Pagination pagination,
+			Integer rangeKey, Sort[] sorts)
 		throws Exception {
 
 		try {
@@ -581,26 +582,55 @@ public class AnalyticsCloudClient {
 			options.setLocation(
 				_getLocation(
 					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
-					null, filterString, null, groupIds,
+					null, filterString, null, groupIds, keywords,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
-					null, null, page, "/summaries", rangeKey, null, size, sorts,
-					null, null));
+					null, null, pagination.getPage() - 1, "/summaries",
+					rangeKey, null, pagination.getPageSize(), sorts, null,
+					null));
 
 			String content = _http.URLtoString(options);
 
 			Http.Response response = options.getResponse();
 
 			if (response.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				PerformanceTopAsset performanceTopAsset = null;
+				List<PerformanceTopAsset> performanceTopAssets =
+					new ArrayList<>();
+				long totalCount = 0;
 
 				JsonNode jsonNode = ObjectMapperHolder._objectMapper.readTree(
 					content);
 
 				if (jsonNode != null) {
-					performanceTopAsset = _getPerformanceTopAsset(jsonNode);
+					JsonNode embeddedJsonNode = jsonNode.get("_embedded");
+
+					if (embeddedJsonNode != null) {
+						JsonNode assetSummaryMetricsJsonNode =
+							embeddedJsonNode.get("assetSummaryMetrics");
+
+						if (assetSummaryMetricsJsonNode != null) {
+							for (JsonNode assetSummaryMetricJsonNode :
+									assetSummaryMetricsJsonNode) {
+
+								performanceTopAssets.add(
+									_getPerformanceTopAsset(
+										assetSummaryMetricJsonNode));
+							}
+						}
+					}
+
+					JsonNode pageJsonNode = jsonNode.get("page");
+
+					if (pageJsonNode != null) {
+						JsonNode totalElementsJsonNode = pageJsonNode.get(
+							"totalElements");
+
+						if (totalElementsJsonNode != null) {
+							totalCount = totalElementsJsonNode.asLong();
+						}
+					}
 				}
 
-				return performanceTopAsset;
+				return Page.of(performanceTopAssets, pagination, totalCount);
 			}
 
 			if (_log.isDebugEnabled()) {
@@ -622,10 +652,10 @@ public class AnalyticsCloudClient {
 	private String _getLocation(
 		Long categoryId, String dataSourceId, String externalReferenceCode,
 		String filterString, String groupBy, List<Long> groupIds,
-		String liferayAnalyticsFaroBackendURL, String metricType,
-		String objectType, Integer page, String path, Integer rangeKey,
-		String[] selectedMetrics, Integer size, Sort[] sorts, Long tagId,
-		Long vocabularyId) {
+		String keywords, String liferayAnalyticsFaroBackendURL,
+		String metricType, String objectType, Integer page, String path,
+		Integer rangeKey, String[] selectedMetrics, Integer size, Sort[] sorts,
+		Long tagId, Long vocabularyId) {
 
 		String location = String.join(
 			StringPool.BLANK, liferayAnalyticsFaroBackendURL,
@@ -660,6 +690,11 @@ public class AnalyticsCloudClient {
 			location = HttpComponentsUtil.addParameter(
 				location, "groupIds",
 				StringUtil.merge(groupIds, StringPool.COMMA));
+		}
+
+		if (Validator.isNotNull(keywords)) {
+			location = HttpComponentsUtil.addParameter(
+				location, "keywords", keywords);
 		}
 
 		if (Validator.isNotNull(metricType)) {
@@ -723,7 +758,7 @@ public class AnalyticsCloudClient {
 		Integer rangeKey) {
 
 		return _getLocation(
-			null, dataSourceId, null, null, null, groupIds,
+			null, dataSourceId, null, null, null, groupIds, null,
 			liferayAnalyticsFaroBackendURL, metricType, null, null, path,
 			rangeKey, null, null, null, null, null);
 	}
@@ -735,8 +770,8 @@ public class AnalyticsCloudClient {
 
 		return _getLocation(
 			null, dataSourceId, externalReferenceCode, null, null, groupIds,
-			liferayAnalyticsFaroBackendURL, null, null, null, path, rangeKey,
-			selectedMetrics, null, null, null, null);
+			null, liferayAnalyticsFaroBackendURL, null, null, null, path,
+			rangeKey, selectedMetrics, null, null, null, null);
 	}
 
 	private Double _getMetricValue(JsonNode jsonNode, String metricName) {
@@ -801,84 +836,25 @@ public class AnalyticsCloudClient {
 	private PerformanceTopAsset _getPerformanceTopAsset(JsonNode jsonNode) {
 		PerformanceTopAsset performanceTopAsset = new PerformanceTopAsset();
 
-		JsonNode pageJsonNode = jsonNode.get("page");
-
-		if (pageJsonNode != null) {
-			JsonNode lastPageJsonNode = pageJsonNode.get("totalPages");
-
-			if (lastPageJsonNode != null) {
-				performanceTopAsset.setLastPage(lastPageJsonNode::asLong);
-			}
-
-			JsonNode pageNumberJsonNode = pageJsonNode.get("number");
-
-			if (pageNumberJsonNode != null) {
-				performanceTopAsset.setPage(pageNumberJsonNode::asLong);
-			}
-
-			JsonNode pageSizeJsonNode = pageJsonNode.get("size");
-
-			if (pageSizeJsonNode != null) {
-				performanceTopAsset.setPageSize(pageSizeJsonNode::asLong);
-			}
-
-			JsonNode totalCountJsonNode = pageJsonNode.get("totalElements");
-
-			if (totalCountJsonNode != null) {
-				performanceTopAsset.setTotalCount(totalCountJsonNode::asLong);
-			}
-		}
-
-		List<PerformanceTopAssetItem> performanceTopAssetItems =
-			new ArrayList<>();
-
-		JsonNode embeddedJsonNode = jsonNode.get("_embedded");
-
-		if (embeddedJsonNode != null) {
-			JsonNode assetSummaryMetricsJsonNode = embeddedJsonNode.get(
-				"assetSummaryMetrics");
-
-			if (assetSummaryMetricsJsonNode != null) {
-				for (JsonNode assetSummaryMetricJsonNode :
-						assetSummaryMetricsJsonNode) {
-
-					performanceTopAssetItems.add(
-						_getPerformanceTopAssetItem(
-							assetSummaryMetricJsonNode));
-				}
-			}
-		}
-
-		performanceTopAsset.setPerformanceTopAssetItems(
-			() -> performanceTopAssetItems.toArray(
-				new PerformanceTopAssetItem[0]));
-
-		return performanceTopAsset;
-	}
-
-	private PerformanceTopAssetItem _getPerformanceTopAssetItem(
-		JsonNode jsonNode) {
-
-		PerformanceTopAssetItem performanceTopAssetItem =
-			new PerformanceTopAssetItem();
-
-		performanceTopAssetItem.setDownloads(
+		performanceTopAsset.setDownloads(
 			() -> _getMetricValue(jsonNode, "downloadsMetric"));
-		performanceTopAssetItem.setEngagement(
+		performanceTopAsset.setEngagement(
 			() -> _getMetricValue(jsonNode, "engagementMetric"));
-		performanceTopAssetItem.setImpressions(
-			() -> _getMetricValue(jsonNode, "impressionsMetric"));
 
-		JsonNode mimeTypeJsonNode = jsonNode.get("assetType");
+		JsonNode externalReferenceCodeJsonNode = jsonNode.get("assetId");
 
-		if (mimeTypeJsonNode != null) {
-			performanceTopAssetItem.setMimeType(mimeTypeJsonNode::asText);
+		if (externalReferenceCodeJsonNode != null) {
+			performanceTopAsset.setExternalReferenceCode(
+				externalReferenceCodeJsonNode::asText);
 		}
+
+		performanceTopAsset.setImpressions(
+			() -> _getMetricValue(jsonNode, "impressionsMetric"));
 
 		JsonNode titleJsonNode = jsonNode.get("assetTitle");
 
 		if (titleJsonNode != null) {
-			performanceTopAssetItem.setTitle(titleJsonNode::asText);
+			performanceTopAsset.setTitle(titleJsonNode::asText);
 		}
 
 		JsonNode engagementMetricJsonNode = jsonNode.get("engagementMetric");
@@ -887,15 +863,20 @@ public class AnalyticsCloudClient {
 			JsonNode trendJsonNode = engagementMetricJsonNode.get("trend");
 
 			if (trendJsonNode != null) {
-				performanceTopAssetItem.setTrend(
-					() -> _getTrend(trendJsonNode));
+				performanceTopAsset.setTrend(() -> _getTrend(trendJsonNode));
 			}
 		}
 
-		performanceTopAssetItem.setViews(
+		JsonNode typeJsonNode = jsonNode.get("assetType");
+
+		if (typeJsonNode != null) {
+			performanceTopAsset.setType(typeJsonNode::asText);
+		}
+
+		performanceTopAsset.setViews(
 			() -> _getMetricValue(jsonNode, "viewsMetric"));
 
-		return performanceTopAssetItem;
+		return performanceTopAsset;
 	}
 
 	private Trend _getTrend(JsonNode jsonNode) {

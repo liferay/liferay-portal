@@ -83,7 +83,7 @@ public class PerformanceMetricResourceImpl
 		InputStream inputStream = analyticsCloudClient.getInputStream(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			null, Arrays.asList(groupIds), metricType,
+			null, Arrays.asList(groupIds), null, metricType,
 			_getPath(groupBy) + "/export", rangeKey, null);
 
 		return Response.ok(
