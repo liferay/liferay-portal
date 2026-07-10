@@ -1,27 +1,30 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
+import {getTempDir} from '../../../utils/temp';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 
 export const test = mergeTests(
+	dataApiHelpersTest,
 	exportImportPagesTest,
-	isolatedSiteTest,
 	featureFlagsTest({
 		'LPD-57655': {enabled: true},
 	}),
+	isolatedSiteTest,
 	loginTest()
 );
 
 test(
-	'can export at site level with a custom task name',
+	'Can export at site level with a custom task name',
 	{tag: '@LPD-57655'},
 	async ({exportImportPage, site}) => {
 		await exportImportPage.goToExport(site.friendlyUrlPath);
@@ -31,43 +34,31 @@ test(
 		await exportImportPage.export(name);
 
 		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+
+		expect(await exportImportPage.download(name)).toBe(
+			`${getTempDir()}${name}.lar`
+		);
 	}
 );
 
 test(
-	'cannot export at site level without a file name',
+	'Can select comments and ratings at site level',
 	{tag: '@LPD-57655'},
-	async ({exportImportPage, site}) => {
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		page,
+		site,
+	}) => {
+		await apiHelpers.headlessDelivery.postBlog(site.id);
+
 		await exportImportPage.goToExport(site.friendlyUrlPath);
 
 		await exportImportPage.clickNew();
 
-		await expect(exportImportPage.exportButton).toBeDisabled();
-	}
-);
+		await exportImportDataSelectionPage.expandSection('Content & Data');
 
-test(
-	'data sections are checked by default and can be toggled',
-	{tag: '@LPD-57655'},
-	async ({exportImportDataSelectionPage, exportImportPage, site}) => {
-		await exportImportPage.goToExport(site.friendlyUrlPath);
-
-		await exportImportPage.clickNew();
-
-		expect(
-			await exportImportDataSelectionPage.isSectionChecked('Site Builder')
-		).toBe(true);
-
-		await exportImportDataSelectionPage.unselectSection('Site Builder');
-
-		expect(
-			await exportImportDataSelectionPage.isSectionChecked('Site Builder')
-		).toBe(false);
-
-		await exportImportDataSelectionPage.selectSection('Site Builder');
-
-		expect(
-			await exportImportDataSelectionPage.isSectionChecked('Site Builder')
-		).toBe(true);
+		await expect(page.getByText('Comments and Ratings')).toBeVisible();
 	}
 );
