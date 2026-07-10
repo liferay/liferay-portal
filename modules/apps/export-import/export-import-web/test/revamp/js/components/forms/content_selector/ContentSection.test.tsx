@@ -90,6 +90,47 @@ describe('ContentSection', () => {
 		expect(queryByText('x-deletions')).toBeNull();
 	});
 
+	it('hides the deletion count label when deletions are not shown', () => {
+		const {queryByText} = render(
+			<ContentSection
+				onChange={jest.fn()}
+				previewPortletDataHandlerSection={getPreviewPortletDataHandlerSection(
+					'web-content',
+					{additionCount: 1, deletionCount: 1}
+				)}
+				sectionSelection={undefined}
+			/>
+		);
+
+		expect(queryByText('x-item')).not.toBeNull();
+		expect(queryByText('x-deletion')).toBeNull();
+	});
+
+	it('renders the handler addition and deletion counts', () => {
+		const {queryByText} = render(
+			<ContentSection
+				onChange={jest.fn()}
+				previewPortletDataHandlerSection={{
+					label: SECTION_KEY_CONTENT,
+					name: SECTION_KEY_CONTENT,
+					previewPortletDataHandlers: [
+						{
+							additionCount: 2,
+							deletionCount: 1,
+							label: 'Handler',
+							name: 'handler',
+						},
+					],
+				}}
+				sectionSelection={undefined}
+				showDeletions
+			/>
+		);
+
+		expect(queryByText('x-items')).not.toBeNull();
+		expect(queryByText('x-deletion')).not.toBeNull();
+	});
+
 	it('hides the comments and ratings footer when nothing is selected', () => {
 		const {queryByText} = render(
 			<ContentSection
