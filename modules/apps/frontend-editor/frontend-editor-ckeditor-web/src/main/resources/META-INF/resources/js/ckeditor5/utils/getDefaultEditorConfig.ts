@@ -35,6 +35,7 @@ import {Link, LinkImage} from '@ckeditor/ckeditor5-link/dist/index.js';
 import {List} from '@ckeditor/ckeditor5-list/dist/index.js';
 import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed/dist/index.js';
 import {Paragraph} from '@ckeditor/ckeditor5-paragraph/dist/index.js';
+import {PasteFromOfficeEnhanced} from '@ckeditor/ckeditor5-paste-from-office-enhanced/dist/index.js';
 import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office/dist/index.js';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format/dist/index.js';
 import {SourceEditing} from '@ckeditor/ckeditor5-source-editing/dist/index.js';
@@ -58,10 +59,12 @@ const getDefaultEditorConfig = ({
 	editorVariant,
 	preset,
 	showAICreator,
+	showPasteFromOfficeEnhanced,
 }: {
 	editorVariant: EEditorVariant;
 	preset: EEditorConfigPreset;
 	showAICreator?: boolean;
+	showPasteFromOfficeEnhanced?: boolean;
 }): EditorConfig => {
 	const basicPlugins = [
 		BlockToolbar,
@@ -74,7 +77,7 @@ const getDefaultEditorConfig = ({
 		LinkImage,
 		List,
 		Paragraph,
-		PasteFromOffice,
+		showPasteFromOfficeEnhanced ? PasteFromOfficeEnhanced : PasteFromOffice,
 		Underline,
 	];
 
