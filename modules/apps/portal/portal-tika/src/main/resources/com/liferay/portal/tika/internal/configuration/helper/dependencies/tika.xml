@@ -15,7 +15,6 @@
 		<parser class="org.apache.tika.parser.feed.FeedParser" />
 		<parser class="org.apache.tika.parser.font.AdobeFontMetricParser" />
 		<parser class="org.apache.tika.parser.font.TrueTypeParser" />
-		<parser class="org.apache.tika.parser.gdal.GDALParser" />
 		<parser class="org.apache.tika.parser.grib.GribParser" />
 		<parser class="org.apache.tika.parser.hdf.HDFParser" />
 		<parser class="org.apache.tika.parser.html.HtmlParser" />
@@ -40,7 +39,6 @@
 		<parser class="org.apache.tika.parser.mp3.Mp3Parser" />
 		<parser class="org.apache.tika.parser.mp4.MP4Parser" />
 		<parser class="org.apache.tika.parser.netcdf.NetCDFParser" />
-		<parser class="org.apache.tika.parser.ocr.TesseractOCRParser" />
 		<parser class="org.apache.tika.parser.odf.OpenDocumentParser" />
 		<parser class="org.apache.tika.parser.pdf.PDFParser" />
 		<parser class="org.apache.tika.parser.pkg.CompressorParser" />

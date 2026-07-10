@@ -8,7 +8,6 @@ dependencies {
 	compileInclude group: "com.uwyn", name: "jhighlight", version: "1.0"
 	compileInclude group: "edu.ucar", name: "netcdf", version: "4.3.23"
 	compileInclude group: "net.java.dev.jna", name: "jna", version: "4.1.0"
-	compileInclude group: "org.apache.commons", name: "commons-exec", version: "1.3"
 	compileInclude group: "org.apache.james", name: "apache-mime4j-core", version: "0.8.11"
 	compileInclude group: "org.apache.james", name: "apache-mime4j-dom", version: "0.8.11"
 	compileInclude group: "org.apache.poi", name: "poi-scratchpad", version: "5.4.1"
