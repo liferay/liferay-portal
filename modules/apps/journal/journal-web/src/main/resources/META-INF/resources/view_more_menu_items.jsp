@@ -57,7 +57,7 @@ JournalViewMoreMenuItemsDisplayContext journalViewMoreMenuItemsDisplayContext = 
 
 			<liferay-ui:search-container-column-text
 				name="scope"
-				value="<%= journalViewMoreMenuItemsDisplayContext.getDDMStructureScopeName(ddmStructure, locale) %>"
+				value="<%= HtmlUtil.escape(journalViewMoreMenuItemsDisplayContext.getDDMStructureScopeName(ddmStructure, locale)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
