@@ -13,6 +13,7 @@ import PageTreeModal, {
 	PageTreeModalConfiguration,
 } from '../../../pages/export/components/PageTreeModal';
 import {
+	LayoutSetSelection,
 	PortletDataHandlerSelection,
 	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
@@ -111,7 +112,7 @@ export default function LayoutSetControl({
 		typeof portletDataHandlerSelection === 'object'
 			? portletDataHandlerSelection
 			: {}
-	) as {layoutIds?: number[]; privateLayout?: boolean};
+	) as LayoutSetSelection;
 
 	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
 

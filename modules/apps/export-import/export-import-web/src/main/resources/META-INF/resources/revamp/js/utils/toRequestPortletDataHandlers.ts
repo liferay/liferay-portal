@@ -12,6 +12,7 @@ import {
 } from '../types/portletDataHandler';
 import {
 	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
+	LayoutSetSelection,
 	PRIVATE_PAGES_CONTROL_NAME,
 	PUBLIC_PAGES_CONTROL_NAME,
 	PortletDataHandlerSelection,
@@ -150,10 +151,8 @@ function toLayoutSetRequestPortletDataHandler(
 		return {name};
 	}
 
-	const {layoutIds, privateLayout = false} = portletDataHandlerSelection as {
-		layoutIds?: number[];
-		privateLayout?: boolean;
-	};
+	const {layoutIds, privateLayout = false} =
+		portletDataHandlerSelection as LayoutSetSelection;
 
 	const requestPortletDataHandlerControl: RequestPortletDataHandlerControl = {
 		name: privateLayout

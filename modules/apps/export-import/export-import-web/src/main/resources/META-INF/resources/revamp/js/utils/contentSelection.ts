@@ -21,6 +21,11 @@ export type PortletDataHandlerSelection =
 	| string
 	| true;
 
+export interface LayoutSetSelection {
+	layoutIds?: number[];
+	privateLayout?: boolean;
+}
+
 export const COMPACT_SECTION_NAMES = [
 	'category.control_panel.users',
 	'objects',
@@ -422,13 +427,10 @@ export function isPrivateLayoutSelected(
 	for (const sectionSelection of Object.values(contentSelection)) {
 		const portletDataHandlerSelection = sectionSelection?.[
 			LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
-		] as {privateLayout?: boolean} | undefined;
+		] as LayoutSetSelection | undefined;
 
-		if (
-			portletDataHandlerSelection &&
-			typeof portletDataHandlerSelection === 'object'
-		) {
-			return portletDataHandlerSelection.privateLayout === true;
+		if (portletDataHandlerSelection) {
+			return !!portletDataHandlerSelection.privateLayout;
 		}
 	}
 
