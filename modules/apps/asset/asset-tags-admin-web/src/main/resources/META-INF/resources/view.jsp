@@ -66,7 +66,7 @@
 					<liferay-ui:search-container-column-text
 						cssClass="table-cell-expand table-cell-minw-200 table-title"
 						name="name"
-						value="<%= tag.getName() %>"
+						value="<%= HtmlUtil.escape(tag.getName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
