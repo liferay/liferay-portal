@@ -94,14 +94,12 @@ public abstract class BaseAccessTokenGrantHandler
 
 		List<String> registeredAudiences = client.getRegisteredAudiences();
 
-		if (ListUtil.isNotEmpty(registeredAudiences)) {
-			for (String resource : resources) {
-				if (!registeredAudiences.contains(resource)) {
-					OAuth2ErrorUtil.reportInvalidRequestError(
-						"The resource parameter is not a registered audience",
-						"invalid_target", Response.Status.BAD_REQUEST);
-				}
-			}
+		if (ListUtil.isNotEmpty(registeredAudiences) &&
+			!registeredAudiences.containsAll(resources)) {
+
+			OAuth2ErrorUtil.reportInvalidRequestError(
+				"The resource parameter is not a registered audience",
+				"invalid_target", Response.Status.BAD_REQUEST);
 		}
 
 		try {
