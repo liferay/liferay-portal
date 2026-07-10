@@ -100,7 +100,7 @@ if (comment) {
 
 				<div class="entry-bubble">
 					<div class="user-name">
-						<span><%= receiverUserFullName %></span> <span class="small">(<%= receiverUserScreenName %>)</span>
+						<span><%= receiverUserFullName %></span> <span class="small">(<%= HtmlUtil.escape(receiverUserScreenName) %>)</span>
 					</div>
 
 					<div class="content">
