@@ -27,7 +27,7 @@
 			cssClass="table-cell-expand table-cell-minw-200 table-title"
 			href='<%= PortletFileRepositoryUtil.getDownloadPortletFileEntryURL(themeDisplay, fileEntry, "status=" + status) %>'
 			name="file-name"
-			value="<%= fileEntry.isInTrash() ? trashHelper.getOriginalTitle(fileEntry.getTitle()) : fileEntry.getTitle() %>"
+			value="<%= fileEntry.isInTrash() ? HtmlUtil.escape(trashHelper.getOriginalTitle(fileEntry.getTitle())) : fileEntry.getTitle() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
