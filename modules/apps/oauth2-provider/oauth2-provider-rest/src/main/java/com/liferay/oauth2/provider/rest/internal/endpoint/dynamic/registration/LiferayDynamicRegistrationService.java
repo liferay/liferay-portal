@@ -174,9 +174,9 @@ public class LiferayDynamicRegistrationService
 		ClientRegistration clientRegistration, Client client) {
 
 		if (_isOpenRegistrationRequest(_getHttpServletRequest())) {
-			Map<String, String> clientProperties = client.getProperties();
+			Map<String, String> properties = client.getProperties();
 
-			clientProperties.put(
+			properties.put(
 				OAuth2ProviderRESTEndpointConstants.
 					PROPERTY_KEY_DYNAMIC_REGISTRATION_MODE,
 				OAuth2ProviderRESTEndpointConstants.
@@ -545,9 +545,9 @@ public class LiferayDynamicRegistrationService
 	}
 
 	private boolean _isOpenRegistration(Client client) {
-		Map<String, String> clientProperties = client.getProperties();
+		Map<String, String> properties = client.getProperties();
 
-		String mode = clientProperties.get(
+		String mode = properties.get(
 			OAuth2ProviderRESTEndpointConstants.
 				PROPERTY_KEY_DYNAMIC_REGISTRATION_MODE);
 
