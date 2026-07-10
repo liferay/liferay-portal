@@ -122,12 +122,12 @@ public class DynamicRegistrationServiceContainerRequestFilter
 				StringUtil.equalsIgnoreCase(
 					httpServletRequest.getMethod(), "POST")) {
 
-				user = _authorizeOpenRegistration(
-					companyId, httpServletRequest);
-
 				httpServletRequest.setAttribute(
 					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_OPEN,
 					Boolean.TRUE);
+
+				user = _authorizeOpenRegistration(
+					companyId, httpServletRequest);
 			}
 			else {
 				httpServletRequest.setAttribute(
