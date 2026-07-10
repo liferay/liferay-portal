@@ -53,7 +53,7 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 						</c:when>
 						<c:otherwise>
 							<h1>
-								<%= LanguageUtil.format(request, "authorize-x", new String[] {oAuth2Application.getName()}) %>
+								<%= LanguageUtil.format(request, "authorize-x", new String[] {HtmlUtil.escape(oAuth2Application.getName())}) %>
 							</h1>
 
 							<p class="application-wants-permissions text-truncate">
