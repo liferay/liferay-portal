@@ -188,7 +188,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 								'<%= user.getUserId() %>'
 							);
 							A.one('#<portlet:namespace />clientCredentialUserName').val(
-								'<%= user.getScreenName() %>'
+								'<%= HtmlUtil.escapeJS(user.getScreenName()) %>'
 							);
 						});
 					}
