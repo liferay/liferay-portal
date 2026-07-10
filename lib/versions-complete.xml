@@ -6621,12 +6621,12 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.pdfbox.jar!fontbox.jar</file-name>
-				<version>2.0.35</version>
+				<version>3.0.7</version>
 				<project-name>Apache FontBox</project-name>
 				<project-url>https://pdfbox.apache.org</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
@@ -6666,25 +6666,25 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.pdfbox.jar!jempbox.jar</file-name>
-				<version>1.8.16</version>
-				<project-name>Apache JempBox</project-name>
-				<project-url>http://pdfbox.apache.org</project-url>
+				<file-name>com.liferay.shared.dependencies.pdfbox.jar!pdfbox-io.jar</file-name>
+				<version>3.0.7</version>
+				<project-name>Apache PDFBox io</project-name>
+				<project-url>https://pdfbox.apache.org</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.pdfbox.jar!pdfbox.jar</file-name>
-				<version>2.0.35</version>
+				<version>3.0.7</version>
 				<project-name>Apache PDFBox</project-name>
 				<project-url>https://pdfbox.apache.org</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
