@@ -189,6 +189,7 @@ public abstract class BaseFragmentResourceTestCase {
 		Fragment fragment = randomFragment();
 
 		fragment.setExternalReferenceCode(regex);
+		fragment.setFragmentSetExternalReferenceCode(regex);
 		fragment.setIcon(regex);
 		fragment.setKey(regex);
 		fragment.setName(regex);
@@ -200,6 +201,8 @@ public abstract class BaseFragmentResourceTestCase {
 		fragment = FragmentSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, fragment.getExternalReferenceCode());
+		Assert.assertEquals(
+			regex, fragment.getFragmentSetExternalReferenceCode());
 		Assert.assertEquals(regex, fragment.getIcon());
 		Assert.assertEquals(regex, fragment.getKey());
 		Assert.assertEquals(regex, fragment.getName());
@@ -749,6 +752,8 @@ public abstract class BaseFragmentResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				fragmentSetExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				icon = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				marketplace = RandomTestUtil.randomBoolean();
@@ -768,6 +773,8 @@ public abstract class BaseFragmentResourceTestCase {
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				fragmentSetExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				icon = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -807,6 +814,8 @@ public abstract class BaseFragmentResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				fragmentSetExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				icon = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				marketplace = RandomTestUtil.randomBoolean();
@@ -827,6 +836,8 @@ public abstract class BaseFragmentResourceTestCase {
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				fragmentSetExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				icon = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -1052,6 +1063,17 @@ public abstract class BaseFragmentResourceTestCase {
 
 			if (Objects.equals("fragmentSet", additionalAssertFieldName)) {
 				if (fragment.getFragmentSet() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"fragmentSetExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (fragment.getFragmentSetExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -1313,6 +1335,20 @@ public abstract class BaseFragmentResourceTestCase {
 				if (!Objects.deepEquals(
 						fragment1.getFragmentSet(),
 						fragment2.getFragmentSet())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"fragmentSetExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						fragment1.getFragmentSetExternalReferenceCode(),
+						fragment2.getFragmentSetExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1648,6 +1684,52 @@ public abstract class BaseFragmentResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("fragmentSetExternalReferenceCode")) {
+			Object object = fragment.getFragmentSetExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("fragmentVersions")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1865,6 +1947,8 @@ public abstract class BaseFragmentResourceTestCase {
 				fragment.setDateModified(RandomTestUtil.nextDate());
 				fragment.setExternalReferenceCode(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				fragment.setFragmentSetExternalReferenceCode(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				fragment.setIcon(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				fragment.setKey(
@@ -1885,6 +1969,8 @@ public abstract class BaseFragmentResourceTestCase {
 				fragment.setDateCreated(RandomTestUtil.nextDate());
 				fragment.setDateModified(RandomTestUtil.nextDate());
 				fragment.setExternalReferenceCode(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				fragment.setFragmentSetExternalReferenceCode(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				fragment.setIcon(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
@@ -2149,4 +2235,4 @@ public abstract class BaseFragmentResourceTestCase {
 		_fragmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-344471918
+// LIFERAY-REST-BUILDER-HASH:-1356236161

@@ -131,6 +131,32 @@ public class ResourceFolder implements Cloneable, Serializable {
 
 	protected FragmentSet fragmentSet;
 
+	public String getFragmentSetExternalReferenceCode() {
+		return fragmentSetExternalReferenceCode;
+	}
+
+	public void setFragmentSetExternalReferenceCode(
+		String fragmentSetExternalReferenceCode) {
+
+		this.fragmentSetExternalReferenceCode =
+			fragmentSetExternalReferenceCode;
+	}
+
+	public void setFragmentSetExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			fragmentSetExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			fragmentSetExternalReferenceCode =
+				fragmentSetExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String fragmentSetExternalReferenceCode;
+
 	public String getName() {
 		return name;
 	}
@@ -230,4 +256,4 @@ public class ResourceFolder implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:214674976
+// LIFERAY-REST-BUILDER-HASH:-241184010

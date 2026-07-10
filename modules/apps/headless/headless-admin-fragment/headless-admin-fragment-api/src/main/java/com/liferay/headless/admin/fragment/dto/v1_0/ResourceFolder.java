@@ -235,7 +235,7 @@ public class ResourceFolder implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The resource folder's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist."
+		description = "The resource folder's fragment set. On read, returned only when `nestedFields=fragmentSet` is requested. On write, used only during LAR import, where it is created if it does not exist."
 	)
 	@Valid
 	public FragmentSet getFragmentSet() {
@@ -272,13 +272,63 @@ public class ResourceFolder implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The resource folder's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist."
+		description = "The resource folder's fragment set. On read, returned only when `nestedFields=fragmentSet` is requested. On write, used only during LAR import, where it is created if it does not exist."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected FragmentSet fragmentSet;
 
 	@JsonIgnore
 	private Supplier<FragmentSet> _fragmentSetSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The external reference code of the resource folder's fragment set, used to reference an existing fragment set. Takes precedence over `fragmentSet` when both are set."
+	)
+	public String getFragmentSetExternalReferenceCode() {
+		if (_fragmentSetExternalReferenceCodeSupplier != null) {
+			fragmentSetExternalReferenceCode =
+				_fragmentSetExternalReferenceCodeSupplier.get();
+
+			_fragmentSetExternalReferenceCodeSupplier = null;
+		}
+
+		return fragmentSetExternalReferenceCode;
+	}
+
+	public void setFragmentSetExternalReferenceCode(
+		String fragmentSetExternalReferenceCode) {
+
+		this.fragmentSetExternalReferenceCode =
+			fragmentSetExternalReferenceCode;
+
+		_fragmentSetExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFragmentSetExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			fragmentSetExternalReferenceCodeUnsafeSupplier) {
+
+		_fragmentSetExternalReferenceCodeSupplier = () -> {
+			try {
+				return fragmentSetExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The external reference code of the resource folder's fragment set, used to reference an existing fragment set. Takes precedence over `fragmentSet` when both are set."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String fragmentSetExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _fragmentSetExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The resource folder's name."
@@ -322,7 +372,7 @@ public class ResourceFolder implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The resource folder's parent resource folder. On write, used only during LAR import, where it is created if it does not exist."
+		description = "The resource folder's parent resource folder. On read, returned only when `nestedFields=parentResourceFolder` is requested. On write, used only during LAR import, where it is created if it does not exist."
 	)
 	@Valid
 	public ResourceFolder getParentResourceFolder() {
@@ -360,7 +410,7 @@ public class ResourceFolder implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The resource folder's parent resource folder. On write, used only during LAR import, where it is created if it does not exist."
+		description = "The resource folder's parent resource folder. On read, returned only when `nestedFields=parentResourceFolder` is requested. On write, used only during LAR import, where it is created if it does not exist."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected ResourceFolder parentResourceFolder;
@@ -521,6 +571,23 @@ public class ResourceFolder implements Serializable {
 			sb.append(String.valueOf(fragmentSet));
 		}
 
+		String fragmentSetExternalReferenceCode =
+			getFragmentSetExternalReferenceCode();
+
+		if (fragmentSetExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentSetExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fragmentSetExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		String name = getName();
 
 		if (name != null) {
@@ -667,4 +734,4 @@ public class ResourceFolder implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-635616269
+// LIFERAY-REST-BUILDER-HASH:852636757

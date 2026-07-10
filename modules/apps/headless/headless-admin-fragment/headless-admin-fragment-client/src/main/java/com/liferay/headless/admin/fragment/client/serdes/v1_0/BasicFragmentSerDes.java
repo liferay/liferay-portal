@@ -128,6 +128,21 @@ public class BasicFragmentSerDes {
 			sb.append(String.valueOf(basicFragment.getFragmentSet()));
 		}
 
+		if (basicFragment.getFragmentSetExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentSetExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(basicFragment.getFragmentSetExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (basicFragment.getFragmentVersions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -307,6 +322,16 @@ public class BasicFragmentSerDes {
 				"fragmentSet", String.valueOf(basicFragment.getFragmentSet()));
 		}
 
+		if (basicFragment.getFragmentSetExternalReferenceCode() == null) {
+			map.put("fragmentSetExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"fragmentSetExternalReferenceCode",
+				String.valueOf(
+					basicFragment.getFragmentSetExternalReferenceCode()));
+		}
+
 		if (basicFragment.getFragmentVersions() == null) {
 			map.put("fragmentVersions", null);
 		}
@@ -406,6 +431,12 @@ public class BasicFragmentSerDes {
 			else if (Objects.equals(jsonParserFieldName, "fragmentSet")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"fragmentSetExternalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "fragmentVersions")) {
 				return false;
 			}
@@ -476,6 +507,15 @@ public class BasicFragmentSerDes {
 				if (jsonParserFieldValue != null) {
 					basicFragment.setFragmentSet(
 						FragmentSetSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"fragmentSetExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					basicFragment.setFragmentSetExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "fragmentVersions")) {
@@ -616,4 +656,4 @@ public class BasicFragmentSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:951801515
+// LIFERAY-REST-BUILDER-HASH:-1756272449

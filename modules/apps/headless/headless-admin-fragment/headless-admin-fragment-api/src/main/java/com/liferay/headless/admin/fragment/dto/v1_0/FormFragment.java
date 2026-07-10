@@ -240,6 +240,23 @@ public class FormFragment extends Fragment implements Serializable {
 			sb.append(String.valueOf(fragmentSet));
 		}
 
+		String fragmentSetExternalReferenceCode =
+			getFragmentSetExternalReferenceCode();
+
+		if (fragmentSetExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentSetExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fragmentSetExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		FragmentVersion[] fragmentVersions = getFragmentVersions();
 
 		if (fragmentVersions != null) {
@@ -462,4 +479,4 @@ public class FormFragment extends Fragment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-180614183
+// LIFERAY-REST-BUILDER-HASH:624800786

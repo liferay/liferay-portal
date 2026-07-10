@@ -130,6 +130,15 @@ public class FragmentSerDes {
 			map.put("fragmentSet", String.valueOf(fragment.getFragmentSet()));
 		}
 
+		if (fragment.getFragmentSetExternalReferenceCode() == null) {
+			map.put("fragmentSetExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"fragmentSetExternalReferenceCode",
+				String.valueOf(fragment.getFragmentSetExternalReferenceCode()));
+		}
+
 		if (fragment.getFragmentVersions() == null) {
 			map.put("fragmentVersions", null);
 		}
@@ -227,6 +236,12 @@ public class FragmentSerDes {
 			else if (Objects.equals(jsonParserFieldName, "fragmentSet")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"fragmentSetExternalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "fragmentVersions")) {
 				return false;
 			}
@@ -322,6 +337,15 @@ public class FragmentSerDes {
 				if (jsonParserFieldValue != null) {
 					fragment.setFragmentSet(
 						FragmentSetSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"fragmentSetExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					fragment.setFragmentSetExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "fragmentVersions")) {
@@ -461,4 +485,4 @@ public class FragmentSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-282516193
+// LIFERAY-REST-BUILDER-HASH:-1654088476
