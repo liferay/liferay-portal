@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -56,7 +57,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 			Collections.singletonList(_RESOURCE_URI));
 		_testTokenIntrospectionAudience(
 			Arrays.asList(
-				_RESOURCE_URI, "https://" + RandomTestUtil.randomString()));
+				_RESOURCE_URI,
+				Http.HTTPS_WITH_SLASH + RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -135,7 +137,7 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		_testTokenRequestWithInvalidResource(StringPool.SPACE);
 		_testTokenRequestWithInvalidResource(
 			StringBundler.concat(
-				"https://", RandomTestUtil.randomString(), "/#",
+				Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(), "/#",
 				RandomTestUtil.randomString()));
 		_testTokenRequestWithInvalidResource(RandomTestUtil.randomString());
 	}
@@ -235,7 +237,7 @@ public class TokenAudienceTest extends BaseClientTestCase {
 	private static final String _CLIENT_SECRET = RandomTestUtil.randomString();
 
 	private static final String _RESOURCE_URI =
-		"https://" + RandomTestUtil.randomString();
+		Http.HTTPS_WITH_SLASH + RandomTestUtil.randomString();
 
 	private class TokenAudienceTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -251,8 +253,9 @@ public class TokenAudienceTest extends BaseClientTestCase {
 				Arrays.asList(
 					GrantType.CLIENT_CREDENTIALS, GrantType.AUTHORIZATION_CODE),
 				"client_secret_post", null,
-				Collections.singletonList("http://redirecturi:8080"), false,
-				Collections.singletonList("everything"), false);
+				Collections.singletonList(
+					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString()),
+				false, Collections.singletonList("everything"), false);
 		}
 
 	}
