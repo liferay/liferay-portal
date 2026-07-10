@@ -201,9 +201,9 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 		Assert.assertEquals(resources.size(), audJSONArray.length());
 
-		List<String> audiencesList = JSONUtil.toStringList(audJSONArray);
+		List<String> audiences = JSONUtil.toStringList(audJSONArray);
 
-		Assert.assertTrue(audiencesList.containsAll(resources));
+		Assert.assertTrue(audiences.containsAll(resources));
 	}
 
 	private void _testTokenRequestWithInvalidResource(String resource)
