@@ -147,7 +147,7 @@ AssetListManagementToolbarDisplayContext assetListManagementToolbarDisplayContex
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand text-truncate"
 								name="subtype"
-								value="<%= assetListDisplayContext.getClassTypeLabel(assetListEntry) %>"
+								value="<%= HtmlUtil.escape(assetListDisplayContext.getClassTypeLabel(assetListEntry)) %>"
 							/>
 
 							<liferay-ui:search-container-column-text
