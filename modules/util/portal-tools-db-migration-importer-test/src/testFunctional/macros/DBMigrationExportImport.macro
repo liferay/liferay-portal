@@ -5,15 +5,11 @@ definition {
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 		var portalURL = JSONCompany.getDefaultPortalURL();
 		var userLoginInfo = JSONUtil2.formatJSONSuperAdminUser();
-		var parameters = JSONUtil2._addJSONObject(
-			json = "{}",
-			key = "exportFilesPath",
-			value = "\"${liferayHome}\"");
 
 		var curl = '''
 			${portalURL}/o/admin-server/v1.0/database-schema-export \
 				-u ${userLoginInfo} \
-				-d ${parameters} \
+				-d {"exportFilesPath": "${liferayHome}"} \
 				-H Content-Type: application/json
 		''';
 
