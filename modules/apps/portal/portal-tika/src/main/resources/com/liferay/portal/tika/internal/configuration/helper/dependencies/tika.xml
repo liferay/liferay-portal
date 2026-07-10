@@ -12,7 +12,6 @@
 		<parser class="org.apache.tika.parser.epub.EpubParser" />
 		<parser class="org.apache.tika.parser.executable.ExecutableParser" />
 		<parser class="org.apache.tika.parser.external.CompositeExternalParser" />
-		<parser class="org.apache.tika.parser.feed.FeedParser" />
 		<parser class="org.apache.tika.parser.font.AdobeFontMetricParser" />
 		<parser class="org.apache.tika.parser.font.TrueTypeParser" />
 		<parser class="org.apache.tika.parser.grib.GribParser" />
@@ -26,7 +25,6 @@
 		<parser class="org.apache.tika.parser.iptc.IptcAnpaParser" />
 		<parser class="org.apache.tika.parser.isatab.ISArchiveParser" />
 		<parser class="org.apache.tika.parser.iwork.IWorkPackageParser" />
-		<parser class="org.apache.tika.parser.jdbc.SQLite3Parser" />
 		<parser class="org.apache.tika.parser.jpeg.JpegParser" />
 		<parser class="org.apache.tika.parser.mail.RFC822Parser" />
 		<parser class="org.apache.tika.parser.mat.MatParser" />

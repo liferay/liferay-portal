@@ -215,11 +215,7 @@ public class TextExtractorImpl implements TextExtractor {
 			}
 
 			Logger logger = Logger.getLogger(
-				"org.apache.tika.parser.SQLite3Parser");
-
-			logger.setLevel(Level.SEVERE);
-
-			logger = Logger.getLogger("org.apache.tika.parsers.PDFParser");
+				"org.apache.tika.parsers.PDFParser");
 
 			logger.setLevel(Level.SEVERE);
 
