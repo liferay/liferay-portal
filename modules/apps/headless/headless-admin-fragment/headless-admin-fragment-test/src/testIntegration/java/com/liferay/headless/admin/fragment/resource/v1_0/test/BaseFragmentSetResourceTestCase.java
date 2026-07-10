@@ -213,6 +213,17 @@ public abstract class BaseFragmentSetResourceTestCase {
 			fragmentSetResource.deleteDesignLibraryFragmentSetHttpResponse(
 				testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode(),
 				fragmentSet.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			fragmentSetResource.getDesignLibraryFragmentSetHttpResponse(
+				testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode(),
+				fragmentSet.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			fragmentSetResource.getDesignLibraryFragmentSetHttpResponse(
+				testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode(),
+				"-"));
 	}
 
 	protected FragmentSet testDeleteDesignLibraryFragmentSet_addFragmentSet()
@@ -263,6 +274,317 @@ public abstract class BaseFragmentSetResourceTestCase {
 		throws Exception {
 
 		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSet() throws Exception {
+		FragmentSet postFragmentSet =
+			testGetDesignLibraryFragmentSet_addFragmentSet();
+
+		FragmentSet getFragmentSet =
+			fragmentSetResource.getDesignLibraryFragmentSet(
+				testGetDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode(),
+				postFragmentSet.getExternalReferenceCode());
+
+		assertEquals(postFragmentSet, getFragmentSet);
+		assertValid(getFragmentSet);
+	}
+
+	protected FragmentSet testGetDesignLibraryFragmentSet_addFragmentSet()
+		throws Exception {
+
+		return fragmentSetResource.postSiteFragmentSet(
+			testGroup.getExternalReferenceCode(), randomFragmentSet());
+	}
+
+	protected String
+			testGetDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPage() throws Exception {
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode();
+		String irrelevantDesignLibraryExternalReferenceCode =
+			testGetDesignLibraryFragmentSetsPage_getIrrelevantDesignLibraryExternalReferenceCode();
+
+		Page<FragmentSet> page =
+			fragmentSetResource.getDesignLibraryFragmentSetsPage(
+				designLibraryExternalReferenceCode, null, Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantDesignLibraryExternalReferenceCode != null) {
+			FragmentSet irrelevantFragmentSet =
+				testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+					irrelevantDesignLibraryExternalReferenceCode,
+					randomIrrelevantFragmentSet());
+
+			page = fragmentSetResource.getDesignLibraryFragmentSetsPage(
+				irrelevantDesignLibraryExternalReferenceCode, null,
+				Pagination.of(1, (int)totalCount + 1));
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantFragmentSet, (List<FragmentSet>)page.getItems());
+			assertValid(
+				page,
+				testGetDesignLibraryFragmentSetsPage_getExpectedActions(
+					irrelevantDesignLibraryExternalReferenceCode));
+		}
+
+		FragmentSet fragmentSet1 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		FragmentSet fragmentSet2 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		page = fragmentSetResource.getDesignLibraryFragmentSetsPage(
+			designLibraryExternalReferenceCode, null, Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(fragmentSet1, (List<FragmentSet>)page.getItems());
+		assertContains(fragmentSet2, (List<FragmentSet>)page.getItems());
+		assertValid(
+			page,
+			testGetDesignLibraryFragmentSetsPage_getExpectedActions(
+				designLibraryExternalReferenceCode));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetDesignLibraryFragmentSetsPage_getExpectedActions(
+				String designLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode();
+
+		FragmentSet fragmentSet1 = randomFragmentSet();
+
+		fragmentSet1 = testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+			designLibraryExternalReferenceCode, fragmentSet1);
+
+		for (EntityField entityField : entityFields) {
+			Page<FragmentSet> page =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode,
+					getFilterString(entityField, "between", fragmentSet1),
+					Pagination.of(1, 2));
+
+			assertEquals(
+				Collections.singletonList(fragmentSet1),
+				(List<FragmentSet>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetDesignLibraryFragmentSetsPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithFilterStringContains()
+		throws Exception {
+
+		testGetDesignLibraryFragmentSetsPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetDesignLibraryFragmentSetsPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetDesignLibraryFragmentSetsPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetDesignLibraryFragmentSetsPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode();
+
+		FragmentSet fragmentSet1 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		FragmentSet fragmentSet2 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		for (EntityField entityField : entityFields) {
+			Page<FragmentSet> page =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode,
+					getFilterString(entityField, operator, fragmentSet1),
+					Pagination.of(1, 2));
+
+			assertEquals(
+				Collections.singletonList(fragmentSet1),
+				(List<FragmentSet>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryFragmentSetsPageWithPagination()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode();
+
+		Page<FragmentSet> fragmentSetsPage =
+			fragmentSetResource.getDesignLibraryFragmentSetsPage(
+				designLibraryExternalReferenceCode, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			fragmentSetsPage.getTotalCount());
+
+		FragmentSet fragmentSet1 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		FragmentSet fragmentSet2 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		FragmentSet fragmentSet3 =
+			testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+				designLibraryExternalReferenceCode, randomFragmentSet());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<FragmentSet> page1 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(fragmentSet1, (List<FragmentSet>)page1.getItems());
+
+			Page<FragmentSet> page2 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(fragmentSet2, (List<FragmentSet>)page2.getItems());
+
+			Page<FragmentSet> page3 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(fragmentSet3, (List<FragmentSet>)page3.getItems());
+		}
+		else {
+			Page<FragmentSet> page1 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(1, totalCount + 2));
+
+			List<FragmentSet> fragmentSets1 =
+				(List<FragmentSet>)page1.getItems();
+
+			Assert.assertEquals(
+				fragmentSets1.toString(), totalCount + 2, fragmentSets1.size());
+
+			Page<FragmentSet> page2 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<FragmentSet> fragmentSets2 =
+				(List<FragmentSet>)page2.getItems();
+
+			Assert.assertEquals(
+				fragmentSets2.toString(), 1, fragmentSets2.size());
+
+			Page<FragmentSet> page3 =
+				fragmentSetResource.getDesignLibraryFragmentSetsPage(
+					designLibraryExternalReferenceCode, null,
+					Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(fragmentSet1, (List<FragmentSet>)page3.getItems());
+			assertContains(fragmentSet2, (List<FragmentSet>)page3.getItems());
+			assertContains(fragmentSet3, (List<FragmentSet>)page3.getItems());
+		}
+	}
+
+	protected FragmentSet testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+			String designLibraryExternalReferenceCode, FragmentSet fragmentSet)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryFragmentSetsPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -1714,4 +2036,4 @@ public abstract class BaseFragmentSetResourceTestCase {
 			_fragmentSetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1318768798
+// LIFERAY-REST-BUILDER-HASH:-576482506

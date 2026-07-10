@@ -56,6 +56,17 @@ public interface FragmentSetResource {
 			String fragmentSetExternalReferenceCode)
 		throws Exception;
 
+	public FragmentSet getDesignLibraryFragmentSet(
+			String designLibraryExternalReferenceCode,
+			String fragmentSetExternalReferenceCode)
+		throws Exception;
+
+	public Page<FragmentSet> getDesignLibraryFragmentSetsPage(
+			String designLibraryExternalReferenceCode,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination)
+		throws Exception;
+
 	public FragmentSet getSiteFragmentSet(
 			String siteExternalReferenceCode,
 			String fragmentSetExternalReferenceCode)
@@ -182,4 +193,4 @@ public interface FragmentSetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2098913088
+// LIFERAY-REST-BUILDER-HASH:1376008915
