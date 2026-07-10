@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
@@ -82,7 +83,23 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 	}
 
 	public Map<String, Object> getAIAssistantChatProps() {
+		String title = MapUtil.getString(objectEntry.getValues(), "title");
+
 		return HashMapBuilder.<String, Object>put(
+			"context",
+			HashMapBuilder.<String, Object>put(
+				"cmsGroupId", objectEntry.getGroupId()
+			).put(
+				"focusScope", "full-matrix"
+			).put(
+				"projectId", objectEntry.getObjectEntryId()
+			).build()
+		).put(
+			"initialMessage",
+			LanguageUtil.format(
+				httpServletRequest,
+				"get-ai-insights-for-the-x-content-coverage-matrix", title)
+		).put(
 			"instructionDefinitionScope", "cms"
 		).put(
 			"triggerLabel",
