@@ -164,10 +164,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 				throw ExceptionUtils.toNotAuthorizedException(null, null);
 			}
 
-			throw new WebApplicationException(
-				Response.status(
-					Response.Status.INTERNAL_SERVER_ERROR
-				).build());
+			throw ExceptionUtils.toInternalServerErrorException(null, null);
 		}
 
 		_setSecurityContext(containerRequestContext, httpServletRequest, user);
@@ -306,10 +303,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 				_getAuthorizationFailureAuditMessage(
 					false, clientHost, companyId, httpServletRequest));
 
-			throw new WebApplicationException(
-				Response.status(
-					Response.Status.INTERNAL_SERVER_ERROR
-				).build());
+			throw ExceptionUtils.toInternalServerErrorException(null, null);
 		}
 
 		if (_log.isInfoEnabled()) {
