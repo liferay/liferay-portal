@@ -41,6 +41,7 @@ public class ServiceBuilderModulesBatchTestClassGroupTest
 				"/liferay/portal/tools/service/builder/ServiceBuilder.java",
 			"portal-impl/src/com/liferay/portal/service/impl" +
 				"/UserLocalServiceImpl.java");
+		_testGetBuildType(null);
 		_testGetBuildType(
 			null,
 			"modules/apps/blogs/blogs-web/src/main/resources/META-INF" +
