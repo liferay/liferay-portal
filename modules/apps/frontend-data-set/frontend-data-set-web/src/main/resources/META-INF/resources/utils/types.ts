@@ -295,6 +295,7 @@ export interface IView {
 	label?: string;
 	name?: string;
 	schema?: ISchema;
+	selectable?: boolean;
 	setItemComponentProps?: ({item, props}: {item: any; props: any}) => any;
 	showPagination?: boolean;
 	thumbnail?: string;
