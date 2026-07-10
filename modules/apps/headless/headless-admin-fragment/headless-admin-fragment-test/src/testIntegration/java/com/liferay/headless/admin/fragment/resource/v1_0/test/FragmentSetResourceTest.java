@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -127,6 +128,12 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				fetchFragmentCollectionByExternalReferenceCode(
 					fragmentSet.getExternalReferenceCode(),
 					testGroup.getGroupId()));
+	}
+
+	@Override
+	@Test
+	public void testGetDesignLibraryFragmentSetsPage() throws Exception {
+		super.testGetDesignLibraryFragmentSetsPage();
 	}
 
 	@Override
@@ -352,6 +359,28 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	@Override
 	protected String
 			testGetDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
+	protected FragmentSet testGetDesignLibraryFragmentSetsPage_addFragmentSet(
+			String designLibraryExternalReferenceCode, FragmentSet fragmentSet)
+		throws Exception {
+
+		return _addDesignLibraryFragmentSet(
+			fragmentSet,
+			_groupLocalService.getGroupByExternalReferenceCode(
+				designLibraryExternalReferenceCode,
+				TestPropsValues.getCompanyId()));
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryFragmentSetsPage_getDesignLibraryExternalReferenceCode()
 		throws Exception {
 
 		Group group = _depotEntry.getGroup();
@@ -741,6 +770,9 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private Language _language;
