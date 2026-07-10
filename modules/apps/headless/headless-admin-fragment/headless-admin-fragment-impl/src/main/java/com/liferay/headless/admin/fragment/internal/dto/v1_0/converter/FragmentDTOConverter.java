@@ -18,6 +18,7 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FragmentVersion;
 import com.liferay.headless.admin.fragment.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.fragment.internal.util.FieldTypeUtil;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -82,6 +83,11 @@ public class FragmentDTOConverter
 	private BasicFragment _toBasicFragment(
 		FragmentEntry fragmentEntry, List<FragmentVersion> fragmentVersions) {
 
+		UnsafeSupplierValue<FragmentCollection, Exception> unsafeSupplierValue =
+			new UnsafeSupplierValue<>(
+				() -> _fragmentCollectionLocalService.getFragmentCollection(
+					fragmentEntry.getFragmentCollectionId()));
+
 		BasicFragment basicFragment = new BasicFragment() {
 			{
 				setCacheable(fragmentEntry::isCacheable);
@@ -92,10 +98,17 @@ public class FragmentDTOConverter
 				setExternalReferenceCode(
 					fragmentEntry::getExternalReferenceCode);
 				setFragmentSet(
-					() -> _fragmentSetDTOConverter.toDTO(
-						null,
-						_fragmentCollectionLocalService.getFragmentCollection(
-							fragmentEntry.getFragmentCollectionId())));
+					() -> NestedFieldsSupplier.supply(
+						"fragmentSet",
+						fieldName -> _fragmentSetDTOConverter.toDTO(
+							null, unsafeSupplierValue.getValue())));
+				setFragmentSetExternalReferenceCode(
+					() -> {
+						FragmentCollection fragmentCollection =
+							unsafeSupplierValue.getValue();
+
+						return fragmentCollection.getExternalReferenceCode();
+					});
 				setIcon(fragmentEntry::getIcon);
 				setKey(fragmentEntry::getFragmentEntryKey);
 				setMarketplace(fragmentEntry::isMarketplace);
@@ -120,6 +133,11 @@ public class FragmentDTOConverter
 
 	private FormFragment _toFormFragment(
 		FragmentEntry fragmentEntry, List<FragmentVersion> fragmentVersions) {
+
+		UnsafeSupplierValue<FragmentCollection, Exception> unsafeSupplierValue =
+			new UnsafeSupplierValue<>(
+				() -> _fragmentCollectionLocalService.getFragmentCollection(
+					fragmentEntry.getFragmentCollectionId()));
 
 		FormFragment formFragment = new FormFragment() {
 			{
@@ -154,10 +172,17 @@ public class FragmentDTOConverter
 							FieldType.class);
 					});
 				setFragmentSet(
-					() -> _fragmentSetDTOConverter.toDTO(
-						null,
-						_fragmentCollectionLocalService.getFragmentCollection(
-							fragmentEntry.getFragmentCollectionId())));
+					() -> NestedFieldsSupplier.supply(
+						"fragmentSet",
+						fieldName -> _fragmentSetDTOConverter.toDTO(
+							null, unsafeSupplierValue.getValue())));
+				setFragmentSetExternalReferenceCode(
+					() -> {
+						FragmentCollection fragmentCollection =
+							unsafeSupplierValue.getValue();
+
+						return fragmentCollection.getExternalReferenceCode();
+					});
 				setIcon(fragmentEntry::getIcon);
 				setKey(fragmentEntry::getFragmentEntryKey);
 				setMarketplace(fragmentEntry::isMarketplace);
