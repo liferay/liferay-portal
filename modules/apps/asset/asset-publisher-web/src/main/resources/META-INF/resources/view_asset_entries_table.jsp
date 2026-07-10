@@ -23,7 +23,7 @@ if (stageableGroup.isLayout()) {
 
 <c:if test="<%= Validator.isNotNull(assetEntryResult.getTitle()) %>">
 	<p class="h4">
-		<%= assetEntryResult.getTitle() %>
+		<%= HtmlUtil.escape(assetEntryResult.getTitle()) %>
 	</p>
 </c:if>
 
