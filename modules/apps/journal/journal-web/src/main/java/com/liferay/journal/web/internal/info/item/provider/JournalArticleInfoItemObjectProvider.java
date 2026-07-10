@@ -146,6 +146,7 @@ public class JournalArticleInfoItemObjectProvider
 		throws PortalException {
 
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
@@ -173,6 +174,7 @@ public class JournalArticleInfoItemObjectProvider
 		throws PortalException {
 
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
@@ -193,6 +195,7 @@ public class JournalArticleInfoItemObjectProvider
 		throws PortalException {
 
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
@@ -223,6 +226,7 @@ public class JournalArticleInfoItemObjectProvider
 		throws PortalException {
 
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
