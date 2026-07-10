@@ -80,13 +80,13 @@ private String _buildTreeMenuHTML(List<MenuItem> menuItems, String curTitle, boo
 			}
 
 			sb.append("href=\"");
-			sb.append(url);
+			sb.append(HtmlUtil.escapeAttribute(url));
 			sb.append("\">");
-			sb.append(name);
+			sb.append(HtmlUtil.escape(name));
 			sb.append("</a>");
 		}
 		else {
-			sb.append(name);
+			sb.append(HtmlUtil.escape(name));
 		}
 
 		if (!menuItem.getChildren().isEmpty()) {
