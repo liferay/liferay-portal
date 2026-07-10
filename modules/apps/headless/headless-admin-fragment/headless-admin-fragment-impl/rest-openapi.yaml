@@ -255,6 +255,39 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["FragmentSet"]
+        get:
+            description:
+                Retrieves a specific fragment set of a design library.
+            operationId: getDesignLibraryFragmentSet
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: fragmentSetExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FragmentSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/FragmentSet"
+            tags: ["FragmentSet"]
     "/sites/{siteExternalReferenceCode}/fragment-sets":
         get:
             description:
