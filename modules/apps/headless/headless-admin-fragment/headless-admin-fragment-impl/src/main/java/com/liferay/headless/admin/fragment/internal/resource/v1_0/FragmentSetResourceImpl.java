@@ -92,6 +92,24 @@ public class FragmentSetResourceImpl
 	}
 
 	@Override
+	public FragmentSet getDesignLibraryFragmentSet(
+			String designLibraryExternalReferenceCode,
+			String fragmentSetExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		long groupId = GroupUtil.getDepotGroupId(
+			contextCompany.getCompanyId(), designLibraryExternalReferenceCode,
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		return _getFragmentSet(
+			fragmentSetExternalReferenceCode, groupId,
+			_getDesignLibraryActionsUnsafeFunction(
+				designLibraryExternalReferenceCode, groupId));
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
@@ -133,10 +151,8 @@ public class FragmentSetResourceImpl
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		return _toFragmentSet(
-			_fragmentCollectionService.
-				getFragmentCollectionByExternalReferenceCode(
-					fragmentSetExternalReferenceCode, groupId),
+		return _getFragmentSet(
+			fragmentSetExternalReferenceCode, groupId,
 			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
 	}
 
@@ -269,6 +285,20 @@ public class FragmentSetResourceImpl
 			FragmentCollectionActionUtil.getDesignLibraryActions(
 				contextScopeChecker, designLibraryExternalReferenceCode,
 				fragmentCollection, manageFragmentEntries, contextUriInfo);
+	}
+
+	private FragmentSet _getFragmentSet(
+			String externalReferenceCode, long groupId,
+			UnsafeFunction
+				<FragmentCollection, Map<String, Map<String, String>>,
+				 Exception> unsafeFunction)
+		throws Exception {
+
+		return _toFragmentSet(
+			_fragmentCollectionService.
+				getFragmentCollectionByExternalReferenceCode(
+					externalReferenceCode, groupId),
+			unsafeFunction);
 	}
 
 	private UnsafeFunction
