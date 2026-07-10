@@ -68,6 +68,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 	public void testPostSuggestionsPage() throws Exception {
 		_testPostSuggestionsPageWithBasicSuggestionsContributor();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithAssetSearchSummary();
+		_testPostSuggestionsPageWithBasicSuggestionsContributorWithDestinationLayout();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithEverythingScope();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithGroupERCScope();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithThisSiteScope();
@@ -199,6 +200,44 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 		Assert.assertEquals(
 			_journalArticle.getDescription(_locale),
 			suggestionAttributesJSONObject.get("assetSearchSummary"));
+	}
+
+	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithDestinationLayout()
+		throws Exception {
+
+		Layout destinationLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup);
+
+		Page<SuggestionsContributorResults> page = _postSuggestionsPage(
+			"http://localhost:" + PortalUtil.getPortalServerPort(false) +
+				"/web/guest/home",
+			destinationLayout.getFriendlyURL(), null, "q", _layout.getPlid(),
+			null, _journalArticle.getArticleId(),
+			new SuggestionsContributorConfiguration[] {
+				new SuggestionsContributorConfiguration() {
+					{
+						contributorName = "basic";
+						displayGroupName = "Suggestions";
+					}
+				}
+			});
+
+		SuggestionsContributorResults suggestionsContributorResults =
+			page.fetchFirstItem();
+
+		Suggestion[] suggestions =
+			suggestionsContributorResults.getSuggestions();
+
+		JSONObject suggestionAttributesJSONObject =
+			JSONFactoryUtil.createJSONObject(
+				String.valueOf(suggestions[0].getAttributes()));
+
+		String assetURL = suggestionAttributesJSONObject.getString("assetURL");
+
+		Assert.assertTrue(
+			assetURL,
+			assetURL.contains(destinationLayout.getFriendlyURL()) ||
+			assetURL.contains("p_l_id=" + destinationLayout.getPlid()));
 	}
 
 	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithEverythingScope()
