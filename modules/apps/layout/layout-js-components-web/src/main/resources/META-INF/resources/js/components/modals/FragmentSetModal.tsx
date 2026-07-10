@@ -17,21 +17,23 @@ type FragmentSet = {fragmentCollectionId: number; name: string};
 
 type Errors = {
 	error?: string;
+	fragmentName?: string | null;
 	fragmentSets?: string | null;
 	name?: string | null;
 };
 
 export default function FragmentSetModal({
 	addFragmentCollectionURL,
+	allowCustomName = false,
 	contributedEntryKeys = [],
 	copyFragmentEntriesURL,
 	fragmentCollections = [],
 	fragmentEntryIds = [],
 	onSubmitFragmentCollection,
 	portletNamespace,
-	showFragmentNameInput = false,
 }: {
 	addFragmentCollectionURL?: string;
+	allowCustomName?: boolean;
 	contributedEntryKeys?: string[];
 	copyFragmentEntriesURL?: string;
 	fragmentCollections: FragmentSet[];
@@ -41,13 +43,8 @@ export default function FragmentSetModal({
 		fragmentName?: string
 	) => Promise<void> | void;
 	portletNamespace: string;
-	showFragmentNameInput?: boolean;
 }) {
-	const [visible, setVisible] = useState(true);
-
-	const {observer, onClose} = useModal({
-		onClose: () => setVisible(false),
-	});
+	const {observer, onOpenChange, open} = useModal({defaultOpen: true});
 
 	const [errors, setErrors] = useState<Errors>({});
 	const [fragmentName, setFragmentName] = useState('');
@@ -58,26 +55,10 @@ export default function FragmentSetModal({
 	const formId = `${portletNamespace}form`;
 
 	const submitFragmentCollection = (fragmentCollectionId: number) => {
-		if (showFragmentNameInput && !fragmentName) {
-			setErrors({
-				name: sub(
-					Liferay.Language.get('x-field-is-required'),
-					Liferay.Language.get('name')
-				),
-			});
-
-			return;
-		}
-
 		if (onSubmitFragmentCollection) {
-			onClose();
+			onOpenChange(false);
 
-			if (showFragmentNameInput) {
-				onSubmitFragmentCollection(fragmentCollectionId, fragmentName);
-			}
-			else {
-				onSubmitFragmentCollection(fragmentCollectionId);
-			}
+			onSubmitFragmentCollection(fragmentCollectionId, fragmentName);
 
 			return;
 		}
@@ -117,7 +98,7 @@ export default function FragmentSetModal({
 			method: 'POST',
 		})
 			.then((response) => {
-				onClose();
+				onOpenChange(false);
 
 				if (response.redirected) {
 					navigate(response.url);
@@ -140,7 +121,16 @@ export default function FragmentSetModal({
 			});
 	};
 
-	if (!visible) {
+	let title = Liferay.Language.get('select-fragment-set');
+
+	if (allowCustomName) {
+		title = Liferay.Language.get('add-fragment');
+	}
+	else if (showFragmentSetForm) {
+		title = Liferay.Language.get('add-fragment-set');
+	}
+
+	if (!open) {
 		return null;
 	}
 
@@ -149,11 +139,7 @@ export default function FragmentSetModal({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{showFragmentNameInput
-					? Liferay.Language.get('add-fragment')
-					: showFragmentSetForm
-						? Liferay.Language.get('add-fragment-set')
-						: Liferay.Language.get('select-fragment-set')}
+				{title}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
@@ -166,43 +152,29 @@ export default function FragmentSetModal({
 					</ClayAlert>
 				)}
 
-				{showFragmentNameInput && (
-					<FormField
-						error={errors.name}
-						id={`${portletNamespace}fragmentName`}
-						name={Liferay.Language.get('name')}
-						required
-					>
-						<ClayInput
-							id={`${portletNamespace}fragmentName`}
-							onChange={(event) => {
-								setErrors({...errors, name: null});
-								setFragmentName(event.target.value);
-							}}
-							required
-							type="text"
-							value={fragmentName}
-						/>
-					</FormField>
-				)}
-
 				{showFragmentSetForm ? (
 					<FragmentSetForm
 						addFragmentCollectionURL={addFragmentCollectionURL}
+						allowCustomName={allowCustomName}
 						errors={errors}
 						formId={formId}
 						fragmentCollections={fragmentCollections}
+						fragmentName={fragmentName}
 						portletNamespace={portletNamespace}
 						setErrors={setErrors}
+						setFragmentName={setFragmentName}
 						submitFragmentCollection={submitFragmentCollection}
 					/>
 				) : (
 					<FragmentSetSelector
+						allowCustomName={allowCustomName}
 						errors={errors}
 						formId={formId}
 						fragmentCollections={fragmentCollections}
+						fragmentName={fragmentName}
 						portletNamespace={portletNamespace}
 						setErrors={setErrors}
+						setFragmentName={setFragmentName}
 						submitFragmentCollection={submitFragmentCollection}
 					/>
 				)}
@@ -223,7 +195,10 @@ export default function FragmentSetModal({
 				}
 				last={
 					<ClayButton.Group spaced>
-						<ClayButton displayType="secondary" onClick={onClose}>
+						<ClayButton
+							displayType="secondary"
+							onClick={() => onOpenChange(false)}
+						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
@@ -241,19 +216,59 @@ export default function FragmentSetModal({
 	);
 }
 
+function FragmentNameField({
+	errors,
+	fragmentName,
+	portletNamespace,
+	setErrors,
+	setFragmentName,
+}: {
+	errors: Errors;
+	fragmentName: string;
+	portletNamespace: string;
+	setErrors: (errors: Errors) => void;
+	setFragmentName: (fragmentName: string) => void;
+}) {
+	return (
+		<FormField
+			error={errors.fragmentName}
+			id={`${portletNamespace}fragmentName`}
+			name={Liferay.Language.get('name')}
+			required
+		>
+			<ClayInput
+				id={`${portletNamespace}fragmentName`}
+				onChange={(event) => {
+					setErrors({...errors, fragmentName: null});
+					setFragmentName(event.target.value);
+				}}
+				required
+				type="text"
+				value={fragmentName}
+			/>
+		</FormField>
+	);
+}
+
 function FragmentSetSelector({
+	allowCustomName,
 	errors,
 	formId,
 	fragmentCollections,
+	fragmentName,
 	portletNamespace,
 	setErrors,
+	setFragmentName,
 	submitFragmentCollection,
 }: {
+	allowCustomName: boolean;
 	errors: Errors;
 	formId: string;
 	fragmentCollections: FragmentSet[];
+	fragmentName: string;
 	portletNamespace: string;
 	setErrors: (errors: Errors) => void;
+	setFragmentName: (fragmentName: string) => void;
 	submitFragmentCollection: (fragmentCollectionId: number) => void;
 }) {
 	const [selectedFragmentCollection, setSelectedFragmentCollection] =
@@ -276,13 +291,24 @@ function FragmentSetSelector({
 	const handleSubmit = (event: FormEvent) => {
 		event.preventDefault();
 
+		const nextErrors: Errors = {};
+
+		if (allowCustomName && !fragmentName) {
+			nextErrors.fragmentName = sub(
+				Liferay.Language.get('x-field-is-required'),
+				Liferay.Language.get('name')
+			);
+		}
+
 		if (!selectedFragmentCollection) {
-			setErrors({
-				fragmentSets: sub(
-					Liferay.Language.get('x-field-is-required'),
-					Liferay.Language.get('fragment-set')
-				),
-			});
+			nextErrors.fragmentSets = sub(
+				Liferay.Language.get('x-field-is-required'),
+				Liferay.Language.get('fragment-set')
+			);
+		}
+
+		if (Object.keys(nextErrors).length) {
+			setErrors(nextErrors);
 
 			return;
 		}
@@ -291,12 +317,29 @@ function FragmentSetSelector({
 	};
 
 	return (
-		<ClayForm id={formId} onSubmit={handleSubmit}>
+		<ClayForm
+			id={formId}
+
+			// @ts-ignore
+
+			noValidate
+			onSubmit={handleSubmit}
+		>
 			<p className="text-secondary">
 				{Liferay.Language.get(
 					'select-an-existing-set-or-create-a-new-one-to-save-your-fragment'
 				)}
 			</p>
+
+			{allowCustomName && (
+				<FragmentNameField
+					errors={errors}
+					fragmentName={fragmentName}
+					portletNamespace={portletNamespace}
+					setErrors={setErrors}
+					setFragmentName={setFragmentName}
+				/>
+			)}
 
 			<FormField
 				error={errors.fragmentSets}
@@ -320,19 +363,25 @@ function FragmentSetSelector({
 
 function FragmentSetForm({
 	addFragmentCollectionURL,
+	allowCustomName,
 	errors,
 	formId,
 	fragmentCollections,
+	fragmentName,
 	portletNamespace,
 	setErrors,
+	setFragmentName,
 	submitFragmentCollection,
 }: {
 	addFragmentCollectionURL?: string;
+	allowCustomName: boolean;
 	errors: Errors;
 	formId: string;
 	fragmentCollections: FragmentSet[];
+	fragmentName: string;
 	portletNamespace: string;
 	setErrors: (errors: Errors) => void;
+	setFragmentName: (fragmentName: string) => void;
 	submitFragmentCollection: (fragmentCollectionId: number) => void;
 }) {
 	const [name, setName] = useState(() =>
@@ -343,13 +392,24 @@ function FragmentSetForm({
 	const handleSubmit = (event: FormEvent) => {
 		event.preventDefault();
 
+		const nextErrors: Errors = {};
+
+		if (allowCustomName && !fragmentName) {
+			nextErrors.fragmentName = sub(
+				Liferay.Language.get('x-field-is-required'),
+				Liferay.Language.get('name')
+			);
+		}
+
 		if (!name) {
-			setErrors({
-				name: sub(
-					Liferay.Language.get('x-field-is-required'),
-					Liferay.Language.get('name')
-				),
-			});
+			nextErrors.name = sub(
+				Liferay.Language.get('x-field-is-required'),
+				Liferay.Language.get('name')
+			);
+		}
+
+		if (Object.keys(nextErrors).length) {
+			setErrors(nextErrors);
 
 			return;
 		}
@@ -395,6 +455,16 @@ function FragmentSetForm({
 						'add-a-fragment-set-to-save-your-fragment'
 					)}
 				</p>
+			)}
+
+			{allowCustomName && (
+				<FragmentNameField
+					errors={errors}
+					fragmentName={fragmentName}
+					portletNamespace={portletNamespace}
+					setErrors={setErrors}
+					setFragmentName={setFragmentName}
+				/>
 			)}
 
 			<FormField
