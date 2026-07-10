@@ -66,7 +66,7 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 					continue;
 				}
 
-				log(childDetailAST, _MSG_USE_METHOD);
+				log(childDetailAST, _MSG_PORTAL_UTIL_USE);
 			}
 		}
 	}
@@ -99,12 +99,12 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 			return;
 		}
 
-		log(detailAST, _MSG_USE_METHOD);
+		log(detailAST, _MSG_PORTAL_UTIL_USE);
 	}
+
+	private static final String _MSG_PORTAL_UTIL_USE = "portal.util.use";
 
 	private static final String _MSG_USE_HARD_CODED_PORT =
 		"hard.coded.port.use";
-
-	private static final String _MSG_USE_METHOD = "method.use";
 
 }
