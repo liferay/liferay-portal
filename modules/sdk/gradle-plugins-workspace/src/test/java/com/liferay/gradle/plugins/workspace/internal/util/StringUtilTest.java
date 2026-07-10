@@ -47,6 +47,20 @@ public class StringUtilTest {
 	}
 
 	@Test
+	public void testReplaceBackslashes() {
+		Assert.assertNull(StringUtil.replaceBackslashes(null));
+		Assert.assertEquals("", StringUtil.replaceBackslashes(""));
+		Assert.assertEquals(
+			"/opt/build/upgradeJakarta/dependencies.txt",
+			StringUtil.replaceBackslashes(
+				"/opt/build/upgradeJakarta/dependencies.txt"));
+		Assert.assertEquals(
+			"C:/build/upgradeJakarta/dependencies.txt",
+			StringUtil.replaceBackslashes(
+				"C:\\build\\upgradeJakarta\\dependencies.txt"));
+	}
+
+	@Test
 	public void testSuffix() {
 		Assert.assertEquals("foo", StringUtil.suffixIfNotBlank("foo", ""));
 		Assert.assertEquals(
