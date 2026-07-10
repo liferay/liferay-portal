@@ -58,7 +58,7 @@ RulesEngine rulesEngine = (RulesEngine)request.getAttribute(RulesEngine.class.ge
 							request.setAttribute(WebKeys.ASSET_RENDERER_FACTORY, assetRendererFactory);
 						%>
 
-							<strong><%= assetRenderer.getTitle(locale) %></strong>
+							<strong><%= HtmlUtil.escape(assetRenderer.getTitle(locale)) %></strong>
 
 							<br /><br />
 
