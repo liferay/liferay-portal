@@ -59,7 +59,11 @@ components:
                 fragmentSet:
                     $ref: "#/components/schemas/FragmentSet"
                     description:
-                        The fragment's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist.
+                        The fragment's fragment set. On read, returned only when `nestedFields=fragmentSet` is requested. On write, used only during LAR import, where it is created if it does not exist.
+                fragmentSetExternalReferenceCode:
+                    description:
+                        The external reference code of the fragment's fragment set, used to reference an existing fragment set. Takes precedence over `fragmentSet` when both are set.
+                    type: string
                 fragmentVersions:
                     description:
                         The fragment's versions. A fragment can have up to 2 versions, one draft and one published (approved).
