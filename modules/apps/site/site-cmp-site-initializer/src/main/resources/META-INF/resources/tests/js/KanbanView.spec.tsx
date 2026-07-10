@@ -43,6 +43,7 @@ describe('KanbanView mapping and lifecycle', () => {
 
 		const {unmount} = render(
 			<KanbanView
+				hasAddTaskPermission
 				items={items}
 				itemsActions={[]}
 				projectId=""

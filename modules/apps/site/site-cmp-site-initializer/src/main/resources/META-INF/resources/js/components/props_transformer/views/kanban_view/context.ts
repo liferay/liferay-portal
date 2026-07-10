@@ -17,6 +17,7 @@ interface IKanbanContext {
 			name: string;
 		}
 	) => void;
+	hasAddTaskPermission: boolean;
 	itemsActions: IItemsActions[];
 	loadData: Function;
 	projectId: string;

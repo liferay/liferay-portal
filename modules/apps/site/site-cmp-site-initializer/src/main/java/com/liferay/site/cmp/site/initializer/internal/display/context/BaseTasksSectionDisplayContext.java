@@ -88,6 +88,8 @@ public abstract class BaseTasksSectionDisplayContext
 
 	public Map<String, Object> getAdditionalProps() throws Exception {
 		return HashMapBuilder.<String, Object>put(
+			"hasAddTaskPermission", hasAddObjectEntryPortletResourcePermission()
+		).put(
 			"projectId",
 			() -> {
 				if (assetEntry == null) {

@@ -67,6 +67,7 @@ export default function ProjectTasksFDSPropsTransformer({
 		component: (props: any) =>
 			CalendarView({
 				...props,
+				hasAddTaskPermission: additionalProps.hasAddTaskPermission,
 				projectId: additionalProps.projectId,
 				projectObjectDefinitionId:
 					additionalProps.projectObjectDefinitionId,
@@ -92,6 +93,7 @@ export default function ProjectTasksFDSPropsTransformer({
 		component: (props: any) =>
 			KanbanView({
 				...props,
+				hasAddTaskPermission: additionalProps.hasAddTaskPermission,
 				projectId: additionalProps.projectId,
 				projectObjectDefinitionId:
 					additionalProps.projectObjectDefinitionId,

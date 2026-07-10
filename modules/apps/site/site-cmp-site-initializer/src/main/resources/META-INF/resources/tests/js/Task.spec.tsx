@@ -106,6 +106,7 @@ describe('Kanban Task', () => {
 				value={{
 					boardData: {},
 					changeTaskStatus: jest.fn(),
+					hasAddTaskPermission: true,
 					itemsActions,
 					loadData: mockLoadData,
 					projectId,
@@ -216,6 +217,7 @@ describe('Kanban Task', () => {
 				value={{
 					boardData: {},
 					changeTaskStatus: jest.fn(),
+					hasAddTaskPermission: true,
 					itemsActions: [],
 					loadData: mockLoadData,
 					projectId: '123',
@@ -285,6 +287,7 @@ describe('Kanban Task', () => {
 					value={{
 						boardData: {},
 						changeTaskStatus: jest.fn(),
+						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
 						projectId: '',
@@ -319,6 +322,7 @@ describe('Kanban Task', () => {
 					value={{
 						boardData: {},
 						changeTaskStatus: jest.fn(),
+						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
 						projectId: '',

@@ -41,6 +41,7 @@ import './CalendarView.scss';
 import type {FirstDayOfWeekLocale} from 'frontend-js-web';
 
 interface CalendarViewProps {
+	hasAddTaskPermission: boolean;
 	items: ITask[];
 	itemsActions: IItemsActions[];
 	projectId?: string;
@@ -54,6 +55,7 @@ interface MoreLinkPopover {
 }
 
 export default function CalendarView({
+	hasAddTaskPermission,
 	items,
 	itemsActions,
 	projectId,
@@ -431,56 +433,6 @@ export default function CalendarView({
 					setCurrentView(view.type);
 					setTitle(view.title);
 				}}
-				dayCellContent={(arg) => {
-					const dateMarker =
-						currentView === 'dayGridWeek'
-							? getProjectDateMarker(
-									dateUtils.format(arg.date, 'yyyy-MM-dd'),
-									projectDates
-								)
-							: null;
-
-					return (
-						<>
-							{arg.dayNumberText || String(arg.date.getDate())}
-
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get('add-task')}
-								borderless
-								className="lfr__calendar-view-add-task-button"
-								displayType="secondary"
-								onClick={() =>
-									openCreateTaskModal(
-										dateUtils.format(arg.date, 'yyyy-MM-dd')
-									)
-								}
-								rounded
-								size="xs"
-								symbol="plus"
-								title={Liferay.Language.get('add-task')}
-							/>
-
-							{dateMarker && (
-								<span
-									className={classNames(
-										'lfr__calendar-view-date-marker',
-										`lfr__calendar-view-date-marker-${dateMarker}`
-									)}
-								>
-									<ClayIcon symbol="flag-full" />
-
-									{dateMarker === 'startDate'
-										? Liferay.Language.get(
-												'project-start-date'
-											)
-										: Liferay.Language.get(
-												'project-due-date'
-											)}
-								</span>
-							)}
-						</>
-					);
-				}}
 				dayHeaderFormat={{weekday: 'long'}}
 				dayMaxEvents
 				drop={async (arg) => {
@@ -574,6 +526,67 @@ export default function CalendarView({
 				moreLinkHint={Liferay.Language.get('view-all-tasks')}
 				plugins={[dayGridPlugin, interactionPlugin]}
 				ref={calendarRef}
+				{...(hasAddTaskPermission && {
+					dayCellContent: (arg) => {
+						const dateMarker =
+							currentView === 'dayGridWeek'
+								? getProjectDateMarker(
+										dateUtils.format(
+											arg.date,
+											'yyyy-MM-dd'
+										),
+										projectDates
+									)
+								: null;
+
+						return (
+							<>
+								{arg.dayNumberText ||
+									String(arg.date.getDate())}
+
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get(
+										'add-task'
+									)}
+									borderless
+									className="lfr__calendar-view-add-task-button"
+									displayType="secondary"
+									onClick={() =>
+										openCreateTaskModal(
+											dateUtils.format(
+												arg.date,
+												'yyyy-MM-dd'
+											)
+										)
+									}
+									rounded
+									size="xs"
+									symbol="plus"
+									title={Liferay.Language.get('add-task')}
+								/>
+
+								{dateMarker && (
+									<span
+										className={classNames(
+											'lfr__calendar-view-date-marker',
+											`lfr__calendar-view-date-marker-${dateMarker}`
+										)}
+									>
+										<ClayIcon symbol="flag-full" />
+
+										{dateMarker === 'startDate'
+											? Liferay.Language.get(
+													'project-start-date'
+												)
+											: Liferay.Language.get(
+													'project-due-date'
+												)}
+									</span>
+								)}
+							</>
+						);
+					},
+				})}
 			/>
 
 			{moreLinkPopover && (
