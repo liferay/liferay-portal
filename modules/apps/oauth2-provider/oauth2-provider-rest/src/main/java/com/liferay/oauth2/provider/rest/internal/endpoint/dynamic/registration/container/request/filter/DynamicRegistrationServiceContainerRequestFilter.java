@@ -512,41 +512,38 @@ public class DynamicRegistrationServiceContainerRequestFilter
 
 		Set<String> normalizedAllowedHosts = new HashSet<>();
 
-		if (allowedHosts != null) {
-			for (String allowedHost : allowedHosts) {
-				if (Validator.isBlank(allowedHost)) {
+		for (String allowedHost : GetterUtil.getStringValues(allowedHosts)) {
+			if (Validator.isBlank(allowedHost)) {
+				continue;
+			}
+
+			for (String host : allowedHost.split("\\s+")) {
+				if (Validator.isBlank(host)) {
 					continue;
 				}
 
-				for (String host : allowedHost.split("\\s+")) {
-					if (Validator.isBlank(host)) {
-						continue;
-					}
-
-					normalizedAllowedHosts.add(_normalizeHost(host));
-				}
+				normalizedAllowedHosts.add(_normalizeHost(host));
 			}
 		}
 
-		if (normalizedAllowedHosts.contains(StringPool.STAR)) {
+		if (normalizedAllowedHosts.contains(StringPool.STAR) ||
+			normalizedAllowedHosts.contains(clientHost)) {
+
 			return;
 		}
 
-		if (!normalizedAllowedHosts.contains(clientHost)) {
-			String message =
-				"Host " + clientHost + " is not allowed for open registration";
+		String message =
+			"Host " + clientHost + " is not allowed for open registration";
 
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
-				_getRejectAuditMessage(
-					clientHost, companyId, OAuthConstants.ACCESS_DENIED,
-					message, httpServletRequest,
-					OAuth2ProviderRESTEndpointConstants.
-						DYNAMIC_REGISTRATION_MODE_OPEN));
+		DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			_getRejectAuditMessage(
+				clientHost, companyId, OAuthConstants.ACCESS_DENIED, message,
+				httpServletRequest,
+				OAuth2ProviderRESTEndpointConstants.
+					DYNAMIC_REGISTRATION_MODE_OPEN));
 
-			OAuth2ErrorUtil.reportInvalidRequestError(
-				message, OAuthConstants.ACCESS_DENIED,
-				Response.Status.FORBIDDEN);
-		}
+		OAuth2ErrorUtil.reportInvalidRequestError(
+			message, OAuthConstants.ACCESS_DENIED, Response.Status.FORBIDDEN);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
