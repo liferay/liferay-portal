@@ -235,7 +235,7 @@ TLDTypeCheck | .tld | Ensures the fully qualified name is used for types in `.tl
 TSConfigFileCheck | .ts or .tsx | Performs several checks on `ts.config` file. |
 TSSpecFileLocationCheck | .ts or .tsx | Checks that `*.spec.ts` file should be inside a folder that contains a `config.ts`. |
 TestClassDBConnectionCheck | .java | Finds cases of incorrect use of database connection. |
-TestClassHardcodedPortCheck | .java | Finds cases where `PortalUtil.getPortalServerPort` should be used. |
+TestClassHardcodedPortCheck | .java | Checks usages of `PortalUtil.getPortalServerPort()` in test classes. |
 TestClassMissingLiferayUnitTestRuleCheck | .java | Finds missing LiferayUnitTestRule. |
 [ThreadContextClassLoaderCheck](check/thread_context_class_loader_check.md#threadcontextclassloadercheck) | .java | Checks usage of `Thread.setContextClassLoader`. |
 TransactionalTestRuleCheck | .java | Finds usage of `TransactionalTestRule` in `*StagedModelDataHandlerTest`. |
