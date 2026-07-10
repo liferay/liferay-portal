@@ -227,6 +227,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteFragmentDuplicateKeyProblemException();
 		_testPostSiteFragmentEmpty();
+		_testPostSiteFragmentFragmentSetAndFragmentSetExternalReferenceCode();
+		_testPostSiteFragmentFragmentSetAndFragmentSetExternalReferenceCodeProblemException();
 		_testPostSiteFragmentFragmentSetExisting();
 		_testPostSiteFragmentFragmentSetExternalReferenceCodeNullProblemException();
 		_testPostSiteFragmentFragmentSetNonexisting();
@@ -1593,6 +1595,48 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	private void _testPostSiteFragmentEmpty() throws Exception {
 		_testPostFragmentEmpty(this::_postSiteFragment);
+	}
+
+	private void _testPostSiteFragmentFragmentSetAndFragmentSetExternalReferenceCode()
+		throws Exception {
+
+		Fragment fragment = randomFragment();
+
+		FragmentCollection fragmentCollection1 = _addFragmentCollection();
+		FragmentCollection fragmentCollection2 = _addFragmentCollection();
+
+		fragment.setFragmentSet(
+			_randomFragmentSet(fragmentCollection1.getExternalReferenceCode()));
+		fragment.setFragmentSetExternalReferenceCode(
+			fragmentCollection2.getExternalReferenceCode());
+
+		Fragment postFragment = _postSiteFragment(fragment);
+
+		Assert.assertEquals(
+			fragmentCollection2.getExternalReferenceCode(),
+			postFragment.getFragmentSetExternalReferenceCode());
+	}
+
+	private void _testPostSiteFragmentFragmentSetAndFragmentSetExternalReferenceCodeProblemException()
+		throws Exception {
+
+		Fragment fragment = randomFragment();
+
+		fragment.setFragmentSet(
+			_randomFragmentSet(RandomTestUtil.randomString()));
+		fragment.setFragmentSetExternalReferenceCode(
+			RandomTestUtil.randomString());
+
+		_assertProblemException(
+			"the-fragment-set-external-reference-codes-do-not-match",
+			() -> {
+				try (SafeCloseable safeCloseable =
+						LazyReferencingTestUtil.
+							setLazyReferencingWithSafeCloseable(true)) {
+
+					_postSiteFragment(fragment);
+				}
+			});
 	}
 
 	private void _testPostSiteFragmentFragmentSetExisting() throws Exception {
