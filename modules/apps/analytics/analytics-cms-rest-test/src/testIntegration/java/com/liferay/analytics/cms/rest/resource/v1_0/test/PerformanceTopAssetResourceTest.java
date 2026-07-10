@@ -6,7 +6,6 @@
 package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAsset;
-import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAssetItem;
 import com.liferay.analytics.cms.rest.dto.v1_0.Trend;
 import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceTopAssetResource;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
@@ -22,21 +21,27 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.io.ByteArrayOutputStream;
 
 import java.time.LocalDate;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -57,37 +62,6 @@ public class PerformanceTopAssetResourceTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@Override
-	@Test
-	public void testGetPerformanceTopAsset() throws Exception {
-		String dataSourceId = RandomTestUtil.randomString();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						AnalyticsConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"liferayAnalyticsDataSourceId", dataSourceId
-						).put(
-							"liferayAnalyticsEnableAllGroupIds", true
-						).put(
-							"liferayAnalyticsFaroBackendSecuritySignature",
-							RandomTestUtil.randomString()
-						).put(
-							"liferayAnalyticsFaroBackendURL",
-							"http://" + RandomTestUtil.randomString()
-						).build())) {
-
-			_testGetPerformanceTopAssetResponse();
-			_testGetPerformanceTopAssetURL(dataSourceId);
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_performanceTopAssetResource, "_http", _http);
-		}
-	}
 
 	@Override
 	@Test
@@ -120,6 +94,83 @@ public class PerformanceTopAssetResourceTest
 		}
 	}
 
+	@Override
+	@Test
+	public void testGetPerformanceTopAssetPage() throws Exception {
+		String dataSourceId = RandomTestUtil.randomString();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId", dataSourceId
+						).put(
+							"liferayAnalyticsEnableAllGroupIds", true
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			_testGetPerformanceTopAssetPageResponse();
+			_testGetPerformanceTopAssetPageURL(dataSourceId);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_performanceTopAssetResource, "_http", _http);
+		}
+	}
+
+	@Override
+	@Test
+	public void testGetPerformanceTopAssetPageWithPagination()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsEnableAllGroupIds", true
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			RecordingMockHttp recordingMockHttp = _setUpRecordingMockHttp(
+				"{}", "/api/1.0/asset-metric/objectEntry/summaries");
+
+			_setUpUriInfo(null);
+
+			int page = RandomTestUtil.nextInt();
+			int pageSize = RandomTestUtil.nextInt();
+
+			_performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, RandomTestUtil.nextInt(), null, null,
+				Pagination.of(page, pageSize), null);
+
+			String location = recordingMockHttp.getLocation();
+
+			_assertParameter(String.valueOf(page - 1), "page", location);
+			_assertParameter(String.valueOf(pageSize), "size", location);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_performanceTopAssetResource, "_http", _http);
+		}
+	}
+
 	private void _assertParameter(
 		String expectedValue, String name, String url) {
 
@@ -141,16 +192,39 @@ public class PerformanceTopAssetResourceTest
 		return recordingMockHttp;
 	}
 
+	private void _setUpUriInfo(String filterString) {
+		MultivaluedMap<String, String> multivaluedMap =
+			new MultivaluedHashMap<>();
+
+		if (filterString != null) {
+			multivaluedMap.putSingle("filter", filterString);
+		}
+
+		UriInfo uriInfo = (UriInfo)ProxyUtil.newProxyInstance(
+			UriInfo.class.getClassLoader(), new Class<?>[] {UriInfo.class},
+			(proxy, method, args) -> {
+				if (Objects.equals(method.getName(), "getQueryParameters")) {
+					return multivaluedMap;
+				}
+
+				return null;
+			});
+
+		ReflectionTestUtil.setFieldValue(
+			_performanceTopAssetResource, "contextUriInfo", uriInfo);
+	}
+
 	private void _testGetPerformanceTopAssetExportResponse() throws Exception {
 		String value = RandomTestUtil.randomString();
 
 		_setUpRecordingMockHttp(
 			value, "/api/1.0/asset-metric/objectEntry/summaries/export");
 
+		_setUpUriInfo(null);
+
 		Response response =
 			_performanceTopAssetResource.getPerformanceTopAssetExport(
-				RandomTestUtil.randomString(), null, RandomTestUtil.nextInt(),
-				null);
+				null, RandomTestUtil.nextInt(), null, null, null);
 
 		Assert.assertEquals(
 			"attachment; filename=top-assets-" + LocalDate.now() + ".csv",
@@ -175,18 +249,22 @@ public class PerformanceTopAssetResourceTest
 
 		String assetFilterString = RandomTestUtil.randomString();
 		int rangeKey = RandomTestUtil.nextInt();
+		String search = RandomTestUtil.randomString();
 		Sort[] sorts = {
 			new Sort(RandomTestUtil.randomString(), true),
 			new Sort(RandomTestUtil.randomString(), false)
 		};
 
+		_setUpUriInfo(assetFilterString);
+
 		_performanceTopAssetResource.getPerformanceTopAssetExport(
-			assetFilterString, null, rangeKey, sorts);
+			null, rangeKey, search, null, sorts);
 
 		String location = recordingMockHttp.getLocation();
 
 		_assertParameter(dataSourceId, "dataSourceId", location);
 		_assertParameter(assetFilterString, "filter", location);
+		_assertParameter(search, "keywords", location);
 		_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 
 		StringBundler sb = new StringBundler();
@@ -204,15 +282,14 @@ public class PerformanceTopAssetResourceTest
 		_assertParameter(sb.toString(), "sort", location);
 	}
 
-	private void _testGetPerformanceTopAssetResponse() throws Exception {
+	private void _testGetPerformanceTopAssetPageResponse() throws Exception {
+		String assetId = RandomTestUtil.randomString();
 		String assetTitle = RandomTestUtil.randomString();
 		String assetType = RandomTestUtil.randomString();
 		int downloads = RandomTestUtil.nextInt();
 		double engagement = RandomTestUtil.nextDouble();
 		double engagementTrend = RandomTestUtil.nextDouble();
 		int impressions = RandomTestUtil.nextInt();
-		int lastPage = RandomTestUtil.nextInt();
-		int page = RandomTestUtil.nextInt();
 		int pageSize = RandomTestUtil.nextInt();
 		int totalCount = RandomTestUtil.nextInt();
 		int views = RandomTestUtil.nextInt();
@@ -224,6 +301,8 @@ public class PerformanceTopAssetResourceTest
 					"assetSummaryMetrics",
 					JSONUtil.putAll(
 						JSONUtil.put(
+							"assetId", assetId
+						).put(
 							"assetTitle", assetTitle
 						).put(
 							"assetType", assetType
@@ -248,60 +327,47 @@ public class PerformanceTopAssetResourceTest
 							"viewsMetric", JSONUtil.put("value", views)
 						)))
 			).put(
-				"page",
-				JSONUtil.put(
-					"number", page
-				).put(
-					"size", pageSize
-				).put(
-					"totalElements", totalCount
-				).put(
-					"totalPages", lastPage
-				)
+				"page", JSONUtil.put("totalElements", totalCount)
 			).toString(),
 			"/api/1.0/asset-metric/objectEntry/summaries");
 
-		PerformanceTopAsset performanceTopAsset =
-			_performanceTopAssetResource.getPerformanceTopAsset(
-				RandomTestUtil.randomString(), null, RandomTestUtil.nextInt(),
-				Pagination.of(page, pageSize), null);
+		_setUpUriInfo(null);
 
-		Assert.assertEquals(lastPage, (long)performanceTopAsset.getLastPage());
-		Assert.assertEquals(page, (long)performanceTopAsset.getPage());
-		Assert.assertEquals(pageSize, (long)performanceTopAsset.getPageSize());
-		Assert.assertEquals(
-			totalCount, (long)performanceTopAsset.getTotalCount());
+		Page<PerformanceTopAsset> page =
+			_performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, RandomTestUtil.nextInt(), null, null,
+				Pagination.of(1, pageSize), null);
 
-		PerformanceTopAssetItem[] performanceTopAssetItems =
-			performanceTopAsset.getPerformanceTopAssetItems();
+		Assert.assertEquals(totalCount, page.getTotalCount());
+
+		List<PerformanceTopAsset> performanceTopAssets =
+			(List<PerformanceTopAsset>)page.getItems();
 
 		Assert.assertEquals(
-			Arrays.toString(performanceTopAssetItems), 1,
-			performanceTopAssetItems.length);
+			performanceTopAssets.toString(), 1, performanceTopAssets.size());
 
-		PerformanceTopAssetItem performanceTopAssetItem =
-			performanceTopAssetItems[0];
+		PerformanceTopAsset performanceTopAsset = performanceTopAssets.get(0);
 
+		Assert.assertEquals(downloads, performanceTopAsset.getDownloads(), 0);
+		Assert.assertEquals(engagement, performanceTopAsset.getEngagement(), 0);
 		Assert.assertEquals(
-			downloads, performanceTopAssetItem.getDownloads(), 0);
+			assetId, performanceTopAsset.getExternalReferenceCode());
 		Assert.assertEquals(
-			engagement, performanceTopAssetItem.getEngagement(), 0);
-		Assert.assertEquals(
-			impressions, performanceTopAssetItem.getImpressions(), 0);
-		Assert.assertEquals(assetType, performanceTopAssetItem.getMimeType());
-		Assert.assertEquals(assetTitle, performanceTopAssetItem.getTitle());
+			impressions, performanceTopAsset.getImpressions(), 0);
+		Assert.assertEquals(assetTitle, performanceTopAsset.getTitle());
 
-		Trend trend = performanceTopAssetItem.getTrend();
+		Trend trend = performanceTopAsset.getTrend();
 
 		Assert.assertEquals(
 			Trend.Classification.POSITIVE.toString(),
 			String.valueOf(trend.getClassification()));
 		Assert.assertEquals(engagementTrend, trend.getPercentage(), 0);
 
-		Assert.assertEquals(views, performanceTopAssetItem.getViews(), 0);
+		Assert.assertEquals(assetType, performanceTopAsset.getType());
+		Assert.assertEquals(views, performanceTopAsset.getViews(), 0);
 	}
 
-	private void _testGetPerformanceTopAssetURL(String dataSourceId)
+	private void _testGetPerformanceTopAssetPageURL(String dataSourceId)
 		throws Exception {
 
 		RecordingMockHttp recordingMockHttp = _setUpRecordingMockHttp(
@@ -311,20 +377,22 @@ public class PerformanceTopAssetResourceTest
 		int page = RandomTestUtil.nextInt();
 		int pageSize = RandomTestUtil.nextInt();
 		int rangeKey = RandomTestUtil.nextInt();
-
+		String search = RandomTestUtil.randomString();
 		Sort[] sorts = {
 			new Sort(RandomTestUtil.randomString(), true),
 			new Sort(RandomTestUtil.randomString(), false)
 		};
 
-		_performanceTopAssetResource.getPerformanceTopAsset(
-			assetFilterString, null, rangeKey, Pagination.of(page, pageSize),
-			sorts);
+		_setUpUriInfo(assetFilterString);
+
+		_performanceTopAssetResource.getPerformanceTopAssetPage(
+			null, rangeKey, search, null, Pagination.of(page, pageSize), sorts);
 
 		String location = recordingMockHttp.getLocation();
 
 		_assertParameter(dataSourceId, "dataSourceId", location);
 		_assertParameter(assetFilterString, "filter", location);
+		_assertParameter(search, "keywords", location);
 		_assertParameter(String.valueOf(page - 1), "page", location);
 		_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 		_assertParameter(String.valueOf(pageSize), "size", location);
