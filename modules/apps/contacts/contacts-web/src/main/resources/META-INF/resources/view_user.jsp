@@ -339,7 +339,7 @@ request.setAttribute("view_user.jsp-user", user2);
 														sb.append("<li><a class=\"text-decoration-underline\" href=\"");
 														sb.append(searchURL);
 														sb.append("\">");
-														sb.append(assetTag.getName());
+														sb.append(HtmlUtil.escape(assetTag.getName()));
 														sb.append("</a></li>");
 													}
 													%>
