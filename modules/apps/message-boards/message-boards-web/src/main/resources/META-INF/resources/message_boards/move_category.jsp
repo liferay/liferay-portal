@@ -30,7 +30,7 @@ if (portletTitleBasedNavigation) {
 
 <div <%= portletTitleBasedNavigation ? "class=\"container-fluid container-fluid-max-xl container-form-lg\"" : StringPool.BLANK %>>
 	<c:if test="<%= !portletTitleBasedNavigation %>">
-		<h3><%= LanguageUtil.format(request, "move-x", category.getName(), false) %></h3>
+		<h3><%= LanguageUtil.format(request, "move-x", HtmlUtil.escape(category.getName()), false) %></h3>
 	</c:if>
 
 	<portlet:actionURL name="/message_boards/move_category" var="moveCategoryURL" />
