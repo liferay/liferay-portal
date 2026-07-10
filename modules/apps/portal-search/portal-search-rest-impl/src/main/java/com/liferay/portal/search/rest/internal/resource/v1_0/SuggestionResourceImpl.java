@@ -79,15 +79,26 @@ public class SuggestionResourceImpl extends BaseSuggestionResourceImpl {
 
 		Layout layout = _layoutLocalService.getLayout(plid);
 
+		if (Validator.isNotNull(destinationFriendlyURL)) {
+			if (!StringUtil.startsWith(
+					destinationFriendlyURL, CharPool.SLASH)) {
+
+				destinationFriendlyURL = StringPool.SLASH.concat(
+					destinationFriendlyURL);
+			}
+
+			Layout destinationLayout = _fetchLayoutByFriendlyURL(
+				layout.getGroupId(), destinationFriendlyURL);
+
+			if (destinationLayout != null) {
+				layout = destinationLayout;
+			}
+		}
+
 		ThemeDisplay themeDisplay = _createThemeDisplay(currentURL, layout);
 
 		LiferayRenderRequest liferayRenderRequest = _createLiferayRenderRequest(
 			layout, themeDisplay);
-
-		if (!StringUtil.startsWith(destinationFriendlyURL, CharPool.SLASH)) {
-			destinationFriendlyURL = StringPool.SLASH.concat(
-				destinationFriendlyURL);
-		}
 
 		return Page.of(
 			transform(
@@ -245,6 +256,18 @@ public class SuggestionResourceImpl extends BaseSuggestionResourceImpl {
 		themeDisplay.setUser(contextUser);
 
 		return themeDisplay;
+	}
+
+	private Layout _fetchLayoutByFriendlyURL(long groupId, String friendlyURL) {
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			groupId, false, friendlyURL);
+
+		if (layout != null) {
+			return layout;
+		}
+
+		return _layoutLocalService.fetchLayoutByFriendlyURL(
+			groupId, true, friendlyURL);
 	}
 
 	@Reference
