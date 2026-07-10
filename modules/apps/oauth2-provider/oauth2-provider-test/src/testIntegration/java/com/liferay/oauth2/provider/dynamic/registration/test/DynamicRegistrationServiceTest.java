@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -349,8 +348,10 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	public void testRegisterInOpenModeEnforcesAllowedHosts() throws Exception {
 		String allowedHost = RandomTestUtil.randomString();
 
+		int port = RandomTestUtil.randomInt(1025, 65535);
+
 		String bracketedHostAndPort = StringBundler.concat(
-			"[", allowedHost, "]:", PortalUtil.getPortalServerPort(false));
+			"[", allowedHost, "]:", port);
 
 		// Allow when the bracketed IPv6 host is compared with or without a port
 
@@ -362,8 +363,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		// Allow when the port is present on the request host
 
 		_testRegisterInOpenModeEnforcesAllowedHosts(
-			allowedHost, 201,
-			allowedHost + ":" + PortalUtil.getPortalServerPort(false));
+			allowedHost, 201, allowedHost + ":" + port);
 
 		// Allow when the request host matches exactly
 
