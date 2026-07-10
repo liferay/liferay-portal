@@ -151,12 +151,11 @@ export default React.forwardRef(function ScheduleField(
 	);
 });
 
-function isPastDate(value: string) {
-	const languageId = Liferay.ThemeDisplay.getBCP47LanguageId();
+export function isPastDate(value: string) {
 	const timeZone = Liferay.ThemeDisplay.getTimeZone();
 
 	const timeZoneDateTime = new Date(
-		new Date().toLocaleString(languageId, {
+		new Date().toLocaleString('en-US', {
 			timeZone,
 		})
 	);
