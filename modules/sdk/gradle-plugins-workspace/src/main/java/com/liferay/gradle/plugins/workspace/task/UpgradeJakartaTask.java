@@ -82,7 +82,7 @@ public class UpgradeJakartaTask extends FormatSourceTask {
 			if ((file != null) && file.exists()) {
 				addSourceFormatterProperty(
 					"jakarta.transform.dependencies.file.path",
-					file.getAbsolutePath());
+					StringUtil.replaceBackslashes(file.getAbsolutePath()));
 			}
 		}
 		catch (Exception exception) {
