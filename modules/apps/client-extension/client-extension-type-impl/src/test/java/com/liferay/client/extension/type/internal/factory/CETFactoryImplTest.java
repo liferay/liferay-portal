@@ -66,8 +66,8 @@ public class CETFactoryImplTest {
 		GlobalCSSCET globalCSSCET = (GlobalCSSCET)cetFactoryImpl.create(
 			clientExtensionEntry, false);
 
-		Assert.assertEquals(url, globalCSSCET.getURL());
 		Assert.assertEquals("company", globalCSSCET.getScope());
+		Assert.assertEquals(url, globalCSSCET.getURL());
 	}
 
 	@Test
