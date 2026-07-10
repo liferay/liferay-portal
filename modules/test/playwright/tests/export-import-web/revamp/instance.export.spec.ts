@@ -140,7 +140,7 @@ test(
 			name: 'Export',
 		});
 
-		const exportUrl = await exportMenuItem.getAttribute('href');
+		const exportURL = await exportMenuItem.getAttribute('href');
 
 		await expect(exportMenuItem).toBeVisible();
 
@@ -156,7 +156,7 @@ test(
 
 		// Try to access the Export page directly using the stored URL
 
-		await page.goto(exportUrl);
+		await page.goto(exportURL);
 
 		await expect(exportImportPage.newButton).toBeHidden();
 	}
