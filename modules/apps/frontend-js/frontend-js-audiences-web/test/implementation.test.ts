@@ -52,5 +52,27 @@ describe('implementation', () => {
 
 			expect(runCount).toBe(2);
 		});
+
+		it('does not run handlers after they are cleared', async () => {
+			let runCount = 0;
+
+			store.setAudienceIds(new Set(['cleared']));
+
+			audiences.on('cleared', () => {
+				runCount += 1;
+			});
+
+			await audiences.runHandlers();
+
+			expect(runCount).toBe(1);
+
+			// Navigating to another page clears the previous page's handlers
+
+			audiences.clearHandlers();
+
+			await audiences.runHandlers();
+
+			expect(runCount).toBe(1);
+		});
 	});
 });
