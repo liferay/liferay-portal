@@ -18,7 +18,7 @@ AssetEntryResult assetEntryResult = (AssetEntryResult)request.getAttribute("view
 <ul class="list-group show-quick-actions-on-hover">
 	<c:if test="<%= Validator.isNotNull(assetEntryResult.getTitle()) %>">
 		<li class="list-group-header">
-			<p class="h3 list-group-header-title"><%= assetEntryResult.getTitle() %></p>
+			<p class="h3 list-group-header-title"><%= HtmlUtil.escape(assetEntryResult.getTitle()) %></p>
 		</li>
 	</c:if>
 
