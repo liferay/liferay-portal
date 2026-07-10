@@ -44,7 +44,7 @@ DLSelectRestrictedFileEntryTypesDisplayContext selectRestrictedFileEntryTypesDis
 				<div class="h5"><%= HtmlUtil.escape(fileEntryType.getName(locale)) %></div>
 
 				<div class="h6 text-default">
-					<span><%= fileEntryType.getDescription(locale) %></span>
+					<span><%= HtmlUtil.escape(fileEntryType.getDescription(locale)) %></span>
 				</div>
 			</liferay-ui:search-container-column-text>
 
