@@ -259,7 +259,8 @@ public class DynamicRegistrationServiceContainerRequestFilter
 
 		OAuth2DynamicRegistrationConfiguration
 			oAuth2DynamicRegistrationConfiguration =
-				_getOAuth2DynamicRegistrationConfiguration(companyId);
+				_configurationProvider.getCompanyConfiguration(
+					OAuth2DynamicRegistrationConfiguration.class, companyId);
 
 		String clientHost = _normalizeHost(
 			_getClientHost(
@@ -415,14 +416,6 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			accessTokenContent);
 
 		return jwsJwtCompactConsumer.getJwtToken();
-	}
-
-	private OAuth2DynamicRegistrationConfiguration
-			_getOAuth2DynamicRegistrationConfiguration(long companyId)
-		throws ConfigurationException {
-
-		return _configurationProvider.getCompanyConfiguration(
-			OAuth2DynamicRegistrationConfiguration.class, companyId);
 	}
 
 	private AuditMessage _getRejectAuditMessage(
