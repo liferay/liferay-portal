@@ -10,6 +10,7 @@ import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.type.GlobalCSSCET;
 import com.liferay.client.extension.type.factory.CETImplFactory;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -54,16 +55,18 @@ public class CETFactoryImplTest {
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS
 		);
 
+		String url = "http://" + RandomTestUtil.randomString();
+
 		Mockito.when(
 			clientExtensionEntry.getTypeSettings()
 		).thenReturn(
-			"scope=company\nurl=http://example.com/a.css"
+			"scope=company\nurl=" + url
 		);
 
 		GlobalCSSCET globalCSSCET = (GlobalCSSCET)cetFactoryImpl.create(
 			clientExtensionEntry, false);
 
-		Assert.assertEquals("http://example.com/a.css", globalCSSCET.getURL());
+		Assert.assertEquals(url, globalCSSCET.getURL());
 		Assert.assertEquals("company", globalCSSCET.getScope());
 	}
 

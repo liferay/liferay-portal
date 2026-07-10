@@ -70,7 +70,7 @@ public class CETManagerImplTest {
 	}
 
 	private void _testGetCETIsCached() throws Exception {
-		String url = RandomTestUtil.randomString();
+		String url = "http://" + RandomTestUtil.randomString();
 
 		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS, url);
@@ -100,7 +100,7 @@ public class CETManagerImplTest {
 			TestPropsValues.getCompanyId(),
 			clientExtensionEntry.getExternalReferenceCode());
 
-		String url = RandomTestUtil.randomString();
+		String url = "http://" + RandomTestUtil.randomString();
 
 		clientExtensionEntry.setTypeSettings(
 			UnicodePropertiesBuilder.create(
