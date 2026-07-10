@@ -111,7 +111,7 @@ else {
 	}
 	%>
 
-	<%= DLUtil.getAbsolutePath(liferayPortletRequest, dlAdminDisplayContext.getRootFolderId(), folderId).replace(StringPool.RAQUO_CHAR, StringPool.GREATER_THAN) %>
+	<%= HtmlUtil.escape(DLUtil.getAbsolutePath(liferayPortletRequest, dlAdminDisplayContext.getRootFolderId(), folderId).replace(StringPool.RAQUO_CHAR, StringPool.GREATER_THAN)) %>
 </span>
 
 <c:if test="<%= latestFileVersion.getModel() instanceof DLFileVersion %>">
