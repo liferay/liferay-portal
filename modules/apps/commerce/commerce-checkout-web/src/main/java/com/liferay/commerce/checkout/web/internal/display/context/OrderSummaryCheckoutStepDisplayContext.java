@@ -6,7 +6,6 @@
 package com.liferay.commerce.checkout.web.internal.display.context;
 
 import com.liferay.account.model.AccountEntry;
-import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceConstants;
