@@ -53,6 +53,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,10 +102,20 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 								CompletableFuture<Void> localCompletableFuture =
 									new CompletableFuture<>();
 
-								Runnable runnable = _processBatchEngineUnit(
-									batchEngineUnit, localCompletableFuture);
+								if (_isProcessed(batchEngineUnit)) {
+									localCompletableFuture.complete(null);
 
-								runnable.run();
+									return localCompletableFuture;
+								}
+
+								List<BatchEngineUnitData> singletonList =
+									Collections.singletonList(
+										_getBatchEngineUnitData(
+											batchEngineUnit));
+
+								_processBatchEngineUnits(
+									singletonList.iterator(),
+									localCompletableFuture);
 
 								return localCompletableFuture;
 							});
@@ -137,33 +149,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			return completableFuture;
 		}
 
-		completableFuture.complete(null);
-
-		for (BatchEngineUnitData batchEngineUnitData : batchEngineUnitDatas) {
-			CompletableFuture<Void> nextCompletableFuture =
-				new CompletableFuture<>();
-
-			Runnable runnable = _execute(
-				batchEngineUnitData, nextCompletableFuture);
-
-			completableFuture.whenComplete(
-				(result, throwable) -> {
-					if (throwable != null) {
-						nextCompletableFuture.completeExceptionally(throwable);
-
-						return;
-					}
-
-					try {
-						runnable.run();
-					}
-					catch (Throwable throwable2) {
-						nextCompletableFuture.completeExceptionally(throwable2);
-					}
-				});
-
-			completableFuture = nextCompletableFuture;
-		}
+		_processBatchEngineUnits(
+			batchEngineUnitDatas.iterator(), completableFuture);
 
 		return completableFuture;
 	}
@@ -251,8 +238,9 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 	}
 
-	private Runnable _execute(
+	private void _execute(
 		BatchEngineUnitData batchEngineUnitData,
+		Iterator<BatchEngineUnitData> iterator,
 		CompletableFuture<Void> completableFuture) {
 
 		BatchEngineUnit batchEngineUnit = batchEngineUnitData._batchEngineUnit;
@@ -283,6 +271,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					Future<ServiceReference<Object>> future,
 					ServiceReference<Object> serviceReference) {
 
+					boolean imported = false;
+
 					try {
 						_markProcessed(batchEngineUnit);
 
@@ -303,7 +293,7 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 							batchEngineUnitData._content,
 							batchEngineUnitData._contentType, service);
 
-						completableFuture.complete(null);
+						imported = true;
 					}
 					catch (Throwable throwable) {
 						completableFuture.completeExceptionally(throwable);
@@ -326,11 +316,15 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 							_log.warn(exception);
 						}
 					}
+
+					if (imported) {
+						_processBatchEngineUnits(iterator, completableFuture);
+					}
 				}
 
 			});
 
-		return serviceTracker::open;
+		serviceTracker.open();
 	}
 
 	private long _getAdminUserId(long companyId) throws PortalException {
@@ -532,17 +526,30 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 	}
 
-	private Runnable _processBatchEngineUnit(
-			BatchEngineUnit batchEngineUnit,
-			CompletableFuture<Void> completableFuture)
-		throws Exception {
+	private void _processBatchEngineUnits(
+		Iterator<BatchEngineUnitData> iterator,
+		CompletableFuture<Void> completableFuture) {
 
-		if (_isProcessed(batchEngineUnit)) {
-			return null;
+		// Exactly one thread advances the iterator at any time: the caller
+		// until the current unit's tracker is opened, then only the unit's
+		// single listener firing, which imports the unit and reenters this
+		// method. The handoff is serialized by the unit's
+		// DefaultNoticeableFuture: its set-once semantics pick exactly one
+		// continuation and its listener registration publishes the iterator
+		// state to the continuing thread.
+
+		if (!iterator.hasNext()) {
+			completableFuture.complete(null);
+
+			return;
 		}
 
-		return _execute(
-			_getBatchEngineUnitData(batchEngineUnit), completableFuture);
+		try {
+			_execute(iterator.next(), iterator, completableFuture);
+		}
+		catch (Throwable throwable) {
+			completableFuture.completeExceptionally(throwable);
+		}
 	}
 
 	private BatchEngineUnitConfiguration _updateBatchEngineUnitConfiguration(
