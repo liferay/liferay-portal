@@ -308,10 +308,6 @@ public class LiferayDynamicRegistrationService
 			liferayClientRegistrationResponse.setJwksUri(jwksURI);
 		}
 
-		// Open registration is create only. Suppress the registration access
-		// token and management URI so the response does not advertise a client
-		// lifecycle that the endpoint does not support for open clients.
-
 		if (!_isOpenRegistration(client)) {
 			liferayClientRegistrationResponse.setRegistrationAccessToken(
 				properties.get("registration_access_token"));
