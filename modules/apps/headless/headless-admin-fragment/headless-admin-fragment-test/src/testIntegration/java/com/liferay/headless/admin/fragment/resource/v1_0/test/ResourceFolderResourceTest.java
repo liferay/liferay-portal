@@ -394,9 +394,11 @@ public class ResourceFolderResourceTest
 			"COMPLETED", false,
 			HTTPTestUtil.invokeToJSONObject(
 				null,
-				"headless-admin-fragment/v1.0/sites/" +
-					siteExternalReferenceCode +
-						"/resource-folders/export-batch?contentType=JSON",
+				StringBundler.concat(
+					"headless-admin-fragment/v1.0/sites/",
+					siteExternalReferenceCode,
+					"/resource-folders/export-batch?contentType=JSON",
+					"&batchNestedFields=fragmentSet,parentResourceFolder"),
 				Http.Method.POST));
 
 		try (InputStream inputStream = HTTPTestUtil.invokeToInputStream(
