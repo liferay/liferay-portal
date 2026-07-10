@@ -49,6 +49,7 @@ type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
 
 interface AIAssistantChatProps {
 	aiState?: AIState;
+	context?: ChatContext;
 	embedded?: boolean;
 	getContext?: () => ChatContext;
 	hideTriggerLabel?: boolean;
@@ -62,8 +63,9 @@ interface AIAssistantChatProps {
 
 const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	aiState,
+	context,
 	embedded = false,
-	getContext = () => ({}),
+	getContext,
 	hideTriggerLabel = false,
 	initialMessage,
 	instructionDefinitionScope,
@@ -101,7 +103,8 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	};
 	const eventSourceRef = useRef<EventSource | null>(null);
 	const eventSourceReference = useRef<string | null>(null);
-	const getContextRef = useRef<() => ChatContext>(getContext);
+	const contextRef = useRef<ChatContext | undefined>(context);
+	const getContextRef = useRef<(() => ChatContext) | undefined>(getContext);
 	const initialMessageRef = useRef<string | undefined>(initialMessage);
 	const initialMessageSentRef = useRef<boolean>(false);
 	const instructionDefinitionScopeRef = useRef<string>(
@@ -112,9 +115,10 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	useEffect(() => {
+		contextRef.current = context;
 		getContextRef.current = getContext;
 		instructionDefinitionScopeRef.current = instructionDefinitionScope;
-	}, [getContext, instructionDefinitionScope]);
+	}, [context, getContext, instructionDefinitionScope]);
 
 	const sendMessage = useCallback((text: string) => {
 		if (!text.trim()) {
@@ -134,10 +138,11 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		if (eventSourceReference.current) {
 			setIsGenerating(true);
 
-			const getCurrentContext = getContextRef.current;
-
 			postChatByExternalReferenceCodeMessage({
-				chatContext: getCurrentContext(),
+				chatContext: {
+					...contextRef.current,
+					...getContextRef.current?.(),
+				},
 				eventSourceReference: eventSourceReference.current,
 				instructionDefinitionScope:
 					instructionDefinitionScopeRef.current,
