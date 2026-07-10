@@ -132,8 +132,24 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
+	public void testGetDesignLibraryFragmentSet() throws Exception {
+		super.testGetDesignLibraryFragmentSet();
+
+		_testGetDesignLibraryFragmentSetActions();
+	}
+
+	@Override
+	@Test
 	public void testGetDesignLibraryFragmentSetsPage() throws Exception {
 		super.testGetDesignLibraryFragmentSetsPage();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteFragmentSet() throws Exception {
+		super.testGetSiteFragmentSet();
+
+		_testGetSiteFragmentSetActions();
 	}
 
 	@Override
@@ -444,6 +460,19 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
+	private void _assertActionHref(
+		Map<String, Map<String, String>> actions, String content,
+		String... keys) {
+
+		for (String key : keys) {
+			Map<String, String> action = actions.get(key);
+
+			String href = action.get("href");
+
+			Assert.assertTrue(key, href.contains(content));
+		}
+	}
+
 	private void _assertFragmentCollection(FragmentSet fragmentSet, Group group)
 		throws Exception {
 
@@ -602,6 +631,40 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			() -> fragmentSetResource.deleteDesignLibraryFragmentSet(
 				testGroup.getExternalReferenceCode(),
 				RandomTestUtil.randomString()));
+	}
+
+	private void _testGetDesignLibraryFragmentSetActions() throws Exception {
+		Group group = _depotEntry.getGroup();
+
+		FragmentSet fragmentSet = _addDesignLibraryFragmentSet(
+			randomFragmentSet(), group);
+
+		FragmentSet getFragmentSet =
+			fragmentSetResource.getDesignLibraryFragmentSet(
+				group.getExternalReferenceCode(),
+				fragmentSet.getExternalReferenceCode());
+
+		_assertActionHref(
+			getFragmentSet.getActions(),
+			StringBundler.concat(
+				"/design-libraries/", group.getExternalReferenceCode(),
+				"/fragment-sets/", fragmentSet.getExternalReferenceCode()),
+			"delete", "get");
+	}
+
+	private void _testGetSiteFragmentSetActions() throws Exception {
+		FragmentSet postFragmentSet = testGetSiteFragmentSet_addFragmentSet();
+
+		FragmentSet getFragmentSet = fragmentSetResource.getSiteFragmentSet(
+			testGetSiteFragmentSet_getSiteExternalReferenceCode(),
+			postFragmentSet.getExternalReferenceCode());
+
+		_assertActionHref(
+			getFragmentSet.getActions(),
+			StringBundler.concat(
+				"/sites/", testGroup.getExternalReferenceCode(),
+				"/fragment-sets/", postFragmentSet.getExternalReferenceCode()),
+			"delete", "get", "replace");
 	}
 
 	private void _testPostSiteFragmentSetBatch() throws Exception {
