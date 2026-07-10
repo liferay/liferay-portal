@@ -15,6 +15,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface InfoItemIdentifier {
 
+	public static final String VERSION_EDITABLE = "VERSION_EDITABLE";
+
 	public static final String VERSION_LATEST = "VERSION_LATEST";
 
 	public static final String VERSION_LATEST_APPROVED =

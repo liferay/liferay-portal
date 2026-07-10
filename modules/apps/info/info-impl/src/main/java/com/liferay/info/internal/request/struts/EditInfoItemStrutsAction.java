@@ -606,7 +606,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 			return null;
 		}
 
-		infoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_LATEST);
+		infoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_EDITABLE);
 
 		return infoItemIdentifier;
 	}

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Info API
 Bundle-SymbolicName: com.liferay.info.api
-Bundle-Version: 38.10.1
+Bundle-Version: 38.11.0
 Export-Package:\
 	com.liferay.info.collection.provider,\
 	com.liferay.info.constants,\
