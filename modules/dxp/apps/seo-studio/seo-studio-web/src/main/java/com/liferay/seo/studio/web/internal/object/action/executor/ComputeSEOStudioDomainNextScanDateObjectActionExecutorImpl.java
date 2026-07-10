@@ -53,12 +53,12 @@ public class ComputeSEOStudioDomainNextScanDateObjectActionExecutorImpl
 			JSONObject payloadJSONObject, long userId)
 		throws Exception {
 
+		Date nextScanDate = null;
+
 		long seoStudioDomainId = payloadJSONObject.getLong("classPK");
 
 		Map<String, Serializable> values = _objectEntryLocalService.getValues(
 			seoStudioDomainId);
-
-		Date nextScanDate = null;
 
 		if (GetterUtil.getBoolean(values.get("autoScanEnabled"))) {
 			nextScanDate = SEOStudioScanScheduleUtil.getNextScanDate(

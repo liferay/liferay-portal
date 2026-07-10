@@ -40,12 +40,10 @@ public class SEOStudioScanScheduleUtilTest {
 			_toDate(localDate, 9),
 			SEOStudioScanScheduleUtil.getNextScanDate(
 				_toInstant(localDate, 8), null, null, "daily", "09:00", "UTC"));
-
 		Assert.assertEquals(
 			_toDate(localDate.plusDays(1), 9),
 			SEOStudioScanScheduleUtil.getNextScanDate(
 				_toInstant(localDate, 9), null, null, "daily", "09:00", "UTC"));
-
 		Assert.assertEquals(
 			_toDate(localDate.plusDays(1), 9),
 			SEOStudioScanScheduleUtil.getNextScanDate(
@@ -123,7 +121,6 @@ public class SEOStudioScanScheduleUtilTest {
 				9),
 			SEOStudioScanScheduleUtil.getNextScanDate(
 				instant, null, "MO", "weekly", "09:00", "UTC"));
-
 		Assert.assertEquals(
 			_toDate(wednesdayLocalDate, 9),
 			SEOStudioScanScheduleUtil.getNextScanDate(
