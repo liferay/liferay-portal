@@ -1,6 +1,12 @@
 {
 	"dependencies": {
-		"frontend-js-web": "*"
+		"@clayui/icon": "^3.165.0",
+		"@clayui/link": "^3.165.0",
+		"@clayui/sticker": "^3.165.0",
+		"@liferay/frontend-data-set-web": "*",
+		"@liferay/site-cms-site-initializer": "*",
+		"frontend-js-web": "*",
+		"react": "18.2.0"
 	},
 	"main": "js/index.js",
 	"name": "@liferay/site-pim-site-initializer",

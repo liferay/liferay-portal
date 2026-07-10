@@ -27,7 +27,9 @@ ProductsSectionDisplayContext productsSectionDisplayContext = (ProductsSectionDi
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
 			apiURL="<%= productsSectionDisplayContext.getAPIURL() %>"
+			creationMenu="<%= productsSectionDisplayContext.getCreationMenu() %>"
 			emptyState="<%= productsSectionDisplayContext.getEmptyState() %>"
+			fdsActionDropdownItems="<%= productsSectionDisplayContext.getFDSActionDropdownItems() %>"
 			id="<%= PIMFDSNames.PRODUCTS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{ProductsFDSPropsTransformer} from site-pim-site-initializer"

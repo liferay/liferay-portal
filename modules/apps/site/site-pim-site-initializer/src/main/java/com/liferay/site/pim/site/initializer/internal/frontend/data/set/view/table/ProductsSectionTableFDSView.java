@@ -5,8 +5,10 @@
 
 package com.liferay.site.pim.site.initializer.internal.frontend.data.set.view.table;
 
+import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
+import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -32,21 +34,55 @@ public class ProductsSectionTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"embedded.name", "name"
+			"embedded.name", "name",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"nameTableCellRenderer")
 		).add(
 			"embedded.code", "code"
+		).add(
+			"embedded.systemProperties.objectDefinitionBrief.label", "type"
+		).add(
+			"embedded.scopeKey", "space",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"spaceTableCellRenderer")
+		).add(
+			"embedded.creator.name", "author",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"authorTableCellRenderer")
+		).add(
+			_getModifiedFDSTableSchemaField()
 		).add(
 			"embedded.status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"status")
-		).add(
-			"dateModified", "modified"
 		).build();
 	}
 
 	@Override
 	public boolean isDefault(String fdsName) {
 		return true;
+	}
+
+	private DateTimeFDSTableSchemaField _getModifiedFDSTableSchemaField() {
+		DateTimeFDSTableSchemaField dateTimeFDSTableSchemaField =
+			new DateTimeFDSTableSchemaField();
+
+		dateTimeFDSTableSchemaField.setContentRenderer(
+			"dateTime"
+		).setFieldName(
+			"dateModified"
+		).setLabel(
+			"modified"
+		).setLocalizeLabel(
+			true
+		).setSortable(
+			true
+		);
+
+		dateTimeFDSTableSchemaField.setTimeZoneBehavior(
+			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
+
+		return dateTimeFDSTableSchemaField;
 	}
 
 	@Reference
