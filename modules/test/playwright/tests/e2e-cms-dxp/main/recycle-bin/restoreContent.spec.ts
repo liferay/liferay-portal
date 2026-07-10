@@ -12,11 +12,11 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import getRandomString from '../../../../utils/getRandomString';
-import {ContentsPage} from '../../../site-cms-site-initializer/main/pages/ContentsPage';
-import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {deleteEntryToRecycleBin, restoreEntry} from './utils/recycleBin';
 
 const test = mergeTests(
+	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
@@ -34,7 +34,15 @@ const ENTITY = 'Basic Web Contents (CMS)';
 test(
 	'A CMS Administrator restores a deleted Basic Web Content from the Recycle Bin and it renders again for GUEST',
 	{tag: ['@LPD-95539', '@LPD-95539/TC-16.a']},
-	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
+	async ({
+		apiHelpers,
+		browser,
+		contentsPage,
+		page,
+		pageEditorPage,
+		recycleBinPage,
+		site,
+	}) => {
 		test.setTimeout(300000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -114,9 +122,6 @@ test(
 				}).toPass({timeout: 30000});
 			});
 
-			const contentsPage = new ContentsPage(page);
-			const recycleBinPage = new RecycleBinPage(page);
-
 			await test.step('The CMS Administrator deletes the content into the Recycle Bin', async () => {
 				await contentsPage.goto();
 
@@ -136,7 +141,7 @@ test(
 			await test.step('The CMS Administrator restores the content from the Recycle Bin', async () => {
 				await recycleBinPage.goto();
 
-				await restoreEntry(page, title);
+				await restoreEntry(recycleBinPage, title);
 			});
 
 			await test.step('The content reappears in the Space', async () => {

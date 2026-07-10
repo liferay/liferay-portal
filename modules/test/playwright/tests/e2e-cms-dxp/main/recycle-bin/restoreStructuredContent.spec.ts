@@ -14,12 +14,12 @@ import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
-import {ContentsPage} from '../../../site-cms-site-initializer/main/pages/ContentsPage';
-import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 import {deleteEntryToRecycleBin, restoreEntry} from './utils/recycleBin';
 
 const test = mergeTests(
+	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
@@ -37,8 +37,10 @@ test(
 	async ({
 		apiHelpers,
 		browser,
+		contentsPage,
 		page,
 		pageEditorPage,
+		recycleBinPage,
 		site,
 		structureBuilderPage,
 	}) => {
@@ -189,9 +191,6 @@ test(
 				}).toPass({timeout: 30000});
 			});
 
-			const contentsPage = new ContentsPage(page);
-			const recycleBinPage = new RecycleBinPage(page);
-
 			await test.step('The CMS Administrator deletes the content into the Recycle Bin', async () => {
 				await contentsPage.goto();
 
@@ -201,7 +200,7 @@ test(
 			await test.step('The CMS Administrator restores the content from the Recycle Bin', async () => {
 				await recycleBinPage.goto();
 
-				await restoreEntry(page, titleValue);
+				await restoreEntry(recycleBinPage, titleValue);
 			});
 
 			await test.step('USER sees the restored content again on the DXP page', async () => {

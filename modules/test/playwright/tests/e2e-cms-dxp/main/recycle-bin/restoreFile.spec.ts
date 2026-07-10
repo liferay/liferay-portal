@@ -15,11 +15,11 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import getRandomString from '../../../../utils/getRandomString';
 import {isImageLoaded} from '../../../../utils/isImageLoaded';
-import {AssetsPage} from '../../../site-cms-site-initializer/main/pages/AssetsPage';
-import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {deleteEntryToRecycleBin, restoreEntry} from './utils/recycleBin';
 
 const test = mergeTests(
+	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
@@ -41,7 +41,15 @@ const imageBase64 = readFileSync(
 test(
 	'A CMS Administrator restores a deleted file from the Recycle Bin and it renders again for GUEST',
 	{tag: ['@LPD-95539', '@LPD-95539/TC-16.c']},
-	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
+	async ({
+		apiHelpers,
+		assetsPage,
+		browser,
+		page,
+		pageEditorPage,
+		recycleBinPage,
+		site,
+	}) => {
 		test.setTimeout(300000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -129,9 +137,6 @@ test(
 				}).toPass({timeout: 30000});
 			});
 
-			const assetsPage = new AssetsPage(page);
-			const recycleBinPage = new RecycleBinPage(page);
-
 			await test.step('The CMS Administrator deletes the file into the Recycle Bin', async () => {
 				await assetsPage.gotoFiles();
 
@@ -143,7 +148,7 @@ test(
 			await test.step('The CMS Administrator restores the file from the Recycle Bin', async () => {
 				await recycleBinPage.goto();
 
-				await restoreEntry(page, title);
+				await restoreEntry(recycleBinPage, title);
 			});
 
 			await test.step('GUEST sees the restored file image again on the DXP page', async () => {

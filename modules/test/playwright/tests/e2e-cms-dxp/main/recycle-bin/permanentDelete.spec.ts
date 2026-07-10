@@ -10,10 +10,10 @@ import path from 'path';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {applyRecycleBinFilter} from './utils/recycleBin';
 
-const test = mergeTests(dataApiHelpersTest, loginTest());
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 const CONTENT_APPLICATION_NAME = 'cms/basic-web-contents';
 
@@ -26,7 +26,7 @@ const imageBase64 = readFileSync(
 test(
 	'A CMS Administrator permanently deletes selected items and they can no longer be restored',
 	{tag: ['@LPD-95539', '@LPD-95539/TC-16.d']},
-	async ({apiHelpers, page}) => {
+	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(180000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -54,8 +54,6 @@ test(
 				String(entry.id)
 			);
 		}
-
-		const recycleBinPage = new RecycleBinPage(page);
 
 		await test.step('Select the trashed items and permanently delete them', async () => {
 			await recycleBinPage.goto();
@@ -102,7 +100,7 @@ test(
 test(
 	'The Recycle Bin can be filtered by content type',
 	{tag: ['@LPD-95539', '@LPD-95539/TC-16.d', '@LPD-97359']},
-	async ({apiHelpers, page}) => {
+	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(180000);
 
 		test.fail(
@@ -151,8 +149,6 @@ test(
 			FILE_APPLICATION_NAME,
 			String(fileEntry.id)
 		);
-
-		const recycleBinPage = new RecycleBinPage(page);
 
 		await recycleBinPage.goto();
 

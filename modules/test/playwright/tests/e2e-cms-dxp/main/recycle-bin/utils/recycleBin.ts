@@ -7,6 +7,9 @@ import {Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../../../../helpers/ApiHelpers';
 import {addSpaceUser} from '../../../../../utils/addSpaceUser';
+import {waitForAlert} from '../../../../../utils/waitForAlert';
+import {DataSetPage} from '../../../../site-cms-site-initializer/main/pages/DataSetPage';
+import {RecycleBinPage} from '../../../../site-cms-site-initializer/main/pages/RecycleBinPage';
 
 export async function addSpaceUserWithSession(
 	apiHelpers: DataApiHelpers,
@@ -23,27 +26,6 @@ export async function addSpaceUserWithSession(
 	await apiHelpers.jsonWebServicesUser.answerReminderQuery(user.id);
 
 	return user;
-}
-
-function rowActionsButton(page: Page, rowText: string) {
-	return page
-		.locator('tbody tr', {hasText: rowText})
-		.first()
-		.getByRole('button', {name: `${rowText} Actions`});
-}
-
-async function clickRowAction(page: Page, rowText: string, action: string) {
-	const menuItem = page.getByRole('menuitem', {exact: true, name: action});
-
-	await expect(async () => {
-		if (!(await menuItem.isVisible())) {
-			await rowActionsButton(page, rowText).click({timeout: 5000});
-
-			await expect(menuItem).toBeVisible({timeout: 5000});
-		}
-	}).toPass({timeout: 30000});
-
-	await menuItem.click();
 }
 
 export async function applyRecycleBinFilter(
@@ -63,7 +45,10 @@ export async function applyRecycleBinFilter(
 }
 
 export async function deleteEntryToRecycleBin(page: Page, title: string) {
-	await clickRowAction(page, title, 'Delete');
+	await new DataSetPage(page).execItemAction({
+		action: 'Delete',
+		filter: title,
+	});
 
 	const modalDeleteButton = page
 		.locator('.modal.show')
@@ -73,35 +58,34 @@ export async function deleteEntryToRecycleBin(page: Page, title: string) {
 
 	await modalDeleteButton.click();
 
-	await expect(page.locator('.alert', {hasText: 'was moved'})).toBeVisible({
-		timeout: 15000,
+	await waitForAlert(page, `${title} was moved`, {autoClose: false});
+}
+
+export async function restoreEntry(
+	recycleBinPage: RecycleBinPage,
+	title: string
+) {
+	await recycleBinPage.execItemAction({action: 'Restore', filter: title});
+
+	await waitForAlert(recycleBinPage.page, `${title} was restored`, {
+		autoClose: false,
 	});
 }
 
-export async function restoreEntry(page: Page, title: string) {
-	await clickRowAction(page, title, 'Restore');
-
-	await expect(page.locator('.alert', {hasText: 'was restored'})).toBeVisible(
-		{timeout: 15000}
-	);
-}
-
-export async function expectRestoreUnavailable(page: Page, title: string) {
-	const actionsButton = rowActionsButton(page, title);
+export async function expectRestoreUnavailable(
+	recycleBinPage: RecycleBinPage,
+	title: string
+) {
+	const actionsButton = recycleBinPage.dataSetFragmentPage
+		.getRow(title)
+		.getByRole('button', {name: `${title} Actions`});
 
 	if (!(await actionsButton.isVisible().catch(() => false))) {
 		return;
 	}
 
-	await actionsButton.click({timeout: 5000});
-
-	await expect(page.locator('.dropdown-menu.show')).toBeVisible({
-		timeout: 5000,
+	await recycleBinPage.dataSetFragmentPage.expectItemActionHidden({
+		action: 'Restore',
+		filter: title,
 	});
-
-	await expect(
-		page.getByRole('menuitem', {exact: true, name: 'Restore'})
-	).toBeHidden({timeout: 5000});
-
-	await page.keyboard.press('Escape');
 }

@@ -10,13 +10,14 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
+import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
 import {
 	addSpaceUserWithSession,
 	expectRestoreUnavailable,
 } from './utils/recycleBin';
 
-const test = mergeTests(dataApiHelpersTest, loginTest());
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
 
@@ -47,7 +48,7 @@ async function createTrashedContent(
 test(
 	'A CMS Administrator sees Recycle Bin items from all Spaces',
 	{tag: ['@LPD-95539', '@LPD-95539/TC-16.e']},
-	async ({apiHelpers, page}) => {
+	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(120000);
 
 		const spaceName1 = `Space ${getRandomString()}`;
@@ -65,10 +66,6 @@ test(
 
 		const title1 = await createTrashedContent(apiHelpers, spaceName1);
 		const title2 = await createTrashedContent(apiHelpers, spaceName2);
-
-		const recycleBinPage = new RecycleBinPage(page);
-
-		await recycleBinPage.goto();
 
 		await expect(async () => {
 			await recycleBinPage.goto();
@@ -181,7 +178,7 @@ test(
 				memberPage.locator('tbody tr', {hasText: title})
 			).toBeVisible({timeout: 10000});
 
-			await expectRestoreUnavailable(memberPage, title);
+			await expectRestoreUnavailable(recycleBinPage, title);
 		}
 		finally {
 			await memberContext.close();
@@ -240,7 +237,7 @@ test(
 				reviewerPage.locator('tbody tr', {hasText: title})
 			).toBeVisible({timeout: 10000});
 
-			await expectRestoreUnavailable(reviewerPage, title);
+			await expectRestoreUnavailable(recycleBinPage, title);
 		}
 		finally {
 			await reviewerContext.close();
