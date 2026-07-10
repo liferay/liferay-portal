@@ -15,6 +15,7 @@ import com.liferay.commerce.service.CommerceOrderTypeRelLocalService;
 import com.liferay.commerce.service.base.CommerceOrderTypeLocalServiceBaseImpl;
 import com.liferay.commerce.util.CommerceGroupThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.FromStep;
@@ -39,13 +40,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 
 import java.io.Serializable;
 
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -117,11 +122,16 @@ public class CommerceOrderTypeLocalServiceImpl
 		commerceOrderType.setDisplayOrder(displayOrder);
 		commerceOrderType.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
-			commerceOrderType.setStatus(WorkflowConstants.STATUS_DRAFT);
+		if (_emptyModelManager.isEmptyModel()) {
+			commerceOrderType.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
 		else {
-			commerceOrderType.setStatus(WorkflowConstants.STATUS_EXPIRED);
+			if ((expirationDate == null) || expirationDate.after(date)) {
+				commerceOrderType.setStatus(WorkflowConstants.STATUS_DRAFT);
+			}
+			else {
+				commerceOrderType.setStatus(WorkflowConstants.STATUS_EXPIRED);
+			}
 		}
 
 		commerceOrderType.setStatusByUserId(user.getUserId());
@@ -133,6 +143,10 @@ public class CommerceOrderTypeLocalServiceImpl
 
 		_resourceLocalService.addModelResources(
 			commerceOrderType, serviceContext);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			return commerceOrderType;
+		}
 
 		return _startWorkflowInstance(
 			user.getUserId(), commerceOrderType, serviceContext);
@@ -220,6 +234,31 @@ public class CommerceOrderTypeLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public CommerceOrderType getOrAddEmptyCommerceOrderType(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CommerceOrderType.class, companyId,
+			() -> commerceOrderTypeLocalService.addCommerceOrderType(
+				externalReferenceCode, userId,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, false, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, 0, true,
+				new ServiceContext()),
+			externalReferenceCode,
+			this::fetchCommerceOrderTypeByExternalReferenceCode,
+			this::getCommerceOrderTypeByExternalReferenceCode,
+			CommerceOrderType.class.getName());
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public CommerceOrderType updateCommerceOrderType(
 			String externalReferenceCode, long userId, long commerceOrderTypeId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
@@ -264,7 +303,25 @@ public class CommerceOrderTypeLocalServiceImpl
 
 		commerceOrderType.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
+		if (commerceOrderType.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			commerceOrderType.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					commerceOrderType.getExternalReferenceCode(),
+					commerceOrderType.getModelClassName(),
+					commerceOrderType.getCompanyId(), 0,
+					commerceOrderType.getStatus(),
+					() -> {
+						if ((serviceContext != null) &&
+							(serviceContext.getWorkflowAction() ==
+								WorkflowConstants.ACTION_PUBLISH)) {
+
+							return WorkflowConstants.STATUS_APPROVED;
+						}
+
+						return WorkflowConstants.STATUS_DRAFT;
+					}));
+		}
+		else if ((expirationDate == null) || expirationDate.after(date)) {
 			commerceOrderType.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -483,6 +540,9 @@ public class CommerceOrderTypeLocalServiceImpl
 
 	@Reference
 	private CommerceOrderTypeRelLocalService _commerceOrderTypeRelLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
