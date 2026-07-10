@@ -40,8 +40,7 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		}
 
 		_checkDelimiters(fileName, fileContent, annotation);
-		_checkMissingNameAttribute(
-			fileName, absolutePath, fileContent, annotation);
+		_checkMissingName(fileName, absolutePath, fileContent, annotation);
 
 		if (isAttributeValue(_CHECK_CONFIGURATION_NAME_KEY, absolutePath)) {
 			_checkConfigurationNameValue(fileName, fileContent, annotation);
@@ -123,24 +122,23 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		}
 	}
 
-	private void _checkMissingNameAttribute(
+	private void _checkMissingName(
 		String fileName, String absolutePath, String content,
 		String annotation) {
 
-		if (!annotation.contains("@Meta.AD") ||
-			!content.contains("@Meta.OCD") ||
+		if (absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/") ||
+			annotation.contains("name = ") ||
 			content.contains("generateUI = false") ||
-			absolutePath.contains("/test/") ||
-			absolutePath.contains("/testIntegration/")) {
+			!annotation.contains("@Meta.AD") ||
+			!content.contains("@Meta.OCD")) {
 
 			return;
 		}
 
-		if (!annotation.contains("name = ")) {
-			addMessage(
-				fileName, "Missing attribute \"name\" in \"@Meta.AD\"",
-				getLineNumber(content, content.indexOf(annotation)));
-		}
+		addMessage(
+			fileName, "Missing attribute \"name\" in \"@Meta.AD\"",
+			getLineNumber(content, content.indexOf(annotation)));
 	}
 
 	private String _fixOCDId(
