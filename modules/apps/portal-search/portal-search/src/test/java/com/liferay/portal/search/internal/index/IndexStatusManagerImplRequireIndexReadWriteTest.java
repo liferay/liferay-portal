@@ -6,8 +6,8 @@
 package com.liferay.portal.search.internal.index;
 
 import com.liferay.portal.events.StartupHelperUtil;
+import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.tools.DBUpgrader;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -32,15 +32,16 @@ public class IndexStatusManagerImplRequireIndexReadWriteTest {
 
 	@Before
 	public void setUp() {
-		_dbUpgraderMockedStatic = Mockito.mockStatic(DBUpgrader.class);
 		_startupHelperUtilMockedStatic = Mockito.mockStatic(
 			StartupHelperUtil.class);
+		_upgradeProcessUtilMockedStatic = Mockito.mockStatic(
+			UpgradeProcessUtil.class);
 	}
 
 	@After
 	public void tearDown() {
-		_dbUpgraderMockedStatic.close();
 		_startupHelperUtilMockedStatic.close();
+		_upgradeProcessUtilMockedStatic.close();
 	}
 
 	@Test
@@ -105,8 +106,8 @@ public class IndexStatusManagerImplRequireIndexReadWriteTest {
 
 	@Test
 	public void testReadOnlyWhenIsUpgradeClient() {
-		_dbUpgraderMockedStatic.when(
-			DBUpgrader::isUpgradeClient
+		_upgradeProcessUtilMockedStatic.when(
+			UpgradeProcessUtil::isUpgradeClient
 		).thenReturn(
 			true
 		);
@@ -121,8 +122,8 @@ public class IndexStatusManagerImplRequireIndexReadWriteTest {
 
 		Assert.assertTrue(indexStatusManagerImpl.isIndexReadOnly());
 
-		_dbUpgraderMockedStatic.when(
-			DBUpgrader::isUpgradeClient
+		_upgradeProcessUtilMockedStatic.when(
+			UpgradeProcessUtil::isUpgradeClient
 		).thenReturn(
 			false
 		);
@@ -132,8 +133,8 @@ public class IndexStatusManagerImplRequireIndexReadWriteTest {
 
 	@Test
 	public void testReadOnlyWhenIsUpgrading() {
-		_dbUpgraderMockedStatic.when(
-			DBUpgrader::isUpgradeClient
+		_upgradeProcessUtilMockedStatic.when(
+			UpgradeProcessUtil::isUpgradeClient
 		).thenReturn(
 			false
 		);
@@ -163,7 +164,7 @@ public class IndexStatusManagerImplRequireIndexReadWriteTest {
 	protected IndexStatusManagerImpl indexStatusManagerImpl =
 		new IndexStatusManagerImpl();
 
-	private MockedStatic<DBUpgrader> _dbUpgraderMockedStatic;
 	private MockedStatic<StartupHelperUtil> _startupHelperUtilMockedStatic;
+	private MockedStatic<UpgradeProcessUtil> _upgradeProcessUtilMockedStatic;
 
 }
