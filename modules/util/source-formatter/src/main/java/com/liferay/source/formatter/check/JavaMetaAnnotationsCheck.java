@@ -40,10 +40,13 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		}
 
 		_checkDelimiters(fileName, fileContent, annotation);
-		_checkMissingName(fileName, absolutePath, fileContent, annotation);
 
 		if (isAttributeValue(_CHECK_CONFIGURATION_NAME_KEY, absolutePath)) {
 			_checkConfigurationNameValue(fileName, fileContent, annotation);
+		}
+
+		if (isAttributeValue(_CHECK_MISSING_NAME_KEY, absolutePath)) {
+			_checkMissingName(fileName, absolutePath, fileContent, annotation);
 		}
 
 		annotation = _fixOCDId(
@@ -170,6 +173,8 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 
 	private static final String _CHECK_CONFIGURATION_NAME_KEY =
 		"checkConfigurationName";
+
+	private static final String _CHECK_MISSING_NAME_KEY = "checkMissingName";
 
 	private static final Pattern _annotationMetaTypePattern = Pattern.compile(
 		"[\\s\\(](name|description) = \"%");
