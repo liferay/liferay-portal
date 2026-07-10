@@ -307,6 +307,15 @@ export function withSiteBuilderSection(
 	];
 }
 
+function isDeletionOnlySection(
+	previewPortletDataHandlerSection: PreviewPortletDataHandlerSection
+): boolean {
+	return (
+		!previewPortletDataHandlerSection.additionCount &&
+		!!previewPortletDataHandlerSection.deletionCount
+	);
+}
+
 export function getVisibleSections(
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
 	{
@@ -317,8 +326,7 @@ export function getVisibleSections(
 	const filteredSections = previewPortletDataHandlerSections.filter(
 		(previewPortletDataHandlerSection) =>
 			showDeletions ||
-			!!previewPortletDataHandlerSection.additionCount ||
-			!previewPortletDataHandlerSection.deletionCount
+			!isDeletionOnlySection(previewPortletDataHandlerSection)
 	);
 
 	return lookAndFeelEnabled
