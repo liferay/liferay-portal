@@ -293,7 +293,6 @@ public class ProjectFaroController extends BaseFaroController {
 	@POST
 	@RolesAllowed(StringPool.BLANK)
 	public ProjectDisplay createProvisioned(
-			@FormParam("corpEntryName") String corpEntryName,
 			@FormParam("corpProjectName") String corpProjectName,
 			@FormParam("corpProjectUuid") String corpProjectUuid,
 			@DefaultValue(JSONConstants.NULL_JSON_ARRAY)
@@ -318,7 +317,7 @@ public class ProjectFaroController extends BaseFaroController {
 		User user = getUser();
 
 		FaroProject faroProject = _create(
-			corpEntryName, corpProjectName, corpProjectUuid,
+			corpProjectName, corpProjectUuid,
 			emailAddressDomainsFaroParam.getValue(), friendlyURL,
 			incidentReportEmailAddressesFaroParam.getValue(), name,
 			offeringEntriesFaroParam.getValue(), serverLocation,
@@ -1006,7 +1005,6 @@ public class ProjectFaroController extends BaseFaroController {
 	@PUT
 	@RolesAllowed(StringPool.BLANK)
 	public ProjectDisplay updateSubscription(
-			@FormParam("corpEntryName") String corpEntryName,
 			@FormParam("corpProjectName") String corpProjectName,
 			@PathParam("corpProjectUuid") String corpProjectUuid,
 			@FormParam("offeringEntries") FaroParam<List<OSBOfferingEntry>>
@@ -1034,9 +1032,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 		FaroSubscriptionDisplay faroSubscriptionDisplay =
 			new FaroSubscriptionDisplay(
-				OSBAccountEntryBuilder.setCorpEntryName(
-					corpEntryName
-				).setCorpProjectUuid(
+				OSBAccountEntryBuilder.setCorpProjectUuid(
 					corpProjectUuid
 				).setName(
 					corpProjectName
@@ -1050,7 +1046,6 @@ public class ProjectFaroController extends BaseFaroController {
 			faroProject.setSubscriptionModifiedTime(System.currentTimeMillis());
 		}
 
-		faroProject.setAccountName(corpEntryName);
 		faroProject.setCorpProjectName(corpProjectName);
 
 		try {
@@ -1140,11 +1135,11 @@ public class ProjectFaroController extends BaseFaroController {
 	}
 
 	private FaroProject _create(
-			String corpEntryName, String corpProjectName,
-			String corpProjectUuid, List<String> emailAddressDomains,
-			String friendlyURL, List<String> incidentReportEmailAddresses,
-			String name, List<OSBOfferingEntry> offeringEntries,
-			String serverLocation, String state, String timeZoneId)
+			String corpProjectName, String corpProjectUuid,
+			List<String> emailAddressDomains, String friendlyURL,
+			List<String> incidentReportEmailAddresses, String name,
+			List<OSBOfferingEntry> offeringEntries, String serverLocation,
+			String state, String timeZoneId)
 		throws Exception {
 
 		_validateFriendlyURL(friendlyURL);
@@ -1156,9 +1151,7 @@ public class ProjectFaroController extends BaseFaroController {
 		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
 			_validateOfferingEntries(offeringEntries);
 
-			osbAccountEntry = OSBAccountEntryBuilder.setCorpEntryName(
-				corpEntryName
-			).setCorpProjectUuid(
+			osbAccountEntry = OSBAccountEntryBuilder.setCorpProjectUuid(
 				corpProjectUuid
 			).setName(
 				corpProjectName

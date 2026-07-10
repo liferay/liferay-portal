@@ -12,30 +12,22 @@ import java.util.List;
  */
 public class OSBAccountEntryBuilder {
 
-	public static AfterCorpEntryNameStep setCorpEntryName(
-		String corpEntryName) {
+	public static AfterCorpProjectUuidStep setCorpProjectUuid(
+		String corpProjectUuid) {
 
 		OSBAccountEntryStep osbAccountEntryStep = new OSBAccountEntryStep();
 
-		return osbAccountEntryStep.setCorpEntryName(corpEntryName);
+		return osbAccountEntryStep.setCorpProjectUuid(corpProjectUuid);
 	}
 
 	public static class OSBAccountEntryStep
-		implements AfterCorpEntryNameStep, AfterCorpProjectUuidStep,
-				   AfterNameStep, AfterOfferingEntriesStep, BuildStep,
-				   CorpEntryNameStep, CorpProjectUuidStep, NameStep,
-				   OfferingEntriesStep {
+		implements AfterCorpProjectUuidStep, AfterNameStep,
+				   AfterOfferingEntriesStep, BuildStep, CorpProjectUuidStep,
+				   NameStep, OfferingEntriesStep {
 
 		@Override
 		public OSBAccountEntry build() {
 			return _osbAccountEntry;
-		}
-
-		@Override
-		public AfterCorpEntryNameStep setCorpEntryName(String corpEntryName) {
-			_osbAccountEntry.setCorpEntryName(corpEntryName);
-
-			return this;
 		}
 
 		@Override
@@ -67,9 +59,6 @@ public class OSBAccountEntryBuilder {
 
 	}
 
-	public interface AfterCorpEntryNameStep extends CorpProjectUuidStep {
-	}
-
 	public interface AfterCorpProjectUuidStep extends NameStep {
 	}
 
@@ -82,12 +71,6 @@ public class OSBAccountEntryBuilder {
 	public interface BuildStep {
 
 		public OSBAccountEntry build();
-
-	}
-
-	public interface CorpEntryNameStep {
-
-		public AfterCorpEntryNameStep setCorpEntryName(String corpEntryName);
 
 	}
 

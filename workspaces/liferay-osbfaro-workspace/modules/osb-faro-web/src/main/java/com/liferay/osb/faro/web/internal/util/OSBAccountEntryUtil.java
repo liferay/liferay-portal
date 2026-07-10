@@ -79,9 +79,7 @@ public class OSBAccountEntryUtil {
 			}
 		}
 
-		return OSBAccountEntryBuilder.setCorpEntryName(
-			faroProject.getAccountName()
-		).setCorpProjectUuid(
+		return OSBAccountEntryBuilder.setCorpProjectUuid(
 			faroProject.getCorpProjectUuid()
 		).setName(
 			faroProject.getCorpProjectName()

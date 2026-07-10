@@ -43,9 +43,7 @@ public class OSBAccountEntryUtilTest {
 		osbOfferingEntry.setQuantity(1);
 
 		OSBAccountEntry osbAccountEntry =
-			OSBAccountEntryBuilder.setCorpEntryName(
-				"Corp Entry Name"
-			).setCorpProjectUuid(
+			OSBAccountEntryBuilder.setCorpProjectUuid(
 				"corp-project-uuid"
 			).setName(
 				"Corp Project Name"
@@ -53,8 +51,6 @@ public class OSBAccountEntryUtilTest {
 				Collections.singletonList(osbOfferingEntry)
 			).build();
 
-		Assert.assertEquals(
-			"Corp Entry Name", osbAccountEntry.getCorpEntryName());
 		Assert.assertEquals(
 			"corp-project-uuid", osbAccountEntry.getCorpProjectUuid());
 		Assert.assertEquals("Corp Project Name", osbAccountEntry.getName());
@@ -83,9 +79,7 @@ public class OSBAccountEntryUtilTest {
 			ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
 
 		OSBAccountEntry pushedOSBAccountEntry =
-			OSBAccountEntryBuilder.setCorpEntryName(
-				"Corp Entry Name"
-			).setCorpProjectUuid(
+			OSBAccountEntryBuilder.setCorpProjectUuid(
 				"corp-project-uuid"
 			).setName(
 				"Corp Project Name"
@@ -94,12 +88,6 @@ public class OSBAccountEntryUtilTest {
 			).build();
 
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
-
-		Mockito.when(
-			faroProject.getAccountName()
-		).thenReturn(
-			"Corp Entry Name"
-		);
 
 		Mockito.when(
 			faroProject.getCorpProjectName()
@@ -123,8 +111,6 @@ public class OSBAccountEntryUtilTest {
 		OSBAccountEntry osbAccountEntry = OSBAccountEntryUtil.build(
 			faroProject);
 
-		Assert.assertEquals(
-			"Corp Entry Name", osbAccountEntry.getCorpEntryName());
 		Assert.assertEquals(
 			"corp-project-uuid", osbAccountEntry.getCorpProjectUuid());
 		Assert.assertEquals("Corp Project Name", osbAccountEntry.getName());

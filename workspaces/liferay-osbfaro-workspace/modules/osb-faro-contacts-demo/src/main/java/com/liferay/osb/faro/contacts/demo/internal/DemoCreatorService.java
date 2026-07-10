@@ -129,9 +129,7 @@ public abstract class DemoCreatorService {
 			osbOfferingEntry.setStatus(
 				ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
 
-			osbAccountEntry = OSBAccountEntryBuilder.setCorpEntryName(
-				FaroPropsValues.FARO_PROJECT_ID
-			).setCorpProjectUuid(
+			osbAccountEntry = OSBAccountEntryBuilder.setCorpProjectUuid(
 				FaroPropsValues.FARO_PROJECT_ID
 			).setName(
 				FaroPropsValues.FARO_PROJECT_ID
