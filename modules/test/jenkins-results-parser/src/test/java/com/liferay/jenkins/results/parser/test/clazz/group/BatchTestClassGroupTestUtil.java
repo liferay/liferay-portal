@@ -88,12 +88,12 @@ public class BatchTestClassGroupTestUtil {
 		newServiceBuilderModulesBatchTestClassGroup(
 			String... modifiedFilePaths) {
 
+		List<File> modifiedFiles = new ArrayList<>();
+
 		PortalTestClassJob portalTestClassJob = getPortalTestClassJob();
 
 		PortalGitWorkingDirectory portalGitWorkingDirectory =
 			portalTestClassJob.getPortalGitWorkingDirectory();
-
-		List<File> modifiedFiles = new ArrayList<>();
 
 		File workingDirectory = portalGitWorkingDirectory.getWorkingDirectory();
 
