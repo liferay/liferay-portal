@@ -176,6 +176,9 @@ public class ResourceFolderResourceTest
 		_testPostSiteResourceFolderBatch();
 		_testPostSiteResourceFolderBatchLazyReferencingParentResourceFolder();
 		_testPostSiteResourceFolderDuplicateExternalReferenceCodeProblemException();
+		_testPostSiteResourceFolderFragmentSetAndFragmentSetExternalReferenceCode();
+		_testPostSiteResourceFolderFragmentSetAndFragmentSetExternalReferenceCodeProblemException();
+		_testPostSiteResourceFolderFragmentSetExternalReferenceCode();
 		_testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException();
 		_testPostSiteResourceFolderFragmentSetNonexistentProblemException();
 		_testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCode();
@@ -1104,6 +1107,88 @@ public class ResourceFolderResourceTest
 			"CONFLICT", "this-external-reference-code-is-already-in-use",
 			() -> resourceFolderResource.postSiteResourceFolder(
 				testGroup.getExternalReferenceCode(), resourceFolder));
+	}
+
+	private void _testPostSiteResourceFolderFragmentSetAndFragmentSetExternalReferenceCode()
+		throws Exception {
+
+		FragmentCollection fragmentCollection1 = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FragmentCollection fragmentCollection2 = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			fragmentCollection2.getExternalReferenceCode());
+
+		resourceFolder.setFragmentSet(
+			_toFragmentSet(fragmentCollection1.getExternalReferenceCode()));
+
+		ResourceFolder postResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+		ResourceFolder getResourceFolder = _getSiteResourceFolder(
+			postResourceFolder.getExternalReferenceCode());
+
+		FragmentSet getFragmentSet = getResourceFolder.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentCollection2.getExternalReferenceCode(),
+			getFragmentSet.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			fragmentCollection2.getExternalReferenceCode(),
+			getResourceFolder.getFragmentSetExternalReferenceCode());
+	}
+
+	private void _testPostSiteResourceFolderFragmentSetAndFragmentSetExternalReferenceCodeProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			RandomTestUtil.randomString());
+
+		resourceFolder.setFragmentSet(
+			_toFragmentSet(RandomTestUtil.randomString()));
+
+		_assertProblemException(
+			"the-fragment-set-external-reference-codes-do-not-match",
+			() -> {
+				try (SafeCloseable safeCloseable =
+						LazyReferencingTestUtil.
+							setLazyReferencingWithSafeCloseable(true)) {
+
+					resourceFolderResource.postSiteResourceFolder(
+						testGroup.getExternalReferenceCode(), resourceFolder);
+				}
+			});
+	}
+
+	private void _testPostSiteResourceFolderFragmentSetExternalReferenceCode()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			fragmentCollection.getExternalReferenceCode());
+
+		ResourceFolder postResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+		ResourceFolder getResourceFolder = _getSiteResourceFolder(
+			postResourceFolder.getExternalReferenceCode());
+
+		FragmentSet getFragmentSet = getResourceFolder.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentCollection.getExternalReferenceCode(),
+			getFragmentSet.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			fragmentCollection.getExternalReferenceCode(),
+			getResourceFolder.getFragmentSetExternalReferenceCode());
 	}
 
 	private void _testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException()
