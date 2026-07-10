@@ -35,7 +35,7 @@ OpenGraphSettingsDisplayContext openGraphSettingsDisplayContext = (OpenGraphSett
 
 		<div class="input-group mb-3">
 			<div class="input-group-item">
-				<input class="field form-control lfr-input-text" disabled="<%= !openGraphSettingsDisplayContext.isOpenGraphEnabled() %>" id="<portlet:namespace />openGraphImageTitle" name="<portlet:namespace />parentSiteTitle" placeholder="image" readonly="<%= true %>" type="text" value="<%= openGraphSettingsDisplayContext.getOpenGraphImageTitle() %>" />
+				<input class="field form-control lfr-input-text" disabled="<%= !openGraphSettingsDisplayContext.isOpenGraphEnabled() %>" id="<portlet:namespace />openGraphImageTitle" name="<portlet:namespace />parentSiteTitle" placeholder="image" readonly="<%= true %>" type="text" value="<%= HtmlUtil.escapeAttribute(openGraphSettingsDisplayContext.getOpenGraphImageTitle()) %>" />
 			</div>
 
 			<div class="input-group-item input-group-item-shrink">
