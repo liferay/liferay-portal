@@ -1283,6 +1283,7 @@ public class ClientExtensionProjectConfigurator
 			_validateTypeSettingsValues(
 				clientExtension, "membershipType", "open", "private",
 				"restricted");
+			_validateSiteInitializerSiteNameI18n(clientExtension);
 		}
 		else if (Objects.equals(clientExtension.type, "themeCSS")) {
 			_validateTypeSettingsValues(
@@ -1375,6 +1376,43 @@ public class ClientExtensionProjectConfigurator
 						"property %s",
 					clientExtension.id, clientExtension.type,
 					StringUtil.quote(requiredTypeSettingsKey)));
+		}
+	}
+
+	private void _validateSiteInitializerSiteNameI18n(
+		ClientExtension clientExtension) {
+
+		Map<String, Object> typeSettings = clientExtension.typeSettings;
+
+		if (!typeSettings.containsKey("siteName_i18n")) {
+			return;
+		}
+
+		Object siteNameI18n = typeSettings.get("siteName_i18n");
+
+		if (!(siteNameI18n instanceof Map)) {
+			throw new GradleException(
+				"The property 'siteName_i18n' must be an object");
+		}
+
+		Map<String, Object> siteNameI18nMap = (Map<String, Object>)siteNameI18n;
+
+		for (Map.Entry<String, Object> entry : siteNameI18nMap.entrySet()) {
+			Object value = entry.getValue();
+
+			if (value == null) {
+				throw new GradleException(
+					String.format(
+						"The value for the language key '%s' must be specified",
+						entry.getKey()));
+			}
+
+			if (!(value instanceof String)) {
+				throw new GradleException(
+					String.format(
+						"The value for the language key '%s' must be a string",
+						entry.getKey()));
+			}
 		}
 	}
 
