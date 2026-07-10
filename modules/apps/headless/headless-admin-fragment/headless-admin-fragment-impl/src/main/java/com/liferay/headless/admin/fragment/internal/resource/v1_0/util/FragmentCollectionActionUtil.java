@@ -44,6 +44,11 @@ public class FragmentCollectionActionUtil {
 			_addAction(
 				contextScopeChecker, fragmentCollection,
 				"deleteDesignLibraryFragmentSet", templateParameterMap, uriInfo)
+		).put(
+			"get",
+			_addAction(
+				contextScopeChecker, fragmentCollection,
+				"getDesignLibraryFragmentSet", templateParameterMap, uriInfo)
 		).build();
 	}
 
