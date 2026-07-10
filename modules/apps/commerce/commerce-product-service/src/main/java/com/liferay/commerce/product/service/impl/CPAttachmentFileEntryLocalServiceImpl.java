@@ -26,6 +26,7 @@ import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -71,6 +72,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -88,6 +90,8 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -129,17 +133,19 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 		FileEntry fileEntry = null;
 
-		if (!cdnEnabled) {
-			fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		if (!_emptyModelManager.isEmptyModel()) {
+			if (!cdnEnabled) {
+				fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
 
-			fileEntryId = _getFileEntryId(
-				fileEntry, userId, groupId, _portal.getClassName(classNameId),
-				classPK, serviceContext);
+				fileEntryId = _getFileEntryId(
+					fileEntry, userId, groupId,
+					_portal.getClassName(classNameId), classPK, serviceContext);
+			}
+
+			_validate(
+				classNameId, classPK, fileEntryId, cdnEnabled, cdnURL, 0, null,
+				false);
 		}
-
-		_validate(
-			classNameId, classPK, fileEntryId, cdnEnabled, cdnURL, 0, null,
-			false);
 
 		Date expirationDate = null;
 		Date date = new Date();
@@ -194,7 +200,10 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		cpAttachmentFileEntry.setDisplayDate(displayDate);
 		cpAttachmentFileEntry.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
+		if (_emptyModelManager.isEmptyModel()) {
+			cpAttachmentFileEntry.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else if ((expirationDate == null) || expirationDate.after(date)) {
 			cpAttachmentFileEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -214,6 +223,10 @@ public class CPAttachmentFileEntryLocalServiceImpl
 			cpAttachmentFileEntry);
 
 		_reindex(classNameId, classPK);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			return cpAttachmentFileEntry;
+		}
 
 		// Asset
 
@@ -666,6 +679,32 @@ public class CPAttachmentFileEntryLocalServiceImpl
 				CPAttachmentFileEntryTable.INSTANCE.title));
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPAttachmentFileEntry getOrAddEmptyCPAttachmentFileEntry(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId, long classNameId, long classPK)
+		throws PortalException {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPAttachmentFileEntry.class, companyId,
+			() -> cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(
+				externalReferenceCode, userId, groupId, classNameId, classPK, 0,
+				false, StringPool.BLANK, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, 0, 0, new ServiceContext()),
+			externalReferenceCode,
+			this::fetchCPAttachmentFileEntryByExternalReferenceCode,
+			this::getCPAttachmentFileEntryByExternalReferenceCode,
+			CPAttachmentFileEntry.class.getName());
+	}
+
 	@Override
 	public void updateAsset(
 			long userId, CPAttachmentFileEntry cpAttachmentFileEntry,
@@ -783,7 +822,28 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		cpAttachmentFileEntry.setDisplayDate(displayDate);
 		cpAttachmentFileEntry.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
+		if (cpAttachmentFileEntry.getStatus() ==
+				WorkflowConstants.STATUS_EMPTY) {
+
+			cpAttachmentFileEntry.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					cpAttachmentFileEntry.getExternalReferenceCode(),
+					cpAttachmentFileEntry.getModelClassName(),
+					cpAttachmentFileEntry.getCompanyId(),
+					cpAttachmentFileEntry.getGroupId(),
+					cpAttachmentFileEntry.getStatus(),
+					() -> {
+						if ((serviceContext != null) &&
+							(serviceContext.getWorkflowAction() ==
+								WorkflowConstants.ACTION_PUBLISH)) {
+
+							return WorkflowConstants.STATUS_APPROVED;
+						}
+
+						return WorkflowConstants.STATUS_DRAFT;
+					}));
+		}
+		else if ((expirationDate == null) || expirationDate.after(date)) {
 			cpAttachmentFileEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -1119,6 +1179,9 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
