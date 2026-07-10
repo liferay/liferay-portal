@@ -188,7 +188,11 @@ components:
                 fragmentSet:
                     $ref: "#/components/schemas/FragmentSet"
                     description:
-                        The resource folder's fragment set, referenced by its `externalReferenceCode`. During LAR import, it is created if it does not exist.
+                        The resource folder's fragment set. On read, returned only when `nestedFields=fragmentSet` is requested. On write, used only during LAR import, where it is created if it does not exist.
+                fragmentSetExternalReferenceCode:
+                    description:
+                        The external reference code of the resource folder's fragment set, used to reference an existing fragment set. Takes precedence over `fragmentSet` when both are set.
+                    type: string
                 name:
                     description:
                         The resource folder's name.
@@ -196,7 +200,7 @@ components:
                 parentResourceFolder:
                     $ref: "#/components/schemas/ResourceFolder"
                     description:
-                        The resource folder's parent resource folder. On write, used only during LAR import, where it is created if it does not exist.
+                        The resource folder's parent resource folder. On read, returned only when `nestedFields=parentResourceFolder` is requested. On write, used only during LAR import, where it is created if it does not exist.
                 parentResourceFolderExternalReferenceCode:
                     description:
                         The external reference code of the resource folder's parent resource folder, used to reference an existing parent. Takes precedence over `parentResourceFolder` when both are set.
@@ -838,7 +842,7 @@ paths:
             tags: ["ResourceFolder"]
         put:
             description:
-                Updates the resource folder with the given external reference code, or creates it if it does not exist. On update, `dateModified` and `name` are honored; any values sent for `dateCreated`, `externalReferenceCode`, `fragmentSet`, `parentResourceFolder`, and `parentResourceFolderExternalReferenceCode` are ignored.
+                Updates the resource folder with the given external reference code, or creates it if it does not exist. On update, `dateModified` and `name` are honored; any values sent for `dateCreated`, `externalReferenceCode`, `fragmentSet`, `fragmentSetExternalReferenceCode`, `parentResourceFolder`, and `parentResourceFolderExternalReferenceCode` are ignored.
             operationId: putSiteResourceFolder
             parameters:
                 -   in: path
