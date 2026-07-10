@@ -88,45 +88,41 @@ public class FeatureFlagBatchEngineUnitProcessor {
 				return;
 			}
 
-			Tuple tuple = _getTuple(companyId, featureFlagKey);
+			List<UnsafeSupplier<CompletableFuture<Void>, Exception>>
+				unsafeSuppliers = _unsafeSuppliers.remove(
+					_getTuple(companyId, featureFlagKey));
 
-			if (!_unsafeSuppliers.containsKey(tuple)) {
+			if (unsafeSuppliers == null) {
 				return;
 			}
 
-			synchronized (_unsafeSuppliers) {
-				List<UnsafeSupplier<CompletableFuture<Void>, Exception>>
-					unsafeSuppliers = _unsafeSuppliers.remove(tuple);
+			ExecutorService executorService =
+				_portalExecutorManager.getPortalExecutor(
+					FeatureFlagListenerImpl.class.getName());
 
-				ExecutorService executorService =
-					_portalExecutorManager.getPortalExecutor(
-						FeatureFlagListenerImpl.class.getName());
+			executorService.submit(
+				() -> {
+					for (UnsafeSupplier<CompletableFuture<Void>, Exception>
+							unsafeSupplier : unsafeSuppliers) {
 
-				executorService.submit(
-					() -> {
-						for (UnsafeSupplier<CompletableFuture<Void>, Exception>
-								unsafeSupplier : unsafeSuppliers) {
+						try {
+							CompletableFuture<Void> completableFuture =
+								unsafeSupplier.get();
 
-							try {
-								CompletableFuture<Void> completableFuture =
-									unsafeSupplier.get();
-
-								completableFuture.get();
-							}
-							catch (Exception exception) {
-								_log.error(
-									StringBundler.concat(
-										"Unable to process batch engine units ",
-										"deferred for feature flag ",
-										featureFlagKey, " in company ",
-										companyId),
-									exception);
-
-								return;
-							}
+							completableFuture.get();
 						}
-					});
-			}
+						catch (Exception exception) {
+							_log.error(
+								StringBundler.concat(
+									"Unable to process batch engine units ",
+									"deferred for feature flag ",
+									featureFlagKey, " in company ", companyId),
+								exception);
+
+							return;
+						}
+					}
+				});
 		}
 
 	}
