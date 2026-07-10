@@ -11,7 +11,7 @@ definition {
 			value = "\"${liferayHome}\"");
 
 		var curl = '''
-			${portalURL}/o/headless-admin-server/v1.0/database-schema-export \
+			${portalURL}/o/admin-server/v1.0/database-schema-export \
 				-u ${userLoginInfo} \
 				-d ${parameters} \
 				-H Content-Type: application/json
