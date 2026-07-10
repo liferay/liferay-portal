@@ -285,7 +285,6 @@ public class OrderSummaryCommerceCheckoutStepTest {
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest() {
-
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
 		httpServletRequest.setAttribute(

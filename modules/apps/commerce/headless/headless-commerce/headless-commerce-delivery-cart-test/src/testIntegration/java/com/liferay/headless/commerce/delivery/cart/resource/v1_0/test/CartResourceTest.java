@@ -286,9 +286,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Cart cart = _createCart();
 
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.getCommerceOrder(cart.getId());
-
 		Cart postCart = cartResource.postCartCheckout(cart.getId());
 
 		Assert.assertFalse(
@@ -305,8 +302,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		Assert.assertFalse(
 			ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
 
-		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
-			cart.getId());
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.getCommerceOrder(cart.getId());
 
 		commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
@@ -330,8 +327,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
 		testAccountEntryValidator.setResultStatus(
 			AccountEntryValidatorConstants.RESULT_WARNING);
@@ -764,6 +760,23 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		return cart;
 	}
 
+	private void _setAccountEntryValidationMode(String validationMode)
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(
+				_commerceChannel.getGroupId(),
+				CommerceConstants.
+					SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue("validationMode", validationMode);
+
+		modifiableSettings.store();
+	}
+
 	private void _testGetCartPaymentURLWithBusinessAccountEntry()
 		throws Exception {
 
@@ -846,23 +859,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			Assert.assertNull(pageCart.getErrorMessages());
 			Assert.assertNull(pageCart.getValid());
 		}
-	}
-
-	private void _setAccountEntryValidationMode(String validationMode)
-		throws Exception {
-
-		Settings settings = FallbackKeysSettingsUtil.getSettings(
-			new GroupServiceSettingsLocator(
-				_commerceChannel.getGroupId(),
-				CommerceConstants.
-					SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
-
-		ModifiableSettings modifiableSettings =
-			settings.getModifiableSettings();
-
-		modifiableSettings.setValue("validationMode", validationMode);
-
-		modifiableSettings.store();
 	}
 
 	private void _testGetChannelCartsPageWithFilter() throws Exception {
