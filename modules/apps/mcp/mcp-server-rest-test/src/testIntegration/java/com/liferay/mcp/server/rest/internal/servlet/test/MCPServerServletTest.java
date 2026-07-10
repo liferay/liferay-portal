@@ -363,27 +363,24 @@ public class MCPServerServletTest {
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						"com.liferay.oauth2.provider.rest.internal." +
-							"configuration.DynamicRegistrationConfiguration",
+							"configuration." +
+								"OAuth2DynamicRegistrationConfiguration",
 						HashMapDictionaryBuilder.<String, Object>put(
-							"dynamic.registration.anonymous.allowed.grant." +
-								"types",
+							"oauth2.dynamic.registration.allowed.grant.types",
 							new String[] {"*"}
 						).put(
-							"dynamic.registration.anonymous.allowed.hosts",
+							"oauth2.dynamic.registration.allowed.hosts",
 							new String[] {"*"}
 						).put(
-							"dynamic.registration.anonymous.allowed.redirect." +
+							"oauth2.dynamic.registration.allowed.redirect." +
 								"uri.patterns",
 							new String[] {"*"}
 						).put(
-							"dynamic.registration.anonymous.allowed.scopes",
+							"oauth2.dynamic.registration.allowed.scopes",
 							new String[] {"*"}
 						).put(
-							"dynamic.registration.anonymous.registrations." +
-								"per.hour",
-							0
-						).put(
-							"dynamic.registration.require.initial.access.token",
+							"oauth2.dynamic.registration.require.initial." +
+								"access.token",
 							false
 						).build())) {
 
