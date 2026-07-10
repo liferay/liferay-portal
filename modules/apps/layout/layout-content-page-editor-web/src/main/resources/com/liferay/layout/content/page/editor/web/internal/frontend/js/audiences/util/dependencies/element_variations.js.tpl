@@ -110,18 +110,22 @@ function applyElementVariationOnce(elementVariation) {
 const elementVariations = [$ELEMENT_VARIATIONS$];
 const sortedAudienceEntryERCs = [$SORTED_AUDIENCE_ENTRY_ERCS$];
 
-elementVariations.forEach((elementVariation) => {
-	elementVariation.audienceEntryERCs.forEach((audienceEntryERC) => {
-		audiences.on(audienceEntryERC, () => {
-			if (
-				elementVariation.targetElement &&
-				getWinnerAudienceEntryERC(elementVariation.targetElement) !==
-					audienceEntryERC
-			) {
-				return;
-			}
+export function register() {
+	appliedElementVariations.clear();
 
-			applyElementVariationOnce(elementVariation);
+	elementVariations.forEach((elementVariation) => {
+		elementVariation.audienceEntryERCs.forEach((audienceEntryERC) => {
+			audiences.on(audienceEntryERC, () => {
+				if (
+					elementVariation.targetElement &&
+					getWinnerAudienceEntryERC(elementVariation.targetElement) !==
+						audienceEntryERC
+				) {
+					return;
+				}
+
+				applyElementVariationOnce(elementVariation);
+			});
 		});
 	});
-});
+}
