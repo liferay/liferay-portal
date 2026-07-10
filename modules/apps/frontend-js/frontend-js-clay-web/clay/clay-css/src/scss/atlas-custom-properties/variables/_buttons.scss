@@ -752,6 +752,78 @@ $btn-link: map-deep-merge(
 	$btn-link
 );
 
+$btn-ai: () !default;
+$btn-ai: map-deep-merge(
+	(
+		background-color: var(--btn-ai-background-color, $purple),
+		border-color: var(--btn-ai-border-color, transparent),
+		color: var(--btn-ai-color, $white),
+		hover: (
+			background-color: var(--btn-ai-hover-background-color, $purple-d1),
+			border-color: var(--btn-ai-hover-border-color, transparent),
+			color: var(--btn-ai-hover-color, $white),
+		),
+
+		focus: (),
+		active: (
+			background-color: var(--btn-ai-active-background-color, $purple-d2),
+			border-color: var(--btn-ai-active-border-color, transparent),
+			color: var(--btn-ai-active-color, $white),
+		),
+
+		disabled: (
+			background-color: var(--btn-ai-disabled-background-color, $purple),
+			border-color: var(--btn-ai-disabled-border-color, transparent),
+			color: var(--btn-ai-disabled-color, $white),
+		),
+	),
+	$btn-ai
+);
+
+$btn-ai-gradient: () !default;
+$btn-ai-gradient: map-deep-merge(
+	(
+		background-image:
+			var(
+				--btn-ai-gradient-background-image,
+				linear-gradient(270deg, $primary 0%, $purple-d2 100%)
+			),
+		border-color: transparent,
+		box-shadow:
+			var(
+				--btn-ai-gradient-box-shadow,
+				0 0 8px 0 unquote('hsl(from #{$purple} h s l / 0.15)')
+			),
+		hover: (
+			background-image:
+				var(
+					--btn-ai-gradient-hover-background-image,
+					linear-gradient(270deg, $primary-d1 0%, $purple-d3 100%)
+				),
+			border-color: transparent,
+		),
+
+		active: (
+			background-image:
+				var(
+					--btn-ai-gradient-active-background-image,
+					linear-gradient(270deg, $primary-d2 0%, $purple-d4 100%)
+				),
+			border-color: transparent,
+		),
+
+		disabled: (
+			background-image:
+				var(
+					--btn-ai-gradient-disabled-background-image,
+					linear-gradient(270deg, $primary 0%, $purple-d2 100%)
+				),
+			border-color: transparent,
+		),
+	),
+	$btn-ai-gradient
+);
+
 $btn-palette: () !default;
 $btn-palette: map-deep-merge(
 	(
@@ -773,10 +845,54 @@ $btn-palette: map-deep-merge(
 
 		link: $btn-link,
 
+		ai: $btn-ai,
+
+		'.btn-ai-gradient': $btn-ai-gradient,
+
+		'.btn-outline-ai.btn-ai-link': (
+			hover: (
+				background-color: transparent,
+				color: $purple-d1,
+				text-decoration: underline,
+			),
+
+			focus: (
+				background-color: transparent,
+				color: $purple-d1,
+				text-decoration: underline,
+			),
+
+			active: (
+				background-color: transparent,
+				color: $purple-d2,
+			),
+		),
+
 		'.btn-translucent': (
 			extend: '%clay-btn-xs',
 
 			border-radius: $rounded-pill,
+		),
+
+		'.btn-translucent.btn-ai': (
+			background-color: unquote('hsl(from #{$purple} h s l / 0.04)'),
+			border-color: transparent,
+			color: $purple,
+
+			hover: (
+				background-color: unquote('hsl(from #{$purple} h s l / 0.06)'),
+				color: $purple,
+			),
+
+			focus: (
+				background-color: unquote('hsl(from #{$purple} h s l / 0.06)'),
+				color: $purple,
+			),
+
+			active: (
+				background-color: unquote('hsl(from #{$purple} h s l / 0.08)'),
+				color: $purple,
+			),
 		),
 
 		'.btn-translucent.btn-primary': (
@@ -1120,6 +1236,43 @@ $btn-outline-primary: map-deep-merge(
 	$btn-outline-primary
 );
 
+$btn-outline-ai: () !default;
+$btn-outline-ai: map-deep-merge(
+	(
+		background-color: var(--btn-outline-ai-background-color, transparent),
+		border-color: var(--btn-outline-ai-border-color, $purple),
+		color: var(--btn-outline-ai-color, $purple),
+		hover: (
+			background-color:
+				var(
+					--btn-outline-ai-hover-background-color,
+					unquote('hsl(from #{$purple} h s l / 0.06)')
+				),
+			border-color: var(--btn-outline-ai-hover-border-color, $purple),
+			color: var(--btn-outline-ai-hover-color, $purple),
+		),
+
+		focus: (),
+		active: (
+			background-color:
+				var(
+					--btn-outline-ai-active-background-color,
+					unquote('hsl(from #{$purple} h s l / 0.12)')
+				),
+			border-color: var(--btn-outline-ai-active-border-color, $purple),
+			color: var(--btn-outline-ai-active-color, $purple),
+		),
+
+		disabled: (
+			background-color:
+				var(--btn-outline-ai-disabled-background-color, transparent),
+			border-color: var(--btn-outline-ai-disabled-border-color, $purple),
+			color: var(--btn-outline-ai-disabled-color, $purple),
+		),
+	),
+	$btn-outline-ai
+);
+
 $btn-outline-secondary: () !default;
 $btn-outline-secondary: map-deep-merge(
 	(
@@ -1363,6 +1516,8 @@ $btn-outline-palette: () !default;
 $btn-outline-palette: map-deep-merge(
 	(
 		primary: $btn-outline-primary,
+
+		ai: $btn-outline-ai,
 
 		secondary: $btn-outline-secondary,
 

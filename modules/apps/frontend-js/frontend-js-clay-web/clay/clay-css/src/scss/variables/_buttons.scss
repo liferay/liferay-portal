@@ -1005,6 +1005,81 @@ $btn-link: map-deep-merge(
 	$btn-link
 );
 
+$btn-ai: () !default;
+$btn-ai: map-deep-merge(
+	(
+		background-color: $purple,
+		border-color: $purple,
+		box-shadow: clay-enable-shadows($btn-box-shadow),
+		color: color-yiq($purple),
+		hover: (
+			background-color: $purple-d1,
+			border-color: $purple-d1,
+			color: color-yiq($purple-d1),
+		),
+
+		focus: (
+			box-shadow:
+				clay-enable-shadows(
+					#{$btn-box-shadow,
+					0 0 0 $btn-focus-width rgba($primary-l0, 0.5)},
+					0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+				),
+		),
+
+		active: (
+			background-color: $purple-d2,
+			border-color: $purple-d2,
+			color: color-yiq($purple-d2),
+			focus: (
+				box-shadow:
+					clay-enable-shadows(
+						#{$btn-active-box-shadow,
+						0 0 0 $btn-focus-width rgba($primary-l0, 0.5)},
+						0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+					),
+			),
+		),
+
+		disabled: (
+			background-color: $purple,
+			border-color: $purple,
+			color: color-yiq($purple),
+		),
+	),
+	$btn-ai
+);
+
+// .btn-ai-gradient is a modifier layered on .btn-ai to render the "calling"
+// gradient fill.
+
+$btn-ai-gradient: () !default;
+$btn-ai-gradient: map-deep-merge(
+	(
+		background-image: linear-gradient(270deg, $primary 0%, $purple-d2 100%),
+		border-color: transparent,
+		box-shadow: 0 0 8px 0 rgba($purple, 0.15),
+		hover: (
+			background-image:
+				linear-gradient(270deg, $primary-d1 0%, $purple-d3 100%),
+			border-color: transparent,
+		),
+
+		active: (
+			background-image:
+				linear-gradient(270deg, $primary-d2 0%, $purple-d4 100%),
+			border-color: transparent,
+		),
+
+		disabled: (
+			background-image:
+				linear-gradient(270deg, $primary 0%, $purple-d2 100%),
+			border-color: transparent,
+		),
+	),
+	$btn-ai-gradient
+);
+
 $btn-palette: () !default;
 $btn-palette: map-deep-merge(
 	(
@@ -1026,10 +1101,57 @@ $btn-palette: map-deep-merge(
 
 		link: $btn-link,
 
+		ai: $btn-ai,
+
+		'.btn-ai-gradient': $btn-ai-gradient,
+
+		// Layered on the borderless AI button to render it as a link: no
+		// background, only the text color changes, underline on hover.
+		'.btn-outline-ai.btn-ai-link':
+			(
+				hover: (
+					background-color: transparent,
+					color: $purple-d1,
+					text-decoration: underline,
+				),
+
+				focus: (
+					background-color: transparent,
+					color: $purple-d1,
+					text-decoration: underline,
+				),
+
+				active: (
+					background-color: transparent,
+					color: $purple-d2,
+				),
+			),
+
 		'.btn-translucent': (
 			extend: '%clay-btn-xs',
 
 			border-radius: $rounded-pill,
+		),
+
+		'.btn-translucent.btn-ai': (
+			background-color: rgba($purple, 0.04),
+			border-color: transparent,
+			color: $purple,
+
+			hover: (
+				background-color: rgba($purple, 0.06),
+				color: $purple,
+			),
+
+			focus: (
+				background-color: rgba($purple, 0.06),
+				color: $purple,
+			),
+
+			active: (
+				background-color: rgba($purple, 0.08),
+				color: $purple,
+			),
 		),
 
 		'.btn-translucent.btn-primary': (
@@ -1636,10 +1758,50 @@ $btn-outline-borderless: map-deep-merge(
 	$btn-outline-borderless
 );
 
+$btn-outline-ai: () !default;
+$btn-outline-ai: map-deep-merge(
+	(
+		border-color: $purple,
+		color: $purple,
+
+		hover: (
+			background-color: $purple,
+			border-color: $purple,
+			color: color-yiq($purple),
+		),
+
+		focus: (
+			box-shadow: 0 0 0 $btn-focus-width rgba($primary, 0.5),
+		),
+
+		active: (
+			background-color: $purple,
+			border-color: $purple,
+			color: color-yiq($purple),
+			focus: (
+				box-shadow:
+					clay-enable-shadows(
+						#{$btn-active-box-shadow,
+						0 0 0 $btn-focus-width rgba($primary, 0.5)},
+						$c-unset
+					),
+			),
+		),
+
+		disabled: (
+			background-color: transparent,
+			color: $purple,
+		),
+	),
+	$btn-outline-ai
+);
+
 $btn-outline-palette: () !default;
 $btn-outline-palette: map-deep-merge(
 	(
 		primary: $btn-outline-primary,
+
+		ai: $btn-outline-ai,
 
 		secondary: $btn-outline-secondary,
 

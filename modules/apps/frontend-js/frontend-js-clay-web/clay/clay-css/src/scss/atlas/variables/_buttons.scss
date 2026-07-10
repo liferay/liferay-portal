@@ -411,6 +411,14 @@ $btn-dark: map-deep-merge(
 	$btn-dark
 );
 
+$btn-ai: () !default;
+$btn-ai: map-deep-merge(
+	(
+		box-shadow: c-unset,
+	),
+	$btn-ai
+);
+
 // Button Outline Variant
 
 $btn-outline-primary: () !default;
@@ -444,6 +452,33 @@ $btn-outline-primary: map-deep-merge(
 		),
 	),
 	$btn-outline-primary
+);
+
+$btn-outline-ai: () !default;
+$btn-outline-ai: map-deep-merge(
+	(
+		hover: (
+			background-color: rgba($purple, 0.06),
+			color: $purple-d1,
+		),
+
+		focus: (
+			background-color: rgba($purple, 0.06),
+			color: $purple-d1,
+		),
+
+		active: (
+			background-color: rgba($purple, 0.12),
+			color: $purple-d1,
+		),
+
+		disabled: (
+			background-color: transparent,
+			border-color: $purple,
+			color: $purple,
+		),
+	),
+	$btn-outline-ai
 );
 
 $btn-outline-secondary: () !default;
