@@ -68,6 +68,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -973,7 +974,7 @@ public class PDFPreviewableDLProcessor
 	private Map<String, Integer> _getScaledDimensions(File file)
 		throws Exception {
 
-		try (PDDocument pdDocument = PDDocument.load(file)) {
+		try (PDDocument pdDocument = Loader.loadPDF(file)) {
 			PDDocumentCatalog pdDocumentCatalog =
 				pdDocument.getDocumentCatalog();
 
@@ -1050,7 +1051,7 @@ public class PDFPreviewableDLProcessor
 					DL_FILE_ENTRY_PREVIEW_GENERATION_DECRYPT_PASSWORDS_PDFBOX) {
 
 			try {
-				return PDDocument.load(file, decryptPassword);
+				return Loader.loadPDF(file, decryptPassword);
 			}
 			catch (IOException ioException) {
 				if (!(ioException instanceof InvalidPasswordException)) {
@@ -1059,7 +1060,7 @@ public class PDFPreviewableDLProcessor
 			}
 		}
 
-		return PDDocument.load(file);
+		return Loader.loadPDF(file);
 	}
 
 	private void _queueGeneration(
@@ -1145,7 +1146,7 @@ public class PDFPreviewableDLProcessor
 
 			logger.setLevel(Level.WARNING);
 
-			try (PDDocument pdDocument = PDDocument.load(_inputFile)) {
+			try (PDDocument pdDocument = Loader.loadPDF(_inputFile)) {
 				LiferayPDFBoxUtil.generateImagesPB(
 					pdDocument, _thumbnailFile, _previewFiles, _extension,
 					_thumbnailExtension, _dpi, _height, _width,

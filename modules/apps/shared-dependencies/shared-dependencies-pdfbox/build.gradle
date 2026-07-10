@@ -1,9 +1,9 @@
 dependencies {
 	compileInclude group: "com.github.jai-imageio", name: "jai-imageio-core", version: "1.4.0"
 	compileInclude group: "com.github.jai-imageio", name: "jai-imageio-jpeg2000", version: "1.3.0"
-	compileInclude group: "org.apache.pdfbox", name: "fontbox", version: "2.0.35"
+	compileInclude group: "org.apache.pdfbox", name: "fontbox", version: "3.0.7"
 	compileInclude group: "org.apache.pdfbox", name: "jbig2-imageio", version: "3.0.3"
-	compileInclude group: "org.apache.pdfbox", name: "jempbox", version: "1.8.16"
-	compileInclude group: "org.apache.pdfbox", name: "pdfbox", version: "2.0.35"
+	compileInclude group: "org.apache.pdfbox", name: "pdfbox", version: "3.0.7"
+	compileInclude group: "org.apache.pdfbox", name: "pdfbox-io", version: "3.0.7"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 }

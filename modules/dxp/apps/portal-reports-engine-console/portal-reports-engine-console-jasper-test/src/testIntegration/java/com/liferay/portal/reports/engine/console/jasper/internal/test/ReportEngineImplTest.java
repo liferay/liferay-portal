@@ -31,6 +31,7 @@ import java.util.HashMap;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -222,7 +223,7 @@ public class ReportEngineImplTest extends TestCase {
 		Assert.assertFalse(reportResultContainer.hasError());
 		Assert.assertNotNull(reportResultContainer.getResults());
 
-		try (PDDocument pdDocument = PDDocument.load(
+		try (PDDocument pdDocument = Loader.loadPDF(
 				reportResultContainer.getResults())) {
 
 			PDFTextStripper pdfTextStripper = new PDFTextStripper();

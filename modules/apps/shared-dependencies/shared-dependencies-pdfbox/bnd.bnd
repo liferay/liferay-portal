@@ -9,6 +9,4 @@ Import-Package:\
 -exportcontents:\
 	org.apache.fontbox.afm,\
 	org.apache.fontbox.ttf,\
-	org.apache.jempbox.xmp,\
-	org.apache.jempbox.xmp.pdfa,\
 	org.apache.pdfbox.*;-noimport:=true
