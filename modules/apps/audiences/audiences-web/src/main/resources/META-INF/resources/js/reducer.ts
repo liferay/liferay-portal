@@ -10,6 +10,7 @@ import {AudiencesCriteria, AudiencesCriteriaRulesGroup, Rule} from './types';
 
 export interface State {
 	conjunction: string;
+	externalReferenceCode: string;
 	name: string;
 	rules: Rule[];
 }
@@ -17,6 +18,7 @@ export interface State {
 export type Action =
 	| {audiencesCriteria: AudiencesCriteria; index?: number; type: 'ADD_RULE'}
 	| {conjunction: string; type: 'SET_CONJUNCTION'}
+	| {externalReferenceCode: string; type: 'SET_EXTERNAL_REFERENCE_CODE'}
 	| {index: number; rule: Rule; type: 'UPDATE_RULE'}
 	| {index: number; type: 'DELETE_RULE'}
 	| {index: number; type: 'DUPLICATE_RULE'}
@@ -37,14 +39,17 @@ export function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 }
 
 export function initState({
+	externalReferenceCode = '',
 	name = '',
 	rulesGroup,
 }: {
+	externalReferenceCode?: string;
 	name?: string;
 	rulesGroup?: AudiencesCriteriaRulesGroup;
 }): State {
 	return {
 		conjunction: rulesGroup?.conjunction ?? 'AND',
+		externalReferenceCode,
 		name,
 		rules: (rulesGroup?.rules ?? [])
 			.filter((rule) => Boolean(rule.attribute))
@@ -91,6 +96,11 @@ export function reducer(state: State, action: Action): State {
 			return {...state, rules: action.rules};
 		case 'SET_CONJUNCTION':
 			return {...state, conjunction: action.conjunction};
+		case 'SET_EXTERNAL_REFERENCE_CODE':
+			return {
+				...state,
+				externalReferenceCode: action.externalReferenceCode,
+			};
 		case 'SET_NAME':
 			return {...state, name: action.name};
 		case 'UPDATE_RULE':
