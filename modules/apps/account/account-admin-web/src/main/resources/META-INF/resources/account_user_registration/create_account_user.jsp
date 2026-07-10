@@ -126,7 +126,7 @@ portletDisplay.setURLBack(backURL);
 					</label>
 
 					<div class="form-control-plaintext">
-						<%= invitedAccountUserDisplayContext.getEmailAddress() %>
+						<%= HtmlUtil.escape(invitedAccountUserDisplayContext.getEmailAddress()) %>
 					</div>
 				</div>
 			</div>
