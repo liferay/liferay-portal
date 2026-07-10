@@ -54,7 +54,7 @@ DLViewMoreMenuItemsDisplayContext dlViewMoreMenuItemsDisplayContext = new DLView
 
 			<liferay-ui:search-container-column-text
 				name="scope"
-				value="<%= dlViewMoreMenuItemsDisplayContext.getDLFileEntryTypeScopeName(fileEntryType, locale) %>"
+				value="<%= HtmlUtil.escape(dlViewMoreMenuItemsDisplayContext.getDLFileEntryTypeScopeName(fileEntryType, locale)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
