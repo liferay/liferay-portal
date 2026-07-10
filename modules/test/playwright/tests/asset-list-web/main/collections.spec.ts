@@ -11,6 +11,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
 const test = mergeTests(
 	loginTest(),
@@ -65,6 +66,44 @@ test.describe('Manual Collection', () => {
 					page.getByRole('checkbox', {exact: true, name: excludedType})
 				).toHaveCount(0);
 			}
+		});
+	});
+
+	test('Displays the selected content', {tag: '@LPS-143093'}, async ({
+		apiHelpers,
+		collectionsPage,
+		page,
+		site,
+	}) => {
+		const webContentTitle = getRandomString();
+
+		await test.step('Create a web content article', async () => {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+				groupId: site.id,
+				titleMap: {en_US: webContentTitle},
+			});
+		});
+
+		await test.step('Create a manual collection of Web Content Articles', async () => {
+			await collectionsPage.goto(site.friendlyUrlPath);
+
+			await collectionsPage.addNewManualCollection(getRandomString());
+
+			await collectionsPage.configureManualCollectionItemType({
+				itemSubtype: 'Basic Web Content',
+				itemType: 'Web Content Article',
+			});
+		});
+
+		await test.step('Select the web content article', async () => {
+			await collectionsPage.selectAssets([webContentTitle]);
+		});
+
+		await test.step('The selected web content article is displayed in the collection', async () => {
+			await expect(
+				page.getByRole('cell', {name: webContentTitle}).first()
+			).toBeVisible();
 		});
 	});
 });

@@ -1158,55 +1158,6 @@ definition {
 		}
 	}
 
-	@description = "Assert that Asset Lists correctly display their selected content."
-	@priority = 4
-	@uitest
-	test ViewAssetListContent {
-		task ("Create a web content article") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Create a manual asset list") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-			AssetListsAdmin.addManualSelection(assetListTitle = "Manual Asset List Test");
-		}
-
-		task ("Select the Web Content Article as item type and Basic Web Content as item subtype") {
-			AssetListsAdmin.configureItemTypeInManualCollection(
-				itemSubtype = "Basic Web Content",
-				itemType = "Web Content Article");
-		}
-
-		task ("Select the created web content article to be linked to the asset list") {
-			AssetListsAdmin.selectAsset(
-				assetName = "WC WebContent Title",
-				assetType = "Basic Web Content");
-		}
-
-		task ("Assert the selected web content article is viewable from the View Content action for the asset list") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-			AssetListsAdmin.viewContent(
-				assetListTitle = "Manual Asset List Test",
-				assetTitle = "WC WebContent Title",
-				assetType = "Web Content Article");
-
-			AssertTextEquals(
-				key_assetTitle = "WC WebContent Title",
-				locator1 = "AssetLists#ASSET_TITLE_ROW",
-				value1 = "WC WebContent Title");
-
-			AssertTextEquals(
-				key_assetTitle = "Web Content Article",
-				locator1 = "AssetLists#ASSET_TYPE_ROW",
-				value1 = "Web Content Article");
-		}
-	}
-
 	@description = "This is a test for LPS-125486. Collection should be available after delete Item Subtype."
 	@priority = 4
 	test ViewCollectionAfterDeleteItemSubtype {

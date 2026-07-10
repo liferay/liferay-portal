@@ -153,6 +153,37 @@ export class CollectionsPage {
 	}
 
 	/**
+	 * On a manual collection's edit page, restricts the collection to a single
+	 * item type (and optional subtype), then saves.
+	 */
+
+	async configureManualCollectionItemType({
+		itemSubtype,
+		itemType,
+	}: {
+		itemSubtype?: string;
+		itemType: string;
+	}) {
+		await this.page
+			.getByRole('combobox', {name: 'Item Type'})
+			.selectOption({label: itemType});
+
+		if (itemSubtype) {
+			const subtypeSelect = this.page
+				.locator('.asset-subtype:not(.hide)')
+				.getByLabel('Item Subtype');
+
+			await subtypeSelect.waitFor();
+
+			await subtypeSelect.selectOption({label: itemSubtype});
+		}
+
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page);
+	}
+
+	/**
 	 * On a manual collection's edit page, clicks "Select" to open the asset
 	 * entries item selector modal and returns the modal dialog locator.
 	 */
@@ -165,6 +196,26 @@ export class CollectionsPage {
 		await modal.waitFor();
 
 		return modal;
+	}
+
+	/**
+	 * On a manual collection's edit page, opens the asset entries item selector
+	 * modal, checks the given assets, and confirms the selection.
+	 */
+
+	async selectAssets(assetTitles: string[]) {
+		await this.openSelectItemsModal();
+
+		for (const assetTitle of assetTitles) {
+			await this.page
+				.getByRole('checkbox', {name: `Select ${assetTitle}`})
+				.check();
+		}
+
+		await this.page
+			.locator('.modal-footer')
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
 	}
 
 	/**
