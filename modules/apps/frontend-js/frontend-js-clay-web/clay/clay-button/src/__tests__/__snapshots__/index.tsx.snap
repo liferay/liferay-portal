@@ -116,6 +116,17 @@ exports[`Button renders disabled 1`] = `
 </div>
 `;
 
+exports[`Button renders displayType="ai" 1`] = `
+<div>
+  <button
+    class="btn btn-ai rounded-pill"
+    type="button"
+  >
+    Button
+  </button>
+</div>
+`;
+
 exports[`Button renders displayType="beta" as info and translucent 1`] = `
 <div>
   <button
@@ -153,6 +164,17 @@ exports[`Button renders outline 1`] = `
 <div>
   <button
     class="btn btn-outline-primary"
+    type="button"
+  >
+    Button
+  </button>
+</div>
+`;
+
+exports[`Button renders outline displayType="ai" 1`] = `
+<div>
+  <button
+    class="btn btn-outline-ai rounded-pill"
     type="button"
   >
     Button

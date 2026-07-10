@@ -12,6 +12,7 @@ import Group from './Group';
 
 type DisplayType =
 	| null
+	| 'ai'
 	| 'primary'
 	| 'secondary'
 	| 'link'
@@ -47,6 +48,8 @@ export interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 	/**
 	 * Determines the button variant to use.
+	 * The value `ai` renders the AI variant, meant for actions that trigger or
+	 * involve AI-assisted workflows.
 	 * The values `beta` and `beta-dark` are deprecated since v3.100.0 - use
 	 * `translucent` and `dark` instead.
 	 * The values `null` and `unstyled` are for internal use only.

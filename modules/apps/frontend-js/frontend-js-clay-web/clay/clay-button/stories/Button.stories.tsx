@@ -5,13 +5,14 @@
 
 import React from 'react';
 
-import ClayButton, {ClayButtonWithIcon} from '../src';
+import ClayButton, {ClayAiButton, ClayButtonWithIcon} from '../src';
 
 export default {
 	argTypes: {
 		displayType: {
 			control: {type: 'select'},
 			options: [
+				'ai',
 				'link',
 				'primary',
 				'secondary',
@@ -133,5 +134,79 @@ export function Icon() {
 				symbol="desktop"
 			/>
 		</>
+	);
+}
+
+const AI_STATES = [
+	{className: undefined, disabled: false, label: 'Default'},
+	{className: 'focus', disabled: false, label: 'Focus'},
+	{className: 'active', disabled: false, label: 'Active'},
+	{className: undefined, disabled: true, label: 'Disabled'},
+];
+
+const AI_VARIANTS = [
+	{label: 'Calling (gradient)', props: {gradient: true}},
+	{label: 'Primary (solid)', props: {}},
+	{label: 'Outline', props: {outline: true}},
+	{label: 'Borderless', props: {borderless: true}},
+	{label: 'Link', props: {link: true}},
+	{label: 'Subtle', props: {translucent: true}},
+];
+
+export function AI() {
+	return (
+		<div className="p-4">
+			<p className="text-secondary">
+				<code>ClayAiButton</code> renders the AI icon and a{' '}
+
+				<code>Chat with AI</code> label. The <code>gradient</code> prop
+				switches the filled variant from solid purple to the "calling"
+				gradient; <code>outline</code>, <code>borderless</code>,{' '}
+
+				<code>translucent</code>, and <code>monospaced</code> come from
+				the base button. Hover a button to see its hover state.
+			</p>
+
+			<table>
+				<tbody>
+					<tr>
+						<td />
+
+						{AI_STATES.map((state) => (
+							<td
+								className="pb-2 px-3 text-secondary"
+								key={state.label}
+							>
+								{state.label}
+							</td>
+						))}
+
+						<td className="pb-2 px-3 text-secondary">Icon</td>
+					</tr>
+
+					{AI_VARIANTS.map((variant) => (
+						<tr key={variant.label}>
+							<td className="pr-3 text-secondary">
+								{variant.label}
+							</td>
+
+							{AI_STATES.map((state) => (
+								<td className="p-3" key={state.label}>
+									<ClayAiButton
+										{...variant.props}
+										className={state.className}
+										disabled={state.disabled}
+									/>
+								</td>
+							))}
+
+							<td className="p-3">
+								<ClayAiButton {...variant.props} monospaced />
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
 	);
 }
