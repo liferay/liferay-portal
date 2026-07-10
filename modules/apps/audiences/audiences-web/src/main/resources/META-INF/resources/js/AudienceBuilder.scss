@@ -65,6 +65,14 @@ $toolbar-height: 55px;
 	}
 }
 
+.audience-builder-general-settings {
+	.collapse-icon.collapse-icon-middle .collapse-icon-closed,
+	.collapse-icon.collapse-icon-middle .collapse-icon-open {
+		position: static;
+		transform: none;
+	}
+}
+
 .audience-builder-grip {
 	cursor: grab;
 }
@@ -119,12 +127,4 @@ $toolbar-height: 55px;
 
 .audience-builder-sidebar {
 	width: $sidebar-width;
-}
-
-.audience-builder-general-settings {
-	.collapse-icon.collapse-icon-middle .collapse-icon-closed,
-	.collapse-icon.collapse-icon-middle .collapse-icon-open {
-		position: static;
-		transform: none;
-	}
 }
