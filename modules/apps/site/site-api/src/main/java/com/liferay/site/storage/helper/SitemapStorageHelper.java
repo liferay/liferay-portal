@@ -9,6 +9,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 import java.io.InputStream;
 
+import java.util.Date;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -26,6 +28,9 @@ public interface SitemapStorageHelper {
 			long companyId, long groupId, String assetTypeKey)
 		throws PortalException;
 
+	public Date getLastRegenerateSitemapDate(long companyId)
+		throws PortalException;
+
 	public InputStream getSitemapInputStream(long companyId, long groupId)
 		throws PortalException;
 
@@ -41,6 +46,9 @@ public interface SitemapStorageHelper {
 		throws PortalException;
 
 	public boolean hasSitemapFiles(long companyId) throws PortalException;
+
+	public void storeLastRegenerateSitemapDateFile(long companyId)
+		throws PortalException;
 
 	public void storeSitemapFile(long companyId, long groupId, String xml)
 		throws PortalException;

@@ -13,7 +13,9 @@ import com.liferay.object.item.selector.ObjectDefinitionItemSelectorReturnType;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -22,8 +24,11 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.CalendarUtil;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -31,8 +36,13 @@ import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
+import com.liferay.site.manager.SitemapManager;
+import com.liferay.site.storage.helper.SitemapStorageHelper;
+
+import java.text.Format;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,7 +56,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 		LiferayPortletResponse liferayPortletResponse,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		SitemapConfigurationManager sitemapConfigurationManager,
-		ThemeDisplay themeDisplay) {
+		SitemapManager sitemapManager,
+		SitemapStorageHelper sitemapStorageHelper, ThemeDisplay themeDisplay) {
 
 		_groupLocalService = groupLocalService;
 		_itemSelector = itemSelector;
@@ -54,7 +65,14 @@ public class SitemapCompanyConfigurationDisplayContext {
 		_liferayPortletResponse = liferayPortletResponse;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_sitemapConfigurationManager = sitemapConfigurationManager;
+		_sitemapManager = sitemapManager;
+		_sitemapStorageHelper = sitemapStorageHelper;
 		_themeDisplay = themeDisplay;
+	}
+
+	public boolean cachedGenerationEnabled() throws ConfigurationException {
+		return _sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			_themeDisplay.getCompanyId());
 	}
 
 	public SearchContainer<Group> getGroupSearchContainer() throws Exception {
@@ -107,6 +125,30 @@ public class SitemapCompanyConfigurationDisplayContext {
 				getSelectGroupEventName(), siteItemSelectorCriterion));
 
 		return _groupSelectorURL;
+	}
+
+	public String getLastRegenerateSitemapDateString() throws PortalException {
+		Date lastRegenerateSitemapDate =
+			_sitemapStorageHelper.getLastRegenerateSitemapDate(
+				_themeDisplay.getCompanyId());
+
+		if (lastRegenerateSitemapDate == null) {
+			return StringPool.DASH;
+		}
+
+		return _getDateString(lastRegenerateSitemapDate);
+	}
+
+	public String getNextRegenerateSitemapDateString() throws PortalException {
+		Date nextRegenerateSitemapDate =
+			_sitemapManager.getNextRegenerateSitemapDate(
+				_themeDisplay.getCompanyId());
+
+		if (nextRegenerateSitemapDate == null) {
+			return StringPool.DASH;
+		}
+
+		return _getDateString(nextRegenerateSitemapDate);
 	}
 
 	public SearchContainer<ObjectDefinition>
@@ -168,6 +210,14 @@ public class SitemapCompanyConfigurationDisplayContext {
 		return _objectDefinitionSelectorURL;
 	}
 
+	public String getRegenerateSitemapInProgressURL() {
+		return ResourceURLBuilder.createResourceURL(
+			_liferayPortletResponse
+		).setResourceID(
+			"/site_sitemap/get_regenerate_sitemap_in_progress"
+		).buildString();
+	}
+
 	public String getSelectGroupEventName() {
 		if (_selectGroupEventName != null) {
 			return _selectGroupEventName;
@@ -216,6 +266,55 @@ public class SitemapCompanyConfigurationDisplayContext {
 		return selectOptions;
 	}
 
+	public List<SelectOption> getXMLSitemapRegenerationDayOfWeekSelectOptions()
+		throws ConfigurationException {
+
+		List<SelectOption> selectOptions = new ArrayList<>();
+
+		String xmlSitemapRegenerationDayOfWeek =
+			xmlSitemapRegenerationDayOfWeek();
+
+		String[] days = CalendarUtil.getDays(_themeDisplay.getLocale());
+
+		for (int i = 0; i < days.length; i++) {
+			String dayOfWeek = String.valueOf(i + 1);
+
+			selectOptions.add(
+				new SelectOption(
+					days[i], dayOfWeek,
+					StringUtil.equals(
+						dayOfWeek, xmlSitemapRegenerationDayOfWeek)));
+		}
+
+		return selectOptions;
+	}
+
+	public List<SelectOption> getXMLSitemapRegenerationFrequencySelectOptions()
+		throws ConfigurationException {
+
+		List<SelectOption> selectOptions = new ArrayList<>();
+
+		String xmlSitemapRegenerationFrequency =
+			xmlSitemapRegenerationFrequency();
+
+		String[] regenerationFrequencies = {
+			SitemapConstants.REGENERATION_FREQUENCY_HOURLY,
+			SitemapConstants.REGENERATION_FREQUENCY_DAILY,
+			SitemapConstants.REGENERATION_FREQUENCY_WEEKLY
+		};
+
+		for (String frequency : regenerationFrequencies) {
+			selectOptions.add(
+				new SelectOption(
+					LanguageUtil.get(_themeDisplay.getLocale(), frequency),
+					frequency,
+					StringUtil.equals(
+						frequency, xmlSitemapRegenerationFrequency)));
+		}
+
+		return selectOptions;
+	}
+
 	public boolean hasVirtualHost(Group group) {
 		LayoutSet layoutSet = group.getPublicLayoutSet();
 
@@ -243,6 +342,16 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
+	public boolean indexModeAssetTypeEnabled() throws ConfigurationException {
+		return _sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
+			_themeDisplay.getCompanyId());
+	}
+
+	public boolean isRegenerateSitemapInProgress() {
+		return _sitemapManager.isRegenerateSitemapInProgress(
+			_themeDisplay.getCompanyId());
+	}
+
 	public boolean xmlSitemapIndexEnabled() throws ConfigurationException {
 		return _sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
 			_themeDisplay.getCompanyId());
@@ -251,6 +360,54 @@ public class SitemapCompanyConfigurationDisplayContext {
 	public String xmlSitemapIndexMode() throws ConfigurationException {
 		return _sitemapConfigurationManager.xmlSitemapIndexMode(
 			_themeDisplay.getCompanyId());
+	}
+
+	public String xmlSitemapRegenerationDayOfWeek()
+		throws ConfigurationException {
+
+		return _sitemapConfigurationManager.xmlSitemapRegenerationDayOfWeek(
+			_themeDisplay.getCompanyId());
+	}
+
+	public String xmlSitemapRegenerationFrequency()
+		throws ConfigurationException {
+
+		return _sitemapConfigurationManager.xmlSitemapRegenerationFrequency(
+			_themeDisplay.getCompanyId());
+	}
+
+	public String xmlSitemapRegenerationTime() throws ConfigurationException {
+		return _sitemapConfigurationManager.xmlSitemapRegenerationTime(
+			_themeDisplay.getCompanyId());
+	}
+
+	public boolean xmlSitemapRegenerationFrequencyHourly()
+		throws ConfigurationException {
+
+		return SitemapConstants.REGENERATION_FREQUENCY_HOURLY.equals(
+			xmlSitemapRegenerationFrequency());
+	}
+
+	public boolean xmlSitemapRegenerationFrequencyWeekly()
+		throws ConfigurationException {
+
+		return SitemapConstants.REGENERATION_FREQUENCY_WEEKLY.equals(
+			xmlSitemapRegenerationFrequency());
+	}
+
+	public String xmlSitemapRegenerationTimeZoneId()
+		throws ConfigurationException {
+
+		return _sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
+			_themeDisplay.getCompanyId());
+	}
+
+	private String _getDateString(Date date) {
+		Format dateFormat = FastDateFormatFactoryUtil.getSimpleDateFormat(
+			"MMM d, yyyy HH:mm:ss", _themeDisplay.getLocale(),
+			_themeDisplay.getTimeZone());
+
+		return dateFormat.format(date);
 	}
 
 	private Group _getGuestGroup() throws Exception {
@@ -277,6 +434,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 	private String _selectGroupEventName;
 	private String _selectObjectDefinitionEventName;
 	private final SitemapConfigurationManager _sitemapConfigurationManager;
+	private final SitemapManager _sitemapManager;
+	private final SitemapStorageHelper _sitemapStorageHelper;
 	private final ThemeDisplay _themeDisplay;
 
 }

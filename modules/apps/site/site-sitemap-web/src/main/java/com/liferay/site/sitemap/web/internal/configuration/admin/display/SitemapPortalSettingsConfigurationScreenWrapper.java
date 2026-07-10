@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
+import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.sitemap.web.internal.display.context.SitemapCompanyConfigurationDisplayContext;
+import com.liferay.site.storage.helper.SitemapStorageHelper;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -69,6 +71,12 @@ public class SitemapPortalSettingsConfigurationScreenWrapper
 
 	@Reference
 	private SitemapConfigurationManager _sitemapConfigurationManager;
+
+	@Reference
+	private SitemapManager _sitemapManager;
+
+	@Reference
+	private SitemapStorageHelper _sitemapStorageHelper;
 
 	private class SitemapPortalSettingsConfigurationScreenContributor
 		implements PortalSettingsConfigurationScreenContributor {
@@ -127,6 +135,7 @@ public class SitemapPortalSettingsConfigurationScreenWrapper
 						(PortletResponse)httpServletRequest.getAttribute(
 							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 					_objectDefinitionLocalService, _sitemapConfigurationManager,
+					_sitemapManager, _sitemapStorageHelper,
 					(ThemeDisplay)httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY)));
 		}

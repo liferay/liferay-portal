@@ -256,23 +256,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		throws PortalException {
 
 		for (SchedulerResponse schedulerResponse :
-				_schedulerEngineHelper.getScheduledJobs(
-					StorageType.PERSISTED)) {
-
-			if (!Objects.equals(
-					schedulerResponse.getGroupName(),
-					SitemapDestinationNames.SITEMAP_REGENERATION)) {
-
-				continue;
-			}
-
-			Message message = schedulerResponse.getMessage();
-
-			if ((message == null) ||
-				(message.getLong("companyId") != companyId)) {
-
-				continue;
-			}
+				_getRegenerateSitemapSchedulerResponses(companyId)) {
 
 			try {
 				_schedulerEngineHelper.delete(
@@ -316,6 +300,29 @@ public class SitemapManagerImpl implements SitemapManager {
 	@Override
 	public Map<Long, String> getAssetTypeKeys() {
 		return _assetTypeKeys;
+	}
+
+	@Override
+	public Date getNextRegenerateSitemapDate(long companyId)
+		throws PortalException {
+
+		Date nextRegenerateSitemapDate = null;
+
+		for (SchedulerResponse schedulerResponse :
+				_getRegenerateSitemapSchedulerResponses(companyId)) {
+
+			Date nextFireDate = _schedulerEngineHelper.getNextFireDate(
+				schedulerResponse);
+
+			if ((nextFireDate != null) &&
+				((nextRegenerateSitemapDate == null) ||
+				 nextFireDate.before(nextRegenerateSitemapDate))) {
+
+				nextRegenerateSitemapDate = nextFireDate;
+			}
+		}
+
+		return nextRegenerateSitemapDate;
 	}
 
 	@Override
@@ -483,6 +490,13 @@ public class SitemapManagerImpl implements SitemapManager {
 				assetTypeClassNameId, groupId, false, themeDisplay);
 
 			_getIndexSitemap(groupId, false, themeDisplay);
+
+			if (_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+					companyId)) {
+
+				_sitemapStorageHelper.storeLastRegenerateSitemapDateFile(
+					companyId);
+			}
 		}
 		finally {
 			_unlockRegenerateSitemap(assetTypeKey, companyId, groupId);
@@ -1168,6 +1182,27 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		return Collections.emptyList();
+	}
+
+	private List<SchedulerResponse> _getRegenerateSitemapSchedulerResponses(
+			long companyId)
+		throws SchedulerException {
+
+		return TransformUtil.transform(
+			_schedulerEngineHelper.getScheduledJobs(
+				SitemapDestinationNames.SITEMAP_REGENERATION,
+				StorageType.PERSISTED),
+			schedulerResponse -> {
+				Message message = schedulerResponse.getMessage();
+
+				if ((message != null) &&
+					(message.getLong("companyId") == companyId)) {
+
+					return schedulerResponse;
+				}
+
+				return null;
+			});
 	}
 
 	private String _getSchedulerJobName(

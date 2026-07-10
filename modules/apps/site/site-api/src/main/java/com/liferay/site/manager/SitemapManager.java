@@ -55,6 +55,9 @@ public interface SitemapManager {
 
 	public Map<Long, String> getAssetTypeKeys();
 
+	public Date getNextRegenerateSitemapDate(long companyId)
+		throws PortalException;
+
 	public String getSitemap(
 			long groupId, boolean privateLayout, ThemeDisplay themeDisplay)
 		throws PortalException;
