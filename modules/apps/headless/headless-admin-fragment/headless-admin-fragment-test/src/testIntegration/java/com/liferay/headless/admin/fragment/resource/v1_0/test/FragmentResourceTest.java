@@ -192,6 +192,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentApproved();
 		_testGetSiteFragmentApprovedAndDraft();
 		_testGetSiteFragmentDraft();
+		_testGetSiteFragmentFragmentSet();
 		_testGetSiteFragmentThumbnailURLReference();
 		_testGetSiteFragmentWithFormFragment();
 	}
@@ -1213,6 +1214,28 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	private void _testGetSiteFragmentDraft() throws Exception {
 		_testGetSiteFragment(false, true);
+	}
+
+	private void _testGetSiteFragmentFragmentSet() throws Exception {
+		Fragment postFragment = _postSiteFragment(randomFragment());
+
+		Fragment getFragment = fragmentResource.getSiteFragment(
+			testGroup.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
+
+		Assert.assertNull(getFragment.getFragmentSet());
+
+		FragmentResource fragmentResource = _getFragmentResource("fragmentSet");
+
+		getFragment = fragmentResource.getSiteFragment(
+			testGroup.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
+
+		FragmentSet fragmentSet = getFragment.getFragmentSet();
+
+		Assert.assertEquals(
+			_fragmentCollection.getExternalReferenceCode(),
+			fragmentSet.getExternalReferenceCode());
 	}
 
 	private void _testGetSiteFragmentSetFragmentsPageWithNonexistentFragmentSet()
