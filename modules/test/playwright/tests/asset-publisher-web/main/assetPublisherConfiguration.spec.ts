@@ -14,6 +14,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -244,5 +245,50 @@ test(
 			['assetEntryId', 'tags', 'tag'],
 			true
 		);
+	}
+);
+
+test(
+	'Metadata move boxes render when configuring an Asset Publisher on a widget page in French',
+	{
+		tag: '@LPD-97436',
+	},
+	async ({assetPublisherPage, assetPublisherWidgetPage, page, site}) => {
+
+		// Add an Asset Publisher to a widget page
+
+		const layout =
+			await assetPublisherWidgetPage.addAssetPublisherPortlet(site);
+
+		// View the widget page in French
+
+		await page.goto(`/fr/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		// Open the widget configuration ("Facultatif" is French for "Options")
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				exact: true,
+				name: 'Configuration',
+			}),
+			trigger: page
+				.locator('.portlet-asset-publisher')
+				.getByLabel('Facultatif'),
+		});
+
+		// Open the Display Settings panel ("Paramètres d'affichage" in French)
+
+		await assetPublisherPage.configurationIframe
+			.getByRole('tab', {name: "Paramètres d'affichage"})
+			.click();
+
+		// Assert a move button rendered in the metadata section
+
+		await expect(
+			assetPublisherPage.configurationIframe
+				.locator('[id$="metadata"]')
+				.getByTestId('ltr')
+		).toBeVisible();
 	}
 );
