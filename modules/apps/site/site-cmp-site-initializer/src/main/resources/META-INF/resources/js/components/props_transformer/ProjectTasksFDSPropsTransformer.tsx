@@ -83,6 +83,7 @@ export default function ProjectTasksFDSPropsTransformer({
 			symbol: '',
 			title: 'embedded.title',
 		},
+		selectable: false,
 		showPagination: false,
 		thumbnail: 'calendar',
 	};
@@ -107,6 +108,7 @@ export default function ProjectTasksFDSPropsTransformer({
 			symbol: '',
 			title: 'embedded.title',
 		},
+		selectable: false,
 		showPagination: false,
 		thumbnail: 'columns',
 	};
