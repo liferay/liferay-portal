@@ -10,7 +10,7 @@
 <aui:script position="inline" type="text/javascript">
 	var _smartsupp = _smartsupp || {};
 
-	_smartsupp.key = '<%= clickToChatChatProviderAccountId %>';
+	_smartsupp.key = '<%= HtmlUtil.escapeJS(clickToChatChatProviderAccountId) %>';
 
 	window.smartsupp ||
 		(function (d) {
@@ -35,7 +35,7 @@
 		})(document);
 
 	<c:if test="<%= themeDisplay.isSignedIn() %>">
-		smartsupp('email', '<%= user.getEmailAddress() %>');
-		smartsupp('name', '<%= user.getFirstName() %>');
+		smartsupp('email', '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>');
+		smartsupp('name', '<%= HtmlUtil.escapeJS(user.getFirstName()) %>');
 	</c:if>
 </aui:script>
