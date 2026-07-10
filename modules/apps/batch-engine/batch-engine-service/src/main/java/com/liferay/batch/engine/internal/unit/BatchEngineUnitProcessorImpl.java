@@ -353,6 +353,23 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		return className;
 	}
 
+	private java.io.File _getProcessedFile(
+			BatchEngineUnit batchEngineUnit, Bundle bundle)
+		throws IOException {
+
+		BatchEngineUnitConfiguration batchEngineUnitConfiguration =
+			batchEngineUnit.getBatchEngineUnitConfiguration();
+
+		String dataFileName = batchEngineUnit.getDataFileName();
+
+		return bundle.getDataFile(
+			com.liferay.petra.string.StringUtil.merge(
+				Arrays.asList(
+					dataFileName.replaceAll("\\W+", "."),
+					batchEngineUnitConfiguration.getCompanyId(), "processed"),
+				"."));
+	}
+
 	private boolean _isFeatureFlagDisabled(String featureFlagKey) {
 		if (Validator.isNotNull(featureFlagKey) &&
 			!FeatureFlagManagerUtil.isEnabled(featureFlagKey)) {
@@ -371,37 +388,20 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 
 		try {
-			BatchEngineUnitConfiguration batchEngineUnitConfiguration =
-				batchEngineUnit.getBatchEngineUnitConfiguration();
-
-			String dataFileName = batchEngineUnit.getDataFileName();
-
-			java.io.File processedFile = bundle.getDataFile(
-				com.liferay.petra.string.StringUtil.merge(
-					Arrays.asList(
-						dataFileName.replaceAll("\\W+", "."),
-						batchEngineUnitConfiguration.getCompanyId(),
-						"processed"),
-					"."));
+			java.io.File processedFile = _getProcessedFile(
+				batchEngineUnit, bundle);
 
 			if (processedFile == null) {
 				return false;
 			}
 
-			String lastModifiedString = String.valueOf(
-				bundle.getLastModified());
-
 			if (processedFile.exists() &&
-				Objects.equals(_file.read(processedFile), lastModifiedString)) {
+				Objects.equals(
+					_file.read(processedFile),
+					String.valueOf(bundle.getLastModified()))) {
 
 				return true;
 			}
-
-			if (!processedFile.exists()) {
-				processedFile.createNewFile();
-			}
-
-			_file.write(processedFile, lastModifiedString, true);
 
 			return false;
 		}
@@ -412,6 +412,33 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		return false;
 	}
 
+	private void _markProcessed(BatchEngineUnit batchEngineUnit) {
+		Bundle bundle = _getBundle(batchEngineUnit);
+
+		if (bundle == null) {
+			return;
+		}
+
+		try {
+			java.io.File processedFile = _getProcessedFile(
+				batchEngineUnit, bundle);
+
+			if (processedFile == null) {
+				return;
+			}
+
+			if (!processedFile.exists()) {
+				processedFile.createNewFile();
+			}
+
+			_file.write(
+				processedFile, String.valueOf(bundle.getLastModified()), true);
+		}
+		catch (IOException ioException) {
+			ReflectionUtil.throwException(ioException);
+		}
+	}
+
 	private Runnable _processBatchEngineUnit(
 			BatchEngineUnit batchEngineUnit,
 			CompletableFuture<Void> completableFuture)
@@ -420,6 +447,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		if (_isProcessed(batchEngineUnit)) {
 			return null;
 		}
+
+		_markProcessed(batchEngineUnit);
 
 		BatchEngineUnitConfiguration batchEngineUnitConfiguration = null;
 		byte[] content = null;
