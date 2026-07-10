@@ -6,8 +6,10 @@
 import {
 	ObjectDefinition,
 	ObjectField,
+	ObjectRelationship,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
 import buildObjectDefinition from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectDefinition';
+import buildObjectRelationships from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectRelationships';
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
@@ -415,6 +417,74 @@ describe('buildStructure', () => {
 				multiselection: false,
 				name: 'selfRelatedContent',
 				relatedStructureERC: 'SELF_ERC',
+			}),
+		]);
+	});
+
+	it('Round-trips a related content field referencing the same structure', () => {
+		const objectRelationship: ObjectRelationship = {
+			deletionType: 'disassociate',
+			externalReferenceCode: 'self-related-content',
+			label: {en_US: 'Self Related Content'},
+			name: 'selfRelatedContent',
+			objectDefinitionExternalReferenceCode1: 'SELF_ERC',
+			objectDefinitionExternalReferenceCode2: 'SELF_ERC',
+			type: 'oneToMany',
+		};
+
+		const objectDefinition = createObjectDefinition({
+			externalReferenceCode: 'SELF_ERC',
+			objectRelationships: [objectRelationship],
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {SELF_ERC: objectDefinition},
+		});
+
+		expect(
+			buildObjectRelationships({
+				children: structure.children,
+				structureERC: structure.erc,
+			})
+		).toEqual([objectRelationship]);
+	});
+
+	it('Builds a self-referencing repeatable group definition only as a repeatable group', () => {
+		const objectDefinition = createObjectDefinition({
+			externalReferenceCode: 'SELF_GROUP_ERC',
+			objectFolderExternalReferenceCode:
+				'L_CMS_STRUCTURE_REPEATABLE_GROUPS',
+			objectRelationships: [
+				{
+					deletionType: 'disassociate',
+					externalReferenceCode: 'self-group',
+					label: {en_US: 'Self Group'},
+					name: 'selfGroup',
+					objectDefinitionExternalReferenceCode1: 'SELF_GROUP_ERC',
+					objectDefinitionExternalReferenceCode2: 'SELF_GROUP_ERC',
+					type: 'oneToMany',
+				},
+			],
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {SELF_GROUP_ERC: objectDefinition},
+		});
+
+		const children = Array.from(structure.children.values());
+
+		expect(
+			children.filter((child) => child.type === 'related-content')
+		).toEqual([]);
+
+		expect(
+			children.filter((child) => child.type === 'repeatable-group')
+		).toEqual([
+			expect.objectContaining({
+				erc: 'SELF_GROUP_ERC',
+				relationshipERC: 'self-group',
 			}),
 		]);
 	});
