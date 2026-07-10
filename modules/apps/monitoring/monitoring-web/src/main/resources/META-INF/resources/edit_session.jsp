@@ -84,7 +84,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "session-id-x", sessionId, 
 									<liferay-ui:message key="email-address" />
 								</dt>
 								<dd>
-									<%= (user2 != null) ? user2.getEmailAddress() : LanguageUtil.get(request, "not-available") %>
+									<%= (user2 != null) ? HtmlUtil.escape(user2.getEmailAddress()) : LanguageUtil.get(request, "not-available") %>
 								</dd>
 								<dt class="h4">
 									<liferay-ui:message key="last-request" />
