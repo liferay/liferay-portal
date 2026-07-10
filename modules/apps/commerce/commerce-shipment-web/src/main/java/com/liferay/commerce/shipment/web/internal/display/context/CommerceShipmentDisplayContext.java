@@ -22,7 +22,7 @@ import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
@@ -78,7 +78,7 @@ public class CommerceShipmentDisplayContext
 	public CommerceShipmentDisplayContext(
 		ActionHelper actionHelper,
 		CommerceAddressFormatter commerceAddressFormatter,
-		CommerceAddressService commerceAddressService,
+		CommerceAddressLocalService commerceAddressLocalService,
 		CommerceChannelService commerceChannelService,
 		CommerceOrderItemService commerceOrderItemService,
 		CommerceOrderLocalService commerceOrderLocalService,
@@ -94,7 +94,7 @@ public class CommerceShipmentDisplayContext
 			httpServletRequest);
 
 		_commerceAddressFormatter = commerceAddressFormatter;
-		_commerceAddressService = commerceAddressService;
+		_commerceAddressLocalService = commerceAddressLocalService;
 		_commerceChannelService = commerceChannelService;
 		_commerceOrderItemService = commerceOrderItemService;
 		_commerceOrderLocalService = commerceOrderLocalService;
@@ -191,7 +191,7 @@ public class CommerceShipmentDisplayContext
 		}
 
 		CommerceAddress commerceAddress =
-			_commerceAddressService.getCommerceAddress(
+			_commerceAddressLocalService.getCommerceAddress(
 				commerceShipment.getCommerceAddressId());
 
 		return _commerceShippingMethodService.getCommerceShippingMethods(
@@ -424,7 +424,7 @@ public class CommerceShipmentDisplayContext
 	public CommerceAddress getShippingAddress() throws PortalException {
 		CommerceShipment commerceShipment = getCommerceShipment();
 
-		return _commerceAddressService.fetchCommerceAddress(
+		return _commerceAddressLocalService.fetchCommerceAddress(
 			commerceShipment.getCommerceAddressId());
 	}
 
@@ -499,7 +499,7 @@ public class CommerceShipmentDisplayContext
 		CommerceShipmentDisplayContext.class);
 
 	private final CommerceAddressFormatter _commerceAddressFormatter;
-	private final CommerceAddressService _commerceAddressService;
+	private final CommerceAddressLocalService _commerceAddressLocalService;
 	private final CommerceChannelService _commerceChannelService;
 	private final CommerceOrderItemService _commerceOrderItemService;
 	private final CommerceOrderLocalService _commerceOrderLocalService;

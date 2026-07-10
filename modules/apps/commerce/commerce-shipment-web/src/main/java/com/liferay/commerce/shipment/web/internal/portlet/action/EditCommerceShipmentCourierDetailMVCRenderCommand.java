@@ -9,7 +9,7 @@ import com.liferay.commerce.address.CommerceAddressFormatter;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.product.service.CommerceChannelService;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
@@ -51,7 +51,7 @@ public class EditCommerceShipmentCourierDetailMVCRenderCommand
 		CommerceShipmentDisplayContext commerceShipmentDisplayContext =
 			new CommerceShipmentDisplayContext(
 				_actionHelper, _commerceAddressFormatter,
-				_commerceAddressService, _commerceChannelService,
+				_commerceAddressLocalService, _commerceChannelService,
 				_commerceOrderItemService, _commerceOrderLocalService,
 				_commerceShipmentItemService,
 				_commerceShipmentModelResourcePermission,
@@ -71,7 +71,7 @@ public class EditCommerceShipmentCourierDetailMVCRenderCommand
 	private CommerceAddressFormatter _commerceAddressFormatter;
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@Reference
 	private CommerceChannelService _commerceChannelService;

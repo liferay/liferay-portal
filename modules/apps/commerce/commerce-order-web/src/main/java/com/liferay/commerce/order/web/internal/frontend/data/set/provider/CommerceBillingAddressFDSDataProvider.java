@@ -12,7 +12,7 @@ import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
 import com.liferay.commerce.order.web.internal.model.Address;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
@@ -59,7 +59,7 @@ public class CommerceBillingAddressFDSDataProvider
 				commerceOrder.getGroupId());
 
 		return TransformUtil.transform(
-			_commerceAddressService.getBillingCommerceAddresses(
+			_commerceAddressLocalService.getBillingCommerceAddresses(
 				commerceOrder.getCompanyId(), AccountEntry.class.getName(),
 				commerceOrder.getCommerceAccountId(),
 				commerceChannel.getCommerceChannelId(),
@@ -86,7 +86,7 @@ public class CommerceBillingAddressFDSDataProvider
 			_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
 				commerceOrder.getGroupId());
 
-		return _commerceAddressService.getBillingCommerceAddressesCount(
+		return _commerceAddressLocalService.getBillingCommerceAddressesCount(
 			commerceOrder.getCompanyId(), AccountEntry.class.getName(),
 			commerceOrder.getCommerceAccountId(),
 			commerceChannel.getCommerceChannelId(), fdsKeywords.getKeywords());
@@ -120,7 +120,7 @@ public class CommerceBillingAddressFDSDataProvider
 	}
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
