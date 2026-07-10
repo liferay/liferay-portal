@@ -20,11 +20,11 @@ const SESSION_TREE_JS_CLICK_URL = `${PATH_MAIN}/portal/session_tree_js_click`;
 export interface PageTreeModalConfiguration {
 	liveGroupId: number;
 	pageSize: number;
-	privateLayoutsEnabled: boolean;
+	privateLayoutsAvailable: boolean;
 }
 
 interface Props
-	extends Omit<PageTreeModalConfiguration, 'privateLayoutsEnabled'> {
+	extends Omit<PageTreeModalConfiguration, 'privateLayoutsAvailable'> {
 	initialAll?: boolean;
 	initialSelectedIds: string[];
 	onClose: () => void;

@@ -38,7 +38,7 @@ const DEFAULT_PROPS = {
 	pageTreeModalConfiguration: {
 		liveGroupId: 20121,
 		pageSize: 20,
-		privateLayoutsEnabled: false,
+		privateLayoutsAvailable: false,
 	},
 };
 
@@ -330,7 +330,7 @@ describe('NewExport', () => {
 
 		const privatePageTreeModalConfiguration = {
 			...DEFAULT_PROPS.pageTreeModalConfiguration,
-			privateLayoutsEnabled: true,
+			privateLayoutsAvailable: true,
 		};
 
 		const getExportRequest = () => {

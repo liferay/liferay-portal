@@ -52,7 +52,7 @@ renderResponse.setTitle(exportImportPreviewDisplayContext.getExportTitle());
 				).put(
 					"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
 				).put(
-					"privateLayoutsEnabled", liveGroup.isPrivateLayoutsEnabled()
+					"privateLayoutsAvailable", liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
 				).build()
 			).build()
 		%>'

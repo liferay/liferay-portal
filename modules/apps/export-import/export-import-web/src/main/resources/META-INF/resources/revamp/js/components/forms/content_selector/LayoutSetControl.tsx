@@ -100,7 +100,7 @@ export default function LayoutSetControl({
 	pageTreeModalConfiguration,
 	portletDataHandlerSelection,
 }: Props) {
-	const {privateLayoutsEnabled, ...modalConfiguration} =
+	const {privateLayoutsAvailable, ...modalConfiguration} =
 		pageTreeModalConfiguration;
 
 	const checkboxId = useId();
@@ -157,7 +157,7 @@ export default function LayoutSetControl({
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{privateLayoutsEnabled && selected && (
+			{privateLayoutsAvailable && selected && (
 				<LayoutVisibilitySelector
 					label={label}
 					onSetMode={(nextPrivateLayout) =>
