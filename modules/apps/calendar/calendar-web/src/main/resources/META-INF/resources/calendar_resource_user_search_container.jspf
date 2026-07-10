@@ -20,7 +20,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="description"
-			value="<%= user.getEmailAddress() %>"
+			value="<%= HtmlUtil.escape(user.getEmailAddress()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
