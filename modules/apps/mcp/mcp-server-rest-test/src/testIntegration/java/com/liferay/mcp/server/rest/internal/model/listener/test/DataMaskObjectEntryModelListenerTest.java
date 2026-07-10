@@ -48,14 +48,13 @@ public class DataMaskObjectEntryModelListenerTest {
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
+		ObjectEntry customDataMaskObjectEntry =
+			MCPServerTestUtil.addDataMaskObjectEntry(
+				"\\d{4}", RandomTestUtil.randomString(), "[REDACTED]");
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
-
-		ObjectEntry customDataMaskObjectEntry =
-			MCPServerTestUtil.addDataMaskObjectEntry(
-				"\\d{4}", RandomTestUtil.randomString(), "[REDACTED]");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(

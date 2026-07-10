@@ -44,13 +44,12 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
+		ObjectEntry dataMaskObjectEntry =
+			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
-
-		ObjectEntry dataMaskObjectEntry =
-			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(

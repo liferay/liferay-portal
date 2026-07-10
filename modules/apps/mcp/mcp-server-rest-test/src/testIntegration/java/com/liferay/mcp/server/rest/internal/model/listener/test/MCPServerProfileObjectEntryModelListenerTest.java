@@ -141,13 +141,13 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
+		int count = 0;
+
 		ObjectDefinition profileDataMaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_MCP_SERVER_PROFILE_DATA_MASK",
 					TestPropsValues.getCompanyId());
-
-		int count = 0;
 
 		for (ObjectEntry profileDataMaskObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
