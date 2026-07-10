@@ -6,6 +6,7 @@
 package com.liferay.portal.search.elasticsearch8.internal.search.engine.adapter.document;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.Conflicts;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.DeleteByQueryRequest;
 import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
@@ -62,6 +63,10 @@ public class DeleteByQueryDocumentRequestExecutor {
 				new Query(
 					ElasticsearchQueryVisitor.INSTANCE.translate(
 						deleteByQueryDocumentRequest.getQuery())));
+		}
+
+		if (deleteByQueryDocumentRequest.isProceedOnConflicts()) {
+			builder.conflicts(Conflicts.Proceed);
 		}
 
 		builder.refresh(deleteByQueryDocumentRequest.isRefresh());

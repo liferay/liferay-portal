@@ -83,6 +83,8 @@ public class SyncReindexManagerImpl implements SyncReindexManager {
 		DeleteByQueryDocumentRequest deleteByQueryDocumentRequest =
 			new DeleteByQueryDocumentRequest(booleanQuery, indexName);
 
+		deleteByQueryDocumentRequest.setProceedOnConflicts(true);
+
 		_searchEngineAdapter.execute(deleteByQueryDocumentRequest);
 	}
 
