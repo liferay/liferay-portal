@@ -48,6 +48,13 @@ public class DepotRoleUtil {
 			return roles;
 		}
 
+		if (Objects.equals(
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+
+			return ListUtil.filter(
+				roles, role -> Objects.equals(role.getSubtype(), subtype));
+		}
+
 		return ListUtil.filter(
 			roles,
 			role -> {
@@ -168,6 +175,31 @@ public class DepotRoleUtil {
 				"asset-library-owners-are-super-users-of-their-asset-library-" +
 					"and-can-assign-asset-library-roles-to-users");
 		}
+		else if (Objects.equals(
+					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR, name)) {
+
+			return ResourceBundleUtil.getString(
+				resourceBundle,
+				"design-library-administrators-are-super-users-of-their-" +
+					"design-library-but-cannot-make-other-users-into-design-" +
+						"library-administrators");
+		}
+		else if (Objects.equals(
+					DepotRolesConstants.DESIGN_LIBRARY_MEMBER, name)) {
+
+			return ResourceBundleUtil.getString(
+				resourceBundle,
+				"all-users-who-belong-to-a-design-library-have-this-role-" +
+					"within-that-design-library");
+		}
+		else if (Objects.equals(
+					DepotRolesConstants.DESIGN_LIBRARY_OWNER, name)) {
+
+			return ResourceBundleUtil.getString(
+				resourceBundle,
+				"design-library-owners-are-super-users-of-their-design-" +
+					"library-and-can-assign-design-library-roles-to-users");
+		}
 
 		return null;
 	}
@@ -202,6 +234,17 @@ public class DepotRoleUtil {
 				DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member"
 			).put(
 				DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+				"design-library-administrator"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				"design-library-content-reviewer"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+				"design-library-member"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER, "design-library-owner"
 			).build());
 	}
 
