@@ -9,12 +9,15 @@ import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {workflowPagesTest} from '../../../../fixtures/workflowPagesTest';
+import {getRandomInt} from '../../../../utils/getRandomInt';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
-	loginTest()
+	loginTest(),
+	workflowPagesTest
 );
 
 test('LPD-13559 Bulk actions for product relations', async ({
@@ -173,5 +176,131 @@ test(
 				commerceAdminProductDetailsProductRelationsPage.emptyTableMessage
 			).toBeVisible();
 		});
+	}
+);
+
+test(
+	'Product relations created under the Single Approver workflow show as pending and become approved once approved',
+	{tag: '@COMMERCE-11569'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductRelationsPage,
+		commerceAdminProductPage,
+		configurationTabPage,
+		page,
+	}) => {
+		await configurationTabPage.goTo();
+
+		await configurationTabPage.assignWorkflowToAssetType(
+			'Single Approver',
+			'Product Link'
+		);
+
+		try {
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const sourceProduct =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: 'ABS Sensor ' + getRandomInt()},
+				});
+			const relatedProduct =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: 'Hoses ' + getRandomInt()},
+				});
+
+			const relationLinkIds = new Set<number>();
+
+			const relationTypes = [
+				{label: 'Up-Sell', type: 'up-sell'},
+				{label: 'Cross-Sell', type: 'cross-sell'},
+				{label: 'Related', type: 'related'},
+				{label: 'Accessories', type: 'accessories'},
+				{label: 'Spare', type: 'spare'},
+			];
+
+			for (const {type} of relationTypes) {
+				const relation =
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						sourceProduct.productId,
+						{productId: relatedProduct.productId, type}
+					);
+
+				relationLinkIds.add(relation.id);
+			}
+
+			await commerceAdminProductPage.gotoProduct(
+				sourceProduct.name.en_US
+			);
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expect(
+				commerceAdminProductDetailsProductRelationsPage.table
+			).toBeVisible();
+
+			for (const {label} of relationTypes) {
+				await expect(
+					commerceAdminProductDetailsProductRelationsPage.productRelationStatusLabel(
+						relatedProduct.name.en_US,
+						label
+					)
+				).toHaveText('Pending');
+			}
+
+			const userAccount =
+				await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+			let workflowTasks: any[] = [];
+
+			await expect(async () => {
+				const {items} =
+					await apiHelpers.headlessAdminWorkflow.getWorkflowTasksBySubmittingUser(
+						userAccount.id,
+						-1
+					);
+
+				workflowTasks = items.filter((item) =>
+					relationLinkIds.has(item.objectReviewed?.id)
+				);
+
+				expect(workflowTasks).toHaveLength(relationTypes.length);
+			}).toPass();
+
+			for (const workflowTask of workflowTasks) {
+				await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+					workflowTask.id,
+					userAccount.id
+				);
+
+				await apiHelpers.headlessAdminWorkflow.postWorkflowTaskChangeTransition(
+					workflowTask.id,
+					'approve'
+				);
+			}
+
+			await page.reload();
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			for (const {label} of relationTypes) {
+				await expect(
+					commerceAdminProductDetailsProductRelationsPage.productRelationStatusLabel(
+						relatedProduct.name.en_US,
+						label
+					)
+				).toHaveText('Approved');
+			}
+		}
+		finally {
+			await configurationTabPage.goTo();
+
+			await configurationTabPage.unassignWorkflowFromAssetType(
+				'Product Link'
+			);
+		}
 	}
 );

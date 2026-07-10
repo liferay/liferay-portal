@@ -68,6 +68,10 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 		relationType: string
 	) => Locator;
 	readonly productRelationRowMenuItem: (action: string) => Locator;
+	readonly productRelationStatusLabel: (
+		productName: string,
+		relationType: string
+	) => Locator;
 	readonly productRelationTypeMenuItem: (relationType: string) => Locator;
 	readonly productRelationsLink: Locator;
 	readonly selectItemsInput: Locator;
@@ -181,6 +185,13 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 			);
 		this.productRelationRowMenuItem = (action: string) =>
 			page.getByRole('menuitem', {exact: true, name: action});
+		this.productRelationStatusLabel = (
+			productName: string,
+			relationType: string
+		) =>
+			this.productRelationRow(productName, relationType).locator(
+				'.label'
+			);
 		this.productRelationTypeMenuItem = (relationType: string) =>
 			page.getByRole('menuitem', {
 				exact: true,
