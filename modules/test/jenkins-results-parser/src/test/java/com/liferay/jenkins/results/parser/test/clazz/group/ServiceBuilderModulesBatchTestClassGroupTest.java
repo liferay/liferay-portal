@@ -24,6 +24,24 @@ public class ServiceBuilderModulesBatchTestClassGroupTest
 	@Test
 	public void testGetBuildType() {
 		_testGetBuildType(
+			ServiceBuilderModulesBatchTestClassGroup.BuildType.CORE,
+			"portal-impl/src/com/liferay/portal/service/impl" +
+				"/UserLocalServiceImpl.java");
+		_testGetBuildType(
+			ServiceBuilderModulesBatchTestClassGroup.BuildType.CORE,
+			"portal-kernel/src/com/liferay/portal/kernel/service" +
+				"/UserLocalService.java");
+		_testGetBuildType(
+			ServiceBuilderModulesBatchTestClassGroup.BuildType.FULL,
+			"modules/util/portal-tools-service-builder/src/main/java/com" +
+				"/liferay/portal/tools/service/builder/ServiceBuilder.java");
+		_testGetBuildType(
+			ServiceBuilderModulesBatchTestClassGroup.BuildType.FULL,
+			"modules/util/portal-tools-service-builder/src/main/java/com" +
+				"/liferay/portal/tools/service/builder/ServiceBuilder.java",
+			"portal-impl/src/com/liferay/portal/service/impl" +
+				"/UserLocalServiceImpl.java");
+		_testGetBuildType(
 			null,
 			"modules/apps/blogs/blogs-web/src/main/resources/META-INF" +
 				"/resources/view.jsp");
