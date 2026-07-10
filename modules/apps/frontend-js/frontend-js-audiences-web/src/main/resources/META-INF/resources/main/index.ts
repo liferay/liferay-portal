@@ -5,6 +5,7 @@
 
 import {
 	clear,
+	clearHandlers,
 	get,
 	on,
 	runDetection,
@@ -81,6 +82,7 @@ export interface Handler {
 
 export interface AudiencesAPI {
 	clear(): void;
+	clearHandlers(): void;
 	get(): Set<AudienceId>;
 	on(audienceId: AudienceId, handler: Handler): void;
 	runDetection(audiencesDefinitionURL: string): Promise<void>;
@@ -90,6 +92,7 @@ export interface AudiencesAPI {
 
 export const audiences: AudiencesAPI = {
 	clear,
+	clearHandlers,
 	get,
 	on,
 	runDetection,

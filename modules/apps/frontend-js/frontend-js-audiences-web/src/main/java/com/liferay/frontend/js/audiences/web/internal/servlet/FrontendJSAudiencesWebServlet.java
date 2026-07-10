@@ -61,20 +61,10 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 		String hash = null;
 
 		if ((parts.length == 2) && parts[1].startsWith("bootstrap.")) {
-			Long plid = _getPlid(httpServletRequest.getParameter("plid"));
-
-			if (plid == null) {
-				httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
-				return;
-			}
-
 			content = BootstrapJavaScriptUtil.getContent(
 				httpServletRequest.getParameter("audiencesDefinitionHash"),
-				httpServletRequest.getParameter("elementVariationsHash"),
 				Boolean.parseBoolean(
-					httpServletRequest.getParameter("enableLog")),
-				plid);
+					httpServletRequest.getParameter("enableLog")));
 			contentType = ContentTypes.APPLICATION_JAVASCRIPT;
 			hash = BootstrapJavaScriptUtil.getHash();
 		}

@@ -20,18 +20,13 @@ import java.io.InputStream;
 public class BootstrapJavaScriptUtil {
 
 	public static String getContent(
-		String audiencesDefinitionHash, String elementVariationsHash,
-		boolean enableLog, long plid) {
+		String audiencesDefinitionHash, boolean enableLog) {
 
 		return StringUtil.replace(
 			_TPL_BOOTSTRAP_JS,
-			new String[] {
-				"[$AUDIENCES_DEFINITION_HASH$]", "[$ELEMENT_VARIATIONS_HASH$]",
-				"[$ENABLE_LOG$]", "[$PLID$]"
-			},
+			new String[] {"[$AUDIENCES_DEFINITION_HASH$]", "[$ENABLE_LOG$]"},
 			new Object[] {
-				HtmlUtil.escapeJS(audiencesDefinitionHash),
-				HtmlUtil.escapeJS(elementVariationsHash), enableLog, plid
+				HtmlUtil.escapeJS(audiencesDefinitionHash), enableLog
 			});
 	}
 

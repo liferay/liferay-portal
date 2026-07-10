@@ -4,27 +4,36 @@ const {audiences} = await import(`${BASE_URL}o/frontend-js-audiences-web/__lifer
 
 audiences.setLogEnabled([$ENABLE_LOG$]);
 
-// Register the element variation handlers once. ES modules are evaluated at
-// most once per document, so neither this bootstrap module nor the variations
-// module below re-runs on SPA navigations. The handlers are therefore
-// registered a single time and kept registered, while detection and handler
-// execution are re-run on every navigation through the listener below.
-
-await import(`${BASE_URL}o/audiences/[$PLID$]/variations.([$ELEMENT_VARIATIONS_HASH$]).js`);
+const DEFINITION_URL = `${BASE_URL}o/audiences/definition.([$AUDIENCES_DEFINITION_HASH$]).json`;
 
 async function runAudiences() {
+	const meta = document.head.querySelector(
+		'meta[name="audiences-variations"]'
+	);
+
+	// A page without element variations has no metadata. There is nothing to
+	// apply, so leave any previously registered handlers untouched.
+
+	if (!meta) {
+		return;
+	}
+
+	const [plid, elementVariationsHash] = meta.content.split(':');
+
+	audiences.clearHandlers();
+
+	const variations = await import(
+		`${BASE_URL}o/audiences/${plid}/variations.(${elementVariationsHash}).js`
+	);
+
+	variations.register();
+
 	audiences.clear();
 
-	await audiences.runDetection(
-		`${BASE_URL}o/audiences/definition.([$AUDIENCES_DEFINITION_HASH$]).json`
-	);
+	await audiences.runDetection(DEFINITION_URL);
 
 	await audiences.runHandlers();
 }
-
-// Run detection and handlers for the current page, then again after every SPA
-// navigation. Senna keeps this script (data-senna-track="permanent") from
-// being re-evaluated, so this listener is the only thing that runs per page.
 
 await runAudiences();
 
