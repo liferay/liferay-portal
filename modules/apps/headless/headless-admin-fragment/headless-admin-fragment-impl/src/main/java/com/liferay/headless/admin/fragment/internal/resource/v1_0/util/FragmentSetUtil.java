@@ -5,6 +5,8 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0.util;
 
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
@@ -35,6 +37,21 @@ public class FragmentSetUtil {
 			fragmentSet.getName(), fragmentSet.getDescription(),
 			GetterUtil.getBoolean(fragmentSet.getMarketplace()),
 			serviceContext);
+	}
+
+	public static FragmentCollection getFragmentCollection(DLFolder dlFolder) {
+		DLFolder parentDLFolder = DLFolderLocalServiceUtil.fetchDLFolder(
+			dlFolder.getParentFolderId());
+
+		while ((parentDLFolder != null) && !parentDLFolder.isMountPoint()) {
+			dlFolder = parentDLFolder;
+
+			parentDLFolder = DLFolderLocalServiceUtil.fetchDLFolder(
+				dlFolder.getParentFolderId());
+		}
+
+		return FragmentCollectionLocalServiceUtil.fetchFragmentCollection(
+			dlFolder.getGroupId(), dlFolder.getName());
 	}
 
 	public static FragmentCollection getOrAddFragmentCollection(
