@@ -94,7 +94,7 @@ PortletURL previewURL = PortletURLBuilder.createRenderURL(
 
 		<liferay-ui:search-container-column-text
 			name="email-address"
-			value="<%= membershipRequestUser.getEmailAddress() %>"
+			value="<%= HtmlUtil.escape(membershipRequestUser.getEmailAddress()) %>"
 		/>
 
 		<liferay-ui:search-container-column-date
