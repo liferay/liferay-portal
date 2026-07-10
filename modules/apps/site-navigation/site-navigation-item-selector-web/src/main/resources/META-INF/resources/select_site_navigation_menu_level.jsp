@@ -56,7 +56,7 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 				/>
 
 				<a href="<%= siteNavigationMenuEntry.getURL() %>">
-					<%= siteNavigationMenuEntry.getName() %>
+					<%= HtmlUtil.escape(siteNavigationMenuEntry.getName()) %>
 				</a>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
