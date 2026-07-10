@@ -20,8 +20,13 @@ language key, so the configuration fails localization at runtime.
     name = "cmis-repository-configuration-name"
 )
 
-@Meta.AD(
-    deflt = "1", description = "delete-depth-description",
-    name = "delete-depth-name", required = false
-)
+public interface ScriptManagementConfiguration {
+
+    @Meta.AD(
+        deflt = "1", description = "delete-depth-description",
+        name = "delete-depth-name", required = false
+    )
+    public int deleteDepth();
+
+}
 ```
