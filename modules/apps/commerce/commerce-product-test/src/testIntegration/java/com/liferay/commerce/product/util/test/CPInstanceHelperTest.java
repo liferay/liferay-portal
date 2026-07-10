@@ -5,15 +5,12 @@
 
 package com.liferay.commerce.product.util.test;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
-import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
-import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
@@ -27,11 +24,9 @@ import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
-import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
-import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
-import com.liferay.commerce.test.util.price.list.CommercePriceListTestUtil;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -49,7 +44,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -105,18 +99,15 @@ public class CPInstanceHelperTest {
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_user.getCompanyId(), _group.getGroupId(), _user.getUserId());
 
-		_commerceCatalog = CommerceCatalogLocalServiceUtil.addCommerceCatalog(
-			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			LocaleUtil.US.getDisplayLanguage(), _serviceContext);
-
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_user.getCompanyId());
 
-		_commerceChannel = CommerceChannelLocalServiceUtil.addCommerceChannel(
-			null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-			_group.getGroupId(), "Test Channel",
-			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
-			_commerceCurrency.getCode(), _serviceContext);
+		_commerceCatalog = CommerceTestUtil.addCommerceCatalog(
+			_user.getCompanyId(), _group.getGroupId(), _user.getUserId(),
+			_commerceCurrency.getCode());
+
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), _commerceCurrency.getCode());
 	}
 
 	@After
@@ -316,17 +307,13 @@ public class CPInstanceHelperTest {
 		CommerceContextThreadLocal.set(
 			_commerceContextFactory.create(
 				accountEntry.getAccountEntryId(), _commerceChannel.getGroupId(),
-				null, 0, _company.getCompanyId()));
-
-		CommercePriceListTestUtil.addCommercePriceList(
-			_commerceCatalog.getGroupId(), true,
-			CommercePriceListConstants.TYPE_PRICE_LIST, 1.0);
+				_commerceCurrency.getCode(), 0, _company.getCompanyId()));
 
 		BigDecimal unitPrice = _cpInstanceHelper.fetchCPInstanceUnitPrice(
 			CPTestUtil.addCPInstanceFromCatalog(
 				_commerceCatalog.getGroupId(), BigDecimal.TEN));
 
-		Assert.assertEquals(unitPrice, BigDecimal.TEN);
+		Assert.assertEquals(0, unitPrice.compareTo(BigDecimal.TEN));
 	}
 
 	@Test

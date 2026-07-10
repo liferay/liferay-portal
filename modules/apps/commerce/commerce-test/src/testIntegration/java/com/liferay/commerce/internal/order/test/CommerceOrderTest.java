@@ -32,8 +32,6 @@ import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
-import com.liferay.commerce.test.util.context.TestCustomCommerceContextFactory;
-import com.liferay.commerce.test.util.context.TestCustomCommerceContextHttp;
 import com.liferay.commerce.util.CommerceOrderThreadLocal;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -77,18 +75,10 @@ import org.frutilla.FrutillaRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.component.runtime.ServiceComponentRuntime;
-import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
-import org.osgi.util.promise.Promise;
-
-import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Alec Sloan
@@ -102,19 +92,6 @@ public class CommerceOrderTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		ComponentDescriptionDTO componentDescriptionDTO =
-			_serviceComponentRuntime.getComponentDescriptionDTO(
-				FrameworkUtil.getBundle(TestCustomCommerceContextFactory.class),
-				TestCustomCommerceContextFactory.class.getName());
-
-		Promise<Void> voidPromise = _serviceComponentRuntime.enableComponent(
-			componentDescriptionDTO);
-
-		voidPromise.getValue();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -154,25 +131,17 @@ public class CommerceOrderTest {
 	public void tearDown() throws Exception {
 		_commerceOrderLocalService.deleteCommerceOrders(
 			_commerceChannel.getGroupId());
-
-		ComponentDescriptionDTO componentDescriptionDTO =
-			_serviceComponentRuntime.getComponentDescriptionDTO(
-				FrameworkUtil.getBundle(TestCustomCommerceContextFactory.class),
-				TestCustomCommerceContextFactory.class.getName());
-
-		Promise<Void> voidPromise = _serviceComponentRuntime.disableComponent(
-			componentDescriptionDTO);
-
-		voidPromise.getValue();
 	}
 
 	@Test
 	public void testCommerceOrderCurrency() throws Exception {
-		CommerceContext commerceContext = _commerceContextFactory.create(
-			new MockHttpServletRequest());
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(_group.getCompanyId());
 
-		Assert.assertTrue(
-			commerceContext instanceof TestCustomCommerceContextHttp);
+		CommerceContext commerceContext = _commerceContextFactory.create(
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+			_commerceChannel.getGroupId(), commerceCurrency.getCode(), 0,
+			_group.getCompanyId());
 
 		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
@@ -1217,9 +1186,6 @@ public class CommerceOrderTest {
 	}
 
 	private static final int _MAX_CLAUSES_COUNT = 1024;
-
-	@Inject
-	private static ServiceComponentRuntime _serviceComponentRuntime;
 
 	private final List<AccountEntry> _accountEntries = new ArrayList<>();
 
