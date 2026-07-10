@@ -82,7 +82,7 @@ if (Validator.isNotNull(backURL)) {
 					<liferay-ui:search-container-column-text
 						href="<%= rowURL %>"
 						name="title"
-						value="<%= MySubscriptionsUtil.getTitleText(locale, subscription.getClassName(), subscription.getClassPK(), ((assetRenderer != null) ? assetRenderer.getTitle(locale) : null)) %>"
+						value="<%= HtmlUtil.escape(MySubscriptionsUtil.getTitleText(locale, subscription.getClassName(), subscription.getClassPK(), ((assetRenderer != null) ? assetRenderer.getTitle(locale) : null))) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
