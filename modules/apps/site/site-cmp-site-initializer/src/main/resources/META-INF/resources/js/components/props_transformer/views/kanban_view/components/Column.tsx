@@ -43,8 +43,13 @@ export function ColumnView({
 	column: {icon, key, name, tasks},
 	stateFlow,
 }: IColumnViewProps) {
-	const {changeTaskStatus, loadData, projectId, projectObjectDefinitionId} =
-		useContext(KanbanViewContext);
+	const {
+		changeTaskStatus,
+		hasAddTaskPermission,
+		loadData,
+		projectId,
+		projectObjectDefinitionId,
+	} = useContext(KanbanViewContext);
 
 	const canTransition = (taskStateKey: string) => {
 		if (!stateFlow) {
@@ -113,37 +118,39 @@ export function ColumnView({
 						})}
 					</div>
 
-					<ClayButton
-						borderless
-						className="lfr__kaban-view-column-state-add-button"
-						displayType="secondary"
-						onClick={async () => {
-							await openCMPModal({
-								center: true,
-								contentComponent: ({
-									closeModal,
-								}: {
-									closeModal: () => void;
-								}) => (
-									<CreateTaskModal
-										closeModal={closeModal}
-										loadData={loadData}
-										projectId={projectId}
-										projectObjectDefinitionId={
-											projectObjectDefinitionId
-										}
-										state={key}
-									/>
-								),
-								size: 'md',
-							});
-						}}
-						size="xs"
-					>
-						<ClayIcon symbol="plus" />
+					{hasAddTaskPermission && (
+						<ClayButton
+							borderless
+							className="lfr__kaban-view-column-state-add-button"
+							displayType="secondary"
+							onClick={async () => {
+								await openCMPModal({
+									center: true,
+									contentComponent: ({
+										closeModal,
+									}: {
+										closeModal: () => void;
+									}) => (
+										<CreateTaskModal
+											closeModal={closeModal}
+											loadData={loadData}
+											projectId={projectId}
+											projectObjectDefinitionId={
+												projectObjectDefinitionId
+											}
+											state={key}
+										/>
+									),
+									size: 'md',
+								});
+							}}
+							size="xs"
+						>
+							<ClayIcon symbol="plus" />
 
-						{Liferay.Language.get('add-task')}
-					</ClayButton>
+							{Liferay.Language.get('add-task')}
+						</ClayButton>
+					)}
 				</div>
 			</Col>
 		</div>

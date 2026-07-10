@@ -17,6 +17,7 @@ import {KanbanViewContext} from './context';
 import {useOptimisticBoard} from './hooks/useOptimisticBoard';
 
 interface KanbanViewProps {
+	hasAddTaskPermission: boolean;
 	items: ITask[];
 	itemsActions: IItemsActions[];
 	projectId: string;
@@ -61,6 +62,7 @@ function KanbanView(props: KanbanViewProps) {
 			value={{
 				boardData,
 				changeTaskStatus,
+				hasAddTaskPermission: props.hasAddTaskPermission,
 				itemsActions: props.itemsActions,
 				loadData,
 				projectId: props.projectId,
