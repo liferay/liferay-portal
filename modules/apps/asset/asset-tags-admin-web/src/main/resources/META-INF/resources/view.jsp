@@ -46,7 +46,7 @@
 						colspan="<%= 2 %>"
 					>
 						<h2 class="h5">
-							<%= tag.getName() %>
+							<%= HtmlUtil.escape(tag.getName()) %>
 						</h2>
 
 						<span class="text-default">
