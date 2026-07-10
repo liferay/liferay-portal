@@ -6,14 +6,14 @@
 package com.liferay.batch.engine.unit;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Raymond Augé
  */
 public interface BatchEngineUnitProcessor {
 
-	public CompletableFuture<Void> processBatchEngineUnits(
-		Collection<BatchEngineUnit> batchEngineUnits);
+	public void processBatchEngineUnits(
+			Collection<BatchEngineUnit> batchEngineUnits)
+		throws Exception;
 
 }

@@ -14,8 +14,6 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -35,24 +33,22 @@ public class MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener
 
 		if (db.getDBType() == DBType.HYPERSONIC) {
 			TransactionCallbackUtil.registerCommitCallback(
-				() -> _processBatchEngineUnits(company));
+				() -> {
+					_multiCompanyBatchEngineUnitProcessor.
+						processBatchEngineUnits(company);
+
+					return null;
+				});
 		}
 		else {
-			_processBatchEngineUnits(company);
+			_multiCompanyBatchEngineUnitProcessor.processBatchEngineUnits(
+				company);
 		}
 	}
 
 	@Override
 	public void portalInstanceUnregistered(Company company) {
 		_multiCompanyBatchEngineUnitProcessor.unregister(company);
-	}
-
-	private Void _processBatchEngineUnits(Company company) throws Exception {
-		CompletableFuture<Void> completableFuture =
-			_multiCompanyBatchEngineUnitProcessor.processBatchEngineUnits(
-				company);
-
-		return completableFuture.get();
 	}
 
 	@Reference

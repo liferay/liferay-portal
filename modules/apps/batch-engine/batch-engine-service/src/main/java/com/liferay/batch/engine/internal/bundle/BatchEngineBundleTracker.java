@@ -11,6 +11,8 @@ import com.liferay.batch.engine.unit.BatchEngineUnitMetaInfo;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 
@@ -51,6 +53,9 @@ public class BatchEngineBundleTracker {
 	protected void deactivate() {
 		_bundleTracker.close();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BatchEngineBundleTracker.class);
 
 	@Reference
 	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
@@ -112,8 +117,16 @@ public class BatchEngineBundleTracker {
 				}
 			}
 
-			_batchEngineUnitProcessor.processBatchEngineUnits(
-				singleCompanyBatchEngineUnits);
+			try {
+				_batchEngineUnitProcessor.processBatchEngineUnits(
+					singleCompanyBatchEngineUnits);
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to process batch engine units of bundle " +
+						bundle.getSymbolicName(),
+					exception);
+			}
 
 			if (multiCompanyBatchEngineUnits.isEmpty()) {
 				return null;

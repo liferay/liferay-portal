@@ -53,12 +53,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -79,11 +79,14 @@ import org.osgi.util.tracker.ServiceTracker;
 public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 
 	@Override
-	public CompletableFuture<Void> processBatchEngineUnits(
-		Collection<BatchEngineUnit> batchEngineUnits) {
+	public void processBatchEngineUnits(
+			Collection<BatchEngineUnit> batchEngineUnits)
+		throws Exception {
 
 		List<BatchEngineUnitData> batchEngineUnitDatas = new ArrayList<>();
 		Exception exception1 = null;
+		Map<Map.Entry<Long, String>, List<BatchEngineUnit>>
+			featureFlagBatchEngineUnitsMap = new LinkedHashMap<>();
 
 		for (BatchEngineUnit batchEngineUnit : batchEngineUnits) {
 			try {
@@ -94,31 +97,14 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					batchEngineUnitMetaInfo.getFeatureFlagKey();
 
 				if (_isFeatureFlagDisabled(featureFlagKey)) {
-					_featureFlagBatchEngineUnitProcessor.
-						registerBatchEngineUnit(
-							batchEngineUnitMetaInfo.getCompanyId(),
-							featureFlagKey,
-							() -> {
-								CompletableFuture<Void> localCompletableFuture =
-									new CompletableFuture<>();
+					List<BatchEngineUnit> featureFlagBatchEngineUnits =
+						featureFlagBatchEngineUnitsMap.computeIfAbsent(
+							Map.entry(
+								batchEngineUnitMetaInfo.getCompanyId(),
+								featureFlagKey),
+							key -> new ArrayList<>());
 
-								if (_isProcessed(batchEngineUnit)) {
-									localCompletableFuture.complete(null);
-
-									return localCompletableFuture;
-								}
-
-								List<BatchEngineUnitData> singletonList =
-									Collections.singletonList(
-										_getBatchEngineUnitData(
-											batchEngineUnit));
-
-								_processBatchEngineUnits(
-									singletonList.iterator(),
-									localCompletableFuture);
-
-								return localCompletableFuture;
-							});
+					featureFlagBatchEngineUnits.add(batchEngineUnit);
 
 					continue;
 				}
@@ -141,18 +127,32 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			}
 		}
 
-		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+		for (Map.Entry<Map.Entry<Long, String>, List<BatchEngineUnit>> entry :
+				featureFlagBatchEngineUnitsMap.entrySet()) {
 
-		if (exception1 != null) {
-			completableFuture.completeExceptionally(exception1);
+			Map.Entry<Long, String> key = entry.getKey();
 
-			return completableFuture;
+			long companyId = key.getKey();
+			String featureFlagKey = key.getValue();
+
+			_featureFlagBatchEngineUnitProcessor.registerBatchEngineUnits(
+				companyId, featureFlagKey,
+				() -> _processFeatureFlagBatchEngineUnits(
+					entry.getValue(), companyId, featureFlagKey));
 		}
 
-		_processBatchEngineUnits(
-			batchEngineUnitDatas.iterator(), completableFuture);
+		if (exception1 != null) {
+			throw exception1;
+		}
 
-		return completableFuture;
+		DefaultNoticeableFuture<Void> defaultNoticeableFuture =
+			new DefaultNoticeableFuture<>();
+
+		_processBatchEngineUnits(
+			batchEngineUnitDatas.iterator(), defaultNoticeableFuture);
+
+		_processDefaultNoticeableFuture(
+			defaultNoticeableFuture, "Unable to process batch engine units");
 	}
 
 	@Activate
@@ -241,12 +241,13 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 	private void _execute(
 		BatchEngineUnitData batchEngineUnitData,
 		Iterator<BatchEngineUnitData> iterator,
-		CompletableFuture<Void> completableFuture) {
+		DefaultNoticeableFuture<Void> defaultNoticeableFuture) {
 
 		BatchEngineUnit batchEngineUnit = batchEngineUnitData._batchEngineUnit;
 
 		DefaultNoticeableFuture<ServiceReference<Object>>
-			defaultNoticeableFuture = new DefaultNoticeableFuture<>();
+			serviceReferenceDefaultNoticeableFuture =
+				new DefaultNoticeableFuture<>();
 
 		ServiceTracker<Object, Object> serviceTracker =
 			new ServiceTracker<Object, Object>(
@@ -256,14 +257,15 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 				public Object addingService(
 					ServiceReference<Object> serviceReference) {
 
-					defaultNoticeableFuture.set(serviceReference);
+					serviceReferenceDefaultNoticeableFuture.set(
+						serviceReference);
 
 					return null;
 				}
 
 			};
 
-		defaultNoticeableFuture.addFutureListener(
+		serviceReferenceDefaultNoticeableFuture.addFutureListener(
 			new BaseFutureListener<>() {
 
 				@Override
@@ -296,7 +298,7 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 						imported = true;
 					}
 					catch (Throwable throwable) {
-						completableFuture.completeExceptionally(throwable);
+						defaultNoticeableFuture.setException(throwable);
 					}
 
 					try {
@@ -318,13 +320,24 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					}
 
 					if (imported) {
-						_processBatchEngineUnits(iterator, completableFuture);
+						_processBatchEngineUnits(
+							iterator, defaultNoticeableFuture);
 					}
 				}
 
 			});
 
 		serviceTracker.open();
+
+		if (!serviceReferenceDefaultNoticeableFuture.isDone() &&
+			_log.isInfoEnabled()) {
+
+			_log.info(
+				StringBundler.concat(
+					"Waiting for a service matching ",
+					batchEngineUnitData._filter, " to process ",
+					batchEngineUnit.getDataFileName()));
+		}
 	}
 
 	private long _getAdminUserId(long companyId) throws PortalException {
@@ -528,7 +541,7 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 
 	private void _processBatchEngineUnits(
 		Iterator<BatchEngineUnitData> iterator,
-		CompletableFuture<Void> completableFuture) {
+		DefaultNoticeableFuture<Void> defaultNoticeableFuture) {
 
 		// Exactly one thread advances the iterator at any time: the caller
 		// until the current unit's tracker is opened, then only the unit's
@@ -539,17 +552,87 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		// state to the continuing thread.
 
 		if (!iterator.hasNext()) {
-			completableFuture.complete(null);
+			defaultNoticeableFuture.set(null);
 
 			return;
 		}
 
 		try {
-			_execute(iterator.next(), iterator, completableFuture);
+			_execute(iterator.next(), iterator, defaultNoticeableFuture);
 		}
 		catch (Throwable throwable) {
-			completableFuture.completeExceptionally(throwable);
+			defaultNoticeableFuture.setException(throwable);
 		}
+	}
+
+	private void _processDefaultNoticeableFuture(
+			DefaultNoticeableFuture<Void> defaultNoticeableFuture,
+			String message)
+		throws Exception {
+
+		if (defaultNoticeableFuture.isDone()) {
+			try {
+				defaultNoticeableFuture.get();
+			}
+			catch (ExecutionException executionException) {
+				Throwable throwable = executionException.getCause();
+
+				if (throwable instanceof Exception exception) {
+					throw exception;
+				}
+
+				throw executionException;
+			}
+			catch (InterruptedException interruptedException) {
+				Thread currentThread = Thread.currentThread();
+
+				currentThread.interrupt();
+
+				throw interruptedException;
+			}
+
+			return;
+		}
+
+		defaultNoticeableFuture.addFutureListener(
+			new BaseFutureListener<>() {
+
+				@Override
+				public void completeWithException(
+					Future<Void> future, Throwable throwable) {
+
+					_log.error(message, throwable);
+				}
+
+			});
+	}
+
+	private void _processFeatureFlagBatchEngineUnits(
+			List<BatchEngineUnit> batchEngineUnits, long companyId,
+			String featureFlagKey)
+		throws Exception {
+
+		List<BatchEngineUnitData> batchEngineUnitDatas = new ArrayList<>();
+
+		for (BatchEngineUnit batchEngineUnit : batchEngineUnits) {
+			if (_isProcessed(batchEngineUnit)) {
+				continue;
+			}
+
+			batchEngineUnitDatas.add(_getBatchEngineUnitData(batchEngineUnit));
+		}
+
+		DefaultNoticeableFuture<Void> defaultNoticeableFuture =
+			new DefaultNoticeableFuture<>();
+
+		_processBatchEngineUnits(
+			batchEngineUnitDatas.iterator(), defaultNoticeableFuture);
+
+		_processDefaultNoticeableFuture(
+			defaultNoticeableFuture,
+			StringBundler.concat(
+				"Unable to process batch engine units deferred for feature ",
+				"flag ", featureFlagKey, " in company ", companyId));
 	}
 
 	private BatchEngineUnitConfiguration _updateBatchEngineUnitConfiguration(

@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import java.io.File;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -44,11 +43,13 @@ public class BatchEngineTestUtil {
 				_deleteFile(bundle, fileName);
 			}
 
-			CompletableFuture<Void> completableFuture =
+			try {
 				batchEngineUnitProcessor.processBatchEngineUnits(
 					batchEngineUnitReader.getBatchEngineUnits(bundle));
-
-			completableFuture.join();
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
 		}
 	}
 

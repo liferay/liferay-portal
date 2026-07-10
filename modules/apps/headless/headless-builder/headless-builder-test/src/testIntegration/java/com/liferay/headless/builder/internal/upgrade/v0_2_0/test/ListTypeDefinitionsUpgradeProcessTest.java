@@ -42,7 +42,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -153,7 +152,7 @@ public class ListTypeDefinitionsUpgradeProcessTest {
 		}
 	}
 
-	private void _deployLatestVersion() {
+	private void _deployLatestVersion() throws Exception {
 		Bundle testBundle = FrameworkUtil.getBundle(BaseTestCase.class);
 
 		BundleContext bundleContext = testBundle.getBundleContext();
@@ -166,11 +165,8 @@ public class ListTypeDefinitionsUpgradeProcessTest {
 				_deleteFile(bundle, "00.list.type.definition");
 				_deleteFile(bundle, "01.object.definition");
 
-				CompletableFuture<Void> completableFuture =
-					_batchEngineUnitProcessor.processBatchEngineUnits(
-						_batchEngineUnitReader.getBatchEngineUnits(bundle));
-
-				completableFuture.join();
+				_batchEngineUnitProcessor.processBatchEngineUnits(
+					_batchEngineUnitReader.getBatchEngineUnits(bundle));
 			}
 		}
 	}
@@ -252,11 +248,8 @@ public class ListTypeDefinitionsUpgradeProcessTest {
 			new FileInputStream(zipWriter.getFile()));
 
 		try {
-			CompletableFuture<Void> completableFuture =
-				_batchEngineUnitProcessor.processBatchEngineUnits(
-					_batchEngineUnitReader.getBatchEngineUnits(testBundle));
-
-			completableFuture.join();
+			_batchEngineUnitProcessor.processBatchEngineUnits(
+				_batchEngineUnitReader.getBatchEngineUnits(testBundle));
 		}
 		finally {
 			testBundle.uninstall();

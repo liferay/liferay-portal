@@ -18,7 +18,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.io.File;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,11 +57,8 @@ public abstract class BaseTestCase {
 				_deleteFile(bundle, "00.list.type.definition");
 				_deleteFile(bundle, "01.object.definition");
 
-				CompletableFuture<Void> completableFuture =
-					_batchEngineUnitProcessor.processBatchEngineUnits(
-						_batchEngineUnitReader.getBatchEngineUnits(bundle));
-
-				completableFuture.join();
+				_batchEngineUnitProcessor.processBatchEngineUnits(
+					_batchEngineUnitReader.getBatchEngineUnits(bundle));
 			}
 		}
 	}

@@ -28,8 +28,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.io.InputStream;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,20 +66,13 @@ public class BatchEngineUnitProcessorTest {
 				_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_EXECUTOR_IMPL,
 				LoggerTestUtil.ERROR)) {
 
-			CompletableFuture<Void> completableFuture =
-				_processBatchEngineUnits("abort");
-
-			Assert.assertTrue(completableFuture.isCompletedExceptionally());
-
 			try {
-				completableFuture.join();
+				_processBatchEngineUnits("abort");
 
 				Assert.fail();
 			}
-			catch (CompletionException completionException) {
-				Throwable throwable = completionException.getCause();
-
-				String message = throwable.getMessage();
+			catch (Exception exception) {
+				String message = exception.getMessage();
 
 				Assert.assertTrue(
 					message,
@@ -139,10 +130,7 @@ public class BatchEngineUnitProcessorTest {
 	public void testProcessBatchEngineUnitsProcessesAllValidUnits()
 		throws Exception {
 
-		CompletableFuture<Void> completableFuture = _processBatchEngineUnits(
-			"control");
-
-		completableFuture.join();
+		_processBatchEngineUnits("control");
 
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
@@ -182,14 +170,12 @@ public class BatchEngineUnitProcessorTest {
 		}
 	}
 
-	private CompletableFuture<Void> _processBatchEngineUnits(String dirName)
-		throws Exception {
-
+	private void _processBatchEngineUnits(String dirName) throws Exception {
 		Bundle bundle = _bundleContext.installBundle(
 			RandomTestUtil.randomString(), _toInputStream(dirName));
 
 		try {
-			return _batchEngineUnitProcessor.processBatchEngineUnits(
+			_batchEngineUnitProcessor.processBatchEngineUnits(
 				_batchEngineUnitReader.getBatchEngineUnits(bundle));
 		}
 		finally {
