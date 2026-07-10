@@ -11,6 +11,12 @@
 SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayContext = (SitemapCompanyConfigurationDisplayContext)request.getAttribute(SitemapCompanyConfigurationDisplayContext.class.getName());
 %>
 
+<c:if test="<%= sitemapCompanyConfigurationDisplayContext.cachedGenerationEnabled() %>">
+	<p class="c-mb-0 small text-secondary"><liferay-ui:message key="last-updated" />: <%= sitemapCompanyConfigurationDisplayContext.getLastRegenerateSitemapDateString() %></p>
+
+	<p class="c-mb-3 small text-secondary"><liferay-ui:message key="next-scheduled" />: <%= sitemapCompanyConfigurationDisplayContext.isRegenerateSitemapInProgress() ? LanguageUtil.get(request, "generating-now") : sitemapCompanyConfigurationDisplayContext.getNextRegenerateSitemapDateString() %></p>
+</c:if>
+
 <clay:content-row
 	cssClass="c-mb-3"
 >
@@ -78,7 +84,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 	</clay:content-row>
 
 	<clay:content-row
-		cssClass="c-mt-2"
+		cssClass="c-mb-2"
 	>
 		<clay:content-col
 			expand="<%= true %>"
@@ -95,6 +101,127 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 		</clay:content-col>
 	</clay:content-row>
 </clay:sheet-section>
+
+<c:if test="<%= sitemapCompanyConfigurationDisplayContext.indexModeAssetTypeEnabled() %>">
+
+	<%
+	boolean cachedGenerationEnabled = sitemapCompanyConfigurationDisplayContext.cachedGenerationEnabled();
+	%>
+
+	<clay:sheet-section
+		aria-labelledby='<%= liferayPortletResponse.getNamespace() + "xmlSitemapGenerationModeTitle" %>'
+		cssClass="c-mb-0"
+		role="group"
+	>
+		<clay:content-row
+			containerElement="h3"
+			cssClass="c-mb-3 sheet-subtitle"
+		>
+			<clay:content-col
+				expand="<%= true %>"
+			>
+				<span class="heading-text text-secondary" id="<portlet:namespace />xmlSitemapGenerationModeTitle"><liferay-ui:message key="xml-sitemap-generation-mode" /></span>
+			</clay:content-col>
+		</clay:content-row>
+
+		<clay:content-row
+			cssClass="c-mt-2"
+		>
+			<clay:content-col
+				expand="<%= true %>"
+			>
+				<clay:radio
+					checked="<%= !cachedGenerationEnabled %>"
+					data-qa-id="onDemandRadioButton"
+					id='<%= liferayPortletResponse.getNamespace() + "cachedGenerationEnabledOnDemand" %>'
+					label='<%= LanguageUtil.get(request, "on-demand") %>'
+					name='<%= liferayPortletResponse.getNamespace() + "cachedGenerationEnabled" %>'
+					value="false"
+				/>
+
+				<p class="c-ml-4 small text-secondary"><liferay-ui:message key="xml-sitemap-on-demand-generation-mode-help" /></p>
+
+				<clay:radio
+					checked="<%= cachedGenerationEnabled %>"
+					data-qa-id="scheduledCachedRadioButton"
+					id='<%= liferayPortletResponse.getNamespace() + "cachedGenerationEnabledScheduledCached" %>'
+					label='<%= LanguageUtil.get(request, "scheduled-cached") %>'
+					name='<%= liferayPortletResponse.getNamespace() + "cachedGenerationEnabled" %>'
+					value="true"
+				/>
+
+				<p class="c-ml-4 small text-secondary"><liferay-ui:message key="xml-sitemap-cached-generation-mode-help" /></p>
+			</clay:content-col>
+		</clay:content-row>
+
+		<input id="<portlet:namespace />saveAndGenerate" name="<portlet:namespace />saveAndGenerate" type="hidden" value="false" />
+
+		<clay:content-row
+			cssClass='<%= cachedGenerationEnabled ? "c-pl-4" : "hide" %>'
+			id='<%= liferayPortletResponse.getNamespace() + "sitemapRegenerationScheduleOptions" %>'
+		>
+			<clay:content-col
+				cssClass="c-pr-2"
+			>
+				<clay:select
+					id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationFrequency" %>'
+					label='<%= LanguageUtil.get(request, "frequency") %>'
+					name="xmlSitemapRegenerationFrequency"
+					options="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationFrequencySelectOptions() %>"
+				/>
+			</clay:content-col>
+
+			<clay:content-col
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyWeekly() ? "c-pr-2" : "hide" %>'
+				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationDayField" %>'
+			>
+				<clay:select
+					id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationDayOfWeek" %>'
+					label='<%= LanguageUtil.get(request, "day-of-week") %>'
+					name="xmlSitemapRegenerationDayOfWeek"
+					options="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationDayOfWeekSelectOptions() %>"
+				/>
+			</clay:content-col>
+
+			<clay:content-col
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyHourly() ? "hide" : "c-pr-2" %>'
+				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationTimeField" %>'
+			>
+				<div class="form-group">
+					<label class="control-label"><liferay-ui:message key="time" /></label>
+
+					<liferay-ui:input-time
+						amPmParam="xmlSitemapRegenerationDateAmPm"
+						amPmValue="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationDateAmPm() %>"
+						cssClass="form-group form-group-inline range-options"
+						hourParam="xmlSitemapRegenerationDateHour"
+						hourValue="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationDateHour() %>"
+						minuteParam="xmlSitemapRegenerationDateMinute"
+						minuteValue="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationDateMinute() %>"
+					/>
+				</div>
+			</clay:content-col>
+
+			<clay:content-col
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyHourly() ? "hide" : "" %>'
+				expand="<%= true %>"
+				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationTimeZoneField" %>'
+			>
+				<div class="form-group">
+					<label class="control-label" for="<portlet:namespace />xmlSitemapRegenerationTimeZoneId"><liferay-ui:message key="time-zone" /></label>
+
+					<liferay-ui:input-time-zone
+						cssClass="bg-white border-0"
+						displayStyle="<%= 0 %>"
+						name="xmlSitemapRegenerationTimeZoneId"
+						nullable="<%= true %>"
+						value="<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationTimeZoneId() %>"
+					/>
+				</div>
+			</clay:content-col>
+		</clay:content-row>
+	</clay:sheet-section>
+</c:if>
 
 <clay:sheet-section
 	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "sitesIncludedTitle" %>'
@@ -277,7 +404,8 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 </clay:sheet-section>
 
 <clay:sheet-section
-	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "pagesTitle" %>'
+	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "includeContentTitle" %>'
+	cssClass="c-mb-4"
 	role="group"
 >
 	<clay:content-row
@@ -287,9 +415,11 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 		<clay:content-col
 			expand="<%= true %>"
 		>
-			<span class="heading-text text-secondary" id="<portlet:namespace />pagesTitle"><liferay-ui:message key="pages" /></span>
+			<span class="heading-text text-secondary" id="<portlet:namespace />includeContentTitle"><liferay-ui:message key="content-included-in-the-xml-sitemap" /></span>
 		</clay:content-col>
 	</clay:content-row>
+
+	<p class="c-mb-3 c-mt-2 small text-secondary"><liferay-ui:message key="select-what-to-be-included-in-the-sitemap" /></p>
 
 	<clay:content-row
 		cssClass="c-mt-2"
@@ -300,27 +430,9 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			<clay:checkbox
 				checked="<%= sitemapCompanyConfigurationDisplayContext.includePages() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "includePages" %>'
-				label='<%= LanguageUtil.get(request, "include-page-urls-in-the-xml-sitemap") %>'
+				label='<%= LanguageUtil.get(request, "page-urls-including-widget-pages-content-pages-panel-pages-and-embedded-pages") %>'
 				name='<%= liferayPortletResponse.getNamespace() + "includePages" %>'
 			/>
-
-			<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="when-this-configuration-is-enabled,-search-engines-will-be-notified-that-page-URLs-are-available-for-crawling" /></p>
-		</clay:content-col>
-	</clay:content-row>
-</clay:sheet-section>
-
-<clay:sheet-section
-	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "webContentTitle" %>'
-	role="group"
->
-	<clay:content-row
-		containerElement="h3"
-		cssClass="c-mb-3 sheet-subtitle"
-	>
-		<clay:content-col
-			expand="<%= true %>"
-		>
-			<span class="heading-text text-secondary" id="<portlet:namespace />webContentTitle"><liferay-ui:message key="web-content" /></span>
 		</clay:content-col>
 	</clay:content-row>
 
@@ -333,27 +445,9 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			<clay:checkbox
 				checked="<%= sitemapCompanyConfigurationDisplayContext.includeWebContent() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "includeWebContent" %>'
-				label='<%= LanguageUtil.get(request, "include-web-content-urls-in-the-xml-sitemap") %>'
+				label='<%= LanguageUtil.get(request, "web-content-urls") %>'
 				name='<%= liferayPortletResponse.getNamespace() + "includeWebContent" %>'
 			/>
-
-			<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="when-this-configuration-is-enabled,-search-engines-will-be-notified-that-web-content-URLs-are-available-for-crawling" /></p>
-		</clay:content-col>
-	</clay:content-row>
-</clay:sheet-section>
-
-<clay:sheet-section
-	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "categoriesTitle" %>'
-	role="group"
->
-	<clay:content-row
-		containerElement="h3"
-		cssClass="c-mb-3 sheet-subtitle"
-	>
-		<clay:content-col
-			expand="<%= true %>"
-		>
-			<span class="heading-text text-secondary" id="<portlet:namespace />categoriesTitle"><liferay-ui:message key="categories" /></span>
 		</clay:content-col>
 	</clay:content-row>
 
@@ -366,26 +460,30 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			<clay:checkbox
 				checked="<%= sitemapCompanyConfigurationDisplayContext.includeCategories() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "includeCategories" %>'
-				label='<%= LanguageUtil.get(request, "include-category-urls-in-the-xml-sitemap") %>'
+				label='<%= LanguageUtil.get(request, "category-urls") %>'
 				name='<%= liferayPortletResponse.getNamespace() + "includeCategories" %>'
 			/>
 
-			<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="when-this-configuration-is-enabled,-search-engines-will-be-notified-that-category-URLs-are-available-for-crawling" /></p>
+			<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="search-engines-will-be-notified-that-selected-URLs-are-available-for-crawling" /></p>
 		</clay:content-col>
 	</clay:content-row>
-
-	<liferay-frontend:component
-		context='<%=
-			HashMapBuilder.<String, Object>put(
-				"groupSelectorURL", sitemapCompanyConfigurationDisplayContext.getGroupSelectorURL()
-			).put(
-				"objectDefinitionSelectorURL", sitemapCompanyConfigurationDisplayContext.getObjectDefinitionSelectorURL()
-			).put(
-				"selectGroupEventName", sitemapCompanyConfigurationDisplayContext.getSelectGroupEventName()
-			).put(
-				"selectObjectDefinitionEventName", sitemapCompanyConfigurationDisplayContext.getSelectObjectDefinitionEventName()
-			).build()
-		%>'
-		module="{SitemapCompanyConfiguration} from site-sitemap-web"
-	/>
 </clay:sheet-section>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"groupSelectorURL", sitemapCompanyConfigurationDisplayContext.getGroupSelectorURL()
+		).put(
+			"isRegenerateSitemapInProgress", sitemapCompanyConfigurationDisplayContext.isRegenerateSitemapInProgress()
+		).put(
+			"objectDefinitionSelectorURL", sitemapCompanyConfigurationDisplayContext.getObjectDefinitionSelectorURL()
+		).put(
+			"regenerateSitemapInProgressURL", sitemapCompanyConfigurationDisplayContext.getRegenerateSitemapInProgressURL()
+		).put(
+			"selectGroupEventName", sitemapCompanyConfigurationDisplayContext.getSelectGroupEventName()
+		).put(
+			"selectObjectDefinitionEventName", sitemapCompanyConfigurationDisplayContext.getSelectObjectDefinitionEventName()
+		).build()
+	%>'
+	module="{SitemapCompanyConfiguration} from site-sitemap-web"
+/>
