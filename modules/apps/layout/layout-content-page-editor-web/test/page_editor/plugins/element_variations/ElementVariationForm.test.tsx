@@ -19,7 +19,7 @@ type ElementVariationProp = React.ComponentProps<
 
 const BASE_ELEMENT_VARIATION: ElementVariationProp = {
 	audienceEntryERCs: [],
-	hide: {},
+	hide: false,
 	html: {},
 	js: {},
 	name: 'My Variation',
@@ -98,7 +98,7 @@ describe('ElementVariationForm', () => {
 	});
 
 	it('keeps the toggle but hides the html and js fields while the element is hidden', () => {
-		renderForm({hide: {en_US: true}, targetElement: '.title'});
+		renderForm({hide: true, targetElement: '.title'});
 
 		expect(screen.getByLabelText('hide-page-element')).toBeChecked();
 		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
@@ -115,15 +115,15 @@ describe('ElementVariationForm', () => {
 		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
 		expect(onChange).toHaveBeenCalledWith({
-			hide: {en_US: true},
-			html: {en_US: ''},
-			js: {en_US: ''},
+			hide: true,
+			html: {},
+			js: {},
 		});
 	});
 
 	it('preserves the html and js values when the element is shown again', async () => {
 		const {onChange} = renderForm({
-			hide: {en_US: true},
+			hide: true,
 			html: {en_US: '<p>Hello</p>'},
 			js: {en_US: 'console.log("hi");'},
 			targetElement: '.title',
@@ -131,16 +131,17 @@ describe('ElementVariationForm', () => {
 
 		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
-		expect(onChange).toHaveBeenCalledWith({hide: {en_US: false}});
+		expect(onChange).toHaveBeenCalledWith({hide: false});
 	});
 
 	it('marks the not-localizable fields as read-only when translating', () => {
 		renderForm({targetElement: '.title'}, TRANSLATING_PROPS);
 
-		expect(screen.getAllByText('(not-localizable)')).toHaveLength(3);
+		expect(screen.getAllByText('(not-localizable)')).toHaveLength(4);
 		expect(screen.getByDisplayValue('My Variation')).toHaveAttribute(
 			'readonly'
 		);
+		expect(screen.getByLabelText('hide-page-element')).toBeDisabled();
 	});
 
 	it('does not mark fields as not-localizable on the default language', () => {
@@ -161,6 +162,14 @@ describe('ElementVariationForm', () => {
 
 		expect(screen.getByText('default html content')).toBeInTheDocument();
 		expect(screen.getByText('default js content')).toBeInTheDocument();
+	});
+
+	it('shows a fallback message when translating a field with no default language value', () => {
+		renderForm({targetElement: '.title'}, TRANSLATING_PROPS);
+
+		expect(
+			screen.getAllByText('there-is-no-default-value-to-localize')
+		).toHaveLength(2);
 	});
 
 	it('has no accessibility violations', async () => {
