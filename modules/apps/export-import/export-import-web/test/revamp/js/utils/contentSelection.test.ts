@@ -16,12 +16,17 @@ import {
 	withSelectedLayoutSetCount,
 } from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
 
-function getPreviewPortletDataHandlerSections(
-	publicAdditionCount: number,
-	privateAdditionCount: number,
+function mockLayoutSetSections({
+	privateAdditionCount = 5,
+	privateDeletionCount = 0,
+	publicAdditionCount = 2,
 	publicDeletionCount = 0,
-	privateDeletionCount = 0
-): PreviewPortletDataHandlerSection[] {
+}: {
+	privateAdditionCount?: number;
+	privateDeletionCount?: number;
+	publicAdditionCount?: number;
+	publicDeletionCount?: number;
+} = {}): PreviewPortletDataHandlerSection[] {
 	return [
 		{
 			additionCount: publicAdditionCount,
@@ -75,8 +80,7 @@ const publicSelection = {
 
 describe('contentSelection layout set counts', () => {
 	it('reads the public and private addition counts from the choices', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5);
+		const previewPortletDataHandlerSections = mockLayoutSetSections();
 
 		expect(
 			getLayoutSetCount(previewPortletDataHandlerSections, false)
@@ -87,8 +91,10 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('reads the public and private deletion counts from the choices', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections = mockLayoutSetSections({
+			privateDeletionCount: 3,
+			publicDeletionCount: 1,
+		});
 
 		expect(
 			getLayoutSetCount(
@@ -113,8 +119,10 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('keeps the public counts in the totals when the public set is selected', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections = mockLayoutSetSections({
+			privateDeletionCount: 3,
+			publicDeletionCount: 1,
+		});
 
 		expect(
 			getSelectedItemsCount(
@@ -133,8 +141,10 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('swaps in the private counts in the totals when private is selected', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections = mockLayoutSetSections({
+			privateDeletionCount: 3,
+			publicDeletionCount: 1,
+		});
 
 		expect(
 			getSelectedItemsCount(
@@ -153,8 +163,10 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('leaves the sections untouched when the public set is selected', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections = mockLayoutSetSections({
+			privateDeletionCount: 3,
+			publicDeletionCount: 1,
+		});
 
 		expect(
 			withSelectedLayoutSetCount(
@@ -165,8 +177,10 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('adjusts the section and handler counts when private is selected', () => {
-		const previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections(2, 5, 1, 3);
+		const previewPortletDataHandlerSections = mockLayoutSetSections({
+			privateDeletionCount: 3,
+			publicDeletionCount: 1,
+		});
 
 		const [previewPortletDataHandlerSection] = withSelectedLayoutSetCount(
 			previewPortletDataHandlerSections,
