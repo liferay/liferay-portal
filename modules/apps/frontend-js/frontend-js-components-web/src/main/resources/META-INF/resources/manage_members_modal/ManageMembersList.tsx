@@ -128,7 +128,7 @@ export function ManageMembersList({
 						await addMember(item, selectedOption);
 
 						if (!isAlreadyMember && defaultRole) {
-							updateMemberRoles(
+							await updateMemberRoles(
 								item,
 								[defaultRole.name],
 								selectedOption
