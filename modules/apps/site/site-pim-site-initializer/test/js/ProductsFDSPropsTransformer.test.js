@@ -5,6 +5,14 @@
 
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductsFDSPropsTransformer';
 
+jest.mock('@liferay/site-cms-site-initializer', () => ({
+	ACTIONS: {},
+	AuthorRenderer: () => null,
+	SpaceRendererWithCache: () => null,
+	addOnClickToCreationMenuItems: (primaryItems) => primaryItems,
+	getScopeExternalReferenceCode: () => '',
+}));
+
 describe('ProductsFDSPropsTransformer', () => {
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
 		const result = propsTransformer({
@@ -16,5 +24,17 @@ describe('ProductsFDSPropsTransformer', () => {
 		expect(result.apiURL).toBe('/o/search/v1.0/search');
 		expect(result.hideManagementBarInEmptyState).toBe(true);
 		expect(result.id).toBe('products');
+	});
+
+	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
+		const result = propsTransformer({
+			itemsActions: [
+				{data: {id: 'edit'}, icon: 'pencil'},
+				{data: {id: 'delete'}, icon: 'trash'},
+			],
+		});
+
+		expect(result.itemsActions[0].className).toBeUndefined();
+		expect(result.itemsActions[1].className).toBe('text-danger');
 	});
 });

@@ -5,13 +5,19 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -19,6 +25,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -37,9 +44,11 @@ public class ProductsSectionDisplayContextTest {
 			new ProductsSectionDisplayContext(null);
 
 		Assert.assertEquals(
-			"/o/search/v1.0/search?emptySearch=true&filter=" +
-				URLCodec.encodeURL("cmsSection eq 'products'") +
-					"&nestedFields=embedded",
+			StringBundler.concat(
+				"/o/search/v1.0/search?emptySearch=true&filter=",
+				URLCodec.encodeURL("cmsSection eq 'products'"),
+				"&nestedFields=embedded,systemProperties.",
+				"objectDefinitionBrief"),
 			productsSectionDisplayContext.getAPIURL());
 	}
 
@@ -79,6 +88,142 @@ public class ProductsSectionDisplayContextTest {
 		Assert.assertEquals(
 			"/states/cms_empty_state_content.svg", emptyState.get("image"));
 		Assert.assertEquals("No Products Yet", emptyState.get("title"));
+	}
+
+	@Test
+	public void testGetFDSActionDropdownItems() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+		Language language = Mockito.mock(Language.class);
+
+		Mockito.when(
+			language.get(
+				httpServletRequest, "are-you-sure-you-want-to-delete-this")
+		).thenReturn(
+			"Are you sure?"
+		);
+
+		Mockito.when(
+			language.get(httpServletRequest, "delete")
+		).thenReturn(
+			"Delete"
+		);
+
+		Mockito.when(
+			language.get(httpServletRequest, "edit")
+		).thenReturn(
+			"Edit"
+		);
+
+		languageUtil.setLanguage(language);
+
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getCompanyId()
+		).thenReturn(
+			1L
+		);
+
+		Mockito.when(
+			themeDisplay.getPathMain()
+		).thenReturn(
+			"/c"
+		);
+
+		Mockito.when(
+			themeDisplay.getPortalURL()
+		).thenReturn(
+			"http://localhost:8080"
+		);
+
+		Mockito.when(
+			themeDisplay.getURLCurrent()
+		).thenReturn(
+			"/web/cms/products"
+		);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		ProductsSectionDisplayContext productsSectionDisplayContext =
+			new ProductsSectionDisplayContext(httpServletRequest);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				false
+			);
+
+			List<FDSActionDropdownItem> fdsActionDropdownItems =
+				productsSectionDisplayContext.getFDSActionDropdownItems();
+
+			Assert.assertTrue(fdsActionDropdownItems.isEmpty());
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				true
+			);
+
+			fdsActionDropdownItems =
+				productsSectionDisplayContext.getFDSActionDropdownItems();
+
+			Assert.assertEquals(
+				fdsActionDropdownItems.toString(), 2,
+				fdsActionDropdownItems.size());
+
+			FDSActionDropdownItem editFDSActionDropdownItem =
+				fdsActionDropdownItems.get(0);
+
+			Assert.assertTrue(
+				String.valueOf(
+					editFDSActionDropdownItem.get("href")
+				).contains(
+					"/edit_content_item?objectEntryId={embedded.id}"
+				));
+			Assert.assertEquals(
+				"pencil", editFDSActionDropdownItem.get("icon"));
+			Assert.assertEquals("Edit", editFDSActionDropdownItem.get("label"));
+
+			Map<?, ?> data = (Map<?, ?>)editFDSActionDropdownItem.get("data");
+
+			Assert.assertEquals("edit", data.get("id"));
+			Assert.assertEquals("get", data.get("method"));
+			Assert.assertEquals("update", data.get("permissionKey"));
+
+			FDSActionDropdownItem deleteFDSActionDropdownItem =
+				fdsActionDropdownItems.get(1);
+
+			Assert.assertEquals(
+				"{embedded.actions.delete.href}",
+				deleteFDSActionDropdownItem.get("href"));
+			Assert.assertEquals(
+				"trash", deleteFDSActionDropdownItem.get("icon"));
+			Assert.assertEquals(
+				"Delete", deleteFDSActionDropdownItem.get("label"));
+			Assert.assertEquals(
+				"headless", deleteFDSActionDropdownItem.get("target"));
+
+			data = (Map<?, ?>)deleteFDSActionDropdownItem.get("data");
+
+			Assert.assertEquals(
+				"Are you sure?", data.get("confirmationMessage"));
+			Assert.assertEquals("delete", data.get("id"));
+			Assert.assertEquals("delete", data.get("method"));
+			Assert.assertEquals("delete", data.get("permissionKey"));
+		}
 	}
 
 }
