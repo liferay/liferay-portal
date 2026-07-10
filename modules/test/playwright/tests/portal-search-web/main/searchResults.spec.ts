@@ -89,16 +89,20 @@ test.describe('Result Detail Navigation', () => {
 		await test.step('Click Edit and assert the article edit page loads with its content', async () => {
 			await hoverAndExpectToBeVisible({
 				autoClick: true,
-				target: searchPage.searchResults
-					.locator('.component-title')
-					.getByRole('link'),
-				trigger: searchPage.searchResults.locator('.component-title'),
+				target: searchPage.searchResults.getByRole('link', {
+					name: /edit/i,
+				}),
+				trigger: searchPage.searchResults
+					.getByText(title, {exact: true})
+					.first(),
 			});
 
 			await expect(page).toHaveURL(/mvcRenderCommandName.*edit_article/);
 
 			await expect(
-				page.locator('.ck-editor__editable').filter({hasText: content})
+				page
+					.getByRole('textbox', {name: 'Rich Text Editor. Editing'})
+					.filter({hasText: content})
 			).toBeVisible();
 		});
 	});

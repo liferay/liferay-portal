@@ -63,11 +63,8 @@ async function assertConfigurationPreserved(
 
 test.describe('Blueprint Duplication', () => {
 	let title: string;
-	let uiCreatedBlueprintId: string | null;
 
 	test.beforeEach(async ({apiHelpers, sxpBlueprintsAndElementsViewPage}) => {
-		uiCreatedBlueprintId = null;
-
 		await test.step('Create a configured blueprint with API', async () => {
 			title = `Blueprint${getRandomInt()}`;
 
@@ -82,14 +79,6 @@ test.describe('Blueprint Duplication', () => {
 		});
 	});
 
-	test.afterEach(async ({apiHelpers}) => {
-		if (uiCreatedBlueprintId) {
-			await apiHelpers.searchExperiences.deleteSXPBlueprint(
-				uiCreatedBlueprintId
-			);
-		}
-	});
-
 	test('Copying a blueprint preserves its configuration', async ({
 		apiHelpers,
 		editSXPBlueprintPage,
@@ -102,22 +91,18 @@ test.describe('Blueprint Duplication', () => {
 			);
 		});
 
-		await test.step('Open the copy and read its id', async () => {
+		await test.step('Open the copy and assert its configuration', async () => {
 			await sxpBlueprintsAndElementsViewPage.selectTableLink(
 				`Copy of ${title}`
 			);
 
-			uiCreatedBlueprintId =
-				await editSXPBlueprintPage.getSXPBlueprintId();
+			const copyId = await editSXPBlueprintPage.getSXPBlueprintId();
 
-			expect(uiCreatedBlueprintId).toBeTruthy();
-		});
+			expect(copyId).toBeTruthy();
 
-		await test.step('Assert the copy preserved the configuration', async () => {
-			await assertConfigurationPreserved(
-				apiHelpers,
-				uiCreatedBlueprintId!
-			);
+			apiHelpers.data.push({id: copyId, type: 'sxpBlueprint'});
+
+			await assertConfigurationPreserved(apiHelpers, copyId!);
 		});
 	});
 
@@ -165,7 +150,9 @@ test.describe('Blueprint Duplication', () => {
 
 			await page.getByRole('menuitem', {name: 'Import'}).click();
 
-			const importModal = page.locator('.sxp-import-modal-root');
+			const importModal = page
+				.getByRole('dialog')
+				.filter({hasText: 'Import'});
 
 			await importModal
 				.locator('input[type="file"]')
@@ -176,20 +163,16 @@ test.describe('Blueprint Duplication', () => {
 			await expect(importModal).toBeHidden();
 		});
 
-		await test.step('Open the imported blueprint and read its id', async () => {
+		await test.step('Open the imported blueprint and assert its configuration', async () => {
 			await sxpBlueprintsAndElementsViewPage.selectTableLink(title);
 
-			uiCreatedBlueprintId =
-				await editSXPBlueprintPage.getSXPBlueprintId();
+			const importedId = await editSXPBlueprintPage.getSXPBlueprintId();
 
-			expect(uiCreatedBlueprintId).toBeTruthy();
-		});
+			expect(importedId).toBeTruthy();
 
-		await test.step('Assert the imported blueprint preserved the configuration', async () => {
-			await assertConfigurationPreserved(
-				apiHelpers,
-				uiCreatedBlueprintId!
-			);
+			apiHelpers.data.push({id: importedId, type: 'sxpBlueprint'});
+
+			await assertConfigurationPreserved(apiHelpers, importedId!);
 		});
 	});
 });

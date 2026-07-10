@@ -374,10 +374,12 @@ test.describe('Search Preview', () => {
 });
 
 test.describe('Manual Creation', () => {
-	let sxpBlueprintId: string;
-
 	test.beforeEach(
-		async ({editSXPBlueprintPage, sxpBlueprintsAndElementsViewPage}) => {
+		async ({
+			apiHelpers,
+			editSXPBlueprintPage,
+			sxpBlueprintsAndElementsViewPage,
+		}) => {
 			const sxpBlueprintTitle = `Blueprint${getRandomInt()}`;
 
 			await test.step('Create a blueprint via page', async () => {
@@ -393,18 +395,18 @@ test.describe('Manual Creation', () => {
 					sxpBlueprintTitle
 				);
 
-				sxpBlueprintId = await editSXPBlueprintPage.getSXPBlueprintId();
+				const sxpBlueprintId =
+					await editSXPBlueprintPage.getSXPBlueprintId();
+
+				expect(sxpBlueprintId).toBeTruthy();
+
+				apiHelpers.data.push({
+					id: sxpBlueprintId,
+					type: 'sxpBlueprint',
+				});
 			});
 		}
 	);
-
-	test.afterEach(async ({apiHelpers}) => {
-		if (sxpBlueprintId) {
-			await apiHelpers.searchExperiences.deleteSXPBlueprint(
-				sxpBlueprintId
-			);
-		}
-	});
 
 	test('Newly created blueprint starts with "Enable All" clause contributors @LPD-22974', async ({
 		editSXPBlueprintPage,

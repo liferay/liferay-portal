@@ -26,13 +26,11 @@ async function assertCopiedFromModal(
 	modalTitle: string,
 	expectedText: string
 ) {
-	const modal = page
-		.locator('.sxp-preview-modal-root')
-		.filter({hasText: modalTitle});
+	const modal = page.getByRole('dialog').filter({hasText: modalTitle});
 
 	await expect(modal).toBeVisible();
 
-	await modal.locator('.sxp-copy-button').click();
+	await modal.getByRole('button', {name: 'Copy to Clipboard'}).click();
 
 	await expect(async () => {
 		expect(
@@ -139,7 +137,7 @@ test.describe('Blueprints Preview', () => {
 		page,
 	}) => {
 		await editSXPBlueprintPage.previewSidebar
-			.locator('button.raw-request')
+			.getByRole('button', {name: 'View Raw Request'})
 			.click();
 
 		await assertCopiedFromModal(page, 'Raw Request', 'hits');
@@ -147,7 +145,7 @@ test.describe('Blueprints Preview', () => {
 
 	test('Copies the raw response', async ({editSXPBlueprintPage, page}) => {
 		await editSXPBlueprintPage.previewSidebar
-			.locator('button.raw-response')
+			.getByRole('button', {name: 'View Raw Response'})
 			.click();
 
 		await assertCopiedFromModal(page, 'Raw Response', 'hits');
