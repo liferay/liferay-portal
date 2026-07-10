@@ -63,8 +63,8 @@ if (themeDisplay.isSignedIn() && (parts.length > 1)) {
 			<c:otherwise>
 				<aui:script position="inline" type="text/javascript">
 					window.hsConversationsSettings = {
-						identificationEmail: '<%= user.getEmailAddress() %>',
-						identificationToken: '<%= identificationToken %>',
+						identificationEmail: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
+						identificationToken: '<%= HtmlUtil.escapeJS(identificationToken) %>',
 					};
 
 					window.HubSpotConversations.widget.load();
