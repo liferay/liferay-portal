@@ -63,12 +63,20 @@ public class DeleteByQueryDocumentRequest
 		return _query;
 	}
 
+	public boolean isProceedOnConflicts() {
+		return _proceedOnConflicts;
+	}
+
 	public boolean isRefresh() {
 		return _refresh;
 	}
 
 	public boolean isWaitForCompletion() {
 		return _waitForCompletion;
+	}
+
+	public void setProceedOnConflicts(boolean proceedOnConflicts) {
+		_proceedOnConflicts = proceedOnConflicts;
 	}
 
 	public void setRefresh(boolean refresh) {
@@ -81,6 +89,7 @@ public class DeleteByQueryDocumentRequest
 
 	private final String[] _indexNames;
 	private final Query _portalSearchQuery;
+	private boolean _proceedOnConflicts;
 	private final com.liferay.portal.kernel.search.Query _query;
 	private boolean _refresh;
 	private boolean _waitForCompletion;
