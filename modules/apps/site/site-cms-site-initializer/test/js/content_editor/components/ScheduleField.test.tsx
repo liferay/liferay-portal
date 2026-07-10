@@ -8,7 +8,9 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import ScheduleField from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ScheduleField';
+import ScheduleField, {
+	isPastDate,
+} from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ScheduleField';
 
 const DATE_CONFIG = {
 	clayFormat: 'MM/dd/yyyy',
@@ -156,5 +158,37 @@ describe('ScheduleField', () => {
 		await waitFor(() => {
 			expect(screen.queryByText('error')).not.toBeInTheDocument();
 		});
+	});
+});
+
+describe('isPastDate', () => {
+	const originalGetBCP47LanguageId =
+		global.Liferay.ThemeDisplay.getBCP47LanguageId;
+
+	beforeEach(() => {
+		jest.useFakeTimers().setSystemTime(new Date('2026-07-10T08:00:00Z'));
+
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('UTC');
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+
+		global.Liferay.ThemeDisplay.getBCP47LanguageId =
+			originalGetBCP47LanguageId;
+	});
+
+	it('does not flag a future date as past when the account locale swaps the day and month', () => {
+		global.Liferay.ThemeDisplay.getBCP47LanguageId = jest
+			.fn()
+			.mockReturnValue('cs-CZ');
+
+		expect(isPastDate('07/10/2026 09:00 PM')).toBe(false);
+	});
+
+	it('flags an earlier time on the current day as past', () => {
+		expect(isPastDate('07/10/2026 07:00 AM')).toBe(true);
 	});
 });
