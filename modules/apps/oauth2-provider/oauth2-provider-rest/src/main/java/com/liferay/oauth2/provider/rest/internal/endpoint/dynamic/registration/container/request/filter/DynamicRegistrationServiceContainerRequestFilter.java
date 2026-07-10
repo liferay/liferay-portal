@@ -12,7 +12,7 @@ import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.rest.internal.configuration.OAuth2DynamicRegistrationConfiguration;
 import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWebKeys;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
-import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationAuditMessageUtil;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationUtil;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
@@ -155,7 +155,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
 				_normalizeHost(_getClientHost(httpServletRequest, false)));
 
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			DynamicRegistrationUtil.routeAuditMessage(
 				_getAuthorizationFailureAuditMessage(
 					authenticatedRegistration, clientHost, companyId,
 					httpServletRequest));
@@ -274,7 +274,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		if (oAuth2DynamicRegistrationConfiguration.
 				requireInitialAccessToken()) {
 
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			DynamicRegistrationUtil.routeAuditMessage(
 				_getRejectAuditMessage(
 					clientHost, companyId,
 					OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_TOKEN,
@@ -300,7 +300,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 						"company ", companyId));
 			}
 
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			DynamicRegistrationUtil.routeAuditMessage(
 				_getAuthorizationFailureAuditMessage(
 					false, clientHost, companyId, httpServletRequest));
 
@@ -512,18 +512,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 
 		Set<String> normalizedAllowedHosts = new HashSet<>();
 
-		for (String allowedHost : GetterUtil.getStringValues(allowedHosts)) {
-			if (Validator.isBlank(allowedHost)) {
-				continue;
-			}
+		for (String allowedHost :
+				DynamicRegistrationUtil.parseAllowedValues(allowedHosts)) {
 
-			for (String host : allowedHost.split("\\s+")) {
-				if (Validator.isBlank(host)) {
-					continue;
-				}
-
-				normalizedAllowedHosts.add(_normalizeHost(host));
-			}
+			normalizedAllowedHosts.add(_normalizeHost(allowedHost));
 		}
 
 		if (normalizedAllowedHosts.contains(StringPool.STAR) ||
@@ -535,7 +527,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		String message =
 			"Host " + clientHost + " is not allowed for open registration";
 
-		DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+		DynamicRegistrationUtil.routeAuditMessage(
 			_getRejectAuditMessage(
 				clientHost, companyId, OAuthConstants.ACCESS_DENIED, message,
 				httpServletRequest,

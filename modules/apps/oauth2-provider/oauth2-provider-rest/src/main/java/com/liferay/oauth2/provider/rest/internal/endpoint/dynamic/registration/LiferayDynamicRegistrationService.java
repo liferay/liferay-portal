@@ -11,7 +11,7 @@ import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWeb
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
 import com.liferay.oauth2.provider.rest.internal.endpoint.dynamic.registration.model.LiferayClientRegistration;
 import com.liferay.oauth2.provider.rest.internal.endpoint.dynamic.registration.model.LiferayClientRegistrationResponse;
-import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationAuditMessageUtil;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationUtil;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -51,7 +51,6 @@ import jakarta.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -116,13 +115,13 @@ public class LiferayDynamicRegistrationService
 		try {
 			Response response = super.register(liferayClientRegistration);
 
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			DynamicRegistrationUtil.routeAuditMessage(
 				_getAddAuditMessage(response));
 
 			return response;
 		}
 		catch (RuntimeException runtimeException) {
-			DynamicRegistrationAuditMessageUtil.routeAuditMessage(
+			DynamicRegistrationUtil.routeAuditMessage(
 				_getRejectAuditMessage(
 					runtimeException, liferayClientRegistration));
 
@@ -557,28 +556,6 @@ public class LiferayDynamicRegistrationService
 		return false;
 	}
 
-	private Set<String> _parseAllowedValues(String[] allowedValues) {
-		Set<String> allowedValuesSet = new HashSet<>();
-
-		if (allowedValues == null) {
-			return allowedValuesSet;
-		}
-
-		for (String allowedValue : allowedValues) {
-			if (Validator.isBlank(allowedValue)) {
-				continue;
-			}
-
-			for (String part : allowedValue.split("\\s+")) {
-				if (!Validator.isBlank(part)) {
-					allowedValuesSet.add(part);
-				}
-			}
-		}
-
-		return allowedValuesSet;
-	}
-
 	private void _setAllowedGrantTypes(Client client) {
 		if (!OAuthConstants.TOKEN_ENDPOINT_AUTH_NONE.equals(
 				client.getTokenEndpointAuthMethod())) {
@@ -732,7 +709,8 @@ public class LiferayDynamicRegistrationService
 		String[] allowedValues, String emptyAllowedValuesMessage, String error,
 		String label, Collection<String> requestedValues) {
 
-		Set<String> allowedValuesSet = _parseAllowedValues(allowedValues);
+		Set<String> allowedValuesSet =
+			DynamicRegistrationUtil.parseAllowedValues(allowedValues);
 
 		if (allowedValuesSet.contains(StringPool.STAR)) {
 			return;
@@ -811,8 +789,9 @@ public class LiferayDynamicRegistrationService
 			return;
 		}
 
-		Set<String> allowedRedirectURIPatternsSet = _parseAllowedValues(
-			allowedRedirectURIPatterns);
+		Set<String> allowedRedirectURIPatternsSet =
+			DynamicRegistrationUtil.parseAllowedValues(
+				allowedRedirectURIPatterns);
 
 		if (allowedRedirectURIPatternsSet.contains(StringPool.STAR)) {
 			return;

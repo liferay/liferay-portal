@@ -10,11 +10,34 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Jorge García Jiménez
  */
-public class DynamicRegistrationAuditMessageUtil {
+public class DynamicRegistrationUtil {
+
+	public static Set<String> parseAllowedValues(String[] allowedValues) {
+		Set<String> allowedValuesSet = new HashSet<>();
+
+		for (String allowedValue : GetterUtil.getStringValues(allowedValues)) {
+			if (Validator.isBlank(allowedValue)) {
+				continue;
+			}
+
+			for (String part : allowedValue.split("\\s+")) {
+				if (!Validator.isBlank(part)) {
+					allowedValuesSet.add(part);
+				}
+			}
+		}
+
+		return allowedValuesSet;
+	}
 
 	public static void routeAuditMessage(AuditMessage auditMessage) {
 		if (auditMessage == null) {
@@ -37,6 +60,6 @@ public class DynamicRegistrationAuditMessageUtil {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DynamicRegistrationAuditMessageUtil.class);
+		DynamicRegistrationUtil.class);
 
 }
