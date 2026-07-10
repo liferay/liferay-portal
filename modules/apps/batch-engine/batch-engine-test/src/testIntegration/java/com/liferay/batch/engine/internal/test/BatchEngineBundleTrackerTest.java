@@ -7,8 +7,10 @@ package com.liferay.batch.engine.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineImportTaskExecutor;
+import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
+import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnitConfiguration;
 import com.liferay.batch.engine.unit.BatchEngineUnitMetaInfo;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
@@ -222,6 +224,16 @@ public class BatchEngineBundleTrackerTest {
 			"batch10", "/batch10/data.batch-engine-data.json");
 	}
 
+	private void _completeBatchEngineImportTask(
+		BatchEngineImportTask batchEngineImportTask) {
+
+		batchEngineImportTask.setExecuteStatus(
+			BatchEngineTaskExecuteStatus.COMPLETED.toString());
+
+		_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
+			batchEngineImportTask);
+	}
+
 	private String _getDataFileName(
 		BatchEngineImportTask batchEngineImportTask) {
 
@@ -275,6 +287,8 @@ public class BatchEngineBundleTrackerTest {
 						if (dataFileName != null) {
 							processedDataFileNames.add(dataFileName);
 						}
+
+						_completeBatchEngineImportTask(batchEngineImportTask);
 					}
 
 					@Override
@@ -294,6 +308,8 @@ public class BatchEngineBundleTrackerTest {
 						if (dataFileName != null) {
 							processedDataFileNames.add(dataFileName);
 						}
+
+						_completeBatchEngineImportTask(batchEngineImportTask);
 					}
 
 				},
@@ -367,6 +383,10 @@ public class BatchEngineBundleTrackerTest {
 
 	@Inject
 	private BatchEngineImportTaskExecutor _batchEngineImportTaskExecutor;
+
+	@Inject
+	private BatchEngineImportTaskLocalService
+		_batchEngineImportTaskLocalService;
 
 	@Inject
 	private BatchEngineUnitReader _batchEngineUnitReader;

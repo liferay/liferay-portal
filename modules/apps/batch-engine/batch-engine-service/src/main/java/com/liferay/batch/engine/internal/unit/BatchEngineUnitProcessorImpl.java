@@ -113,7 +113,23 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					batchEngineUnit, nextCompletableFuture);
 
 				if (runnable != null) {
-					completableFuture.thenRun(runnable);
+					completableFuture.whenComplete(
+						(result, throwable) -> {
+							if (throwable != null) {
+								nextCompletableFuture.completeExceptionally(
+									throwable);
+
+								return;
+							}
+
+							try {
+								runnable.run();
+							}
+							catch (Throwable throwable2) {
+								nextCompletableFuture.completeExceptionally(
+									throwable2);
+							}
+						});
 
 					completableFuture = nextCompletableFuture;
 				}
@@ -130,6 +146,13 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 				if (_log.isWarnEnabled()) {
 					_log.warn(exception);
 				}
+
+				CompletableFuture<Void> nextCompletableFuture =
+					new CompletableFuture<>();
+
+				nextCompletableFuture.completeExceptionally(exception);
+
+				completableFuture = nextCompletableFuture;
 			}
 		}
 
@@ -181,14 +204,11 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 						_execute(
 							batchEngineUnit, batchEngineUnitConfiguration,
 							content, contentType, service, this);
+
+						completableFuture.complete(null);
 					}
 					catch (Exception exception) {
-						if (_log.isWarnEnabled()) {
-							_log.warn(exception);
-						}
-					}
-					finally {
-						completableFuture.complete(null);
+						completableFuture.completeExceptionally(exception);
 					}
 
 					_bundleContext.ungetService(serviceReference);
@@ -247,6 +267,25 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			_batchEngineImportTaskExecutor.execute(
 				batchEngineImportTask, batchEngineTaskItemDelegate,
 				batchEngineUnitConfiguration.isCheckPermissions());
+
+			batchEngineImportTask =
+				_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+					batchEngineImportTask.getBatchEngineImportTaskId());
+
+			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus =
+				BatchEngineTaskExecuteStatus.valueOf(
+					batchEngineImportTask.getExecuteStatus());
+
+			if (batchEngineTaskExecuteStatus !=
+					BatchEngineTaskExecuteStatus.COMPLETED) {
+
+				throw new Exception(
+					StringBundler.concat(
+						"Unable to deploy batch engine file ",
+						batchEngineUnit.getFileName(), StringPool.SPACE,
+						batchEngineUnit.getDataFileName(), ": ",
+						batchEngineImportTask.getErrorMessage()));
+			}
 		}
 		finally {
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
