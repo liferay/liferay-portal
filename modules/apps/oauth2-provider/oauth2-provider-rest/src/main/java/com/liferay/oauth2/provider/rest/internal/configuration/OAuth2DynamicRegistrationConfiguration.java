@@ -26,7 +26,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "",
 		description = "oauth2-dynamic-registration-allowed-grant-types-description",
-		id = "dynamic.registration.allowed.grant.types",
+		id = "oauth2.dynamic.registration.allowed.grant.types",
 		name = "oauth2-dynamic-registration-allowed-grant-types",
 		required = false
 	)
@@ -35,7 +35,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "",
 		description = "oauth2-dynamic-registration-allowed-hosts-description",
-		id = "dynamic.registration.allowed.hosts",
+		id = "oauth2.dynamic.registration.allowed.hosts",
 		name = "oauth2-dynamic-registration-allowed-hosts", required = false
 	)
 	public String[] allowedHosts();
@@ -43,7 +43,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "",
 		description = "oauth2-dynamic-registration-allowed-redirect-uri-patterns-description",
-		id = "dynamic.registration.allowed.redirect.uri.patterns",
+		id = "oauth2.dynamic.registration.allowed.redirect.uri.patterns",
 		name = "oauth2-dynamic-registration-allowed-redirect-uri-patterns",
 		required = false
 	)
@@ -52,7 +52,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "",
 		description = "oauth2-dynamic-registration-allowed-scopes-description",
-		id = "dynamic.registration.allowed.scopes",
+		id = "oauth2.dynamic.registration.allowed.scopes",
 		name = "oauth2-dynamic-registration-allowed-scopes", required = false
 	)
 	public String[] allowedScopes();
@@ -60,7 +60,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "true",
 		description = "oauth2-dynamic-registration-require-initial-access-token-description",
-		id = "dynamic.registration.require.initial.access.token",
+		id = "oauth2.dynamic.registration.require.initial.access.token",
 		name = "oauth2-dynamic-registration-require-initial-access-token",
 		required = false
 	)
@@ -69,7 +69,7 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	@Meta.AD(
 		deflt = "false",
 		description = "oauth2-dynamic-registration-trust-proxy-headers-description",
-		id = "dynamic.registration.trust.proxy.headers",
+		id = "oauth2.dynamic.registration.trust.proxy.headers",
 		name = "oauth2-dynamic-registration-trust-proxy-headers",
 		required = false
 	)
