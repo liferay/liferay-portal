@@ -79,6 +79,34 @@ export class CollectionsPage {
 		await this.addNewCollection(name, false);
 	}
 
+	/**
+	 * Opens a collection from the Collections list for editing.
+	 */
+
+	async openCollection(name: string) {
+		await this.page.getByRole('link', {name}).click();
+
+		await this.page.waitForLoadState('networkidle');
+	}
+
+	/**
+	 * On a collection's edit page, adds a personalized variation for the given
+	 * segment. The segment picker renders inside a modal iframe.
+	 */
+
+	async addPersonalizedVariation(segmentName: string) {
+		await this.page
+			.getByRole('button', {name: 'Add Personalized Variation'})
+			.click();
+
+		await this.page
+			.frameLocator('iframe[id$="selectEntity_iframe_"]')
+			.getByText(segmentName)
+			.click();
+
+		await waitForAlert(this.page);
+	}
+
 	async deleteCollection(name: string) {
 		const menuButton = this.page
 			.getByRole('row', {name})

@@ -60,4 +60,19 @@ export class JSONWebServicesSegmentsEntryApiHelper {
 			}
 		);
 	}
+
+	async deleteSegmentsEntry(segmentsEntryId: string): Promise<void> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('segmentsEntryId', segmentsEntryId);
+
+		return await this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/delete-segments-entry`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
 }

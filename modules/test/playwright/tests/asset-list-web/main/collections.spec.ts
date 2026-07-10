@@ -17,7 +17,10 @@ const test = mergeTests(
 	loginTest(),
 	isolatedSiteTest,
 	dataApiHelpersTest,
-	featureFlagsTest({'LPD-39304': {enabled: true}}),
+	featureFlagsTest({
+		'LPD-39304': {enabled: true},
+		'LPD-78863': {enabled: true, system: true},
+	}),
 	collectionsPagesTest
 );
 
@@ -101,6 +104,77 @@ test.describe('Manual Collection', () => {
 		});
 
 		await test.step('The selected web content article is displayed in the collection', async () => {
+			await expect(
+				page.getByRole('cell', {name: webContentTitle}).first()
+			).toBeVisible();
+		});
+	});
+
+	test('Can still be edited after deleting a segment used by a variation', {tag: '@LPS-98466'}, async ({
+		apiHelpers,
+		collectionsPage,
+		page,
+		site,
+	}) => {
+		const collectionName = getRandomString();
+		const segmentName = getRandomString();
+		const webContentTitle = getRandomString();
+
+		let segmentsEntryId: string;
+
+		await test.step('Create a web content article and a segment', async () => {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+				groupId: site.id,
+				titleMap: {en_US: webContentTitle},
+			});
+
+			const segment =
+				await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
+					criteria: {
+						criteria: {
+							user: {
+								conjunction: 'and',
+								filterString: `(firstName eq 'Test')`,
+								typeValue: 'model',
+							},
+						},
+						filterString: {model: `(firstName eq 'Test')`},
+					},
+					groupId: site.id,
+					name: segmentName,
+					source: 'DEFAULT',
+				});
+
+			segmentsEntryId = segment.segmentsEntryId;
+		});
+
+		await test.step('Create a manual collection with a personalized variation for the segment', async () => {
+			await collectionsPage.goto(site.friendlyUrlPath);
+
+			await collectionsPage.addNewManualCollection(collectionName);
+
+			await collectionsPage.configureManualCollectionItemType({
+				itemSubtype: 'All Subtypes',
+				itemType: 'Web Content Article',
+			});
+
+			await collectionsPage.addPersonalizedVariation(segmentName);
+		});
+
+		await test.step('Delete the segment used by the variation', async () => {
+			await apiHelpers.jsonWebServicesSegmentsEntry.deleteSegmentsEntry(
+				segmentsEntryId
+			);
+		});
+
+		await test.step('The collection can still be edited and assets selected', async () => {
+			await collectionsPage.goto(site.friendlyUrlPath);
+
+			await collectionsPage.openCollection(collectionName);
+
+			await collectionsPage.selectAssets([webContentTitle]);
+
 			await expect(
 				page.getByRole('cell', {name: webContentTitle}).first()
 			).toBeVisible();

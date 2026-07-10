@@ -496,66 +496,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-98466. Editing a collection fails after deleting a segment used by it."
-	@priority = 3
-	test EditManualCollectionAfterDeletingASegmentUsedByIt {
-		task ("Given a manual collection with variation") {
-			task ("Create web content articles") {
-				for (var i : list "1,2") {
-					JSONWebcontent.addWebContent(
-						content = "WC Content",
-						groupName = "Test Site Name",
-						title = "WC_Title_${i}");
-				}
-			}
-
-			task ("Create a segment") {
-				JSONSegmentsentry.addSegment(
-					fieldName = "Signed In",
-					groupName = "Test Site Name",
-					operator = "equals",
-					segmentName = "Segment Name",
-					text = "false");
-			}
-
-			task ("Create a manual Collection") {
-				AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-				AssetListsAdmin.addManualSelection(assetListTitle = "Manual Collection Test");
-
-				AssetListsAdmin.configureItemTypeInManualCollection(
-					itemSubtype = "All Subtypes",
-					itemType = "Web Content Article");
-			}
-
-			task ("Create a variation for the collection and select a web content") {
-				AssetListsAdmin.addPersonalizedVariation(segmentName = "Segment Name");
-
-				AssetListsAdmin.selectAsset(
-					assetListTitle = "Manual Collection Test",
-					assetType = "Basic Web Content",
-					entryList = "WC_Title_2");
-			}
-		}
-
-		task ("When delete the segment") {
-			JSONSegmentsentry.deleteSegment(
-				groupName = "Test Site Name",
-				segmentName = "Segment Name");
-		}
-
-		task ("Then assert user is able to edit the manual collection") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-			AssetListsAdmin.editAssetList(assetListTitle = "Manual Collection Test");
-
-			AssetListsAdmin.selectAsset(
-				assetListTitle = "Manual Collection Test",
-				assetType = "Basic Web Content",
-				entryList = "WC_Title_1");
-		}
-	}
-
 	@description = "This is a test for LPS-131309. The user could filter collection items by global category."
 	@priority = 4
 	test FilterCollectionItemsByGlobalCategory {
