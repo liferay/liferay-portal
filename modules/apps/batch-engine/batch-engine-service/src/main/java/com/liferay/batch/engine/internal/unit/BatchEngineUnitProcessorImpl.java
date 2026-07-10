@@ -219,6 +219,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					ServiceReference<Object> serviceReference) {
 
 					try {
+						_markProcessed(batchEngineUnit);
+
 						Object service = _bundleContext.getService(
 							serviceReference);
 
@@ -487,8 +489,6 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		if (_isProcessed(batchEngineUnit)) {
 			return null;
 		}
-
-		_markProcessed(batchEngineUnit);
 
 		BatchEngineUnitConfiguration batchEngineUnitConfiguration = null;
 		byte[] content = null;
