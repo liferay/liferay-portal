@@ -67,9 +67,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 		String authorizationCode = parseAuthorizationCodeString(
 			getCodeResponse(
-				TestPropsValues.getUser(
-				).getEmailAddress(),
-				PropsValues.DEFAULT_ADMIN_PASSWORD, null,
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null,
 				getCodeFunction(
 					webTarget -> webTarget.queryParam(
 						"client_id", _CLIENT_ID
@@ -239,6 +238,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 	private static final String _RESOURCE_URI =
 		Http.HTTPS_WITH_SLASH + RandomTestUtil.randomString();
 
+	private User _user;
+
 	private class TokenAudienceTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
 
@@ -246,10 +247,10 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		protected void prepareTest() throws Exception {
 			long companyId = TestPropsValues.getCompanyId();
 
-			User user = UserTestUtil.getAdminUser(companyId);
+			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, user, _CLIENT_ID, _CLIENT_SECRET,
+				companyId, _user, _CLIENT_ID, _CLIENT_SECRET,
 				Arrays.asList(
 					GrantType.CLIENT_CREDENTIALS, GrantType.AUTHORIZATION_CODE),
 				"client_secret_post", null,
