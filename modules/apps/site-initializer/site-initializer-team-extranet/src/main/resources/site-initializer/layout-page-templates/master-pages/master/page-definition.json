@@ -92,9 +92,6 @@
 								"key": "BASIC_COMPONENT-social"
 							},
 							{
-								"key": "DIALECT-dialect-label"
-							},
-							{
 								"key": "FEATURED_CONTENT-composition-banner-cover"
 							},
 							{
@@ -129,15 +126,6 @@
 							},
 							{
 								"key": "com.liferay.fragment.renderer.menu.display.internal.MenuDisplayFragmentRenderer"
-							},
-							{
-								"key": "DIALECT-dialect-button"
-							},
-							{
-								"key": "DIALECT-dialect-text"
-							},
-							{
-								"key": "DIALECT-dialect-nav"
 							},
 							{
 								"key": "BASIC_COMPONENT-image"

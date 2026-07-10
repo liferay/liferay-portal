@@ -1925,8 +1925,7 @@ public class BundleSiteInitializerTest {
 		fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
 			_group.getGroupId(), "dialect-button");
 
-		Assert.assertNotNull(fragmentEntry);
-		Assert.assertEquals("Dialect Button", fragmentEntry.getName());
+		Assert.assertNull(fragmentEntry);
 	}
 
 	private void _assertJournalArticles1() throws Exception {
@@ -2281,7 +2280,7 @@ public class BundleSiteInitializerTest {
 
 		Theme privateTheme = privateLayoutSet.getTheme();
 
-		Assert.assertEquals("Dialect", privateTheme.getName());
+		Assert.assertEquals("CMS", privateTheme.getName());
 
 		UnicodeProperties privateLayoutSetUnicodeProperties =
 			privateLayoutSet.getSettingsProperties();
@@ -2302,7 +2301,7 @@ public class BundleSiteInitializerTest {
 
 		Theme publicTheme = publicLayoutSet.getTheme();
 
-		Assert.assertEquals("Dialect", publicTheme.getName());
+		Assert.assertEquals("CMS", publicTheme.getName());
 
 		UnicodeProperties publicLayoutSetUnicodeProperties =
 			publicLayoutSet.getSettingsProperties();
