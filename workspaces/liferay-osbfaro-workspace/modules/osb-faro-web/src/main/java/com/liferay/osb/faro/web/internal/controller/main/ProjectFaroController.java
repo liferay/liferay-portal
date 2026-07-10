@@ -211,15 +211,18 @@ public class ProjectFaroController extends BaseFaroController {
 			return new ProjectDisplay(faroProject);
 		}
 
-		User user = getUser();
+		if (!FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+			User user = getUser();
 
-		_provisioningClient.addCorpProjectUsers(
-			faroProject.getCorpProjectUuid(),
-			new String[] {user.getUserUuid()});
+			_provisioningClient.addCorpProjectUsers(
+				faroProject.getCorpProjectUuid(),
+				new String[] {user.getUserUuid()});
 
-		_provisioningClient.addUserCorpProjectRoles(
-			faroProject.getCorpProjectUuid(), new String[] {user.getUserUuid()},
-			CorpProjectConstants.ROLE_OWNER);
+			_provisioningClient.addUserCorpProjectRoles(
+				faroProject.getCorpProjectUuid(),
+				new String[] {user.getUserUuid()},
+				CorpProjectConstants.ROLE_OWNER);
+		}
 
 		faroProject.setState(FaroProjectConstants.STATE_NOT_READY);
 
@@ -252,7 +255,8 @@ public class ProjectFaroController extends BaseFaroController {
 			if (Validator.isNull(faroProject.getCorpProjectUuid()) ||
 				Objects.equals(
 					faroProject.getCorpProjectUuid(),
-					FaroPropsValues.FARO_PROJECT_ID)) {
+					FaroPropsValues.FARO_PROJECT_ID) ||
+				FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
 
 				continue;
 			}
@@ -1209,7 +1213,9 @@ public class ProjectFaroController extends BaseFaroController {
 
 		faroProject.setWeDeployKey(weDeployKey);
 
-		if (!Objects.equals(corpProjectUuid, FaroPropsValues.FARO_PROJECT_ID)) {
+		if (!FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED &&
+			!Objects.equals(corpProjectUuid, FaroPropsValues.FARO_PROJECT_ID)) {
+
 			_provisioningClient.addProductConsumption(
 				corpProjectUuid, faroProject.getGroupId());
 		}

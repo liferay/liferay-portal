@@ -35,7 +35,10 @@ import com.liferay.osb.faro.engine.client.model.credentials.OAuth2Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
+import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
+import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntryBuilder;
+import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -114,8 +117,32 @@ public abstract class DemoCreatorService {
 		User user = userLocalService.getUserByEmailAddress(
 			portal.getDefaultCompanyId(), "test@liferay.com");
 
-		OSBAccountEntry osbAccountEntry = provisioningClient.getOSBAccountEntry(
-			FaroPropsValues.FARO_PROJECT_ID);
+		OSBAccountEntry osbAccountEntry = null;
+
+		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+			OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+			osbOfferingEntry.setQuantity(1);
+			osbOfferingEntry.setStartDate(new Date());
+			osbOfferingEntry.setStatus(
+				ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+
+			osbAccountEntry = OSBAccountEntryBuilder.setCorpEntryName(
+				FaroPropsValues.FARO_PROJECT_ID
+			).setCorpProjectUuid(
+				FaroPropsValues.FARO_PROJECT_ID
+			).setName(
+				FaroPropsValues.FARO_PROJECT_ID
+			).setOfferingEntries(
+				Collections.singletonList(osbOfferingEntry)
+			).build();
+		}
+		else {
+			osbAccountEntry = provisioningClient.getOSBAccountEntry(
+				FaroPropsValues.FARO_PROJECT_ID);
+		}
 
 		FaroSubscriptionDisplay faroSubscriptionDisplay =
 			new FaroSubscriptionDisplay(osbAccountEntry);
