@@ -36,9 +36,10 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
+	@Override
 	@Test
-	public void testGetDesignLibraryStyleBooksPageWhenGroupIsNotDesignLibrary()
-		throws Exception {
+	public void testGetDesignLibraryStyleBooksPage() throws Exception {
+		super.testGetDesignLibraryStyleBooksPage();
 
 		try {
 			styleBookResource.getDesignLibraryStyleBooksPage(
