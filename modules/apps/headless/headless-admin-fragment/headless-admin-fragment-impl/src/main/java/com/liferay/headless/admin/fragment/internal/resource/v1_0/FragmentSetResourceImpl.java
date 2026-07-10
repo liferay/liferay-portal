@@ -110,6 +110,24 @@ public class FragmentSetResourceImpl
 	}
 
 	@Override
+	public Page<FragmentSet> getDesignLibraryFragmentSetsPage(
+			String designLibraryExternalReferenceCode, Filter filter,
+			Pagination pagination)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		long groupId = GroupUtil.getDepotGroupId(
+			contextCompany.getCompanyId(), designLibraryExternalReferenceCode,
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		return _search(
+			filter, groupId, pagination,
+			_getDesignLibraryActionsUnsafeFunction(
+				designLibraryExternalReferenceCode, groupId));
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
@@ -168,34 +186,9 @@ public class FragmentSetResourceImpl
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		UnsafeFunction
-			<FragmentCollection, Map<String, Map<String, String>>, Exception>
-				unsafeFunction = _getSiteActionsUnsafeFunction(
-					groupId, siteExternalReferenceCode);
-
-		return SearchUtil.search(
-			Collections.emptyMap(),
-			booleanQuery -> {
-			},
-			filter, FragmentCollection.class.getName(), null, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> {
-				searchContext.setCompanyId(contextCompany.getCompanyId());
-				searchContext.setGroupIds(new long[] {groupId});
-			},
-			null,
-			document -> {
-				FragmentCollection fragmentCollection =
-					_fragmentCollectionService.fetchFragmentCollection(
-						GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
-
-				if (fragmentCollection == null) {
-					return null;
-				}
-
-				return _toFragmentSet(fragmentCollection, unsafeFunction);
-			});
+		return _search(
+			filter, groupId, pagination,
+			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
 	}
 
 	@Override
@@ -321,12 +314,41 @@ public class FragmentSetResourceImpl
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
+	private Page<FragmentSet> _search(
+			Filter filter, long groupId, Pagination pagination,
+			UnsafeFunction
+				<FragmentCollection, Map<String, Map<String, String>>,
+				 Exception> unsafeFunction)
+		throws Exception {
+
+		return SearchUtil.search(
+			Collections.emptyMap(),
+			booleanQuery -> {
+			},
+			filter, FragmentCollection.class.getName(), null, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+				searchContext.setGroupIds(new long[] {groupId});
+			},
+			null,
+			document -> _toFragmentSet(
+				_fragmentCollectionService.fetchFragmentCollection(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
+				unsafeFunction));
+	}
+
 	private FragmentSet _toFragmentSet(
 			FragmentCollection fragmentCollection,
 			UnsafeFunction
 				<FragmentCollection, Map<String, Map<String, String>>,
 				 Exception> unsafeFunction)
 		throws Exception {
+
+		if (fragmentCollection == null) {
+			return null;
+		}
 
 		return _fragmentSetDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
