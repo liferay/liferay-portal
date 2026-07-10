@@ -85,44 +85,51 @@ Map<String, Object> data = new HashMap<String, Object>();
 	function main({initialItems}) {
 		const [items, setItems] = React.useState(initialItems);
 
-		return React.createElement(
-			ClayDualListBox,
-			{
-				ariaLabels: {
-					transferRTL: '<%= LanguageUtil.format(request, "move-selected-items-from-x-to-x", new Object[] {rightTitle, leftTitle}, false) %>',
-					transferLTR: '<%= LanguageUtil.format(request, "move-selected-items-from-x-to-x", new Object[] {leftTitle, rightTitle}, false) %>'
-				},
-				items: items,
-				left: {
-					id: '<portlet:namespace /><%= leftBoxName %>',
-					label: '<%= leftTitle %>'
-				},
-				leftMaxItems: <%= leftBoxMaxItems %>,
-				onItemsChange: (newItems) => {
-					const initialLeftItemsLength = items[0].length;
-					const newLeftItemsLength = newItems[0].length;
+		return React.createElement(ClayDualListBox, {
+			ariaLabels: {
+				transferRTL:
+					'<%= HtmlUtil.escapeJS(LanguageUtil.format(request, "move-selected-items-from-x-to-x", new Object[] {rightTitle, leftTitle}, false)) %>',
+				transferLTR:
+					'<%= HtmlUtil.escapeJS(LanguageUtil.format(request, "move-selected-items-from-x-to-x", new Object[] {leftTitle, rightTitle}, false)) %>',
+			},
+			items: items,
+			left: {
+				id: '<portlet:namespace /><%= leftBoxName %>',
+				label: '<%= HtmlUtil.escapeJS(leftTitle) %>',
+			},
+			leftMaxItems: <%= leftBoxMaxItems %>,
+			onItemsChange: (newItems) => {
+				const initialLeftItemsLength = items[0].length;
+				const newLeftItemsLength = newItems[0].length;
 
-					let fromBox = document.getElementById('<portlet:namespace /><%= leftBoxName %>');
-					let toBox = document.getElementById('<portlet:namespace /><%= rightBoxName %>');
+				let fromBox = document.getElementById(
+					'<portlet:namespace /><%= leftBoxName %>'
+				);
+				let toBox = document.getElementById(
+					'<portlet:namespace /><%= rightBoxName %>'
+				);
 
-					if (initialLeftItemsLength > newLeftItemsLength) {
-						fromBox = document.getElementById('<portlet:namespace /><%= rightBoxName %>');
-						toBox = document.getElementById('<portlet:namespace /><%= leftBoxName %>');
-					}
+				if (initialLeftItemsLength > newLeftItemsLength) {
+					fromBox = document.getElementById(
+						'<portlet:namespace /><%= rightBoxName %>'
+					);
+					toBox = document.getElementById(
+						'<portlet:namespace /><%= leftBoxName %>'
+					);
+				}
 
-					setItems(newItems);
+				setItems(newItems);
 
-					Liferay.fire('inputmoveboxes:moveItem', {fromBox, toBox});
-					Liferay.fire('inputmoveboxes:orderItem');
-				},
-				right: {
-					id: '<portlet:namespace /><%= rightBoxName %>',
-					label: '<%= rightTitle %>'
-				},
-				rightMaxItems: <%= rightBoxMaxItems %>,
-				size: 10,
-			}
-		);
+				Liferay.fire('inputmoveboxes:moveItem', {fromBox, toBox});
+				Liferay.fire('inputmoveboxes:orderItem');
+			},
+			right: {
+				id: '<portlet:namespace /><%= rightBoxName %>',
+				label: '<%= HtmlUtil.escapeJS(rightTitle) %>',
+			},
+			rightMaxItems: <%= rightBoxMaxItems %>,
+			size: 10,
+		});
 	}
 
 	render(
@@ -130,6 +137,7 @@ Map<String, Object> data = new HashMap<String, Object>();
 		{
 			initialItems: [
 				[
+
 					<%
 					for (int i = 0; i < leftList.size(); i++) {
 						KeyValuePair kvp = (KeyValuePair)leftList.get(i);
@@ -137,14 +145,16 @@ Map<String, Object> data = new HashMap<String, Object>();
 
 						{
 							label: '<%= HtmlUtil.escapeJS(kvp.getValue()) %>',
-							value: '<%= HtmlUtil.escapeJS(kvp.getKey()) %>'
+							value: '<%= HtmlUtil.escapeJS(kvp.getKey()) %>',
 						},
+
 					<%
 					}
 					%>
 
 				],
 				[
+
 					<%
 					for (int i = 0; i < rightList.size(); i++) {
 						KeyValuePair kvp = (KeyValuePair)rightList.get(i);
@@ -152,14 +162,15 @@ Map<String, Object> data = new HashMap<String, Object>();
 
 						{
 							label: '<%= HtmlUtil.escapeJS(kvp.getValue()) %>',
-							value: '<%= HtmlUtil.escapeJS(kvp.getKey()) %>'
+							value: '<%= HtmlUtil.escapeJS(kvp.getKey()) %>',
 						},
+
 					<%
 					}
 					%>
 
-				]
-			]
+				],
+			],
 		},
 		document.querySelector('#<%= randomNamespace %>input-move-boxes')
 	);
