@@ -317,16 +317,11 @@ public class IGExportImportPortletPreferencesProcessorTest {
 
 		GroupTestUtil.enableLocalStaging(depotLiveGroup);
 
-		Group depotStagingGroup = depotLiveGroup.getStagingGroup();
-
-		FileEntry stagingFileEntry = _dlAppLocalService.getFileEntry(
-			depotStagingGroup.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			liveFileEntry.getTitle());
+		Map<String, String> livePortletPreferencesValues =
+			_getPortletPreferencesValues(liveFileEntry);
 
 		_testExportImportFolderInAssetLibraryWithStagingInProcess(
-			_getPortletPreferencesValues(liveFileEntry),
-			_getPortletPreferencesValues(stagingFileEntry));
+			livePortletPreferencesValues, livePortletPreferencesValues);
 	}
 
 	@Test
@@ -376,15 +371,11 @@ public class IGExportImportPortletPreferencesProcessorTest {
 
 		GroupTestUtil.enableLocalStaging(depotLiveGroup);
 
-		Group depotStagingGroup = depotLiveGroup.getStagingGroup();
-
-		Folder stagingFolder = _dlAppLocalService.getFolder(
-			depotStagingGroup.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, liveFolder.getName());
+		Map<String, String> livePortletPreferencesValues =
+			_getPortletPreferencesValues(liveFolder);
 
 		_testExportImportFolderInAssetLibraryWithStagingInProcess(
-			_getPortletPreferencesValues(liveFolder),
-			_getPortletPreferencesValues(stagingFolder));
+			livePortletPreferencesValues, livePortletPreferencesValues);
 	}
 
 	@Test
