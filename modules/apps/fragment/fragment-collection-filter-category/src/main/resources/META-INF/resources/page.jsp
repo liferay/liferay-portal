@@ -9,7 +9,7 @@
 
 <div class="form-group form-group-sm">
 	<span class="control-label <%= fragmentCollectionFilterCategoryDisplayContext.isShowLabel() ? "" : "sr-only" %>">
-		<%= fragmentCollectionFilterCategoryDisplayContext.getLabel() %>
+		<%= HtmlUtil.escape(fragmentCollectionFilterCategoryDisplayContext.getLabel()) %>
 	</span>
 
 	<div>
