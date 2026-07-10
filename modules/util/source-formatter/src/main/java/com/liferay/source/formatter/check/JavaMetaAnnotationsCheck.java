@@ -126,7 +126,9 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		String fileName, String absolutePath, String content,
 		String annotation) {
 
-		if (absolutePath.contains("/test/") ||
+		if (absolutePath.contains("/archived/") ||
+			absolutePath.contains("/gradleTest/") ||
+			absolutePath.contains("/test/") ||
 			absolutePath.contains("/testIntegration/") ||
 			annotation.contains("name = ") ||
 			content.contains("generateUI = false") ||
