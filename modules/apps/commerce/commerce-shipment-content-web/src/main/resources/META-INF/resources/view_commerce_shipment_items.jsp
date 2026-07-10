@@ -223,7 +223,7 @@ if (commerceAddress != null) {
 		<liferay-ui:search-container-column-text
 			cssClass="table-cell-expand"
 			name="name"
-			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : commerceOrderItem.getName(languageId) %>"
+			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : HtmlUtil.escape(commerceOrderItem.getName(languageId)) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
