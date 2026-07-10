@@ -34,7 +34,7 @@ String layoutPageTemplateEntryName = cpDefinitionDisplayLayoutDisplayContext.get
 					<span class="text-muted"><liferay-ui:message key="none" /></span>
 				</c:when>
 				<c:otherwise>
-					<%= layoutPageTemplateEntryName %>
+					<%= HtmlUtil.escape(layoutPageTemplateEntryName) %>
 				</c:otherwise>
 			</c:choose>
 		</span>
