@@ -35,7 +35,7 @@
 								<button class="align-items-center btn btn-secondary btn-sm form-control-select">
 									<svg class="lexicon-icon lexicon-icon-folder mr-2" role="presentation">
 										<use xlink:href="/o/admin-theme/images/clay/icons.svg#folder">
-									</svg><%= searchLocationLabel %>
+									</svg><%= HtmlUtil.escape(searchLocationLabel) %>
 								</button>
 							</div>
 						</c:if>
