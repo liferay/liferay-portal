@@ -132,7 +132,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			else {
 				httpServletRequest.setAttribute(
 					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST,
-					_normalizeHost(_getClientHost(httpServletRequest, false)));
+					_getClientHost(httpServletRequest, false));
 
 				user = _authorize(
 					httpServletRequest, httpServletRequest.getMethod());
@@ -153,7 +153,7 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			String clientHost = GetterUtil.getString(
 				httpServletRequest.getAttribute(
 					OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST),
-				_normalizeHost(_getClientHost(httpServletRequest, false)));
+				_getClientHost(httpServletRequest, false));
 
 			DynamicRegistrationUtil.routeAuditMessage(
 				_getAuthorizationFailureAuditMessage(
@@ -262,10 +262,9 @@ public class DynamicRegistrationServiceContainerRequestFilter
 				_configurationProvider.getCompanyConfiguration(
 					OAuth2DynamicRegistrationConfiguration.class, companyId);
 
-		String clientHost = _normalizeHost(
-			_getClientHost(
-				httpServletRequest,
-				oAuth2DynamicRegistrationConfiguration.trustProxyHeaders()));
+		String clientHost = _getClientHost(
+			httpServletRequest,
+			oAuth2DynamicRegistrationConfiguration.trustProxyHeaders());
 
 		httpServletRequest.setAttribute(
 			OAuth2ProviderRESTWebKeys.DYNAMIC_REGISTRATION_CLIENT_HOST,
@@ -342,14 +341,14 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		HttpServletRequest httpServletRequest, boolean trustProxyHeaders) {
 
 		if (!trustProxyHeaders) {
-			return httpServletRequest.getRemoteAddr();
+			return _normalizeHost(httpServletRequest.getRemoteAddr());
 		}
 
 		String forwardedFor = httpServletRequest.getHeader(
 			HttpHeaders.X_FORWARDED_FOR);
 
 		if (Validator.isBlank(forwardedFor)) {
-			return httpServletRequest.getRemoteAddr();
+			return _normalizeHost(httpServletRequest.getRemoteAddr());
 		}
 
 		int index = forwardedFor.indexOf(',');
@@ -361,10 +360,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		forwardedFor = forwardedFor.trim();
 
 		if (!Validator.isBlank(forwardedFor)) {
-			return forwardedFor;
+			return _normalizeHost(forwardedFor);
 		}
 
-		return httpServletRequest.getRemoteAddr();
+		return _normalizeHost(httpServletRequest.getRemoteAddr());
 	}
 
 	private String _getClientId(HttpServletRequest httpServletRequest) {
