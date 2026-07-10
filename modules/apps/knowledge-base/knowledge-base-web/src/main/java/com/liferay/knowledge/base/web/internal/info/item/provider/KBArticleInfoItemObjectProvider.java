@@ -84,6 +84,7 @@ public class KBArticleInfoItemObjectProvider
 
 	private KBArticle _getKBArticle(long classPK, String version) {
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
@@ -108,6 +109,7 @@ public class KBArticleInfoItemObjectProvider
 		String externalReferenceCode, long groupId, String version) {
 
 		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
