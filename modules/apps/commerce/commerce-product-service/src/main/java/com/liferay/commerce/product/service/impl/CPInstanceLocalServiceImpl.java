@@ -45,6 +45,7 @@ import com.liferay.commerce.product.service.persistence.CProductPersistence;
 import com.liferay.commerce.product.util.CPSubscriptionType;
 import com.liferay.commerce.product.util.CPSubscriptionTypeRegistry;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -226,14 +227,20 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			deliverySubscriptionTypeSettingsUnicodeProperties);
 		cpInstance.setDeliveryMaxSubscriptionCycles(
 			deliveryMaxSubscriptionCycles);
-		cpInstance.setStatus(WorkflowConstants.STATUS_DRAFT);
 
-		if ((displayDate != null) && date.before(displayDate)) {
-			cpInstance.setStatus(WorkflowConstants.STATUS_SCHEDULED);
+		if (_emptyModelManager.isEmptyModel()) {
+			cpInstance.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
+		else {
+			cpInstance.setStatus(WorkflowConstants.STATUS_DRAFT);
 
-		if (!neverExpire && expirationDate.before(date)) {
-			cpInstance.setStatus(WorkflowConstants.STATUS_EXPIRED);
+			if ((displayDate != null) && date.before(displayDate)) {
+				cpInstance.setStatus(WorkflowConstants.STATUS_SCHEDULED);
+			}
+
+			if (!neverExpire && expirationDate.before(date)) {
+				cpInstance.setStatus(WorkflowConstants.STATUS_EXPIRED);
+			}
 		}
 
 		cpInstance.setUnspsc(unspsc);
@@ -262,7 +269,9 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 
 		_reindexCPDefinition(cpDefinitionId);
 
-		if (!_isWorkflowActionPublish(serviceContext)) {
+		if (_emptyModelManager.isEmptyModel() ||
+			!_isWorkflowActionPublish(serviceContext)) {
+
 			return cpInstance;
 		}
 
@@ -832,6 +841,35 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			cProduct.getPublishedCPDefinitionId(), cpInstanceUuid);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId,
+			long companyId, long userId)
+		throws PortalException {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPInstance.class, companyId,
+			() -> cpInstanceLocalService.addCPInstance(
+				externalReferenceCode, cpDefinitionId, groupId,
+				externalReferenceCode, null, null, false, null, 0, 0, 0, 0,
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false,
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
+				false, 1, null, null, 0, false, 1, null, null, 0, null, false,
+				null, 0, 0, 0, 0, serviceContext),
+			externalReferenceCode, this::fetchCPInstanceByExternalReferenceCode,
+			this::getCPInstanceByExternalReferenceCode,
+			CPInstance.class.getName());
+	}
+
 	@Override
 	public String[] getSKUs(long cpDefinitionId) {
 		List<CPInstance> cpInstances = getCPDefinitionInstances(
@@ -1129,7 +1167,23 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 		cpInstance.setDeliveryMaxSubscriptionCycles(
 			deliveryMaxSubscriptionCycles);
 
-		if (!neverExpire && expirationDate.before(date)) {
+		if (cpInstance.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			cpInstance.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					cpInstance.getExternalReferenceCode(),
+					cpInstance.getModelClassName(), cpInstance.getCompanyId(),
+					cpInstance.getGroupId(), cpInstance.getStatus(),
+					() -> {
+						if ((serviceContext != null) &&
+							_isWorkflowActionPublish(serviceContext)) {
+
+							return WorkflowConstants.STATUS_APPROVED;
+						}
+
+						return WorkflowConstants.STATUS_DRAFT;
+					}));
+		}
+		else if (!neverExpire && expirationDate.before(date)) {
 			cpInstance.setStatus(WorkflowConstants.STATUS_EXPIRED);
 		}
 
@@ -2131,6 +2185,9 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 
 	@Reference
 	private CPSubscriptionTypeRegistry _cpSubscriptionTypeRegistry;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
