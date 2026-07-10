@@ -11,7 +11,7 @@ import {ElementVariation} from './elementVariationsReducer';
 import {EditableElementOption} from './getEditableElementOptions';
 
 function hasValueInAnyLanguage(
-	localizedValue: Record<string, boolean | string>
+	localizedValue: Record<string, string>
 ): boolean {
 	return Object.values(localizedValue).some(Boolean);
 }
@@ -114,9 +114,7 @@ export default function ElementVariationsList({
 														</ClayLabel>
 													) : null}
 
-													{hasValueInAnyLanguage(
-														elementVariation.hide
-													) ? (
+													{elementVariation.hide ? (
 														<ClayLabel
 															displayType="success"
 															inverse

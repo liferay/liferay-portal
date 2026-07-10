@@ -133,6 +133,7 @@ function ElementVariations({
 							onSave={() =>
 								ElementVariationService.addElementVariation({
 									addElementVariationURL,
+									defaultLanguageId,
 									elementVariation: draftElementVariation,
 									plid,
 								}).then(() =>

@@ -105,9 +105,6 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 				return;
 			}
 
-			const hideValue = Boolean(
-				hide[languageId] ?? hide[defaultLanguageId]
-			);
 			const htmlValue = html[languageId] ?? html[defaultLanguageId] ?? '';
 			const jsValue = js[languageId] ?? js[defaultLanguageId] ?? '';
 
@@ -133,7 +130,7 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 				iframeDocument.body.removeChild(scriptElement);
 			}
 
-			if (hideValue) {
+			if (hide) {
 				styleElement = iframeDocument.createElement('style');
 
 				styleElement.textContent = `${targetElement} { display: none !important; }`;

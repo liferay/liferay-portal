@@ -8,6 +8,7 @@ import {ElementVariation} from './elementVariationsReducer';
 
 interface AddElementVariationParameters {
 	addElementVariationURL: string;
+	defaultLanguageId: string;
 	elementVariation: ElementVariation;
 	plid: number;
 }
@@ -21,6 +22,7 @@ interface DeleteElementVariationParameters {
 export default {
 	addElementVariation({
 		addElementVariationURL,
+		defaultLanguageId,
 		elementVariation,
 		plid,
 	}: AddElementVariationParameters) {
@@ -30,7 +32,7 @@ export default {
 					audienceEntryERCs: elementVariation.audienceEntryERCs,
 					externalReferenceCode:
 						elementVariation.externalReferenceCode,
-					hideMap: elementVariation.hide,
+					hideMap: {[defaultLanguageId]: elementVariation.hide},
 					htmlMap: elementVariation.html,
 					jsMap: elementVariation.js,
 					name: elementVariation.name,

@@ -69,7 +69,7 @@ export default function ElementVariationForm({
 	const translating = languageId !== defaultLanguageId;
 
 	const notLocalizableHint = translating ? (
-		<span className="element-variations__not-localizable-label font-weight-lighter">
+		<span className="element-variations__not-localizable-label font-weight-lighter ml-1">
 			({Liferay.Language.get('not-localizable')})
 		</span>
 	) : null;
@@ -251,40 +251,34 @@ export default function ElementVariationForm({
 							/>
 						</ClayForm.Group>
 
-						<ClayForm.Group className="my-4">
+						<ClayForm.Group className="align-items-center d-flex my-4">
 							<ClayToggle
+								disabled={translating}
 								label={Liferay.Language.get(
 									'hide-page-element'
 								)}
 								onToggle={(hide) => {
 									const properties: Partial<ElementVariationFormData> =
-										{
-											hide: {
-												...elementVariation.hide,
-												[languageId]: hide,
-											},
-										};
+										{hide};
 
 									if (hide) {
-										properties.html = {
-											...elementVariation.html,
-											[languageId]: '',
-										};
-										properties.js = {
-											...elementVariation.js,
-											[languageId]: '',
-										};
+										properties.html = {};
+										properties.js = {};
 									}
 
 									onChange(properties);
 								}}
-								toggled={Boolean(
-									elementVariation.hide[languageId]
-								)}
+								toggled={elementVariation.hide}
 							/>
+
+							{translating ? (
+								<span className="element-variations__not-localizable-label font-weight-lighter mb-1 ml-2 text-2">
+									({Liferay.Language.get('not-localizable')})
+								</span>
+							) : null}
 						</ClayForm.Group>
 
-						{elementVariation.hide[languageId] ? null : (
+						{elementVariation.hide ? null : (
 							<>
 								<CodeEditorField
 									defaultLanguageValue={

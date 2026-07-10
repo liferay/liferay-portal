@@ -10,7 +10,7 @@ import {EditableElementOption} from './getEditableElementOptions';
 export interface ElementVariation {
 	audienceEntryERCs: string[];
 	externalReferenceCode: string;
-	hide: Record<string, boolean>;
+	hide: boolean;
 	html: Record<string, string>;
 	js: Record<string, string>;
 	key: string;
@@ -58,7 +58,7 @@ export function createElementVariation(
 	return {
 		audienceEntryERCs: [],
 		externalReferenceCode: uuidv4(),
-		hide: {},
+		hide: false,
 		html: {},
 		js: {},
 		key: uuidv4(),
@@ -98,14 +98,7 @@ export function createInitialState({
 		editableElementOptions: [],
 		elementVariations: elementVariations.map((elementVariation) => ({
 			...elementVariation,
-			hide: Object.fromEntries(
-				Object.entries(elementVariation.hide).map(
-					([languageId, value]): [string, boolean] => [
-						languageId,
-						value === 'true',
-					]
-				)
-			),
+			hide: elementVariation.hide[defaultLanguageId] === 'true',
 			key: uuidv4(),
 		})),
 		experienceKey:
