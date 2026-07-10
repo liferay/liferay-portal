@@ -89,7 +89,12 @@ public abstract class BaseAccessTokenGrantHandler
 		}
 
 		for (String resource : resources) {
-			_validateResource(resource);
+			if (!_isValidResource(resource)) {
+				OAuth2ErrorUtil.reportInvalidRequestError(
+					"The resource parameter must be an absolute URI without " +
+						"a fragment",
+					"invalid_target", Response.Status.BAD_REQUEST);
+			}
 		}
 
 		List<String> registeredAudiences = client.getRegisteredAudiences();
@@ -177,25 +182,27 @@ public abstract class BaseAccessTokenGrantHandler
 	@Reference
 	protected UserLocalService userLocalService;
 
-	private void _validateResource(String resource) {
-		if (!Validator.isBlank(resource)) {
-			try {
-				URI uri = new URI(resource);
-
-				if (uri.isAbsolute() && (uri.getFragment() == null)) {
-					return;
-				}
-			}
-			catch (URISyntaxException uriSyntaxException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(uriSyntaxException);
-				}
-			}
+	private boolean _isValidResource(String resource) {
+		if (Validator.isBlank(resource)) {
+			return false;
 		}
 
-		OAuth2ErrorUtil.reportInvalidRequestError(
-			"The resource parameter must be an absolute URI without a fragment",
-			"invalid_target", Response.Status.BAD_REQUEST);
+		try {
+			URI uri = new URI(resource);
+
+			if (uri.isAbsolute() && (uri.getFragment() == null)) {
+				return true;
+			}
+
+			return false;
+		}
+		catch (URISyntaxException uriSyntaxException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(uriSyntaxException);
+			}
+
+			return false;
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
