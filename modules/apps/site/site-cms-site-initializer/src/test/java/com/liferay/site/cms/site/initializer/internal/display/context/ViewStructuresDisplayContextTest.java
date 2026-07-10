@@ -8,6 +8,8 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -38,6 +40,7 @@ public class ViewStructuresDisplayContextTest {
 	}
 
 	private final ViewStructuresDisplayContext _viewStructuresDisplayContext =
-		new ViewStructuresDisplayContext(new MockHttpServletRequest());
+		new ViewStructuresDisplayContext(
+			Collections.emptyList(), new MockHttpServletRequest());
 
 }
