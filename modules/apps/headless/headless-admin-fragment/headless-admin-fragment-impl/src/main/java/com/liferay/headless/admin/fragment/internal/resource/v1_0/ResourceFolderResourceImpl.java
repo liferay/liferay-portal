@@ -282,26 +282,11 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 	}
 
 	private void _checkResourceFolder(DLFolder dlFolder) throws Exception {
-		if (_getFragmentCollection(dlFolder) == null) {
+		if (FragmentSetUtil.getFragmentCollection(dlFolder) == null) {
 			throw new NoSuchFolderException(
 				"No resource folder exists with external reference code " +
 					dlFolder.getExternalReferenceCode());
 		}
-	}
-
-	private FragmentCollection _getFragmentCollection(DLFolder dlFolder) {
-		DLFolder parentDLFolder = _dlFolderLocalService.fetchDLFolder(
-			dlFolder.getParentFolderId());
-
-		while ((parentDLFolder != null) && !parentDLFolder.isMountPoint()) {
-			dlFolder = parentDLFolder;
-
-			parentDLFolder = _dlFolderLocalService.fetchDLFolder(
-				dlFolder.getParentFolderId());
-		}
-
-		return _fragmentCollectionLocalService.fetchFragmentCollection(
-			dlFolder.getGroupId(), dlFolder.getName());
 	}
 
 	private FragmentCollection _getOrAddFragmentCollection(
@@ -366,7 +351,7 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 		}
 
 		if ((parentDLFolder != null) &&
-			(_getFragmentCollection(parentDLFolder) == null)) {
+			(FragmentSetUtil.getFragmentCollection(parentDLFolder) == null)) {
 
 			parentDLFolder = null;
 		}

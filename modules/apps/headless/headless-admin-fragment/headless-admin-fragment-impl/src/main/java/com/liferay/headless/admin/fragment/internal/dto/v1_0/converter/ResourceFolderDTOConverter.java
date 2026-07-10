@@ -8,10 +8,10 @@ package com.liferay.headless.admin.fragment.internal.dto.v1_0.converter;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.fragment.model.FragmentCollection;
-import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
 import com.liferay.headless.admin.fragment.internal.dto.v1_0.util.CreatorUtil;
+import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -39,7 +39,7 @@ public class ResourceFolderDTOConverter
 
 		UnsafeSupplierValue<FragmentCollection, Exception>
 			fragmentCollectionUnsafeSupplierValue = new UnsafeSupplierValue<>(
-				() -> _getFragmentCollection(dlFolder));
+				() -> FragmentSetUtil.getFragmentCollection(dlFolder));
 		UnsafeSupplierValue<DLFolder, Exception>
 			parentDLFolderUnsafeSupplierValue = new UnsafeSupplierValue<>(
 				() -> _getParentDLFolder(dlFolder));
@@ -96,21 +96,6 @@ public class ResourceFolderDTOConverter
 		};
 	}
 
-	private FragmentCollection _getFragmentCollection(DLFolder dlFolder) {
-		DLFolder parentDLFolder = _dlFolderLocalService.fetchDLFolder(
-			dlFolder.getParentFolderId());
-
-		while ((parentDLFolder != null) && !parentDLFolder.isMountPoint()) {
-			dlFolder = parentDLFolder;
-
-			parentDLFolder = _dlFolderLocalService.fetchDLFolder(
-				dlFolder.getParentFolderId());
-		}
-
-		return _fragmentCollectionLocalService.fetchFragmentCollection(
-			dlFolder.getGroupId(), dlFolder.getName());
-	}
-
 	private DLFolder _getParentDLFolder(DLFolder dlFolder) {
 		DLFolder parentDLFolder = _dlFolderLocalService.fetchDLFolder(
 			dlFolder.getParentFolderId());
@@ -143,9 +128,6 @@ public class ResourceFolderDTOConverter
 
 	@Reference
 	private DLFolderLocalService _dlFolderLocalService;
-
-	@Reference
-	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.fragment.internal.dto.v1_0.converter.FragmentSetDTOConverter)"
