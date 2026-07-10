@@ -500,6 +500,16 @@ public class CPAttachmentFileEntryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPAttachmentFileEntry getOrAddEmptyCPAttachmentFileEntry(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId, long classNameId, long classPK)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPAttachmentFileEntry(
+			externalReferenceCode, companyId, userId, groupId, classNameId,
+			classPK);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -588,4 +598,4 @@ public class CPAttachmentFileEntryLocalServiceUtil {
 			CPAttachmentFileEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1423879644
+// LIFERAY-SERVICE-BUILDER-HASH:677714773

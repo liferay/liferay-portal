@@ -599,6 +599,16 @@ public class CPInstanceLocalServiceWrapper
 		return _cpInstanceLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId,
+			long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceLocalService.getOrAddEmptyCPInstance(
+			externalReferenceCode, cpDefinitionId, groupId, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -899,4 +909,4 @@ public class CPInstanceLocalServiceWrapper
 	private CPInstanceLocalService _cpInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1744458225
+// LIFERAY-SERVICE-BUILDER-HASH:210732494

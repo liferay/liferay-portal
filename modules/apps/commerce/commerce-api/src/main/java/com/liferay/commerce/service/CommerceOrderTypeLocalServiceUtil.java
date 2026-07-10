@@ -367,6 +367,14 @@ public class CommerceOrderTypeLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CommerceOrderType getOrAddEmptyCommerceOrderType(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceOrderType(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -452,4 +460,4 @@ public class CommerceOrderTypeLocalServiceUtil {
 			CommerceOrderTypeLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:344136255
+// LIFERAY-SERVICE-BUILDER-HASH:2130032150

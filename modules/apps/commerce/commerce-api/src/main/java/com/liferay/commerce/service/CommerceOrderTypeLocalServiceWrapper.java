@@ -412,6 +412,16 @@ public class CommerceOrderTypeLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public com.liferay.commerce.model.CommerceOrderType
+			getOrAddEmptyCommerceOrderType(
+				String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeLocalService.getOrAddEmptyCommerceOrderType(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -516,4 +526,4 @@ public class CommerceOrderTypeLocalServiceWrapper
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1602209560
+// LIFERAY-SERVICE-BUILDER-HASH:-15495848

@@ -543,6 +543,15 @@ public class CPInstanceLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId,
+			long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPInstance(
+			externalReferenceCode, cpDefinitionId, groupId, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -789,4 +798,4 @@ public class CPInstanceLocalServiceUtil {
 			CPInstanceLocalServiceUtil.class, CPInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1369807608
+// LIFERAY-SERVICE-BUILDER-HASH:-538107981
