@@ -713,7 +713,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		String endpoint = StringBundler.concat(
 			"headless-admin-fragment/v1.0/sites/", siteExternalReferenceCode,
-			"/fragments/export-batch?contentType=JSON");
+			"/fragments/export-batch?contentType=JSON",
+			"&batchNestedFields=fragmentSet");
 
 		if (filterString != null) {
 			endpoint = StringBundler.concat(
