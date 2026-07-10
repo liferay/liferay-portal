@@ -49,6 +49,7 @@ const renderColumnView = (props: any, contextProps: any = {}) =>
 			value={{
 				boardData: {},
 				changeTaskStatus: jest.fn(),
+				hasAddTaskPermission: true,
 				loadData: () => {},
 				...contextProps,
 			}}
@@ -172,6 +173,18 @@ describe('Kanban ColumnView', () => {
 		});
 	});
 
+	it('hides the add task button without add task permission', () => {
+		const {queryByText} = renderColumnView(
+			{
+				column: defaultColumn,
+				stateFlow: mockStateFlow,
+			},
+			{hasAddTaskPermission: false}
+		);
+
+		expect(queryByText('add-task')).not.toBeInTheDocument();
+	});
+
 	it('renders header and tasks', () => {
 		const {getAllByTestId, getByText} = renderColumnView({
 			column: defaultColumn,
@@ -180,5 +193,14 @@ describe('Kanban ColumnView', () => {
 
 		expect(getByText('In Progress')).toBeInTheDocument();
 		expect(getAllByTestId('task').length).toBe(1);
+	});
+
+	it('shows the add task button with add task permission', () => {
+		const {getByText} = renderColumnView({
+			column: defaultColumn,
+			stateFlow: mockStateFlow,
+		});
+
+		expect(getByText('add-task')).toBeInTheDocument();
 	});
 });
