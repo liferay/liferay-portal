@@ -285,7 +285,7 @@ export default function ElementVariationForm({
 										translating
 											? elementVariation.html[
 													defaultLanguageId
-												]
+												] ?? ''
 											: undefined
 									}
 									initialValue={
@@ -309,7 +309,7 @@ export default function ElementVariationForm({
 										translating
 											? elementVariation.js[
 													defaultLanguageId
-												]
+												] ?? ''
 											: undefined
 									}
 									description={Liferay.Language.get(

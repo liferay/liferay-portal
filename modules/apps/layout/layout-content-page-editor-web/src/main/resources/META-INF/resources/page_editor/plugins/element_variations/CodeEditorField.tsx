@@ -5,6 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
+import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
@@ -75,9 +76,22 @@ export default function CodeEditorField({
 				value={value}
 			/>
 
-			{defaultLanguageValue ? (
-				<p className="element-variations__default-language-value font-italic mt-1 pl-2 text-3 text-break text-secondary">
-					{defaultLanguageValue}
+			{defaultLanguageValue !== undefined ? (
+				<p
+					className={classNames(
+						'element-variations__default-language-value mt-2 pl-2 text-3 text-break',
+						{
+							'element-variations__default-language-value--empty':
+								!defaultLanguageValue,
+							'font-italic': defaultLanguageValue,
+							'text-secondary': Boolean(defaultLanguageValue),
+						}
+					)}
+				>
+					{defaultLanguageValue ||
+						Liferay.Language.get(
+							'there-is-no-default-value-to-localize'
+						)}
 				</p>
 			) : null}
 
