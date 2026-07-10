@@ -15,6 +15,6 @@ FileVersion fileVersion = (FileVersion)request.getAttribute(WebKeys.DOCUMENT_LIB
 
 <c:if test="<%= fileVersion.isApproved() %>">
 	<div>
-		<%= fileEntry.getTitle() %>
+		<%= HtmlUtil.escape(fileEntry.getTitle()) %>
 	</div>
 </c:if>

@@ -17,6 +17,7 @@ page import="com.liferay.document.library.util.DLURLHelperUtil" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.repository.model.FileEntry" %><%@
 page import="com.liferay.portal.kernel.repository.model.FileVersion" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %>
 
 <%@ page import="java.util.Objects" %>
