@@ -22,7 +22,7 @@ EditAccountEntryAccountUserDisplayContext editAccountEntryAccountUserDisplayCont
 	<aui:input name="accountUserId" type="hidden" value="<%= editAccountEntryAccountUserDisplayContext.getAccountUserId() %>" />
 
 	<clay:sheet-header>
-		<h2 class="sheet-title"><%= editAccountEntryAccountUserDisplayContext.getTitle() %></h2>
+		<h2 class="sheet-title"><%= HtmlUtil.escape(editAccountEntryAccountUserDisplayContext.getTitle()) %></h2>
 	</clay:sheet-header>
 
 	<liferay-frontend:edit-form-body>
