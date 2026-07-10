@@ -347,18 +347,20 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		String forwardedFor = httpServletRequest.getHeader(
 			HttpHeaders.X_FORWARDED_FOR);
 
+		if (Validator.isBlank(forwardedFor)) {
+			return httpServletRequest.getRemoteAddr();
+		}
+
+		int index = forwardedFor.indexOf(',');
+
+		if (index >= 0) {
+			forwardedFor = forwardedFor.substring(0, index);
+		}
+
+		forwardedFor = forwardedFor.trim();
+
 		if (!Validator.isBlank(forwardedFor)) {
-			int index = forwardedFor.indexOf(',');
-
-			if (index >= 0) {
-				forwardedFor = forwardedFor.substring(0, index);
-			}
-
-			forwardedFor = forwardedFor.trim();
-
-			if (!Validator.isBlank(forwardedFor)) {
-				return forwardedFor;
-			}
+			return forwardedFor;
 		}
 
 		return httpServletRequest.getRemoteAddr();
