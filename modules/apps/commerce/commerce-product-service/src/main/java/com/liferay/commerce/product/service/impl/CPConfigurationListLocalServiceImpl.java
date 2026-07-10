@@ -27,6 +27,7 @@ import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationListLocalServiceBaseImpl;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -58,6 +60,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +127,14 @@ public class CPConfigurationListLocalServiceImpl
 		cpConfigurationList.setPriority(priority);
 		cpConfigurationList.setDisplayDate(displayDate);
 		cpConfigurationList.setExpirationDate(expirationDate);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpConfigurationList.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpConfigurationList.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpConfigurationList.setExpandoBridgeAttributes(serviceContext);
 
 		cpConfigurationList = cpConfigurationListPersistence.update(
@@ -423,6 +434,30 @@ public class CPConfigurationListLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public CPConfigurationList getOrAddEmptyCPConfigurationList(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPConfigurationList.class, companyId,
+			() -> cpConfigurationListLocalService.addCPConfigurationList(
+				externalReferenceCode, userId, groupId, 0, false,
+				externalReferenceCode, 0, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext()),
+			externalReferenceCode,
+			this::fetchCPConfigurationListByExternalReferenceCode,
+			this::getCPConfigurationListByExternalReferenceCode,
+			CPConfigurationList.class.getName());
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public CPConfigurationList updateCPConfigurationList(
 			String externalReferenceCode, long cpConfigurationListId,
 			long userId, long groupId, long parentCPConfigurationListId,
@@ -467,6 +502,18 @@ public class CPConfigurationListLocalServiceImpl
 		cpConfigurationList.setPriority(priority);
 		cpConfigurationList.setDisplayDate(displayDate);
 		cpConfigurationList.setExpirationDate(expirationDate);
+
+		if (cpConfigurationList.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			cpConfigurationList.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					cpConfigurationList.getExternalReferenceCode(),
+					cpConfigurationList.getModelClassName(),
+					cpConfigurationList.getCompanyId(),
+					cpConfigurationList.getGroupId(),
+					cpConfigurationList.getStatus(),
+					() -> WorkflowConstants.STATUS_APPROVED));
+		}
+
 		cpConfigurationList.setExpandoBridgeAttributes(serviceContext);
 
 		return cpConfigurationListPersistence.update(cpConfigurationList);
@@ -654,6 +701,9 @@ public class CPConfigurationListLocalServiceImpl
 	@Reference
 	private CPConfigurationEntrySettingLocalService
 		_cpConfigurationEntrySettingLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
