@@ -1,0 +1,5 @@
+Manifest-Version: 2
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.liferay.batch.engine.unit.processor.test.control
+Bundle-Version: 1.0.0
+Liferay-Client-Extension-Batch: batch

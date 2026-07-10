@@ -19,6 +19,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-admin-user:headless-admin-user-client")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
+	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
