@@ -21,7 +21,7 @@
 			href="<%= layoutsAdminDisplayContext.getEditOrViewLayoutURL(layout) %>"
 			name="title"
 			target="<%= layoutsAdminDisplayContext.getTarget(layout) %>"
-			value="<%= layout.getName(locale) %>"
+			value="<%= HtmlUtil.escapeAttribute(layout.getName(locale)) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
