@@ -413,3 +413,25 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Enhanced Paste from Office plugin is registered for licensed DXP installations',
+	{tag: '@LPD-95090'},
+	async ({classicPage, page}) => {
+		await expect(classicPage.editable).toBeVisible();
+
+		const hasPasteFromOfficeEnhanced = await page.evaluate(() => {
+			const editorElement = Array.from(
+				document.querySelectorAll('.lfr-ck *')
+			).find((element) => (element as any).ckeditorInstance);
+
+			return (
+				(editorElement as any)?.ckeditorInstance?.plugins.has(
+					'PasteFromOfficeEnhanced'
+				) ?? false
+			);
+		});
+
+		expect(hasPasteFromOfficeEnhanced).toBe(true);
+	}
+);
