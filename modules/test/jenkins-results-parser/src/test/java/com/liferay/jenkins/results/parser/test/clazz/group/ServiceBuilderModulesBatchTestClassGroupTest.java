@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.io.File;
 
@@ -25,27 +26,22 @@ public class ServiceBuilderModulesBatchTestClassGroupTest
 	public void testGetBuildType() {
 		_testGetBuildType(
 			ServiceBuilderModulesBatchTestClassGroup.BuildType.CORE,
-			"portal-impl/src/com/liferay/portal/service/impl" +
-				"/UserLocalServiceImpl.java");
+			"portal-impl/" + RandomTestUtil.randomString());
 		_testGetBuildType(
 			ServiceBuilderModulesBatchTestClassGroup.BuildType.CORE,
-			"portal-kernel/src/com/liferay/portal/kernel/service" +
-				"/UserLocalService.java");
+			"portal-kernel/" + RandomTestUtil.randomString());
 		_testGetBuildType(
 			ServiceBuilderModulesBatchTestClassGroup.BuildType.FULL,
-			"modules/util/portal-tools-service-builder/src/main/java/com" +
-				"/liferay/portal/tools/service/builder/ServiceBuilder.java");
+			"modules/util/portal-tools-service-builder/" +
+				RandomTestUtil.randomString());
 		_testGetBuildType(
 			ServiceBuilderModulesBatchTestClassGroup.BuildType.FULL,
-			"modules/util/portal-tools-service-builder/src/main/java/com" +
-				"/liferay/portal/tools/service/builder/ServiceBuilder.java",
-			"portal-impl/src/com/liferay/portal/service/impl" +
-				"/UserLocalServiceImpl.java");
+			"modules/util/portal-tools-service-builder/" +
+				RandomTestUtil.randomString(),
+			"portal-impl/" + RandomTestUtil.randomString());
 		_testGetBuildType(null);
 		_testGetBuildType(
-			null,
-			"modules/apps/blogs/blogs-web/src/main/resources/META-INF" +
-				"/resources/view.jsp");
+			null, "modules/apps/" + RandomTestUtil.randomString());
 	}
 
 	private void _testGetBuildType(

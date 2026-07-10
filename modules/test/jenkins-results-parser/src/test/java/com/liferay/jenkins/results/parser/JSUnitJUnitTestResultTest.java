@@ -43,11 +43,11 @@ public class JSUnitJUnitTestResultTest
 			).put(
 				"className", className
 			).put(
-				"duration", 0.5
+				"duration", RandomTestUtil.randomDouble()
 			).put(
-				"name", "renders the component"
+				"name", RandomTestUtil.randomString()
 			).put(
-				"status", "PASSED"
+				"status", RandomTestUtil.randomString()
 			));
 
 		return jsUnitJUnitTestResult.getTestTaskName();

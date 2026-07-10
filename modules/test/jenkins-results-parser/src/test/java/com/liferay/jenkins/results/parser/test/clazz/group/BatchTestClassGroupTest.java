@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 
@@ -35,7 +36,7 @@ public class BatchTestClassGroupTest
 			batchTestClassGroup.addTestClass(
 				TestClassFactory.newTestClass(
 					batchTestClassGroup,
-					new File("test-class-" + i)));
+					new File(RandomTestUtil.randomString())));
 		}
 
 		batchTestClassGroup.setAxisTestClassGroups();
