@@ -180,6 +180,26 @@ describe('AssetCategories', () => {
 		).toBe('');
 	});
 
+	it('does not render the category selector before the asset scope is known', () => {
+		render(
+			<AssetCategories
+				cmsGroupId={456}
+				hasUpdatePermission={true}
+				objectEntry={
+					{
+						systemProperties: {
+							objectDefinitionBrief: {classNameId: 1},
+						},
+						taxonomyCategoryBriefs: [],
+					} as any
+				}
+				updateObjectEntry={jest.fn()}
+			/>
+		);
+
+		expect(screen.queryByTestId('item-selector')).not.toBeInTheDocument();
+	});
+
 	it('filters system vocabulary categories out of the generic dropdown', () => {
 		renderComponent({scopeId: 123, systemVocabularyIds: [10]});
 
@@ -188,6 +208,29 @@ describe('AssetCategories', () => {
 				.getByTestId('item-selector')
 				.getAttribute('data-filtered-vocabulary-ids')
 		).toBe('10');
+	});
+
+	it('fires the categorize event when the sparkle is clicked', () => {
+		const fire = jest.fn();
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({classNameId: 1, cmsGroupId: 456, scopeId: 123});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		);
+
+		expect(fire).toHaveBeenCalledWith(
+			'cms:aiAssistant:categorize',
+			expect.objectContaining({
+				agent: 'L_AUTO_CATEGORIZE',
+				classNameId: 1,
+				cmsGroupId: 456,
+				scopeId: 123,
+			})
+		);
 	});
 
 	it('hides categories from system vocabularies', () => {
@@ -214,26 +257,6 @@ describe('AssetCategories', () => {
 
 		expect(screen.getByText('vocabulary-b')).toBeInTheDocument();
 		expect(screen.getByText('category-3')).toBeInTheDocument();
-	});
-
-	it('does not render the category selector before the asset scope is known', () => {
-		render(
-			<AssetCategories
-				cmsGroupId={456}
-				hasUpdatePermission={true}
-				objectEntry={
-					{
-						systemProperties: {
-							objectDefinitionBrief: {classNameId: 1},
-						},
-						taxonomyCategoryBriefs: [],
-					} as any
-				}
-				updateObjectEntry={jest.fn()}
-			/>
-		);
-
-		expect(screen.queryByTestId('item-selector')).not.toBeInTheDocument();
 	});
 
 	it('renders categories grouped under their vocabulary names', () => {
@@ -326,28 +349,5 @@ describe('AssetCategories', () => {
 		).not.toBeInTheDocument();
 
 		expect(screen.getByText('categories')).toBeInTheDocument();
-	});
-
-	it('fires the categorize event when the sparkle is clicked', () => {
-		const fire = jest.fn();
-
-		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
-		(global as any).Liferay.fire = fire;
-
-		renderComponent({classNameId: 1, cmsGroupId: 456, scopeId: 123});
-
-		fireEvent.click(
-			screen.getByRole('button', {name: 'add-categories-with-ai'})
-		);
-
-		expect(fire).toHaveBeenCalledWith(
-			'cms:aiAssistant:categorize',
-			expect.objectContaining({
-				agent: 'L_AUTO_CATEGORIZE',
-				classNameId: 1,
-				cmsGroupId: 456,
-				scopeId: 123,
-			})
-		);
 	});
 });

@@ -31,6 +31,23 @@ describe('getCandidateCategories', () => {
 		} as never;
 	});
 
+	it('caps the candidate set at the requested max', async () => {
+		const items = Array.from({length: 5}, (_, index) => ({
+			id: index + 1,
+			name: `c${index}`,
+		}));
+
+		mockFetch.mockResolvedValue(page(items) as never);
+
+		const result = await getCandidateCategories({
+			cmsGroupId: 20124,
+			max: 2,
+			scopeId: 555,
+		});
+
+		expect(result).toHaveLength(2);
+	});
+
 	it('queries the asset-libraries endpoint and maps id, name, vocabulary', async () => {
 		mockFetch.mockResolvedValue(
 			page([
@@ -72,22 +89,5 @@ describe('getCandidateCategories', () => {
 		expect(calledURL).toContain('/sites/20124/taxonomy-categories');
 		expect(calledURL).toContain("assetLibraries in ('-1')");
 		expect(calledURL).toContain("assetTypes in ('0')");
-	});
-
-	it('caps the candidate set at the requested max', async () => {
-		const items = Array.from({length: 5}, (_, index) => ({
-			id: index + 1,
-			name: `c${index}`,
-		}));
-
-		mockFetch.mockResolvedValue(page(items) as never);
-
-		const result = await getCandidateCategories({
-			cmsGroupId: 20124,
-			max: 2,
-			scopeId: 555,
-		});
-
-		expect(result).toHaveLength(2);
 	});
 });

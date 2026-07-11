@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {act, render, screen, waitFor} from '@testing-library/react';
+import {act, render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -84,33 +84,6 @@ describe('ContentEditorSidePanel', () => {
 		(global as any).Liferay.on = () => {};
 		(global as any).Liferay.fire = () => {};
 		(global as any).Liferay.detach = () => {};
-	});
-
-	it('renders ContentEditorSidePanel', () => {
-		renderComponent();
-
-		['general', 'comments', 'schedule[noun]', 'categorization'].forEach(
-			(name) => expect(screen.getByTitle(name)).toBeInTheDocument()
-		);
-	});
-
-	it('closes the panel pressing the Close button', async () => {
-		renderComponent();
-
-		const panelButton = screen.getByLabelText('general');
-
-		await userEvent.click(panelButton);
-
-		await waitFor(() => {
-			expect(screen.getByText('general')).toBeInTheDocument();
-		});
-
-		await userEvent.click(screen.getByLabelText('close'));
-
-		await waitFor(() => {
-			expect(screen.queryByText('general')).not.toBeInTheDocument();
-			expect(panelButton).toHaveFocus();
-		});
 	});
 
 	it('calls the subscribe request', async () => {
@@ -193,88 +166,22 @@ describe('ContentEditorSidePanel', () => {
 		});
 	});
 
-	it('renders the hidden inputs with initial values', async () => {
-		renderComponent();
+	it('closes the panel pressing the Close button', async () => {
+		const {container} = renderComponent();
 
-		const expirationInput: HTMLInputElement | null = document.querySelector(
-			'[name="ObjectEntry_expirationDate"]'
-		);
-		const reviewInput: HTMLInputElement | null = document.querySelector(
-			'[name="ObjectEntry_reviewDate"]'
-		);
+		const panelButton = screen.getByLabelText('general');
 
-		expect(expirationInput?.value).toBe(EXPIRATION_DATE);
-		expect(reviewInput?.value).toBe(REVIEW_DATE);
-	});
-
-	it('persists the schedule field value when checking Never Expire and switching tabs', async () => {
-		renderComponent();
-
-		await userEvent.click(screen.getByLabelText('schedule[noun]'));
-
-		await waitFor(() => {
-			expect(screen.getByText('schedule[noun]')).toBeInTheDocument();
-		});
-
-		const expireCheckbox = screen.getAllByLabelText('never-expire')[0];
-
-		expect(expireCheckbox).not.toBeChecked();
-
-		await userEvent.click(expireCheckbox);
-
-		await waitFor(() => {
-			expect(expireCheckbox).toBeChecked();
-		});
-
-		await userEvent.click(screen.getByLabelText('general'));
+		await userEvent.click(panelButton);
 
 		await waitFor(() => {
 			expect(screen.getByText('general')).toBeInTheDocument();
 		});
 
-		await userEvent.click(screen.getByLabelText('schedule[noun]'));
+		await userEvent.click(within(container).getByLabelText('close'));
 
 		await waitFor(() => {
-			expect(screen.getByText('schedule[noun]')).toBeInTheDocument();
-			expect(expireCheckbox).toBeChecked();
-			expect(
-				screen.getByRole('textbox', {name: 'expiration-date'})
-			).toHaveValue('08/14/2025 12:01 AM');
-		});
-	});
-
-	it('fires the categorize event without opening the categorization panel when requested', async () => {
-		const handlers: Record<string, (payload: any) => void> = {};
-
-		(global as any).Liferay.on = jest.fn(
-			(name: string, callback: (payload: any) => void) => {
-				handlers[name] = callback;
-			}
-		);
-		(global as any).Liferay.fire = jest.fn();
-
-		renderComponent();
-
-		await act(async () => {
-			handlers['cms:aiAssistant:requestCategorize']({
-				actions: [{agent: 'categorize'}],
-			});
-		});
-
-		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
-
-		await waitFor(() => {
-			expect(global.Liferay.fire as jest.Mock).toHaveBeenCalledWith(
-				'cms:aiAssistant:categorize',
-				expect.objectContaining({
-					agent: 'L_AUTO_CATEGORIZE',
-					classNameId: 30982,
-					cmsGroupId: '21000',
-					content: 'Japan',
-					scopeId: 555,
-					suppressUserMessage: true,
-				})
-			);
+			expect(screen.queryByText('general')).not.toBeInTheDocument();
+			expect(panelButton).toHaveFocus();
 		});
 	});
 
@@ -326,6 +233,60 @@ describe('ContentEditorSidePanel', () => {
 		);
 	});
 
+	it('fires the categorize event without opening the categorization panel when requested', async () => {
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn();
+
+		renderComponent();
+
+		await act(async () => {
+			handlers['cms:aiAssistant:requestCategorize']({
+				actions: [{agent: 'categorize'}],
+			});
+		});
+
+		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
+
+		await waitFor(() => {
+			expect(global.Liferay.fire as jest.Mock).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({
+					agent: 'L_AUTO_CATEGORIZE',
+					classNameId: 30982,
+					cmsGroupId: '21000',
+					content: 'Japan',
+					scopeId: 555,
+					suppressUserMessage: true,
+				})
+			);
+		});
+	});
+
+	it('opens the categorization panel when requested directly', async () => {
+		const handlers: Record<string, (payload: any) => void> = {};
+
+		(global as any).Liferay.on = jest.fn(
+			(name: string, callback: (payload: any) => void) => {
+				handlers[name] = callback;
+			}
+		);
+		(global as any).Liferay.fire = jest.fn();
+
+		renderComponent();
+
+		await act(async () => {
+			handlers['cms:aiAssistant:openCategorizationPanel']({});
+		});
+
+		expect(screen.getByText('categorization')).toBeInTheDocument();
+	});
+
 	it('persists a tag commit while the categorization panel is closed', async () => {
 		const handlers: Record<string, (payload: any) => void> = {};
 
@@ -369,22 +330,61 @@ describe('ContentEditorSidePanel', () => {
 		});
 	});
 
-	it('opens the categorization panel when requested directly', async () => {
-		const handlers: Record<string, (payload: any) => void> = {};
-
-		(global as any).Liferay.on = jest.fn(
-			(name: string, callback: (payload: any) => void) => {
-				handlers[name] = callback;
-			}
-		);
-		(global as any).Liferay.fire = jest.fn();
-
+	it('persists the schedule field value when checking Never Expire and switching tabs', async () => {
 		renderComponent();
 
-		await act(async () => {
-			handlers['cms:aiAssistant:openCategorizationPanel']({});
+		await userEvent.click(screen.getByLabelText('schedule[noun]'));
+
+		await waitFor(() => {
+			expect(screen.getByText('schedule[noun]')).toBeInTheDocument();
 		});
 
-		expect(screen.getByText('categorization')).toBeInTheDocument();
+		const expireCheckbox = screen.getAllByLabelText('never-expire')[0];
+
+		expect(expireCheckbox).not.toBeChecked();
+
+		await userEvent.click(expireCheckbox);
+
+		await waitFor(() => {
+			expect(expireCheckbox).toBeChecked();
+		});
+
+		await userEvent.click(screen.getByLabelText('general'));
+
+		await waitFor(() => {
+			expect(screen.getByText('general')).toBeInTheDocument();
+		});
+
+		await userEvent.click(screen.getByLabelText('schedule[noun]'));
+
+		await waitFor(() => {
+			expect(screen.getByText('schedule[noun]')).toBeInTheDocument();
+			expect(expireCheckbox).toBeChecked();
+			expect(
+				screen.getByRole('textbox', {name: 'expiration-date'})
+			).toHaveValue('08/14/2025 12:01 AM');
+		});
+	});
+
+	it('renders ContentEditorSidePanel', () => {
+		renderComponent();
+
+		['general', 'comments', 'schedule[noun]', 'categorization'].forEach(
+			(name) => expect(screen.getByTitle(name)).toBeInTheDocument()
+		);
+	});
+
+	it('renders the hidden inputs with initial values', async () => {
+		renderComponent();
+
+		const expirationInput: HTMLInputElement | null = document.querySelector(
+			'[name="ObjectEntry_expirationDate"]'
+		);
+		const reviewInput: HTMLInputElement | null = document.querySelector(
+			'[name="ObjectEntry_reviewDate"]'
+		);
+
+		expect(expirationInput?.value).toBe(EXPIRATION_DATE);
+		expect(reviewInput?.value).toBe(REVIEW_DATE);
 	});
 });
