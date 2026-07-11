@@ -13,6 +13,7 @@ import com.liferay.ai.hub.internal.langchain4j.observability.api.listener.InputG
 import com.liferay.ai.hub.internal.langchain4j.observability.api.listener.OutputGuardrailExecutedListenerImpl;
 import com.liferay.ai.hub.internal.mcp.tool.provider.MCPToolProviderUtil;
 import com.liferay.ai.hub.internal.model.GoogleGenAiUtil;
+import com.liferay.ai.hub.internal.tool.WorkflowNodeTools;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.GuardrailsUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoNodeSettingUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.MessageUtil;
@@ -77,64 +78,6 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 	@Override
 	public NodeType getNodeType() {
 		return NodeType.AI_DECISION;
-	}
-
-	public class Tools {
-
-		public Tools() {
-			_completeWorkflowNodeCallable =
-				new CompanyInheritableThreadLocalCallable<>(
-					() -> {
-						ExecutionContext executionContext =
-							_invocationParameters.get("executionContext");
-
-						KaleoInstanceToken kaleoInstanceToken =
-							executionContext.getKaleoInstanceToken();
-
-						Map<String, Serializable> workflowContext =
-							executionContext.getWorkflowContext();
-
-						workflowContext.put("reason", _reason);
-
-						_workflowNodeManager.completeWorkflowNode(
-							kaleoInstanceToken.getCompanyId(),
-							kaleoInstanceToken.getUserId(),
-							kaleoInstanceToken.getKaleoInstanceTokenId(),
-							_transitionName, workflowContext, false);
-
-						return null;
-					});
-		}
-
-		@Tool(
-			"Complete the workflow node by proceeding to the chosen transition"
-		)
-		public void completeWorkflowNode(
-				InvocationParameters invocationParameters,
-				@P(
-					"A brief, one-sentence justification for the chosen transition."
-				)
-				String reason,
-				@P("Transition name") String transitionName)
-			throws PortalException {
-
-			_invocationParameters = invocationParameters;
-			_reason = reason;
-			_transitionName = transitionName;
-
-			try {
-				_completeWorkflowNodeCallable.call();
-			}
-			catch (Exception exception) {
-				ReflectionUtil.throwException(exception);
-			}
-		}
-
-		private final Callable<Void> _completeWorkflowNodeCallable;
-		private InvocationParameters _invocationParameters;
-		private String _reason;
-		private String _transitionName;
-
 	}
 
 	@Activate
@@ -241,7 +184,7 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 			).systemMessageProviderFunction(
 				memoryId -> prompt
 			).tools(
-				new Tools()
+				new WorkflowNodeTools(_workflowNodeManager)
 			).toolProvider(
 				MCPToolProviderUtil.create(
 					kaleoInstanceToken.getCompanyId(), _dtoConverterRegistry,
