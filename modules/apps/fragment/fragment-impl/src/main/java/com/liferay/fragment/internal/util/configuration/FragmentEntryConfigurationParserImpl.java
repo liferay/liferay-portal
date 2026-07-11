@@ -833,26 +833,30 @@ public class FragmentEntryConfigurationParserImpl
 	}
 
 	private Object _getURLValue(String value) {
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		if ((serviceContext == null) || Validator.isNull(value) ||
-			(serviceContext.getThemeDisplay() == null)) {
-
-			return StringPool.POUND;
+		if (Validator.isNull(value)) {
+			return null;
 		}
 
 		JSONObject jsonObject = (JSONObject)_getFieldValue(
 			FragmentConfigurationFieldDataType.OBJECT, value);
 
 		if (jsonObject == null) {
-			return StringPool.POUND;
+			return null;
 		}
 
 		JSONObject layoutJSONObject = jsonObject.getJSONObject("layout");
 
 		if (layoutJSONObject == null) {
 			return jsonObject.getString("href");
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if ((serviceContext == null) ||
+			(serviceContext.getThemeDisplay() == null)) {
+
+			return StringPool.POUND;
 		}
 
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
