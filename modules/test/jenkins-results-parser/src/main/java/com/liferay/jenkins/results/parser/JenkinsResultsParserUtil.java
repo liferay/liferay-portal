@@ -2303,6 +2303,21 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
+	public static long getJenkinsBuildQueueId(String location) {
+		if (isNullOrEmpty(location)) {
+			return 0L;
+		}
+
+		Matcher jenkinsBuildQueueURLMatcher =
+			_jenkinsBuildQueueURLPattern.matcher(location);
+
+		if (!jenkinsBuildQueueURLMatcher.find()) {
+			return 0L;
+		}
+
+		return Long.parseLong(jenkinsBuildQueueURLMatcher.group("queueId"));
+	}
+
 	public static String getJenkinsBuildResult(String buildURL) {
 		try {
 			JSONObject jsonObject = toJSONObject(
@@ -3714,20 +3729,8 @@ public class JenkinsResultsParserUtil {
 				return 0;
 			}
 
-			String location = httpURLConnection.getHeaderField("Location");
-
-			if (isNullOrEmpty(location)) {
-				return 0L;
-			}
-
-			Matcher jenkinsBuildQueueURLMatcher =
-				_jenkinsBuildQueueURLPattern.matcher(location);
-
-			if (!jenkinsBuildQueueURLMatcher.find()) {
-				return 0L;
-			}
-
-			return Long.parseLong(jenkinsBuildQueueURLMatcher.group("queueId"));
+			return getJenkinsBuildQueueId(
+				httpURLConnection.getHeaderField("Location"));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
