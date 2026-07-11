@@ -117,6 +117,7 @@ public class AccountEntryValidatorResultManagerTest {
 				getValidAccountEntryValidatorResult(
 					_accountEntry, 30, className,
 					RandomTestUtil.randomString()));
+
 		AccountEntryValidatorResult accountEntryValidatorResult =
 			_accountEntryValidatorResultManager.
 				getValidAccountEntryValidatorResult(
