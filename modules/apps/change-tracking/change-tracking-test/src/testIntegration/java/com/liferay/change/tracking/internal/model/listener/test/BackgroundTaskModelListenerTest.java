@@ -73,6 +73,46 @@ public class BackgroundTaskModelListenerTest {
 		ctCollection = _ctCollectionLocalService.updateCTCollection(
 			ctCollection);
 
+		_failBackgroundTask(ctCollection.getCtCollectionId());
+
+		ctCollection = _ctCollectionLocalService.fetchCTCollection(
+			ctCollection.getCtCollectionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_INCOMPLETE, ctCollection.getStatus());
+	}
+
+	@Test
+	public void testOnAfterUpdateWhenCTCollectionIsApproved() throws Exception {
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, ReleaseModelListenerTest.class.getSimpleName(), null);
+
+		ctCollection.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		ctCollection = _ctCollectionLocalService.updateCTCollection(
+			ctCollection);
+
+		BackgroundTask backgroundTask = _failBackgroundTask(
+			ctCollection.getCtCollectionId());
+
+		ctCollection = _ctCollectionLocalService.fetchCTCollection(
+			ctCollection.getCtCollectionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, ctCollection.getStatus());
+
+		backgroundTask = _backgroundTaskLocalService.getBackgroundTask(
+			backgroundTask.getBackgroundTaskId());
+
+		Assert.assertEquals(
+			BackgroundTaskConstants.STATUS_SUCCESSFUL,
+			backgroundTask.getStatus());
+	}
+
+	private BackgroundTask _failBackgroundTask(long ctCollectionId)
+		throws Exception {
+
 		BackgroundTaskExecutor backgroundTaskExecutor =
 			(BackgroundTaskExecutor)ProxyUtil.newProxyInstance(
 				BackgroundTaskExecutor.class.getClassLoader(),
@@ -104,7 +144,7 @@ public class BackgroundTaskModelListenerTest {
 			BackgroundTask backgroundTask =
 				_backgroundTaskLocalService.addBackgroundTask(
 					TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
-					String.valueOf(ctCollection.getCtCollectionId()), null,
+					String.valueOf(ctCollectionId), null,
 					backgroundTaskExecutor.getClass(), null, null);
 
 			backgroundTask = _backgroundTaskLocalService.getBackgroundTask(
@@ -115,14 +155,9 @@ public class BackgroundTaskModelListenerTest {
 					"CTPublishBackgroundTaskExecutor");
 			backgroundTask.setStatus(BackgroundTaskConstants.STATUS_FAILED);
 
-			_backgroundTaskLocalService.updateBackgroundTask(backgroundTask);
+			return _backgroundTaskLocalService.updateBackgroundTask(
+				backgroundTask);
 		}
-
-		ctCollection = _ctCollectionLocalService.fetchCTCollection(
-			ctCollection.getCtCollectionId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_INCOMPLETE, ctCollection.getStatus());
 	}
 
 	@Inject
