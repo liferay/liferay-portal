@@ -392,39 +392,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		File workingDirectory = getWorkingDirectory();
 
 		try {
-			Map<String, String> filteredEnv = new HashMap<>();
-
-			Map<String, String> env = Environment.getAll();
-
-			for (Map.Entry<String, String> entry : env.entrySet()) {
-				String key = entry.getKey();
-
-				if (!key.startsWith("ANT_") && !key.startsWith("JAVA_") &&
-					!key.startsWith("JENKINS_HOME")) {
-
-					continue;
-				}
-
-				filteredEnv.put(key, entry.getValue());
-			}
-
-			String antOptsDefault = JenkinsResultsParserUtil.getBuildProperty(
-				"ant.opts.default", getUpstreamBranchName());
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(antOptsDefault)) {
-				filteredEnv.put("ANT_OPTS", antOptsDefault);
-				filteredEnv.put("JAVA_OPTS", antOptsDefault);
-			}
-
-			String javaJDKDefaultRuntime =
-				JenkinsResultsParserUtil.getBuildProperty(
-					"java.jdk.default.runtime", getUpstreamBranchName());
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
-					javaJDKDefaultRuntime)) {
-
-				filteredEnv.put("JAVA_HOME", javaJDKDefaultRuntime);
-			}
+			Map<String, String> filteredEnv = getFilteredEnvironment();
 
 			Properties properties = new Properties();
 
@@ -570,6 +538,42 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		throws IOException {
 
 		super(upstreamBranchName, workingDirectoryPath, gitRepositoryName);
+	}
+
+	protected Map<String, String> getFilteredEnvironment() throws IOException {
+		Map<String, String> filteredEnv = new HashMap<>();
+
+		Map<String, String> env = Environment.getAll();
+
+		for (Map.Entry<String, String> entry : env.entrySet()) {
+			String key = entry.getKey();
+
+			if (!key.startsWith("ANT_") && !key.startsWith("JAVA_") &&
+				!key.startsWith("JENKINS_HOME")) {
+
+				continue;
+			}
+
+			filteredEnv.put(key, entry.getValue());
+		}
+
+		String antOptsDefault = JenkinsResultsParserUtil.getBuildProperty(
+			"ant.opts.default", getUpstreamBranchName());
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(antOptsDefault)) {
+			filteredEnv.put("ANT_OPTS", antOptsDefault);
+			filteredEnv.put("JAVA_OPTS", antOptsDefault);
+		}
+
+		String javaJDKDefaultRuntime =
+			JenkinsResultsParserUtil.getBuildProperty(
+				"java.jdk.default.runtime", getUpstreamBranchName());
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(javaJDKDefaultRuntime)) {
+			filteredEnv.put("JAVA_HOME", javaJDKDefaultRuntime);
+		}
+
+		return filteredEnv;
 	}
 
 	private boolean _isNPMTestModuleDir(File moduleDir) {
