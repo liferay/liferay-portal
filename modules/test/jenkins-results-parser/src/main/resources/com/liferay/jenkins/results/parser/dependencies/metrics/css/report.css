@@ -67,6 +67,11 @@ th.col-1, th.col-2 {
 	content: "\2796";
 }
 
+.chart-container {
+	height: 600px;
+	position: relative;
+}
+
 .date p {
 	font-size: 12px;
 	font-style: italic;

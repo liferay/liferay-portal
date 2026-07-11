@@ -1,3 +1,7 @@
+.chart-container {
+	height: 800px;
+}
+
 .col-1 {
 	left: 1px;
 	max-width: 198px;

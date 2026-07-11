@@ -162,10 +162,10 @@ function createBarChartFromTable(chartTitle, dataSuffix, elementID, metricName, 
 		datasets.push(dataset);
 	});
 
-	let yAxesMax = 100;
+	let yMax = 100;
 
 	if (testSuiteReport) {
-		yAxesMax = getDynamicMax(datasets);
+		yMax = getDynamicMax(datasets);
 	}
 
 	let barChart = new Chart(document.getElementById(elementID), {
@@ -175,54 +175,58 @@ function createBarChartFromTable(chartTitle, dataSuffix, elementID, metricName, 
 		},
 		options: {
 			maintainAspectRatio: false,
+			plugins: {
+				title: {
+					display: true,
+					font: {
+						size: 14
+					},
+					text: chartTitle
+				},
+				tooltip: {
+					callbacks: {
+						label: function(context) {
+					        let label = context.dataset.label;
+					        let dataDenomination = context.dataset.data[context.dataIndex];
+					        let totaldataDenomination = 0;
+
+					        for (let i = 0; i < context.chart.data.datasets.length; i++) {
+					            totaldataDenomination += parseFloat(context.chart.data.datasets[i].data[context.dataIndex]);
+					        }
+
+					        if (context.datasetIndex != 0) {
+					            return label + ' : ' + dataDenomination + dataSuffix;
+					        }
+					        else {
+					            return [label + ' : ' + dataDenomination + dataSuffix, "Total : " + totaldataDenomination.toFixed(2) + dataSuffix];
+					        }
+						}
+					},
+					itemSort: function(a, b) {
+						return b.datasetIndex - a.datasetIndex;
+					},
+					mode: 'index'
+				}
+			},
 			responsive: true,
 			scales: {
-				xAxes: [{
-					stacked: true,
-				}],
-				yAxes: [{
-					scaleLabel: {
-						display: true,
-						labelString: dataSuffix
-					},
+				x: {
+					stacked: true
+				},
+				y: {
+					beginAtZero: true,
+					max: yMax,
 					stacked: true,
 					ticks: {
-						beginAtZero: true,
 						callback: function(value) {
 							return value + dataSuffix;
-						},
-						max: yAxesMax
+						}
+					},
+					title: {
+						display: true,
+						text: dataSuffix
 					}
-				}]
-			},
-			title: {
-				display: true,
-				fontSize: 14,
-				text: chartTitle
-			},
-			tooltips: {
-				callbacks: {
-					label: function(tooltipItem, data) {
-				        let label = data.datasets[tooltipItem.datasetIndex].label;
-				        let dataDenomination = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-				        let totaldataDenomination = 0;
-
-				        for (let i = 0; i < data.datasets.length; i++) {
-				            totaldataDenomination += parseFloat(data.datasets[i].data[tooltipItem.index]);
-				        }
-
-				        if (tooltipItem.datasetIndex != 0) {
-				            return label + ' : ' + dataDenomination + dataSuffix;
-				        }
-				        else {
-				            return [label + ' : ' + dataDenomination + dataSuffix, "Total : " + totaldataDenomination.toFixed(2) + dataSuffix];
-				        }
-					}
-				},
-				itemSort: function(a, b) {
-					return b.datasetIndex - a.datasetIndex;
-				},
-				mode: 'index'
+				}
 			}
 		},
 		type: 'bar'
