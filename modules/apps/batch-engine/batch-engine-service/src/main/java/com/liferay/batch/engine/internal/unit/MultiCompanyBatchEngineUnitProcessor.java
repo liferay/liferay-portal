@@ -13,12 +13,11 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
@@ -72,13 +71,11 @@ public class MultiCompanyBatchEngineUnitProcessor {
 		Bundle bundle, Company company) {
 
 		Set<Long> companyIds = _bundleProcessedCompanies.computeIfAbsent(
-			bundle, key -> new HashSet<>());
+			bundle, key -> ConcurrentHashMap.newKeySet());
 
-		if (companyIds.contains(company.getCompanyId())) {
+		if (!companyIds.add(company.getCompanyId())) {
 			return CompletableFuture.completedFuture(null);
 		}
-
-		companyIds.add(company.getCompanyId());
 
 		return _batchEngineUnitProcessor.processBatchEngineUnits(
 			TransformUtil.transform(
@@ -91,9 +88,9 @@ public class MultiCompanyBatchEngineUnitProcessor {
 	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
 
 	private final Map<Bundle, List<BatchEngineUnit>> _bundleBatchEngineUnits =
-		new HashMap<>();
+		new ConcurrentHashMap<>();
 	private final Map<Bundle, Set<Long>> _bundleProcessedCompanies =
-		new HashMap<>();
+		new ConcurrentHashMap<>();
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
