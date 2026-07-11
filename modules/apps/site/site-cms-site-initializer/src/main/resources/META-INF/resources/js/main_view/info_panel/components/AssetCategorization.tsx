@@ -8,12 +8,12 @@ import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {ComponentProps, useCallback, useEffect, useState} from 'react';
 
+import CategorizationSuggestionService from '../../../common/services/CategorizationSuggestionService';
 import CategoryService from '../../../common/services/CategoryService';
 import {
 	IAssetObjectEntry,
 	ITaxonomyCategoryBrief,
 } from '../../../common/types/AssetType';
-import CategorizationCommitService from '../services/CategorizationCommitService';
 import ObjectEntryService from '../services/ObjectEntryService';
 import AssetCategorizationSections from './AssetCategorizationSections';
 import {
@@ -161,7 +161,7 @@ export default function AssetCategorization({
 			);
 
 			const briefs =
-				await CategorizationCommitService.resolveNewCategoryBriefs(
+				await CategorizationSuggestionService.resolveNewCategoryBriefs(
 					suggestions,
 					currentIds
 				);
@@ -202,7 +202,7 @@ export default function AssetCategorization({
 				assetLibraryId ||
 				cmsGroupId;
 
-			const names = await CategorizationCommitService.createTagNames(
+			const names = await CategorizationSuggestionService.createTagNames(
 				suggestions,
 				{assetLibraryId: scopeId, cmsGroupId}
 			);

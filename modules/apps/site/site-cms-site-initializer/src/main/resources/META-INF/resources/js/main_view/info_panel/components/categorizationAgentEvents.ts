@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {CategorizationCommitSuggestion} from '../../../common/services/CategorizationSuggestionService';
+
 export const AUTO_CATEGORIZE_AGENT = 'L_AUTO_CATEGORIZE';
 
 export const CATEGORIZE_EVENT = 'cms:aiAssistant:categorize';
@@ -28,11 +30,7 @@ export interface CategorizationCommitPayload {
 	suggestions: CategorizationCommitSuggestion[];
 }
 
-export interface CategorizationCommitSuggestion {
-	id?: number;
-	isNew?: boolean;
-	name: string;
-}
+export type {CategorizationCommitSuggestion};
 
 export interface CategorizeEventPayload {
 	agent: typeof AUTO_CATEGORIZE_AGENT | typeof GENERATE_TAGS_AGENT;

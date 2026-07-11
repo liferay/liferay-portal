@@ -8,8 +8,8 @@ import {act, render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import CategorizationSuggestionService from '../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService';
 import ContentEditorSidePanel from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ContentEditorSidePanel';
-import CategorizationCommitService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/CategorizationCommitService';
 import ObjectEntryService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 
@@ -28,7 +28,7 @@ jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService'
 );
 jest.mock(
-	'../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/CategorizationCommitService'
+	'../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService'
 );
 
 const renderComponent = ({isSubscribed = false} = {}) => {
@@ -298,7 +298,7 @@ describe('ContentEditorSidePanel', () => {
 		(global as any).Liferay.fire = jest.fn();
 
 		(
-			CategorizationCommitService.createTagNames as jest.Mock
+			CategorizationSuggestionService.createTagNames as jest.Mock
 		).mockResolvedValue(['Culture']);
 
 		await act(async () => {
@@ -317,7 +317,7 @@ describe('ContentEditorSidePanel', () => {
 
 		await waitFor(() => {
 			expect(
-				CategorizationCommitService.createTagNames
+				CategorizationSuggestionService.createTagNames
 			).toHaveBeenCalledWith([{isNew: true, name: 'Culture'}], {
 				assetLibraryId: 555,
 				cmsGroupId: '21000',

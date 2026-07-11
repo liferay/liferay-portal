@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import CategoryService from '../../../common/services/CategoryService';
-import TagService from '../../../common/services/TagService';
-import {ITaxonomyCategoryBrief} from '../../../common/types/AssetType';
-import {CategorizationCommitSuggestion} from '../components/categorizationAgentEvents';
+import {ITaxonomyCategoryBrief} from '../types/AssetType';
+import CategoryService from './CategoryService';
+import TagService from './TagService';
+
+export interface CategorizationCommitSuggestion {
+	id?: number;
+	isNew?: boolean;
+	name: string;
+}
 
 async function createTagNames(
 	suggestions: CategorizationCommitSuggestion[],

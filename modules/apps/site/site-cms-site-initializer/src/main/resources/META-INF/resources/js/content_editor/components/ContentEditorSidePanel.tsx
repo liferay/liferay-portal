@@ -15,6 +15,7 @@ import {openToast} from 'frontend-js-components-web';
 import {fetch, objectToFormData, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import CategorizationSuggestionService from '../../common/services/CategorizationSuggestionService';
 import VocabularyService from '../../common/services/VocabularyService';
 import {IAssetObjectEntry} from '../../common/types/AssetType';
 import focusInvalidElement from '../../common/utils/focusInvalidElement';
@@ -30,7 +31,6 @@ import {
 	REQUEST_CATEGORIZE_EVENT,
 	RequestCategorizePayload,
 } from '../../main_view/info_panel/components/categorizationAgentEvents';
-import CategorizationCommitService from '../../main_view/info_panel/services/CategorizationCommitService';
 import ObjectEntryService from '../../main_view/info_panel/services/ObjectEntryService';
 import {Comment} from '../services/CommentService';
 import {EVENT_VALIDATE_FORM} from './ContentEditorToolbar';
@@ -432,7 +432,7 @@ function SidePanel(props: SidePanelProps) {
 				const currentBriefs = fields.assetCategoryIds.value;
 
 				const briefs =
-					await CategorizationCommitService.resolveNewCategoryBriefs(
+					await CategorizationSuggestionService.resolveNewCategoryBriefs(
 						suggestions,
 						currentBriefs.map(
 							({taxonomyCategoryId}) => taxonomyCategoryId
@@ -466,7 +466,7 @@ function SidePanel(props: SidePanelProps) {
 				});
 			}
 			else if (agent === GENERATE_TAGS_AGENT) {
-				const names = await CategorizationCommitService.createTagNames(
+				const names = await CategorizationSuggestionService.createTagNames(
 					suggestions,
 					{
 						assetLibraryId: scopeId || assetLibraryId || cmsGroupId,
