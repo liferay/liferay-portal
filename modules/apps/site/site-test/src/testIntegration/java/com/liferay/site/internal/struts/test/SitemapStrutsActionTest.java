@@ -187,6 +187,8 @@ public class SitemapStrutsActionTest {
 						TestPropsValues.getCompanyId(),
 						_PID_SITEMAP_COMPANY_CONFIGURATION,
 						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
 							"xmlSitemapIndexEnabled", true
 						).put(
 							"xmlSitemapIndexMode",
@@ -225,6 +227,8 @@ public class SitemapStrutsActionTest {
 						TestPropsValues.getCompanyId(),
 						_PID_SITEMAP_COMPANY_CONFIGURATION,
 						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
 							"xmlSitemapIndexEnabled", true
 						).put(
 							"xmlSitemapIndexMode",
