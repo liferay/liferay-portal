@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.mime.MimeTypesReaderMetKeys;
 
 import org.osgi.service.component.annotations.Activate;
@@ -89,7 +90,8 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 
 		if (Validator.isNotNull(fileName)) {
 			metadata.set(
-				Metadata.RESOURCE_NAME_KEY, HtmlUtil.escapeURL(fileName));
+				TikaCoreProperties.RESOURCE_NAME_KEY,
+				HtmlUtil.escapeURL(fileName));
 		}
 
 		if ((inputStream != null) && !inputStream.markSupported()) {
