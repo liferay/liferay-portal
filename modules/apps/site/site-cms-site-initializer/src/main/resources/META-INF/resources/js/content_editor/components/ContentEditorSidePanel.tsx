@@ -466,13 +466,15 @@ function SidePanel(props: SidePanelProps) {
 				});
 			}
 			else if (agent === GENERATE_TAGS_AGENT) {
-				const names = await CategorizationSuggestionService.createTagNames(
-					suggestions,
-					{
-						assetLibraryId: scopeId || assetLibraryId || cmsGroupId,
-						cmsGroupId,
-					}
-				);
+				const names =
+					await CategorizationSuggestionService.createTagNames(
+						suggestions,
+						{
+							assetLibraryId:
+								scopeId || assetLibraryId || cmsGroupId,
+							cmsGroupId,
+						}
+					);
 
 				const currentNames = fields.assetTagNames.value;
 
