@@ -11,6 +11,7 @@ import com.liferay.change.tracking.model.CTProcess;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.portal.background.task.model.BackgroundTask;
+import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -56,6 +57,19 @@ public class BackgroundTaskModelListener
 						Long.valueOf(backgroundTask.getName()));
 
 				if (ctCollection != null) {
+					if (ctCollection.getStatus() ==
+							WorkflowConstants.STATUS_APPROVED) {
+
+						backgroundTask.setStatus(
+							BackgroundTaskConstants.STATUS_SUCCESSFUL);
+
+						backgroundTask =
+							_backgroundTaskLocalService.updateBackgroundTask(
+								backgroundTask);
+
+						return;
+					}
+
 					int status = WorkflowConstants.STATUS_DRAFT;
 
 					if (!_ctSchemaVersionLocalService.isLatestCTSchemaVersion(
@@ -104,6 +118,9 @@ public class BackgroundTaskModelListener
 			throw new ModelListenerException(searchException);
 		}
 	}
+
+	@Reference
+	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;
