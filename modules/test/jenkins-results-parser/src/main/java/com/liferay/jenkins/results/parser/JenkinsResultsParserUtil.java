@@ -3700,37 +3700,10 @@ public class JenkinsResultsParserUtil {
 			sb.append("token=");
 			sb.append(getBuildProperty("jenkins.authentication.token"));
 
-			URL urlObject = new URL(fixURL(sb.toString()));
-
-			HttpURLConnection httpURLConnection =
-				(HttpURLConnection)urlObject.openConnection();
-
-			if (timeout != 0) {
-				httpURLConnection.setConnectTimeout(timeout);
-				httpURLConnection.setReadTimeout(timeout);
-			}
-
-			HTTPAuthorization httpAuthorization = getJenkinsHTTPAuthorization();
-
-			httpURLConnection.setRequestProperty(
-				"Authorization", httpAuthorization.toString());
-
-			httpURLConnection.connect();
-
-			int responseCode = httpURLConnection.getResponseCode();
-
-			System.out.println(
-				combine(
-					"Response from ", urlObject.toString(), ": ",
-					String.valueOf(responseCode), " ",
-					httpURLConnection.getResponseMessage()));
-
-			if (responseCode >= 400) {
-				return 0;
-			}
-
 			return getJenkinsBuildQueueId(
-				httpURLConnection.getHeaderField("Location"));
+				UrlReader.getResponseHeader(
+					"Location", getJenkinsHTTPAuthorization(),
+					HttpRequestMethod.GET, null, timeout, sb.toString()));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(

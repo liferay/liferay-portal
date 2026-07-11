@@ -40,6 +40,17 @@ import javax.net.ssl.SSLContext;
  */
 public class UrlReader {
 
+	public static String getResponseHeader(
+			String headerName, HTTPAuthorization httpAuthorization,
+			HttpRequestMethod httpRequestMethod, String postContent,
+			int timeout, String url)
+		throws IOException {
+
+		return _urlReader.doGetResponseHeader(
+			headerName, httpAuthorization, httpRequestMethod, postContent,
+			timeout, url);
+	}
+
 	public static InputStream read(
 			boolean checkCache, HTTPAuthorization httpAuthorization,
 			HttpRequestMethod httpRequestMethod, int maxRetries,
@@ -53,6 +64,59 @@ public class UrlReader {
 
 	public static void setInstance(UrlReader urlReader) {
 		_urlReader = urlReader;
+	}
+
+	protected String doGetResponseHeader(
+			String headerName, HTTPAuthorization httpAuthorization,
+			HttpRequestMethod httpRequestMethod, String postContent,
+			int timeout, String url)
+		throws IOException {
+
+		URL urlObject = new URL(JenkinsResultsParserUtil.fixURL(url));
+
+		HttpURLConnection httpURLConnection =
+			(HttpURLConnection)urlObject.openConnection();
+
+		if (httpRequestMethod != null) {
+			httpURLConnection.setRequestMethod(httpRequestMethod.name());
+		}
+
+		if (httpAuthorization != null) {
+			httpURLConnection.setRequestProperty(
+				"Authorization", httpAuthorization.toString());
+		}
+
+		if (timeout != 0) {
+			httpURLConnection.setConnectTimeout(timeout);
+			httpURLConnection.setReadTimeout(timeout);
+		}
+
+		if (postContent != null) {
+			httpURLConnection.setDoOutput(true);
+
+			try (OutputStream outputStream =
+					httpURLConnection.getOutputStream()) {
+
+				outputStream.write(postContent.getBytes("UTF-8"));
+
+				outputStream.flush();
+			}
+		}
+
+		httpURLConnection.connect();
+
+		int responseCode = httpURLConnection.getResponseCode();
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Response from ", url, ": ", String.valueOf(responseCode), " ",
+				httpURLConnection.getResponseMessage()));
+
+		if (responseCode >= 400) {
+			return null;
+		}
+
+		return httpURLConnection.getHeaderField(headerName);
 	}
 
 	protected InputStream doRead(

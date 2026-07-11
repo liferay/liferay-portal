@@ -378,6 +378,53 @@ public class JenkinsResultsParserUtilTest
 				"https://releases.liferay.com/portal/"));
 	}
 
+	@Test
+	public void testInvokeJenkinsBuild() throws Exception {
+		Environment environment = mockEnvironment();
+
+		Mockito.when(
+			environment.doGet("MASTER_NETWORK_NAME")
+		).thenReturn(
+			"aws-network"
+		);
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"jenkins.admin.user.name", RandomTestUtil.randomString());
+		buildProperties.setProperty(
+			"jenkins.admin.user.token", RandomTestUtil.randomString());
+		buildProperties.setProperty(
+			"jenkins.authentication.token", RandomTestUtil.randomString());
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		UrlReader urlReader = mockUrlReader();
+
+		Mockito.doReturn(
+			"https://test-1-1.liferay.com/queue/item/12345"
+		).when(
+			urlReader
+		).doGetResponseHeader(
+			Mockito.eq("Location"), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyInt(), Mockito.anyString()
+		);
+
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+
+		Mockito.when(
+			jenkinsMaster.getRemoteURL()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		testEquals(
+			"12345",
+			String.valueOf(
+				JenkinsResultsParserUtil.invokeJenkinsBuild(
+					jenkinsMaster, "test-job", new HashMap<>())));
+	}
+
 	@Test(timeout = 30000)
 	public void testInvokeJenkinsBuildReadTimeout() throws Exception {
 		try (ServerSocket serverSocket = _createServerSocket()) {
