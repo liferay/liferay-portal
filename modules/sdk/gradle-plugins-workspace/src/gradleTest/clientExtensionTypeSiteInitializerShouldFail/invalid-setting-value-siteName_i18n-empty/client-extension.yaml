@@ -1,0 +1,20 @@
+oauth:
+    .serviceAddress: localhost:8080
+    .serviceScheme: http
+    name: oauth
+    scopes:
+        -   Liferay.Headless.Site.everything
+    type: oAuthApplicationHeadlessServer
+site-initializer:
+    builtInTemplateKey: Sample Template Key
+    builtInTemplateType: site-initializer
+    membershipType: open
+    name: Liferay Sample Site Initializer
+    oAuthApplicationHeadlessServer: oauth
+    parentSiteKey: Parent Site Name
+    siteExternalReferenceCode: External Reference Code
+    siteName: Site Name
+    siteName_i18n:
+        de_DE: Site Name DE
+        en_US:
+    type: siteInitializer
