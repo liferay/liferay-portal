@@ -9,15 +9,20 @@ import com.liferay.asset.list.model.AssetListEntryTable;
 import com.liferay.fragment.model.FragmentCompositionTable;
 import com.liferay.fragment.model.FragmentEntryLinkTable;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelTable;
+import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassNameTable;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.PortletPreferencesTable;
@@ -25,6 +30,7 @@ import com.liferay.portal.kernel.model.PortletTable;
 import com.liferay.portal.kernel.model.ResourceActionTable;
 import com.liferay.portal.kernel.model.ResourcePermissionTable;
 import com.liferay.portal.kernel.model.UserNotificationEventTable;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -119,6 +125,27 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 				company.getCompanyId(), WorkflowConstants.STATUS_APPROVED);
 
 		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			if (!objectDefinition.isUnmodifiableSystemObject()) {
+
+				// A partition company is deleted by dropping its schema, so
+				// its object definitions are never individually deleted and
+				// nothing else removes their resource actions. Evict them
+				// from the JVM global maps in ResourceActionsImpl while the
+				// partition is still readable, or the portlet to root model
+				// resource bindings leak and a later company reusing a random
+				// portlet name collides with them. See LPS-135983.
+
+				try {
+					ObjectDefinitionResourcePermissionUtil.
+						removeResourceActions(
+							_objectActionLocalService, objectDefinition,
+							_objectFieldLocalService, _resourceActions);
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+				}
+			}
+
 			_objectDefinitionLocalService.undeployObjectDefinition(
 				objectDefinition);
 		}
@@ -226,6 +253,9 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 		return sb.toString();
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		CompanyObjectDefinitionPortalInstanceLifecycleListener.class);
+
 	private final Map<String, String> _classNameColumnNamesMap =
 		HashMapBuilder.put(
 			AssetListEntryTable.INSTANCE.getTableName(),
@@ -284,7 +314,13 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 	private CurrentConnection _currentConnection;
 
 	@Reference
+	private ObjectActionLocalService _objectActionLocalService;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private PLOEntryLocalService _ploEntryLocalService;
@@ -313,5 +349,8 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 			ResourcePermissionTable.INSTANCE.name.getName() + StringPool.COMMA +
 				ResourcePermissionTable.INSTANCE.primKey.getName()
 		).build();
+
+	@Reference
+	private ResourceActions _resourceActions;
 
 }
