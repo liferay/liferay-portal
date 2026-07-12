@@ -29,7 +29,7 @@
 
 		Tawk_API.visitor = {
 			email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
-			name: '<%= user.getScreenName() %>',
+			name: '<%= HtmlUtil.escapeJS(user.getScreenName()) %>',
 		};
 	</c:if>
 </aui:script>
