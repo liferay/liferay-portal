@@ -5,11 +5,16 @@
 
 import {test} from '@playwright/test';
 
+import {ElementVariationsPage} from '../pages/layout-content-page-editor-web/ElementVariationsPage';
 import {PageEditorPage} from '../pages/layout-content-page-editor-web/PageEditorPage';
 
 const pageEditorPagesTest = test.extend<{
+	elementVariationsPage: ElementVariationsPage;
 	pageEditorPage: PageEditorPage;
 }>({
+	elementVariationsPage: async ({page}, use) => {
+		await use(new ElementVariationsPage(page));
+	},
 	pageEditorPage: async ({page}, use) => {
 		await use(new PageEditorPage(page));
 	},

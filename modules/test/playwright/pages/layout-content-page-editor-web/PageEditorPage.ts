@@ -216,6 +216,14 @@ export class PageEditorPage {
 		});
 	}
 
+	async goToElementVariations() {
+		await this.page.getByLabel('Create Variations').click();
+
+		await this.page
+			.getByText('Element Variations', {exact: true})
+			.waitFor();
+	}
+
 	async goToFragmentComment(fragmentId: string) {
 		await this.selectFragment(fragmentId);
 
