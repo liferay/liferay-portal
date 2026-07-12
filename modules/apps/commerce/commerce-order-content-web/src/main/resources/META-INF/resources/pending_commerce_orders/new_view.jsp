@@ -142,7 +142,7 @@ boolean hasPermission = commerceOrderContentDisplayContext.hasModelPermission(co
 								</span>
 							</c:when>
 							<c:otherwise>
-								<p class="mb-0"><%= accountEntry.getName() %></p>
+								<p class="mb-0"><%= HtmlUtil.escape(accountEntry.getName()) %></p>
 								<p class="mb-0">#<%= accountEntry.getAccountEntryId() %></p>
 							</c:otherwise>
 						</c:choose>
