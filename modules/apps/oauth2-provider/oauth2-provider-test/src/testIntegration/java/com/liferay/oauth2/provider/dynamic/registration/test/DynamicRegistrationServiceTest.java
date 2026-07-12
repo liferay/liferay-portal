@@ -388,7 +388,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				companyConfigurationTemporarySwapper =
 					_createCompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
-						"dynamic.registration.allowed.hosts",
+						"oauth2.dynamic.registration.allowed.hosts",
 						new String[] {allowedHost})) {
 
 			Invocation.Builder invocationBuilder = registerWebTarget.request();
@@ -464,7 +464,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				true, _getRandomRedirectURI()
 			).toString(),
 			"invalid_client_metadata", 400,
-			"dynamic.registration.allowed.grant.types",
+			"oauth2.dynamic.registration.allowed.grant.types",
 			new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT});
 
 		// Deny when the initial access token is missing
@@ -473,8 +473,8 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			JSONUtil.put(
 				"client_name", RandomTestUtil.randomString()
 			).toString(),
-			null, 401, "dynamic.registration.require.initial.access.token",
-			true);
+			null, 401,
+			"oauth2.dynamic.registration.require.initial.access.token", true);
 
 		// Deny when the redirect URI does not match the allowed patterns
 
@@ -483,7 +483,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				true, _getRandomRedirectURI()
 			).toString(),
 			"invalid_redirect_uri", 400,
-			"dynamic.registration.allowed.redirect.uri.patterns",
+			"oauth2.dynamic.registration.allowed.redirect.uri.patterns",
 			new String[] {"https://*.example.org/*"});
 
 		// Deny when the redirect URI is blank
@@ -493,7 +493,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				true, StringPool.BLANK
 			).toString(),
 			"invalid_redirect_uri", 400,
-			"dynamic.registration.allowed.redirect.uri.patterns",
+			"oauth2.dynamic.registration.allowed.redirect.uri.patterns",
 			new String[] {"https://*.example.org/*"});
 
 		// Deny when the scope is missing, even when all scopes are allowed
@@ -503,14 +503,14 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				false, _getRandomRedirectURI()
 			).toString(),
 			"invalid_client_metadata", 400,
-			"dynamic.registration.allowed.scopes",
+			"oauth2.dynamic.registration.allowed.scopes",
 			new String[] {"Liferay.Headless.Delivery.everything"});
 		_testRegisterInOpenModeWithInvalidRequest(
 			_createOpenRegistrationJSONObject(
 				false, _getRandomRedirectURI()
 			).toString(),
 			"invalid_client_metadata", 400,
-			"dynamic.registration.allowed.scopes",
+			"oauth2.dynamic.registration.allowed.scopes",
 			new String[] {StringPool.STAR});
 
 		// Deny when the scope is not allowed
@@ -524,7 +524,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			).put(
 				"scope", "Liferay.Headless.Admin.Site.everything"
 			).toString(),
-			"invalid_scope", 400, "dynamic.registration.allowed.scopes",
+			"invalid_scope", 400, "oauth2.dynamic.registration.allowed.scopes",
 			new String[] {"Liferay.Headless.Delivery.everything"});
 	}
 
@@ -545,9 +545,10 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				companyConfigurationTemporarySwapper =
 					_createCompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
-						"dynamic.registration.allowed.grant.types",
+						"oauth2.dynamic.registration.allowed.grant.types",
 						new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT},
-						"dynamic.registration.allowed.redirect.uri.patterns",
+						"oauth2.dynamic.registration.allowed.redirect.uri." +
+							"patterns",
 						new String[0])) {
 
 			Invocation.Builder invocationBuilder = registerWebTarget.request();
@@ -756,19 +757,20 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
-				"dynamic.registration.allowed.grant.types",
+				"oauth2.dynamic.registration.allowed.grant.types",
 				new String[] {StringPool.STAR}
 			).put(
-				"dynamic.registration.allowed.hosts",
+				"oauth2.dynamic.registration.allowed.hosts",
 				new String[] {StringPool.STAR}
 			).put(
-				"dynamic.registration.allowed.redirect.uri.patterns",
+				"oauth2.dynamic.registration.allowed.redirect.uri.patterns",
 				new String[] {StringPool.STAR}
 			).put(
-				"dynamic.registration.allowed.scopes",
+				"oauth2.dynamic.registration.allowed.scopes",
 				new String[] {StringPool.STAR}
 			).put(
-				"dynamic.registration.require.initial.access.token", false
+				"oauth2.dynamic.registration.require.initial.access.token",
+				false
 			).build();
 
 		for (int i = 0; i < keysAndValues.length; i += 2) {
@@ -878,9 +880,10 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				companyConfigurationTemporarySwapper =
 					_createCompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
-						"dynamic.registration.allowed.hosts",
+						"oauth2.dynamic.registration.allowed.hosts",
 						new String[] {allowedHost},
-						"dynamic.registration.trust.proxy.headers", true)) {
+						"oauth2.dynamic.registration.trust.proxy.headers",
+						true)) {
 
 			Invocation.Builder invocationBuilder = registerWebTarget.request();
 
