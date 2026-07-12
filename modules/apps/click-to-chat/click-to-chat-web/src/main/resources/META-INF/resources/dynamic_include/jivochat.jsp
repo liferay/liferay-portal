@@ -14,7 +14,7 @@
 		function jivo_onOpen() {
 			jivo_api.setContactInfo({
 				email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
-				name: '<%= user.getScreenName() %>',
+				name: '<%= HtmlUtil.escapeJS(user.getScreenName()) %>',
 			});
 		}
 	</aui:script>
