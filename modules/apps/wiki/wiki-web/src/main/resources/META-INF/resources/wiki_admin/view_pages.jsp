@@ -191,7 +191,7 @@ WikiPagesManagementToolbarDisplayContext wikiPagesManagementToolbarDisplayContex
 							>
 								<h2 class="h5">
 									<aui:a href="<%= rowURL.toString() %>">
-										<%= curPage.getTitle() %>
+										<%= HtmlUtil.escape(curPage.getTitle()) %>
 									</aui:a>
 								</h2>
 
