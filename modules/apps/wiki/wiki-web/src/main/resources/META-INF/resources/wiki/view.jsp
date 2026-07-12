@@ -248,7 +248,7 @@ if (portletTitleBasedNavigation) {
 							/>
 						</c:when>
 						<c:otherwise>
-							<h2 class="sheet-title"><%= title %></h2>
+							<h2 class="sheet-title"><%= HtmlUtil.escape(title) %></h2>
 						</c:otherwise>
 					</c:choose>
 
