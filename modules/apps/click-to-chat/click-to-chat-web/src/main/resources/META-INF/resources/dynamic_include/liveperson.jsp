@@ -74,7 +74,9 @@
 					scp: lpTag.scp || null,
 					sdes: lpTag.sdes || [],
 					section: lpTag.section || '',
-					site: '<%= clickToChatChatProviderAccountId %>' || '',
+					site:
+						'<%= HtmlUtil.escapeJS(clickToChatChatProviderAccountId) %>' ||
+						'',
 					start: function () {
 						this.autoStart = !0;
 					},
@@ -120,11 +122,11 @@
 		personal: {
 			contacts: [
 				{
-					email: '<%= user.getEmailAddress() %>',
+					email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
 				},
 			],
-			firstname: '<%= user.getFirstName() %>',
-			lastname: '<%= user.getLastName() %>',
+			firstname: '<%= HtmlUtil.escapeJS(user.getFirstName()) %>',
+			lastname: '<%= HtmlUtil.escapeJS(user.getLastName()) %>',
 		},
 		type: 'personal',
 	});
