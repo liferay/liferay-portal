@@ -15,13 +15,17 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -57,6 +61,52 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 		DB db = DBManagerUtil.getDB();
 
 		Assume.assumeTrue(db.isSupportsDBPartition());
+	}
+
+	@Test
+	public void testDeleteCompanyRemovesResourceActions() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		ObjectDefinition objectDefinition = null;
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+			objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()),
+				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
+		}
+
+		String portletId = objectDefinition.getPortletId();
+
+		boolean deleted = false;
+
+		try {
+			Assert.assertEquals(
+				objectDefinition.getResourceName(),
+				ResourceActionsUtil.getPortletRootModelResource(portletId));
+
+			_companyLocalService.deleteCompany(company);
+
+			deleted = true;
+
+			Assert.assertNull(
+				ResourceActionsUtil.getPortletRootModelResource(portletId));
+		}
+		finally {
+			if (!deleted) {
+				_companyLocalService.deleteCompany(company);
+			}
+		}
 	}
 
 	@Test
@@ -143,6 +193,9 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 					objectDefinition.getClassName()));
 		}
 	}
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
