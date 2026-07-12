@@ -13,7 +13,7 @@
 	<aui:script position="inline">
 		function jivo_onOpen() {
 			jivo_api.setContactInfo({
-				email: '<%= user.getEmailAddress() %>',
+				email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
 				name: '<%= user.getScreenName() %>',
 			});
 		}
