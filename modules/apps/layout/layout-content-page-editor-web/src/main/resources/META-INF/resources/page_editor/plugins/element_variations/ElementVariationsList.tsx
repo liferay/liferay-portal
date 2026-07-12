@@ -64,6 +64,7 @@ export default function ElementVariationsList({
 									<ClayList.Item
 										flex
 										key={elementVariation.key}
+										tabIndex={0}
 									>
 										<ClayList.ItemField expand>
 											<ClayList.ItemTitle>
