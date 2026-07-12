@@ -75,7 +75,7 @@ portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 								elementClasses="py-3"
 								title='<%= LanguageUtil.get(request, "shipping-address") %>'
 							>
-								<p class="mb-0"><%= commerceReturnContentDisplayContext.getShippingAddress() %></p>
+								<p class="mb-0"><%= HtmlUtil.escape(commerceReturnContentDisplayContext.getShippingAddress()) %></p>
 							</commerce-ui:info-box>
 						</div>
 
