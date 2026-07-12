@@ -34,9 +34,12 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+
+import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.List;
@@ -79,7 +82,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 			}
 
 			_objectDefinitionResourceActionDocumentsMap.put(
-				objectDefinition, document);
+				_getCacheKey(objectDefinition), document);
 		}
 	}
 
@@ -91,7 +94,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 		throws Exception {
 
 		Document document = _objectDefinitionResourceActionDocumentsMap.remove(
-			objectDefinition);
+			_getCacheKey(objectDefinition));
 
 		if (document == null) {
 			document = _readDocument(
@@ -147,6 +150,17 @@ public class ObjectDefinitionResourcePermissionUtil {
 		ResourcePermissionLocalServiceUtil.updateResourcePermissions(
 			companyId, groupId, permissionName, String.valueOf(primKey),
 			modelPermissions);
+	}
+
+	private static Serializable _getCacheKey(
+		ObjectDefinition objectDefinition) {
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			return objectDefinition.getObjectDefinitionId() + StringPool.AT +
+				objectDefinition.getCompanyId();
+		}
+
+		return objectDefinition.getObjectDefinitionId();
 	}
 
 	private static String _getObjectActionPermissionKeys(
@@ -306,7 +320,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 				}));
 	}
 
-	private static final Map<ObjectDefinition, Document>
+	private static final Map<Serializable, Document>
 		_objectDefinitionResourceActionDocumentsMap = new ConcurrentHashMap<>();
 
 }
