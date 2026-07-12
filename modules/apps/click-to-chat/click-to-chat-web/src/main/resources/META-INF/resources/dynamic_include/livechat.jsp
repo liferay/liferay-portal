@@ -58,7 +58,10 @@
 				'set_customer_email',
 				'<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>'
 			);
-			LiveChatWidget.call('set_customer_name', '<%= user.getScreenName() %>');
+			LiveChatWidget.call(
+				'set_customer_name',
+				'<%= HtmlUtil.escapeJS(user.getScreenName()) %>'
+			);
 		};
 	</c:if>
 </aui:script>
