@@ -321,7 +321,7 @@ boolean hasPermission = commerceOrderContentDisplayContext.hasModelPermission(co
 								</c:if>
 
 								<p class="mb-0">
-									<%= commerceOrderContentDisplayContext.getDescriptiveAddress(shippingCommerceAddress) %>
+									<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveAddress(shippingCommerceAddress)) %>
 								</p>
 							</c:otherwise>
 						</c:choose>
