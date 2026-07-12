@@ -29,7 +29,7 @@
 	%>
 
 	<div class="input-group-item">
-		<input class="field form-control lfr-input-text" id="<portlet:namespace />defaultDisplayPageNameInput" readonly="readonly" title="<%= LanguageUtil.get(resourceBundle, "default-display-page-template") %>" type="text" value="<%= Validator.isNotNull(defaultAssetDisplayPageName) ? defaultAssetDisplayPageName : LanguageUtil.get(resourceBundle, "no-default-display-page-template") %>" />
+		<input class="field form-control lfr-input-text" id="<portlet:namespace />defaultDisplayPageNameInput" readonly="readonly" title="<%= LanguageUtil.get(resourceBundle, "default-display-page-template") %>" type="text" value="<%= Validator.isNotNull(defaultAssetDisplayPageName) ? HtmlUtil.escape(defaultAssetDisplayPageName) : LanguageUtil.get(resourceBundle, "no-default-display-page-template") %>" />
 	</div>
 
 	<c:if test="<%= selectAssetDisplayPageDisplayContext.isAssetDisplayPageTypeDefault() && selectAssetDisplayPageDisplayContext.isShowViewInContextLink() && selectAssetDisplayPageDisplayContext.isURLViewInContext() %>">
