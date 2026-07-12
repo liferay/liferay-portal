@@ -532,7 +532,7 @@ SearchContainer<?> searchContainer = new SearchContainer(renderRequest, itemSele
 										colspan="<%= 3 %>"
 									>
 										<div class="h5">
-											<a href="<%= HtmlUtil.escapeAttribute(viewFolderURL.toString()) %>" title="<%= folder.getName() %>">
+											<a href="<%= HtmlUtil.escapeAttribute(viewFolderURL.toString()) %>" title="<%= HtmlUtil.escapeAttribute(folder.getName()) %>">
 												<strong><%= HtmlUtil.escape(folder.getName()) %></strong>
 											</a>
 										</div>
