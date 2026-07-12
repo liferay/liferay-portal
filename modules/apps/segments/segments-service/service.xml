@@ -243,7 +243,7 @@
 			<finder-column name="active" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="SegmentsExperienceAudienceEntryRel" remote-service="false" table="SExperienceAudienceEntryRel" uuid="true">
+	<entity local-service="true" name="SegmentsExperienceAudienceEntryRel" remote-service="true" table="SExperienceAudienceEntryRel" uuid="true">
 
 		<!-- PK fields -->
 
@@ -275,10 +275,16 @@
 
 		<!-- Finder methods -->
 
-		<finder name="SegmentsExperienceERC" return-type="Collection">
+		<finder name="G_SEERC" return-type="Collection">
+			<finder-column name="groupId" />
 			<finder-column name="segmentsExperienceERC" />
 		</finder>
-		<finder name="AEERC_SEERC" return-type="SegmentsExperienceAudienceEntryRel" unique="true">
+		<finder name="C_AEERC" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="audienceEntryERC" />
+		</finder>
+		<finder name="G_AEERC_SEERC" return-type="SegmentsExperienceAudienceEntryRel" unique="true">
+			<finder-column name="groupId" />
 			<finder-column name="audienceEntryERC" />
 			<finder-column name="segmentsExperienceERC" />
 		</finder>
@@ -383,6 +389,7 @@
 		<exception>SegmentsEntryCriteria</exception>
 		<exception>SegmentsEntryKey</exception>
 		<exception>SegmentsEntryName</exception>
+		<exception>SegmentsExperienceAudienceEntryRelAudienceEntryERC</exception>
 		<exception>SegmentsExperienceName</exception>
 		<exception>SegmentsExperiencePriority</exception>
 		<exception>SegmentsExperimentConfidenceLevel</exception>
