@@ -1627,10 +1627,12 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Fragment fragment = randomFragment();
 
 		FragmentCollection fragmentCollection1 = _addFragmentCollection();
-		FragmentCollection fragmentCollection2 = _addFragmentCollection();
 
 		fragment.setFragmentSet(
 			_randomFragmentSet(fragmentCollection1.getExternalReferenceCode()));
+
+		FragmentCollection fragmentCollection2 = _addFragmentCollection();
+
 		fragment.setFragmentSetExternalReferenceCode(
 			fragmentCollection2.getExternalReferenceCode());
 
