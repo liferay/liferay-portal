@@ -129,6 +129,24 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceUtil {
 			segmentsExperienceAudienceEntryRel);
 	}
 
+	public static void
+		deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		getService().
+			deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
+	public static void
+		deleteSegmentsExperienceAudienceEntryRelsBySegmentsExperienceERC(
+			long groupId, String segmentsExperienceERC) {
+
+		getService().
+			deleteSegmentsExperienceAudienceEntryRelsBySegmentsExperienceERC(
+				groupId, segmentsExperienceERC);
+	}
+
 	public static <T> T dslQuery(DSLQuery dslQuery) {
 		return getService().dslQuery(dslQuery);
 	}
@@ -328,6 +346,14 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceUtil {
 		return getService().getSegmentsExperienceAudienceEntryRels(start, end);
 	}
 
+	public static List<SegmentsExperienceAudienceEntryRel>
+		getSegmentsExperienceAudienceEntryRels(
+			long groupId, String segmentsExperienceERC) {
+
+		return getService().getSegmentsExperienceAudienceEntryRels(
+			groupId, segmentsExperienceERC);
+	}
+
 	/**
 	 * Returns all the segments experience audience entry rels matching the UUID and company.
 	 *
@@ -393,6 +419,16 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceUtil {
 			segmentsExperienceAudienceEntryRel);
 	}
 
+	public static List<SegmentsExperienceAudienceEntryRel>
+			updateSegmentsExperienceAudienceEntryRels(
+				long userId, long groupId, String[] audienceEntryERCs,
+				String segmentsExperienceERC)
+		throws PortalException {
+
+		return getService().updateSegmentsExperienceAudienceEntryRels(
+			userId, groupId, audienceEntryERCs, segmentsExperienceERC);
+	}
+
 	public static SegmentsExperienceAudienceEntryRelLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -404,4 +440,4 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceUtil {
 				SegmentsExperienceAudienceEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-476327119
+// LIFERAY-SERVICE-BUILDER-HASH:-1478478896

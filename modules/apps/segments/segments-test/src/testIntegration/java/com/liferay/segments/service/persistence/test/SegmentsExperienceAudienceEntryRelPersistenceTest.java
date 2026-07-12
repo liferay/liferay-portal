@@ -242,21 +242,30 @@ public class SegmentsExperienceAudienceEntryRelPersistenceTest {
 	}
 
 	@Test
-	public void testCountBySegmentsExperienceERC() throws Exception {
-		_persistence.countBySegmentsExperienceERC("");
+	public void testCountByG_SEERC() throws Exception {
+		_persistence.countByG_SEERC(RandomTestUtil.nextLong(), "");
 
-		_persistence.countBySegmentsExperienceERC("null");
+		_persistence.countByG_SEERC(0L, "null");
 
-		_persistence.countBySegmentsExperienceERC((String)null);
+		_persistence.countByG_SEERC(0L, (String)null);
 	}
 
 	@Test
-	public void testCountByAEERC_SEERC() throws Exception {
-		_persistence.countByAEERC_SEERC("", "");
+	public void testCountByC_AEERC() throws Exception {
+		_persistence.countByC_AEERC(RandomTestUtil.nextLong(), "");
 
-		_persistence.countByAEERC_SEERC("null", "null");
+		_persistence.countByC_AEERC(0L, "null");
 
-		_persistence.countByAEERC_SEERC((String)null, (String)null);
+		_persistence.countByC_AEERC(0L, (String)null);
+	}
+
+	@Test
+	public void testCountByG_AEERC_SEERC() throws Exception {
+		_persistence.countByG_AEERC_SEERC(RandomTestUtil.nextLong(), "", "");
+
+		_persistence.countByG_AEERC_SEERC(0L, "null", "null");
+
+		_persistence.countByG_AEERC_SEERC(0L, (String)null, (String)null);
 	}
 
 	@Test
@@ -633,6 +642,11 @@ public class SegmentsExperienceAudienceEntryRelPersistenceTest {
 				new Class<?>[] {String.class}, "groupId"));
 
 		Assert.assertEquals(
+			Long.valueOf(segmentsExperienceAudienceEntryRel.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				segmentsExperienceAudienceEntryRel, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+		Assert.assertEquals(
 			segmentsExperienceAudienceEntryRel.getAudienceEntryERC(),
 			ReflectionTestUtil.invoke(
 				segmentsExperienceAudienceEntryRel, "getColumnOriginalValue",
@@ -698,4 +712,4 @@ public class SegmentsExperienceAudienceEntryRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:654716268
+// LIFERAY-SERVICE-BUILDER-HASH:-1105885472

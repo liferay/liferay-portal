@@ -134,6 +134,13 @@ public interface SegmentsExperienceAudienceEntryRelLocalService
 			SegmentsExperienceAudienceEntryRel
 				segmentsExperienceAudienceEntryRel);
 
+	public void deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC);
+
+	public void
+		deleteSegmentsExperienceAudienceEntryRelsBySegmentsExperienceERC(
+			long groupId, String segmentsExperienceERC);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
 
@@ -290,6 +297,11 @@ public interface SegmentsExperienceAudienceEntryRelLocalService
 	public List<SegmentsExperienceAudienceEntryRel>
 		getSegmentsExperienceAudienceEntryRels(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SegmentsExperienceAudienceEntryRel>
+		getSegmentsExperienceAudienceEntryRels(
+			long groupId, String segmentsExperienceERC);
+
 	/**
 	 * Returns all the segments experience audience entry rels matching the UUID and company.
 	 *
@@ -343,6 +355,12 @@ public interface SegmentsExperienceAudienceEntryRelLocalService
 			SegmentsExperienceAudienceEntryRel
 				segmentsExperienceAudienceEntryRel);
 
+	public List<SegmentsExperienceAudienceEntryRel>
+			updateSegmentsExperienceAudienceEntryRels(
+				long userId, long groupId, String[] audienceEntryERCs,
+				String segmentsExperienceERC)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<SegmentsExperienceAudienceEntryRel> getCTPersistence();
@@ -360,4 +378,4 @@ public interface SegmentsExperienceAudienceEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1523183834
+// LIFERAY-SERVICE-BUILDER-HASH:-956531629

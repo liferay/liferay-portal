@@ -11,6 +11,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
@@ -51,6 +52,7 @@ import java.util.function.Function;
  * @see SegmentsExperienceAudienceEntryRelImpl
  * @generated
  */
+@JSON(strict = true)
 public class SegmentsExperienceAudienceEntryRelModelImpl
 	extends BaseModelImpl<SegmentsExperienceAudienceEntryRel>
 	implements SegmentsExperienceAudienceEntryRelModel {
@@ -381,6 +383,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 
 	}
 
+	@JSON
 	@Override
 	public long getMvccVersion() {
 		return _mvccVersion;
@@ -395,6 +398,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_mvccVersion = mvccVersion;
 	}
 
+	@JSON
 	@Override
 	public long getCtCollectionId() {
 		return _ctCollectionId;
@@ -409,6 +413,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_ctCollectionId = ctCollectionId;
 	}
 
+	@JSON
 	@Override
 	public String getUuid() {
 		if (_uuid == null) {
@@ -437,6 +442,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		return getColumnOriginalValue("uuid_");
 	}
 
+	@JSON
 	@Override
 	public long getSegmentsExperienceAudienceEntryRelId() {
 		return _segmentsExperienceAudienceEntryRelId;
@@ -454,6 +460,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 			segmentsExperienceAudienceEntryRelId;
 	}
 
+	@JSON
 	@Override
 	public long getGroupId() {
 		return _groupId;
@@ -477,6 +484,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("groupId"));
 	}
 
+	@JSON
 	@Override
 	public long getCompanyId() {
 		return _companyId;
@@ -501,6 +509,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
+	@JSON
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -531,6 +540,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 	public void setUserUuid(String userUuid) {
 	}
 
+	@JSON
 	@Override
 	public String getUserName() {
 		if (_userName == null) {
@@ -550,6 +560,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_userName = userName;
 	}
 
+	@JSON
 	@Override
 	public Date getCreateDate() {
 		return _createDate;
@@ -564,6 +575,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_createDate = createDate;
 	}
 
+	@JSON
 	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
@@ -584,6 +596,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	@JSON
 	@Override
 	public String getAudienceEntryERC() {
 		if (_audienceEntryERC == null) {
@@ -612,6 +625,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		return getColumnOriginalValue("audienceEntryERC");
 	}
 
+	@JSON
 	@Override
 	public int getPriority() {
 		return _priority;
@@ -626,6 +640,7 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 		_priority = priority;
 	}
 
+	@JSON
 	@Override
 	public String getSegmentsExperienceERC() {
 		if (_segmentsExperienceERC == null) {
@@ -1136,4 +1151,4 @@ public class SegmentsExperienceAudienceEntryRelModelImpl
 	private SegmentsExperienceAudienceEntryRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1763078808
+// LIFERAY-SERVICE-BUILDER-HASH:-981159527

@@ -350,12 +350,13 @@ public class SegmentsExperienceAudienceEntryRelUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the segments experience audience entry rels where segmentsExperienceERC = &#63;.
+	 * Returns an ordered range of all the segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
 	 * </p>
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param start the lower bound of the range of segments experience audience entry rels
 	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
@@ -363,140 +364,228 @@ public class SegmentsExperienceAudienceEntryRelUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching segments experience audience entry rels
 	 */
-	public static List<SegmentsExperienceAudienceEntryRel>
-		findBySegmentsExperienceERC(
-			String segmentsExperienceERC, int start, int end,
-			OrderByComparator<SegmentsExperienceAudienceEntryRel>
-				orderByComparator,
-			boolean useFinderCache) {
+	public static List<SegmentsExperienceAudienceEntryRel> findByG_SEERC(
+		long groupId, String segmentsExperienceERC, int start, int end,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel> orderByComparator,
+		boolean useFinderCache) {
 
-		return getPersistence().findBySegmentsExperienceERC(
-			segmentsExperienceERC, start, end, orderByComparator,
+		return getPersistence().findByG_SEERC(
+			groupId, segmentsExperienceERC, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Returns the first segments experience audience entry rel in the ordered set where segmentsExperienceERC = &#63;.
+	 * Returns the first segments experience audience entry rel in the ordered set where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching segments experience audience entry rel
 	 * @throws NoSuchExperienceAudienceEntryRelException if a matching segments experience audience entry rel could not be found
 	 */
-	public static SegmentsExperienceAudienceEntryRel
-			findBySegmentsExperienceERC_First(
-				String segmentsExperienceERC,
-				OrderByComparator<SegmentsExperienceAudienceEntryRel>
-					orderByComparator)
+	public static SegmentsExperienceAudienceEntryRel findByG_SEERC_First(
+			long groupId, String segmentsExperienceERC,
+			OrderByComparator<SegmentsExperienceAudienceEntryRel>
+				orderByComparator)
 		throws com.liferay.segments.exception.
 			NoSuchExperienceAudienceEntryRelException {
 
-		return getPersistence().findBySegmentsExperienceERC_First(
-			segmentsExperienceERC, orderByComparator);
+		return getPersistence().findByG_SEERC_First(
+			groupId, segmentsExperienceERC, orderByComparator);
 	}
 
 	/**
-	 * Returns the first segments experience audience entry rel in the ordered set where segmentsExperienceERC = &#63;.
+	 * Returns the first segments experience audience entry rel in the ordered set where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching segments experience audience entry rel, or <code>null</code> if a matching segments experience audience entry rel could not be found
 	 */
-	public static SegmentsExperienceAudienceEntryRel
-		fetchBySegmentsExperienceERC_First(
-			String segmentsExperienceERC,
-			OrderByComparator<SegmentsExperienceAudienceEntryRel>
-				orderByComparator) {
+	public static SegmentsExperienceAudienceEntryRel fetchByG_SEERC_First(
+		long groupId, String segmentsExperienceERC,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel>
+			orderByComparator) {
 
-		return getPersistence().fetchBySegmentsExperienceERC_First(
-			segmentsExperienceERC, orderByComparator);
+		return getPersistence().fetchByG_SEERC_First(
+			groupId, segmentsExperienceERC, orderByComparator);
 	}
 
 	/**
-	 * Removes all the segments experience audience entry rels where segmentsExperienceERC = &#63; from the database.
+	 * Removes all the segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63; from the database.
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 */
-	public static void removeBySegmentsExperienceERC(
-		String segmentsExperienceERC) {
+	public static void removeByG_SEERC(
+		long groupId, String segmentsExperienceERC) {
 
-		getPersistence().removeBySegmentsExperienceERC(segmentsExperienceERC);
+		getPersistence().removeByG_SEERC(groupId, segmentsExperienceERC);
 	}
 
 	/**
-	 * Returns the number of segments experience audience entry rels where segmentsExperienceERC = &#63;.
+	 * Returns the number of segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the number of matching segments experience audience entry rels
 	 */
-	public static int countBySegmentsExperienceERC(
-		String segmentsExperienceERC) {
+	public static int countByG_SEERC(
+		long groupId, String segmentsExperienceERC) {
 
-		return getPersistence().countBySegmentsExperienceERC(
-			segmentsExperienceERC);
+		return getPersistence().countByG_SEERC(groupId, segmentsExperienceERC);
 	}
 
 	/**
-	 * Returns the segments experience audience entry rel where audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or throws a <code>NoSuchExperienceAudienceEntryRelException</code> if it could not be found.
+	 * Returns an ordered range of all the segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63;.
 	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of segments experience audience entry rels
+	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching segments experience audience entry rels
+	 */
+	public static List<SegmentsExperienceAudienceEntryRel> findByC_AEERC(
+		long companyId, String audienceEntryERC, int start, int end,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_AEERC(
+			companyId, audienceEntryERC, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first segments experience audience entry rel in the ordered set where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments experience audience entry rel
+	 * @throws NoSuchExperienceAudienceEntryRelException if a matching segments experience audience entry rel could not be found
+	 */
+	public static SegmentsExperienceAudienceEntryRel findByC_AEERC_First(
+			long companyId, String audienceEntryERC,
+			OrderByComparator<SegmentsExperienceAudienceEntryRel>
+				orderByComparator)
+		throws com.liferay.segments.exception.
+			NoSuchExperienceAudienceEntryRelException {
+
+		return getPersistence().findByC_AEERC_First(
+			companyId, audienceEntryERC, orderByComparator);
+	}
+
+	/**
+	 * Returns the first segments experience audience entry rel in the ordered set where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments experience audience entry rel, or <code>null</code> if a matching segments experience audience entry rel could not be found
+	 */
+	public static SegmentsExperienceAudienceEntryRel fetchByC_AEERC_First(
+		long companyId, String audienceEntryERC,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel>
+			orderByComparator) {
+
+		return getPersistence().fetchByC_AEERC_First(
+			companyId, audienceEntryERC, orderByComparator);
+	}
+
+	/**
+	 * Removes all the segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 */
+	public static void removeByC_AEERC(
+		long companyId, String audienceEntryERC) {
+
+		getPersistence().removeByC_AEERC(companyId, audienceEntryERC);
+	}
+
+	/**
+	 * Returns the number of segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @return the number of matching segments experience audience entry rels
+	 */
+	public static int countByC_AEERC(long companyId, String audienceEntryERC) {
+		return getPersistence().countByC_AEERC(companyId, audienceEntryERC);
+	}
+
+	/**
+	 * Returns the segments experience audience entry rel where groupId = &#63; and audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or throws a <code>NoSuchExperienceAudienceEntryRelException</code> if it could not be found.
+	 *
+	 * @param groupId the group ID
 	 * @param audienceEntryERC the audience entry erc
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching segments experience audience entry rel
 	 * @throws NoSuchExperienceAudienceEntryRelException if a matching segments experience audience entry rel could not be found
 	 */
-	public static SegmentsExperienceAudienceEntryRel findByAEERC_SEERC(
-			String audienceEntryERC, String segmentsExperienceERC)
+	public static SegmentsExperienceAudienceEntryRel findByG_AEERC_SEERC(
+			long groupId, String audienceEntryERC, String segmentsExperienceERC)
 		throws com.liferay.segments.exception.
 			NoSuchExperienceAudienceEntryRelException {
 
-		return getPersistence().findByAEERC_SEERC(
-			audienceEntryERC, segmentsExperienceERC);
+		return getPersistence().findByG_AEERC_SEERC(
+			groupId, audienceEntryERC, segmentsExperienceERC);
 	}
 
 	/**
-	 * Returns the segments experience audience entry rel where audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the segments experience audience entry rel where groupId = &#63; and audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
+	 * @param groupId the group ID
 	 * @param audienceEntryERC the audience entry erc
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching segments experience audience entry rel, or <code>null</code> if a matching segments experience audience entry rel could not be found
 	 */
-	public static SegmentsExperienceAudienceEntryRel fetchByAEERC_SEERC(
-		String audienceEntryERC, String segmentsExperienceERC,
+	public static SegmentsExperienceAudienceEntryRel fetchByG_AEERC_SEERC(
+		long groupId, String audienceEntryERC, String segmentsExperienceERC,
 		boolean useFinderCache) {
 
-		return getPersistence().fetchByAEERC_SEERC(
-			audienceEntryERC, segmentsExperienceERC, useFinderCache);
+		return getPersistence().fetchByG_AEERC_SEERC(
+			groupId, audienceEntryERC, segmentsExperienceERC, useFinderCache);
 	}
 
 	/**
-	 * Removes the segments experience audience entry rel where audienceEntryERC = &#63; and segmentsExperienceERC = &#63; from the database.
+	 * Removes the segments experience audience entry rel where groupId = &#63; and audienceEntryERC = &#63; and segmentsExperienceERC = &#63; from the database.
 	 *
+	 * @param groupId the group ID
 	 * @param audienceEntryERC the audience entry erc
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the segments experience audience entry rel that was removed
 	 */
-	public static SegmentsExperienceAudienceEntryRel removeByAEERC_SEERC(
-			String audienceEntryERC, String segmentsExperienceERC)
+	public static SegmentsExperienceAudienceEntryRel removeByG_AEERC_SEERC(
+			long groupId, String audienceEntryERC, String segmentsExperienceERC)
 		throws com.liferay.segments.exception.
 			NoSuchExperienceAudienceEntryRelException {
 
-		return getPersistence().removeByAEERC_SEERC(
-			audienceEntryERC, segmentsExperienceERC);
+		return getPersistence().removeByG_AEERC_SEERC(
+			groupId, audienceEntryERC, segmentsExperienceERC);
 	}
 
 	/**
-	 * Returns the number of segments experience audience entry rels where audienceEntryERC = &#63; and segmentsExperienceERC = &#63;.
+	 * Returns the number of segments experience audience entry rels where groupId = &#63; and audienceEntryERC = &#63; and segmentsExperienceERC = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param audienceEntryERC the audience entry erc
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the number of matching segments experience audience entry rels
 	 */
-	public static int countByAEERC_SEERC(
-		String audienceEntryERC, String segmentsExperienceERC) {
+	public static int countByG_AEERC_SEERC(
+		long groupId, String audienceEntryERC, String segmentsExperienceERC) {
 
-		return getPersistence().countByAEERC_SEERC(
-			audienceEntryERC, segmentsExperienceERC);
+		return getPersistence().countByG_AEERC_SEERC(
+			groupId, audienceEntryERC, segmentsExperienceERC);
 	}
 
 	/**
@@ -575,17 +664,18 @@ public class SegmentsExperienceAudienceEntryRelUtil {
 	}
 
 	/**
-	 * Returns the segments experience audience entry rel where audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the segments experience audience entry rel where groupId = &#63; and audienceEntryERC = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
+	 * @param groupId the group ID
 	 * @param audienceEntryERC the audience entry erc
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching segments experience audience entry rel, or <code>null</code> if a matching segments experience audience entry rel could not be found
 	 */
-	public static SegmentsExperienceAudienceEntryRel fetchByAEERC_SEERC(
-		String audienceEntryERC, String segmentsExperienceERC) {
+	public static SegmentsExperienceAudienceEntryRel fetchByG_AEERC_SEERC(
+		long groupId, String audienceEntryERC, String segmentsExperienceERC) {
 
-		return getPersistence().fetchByAEERC_SEERC(
-			audienceEntryERC, segmentsExperienceERC);
+		return getPersistence().fetchByG_AEERC_SEERC(
+			groupId, audienceEntryERC, segmentsExperienceERC);
 	}
 
 	/**
@@ -695,59 +785,115 @@ public class SegmentsExperienceAudienceEntryRelUtil {
 	}
 
 	/**
-	 * Returns all the segments experience audience entry rels where segmentsExperienceERC = &#63;.
+	 * Returns all the segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching segments experience audience entry rels
 	 */
-	public static List<SegmentsExperienceAudienceEntryRel>
-		findBySegmentsExperienceERC(String segmentsExperienceERC) {
+	public static List<SegmentsExperienceAudienceEntryRel> findByG_SEERC(
+		long groupId, String segmentsExperienceERC) {
 
-		return getPersistence().findBySegmentsExperienceERC(
-			segmentsExperienceERC);
+		return getPersistence().findByG_SEERC(groupId, segmentsExperienceERC);
 	}
 
 	/**
-	 * Returns a range of all the segments experience audience entry rels where segmentsExperienceERC = &#63;.
+	 * Returns a range of all the segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
 	 * </p>
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param start the lower bound of the range of segments experience audience entry rels
 	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
 	 * @return the range of matching segments experience audience entry rels
 	 */
-	public static List<SegmentsExperienceAudienceEntryRel>
-		findBySegmentsExperienceERC(
-			String segmentsExperienceERC, int start, int end) {
+	public static List<SegmentsExperienceAudienceEntryRel> findByG_SEERC(
+		long groupId, String segmentsExperienceERC, int start, int end) {
 
-		return getPersistence().findBySegmentsExperienceERC(
-			segmentsExperienceERC, start, end);
+		return getPersistence().findByG_SEERC(
+			groupId, segmentsExperienceERC, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the segments experience audience entry rels where segmentsExperienceERC = &#63;.
+	 * Returns an ordered range of all the segments experience audience entry rels where groupId = &#63; and segmentsExperienceERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
 	 * </p>
 	 *
+	 * @param groupId the group ID
 	 * @param segmentsExperienceERC the segments experience erc
 	 * @param start the lower bound of the range of segments experience audience entry rels
 	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching segments experience audience entry rels
 	 */
-	public static List<SegmentsExperienceAudienceEntryRel>
-		findBySegmentsExperienceERC(
-			String segmentsExperienceERC, int start, int end,
-			OrderByComparator<SegmentsExperienceAudienceEntryRel>
-				orderByComparator) {
+	public static List<SegmentsExperienceAudienceEntryRel> findByG_SEERC(
+		long groupId, String segmentsExperienceERC, int start, int end,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel>
+			orderByComparator) {
 
-		return getPersistence().findBySegmentsExperienceERC(
-			segmentsExperienceERC, start, end, orderByComparator);
+		return getPersistence().findByG_SEERC(
+			groupId, segmentsExperienceERC, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns all the segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @return the matching segments experience audience entry rels
+	 */
+	public static List<SegmentsExperienceAudienceEntryRel> findByC_AEERC(
+		long companyId, String audienceEntryERC) {
+
+		return getPersistence().findByC_AEERC(companyId, audienceEntryERC);
+	}
+
+	/**
+	 * Returns a range of all the segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of segments experience audience entry rels
+	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
+	 * @return the range of matching segments experience audience entry rels
+	 */
+	public static List<SegmentsExperienceAudienceEntryRel> findByC_AEERC(
+		long companyId, String audienceEntryERC, int start, int end) {
+
+		return getPersistence().findByC_AEERC(
+			companyId, audienceEntryERC, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the segments experience audience entry rels where companyId = &#63; and audienceEntryERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsExperienceAudienceEntryRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param audienceEntryERC the audience entry erc
+	 * @param start the lower bound of the range of segments experience audience entry rels
+	 * @param end the upper bound of the range of segments experience audience entry rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching segments experience audience entry rels
+	 */
+	public static List<SegmentsExperienceAudienceEntryRel> findByC_AEERC(
+		long companyId, String audienceEntryERC, int start, int end,
+		OrderByComparator<SegmentsExperienceAudienceEntryRel>
+			orderByComparator) {
+
+		return getPersistence().findByC_AEERC(
+			companyId, audienceEntryERC, start, end, orderByComparator);
 	}
 
 	public static SegmentsExperienceAudienceEntryRelPersistence
@@ -766,4 +912,4 @@ public class SegmentsExperienceAudienceEntryRelUtil {
 		_persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:596021413
+// LIFERAY-SERVICE-BUILDER-HASH:-2005557337

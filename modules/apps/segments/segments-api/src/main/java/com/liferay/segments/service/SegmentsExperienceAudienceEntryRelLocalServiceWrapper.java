@@ -139,6 +139,25 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		_segmentsExperienceAudienceEntryRelLocalService.
+			deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
+	@Override
+	public void
+		deleteSegmentsExperienceAudienceEntryRelsBySegmentsExperienceERC(
+			long groupId, String segmentsExperienceERC) {
+
+		_segmentsExperienceAudienceEntryRelLocalService.
+			deleteSegmentsExperienceAudienceEntryRelsBySegmentsExperienceERC(
+				groupId, segmentsExperienceERC);
+	}
+
+	@Override
 	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
 		return _segmentsExperienceAudienceEntryRelLocalService.dslQuery(
 			dslQuery);
@@ -377,6 +396,16 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceWrapper
 			getSegmentsExperienceAudienceEntryRels(start, end);
 	}
 
+	@Override
+	public java.util.List<SegmentsExperienceAudienceEntryRel>
+		getSegmentsExperienceAudienceEntryRels(
+			long groupId, String segmentsExperienceERC) {
+
+		return _segmentsExperienceAudienceEntryRelLocalService.
+			getSegmentsExperienceAudienceEntryRels(
+				groupId, segmentsExperienceERC);
+	}
+
 	/**
 	 * Returns all the segments experience audience entry rels matching the UUID and company.
 	 *
@@ -449,6 +478,18 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<SegmentsExperienceAudienceEntryRel>
+			updateSegmentsExperienceAudienceEntryRels(
+				long userId, long groupId, String[] audienceEntryERCs,
+				String segmentsExperienceERC)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _segmentsExperienceAudienceEntryRelLocalService.
+			updateSegmentsExperienceAudienceEntryRels(
+				userId, groupId, audienceEntryERCs, segmentsExperienceERC);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _segmentsExperienceAudienceEntryRelLocalService.
 			getBasePersistence();
@@ -496,4 +537,4 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceWrapper
 		_segmentsExperienceAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1429407997
+// LIFERAY-SERVICE-BUILDER-HASH:-1823294634

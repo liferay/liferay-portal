@@ -1,4 +1,6 @@
-create unique index IX_5B6AF448 on SExperienceAudienceEntryRel (segmentsExperienceERC[$COLUMN_LENGTH:75$], audienceEntryERC[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_F30945DE on SExperienceAudienceEntryRel (audienceEntryERC[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_D9AF73C2 on SExperienceAudienceEntryRel (groupId, audienceEntryERC[$COLUMN_LENGTH:75$], segmentsExperienceERC[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_9B8A5E80 on SExperienceAudienceEntryRel (groupId, segmentsExperienceERC[$COLUMN_LENGTH:75$]);
 create unique index IX_1F1DEAC2 on SExperienceAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_F6225631 on SegmentsEntry (active_);
