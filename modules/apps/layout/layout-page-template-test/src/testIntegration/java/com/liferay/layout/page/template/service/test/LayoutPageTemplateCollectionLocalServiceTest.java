@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionExternalReferenceCodeException;
+import com.liferay.layout.page.template.exception.InvalidLayoutPageTemplateCollectionTypeException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionGroupIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -183,6 +184,30 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				"Layout page template collection key ",
 				layoutPageTemplateCollectionKey,
 				" must have fewer than 75 characters"));
+	}
+
+	@Test(expected = InvalidLayoutPageTemplateCollectionTypeException.class)
+	public void testAddLayoutPageTemplateCollectionWithInvalidParentType()
+		throws Exception {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					null, RandomTestUtil.randomString(), null,
+					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					_serviceContext);
+
+		_layoutPageTemplateCollectionLocalService.
+			addLayoutPageTemplateCollection(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				null, RandomTestUtil.randomString(), null,
+				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
+				_serviceContext);
 	}
 
 	@Test

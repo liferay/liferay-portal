@@ -14,6 +14,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-content-page-editor-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
+	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
