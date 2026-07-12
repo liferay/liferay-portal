@@ -8,7 +8,7 @@
 <%@ include file="/dynamic_include/init.jsp" %>
 
 <aui:script position="inline">
-	var APP_ID = '<%= clickToChatChatProviderAccountId %>';
+	var APP_ID = '<%= HtmlUtil.escapeJS(clickToChatChatProviderAccountId) %>';
 
 	let intercomSettings = {
 		app_id: APP_ID,
@@ -24,7 +24,7 @@
 			intercomSettings.created_at = '<%= createDate.getTime() %>';
 		</c:if>
 
-		intercomSettings.email = '<%= user.getEmailAddress() %>';
+		intercomSettings.email = '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>';
 		intercomSettings.name = '<%= user.getFullName() %>';
 		intercomSettings.user_id = '<%= user.getUserId() %>';
 	</c:if>
