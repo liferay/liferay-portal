@@ -18,7 +18,7 @@
 
 	<c:if test="<%= themeDisplay.isSignedIn() %>">
 		_tn.push(['_setEmail', '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>']);
-		_tn.push(['_setName', '<%= user.getScreenName() %>']);
+		_tn.push(['_setName', '<%= HtmlUtil.escapeJS(user.getScreenName()) %>']);
 	</c:if>
 
 	(function () {
