@@ -52,7 +52,7 @@
 		%>
 
 		<div class="input-group-item">
-			<input class="field form-control lfr-input-text" id="<portlet:namespace />specificDisplayPageNameInput" readonly="readonly" title="<%= LanguageUtil.get(resourceBundle, "specific-display-page-template") %>" type="text" value="<%= Validator.isNotNull(specificAssetDisplayPageName) ? specificAssetDisplayPageName : LanguageUtil.get(resourceBundle, "no-display-page-template-selected") %>" />
+			<input class="field form-control lfr-input-text" id="<portlet:namespace />specificDisplayPageNameInput" readonly="readonly" title="<%= LanguageUtil.get(resourceBundle, "specific-display-page-template") %>" type="text" value="<%= Validator.isNotNull(specificAssetDisplayPageName) ? HtmlUtil.escape(specificAssetDisplayPageName) : LanguageUtil.get(resourceBundle, "no-display-page-template-selected") %>" />
 		</div>
 
 		<c:if test="<%= selectAssetDisplayPageDisplayContext.isAssetDisplayPageTypeSpecific() && selectAssetDisplayPageDisplayContext.isShowViewInContextLink() && selectAssetDisplayPageDisplayContext.isURLViewInContext() %>">
