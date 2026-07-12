@@ -304,7 +304,7 @@ public class GradleStylingCheck extends BaseFileCheck {
 	private static final Pattern _mapKeyPattern = Pattern.compile(
 		"(\".+?\") *: *(\".+?\")");
 	private static final Pattern _multiLineStringsPattern = Pattern.compile(
-		"(\"\"\"|''')\\\\\n.*?\\1", Pattern.DOTALL);
+		"(\"\"\"|''').*?\\1", Pattern.DOTALL);
 	private static final Pattern _stylingPattern1 = Pattern.compile(
 		"(\\A|\n)(\\w+)\\.(\\w+ = \\w+)(\n|\\Z)");
 	private static final Pattern _stylingPattern2 = Pattern.compile(
