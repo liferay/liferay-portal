@@ -113,9 +113,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			return;
 		}
 
+		User user = null;
+
 		boolean authenticatedRegistration = StringUtil.startsWith(
 			httpServletRequest.getHeader("Authorization"), "Bearer ");
-		User user = null;
 
 		try {
 			if (!authenticatedRegistration &&
