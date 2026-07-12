@@ -9,6 +9,6 @@
 
 <div class="autofit-col autofit-col-expand">
 	<aui:a href="<%= cpDefinition.getURL(LanguageUtil.getLanguageId(locale)) %>">
-		<%= cpDefinition.getName() %>
+		<%= HtmlUtil.escape(cpDefinition.getName()) %>
 	</aui:a>
 </div>
