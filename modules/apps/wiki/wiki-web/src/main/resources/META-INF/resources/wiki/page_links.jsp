@@ -122,7 +122,7 @@ boolean hasOutgoingLinkPages = ListUtil.isNotEmpty(outgoingLinkPages);
 													"nodeName", wikiNode.getName()
 												).setParameter(
 													"title", outgoingLinkPage.getTitle()
-												).buildString() %>"><%= outgoingLinkPage.getTitle() %></a
+												).buildString() %>"><%= HtmlUtil.escape(outgoingLinkPage.getTitle()) %></a
 														>
 													</div>
 												</dt>
