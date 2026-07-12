@@ -491,7 +491,7 @@ PortletURLBuilder.create(
 									PortletURLUtil.clone(viewPageURL, renderResponse)
 								).setParameter(
 									"title", childPage.getTitle()
-								).buildString() %>"><%= childPage.getTitle() %></aui:a
+								).buildString() %>"><%= HtmlUtil.escape(childPage.getTitle()) %></aui:a
 								>
 							</h3>
 
