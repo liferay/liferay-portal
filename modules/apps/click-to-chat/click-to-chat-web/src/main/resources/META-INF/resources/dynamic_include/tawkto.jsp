@@ -18,7 +18,8 @@
 		s1.async = true;
 		s1.charset = 'UTF-8';
 		s1.setAttribute('crossorigin', '*');
-		s1.src = 'https://embed.tawk.to/<%= clickToChatChatProviderAccountId %>';
+		s1.src =
+			'https://embed.tawk.to/<%= HtmlUtil.escapeJS(clickToChatChatProviderAccountId) %>';
 
 		s0.parentNode.insertBefore(s1, s0);
 	})();
@@ -27,7 +28,7 @@
 		Tawk_API = Tawk_API || {};
 
 		Tawk_API.visitor = {
-			email: '<%= user.getEmailAddress() %>',
+			email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
 			name: '<%= user.getScreenName() %>',
 		};
 	</c:if>
