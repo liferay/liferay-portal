@@ -98,7 +98,7 @@ portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 								elementClasses="py-3"
 								title='<%= LanguageUtil.get(request, "payment-method") %>'
 							>
-								<p class="mb-0"><%= commerceReturnContentDisplayContext.getPaymentMethod() %></p>
+								<p class="mb-0"><%= HtmlUtil.escape(commerceReturnContentDisplayContext.getPaymentMethod()) %></p>
 							</commerce-ui:info-box>
 						</div>
 
