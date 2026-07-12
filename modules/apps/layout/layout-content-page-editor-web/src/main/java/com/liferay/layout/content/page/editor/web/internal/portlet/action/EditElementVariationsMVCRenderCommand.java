@@ -13,6 +13,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelEl
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.SegmentsExperienceService;
 
 import jakarta.portlet.RenderRequest;
@@ -44,6 +45,7 @@ public class EditElementVariationsMVCRenderCommand implements MVCRenderCommand {
 				_portal.getHttpServletRequest(renderRequest),
 				_layoutLocalService,
 				_layoutPageTemplateStructureRelElementVariationService, _portal,
+				_segmentsExperienceAudienceEntryRelLocalService,
 				_segmentsExperienceService));
 
 		return "/edit_element_variations.jsp";
@@ -64,6 +66,10 @@ public class EditElementVariationsMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SegmentsExperienceAudienceEntryRelLocalService
+		_segmentsExperienceAudienceEntryRelLocalService;
 
 	@Reference
 	private SegmentsExperienceService _segmentsExperienceService;

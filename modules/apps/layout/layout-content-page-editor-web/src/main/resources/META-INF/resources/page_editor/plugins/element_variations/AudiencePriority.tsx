@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import React, {useState} from 'react';
 
 import AudiencesPriorityModal from './AudiencesPriorityModal';
+import ElementVariationService from './ElementVariationService';
 
 interface Audience {
 	label: string;
@@ -16,9 +17,15 @@ interface Audience {
 
 interface Props {
 	audiences: Audience[];
+	segmentsExperienceERC: string;
+	updateAudiencesPriorityURL: string;
 }
 
-export default function AudiencePriority({audiences: initialAudiences}: Props) {
+export default function AudiencePriority({
+	audiences: initialAudiences,
+	segmentsExperienceERC,
+	updateAudiencesPriorityURL,
+}: Props) {
 	const [audiences, setAudiences] = useState(initialAudiences);
 	const [openModal, setOpenModal] = useState(false);
 
@@ -59,7 +66,15 @@ export default function AudiencePriority({audiences: initialAudiences}: Props) {
 				<AudiencesPriorityModal
 					audiences={audiences}
 					onClose={() => setOpenModal(false)}
-					onSave={setAudiences}
+					onSave={(orderedAudiences) =>
+						ElementVariationService.updateAudiencesPriority({
+							audienceEntryERCs: orderedAudiences.map(
+								({value}) => value
+							),
+							segmentsExperienceERC,
+							updateAudiencesPriorityURL,
+						}).then(() => setAudiences(orderedAudiences))
+					}
 				/>
 			) : null}
 		</div>

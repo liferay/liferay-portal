@@ -18,6 +18,12 @@ interface DeleteElementVariationParameters {
 	plid: number;
 }
 
+interface UpdateAudiencesPriorityParameters {
+	audienceEntryERCs: string[];
+	segmentsExperienceERC: string;
+	updateAudiencesPriorityURL: string;
+}
+
 export default {
 	addElementVariation({
 		addElementVariationURL,
@@ -53,6 +59,19 @@ export default {
 			body: {
 				externalReferenceCode,
 				plid: String(plid),
+			},
+		});
+	},
+
+	updateAudiencesPriority({
+		audienceEntryERCs,
+		segmentsExperienceERC,
+		updateAudiencesPriorityURL,
+	}: UpdateAudiencesPriorityParameters) {
+		return serviceFetch<void>(updateAudiencesPriorityURL, {
+			body: {
+				audienceEntryERCs: JSON.stringify(audienceEntryERCs),
+				segmentsExperienceERC,
 			},
 		});
 	},

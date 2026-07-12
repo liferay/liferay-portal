@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.segments.model.SegmentsExperienceAudienceEntryRel;
+import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.SegmentsExperienceService;
 
 import jakarta.portlet.PortletResponse;
@@ -64,7 +66,10 @@ public class EditElementVariationsDisplayContext {
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateStructureRelElementVariationService
 			layoutPageTemplateStructureRelElementVariationService,
-		Portal portal, SegmentsExperienceService segmentsExperienceService) {
+		Portal portal,
+		SegmentsExperienceAudienceEntryRelLocalService
+			segmentsExperienceAudienceEntryRelLocalService,
+		SegmentsExperienceService segmentsExperienceService) {
 
 		_audiencesEntryService = audiencesEntryService;
 		_fragmentEntryLinkLocalService = fragmentEntryLinkLocalService;
@@ -73,6 +78,8 @@ public class EditElementVariationsDisplayContext {
 		_layoutPageTemplateStructureRelElementVariationService =
 			layoutPageTemplateStructureRelElementVariationService;
 		_portal = portal;
+		_segmentsExperienceAudienceEntryRelLocalService =
+			segmentsExperienceAudienceEntryRelLocalService;
 		_segmentsExperienceService = segmentsExperienceService;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -118,6 +125,11 @@ public class EditElementVariationsDisplayContext {
 			"redirect", getRedirect()
 		).put(
 			"selectedSegmentsExperienceId", _getSegmentsExperienceId()
+		).put(
+			"updateAudiencesPriorityURL",
+			_getActionURL(
+				"/layout_content_page_editor" +
+					"/update_segments_experience_audience_entry_rels")
 		).build();
 	}
 
@@ -349,6 +361,14 @@ public class EditElementVariationsDisplayContext {
 				_segmentsExperienceService.getSegmentsExperiences(
 					_themeDisplay.getScopeGroupId(), _getPlid(), true),
 				segmentsExperience -> HashMapBuilder.<String, Object>put(
+					"audienceEntryERCs",
+					TransformUtil.transform(
+						_segmentsExperienceAudienceEntryRelLocalService.
+							getSegmentsExperienceAudienceEntryRels(
+								_themeDisplay.getScopeGroupId(),
+								segmentsExperience.getExternalReferenceCode()),
+						SegmentsExperienceAudienceEntryRel::getAudienceEntryERC)
+				).put(
 					"label",
 					segmentsExperience.getName(_themeDisplay.getLocale())
 				).put(
@@ -378,6 +398,8 @@ public class EditElementVariationsDisplayContext {
 	private Long _plid;
 	private final Portal _portal;
 	private String _redirect;
+	private final SegmentsExperienceAudienceEntryRelLocalService
+		_segmentsExperienceAudienceEntryRelLocalService;
 	private Long _segmentsExperienceId;
 	private final SegmentsExperienceService _segmentsExperienceService;
 	private final ThemeDisplay _themeDisplay;

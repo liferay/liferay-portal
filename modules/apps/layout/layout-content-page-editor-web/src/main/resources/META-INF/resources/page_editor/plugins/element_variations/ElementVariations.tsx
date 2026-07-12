@@ -34,6 +34,7 @@ interface Props {
 	deleteElementVariationURL: string;
 	elementVariations: Array<LoadedElementVariation>;
 	experiences: Array<{
+		audienceEntryERCs: Array<string>;
 		label: string;
 		segmentsExperienceERC: string;
 		segmentsExperienceId: number;
@@ -44,12 +45,33 @@ interface Props {
 	portletNamespace: string;
 	previewURL: string;
 	selectedSegmentsExperienceId: number;
+	updateAudiencesPriorityURL: string;
 }
 
 export default function (props: Props) {
 	initializeConfig({portletNamespace: props.portletNamespace} as Config);
 
 	return <ElementVariations {...props} />;
+}
+
+function getOrderedAudiences(
+	audiences: Array<{label: string; value: string}>,
+	audienceEntryERCs: Array<string>
+): Array<{label: string; value: string}> {
+	const explicitAudiences = audienceEntryERCs
+		.map((audienceEntryERC) =>
+			audiences.find(({value}) => value === audienceEntryERC)
+		)
+		.filter(
+			(audience): audience is {label: string; value: string} =>
+				audience !== undefined
+		);
+
+	const remainingAudiences = audiences.filter(
+		({value}) => !audienceEntryERCs.includes(value)
+	);
+
+	return [...explicitAudiences, ...remainingAudiences];
 }
 
 function ElementVariations({
@@ -64,6 +86,7 @@ function ElementVariations({
 	plid,
 	previewURL,
 	selectedSegmentsExperienceId,
+	updateAudiencesPriorityURL,
 }: Props) {
 	const experienceId = useId();
 
@@ -91,6 +114,10 @@ function ElementVariations({
 	const experienceElementVariations = elementVariations.filter(
 		(elementVariation) =>
 			elementVariation.segmentsExperienceERC === experienceKey
+	);
+
+	const selectedExperience = experiences.find(
+		(experience) => experience.segmentsExperienceERC === experienceKey
 	);
 
 	const elementVariationsPreviewRef =
@@ -182,7 +209,18 @@ function ElementVariations({
 									</Picker>
 								</div>
 
-								<AudiencePriority audiences={audiences} />
+								<AudiencePriority
+									audiences={getOrderedAudiences(
+										audiences,
+										selectedExperience?.audienceEntryERCs ??
+											[]
+									)}
+									key={experienceKey}
+									segmentsExperienceERC={experienceKey}
+									updateAudiencesPriorityURL={
+										updateAudiencesPriorityURL
+									}
+								/>
 
 								{experienceElementVariations.length ? (
 									<ElementVariationsList
