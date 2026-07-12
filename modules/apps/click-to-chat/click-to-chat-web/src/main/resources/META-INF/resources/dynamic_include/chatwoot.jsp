@@ -33,7 +33,7 @@
 		window.onload = function () {
 			window.$chatwoot.setUser('<%= user.getUserId() %>', {
 				email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
-				name: '<%= user.getScreenName() %>',
+				name: '<%= HtmlUtil.escapeJS(user.getScreenName()) %>',
 			});
 		};
 	</c:if>
