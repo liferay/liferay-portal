@@ -203,25 +203,25 @@ public class DBPartitionDBMigrationSchemaExportTest
 					"Default virtual instance missing tables:\n"));
 			Assert.assertTrue(
 				reportContent.contains(
-					"Virtual instance " + _company.getCompanyId() +
+					"Virtual instance " + TestPropsValues.getCompanyId() +
 						" missing tables:\n"));
 			Assert.assertTrue(
 				reportContent.contains(
-					"Virtual instance " + _company.getCompanyId() +
+					"Virtual instance " + TestPropsValues.getCompanyId() +
 						" missing views:\n") ||
 				reportContent.endsWith(
-					"Virtual instance " + _company.getCompanyId() +
+					"Virtual instance " + TestPropsValues.getCompanyId() +
 						" missing views:"));
 			Assert.assertTrue(
 				reportContent.contains(
-					"Virtual instance " + TestPropsValues.getCompanyId() +
+					"Virtual instance " + _company.getCompanyId() +
 						" missing tables:\n"));
 			Assert.assertTrue(
 				reportContent.contains(
-					"Virtual instance " + TestPropsValues.getCompanyId() +
+					"Virtual instance " + _company.getCompanyId() +
 						" missing views:\n") ||
 				reportContent.endsWith(
-					"Virtual instance " + TestPropsValues.getCompanyId() +
+					"Virtual instance " + _company.getCompanyId() +
 						" missing views:"));
 		}
 	}
