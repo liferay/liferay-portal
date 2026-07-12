@@ -9051,6 +9051,12 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/WidgetPageWidgetInstance"
                                 type: array
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page."
+                404:
+                    description:
+                        "The requested site page could not be found."
             # @review
             tags: ["WidgetPageWidgetInstance"]
         post:
@@ -9098,6 +9104,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page, the parent section does not exist, or the widget could not be added to the site page."
+                404:
+                    description:
+                        "The requested site page could not be found."
             # @review
             tags: ["WidgetPageWidgetInstance"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/widget-instances/{widgetInstanceExternalReferenceCode}":
@@ -9127,6 +9139,12 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page."
+                404:
+                    description:
+                        "The requested site page or widget instance could not be found."
             tags: ["WidgetPageWidgetInstance"]
         get:
             # @review
@@ -9170,6 +9188,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page."
+                404:
+                    description:
+                        "The requested site page or widget instance could not be found."
             tags: ["WidgetPageWidgetInstance"]
         patch:
             # @review
@@ -9221,6 +9245,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page or the parent section does not exist."
+                404:
+                    description:
+                        "The requested site page or widget instance could not be found."
             tags: ["WidgetPageWidgetInstance"]
         put:
             # @review
@@ -9272,6 +9302,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                400:
+                    description:
+                        "The request is invalid. For example, the site page is not a widget page, the parent section does not exist, or the widget could not be added to the site page."
+                404:
+                    description:
+                        "The requested site page could not be found."
             tags: ["WidgetPageWidgetInstance"]
     "/sites/{siteExternalReferenceCode}/style-books":
         get:
