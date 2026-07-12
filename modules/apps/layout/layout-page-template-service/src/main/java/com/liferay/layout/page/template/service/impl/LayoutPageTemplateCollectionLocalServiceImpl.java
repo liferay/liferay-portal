@@ -5,7 +5,10 @@
 
 package com.liferay.layout.page.template.service.impl;
 
+import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
+import com.liferay.layout.page.template.exception.InvalidLayoutPageTemplateCollectionTypeException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionGroupIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionNameException;
@@ -73,6 +76,8 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		_validate(groupId, name, parentLayoutPageTemplateCollectionId, type);
+		_validateParentLayoutPageTemplateCollectionType(
+			parentLayoutPageTemplateCollectionId, type);
 
 		if (Validator.isNull(layoutPageTemplateCollectionKey)) {
 			layoutPageTemplateCollectionKey =
@@ -568,6 +573,33 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 		if (layoutPageTemplateCollection != null) {
 			throw new LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException.MustNotBeDuplicate(
 				groupId, layoutPageTemplateCollectionKey, type);
+		}
+	}
+
+	private void _validateParentLayoutPageTemplateCollectionType(
+			long parentLayoutPageTemplateCollectionId, int type)
+		throws PortalException {
+
+		if ((type != LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE) ||
+			(parentLayoutPageTemplateCollectionId ==
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT)) {
+
+			return;
+		}
+
+		LayoutPageTemplateCollection parentLayoutPageTemplateCollection =
+			layoutPageTemplateCollectionPersistence.fetchByPrimaryKey(
+				parentLayoutPageTemplateCollectionId);
+
+		if ((parentLayoutPageTemplateCollection == null) ||
+			(parentLayoutPageTemplateCollection.getType() !=
+				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE)) {
+
+			throw new InvalidLayoutPageTemplateCollectionTypeException(
+				"Parent layout page template collection " +
+					parentLayoutPageTemplateCollectionId +
+						" must be of type display page");
 		}
 	}
 
