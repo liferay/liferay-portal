@@ -24,7 +24,7 @@
 					$crisp.push([
 						'set',
 						'user:nickname',
-						'<%= user.getScreenName() %>',
+						'<%= HtmlUtil.escapeJS(user.getScreenName()) %>',
 					]);
 				}
 			}
