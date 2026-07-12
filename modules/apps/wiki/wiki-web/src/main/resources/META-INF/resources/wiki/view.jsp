@@ -332,7 +332,7 @@ if (portletTitleBasedNavigation) {
 
 						<liferay-ui:csp>
 							<div class="page-redirect" onClick="location.href = '<%= originalViewPageURL.toString() %>';">
-								(<liferay-ui:message arguments="<%= originalPage.getTitle() %>" key="redirected-from-x" translateArguments="<%= false %>" />)
+								(<liferay-ui:message arguments="<%= HtmlUtil.escape(originalPage.getTitle()) %>" key="redirected-from-x" translateArguments="<%= false %>" />)
 							</div>
 						</liferay-ui:csp>
 					</c:if>
