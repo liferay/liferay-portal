@@ -76,7 +76,7 @@ CPSku cpSku = cpContentHelper.getDefaultCPSku(cpCatalogEntry);
 					<p class="card-title" title="<%= HtmlUtil.escapeAttribute(cpCatalogEntry.getName()) %>">
 						<a href="<%= productDetailURL %>">
 							<span class="text-truncate-inline">
-								<span class="text-truncate"><%= cpCatalogEntry.getName() %></span>
+								<span class="text-truncate"><%= HtmlUtil.escape(cpCatalogEntry.getName()) %></span>
 							</span>
 						</a>
 					</p>
