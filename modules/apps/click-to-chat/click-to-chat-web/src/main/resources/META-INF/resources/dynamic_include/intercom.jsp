@@ -25,7 +25,7 @@
 		</c:if>
 
 		intercomSettings.email = '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>';
-		intercomSettings.name = '<%= user.getFullName() %>';
+		intercomSettings.name = '<%= HtmlUtil.escapeJS(user.getFullName()) %>';
 		intercomSettings.user_id = '<%= user.getUserId() %>';
 	</c:if>
 
