@@ -13,7 +13,7 @@
 			function setZendeskUserInfo() {
 				if ('<%= themeDisplay.isSignedIn() %>' === 'true') {
 					zE('webWidget', 'identify', {
-						email: '<%= user.getEmailAddress() %>',
+						email: '<%= HtmlUtil.escapeJS(user.getEmailAddress()) %>',
 						name: '<%= user.getScreenName() %>',
 					});
 				}
