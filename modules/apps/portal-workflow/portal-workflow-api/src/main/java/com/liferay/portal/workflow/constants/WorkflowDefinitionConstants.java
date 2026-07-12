@@ -26,6 +26,9 @@ public class WorkflowDefinitionConstants {
 	public static final String EXTERNAL_REFERENCE_CODE_GENERATE_CONTENT =
 		"L_GENERATE_CONTENT";
 
+	public static final String EXTERNAL_REFERENCE_CODE_GENERATE_FIELD_VALUE =
+		"L_GENERATE_FIELD_VALUE";
+
 	public static final String EXTERNAL_REFERENCE_CODE_GENERATE_IMAGE =
 		"L_GENERATE_IMAGE";
 
@@ -68,6 +71,9 @@ public class WorkflowDefinitionConstants {
 		"Fix Spelling and Grammar";
 
 	public static final String NAME_GENERATE_CONTENT = "Generate Content";
+
+	public static final String NAME_GENERATE_FIELD_VALUE =
+		"Generate Field Value";
 
 	public static final String NAME_GENERATE_IMAGE = "Generate Image";
 
