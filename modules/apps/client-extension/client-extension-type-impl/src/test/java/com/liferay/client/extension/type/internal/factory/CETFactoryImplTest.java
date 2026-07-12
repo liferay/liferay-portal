@@ -33,9 +33,7 @@ public class CETFactoryImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testCreateGlobalCSSCETFromClientExtensionEntry()
-		throws Exception {
-
+	public void testCreate() throws Exception {
 		CETFactoryImpl cetFactoryImpl = new CETFactoryImpl();
 
 		cetFactoryImpl.activate();
