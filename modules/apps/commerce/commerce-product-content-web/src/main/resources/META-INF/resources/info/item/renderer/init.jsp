@@ -21,6 +21,7 @@ page import="com.liferay.commerce.product.content.constants.CPContentWebKeys" %>
 page import="com.liferay.commerce.product.content.helper.CPContentHelper" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 
