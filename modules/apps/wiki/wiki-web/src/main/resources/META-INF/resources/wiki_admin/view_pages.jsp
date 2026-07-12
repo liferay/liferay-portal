@@ -225,7 +225,7 @@ WikiPagesManagementToolbarDisplayContext wikiPagesManagementToolbarDisplayContex
 								cssClass="table-cell-expand table-cell-minw-200 table-title"
 								href="<%= rowURL %>"
 								name="title"
-								value="<%= curPage.getTitle() %>"
+								value="<%= HtmlUtil.escape(curPage.getTitle()) %>"
 							/>
 
 							<liferay-ui:search-container-column-status
