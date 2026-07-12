@@ -11,7 +11,6 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
-import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -31,10 +30,8 @@ test(
 	{
 		tag: '@LPD-93951',
 	},
-	async ({page, site}) => {
-		await page.goto(
-			`/group${site.friendlyUrlPath}${PORTLET_URLS.audiences}`
-		);
+	async ({page}) => {
+		await page.goto(PORTLET_URLS.audiences);
 
 		// Create a new audience
 
@@ -46,12 +43,16 @@ test(
 
 		// Add the Browser Name condition and fill in its value
 
-		await dragAndDropElement({
-			dragTarget: page
+		await expect(async () => {
+			await page
 				.locator('.audience-builder-attribute')
-				.filter({hasText: 'Browser Name'}),
-			dropTarget: page.locator('.audience-builder-drop-zone'),
-		});
+				.filter({hasText: 'Browser Name'})
+				.dragTo(page.locator('.audience-builder-drop-zone'));
+
+			await expect(page.locator('.audience-builder-rule')).toBeVisible({
+				timeout: 2000,
+			});
+		}).toPass();
 
 		await page.getByLabel('Value').fill('Chrome');
 

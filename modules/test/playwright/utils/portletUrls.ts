@@ -10,8 +10,7 @@ export const PORTLET_URLS = {
 		'/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_configurationScreenKey=analytics-cloud-connection',
 	announcements:
 		'/~/control_panel/manage?p_p_id=com_liferay_announcements_web_portlet_AnnouncementsAdminPortlet',
-	audiences:
-		'/~/control_panel/manage?p_p_id=com_liferay_audiences_web_internal_portlet_AudiencesPortlet',
+	audiences: '/group/control_panel/manage/-/audiences/entries',
 	batchExportImport:
 		'/~/control_panel/manage?p_p_id=com_liferay_batch_planner_web_internal_portlet_BatchPlannerPortlet',
 	blogs: '/~/control_panel/manage?p_p_id=com_liferay_blogs_web_portlet_BlogsAdminPortlet',
