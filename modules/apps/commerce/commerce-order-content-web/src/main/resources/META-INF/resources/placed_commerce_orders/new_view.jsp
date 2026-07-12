@@ -163,7 +163,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 							</c:if>
 
 							<p class="mb-0">
-								<%= commerceOrderContentDisplayContext.getDescriptiveAddress(shippingCommerceAddress) %>
+								<%= HtmlUtil.escape(commerceOrderContentDisplayContext.getDescriptiveAddress(shippingCommerceAddress)) %>
 							</p>
 						</commerce-ui:info-box>
 					</c:if>
