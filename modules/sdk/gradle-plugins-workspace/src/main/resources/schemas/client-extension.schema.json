@@ -388,6 +388,12 @@
 								},
 								"siteName": {
 									"type": "string"
+								},
+								"siteName_i18n": {
+									"additionalProperties": {
+										"type": "string"
+									},
+									"type": "object"
 								}
 							},
 							"required": [
