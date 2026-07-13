@@ -1,5 +1,5 @@
 {
-	"@generated": "6657802bdb19f9c8d1972d7fe62b244fdb61ba85",
+	"@generated": "19322937c50366a2242e182ed7eb0389c3146efb",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -22,6 +22,9 @@
 			],
 			"@liferay/frontend-data-set-web/api": [
 				"../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/js/api/api.ts"
+			],
+			"@liferay/frontend-js-charts-web": [
+				"../../../frontend-js/frontend-js-charts-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"@liferay/frontend-js-item-selector-web": [
 				"../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
@@ -92,6 +95,9 @@
 		},
 		{
 			"path": "../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../frontend-js/frontend-js-charts-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"

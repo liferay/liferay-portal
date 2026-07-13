@@ -36,6 +36,7 @@
 		"@liferay/ai-hub-cell-js-components-web": "*",
 		"@liferay/analytics-reports-js-components-web": "*",
 		"@liferay/frontend-data-set-web": "*",
+		"@liferay/frontend-js-charts-web": "*",
 		"@liferay/frontend-js-item-selector-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
