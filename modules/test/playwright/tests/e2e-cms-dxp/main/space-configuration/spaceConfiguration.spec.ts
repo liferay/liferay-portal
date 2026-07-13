@@ -553,6 +553,10 @@ test(
 		await test.step('The content is not moved to the Recycle Bin', async () => {
 			await recycleBinPage.goto();
 
+			await recycleBinPage.dataSetFragmentPage.loading.waitFor({
+				state: 'hidden',
+			});
+
 			await expect(page.getByText(contentTitle)).toHaveCount(0);
 		});
 	}
