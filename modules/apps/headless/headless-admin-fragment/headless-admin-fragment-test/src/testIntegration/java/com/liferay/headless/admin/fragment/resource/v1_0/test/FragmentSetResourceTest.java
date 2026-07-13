@@ -18,6 +18,7 @@ import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -101,6 +103,10 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	@TestInfo("LPD-97408")
 	public void testDeleteDesignLibraryFragmentSet() throws Exception {
 		super.testDeleteDesignLibraryFragmentSet();
+
+		_testDeleteDesignLibraryFragmentSetWithAssetLibraryExternalReferenceCodeProblemException();
+		_testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabledProblemException();
+		_testDeleteDesignLibraryFragmentSetWithSiteExternalReferenceCodeProblemException();
 	}
 
 	@Override
@@ -481,6 +487,54 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				fetchFragmentCollectionByExternalReferenceCode(
 					fragmentSet2.getExternalReferenceCode(),
 					irrelevantGroup.getGroupId()));
+	}
+
+	private void _testDeleteDesignLibraryFragmentSetWithAssetLibraryExternalReferenceCodeProblemException()
+		throws Exception {
+
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		Group group = assetLibraryDepotEntry.getGroup();
+
+		_assertProblemException(
+			"BAD_REQUEST", null,
+			() -> fragmentSetResource.deleteDesignLibraryFragmentSet(
+				group.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
+	}
+
+	private void _testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabledProblemException()
+		throws Exception {
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.FALSE.toString())) {
+
+			Group group = _depotEntry.getGroup();
+
+			FragmentCollection fragmentCollection = _addFragmentCollection(
+				group);
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				"Feature flag LPD-57283 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> fragmentSetResource.deleteDesignLibraryFragmentSet(
+					group.getExternalReferenceCode(),
+					fragmentCollection.getExternalReferenceCode()));
+		}
+	}
+
+	private void _testDeleteDesignLibraryFragmentSetWithSiteExternalReferenceCodeProblemException()
+		throws Exception {
+
+		_assertProblemException(
+			"BAD_REQUEST", null,
+			() -> fragmentSetResource.deleteDesignLibraryFragmentSet(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
 	}
 
 	private void _testPostSiteFragmentSetBatch() throws Exception {
