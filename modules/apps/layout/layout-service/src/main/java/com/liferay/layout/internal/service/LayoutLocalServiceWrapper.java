@@ -433,13 +433,30 @@ public class LayoutLocalServiceWrapper
 					targetLayout.getGroupId(), targetLayout.getPlid());
 
 		if (targetLayoutPageTemplateStructure == null) {
+			long targetDefaultSegmentsExperienceId =
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(targetLayout.getPlid());
+
+			if (targetDefaultSegmentsExperienceId ==
+					SegmentsExperienceConstants.ID_DEFAULT) {
+
+				SegmentsExperience defaultSegmentsExperience =
+					_segmentsExperienceLocalService.
+						addDefaultSegmentsExperience(
+							targetLayout.getExternalReferenceCode() +
+								LayoutConstants.
+									EXTERNAL_REFERENCE_CODE_SUFFIX_DEFAULT,
+							user.getUserId(), targetLayout.getPlid(),
+							ServiceContextThreadLocal.getServiceContext());
+
+				targetDefaultSegmentsExperienceId =
+					defaultSegmentsExperience.getSegmentsExperienceId();
+			}
+
 			_layoutPageTemplateStructureLocalService.
 				addLayoutPageTemplateStructure(
 					user.getUserId(), targetLayout.getGroupId(),
-					targetLayout.getPlid(),
-					_segmentsExperienceLocalService.
-						fetchDefaultSegmentsExperienceId(
-							targetLayout.getPlid()),
+					targetLayout.getPlid(), targetDefaultSegmentsExperienceId,
 					null, ServiceContextThreadLocal.getServiceContext());
 		}
 
