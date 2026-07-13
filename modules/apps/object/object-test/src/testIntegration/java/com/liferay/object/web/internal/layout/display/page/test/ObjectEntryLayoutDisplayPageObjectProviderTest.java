@@ -9,14 +9,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -26,6 +32,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -34,6 +41,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -54,6 +62,14 @@ public class ObjectEntryLayoutDisplayPageObjectProviderTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Test
+	public void testGetRelatedLayoutDisplayPageObjectProviders()
+		throws Exception {
+
+		_testGetRelatedLayoutDisplayPageObjectProvidersWithApprovedParentAndDraftChild();
+		_testGetRelatedLayoutDisplayPageObjectProvidersWithDraftObjectDefinitionTree();
+	}
 
 	@Test
 	public void testGetTitle() throws Exception {
@@ -143,7 +159,165 @@ public class ObjectEntryLayoutDisplayPageObjectProviderTest {
 	protected LayoutDisplayPageProviderRegistry
 		layoutDisplayPageProviderRegistry;
 
+	private ObjectEntry _addChildObjectEntry(
+			ObjectDefinition childObjectDefinition,
+			ObjectDefinition parentObjectDefinition,
+			ObjectEntry parentObjectEntry, ServiceContext serviceContext)
+		throws Exception {
+
+		return ObjectEntryTestUtil.addObjectEntry(
+			0, childObjectDefinition.getObjectDefinitionId(), serviceContext,
+			HashMapBuilder.<String, Serializable>put(
+				"r_objectRelationship_" +
+					parentObjectDefinition.getPKObjectFieldName(),
+				parentObjectEntry.getObjectEntryId()
+			).build());
+	}
+
+	private ObjectDefinition _enableObjectEntryDraft(
+		ObjectDefinition objectDefinition) {
+
+		objectDefinition.setEnableObjectEntryDraft(true);
+
+		return _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
+	}
+
+	private List<? extends LayoutDisplayPageObjectProvider<?>>
+		_getRelatedLayoutDisplayPageObjectProviders(
+			ObjectEntry objectEntry, ObjectRelationship objectRelationship) {
+
+		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
+			layoutDisplayPageProviderRegistry.
+				getLayoutDisplayPageProviderByURLSeparator(
+					objectEntry.getCompanyId(),
+					FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY);
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				0, String.valueOf(objectEntry.getObjectEntryId()));
+
+		return layoutDisplayPageObjectProvider.
+			getRelatedLayoutDisplayPageObjectProviders(
+				objectRelationship.getName());
+	}
+
+	private void _testGetRelatedLayoutDisplayPageObjectProvidersWithApprovedParentAndDraftChild()
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		ObjectDefinition childObjectDefinition = _enableObjectEntryDraft(
+			ObjectDefinitionTestUtil.publishObjectDefinition());
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				childObjectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+				"objectRelationship");
+
+		ObjectEntry parentObjectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, parentObjectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap());
+
+		Assert.assertTrue(parentObjectEntry.isApproved());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectEntry childObjectEntry = _addChildObjectEntry(
+			childObjectDefinition, parentObjectDefinition, parentObjectEntry,
+			serviceContext);
+
+		Assert.assertFalse(childObjectEntry.isApproved());
+
+		List<? extends LayoutDisplayPageObjectProvider<?>>
+			relatedLayoutDisplayPageObjectProviders =
+				_getRelatedLayoutDisplayPageObjectProviders(
+					parentObjectEntry, objectRelationship);
+
+		Assert.assertTrue(
+			relatedLayoutDisplayPageObjectProviders.toString(),
+			relatedLayoutDisplayPageObjectProviders.isEmpty());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			childObjectDefinition);
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			parentObjectDefinition);
+	}
+
+	private void _testGetRelatedLayoutDisplayPageObjectProvidersWithDraftObjectDefinitionTree()
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition = _enableObjectEntryDraft(
+			ObjectDefinitionTestUtil.publishObjectDefinition());
+		ObjectDefinition childObjectDefinition = _enableObjectEntryDraft(
+			ObjectDefinitionTestUtil.publishObjectDefinition());
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				childObjectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+				"objectRelationship");
+
+		TreeTestUtil.bind(
+			_objectRelationshipLocalService,
+			Collections.singletonList(objectRelationship));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectEntry parentObjectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, parentObjectDefinition.getObjectDefinitionId(), serviceContext,
+			Collections.emptyMap());
+
+		Assert.assertFalse(parentObjectEntry.isApproved());
+
+		ObjectEntry childObjectEntry = _addChildObjectEntry(
+			childObjectDefinition, parentObjectDefinition, parentObjectEntry,
+			serviceContext);
+
+		Assert.assertFalse(childObjectEntry.isApproved());
+
+		List<? extends LayoutDisplayPageObjectProvider<?>>
+			relatedLayoutDisplayPageObjectProviders =
+				_getRelatedLayoutDisplayPageObjectProviders(
+					parentObjectEntry, objectRelationship);
+
+		Assert.assertEquals(
+			relatedLayoutDisplayPageObjectProviders.toString(), 1,
+			relatedLayoutDisplayPageObjectProviders.size());
+
+		LayoutDisplayPageObjectProvider<?>
+			relatedLayoutDisplayPageObjectProvider =
+				relatedLayoutDisplayPageObjectProviders.get(0);
+
+		Assert.assertEquals(
+			childObjectEntry.getObjectEntryId(),
+			relatedLayoutDisplayPageObjectProvider.getClassPK());
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				parentObjectDefinition.getName(),
+				childObjectDefinition.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+	}
+
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }
