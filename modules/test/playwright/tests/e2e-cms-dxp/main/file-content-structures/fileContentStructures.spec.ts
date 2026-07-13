@@ -497,7 +497,7 @@ test(
 		const spaceMember = await addSpaceUser(
 			apiHelpers,
 			space.externalReferenceCode,
-			['Member']
+			['Asset Library Member']
 		);
 
 		for (const user of [spaceAdministrator, spaceMember]) {
