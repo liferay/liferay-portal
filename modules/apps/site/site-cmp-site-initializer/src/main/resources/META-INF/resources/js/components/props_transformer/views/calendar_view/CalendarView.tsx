@@ -213,16 +213,20 @@ export default function CalendarView({
 		});
 	};
 
-	// Persist the new due date, then replace the item in the shared FDS data
-	// with a copy carrying that date. Because the FDS feeds every view, this
-	// keeps the calendar and the other views in sync without a reload.
-	// Returns whether the update went through, so a drag can be reverted.
-
-	const rescheduleTask = async (
-		item: ITask,
-		dueDate: string
-	): Promise<boolean> => {
+	/**
+	 * Optimistically replace the item in the shared FDS data with a copy
+	 * carrying the new due date, then persist it. Because the FDS provides
+	 * the data to every view, this keeps the calendar and the other views in
+	 * sync without a reload. When persisting fails, restore the original item
+	 * to undo the optimistic update.
+	 */
+	const rescheduleTask = async (item: ITask, dueDate: string) => {
 		const task = item.embedded;
+
+		onItemsChange({
+			itemKey: 'embedded.id',
+			items: [{...item, embedded: {...task, dueDate}}],
+		});
 
 		const {error} = await patchTaskById({
 			body: {dueDate},
@@ -230,19 +234,14 @@ export default function CalendarView({
 		});
 
 		if (error) {
-			displayErrorToast(error);
+			displayErrorToast();
 
-			return false;
+			onItemsChange({itemKey: 'embedded.id', items: [item]});
+
+			return;
 		}
 
-		onItemsChange({
-			itemKey: 'embedded.id',
-			items: [{...item, embedded: {...task, dueDate}}],
-		});
-
 		displayDueDateSuccessToast(task.title);
-
-		return true;
 	};
 
 	const currentYear = new Date().getFullYear();
@@ -477,13 +476,13 @@ export default function CalendarView({
 						(item) => item.embedded?.id === droppedTask.id
 					);
 
-					const rescheduleSuccessful = droppedItem
-						? await rescheduleTask(droppedItem, droppedDate)
-						: false;
-
-					if (!rescheduleSuccessful) {
+					if (!droppedItem) {
 						arg.revert();
+
+						return;
 					}
+
+					await rescheduleTask(droppedItem, droppedDate);
 				}}
 				eventStartEditable
 				events={events}
