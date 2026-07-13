@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 
 <root available-locales="en_US" default-locale="en_US">
 	<Subject language-id="en_US">Order #[%COMMERCEORDER_ID%]</Subject>
