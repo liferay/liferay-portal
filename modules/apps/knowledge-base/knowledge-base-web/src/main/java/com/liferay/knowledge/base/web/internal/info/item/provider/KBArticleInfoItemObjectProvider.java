@@ -83,11 +83,7 @@ public class KBArticleInfoItemObjectProvider
 	}
 
 	private KBArticle _getKBArticle(long classPK, String version) {
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedKBArticle(version)) {
 			return _kbArticleLocalService.fetchLatestKBArticle(
 				classPK, WorkflowConstants.STATUS_APPROVED);
 		}
@@ -108,11 +104,7 @@ public class KBArticleInfoItemObjectProvider
 	private KBArticle _getKBArticle(
 		String externalReferenceCode, long groupId, String version) {
 
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedKBArticle(version)) {
 			return _kbArticleLocalService.
 				fetchLatestKBArticleByExternalReferenceCode(
 					groupId, externalReferenceCode,
@@ -127,6 +119,18 @@ public class KBArticleInfoItemObjectProvider
 
 		return _kbArticleLocalService.fetchKBArticleByExternalReferenceCode(
 			groupId, externalReferenceCode, GetterUtil.getInteger(version));
+	}
+
+	private boolean _shouldReturnLatestApprovedKBArticle(String version) {
+		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
+			Objects.equals(
+				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference

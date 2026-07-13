@@ -145,11 +145,7 @@ public class JournalArticleInfoItemObjectProvider
 	private JournalArticle _getArticle(long classPK, String version)
 		throws PortalException {
 
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedArticle(version)) {
 			return _journalArticleLocalService.fetchLatestArticle(classPK);
 		}
 		else if (Objects.equals(version, InfoItemIdentifier.VERSION_LATEST)) {
@@ -173,11 +169,7 @@ public class JournalArticleInfoItemObjectProvider
 			long groupId, String articleId, String version)
 		throws PortalException {
 
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedArticle(version)) {
 			return _journalArticleLocalService.fetchLatestArticle(
 				groupId, articleId, WorkflowConstants.STATUS_APPROVED);
 		}
@@ -194,11 +186,7 @@ public class JournalArticleInfoItemObjectProvider
 			String externalReferenceCode, long groupId, String version)
 		throws PortalException {
 
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedArticle(version)) {
 			return _journalArticleLocalService.
 				fetchLatestArticleByExternalReferenceCode(
 					groupId, externalReferenceCode,
@@ -225,11 +213,7 @@ public class JournalArticleInfoItemObjectProvider
 			long groupId, String urlTitle, String version)
 		throws PortalException {
 
-		if (Validator.isNull(version) ||
-			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
-			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
-
+		if (_shouldReturnLatestApprovedArticle(version)) {
 			return _journalArticleLocalService.fetchLatestArticleByUrlTitle(
 				groupId, urlTitle, WorkflowConstants.STATUS_APPROVED);
 		}
@@ -279,6 +263,18 @@ public class JournalArticleInfoItemObjectProvider
 		}
 
 		return permissionChecker.isSignedIn();
+	}
+
+	private boolean _shouldReturnLatestApprovedArticle(String version) {
+		if (Validator.isNull(version) ||
+			Objects.equals(version, InfoItemIdentifier.VERSION_EDITABLE) ||
+			Objects.equals(
+				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
