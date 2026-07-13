@@ -10,10 +10,12 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFolderConstants;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +31,13 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Before
+	public void setUp() {
+		ReflectionTestUtil.setFieldValue(
+			_pimProductObjectEntryModelDocumentContributor,
+			"_objectEntryFolderLocalService", _objectEntryFolderLocalService);
+	}
 
 	@Test
 	public void testContribute() {
@@ -143,7 +152,6 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 		Mockito.mock(ObjectEntryFolderLocalService.class);
 	private final PIMProductObjectEntryModelDocumentContributor
 		_pimProductObjectEntryModelDocumentContributor =
-			new PIMProductObjectEntryModelDocumentContributor(
-				_objectEntryFolderLocalService);
+			new PIMProductObjectEntryModelDocumentContributor();
 
 }
