@@ -62,7 +62,7 @@ public class ObjectEntryIndexedColumnSizeUpgradeProcessTest
 
 	@Override
 	protected String getUpgradeProcessClassName() {
-		return "com.liferay.object.internal.upgrade.v12_2_0." +
+		return "com.liferay.object.internal.upgrade.v13_0_0." +
 			"ObjectEntryIndexedColumnSizeUpgradeProcess";
 	}
 
