@@ -10,12 +10,16 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitchViaApi} from '../../../utils/performLogin';
 import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
 import getFormContainerDefinition from '../main/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../main/utils/getFragmentDefinition';
@@ -24,12 +28,14 @@ import getWidgetDefinition from '../main/utils/getWidgetDefinition';
 
 const test = mergeTests(
 	dataApiHelpersTest,
+	displayPageTemplatesPagesTest,
 	featureFlagsTest({
 		'LPD-11235': {enabled: false},
 		'LPD-17564': {enabled: true},
 		'LPD-60546': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
+	isolatedSiteTest,
 	loginTest(),
 	pageEditorPagesTest,
 	pageManagementSiteTest
@@ -512,5 +518,156 @@ test(
 		await expect(
 			page.getByLabel('Submitted Entry Status')
 		).not.toBeVisible();
+	}
+);
+
+test(
+	'Form container mapped to another item type is editable when the user cannot update the display page item',
+	{tag: '@LPD-98093'},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create the object definition shown in the display page and one entry
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {body: displayObjectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				externalReferenceCode: 'display-page-item-erc',
+				label: {
+					en_US: 'Display Page Item',
+				},
+				name: 'DisplayPageItem',
+				objectFields: [
+					{
+						DBType: 'String',
+						externalReferenceCode: 'display-page-item-text-erc',
+						indexed: true,
+						indexedAsKeyword: true,
+						label: {
+							en_US: 'Text',
+						},
+						name: 'text',
+					},
+				],
+				pluralLabel: {
+					en_US: 'DisplayPageItems',
+				},
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		apiHelpers.data.push({
+			id: displayObjectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{text: getRandomString()},
+			displayObjectDefinition.restContextPath.replace(/^\/o\//, '')
+		);
+
+		// Create the object definition the form container is mapped to
+
+		const {body: formObjectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				externalReferenceCode: 'form-item-erc',
+				label: {
+					en_US: 'Form Item',
+				},
+				name: 'FormItem',
+				objectFields: [
+					{
+						DBType: 'String',
+						externalReferenceCode: 'form-item-text-erc',
+						indexed: true,
+						indexedAsKeyword: true,
+						label: {
+							en_US: 'Text',
+						},
+						name: 'text',
+					},
+				],
+				pluralLabel: {
+					en_US: 'FormItems',
+				},
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		apiHelpers.data.push({
+			id: formObjectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		// Create a display page template for the first object definition
+
+		const displayPageTemplateName = getRandomString();
+
+		const className =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				displayObjectDefinition.className
+			);
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId: className.classNameId,
+				groupId: site.id,
+				name: displayPageTemplateName,
+			}
+		);
+
+		// Add a form container mapped to the second object definition
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+		await pageEditorPage.addFragment('Form Components', 'Form Container');
+
+		await pageEditorPage.mapFormFragment(
+			await pageEditorPage.getFragmentId('Form Container'),
+			formObjectDefinition.label.en_US
+		);
+
+		await displayPageTemplatesPage.publishTemplate();
+
+		// Create a user that can view the display page item but not update it
+
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		const user = await createUserWithPermissions({
+			apiHelpers,
+			rolePermissions: [
+				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName: displayObjectDefinition.className,
+					scope: 1,
+				},
+			],
+		});
+
+		await performUserSwitchViaApi(page, user.alternateName);
+
+		// Go to the entry display page and check that the form is editable
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${objectEntry.id}`
+		);
+
+		await expect(page.locator('fieldset')).not.toBeVisible();
 	}
 );
