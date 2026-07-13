@@ -92,15 +92,13 @@ describe('ConditionsPanel', () => {
 		});
 	});
 
-	it('uppercases and dispatches the conjunction', async () => {
+	it('dispatches the conjunction', async () => {
 		const {dispatch} = renderConditionsPanel({rules: RULES});
 
 		const conjunction = screen.getByLabelText('conjunction');
 
-		expect(conjunction).toHaveClass('text-uppercase');
-
 		await userEvent.click(conjunction);
-		await userEvent.click(screen.getByRole('option', {name: 'or'}));
+		await userEvent.click(screen.getByRole('option', {name: 'any'}));
 
 		expect(dispatch).toHaveBeenCalledWith({
 			conjunction: 'OR',

@@ -19,9 +19,7 @@ export class AudiencesPage {
 
 	constructor(page: Page) {
 		this.nameInput = page.getByPlaceholder('New Audience');
-		this.newAudienceButton = page
-			.getByRole('button', {name: 'New Audience'})
-			.first();
+		this.newAudienceButton = page.getByLabel('New', {exact: true});
 		this.page = page;
 		this.ruleDropZone = page.locator('.audience-builder-drop-zone');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
