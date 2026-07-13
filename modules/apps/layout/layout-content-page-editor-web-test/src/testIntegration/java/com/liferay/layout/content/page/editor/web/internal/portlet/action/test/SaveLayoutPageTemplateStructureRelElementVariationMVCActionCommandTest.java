@@ -75,8 +75,7 @@ public class
 				).put(
 					"externalReferenceCode", externalReferenceCode
 				).put(
-					"hideMap",
-					JSONUtil.put("en_US", RandomTestUtil.randomString())
+					"hide", "true"
 				).put(
 					"htmlMap",
 					JSONUtil.put("en_US", RandomTestUtil.randomString())
@@ -111,10 +110,14 @@ public class
 			externalReferenceCode,
 			Arrays.asList(audienceEntryERC1, audienceEntryERC2));
 
+		Assert.assertTrue(
+			layoutPageTemplateStructureRelElementVariation.isActive());
 		Assert.assertEquals(
 			externalReferenceCode,
 			layoutPageTemplateStructureRelElementVariation.
 				getExternalReferenceCode());
+		Assert.assertEquals(
+			"true", layoutPageTemplateStructureRelElementVariation.getHide());
 		Assert.assertEquals(
 			name, layoutPageTemplateStructureRelElementVariation.getName());
 		Assert.assertEquals(
@@ -128,13 +131,14 @@ public class
 		_mvcActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(
 				JSONUtil.put(
+					"active", false
+				).put(
 					"audienceEntryERCs",
 					JSONUtil.putAll(updatedAudienceEntryERC)
 				).put(
 					"externalReferenceCode", externalReferenceCode
 				).put(
-					"hideMap",
-					JSONUtil.put("en_US", RandomTestUtil.randomString())
+					"hide", "false"
 				).put(
 					"htmlMap",
 					JSONUtil.put("en_US", RandomTestUtil.randomString())
@@ -167,6 +171,8 @@ public class
 			externalReferenceCode,
 			Collections.singletonList(updatedAudienceEntryERC));
 
+		Assert.assertFalse(
+			layoutPageTemplateStructureRelElementVariation.isActive());
 		Assert.assertEquals(
 			updatedName,
 			layoutPageTemplateStructureRelElementVariation.getName());
