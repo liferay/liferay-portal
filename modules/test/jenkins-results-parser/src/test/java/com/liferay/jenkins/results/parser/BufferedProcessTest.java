@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -23,14 +24,28 @@ public class BufferedProcessTest
 	public void testOutputOverThreshold() throws Exception {
 		byte[] standardOut = _newBytes(11 * 1024 * 1024);
 
-		Assert.assertArrayEquals(standardOut, _readStandardOut(standardOut));
+		BufferedProcess bufferedProcess = new BufferedProcess(
+			new StubProcess(standardOut));
+
+		Assert.assertArrayEquals(
+			standardOut, _readStandardOut(bufferedProcess, standardOut.length));
+
+		Assert.assertTrue(
+			bufferedProcess.getInputStream() instanceof FileInputStream);
 	}
 
 	@Test
 	public void testOutputUnderThreshold() throws Exception {
 		byte[] standardOut = _newBytes(1024);
 
-		Assert.assertArrayEquals(standardOut, _readStandardOut(standardOut));
+		BufferedProcess bufferedProcess = new BufferedProcess(
+			new StubProcess(standardOut));
+
+		Assert.assertArrayEquals(
+			standardOut, _readStandardOut(bufferedProcess, standardOut.length));
+
+		Assert.assertTrue(
+			bufferedProcess.getInputStream() instanceof ByteArrayInputStream);
 	}
 
 	private byte[] _newBytes(int size) {
@@ -60,16 +75,16 @@ public class BufferedProcessTest
 		return byteArrayOutputStream.toByteArray();
 	}
 
-	private byte[] _readStandardOut(byte[] standardOut) throws Exception {
-		BufferedProcess bufferedProcess = new BufferedProcess(
-			new StubProcess(standardOut));
+	private byte[] _readStandardOut(
+			BufferedProcess bufferedProcess, int expectedLength)
+		throws Exception {
 
 		byte[] read = new byte[0];
 
 		for (int i = 0; i < 1000; i++) {
 			read = _readInputStream(bufferedProcess.getInputStream());
 
-			if (read.length >= standardOut.length) {
+			if (read.length >= expectedLength) {
 				break;
 			}
 
