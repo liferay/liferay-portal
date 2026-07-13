@@ -33,7 +33,7 @@ public class RetryableTest extends com.liferay.jenkins.results.parser.Test {
 
 			breakLoop();
 
-			throw new RuntimeException("Permanent failure");
+			throw new RuntimeException(RandomTestUtil.randomString());
 		}
 
 		public int getExecuteCount() {
