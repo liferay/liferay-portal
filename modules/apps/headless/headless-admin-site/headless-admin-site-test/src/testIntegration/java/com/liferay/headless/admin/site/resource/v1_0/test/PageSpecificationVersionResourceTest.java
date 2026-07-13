@@ -62,9 +62,9 @@ public class PageSpecificationVersionResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_testGroupLayout = LayoutTestUtil.addTypeContentLayout(testGroup);
 		_irrelevantGroupLayout = LayoutTestUtil.addTypeContentLayout(
 			irrelevantGroup);
+		_testGroupLayout = LayoutTestUtil.addTypeContentLayout(testGroup);
 	}
 
 	@Ignore
