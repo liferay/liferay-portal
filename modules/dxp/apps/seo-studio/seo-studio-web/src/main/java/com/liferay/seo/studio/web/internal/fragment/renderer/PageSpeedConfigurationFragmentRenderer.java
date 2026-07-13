@@ -6,7 +6,7 @@
 package com.liferay.seo.studio.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.seo.studio.web.internal.display.context.GooglePageSpeedConfigurationDisplayContext;
+import com.liferay.seo.studio.web.internal.display.context.PageSpeedConfigurationDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,8 +18,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Kiana Suetani
  */
 @Component(service = FragmentRenderer.class)
-public class GooglePageSpeedConfigurationFragmentRenderer
-	extends BaseFragmentRenderer<GooglePageSpeedConfigurationDisplayContext> {
+public class PageSpeedConfigurationFragmentRenderer
+	extends BaseFragmentRenderer<PageSpeedConfigurationDisplayContext> {
 
 	@Override
 	public String getCollectionKey() {
@@ -32,16 +32,15 @@ public class GooglePageSpeedConfigurationFragmentRenderer
 	}
 
 	@Override
-	protected GooglePageSpeedConfigurationDisplayContext getDisplayContext(
+	protected PageSpeedConfigurationDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new GooglePageSpeedConfigurationDisplayContext(
-			httpServletRequest);
+		return new PageSpeedConfigurationDisplayContext(httpServletRequest);
 	}
 
 	@Override
 	protected String getJSPPath() {
-		return "/google_pagespeed_configuration.jsp";
+		return "/pagespeed_configuration.jsp";
 	}
 
 }

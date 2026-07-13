@@ -13,7 +13,7 @@ import React, {useEffect, useState} from 'react';
 
 import RequiredMark from '../components/RequiredMark';
 
-import './GooglePageSpeedConfiguration.scss';
+import './PageSpeedConfiguration.scss';
 
 interface Props {
 	backURL: string;
@@ -21,7 +21,7 @@ interface Props {
 	instancesURL: string;
 }
 
-export default function GooglePageSpeedConfiguration({
+export default function PageSpeedConfiguration({
 	backURL,
 	domainsURL,
 	instancesURL,
@@ -163,7 +163,7 @@ export default function GooglePageSpeedConfiguration({
 
 				sessionStorage.setItem(
 					'seoStudioToast',
-					Liferay.Language.get('google-pagespeed-api-key-added')
+					Liferay.Language.get('google-pagespeed-api-key-was-added')
 				);
 
 				window.location.assign(backURL);
@@ -214,8 +214,8 @@ export default function GooglePageSpeedConfiguration({
 				</ClayToolbar.Nav>
 			</ClayToolbar>
 
-			<div className="mt-4 mx-auto px-4 seo-studio-google-pagespeed-configuration-body">
-				<h2 className="font-weight-bold seo-studio-google-pagespeed-configuration-title">
+			<div className="mt-4 mx-auto px-4 seo-studio-pagespeed-configuration-body">
+				<h2 className="font-weight-bold seo-studio-pagespeed-configuration-title">
 					{Liferay.Language.get('google-pagespeed')}
 				</h2>
 

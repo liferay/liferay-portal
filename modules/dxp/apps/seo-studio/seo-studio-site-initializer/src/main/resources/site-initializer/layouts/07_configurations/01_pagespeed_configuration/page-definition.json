@@ -12,7 +12,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.seo.studio.web.internal.fragment.renderer.GooglePageSpeedConfigurationFragmentRenderer"
+								"key": "com.liferay.seo.studio.web.internal.fragment.renderer.PageSpeedConfigurationFragmentRenderer"
 							},
 							"fragmentConfig": {
 							},

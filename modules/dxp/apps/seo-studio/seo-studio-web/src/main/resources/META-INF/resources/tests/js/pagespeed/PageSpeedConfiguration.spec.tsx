@@ -8,7 +8,7 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
-import GooglePageSpeedConfiguration from '../../../js/google_pagespeed/GooglePageSpeedConfiguration';
+import PageSpeedConfiguration from '../../../js/pagespeed/PageSpeedConfiguration';
 
 jest.mock('frontend-js-components-web', () => ({
 	openToast: jest.fn(),
@@ -16,24 +16,14 @@ jest.mock('frontend-js-components-web', () => ({
 
 const BACK_URL = '/back/here';
 
-type ConfigurationProps = React.ComponentProps<
-	typeof GooglePageSpeedConfiguration
->;
-
-function randomInt() {
-	return Math.floor(Math.random() * 10000);
-}
-
-function randomString() {
-	return Math.random().toString(36).slice(2);
-}
+type ConfigurationProps = React.ComponentProps<typeof PageSpeedConfiguration>;
 
 function renderConfiguration(props: Partial<ConfigurationProps> = {}) {
 	return render(
-		<GooglePageSpeedConfiguration
-			backURL={randomString()}
-			domainsURL={randomString()}
-			instancesURL={randomString()}
+		<PageSpeedConfiguration
+			backURL={Math.random().toString(36).slice(2)}
+			domainsURL={Math.random().toString(36).slice(2)}
+			instancesURL={Math.random().toString(36).slice(2)}
 			{...props}
 		/>
 	);
@@ -74,7 +64,7 @@ function mockInitialLoad({
 	});
 }
 
-describe('GooglePageSpeedConfiguration', () => {
+describe('PageSpeedConfiguration', () => {
 	beforeEach(() => {
 		(openToast as jest.Mock).mockClear();
 
@@ -122,14 +112,14 @@ describe('GooglePageSpeedConfiguration', () => {
 
 	describe('initial load', () => {
 		it('populates the API key from an existing instance', async () => {
-			const existingKey = randomString();
+			const existingKey = Math.random().toString(36).slice(2);
 
 			mockInitialLoad({
-				domains: [{id: randomInt()}],
+				domains: [{id: Math.floor(Math.random() * 10000)}],
 				instances: [
 					{
 						googlePageSpeedAPIKey: existingKey,
-						id: randomInt(),
+						id: Math.floor(Math.random() * 10000),
 					},
 				],
 			});
@@ -143,8 +133,8 @@ describe('GooglePageSpeedConfiguration', () => {
 
 		it('leaves the input empty when no instance has a key', async () => {
 			mockInitialLoad({
-				domains: [{id: randomInt()}],
-				instances: [{id: randomInt()}],
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+				instances: [{id: Math.floor(Math.random() * 10000)}],
 			});
 
 			renderConfiguration();
@@ -183,7 +173,9 @@ describe('GooglePageSpeedConfiguration', () => {
 
 	describe('save flow', () => {
 		it('disables Save while the API key input is empty', async () => {
-			mockInitialLoad({domains: [{id: randomInt()}]});
+			mockInitialLoad({
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+			});
 
 			renderConfiguration();
 
@@ -193,7 +185,9 @@ describe('GooglePageSpeedConfiguration', () => {
 		});
 
 		it('enables Save once the user types an API key', async () => {
-			mockInitialLoad({domains: [{id: randomInt()}]});
+			mockInitialLoad({
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+			});
 
 			renderConfiguration();
 
@@ -202,7 +196,7 @@ describe('GooglePageSpeedConfiguration', () => {
 			});
 
 			fireEvent.change(getAPIKeyInput(), {
-				target: {value: randomString()},
+				target: {value: Math.random().toString(36).slice(2)},
 			});
 
 			expect(getSaveButton()).toBeEnabled();
@@ -218,7 +212,7 @@ describe('GooglePageSpeedConfiguration', () => {
 			});
 
 			fireEvent.change(getAPIKeyInput(), {
-				target: {value: randomString()},
+				target: {value: Math.random().toString(36).slice(2)},
 			});
 			fireEvent.click(getSaveButton());
 
@@ -230,11 +224,11 @@ describe('GooglePageSpeedConfiguration', () => {
 		});
 
 		it('patches the instance with the new API key and navigates back on success', async () => {
-			const apiKey = randomString();
+			const apiKey = Math.random().toString(36).slice(2);
 
 			mockInitialLoad({
-				domains: [{id: randomInt()}],
-				instances: [{id: randomInt()}],
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+				instances: [{id: Math.floor(Math.random() * 10000)}],
 			});
 
 			const fetchMock = Liferay.Util.fetch as jest.Mock;
@@ -268,7 +262,7 @@ describe('GooglePageSpeedConfiguration', () => {
 			).toBe(apiKey);
 
 			expect(sessionStorage.getItem('seoStudioToast')).toBe(
-				'google-pagespeed-api-key-added'
+				'google-pagespeed-api-key-was-added'
 			);
 		});
 
@@ -285,7 +279,9 @@ describe('GooglePageSpeedConfiguration', () => {
 				name: 'Google returns a malformed body',
 			},
 		])('shows an inline validation error when $name', async ({json}) => {
-			mockInitialLoad({domains: [{id: randomInt()}]});
+			mockInitialLoad({
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+			});
 
 			const fetchMock = Liferay.Util.fetch as jest.Mock;
 
@@ -301,7 +297,7 @@ describe('GooglePageSpeedConfiguration', () => {
 			});
 
 			fireEvent.change(getAPIKeyInput(), {
-				target: {value: randomString()},
+				target: {value: Math.random().toString(36).slice(2)},
 			});
 			fireEvent.click(getSaveButton());
 
@@ -318,8 +314,8 @@ describe('GooglePageSpeedConfiguration', () => {
 
 		it('shows an inline validation error when an instance save fails', async () => {
 			mockInitialLoad({
-				domains: [{id: randomInt()}],
-				instances: [{id: randomInt()}],
+				domains: [{id: Math.floor(Math.random() * 10000)}],
+				instances: [{id: Math.floor(Math.random() * 10000)}],
 			});
 
 			const fetchMock = Liferay.Util.fetch as jest.Mock;
@@ -336,7 +332,7 @@ describe('GooglePageSpeedConfiguration', () => {
 			});
 
 			fireEvent.change(getAPIKeyInput(), {
-				target: {value: randomString()},
+				target: {value: Math.random().toString(36).slice(2)},
 			});
 			fireEvent.click(getSaveButton());
 
