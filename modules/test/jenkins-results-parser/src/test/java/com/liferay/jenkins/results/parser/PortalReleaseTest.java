@@ -42,12 +42,12 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		PortalRelease portalRelease = new PortalRelease(jsonObject);
 
-		JSONObject roundTripJSONObject = portalRelease.getJSONObject();
+		JSONObject portalReleaseJSONObject = portalRelease.getJSONObject();
 
 		for (String urlFieldName : _URL_FIELD_NAMES) {
 			testEquals(
 				_BUNDLES_BASE_URL + "/" + urlFieldName,
-				roundTripJSONObject.optString(urlFieldName, null));
+				portalReleaseJSONObject.optString(urlFieldName, null));
 		}
 
 		JSONObject unsetJSONObject = new JSONObject();
@@ -63,7 +63,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		PortalRelease unsetPortalRelease = new PortalRelease(unsetJSONObject);
 
-		JSONObject unsetRoundTripJSONObject =
+		JSONObject unsetPortalReleaseJSONObject =
 			unsetPortalRelease.getJSONObject();
 
 		for (String urlFieldName : _URL_FIELD_NAMES) {
@@ -72,7 +72,8 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 			}
 
 			testEquals(
-				null, unsetRoundTripJSONObject.optString(urlFieldName, null));
+				null,
+				unsetPortalReleaseJSONObject.optString(urlFieldName, null));
 		}
 	}
 
