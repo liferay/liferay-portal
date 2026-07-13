@@ -47,16 +47,16 @@ public class StringUtilTest {
 	}
 
 	@Test
-	public void testReplaceBackslashes() {
-		Assert.assertNull(StringUtil.replaceBackslashes(null));
-		Assert.assertEquals("", StringUtil.replaceBackslashes(""));
+	public void testNormalizeFilePath() {
+		Assert.assertNull(StringUtil.normalizeFilePath(null));
+		Assert.assertEquals("", StringUtil.normalizeFilePath(""));
 		Assert.assertEquals(
 			"/opt/build/upgradeJakarta/dependencies.txt",
-			StringUtil.replaceBackslashes(
+			StringUtil.normalizeFilePath(
 				"/opt/build/upgradeJakarta/dependencies.txt"));
 		Assert.assertEquals(
 			"C:/build/upgradeJakarta/dependencies.txt",
-			StringUtil.replaceBackslashes(
+			StringUtil.normalizeFilePath(
 				"C:\\build\\upgradeJakarta\\dependencies.txt"));
 	}
 

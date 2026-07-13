@@ -127,6 +127,14 @@ public class StringUtil {
 		);
 	}
 
+	public static String normalizeFilePath(String s) {
+		if (s == null) {
+			return null;
+		}
+
+		return s.replace('\\', '/');
+	}
+
 	public static String quote(Object object) {
 		return "\"" + object + "\"";
 	}
@@ -159,14 +167,6 @@ public class StringUtil {
 		}
 
 		return new String(buffer, 0, offset, "UTF-8");
-	}
-
-	public static String replaceBackslashes(String s) {
-		if (s == null) {
-			return null;
-		}
-
-		return s.replace('\\', '/');
 	}
 
 	public static List<String> split(String s) {
