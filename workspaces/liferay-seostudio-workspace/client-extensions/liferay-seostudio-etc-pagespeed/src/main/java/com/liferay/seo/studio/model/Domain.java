@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class Domain {
 
 	public Domain(JSONObject jsonObject) {
-		_domainHostname = jsonObject.optString("domainHostname", null);
+		_hostname = jsonObject.optString("hostname", null);
 
 		JSONObject seoStudioInstanceJSONObject = jsonObject.optJSONObject(
 			"seoStudioInstance");
@@ -21,21 +21,28 @@ public class Domain {
 		if (seoStudioInstanceJSONObject != null) {
 			_googlePageSpeedAPIKey = seoStudioInstanceJSONObject.optString(
 				"googlePageSpeedAPIKey", null);
+			_seoStudioInstanceId = seoStudioInstanceJSONObject.getLong("id");
 		}
 		else {
 			_googlePageSpeedAPIKey = null;
+			_seoStudioInstanceId = 0;
 		}
-	}
-
-	public String getDomainHostname() {
-		return _domainHostname;
 	}
 
 	public String getGooglePageSpeedAPIKey() {
 		return _googlePageSpeedAPIKey;
 	}
 
-	private final String _domainHostname;
+	public String getHostname() {
+		return _hostname;
+	}
+
+	public long getSEOStudioInstanceId() {
+		return _seoStudioInstanceId;
+	}
+
 	private final String _googlePageSpeedAPIKey;
+	private final String _hostname;
+	private final long _seoStudioInstanceId;
 
 }
