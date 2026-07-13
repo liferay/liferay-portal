@@ -151,8 +151,7 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 							StringBundler.concat(
 								"PBKDF2 output length ", _keySize,
 								" bits is below the minimum allowed value of ",
-								_KEY_SIZE_MIN, " bits"),
-							null);
+								_KEY_SIZE_MIN, " bits"));
 					}
 
 					if (_rounds < _ROUNDS_MIN) {
@@ -160,8 +159,7 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 							StringBundler.concat(
 								"PBKDF2 iteration count ", _rounds,
 								" is below the minimum allowed value of ",
-								_ROUNDS_MIN),
-							null);
+								_ROUNDS_MIN));
 					}
 				}
 

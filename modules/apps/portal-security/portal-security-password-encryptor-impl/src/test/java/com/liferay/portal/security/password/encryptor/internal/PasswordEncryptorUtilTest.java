@@ -115,13 +115,13 @@ public class PasswordEncryptorUtilTest {
 
 		_testEncryptFailure(null, StringPool.BLANK, null);
 
+		_testEncryptFailure(null, StringPool.BLANK, StringPool.BLANK);
+
 		_testEncryptFailure(StringPool.BLANK, null, null);
 
 		_testEncryptFailure(StringPool.BLANK, null, StringPool.BLANK);
 
 		_testEncryptFailure(StringPool.BLANK, StringPool.BLANK, null);
-
-		_testEncryptFailure(null, StringPool.BLANK, StringPool.BLANK);
 
 		_testEncryptFailure(
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);

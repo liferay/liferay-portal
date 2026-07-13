@@ -150,8 +150,7 @@ public class PasswordEncryptorUtil {
 
 			throw new PwdEncryptorException.InvalidAlgorithm(
 				StringBundler.concat(
-					"Algorithm \"", algorithm, "\" is not allowed"),
-				null);
+					"Algorithm \"", algorithm, "\" is not allowed"));
 		}
 
 		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(algorithm);
@@ -309,13 +308,8 @@ public class PasswordEncryptorUtil {
 
 		String upperCaseAlgorithm = StringUtil.toUpperCase(algorithm);
 
-		if (upperCaseAlgorithm.startsWith(PasswordEncryptor.TYPE_PBKDF2) &&
-			upperCaseAlgorithm.contains("SHA256")) {
-
-			return true;
-		}
-
-		return false;
+		return upperCaseAlgorithm.startsWith(PasswordEncryptor.TYPE_PBKDF2) &&
+			upperCaseAlgorithm.contains("SHA256");
 	}
 
 	private static final String _PASSWORDS_ENCRYPTION_ALGORITHM =
