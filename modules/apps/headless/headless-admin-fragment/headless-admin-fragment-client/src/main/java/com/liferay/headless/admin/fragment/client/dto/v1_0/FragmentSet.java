@@ -13,6 +13,7 @@ import jakarta.annotation.Generated;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,6 +26,28 @@ public class FragmentSet implements Cloneable, Serializable {
 	public static FragmentSet toDTO(String json) {
 		return FragmentSetSerDes.toDTO(json);
 	}
+
+	public Map<String, Map<String, String>> getActions() {
+		return actions;
+	}
+
+	public void setActions(Map<String, Map<String, String>> actions) {
+		this.actions = actions;
+	}
+
+	public void setActions(
+		UnsafeSupplier<Map<String, Map<String, String>>, Exception>
+			actionsUnsafeSupplier) {
+
+		try {
+			actions = actionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, Map<String, String>> actions;
 
 	public Creator getCreator() {
 		return creator;
@@ -222,4 +245,4 @@ public class FragmentSet implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:267314961
+// LIFERAY-REST-BUILDER-HASH:1029282499
