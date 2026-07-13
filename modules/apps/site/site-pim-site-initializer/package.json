@@ -8,8 +8,7 @@
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
-		"format": "node-scripts format",
-		"test": "node-scripts test"
+		"format": "node-scripts format"
 	},
 	"version": "1.0.0"
 }
