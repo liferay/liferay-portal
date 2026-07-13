@@ -3,6 +3,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-compute
 spec:
@@ -14,6 +15,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-cloudplatform
 spec:
@@ -25,6 +27,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-kms
 spec:
@@ -36,6 +39,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-sql
 spec:
@@ -47,6 +51,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-storage
 spec:
@@ -58,7 +63,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
-        argocd.argoproj.io/sync-options: ServerSideApply=true
+        argocd.argoproj.io/sync-options: ServerSideApply=true,SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: provider-kubernetes
 spec:
@@ -71,6 +76,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     name: upbound-provider-family-gcp
 spec:
