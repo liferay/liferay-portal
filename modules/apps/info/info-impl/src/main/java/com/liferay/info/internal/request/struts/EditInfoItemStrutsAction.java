@@ -597,15 +597,15 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		String externalReferenceCode = ParamUtil.getString(
 			httpServletRequest, "externalReferenceCode");
 
-		if (Validator.isNotNull(externalReferenceCode)) {
-			return new ERCInfoItemIdentifier(
-				externalReferenceCode,
-				ParamUtil.getString(
-					httpServletRequest, "scopeExternalReferenceCode", null),
-				InfoItemIdentifier.VERSION_EDITABLE);
+		if (Validator.isNull(externalReferenceCode)) {
+			return null;
 		}
 
-		return null;
+		return new ERCInfoItemIdentifier(
+			externalReferenceCode,
+			ParamUtil.getString(
+				httpServletRequest, "scopeExternalReferenceCode", null),
+			InfoItemIdentifier.VERSION_EDITABLE);
 	}
 
 	private LayoutStructure _getLayoutStructure(
