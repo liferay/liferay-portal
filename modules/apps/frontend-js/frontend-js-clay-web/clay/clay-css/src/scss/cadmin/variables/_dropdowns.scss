@@ -39,6 +39,8 @@ $cadmin-dropdown-spacer: 5px !default; // 5px
 $cadmin-dropdown-menu: () !default;
 $cadmin-dropdown-menu: map-deep-merge(
 	(
+		breakpoint-down: md,
+
 		background-clip: padding-box,
 		background-color: $cadmin-dropdown-bg,
 		border-color: $cadmin-dropdown-border-color,
@@ -46,7 +48,6 @@ $cadmin-dropdown-menu: map-deep-merge(
 		border-style: $cadmin-dropdown-border-style,
 		border-width: $cadmin-dropdown-border-width,
 		box-shadow: clay-enable-shadows($cadmin-dropdown-box-shadow),
-		breakpoint-down: md,
 		color: $cadmin-dropdown-color,
 		display: none,
 		float: left,

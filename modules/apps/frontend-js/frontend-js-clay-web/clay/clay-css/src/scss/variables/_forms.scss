@@ -2297,8 +2297,9 @@ $input-group-sm: map-deep-merge(
 				btn-monospaced: $input-group-sm-inset-item-btn-monospaced,
 
 				form-file: (
-					btn: $input-group-sm-inset-item-form-file-btn,
 					height: 75%,
+
+					btn: $input-group-sm-inset-item-form-file-btn,
 				),
 			),
 		),

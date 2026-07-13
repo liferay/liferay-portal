@@ -522,9 +522,11 @@ $cadmin-container-form-lg: () !default;
 $cadmin-container-form-lg: map-deep-merge(
 	(
 		breakpoint-up: lg,
+
 		padding-bottom: 48px,
-		padding-bottom-mobile: 16px,
 		padding-top: 48px,
+
+		padding-bottom-mobile: 16px,
 		padding-top-mobile: 16px,
 	),
 	$cadmin-container-form-lg

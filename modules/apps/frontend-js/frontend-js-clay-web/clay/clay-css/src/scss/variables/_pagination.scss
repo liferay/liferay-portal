@@ -380,8 +380,9 @@ $pagination-items-per-page: () !default;
 $pagination-items-per-page: map-deep-merge(
 	(
 		font-size: $pagination-items-per-page-font-size,
-		link: $pagination-items-per-page-link,
 		margin-bottom: $pagination-margin-bottom,
+
+		link: $pagination-items-per-page-link,
 
 		media-breakpoint-down: (
 			sm: (

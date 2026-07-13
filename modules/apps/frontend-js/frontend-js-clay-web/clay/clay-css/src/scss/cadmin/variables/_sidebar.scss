@@ -122,12 +122,13 @@ $cadmin-sidebar: map-deep-merge(
 		),
 
 		sidebar-header: (
-			component-subtitle: $cadmin-sidebar-header-component-subtitle,
-			component-title: $cadmin-sidebar-header-component-title,
 			padding-bottom: $cadmin-sidebar-padding-bottom,
 			padding-left: $cadmin-sidebar-padding-left,
 			padding-right: 16px,
 			padding-top: $cadmin-sidebar-padding-top,
+
+			component-subtitle: $cadmin-sidebar-header-component-subtitle,
+			component-title: $cadmin-sidebar-header-component-title,
 
 			autofit-row: (
 				margin-left: -4px,

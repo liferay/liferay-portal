@@ -229,8 +229,9 @@ $list-group-subtitle: () !default;
 $list-group-subtitle: map-deep-merge(
 	(
 		color: var(--list-group-subtitle-color, $gray-600),
-		href: $list-group-subtitle-link,
 		margin-bottom: var(--list-group-subtitle-margin-bottom, 0),
+
+		href: $list-group-subtitle-link,
 	),
 	$list-group-subtitle
 );
@@ -310,9 +311,10 @@ $list-group-subtext: () !default;
 $list-group-subtext: map-deep-merge(
 	(
 		color: var(--list-group-subtext-color, $gray-600),
-		href: $list-group-subtext-link,
 		margin-bottom: var(--list-group-subtext-margin-bottom, 0),
 		margin-top: var(--list-group-subtext-margin-top, 8px),
+
+		href: $list-group-subtext-link,
 	),
 	$list-group-subtext
 );

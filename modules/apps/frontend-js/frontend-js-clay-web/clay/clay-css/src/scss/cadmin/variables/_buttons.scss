@@ -126,10 +126,11 @@ $cadmin-btn: map-deep-merge(
 
 $cadmin-btn-border-radius-lg: $cadmin-border-radius !default;
 $cadmin-btn-font-size-lg: $cadmin-font-size-lg !default; // 18px
-$cadmin-btn-inline-item-font-size-lg: null !default; // 18px
 $cadmin-btn-line-height-lg: $cadmin-input-btn-line-height-lg !default;
 $cadmin-btn-padding-x-lg: 24px !default; // 24px
 $cadmin-btn-padding-y-lg: 9.5px !default; // 9.5px
+
+$cadmin-btn-inline-item-font-size-lg: null !default; // 18px
 $cadmin-btn-section-font-size-lg: 13px !default; // 13px
 
 $cadmin-btn-font-size-lg-mobile: null !default;
@@ -174,10 +175,11 @@ $cadmin-btn-lg: map-deep-merge(
 
 $cadmin-btn-border-radius-sm: $cadmin-border-radius-sm !default;
 $cadmin-btn-font-size-sm: $cadmin-font-size-sm !default; // 14px
-$cadmin-btn-inline-item-font-size-sm: null !default;
 $cadmin-btn-line-height-sm: 1 !default;
 $cadmin-btn-padding-x-sm: 12px !default; // 12px
 $cadmin-btn-padding-y-sm: 7px !default; // 7px
+
+$cadmin-btn-inline-item-font-size-sm: null !default;
 $cadmin-btn-section-font-size-sm: 9px !default; // 9px
 
 $cadmin-btn-font-size-sm-mobile: null !default;
@@ -968,8 +970,9 @@ $cadmin-btn-palette: map-deep-merge(
 		),
 
 		'.btn-translucent': (
-			border-radius: clay-enable-rounded($cadmin-rounded-pill),
 			extend: '%clay-btn-xs',
+
+			border-radius: clay-enable-rounded($cadmin-rounded-pill),
 		),
 
 		'.btn-translucent.btn-ai': (

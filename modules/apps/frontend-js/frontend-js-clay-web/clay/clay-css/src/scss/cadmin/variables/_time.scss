@@ -38,9 +38,10 @@ $cadmin-clay-time-form-control-inset: map-deep-merge(
 		margin-bottom: 0px,
 		margin-left: 0px,
 		margin-top: 0px,
-		selection-bg: transparent,
 		text-align: center,
 		width: 20px,
+
+		selection-bg: transparent,
 
 		focus: (
 			background-color: #b3d8fd,

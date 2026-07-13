@@ -6,10 +6,11 @@ $navigation-bar-size: map-deep-merge(
 		border-bottom-width: 1px,
 		font-size: var(--navigation-bar-font-size, $navbar-font-size),
 		height: var(--navigation-bar-height, 48px),
-		link-padding-x: var(--navigation-bar-nav-link-link-padding-x, 16px),
-		nav-item-dropdown-margin-top: 0,
 		padding-x: var(--navigation-bar-padding-x, 0px),
 		padding-y: var(--navigation-bar-padding-y, 0px),
+
+		link-padding-x: var(--navigation-bar-nav-link-link-padding-x, 16px),
+		nav-item-dropdown-margin-top: 0,
 
 		active-border-bottom-width: 4px,
 		active-border-offset-bottom: -8.5px,

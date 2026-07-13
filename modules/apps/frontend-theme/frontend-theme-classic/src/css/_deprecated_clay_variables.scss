@@ -255,9 +255,13 @@ $component-focus-inset-box-shadow: inset 0 0 0 0.125rem $primary-l1#{','} inset 
 
 $grid-breakpoints: (
 	xs: 0,
+
 	sm: 576px,
+
 	md: 768px,
+
 	lg: 992px,
+
 	xl: 1280px,
 ) !default;
 
@@ -269,8 +273,11 @@ $grid-row-columns: 6 !default;
 
 $container-max-widths: (
 	sm: var(--container-max-sm, 540px),
+
 	md: var(--container-max-md, 720px),
+
 	lg: var(--container-max-lg, 960px),
+
 	xl: var(--container-max-xl, 1248px),
 ) !default;
 
@@ -278,9 +285,11 @@ $container-form-lg: () !default;
 $container-form-lg: map-deep-merge(
 	(
 		breakpoint-up: lg,
+
 		padding-bottom: 3rem,
-		padding-bottom-mobile: 1rem,
 		padding-top: 3rem,
+
+		padding-bottom-mobile: 1rem,
 		padding-top-mobile: 1rem,
 	),
 	$container-form-lg

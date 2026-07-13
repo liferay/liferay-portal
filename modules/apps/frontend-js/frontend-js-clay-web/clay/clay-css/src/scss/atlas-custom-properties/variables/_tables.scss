@@ -559,11 +559,11 @@ $c-tr-table-focus: map-deep-merge(
 
 			first-child: (
 				after: (
+					bottom: $table-border-width,
 					box-shadow:
 						unquote(
 							'inset 2px 0 0 0 #{$primary-l0},inset 4px 0 0 0 #{$white}'
 						),
-					bottom: $table-border-width,
 					content: '',
 					display: block,
 					left: calc(#{$table-border-width} * -1),
@@ -577,11 +577,11 @@ $c-tr-table-focus: map-deep-merge(
 
 			last-child: (
 				after: (
+					bottom: $table-border-width,
 					box-shadow:
 						unquote(
 							'inset -2px 0 0 0 #{$primary-l0},inset -4px 0 0 0 #{$white}'
 						),
-					bottom: $table-border-width,
 					content: '',
 					display: block,
 					pointer-events: none,

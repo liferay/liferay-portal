@@ -182,11 +182,12 @@ $pagination-items-per-page-focus-box-shadow: c-unset !default;
 $pagination-items-per-page-link-focus: () !default;
 $pagination-items-per-page-link-focus: map-deep-merge(
 	(
-		after: map-get($pagination-link-focus, after),
 		background-color: map-get($pagination-link-focus, background-color),
 		border-color: map-get($pagination-link-focus, border-color),
 		box-shadow: $pagination-items-per-page-focus-box-shadow,
 		color: map-get($pagination-link-focus, color),
+
+		after: map-get($pagination-link-focus, after),
 	),
 	$pagination-items-per-page-link-focus
 );

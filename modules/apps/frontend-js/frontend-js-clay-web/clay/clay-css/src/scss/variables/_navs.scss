@@ -46,8 +46,9 @@ $nav-link: map-deep-merge(
 $nav-link-btn-unstyled: () !default;
 $nav-link-btn-unstyled: map-deep-merge(
 	(
-		disabled-opacity: 1,
 		width: 100%,
+
+		disabled-opacity: 1,
 
 		c-inner: (
 			width: auto,

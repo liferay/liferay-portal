@@ -555,6 +555,9 @@ $input-group-addon-color: $gray-600 !default;
 $input-group-addon-font-weight: $font-weight-semi-bold !default;
 $input-group-addon-min-width: 2.5rem !default; // 40px
 $input-group-addon-padding-x: 0.75rem !default; // 12px
+
+$input-group-item-margin-left: 0.5rem !default;
+
 $input-group-item: () !default;
 $input-group-item: map-deep-merge(
 	(
@@ -598,7 +601,6 @@ $input-group-item: map-deep-merge(
 	),
 	$input-group-item
 );
-$input-group-item-margin-left: 0.5rem !default;
 
 // Input Group Sizes
 

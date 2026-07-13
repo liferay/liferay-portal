@@ -95,9 +95,10 @@ $multi-step-title: map-deep-merge(
 	$multi-step-title
 );
 
-$multi-step-item-fixed-width: 150px !default;
 $multi-step-item-margin-bottom: 10px !default;
 $multi-step-item-width: 75px !default;
+
+$multi-step-item-fixed-width: 150px !default;
 
 $multi-step-nav-center: () !default;
 $multi-step-nav-center: map-deep-merge(

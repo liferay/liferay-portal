@@ -6,9 +6,10 @@ $cadmin-navigation-bar-size: map-deep-merge(
 		border-bottom-width: 1px,
 		font-size: $cadmin-navbar-font-size,
 		height: 48px,
-		link-padding-x: 16px,
 		padding-x: 0px,
 		padding-y: 0px,
+
+		link-padding-x: 16px,
 
 		nav-item-dropdown-margin-top: 0px,
 

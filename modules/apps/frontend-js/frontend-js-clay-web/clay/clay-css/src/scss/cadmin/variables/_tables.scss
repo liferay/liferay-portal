@@ -492,14 +492,13 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 	(
 		td: (
 			before: (
+				bottom: calc(#{$cadmin-table-border-width} * -1),
 				box-shadow: (
 					inset 0 2px 0 0 $cadmin-primary-l0,
 					inset 0 4px 0 0 $cadmin-white,
 					inset 0 -2px 0 0 $cadmin-primary-l0,
 					inset 0 -4px 0 0 $cadmin-white,
 				),
-
-				bottom: calc(#{$cadmin-table-border-width} * -1),
 				content: '',
 				display: block,
 				left: calc(#{$cadmin-table-border-width} * -1),
@@ -512,12 +511,11 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 
 			first-child: (
 				after: (
+					bottom: $cadmin-table-border-width,
 					box-shadow: (
 						inset 2px 0 0 0 $cadmin-primary-l0,
 						inset 4px 0 0 0 $cadmin-white,
 					),
-
-					bottom: $cadmin-table-border-width,
 					content: '',
 					display: block,
 					left: calc(#{$cadmin-table-border-width} * -1),
@@ -531,12 +529,11 @@ $cadmin-c-tr-table-focus: map-deep-merge(
 
 			last-child: (
 				after: (
+					bottom: $cadmin-table-border-width,
 					box-shadow: (
 						inset -2px 0 0 0 $cadmin-primary-l0,
 						inset -4px 0 0 0 $cadmin-white,
 					),
-
-					bottom: $cadmin-table-border-width,
 					content: '',
 					display: block,
 					pointer-events: none,

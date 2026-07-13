@@ -348,8 +348,9 @@ $alert-notifications-absolute-top-mobile: 4.25rem !default;
 $alert-notifications-absolute: () !default;
 $alert-notifications-absolute: map-deep-merge(
 	(
-		bottom: $alert-notifications-absolute-bottom,
 		breakpoint-down: sm,
+
+		bottom: $alert-notifications-absolute-bottom,
 		height: 0rem,
 		left: $alert-notifications-absolute-left,
 		position: absolute,
@@ -386,8 +387,9 @@ $alert-notifications-fixed-top-mobile: null !default;
 $alert-notifications-fixed: () !default;
 $alert-notifications-fixed: map-deep-merge(
 	(
-		bottom: $alert-notifications-fixed-bottom,
 		breakpoint-down: sm,
+
+		bottom: $alert-notifications-fixed-bottom,
 		left: $alert-notifications-fixed-left,
 		position: fixed,
 		right: $alert-notifications-fixed-right,

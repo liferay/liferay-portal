@@ -105,6 +105,7 @@ $toggle-switch: () !default;
 $toggle-switch: map-deep-merge(
 	(
 		breakpoint-down: sm,
+
 		cursor: $toggle-switch-cursor,
 		display: inline-block,
 		font-weight: $toggle-switch-font-weight,
@@ -169,8 +170,9 @@ $toggle-switch-bar: map-deep-merge(
 $toggle-switch-check: () !default;
 $toggle-switch-check: map-deep-merge(
 	(
-		bottom: 0rem,
 		breakpoint-down: sm,
+
+		bottom: 0rem,
 		font-size: 62.5%,
 		height: $toggle-switch-bar-height,
 		opacity: 0,
@@ -474,6 +476,7 @@ $toggle-switch-text-left: () !default;
 $toggle-switch-text-left: map-merge(
 	(
 		breakpoint-down: sm,
+
 		display: inline-flex,
 		line-height: $toggle-switch-bar-height,
 		margin-right: 8px,
@@ -491,6 +494,7 @@ $toggle-switch-text-right: () !default;
 $toggle-switch-text-right: map-deep-merge(
 	(
 		breakpoint-down: sm,
+
 		display: inline-flex,
 		line-height: $toggle-switch-bar-height,
 		margin-left: 8px,
