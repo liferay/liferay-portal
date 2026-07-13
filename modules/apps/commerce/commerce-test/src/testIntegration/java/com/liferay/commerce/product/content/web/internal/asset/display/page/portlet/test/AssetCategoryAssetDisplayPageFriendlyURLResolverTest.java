@@ -119,6 +119,10 @@ public class AssetCategoryAssetDisplayPageFriendlyURLResolverTest {
 	public void testGetLayoutFriendlyURLCompositeWithHierarchicalEntry()
 		throws Exception {
 
+		// Reproduce the state left by the LPD-70396 backfill: the friendly URL
+		// entry is reparented from the flat default to the vocabulary, so the
+		// legacy flat lookup at PARENT_CLASS_PK_DEFAULT no longer finds it
+
 		AssetCategory assetCategory = _addAssetCategory();
 
 		FriendlyURLEntry friendlyURLEntry =
@@ -128,10 +132,6 @@ public class AssetCategoryAssetDisplayPageFriendlyURLResolverTest {
 
 		String languageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
-
-		// Reproduce the state left by the LPD-70396 backfill: the friendly URL
-		// entry is reparented from the flat default to the vocabulary, so the
-		// legacy flat lookup at PARENT_CLASS_PK_DEFAULT no longer finds it.
 
 		_friendlyURLEntryLocalService.updateFriendlyURLEntry(
 			friendlyURLEntry.getFriendlyURLEntryId(),
@@ -148,7 +148,7 @@ public class AssetCategoryAssetDisplayPageFriendlyURLResolverTest {
 	private AssetCategory _addAssetCategory() throws Exception {
 
 		// The Commerce category resolver looks up the friendly URL entry in the
-		// company group, so the category must live there for /g/ to resolve.
+		// company group, so the category must live there for /g/ to resolve
 
 		_assetVocabulary = _assetVocabularyLocalService.addVocabulary(
 			TestPropsValues.getUserId(), _company.getGroupId(),
