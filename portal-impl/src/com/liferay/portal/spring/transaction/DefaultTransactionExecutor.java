@@ -6,6 +6,7 @@
 package com.liferay.portal.spring.transaction;
 
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionLifecycleManager;
 
 import org.springframework.transaction.PlatformTransactionManager;
@@ -68,7 +69,22 @@ public class DefaultTransactionExecutor implements TransactionExecutor {
 		T returnValue = null;
 
 		try {
-			returnValue = unsafeSupplier.get();
+			if (transactionAttributeAdapter.getPropagation() ==
+					Propagation.NESTED) {
+
+				if (transactionStatusAdapter.isNewTransaction()) {
+					returnValue = _invokeWithNewTransaction(unsafeSupplier);
+				}
+				else {
+					returnValue = _invokeWithSavepoint(unsafeSupplier);
+				}
+			}
+			else if (transactionStatusAdapter.isNewTransaction()) {
+				returnValue = _invokeWithNewTransaction(unsafeSupplier);
+			}
+			else {
+				returnValue = _invokeWithAmbientTransaction(unsafeSupplier);
+			}
 		}
 		catch (Throwable throwable) {
 			rollback(
@@ -162,6 +178,27 @@ public class DefaultTransactionExecutor implements TransactionExecutor {
 			transactionAttributeAdapter, transactionStatusAdapter);
 
 		return transactionStatusAdapter;
+	}
+
+	private <T> T _invokeWithAmbientTransaction(
+			UnsafeSupplier<T, Throwable> unsafeSupplier)
+		throws Throwable {
+
+		return unsafeSupplier.get();
+	}
+
+	private <T> T _invokeWithNewTransaction(
+			UnsafeSupplier<T, Throwable> unsafeSupplier)
+		throws Throwable {
+
+		return unsafeSupplier.get();
+	}
+
+	private <T> T _invokeWithSavepoint(
+			UnsafeSupplier<T, Throwable> unsafeSupplier)
+		throws Throwable {
+
+		return unsafeSupplier.get();
 	}
 
 	private final PlatformTransactionManager _platformTransactionManager;

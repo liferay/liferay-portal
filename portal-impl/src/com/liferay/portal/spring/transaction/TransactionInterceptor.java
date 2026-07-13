@@ -7,6 +7,7 @@ package com.liferay.portal.spring.transaction;
 
 import com.liferay.portal.kernel.aop.AopMethodInvocation;
 import com.liferay.portal.kernel.aop.ChainableMethodAdvice;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
 import java.lang.annotation.Annotation;
@@ -65,7 +66,26 @@ public class TransactionInterceptor extends ChainableMethodAdvice {
 		Object returnValue = null;
 
 		try {
-			returnValue = aopMethodInvocation.proceed(arguments);
+			if (transactionAttributeAdapter.getPropagation() ==
+					Propagation.NESTED) {
+
+				if (transactionStatusAdapter.isNewTransaction()) {
+					returnValue = _invokeWithNewTransaction(
+						aopMethodInvocation, arguments);
+				}
+				else {
+					returnValue = _invokeWithSavepoint(
+						aopMethodInvocation, arguments);
+				}
+			}
+			else if (transactionStatusAdapter.isNewTransaction()) {
+				returnValue = _invokeWithNewTransaction(
+					aopMethodInvocation, arguments);
+			}
+			else {
+				returnValue = _invokeWithAmbientTransaction(
+					aopMethodInvocation, arguments);
+			}
 		}
 		catch (Throwable throwable) {
 			_transactionExecutor.rollback(
@@ -77,6 +97,27 @@ public class TransactionInterceptor extends ChainableMethodAdvice {
 			transactionAttributeAdapter, transactionStatusAdapter);
 
 		return returnValue;
+	}
+
+	private Object _invokeWithAmbientTransaction(
+			AopMethodInvocation aopMethodInvocation, Object[] arguments)
+		throws Throwable {
+
+		return aopMethodInvocation.proceed(arguments);
+	}
+
+	private Object _invokeWithNewTransaction(
+			AopMethodInvocation aopMethodInvocation, Object[] arguments)
+		throws Throwable {
+
+		return aopMethodInvocation.proceed(arguments);
+	}
+
+	private Object _invokeWithSavepoint(
+			AopMethodInvocation aopMethodInvocation, Object[] arguments)
+		throws Throwable {
+
+		return aopMethodInvocation.proceed(arguments);
 	}
 
 	private final TransactionExecutor _transactionExecutor;
