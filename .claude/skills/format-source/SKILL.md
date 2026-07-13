@@ -39,6 +39,47 @@ Skip generated files. The automatic formatter already does this via `BaseSourceP
 
 These files are overwritten on the next build, so manual edits are lost and only pollute the diff.
 
+## Shell Scripts
+
+Shell scripts (`*.sh`) follow a separate style guide maintained in the `liferay-docker` repository, not the manual rules below. Defer their formatting to the `format-bash-source` skill and the `CODE_STYLE.md` it depends on. Resolve both files in this order:
+
+1. **Local Checkout** — when `liferay-docker` sits beside this repository, read `../liferay-docker/.claude/skills/format-bash-source/SKILL.md` and `../liferay-docker/.claude/CODE_STYLE.md`.
+
+1. **Remote Fallback** — when the local checkout is absent, download both files from `raw.githubusercontent.com` and read them from there:
+
+	```bash
+	curl \
+		--output "${temp_dir}/format-bash-source.md" \
+		--silent \
+		--url "https://raw.githubusercontent.com/liferay/liferay-docker/refs/heads/master/.claude/skills/format-bash-source/SKILL.md"
+
+	curl \
+		--output "${temp_dir}/CODE_STYLE.md" \
+		--silent \
+		--url "https://raw.githubusercontent.com/liferay/liferay-docker/refs/heads/master/.claude/CODE_STYLE.md"
+	```
+
+For any `*.sh` file in scope, read the resolved `format-bash-source` `SKILL.md` and the `CODE_STYLE.md` it points to, then apply those rules in place of the manual rules in this document.
+
+### Portal-Exclusive Rule: Bash Scripts Under `cloud/` Exit on First Failure
+
+Every `liferay-portal` shell script follows the delegated Bash Code Style. Scripts under `cloud/` must also satisfy the rule below, which is exclusive to `liferay-portal` and has no counterpart in liferay-docker's `CODE_STYLE.md`.
+
+**Why:** Without an explicit fail-fast directive, a failing command silently passes through to the next; the `set -o errexit` / `set -o nounset` / `set -o pipefail` block at the top of the script makes failures, unset variables, and broken pipeline stages surface immediately.
+
+**Examples:**
+
+```diff
+ #!/usr/bin/env bash
+
++set -o errexit
++set -o nounset
++set -o pipefail
++
+ _execute "step-1"
+ _execute "step-2"
+```
+
 ## Rules
 
 ### Rule 1: Chained Method Call Ordering
@@ -764,25 +805,7 @@ Separate must-be-first or must-be-last items from the sorted block:
 +FooResource fooResource = factory.create();
 ```
 
-### Rule 38: Bash Scripts Exit on First Failure
-
-**Why:** Without an explicit fail-fast directive, a failing command silently passes through to the next; the `set -o errexit` / `set -o nounset` / `set -o pipefail` block at the top of the script makes failures, unset variables, and broken pipeline stages surface immediately.
-
-**Examples:**
-
-```diff
--#!/bin/bash
-+#!/usr/bin/env bash
-+
-+set -o errexit
-+set -o nounset
-+set -o pipefail
-
- _execute "step-1"
- _execute "step-2"
-```
-
-### Rule 39: Class-Level Constants Live at the Top of the Class, Sorted
+### Rule 38: Class-Level Constants Live at the Top of the Class, Sorted
 
 **Why:** Constants scattered between methods force the reader to scan the whole class to confirm what is and is not a constant; a single sorted block at the top, after fields, is the canonical place to look.
 
@@ -810,7 +833,7 @@ Separate must-be-first or must-be-last items from the sorted block:
  }
 ```
 
-### Rule 40: Methods Used Only Inside the Class Must Be `private`
+### Rule 39: Methods Used Only Inside the Class Must Be `private`
 
 **Why:** Default or `public` visibility on a class-internal method overstates the contract; a reader cannot tell from the signature alone whether external callers exist, and tooling cannot prune the method when its callers go away.
 
@@ -823,7 +846,7 @@ Separate must-be-first or must-be-last items from the sorted block:
  }
 ```
 
-### Rule 41: Method Names Start With a Verb
+### Rule 40: Method Names Start With a Verb
 
 **Why:** A method represents an action, so its name should begin with one (`get`, `set`, `is`, `make`, `attach`, `verify`, …); a noun-only name reads as a field, not a call.
 
@@ -836,7 +859,7 @@ Separate must-be-first or must-be-last items from the sorted block:
  }
 ```
 
-### Rule 42: Constant Names Lead With Their Group Prefix
+### Rule 41: Constant Names Lead With Their Group Prefix
 
 **Why:** When constant names begin with their category (`<PREFIX>_<KIND>_<VALUE>`), an alphabetical sort places every member of the group together; leading with the value scatters the group across the file.
 
@@ -849,7 +872,7 @@ Separate must-be-first or must-be-last items from the sorted block:
 +private static final String _BUNDLE_NAME_ENTERPRISE_APP = "...";
 ```
 
-### Rule 43: Blank Line Between Dependent Resources in `try`-With-Resources
+### Rule 42: Blank Line Between Dependent Resources in `try`-With-Resources
 
 **Why:** When a multiresource `try` mixes independent resources with one that consumes them, a blank line between the independent group and the consumer makes the dependency visible at the resource declaration level instead of forcing the reader to trace it through the body.
 
@@ -863,7 +886,7 @@ Separate must-be-first or must-be-last items from the sorted block:
  	ResultSet resultSet = preparedStatement1.executeQuery()) {
 ```
 
-### Rule 44: Do Not Wrap and Rethrow a Checked Exception
+### Rule 43: Do Not Wrap and Rethrow a Checked Exception
 
 **Why:** Wrapping a caught exception in a generic runtime exception (or a framework-specific equivalent) hides both the original type and the original stack frame; the first choice is to let the original propagate by declaring it on the method.
 
@@ -881,7 +904,7 @@ Separate must-be-first or must-be-last items from the sorted block:
 
 **Exception:** When the method signature cannot be changed (an interface override, a callback whose contract forbids the checked type), wrapping is the necessary escape hatch. Use a known utility (`ReflectionUtil.throwException`, `_log.error` plus a domain-specific runtime type) and keep the original as the cause so the stack frame survives.
 
-### Rule 45: Drop Defensive `Math.ceil` on Whole-Unit Division
+### Rule 44: Drop Defensive `Math.ceil` on Whole-Unit Division
 
 **Why:** When converting a whole-unit value (milliseconds to seconds, bytes to kilobytes) for an input whose realistic values are already multiples of the divisor, `Math.ceil` adds a double promotion and a primitive cast that all collapse for any actual input; integer division does the same job.
 
@@ -892,7 +915,7 @@ Separate must-be-first or must-be-last items from the sorted block:
 +long seconds = milliseconds / 1000;
 ```
 
-### Rule 46: Burrito — Declarations Before Configuration, Outer Before Inner
+### Rule 45: Burrito — Declarations Before Configuration, Outer Before Inner
 
 **Why:** Grouping all declarations together and all configuration together — with the outermost/output object first — makes the purpose of a block visible upfront and eliminates "spaghetti" code where create-and-configure steps are interleaved as you descend the dependency chain.
 
@@ -961,7 +984,7 @@ In Mockito-based tests the same rule applies: declare all mocks first in outer-t
 
 This is the complement of Rule 14: intermediate input variables move down (next to first use), while output and wrapping variables move up (declared before the code that feeds them).
 
-### Rule 47: Parameter-Aligned Variable Naming
+### Rule 46: Parameter-Aligned Variable Naming
 
 **Why:** When a local variable carries a value directly into a method call, naming it after the method's parameter makes the call site self-documenting and eliminates the translation overhead for the reader who must otherwise reconcile a synonym with the method signature.
 
@@ -1004,7 +1027,7 @@ The same applies when renaming a method or its parameter to match the vocabulary
 
 When you rename a local, propagate the new name to every call site, every parameter that passes it on, and every private helper that receives it.
 
-### Rule 48: Chicago Title Case for Titles in Language Properties
+### Rule 47: Chicago Title Case for Titles in Language Properties
 
 **Why:** Titles in `Language.properties` — labels, headings, button text, dropdown options, filter values — follow the Chicago Manual of Style: capitalize the first word, the last word, and every major word (nouns, verbs, adjectives, adverbs, pronouns), and keep articles, coordinating conjunctions, and prepositions lowercase. Sentences and inline phrases stay in sentence case; full sentences fall under Rule 18.
 
