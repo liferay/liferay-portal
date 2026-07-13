@@ -141,7 +141,8 @@ public class ObjectEntryLayoutDisplayPageObjectProvider
 			List<ObjectEntry> objectEntries =
 				_objectEntryLocalService.getOneToManyObjectEntries(
 					getGroupId(), objectRelationship.getObjectRelationshipId(),
-					null, true, _objectEntry.getObjectEntryId(), true, null,
+					null, _objectEntry.isApproved(),
+					_objectEntry.getObjectEntryId(), true, null,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 			ObjectDefinition objectDefinition =
