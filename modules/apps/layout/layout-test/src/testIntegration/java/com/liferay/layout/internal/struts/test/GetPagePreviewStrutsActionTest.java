@@ -151,9 +151,9 @@ public class GetPagePreviewStrutsActionTest {
 		Layout layout = _addLayout(group, false, LayoutConstants.TYPE_CONTENT);
 
 		_layoutSetLocalService.updateLookAndFeel(
-			group.getGroupId(), false, "dialect_WAR_dialecttheme", null, null);
+			group.getGroupId(), false, "cms_WAR_cmstheme", null, null);
 
-		_assertContainsContent("dialect_WAR_dialecttheme");
+		_assertContainsContent("cms_WAR_cmstheme");
 
 		_layoutLocalService.updateLookAndFeel(
 			group.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
