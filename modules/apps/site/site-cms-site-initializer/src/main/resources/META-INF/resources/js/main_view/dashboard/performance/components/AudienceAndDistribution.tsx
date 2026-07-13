@@ -4,7 +4,7 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {ChartState, PieChart} from '@liferay/frontend-js-charts-web';
+import {ChartState, MapChart, PieChart} from '@liferay/frontend-js-charts-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {BaseCard} from '../../common/BaseCard';
@@ -129,7 +129,17 @@ function Card({
 						legend="table"
 						title=""
 					/>
-				) : null}
+				) : (
+					<MapChart
+						data={metrics.map(({value, valueKey}) => ({
+							country: valueKey,
+							value,
+						}))}
+						legend="list"
+						title=""
+						variant="choropleth"
+					/>
+				)}
 			</ChartState>
 		</BaseCard>
 	);
