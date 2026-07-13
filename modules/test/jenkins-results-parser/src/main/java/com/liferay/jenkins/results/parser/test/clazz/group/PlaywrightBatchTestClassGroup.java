@@ -709,9 +709,14 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		try {
 			String buildGradle = JenkinsResultsParserUtil.read(buildGradleFile);
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(buildGradle) &&
-				buildGradle.contains("task runPlaywright")) {
+			if (JenkinsResultsParserUtil.isNullOrEmpty(buildGradle)) {
+				return _hasRunPlaywrightGradleTask;
+			}
 
+			Matcher matcher = _runPlaywrightGradleTaskPattern.matcher(
+				buildGradle);
+
+			if (matcher.find()) {
 				_hasRunPlaywrightGradleTask = true;
 			}
 		}
@@ -1080,6 +1085,11 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 	private static JSONObject _playwrightJSONObject;
 	private static final AtomicBoolean _playwrightJSONObjectsLoaded =
 		new AtomicBoolean();
+	private static final Pattern _runPlaywrightGradleTaskPattern =
+		Pattern.compile(
+			"^\\s*(task\\s+runPlaywright\\b|tasks\\.(create|register)\\s*\\(" +
+				"\\s*[\"']runPlaywright[\"'])",
+			Pattern.MULTILINE);
 
 	private Boolean _hasRunPlaywrightGradleTask;
 	private final Set<String> _projectNames = new HashSet<>();
