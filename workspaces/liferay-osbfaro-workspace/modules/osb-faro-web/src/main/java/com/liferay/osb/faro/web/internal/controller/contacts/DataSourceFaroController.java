@@ -19,6 +19,7 @@ import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
+import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Event;
 import com.liferay.osb.faro.engine.client.model.Field;
@@ -459,6 +460,30 @@ public class DataSourceFaroController extends BaseFaroController {
 		faroProjectLocalService.updateFaroProject(faroProject);
 	}
 
+	@Path("/field-catalog")
+	@POST
+	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	public Map<String, List<DataSourceFieldCatalogEntry>> discoverFieldCatalog(
+			@PathParam("groupId") long groupId,
+			@FormParam("credentials") Credentials credentials,
+			@FormParam("url") String url)
+		throws Exception {
+
+		DataSource dataSource = new DataSource();
+
+		url = getURL(url);
+
+		dataSource.setCredentials(
+			processCredentials(SalesforceProvider.TYPE, credentials, url));
+
+		dataSource.setProvider(new SalesforceProvider());
+		dataSource.setUrl(url);
+
+		return contactsEngineClient.discoverDataSourceFieldCatalog(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId),
+			dataSource);
+	}
+
 	public String generateDataSourceAccessToken(
 		long groupId, long faroProjectId) {
 
@@ -894,6 +919,19 @@ public class DataSourceFaroController extends BaseFaroController {
 	}
 
 	@GET
+	@Path("/{id}/field-catalog")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public Map<String, List<DataSourceFieldCatalogEntry>> getFieldCatalog(
+			@PathParam("groupId") long groupId, @PathParam("id") String id,
+			@QueryParam("refresh") boolean refresh)
+		throws Exception {
+
+		return contactsEngineClient.getDataSourceFieldCatalog(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
+			refresh);
+	}
+
+	@GET
 	@Path("/field_values")
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public List<FieldValuesDisplay> getFieldValuesDisplays(
@@ -1127,6 +1165,20 @@ public class DataSourceFaroController extends BaseFaroController {
 			DXPUserGroupDisplay::new;
 
 		return new FaroResultsDisplay(results, function);
+	}
+
+	@PATCH
+	@Path("/{id}/field-selection")
+	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	public void patchFieldSelection(
+			@PathParam("groupId") long groupId, @PathParam("id") String id,
+			@DefaultValue(StringPool.BLANK) @FormParam("fieldSelection")
+				FaroParam<Map<String, Set<String>>> fieldSelectionFaroParam)
+		throws Exception {
+
+		contactsEngineClient.updateDataSourceFieldSelection(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
+			fieldSelectionFaroParam.getValue());
 	}
 
 	@PATCH

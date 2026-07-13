@@ -9,6 +9,7 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
+import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.FieldMapping;
 import com.liferay.osb.faro.engine.client.model.Provider;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -38,9 +40,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -267,6 +271,47 @@ public class DataSourceFaroControllerTest {
 	}
 
 	@Test
+	public void testDiscoverFieldCatalog() throws Exception {
+		Map<String, List<DataSourceFieldCatalogEntry>>
+			dataSourceFieldCatalogEntries =
+				HashMapBuilder.<String, List<DataSourceFieldCatalogEntry>>put(
+					"ACCOUNT",
+					Arrays.asList(
+						new DataSourceFieldCatalogEntry(
+							"Name", true, true, "string"))
+				).build();
+
+		Mockito.when(
+			_contactsEngineClient.discoverDataSourceFieldCatalog(
+				Mockito.eq(_faroProject), Mockito.any(DataSource.class))
+		).thenReturn(
+			dataSourceFieldCatalogEntries
+		);
+
+		Assert.assertSame(
+			dataSourceFieldCatalogEntries,
+			_dataSourceFaroController.discoverFieldCatalog(
+				32719L, null, "https://test.my.salesforce.com/"));
+
+		ArgumentCaptor<DataSource> argumentCaptor = ArgumentCaptor.forClass(
+			DataSource.class);
+
+		Mockito.verify(
+			_contactsEngineClient
+		).discoverDataSourceFieldCatalog(
+			Mockito.eq(_faroProject), argumentCaptor.capture()
+		);
+
+		DataSource dataSource = argumentCaptor.getValue();
+
+		Assert.assertTrue(
+			dataSource.getProvider() instanceof SalesforceProvider);
+		Assert.assertEquals(
+			"https://test.my.salesforce.com", dataSource.getUrl());
+		Assert.assertNull(dataSource.getCredentials());
+	}
+
+	@Test
 	public void testGenerateDataSourceAccessToken() throws Exception {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
@@ -341,6 +386,54 @@ public class DataSourceFaroControllerTest {
 		Assert.assertEquals(
 			dataSourceMappingDisplays.toString(), 13,
 			dataSourceMappingDisplays.size());
+	}
+
+	@Test
+	public void testGetFieldCatalog() throws Exception {
+		Map<String, List<DataSourceFieldCatalogEntry>>
+			dataSourceFieldCatalogEntries =
+				HashMapBuilder.<String, List<DataSourceFieldCatalogEntry>>put(
+					"ACCOUNT",
+					Arrays.asList(
+						new DataSourceFieldCatalogEntry(
+							"Industry", false, false, "picklist"),
+						new DataSourceFieldCatalogEntry(
+							"Name", true, true, "string"))
+				).build();
+
+		Mockito.when(
+			_contactsEngineClient.getDataSourceFieldCatalog(
+				_faroProject, "32783", true)
+		).thenReturn(
+			dataSourceFieldCatalogEntries
+		);
+
+		Assert.assertSame(
+			dataSourceFieldCatalogEntries,
+			_dataSourceFaroController.getFieldCatalog(32719L, "32783", true));
+
+		Mockito.verify(
+			_contactsEngineClient
+		).getDataSourceFieldCatalog(
+			_faroProject, "32783", true
+		);
+	}
+
+	@Test
+	public void testPatchFieldSelection() throws Exception {
+		Map<String, Set<String>> selectedFieldNames =
+			HashMapBuilder.<String, Set<String>>put(
+				"ACCOUNT", new HashSet<>(Arrays.asList("Industry", "Name"))
+			).build();
+
+		_dataSourceFaroController.patchFieldSelection(
+			32719L, "32783", new FaroParam<>(selectedFieldNames));
+
+		Mockito.verify(
+			_contactsEngineClient
+		).updateDataSourceFieldSelection(
+			_faroProject, "32783", selectedFieldNames
+		);
 	}
 
 	@Test
