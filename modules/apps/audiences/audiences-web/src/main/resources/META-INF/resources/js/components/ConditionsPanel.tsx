@@ -140,7 +140,6 @@ export default function ConditionsPanel({
 								type: 'SET_CONJUNCTION',
 							})
 						}
-						rulesCount={rules.length}
 					/>
 
 					<div
@@ -220,57 +219,34 @@ export default function ConditionsPanel({
 interface ConjunctionBarProps {
 	conjunction: string;
 	onConjunctionChange: (conjunction: string) => void;
-	rulesCount: number;
 }
 
 function ConjunctionBar({
 	conjunction,
 	onConjunctionChange,
-	rulesCount,
 }: ConjunctionBarProps) {
 	return (
-		<div className="align-items-center bg-lighter border-top d-flex p-3">
-			<div className="mr-3">
-				<Picker
-					UNSAFE_menuClassName="audience-builder-conjunction-menu"
-					aria-label={Liferay.Language.get('conjunction')}
-					className="form-control-sm text-uppercase w-auto"
-					items={[
-						{
-							label: Liferay.Language.get('and'),
-							value: 'AND',
-						},
-						{
-							label: Liferay.Language.get('or'),
-							value: 'OR',
-						},
-					]}
-					onSelectionChange={(key) =>
-						onConjunctionChange(key as string)
-					}
-					selectedKey={conjunction}
-				>
-					{(item) => <Option key={item.value}>{item.label}</Option>}
-				</Picker>
-			</div>
+		<div className="align-items-center bg-lighter border-top c-gap-2 d-flex p-3 text-3 text-secondary">
+			<Picker
+				aria-label={Liferay.Language.get('conjunction')}
+				className="form-control-sm w-auto"
+				items={[
+					{
+						label: Liferay.Language.get('all'),
+						value: 'AND',
+					},
+					{
+						label: Liferay.Language.get('any'),
+						value: 'OR',
+					},
+				]}
+				onSelectionChange={(key) => onConjunctionChange(key as string)}
+				selectedKey={conjunction}
+			>
+				{(item) => <Option key={item.value}>{item.label}</Option>}
+			</Picker>
 
-			<span className="text-2 text-secondary">
-				{conjunction === 'OR'
-					? Liferay.Language.get('any-rule-must-match')
-					: Liferay.Language.get('all-rules-must-match')}
-
-				{' · '}
-
-				{rulesCount === 1
-					? Liferay.Util.sub(
-							Liferay.Language.get('x-criterion'),
-							rulesCount
-						)
-					: Liferay.Util.sub(
-							Liferay.Language.get('x-criteria'),
-							rulesCount
-						)}
-			</span>
+			{Liferay.Language.get('of-these-criteria-are-met')}
 		</div>
 	);
 }
