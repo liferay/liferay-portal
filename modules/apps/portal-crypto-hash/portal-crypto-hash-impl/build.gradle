@@ -9,4 +9,5 @@ dependencies {
 	testImplementation group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
 	testImplementation project(":apps:portal-crypto-hash:portal-crypto-hash-provider:portal-crypto-hash-provider-bcrypt")
 	testImplementation project(":apps:portal-crypto-hash:portal-crypto-hash-provider:portal-crypto-hash-provider-message-digest")
+	testImplementation project(":core:petra:petra-lang")
 }

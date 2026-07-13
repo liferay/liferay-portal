@@ -12,7 +12,9 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.lang.reflect.Method;
 
@@ -23,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +40,37 @@ public class FIPSModeValidator {
 		_validateFIPSProvider(providers);
 		_validateProviders(providers);
 
-		_validatePasswordsEncryptionAlgorithm(
-			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
+		_validateProperties();
+	}
+
+	public static void validateAlgorithm(String algorithm) {
+		if (!PropsValues.FIPS_ENABLED) {
+			return;
+		}
+
+		if (Validator.isNotNull(algorithm)) {
+			for (String allowedAlgorithm : _allowedAlgorithms) {
+				if (StringUtil.startsWith(algorithm, allowedAlgorithm)) {
+					return;
+				}
+			}
+		}
+
+		throw new SecurityException(
+			"Algorithm \"" + algorithm + "\" is not allowed in FIPS mode");
+	}
+
+	public static void validateKey(String algorithm, int keySize) {
+		if (!PropsValues.FIPS_ENABLED) {
+			return;
+		}
+
+		validateAlgorithm(algorithm);
+
+		if ((keySize != 0) && !_allowedKeySizes.contains(keySize)) {
+			throw new SecurityException(
+				"AES key must be 128, 192, or 256 bits");
+		}
 	}
 
 	private static void _validateFIPSProvider(Provider[] providers) {
@@ -183,6 +215,18 @@ public class FIPSModeValidator {
 		}
 	}
 
+	private static void _validateProperties() {
+		if (GetterUtil.getBoolean(PropsUtil.get(PropsKeys.AUTH_MAC_ALLOW))) {
+			validateAlgorithm(PropsUtil.get(PropsKeys.AUTH_MAC_ALGORITHM));
+		}
+
+		validateAlgorithm(
+			PropsUtil.get(PropsKeys.COMPANY_ENCRYPTION_ALGORITHM));
+		validateAlgorithm(PropsValues.TUNNELING_SERVLET_ENCRYPTION_ALGORITHM);
+		_validatePasswordsEncryptionAlgorithm(
+			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
+	}
+
 	private static void _validateProviders(Provider[] providers) {
 		Provider provider = providers[0];
 
@@ -210,6 +254,11 @@ public class FIPSModeValidator {
 	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN =
 		1300000;
 
+	private static final Set<String> _allowedAlgorithms = Set.of(
+		"AES", "HmacSHA256", "HmacSHA384", "HmacSHA512", "PBKDF2WithHmacSHA256",
+		"PBKDF2WithHmacSHA384", "PBKDF2WithHmacSHA512", "SHA-256", "SHA-384",
+		"SHA-512");
+	private static final Set<Integer> _allowedKeySizes = Set.of(128, 192, 256);
 	private static final Map<String, List<String>> _allowedProviderNames =
 		Map.of(
 			"AmazonCorrettoCryptoProvider",
