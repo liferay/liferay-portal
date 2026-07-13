@@ -455,46 +455,18 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 					RandomTestUtil.randomString(), TestPropsValues.getUserId());
 			});
 
-		InputStream inputStream = getResourceInputStream(
-			"service-node-workflow-definition.json");
+		byte[] bytes = FileUtil.getBytes(
+			getResourceInputStream("service-node-workflow-definition.json"));
 
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.deployWorkflowDefinition(
-				FileUtil.getBytes(inputStream), TestPropsValues.getCompanyId(),
-				RandomTestUtil.randomString(),
-				"Service Node Workflow Definition",
-				RandomTestUtil.randomString(), TestPropsValues.getUserId());
+		_assertServiceNodeWorkflowDefinition(
+			bytes, "com.example.Converter#convert");
 
-		List<WorkflowNode> workflowNodes =
-			workflowDefinition.getWorkflowNodes();
+		String content = StringUtil.replace(
+			new String(bytes), "com.example.Converter#convert",
+			"com.example.Converter#scope#convert");
 
-		WorkflowNode workflowNode = workflowNodes.get(2);
-
-		Assert.assertEquals(WorkflowNode.Type.SERVICE, workflowNode.getType());
-
-		_assertEquals(
-			List.of(
-				_createWorkflowNodeSetting(
-					"inputVariables",
-					JSONUtil.put(
-						JSONUtil.put(
-							"name", "input"
-						).put(
-							"type", "string"
-						)
-					).toString()),
-				_createWorkflowNodeSetting(
-					"javaDelegate", "com.example.Converter#convert"),
-				_createWorkflowNodeSetting(
-					"outputVariables",
-					JSONUtil.put(
-						JSONUtil.put(
-							"name", "output"
-						).put(
-							"type", "string"
-						)
-					).toString())),
-			workflowNode.getWorkflowNodeSettings());
+		_assertServiceNodeWorkflowDefinition(
+			content.getBytes(), "com.example.Converter#scope#convert");
 	}
 
 	@Test
@@ -941,6 +913,48 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 		}
 
 		return null;
+	}
+
+	private void _assertServiceNodeWorkflowDefinition(
+			byte[] bytes, String javaDelegate)
+		throws Exception {
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				bytes, TestPropsValues.getCompanyId(),
+				RandomTestUtil.randomString(),
+				"Service Node Workflow Definition",
+				RandomTestUtil.randomString(), TestPropsValues.getUserId());
+
+		List<WorkflowNode> workflowNodes =
+			workflowDefinition.getWorkflowNodes();
+
+		WorkflowNode workflowNode = workflowNodes.get(2);
+
+		Assert.assertEquals(WorkflowNode.Type.SERVICE, workflowNode.getType());
+
+		_assertEquals(
+			List.of(
+				_createWorkflowNodeSetting(
+					"inputVariables",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "input"
+						).put(
+							"type", "string"
+						)
+					).toString()),
+				_createWorkflowNodeSetting("javaDelegate", javaDelegate),
+				_createWorkflowNodeSetting(
+					"outputVariables",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "output"
+						).put(
+							"type", "string"
+						)
+					).toString())),
+			workflowNode.getWorkflowNodeSettings());
 	}
 
 	private void _assertValid(InputStream inputStream) throws Exception {
