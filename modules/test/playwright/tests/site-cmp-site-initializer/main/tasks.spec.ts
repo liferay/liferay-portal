@@ -513,6 +513,68 @@ test(
 );
 
 test(
+	'Calendar view switches between day, week, and month views',
+	{tag: ['@LPD-69885', '@LPD-94174']},
+	async ({page, projectPage, projectsPage, tasksPage}) => {
+		const {calendarView} = tasksPage;
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await expect(calendarView.title).toBeVisible();
+		});
+
+		// The FDS view selector keeps focus after selecting Calendar and its
+		// tooltip overlaps the view switcher, so blur it before clicking.
+
+		await page.evaluate(() =>
+			(document.activeElement as HTMLElement)?.blur()
+		);
+
+		await test.step('Switch to the week view', async () => {
+			await calendarView.weekViewButton.click();
+
+			await expect(page.locator('.fc-dayGridWeek-view')).toBeVisible();
+
+			await expect(calendarView.weekViewButton).toHaveAttribute(
+				'aria-pressed',
+				'true'
+			);
+		});
+
+		await test.step('Switch to the day view', async () => {
+			await calendarView.dayViewButton.click();
+
+			await expect(page.locator('.fc-dayGridDay-view')).toBeVisible();
+
+			await expect(calendarView.dayViewButton).toHaveAttribute(
+				'aria-pressed',
+				'true'
+			);
+		});
+
+		await test.step('Switch back to the month view', async () => {
+			await calendarView.monthViewButton.click();
+
+			await expect(page.locator('.fc-dayGridMonth-view')).toBeVisible();
+
+			await expect(calendarView.monthViewButton).toHaveAttribute(
+				'aria-pressed',
+				'true'
+			);
+		});
+	}
+);
+
+test(
 	"Calendar's task actions are displayed",
 	{tag: ['@LPD-69885', '@LPD-96185']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
