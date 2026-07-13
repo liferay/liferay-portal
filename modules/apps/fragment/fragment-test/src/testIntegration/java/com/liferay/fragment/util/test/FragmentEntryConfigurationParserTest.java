@@ -84,21 +84,8 @@ public class FragmentEntryConfigurationParserTest {
 
 		Layout layout1 = LayoutTestUtil.addTypeContentLayout(group1);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group1.getGroupId());
-
-		HttpServletRequest mockHttpServletRequest =
-			ContentLayoutTestUtil.getMockHttpServletRequest(
-				_companyLocalService.getCompany(group1.getCompanyId()), group1,
-				layout1);
-
-		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			new MockLiferayPortletRenderResponse());
-
-		serviceContext.setRequest(mockHttpServletRequest);
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+		ServiceContext serviceContext = _getAndPushServiceContext(
+			group1, layout1);
 
 		String name = RandomTestUtil.randomString();
 
@@ -207,6 +194,28 @@ public class FragmentEntryConfigurationParserTest {
 	@Test
 	public void testTranslateConfigurationEs() throws Exception {
 		_testTranslateConfiguration("es");
+	}
+
+	private ServiceContext _getAndPushServiceContext(Group group, Layout layout)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		HttpServletRequest mockHttpServletRequest =
+			ContentLayoutTestUtil.getMockHttpServletRequest(
+				_companyLocalService.getCompany(group.getCompanyId()), group,
+				layout);
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletRenderResponse());
+
+		serviceContext.setRequest(mockHttpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		return serviceContext;
 	}
 
 	private ResourceBundle _getResourceBundle(String language) {
