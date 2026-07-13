@@ -7,6 +7,7 @@ package com.liferay.info.item;
 
 import com.liferay.info.item.provider.filter.InfoItemServiceFilter;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Objects;
 
@@ -37,7 +38,9 @@ public class ERCInfoItemIdentifier extends BaseInfoItemIdentifier {
 
 		this(externalReferenceCode, scopeExternalReferenceCode);
 
-		setVersion(version);
+		if (Validator.isNotNull(version)) {
+			setVersion(version);
+		}
 	}
 
 	@Override

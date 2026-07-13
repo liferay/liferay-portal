@@ -7,6 +7,7 @@ package com.liferay.info.item;
 
 import com.liferay.info.item.provider.filter.InfoItemServiceFilter;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Objects;
 
@@ -25,7 +26,9 @@ public class ClassPKInfoItemIdentifier extends BaseInfoItemIdentifier {
 	public ClassPKInfoItemIdentifier(long classPK, String version) {
 		this(classPK);
 
-		setVersion(version);
+		if (Validator.isNotNull(version)) {
+			setVersion(version);
+		}
 	}
 
 	@Override
