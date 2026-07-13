@@ -23,7 +23,7 @@ public class AudiencesEntryModelListener
 	@Override
 	public void onBeforeRemove(AudiencesEntry audiencesEntry) {
 		_segmentsExperienceAudienceEntryRelLocalService.
-			deleteSegmentsExperienceAudienceEntryRels(
+			deleteSegmentsExperienceAudienceEntryRelsByAudienceEntryERC(
 				audiencesEntry.getCompanyId(),
 				audiencesEntry.getExternalReferenceCode());
 	}
