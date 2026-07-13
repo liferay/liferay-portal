@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.Test;
 
 /**
@@ -14,34 +16,24 @@ public class RetryableTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testBreakLoop() {
-		BreakLoopRetryable breakLoopRetryable = new BreakLoopRetryable();
+		AtomicInteger executeCount = new AtomicInteger();
 
-		breakLoopRetryable.executeWithRetries();
+		Retryable<Void> retryable = new Retryable<Void>(false, 5, 0, false) {
 
-		testEquals("1", String.valueOf(breakLoopRetryable.getExecuteCount()));
-	}
+			@Override
+			public Void execute() {
+				executeCount.incrementAndGet();
 
-	private static class BreakLoopRetryable extends Retryable<Void> {
+				breakLoop();
 
-		public BreakLoopRetryable() {
-			super(false, 5, 0, false);
-		}
+				throw new RuntimeException(RandomTestUtil.randomString());
+			}
 
-		@Override
-		public Void execute() {
-			_executeCount++;
+		};
 
-			breakLoop();
+		retryable.executeWithRetries();
 
-			throw new RuntimeException(RandomTestUtil.randomString());
-		}
-
-		public int getExecuteCount() {
-			return _executeCount;
-		}
-
-		private int _executeCount;
-
+		testEquals("1", String.valueOf(executeCount.get()));
 	}
 
 }
