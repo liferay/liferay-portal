@@ -174,6 +174,38 @@ public class FragmentEntryConfigurationParserTest {
 	}
 
 	@Test
+	@TestInfo("LPD-97996")
+	public void testGetFieldValueURLConfiguration() throws Exception {
+		_testGetFieldValueURLConfiguration(null, StringPool.BLANK);
+		_testGetFieldValueURLConfiguration(null, RandomTestUtil.randomString());
+
+		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		ServiceContext serviceContext = _getAndPushServiceContext(
+			group, layout);
+
+		_testGetFieldValueURLConfiguration(
+			StringPool.POUND,
+			JSONUtil.put(
+				"layout",
+				JSONUtil.put(
+					"externalReferenceCode", RandomTestUtil.randomString())
+			).toString());
+
+		_testGetFieldValueURLConfiguration(
+			_portal.getLayoutFullURL(layout, serviceContext.getThemeDisplay()),
+			JSONUtil.put(
+				"layout",
+				JSONUtil.put(
+					"externalReferenceCode", layout.getExternalReferenceCode())
+			).toString());
+
+		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
 	@TestInfo("LPD-77079")
 	public void testGetFieldValueWithLocalizableFields() {
 		_testGetFieldValueWithLocalizableField(
@@ -232,6 +264,34 @@ public class FragmentEntryConfigurationParserTest {
 		return JSONFactoryUtil.createJSONObject(
 			new String(
 				FileUtil.getBytes(getClass(), "dependencies/" + fileName)));
+	}
+
+	private void _testGetFieldValueURLConfiguration(
+		Object expectedValue, String value) {
+
+		String name = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			expectedValue,
+			_fragmentEntryConfigurationParser.getFieldValue(
+				JSONUtil.put(
+					"fieldSets",
+					JSONUtil.put(
+						JSONUtil.put(
+							"fields",
+							JSONUtil.put(
+								JSONUtil.put(
+									"label", RandomTestUtil.randomString()
+								).put(
+									"name", name
+								).put(
+									"type", "url"
+								))))),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(name, value)),
+				name));
 	}
 
 	private void _testGetFieldValueWithLocalizableField(
