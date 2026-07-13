@@ -36,6 +36,7 @@ import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
+import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Distribution;
 import com.liferay.osb.faro.engine.client.model.Event;
@@ -67,6 +68,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -301,6 +303,15 @@ public abstract class BaseMockContactsEngineClientImpl
 		throws FaroEngineClientException {
 
 		contactsEngineClient.disconnectDataSources(faroProject);
+	}
+
+	@Override
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		discoverDataSourceFieldCatalog(
+			FaroProject faroProject, DataSource dataSource) {
+
+		return contactsEngineClient.discoverDataSourceFieldCatalog(
+			faroProject, dataSource);
 	}
 
 	@Override
@@ -705,6 +716,15 @@ public abstract class BaseMockContactsEngineClientImpl
 
 		return contactsEngineClient.getDataSourceDXPUserGroups(
 			faroProject, id, name, cur, delta);
+	}
+
+	@Override
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		getDataSourceFieldCatalog(
+			FaroProject faroProject, String id, boolean refresh) {
+
+		return contactsEngineClient.getDataSourceFieldCatalog(
+			faroProject, id, refresh);
 	}
 
 	@Override
@@ -1299,6 +1319,15 @@ public abstract class BaseMockContactsEngineClientImpl
 		return contactsEngineClient.updateDataSource(
 			faroProject, id, credentials, event, name, provider, status, url,
 			userId);
+	}
+
+	@Override
+	public void updateDataSourceFieldSelection(
+		FaroProject faroProject, String id,
+		Map<String, Set<String>> selectedFieldNames) {
+
+		contactsEngineClient.updateDataSourceFieldSelection(
+			faroProject, id, selectedFieldNames);
 	}
 
 	@Override

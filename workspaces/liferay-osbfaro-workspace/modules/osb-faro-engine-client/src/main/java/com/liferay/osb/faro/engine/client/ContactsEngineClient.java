@@ -35,6 +35,7 @@ import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
+import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Distribution;
 import com.liferay.osb.faro.engine.client.model.Event;
@@ -67,6 +68,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shinn Lok
@@ -170,6 +172,10 @@ public interface ContactsEngineClient {
 
 	public void disconnectDataSources(FaroProject faroProject)
 		throws FaroEngineClientException;
+
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		discoverDataSourceFieldCatalog(
+			FaroProject faroProject, DataSource dataSource);
 
 	public <T> T get(
 			FaroProject faroProject, Map<String, String> headers, String path,
@@ -356,6 +362,10 @@ public interface ContactsEngineClient {
 
 	public Results<DXPUserGroup> getDataSourceDXPUserGroups(
 		FaroProject faroProject, String id, String name, int cur, int delta);
+
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		getDataSourceFieldCatalog(
+			FaroProject faroProject, String id, boolean refresh);
 
 	public List<DataSourceField> getDataSourceFields(
 		FaroProject faroProject, String id, String context, int count);
@@ -641,6 +651,10 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String id, Credentials credentials,
 		Event event, String name, Provider provider, String status, String url,
 		long userId);
+
+	public void updateDataSourceFieldSelection(
+		FaroProject faroProject, String id,
+		Map<String, Set<String>> selectedFieldNames);
 
 	public FieldMapping updateFieldMapping(
 		FaroProject faroProject, String context,

@@ -45,6 +45,7 @@ import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
+import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Distribution;
 import com.liferay.osb.faro.engine.client.model.EntityModelPagedModel;
@@ -106,6 +107,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.osgi.service.component.annotations.Component;
@@ -571,6 +573,21 @@ public class ContactsEngineClientImpl
 
 		post(
 			faroProject, Rels.DATA_SOURCE_DISCONNECT_ALL, null, Void.class,
+			getUriVariables(faroProject));
+	}
+
+	@Override
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		discoverDataSourceFieldCatalog(
+			FaroProject faroProject, DataSource dataSource) {
+
+		dataSource.setWorkspaceURL(getWorkspaceURL(faroProject.getGroupId()));
+
+		return post(
+			faroProject, Rels.DATA_SOURCES_FIELDS, dataSource,
+			new ParameterizedTypeReference
+				<Map<String, List<DataSourceFieldCatalogEntry>>>() {
+			},
 			getUriVariables(faroProject));
 	}
 
@@ -1746,6 +1763,23 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
+	}
+
+	@Override
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+		getDataSourceFieldCatalog(
+			FaroProject faroProject, String id, boolean refresh) {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		uriVariables.put("refresh", refresh);
+
+		return get(
+			faroProject, Rels.DATA_SOURCE_FIELDS,
+			new ParameterizedTypeReference
+				<Map<String, List<DataSourceFieldCatalogEntry>>>() {
+			},
+			uriVariables);
 	}
 
 	@Override
@@ -3475,6 +3509,16 @@ public class ContactsEngineClientImpl
 		return put(
 			faroProject, Rels.DATA_SOURCE, dataSource, DataSource.class,
 			getUriVariables(faroProject, id));
+	}
+
+	@Override
+	public void updateDataSourceFieldSelection(
+		FaroProject faroProject, String id,
+		Map<String, Set<String>> selectedFieldNames) {
+
+		patch(
+			faroProject, Rels.DATA_SOURCE_FIELDS, id, selectedFieldNames,
+			Void.class);
 	}
 
 	@Override
