@@ -7,5 +7,6 @@ data:
 kind: EnvironmentConfig
 metadata:
     annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-40"
     name: environment-config
