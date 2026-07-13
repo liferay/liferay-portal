@@ -141,12 +141,7 @@ export default function RoomsFDSPropsTransformer({
 		itemsActions: itemsActions.map((action) => {
 			const id = action?.data?.id;
 
-			if (
-				id === 'archive' ||
-				id === 'duplicate' ||
-				id === 'edit' ||
-				id === 'settings'
-			) {
+			if (id === 'archive' || id === 'edit' || id === 'settings') {
 				return {
 					...action,
 					isVisible: (item: IRoomObjectEntry) =>
