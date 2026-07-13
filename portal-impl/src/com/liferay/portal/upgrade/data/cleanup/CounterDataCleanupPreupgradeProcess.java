@@ -361,9 +361,9 @@ public class CounterDataCleanupPreupgradeProcess
 
 		if (dbType == DBType.DB2) {
 			return StringBundler.concat(
-				"select max(cast(", columnName, " as bigint)) as ", columnName,
-				" from ", tableName, " where regexp_like(", columnName,
-				", '^[0-9]{1,18}$')");
+				"select max(cast(case when regexp_like(", columnName,
+				", '^[0-9]{1,18}$') then ", columnName, " end as bigint)) as ",
+				columnName, " from ", tableName);
 		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			return StringBundler.concat(
