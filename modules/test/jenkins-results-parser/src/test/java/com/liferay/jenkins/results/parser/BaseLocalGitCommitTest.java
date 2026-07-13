@@ -54,6 +54,43 @@ public class BaseLocalGitCommitTest
 		);
 	}
 
+	@Test
+	public void testIsFileChangedParentPresent() throws Exception {
+		Shell shell = _mockGitWorkingDirectoryShell();
+
+		setShellCommandOutput(
+			"git cat-file -t " + _SHA + "^", shell, "commit\n");
+		setShellCommandOutput("git show " + _SHA, shell, _PATCH);
+
+		LocalGitCommit localGitCommit = _newLocalGitCommit();
+
+		Assert.assertTrue(
+			localGitCommit.isFileChanged(
+				new File(temporaryFolder.getRoot(), "foo.txt")));
+	}
+
+	@Test
+	public void testIsFileChangedParentUnavailable() throws Exception {
+		Shell shell = _mockGitWorkingDirectoryShell();
+
+		_setShellExitValue(shell, "git cat-file -t " + _SHA + "^", 128);
+		setShellCommandOutput("git fetch -f --depth=2", shell, "");
+
+		LocalGitCommit localGitCommit = _newLocalGitCommit();
+
+		Assert.assertFalse(
+			localGitCommit.isFileChanged(
+				new File(temporaryFolder.getRoot(), "foo.txt")));
+
+		Mockito.verify(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "git fetch -f --depth=2", _SHA))
+		);
+	}
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
