@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.staging.StagingGroupHelper;
 
 import jakarta.portlet.RenderRequest;
@@ -26,9 +27,9 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT_IMPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/view_new_export"
 	},
 	service = MVCRenderCommand.class

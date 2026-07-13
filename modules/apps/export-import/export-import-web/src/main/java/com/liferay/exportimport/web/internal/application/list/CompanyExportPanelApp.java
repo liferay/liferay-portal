@@ -8,10 +8,10 @@ package com.liferay.exportimport.web.internal.application.list;
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
-import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.staging.StagingGroupHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,7 @@ public class CompanyExportPanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return ExportImportPortletKeys.COMPANY_EXPORT;
+		return PortletKeys.COMPANY_EXPORT;
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class CompanyExportPanelApp extends BasePanelApp {
 	private Portal _portal;
 
 	@Reference(
-		target = "(jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT + ")"
+		target = "(jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT + ")"
 	)
 	private Portlet _portlet;
 

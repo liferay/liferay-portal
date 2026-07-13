@@ -10,12 +10,6 @@ package com.liferay.exportimport.constants;
  */
 public class ExportImportPortletKeys {
 
-	public static final String COMPANY_EXPORT =
-		"com_liferay_exportimport_web_portlet_CompanyExportPortlet";
-
-	public static final String COMPANY_IMPORT =
-		"com_liferay_exportimport_web_portlet_CompanyImportPortlet";
-
 	public static final String EXPORT =
 		"com_liferay_exportimport_web_portlet_ExportPortlet";
 

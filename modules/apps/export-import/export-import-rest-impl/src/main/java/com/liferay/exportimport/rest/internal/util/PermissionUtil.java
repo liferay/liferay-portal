@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
@@ -23,7 +24,7 @@ public class PermissionUtil {
 		throws PortalException {
 
 		_checkPermission(
-			companyId, groupId, ExportImportPortletKeys.COMPANY_EXPORT,
+			companyId, groupId, PortletKeys.COMPANY_EXPORT,
 			ExportImportPortletKeys.EXPORT);
 	}
 
@@ -31,7 +32,7 @@ public class PermissionUtil {
 		throws PortalException {
 
 		_checkPermission(
-			companyId, groupId, ExportImportPortletKeys.COMPANY_IMPORT,
+			companyId, groupId, PortletKeys.COMPANY_IMPORT,
 			ExportImportPortletKeys.IMPORT);
 	}
 

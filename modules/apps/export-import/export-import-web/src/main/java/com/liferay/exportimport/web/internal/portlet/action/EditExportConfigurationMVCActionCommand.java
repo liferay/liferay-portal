@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.SessionTreeJSClicks;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -55,8 +56,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/edit_export_configuration"
 	},
 	service = MVCActionCommand.class

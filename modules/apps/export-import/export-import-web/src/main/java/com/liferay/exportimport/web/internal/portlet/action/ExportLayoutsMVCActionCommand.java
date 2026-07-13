@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.SessionTreeJSClicks;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -46,8 +47,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/export_layouts"
 	},
 	service = MVCActionCommand.class

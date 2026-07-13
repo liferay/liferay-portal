@@ -7,6 +7,7 @@ package com.liferay.exportimport.web.internal.portlet.action;
 
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.util.PortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,8 +16,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/view_export_configurations"
 	},
 	service = MVCRenderCommand.class

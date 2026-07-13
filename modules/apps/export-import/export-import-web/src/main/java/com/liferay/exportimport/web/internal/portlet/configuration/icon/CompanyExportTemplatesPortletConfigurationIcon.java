@@ -5,8 +5,8 @@
 
 package com.liferay.exportimport.web.internal.portlet.configuration.icon;
 
-import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
+import com.liferay.portal.kernel.util.PortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Carlos Correa
  */
 @Component(
-	property = "jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
+	property = "jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 	service = PortletConfigurationIcon.class
 )
 public class CompanyExportTemplatesPortletConfigurationIcon

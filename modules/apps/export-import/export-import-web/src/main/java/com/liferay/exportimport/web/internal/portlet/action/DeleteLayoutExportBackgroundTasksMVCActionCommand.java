@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -25,8 +26,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/delete_layout_export_background_tasks"
 	},
 	service = MVCActionCommand.class

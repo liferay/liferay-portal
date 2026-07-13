@@ -5,8 +5,8 @@
 
 package com.liferay.exportimport.web.internal.portlet;
 
-import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.util.TrashWebKeys;
 
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.init-param.mvc-command-names-default-views=/export_import/view_export_layouts",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/export/view_export_layouts.jsp",
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
 		"jakarta.portlet.version=4.0"

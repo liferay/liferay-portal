@@ -8,6 +8,7 @@ package com.liferay.exportimport.web.internal.portlet.action;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.util.PortletKeys;
 
 import jakarta.portlet.PortletRequestDispatcher;
 import jakarta.portlet.ResourceRequest;
@@ -20,8 +21,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + PortletKeys.COMPANY_EXPORT,
 		"mvc.command.name=/export_import/edit_export_configuration"
 	},
 	service = MVCResourceCommand.class
