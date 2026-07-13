@@ -1,2 +1,2 @@
-Bundle-SymbolicName: opensaml-security-api
+Bundle-SymbolicName: org.opensaml.security.api
 Bundle-Version: 3.3.0.LIFERAY-PATCHED-1

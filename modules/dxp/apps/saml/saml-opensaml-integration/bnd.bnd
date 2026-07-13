@@ -88,7 +88,6 @@ Import-Package:\
 	opensaml-profile-api-*;lib:=true,\
 	opensaml-profile-impl-*;lib:=true,\
 	opensaml-saml-api-*;lib:=true,\
-	opensaml-security-api-*;lib:=true,\
 	opensaml-security-impl-*;lib:=true,\
 	opensaml-soap-api-*;lib:=true,\
 	opensaml-soap-impl-*;lib:=true,\
@@ -98,4 +97,5 @@ Import-Package:\
 	opensaml-xmlsec-impl-*;lib:=true,\
 	org.opensaml.impl-*;lib:=true,\
 	org.opensaml.messaging-*;lib:=true,\
-	org.opensaml.messaging.impl-*;lib:=true
+	org.opensaml.messaging.impl-*;lib:=true,\
+	org.opensaml.security.api-*;lib:=true
