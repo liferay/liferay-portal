@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -237,12 +239,12 @@ public class GitHubRemoteGitRepositoryTest extends GitRepositoryTest {
 		GitHubRemoteGitRepository gitHubRemoteGitRepository =
 			(GitHubRemoteGitRepository)remoteGitRepository;
 
-		TestSample testSample = new TestSample(dependenciesDirs, "labels");
+		File dependenciesDir = dependenciesDirs.get(0);
 
 		try {
 			gitHubRemoteGitRepository.setLabelRequestURL(
 				JenkinsResultsParserUtil.getLocalURL(
-					toURLString(testSample.getSampleDir())));
+					toURLString(new File(dependenciesDir, "labels"))));
 
 			return gitHubRemoteGitRepository;
 		}

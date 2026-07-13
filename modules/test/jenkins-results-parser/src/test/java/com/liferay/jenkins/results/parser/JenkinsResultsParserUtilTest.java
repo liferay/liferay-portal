@@ -9,8 +9,6 @@ import java.io.File;
 
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.URI;
-import java.net.URL;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -21,7 +19,6 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -31,20 +28,6 @@ import org.mockito.Mockito;
  */
 public class JenkinsResultsParserUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
-
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		downloadSample(
-			"axis-integration-db2-1", "0,label_exp=!master", "129",
-			"test-portal-acceptance-pullrequest-batch(master)", "test-4-1");
-		downloadSample(
-			"axis-plugin-1", "9,label_exp=!master", "233",
-			"test-portal-acceptance-pullrequest-batch(ee-6.2.x)", "test-1-20");
-		downloadSample(
-			"job-1", null, "267",
-			"test-portal-acceptance-pullrequest-source(ee-6.2.x)", "test-1-1");
-	}
 
 	@After
 	public void tearDown() {
@@ -139,26 +122,19 @@ public class JenkinsResultsParserUtilTest
 
 	@Test
 	public void testGetJobVariant() throws Exception {
-		TestSample testSample = testSamples.get("axis-integration-db2-1");
+		String jobVariant = RandomTestUtil.randomString();
 
-		testEquals(
-			"integration-db2",
-			JenkinsResultsParserUtil.getJobVariant(
-				read(testSample.getSampleDir(), "/api/json")));
-
-		testSample = testSamples.get("axis-plugin-1");
-
-		testEquals(
-			"plugins",
-			JenkinsResultsParserUtil.getJobVariant(
-				read(testSample.getSampleDir(), "/api/json")));
-
-		testSample = testSamples.get("job-1");
-
-		testEquals(
+		_testGetJobVariant(
+			jobVariant,
+			"{\"actions\": [null, {\"parameters\": [{\"name\": " +
+				"\"JOB_VARIANT\", \"value\": \"" + jobVariant + "\"}]}]}");
+		_testGetJobVariant(
 			"",
-			JenkinsResultsParserUtil.getJobVariant(
-				read(testSample.getSampleDir(), "/api/json")));
+			"{\"actions\": [{\"parameters\": [{\"name\": " +
+				"\"JENKINS_GITHUB_BRANCH_NAME\", \"value\": \"" + jobVariant +
+					"\"}]}]}");
+
+		_testGetJobVariant("", "{\"actions\": [{}]}");
 	}
 
 	@Test
@@ -616,59 +592,12 @@ public class JenkinsResultsParserUtilTest
 		}
 	}
 
-	@Test
-	public void testToJSONObject() throws Exception {
-		for (TestSample testSample : testSamples.values()) {
-			testToJSONObject(new File(testSample.getSampleDir(), "api/json"));
-		}
-	}
-
-	@Test
-	public void testToString() throws Exception {
-		for (TestSample testSample : testSamples.values()) {
-			testToString(new File(testSample.getSampleDir(), "api/json"));
-		}
-	}
-
-	@Override
-	protected void downloadSample(TestSample testSample, URL url)
-		throws Exception {
-
-		downloadSampleURL(testSample.getSampleDir(), url, "/api/json");
-	}
-
 	protected Environment mockEnvironment() {
 		Environment environment = Mockito.mock(Environment.class);
 
 		Environment.setInstance(environment);
 
 		return environment;
-	}
-
-	protected void testToJSONObject(File file) throws Exception {
-		JSONObject expectedJSONObject = new JSONObject(read(file));
-		JSONObject actualJSONObject = JenkinsResultsParserUtil.toJSONObject(
-			JenkinsResultsParserUtil.getLocalURL(toURLString(file)));
-
-		testEquals(expectedJSONObject.toString(), actualJSONObject.toString());
-	}
-
-	protected void testToString(File file) throws Exception {
-		String expectedJSON = read(file);
-		String actualJSON = JenkinsResultsParserUtil.toString(
-			JenkinsResultsParserUtil.getLocalURL(toURLString(file)));
-
-		testEquals(
-			expectedJSON.replace("\n", ""), actualJSON.replace("\n", ""));
-	}
-
-	@Override
-	protected String toURLString(File file) throws Exception {
-		URI uri = file.toURI();
-
-		URL url = uri.toURL();
-
-		return url.toString();
 	}
 
 	private ServerSocket _createServerSocket() throws Exception {
@@ -694,6 +623,11 @@ public class JenkinsResultsParserUtilTest
 			buildAwsPropertiesFile.exists());
 
 		return JenkinsResultsParserUtil.getProperties(buildAwsPropertiesFile);
+	}
+
+	private void _testGetJobVariant(String expectedJobVariant, String json) {
+		testEquals(
+			expectedJobVariant, JenkinsResultsParserUtil.getJobVariant(json));
 	}
 
 	private void _testGetProperty(
