@@ -207,6 +207,44 @@ export function AI() {
 					))}
 				</tbody>
 			</table>
+
+			<p className="mt-4 text-secondary">
+				With no children, <code>ClayAiButton</code> renders its{' '}
+
+				<code>label</code> (default <code>Chat with AI</code>). A custom{' '}
+
+				<code>label</code> overrides the default, and{' '}
+
+				<code>children</code> take precedence over both.
+			</p>
+
+			<table>
+				<tbody>
+					<tr>
+						<td className="pr-3 text-secondary">Default label</td>
+
+						<td className="p-3">
+							<ClayAiButton />
+						</td>
+					</tr>
+
+					<tr>
+						<td className="pr-3 text-secondary">Custom label</td>
+
+						<td className="p-3">
+							<ClayAiButton label="Ask AI" />
+						</td>
+					</tr>
+
+					<tr>
+						<td className="pr-3 text-secondary">Children</td>
+
+						<td className="p-3">
+							<ClayAiButton>Improve writing</ClayAiButton>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	);
 }
