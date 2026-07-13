@@ -46,7 +46,7 @@ export function AssetConsumption() {
 	const [loading, setLoading] = useState(true);
 	const [page, setPage] = useState(1);
 	const [pageSize, setPageSize] = useState(20);
-	const [viewType, setViewType] = useState<ViewType>('table');
+	const [viewType, setViewType] = useState<ViewType>('chart');
 
 	const depotEntryIds = useMemo(
 		() => (space.value === 'all' ? undefined : [space.value]),
