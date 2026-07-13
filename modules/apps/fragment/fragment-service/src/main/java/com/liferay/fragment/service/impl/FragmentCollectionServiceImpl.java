@@ -178,6 +178,21 @@ public class FragmentCollectionServiceImpl
 	}
 
 	@Override
+	public FragmentCollection getFragmentCollection(long fragmentCollectionId)
+		throws PortalException {
+
+		FragmentCollection fragmentCollection =
+			fragmentCollectionLocalService.getFragmentCollection(
+				fragmentCollectionId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentCollection.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		return fragmentCollection;
+	}
+
+	@Override
 	public FragmentCollection getFragmentCollectionByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
