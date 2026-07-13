@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
@@ -42,6 +43,22 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = FragmentSetResource.class
 )
 public class FragmentSetResourceImpl extends BaseFragmentSetResourceImpl {
+
+	@Override
+	public void deleteDesignLibraryFragmentSet(
+			String designLibraryExternalReferenceCode,
+			String fragmentSetExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+
+		_fragmentCollectionService.deleteFragmentCollection(
+			fragmentSetExternalReferenceCode,
+			GroupUtil.getDepotGroupId(
+				contextCompany.getCompanyId(),
+				designLibraryExternalReferenceCode,
+				DepotConstants.TYPE_DESIGN_LIBRARY));
+	}
 
 	@Override
 	public void deleteSiteFragmentSet(
