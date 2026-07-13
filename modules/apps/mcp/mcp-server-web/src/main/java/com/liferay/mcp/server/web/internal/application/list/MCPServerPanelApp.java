@@ -9,8 +9,11 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.mcp.server.web.internal.constants.MCPServerWebPortletKeys;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -25,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"panel.app.order:Integer=250",
-		"panel.category.key=" + PanelCategoryKeys.CONTROL_PANEL_OBJECT
+		"panel.category.key=" + PanelCategoryKeys.CONTROL_PANEL_CONFIGURATION
 	},
 	service = PanelApp.class
 )
@@ -39,6 +42,19 @@ public class MCPServerPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return MCPServerWebPortletKeys.MCP_SERVER_WEB;
+	}
+
+	@Override
+	public boolean isShow(PermissionChecker permissionChecker, Group group)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-89575")) {
+
+			return false;
+		}
+
+		return super.isShow(permissionChecker, group);
 	}
 
 	@Override
