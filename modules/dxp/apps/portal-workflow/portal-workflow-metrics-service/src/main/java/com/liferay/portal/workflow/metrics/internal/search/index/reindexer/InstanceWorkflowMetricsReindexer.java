@@ -37,6 +37,15 @@ public class InstanceWorkflowMetricsReindexer
 	}
 
 	@Override
+	protected void onAfterReindex(long companyId, ExecutionMode executionMode)
+		throws Exception {
+
+		if (executionMode == ExecutionMode.FULL) {
+			_processWorkflowMetricsReindexer.reindex(companyId, executionMode);
+		}
+	}
+
+	@Override
 	protected void reindexEntities(long companyId) throws Exception {
 		ActionableDynamicQuery actionableDynamicQuery =
 			_kaleoInstanceLocalService.getActionableDynamicQuery();
@@ -99,6 +108,9 @@ public class InstanceWorkflowMetricsReindexer
 
 	@Reference
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+
+	@Reference(target = "(workflow.metrics.reindexer.key=process)")
+	private IndexReindexer _processWorkflowMetricsReindexer;
 
 	@Reference
 	private WorkflowMetricsReindexStatusMessageSender

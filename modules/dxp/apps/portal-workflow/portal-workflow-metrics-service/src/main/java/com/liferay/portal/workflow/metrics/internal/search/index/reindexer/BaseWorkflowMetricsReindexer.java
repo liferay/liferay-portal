@@ -86,6 +86,8 @@ public abstract class BaseWorkflowMetricsReindexer
 					companyId),
 				date, Collections.emptySet());
 		}
+
+		onAfterReindex(companyId, executionMode);
 	}
 
 	protected boolean isExecuteSyncReindex(ExecutionMode executionMode) {
@@ -97,6 +99,10 @@ public abstract class BaseWorkflowMetricsReindexer
 		}
 
 		return false;
+	}
+
+	protected void onAfterReindex(long companyId, ExecutionMode executionMode)
+		throws Exception {
 	}
 
 	protected abstract void reindexEntities(long companyId) throws Exception;

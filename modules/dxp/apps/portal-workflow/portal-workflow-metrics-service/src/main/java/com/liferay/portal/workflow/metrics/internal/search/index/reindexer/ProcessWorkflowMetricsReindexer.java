@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = {IndexReindexer.class, WorkflowMetricsReindexer.class})
+@Component(
+	property = "workflow.metrics.reindexer.key=process",
+	service = {IndexReindexer.class, WorkflowMetricsReindexer.class}
+)
 public class ProcessWorkflowMetricsReindexer
 	extends BaseWorkflowMetricsReindexer {
 
