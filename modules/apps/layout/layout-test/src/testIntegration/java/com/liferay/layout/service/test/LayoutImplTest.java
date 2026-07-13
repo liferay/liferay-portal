@@ -156,7 +156,7 @@ public class LayoutImplTest {
 			StringPool.BLANK);
 
 		_layoutSetLocalService.updateLookAndFeel(
-			_group.getGroupId(), false, "dialect_WAR_dialecttheme", "01",
+			_group.getGroupId(), false, "cms_WAR_cmstheme", "01",
 			StringPool.BLANK);
 
 		String masterLayoutPageTemplateEntryERC = RandomTestUtil.randomString();
@@ -187,7 +187,7 @@ public class LayoutImplTest {
 				publicLayout.getGroupId(), publicLayout.isPrivateLayout(),
 				publicLayout.getLayoutId(), masterLayoutPageTemplateEntryERC);
 
-		_assertThemeId(publicLayout, "dialect_WAR_dialecttheme");
+		_assertThemeId(publicLayout, "cms_WAR_cmstheme");
 	}
 
 	@Test
@@ -477,18 +477,18 @@ public class LayoutImplTest {
 
 		_layoutLocalService.updateLookAndFeel(
 			masterLayout.getGroupId(), masterLayout.isPrivateLayout(),
-			masterLayout.getLayoutId(), "dialect_WAR_dialecttheme", "01",
+			masterLayout.getLayoutId(), "cms_WAR_cmstheme", "01",
 			StringPool.BLANK);
 
 		layout = _layoutLocalService.getLayout(layout.getPlid());
 
-		_assertThemeId(layout, "dialect_WAR_dialecttheme");
+		_assertThemeId(layout, "cms_WAR_cmstheme");
 
 		layout = _layoutLocalService.updateLookAndFeel(
 			_group.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
 			"admin_WAR_admintheme", "01", StringPool.BLANK);
 
-		_assertThemeId(layout, "dialect_WAR_dialecttheme");
+		_assertThemeId(layout, "cms_WAR_cmstheme");
 	}
 
 	private void _assertThemeId(Layout layout, String themeId)

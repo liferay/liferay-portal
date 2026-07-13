@@ -310,7 +310,7 @@ public class MasterLayoutsImporterTest {
 
 		_layoutLocalService.updateLookAndFeel(
 			_group.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			"dialect_WAR_dialecttheme", "01", StringPool.BLANK);
+			"cms_WAR_cmstheme", "01", StringPool.BLANK);
 
 		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
 			new long[] {layoutPageTemplateEntry.getLayoutPageTemplateEntryId()},
@@ -332,7 +332,7 @@ public class MasterLayoutsImporterTest {
 		layout = _layoutLocalService.fetchLayout(
 			importedLayoutPageTemplateEntry.getPlid());
 
-		Assert.assertEquals("dialect_WAR_dialecttheme", layout.getThemeId());
+		Assert.assertEquals("cms_WAR_cmstheme", layout.getThemeId());
 	}
 
 	@Test
