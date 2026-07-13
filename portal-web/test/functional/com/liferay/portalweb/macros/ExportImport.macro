@@ -46,13 +46,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro deployInstanceConfigFile(portalInstanceName = null, osgiConfigFileName = null) {
-		var companyId = JSONCompany.getCompanyId(portalInstanceName = ${portalInstanceName});
-
-		AntCommands.runCommand("build-test-export-import.xml", "prepare-export-import-osgi-configuration -DcompanyId=${companyId} -Dosgi.config.file.name=${osgiConfigFileName}");
-	}
-
-	@summary = "Default summary"
 	macro getBackgroundTaskStatus(type = null) {
 		if (${type} == "Export") {
 			var mysqlStatement = "SELECT backgroundTaskId FROM BackgroundTask WHERE taskExecutorClassName in ('com.liferay.exportimport.internal.background.task.LayoutExportBackgroundTaskExecutor', 'com.liferay.exportimport.internal.background.task.PortletExportBackgroundTaskExecutor') AND STATUS IN (3, 5);";
