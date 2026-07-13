@@ -17,16 +17,19 @@ import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
 import isOverdue from '../../../../../utils/isOverdue';
 import {ITaskObjectEntry} from '../../../../../utils/types';
+import StateLabel from '../../../../StateLabel';
 
 import './CalendarTaskCard.scss';
 
 interface CalendarTaskCardProps {
+	expanded?: boolean;
 	itemsActions?: IItemsActions[];
 	loadData: Function;
 	task: ITaskObjectEntry;
 }
 
 export default function CalendarTaskCard({
+	expanded = false,
 	itemsActions = [],
 	loadData,
 	task,
@@ -55,10 +58,55 @@ export default function CalendarTaskCard({
 		}
 	};
 
+	const actionsMenu = !!taskItemsActions.length && (
+		<ClayDropDownWithItems
+			items={taskItemsActions}
+			trigger={
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('actions')}
+					borderless
+					className="component-action lfr__cmp-calendar-task-card-actions"
+					data-actions-menu
+					displayType="secondary"
+					size="sm"
+					symbol="ellipsis-v"
+				/>
+			}
+		/>
+	);
+
+	const assignee = (
+		<span className="lfr__cmp-calendar-task-card-assignee">
+			<AssigneeAvatar
+				name={assignTo?.name}
+				portrait={assignTo?.portrait}
+			/>
+		</span>
+	);
+
+	const stateIcon = (
+		<>
+			{blocked && !overdue && (
+				<ClayIcon
+					className="lfr__cmp-calendar-task-card-icon lfr__cmp-calendar-task-card-icon-blocked"
+					symbol="block"
+				/>
+			)}
+
+			{overdue && (
+				<ClayIcon
+					className="lfr__cmp-calendar-task-card-icon lfr__cmp-calendar-task-card-icon-overdue"
+					symbol="exclamation-full"
+				/>
+			)}
+		</>
+	);
+
 	return (
 		<div
 			className={classNames('lfr__cmp-calendar-task-card', {
 				'lfr__cmp-calendar-task-card-clickable': hasViewPermission,
+				'lfr__cmp-calendar-task-card-expanded': expanded,
 				'lfr__cmp-calendar-task-card-state-overdue': overdue,
 				[`lfr__cmp-calendar-task-card-state-${state?.key}`]:
 					!overdue && state?.key,
@@ -89,44 +137,38 @@ export default function CalendarTaskCard({
 			role={hasViewPermission ? 'button' : undefined}
 			tabIndex={hasViewPermission ? 0 : undefined}
 		>
-			<span className="lfr__cmp-calendar-task-card-title">{title}</span>
+			{expanded ? (
+				<>
+					<div className="lfr__cmp-calendar-task-card-header">
+						<span className="lfr__cmp-calendar-task-card-title">
+							{title}
+						</span>
 
-			{blocked && !overdue && (
-				<ClayIcon
-					className="lfr__cmp-calendar-task-card-icon lfr__cmp-calendar-task-card-icon-blocked"
-					symbol="block"
-				/>
-			)}
+						{actionsMenu}
+					</div>
 
-			{overdue && (
-				<ClayIcon
-					className="lfr__cmp-calendar-task-card-icon lfr__cmp-calendar-task-card-icon-overdue"
-					symbol="exclamation-full"
-				/>
-			)}
+					<div className="lfr__cmp-calendar-task-card-footer">
+						<StateLabel dueDate={dueDate} state={state} />
 
-			<span className="lfr__cmp-calendar-task-card-assignee">
-				<AssigneeAvatar
-					name={assignTo?.name}
-					portrait={assignTo?.portrait}
-				/>
-			</span>
+						<div className="lfr__cmp-calendar-task-card-footer-end">
+							{stateIcon}
 
-			{!!taskItemsActions.length && (
-				<ClayDropDownWithItems
-					items={taskItemsActions}
-					trigger={
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('actions')}
-							borderless
-							className="component-action lfr__cmp-calendar-task-card-actions"
-							data-actions-menu
-							displayType="secondary"
-							size="sm"
-							symbol="ellipsis-v"
-						/>
-					}
-				/>
+							{assignee}
+						</div>
+					</div>
+				</>
+			) : (
+				<>
+					<span className="lfr__cmp-calendar-task-card-title">
+						{title}
+					</span>
+
+					{stateIcon}
+
+					{assignee}
+
+					{actionsMenu}
+				</>
 			)}
 		</div>
 	);
