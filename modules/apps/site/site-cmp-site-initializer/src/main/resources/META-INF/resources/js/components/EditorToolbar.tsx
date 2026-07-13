@@ -88,15 +88,7 @@ export default function EditorToolbar({
 						/>
 					</Toolbar.Item>
 
-					<div
-						className="align-self-center"
-						style={{
-							borderColor: '#A7A9BC',
-							borderStyle: 'solid',
-							borderWidth: 1,
-							height: 16,
-						}}
-					/>
+					<div className="ai-assistant__separator" />
 				</>
 			)}
 
