@@ -61,7 +61,9 @@
 				<div>
 					<h4>Categorized CI Builds over time</h4>
 
-					<canvas height="800" id="build-history-canvas"></canvas>
+					<div class="chart-container">
+						<canvas id="build-history-canvas"></canvas>
+					</div>
 				</div>
 
 				<div>
@@ -84,36 +86,37 @@
 			<button class="accordion"><h3>Average Build Duration</h3></button>
 
 			<div class="panel">
-				<div>
-					<canvas height="800" id="build-duration-canvas"></canvas>
+				<div class="chart-container">
+					<canvas id="build-duration-canvas"></canvas>
 				</div>
 			</div>
 
 			<button class="accordion"><h3>Average Queue Duration</h3></button>
 
 			<div class="panel">
-				<div>
-					<canvas height="800" id="queue-duration-canvas"></canvas>
+				<div class="chart-container">
+					<canvas id="queue-duration-canvas"></canvas>
 				</div>
 			</div>
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.1/chartjs-adapter-moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
 
-		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@1a5c67264e8db6aae2e38967a20c3f3a31416d27/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/js/utils.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/js/utils.js"></script>
 
 		<script src="js/table-data.js"></script>
 		<script src="js/timeline-data.js"></script>
 
-		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@1a5c67264e8db6aae2e38967a20c3f3a31416d27/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/aggregate-report/js/main.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/aggregate-report/js/main.js"></script>
 
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/css/sortable-theme-bootstrap.min.css" rel="stylesheet" />
-		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@cbdaa1da84693a1850cfdf792d92fadbdc4f01d5/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/css/report.css" rel="stylesheet" />
-		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@cbdaa1da84693a1850cfdf792d92fadbdc4f01d5/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/aggregate-report/css/main.css" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/css/report.css" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/aggregate-report/css/main.css" rel="stylesheet" />
 	</body>
 </html>
