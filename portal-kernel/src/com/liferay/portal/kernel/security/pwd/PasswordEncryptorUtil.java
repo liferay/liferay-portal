@@ -250,7 +250,9 @@ public class PasswordEncryptorUtil {
 		return null;
 	}
 
-	private static PasswordEncryptor _getPasswordEncryptor(String algorithm) {
+	private static PasswordEncryptor _getPasswordEncryptor(String algorithm)
+		throws PwdEncryptorException {
+
 		if (Validator.isNull(algorithm)) {
 			throw new IllegalArgumentException("Invalid algorithm");
 		}
@@ -277,9 +279,10 @@ public class PasswordEncryptorUtil {
 			(algorithm.startsWith(PasswordEncryptor.TYPE_BCRYPT) ||
 			 algorithm.startsWith(PasswordEncryptor.TYPE_UFC_CRYPT))) {
 
-			throw new SecurityException(
+			throw new PwdEncryptorException.UnavailableAlgorithm(
 				StringBundler.concat(
-					"Algorithm ", algorithm, " is not allowed in FIPS mode"));
+					"Algorithm \"", algorithm,
+					"\" is not available in FIPS mode"));
 		}
 
 		if (passwordEncryptor == null) {

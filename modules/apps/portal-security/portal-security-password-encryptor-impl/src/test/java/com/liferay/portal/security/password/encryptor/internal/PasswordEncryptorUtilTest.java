@@ -98,6 +98,22 @@ public class PasswordEncryptorUtilTest {
 	}
 
 	@Test
+	public void testEncryptBCryptWithFIPSMode() throws Exception {
+		String encryptedPassword = PasswordEncryptorUtil.encrypt(
+			PasswordEncryptor.TYPE_BCRYPT, RandomTestUtil.randomString(), null);
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			Assert.assertThrows(
+				PwdEncryptorException.UnavailableAlgorithm.class,
+				() -> PasswordEncryptorUtil.encrypt(
+					RandomTestUtil.randomString(), encryptedPassword));
+		}
+	}
+
+	@Test
 	public void testEncryptCRYPT() throws Exception {
 		_runTests(
 			PasswordEncryptor.TYPE_UFC_CRYPT, "password", "SNbUMVY9kKQpY",
@@ -214,21 +230,34 @@ public class PasswordEncryptorUtilTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
+			// FIPS-approved algorithm
+
 			_testEncrypt(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/1300000");
 
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_BCRYPT + "/10",
-				RandomTestUtil.randomString(), null);
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA1/160/1300000",
-				RandomTestUtil.randomString(), null);
+			// Iteration count below the minimum
+
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/600000",
-				RandomTestUtil.randomString(), null);
+				PwdEncryptorException.InvalidAlgorithm.class);
+
+			// Non-PBKDF2 algorithm
+
+			_testEncryptFailure(
+				PasswordEncryptor.TYPE_BCRYPT + "/10",
+				PwdEncryptorException.InvalidAlgorithm.class);
+
+			// Non-SHA-256 PBKDF2
+
+			_testEncryptFailure(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA1/160/1300000",
+				PwdEncryptorException.InvalidAlgorithm.class);
+
+			// Output length below the minimum
+
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/64/1300000",
-				RandomTestUtil.randomString(), null);
+				PwdEncryptorException.InvalidAlgorithm.class);
 		}
 	}
 
@@ -333,6 +362,15 @@ public class PasswordEncryptorUtilTest {
 		Assert.assertEquals(
 			expectedPassword,
 			PasswordEncryptorUtil.encrypt(plainPassword, expectedPassword));
+	}
+
+	private void _testEncryptFailure(
+		String algorithm, Class<? extends Throwable> throwableClass) {
+
+		Assert.assertThrows(
+			throwableClass,
+			() -> PasswordEncryptorUtil.encrypt(
+				algorithm, RandomTestUtil.randomString(), null));
 	}
 
 	private void _testEncryptFailure(

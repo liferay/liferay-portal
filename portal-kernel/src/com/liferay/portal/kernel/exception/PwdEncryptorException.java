@@ -54,6 +54,10 @@ public class PwdEncryptorException extends PortalException {
 
 	public static class UnavailableAlgorithm extends PwdEncryptorException {
 
+		public UnavailableAlgorithm(String msg) {
+			super(msg);
+		}
+
 		public UnavailableAlgorithm(String msg, Throwable throwable) {
 			super(msg, throwable);
 		}
