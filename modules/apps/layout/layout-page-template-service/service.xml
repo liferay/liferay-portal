@@ -346,6 +346,7 @@
 
 		<!-- Other fields -->
 
+		<column name="active" type="boolean" />
 		<column localized="true" name="hide" type="String" />
 		<column localized="true" name="html" type="String" />
 		<column localized="true" name="js" type="String" />
@@ -363,6 +364,11 @@
 			<finder-column name="segmentsExperienceERC" />
 		</finder>
 		<finder name="P_SEERC" return-type="Collection">
+			<finder-column name="plid" />
+			<finder-column name="segmentsExperienceERC" />
+		</finder>
+		<finder name="A_P_SEERC" return-type="Collection">
+			<finder-column name="active" />
 			<finder-column name="plid" />
 			<finder-column name="segmentsExperienceERC" />
 		</finder>
