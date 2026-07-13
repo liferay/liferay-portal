@@ -378,6 +378,30 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	}
 
 	@Test
+	public void testRegisterInOpenModeEnforcesRateLimit() throws Exception {
+
+		// Enforce the limit for a bracketed IPv6 host with or without a port
+
+		String clientHost = RandomTestUtil.randomString();
+
+		_testRegisterInOpenModeEnforcesRateLimit(
+			new String[] {
+				StringBundler.concat(
+					"[", clientHost, "]:",
+					RandomTestUtil.randomInt(1025, 65535)),
+				"[" + clientHost + "]:9090", clientHost
+			},
+			"[" + clientHost + "]");
+
+		// Enforce the limit for a plain request host
+
+		clientHost = RandomTestUtil.randomString();
+
+		_testRegisterInOpenModeEnforcesRateLimit(
+			new String[] {clientHost, clientHost, clientHost}, clientHost);
+	}
+
+	@Test
 	public void testRegisterInOpenModeIgnoresUntrustedProxyHeaders()
 		throws Exception {
 
@@ -567,6 +591,39 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 			Assert.assertEquals(
 				"open", additionalInfoJSONObject.getString("mode"));
+		}
+	}
+
+	@Test
+	public void testRegisterInOpenModeWithRateLimitDisabled() throws Exception {
+		String clientHost = RandomTestUtil.randomString();
+
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		String body = _createOpenRegistrationJSONObject(
+			true, _getRandomRedirectURI()
+		).toString();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_createCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"oauth2.dynamic.registration.maximum.number.of." +
+							"registrations.per.hour",
+						0, "oauth2.dynamic.registration.trust.proxy.headers",
+						true)) {
+
+			for (int i = 0; i < 15; i++) {
+				Invocation.Builder invocationBuilder =
+					registerWebTarget.request();
+
+				invocationBuilder.header("X-Forwarded-For", clientHost);
+
+				Response response = invocationBuilder.method(
+					"post", Entity.json(body));
+
+				Assert.assertEquals(201, response.getStatus());
+			}
 		}
 	}
 
@@ -915,6 +972,51 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				Assert.assertEquals(
 					"open", additionalInfoJSONObject.getString("mode"));
 			}
+		}
+	}
+
+	private void _testRegisterInOpenModeEnforcesRateLimit(
+			String[] acceptedHosts, String hostExceedingLimit)
+		throws Exception {
+
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		String body = _createOpenRegistrationJSONObject(
+			true, _getRandomRedirectURI()
+		).toString();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_createCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"oauth2.dynamic.registration.maximum.number.of." +
+							"registrations.per.hour",
+						acceptedHosts.length,
+						"oauth2.dynamic.registration.trust.proxy.headers",
+						true)) {
+
+			for (String acceptedHost : acceptedHosts) {
+				Invocation.Builder invocationBuilder =
+					registerWebTarget.request();
+
+				invocationBuilder.header("X-Forwarded-For", acceptedHost);
+
+				Response response = invocationBuilder.method(
+					"post", Entity.json(body));
+
+				Assert.assertEquals(201, response.getStatus());
+			}
+
+			Invocation.Builder invocationBuilder = registerWebTarget.request();
+
+			invocationBuilder.header("X-Forwarded-For", hostExceedingLimit);
+
+			Response response = invocationBuilder.method(
+				"post", Entity.json(body));
+
+			Assert.assertEquals(429, response.getStatus());
+			Assert.assertEquals("rate_limited", parseError(response));
+			Assert.assertNotNull(response.getHeaderString("Retry-After"));
 		}
 	}
 
