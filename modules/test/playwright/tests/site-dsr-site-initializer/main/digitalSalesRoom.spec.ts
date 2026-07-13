@@ -1469,6 +1469,67 @@ test(
 );
 
 test(
+	'Duplicating an archived room creates an active room',
+	{tag: '@LPD-97749'},
+	async ({apiHelpers, digitalSalesRoomsPage, editDigitalSalesRoomPage}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		await test.step('Create and archive a room', async () => {
+			await digitalSalesRoomsPage.goToRoomsPage();
+
+			await expect(
+				digitalSalesRoomsPage.digitalSalesRoomsTable.searchInput
+			).toBeVisible();
+
+			await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+			await editDigitalSalesRoomPage.addDigitalSalesRoom({
+				accountName: account.name,
+				roomName,
+			});
+
+			await digitalSalesRoomsPage.goToRoomsPage();
+
+			await digitalSalesRoomsPage.archiveRoom(roomName);
+		});
+
+		await test.step('Duplicate the archived room', async () => {
+			await digitalSalesRoomsPage.showArchivedRooms();
+
+			await digitalSalesRoomsPage.clickRowActionsMenuItem(
+				roomName,
+				digitalSalesRoomsPage.duplicateMenuItem
+			);
+
+			await expect(
+				digitalSalesRoomsPage.duplicateModalHeading
+			).toBeVisible();
+
+			await digitalSalesRoomsPage.duplicateButton.click();
+
+			await expect(digitalSalesRoomsPage.duplicateModal).not.toBeVisible({
+				timeout: 30000,
+			});
+		});
+
+		await test.step('Verify the duplicated room is active', async () => {
+			await digitalSalesRoomsPage.goToRoomsPage();
+
+			const duplicatedRow =
+				digitalSalesRoomsPage.digitalSalesRoomsTable.table
+					.getByRole('row')
+					.filter({hasText: `${roomName} (Copy)`});
+
+			await expect(duplicatedRow).toContainText('Active');
+		});
+	}
+);
+
+test(
 	'The room collaborator can manage pages and documents, add room comments, and share the room',
 	{tag: '@LPD-92366'},
 	async ({
