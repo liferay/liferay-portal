@@ -13,6 +13,11 @@ import com.liferay.portal.kernel.model.Company;
  */
 public class EnabledUtil {
 
+	public static void checkDesignLibrariesEnabled(Company company) {
+		FeatureFlagManagerUtil.checkEnabled(
+			company.getCompanyId(), "LPD-57283");
+	}
+
 	public static void checkEnabled(Company company) {
 		FeatureFlagManagerUtil.checkEnabled(
 			company.getCompanyId(), "LPD-39244");
