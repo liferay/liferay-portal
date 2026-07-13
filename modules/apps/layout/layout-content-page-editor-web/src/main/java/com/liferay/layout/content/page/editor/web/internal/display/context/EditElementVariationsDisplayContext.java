@@ -196,6 +196,10 @@ public class EditElementVariationsDisplayContext {
 						_getPlid()),
 				layoutPageTemplateStructureRelElementVariation ->
 					HashMapBuilder.<String, Object>put(
+						"active",
+						layoutPageTemplateStructureRelElementVariation.
+							isActive()
+					).put(
 						"audienceEntryERCs",
 						layoutPageTemplateStructureRelElementVariation.
 							getAudienceEntryERCs()
@@ -205,9 +209,7 @@ public class EditElementVariationsDisplayContext {
 							getExternalReferenceCode()
 					).put(
 						"hide",
-						LocalizedMapUtil.getLanguageIdMap(
-							layoutPageTemplateStructureRelElementVariation.
-								getHideMap())
+						layoutPageTemplateStructureRelElementVariation.getHide()
 					).put(
 						"html",
 						LocalizedMapUtil.getLanguageIdMap(

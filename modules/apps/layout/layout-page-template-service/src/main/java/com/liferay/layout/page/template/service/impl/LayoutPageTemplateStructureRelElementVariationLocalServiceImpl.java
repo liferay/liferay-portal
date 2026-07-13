@@ -40,7 +40,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String[] audienceEntryERCs, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, boolean active, String hide,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -77,7 +77,8 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 
 		layoutPageTemplateStructureRelElementVariation.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
-		layoutPageTemplateStructureRelElementVariation.setHideMap(hideMap);
+		layoutPageTemplateStructureRelElementVariation.setActive(active);
+		layoutPageTemplateStructureRelElementVariation.setHide(hide);
 		layoutPageTemplateStructureRelElementVariation.setHtmlMap(htmlMap);
 		layoutPageTemplateStructureRelElementVariation.setJsMap(jsMap);
 		layoutPageTemplateStructureRelElementVariation.setName(name);
@@ -125,6 +126,14 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 					externalReferenceCode);
 		}
+	}
+
+	public List<LayoutPageTemplateStructureRelElementVariation>
+		getLayoutPageTemplateStructureRelElementVariations(
+			boolean active, long plid, String segmentsExperienceERC) {
+
+		return layoutPageTemplateStructureRelElementVariationPersistence.
+			findByA_P_SEERC(active, plid, segmentsExperienceERC);
 	}
 
 	public List<LayoutPageTemplateStructureRelElementVariation>

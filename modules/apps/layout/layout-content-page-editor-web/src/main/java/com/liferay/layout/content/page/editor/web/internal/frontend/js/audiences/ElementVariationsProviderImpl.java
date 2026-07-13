@@ -110,7 +110,6 @@ public class ElementVariationsProviderImpl
 
 		for (String xml :
 				new String[] {
-					layoutPageTemplateStructureRelElementVariation.getHide(),
 					layoutPageTemplateStructureRelElementVariation.getHtml(),
 					layoutPageTemplateStructureRelElementVariation.getJs()
 				}) {
@@ -148,9 +147,7 @@ public class ElementVariationsProviderImpl
 				_getDefaultLanguageId(
 					layoutPageTemplateStructureRelElementVariation)
 			).put(
-				"hide",
-				_getLocalizedValuesJSONObject(
-					layoutPageTemplateStructureRelElementVariation.getHideMap())
+				"hide", layoutPageTemplateStructureRelElementVariation.getHide()
 			).put(
 				"html",
 				_getLocalizedValuesJSONObject(
@@ -172,7 +169,7 @@ public class ElementVariationsProviderImpl
 		List<String> elementVariationsJS = TransformUtil.transform(
 			_layoutPageTemplateStructureRelElementVariationLocalService.
 				getLayoutPageTemplateStructureRelElementVariations(
-					plid, segmentsExperienceERC),
+					true, plid, segmentsExperienceERC),
 			layoutPageTemplateStructureRelElementVariation ->
 				_getElementVariationJS(
 					layoutPageTemplateStructureRelElementVariation,
