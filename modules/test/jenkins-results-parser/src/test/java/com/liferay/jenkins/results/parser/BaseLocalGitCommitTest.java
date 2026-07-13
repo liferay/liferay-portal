@@ -49,31 +49,13 @@ public class BaseLocalGitCommitTest
 			shell
 		).doExecute(
 			Mockito.argThat(
-				executionRequest -> _hasCommand(
+				executionRequest -> hasCommand(
 					executionRequest, "git fetch -f --depth=2", _SHA))
 		);
 	}
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-	private boolean _hasCommand(
-		Shell.ExecutionRequest executionRequest, String... substrings) {
-
-		if (executionRequest == null) {
-			return false;
-		}
-
-		String command = executionRequest.getCommands()[0];
-
-		for (String substring : substrings) {
-			if (!command.contains(substring)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
 
 	private Shell _mockGitWorkingDirectoryShell() throws Exception {
 		Shell shell = mockShell();
@@ -112,7 +94,7 @@ public class BaseLocalGitCommitTest
 			shell
 		).doExecute(
 			Mockito.argThat(
-				executionRequest -> _hasCommand(executionRequest, command))
+				executionRequest -> hasCommand(executionRequest, command))
 		);
 	}
 

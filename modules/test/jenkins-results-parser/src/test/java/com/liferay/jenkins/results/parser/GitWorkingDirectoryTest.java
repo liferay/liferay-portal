@@ -48,16 +48,9 @@ public class GitWorkingDirectoryTest
 			shell
 		).doExecute(
 			Mockito.argThat(
-				executionRequest -> {
-					if (executionRequest == null) {
-						return false;
-					}
-
-					String command = executionRequest.getCommands()[0];
-
-					return command.contains("git fetch -f --depth=2") &&
-						   command.contains(_LOCAL_BRANCH_SHA);
-				})
+				executionRequest -> hasCommand(
+					executionRequest, "git fetch -f --depth=2",
+					_LOCAL_BRANCH_SHA))
 		);
 	}
 
