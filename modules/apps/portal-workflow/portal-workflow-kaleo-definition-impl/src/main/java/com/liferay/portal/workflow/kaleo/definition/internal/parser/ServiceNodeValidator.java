@@ -42,7 +42,7 @@ public class ServiceNodeValidator extends BaseNodeValidator<ServiceNode> {
 		}
 
 		if (Validator.isNull(javaDelegate) ||
-			!javaDelegate.matches("[\\w.$]+#\\w+")) {
+			!javaDelegate.matches("[\\w.$]+(#\\w+)+")) {
 
 			throw new KaleoDefinitionValidationException(
 				StringBundler.concat(
