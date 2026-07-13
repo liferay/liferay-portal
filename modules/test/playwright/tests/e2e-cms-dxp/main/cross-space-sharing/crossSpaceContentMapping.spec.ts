@@ -84,6 +84,9 @@ test(
 			'Asset Library Administrator'
 		);
 
+		await apiHelpers.jsonWebServicesUser.agreeToTermsOfUse(spaceAdmin.id);
+		await apiHelpers.jsonWebServicesUser.answerReminderQuery(spaceAdmin.id);
+
 		await test.step('Move the content from the source Space to the destination Space', async () => {
 			await assetsPage.gotoAll();
 

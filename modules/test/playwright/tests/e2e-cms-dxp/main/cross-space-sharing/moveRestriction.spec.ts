@@ -64,6 +64,11 @@ test(
 			'Asset Library Member'
 		);
 
+		await apiHelpers.jsonWebServicesUser.agreeToTermsOfUse(spaceMember.id);
+		await apiHelpers.jsonWebServicesUser.answerReminderQuery(
+			spaceMember.id
+		);
+
 		await performUserSwitchViaApi(page, spaceMember.alternateName);
 
 		await test.step('The Move action is not available on the content', async () => {
