@@ -347,7 +347,7 @@
 		<!-- Other fields -->
 
 		<column name="active" type="boolean" />
-		<column localized="true" name="hide" type="String" />
+		<column name="hide" type="String" />
 		<column localized="true" name="html" type="String" />
 		<column localized="true" name="js" type="String" />
 		<column name="name" type="String" />
