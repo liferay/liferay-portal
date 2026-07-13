@@ -100,95 +100,90 @@ public class FragmentEntryConfigurationParserTest {
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		try {
-			String name = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
 
-			JSONObject configurationValuesJSONObject =
-				_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+		JSONObject configurationValuesJSONObject =
+			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+				JSONUtil.put(
+					"fieldSets",
 					JSONUtil.put(
-						"fieldSets",
 						JSONUtil.put(
+							"fields",
 							JSONUtil.put(
-								"fields",
 								JSONUtil.put(
-									JSONUtil.put(
-										"label", RandomTestUtil.randomString()
-									).put(
-										"name", name
-									).put(
-										"type", "url"
-									))))),
-					JSONUtil.put(
-						FragmentEntryProcessorConstants.
-							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-						JSONUtil.put(
-							name,
-							JSONUtil.put(
-								"layout",
-								JSONUtil.put(
-									"externalReferenceCode",
-									layout1.getExternalReferenceCode()
+									"label", RandomTestUtil.randomString()
 								).put(
-									"title", name
-								)))),
-					LocaleUtil.US);
-
-			Assert.assertEquals(
-				_portal.getLayoutFullURL(
-					layout1, serviceContext.getThemeDisplay()),
-				configurationValuesJSONObject.getString(name));
-
-			Group group2 = GroupTestUtil.addGroup();
-
-			Layout layout2 = _layoutLocalService.addLayout(
-				layout1.getExternalReferenceCode(), TestPropsValues.getUserId(),
-				group2.getGroupId(), false,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
-				RandomTestUtil.randomString(), StringPool.BLANK,
-				StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false,
-				StringPool.BLANK, serviceContext);
-
-			configurationValuesJSONObject =
-				_fragmentEntryConfigurationParser.getConfigurationJSONObject(
-					JSONUtil.put(
-						"fieldSets",
-						JSONUtil.put(
-							JSONUtil.put(
-								"fields",
-								JSONUtil.put(
-									JSONUtil.put(
-										"label", RandomTestUtil.randomString()
-									).put(
-										"name", name
-									).put(
-										"type", "url"
-									))))),
-					JSONUtil.put(
-						FragmentEntryProcessorConstants.
-							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-						JSONUtil.put(
-							name,
-							JSONUtil.put(
-								"layout",
-								JSONUtil.put(
-									"externalReferenceCode",
-									layout1.getExternalReferenceCode()
+									"name", name
 								).put(
-									"scopeExternalReferenceCode",
-									group2.getExternalReferenceCode()
-								).put(
-									"title", name
-								)))),
-					LocaleUtil.US);
+									"type", "url"
+								))))),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						name,
+						JSONUtil.put(
+							"layout",
+							JSONUtil.put(
+								"externalReferenceCode",
+								layout1.getExternalReferenceCode()
+							).put(
+								"title", name
+							)))),
+				LocaleUtil.US);
 
-			Assert.assertEquals(
-				_portal.getLayoutFullURL(
-					layout2, serviceContext.getThemeDisplay()),
-				configurationValuesJSONObject.getString(name));
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		Assert.assertEquals(
+			_portal.getLayoutFullURL(layout1, serviceContext.getThemeDisplay()),
+			configurationValuesJSONObject.getString(name));
+
+		Group group2 = GroupTestUtil.addGroup();
+
+		Layout layout2 = _layoutLocalService.addLayout(
+			layout1.getExternalReferenceCode(), TestPropsValues.getUserId(),
+			group2.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			serviceContext);
+
+		configurationValuesJSONObject =
+			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+				JSONUtil.put(
+					"fieldSets",
+					JSONUtil.put(
+						JSONUtil.put(
+							"fields",
+							JSONUtil.put(
+								JSONUtil.put(
+									"label", RandomTestUtil.randomString()
+								).put(
+									"name", name
+								).put(
+									"type", "url"
+								))))),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						name,
+						JSONUtil.put(
+							"layout",
+							JSONUtil.put(
+								"externalReferenceCode",
+								layout1.getExternalReferenceCode()
+							).put(
+								"scopeExternalReferenceCode",
+								group2.getExternalReferenceCode()
+							).put(
+								"title", name
+							)))),
+				LocaleUtil.US);
+
+		Assert.assertEquals(
+			_portal.getLayoutFullURL(layout2, serviceContext.getThemeDisplay()),
+			configurationValuesJSONObject.getString(name));
+
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Test
