@@ -36,6 +36,7 @@ public class FragmentSetDTOConverter
 
 		return new FragmentSet() {
 			{
+				setActions(dtoConverterContext::getActions);
 				setCreator(
 					() -> CreatorUtil.toCreator(
 						fragmentCollection.getUserId()));
