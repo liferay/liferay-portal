@@ -346,14 +346,15 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 	@Test
 	public void testRegisterInOpenModeEnforcesAllowedHosts() throws Exception {
+
+		// Allow when the bracketed IPv6 host is compared with or without a port
+
 		String allowedHost = RandomTestUtil.randomString();
 
 		int port = RandomTestUtil.randomInt(1025, 65535);
 
 		String bracketedHostAndPort = StringBundler.concat(
 			"[", allowedHost, "]:", port);
-
-		// Allow when the bracketed IPv6 host is compared with or without a port
 
 		_testRegisterInOpenModeEnforcesAllowedHosts(
 			allowedHost, 201, bracketedHostAndPort);
