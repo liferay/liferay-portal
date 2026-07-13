@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ObjectField} from '@liferay/object-admin-rest-client-js';
 import {Page, expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 import path from 'path';
@@ -104,10 +105,11 @@ async function publishStructureWithDataChange(page: Page) {
 	await waitForAlert(page, 'published successfully', {timeout: 10000});
 }
 
-async function createBasicContentStructure(
+async function createStructure(
 	apiHelpers: DataApiHelpers,
 	spaceExternalReferenceCode: string,
-	listTypeDefinition: {externalReferenceCode: string; id: number}
+	objectFolderExternalReferenceCode: string,
+	objectFields: Partial<ObjectField>[]
 ) {
 	const definition = await apiHelpers.objectAdmin.postRandomObjectDefinition({
 		objectDefinitionSettings: [
@@ -129,6 +131,39 @@ async function createBasicContentStructure(
 				name: 'title',
 				required: true,
 			},
+			...objectFields,
+		],
+		objectFolderExternalReferenceCode,
+		scope: 'depot',
+		status: {code: 0},
+		titleObjectFieldName: 'title',
+	});
+
+	apiHelpers.data.push({
+		id: definition.id as number,
+		type: 'objectDefinition',
+	});
+
+	return {
+		applicationName: (definition.restContextPath as string).replace(
+			/^\/o\//,
+			''
+		),
+		id: definition.id as number,
+		label: (definition.label?.en_US ?? definition.name) as string,
+	};
+}
+
+async function createBasicContentStructure(
+	apiHelpers: DataApiHelpers,
+	spaceExternalReferenceCode: string,
+	listTypeDefinition: {externalReferenceCode: string; id: number}
+) {
+	return createStructure(
+		apiHelpers,
+		spaceExternalReferenceCode,
+		'L_CMS_CONTENT_STRUCTURES',
+		[
 			{
 				DBType: 'Integer',
 				businessType: 'Integer',
@@ -168,51 +203,19 @@ async function createBasicContentStructure(
 				listTypeDefinitionId: listTypeDefinition.id,
 				name: 'select',
 			},
-		],
-		objectFolderExternalReferenceCode: 'L_CMS_CONTENT_STRUCTURES',
-		scope: 'depot',
-		status: {code: 0},
-		titleObjectFieldName: 'title',
-	});
-
-	apiHelpers.data.push({
-		id: definition.id as number,
-		type: 'objectDefinition',
-	});
-
-	return {
-		applicationName: (definition.restContextPath as string).replace(
-			/^\/o\//,
-			''
-		),
-		label: (definition.label?.en_US ?? definition.name) as string,
-	};
+		]
+	);
 }
 
 async function createBasicFileStructure(
 	apiHelpers: DataApiHelpers,
 	spaceExternalReferenceCode: string
 ) {
-	const definition = await apiHelpers.objectAdmin.postRandomObjectDefinition({
-		objectDefinitionSettings: [
-			{
-				name: 'acceptedGroupExternalReferenceCodes',
-				value: spaceExternalReferenceCode as unknown as object,
-			},
-		],
-		objectFields: [
-			{
-				DBType: 'String',
-				businessType: 'Text',
-				externalReferenceCode: getRandomString(),
-				indexed: true,
-				indexedAsKeyword: false,
-				indexedLanguageId: 'en_US',
-				label: {en_US: 'Title'},
-				localized: true,
-				name: 'title',
-				required: true,
-			},
+	return createStructure(
+		apiHelpers,
+		spaceExternalReferenceCode,
+		'L_CMS_FILE_TYPES',
+		[
 			{
 				DBType: 'Long',
 				businessType: 'Attachment',
@@ -274,52 +277,19 @@ async function createBasicFileStructure(
 				label: {en_US: 'Featured'},
 				name: 'featured',
 			},
-		],
-		objectFolderExternalReferenceCode: 'L_CMS_FILE_TYPES',
-		scope: 'depot',
-		status: {code: 0},
-		titleObjectFieldName: 'title',
-	});
-
-	apiHelpers.data.push({
-		id: definition.id as number,
-		type: 'objectDefinition',
-	});
-
-	return {
-		applicationName: (definition.restContextPath as string).replace(
-			/^\/o\//,
-			''
-		),
-		id: definition.id as number,
-		label: (definition.label?.en_US ?? definition.name) as string,
-	};
+		]
+	);
 }
 
 async function createSimpleContentStructure(
 	apiHelpers: DataApiHelpers,
 	spaceExternalReferenceCode: string
 ) {
-	const definition = await apiHelpers.objectAdmin.postRandomObjectDefinition({
-		objectDefinitionSettings: [
-			{
-				name: 'acceptedGroupExternalReferenceCodes',
-				value: spaceExternalReferenceCode as unknown as object,
-			},
-		],
-		objectFields: [
-			{
-				DBType: 'String',
-				businessType: 'Text',
-				externalReferenceCode: getRandomString(),
-				indexed: true,
-				indexedAsKeyword: false,
-				indexedLanguageId: 'en_US',
-				label: {en_US: 'Title'},
-				localized: true,
-				name: 'title',
-				required: true,
-			},
+	return createStructure(
+		apiHelpers,
+		spaceExternalReferenceCode,
+		'L_CMS_CONTENT_STRUCTURES',
+		[
 			{
 				DBType: 'String',
 				businessType: 'Text',
@@ -331,26 +301,8 @@ async function createSimpleContentStructure(
 				localized: true,
 				name: 'body',
 			},
-		],
-		objectFolderExternalReferenceCode: 'L_CMS_CONTENT_STRUCTURES',
-		scope: 'depot',
-		status: {code: 0},
-		titleObjectFieldName: 'title',
-	});
-
-	apiHelpers.data.push({
-		id: definition.id as number,
-		type: 'objectDefinition',
-	});
-
-	return {
-		applicationName: (definition.restContextPath as string).replace(
-			/^\/o\//,
-			''
-		),
-		id: definition.id as number,
-		label: (definition.label?.en_US ?? definition.name) as string,
-	};
+		]
+	);
 }
 
 async function createPicklist(apiHelpers: DataApiHelpers, options: string[]) {
