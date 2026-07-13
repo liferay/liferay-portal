@@ -5,15 +5,9 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Build;
-import com.liferay.jenkins.results.parser.BuildDatabase;
-
 import java.io.File;
 
-import java.net.URL;
-
 import java.util.List;
-import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,22 +22,49 @@ public class BaseTestrayAttachmentUploaderTest
 
 	@Test
 	public void testPrepareFiles() throws Exception {
-		Build build = _mockBuild();
-
 		File preparedFilesBaseDir = _createTempDir();
 
 		File recordedFilesBaseDir = new File(
 			preparedFilesBaseDir, "recorded_logs");
 
-		FakeTestrayAttachmentUploader fakeTestrayAttachmentUploader =
-			new FakeTestrayAttachmentUploader(
-				build, preparedFilesBaseDir,
-				new FakeTestrayAttachmentRecorder(build, recordedFilesBaseDir));
+		TestrayAttachmentRecorder testrayAttachmentRecorder = Mockito.mock(
+			TestrayAttachmentRecorder.class);
 
-		fakeTestrayAttachmentUploader.prepareFiles();
+		Mockito.when(
+			testrayAttachmentRecorder.getRecordedFilesBaseDir()
+		).thenReturn(
+			recordedFilesBaseDir
+		);
+
+		BaseTestrayAttachmentUploader baseTestrayAttachmentUploader =
+			Mockito.mock(BaseTestrayAttachmentUploader.class);
+
+		Mockito.when(
+			baseTestrayAttachmentUploader.getPreparedFilesBaseDir()
+		).thenReturn(
+			preparedFilesBaseDir
+		);
+
+		Mockito.when(
+			baseTestrayAttachmentUploader.getTestrayAttachmentRecorder()
+		).thenReturn(
+			testrayAttachmentRecorder
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayAttachmentUploader
+		).getPreparedFiles();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayAttachmentUploader
+		).prepareFiles();
+
+		baseTestrayAttachmentUploader.prepareFiles();
 
 		List<File> preparedFiles =
-			fakeTestrayAttachmentUploader.getPreparedFiles();
+			baseTestrayAttachmentUploader.getPreparedFiles();
 
 		Assert.assertTrue(preparedFiles.isEmpty());
 	}
@@ -56,87 +77,6 @@ public class BaseTestrayAttachmentUploaderTest
 		dir.mkdir();
 
 		return dir;
-	}
-
-	private Build _mockBuild() {
-		Build build = Mockito.mock(Build.class);
-
-		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
-
-		Mockito.when(
-			build.getBuildDatabase()
-		).thenReturn(
-			buildDatabase
-		);
-
-		Mockito.when(
-			buildDatabase.getProperties(Mockito.anyString())
-		).thenReturn(
-			new Properties()
-		);
-
-		return build;
-	}
-
-	private static class FakeTestrayAttachmentRecorder
-		extends TestrayAttachmentRecorder {
-
-		public FakeTestrayAttachmentRecorder(
-			Build build, File recordedFilesBaseDir) {
-
-			super(build);
-
-			_recordedFilesBaseDir = recordedFilesBaseDir;
-		}
-
-		@Override
-		public void record() {
-		}
-
-		@Override
-		protected File getRecordedFilesBaseDir() {
-			return _recordedFilesBaseDir;
-		}
-
-		private final File _recordedFilesBaseDir;
-
-	}
-
-	private static class FakeTestrayAttachmentUploader
-		extends BaseTestrayAttachmentUploader {
-
-		public FakeTestrayAttachmentUploader(
-			Build build, File preparedFilesBaseDir,
-			TestrayAttachmentRecorder testrayAttachmentRecorder) {
-
-			super(build, null);
-
-			_preparedFilesBaseDir = preparedFilesBaseDir;
-			_testrayAttachmentRecorder = testrayAttachmentRecorder;
-		}
-
-		@Override
-		public File getPreparedFilesBaseDir() {
-			return _preparedFilesBaseDir;
-		}
-
-		@Override
-		public TestrayAttachmentRecorder getTestrayAttachmentRecorder() {
-			return _testrayAttachmentRecorder;
-		}
-
-		@Override
-		public URL getTestrayServerLogsURL() {
-			return null;
-		}
-
-		@Override
-		public void upload() {
-		}
-
-		private final File _preparedFilesBaseDir;
-		private final TestrayAttachmentRecorder _testrayAttachmentRecorder;
-
 	}
 
 }
