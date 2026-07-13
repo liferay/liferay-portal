@@ -50,7 +50,7 @@ public class AudiencesPanelApp extends BasePanelApp {
 		throws PortalException {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-93951")) {
+				group.getCompanyId(), "LPD-85746")) {
 
 			return false;
 		}

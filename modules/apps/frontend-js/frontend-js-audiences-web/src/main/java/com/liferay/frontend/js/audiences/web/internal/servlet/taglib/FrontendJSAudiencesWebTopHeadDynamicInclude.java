@@ -52,7 +52,7 @@ public class FrontendJSAudiencesWebTopHeadDynamicInclude
 
 		long companyId = _portal.getCompanyId(httpServletRequest);
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-83647")) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85746")) {
 			return;
 		}
 

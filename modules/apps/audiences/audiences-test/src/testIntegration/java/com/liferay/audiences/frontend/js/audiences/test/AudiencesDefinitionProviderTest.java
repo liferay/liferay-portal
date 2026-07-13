@@ -42,7 +42,7 @@ public class AudiencesDefinitionProviderTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-93951"))
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-85746"))
 	@Test
 	public void testGetAudiencesDefinition() throws Exception {
 		AudiencesEntry audiencesEntry =

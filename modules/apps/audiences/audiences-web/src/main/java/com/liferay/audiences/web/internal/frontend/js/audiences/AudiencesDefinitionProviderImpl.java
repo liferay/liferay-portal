@@ -38,7 +38,7 @@ public class AudiencesDefinitionProviderImpl
 
 	@Override
 	public AudiencesDefinition getAudiencesDefinition(long companyId) {
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-93951")) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85746")) {
 			return null;
 		}
 

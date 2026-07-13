@@ -59,7 +59,7 @@ public class ElementVariationsProviderImpl
 
 		if ((layout == null) ||
 			!FeatureFlagManagerUtil.isEnabled(
-				layout.getCompanyId(), "LPD-93951")) {
+				layout.getCompanyId(), "LPD-85746")) {
 
 			return null;
 		}

@@ -491,7 +491,7 @@ const ExperienceSelector = ({experiences, segments, selectedExperience}) => {
 					</ClayLayout.ContentRow>
 				</ClayButton>
 
-				{Liferay.FeatureFlags['LPD-86901'] && (
+				{Liferay.FeatureFlags['LPD-85746'] && (
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('create-variations')}
 						className="align-self-stretch h-auto"
