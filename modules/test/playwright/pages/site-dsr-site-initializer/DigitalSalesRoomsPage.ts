@@ -127,6 +127,53 @@ export class DigitalSalesRoomsPage {
 		}).toPass({timeout: 10000});
 	}
 
+	async goto() {
+		await this.globalMenuPage.goToHome();
+		await this.globalMenuPage.goToCommerce('Digital Sales Room Management');
+		await this.homeLink.click();
+	}
+
+	async goToRoomActionsMenu(roomName: string, actionsCollapsed = false) {
+		await this.goToRoomsPageViaURL();
+
+		await expect(
+			this.digitalSalesRoomsTable.cell(roomName, false)
+		).toBeVisible({timeout: 2000});
+
+		if (actionsCollapsed) {
+			await expect(
+				await this.digitalSalesRoomsTable.rowActions(roomName, 0, false)
+			).toHaveCount(0);
+
+			await expect(
+				this.digitalSalesRoomsTable.table.getByLabel('View', {
+					exact: true,
+				})
+			).toBeVisible();
+
+			return;
+		}
+
+		await (
+			await this.digitalSalesRoomsTable.rowActions(roomName, 0, false)
+		).click();
+	}
+
+	async goToRoomsPage() {
+		await this.globalMenuPage.goToHome();
+		await this.globalMenuPage.goToCommerce('Digital Sales Room Management');
+		await this.roomsLink.click();
+	}
+
+	async goToRoomsPageAsSeller() {
+		await this.page.goto('/web/dsr/home');
+		await this.roomsLink.click();
+	}
+
+	async goToRoomsPageViaURL() {
+		await this.page.goto('/web/dsr/rooms');
+	}
+
 	async restoreRoom(roomName: string) {
 		await this.clickRowActionsMenuItem(roomName, this.restoreMenuItem);
 
@@ -155,22 +202,5 @@ export class DigitalSalesRoomsPage {
 		await this.showResultsButton.click();
 
 		await expect(this.statusFilterButton).toContainText('Archived');
-	}
-
-	async goToRoomsPage() {
-		await this.globalMenuPage.goToHome();
-		await this.globalMenuPage.goToCommerce('Digital Sales Room Management');
-		await this.roomsLink.click();
-	}
-
-	async goToRoomsPageAsSeller() {
-		await this.page.goto('/web/dsr/home');
-		await this.roomsLink.click();
-	}
-
-	async goto() {
-		await this.globalMenuPage.goToHome();
-		await this.globalMenuPage.goToCommerce('Digital Sales Room Management');
-		await this.homeLink.click();
 	}
 }
