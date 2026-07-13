@@ -14,6 +14,7 @@ AudiencesDisplayContext audiencesDisplayContext = new AudiencesDisplayContext(re
 <frontend-data-set:classic-display
 	creationMenu="<%= audiencesDisplayContext.getCreationMenu() %>"
 	dataProviderKey="<%= AudiencesFDSNames.AUDIENCES_ENTRIES %>"
+	emptyState="<%= audiencesDisplayContext.getEmptyState() %>"
 	id="<%= AudiencesFDSNames.AUDIENCES_ENTRIES %>"
 	style="fluid"
 />

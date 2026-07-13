@@ -275,7 +275,7 @@ function ConditionsEmptyState({
 					description={Liferay.Language.get(
 						'to-create-a-new-audience-drag-items-from-the-sidebar-and-drop-them-here'
 					)}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
 					title={Liferay.Language.get('no-criteria-yet')}
 				/>
 			)}

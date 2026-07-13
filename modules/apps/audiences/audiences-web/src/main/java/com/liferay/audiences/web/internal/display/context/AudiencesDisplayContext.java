@@ -11,10 +11,13 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+
+import java.util.Map;
 
 /**
  * @author Eudaldo Alonso
@@ -45,9 +48,22 @@ public class AudiencesDisplayContext {
 					_renderResponse.createRenderURL(), "mvcRenderCommandName",
 					"/audiences/edit_audiences_entry");
 				dropdownItem.setLabel(
-					LanguageUtil.get(
-						_themeDisplay.getLocale(), "new-audience"));
+					LanguageUtil.get(_themeDisplay.getLocale(), "new"));
 			}
+		).build();
+	}
+
+	public Map<String, Object> getEmptyState() {
+		return HashMapBuilder.<String, Object>put(
+			"description",
+			LanguageUtil.get(
+				_themeDisplay.getLocale(),
+				"click-new-to-create-your-first-audience")
+		).put(
+			"image", "/states/empty_state.svg"
+		).put(
+			"title",
+			LanguageUtil.get(_themeDisplay.getLocale(), "no-audiences-yet")
 		).build();
 	}
 
