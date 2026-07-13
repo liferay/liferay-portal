@@ -8,6 +8,7 @@ package com.liferay.portal.spring.transaction;
 import com.liferay.portal.kernel.internal.spring.transaction.ReadOnlyTransactionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionLifecycleManager;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -210,6 +211,11 @@ public class ReadOnlyTransactionThreadLocalTest {
 
 	private static class TestTransactionAttributeAdapter
 		extends TransactionAttributeAdapter {
+
+		@Override
+		public Propagation getPropagation() {
+			return Propagation.REQUIRED;
+		}
 
 		@Override
 		public boolean isReadOnly() {

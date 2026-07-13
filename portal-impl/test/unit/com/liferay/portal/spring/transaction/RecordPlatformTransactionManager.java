@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import java.util.Objects;
+
 import org.junit.Assert;
 
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,6 +33,10 @@ public class RecordPlatformTransactionManager
 				@Override
 				public Object invoke(
 					Object proxy, Method method, Object[] args) {
+
+					if (Objects.equals(method.getName(), "isNewTransaction")) {
+						return true;
+					}
 
 					throw new UnsupportedOperationException(method.toString());
 				}

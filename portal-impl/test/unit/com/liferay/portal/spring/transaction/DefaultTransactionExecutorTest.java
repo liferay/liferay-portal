@@ -6,6 +6,7 @@
 package com.liferay.portal.spring.transaction;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionLifecycleListener;
 import com.liferay.portal.kernel.transaction.TransactionLifecycleManager;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -26,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 
@@ -480,6 +482,12 @@ public class DefaultTransactionExecutorTest {
 							return predicate.test((Throwable)args[0]);
 						}
 
+						if (Objects.equals(
+								method.getName(), "getPropagationBehavior")) {
+
+							return TransactionDefinition.PROPAGATION_REQUIRED;
+						}
+
 						throw new UnsupportedOperationException(
 							method.toString());
 					}
@@ -581,6 +589,11 @@ public class DefaultTransactionExecutorTest {
 
 	private static class TestTransactionAttributeAdapter
 		extends TransactionAttributeAdapter {
+
+		@Override
+		public Propagation getPropagation() {
+			return Propagation.REQUIRED;
+		}
 
 		@Override
 		public boolean rollbackOn(Throwable throwable) {
