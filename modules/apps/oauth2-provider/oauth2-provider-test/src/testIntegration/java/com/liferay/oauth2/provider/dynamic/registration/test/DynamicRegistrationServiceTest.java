@@ -371,6 +371,18 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		_testRegisterInOpenModeEnforcesAllowedHosts(
 			allowedHost, 201, allowedHost);
 
+		// Allow when the rightmost forwarded host matches
+
+		_testRegisterInOpenModeEnforcesAllowedHosts(
+			allowedHost, 201,
+			RandomTestUtil.randomString() + ", " + allowedHost);
+
+		// Deny when only the leftmost forwarded host matches
+
+		_testRegisterInOpenModeEnforcesAllowedHosts(
+			allowedHost, 403,
+			allowedHost + ", " + RandomTestUtil.randomString());
+
 		// Deny when the request host does not match
 
 		_testRegisterInOpenModeEnforcesAllowedHosts(

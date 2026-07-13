@@ -370,10 +370,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			return _normalizeHost(httpServletRequest.getRemoteAddr());
 		}
 
-		int index = forwardedFor.indexOf(',');
+		int index = forwardedFor.lastIndexOf(',');
 
 		if (index >= 0) {
-			forwardedFor = forwardedFor.substring(0, index);
+			forwardedFor = forwardedFor.substring(index + 1);
 		}
 
 		forwardedFor = forwardedFor.trim();
