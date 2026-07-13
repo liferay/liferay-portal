@@ -145,14 +145,6 @@ public class PasswordEncryptorUtil {
 			}
 		}
 
-		if (PropsValues.FIPS_ENABLED && Validator.isNull(encryptedPassword) &&
-			!_isFIPSApprovedAlgorithm(algorithm)) {
-
-			throw new PwdEncryptorException.InvalidAlgorithm(
-				StringBundler.concat(
-					"Algorithm \"", algorithm, "\" is not allowed"));
-		}
-
 		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(algorithm);
 
 		String newEncryptedPassword = passwordEncryptor.encrypt(
@@ -302,17 +294,6 @@ public class PasswordEncryptorUtil {
 		}
 
 		return passwordEncryptor;
-	}
-
-	private static boolean _isFIPSApprovedAlgorithm(String algorithm) {
-		if (Validator.isNull(algorithm)) {
-			return false;
-		}
-
-		String upperCaseAlgorithm = StringUtil.toUpperCase(algorithm);
-
-		return upperCaseAlgorithm.startsWith(PasswordEncryptor.TYPE_PBKDF2) &&
-			upperCaseAlgorithm.contains("SHA256");
 	}
 
 	private static final String _PASSWORDS_ENCRYPTION_ALGORITHM =

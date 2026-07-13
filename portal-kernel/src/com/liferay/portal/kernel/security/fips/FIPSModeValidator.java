@@ -7,8 +7,12 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.lang.reflect.Method;
 
@@ -19,6 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Caio Farias
@@ -30,6 +36,8 @@ public class FIPSModeValidator {
 
 		_validateFIPSProvider(providers);
 		_validateProviders(providers);
+
+		_validateProperties();
 	}
 
 	private static void _validateFIPSProvider(Provider[] providers) {
@@ -130,6 +138,55 @@ public class FIPSModeValidator {
 		}
 	}
 
+	private static void _validatePasswordsEncryptionAlgorithm(
+		String algorithm) {
+
+		String upperCaseAlgorithm = StringUtil.toUpperCase(
+			GetterUtil.getString(algorithm));
+
+		if (!upperCaseAlgorithm.startsWith(PasswordEncryptor.TYPE_PBKDF2) ||
+			!upperCaseAlgorithm.contains("SHA256")) {
+
+			throw new SecurityException(
+				StringBundler.concat(
+					"Algorithm \"", algorithm,
+					"\" is not allowed in FIPS mode"));
+		}
+
+		int keySize = _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN;
+		int rounds = _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN;
+
+		Matcher matcher = _pbkdf2Pattern.matcher(upperCaseAlgorithm);
+
+		if (matcher.matches()) {
+			keySize = GetterUtil.getInteger(
+				matcher.group(1), _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN);
+			rounds = GetterUtil.getInteger(
+				matcher.group(2), _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN);
+		}
+
+		if (keySize < _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN) {
+			throw new SecurityException(
+				StringBundler.concat(
+					"PBKDF2 output length ", keySize,
+					" bits is below the minimum allowed value of ",
+					_PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN, " bits"));
+		}
+
+		if (rounds < _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN) {
+			throw new SecurityException(
+				StringBundler.concat(
+					"PBKDF2 iteration count ", rounds,
+					" is below the minimum allowed value of ",
+					_PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN));
+		}
+	}
+
+	private static void _validateProperties() {
+		_validatePasswordsEncryptionAlgorithm(
+			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
+	}
+
 	private static void _validateProviders(Provider[] providers) {
 		Provider provider = providers[0];
 
@@ -152,6 +209,11 @@ public class FIPSModeValidator {
 				" are not allowed in FIPS mode for ", provider.getName()));
 	}
 
+	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN = 112;
+
+	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN =
+		1300000;
+
 	private static final Map<String, List<String>> _allowedProviderNames =
 		Map.of(
 			"AmazonCorrettoCryptoProvider",
@@ -162,5 +224,7 @@ public class FIPSModeValidator {
 			List.of(
 				"BCJSSE", "JdkLDAP", "JdkSASL", "SUN", "SunJCE", "SunJGSS",
 				"SunSASL", "XMLDSig"));
+	private static final Pattern _pbkdf2Pattern = Pattern.compile(
+		"^[^/]*(?:/([0-9]+))?/([0-9]+)$");
 
 }

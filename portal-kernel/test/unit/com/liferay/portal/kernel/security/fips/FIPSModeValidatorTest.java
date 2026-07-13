@@ -49,6 +49,41 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
+	public void testValidatePasswordsEncryptionAlgorithm() {
+		ReflectionTestUtil.invoke(
+			FIPSModeValidator.class, "_validatePasswordsEncryptionAlgorithm",
+			new Class<?>[] {String.class}, "PBKDF2WithHmacSHA256/256/1300000");
+
+		_assertSecurityException(
+			"is not allowed in FIPS mode",
+			() -> ReflectionTestUtil.invoke(
+				FIPSModeValidator.class,
+				"_validatePasswordsEncryptionAlgorithm",
+				new Class<?>[] {String.class}, "bcrypt/10"));
+		_assertSecurityException(
+			"is not allowed in FIPS mode",
+			() -> ReflectionTestUtil.invoke(
+				FIPSModeValidator.class,
+				"_validatePasswordsEncryptionAlgorithm",
+				new Class<?>[] {String.class},
+				"PBKDF2WithHmacSHA1/160/1300000"));
+		_assertSecurityException(
+			"iteration count",
+			() -> ReflectionTestUtil.invoke(
+				FIPSModeValidator.class,
+				"_validatePasswordsEncryptionAlgorithm",
+				new Class<?>[] {String.class},
+				"PBKDF2WithHmacSHA256/256/600000"));
+		_assertSecurityException(
+			"output length",
+			() -> ReflectionTestUtil.invoke(
+				FIPSModeValidator.class,
+				"_validatePasswordsEncryptionAlgorithm",
+				new Class<?>[] {String.class},
+				"PBKDF2WithHmacSHA256/64/1300000"));
+	}
+
+	@Test
 	public void testValidateProviders() {
 		Map<String, List<String>> allowedProviderNames =
 			ReflectionTestUtil.getFieldValue(

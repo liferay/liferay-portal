@@ -225,43 +225,6 @@ public class PasswordEncryptorUtilTest {
 	}
 
 	@Test
-	public void testEncryptPBKDF2WithFIPSMode() throws Exception {
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"FIPS_ENABLED", true)) {
-
-			// FIPS-approved algorithm
-
-			_testEncrypt(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/1300000");
-
-			// Iteration count below the minimum
-
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/600000",
-				PwdEncryptorException.InvalidAlgorithm.class);
-
-			// Non-PBKDF2 algorithm
-
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_BCRYPT + "/10",
-				PwdEncryptorException.InvalidAlgorithm.class);
-
-			// Non-SHA-256 PBKDF2
-
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA1/160/1300000",
-				PwdEncryptorException.InvalidAlgorithm.class);
-
-			// Output length below the minimum
-
-			_testEncryptFailure(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/64/1300000",
-				PwdEncryptorException.InvalidAlgorithm.class);
-		}
-	}
-
-	@Test
 	public void testEncryptPBKDF2WithHmacSHA256() throws Exception {
 		_runTests(
 			PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256", "password",
@@ -362,15 +325,6 @@ public class PasswordEncryptorUtilTest {
 		Assert.assertEquals(
 			expectedPassword,
 			PasswordEncryptorUtil.encrypt(plainPassword, expectedPassword));
-	}
-
-	private void _testEncryptFailure(
-		String algorithm, Class<? extends Throwable> throwableClass) {
-
-		Assert.assertThrows(
-			throwableClass,
-			() -> PasswordEncryptorUtil.encrypt(
-				algorithm, RandomTestUtil.randomString(), null));
 	}
 
 	private void _testEncryptFailure(
