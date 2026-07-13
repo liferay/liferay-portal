@@ -39,6 +39,44 @@
 		}
 	}
 
+	&-expanded {
+		align-items: stretch;
+		flex-direction: column;
+		gap: 0.5rem;
+		height: auto;
+		padding: 0.5rem;
+	}
+
+	&-footer,
+	&-header {
+		align-items: center;
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	&-header &-title {
+		flex-grow: 1;
+	}
+
+	&-footer {
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	&-footer > div:first-child {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+		min-width: 0;
+	}
+
+	&-footer-end {
+		align-items: center;
+		display: flex;
+		flex-shrink: 0;
+		gap: 0.25rem;
+	}
+
 	&-icon {
 		flex-shrink: 0;
 		font-size: 1rem;

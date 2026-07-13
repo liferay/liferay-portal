@@ -148,6 +148,11 @@
 			display: flex;
 			gap: 0.5rem;
 			justify-content: flex-end;
+
+			.btn-group {
+				flex-shrink: 0;
+				flex-wrap: nowrap;
+			}
 		}
 
 		&-start {
