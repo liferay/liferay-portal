@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -784,6 +785,7 @@ public class ExportProcessResourceTest
 		return objectDefinition;
 	}
 
+	@TestInfo("LPD-90359")
 	private void _testPostExportProcessWithDateRange(
 			long groupId, ObjectDefinition objectDefinition,
 			ObjectEntry[] objectEntries)
@@ -919,6 +921,7 @@ public class ExportProcessResourceTest
 			ObjectEntry::getExternalReferenceCode);
 	}
 
+	@TestInfo("LPD-90359")
 	private void _testPostExportProcessWithPermissions(
 			long groupId, ObjectDefinition objectDefinition,
 			ObjectEntry[] objectEntries)

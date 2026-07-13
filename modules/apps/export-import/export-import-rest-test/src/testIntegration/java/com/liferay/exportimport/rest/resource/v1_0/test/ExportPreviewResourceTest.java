@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -433,6 +434,7 @@ public class ExportPreviewResourceTest
 				portletId));
 	}
 
+	@TestInfo({"LPD-37317", "LPD-90359"})
 	private void _testGetExportPreviewWithDeletions() throws Exception {
 		ObjectDefinition objectDefinition = _publishObjectDefinitionWithEntries(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID,
