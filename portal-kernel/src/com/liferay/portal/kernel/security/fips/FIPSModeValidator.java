@@ -37,7 +37,8 @@ public class FIPSModeValidator {
 		_validateFIPSProvider(providers);
 		_validateProviders(providers);
 
-		_validateProperties();
+		_validatePasswordsEncryptionAlgorithm(
+			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
 	}
 
 	private static void _validateFIPSProvider(Provider[] providers) {
@@ -180,11 +181,6 @@ public class FIPSModeValidator {
 					" is below the minimum allowed value of ",
 					_PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN));
 		}
-	}
-
-	private static void _validateProperties() {
-		_validatePasswordsEncryptionAlgorithm(
-			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
 	}
 
 	private static void _validateProviders(Provider[] providers) {
