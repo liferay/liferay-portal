@@ -343,9 +343,9 @@ function ErrorRuleRow({
 			tabIndex={tabIndex}
 		>
 			<div className="align-items-center c-gap-3 d-flex">
-				<ClayIcon className="text-danger" symbol="exclamation-full" />
+				<ClayIcon className="text-danger" symbol="times-circle-full" />
 
-				<span className="text-3">
+				<span className="font-weight-semi-bold text-4 text-danger">
 					{Liferay.Language.get(
 						'the-criteria-is-no-longer-available'
 					)}
