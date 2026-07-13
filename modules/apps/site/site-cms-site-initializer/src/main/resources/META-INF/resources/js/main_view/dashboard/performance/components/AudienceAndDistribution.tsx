@@ -111,6 +111,7 @@ function Card({
 					})}
 				/>
 			}
+			className="h-100"
 			description={description}
 			title={title}
 			uppercaseTitle={false}

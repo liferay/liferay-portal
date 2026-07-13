@@ -21,6 +21,7 @@ const BaseCard: React.FC<IBaseCard> = ({
 	Preferences,
 	ariaLevel,
 	children,
+	className,
 	contentClassName,
 	description,
 	role,
@@ -28,7 +29,12 @@ const BaseCard: React.FC<IBaseCard> = ({
 	uppercaseTitle = true,
 }) => {
 	return (
-		<div className="cms-dashboard__base-card p-3 rounded-lg sheet">
+		<div
+			className={classNames(
+				'cms-dashboard__base-card p-3 rounded-lg sheet',
+				className
+			)}
+		>
 			<div className="cms-dashboard__base-card__header d-flex">
 				<div
 					aria-level={ariaLevel}
