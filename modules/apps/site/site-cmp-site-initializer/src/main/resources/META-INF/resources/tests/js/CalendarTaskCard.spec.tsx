@@ -67,8 +67,10 @@ function createTask(overrides: Partial<ITaskObjectEntry> = {}) {
 	} as ITaskObjectEntry;
 }
 
-function renderCard(task: ITaskObjectEntry) {
-	return render(<CalendarTaskCard loadData={jest.fn()} task={task} />);
+function renderCard(task: ITaskObjectEntry, props: {expanded?: boolean} = {}) {
+	return render(
+		<CalendarTaskCard loadData={jest.fn()} task={task} {...props} />
+	);
 }
 
 describe('CalendarTaskCard', () => {
@@ -152,6 +154,20 @@ describe('CalendarTaskCard', () => {
 		expect(
 			container.querySelector('.lexicon-icon-exclamation-full')
 		).toBeInTheDocument();
+	});
+
+	it('renders the overdue label in the expanded card when the due date is past', () => {
+		const {getByText} = renderCard(createTask({dueDate: pastDueDate}), {
+			expanded: true,
+		});
+
+		expect(getByText('overdue')).toBeInTheDocument();
+	});
+
+	it('renders the state label in the expanded card', () => {
+		const {getByText} = renderCard(createTask(), {expanded: true});
+
+		expect(getByText('In Progress')).toBeInTheDocument();
 	});
 
 	it('renders the task title', () => {
