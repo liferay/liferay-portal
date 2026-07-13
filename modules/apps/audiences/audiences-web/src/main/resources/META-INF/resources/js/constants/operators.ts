@@ -18,9 +18,9 @@ const NUMBER_OPERATOR_LABELS: Record<string, string> = {
 };
 
 const SHARED_OPERATOR_LABELS: Record<string, string> = {
-	eq: Liferay.Language.get('is'),
+	eq: Liferay.Language.get('equals'),
 	includes: Liferay.Language.get('contains'),
-	not_eq: Liferay.Language.get('is-not'),
+	not_eq: Liferay.Language.get('not-equals'),
 	not_includes: Liferay.Language.get('does-not-contain'),
 };
 
