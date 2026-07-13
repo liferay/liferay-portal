@@ -5,6 +5,7 @@
 
 package com.liferay.portal.crypto.hash.internal;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.crypto.hash.CryptoHashGenerator;
 import com.liferay.portal.crypto.hash.CryptoHashResponse;
 import com.liferay.portal.crypto.hash.CryptoHashVerificationContext;
@@ -12,7 +13,9 @@ import com.liferay.portal.crypto.hash.provider.bcrypt.internal.BCryptCryptoHashP
 import com.liferay.portal.crypto.hash.provider.message.digest.internal.MessageDigestCryptoHashProviderFactory;
 import com.liferay.portal.crypto.hash.spi.CryptoHashProviderFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.ArrayList;
@@ -79,6 +82,28 @@ public class CryptoHashGeneratorTest {
 		_serviceRegistration2.unregister();
 
 		_serviceRegistration1.unregister();
+	}
+
+	@Test
+	public void testCreate() throws Exception {
+		MessageDigestCryptoHashProviderFactory
+			messageDigestCryptoHashProviderFactory =
+				new MessageDigestCryptoHashProviderFactory();
+
+		messageDigestCryptoHashProviderFactory.create(
+			Collections.singletonMap(
+				"message.digest.algorithm", DigesterUtil.MD5));
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			Assert.assertThrows(
+				SecurityException.class,
+				() -> messageDigestCryptoHashProviderFactory.create(
+					Collections.singletonMap(
+						"message.digest.algorithm", DigesterUtil.MD5)));
+		}
 	}
 
 	@Test

@@ -5,7 +5,9 @@
 
 package com.liferay.portal.kernel.security.fips;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.security.Provider;
@@ -21,6 +23,33 @@ import org.junit.function.ThrowingRunnable;
  * @author Caio Farias
  */
 public class FIPSModeValidatorTest {
+
+	@Test
+	public void testValidateAlgorithm() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", false)) {
+
+			for (String algorithm : new String[] {"MD5", null}) {
+				FIPSModeValidator.validateAlgorithm(algorithm);
+			}
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			for (String algorithm : new String[] {"AES", "SHA-256"}) {
+				FIPSModeValidator.validateAlgorithm(algorithm);
+			}
+
+			for (String algorithm : new String[] {"MD5", "SHA-2", null}) {
+				_assertSecurityException(
+					"is not allowed in FIPS mode",
+					() -> FIPSModeValidator.validateAlgorithm(algorithm));
+			}
+		}
+	}
 
 	@Test
 	public void testValidateFIPSProvider() {
@@ -46,6 +75,32 @@ public class FIPSModeValidatorTest {
 			() -> ReflectionTestUtil.invoke(
 				FIPSModeValidator.class, "_validateFIPSProvider",
 				new Class<?>[] {Provider[].class}, (Object)new Provider[0]));
+	}
+
+	@Test
+	public void testValidateKey() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", false)) {
+
+			FIPSModeValidator.validateKey("DES", 64);
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			for (int keySize : List.of(128, 192, 256)) {
+				FIPSModeValidator.validateKey("AES", keySize);
+			}
+
+			_assertSecurityException(
+				"AES key must be 128, 192, or 256 bits",
+				() -> FIPSModeValidator.validateKey("AES", 64));
+			_assertSecurityException(
+				"is not allowed in FIPS mode",
+				() -> FIPSModeValidator.validateKey("DES", 128));
+		}
 	}
 
 	@Test
