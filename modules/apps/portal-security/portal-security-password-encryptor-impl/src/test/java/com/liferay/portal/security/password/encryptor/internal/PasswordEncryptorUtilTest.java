@@ -13,10 +13,14 @@ import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
+import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.security.MessageDigest;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -257,6 +261,22 @@ public class PasswordEncryptorUtilTest {
 			PasswordEncryptor.TYPE_SSHA, "password",
 			"2EWEKeVpSdd79PkTX5vaGXH5uQ028Smy/H1NmA==",
 			PasswordEncryptor.TYPE_SSHA);
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_runTests(
+				PasswordEncryptor.TYPE_SSHA, "password",
+				"q0elUchHiEgZAZww57UMs6Jt+L45+785Q8YcVUf8VfcAAQIDBAUGBw==",
+				PasswordEncryptor.TYPE_SSHA);
+		}
+
+		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+			DigesterUtil.SHA_1, MessageDigest.class, DigesterUtil.SHA_256,
+			MessageDigest::getInstance,
+			() -> PasswordEncryptorUtil.encrypt(
+				PasswordEncryptor.TYPE_SSHA, "password", null));
 	}
 
 	@Test

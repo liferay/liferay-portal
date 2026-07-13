@@ -10,6 +10,9 @@ import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -17,6 +20,8 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import jakarta.servlet.ServletContext;
 
 import java.net.URL;
+
+import java.security.MessageDigest;
 
 import java.util.Map;
 
@@ -78,6 +83,22 @@ public class HashedFilesRegistryImplTest {
 
 		Assert.assertNotNull(
 			hashedFilesRegistryImpl.getResource("/o/frontend-js-web/main.css"));
+	}
+
+	@Test
+	public void testGetServletContextHash() throws Exception {
+		Map<String, String> hashedFileURIs = HashMapBuilder.put(
+			"/o/frontend-js-web/main.css",
+			HashedFilesUtil.addHash(
+				"/o/frontend-js-web/main.css", RandomTestUtil.randomString())
+		).build();
+
+		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+			DigesterUtil.MD5, MessageDigest.class, DigesterUtil.SHA_256,
+			MessageDigest::getInstance,
+			() -> ReflectionTestUtil.invoke(
+				new HashedFilesRegistryImpl(), "_getServletContextHash",
+				new Class<?>[] {Map.class}, hashedFileURIs));
 	}
 
 	private Map<String, HashedFilesRegistryImpl.DataBag> _mockDataBags(
