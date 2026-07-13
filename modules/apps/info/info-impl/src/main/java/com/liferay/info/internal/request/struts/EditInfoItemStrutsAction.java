@@ -587,28 +587,25 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	private InfoItemIdentifier _getInfoItemIdentifier(
 		HttpServletRequest httpServletRequest) {
 
-		InfoItemIdentifier infoItemIdentifier = null;
-
 		long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
+
+		if (classPK > 0) {
+			return new ClassPKInfoItemIdentifier(
+				classPK, InfoItemIdentifier.VERSION_EDITABLE);
+		}
+
 		String externalReferenceCode = ParamUtil.getString(
 			httpServletRequest, "externalReferenceCode");
 
-		if (classPK > 0) {
-			infoItemIdentifier = new ClassPKInfoItemIdentifier(classPK);
-		}
-		else if (Validator.isNotNull(externalReferenceCode)) {
-			infoItemIdentifier = new ERCInfoItemIdentifier(
+		if (Validator.isNotNull(externalReferenceCode)) {
+			return new ERCInfoItemIdentifier(
 				externalReferenceCode,
 				ParamUtil.getString(
-					httpServletRequest, "scopeExternalReferenceCode", null));
-		}
-		else {
-			return null;
+					httpServletRequest, "scopeExternalReferenceCode", null),
+				InfoItemIdentifier.VERSION_EDITABLE);
 		}
 
-		infoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_EDITABLE);
-
-		return infoItemIdentifier;
+		return null;
 	}
 
 	private LayoutStructure _getLayoutStructure(
