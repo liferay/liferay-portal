@@ -24,6 +24,7 @@ public class CreatorUtil {
 		return new Creator() {
 			{
 				setExternalReferenceCode(user::getExternalReferenceCode);
+				setName(user::getFullName);
 			}
 		};
 	}
