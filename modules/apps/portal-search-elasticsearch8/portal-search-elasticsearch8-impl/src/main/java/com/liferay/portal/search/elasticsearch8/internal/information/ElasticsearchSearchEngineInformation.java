@@ -7,20 +7,17 @@ package com.liferay.portal.search.elasticsearch8.internal.information;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchVersionInfo;
-import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.TimeUnit;
 import co.elastic.clients.elasticsearch.core.InfoResponse;
-import co.elastic.clients.elasticsearch.nodes.ElasticsearchNodesClient;
-import co.elastic.clients.elasticsearch.nodes.NodesInfoRequest;
-import co.elastic.clients.elasticsearch.nodes.NodesInfoResponse;
-import co.elastic.clients.elasticsearch.nodes.info.NodeInfo;
+import co.elastic.clients.json.JsonpDeserializer;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.endpoints.SimpleEndpoint;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConnectionConfiguration;
@@ -39,13 +36,16 @@ import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.cluster.HealthClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.HealthClusterResponse;
 
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.osgi.service.cm.Configuration;
@@ -365,6 +365,28 @@ public class ElasticsearchSearchEngineInformation
 		}
 	}
 
+	private JsonObject _getNodesInfoJsonObject(
+			ElasticsearchClient elasticsearchClient)
+		throws Exception {
+
+		ElasticsearchTransport elasticsearchTransport =
+			elasticsearchClient._transport();
+
+		JsonValue jsonValue = elasticsearchTransport.performRequest(
+			null,
+			new SimpleEndpoint<Object, JsonValue>(
+				"es/nodes.info", nodesInfoRequest -> "GET",
+				nodesInfoRequest -> "/_nodes",
+				nodesInfoRequest -> Collections.emptyMap(),
+				nodesInfoRequest -> Collections.singletonMap(
+					"timeout", "10000" + TimeUnit.Milliseconds.jsonValue()),
+				nodesInfoRequest -> Collections.emptyMap(), false,
+				JsonpDeserializer.jsonValueDeserializer()),
+			null);
+
+		return jsonValue.asJsonObject();
+	}
+
 	private Version _getServerVersion() throws Exception {
 		String serverVersionString = _getServerVersionString();
 
@@ -392,42 +414,37 @@ public class ElasticsearchSearchEngineInformation
 			Set<String> labels, ElasticsearchClient elasticsearchClient)
 		throws Exception {
 
-		ElasticsearchNodesClient elasticsearchNodesClient =
-			elasticsearchClient.nodes();
-
-		NodesInfoResponse nodesInfoResponse = elasticsearchNodesClient.info(
-			NodesInfoRequest.of(
-				nodesInforequest -> nodesInforequest.timeout(
-					Time.of(
-						time -> time.time(
-							"10000" + TimeUnit.Milliseconds.jsonValue())))));
-
-		String clusterName = GetterUtil.getString(
-			nodesInfoResponse.clusterName());
-
-		connectionInformationBuilder.clusterName(clusterName);
-
-		Map<String, NodeInfo> nodeInfos = nodesInfoResponse.nodes();
-
 		List<NodeInformation> nodeInformationList = new ArrayList<>();
 
-		for (Map.Entry<String, NodeInfo> entry : nodeInfos.entrySet()) {
-			NodeInfo nodeInfo = entry.getValue();
+		JsonObject jsonObject = _getNodesInfoJsonObject(elasticsearchClient);
 
-			NodeInformationBuilder nodeInformationBuilder =
-				nodeInformationBuilderFactory.getNodeInformationBuilder();
+		connectionInformationBuilder.clusterName(
+			jsonObject.getString("cluster_name", StringPool.BLANK));
 
-			nodeInformationBuilder.name(nodeInfo.name());
+		JsonObject nodesJsonObject = jsonObject.getJsonObject("nodes");
 
-			Version version = Version.parseVersion(nodeInfo.version());
+		if (nodesJsonObject != null) {
+			for (String nodeId : nodesJsonObject.keySet()) {
+				JsonObject nodeJsonObject = nodesJsonObject.getJsonObject(
+					nodeId);
 
-			nodeInformationBuilder.version(version.toString());
+				NodeInformationBuilder nodeInformationBuilder =
+					nodeInformationBuilderFactory.getNodeInformationBuilder();
 
-			if (version.getMajor() == 7) {
-				labels.add("deprecated");
+				nodeInformationBuilder.name(
+					nodeJsonObject.getString("name", StringPool.BLANK));
+
+				Version version = Version.parseVersion(
+					nodeJsonObject.getString("version", StringPool.BLANK));
+
+				nodeInformationBuilder.version(version.toString());
+
+				if (version.getMajor() == 7) {
+					labels.add("deprecated");
+				}
+
+				nodeInformationList.add(nodeInformationBuilder.build());
 			}
-
-			nodeInformationList.add(nodeInformationBuilder.build());
 		}
 
 		connectionInformationBuilder.nodeInformationList(nodeInformationList);
