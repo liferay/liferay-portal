@@ -54,6 +54,13 @@ export default function CalendarView({
 	const calendarRef = useRef<FullCalendar>(null);
 	const calendarViewRef = useRef<HTMLDivElement>(null);
 
+	const calendarViews = [
+		{label: Liferay.Language.get('day'), view: 'dayGridDay'},
+		{label: Liferay.Language.get('week'), view: 'dayGridWeek'},
+		{label: Liferay.Language.get('month'), view: 'dayGridMonth'},
+	];
+
+	const [currentView, setCurrentView] = useState('dayGridMonth');
 	const [datePickerExpanded, setDatePickerExpanded] = useState(false);
 	const [datePickerValue, setDatePickerValue] = useState('');
 	const [fdsContainerElement, setFDSContainerElement] =
@@ -181,6 +188,18 @@ export default function CalendarView({
 	const currentYear = new Date().getFullYear();
 	const locale = Liferay.ThemeDisplay.getBCP47LanguageId();
 
+	const nextLabel = {
+		dayGridDay: Liferay.Language.get('next-day'),
+		dayGridMonth: Liferay.Language.get('next-month'),
+		dayGridWeek: Liferay.Language.get('next-week'),
+	}[currentView];
+
+	const previousLabel = {
+		dayGridDay: Liferay.Language.get('previous-day'),
+		dayGridMonth: Liferay.Language.get('previous-month'),
+		dayGridWeek: Liferay.Language.get('previous-week'),
+	}[currentView];
+
 	return (
 		<div className="lfr__calendar-view" ref={calendarViewRef}>
 			<ClayLayout.Row className="lfr__calendar-view-toolbar">
@@ -219,7 +238,7 @@ export default function CalendarView({
 					md={6}
 				>
 					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('previous-month')}
+						aria-label={previousLabel}
 						borderless
 						displayType="secondary"
 						onClick={() => calendarRef.current?.getApi().prev()}
@@ -305,7 +324,7 @@ export default function CalendarView({
 					</div>
 
 					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('next-month')}
+						aria-label={nextLabel}
 						borderless
 						displayType="secondary"
 						onClick={() => calendarRef.current?.getApi().next()}
@@ -321,17 +340,38 @@ export default function CalendarView({
 					</ClayButton>
 				</ClayLayout.Col>
 
-				{/* Reserved for future toolbar actions; keeping the column
-				    balances the start column so the center stays centered. */}
-
 				<ClayLayout.Col
 					className="lfr__calendar-view-toolbar-end"
 					md={3}
-				/>
+				>
+					<ClayButton.Group>
+						{calendarViews.map(({label, view}) => (
+							<ClayButton
+								aria-label={label}
+								aria-pressed={currentView === view}
+								displayType="secondary"
+								key={view}
+								onClick={() =>
+									calendarRef.current
+										?.getApi()
+										.changeView(view)
+								}
+								outline={currentView !== view}
+								size="sm"
+								title={label}
+							>
+								{label}
+							</ClayButton>
+						))}
+					</ClayButton.Group>
+				</ClayLayout.Col>
 			</ClayLayout.Row>
 
 			<FullCalendar
-				datesSet={({view}) => setTitle(view.title)}
+				datesSet={({view}) => {
+					setCurrentView(view.type);
+					setTitle(view.title);
+				}}
 				dayHeaderFormat={{weekday: 'long'}}
 				dayMaxEvents
 				eventContent={(arg) => (
