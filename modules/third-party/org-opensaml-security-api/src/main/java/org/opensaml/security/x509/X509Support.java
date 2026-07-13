@@ -45,7 +45,9 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
@@ -173,11 +175,16 @@ public class X509Support {
             final LdapName ldapName = new LdapName(dn.getName(X500Principal.RFC2253));
 
             for (final Rdn rdn : ldapName.getRdns()) {
-                if ("CN".equalsIgnoreCase(rdn.getType())) {
-                    values.add(String.valueOf(rdn.getValue()));
+                final Attributes attributes = rdn.toAttributes();
+                final Attribute cnAttribute = attributes.get("CN");
+
+                if (cnAttribute != null) {
+                    for (int i = 0; i < cnAttribute.size(); i++) {
+                        values.add(String.valueOf(cnAttribute.get(i)));
+                    }
                 }
             }
-        } catch (final InvalidNameException e) {
+        } catch (final NamingException e) {
             log.error("Unable to parse DN '{}' for common names", dn.getName(), e);
 
             return null;

@@ -124,10 +124,10 @@ index 9b5e868..392c7da 100644
 +/* @generated */
 \ No newline at end of file
 diff --git a/org/opensaml/security/x509/X509Support.java b/org/opensaml/security/x509/X509Support.java
-index ae0ca8c..ea24da0 100644
+index ae0ca8c..9c4883b 100644
 --- a/org/opensaml/security/x509/X509Support.java
 +++ b/org/opensaml/security/x509/X509Support.java
-@@ -31,34 +31,29 @@ import java.security.cert.CRLException;
+@@ -31,34 +31,31 @@ import java.security.cert.CRLException;
  import java.security.cert.CertificateEncodingException;
  import java.security.cert.CertificateException;
  import java.security.cert.CertificateFactory;
@@ -145,7 +145,9 @@ index ae0ca8c..ea24da0 100644
  
  import javax.annotation.Nonnull;
  import javax.annotation.Nullable;
-+import javax.naming.InvalidNameException;
++import javax.naming.NamingException;
++import javax.naming.directory.Attribute;
++import javax.naming.directory.Attributes;
 +import javax.naming.ldap.LdapName;
 +import javax.naming.ldap.Rdn;
  import javax.security.auth.x500.X500Principal;
@@ -168,7 +170,7 @@ index ae0ca8c..ea24da0 100644
  import org.opensaml.security.SecurityException;
  import org.opensaml.security.crypto.KeySupport;
  import org.slf4j.Logger;
-@@ -166,14 +161,32 @@ public class X509Support {
+@@ -166,14 +163,37 @@ public class X509Support {
  
          final Logger log = getLogger();
          log.debug("Extracting CNs from the following DN: {}", dn.toString());
@@ -189,11 +191,16 @@ index ae0ca8c..ea24da0 100644
 +            final LdapName ldapName = new LdapName(dn.getName(X500Principal.RFC2253));
 +
 +            for (final Rdn rdn : ldapName.getRdns()) {
-+                if ("CN".equalsIgnoreCase(rdn.getType())) {
-+                    values.add(String.valueOf(rdn.getValue()));
++                final Attributes attributes = rdn.toAttributes();
++                final Attribute cnAttribute = attributes.get("CN");
++
++                if (cnAttribute != null) {
++                    for (int i = 0; i < cnAttribute.size(); i++) {
++                        values.add(String.valueOf(cnAttribute.get(i)));
++                    }
 +                }
 +            }
-+        } catch (final InvalidNameException e) {
++        } catch (final NamingException e) {
 +            log.error("Unable to parse DN '{}' for common names", dn.getName(), e);
 +
 +            return null;
@@ -207,7 +214,7 @@ index ae0ca8c..ea24da0 100644
          return values;
      }
  
-@@ -191,16 +204,31 @@ public class X509Support {
+@@ -191,16 +211,31 @@ public class X509Support {
              return null;
          }
  
@@ -247,7 +254,7 @@ index ae0ca8c..ea24da0 100644
          }
          return altNames;
      }
-@@ -246,14 +274,65 @@ public class X509Support {
+@@ -246,14 +281,65 @@ public class X509Support {
          }
  
          try {
@@ -315,7 +322,7 @@ index ae0ca8c..ea24da0 100644
      /**
       * Get the XML Signature-compliant digest of an X.509 certificate.
       * 
-@@ -338,7 +417,22 @@ public class X509Support {
+@@ -338,7 +424,22 @@ public class X509Support {
       */
      @Nullable public static Collection<X509Certificate> decodeCertificates(@Nonnull final byte[] certs)
              throws CertificateException {
@@ -339,7 +346,7 @@ index ae0ca8c..ea24da0 100644
      }
      
      /**
-@@ -377,8 +471,14 @@ public class X509Support {
+@@ -377,8 +478,14 @@ public class X509Support {
       * @throws CertificateException thrown if the certificate cannot be decoded
       */
      @Nullable public static X509Certificate decodeCertificate(@Nonnull final byte[] cert) throws CertificateException {
@@ -355,7 +362,7 @@ index ae0ca8c..ea24da0 100644
          } catch (final IllegalArgumentException e) {
              throw new CertificateException(e);
          }
-@@ -520,45 +620,10 @@ public class X509Support {
+@@ -520,45 +627,10 @@ public class X509Support {
          return builder.toString();
      }
  
@@ -405,7 +412,7 @@ index ae0ca8c..ea24da0 100644
      
      /**
       * Get an SLF4J Logger.
-@@ -569,4 +634,5 @@ public class X509Support {
+@@ -569,4 +641,5 @@ public class X509Support {
          return LoggerFactory.getLogger(X509Support.class);
      }
      

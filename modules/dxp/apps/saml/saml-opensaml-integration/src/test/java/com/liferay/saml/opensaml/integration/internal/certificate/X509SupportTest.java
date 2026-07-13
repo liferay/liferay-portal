@@ -69,6 +69,12 @@ public class X509SupportTest {
 		Assert.assertEquals(commonNames.toString(), 2, commonNames.size());
 		Assert.assertEquals("leaf", commonNames.get(0));
 		Assert.assertEquals("root", commonNames.get(1));
+
+		commonNames = X509Support.getCommonNames(
+			new X500Principal("C=US+CN=leaf"));
+
+		Assert.assertEquals(commonNames.toString(), 1, commonNames.size());
+		Assert.assertEquals("leaf", commonNames.get(0));
 	}
 
 	@Test
