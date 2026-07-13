@@ -5,11 +5,13 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {GlobalMenuPage} from '../../product-navigation-applications-menu/GlobalMenuPage';
 import {searchTableRowByValue} from '../commerceDNDTablePage';
 
 export class CommerceAdminChannelDetailsPage {
+	readonly accountEntryValidationModeSelect: Locator;
 	readonly activeToggle: (tableName: string) => Promise<Locator>;
 	readonly addTaxRateButton: (tableName: string) => Promise<Locator>;
 	readonly addTaxRateSettingButton: (tableName: string) => Promise<Locator>;
@@ -180,6 +182,9 @@ export class CommerceAdminChannelDetailsPage {
 		this.categoryDisplayPageTab = page.getByRole('link', {
 			name: 'Category Display Pages',
 		});
+		this.accountEntryValidationModeSelect = page.locator(
+			'select[name$="validationMode--"]'
+		);
 		this.channelCurrencySelect = page.locator("select[title='Currency']");
 		this.channelId = page.locator('span:has-text("ID")+strong');
 		this.channelNameLink = (channelName: string) =>
@@ -770,6 +775,33 @@ export class CommerceAdminChannelDetailsPage {
 		await expect(
 			await this.generalCommerceAdminChannelTableLink('By Address')
 		).toBeVisible();
+	}
+
+	async setValidationMode(validationMode: string) {
+		await this.accountEntryValidationModeSelect.selectOption(
+			validationMode
+		);
+
+		await expect(this.accountEntryValidationModeSelect).toHaveValue(
+			validationMode
+		);
+
+		await this.saveButton.click();
+
+		await waitForAlert(this.page);
+	}
+
+	async setValidationModeAsAdmin(
+		channelName: string,
+		validationMode: string
+	) {
+		await performLogout(this.page);
+		await performLoginViaApi({page: this.page, screenName: 'test'});
+
+		await this.goto();
+		await this.channelNameLink(channelName).click();
+
+		await this.setValidationMode(validationMode);
 	}
 
 	async changeChannelDefaultCurrency(currency: string) {

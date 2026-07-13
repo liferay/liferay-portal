@@ -5,11 +5,14 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
+import {CommerceThemeMiniumCatalogPage} from '../commerce-theme-minium/commerceThemeMiniumCatalogPage';
 import {
 	CommerceDNDTablePage,
 	searchTableRowByValue,
 } from '../commerceDNDTablePage';
+import {CommerceMiniCartPage} from '../commerceMiniCartPage';
 
 type TAddress = {
 	asGuest?: boolean | false;
@@ -45,6 +48,8 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly goToOrderDetailsButton: Locator;
 	readonly headingDeliveryGroupModal: (name: string) => Locator;
 	readonly iframeOkButton: Locator;
+	readonly commerceMiniCartPage: CommerceMiniCartPage;
+	readonly commerceThemeMiniumCatalogPage: CommerceThemeMiniumCatalogPage;
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly multishippingTabLink: Locator;
 	readonly multishippingTableLocator: Locator;
@@ -140,6 +145,9 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.goToOrderDetailsButton = page.getByRole('button', {
 			name: 'Go to Order Details',
 		});
+		this.commerceMiniCartPage = new CommerceMiniCartPage(page);
+		this.commerceThemeMiniumCatalogPage =
+			new CommerceThemeMiniumCatalogPage(page);
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.multishippingTabLink = page.getByRole('link', {
 			exact: true,
@@ -303,6 +311,27 @@ export class CheckoutPage extends CommerceDNDTablePage {
 
 			await expect(this.orderSuccessMessage).toBeVisible();
 		}
+	}
+
+	async checkoutAsBuyer(siteName: string, buyerScreenName: string) {
+		await performLogout(this.page);
+		await performLoginViaApi({
+			page: this.page,
+			screenName: buyerScreenName,
+		});
+
+		await this.page.goto(`/web/${siteName}/catalog`);
+
+		await this.commerceThemeMiniumCatalogPage.addToCart('Mount');
+
+		await this.commerceMiniCartPage.miniCartButton.click();
+		await this.commerceMiniCartPage.submitButton.click();
+
+		await this.performCheckoutUntilStep('Order Summary');
+
+		await this.continueButton.click();
+
+		await expect(this.orderConfirmationContainer).toBeVisible();
 	}
 
 	async performCheckoutUntilStep(stopAt: string) {
