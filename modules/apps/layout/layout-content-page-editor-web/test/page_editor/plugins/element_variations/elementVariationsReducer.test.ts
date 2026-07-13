@@ -15,6 +15,7 @@ function buildElementVariation(
 	properties: Partial<ElementVariation> = {}
 ): ElementVariation {
 	return {
+		active: true,
 		audienceEntryERCs: [],
 		externalReferenceCode: '',
 		hide: false,
@@ -47,6 +48,7 @@ describe('elementVariationsReducer', () => {
 			const elementVariation = createElementVariation('experience-1');
 
 			expect(elementVariation.segmentsExperienceERC).toBe('experience-1');
+			expect(elementVariation.active).toBe(true);
 			expect(elementVariation.name).toBe('');
 			expect(elementVariation.hide).toBe(false);
 			expect(elementVariation.key).toBeTruthy();
@@ -77,15 +79,16 @@ describe('elementVariationsReducer', () => {
 			});
 		});
 
-		it('assigns a key and derives the hide flag from the default language entry of the hide map', () => {
+		it('assigns a key and derives the hide flag from the hide value', () => {
 			const {draftElementVariation, elementVariations} =
 				createInitialState({
 					defaultLanguageId: 'en_US',
 					elementVariations: [
 						{
+							active: true,
 							audienceEntryERCs: [],
 							externalReferenceCode: 'erc-1',
-							hide: {en_US: 'true'},
+							hide: 'true',
 							html: {},
 							js: {},
 							name: 'Variation 1',

@@ -5,7 +5,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {LanguagePicker, Option, Picker} from '@clayui/core';
-import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
+import ClayForm, {ClayCheckbox, ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
 import {useId} from 'frontend-js-components-web';
@@ -17,7 +17,13 @@ import {EditableElementOption} from './getEditableElementOptions';
 
 type ElementVariationFormData = Pick<
 	ElementVariation,
-	'audienceEntryERCs' | 'hide' | 'html' | 'js' | 'name' | 'targetElement'
+	| 'active'
+	| 'audienceEntryERCs'
+	| 'hide'
+	| 'html'
+	| 'js'
+	| 'name'
+	| 'targetElement'
 >;
 
 interface Props {
@@ -347,6 +353,19 @@ export default function ElementVariationForm({
 								/>
 							</>
 						)}
+
+						<ClayForm.Group className="my-4" small>
+							<ClayCheckbox
+								checked={!elementVariation.active}
+								disabled={translating}
+								label={Liferay.Language.get(
+									'disable-element-variation'
+								)}
+								onChange={(event) =>
+									onChange({active: !event.target.checked})
+								}
+							/>
+						</ClayForm.Group>
 					</>
 				) : null}
 			</div>

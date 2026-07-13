@@ -18,6 +18,7 @@ type ElementVariationProp = React.ComponentProps<
 >['elementVariation'];
 
 const BASE_ELEMENT_VARIATION: ElementVariationProp = {
+	active: true,
 	audienceEntryERCs: [],
 	hide: false,
 	html: {},
@@ -132,6 +133,34 @@ describe('ElementVariationForm', () => {
 		await userEvent.click(screen.getByLabelText('hide-page-element'));
 
 		expect(onChange).toHaveBeenCalledWith({hide: false});
+	});
+
+	it('disables the variation when the disable checkbox is checked', async () => {
+		const {onChange} = renderForm({targetElement: '.title'});
+
+		const disableCheckbox = screen.getByLabelText(
+			'disable-element-variation'
+		);
+
+		expect(disableCheckbox).not.toBeChecked();
+
+		await userEvent.click(disableCheckbox);
+
+		expect(onChange).toHaveBeenCalledWith({active: false});
+	});
+
+	it('enables the variation when the disable checkbox is unchecked', async () => {
+		const {onChange} = renderForm({active: false, targetElement: '.title'});
+
+		const disableCheckbox = screen.getByLabelText(
+			'disable-element-variation'
+		);
+
+		expect(disableCheckbox).toBeChecked();
+
+		await userEvent.click(disableCheckbox);
+
+		expect(onChange).toHaveBeenCalledWith({active: true});
 	});
 
 	it('marks the not-localizable fields as read-only when translating', () => {

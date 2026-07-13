@@ -24,12 +24,7 @@ function applyElementVariation(elementVariation) {
 			return;
 		}
 
-		if (
-			getLocalizedValue(
-				elementVariation.hide,
-				elementVariation.defaultLanguageId
-			) === 'true'
-		) {
+		if (elementVariation.hide === 'true') {
 			element.style.display = 'none';
 		}
 

@@ -8,7 +8,6 @@ import {ElementVariation} from './elementVariationsReducer';
 
 interface AddElementVariationParameters {
 	addElementVariationURL: string;
-	defaultLanguageId: string;
 	elementVariation: ElementVariation;
 	plid: number;
 }
@@ -22,17 +21,17 @@ interface DeleteElementVariationParameters {
 export default {
 	addElementVariation({
 		addElementVariationURL,
-		defaultLanguageId,
 		elementVariation,
 		plid,
 	}: AddElementVariationParameters) {
 		return serviceFetch<void>(addElementVariationURL, {
 			body: {
 				elementVariation: JSON.stringify({
+					active: elementVariation.active,
 					audienceEntryERCs: elementVariation.audienceEntryERCs,
 					externalReferenceCode:
 						elementVariation.externalReferenceCode,
-					hideMap: {[defaultLanguageId]: elementVariation.hide},
+					hide: String(elementVariation.hide),
 					htmlMap: elementVariation.html,
 					jsMap: elementVariation.js,
 					name: elementVariation.name,

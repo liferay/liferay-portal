@@ -8,6 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import {EditableElementOption} from './getEditableElementOptions';
 
 export interface ElementVariation {
+	active: boolean;
 	audienceEntryERCs: string[];
 	externalReferenceCode: string;
 	hide: boolean;
@@ -56,6 +57,7 @@ export function createElementVariation(
 	segmentsExperienceERC: string
 ): ElementVariation {
 	return {
+		active: true,
 		audienceEntryERCs: [],
 		externalReferenceCode: uuidv4(),
 		hide: false,
@@ -69,7 +71,7 @@ export function createElementVariation(
 }
 
 export type LoadedElementVariation = Omit<ElementVariation, 'hide' | 'key'> & {
-	hide: Record<string, string>;
+	hide: string;
 };
 
 export function createInitialState({
@@ -98,7 +100,7 @@ export function createInitialState({
 		editableElementOptions: [],
 		elementVariations: elementVariations.map((elementVariation) => ({
 			...elementVariation,
-			hide: elementVariation.hide[defaultLanguageId] === 'true',
+			hide: elementVariation.hide === 'true',
 			key: uuidv4(),
 		})),
 		experienceKey:
