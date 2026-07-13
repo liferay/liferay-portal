@@ -402,8 +402,6 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 							axisTestClassGroup);
 
 						if (axisCount > 1) {
-							String result = null;
-
 							StringBuilder sb = new StringBuilder();
 
 							sb.append("test --project=");
@@ -413,6 +411,8 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 							sb.append("/");
 							sb.append(axisCount);
 							sb.append(" --list");
+
+							String result;
 
 							if (_hasRunPlaywrightGradleTask()) {
 								result = _callGradleCommand(
