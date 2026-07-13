@@ -166,7 +166,10 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			postFragmentSet.getExternalReferenceCode());
 
 		_assertProblemException(
-			"CONFLICT", "this-external-reference-code-is-already-in-use",
+			"CONFLICT",
+			_language.get(
+				LocaleUtil.getDefault(),
+				"this-external-reference-code-is-already-in-use"),
 			() -> fragmentSetResource.postSiteFragmentSet(
 				testGroup.getExternalReferenceCode(), duplicateERCFragmentSet));
 
@@ -175,10 +178,13 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		duplicateKeyFragmentSet.setKey(postFragmentSet.getKey());
 
 		_assertProblemException(
-			"CONFLICT", "a-fragment-set-with-the-key-x-already-exists",
+			"CONFLICT",
+			_language.format(
+				LocaleUtil.getDefault(),
+				"a-fragment-set-with-the-key-x-already-exists",
+				duplicateKeyFragmentSet.getKey()),
 			() -> fragmentSetResource.postSiteFragmentSet(
-				testGroup.getExternalReferenceCode(), duplicateKeyFragmentSet),
-			duplicateKeyFragmentSet.getKey());
+				testGroup.getExternalReferenceCode(), duplicateKeyFragmentSet));
 
 		FragmentSet invalidNameFragmentSet = randomFragmentSet();
 
@@ -187,7 +193,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				RandomTestUtil.randomString());
 
 		_assertProblemException(
-			"BAD_REQUEST", "name-is-invalid",
+			"BAD_REQUEST",
+			_language.get(LocaleUtil.getDefault(), "name-is-invalid"),
 			() -> fragmentSetResource.postSiteFragmentSet(
 				testGroup.getExternalReferenceCode(), invalidNameFragmentSet));
 
@@ -258,12 +265,15 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		duplicateKeyFragmentSet.setKey(originalKey);
 
 		_assertProblemException(
-			"CONFLICT", "a-fragment-set-with-the-key-x-already-exists",
+			"CONFLICT",
+			_language.format(
+				LocaleUtil.getDefault(),
+				"a-fragment-set-with-the-key-x-already-exists",
+				duplicateKeyFragmentSet.getKey()),
 			() -> fragmentSetResource.putSiteFragmentSet(
 				testGroup.getExternalReferenceCode(),
 				duplicateKeyFragmentSet.getExternalReferenceCode(),
-				duplicateKeyFragmentSet),
-			duplicateKeyFragmentSet.getKey());
+				duplicateKeyFragmentSet));
 
 		FragmentSet nullNameFragmentSet =
 			testPutSiteFragmentSet_addFragmentSet();
@@ -271,7 +281,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		nullNameFragmentSet.setName((String)null);
 
 		_assertProblemException(
-			"BAD_REQUEST", "name-is-invalid",
+			"BAD_REQUEST",
+			_language.get(LocaleUtil.getDefault(), "name-is-invalid"),
 			() -> fragmentSetResource.putSiteFragmentSet(
 				testGroup.getExternalReferenceCode(),
 				nullNameFragmentSet.getExternalReferenceCode(),
@@ -394,8 +405,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	}
 
 	private void _assertProblemException(
-			String status, String titleKey,
-			UnsafeRunnable<Exception> unsafeRunnable, Object... titleArguments)
+			String status, String title,
+			UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
 
 		try {
@@ -407,10 +418,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals(status, problem.getStatus());
-			Assert.assertEquals(
-				_language.format(
-					LocaleUtil.getDefault(), titleKey, titleArguments),
-				problem.getTitle());
+			Assert.assertEquals(title, problem.getTitle());
 		}
 	}
 
