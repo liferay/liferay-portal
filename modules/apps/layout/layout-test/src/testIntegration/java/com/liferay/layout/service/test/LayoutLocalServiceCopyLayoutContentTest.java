@@ -35,6 +35,7 @@ import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
@@ -815,6 +816,47 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		Assert.assertEquals(
 			draftFragmentEntryLink2.getEditableValues(),
 			updatedFragmentEntryLink2.getEditableValues());
+	}
+
+	@Test
+	@TestInfo("LPD-97443")
+	public void testCopyLayoutContentToWidgetPageCreatesValidSegmentsExperience()
+		throws Exception {
+
+		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout targetLayout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), StringPool.BLANK);
+
+		Assert.assertNull(
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					targetLayout.getGroupId(), targetLayout.getPlid()));
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					targetLayout.getGroupId(), targetLayout.getPlid());
+
+		List<LayoutPageTemplateStructureRel> layoutPageTemplateStructureRels =
+			_layoutPageTemplateStructureRelLocalService.
+				getLayoutPageTemplateStructureRels(
+					layoutPageTemplateStructure.
+						getLayoutPageTemplateStructureId());
+
+		Assert.assertEquals(
+			layoutPageTemplateStructureRels.toString(), 1,
+			layoutPageTemplateStructureRels.size());
+
+		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
+			layoutPageTemplateStructureRels.get(0);
+
+		Assert.assertEquals(
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				targetLayout.getPlid()),
+			layoutPageTemplateStructureRel.getSegmentsExperienceId());
 	}
 
 	@Test
