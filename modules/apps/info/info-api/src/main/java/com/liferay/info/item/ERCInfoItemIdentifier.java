@@ -31,6 +31,15 @@ public class ERCInfoItemIdentifier extends BaseInfoItemIdentifier {
 		_scopeExternalReferenceCode = scopeExternalReferenceCode;
 	}
 
+	public ERCInfoItemIdentifier(
+		String externalReferenceCode, String scopeExternalReferenceCode,
+		String version) {
+
+		this(externalReferenceCode, scopeExternalReferenceCode);
+
+		setVersion(version);
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {

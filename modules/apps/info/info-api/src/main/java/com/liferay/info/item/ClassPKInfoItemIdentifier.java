@@ -22,6 +22,12 @@ public class ClassPKInfoItemIdentifier extends BaseInfoItemIdentifier {
 		_classPK = classPK;
 	}
 
+	public ClassPKInfoItemIdentifier(long classPK, String version) {
+		this(classPK);
+
+		setVersion(version);
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
