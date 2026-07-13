@@ -82,7 +82,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 			}
 
 			_objectDefinitionResourceActionDocumentsMap.put(
-				_getCacheKey(objectDefinition), document);
+				_getKey(objectDefinition), document);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 		throws Exception {
 
 		Document document = _objectDefinitionResourceActionDocumentsMap.remove(
-			_getCacheKey(objectDefinition));
+			_getKey(objectDefinition));
 
 		if (document == null) {
 			document = _readDocument(
