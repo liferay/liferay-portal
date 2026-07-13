@@ -11,6 +11,7 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.fragment.configuration.FragmentEntryVersionConfiguration;
 import com.liferay.fragment.configuration.FragmentServiceConfiguration;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.DuplicateFragmentEntryKeyException;
@@ -20,6 +21,7 @@ import com.liferay.fragment.exception.RequiredFragmentEntryException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.model.FragmentEntryVersion;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.base.FragmentEntryLocalServiceBaseImpl;
@@ -900,6 +902,38 @@ public class FragmentEntryLocalServiceImpl
 		}
 	}
 
+	private void _deleteExcessFragmentEntryVersions(FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		FragmentEntryVersionConfiguration fragmentEntryVersionConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				FragmentEntryVersionConfiguration.class,
+				fragmentEntry.getCompanyId());
+
+		int maximumVersionsPerEntry =
+			fragmentEntryVersionConfiguration.maximumVersionsPerEntry();
+
+		if (maximumVersionsPerEntry <= 0) {
+			return;
+		}
+
+		int count = fragmentEntryVersionPersistence.countByFragmentEntryId(
+			fragmentEntry.getPrimaryKey());
+
+		if (count <= maximumVersionsPerEntry) {
+			return;
+		}
+
+		List<FragmentEntryVersion> fragmentEntryVersions = getVersions(
+			fragmentEntry);
+
+		for (int i = maximumVersionsPerEntry; i < fragmentEntryVersions.size();
+			 i++) {
+
+			deleteVersion(fragmentEntryVersions.get(i));
+		}
+	}
+
 	private DepotEntry _fetchGroupDepotEntry(Group group) {
 		if (!group.isDepot()) {
 			return null;
@@ -1083,6 +1117,8 @@ public class FragmentEntryLocalServiceImpl
 
 		FragmentEntry updatedPublishedFragmentEntry = super.publishDraft(
 			draftFragmentEntry);
+
+		_deleteExcessFragmentEntryVersions(updatedPublishedFragmentEntry);
 
 		FragmentServiceConfiguration fragmentServiceConfiguration =
 			_configurationProvider.getCompanyConfiguration(

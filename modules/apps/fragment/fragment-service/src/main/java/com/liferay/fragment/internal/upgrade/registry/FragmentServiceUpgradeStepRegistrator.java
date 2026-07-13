@@ -15,8 +15,10 @@ import com.liferay.fragment.internal.upgrade.v2_4_0.FragmentEntryLinkUpgradeProc
 import com.liferay.fragment.internal.upgrade.v3_0_1.BrowserSnifferFragmentEntryTemplateUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v3_0_2.FragmentEntryHTMLUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
@@ -276,10 +278,22 @@ public class FragmentServiceUpgradeStepRegistrator
 
 		registry.register(
 			"3.0.1", "3.0.2", new FragmentEntryHTMLUpgradeProcess());
+
+		registry.register(
+			"3.0.2", "3.0.3",
+			new com.liferay.fragment.internal.upgrade.v3_0_3.
+				FragmentEntryVersionUpgradeProcess(
+					_companyLocalService, _configurationProvider));
 	}
 
 	@Reference
 	protected ViewCountManager viewCountManager;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DLFolderLocalService _dlFolderLocalService;
