@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 
 /**
  * @author Cristina González
+ * @author Thiago Buarque
  */
 public class DepotRoleTypeContributorTest {
 
@@ -30,10 +31,17 @@ public class DepotRoleTypeContributorTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetSubtypes() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
+	public void testGetExcludedRoleNames() {
+		Assert.assertArrayEquals(
+			new String[] {
+				DepotRolesConstants.ASSET_LIBRARY_OWNER,
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER
+			},
+			_depotRoleTypeContributor.getExcludedRoleNames());
+	}
 
+	@Test
+	public void testGetSubtypes() {
 		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
 				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
 
@@ -52,7 +60,7 @@ public class DepotRoleTypeContributorTest {
 			);
 
 			Assert.assertArrayEquals(
-				new String[0], depotRoleTypeContributor.getSubtypes());
+				new String[0], _depotRoleTypeContributor.getSubtypes());
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -63,7 +71,7 @@ public class DepotRoleTypeContributorTest {
 
 			Assert.assertArrayEquals(
 				new String[] {DepotRolesConstants.SUBTYPE_PROJECT},
-				depotRoleTypeContributor.getSubtypes());
+				_depotRoleTypeContributor.getSubtypes());
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -81,7 +89,7 @@ public class DepotRoleTypeContributorTest {
 
 			Assert.assertArrayEquals(
 				new String[] {DepotRolesConstants.SUBTYPE_SPACE},
-				depotRoleTypeContributor.getSubtypes());
+				_depotRoleTypeContributor.getSubtypes());
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -95,7 +103,7 @@ public class DepotRoleTypeContributorTest {
 					DepotRolesConstants.SUBTYPE_PROJECT,
 					DepotRolesConstants.SUBTYPE_SPACE
 				},
-				depotRoleTypeContributor.getSubtypes());
+				_depotRoleTypeContributor.getSubtypes());
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -110,155 +118,134 @@ public class DepotRoleTypeContributorTest {
 					DepotRolesConstants.SUBTYPE_PROJECT,
 					DepotRolesConstants.SUBTYPE_SPACE
 				},
-				depotRoleTypeContributor.getSubtypes());
+				_depotRoleTypeContributor.getSubtypes());
 		}
 	}
 
 	@Test
-	public void testIsAllowAssignMembersWithAdministrator() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowAssignMembers(role));
+	public void testIsAllowAssignMembers() {
+		_testIsAllowAssignMembersWithAdministrator();
+		_testIsAllowAssignMembersWithMember();
+		_testIsAllowAssignMembersWithOwner();
 	}
 
 	@Test
-	public void testIsAllowAssignMembersWithMember() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_MEMBER
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowAssignMembers(role));
+	public void testIsAllowDefinePermissions() {
+		_testIsAllowDefinePermissionsWithAdministrator();
+		_testIsAllowDefinePermissionsWithMember();
+		_testIsAllowDefinePermissionsWithOwner();
 	}
 
 	@Test
-	public void testIsAllowAssignMembersWithOwner() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_OWNER
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowAssignMembers(role));
+	public void testIsAllowDelete() {
+		_testIsAllowDeleteWithAdministrator();
+		_testIsAllowDeleteWithDesignLibraryAdministrator();
+		_testIsAllowDeleteWithDesignLibraryContentReviewer();
+		_testIsAllowDeleteWithDesignLibraryMember();
+		_testIsAllowDeleteWithDesignLibraryOwner();
+		_testIsAllowDeleteWithMember();
+		_testIsAllowDeleteWithOwner();
 	}
 
 	@Test
-	public void testIsAllowDefinePermissionsWithAdministrator() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR
-		);
-
+	public void testIsAutomaticallyAssignedWithDesignLibraryMember() {
 		Assert.assertTrue(
-			depotRoleTypeContributor.isAllowDefinePermissions(role));
+			_depotRoleTypeContributor.isAutomaticallyAssigned(
+				_mockRole(DepotRolesConstants.DESIGN_LIBRARY_MEMBER)));
 	}
 
-	@Test
-	public void testIsAllowDefinePermissionsWithMember() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
+	private Role _mockRole(String name) {
 		Role role = Mockito.mock(Role.class);
 
 		Mockito.when(
 			role.getName()
 		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_MEMBER
+			name
 		);
 
+		return role;
+	}
+
+	private void _testIsAllowAssignMembersWithAdministrator() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowAssignMembers(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR)));
+	}
+
+	private void _testIsAllowAssignMembersWithMember() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowAssignMembers(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_MEMBER)));
+	}
+
+	private void _testIsAllowAssignMembersWithOwner() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowAssignMembers(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_OWNER)));
+	}
+
+	private void _testIsAllowDefinePermissionsWithAdministrator() {
 		Assert.assertTrue(
-			depotRoleTypeContributor.isAllowDefinePermissions(role));
+			_depotRoleTypeContributor.isAllowDefinePermissions(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR)));
 	}
 
-	@Test
-	public void testIsAllowDefinePermissionsWithOwner() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_OWNER
-		);
-
+	private void _testIsAllowDefinePermissionsWithMember() {
 		Assert.assertTrue(
-			!depotRoleTypeContributor.isAllowDefinePermissions(role));
+			_depotRoleTypeContributor.isAllowDefinePermissions(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_MEMBER)));
 	}
 
-	@Test
-	public void testIsAllowDeleteWithAdministrator() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowDelete(role));
+	private void _testIsAllowDefinePermissionsWithOwner() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDefinePermissions(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_OWNER)));
 	}
 
-	@Test
-	public void testIsAllowDeleteWithMember() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_MEMBER
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowDelete(role));
+	private void _testIsAllowDeleteWithAdministrator() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR)));
 	}
 
-	@Test
-	public void testIsAllowDeleteWithOwner() {
-		DepotRoleTypeContributor depotRoleTypeContributor =
-			new DepotRoleTypeContributor();
-
-		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getName()
-		).thenReturn(
-			DepotRolesConstants.ASSET_LIBRARY_OWNER
-		);
-
-		Assert.assertTrue(!depotRoleTypeContributor.isAllowDelete(role));
+	private void _testIsAllowDeleteWithDesignLibraryAdministrator() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR)));
 	}
+
+	private void _testIsAllowDeleteWithDesignLibraryContentReviewer() {
+		Assert.assertTrue(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(
+					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER)));
+	}
+
+	private void _testIsAllowDeleteWithDesignLibraryMember() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.DESIGN_LIBRARY_MEMBER)));
+	}
+
+	private void _testIsAllowDeleteWithDesignLibraryOwner() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.DESIGN_LIBRARY_OWNER)));
+	}
+
+	private void _testIsAllowDeleteWithMember() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_MEMBER)));
+	}
+
+	private void _testIsAllowDeleteWithOwner() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_OWNER)));
+	}
+
+	private final DepotRoleTypeContributor _depotRoleTypeContributor =
+		new DepotRoleTypeContributor();
 
 }
