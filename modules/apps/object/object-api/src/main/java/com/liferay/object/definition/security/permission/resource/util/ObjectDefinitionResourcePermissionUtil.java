@@ -152,9 +152,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 			modelPermissions);
 	}
 
-	private static Serializable _getKey(
-		ObjectDefinition objectDefinition) {
-
+	private static Serializable _getKey(ObjectDefinition objectDefinition) {
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			return objectDefinition.getObjectDefinitionId() + StringPool.AT +
 				objectDefinition.getCompanyId();
