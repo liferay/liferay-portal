@@ -6,7 +6,6 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.dom4j.Element;
 
@@ -54,18 +53,6 @@ public class BaseDownstreamBuildTest
 			baseDownstreamBuild.getDisplayName()
 		).thenReturn(
 			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			baseDownstreamBuild.getUniqueFailureTestResults()
-		).thenReturn(
-			Collections.<TestResult>emptyList()
-		);
-
-		Mockito.when(
-			baseDownstreamBuild.getUpstreamJobFailureTestResults()
-		).thenReturn(
-			Collections.<TestResult>emptyList()
 		);
 
 		Element uniqueFailureElement = Dom4JUtil.getNewElement(
