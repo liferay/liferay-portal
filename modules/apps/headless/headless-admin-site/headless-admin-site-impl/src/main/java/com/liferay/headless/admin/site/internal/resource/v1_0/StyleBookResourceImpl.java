@@ -625,6 +625,10 @@ public class StyleBookResourceImpl
 		Map<String, String> action, String designLibraryExternalReferenceCode,
 		String styleBookExternalReferenceCode) {
 
+		if (action == null) {
+			return null;
+		}
+
 		String href = action.get("href");
 
 		if (href != null) {
