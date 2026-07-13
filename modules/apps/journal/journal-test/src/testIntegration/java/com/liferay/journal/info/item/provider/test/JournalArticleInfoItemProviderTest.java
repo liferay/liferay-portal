@@ -95,10 +95,11 @@ public class JournalArticleInfoItemProviderTest {
 
 		Assert.assertEquals(article.getTitle(), publishedArticle.getTitle());
 
-		infoItemIdentifier.setVersion(infoItemIdentifier.VERSION_LATEST);
-
 		JournalArticle draftArticle =
-			journalArticleInfoItemProvider.getInfoItem(infoItemIdentifier);
+			journalArticleInfoItemProvider.getInfoItem(
+				new ClassPKInfoItemIdentifier(
+					article.getResourcePrimKey(),
+					InfoItemIdentifier.VERSION_LATEST));
 
 		Assert.assertEquals(updatedArticle.getTitle(), draftArticle.getTitle());
 	}

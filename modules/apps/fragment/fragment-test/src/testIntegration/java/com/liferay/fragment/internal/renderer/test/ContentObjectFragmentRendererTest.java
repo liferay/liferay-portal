@@ -584,9 +584,7 @@ public class ContentObjectFragmentRendererTest {
 				ClassPKInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
 
 		InfoItemIdentifier infoItemIdentifier = new ClassPKInfoItemIdentifier(
-			journalArticle.getResourcePrimKey());
-
-		infoItemIdentifier.setVersion(
+			journalArticle.getResourcePrimKey(),
 			String.valueOf(journalArticle.getVersion()));
 
 		Object infoItem = infoItemObjectProvider.getInfoItem(

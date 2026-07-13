@@ -203,10 +203,8 @@ public class ObjectEntryInfoItemObjectProviderTest {
 			_assertGetInfoItem(new ClassPKInfoItemIdentifier(objectEntryId)));
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			new ClassPKInfoItemIdentifier(objectEntryId);
-
-		classPKInfoItemIdentifier.setVersion(
-			InfoItemIdentifier.VERSION_LATEST_APPROVED);
+			new ClassPKInfoItemIdentifier(
+				objectEntryId, InfoItemIdentifier.VERSION_LATEST_APPROVED);
 
 		Assert.assertEquals(
 			headObjectEntry, _assertGetInfoItem(classPKInfoItemIdentifier));
@@ -228,9 +226,8 @@ public class ObjectEntryInfoItemObjectProviderTest {
 		);
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			new ClassPKInfoItemIdentifier(objectEntryId);
-
-		classPKInfoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_LATEST);
+			new ClassPKInfoItemIdentifier(
+				objectEntryId, InfoItemIdentifier.VERSION_LATEST);
 
 		Assert.assertEquals(
 			objectEntry, _assertGetInfoItem(classPKInfoItemIdentifier));

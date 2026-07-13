@@ -98,10 +98,10 @@ public class KBArticleInfoItemProviderTest {
 		Assert.assertEquals(
 			_kbArticle.getTitle(), publishedKBArticle.getTitle());
 
-		infoItemIdentifier.setVersion(infoItemIdentifier.VERSION_LATEST);
-
 		KBArticle draftKBArticle = kbArticleArticleInfoItemProvider.getInfoItem(
-			infoItemIdentifier);
+			new ClassPKInfoItemIdentifier(
+				_kbArticle.getResourcePrimKey(),
+				InfoItemIdentifier.VERSION_LATEST));
 
 		Assert.assertEquals(
 			updatedKBArticle.getTitle(), draftKBArticle.getTitle());

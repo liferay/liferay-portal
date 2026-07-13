@@ -151,10 +151,9 @@ public class JournalArticleLayoutDisplayPageProviderTest {
 			originalArticle.getResourcePrimKey());
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			new ClassPKInfoItemIdentifier(assetEntry.getClassPK());
-
-		classPKInfoItemIdentifier.setVersion(
-			String.valueOf(originalArticle.getVersion()));
+			new ClassPKInfoItemIdentifier(
+				assetEntry.getClassPK(),
+				String.valueOf(originalArticle.getVersion()));
 
 		Assert.assertNull(
 			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
