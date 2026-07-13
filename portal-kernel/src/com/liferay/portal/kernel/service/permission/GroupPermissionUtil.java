@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
@@ -164,6 +165,17 @@ public class GroupPermissionUtil {
 				 permissionChecker.hasPermission(
 					 originalGroup, Group.class.getName(), groupId,
 					 ActionKeys.PUBLISH_STAGING)) {
+
+			return true;
+		}
+		else if (actionId.equals(ActionKeys.EXPORT_IMPORT_LAYOUTS) &&
+				 group.isCompany() &&
+				 (PortletPermissionUtil.contains(
+					 permissionChecker, PortletKeys.COMPANY_EXPORT,
+					 ActionKeys.ACCESS_IN_CONTROL_PANEL) ||
+				  PortletPermissionUtil.contains(
+					  permissionChecker, PortletKeys.COMPANY_IMPORT,
+					  ActionKeys.ACCESS_IN_CONTROL_PANEL))) {
 
 			return true;
 		}

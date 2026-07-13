@@ -38,6 +38,12 @@ public class PortletKeys {
 
 	public static final String CALENDAR = "8";
 
+	public static final String COMPANY_EXPORT =
+		"com_liferay_exportimport_web_portlet_CompanyExportPortlet";
+
+	public static final String COMPANY_IMPORT =
+		"com_liferay_exportimport_web_portlet_CompanyImportPortlet";
+
 	public static final String DIRECTORY =
 		"com_liferay_directory_web_portlet_DirectoryPortlet";
 
