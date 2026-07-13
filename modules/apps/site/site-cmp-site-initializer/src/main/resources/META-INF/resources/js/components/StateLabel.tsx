@@ -43,12 +43,12 @@ function StateLabel({dueDate, state}: StateLabelProps) {
 
 	return (
 		<div>
-			<Label displayType={mapKeyToNameDisplayType[state.key]}>
+			<Label displayType={mapKeyToNameDisplayType[state.key]} inverse>
 				{state.name}
 			</Label>
 
 			{isOverdue({dueDate, state}) && (
-				<Label displayType="warning">
+				<Label displayType="warning" inverse>
 					{Liferay.Language.get('overdue')}
 				</Label>
 			)}
