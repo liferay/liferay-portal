@@ -35,24 +35,25 @@ public class XMLStylingCheck extends BaseFileCheck {
 			return content;
 		}
 
-		String xmlDeclaration = matcher.group();
+		String attributes = matcher.group(1);
 
-		String newXmlDeclaration = xmlDeclaration.replaceAll(" +=", "=");
+		String newAttributes = attributes.replaceAll(" +=", "=");
 
-		newXmlDeclaration = newXmlDeclaration.replaceAll("= +", "=");
+		newAttributes = newAttributes.replaceAll("= +", "=");
 
-		newXmlDeclaration = newXmlDeclaration.replaceFirst(
+		newAttributes = newAttributes.replaceFirst(
 			"(?i)\\s+encoding=\"UTF-8\"", "");
 
-		if (newXmlDeclaration.equals(xmlDeclaration)) {
+		newAttributes = newAttributes.trim();
+
+		if (attributes.equals(newAttributes)) {
 			return content;
 		}
 
-		return StringUtil.replaceFirst(
-			content, xmlDeclaration, newXmlDeclaration);
+		return StringUtil.replaceFirst(content, attributes, newAttributes);
 	}
 
 	private static final Pattern _xmlDeclarationPattern = Pattern.compile(
-		"(\\A)<\\?xml .+?\\?>");
+		"\\A<\\?xml (.+?)\\?>");
 
 }
