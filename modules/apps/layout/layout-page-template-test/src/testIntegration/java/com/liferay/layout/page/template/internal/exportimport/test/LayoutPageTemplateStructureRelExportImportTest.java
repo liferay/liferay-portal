@@ -14,6 +14,9 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureServiceUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -47,6 +50,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import org.junit.After;
@@ -380,6 +384,45 @@ public class LayoutPageTemplateStructureRelExportImportTest
 			guestGroup.getExternalReferenceCode());
 	}
 
+	@Test
+	@TestInfo("LPD-97443")
+	public void testImportedLayoutPageTemplateStructureRelHasDefaultSegmentsExperience()
+		throws Exception {
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		importedLayout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			layout.getExternalReferenceCode(), importedGroup.getGroupId());
+
+		long defaultSegmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				importedLayout.getPlid());
+
+		Assert.assertNotEquals(
+			SegmentsExperienceConstants.ID_DEFAULT,
+			defaultSegmentsExperienceId);
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					importedGroup.getGroupId(), importedLayout.getPlid());
+
+		Assert.assertNull(
+			_layoutPageTemplateStructureRelLocalService.
+				fetchLayoutPageTemplateStructureRel(
+					layoutPageTemplateStructure.
+						getLayoutPageTemplateStructureId(),
+					SegmentsExperienceConstants.ID_DEFAULT));
+
+		Assert.assertNotNull(
+			_layoutPageTemplateStructureRelLocalService.
+				fetchLayoutPageTemplateStructureRel(
+					layoutPageTemplateStructure.
+						getLayoutPageTemplateStructureId(),
+					defaultSegmentsExperienceId));
+	}
+
 	private AssetListEntry _addAssetListEntry(Group group) throws Exception {
 		return _assetListEntryLocalService.addAssetListEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
@@ -659,6 +702,14 @@ public class LayoutPageTemplateStructureRelExportImportTest
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureRelLocalService
+		_layoutPageTemplateStructureRelLocalService;
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;
