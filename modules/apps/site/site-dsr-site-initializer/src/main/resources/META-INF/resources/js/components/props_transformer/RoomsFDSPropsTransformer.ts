@@ -153,8 +153,6 @@ export default function RoomsFDSPropsTransformer({
 				return {
 					...action,
 					className: 'text-danger',
-					isVisible: (item: IRoomObjectEntry) =>
-						item?.roomStatus === ROOM_STATUS.INACTIVE,
 				};
 			}
 
