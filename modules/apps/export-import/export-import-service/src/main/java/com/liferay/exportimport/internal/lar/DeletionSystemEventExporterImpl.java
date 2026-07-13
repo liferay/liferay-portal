@@ -89,7 +89,9 @@ public class DeletionSystemEventExporterImpl
 
 		Element rootElement = document.addElement("deletion-system-events");
 
-		if (systemEvents != null) {
+		if ((systemEvents != null) &&
+			!ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
+
 			Map<String, List<SystemEvent>> batchSystemEventsMap =
 				new HashMap<>();
 
@@ -160,6 +162,10 @@ public class DeletionSystemEventExporterImpl
 	public long getDeletionSystemEventsCount(
 			PortletDataContext portletDataContext)
 		throws Exception {
+
+		if (ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
+			return 0;
+		}
 
 		Set<StagedModelType> deletionSystemEventStagedModelTypes =
 			portletDataContext.getDeletionSystemEventStagedModelTypes();
