@@ -27,13 +27,13 @@ public class PortalGitWorkingDirectoryTest
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty(
-			"ant.opts.default[master]", "-Xmx4g -Dmaster");
-		buildProperties.setProperty(
 			"ant.opts.default[ee-7.4.x]", "-Xmx8g -Dee74");
 		buildProperties.setProperty(
-			"java.jdk.default.runtime[master]", "/opt/java/jdk-zulu11-master");
+			"ant.opts.default[master]", "-Xmx4g -Dmaster");
 		buildProperties.setProperty(
 			"java.jdk.default.runtime[ee-7.4.x]", "/opt/java/jdk-zulu8-ee74");
+		buildProperties.setProperty(
+			"java.jdk.default.runtime[master]", "/opt/java/jdk-zulu11-master");
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
