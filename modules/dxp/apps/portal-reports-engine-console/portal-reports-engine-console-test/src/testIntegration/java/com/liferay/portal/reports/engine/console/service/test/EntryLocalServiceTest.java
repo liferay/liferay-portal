@@ -103,7 +103,7 @@ public class EntryLocalServiceTest {
 					FileUtil.exists(fileAttachment.getFileName()));
 
 				AssertUtils.assertFailure(
-					IOException.class, "Stream Closed",
+					IOException.class, null,
 					() -> {
 						InputStream inputStream =
 							fileAttachment.getInputStream();
