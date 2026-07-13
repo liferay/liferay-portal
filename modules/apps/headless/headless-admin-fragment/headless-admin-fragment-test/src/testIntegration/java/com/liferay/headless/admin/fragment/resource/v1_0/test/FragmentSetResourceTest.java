@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.exception.DuplicateFragmentCollectionKeyException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
@@ -19,9 +22,13 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -34,6 +41,7 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -42,6 +50,7 @@ import java.io.InputStream;
 
 import java.text.DateFormat;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +58,7 @@ import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,7 +67,9 @@ import org.junit.runner.RunWith;
 /**
  * @author Rubén Pulido
  */
-@FeatureFlag("LPD-39244")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-39244"), @FeatureFlag("LPD-57283")}
+)
 @RunWith(Arquillian.class)
 public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
@@ -68,12 +80,27 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_depotEntry = _addDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY);
+	}
+
 	@Override
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
 
 		_testBatchEngineDeleteImportTask();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-97408")
+	public void testDeleteDesignLibraryFragmentSet() throws Exception {
+		super.testDeleteDesignLibraryFragmentSet();
 	}
 
 	@Override
@@ -272,6 +299,31 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	}
 
 	@Override
+	protected FragmentSet testDeleteDesignLibraryFragmentSet_addFragmentSet()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			_depotEntry.getGroup());
+
+		return new FragmentSet() {
+			{
+				setExternalReferenceCode(
+					fragmentCollection::getExternalReferenceCode);
+			}
+		};
+	}
+
+	@Override
+	protected String
+			testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Map<String, Map<String, String>>
 			testGetSiteFragmentSetsPage_getExpectedActions(
 				String siteExternalReferenceCode)
@@ -287,6 +339,25 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		return fragmentSetResource.postSiteFragmentSet(
 			testGroup.getExternalReferenceCode(), fragmentSet);
+	}
+
+	private DepotEntry _addDepotEntry(int type) throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, type,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private FragmentCollection _addFragmentCollection(Group group)
+		throws Exception {
+
+		return _fragmentCollectionLocalService.addFragmentCollection(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
 	private void _assertFragmentCollection(FragmentSet fragmentSet, Group group)
@@ -561,6 +632,12 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	private static final long _EXPORT_POLL_INTERVAL = 500;
 
 	private static final long _EXPORT_TIMEOUT = 60000;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
