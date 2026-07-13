@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
+import ClayLayout from '@clayui/layout';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
@@ -28,7 +29,7 @@ export function DataMaskRegexTester({
 	const [sampleText, setSampleText] = useState('');
 	const [testing, setTesting] = useState(false);
 
-	const canTest = Boolean(detectionRegex && sampleText) && !testing;
+	const canTest = Boolean(sampleText) && !testing;
 
 	const handleTest = async () => {
 		setTesting(true);
@@ -47,50 +48,65 @@ export function DataMaskRegexTester({
 
 	return (
 		<div className="data-mask-test mt-4">
-			<h4 className="sheet-tertiary-title">
+			<h4 className="mb-2 sheet-subtitle">
 				{Liferay.Language.get('test-this-mask')}
 			</h4>
 
-			<p className="text-secondary">
+			<p className="sheet-text">
 				{Liferay.Language.get(
 					'enter-a-sample-value-to-preview-how-this-mask-would-transform-it'
 				)}
 			</p>
 
-			<FieldBase
-				id="dataMaskSampleValue"
-				label={Liferay.Language.get('sample')}
-			>
-				<ClayInput
-					id="dataMaskSampleValue"
-					onChange={(event) => setSampleText(event.target.value)}
-					placeholder={Liferay.Language.get('enter-a-sample-value')}
-					type="text"
-					value={sampleText}
-				/>
-			</FieldBase>
+			<ClayLayout.Row className="align-items-end">
+				<ClayLayout.Col md size={12}>
+					<FieldBase
+						id="dataMaskSampleValue"
+						label={Liferay.Language.get('sample')}
+					>
+						<ClayInput
+							id="dataMaskSampleValue"
+							onChange={(event) =>
+								setSampleText(event.target.value)
+							}
+							placeholder={Liferay.Language.get(
+								'enter-a-sample-value'
+							)}
+							type="text"
+							value={sampleText}
+						/>
+					</FieldBase>
+				</ClayLayout.Col>
 
-			<FieldBase
-				errorMessage={result?.error}
-				id="dataMaskOutput"
-				label={Liferay.Language.get('output')}
-			>
-				<ClayInput
-					id="dataMaskOutput"
-					readOnly
-					type="text"
-					value={result && !result.error ? result.output : ''}
-				/>
-			</FieldBase>
+				<ClayLayout.Col md="auto" size={12}>
+					<div className="form-group">
+						<ClayButton
+							block
+							disabled={!canTest}
+							displayType="secondary"
+							onClick={handleTest}
+							type="button"
+						>
+							{Liferay.Language.get('test')}
+						</ClayButton>
+					</div>
+				</ClayLayout.Col>
 
-			<ClayButton
-				disabled={!canTest}
-				displayType="secondary"
-				onClick={handleTest}
-				type="button"
-			>
-				{Liferay.Language.get('test')}
-			</ClayButton>
+				<ClayLayout.Col lg size={12}>
+					<FieldBase
+						errorMessage={result?.error}
+						id="dataMaskOutput"
+						label={Liferay.Language.get('output')}
+					>
+						<ClayInput
+							id="dataMaskOutput"
+							readOnly
+							type="text"
+							value={result && !result.error ? result.output : ''}
+						/>
+					</FieldBase>
+				</ClayLayout.Col>
+			</ClayLayout.Row>
 		</div>
 	);
 }
