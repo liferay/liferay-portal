@@ -10,7 +10,6 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -18,7 +17,6 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -36,6 +34,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,6 +53,11 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@Before
+	public void setUp() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+	}
+
 	@FeatureFlags(
 		featureFlags = {
 			@FeatureFlag(value = "LPD-17564"), @FeatureFlag("LPD-57283")
@@ -61,114 +65,98 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 	)
 	@Test
 	public void testAddCompany() throws Exception {
-		Company company = null;
+		long companyId = _company.getCompanyId();
 
-		try {
-			company = CompanyTestUtil.addCompany();
+		_assertRole(
+			companyId,
+			"space-administrators-are-super-users-of-their-space-but-cannot-" +
+				"make-other-users-into-space-administrators",
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+			"space-administrator");
+		_assertRole(
+			companyId,
+			"all-users-who-belong-to-a-space-have-this-role-within-that-space",
+			DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member");
+		_assertRole(
+			companyId,
+			"space-owners-are-super-users-of-their-space-and-can-assign-" +
+				"space-roles-to-users",
+			DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner");
 
-			long companyId = company.getCompanyId();
+		_assertRoleResourcePermissions(
+			companyId, DepotEntry.class.getName(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName()));
+		_assertRoleResourcePermissions(
+			companyId, DepotEntry.class.getName(),
+			DepotRolesConstants.ASSET_LIBRARY_MEMBER, List.of(ActionKeys.VIEW));
 
-			_assertRole(
-				companyId,
-				"space-administrators-are-super-users-of-their-space-but-" +
-					"cannot-make-other-users-into-space-administrators",
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				"space-administrator");
-			_assertRole(
-				companyId,
-				"all-users-who-belong-to-a-space-have-this-role-within-that-" +
-					"space",
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member");
-			_assertRole(
-				companyId,
-				"space-owners-are-super-users-of-their-space-and-can-assign-" +
-					"space-roles-to-users",
-				DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner");
+		_assertRoleResourcePermissions(
+			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+			List.of(ActionKeys.MANAGE_TAG));
+		_assertRoleResourcePermissions(
+			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+			List.of(ActionKeys.MANAGE_TAG));
 
+		for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
 			_assertRoleResourcePermissions(
-				companyId, DepotEntry.class.getName(),
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				ResourceActionsUtil.getResourceActions(
-					DepotEntry.class.getName()));
-			_assertRoleResourcePermissions(
-				companyId, DepotEntry.class.getName(),
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+				companyId, Role.class.getName(), name,
 				List.of(ActionKeys.VIEW));
-
-			_assertRoleResourcePermissions(
-				companyId, _ASSET_TAGS_RESOURCE_NAME,
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				List.of(ActionKeys.MANAGE_TAG));
-			_assertRoleResourcePermissions(
-				companyId, _ASSET_TAGS_RESOURCE_NAME,
-				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
-				List.of(ActionKeys.MANAGE_TAG));
-
-			for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
-				_assertRoleResourcePermissions(
-					companyId, Role.class.getName(), name,
-					List.of(ActionKeys.VIEW));
-			}
-
-			for (String name : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
-				Role role = _roleLocalService.getRole(companyId, name);
-
-				Assert.assertEquals(RoleConstants.TYPE_DEPOT, role.getType());
-				Assert.assertEquals(
-					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY,
-					role.getSubtype());
-				Assert.assertEquals(
-					RoleConstants.toSystemRoleExternalReferenceCode(name),
-					role.getExternalReferenceCode());
-			}
-
-			List<String> administratorResourceActions =
-				ResourceActionsUtil.getResourceActions(
-					DepotEntry.class.getName());
-
-			administratorResourceActions.remove(ActionKeys.ASSIGN_USER_ROLES);
-
-			_assertResourcePermissions(
-				companyId, DepotEntry.class.getName(),
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				administratorResourceActions);
-
-			_assertResourcePermissions(
-				companyId, _ASSET_TAGS_RESOURCE_NAME,
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				List.of(ActionKeys.MANAGE_TAG));
-
-			_assertResourcePermissions(
-				companyId, _ASSET_TAGS_RESOURCE_NAME,
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				List.of(ActionKeys.MANAGE_TAG));
-
-			_assertResourcePermissions(
-				companyId, DepotEntry.class.getName(),
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
-				List.of(ActionKeys.VIEW));
-
-			Role administratorRole = _roleLocalService.getRole(
-				companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
-
-			for (String name : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
-				Role role = _roleLocalService.getRole(companyId, name);
-
-				_assertResourcePermissions(
-					companyId, Role.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(role.getRoleId()),
-					administratorRole.getName(), List.of(ActionKeys.VIEW));
-			}
 		}
-		finally {
-			if (company != null) {
-				_companyLocalService.deleteCompany(company.getCompanyId());
-			}
+
+		for (String name : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
+			Role role = _roleLocalService.getRole(companyId, name);
+
+			Assert.assertEquals(RoleConstants.TYPE_DEPOT, role.getType());
+			Assert.assertEquals(
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY, role.getSubtype());
+			Assert.assertEquals(
+				RoleConstants.toSystemRoleExternalReferenceCode(name),
+				role.getExternalReferenceCode());
+		}
+
+		List<String> administratorResourceActions =
+			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName());
+
+		administratorResourceActions.remove(ActionKeys.ASSIGN_USER_ROLES);
+
+		_assertResourcePermissions(
+			companyId, DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+			administratorResourceActions);
+
+		_assertResourcePermissions(
+			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+			List.of(ActionKeys.MANAGE_TAG));
+
+		_assertResourcePermissions(
+			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+			List.of(ActionKeys.MANAGE_TAG));
+
+		_assertResourcePermissions(
+			companyId, DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+			List.of(ActionKeys.VIEW));
+
+		Role administratorRole = _roleLocalService.getRole(
+			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+
+		for (String name : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
+			Role role = _roleLocalService.getRole(companyId, name);
+
+			_assertResourcePermissions(
+				companyId, Role.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(role.getRoleId()), administratorRole.getName(),
+				List.of(ActionKeys.VIEW));
 		}
 	}
 
@@ -189,7 +177,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 
 	private void _assertRole(
 			long companyId, String descriptionKey, String name, String titleKey)
-		throws PortalException {
+		throws Exception {
 
 		try {
 			Role role = _roleLocalService.getRole(companyId, name);
@@ -226,7 +214,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 	private void _assertRoleResourcePermissions(
 			long companyId, String resourceName, String roleName,
 			List<String> actionIds)
-		throws PortalException {
+		throws Exception {
 
 		Role administratorRole = _roleLocalService.getRole(
 			companyId, DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
@@ -260,8 +248,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 	private static final String _ASSET_TAGS_RESOURCE_NAME =
 		"com.liferay.asset.tags";
 
-	@Inject
-	private CompanyLocalService _companyLocalService;
+	private Company _company;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
