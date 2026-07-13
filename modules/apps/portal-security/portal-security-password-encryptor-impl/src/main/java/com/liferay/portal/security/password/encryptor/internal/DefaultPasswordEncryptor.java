@@ -37,7 +37,7 @@ public class DefaultPasswordEncryptor implements PasswordEncryptor {
 		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new PwdEncryptorException.UnavailableAlgorithm(
 				StringBundler.concat(
-					"The algorithm \"", algorithm, "\" is not available"),
+					"Algorithm \"", algorithm, "\" is not available"),
 				noSuchAlgorithmException);
 		}
 
