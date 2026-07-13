@@ -10,8 +10,7 @@ package com.liferay.commerce.constants;
  */
 public class CommerceAccountEntryValidationConstants {
 
-	public static final String VALIDATION_MODE_ALLOW_ALL_RESULTS =
-		"allow-all-results";
+	public static final String VALIDATION_MODE_ALLOW_ALL = "allow-all";
 
 	public static final String VALIDATION_MODE_ALLOW_SUCCESSES_ONLY =
 		"allow-successes-only";
@@ -22,8 +21,8 @@ public class CommerceAccountEntryValidationConstants {
 	public static final String VALIDATION_MODE_DISABLED = "disabled";
 
 	public static final String[] VALIDATION_MODES = {
-		"disabled", "allow-all-results", "allow-technical-failures",
-		"allow-successes-only"
+		"allow-all", "allow-successes-only", "allow-technical-failures",
+		"disabled"
 	};
 
 }

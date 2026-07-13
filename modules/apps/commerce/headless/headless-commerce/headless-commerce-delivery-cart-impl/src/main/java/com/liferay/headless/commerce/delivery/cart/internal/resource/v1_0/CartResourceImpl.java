@@ -859,7 +859,7 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 								commerceOrder.getShippingAddressId()
 							))) {
 
-					if (!_isAccountValidationFailure(
+					if (_isAccountValidationResultValid(
 							accountEntryValidatorResult, validationMode)) {
 
 						continue;
@@ -1181,15 +1181,15 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		themeDisplay.setScopeGroupId(commerceChannel.getSiteGroupId());
 	}
 
-	private boolean _isAccountValidationFailure(
+	private boolean _isAccountValidationResultValid(
 		AccountEntryValidatorResult accountEntryValidatorResult,
 		String validationMode) {
 
 		if (validationMode.equals(
 				CommerceAccountEntryValidationConstants.
-					VALIDATION_MODE_ALLOW_ALL_RESULTS)) {
+					VALIDATION_MODE_ALLOW_ALL)) {
 
-			return false;
+			return true;
 		}
 
 		if (!accountEntryValidatorResult.isValid() ||
@@ -1199,10 +1199,10 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			 AccountEntryValidatorConstants.RESULT_WARNING.equals(
 				 accountEntryValidatorResult.getResultStatus()))) {
 
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	private boolean _isValidDeliveryTerm(

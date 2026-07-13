@@ -47,6 +47,7 @@ page import="com.liferay.document.library.kernel.exception.InvalidFileException"
 page import="com.liferay.marketplace.constants.MarketplaceActionKeys" %><%@
 page import="com.liferay.marketplace.constants.MarketplacePortletKeys" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.Group" %><%@
 page import="com.liferay.portal.kernel.model.WorkflowDefinitionLink" %><%@

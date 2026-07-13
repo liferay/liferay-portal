@@ -144,10 +144,12 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
+
 		Assert.assertNull(testAccountEntryValidator.getJSONObject());
+
 		_setAccountEntryValidationMode(
-			CommerceAccountEntryValidationConstants.
-				VALIDATION_MODE_ALLOW_ALL_RESULTS);
+			CommerceAccountEntryValidationConstants.VALIDATION_MODE_ALLOW_ALL);
+
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
@@ -172,9 +174,11 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		_setAccountEntryValidationMode(
 			CommerceAccountEntryValidationConstants.
 				VALIDATION_MODE_ALLOW_TECHNICAL_FAILURES);
+
 		Assert.assertFalse(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
+
 		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
@@ -182,9 +186,11 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 		testAccountEntryValidator.setResultStatus(
 			AccountEntryValidatorConstants.RESULT_WARNING);
+
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
+
 		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
@@ -193,9 +199,11 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		_setAccountEntryValidationMode(
 			CommerceAccountEntryValidationConstants.
 				VALIDATION_MODE_ALLOW_SUCCESSES_ONLY);
+
 		Assert.assertFalse(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
+
 		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
@@ -203,9 +211,11 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 		testAccountEntryValidator.setResultStatus(
 			AccountEntryValidatorConstants.RESULT_MANUAL);
+
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
+
 		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
@@ -213,6 +223,7 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 		testAccountEntryValidator.setResultStatus(
 			AccountEntryValidatorConstants.RESULT_SUCCESS);
+
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));

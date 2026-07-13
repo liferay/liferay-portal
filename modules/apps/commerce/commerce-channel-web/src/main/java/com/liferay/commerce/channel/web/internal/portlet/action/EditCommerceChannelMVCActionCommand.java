@@ -215,7 +215,7 @@ public class EditCommerceChannelMVCActionCommand
 		modifiableSettings.store();
 	}
 
-	private void _updateAccountEntryValidation(
+	private void _updateAccountEntryValidationSettings(
 			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
@@ -248,7 +248,7 @@ public class EditCommerceChannelMVCActionCommand
 			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		_updateAccountCartMaxAllowed(actionRequest, commerceChannel);
-		_updateAccountEntryValidation(actionRequest, commerceChannel);
+		_updateAccountEntryValidationSettings(actionRequest, commerceChannel);
 		_updatePurchaseOrderNumber(actionRequest, commerceChannel);
 		_updateRequestedDeliveryDateFormat(actionRequest, commerceChannel);
 		_updateShippingTaxCategory(actionRequest, commerceChannel);

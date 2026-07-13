@@ -294,8 +294,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		Assert.assertNull(testAccountEntryValidator.getJSONObject());
 
 		_setAccountEntryValidationMode(
-			CommerceAccountEntryValidationConstants.
-				VALIDATION_MODE_ALLOW_ALL_RESULTS);
+			CommerceAccountEntryValidationConstants.VALIDATION_MODE_ALLOW_ALL);
 
 		postCart = cartResource.postCartCheckout(cart.getId());
 

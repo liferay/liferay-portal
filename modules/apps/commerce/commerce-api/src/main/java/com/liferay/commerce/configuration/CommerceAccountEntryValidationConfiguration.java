@@ -26,8 +26,8 @@ public interface CommerceAccountEntryValidationConfiguration {
 	@Meta.AD(
 		deflt = "disabled", name = "account-entry-validation",
 		optionValues = {
-			"disabled", "allow-all-results", "allow-technical-failures",
-			"allow-successes-only"
+			"allow-all", "allow-successes-only", "allow-technical-failures",
+			"disabled"
 		},
 		required = false
 	)

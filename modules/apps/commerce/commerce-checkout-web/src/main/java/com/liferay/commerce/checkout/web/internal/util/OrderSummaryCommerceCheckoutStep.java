@@ -208,7 +208,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			if (FeatureFlagManagerUtil.isEnabled(
 					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
 
-				_getFailingAccountEntryValidatorResult(
+				_getAccountEntryValidatorResult(
 					commerceOrder, httpServletRequest);
 			}
 
@@ -236,7 +236,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
 
 				AccountEntryValidatorResult accountEntryValidatorResult =
-					_getFailingAccountEntryValidatorResult(
+					_getAccountEntryValidatorResult(
 						commerceOrder, httpServletRequest);
 
 				if (accountEntryValidatorResult != null) {
@@ -301,13 +301,13 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 	}
 
-	private AccountEntryValidatorResult _getFailingAccountEntryValidatorResult(
+	private AccountEntryValidatorResult _getAccountEntryValidatorResult(
 			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest)
 		throws PortalException {
 
 		AccountEntryValidatorResult accountEntryValidatorResult =
 			(AccountEntryValidatorResult)httpServletRequest.getAttribute(
-				CommerceWebKeys.COMMERCE_ACCOUNT_FAILING_VALIDATION_RESULT);
+				CommerceWebKeys.COMMERCE_ACCOUNT_VALIDATION_RESULTS);
 
 		if (accountEntryValidatorResult != null) {
 			return accountEntryValidatorResult;
@@ -349,11 +349,11 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 						commerceOrder.getShippingAddressId()
 					))) {
 
-			if (_isAccountValidationFailure(
+			if (!_isAccountValidationResultValid(
 					curAccountEntryValidatorResult, validationMode)) {
 
 				httpServletRequest.setAttribute(
-					CommerceWebKeys.COMMERCE_ACCOUNT_FAILING_VALIDATION_RESULT,
+					CommerceWebKeys.COMMERCE_ACCOUNT_VALIDATION_RESULTS,
 					curAccountEntryValidatorResult);
 
 				return curAccountEntryValidatorResult;
@@ -363,15 +363,15 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		return null;
 	}
 
-	private boolean _isAccountValidationFailure(
+	private boolean _isAccountValidationResultValid(
 		AccountEntryValidatorResult accountEntryValidatorResult,
 		String validationMode) {
 
 		if (validationMode.equals(
 				CommerceAccountEntryValidationConstants.
-					VALIDATION_MODE_ALLOW_ALL_RESULTS)) {
+					VALIDATION_MODE_ALLOW_ALL)) {
 
-			return false;
+			return true;
 		}
 
 		if (!accountEntryValidatorResult.isValid() ||
@@ -381,10 +381,10 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			 AccountEntryValidatorConstants.RESULT_WARNING.equals(
 				 accountEntryValidatorResult.getResultStatus()))) {
 
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	private boolean _isCheckoutRequestedDeliveryDateEnabled(
@@ -414,8 +414,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				CommerceCheckoutWebKeys.COMMERCE_ORDER);
 
 		AccountEntryValidatorResult accountEntryValidatorResult =
-			_getFailingAccountEntryValidatorResult(
-				commerceOrder, httpServletRequest);
+			_getAccountEntryValidatorResult(commerceOrder, httpServletRequest);
 
 		if (accountEntryValidatorResult != null) {
 			throw new AccountEntryValidatorException();
