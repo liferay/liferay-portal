@@ -1140,21 +1140,15 @@ definition {
 
 			DMDocument.expandInfo();
 
-			var dmDocumentURL = selenium.getAttribute("//input[contains(@id,'urlInput')]@value");
-
-			var editDocumentURL = StringUtil.extractFirst(${dmDocumentURL}, "jpg");
+			var editDocumentURL = selenium.getAttribute("//input[contains(@id,'urlInput')]@value");
 		}
 
 		task ("And: Create a new WC with the saved URL as reference in the source content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			WebContentNavigator.gotoAddCP();
-
-			PortletEntry.inputTitle(title = "Web Content Title");
-
-			CKEditor.addSourceContent(content = '''<a href="${editDocumentURL}jpg">Link to Document</a>''');
-
-			WebContent.publishWithPermissions();
+			JSONWebcontent.addWebContent(
+				content = '''<a href="${editDocumentURL}">Link to Document</a>''',
+				groupName = "Guest",
+				source = "true",
+				title = "Web Content Title");
 		}
 
 		task ("When: User export with default settings") {
@@ -1192,7 +1186,9 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
-			CKEditor.assertSourceContent();
+			CKEditor.assertBodyLinkWithoutUUID(
+				fieldLabel = "Content",
+				fileName = "document_1");
 		}
 	}
 
