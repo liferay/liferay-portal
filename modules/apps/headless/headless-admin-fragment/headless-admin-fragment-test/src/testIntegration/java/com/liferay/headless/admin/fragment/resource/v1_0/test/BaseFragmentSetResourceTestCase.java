@@ -203,6 +203,34 @@ public abstract class BaseFragmentSetResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDesignLibraryFragmentSet() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		FragmentSet fragmentSet =
+			testDeleteDesignLibraryFragmentSet_addFragmentSet();
+
+		assertHttpResponseStatusCode(
+			204,
+			fragmentSetResource.deleteDesignLibraryFragmentSetHttpResponse(
+				testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode(),
+				fragmentSet.getExternalReferenceCode()));
+	}
+
+	protected FragmentSet testDeleteDesignLibraryFragmentSet_addFragmentSet()
+		throws Exception {
+
+		return fragmentSetResource.postSiteFragmentSet(
+			testGroup.getExternalReferenceCode(), randomFragmentSet());
+	}
+
+	protected String
+			testDeleteDesignLibraryFragmentSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteSiteFragmentSet() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		FragmentSet fragmentSet = testDeleteSiteFragmentSet_addFragmentSet();
@@ -1662,4 +1690,4 @@ public abstract class BaseFragmentSetResourceTestCase {
 			_fragmentSetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:570800732
+// LIFERAY-REST-BUILDER-HASH:-1299801774
