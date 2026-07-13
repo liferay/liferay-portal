@@ -1344,6 +1344,9 @@ public class LayoutStructureRenderer {
 
 		if (Objects.equals(layoutMode, Constants.READ) ||
 			((layoutDisplayPageObjectProvider != null) &&
+			 Objects.equals(
+				 layoutDisplayPageObjectProvider.getClassName(),
+				 formStyledLayoutStructureItem.getClassName()) &&
 			 !_hasPermission(
 				 ActionKeys.UPDATE, layoutDisplayPageObjectProvider))) {
 
