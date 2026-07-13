@@ -635,6 +635,114 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 			finderCache, new Object[] {plid, segmentsExperienceERC});
 	}
 
+	private CollectionPersistenceFinder
+		<LayoutPageTemplateStructureRelElementVariation,
+		 NoSuchPageTemplateStructureRelElementVariationException>
+			_collectionPersistenceFinderByA_P_SEERC;
+
+	/**
+	 * Returns an ordered range of all the layout page template structure rel element variations where active = &#63; and plid = &#63; and segmentsExperienceERC = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateStructureRelElementVariationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param active the active
+	 * @param plid the plid
+	 * @param segmentsExperienceERC the segments experience erc
+	 * @param start the lower bound of the range of layout page template structure rel element variations
+	 * @param end the upper bound of the range of layout page template structure rel element variations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template structure rel element variations
+	 */
+	@Override
+	public List<LayoutPageTemplateStructureRelElementVariation> findByA_P_SEERC(
+		boolean active, long plid, String segmentsExperienceERC, int start,
+		int end,
+		OrderByComparator<LayoutPageTemplateStructureRelElementVariation>
+			orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByA_P_SEERC.find(
+			finderCache, new Object[] {active, plid, segmentsExperienceERC},
+			start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first layout page template structure rel element variation in the ordered set where active = &#63; and plid = &#63; and segmentsExperienceERC = &#63;.
+	 *
+	 * @param active the active
+	 * @param plid the plid
+	 * @param segmentsExperienceERC the segments experience erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout page template structure rel element variation
+	 * @throws NoSuchPageTemplateStructureRelElementVariationException if a matching layout page template structure rel element variation could not be found
+	 */
+	@Override
+	public LayoutPageTemplateStructureRelElementVariation findByA_P_SEERC_First(
+			boolean active, long plid, String segmentsExperienceERC,
+			OrderByComparator<LayoutPageTemplateStructureRelElementVariation>
+				orderByComparator)
+		throws NoSuchPageTemplateStructureRelElementVariationException {
+
+		return _collectionPersistenceFinderByA_P_SEERC.findFirst(
+			finderCache, new Object[] {active, plid, segmentsExperienceERC},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first layout page template structure rel element variation in the ordered set where active = &#63; and plid = &#63; and segmentsExperienceERC = &#63;.
+	 *
+	 * @param active the active
+	 * @param plid the plid
+	 * @param segmentsExperienceERC the segments experience erc
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout page template structure rel element variation, or <code>null</code> if a matching layout page template structure rel element variation could not be found
+	 */
+	@Override
+	public LayoutPageTemplateStructureRelElementVariation
+		fetchByA_P_SEERC_First(
+			boolean active, long plid, String segmentsExperienceERC,
+			OrderByComparator<LayoutPageTemplateStructureRelElementVariation>
+				orderByComparator) {
+
+		return _collectionPersistenceFinderByA_P_SEERC.fetchFirst(
+			finderCache, new Object[] {active, plid, segmentsExperienceERC},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the layout page template structure rel element variations where active = &#63; and plid = &#63; and segmentsExperienceERC = &#63; from the database.
+	 *
+	 * @param active the active
+	 * @param plid the plid
+	 * @param segmentsExperienceERC the segments experience erc
+	 */
+	@Override
+	public void removeByA_P_SEERC(
+		boolean active, long plid, String segmentsExperienceERC) {
+
+		_collectionPersistenceFinderByA_P_SEERC.remove(
+			finderCache, new Object[] {active, plid, segmentsExperienceERC});
+	}
+
+	/**
+	 * Returns the number of layout page template structure rel element variations where active = &#63; and plid = &#63; and segmentsExperienceERC = &#63;.
+	 *
+	 * @param active the active
+	 * @param plid the plid
+	 * @param segmentsExperienceERC the segments experience erc
+	 * @return the number of matching layout page template structure rel element variations
+	 */
+	@Override
+	public int countByA_P_SEERC(
+		boolean active, long plid, String segmentsExperienceERC) {
+
+		return _collectionPersistenceFinderByA_P_SEERC.count(
+			finderCache, new Object[] {active, plid, segmentsExperienceERC});
+	}
+
 	private UniquePersistenceFinder
 		<LayoutPageTemplateStructureRelElementVariation,
 		 NoSuchPageTemplateStructureRelElementVariationException>
@@ -713,6 +821,7 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 		dbColumnNames.put(
 			"layoutPageTemplateStructureRelElementVariationId",
 			"lptsRelElementVariationId");
+		dbColumnNames.put("active", "active_");
 
 		setDBColumnNames(dbColumnNames);
 
@@ -1132,6 +1241,7 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 		ctStrictColumnNames.add("userName");
 		ctStrictColumnNames.add("createDate");
 		ctIgnoreColumnNames.add("modifiedDate");
+		ctMergeColumnNames.add("active_");
 		ctMergeColumnNames.add("hide");
 		ctMergeColumnNames.add("html");
 		ctMergeColumnNames.add("js");
@@ -1341,6 +1451,57 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 					LayoutPageTemplateStructureRelElementVariation::
 						getSegmentsExperienceERC));
 
+		_collectionPersistenceFinderByA_P_SEERC =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByA_P_SEERC",
+					new String[] {
+						Boolean.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"active_", "plid", "segmentsExperienceERC"},
+					true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findByA_P_SEERC",
+					new String[] {
+						Boolean.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"active_", "plid", "segmentsExperienceERC"},
+					0, 4, true, null),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByA_P_SEERC",
+					new String[] {
+						Boolean.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"active_", "plid", "segmentsExperienceERC"},
+					0, 4, false, null),
+				_SQL_SELECT_LAYOUTPAGETEMPLATESTRUCTURERELELEMENTVARIATION_WHERE,
+				_SQL_COUNT_LAYOUTPAGETEMPLATESTRUCTURERELELEMENTVARIATION_WHERE,
+				LayoutPageTemplateStructureRelElementVariationModelImpl.
+					ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX, "", "", null,
+				new FinderColumn<>(
+					"layoutPageTemplateStructureRelElementVariation.", "active",
+					"active_", FinderColumn.Type.BOOLEAN, "=", true, true,
+					LayoutPageTemplateStructureRelElementVariation::isActive),
+				new FinderColumn<>(
+					"layoutPageTemplateStructureRelElementVariation.", "plid",
+					FinderColumn.Type.LONG, "=", true, true,
+					LayoutPageTemplateStructureRelElementVariation::getPlid),
+				new FinderColumn<>(
+					"layoutPageTemplateStructureRelElementVariation.",
+					"segmentsExperienceERC", FinderColumn.Type.STRING, "=",
+					true, true,
+					LayoutPageTemplateStructureRelElementVariation::
+						getSegmentsExperienceERC));
+
 		_uniquePersistenceFinderByERC_G = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1428,7 +1589,7 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {
-			"uuid", "layoutPageTemplateStructureRelElementVariationId"
+			"uuid", "layoutPageTemplateStructureRelElementVariationId", "active"
 		});
 
 	@Override
@@ -1437,4 +1598,4 @@ public class LayoutPageTemplateStructureRelElementVariationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:886004683
+// LIFERAY-SERVICE-BUILDER-HASH:1281830328

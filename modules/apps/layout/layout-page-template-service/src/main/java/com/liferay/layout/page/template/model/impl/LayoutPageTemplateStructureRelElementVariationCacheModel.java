@@ -82,7 +82,7 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -106,6 +106,8 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", active=");
+		sb.append(active);
 		sb.append(", hide=");
 		sb.append(hide);
 		sb.append(", html=");
@@ -185,6 +187,8 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 			layoutPageTemplateStructureRelElementVariationImpl.setModifiedDate(
 				new Date(modifiedDate));
 		}
+
+		layoutPageTemplateStructureRelElementVariationImpl.setActive(active);
 
 		if (hide == null) {
 			layoutPageTemplateStructureRelElementVariationImpl.setHide("");
@@ -270,7 +274,9 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		hide = objectInput.readUTF();
+
+		active = objectInput.readBoolean();
+		hide = (String)objectInput.readObject();
 		html = objectInput.readUTF();
 		js = objectInput.readUTF();
 		name = objectInput.readUTF();
@@ -321,11 +327,13 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		objectOutput.writeBoolean(active);
+
 		if (hide == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(hide);
+			objectOutput.writeObject(hide);
 		}
 
 		if (html == null) {
@@ -379,6 +387,7 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public boolean active;
 	public String hide;
 	public String html;
 	public String js;
@@ -404,4 +413,4 @@ public class LayoutPageTemplateStructureRelElementVariationCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2108233286
+// LIFERAY-SERVICE-BUILDER-HASH:268293372

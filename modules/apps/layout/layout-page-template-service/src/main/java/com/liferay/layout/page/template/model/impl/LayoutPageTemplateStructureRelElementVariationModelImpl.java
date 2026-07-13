@@ -82,9 +82,10 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		{"lptsRelElementVariationId", Types.BIGINT}, {"groupId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"hide", Types.VARCHAR},
-		{"html", Types.VARCHAR}, {"js", Types.VARCHAR}, {"name", Types.VARCHAR},
-		{"plid", Types.BIGINT}, {"segmentsExperienceERC", Types.VARCHAR},
+		{"modifiedDate", Types.TIMESTAMP}, {"active_", Types.BOOLEAN},
+		{"hide", Types.CLOB}, {"html", Types.VARCHAR}, {"js", Types.VARCHAR},
+		{"name", Types.VARCHAR}, {"plid", Types.BIGINT},
+		{"segmentsExperienceERC", Types.VARCHAR},
 		{"targetElement", Types.VARCHAR}
 	};
 
@@ -103,7 +104,8 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("hide", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("hide", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("html", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("js", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
@@ -113,7 +115,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LPTSRelElementVariation (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,lptsRelElementVariationId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,hide STRING null,html STRING null,js STRING null,name VARCHAR(75) null,plid LONG,segmentsExperienceERC VARCHAR(75) null,targetElement VARCHAR(1000) null,primary key (lptsRelElementVariationId, ctCollectionId))";
+		"create table LPTSRelElementVariation (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,lptsRelElementVariationId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,active_ BOOLEAN,hide TEXT null,html STRING null,js STRING null,name VARCHAR(75) null,plid LONG,segmentsExperienceERC VARCHAR(75) null,targetElement VARCHAR(1000) null,primary key (lptsRelElementVariationId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LPTSRelElementVariation";
@@ -137,37 +139,43 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long ACTIVE_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PLID_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SEGMENTSEXPERIENCEERC_COLUMN_BITMASK = 16L;
+	public static final long PLID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long SEGMENTSEXPERIENCEERC_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
@@ -175,7 +183,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	 */
 	@Deprecated
 	public static final long
-		LAYOUTPAGETEMPLATESTRUCTURERELELEMENTVARIATIONID_COLUMN_BITMASK = 64L;
+		LAYOUTPAGETEMPLATESTRUCTURERELELEMENTVARIATIONID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -347,6 +355,9 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 				LayoutPageTemplateStructureRelElementVariation::
 					getModifiedDate);
 			attributeGetterFunctions.put(
+				"active",
+				LayoutPageTemplateStructureRelElementVariation::getActive);
+			attributeGetterFunctions.put(
 				"hide",
 				LayoutPageTemplateStructureRelElementVariation::getHide);
 			attributeGetterFunctions.put(
@@ -459,6 +470,12 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 					<LayoutPageTemplateStructureRelElementVariation, Date>)
 						LayoutPageTemplateStructureRelElementVariation::
 							setModifiedDate);
+			attributeSetterBiConsumers.put(
+				"active",
+				(BiConsumer
+					<LayoutPageTemplateStructureRelElementVariation, Boolean>)
+						LayoutPageTemplateStructureRelElementVariation::
+							setActive);
 			attributeSetterBiConsumers.put(
 				"hide",
 				(BiConsumer
@@ -751,6 +768,37 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 
 	@JSON
 	@Override
+	public boolean getActive() {
+		return _active;
+	}
+
+	@JSON
+	@Override
+	public boolean isActive() {
+		return _active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_active = active;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalActive() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("active_"));
+	}
+
+	@JSON
+	@Override
 	public String getHide() {
 		if (_hide == null) {
 			return "";
@@ -761,99 +809,12 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	}
 
 	@Override
-	public String getHide(Locale locale) {
-		String languageId = LocaleUtil.toLanguageId(locale);
-
-		return getHide(languageId);
-	}
-
-	@Override
-	public String getHide(Locale locale, boolean useDefault) {
-		String languageId = LocaleUtil.toLanguageId(locale);
-
-		return getHide(languageId, useDefault);
-	}
-
-	@Override
-	public String getHide(String languageId) {
-		return LocalizationUtil.getLocalization(getHide(), languageId);
-	}
-
-	@Override
-	public String getHide(String languageId, boolean useDefault) {
-		return LocalizationUtil.getLocalization(
-			getHide(), languageId, useDefault);
-	}
-
-	@Override
-	public String getHideCurrentLanguageId() {
-		return _hideCurrentLanguageId;
-	}
-
-	@JSON
-	@Override
-	public String getHideCurrentValue() {
-		Locale locale = getLocale(_hideCurrentLanguageId);
-
-		return getHide(locale);
-	}
-
-	@Override
-	public Map<Locale, String> getHideMap() {
-		return LocalizationUtil.getLocalizationMap(getHide());
-	}
-
-	@Override
 	public void setHide(String hide) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
 		_hide = hide;
-	}
-
-	@Override
-	public void setHide(String hide, Locale locale) {
-		setHide(hide, locale, LocaleUtil.getSiteDefault());
-	}
-
-	@Override
-	public void setHide(String hide, Locale locale, Locale defaultLocale) {
-		String languageId = LocaleUtil.toLanguageId(locale);
-		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
-
-		if (Validator.isNotNull(hide)) {
-			setHide(
-				LocalizationUtil.updateLocalization(
-					getHide(), "Hide", hide, languageId, defaultLanguageId));
-		}
-		else {
-			setHide(
-				LocalizationUtil.removeLocalization(
-					getHide(), "Hide", languageId));
-		}
-	}
-
-	@Override
-	public void setHideCurrentLanguageId(String languageId) {
-		_hideCurrentLanguageId = languageId;
-	}
-
-	@Override
-	public void setHideMap(Map<Locale, String> hideMap) {
-		setHideMap(hideMap, LocaleUtil.getSiteDefault());
-	}
-
-	@Override
-	public void setHideMap(Map<Locale, String> hideMap, Locale defaultLocale) {
-		if (hideMap == null) {
-			return;
-		}
-
-		setHide(
-			LocalizationUtil.updateLocalization(
-				hideMap, getHide(), "Hide",
-				LocaleUtil.toLanguageId(defaultLocale)));
 	}
 
 	@JSON
@@ -1219,17 +1180,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	public String[] getAvailableLanguageIds() {
 		Set<String> availableLanguageIds = new TreeSet<String>();
 
-		Map<Locale, String> hideMap = getHideMap();
-
-		for (Map.Entry<Locale, String> entry : hideMap.entrySet()) {
-			Locale locale = entry.getKey();
-			String value = entry.getValue();
-
-			if (Validator.isNotNull(value)) {
-				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
-			}
-		}
-
 		Map<Locale, String> htmlMap = getHtmlMap();
 
 		for (Map.Entry<Locale, String> entry : htmlMap.entrySet()) {
@@ -1258,7 +1208,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 
 	@Override
 	public String getDefaultLanguageId() {
-		String xml = getHide();
+		String xml = getHtml();
 
 		if (xml == null) {
 			return "";
@@ -1292,15 +1242,6 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
-
-		String hide = getHide(defaultLocale);
-
-		if (Validator.isNull(hide)) {
-			setHide(getHide(modelDefaultLanguageId), defaultLocale);
-		}
-		else {
-			setHide(getHide(defaultLocale), defaultLocale, defaultLocale);
-		}
 
 		String html = getHtml(defaultLocale);
 
@@ -1366,6 +1307,8 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 			getCreateDate());
 		layoutPageTemplateStructureRelElementVariationImpl.setModifiedDate(
 			getModifiedDate());
+		layoutPageTemplateStructureRelElementVariationImpl.setActive(
+			isActive());
 		layoutPageTemplateStructureRelElementVariationImpl.setHide(getHide());
 		layoutPageTemplateStructureRelElementVariationImpl.setHtml(getHtml());
 		layoutPageTemplateStructureRelElementVariationImpl.setJs(getJs());
@@ -1414,6 +1357,8 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		layoutPageTemplateStructureRelElementVariationImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		layoutPageTemplateStructureRelElementVariationImpl.setActive(
+			this.<Boolean>getColumnOriginalValue("active_"));
 		layoutPageTemplateStructureRelElementVariationImpl.setHide(
 			this.<String>getColumnOriginalValue("hide"));
 		layoutPageTemplateStructureRelElementVariationImpl.setHtml(
@@ -1607,6 +1552,9 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 				modifiedDate = Long.MIN_VALUE;
 		}
 
+		layoutPageTemplateStructureRelElementVariationCacheModel.active =
+			isActive();
+
 		layoutPageTemplateStructureRelElementVariationCacheModel.hide =
 			getHide();
 
@@ -1769,8 +1717,8 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private boolean _active;
 	private String _hide;
-	private String _hideCurrentLanguageId;
 	private String _html;
 	private String _htmlCurrentLanguageId;
 	private String _js;
@@ -1826,6 +1774,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put("hide", _hide);
 		_columnOriginalValues.put("html", _html);
 		_columnOriginalValues.put("js", _js);
@@ -1845,6 +1794,7 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 		attributeNames.put(
 			"lptsRelElementVariationId",
 			"layoutPageTemplateStructureRelElementVariationId");
+		attributeNames.put("active_", "active");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -1882,19 +1832,21 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 
 		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("hide", 2048L);
+		columnBitmasks.put("active_", 2048L);
 
-		columnBitmasks.put("html", 4096L);
+		columnBitmasks.put("hide", 4096L);
 
-		columnBitmasks.put("js", 8192L);
+		columnBitmasks.put("html", 8192L);
 
-		columnBitmasks.put("name", 16384L);
+		columnBitmasks.put("js", 16384L);
 
-		columnBitmasks.put("plid", 32768L);
+		columnBitmasks.put("name", 32768L);
 
-		columnBitmasks.put("segmentsExperienceERC", 65536L);
+		columnBitmasks.put("plid", 65536L);
 
-		columnBitmasks.put("targetElement", 131072L);
+		columnBitmasks.put("segmentsExperienceERC", 131072L);
+
+		columnBitmasks.put("targetElement", 262144L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1945,4 +1897,4 @@ public class LayoutPageTemplateStructureRelElementVariationModelImpl
 	private LayoutPageTemplateStructureRelElementVariation _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1763412238
+// LIFERAY-SERVICE-BUILDER-HASH:544493210

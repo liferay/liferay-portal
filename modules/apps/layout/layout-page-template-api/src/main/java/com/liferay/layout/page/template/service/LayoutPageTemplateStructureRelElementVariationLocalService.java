@@ -84,7 +84,7 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String[] audienceEntryERCs, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, boolean active, String hide,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -287,6 +287,11 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 				String uuid, long groupId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<LayoutPageTemplateStructureRelElementVariation>
+		getLayoutPageTemplateStructureRelElementVariations(
+			boolean active, long plid, String segmentsExperienceERC);
+
 	/**
 	 * Returns a range of all the layout page template structure rel element variations.
 	 *
@@ -398,4 +403,4 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2123153812
+// LIFERAY-SERVICE-BUILDER-HASH:1298355169

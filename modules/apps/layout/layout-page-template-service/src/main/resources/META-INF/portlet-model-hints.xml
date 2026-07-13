@@ -100,7 +100,10 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field localized="true" name="hide" type="String" />
+		<field name="active" type="boolean" />
+		<field name="hide" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field localized="true" name="html" type="String" />
 		<field localized="true" name="js" type="String" />
 		<field name="name" type="String" />

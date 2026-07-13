@@ -51,7 +51,7 @@ public interface LayoutPageTemplateStructureRelElementVariationService
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId,
-				String[] audienceEntryERCs, Map<Locale, String> hideMap,
+				String[] audienceEntryERCs, boolean active, String hide,
 				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
 				String name, long plid, String segmentsExperienceERC,
 				String targetElement, ServiceContext serviceContext)
@@ -74,4 +74,4 @@ public interface LayoutPageTemplateStructureRelElementVariationService
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1465290773
+// LIFERAY-SERVICE-BUILDER-HASH:1864405394

@@ -257,62 +257,33 @@ public interface LayoutPageTemplateStructureRelElementVariationModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the active of this layout page template structure rel element variation.
+	 *
+	 * @return the active of this layout page template structure rel element variation
+	 */
+	public boolean getActive();
+
+	/**
+	 * Returns <code>true</code> if this layout page template structure rel element variation is active.
+	 *
+	 * @return <code>true</code> if this layout page template structure rel element variation is active; <code>false</code> otherwise
+	 */
+	public boolean isActive();
+
+	/**
+	 * Sets whether this layout page template structure rel element variation is active.
+	 *
+	 * @param active the active of this layout page template structure rel element variation
+	 */
+	public void setActive(boolean active);
+
+	/**
 	 * Returns the hide of this layout page template structure rel element variation.
 	 *
 	 * @return the hide of this layout page template structure rel element variation
 	 */
+	@AutoEscape
 	public String getHide();
-
-	/**
-	 * Returns the localized hide of this layout page template structure rel element variation in the language. Uses the default language if no localization exists for the requested language.
-	 *
-	 * @param locale the locale of the language
-	 * @return the localized hide of this layout page template structure rel element variation
-	 */
-	@AutoEscape
-	public String getHide(Locale locale);
-
-	/**
-	 * Returns the localized hide of this layout page template structure rel element variation in the language, optionally using the default language if no localization exists for the requested language.
-	 *
-	 * @param locale the local of the language
-	 * @param useDefault whether to use the default language if no localization exists for the requested language
-	 * @return the localized hide of this layout page template structure rel element variation. If <code>useDefault</code> is <code>false</code> and no localization exists for the requested language, an empty string will be returned.
-	 */
-	@AutoEscape
-	public String getHide(Locale locale, boolean useDefault);
-
-	/**
-	 * Returns the localized hide of this layout page template structure rel element variation in the language. Uses the default language if no localization exists for the requested language.
-	 *
-	 * @param languageId the ID of the language
-	 * @return the localized hide of this layout page template structure rel element variation
-	 */
-	@AutoEscape
-	public String getHide(String languageId);
-
-	/**
-	 * Returns the localized hide of this layout page template structure rel element variation in the language, optionally using the default language if no localization exists for the requested language.
-	 *
-	 * @param languageId the ID of the language
-	 * @param useDefault whether to use the default language if no localization exists for the requested language
-	 * @return the localized hide of this layout page template structure rel element variation
-	 */
-	@AutoEscape
-	public String getHide(String languageId, boolean useDefault);
-
-	@AutoEscape
-	public String getHideCurrentLanguageId();
-
-	@AutoEscape
-	public String getHideCurrentValue();
-
-	/**
-	 * Returns a map of the locales and localized hides of this layout page template structure rel element variation.
-	 *
-	 * @return the locales and localized hides of this layout page template structure rel element variation
-	 */
-	public Map<Locale, String> getHideMap();
 
 	/**
 	 * Sets the hide of this layout page template structure rel element variation.
@@ -320,40 +291,6 @@ public interface LayoutPageTemplateStructureRelElementVariationModel
 	 * @param hide the hide of this layout page template structure rel element variation
 	 */
 	public void setHide(String hide);
-
-	/**
-	 * Sets the localized hide of this layout page template structure rel element variation in the language.
-	 *
-	 * @param hide the localized hide of this layout page template structure rel element variation
-	 * @param locale the locale of the language
-	 */
-	public void setHide(String hide, Locale locale);
-
-	/**
-	 * Sets the localized hide of this layout page template structure rel element variation in the language, and sets the default locale.
-	 *
-	 * @param hide the localized hide of this layout page template structure rel element variation
-	 * @param locale the locale of the language
-	 * @param defaultLocale the default locale
-	 */
-	public void setHide(String hide, Locale locale, Locale defaultLocale);
-
-	public void setHideCurrentLanguageId(String languageId);
-
-	/**
-	 * Sets the localized hides of this layout page template structure rel element variation from the map of locales and localized hides.
-	 *
-	 * @param hideMap the locales and localized hides of this layout page template structure rel element variation
-	 */
-	public void setHideMap(Map<Locale, String> hideMap);
-
-	/**
-	 * Sets the localized hides of this layout page template structure rel element variation from the map of locales and localized hides, and sets the default locale.
-	 *
-	 * @param hideMap the locales and localized hides of this layout page template structure rel element variation
-	 * @param defaultLocale the default locale
-	 */
-	public void setHideMap(Map<Locale, String> hideMap, Locale defaultLocale);
 
 	/**
 	 * Returns the html of this layout page template structure rel element variation.
@@ -634,4 +571,4 @@ public interface LayoutPageTemplateStructureRelElementVariationModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1774816791
+// LIFERAY-SERVICE-BUILDER-HASH:2126470905
