@@ -214,6 +214,9 @@ public class PasswordEncryptorUtilTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
+			_testEncrypt(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/1300000");
+
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_BCRYPT + "/10",
 				RandomTestUtil.randomString(), null);
@@ -226,9 +229,6 @@ public class PasswordEncryptorUtilTest {
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/64/1300000",
 				RandomTestUtil.randomString(), null);
-
-			_testEncrypt(
-				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/1300000");
 		}
 	}
 
