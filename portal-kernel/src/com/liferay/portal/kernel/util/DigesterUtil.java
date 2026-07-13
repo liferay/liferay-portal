@@ -29,8 +29,6 @@ import java.util.Objects;
  */
 public class DigesterUtil {
 
-	public static final String DEFAULT_ALGORITHM = "SHA";
-
 	public static final String ENCODING = StringPool.UTF8;
 
 	public static final String MD5 = "MD5";
@@ -42,15 +40,15 @@ public class DigesterUtil {
 	public static final String SHA_256 = "SHA-256";
 
 	public static String digest(ByteBuffer byteBuffer) {
-		return digest(DEFAULT_ALGORITHM, byteBuffer);
+		return digest(_getDefaultAlgorithm(), byteBuffer);
 	}
 
 	public static String digest(InputStream inputStream) {
-		return digest(DEFAULT_ALGORITHM, inputStream);
+		return digest(_getDefaultAlgorithm(), inputStream);
 	}
 
 	public static String digest(String text) {
-		return digest(DEFAULT_ALGORITHM, text);
+		return digest(_getDefaultAlgorithm(), text);
 	}
 
 	public static String digest(String algorithm, ByteBuffer byteBuffer) {
@@ -78,15 +76,15 @@ public class DigesterUtil {
 	}
 
 	public static String digestBase64(ByteBuffer byteBuffer) {
-		return digestBase64(DEFAULT_ALGORITHM, byteBuffer);
+		return digestBase64(_getDefaultAlgorithm(), byteBuffer);
 	}
 
 	public static String digestBase64(InputStream inputStream) {
-		return digestBase64(DEFAULT_ALGORITHM, inputStream);
+		return digestBase64(_getDefaultAlgorithm(), inputStream);
 	}
 
 	public static String digestBase64(String text) {
-		return digestBase64(DEFAULT_ALGORITHM, text);
+		return digestBase64(_getDefaultAlgorithm(), text);
 	}
 
 	public static String digestBase64(String algorithm, ByteBuffer byteBuffer) {
@@ -110,15 +108,15 @@ public class DigesterUtil {
 	}
 
 	public static String digestHex(ByteBuffer byteBuffer) {
-		return digestHex(DEFAULT_ALGORITHM, byteBuffer);
+		return digestHex(_getDefaultAlgorithm(), byteBuffer);
 	}
 
 	public static String digestHex(InputStream inputStream) {
-		return digestHex(DEFAULT_ALGORITHM, inputStream);
+		return digestHex(_getDefaultAlgorithm(), inputStream);
 	}
 
 	public static String digestHex(String text) {
-		return digestHex(DEFAULT_ALGORITHM, text);
+		return digestHex(_getDefaultAlgorithm(), text);
 	}
 
 	public static String digestHex(String algorithm, ByteBuffer byteBuffer) {
@@ -140,11 +138,11 @@ public class DigesterUtil {
 	}
 
 	public static byte[] digestRaw(ByteBuffer byteBuffer) {
-		return digestRaw(DEFAULT_ALGORITHM, byteBuffer);
+		return digestRaw(_getDefaultAlgorithm(), byteBuffer);
 	}
 
 	public static byte[] digestRaw(String text) {
-		return digestRaw(DEFAULT_ALGORITHM, text);
+		return digestRaw(_getDefaultAlgorithm(), text);
 	}
 
 	public static byte[] digestRaw(String algorithm, ByteBuffer byteBuffer) {
@@ -216,6 +214,14 @@ public class DigesterUtil {
 		}
 
 		return messageDigest.digest();
+	}
+
+	private static String _getDefaultAlgorithm() {
+		if (PropsValues.FIPS_ENABLED) {
+			return SHA_256;
+		}
+
+		return SHA;
 	}
 
 	private static final boolean _BASE_64 = Objects.equals(

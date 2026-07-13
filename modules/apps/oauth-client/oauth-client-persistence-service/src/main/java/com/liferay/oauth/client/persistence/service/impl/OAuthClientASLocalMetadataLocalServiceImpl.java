@@ -23,8 +23,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -433,7 +435,9 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			URI issuerURI = URI.create(issuer);
 
 			if (wellKnownURISuffix.equals("openid-configuration")) {
-				MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+				MessageDigest messageDigest = MessageDigest.getInstance(
+					PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 :
+						DigesterUtil.MD5);
 
 				return StringBundler.concat(
 					issuerURI.getScheme(), "://", issuerURI.getAuthority(),

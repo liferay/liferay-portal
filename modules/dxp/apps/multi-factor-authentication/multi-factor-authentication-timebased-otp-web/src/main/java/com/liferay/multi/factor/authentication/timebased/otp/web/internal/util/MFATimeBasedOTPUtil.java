@@ -9,6 +9,7 @@ import com.liferay.petra.io.BigEndianCodec;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.math.BigInteger;
@@ -28,8 +29,6 @@ import jodd.util.Base32;
  * @author Marta Medio
  */
 public class MFATimeBasedOTPUtil {
-
-	public static final String MFA_TIMEBASED_OTP_ALGORITHM = "HmacSHA1";
 
 	public static final int MFA_TIMEBASED_OTP_COUNTER = 30 * 1000;
 
@@ -74,8 +73,10 @@ public class MFATimeBasedOTPUtil {
 	}
 
 	private static byte[] _generateHMAC(byte[] key, String text) {
+		String algorithm = PropsValues.FIPS_ENABLED ? "HmacSHA256" : "HmacSHA1";
+
 		try {
-			Mac mac = Mac.getInstance(MFA_TIMEBASED_OTP_ALGORITHM);
+			Mac mac = Mac.getInstance(algorithm);
 
 			mac.init(new SecretKeySpec(key, "RAW"));
 
@@ -88,14 +89,12 @@ public class MFATimeBasedOTPUtil {
 		}
 		catch (InvalidKeyException invalidKeyException) {
 			throw new IllegalArgumentException(
-				"Invalid secret key for algorithm " +
-					MFA_TIMEBASED_OTP_ALGORITHM,
+				"Invalid secret key for algorithm " + algorithm,
 				invalidKeyException);
 		}
 		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new IllegalArgumentException(
-				"Invalid algorithm " + MFA_TIMEBASED_OTP_ALGORITHM,
-				noSuchAlgorithmException);
+				"Invalid algorithm " + algorithm, noSuchAlgorithmException);
 		}
 	}
 

@@ -8,6 +8,7 @@ package com.liferay.portal.events;
 import com.liferay.portal.kernel.events.SimpleAction;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -20,12 +21,14 @@ public class CryptoStartupAction extends SimpleAction {
 
 	@Override
 	public void run(String[] ids) {
+		String algorithm = PropsValues.FIPS_ENABLED ? "HmacSHA256" : "HmacSHA1";
+
 		try {
-			Mac.getInstance("HmacSHA1");
+			Mac.getInstance(algorithm);
 		}
 		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			_log.error(
-				"Unable to get Mac instance for algorithm HmacSHA1",
+				"Unable to get Mac instance for algorithm " + algorithm,
 				noSuchAlgorithmException);
 		}
 	}

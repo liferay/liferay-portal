@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.UnsupportedEncodingException;
@@ -44,7 +45,9 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 		byte[] saltBytes = getSaltBytes(encryptedPassword);
 
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+			MessageDigest messageDigest = MessageDigest.getInstance(
+				PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 :
+					DigesterUtil.SHA_1);
 
 			byte[] plainTextPasswordBytes = plainTextPassword.getBytes(
 				DigesterUtil.ENCODING);
