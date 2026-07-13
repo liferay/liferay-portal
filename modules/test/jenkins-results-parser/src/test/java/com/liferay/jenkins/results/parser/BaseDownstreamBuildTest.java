@@ -89,9 +89,9 @@ public class BaseDownstreamBuildTest
 
 		String gitHubMessageXML = gitHubMessageElement.asXML();
 
-		Assert.assertTrue(gitHubMessageXML.contains(_FAILURE_MARKER_UNIQUE));
 		Assert.assertFalse(
 			gitHubMessageXML.contains(_FAILURE_MARKER_UPSTREAM_JOB));
+		Assert.assertTrue(gitHubMessageXML.contains(_FAILURE_MARKER_UNIQUE));
 
 		Element gitHubMessageUpstreamJobFailureElement =
 			baseDownstreamBuild.getGitHubMessageUpstreamJobFailureElement();
@@ -99,12 +99,12 @@ public class BaseDownstreamBuildTest
 		String gitHubMessageUpstreamJobFailureXML =
 			gitHubMessageUpstreamJobFailureElement.asXML();
 
-		Assert.assertTrue(
-			gitHubMessageUpstreamJobFailureXML.contains(
-				_FAILURE_MARKER_UPSTREAM_JOB));
 		Assert.assertFalse(
 			gitHubMessageUpstreamJobFailureXML.contains(
 				_FAILURE_MARKER_UNIQUE));
+		Assert.assertTrue(
+			gitHubMessageUpstreamJobFailureXML.contains(
+				_FAILURE_MARKER_UPSTREAM_JOB));
 	}
 
 	private static final String _FAILURE_MARKER_UNIQUE =
