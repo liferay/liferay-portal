@@ -89,13 +89,7 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 
 		if (Validator.isNumber(parts[2])) {
 			infoItemIdentifier = new ClassPKInfoItemIdentifier(
-				GetterUtil.getLong(parts[2]));
-
-			String version = getVersion(params);
-
-			if (Validator.isNotNull(version)) {
-				infoItemIdentifier.setVersion(version);
-			}
+				GetterUtil.getLong(parts[2]), getVersion(params));
 		}
 		else {
 			infoItemIdentifier = new ERCInfoItemIdentifier(parts[2]);

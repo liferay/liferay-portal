@@ -250,9 +250,7 @@ public class TranslateMVCRenderCommand implements MVCRenderCommand {
 			}
 
 			InfoItemIdentifier infoItemIdentifier =
-				new ClassPKInfoItemIdentifier(classPK);
-
-			infoItemIdentifier.setVersion(version);
+				new ClassPKInfoItemIdentifier(classPK, version);
 
 			return infoItemObjectProvider.getInfoItem(infoItemIdentifier);
 		}

@@ -802,10 +802,9 @@ public class JournalArticleActionDropdownItemsProvider {
 				_themeDisplay.getScopeGroupId(), assetEntry)) {
 
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-				new ClassPKInfoItemIdentifier(assetEntry.getClassPK());
-
-			classPKInfoItemIdentifier.setVersion(
-				String.valueOf(_article.getVersion()));
+				new ClassPKInfoItemIdentifier(
+					assetEntry.getClassPK(),
+					String.valueOf(_article.getVersion()));
 
 			String previewURL =
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(

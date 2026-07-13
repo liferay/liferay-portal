@@ -72,9 +72,8 @@ public class DisplayPageLayoutTypeControllerDisplayContext {
 						ClassPKInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
 
 			InfoItemIdentifier infoItemIdentifier =
-				new ClassPKInfoItemIdentifier(assetEntry.getClassPK());
-
-			infoItemIdentifier.setVersion(InfoItemIdentifier.VERSION_LATEST);
+				new ClassPKInfoItemIdentifier(
+					assetEntry.getClassPK(), InfoItemIdentifier.VERSION_LATEST);
 
 			infoItem = infoItemObjectProvider.getInfoItem(infoItemIdentifier);
 

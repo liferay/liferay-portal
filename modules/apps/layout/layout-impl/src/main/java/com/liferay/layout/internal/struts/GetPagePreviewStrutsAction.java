@@ -306,13 +306,8 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 				ClassPKInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			new ClassPKInfoItemIdentifier(classPK);
-
-		String version = ParamUtil.getString(httpServletRequest, "version");
-
-		if (Validator.isNotNull(version)) {
-			classPKInfoItemIdentifier.setVersion(version);
-		}
+			new ClassPKInfoItemIdentifier(
+				classPK, ParamUtil.getString(httpServletRequest, "version"));
 
 		Object infoItem = infoItemObjectProvider.getInfoItem(
 			classPKInfoItemIdentifier);

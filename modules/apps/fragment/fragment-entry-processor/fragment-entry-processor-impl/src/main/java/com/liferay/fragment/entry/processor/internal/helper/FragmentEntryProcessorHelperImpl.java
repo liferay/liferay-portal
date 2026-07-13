@@ -367,14 +367,8 @@ public class FragmentEntryProcessorHelperImpl
 					editableValueJSONObject.getLong("classPK"))) {
 
 				infoItemIdentifier = new ClassPKInfoItemIdentifier(
-					fragmentEntryProcessorContext.getPreviewClassPK());
-
-				if (Validator.isNotNull(
-						fragmentEntryProcessorContext.getPreviewVersion())) {
-
-					infoItemIdentifier.setVersion(
-						fragmentEntryProcessorContext.getPreviewVersion());
-				}
+					fragmentEntryProcessorContext.getPreviewClassPK(),
+					fragmentEntryProcessorContext.getPreviewVersion());
 
 				infoItemObjectProvider =
 					_infoItemServiceRegistry.getFirstInfoItemService(

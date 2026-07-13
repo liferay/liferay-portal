@@ -150,10 +150,9 @@ public class JournalArticleCTDisplayRenderer
 				assetEntry.getGroupId(), assetEntry)) {
 
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-				new ClassPKInfoItemIdentifier(assetEntry.getClassPK());
-
-			classPKInfoItemIdentifier.setVersion(
-				String.valueOf(journalArticle.getVersion()));
+				new ClassPKInfoItemIdentifier(
+					assetEntry.getClassPK(),
+					String.valueOf(journalArticle.getVersion()));
 
 			String previewURL =
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
