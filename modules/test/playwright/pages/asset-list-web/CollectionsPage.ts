@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
+import {Page, expect} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
@@ -105,6 +105,34 @@ export class CollectionsPage {
 			.click();
 
 		await waitForAlert(this.page);
+	}
+
+	/**
+	 * On a collection's edit page, deprioritizes the given variation through its
+	 * actions menu in the personalized variations panel.
+	 */
+
+	async deprioritizeVariation(variationTitle: string) {
+		const actionsButton = this.page.getByRole('button', {
+			name: `Actions for ${variationTitle}`,
+		});
+
+		const deprioritizeButton = this.page.getByRole('button', {
+			name: 'Deprioritize',
+		});
+
+		// The actions ellipsis sometimes needs a second click to open its
+		// dropdown, so only click it while the menu is still closed.
+
+		await expect(async () => {
+			if (!(await deprioritizeButton.isVisible())) {
+				await actionsButton.click();
+			}
+
+			await expect(deprioritizeButton).toBeVisible({timeout: 2000});
+		}).toPass({timeout: 20000});
+
+		await deprioritizeButton.click();
 	}
 
 	async deleteCollection(name: string) {
