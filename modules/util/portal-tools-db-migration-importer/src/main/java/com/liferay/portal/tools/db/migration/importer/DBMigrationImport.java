@@ -148,7 +148,7 @@ public class DBMigrationImport {
 	private static void _printHelpAndExit(Options options) {
 		new HelpFormatter(
 		).printHelp(
-			"Liferay Portal Tools Database Migration Importer.", options
+			"Liferay Portal Tools Database Migration Importer", options
 		);
 
 		System.exit(_LIFERAY_COMMON_EXIT_CODE_HELP);
