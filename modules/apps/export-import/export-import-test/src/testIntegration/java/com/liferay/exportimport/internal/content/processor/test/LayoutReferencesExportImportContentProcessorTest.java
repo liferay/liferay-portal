@@ -671,9 +671,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 		_layoutReferencesExportImportContentProcessor.validateContentReferences(
 			group.getGroupId(),
 			StringBundler.concat(
-				_CONTENT_PREFIX, layout.getFriendlyURL(),
-				_CONTENT_POSTFIX));
-
+				_CONTENT_PREFIX, layout.getFriendlyURL(), _CONTENT_POSTFIX));
 	}
 
 	@Test
