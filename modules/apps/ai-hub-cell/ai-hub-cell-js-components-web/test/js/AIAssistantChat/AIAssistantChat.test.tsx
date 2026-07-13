@@ -9,7 +9,10 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import AIAssistantChat from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/AIAssistantChat';
-import {createEventSource} from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
+import {
+	createEventSource,
+	postChatByExternalReferenceCodeMessage,
+} from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
 import {postAIIssueReport} from '../../../src/main/resources/META-INF/resources/js/ReportFeedback/api';
 
 jest.mock(
@@ -29,6 +32,10 @@ jest.mock(
 const mockCreateEventSource = createEventSource as jest.MockedFunction<
 	typeof createEventSource
 >;
+const mockPostChat =
+	postChatByExternalReferenceCodeMessage as jest.MockedFunction<
+		typeof postChatByExternalReferenceCodeMessage
+	>;
 const mockPostAIIssueReport = postAIIssueReport as jest.MockedFunction<
 	typeof postAIIssueReport
 >;
@@ -72,6 +79,8 @@ describe('AIAssistantChat', () => {
 
 		mockCreateEventSource.mockReset();
 		mockCreateEventSource.mockResolvedValue(null);
+		mockPostChat.mockReset();
+		mockPostChat.mockResolvedValue(undefined);
 		mockPostAIIssueReport.mockReset();
 		mockPostAIIssueReport.mockResolvedValue({id: 'report-1'});
 
@@ -159,5 +168,47 @@ describe('AIAssistantChat', () => {
 				name: 'send-negative-feedback-or-report-legal-concern',
 			})
 		).not.toBeInTheDocument();
+	});
+
+	it('merges the static context and the getContext snapshot when sending', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await act(async () => {
+			render(
+				<AIAssistantChat
+					context={{scope: 'static'}}
+					getContext={() => ({live: 'value'})}
+					instructionDefinitionScope="test-scope"
+				/>
+			);
+		});
+
+		await act(async () => {
+			screen
+				.getByRole('button', {name: 'ai-assistant'})
+				.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'ref-code');
+		});
+
+		const textArea = screen.getByPlaceholderText('Ask me anything...');
+
+		await act(async () => {
+			fireEvent.change(textArea, {target: {value: 'Hello'}});
+		});
+
+		await act(async () => {
+			fireEvent.submit(textArea.closest('form') as HTMLFormElement);
+		});
+
+		expect(mockPostChat).toHaveBeenCalledWith(
+			expect.objectContaining({
+				chatContext: {live: 'value', scope: 'static'},
+			})
+		);
 	});
 });
