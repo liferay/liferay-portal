@@ -278,7 +278,7 @@ test('Delete an associated asset type of vocabulary', async ({
 	await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
 
 	const vocabularyName = getRandomString();
-	const assetTypes = ['Basic Web Content', 'Object Entry Folder'];
+	const assetTypes = ['Blogs Entry', 'Object Entry Folder'];
 
 	await test.step('Add a vocabulary with 2 asset types', async () => {
 		await assetCategoriesAdminPage.newVocabularyButton.click();
