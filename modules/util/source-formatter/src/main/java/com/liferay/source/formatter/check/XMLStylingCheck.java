@@ -21,9 +21,7 @@ public class XMLStylingCheck extends BaseFileCheck {
 
 		content = content.replaceAll(">\t", ">\n\t");
 
-		content = _fixRedundantEncodingAttribute(content);
-
-		return content;
+		return _fixRedundantEncodingAttribute(content);
 	}
 
 	private String _fixRedundantEncodingAttribute(String content) {
