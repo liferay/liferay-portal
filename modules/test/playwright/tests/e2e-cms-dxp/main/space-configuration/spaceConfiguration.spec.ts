@@ -71,11 +71,10 @@ async function disconnectSpaceFromSite(
 	);
 }
 
-async function mapTitleToHeading(
+async function openContentPicker(
 	page: Page,
 	pageEditorPage: PageEditorPage,
-	fragmentId: string,
-	entryTitle: string
+	fragmentId: string
 ) {
 	const iframe = page.frameLocator('iframe[title="Select"]');
 
@@ -92,6 +91,17 @@ async function mapTitleToHeading(
 	}
 
 	await iframe.getByRole('main').waitFor();
+
+	return iframe;
+}
+
+async function mapTitleToHeading(
+	page: Page,
+	pageEditorPage: PageEditorPage,
+	fragmentId: string,
+	entryTitle: string
+) {
+	const iframe = await openContentPicker(page, pageEditorPage, fragmentId);
 
 	await iframe.getByText('Basic Web Contents (CMS)', {exact: true}).click();
 
@@ -112,21 +122,7 @@ async function isContentAvailableInPicker(
 	fragmentId: string,
 	entryTitle: string
 ) {
-	const iframe = page.frameLocator('iframe[title="Select"]');
-
-	await pageEditorPage.selectEditable(fragmentId, 'element-text');
-
-	await page.getByLabel('Select Item').click();
-
-	const selectItemMenuItem = page.getByRole('menuitem', {
-		name: 'Select Item...',
-	});
-
-	if (await selectItemMenuItem.isVisible()) {
-		await selectItemMenuItem.click();
-	}
-
-	await iframe.getByRole('main').waitFor();
+	const iframe = await openContentPicker(page, pageEditorPage, fragmentId);
 
 	const entity = iframe.getByText('Basic Web Contents (CMS)', {exact: true});
 
