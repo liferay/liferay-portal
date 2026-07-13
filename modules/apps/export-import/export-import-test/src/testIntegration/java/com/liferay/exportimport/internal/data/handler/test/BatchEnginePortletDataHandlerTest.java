@@ -92,6 +92,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -106,6 +108,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -245,6 +248,47 @@ public class BatchEnginePortletDataHandlerTest {
 
 			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-82310")
+	public void testEnableLocalStagingWithDeletedLayout() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
+
+		_layoutLocalService.deleteLayout(
+			layout,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
+			group.getGroupId(),
+			_classNameLocalService.getClassNameId(Layout.class),
+			layout.getPlid(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertNotNull(systemEvent);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_stagingLocalService.enableLocalStaging(
+				TestPropsValues.getUserId(), group, false, false,
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId()));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
+
+		Assert.assertNull(
+			_systemEventLocalService.fetchSystemEvent(
+				group.getGroupId(),
+				_classNameLocalService.getClassNameId(Layout.class),
+				layout.getPlid(), SystemEventConstants.TYPE_DELETE));
 	}
 
 	@Test
@@ -3829,6 +3873,9 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Inject
 	private StagingLocalService _stagingLocalService;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 	private static class TestExportImportVulcanBatchEngineTaskItemDelegate
 		implements EntityModelResource,
