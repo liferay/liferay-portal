@@ -33,6 +33,14 @@ public class SegmentsExperienceAudienceEntryRelLocalServiceImpl
 	extends SegmentsExperienceAudienceEntryRelLocalServiceBaseImpl {
 
 	@Override
+	public void deleteSegmentsExperienceAudienceEntryRels(
+		long companyId, String audienceEntryERC) {
+
+		segmentsExperienceAudienceEntryRelPersistence.removeByC_AEERC(
+			companyId, audienceEntryERC);
+	}
+
+	@Override
 	public List<SegmentsExperienceAudienceEntryRel>
 		getSegmentsExperienceAudienceEntryRels(
 			long groupId, String segmentsExperienceERC) {
