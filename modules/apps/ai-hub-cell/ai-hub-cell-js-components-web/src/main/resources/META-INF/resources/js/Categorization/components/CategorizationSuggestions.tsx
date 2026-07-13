@@ -10,7 +10,7 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {CategorizationStatus, Suggestion} from '../types';
-import SuggestionChip from './SuggestionChip';
+import SuggestionLabel from './SuggestionLabel';
 
 import '../categorization.scss';
 
@@ -110,9 +110,9 @@ export default function CategorizationSuggestions({
 		<div className="categorization-suggestions">
 			<p>{getIntroText(kind, suggestions)}</p>
 
-			<div className="categorization-suggestions__chips mb-3">
+			<div className="categorization-suggestions__labels mb-3">
 				{suggestions.map((suggestion) => (
-					<SuggestionChip
+					<SuggestionLabel
 						disabled={committed}
 						key={`${suggestion.id ?? suggestion.name}`}
 						onDismiss={onDismiss}

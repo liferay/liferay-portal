@@ -74,7 +74,7 @@ describe('CategorizationSuggestions', () => {
 		).toBeInTheDocument();
 	});
 
-	it('renders chips and commits the suggestions', () => {
+	it('renders labels and commits the suggestions', () => {
 		const onCommit = jest.fn();
 		const suggestions = [
 			{id: 1, name: 'International'},
@@ -117,7 +117,7 @@ describe('CategorizationSuggestions', () => {
 		expect(onRegenerate).toHaveBeenCalled();
 	});
 
-	it('fires dismiss when a chip close button is clicked', () => {
+	it('fires dismiss when a label close button is clicked', () => {
 		const onDismiss = jest.fn();
 		const suggestion = {isNew: false, name: 'Japan'};
 
@@ -147,7 +147,7 @@ describe('CategorizationSuggestions', () => {
 		);
 
 		expect(
-			container.querySelector('.categorization-suggestion-chip--new')
+			container.querySelector('.categorization-suggestion-label--new')
 		).toBeInTheDocument();
 	});
 

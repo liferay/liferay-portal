@@ -10,21 +10,21 @@ import React from 'react';
 
 import {Suggestion} from '../types';
 
-interface SuggestionChipProps {
+interface SuggestionLabelProps {
 	disabled?: boolean;
 	onDismiss: (suggestion: Suggestion) => void;
 	suggestion: Suggestion;
 }
 
-export default function SuggestionChip({
+export default function SuggestionLabel({
 	disabled = false,
 	onDismiss,
 	suggestion,
-}: SuggestionChipProps) {
+}: SuggestionLabelProps) {
 	return (
 		<ClayLabel
-			className={classNames('categorization-suggestion-chip mr-2 mt-2', {
-				'categorization-suggestion-chip--new': suggestion.isNew,
+			className={classNames('categorization-suggestion-label mr-2 mt-2', {
+				'categorization-suggestion-label--new': suggestion.isNew,
 			})}
 			closeButtonProps={{
 				'aria-label': Liferay.Language.get('remove'),
