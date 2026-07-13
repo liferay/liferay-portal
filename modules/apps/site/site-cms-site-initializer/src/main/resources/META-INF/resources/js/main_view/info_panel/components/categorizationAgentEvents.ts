@@ -26,6 +26,7 @@ export interface CategorizationAction {
 
 export interface CategorizationCommitPayload {
 	agent: typeof AUTO_CATEGORIZE_AGENT | typeof GENERATE_TAGS_AGENT;
+	notifyAssistantPanelOpen?: (categorizationPanelOpen: boolean) => void;
 	scopeId?: number | string;
 	suggestions: CategorizationCommitSuggestion[];
 }

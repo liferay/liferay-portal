@@ -305,13 +305,18 @@ describe('ContentEditorSidePanel', () => {
 			renderComponent();
 		});
 
+		const notifyAssistantPanelOpen = jest.fn();
+
 		await act(async () => {
 			handlers['cms:aiAssistant:commit']({
 				agent: 'L_GENERATE_TAGS',
+				notifyAssistantPanelOpen,
 				scopeId: 555,
 				suggestions: [{isNew: true, name: 'Culture'}],
 			});
 		});
+
+		expect(notifyAssistantPanelOpen).toHaveBeenCalledWith(false);
 
 		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
 

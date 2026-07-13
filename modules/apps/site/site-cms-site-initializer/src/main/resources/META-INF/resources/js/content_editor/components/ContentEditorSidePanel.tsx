@@ -419,6 +419,7 @@ function SidePanel(props: SidePanelProps) {
 
 		const handleCommit = async ({
 			agent,
+			notifyAssistantPanelOpen,
 			scopeId,
 			suggestions,
 		}: CategorizationCommitPayload) => {
@@ -427,6 +428,8 @@ function SidePanel(props: SidePanelProps) {
 			if (panelRef.current === 'categorization' || !fields) {
 				return;
 			}
+
+			notifyAssistantPanelOpen?.(false);
 
 			if (agent === AUTO_CATEGORIZE_AGENT) {
 				const currentBriefs = fields.assetCategoryIds.value;
