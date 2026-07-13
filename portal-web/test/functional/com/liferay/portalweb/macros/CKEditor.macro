@@ -154,6 +154,14 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro assertBodyLinkWithoutUUID(fieldLabel = null, fileName = null) {
+		AssertElementPresent(
+			key_fieldLabel = ${fieldLabel},
+			key_fileName = ${fileName},
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_LINK_WITHOUT_UUID");
+	}
+
+	@summary = "Default summary"
 	macro assertEditorPresent() {
 		AssertElementPresent(locator1 = "CKEditor#BODY_FIELD");
 	}
