@@ -2254,9 +2254,9 @@ definition {
 		AssertElementNotPresent(locator1 = "Button#PERMISSIONS");
 	}
 
-	@description = "This is a test for LPS-136850. It checks that a site member cannot update a folder without permissions."
+	@description = "This is a test for LPS-136850 and LPS-136844. It checks that a site member cannot update a folder or its permissions without permissions."
 	@priority = 3
-	test SiteMemberCannotUpdateFolder {
+	test SiteMemberCannotUpdateFolderOrFolderPermissions {
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
@@ -2301,65 +2301,15 @@ definition {
 			card = "DM Folder Name",
 			item = "Edit");
 
+		LexiconCard.viewMenuItemNotPresent(
+			card = "DM Folder Name",
+			item = "Permissions");
+
 		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
 
 		DMDocument.gotoMenuItemViaInfoPanel();
 
 		MenuItem.viewNotPresent(menuItem = "Edit");
-	}
-
-	@description = "This is a test for LPS-136844. It checks that a site member cannot update the permissions of a folder without permissions."
-	@priority = 3
-	test SiteMemberCannotUpdateFolderPermissions {
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONUser.addUserToSite(
-			groupName = "Guest",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconCard.viewMenuItemNotPresent(
-			card = "DM Folder Name",
-			item = "Permissions");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMDocument.gotoMenuItemViaInfoPanel();
 
 		MenuItem.viewNotPresent(menuItem = "Permissions");
 	}
