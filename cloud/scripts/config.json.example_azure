@@ -1,0 +1,14 @@
+{
+	"options": {
+		"auto_approve": false,
+		"parallelism": 10,
+		"provider": "azure",
+		"version": "1.1.0"
+	},
+	"variables": {
+		"deployment_name": "liferay-azure-test",
+		"region": "eastus",
+		"subscription_id": "your-azure-subscription-id",
+		"tenant_id": "your-azure-tenant-id"
+	}
+}
