@@ -10,6 +10,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {useState} from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
+import GovernanceDashboard from './governance/GovernanceDashboard';
 import InventoryDashboard from './inventory/InventoryDashboard';
 import PerformanceDashboard from './performance/PerformanceDashboard';
 import {DashboardAdditionalProps} from './performance/types';
@@ -21,11 +22,26 @@ import {ILearnResourceContext} from 'frontend-js-components-web';
 import EnterpriseOnlyPlaceholder from '../../common/components/EnterpriseOnlyPlaceholder';
 
 const TABS = {
+	governance: Liferay.Language.get('governance'),
 	inventory: Liferay.Language.get('inventory'),
 	performance: Liferay.Language.get('performance'),
 } as const;
 
 type TabId = keyof typeof TABS;
+
+const ORDERED_TAB_IDS: TabId[] = ['governance', 'inventory', 'performance'];
+
+function isTabEnabled(tabId: TabId) {
+	if (tabId === 'governance') {
+		return Boolean(Liferay.FeatureFlags['LPD-82226']);
+	}
+
+	if (tabId === 'performance') {
+		return Boolean(Liferay.FeatureFlags['LPD-58315']);
+	}
+
+	return true;
+}
 
 function Wrapper({
 	additionalProps,
@@ -79,7 +95,9 @@ function Dashboards({
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
 }) {
-	const [tabId, setTabId] = useState<TabId>('inventory');
+	const [tabId, setTabId] = useState<TabId>(
+		ORDERED_TAB_IDS.find(isTabEnabled) ?? 'inventory'
+	);
 
 	if (freeTier) {
 		return (
@@ -89,7 +107,10 @@ function Dashboards({
 		);
 	}
 
-	if (!Liferay.FeatureFlags['LPD-58315']) {
+	if (
+		!Liferay.FeatureFlags['LPD-58315'] &&
+		!Liferay.FeatureFlags['LPD-82226']
+	) {
 		return (
 			<ClayLayout.Container className="px-4" fluid>
 				<InventoryDashboard constants={constants} />
@@ -102,6 +123,8 @@ function Dashboards({
 			<Tabs setTabId={setTabId} tabId={tabId} />
 
 			<ClayLayout.Container className="px-4" fluid>
+				{tabId === 'governance' ? <GovernanceDashboard /> : null}
+
 				{tabId === 'inventory' ? (
 					<InventoryDashboard constants={constants} />
 				) : null}
@@ -132,7 +155,7 @@ function Tabs({
 			fluidSize={false}
 			triggerLabel={TABS[tabId]}
 		>
-			{(Object.keys(TABS) as TabId[]).map((id) => (
+			{ORDERED_TAB_IDS.filter(isTabEnabled).map((id) => (
 				<ClayNavigationBar.Item active={id === tabId} key={id}>
 					<ClayButton
 						className="nav-link"
