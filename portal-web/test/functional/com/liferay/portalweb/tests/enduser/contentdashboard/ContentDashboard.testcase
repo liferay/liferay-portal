@@ -3023,9 +3023,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-146471 Given The Filter and Order dropdown When the user selects the option Filter by Author: All Then the list of contents displays content from all users featured in the user's content dashboard view, including Blogs"
+	@description = "LPS-146471 Given The Filter and Order dropdown When the user selects the option Filter by Author (All, Me, Author) Then the list of contents displays the matching content, including Blogs"
 	@priority = 5
-	test FilterBlogByAuthorAll {
+	test FilterBlogByAuthor {
 		property portal.acceptance = "true";
 
 		task ("Create a blog") {
@@ -3035,61 +3035,29 @@ definition {
 				groupName = "Test Site Name");
 		}
 
-		task ("Navigate to Content Dashboard") {
+		task ("Filter by Author: All and assert the blog is displayed") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter by author Me and assert asset displayed") {
 			ContentDashboard.filterByAuthorAll(filterOption = "All");
 
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Blogs Entry Title");
 		}
-	}
 
-	@description = "LPS-146471 Given The Filter and Order dropdown When the user selects the option Filter by Author: Me Then the list of contents displays content where the user is the creator, including Blogs"
-	@priority = 5
-	test FilterBlogByAuthorMe {
-		property portal.acceptance = "true";
-
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to Content Dashboard") {
+		task ("Filter by Author: Me and assert the blog is displayed") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter by author Me and assert asset displayed") {
 			ContentDashboard.filterByAuthorMe(filterOption = "Me");
 
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Blogs Entry Title");
 		}
-	}
 
-	@description = "LPS-146471 Given The Filter and Order dropdown When the user selects the option Filter by Author: Author And the user selects one or more authors Then the list of contents displays content where the selected users are the last editors of the approved version, including Blogs"
-	@priority = 5
-	test FilterBlogByAuthorOther {
-		property portal.acceptance = "true";
-
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to Content Dashboard") {
+		task ("Filter by Author: Author and assert the blog is displayed") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter by author Me and assert asset displayed") {
 			ContentDashboard.filterByAuthor();
 
 			AssertTextEquals(
