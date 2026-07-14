@@ -76,7 +76,7 @@ components:
                     type: string
                 schemaName:
                     description:
-                        The DB partition schema name to import (format lexported_[companyId]).
+                        The DB partition schema name to import (e.g., lexported_12345).
                     type: string
                 virtualHost:
                     description:
@@ -177,7 +177,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PortalInstance"
                     description:
-                        default response
+                        The imported portal instance.
             tags: ["PortalInstance"]
     /portal-instances/{portalInstanceId}:
         delete:
