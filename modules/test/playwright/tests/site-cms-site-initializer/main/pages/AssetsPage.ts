@@ -242,31 +242,39 @@ export class AssetsPage {
 	}
 
 	async gotoSpaceContents(spaceName: string) {
-		await this.gotoAll();
+		await expect(async () => {
+			await this.gotoAll();
 
-		await this.page
-			.getByRole('menuitem', {exact: true, name: spaceName})
-			.click();
+			await this.page
+				.getByRole('menuitem', {exact: true, name: spaceName})
+				.click({timeout: 2000});
 
-		await this.page
-			.getByRole('menuitem', {exact: true, name: 'Contents'})
-			.click();
+			await this.page
+				.getByRole('menuitem', {exact: true, name: 'Contents'})
+				.click({timeout: 2000});
 
-		await this.page.getByRole('heading', {name: 'Contents'}).waitFor();
+			await this.page
+				.getByRole('heading', {name: 'Contents'})
+				.waitFor({timeout: 2000});
+		}).toPass({timeout: 30000});
 	}
 
 	async gotoSpaceFiles(spaceName: string) {
-		await this.gotoAll();
+		await expect(async () => {
+			await this.gotoAll();
 
-		await this.page
-			.getByRole('menuitem', {exact: true, name: spaceName})
-			.click();
+			await this.page
+				.getByRole('menuitem', {exact: true, name: spaceName})
+				.click({timeout: 2000});
 
-		await this.page
-			.getByRole('menuitem', {exact: true, name: 'Files'})
-			.click();
+			await this.page
+				.getByRole('menuitem', {exact: true, name: 'Files'})
+				.click({timeout: 2000});
 
-		await this.page.getByRole('heading', {name: 'Files'}).waitFor();
+			await this.page
+				.getByRole('heading', {name: 'Files'})
+				.waitFor({timeout: 2000});
+		}).toPass({timeout: 30000});
 
 		await this.changeVisualizationMode('Table');
 	}
