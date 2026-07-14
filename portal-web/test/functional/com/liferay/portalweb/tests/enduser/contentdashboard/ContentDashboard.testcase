@@ -2588,6 +2588,8 @@ definition {
 	@description = "LPS-161017 Add the Download Action to the Version History for Documents and Media"
 	@priority = 4
 	test DownloadDocumentFromVersionsTab {
+		property portal.acceptance = "true";
+
 		task ("Given the Versions tab in the Info panel of a document") {
 			task ("Create a Document") {
 				JSONDocument.addFileWithUploadedFile(
@@ -4563,6 +4565,8 @@ definition {
 	@description = "LPS-162824 Add the Revert Action to the Version History for Documents and Media"
 	@priority = 4
 	test RevertDocumentVersion {
+		property portal.acceptance = "true";
+
 		task ("Given a Document with more than one version") {
 			task ("Create a Document") {
 				JSONDocument.addFileWithUploadedFile(
@@ -4958,6 +4962,8 @@ definition {
 	@description = "LPS-162823 Add the View Action to the Version History for Documents and Media"
 	@priority = 3
 	test ViewDocumentVersion {
+		property portal.acceptance = "true";
+
 		task ("Given the Versions tab in the Info panel of a document") {
 			task ("Create a Document") {
 				JSONDocument.addFileWithUploadedFile(
