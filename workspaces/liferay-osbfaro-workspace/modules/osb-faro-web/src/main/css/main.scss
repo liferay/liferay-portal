@@ -4,6 +4,8 @@
 
 :root {
 	@include clay-css($cadmin-c-root);
+
+	color-scheme: light;
 }
 
 @import 'variables';
