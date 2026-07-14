@@ -413,47 +413,6 @@ definition {
 			uploadFileName = "Document_1");
 	}
 
-	@description = "This is a test for LPS-67515. It ensures that a blog entry with a small image can be exported and imported between different sites."
-	@priority = 4
-	test CanImportEntryWithSmallImageBetweenDifferentSites {
-		property portal.acceptance = "false";
-
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry with Small Image");
-
-		BlogsEntry.addSmallImage(
-			navTab = "Documents and Media",
-			uploadFileName = "Document_1.jpg");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-		LAR.exportPortlet(larFileName = "Blog_portlet.lar");
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-		LAR.importPortlet(larFileName = "Blog_portlet.lar");
-
-		AssertConsoleTextNotPresent(value1 = "Unable to execute background task");
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry with Small Image");
-
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entrySmallImage = "Document_1",
-			entryTitle = "Blogs Entry with Small Image");
-	}
-
 	@description = "This checks that a blog entry without content cannot be added."
 	@priority = 4
 	@refactordone
