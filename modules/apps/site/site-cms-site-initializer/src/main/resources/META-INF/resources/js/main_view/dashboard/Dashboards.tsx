@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
-import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {useState} from 'react';
@@ -134,16 +134,13 @@ function Tabs({
 		>
 			{(Object.keys(TABS) as TabId[]).map((id) => (
 				<ClayNavigationBar.Item active={id === tabId} key={id}>
-					<ClayLink
-						onClick={(event) => {
-							event.preventDefault();
-
-							setTabId(id);
-						}}
-						role="tab"
+					<ClayButton
+						className="nav-link"
+						displayType="unstyled"
+						onClick={() => setTabId(id)}
 					>
 						{TABS[id]}
-					</ClayLink>
+					</ClayButton>
 				</ClayNavigationBar.Item>
 			))}
 		</ClayNavigationBar>
