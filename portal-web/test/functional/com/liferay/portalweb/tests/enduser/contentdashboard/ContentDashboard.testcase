@@ -3190,7 +3190,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-117489 Validate if the user can filter by Author, using different display types"
+	@description = "LPS-117489 Validate if the user can filter by Author, using different display types, and that Author: All displays content from all users"
 	@priority = 5
 	test FilterByAuthor {
 		property portal.acceptance = "true";
@@ -3230,6 +3230,66 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "WC Title");
+		}
+
+		task ("Create and configure a second user") {
+			JSONUser.addUser(
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfn",
+				userLastName = "userln",
+				userScreenName = "usersn");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "userea@liferay.com");
+
+			JSONUser.addUserToSite(
+				groupName = "Test Site Name",
+				userEmailAddress = "userea@liferay.com");
+
+			JSONRole.assignSiteRoleToUser(
+				groupName = "Test Site Name",
+				roleTitle = "Site Owner",
+				userEmailAddress = "userea@liferay.com");
+		}
+
+		task ("Change to the second user and create a second Web Content") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "userea@liferay.com",
+				userLoginFullName = "userfn userln");
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addCP(
+				webContentContent = "WC Content 2",
+				webContentTitle = "WC Title 2");
+
+			WebContent.publishWithPermissions();
+		}
+
+		task ("Login with the Admin user") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "test@liferay.com",
+				userLoginFullName = "Test Test");
+		}
+
+		task ("Filter by Author: All and assert content from all users is displayed") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByAuthorAll(filterOption = "All");
+
+			AssertTextEquals(
+				key_tableEntry = "WC Title",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
+				value1 = "WC Title");
+
+			AssertTextEquals(
+				key_tableEntry = "WC Title 2",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
+				value1 = "WC Title 2");
 		}
 	}
 
@@ -5297,83 +5357,6 @@ definition {
 				columnName = "modified-date",
 				tableEntry = "WC WebContent New Title",
 				tableEntryInfo = "0 Seconds Ago");
-		}
-	}
-
-	@description = "LPS-133181 When Filter by Author 'All', displays content from all users featured in the user's content dashboard view."
-	@priority = 5
-	test ShowAllContentCreatorUsers {
-		property portal.acceptance = "true";
-
-		task ("Create and configure second user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Assign site role to user") {
-			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
-
-			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
-				roleTitle = "Site Owner",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create First WC via JSON") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content 1",
-				groupName = "Test Site Name",
-				title = "WC Title 1");
-		}
-
-		task ("Change to second user and create second WC") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(
-				webContentContent = "WC Content 2",
-				webContentTitle = "WC Title 2");
-
-			WebContent.publishWithPermissions();
-		}
-
-		task ("Login with Admin user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "test@liferay.com",
-				userLoginFullName = "Test Test");
-		}
-
-		task ("Go to Content Dashboard and aplly All filter") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByAuthorAll(filterOption = "All");
-		}
-
-		task ("Check if all contents are being displayed") {
-			AssertTextEquals(
-				key_tableEntry = "WC Title 1",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
-				value1 = "WC Title 1");
-
-			AssertTextEquals(
-				key_tableEntry = "WC Title 2",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
-				value1 = "WC Title 2");
 		}
 	}
 
