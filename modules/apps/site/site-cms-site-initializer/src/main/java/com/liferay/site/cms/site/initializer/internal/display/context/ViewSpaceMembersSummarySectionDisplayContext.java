@@ -24,10 +24,10 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceConstants;
 import com.liferay.site.cms.site.initializer.internal.util.SpaceSummaryHeaderUtil;
+import com.liferay.site.cms.site.initializer.util.CMSDepotEntryGroupUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -49,7 +49,6 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 			UserLocalService userLocalService)
 		throws PortalException {
 
-		_depotEntryLocalService = depotEntryLocalService;
 		_groupId = groupId;
 		_groupModelResourcePermission = groupModelResourcePermission;
 		_httpServletRequest = httpServletRequest;
@@ -148,12 +147,7 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 						return null;
 					}
 
-					List<Long> depotEntryGroupIds =
-						_depotEntryLocalService.getDepotEntryGroupIds(
-							_group.getCompanyId(), DepotConstants.TYPE_SPACE);
-
-					return "groupIds in (" +
-						StringUtil.merge(depotEntryGroupIds) + ")";
+					return CMSDepotEntryGroupUtil.getFilterString();
 				}
 			).build(),
 			_getSpaceMembersHeaderTitle(), StringPool.BLANK);
@@ -194,7 +188,6 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 	}
 
 	private final DepotEntry _depotEntry;
-	private final DepotEntryLocalService _depotEntryLocalService;
 	private final String _externalReferenceCode;
 	private final Group _group;
 	private final long _groupId;
