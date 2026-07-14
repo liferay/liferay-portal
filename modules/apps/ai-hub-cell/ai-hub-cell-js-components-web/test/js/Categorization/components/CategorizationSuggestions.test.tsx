@@ -55,7 +55,7 @@ describe('CategorizationSuggestions', () => {
 			/>
 		);
 
-		expect(screen.getByText('generating')).toBeInTheDocument();
+		expect(screen.getByText('generating-tags')).toBeInTheDocument();
 	});
 
 	it('shows the no-match text when empty', () => {
