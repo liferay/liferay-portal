@@ -9,6 +9,7 @@ import buildGroupObjectDefinitions from '../../structure_builder/utils/buildGrou
 import buildObjectDefinition from '../../structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../structure_builder/utils/buildObjectRelationships';
 import getRandomId from '../../structure_builder/utils/getRandomId';
+import {ObjectDefinition} from '../types/ObjectDefinition';
 import ApiHelper from './ApiHelper';
 
 export type StructureServiceError = 'in-use' | 'unexpected';
@@ -233,9 +234,16 @@ async function updateStructureWorkflow({
 	};
 }
 
+async function getStructure(externalReferenceCode: string) {
+	return ApiHelper.get<ObjectDefinition>(
+		`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${externalReferenceCode}`
+	);
+}
+
 export default {
 	createStructure,
 	deleteStructure,
+	getStructure,
 	updateStructure,
 	updateStructureWorkflow,
 };
