@@ -100,9 +100,9 @@ export class ExportImportPage {
 		await this.exportButton.click();
 	}
 
-	async goToExport(siteFriendlyURLPath: string) {
+	async goToExport(siteFriendlyUrlPath: string) {
 		await this.page.goto(
-			`/group${siteFriendlyURLPath}${PORTLET_URLS.export}`
+			`/group${siteFriendlyUrlPath}${PORTLET_URLS.export}`
 		);
 	}
 
