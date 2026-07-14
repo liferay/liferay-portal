@@ -103,11 +103,6 @@ test(
 	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(180000);
 
-		test.fail(
-			true,
-			'LPD-97359: the Recycle Bin type filter returns no results for trashed content, so filtering by "Basic Web Content" hides items that are of that type.'
-		);
-
 		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Content ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
