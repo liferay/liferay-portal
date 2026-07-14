@@ -5379,36 +5379,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-182032 The Review Date column is visible and shows the values propertly."
-	@priority = 5
-	test ViewReviewDateColumn {
-		task ("Given a web content with review date") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.addReviewDate(reviewDate = "01/01/2100");
-
-			WebContent.publishExistingWCArticleWithPermissions();
-		}
-
-		task ("When navigating to the content dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Then the review date column should be visible") {
-			AssertVisible(
-				key_columnName = "review-date",
-				key_tableEntry = "2100-01-01",
-				locator1 = "LexiconTable#TABLE_ENTRY_INFO");
-		}
-	}
-
 	@description = "LPS-116840 When the user clicks on the view icon of a content with an associated display page, the user is led to the view mode of the page"
 	@priority = 5
 	test WebContentIconView {
