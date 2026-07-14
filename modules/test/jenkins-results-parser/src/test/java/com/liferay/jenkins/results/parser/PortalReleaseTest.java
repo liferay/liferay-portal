@@ -27,36 +27,47 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
+		String bundlesBaseURL = "https://release.liferay.com/portal/7.4.13-ga1";
+
+		String[] urlFieldNames = {
+			"plugins_war_zip_url_string", "portal_bundle_glassfish_url_string",
+			"portal_bundle_jboss_url_string", "portal_bundle_tomcat_url_string",
+			"portal_bundle_wildfly_url_string",
+			"portal_dependencies_zip_url_string", "portal_osgi_zip_url_string",
+			"portal_sql_zip_url_string", "portal_tools_zip_url_string",
+			"portal_war_url_string"
+		};
+
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
-			"bundles_base_url", _BUNDLES_BASE_URL
+			"bundles_base_url", bundlesBaseURL
 		).put(
 			"portal_version", RandomTestUtil.randomString()
 		);
 
-		for (String urlFieldName : _URL_FIELD_NAMES) {
-			jsonObject.put(
-				urlFieldName, _BUNDLES_BASE_URL + "/" + urlFieldName);
+		for (String urlFieldName : urlFieldNames) {
+			jsonObject.put(urlFieldName, bundlesBaseURL + "/" + urlFieldName);
 		}
 
 		PortalRelease portalRelease = new PortalRelease(jsonObject);
 
 		JSONObject portalReleaseJSONObject = portalRelease.getJSONObject();
 
-		for (String urlFieldName : _URL_FIELD_NAMES) {
+		for (String urlFieldName : urlFieldNames) {
 			testEquals(
-				_BUNDLES_BASE_URL + "/" + urlFieldName,
+				bundlesBaseURL + "/" + urlFieldName,
 				portalReleaseJSONObject.optString(urlFieldName, null));
 		}
+
+		String tomcatURLFieldName = "portal_bundle_tomcat_url_string";
 
 		JSONObject unsetJSONObject = new JSONObject();
 
 		unsetJSONObject.put(
-			_URL_FIELD_NAME_TOMCAT,
-			_BUNDLES_BASE_URL + "/" + _URL_FIELD_NAME_TOMCAT
+			tomcatURLFieldName, bundlesBaseURL + "/" + tomcatURLFieldName
 		).put(
-			"bundles_base_url", _BUNDLES_BASE_URL
+			"bundles_base_url", bundlesBaseURL
 		).put(
 			"portal_version", RandomTestUtil.randomString()
 		);
@@ -66,8 +77,8 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		JSONObject unsetPortalReleaseJSONObject =
 			unsetPortalRelease.getJSONObject();
 
-		for (String urlFieldName : _URL_FIELD_NAMES) {
-			if (urlFieldName.equals(_URL_FIELD_NAME_TOMCAT)) {
+		for (String urlFieldName : urlFieldNames) {
+			if (urlFieldName.equals(tomcatURLFieldName)) {
 				continue;
 			}
 
@@ -76,20 +87,5 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 				unsetPortalReleaseJSONObject.optString(urlFieldName, null));
 		}
 	}
-
-	private static final String _BUNDLES_BASE_URL =
-		"https://release.liferay.com/portal/7.4.13-ga1";
-
-	private static final String _URL_FIELD_NAME_TOMCAT =
-		"portal_bundle_tomcat_url_string";
-
-	private static final String[] _URL_FIELD_NAMES = {
-		"plugins_war_zip_url_string", "portal_bundle_glassfish_url_string",
-		"portal_bundle_jboss_url_string", "portal_bundle_tomcat_url_string",
-		"portal_bundle_wildfly_url_string",
-		"portal_dependencies_zip_url_string", "portal_osgi_zip_url_string",
-		"portal_sql_zip_url_string", "portal_tools_zip_url_string",
-		"portal_war_url_string"
-	};
 
 }

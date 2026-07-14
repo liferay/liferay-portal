@@ -27,18 +27,20 @@ public class HistoryFactoryTest
 
 		JSONObject jsonObject = new JSONObject();
 
+		String testClassName = "com.liferay.jenkins.results.parser.SampleTest";
+
 		TestClassHistory testClassHistory = HistoryFactory.newTestClassHistory(
-			unitBatchHistory, jsonObject, _TEST_CLASS_NAME);
+			unitBatchHistory, jsonObject, testClassName);
 
 		Assert.assertSame(
 			testClassHistory,
 			HistoryFactory.newTestClassHistory(
-				unitBatchHistory, jsonObject, _TEST_CLASS_NAME));
+				unitBatchHistory, jsonObject, testClassName));
 
 		Assert.assertNotSame(
 			testClassHistory,
 			HistoryFactory.newTestClassHistory(
-				integrationBatchHistory, jsonObject, _TEST_CLASS_NAME));
+				integrationBatchHistory, jsonObject, testClassName));
 	}
 
 	@Test
@@ -50,18 +52,20 @@ public class HistoryFactoryTest
 
 		JSONObject jsonObject = new JSONObject();
 
+		String testTaskName = "sample-test-task";
+
 		TestTaskHistory testTaskHistory = HistoryFactory.newTestTaskHistory(
-			unitBatchHistory, jsonObject, _TEST_TASK_NAME);
+			unitBatchHistory, jsonObject, testTaskName);
 
 		Assert.assertSame(
 			testTaskHistory,
 			HistoryFactory.newTestTaskHistory(
-				unitBatchHistory, jsonObject, _TEST_TASK_NAME));
+				unitBatchHistory, jsonObject, testTaskName));
 
 		Assert.assertNotSame(
 			testTaskHistory,
 			HistoryFactory.newTestTaskHistory(
-				integrationBatchHistory, jsonObject, _TEST_TASK_NAME));
+				integrationBatchHistory, jsonObject, testTaskName));
 	}
 
 	private BatchHistory _mockBatchHistory(
@@ -83,10 +87,5 @@ public class HistoryFactoryTest
 
 		return batchHistory;
 	}
-
-	private static final String _TEST_CLASS_NAME =
-		"com.liferay.jenkins.results.parser.SampleTest";
-
-	private static final String _TEST_TASK_NAME = "sample-test-task";
 
 }

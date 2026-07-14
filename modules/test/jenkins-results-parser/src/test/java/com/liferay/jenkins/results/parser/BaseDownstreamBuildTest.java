@@ -55,10 +55,13 @@ public class BaseDownstreamBuildTest
 			RandomTestUtil.randomString()
 		);
 
+		String uniqueFailureMarker = RandomTestUtil.randomString();
+		String upstreamJobFailureMarker = RandomTestUtil.randomString();
+
 		Element uniqueFailureElement = Dom4JUtil.getNewElement(
-			"code", null, _FAILURE_MARKER_UNIQUE);
+			"code", null, uniqueFailureMarker);
 		Element upstreamJobFailureElement = Dom4JUtil.getNewElement(
-			"code", null, _FAILURE_MARKER_UPSTREAM_JOB);
+			"code", null, upstreamJobFailureMarker);
 
 		Mockito.when(
 			baseDownstreamBuild.getTestResultGitHubElements(
@@ -89,9 +92,8 @@ public class BaseDownstreamBuildTest
 
 		String gitHubMessageXML = gitHubMessageElement.asXML();
 
-		Assert.assertFalse(
-			gitHubMessageXML.contains(_FAILURE_MARKER_UPSTREAM_JOB));
-		Assert.assertTrue(gitHubMessageXML.contains(_FAILURE_MARKER_UNIQUE));
+		Assert.assertFalse(gitHubMessageXML.contains(upstreamJobFailureMarker));
+		Assert.assertTrue(gitHubMessageXML.contains(uniqueFailureMarker));
 
 		Element gitHubMessageUpstreamJobFailureElement =
 			baseDownstreamBuild.getGitHubMessageUpstreamJobFailureElement();
@@ -100,17 +102,10 @@ public class BaseDownstreamBuildTest
 			gitHubMessageUpstreamJobFailureElement.asXML();
 
 		Assert.assertFalse(
-			gitHubMessageUpstreamJobFailureXML.contains(
-				_FAILURE_MARKER_UNIQUE));
+			gitHubMessageUpstreamJobFailureXML.contains(uniqueFailureMarker));
 		Assert.assertTrue(
 			gitHubMessageUpstreamJobFailureXML.contains(
-				_FAILURE_MARKER_UPSTREAM_JOB));
+				upstreamJobFailureMarker));
 	}
-
-	private static final String _FAILURE_MARKER_UNIQUE =
-		"FAILURE_MARKER_UNIQUE";
-
-	private static final String _FAILURE_MARKER_UPSTREAM_JOB =
-		"FAILURE_MARKER_UPSTREAM_JOB";
 
 }
