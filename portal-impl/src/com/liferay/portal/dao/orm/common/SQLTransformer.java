@@ -5,7 +5,6 @@
 
 package com.liferay.portal.dao.orm.common;
 
-import com.liferay.portal.dao.sql.transformer.HQLToJPQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.JPQLToHQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.SQLTransformerFactory;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -31,10 +30,6 @@ public class SQLTransformer {
 			_instance._getSQLTransformer();
 
 		return sqlTransformer.transform(sql);
-	}
-
-	public static String transformFromHQLToJQPL(String sql) {
-		return _instance._transformFromHQLToJPQL(sql);
 	}
 
 	public static String transformFromJPQLToHQL(String sql) {
@@ -63,30 +58,6 @@ public class SQLTransformer {
 
 		_sqlTransformer = SQLTransformerFactory.getSQLTransformer(
 			DBManagerUtil.getDB());
-	}
-
-	private String _transformFromHQLToJPQL(String sql) {
-		String newSQL = _transformedSQLsPortalCache.get(sql);
-
-		if (newSQL != null) {
-			return newSQL;
-		}
-
-		newSQL = _sqlTransformer.transform(sql);
-
-		Function[] functions = {
-			HQLToJPQLTransformerLogic.getPositionalParameterFunction(),
-			HQLToJPQLTransformerLogic.getNotEqualsFunction(),
-			HQLToJPQLTransformerLogic.getCompositeIdMarkerFunction()
-		};
-
-		for (Function<String, String> function : functions) {
-			newSQL = function.apply(newSQL);
-		}
-
-		_transformedSQLsPortalCache.put(sql, newSQL);
-
-		return newSQL;
 	}
 
 	private String _transformFromJPQLToHQL(String sql) {
