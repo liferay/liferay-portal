@@ -123,6 +123,7 @@ function Card({
 			>
 				{groupBy === 'categories' ? (
 					<PieChart
+						className="cms-dashboard__pie-chart w-100"
 						data={metrics.map(({value, valueKey}) => ({
 							label: valueKey,
 							value,

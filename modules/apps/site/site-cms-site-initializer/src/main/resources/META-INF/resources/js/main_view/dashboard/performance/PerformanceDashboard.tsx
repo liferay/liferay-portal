@@ -12,6 +12,8 @@ import {ContentConsumption} from './components/ContentConsumption';
 import {Filters} from './components/Filters';
 import {Overview} from './components/Overview';
 
+import '../../../../css/dashboard/PerformanceDashboard.scss';
+
 export default function PerformanceDashboard({
 	admin,
 	analyticsEnabled,
