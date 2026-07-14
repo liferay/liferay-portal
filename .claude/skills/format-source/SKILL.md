@@ -48,12 +48,16 @@ Shell scripts (`*.sh`) follow a separate style guide maintained in the `liferay-
 1. **Remote Fallback** — when the local checkout is absent, download both files from `raw.githubusercontent.com` and read them from there:
 
 	```bash
+	temp_dir=$(mktemp -d)
+
 	curl \
+		--fail \
 		--output "${temp_dir}/format-bash-source.md" \
 		--silent \
 		--url "https://raw.githubusercontent.com/liferay/liferay-docker/refs/heads/master/.claude/skills/format-bash-source/SKILL.md"
 
 	curl \
+		--fail \
 		--output "${temp_dir}/CODE_STYLE.md" \
 		--silent \
 		--url "https://raw.githubusercontent.com/liferay/liferay-docker/refs/heads/master/.claude/CODE_STYLE.md"
@@ -63,7 +67,7 @@ For any `*.sh` file in scope, read the resolved `format-bash-source` `SKILL.md` 
 
 ### Portal-Exclusive Rule: Bash Scripts Under `cloud/` Exit on First Failure
 
-Every `liferay-portal` shell script follows the delegated Bash Code Style. Scripts under `cloud/` must also satisfy the rule below, which is exclusive to `liferay-portal` and has no counterpart in liferay-docker's `CODE_STYLE.md`.
+Every `liferay-portal` shell script follows the delegated Bash Code Style. Scripts under `cloud/` must also satisfy the rule below, which is exclusive to `liferay-portal` and has no counterpart in `liferay-docker`'s `CODE_STYLE.md`.
 
 **Why:** Without an explicit fail-fast directive, a failing command silently passes through to the next; the `set -o errexit` / `set -o nounset` / `set -o pipefail` block at the top of the script makes failures, unset variables, and broken pipeline stages surface immediately.
 
