@@ -295,9 +295,10 @@ export default function EditVocabulary({
 						displayType="primary"
 						onClick={() => {
 							if (
-								assetTypeChange ||
-								projectChange ||
-								spaceChange
+								!isNew &&
+								(assetTypeChange ||
+									projectChange ||
+									spaceChange)
 							) {
 								onOpenChange(true);
 							}
