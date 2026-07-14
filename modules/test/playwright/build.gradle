@@ -1,3 +1,7 @@
+import com.liferay.gradle.plugins.node.task.ExecuteNodeScriptTask
+
+import org.apache.tools.ant.types.Commandline
+
 buildscript {
 	dependencies {
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
@@ -16,4 +20,15 @@ apply plugin: "com.liferay.node"
 
 node {
 	nodeVersion = "20.12.2"
+}
+
+task runPlaywright(type: ExecuteNodeScriptTask)
+
+runPlaywright {
+	if (project.hasProperty("playwright.args")) {
+		args Commandline.translateCommandline(project.property("playwright.args"))
+	}
+
+	dependsOn "npmInstall"
+	scriptFile = "node_modules/.bin/playwright"
 }
