@@ -1063,7 +1063,7 @@ definition {
 
 	@description = "When the user opens the "Categorization" section, vocabularies not marked as internal are shown in the Public categories section and vocabularies marked as internal are shown in the Internal categories section"
 	@priority = 5
-	test ViewPublicVocabularyInWebContentEditor {
+	test ViewPublicAndInternalVocabulariesInWebContentEditor {
 		property portal.acceptance = "true";
 
 		task ("Add a web content based on Basic Web Content") {
