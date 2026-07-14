@@ -6,11 +6,15 @@
 package com.liferay.object.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
+import com.liferay.info.field.type.CategoriesInfoFieldType;
 import com.liferay.info.field.type.OptionInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.TagsInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
@@ -27,8 +31,11 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -39,6 +46,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectState;
 import com.liferay.object.model.ObjectStateFlow;
@@ -47,6 +55,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
@@ -58,11 +67,16 @@ import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -122,6 +136,7 @@ public class ObjectEntryInfoItemFormProviderTest {
 		_listTypeEntry3 = _addListTypeEntry();
 
 		_childObjectDefinition = _addObjectDefinition(
+			true,
 			new AttachmentObjectFieldBuilder(
 			).labelMap(
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
@@ -252,13 +267,54 @@ public class ObjectEntryInfoItemFormProviderTest {
 	@Test
 	public void testGetInfoForm() throws Exception {
 		_testGetInfoFormWithAttachmentObjectField();
+		_testGetInfoFormWithCategorization();
 		_testGetInfoFormWithEdgeObjectRelationship();
 		_testGetInfoFormWithEnableObjectEntrySchedule();
 		_testGetInfoFormWithManyToManyObjectRelationship();
 		_testGetInfoFormWithObjectAction();
 		_testGetInfoFormWithObjectRelationship();
+		_testGetInfoFormWithoutCategorization();
 		_testGetInfoFormWithPicklistObjectField();
 		_testGetInfoFormWithRootObjectDefinition();
+	}
+
+	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.getOrAddEmptyObjectFolder(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.addCustomObjectDefinition(
+				null, TestPropsValues.getUserId(),
+				objectFolder.getObjectFolderId(), null, true, false, true,
+				false, true, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_DEPOT,
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+					).value(
+						StringPool.TRUE
+					).build()),
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()),
+				Collections.emptyList(), new ServiceContext());
+
+		return _objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private ListTypeEntry _addListTypeEntry() throws Exception {
@@ -271,12 +327,13 @@ public class ObjectEntryInfoItemFormProviderTest {
 			_listTypeDefinition.isSystem());
 	}
 
-	private ObjectDefinition _addObjectDefinition(ObjectField... objectFields)
+	private ObjectDefinition _addObjectDefinition(
+			boolean enableCategorization, ObjectField... objectFields)
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			null, TestPropsValues.getUserId(), 0, null, true, false, true,
-			false, true, false, false, false, false, null,
+			null, TestPropsValues.getUserId(), 0, null, enableCategorization,
+			false, true, false, true, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -386,6 +443,48 @@ public class ObjectEntryInfoItemFormProviderTest {
 			objectField.getObjectFieldId() + "#mimeType", _childInfoForm);
 		_assertInfoField(
 			objectField.getObjectFieldId() + "#size", _childInfoForm);
+	}
+
+	private void _testGetInfoFormWithCategorization() throws Exception {
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		_cmsObjectDefinition = _addCMSObjectDefinition();
+
+		_assetVocabulary = AssetTestUtil.addVocabulary(cmsGroup.getGroupId());
+
+		_group = GroupTestUtil.addGroup();
+
+		AssetVocabulary siteAssetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId());
+
+		InfoForm infoForm = _getInfoForm(_cmsObjectDefinition);
+
+		InfoFieldSet infoFieldSet = (InfoFieldSet)infoForm.getInfoFieldSetEntry(
+			"categorization");
+
+		Assert.assertNotNull(
+			infoFieldSet.getInfoFieldSetEntry(_assetVocabulary.getName()));
+		Assert.assertNull(
+			infoFieldSet.getInfoFieldSetEntry(siteAssetVocabulary.getName()));
+
+		infoForm = _getInfoForm(_childObjectDefinition);
+
+		infoFieldSet = (InfoFieldSet)infoForm.getInfoFieldSetEntry(
+			"categorization");
+
+		InfoField<?> categoriesInfoField =
+			(InfoField<?>)infoFieldSet.getInfoFieldSetEntry("categories");
+
+		Assert.assertEquals(
+			CategoriesInfoFieldType.INSTANCE,
+			categoriesInfoField.getInfoFieldType());
+
+		InfoField<?> tagNamesInfoField =
+			(InfoField<?>)infoFieldSet.getInfoFieldSetEntry("tagNames");
+
+		Assert.assertEquals(
+			TagsInfoFieldType.INSTANCE, tagNamesInfoField.getInfoFieldType());
 	}
 
 	private void _testGetInfoFormWithEdgeObjectRelationship() throws Exception {
@@ -500,6 +599,26 @@ public class ObjectEntryInfoItemFormProviderTest {
 		Assert.assertNotNull(
 			relationshipInfoFieldSet.getInfoFieldSetEntry(
 				"picklistObjectFieldName"));
+	}
+
+	private void _testGetInfoFormWithoutCategorization() throws Exception {
+		_objectDefinition = _addObjectDefinition(
+			false,
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).build());
+
+		_objectDefinition =
+			_objectDefinitionLocalService.publishCustomObjectDefinition(
+				TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId());
+
+		InfoForm infoForm = _getInfoForm(_objectDefinition);
+
+		Assert.assertNull(infoForm.getInfoFieldSetEntry("categorization"));
 	}
 
 	private void _testGetInfoFormWithPicklistObjectField() throws Exception {
@@ -640,8 +759,20 @@ public class ObjectEntryInfoItemFormProviderTest {
 		return serviceContext;
 	}
 
+	@DeleteAfterTestRun
+	private AssetVocabulary _assetVocabulary;
+
 	private InfoForm _childInfoForm;
 	private ObjectDefinition _childObjectDefinition;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _cmsObjectDefinition;
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
@@ -674,6 +805,9 @@ public class ObjectEntryInfoItemFormProviderTest {
 	@Inject
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
+	@DeleteAfterTestRun
+	private ObjectDefinition _objectDefinition;
+
 	private ObjectDefinition _objectDefinitionA;
 	private ObjectDefinition _objectDefinitionAA;
 	private ObjectDefinition _objectDefinitionAAA;
@@ -689,6 +823,9 @@ public class ObjectEntryInfoItemFormProviderTest {
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectRelationship _objectRelationship;
