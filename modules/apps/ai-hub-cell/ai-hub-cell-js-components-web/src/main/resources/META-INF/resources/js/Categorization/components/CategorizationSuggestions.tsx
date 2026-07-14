@@ -5,7 +5,6 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -72,15 +71,11 @@ export default function CategorizationSuggestions({
 
 	if (status === 'loading') {
 		return (
-			<div className="align-items-center categorization-suggestions d-flex">
-				<ClayLoadingIndicator className="mr-2" />
-
-				<span className="font-weight-semi-bold text-secondary">
-					{kind === 'categories'
-						? Liferay.Language.get('searching-for-categories')
-						: Liferay.Language.get('generating')}
-				</span>
-			</div>
+			<span className="categorization-suggestions categorization-suggestions__loading-text font-weight-semi-bold">
+				{kind === 'categories'
+					? Liferay.Language.get('searching-for-categories')
+					: Liferay.Language.get('generating-tags')}
+			</span>
 		);
 	}
 
