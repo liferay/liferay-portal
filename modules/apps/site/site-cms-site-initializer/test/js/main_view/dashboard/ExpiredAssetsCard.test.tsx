@@ -14,7 +14,7 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {initialSpace} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacesDropdown';
+import {initialSpace} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacePicker';
 import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
 import {ExpiredAssetsCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ExpiredAssetsCard';
 

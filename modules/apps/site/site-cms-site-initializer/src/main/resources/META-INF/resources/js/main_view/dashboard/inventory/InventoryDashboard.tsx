@@ -7,7 +7,7 @@ import ClayLayout from '@clayui/layout';
 import React, {useContext} from 'react';
 
 import {SectionHeader} from '../common/SectionHeader';
-import {SpacesDropdown} from '../common/SpacesDropdown';
+import {SpacePicker} from '../common/SpacePicker';
 import {InventoryContext, InventoryContextProvider} from './InventoryContext';
 import {ContentCard} from './components/ContentCard';
 import {ExpiredAssetsCard} from './components/ExpiredAssetsCard';
@@ -40,7 +40,7 @@ function InventoryDashboardContent() {
 			<ClayLayout.Row className="mb-4">
 				<ClayLayout.Col size={12}>
 					<div className="d-flex">
-						<SpacesDropdown
+						<SpacePicker
 							className="mr-3"
 							onSelectSpace={changeSpace}
 							selectedSpace={space}

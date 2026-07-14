@@ -5,7 +5,7 @@
 
 import React, {createContext, useCallback, useReducer} from 'react';
 
-import {initialSpace} from '../common/SpacesDropdown';
+import {initialSpace} from '../common/SpacePicker';
 
 type Item = {
 	externalReferenceCode?: string;

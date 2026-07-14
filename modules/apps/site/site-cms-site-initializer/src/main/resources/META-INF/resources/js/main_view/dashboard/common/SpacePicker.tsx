@@ -20,13 +20,13 @@ export const initialSpace: SpaceOption = {
 	value: 'all',
 };
 
-interface ISpacesDropdown extends React.HTMLAttributes<HTMLElement> {
+interface ISpacePicker extends React.HTMLAttributes<HTMLElement> {
 	className?: string;
 	onSelectSpace: (space: SpaceOption) => void;
 	selectedSpace: SpaceOption;
 }
 
-const SpacesDropdown: React.FC<ISpacesDropdown> = ({
+const SpacePicker: React.FC<ISpacePicker> = ({
 	className,
 	onSelectSpace,
 	selectedSpace,
@@ -79,4 +79,4 @@ const SpacesDropdown: React.FC<ISpacesDropdown> = ({
 	);
 };
 
-export {SpacesDropdown};
+export {SpacePicker};
