@@ -174,10 +174,18 @@ definition {
 		}
 	}
 
-	@description = "When the user clicks on the Flip axes button, the vocabularies will be exchanged, the vocabulary represented in the X (the first in the list in the "In use" box) is sent to the Y, and the other way around"
+	@description = "When there are no contents associated to the categories the Flip axes button is disabled; when the user clicks the enabled Flip axes button, the vocabularies will be exchanged, the vocabulary represented in the X (the first in the list in the "In use" box) is sent to the Y, and the other way around"
 	@priority = 5
 	test AuditGraphFlipAxes {
 		property portal.acceptance = "true";
+
+		task ("Navigate to Content Dashboard without content") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Assert the flip axes button is disabled when there is no content") {
+			AssertVisible(locator1 = "Icon#FLIP_DISABLED");
+		}
 
 		task ("Add a Web Content using categories via JSONWS") {
 			JSONWebcontent.addWebContent(
@@ -201,20 +209,6 @@ definition {
 			AssertElementPresent(
 				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
 				xAxisCategoryName = "Stage 1");
-		}
-	}
-
-	@description = "When there are not web content associated to the categories, the Flip axes button will be disabled"
-	@priority = 5
-	test AuditGraphFlipAxesDisabled {
-		property portal.acceptance = "true";
-
-		task ("Navigate to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Check if flip axes button is disabaled") {
-			AssertVisible(locator1 = "Icon#FLIP_DISABLED");
 		}
 	}
 
