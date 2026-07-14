@@ -258,6 +258,12 @@ definition {
 		SearchResults.viewSearchResults(
 			searchAssetTitle = "DM Document Title",
 			searchAssetType = "Document");
+
+		Navigator.gotoPage(pageName = "Media Gallery Page");
+
+		SearchPage.searchEmbedded(searchTerm = "asdf");
+
+		SearchResults.viewNoSearchResults(searchTerm = "asdf");
 	}
 
 	@description = "This test covers LPS-153892. It ensures that the external video shortcuts can be rendered."
@@ -382,23 +388,6 @@ definition {
 		DMDocument.viewPGViaMG(
 			mgDocumentTitle = "DM Document Title",
 			mgVideoPreview = "true");
-	}
-
-	@priority = 3
-	@refactordone
-	test DocumentWillNotAppearIfSearchQueryIsIrrelevant {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		Navigator.gotoPage(pageName = "Media Gallery Page");
-
-		SearchPage.searchEmbedded(searchTerm = "asdf");
-
-		SearchResults.viewNoSearchResults(searchTerm = "asdf");
 	}
 
 }
