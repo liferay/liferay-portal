@@ -1257,6 +1257,29 @@ public class AgentDefinitionResourceTest
 			new AgentDefinition() {
 				{
 					active = true;
+					externalReferenceCode =
+						"L_SEO_STUDIO_DESCRIPTION_GENERATOR";
+					inputVariables = new Variable[] {
+						new Variable() {
+							{
+								name = "pageContent";
+								type = "string";
+							}
+						}
+					};
+					outputVariable = new Variable() {
+						{
+							name = "metaDescription";
+							type = "string";
+						}
+					};
+					version = 1;
+					workflowDefinitionName = "SEO Studio Description Generator";
+				}
+			},
+			new AgentDefinition() {
+				{
+					active = true;
 					externalReferenceCode = "L_SEO_STUDIO_TITLE_GENERATOR";
 					inputVariables = new Variable[] {
 						new Variable() {
