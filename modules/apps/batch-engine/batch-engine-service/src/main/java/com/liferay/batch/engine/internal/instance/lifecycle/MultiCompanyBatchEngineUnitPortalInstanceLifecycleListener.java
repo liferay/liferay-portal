@@ -8,11 +8,7 @@ package com.liferay.batch.engine.internal.instance.lifecycle;
 import com.liferay.batch.engine.internal.unit.MultiCompanyBatchEngineUnitProcessor;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,21 +25,7 @@ public class MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
-		DB db = DBManagerUtil.getDB();
-
-		if (db.getDBType() == DBType.HYPERSONIC) {
-			TransactionCallbackUtil.registerCommitCallback(
-				() -> {
-					_multiCompanyBatchEngineUnitProcessor.
-						processBatchEngineUnits(company);
-
-					return null;
-				});
-		}
-		else {
-			_multiCompanyBatchEngineUnitProcessor.processBatchEngineUnits(
-				company);
-		}
+		_multiCompanyBatchEngineUnitProcessor.processBatchEngineUnits(company);
 	}
 
 	@Override
