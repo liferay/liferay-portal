@@ -18,11 +18,11 @@ html:not(#__):not(#___) .cadmin .categorization-suggestions__loading-text {
 
 .categorization-suggestion-label--new.label,
 html:not(#__):not(#___) .cadmin .categorization-suggestion-label--new.label {
-	background-color: #f3effd;
-	border-color: #e3d9fb;
-	color: #6e3ad6;
+	background-color: $categorization-new-label-background-color;
+	border-color: $categorization-new-label-border-color;
+	color: $categorization-new-label-color;
 
 	.lexicon-icon {
-		color: #6e3ad6;
+		color: $categorization-new-label-color;
 	}
 }
