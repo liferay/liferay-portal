@@ -3293,98 +3293,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-124960 When there's a WebContent1 authored by Author1 and has Category1 and Category2 and a WebContent2 authored by Author2 and has Category1, and the user filters by Author1 and Category1 and Category2, only the WebContent1 is shown in the list"
-	@priority = 3
-	test FilterByCategoriesAndAuthor {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		task ("Create two categories") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category2",
-				vocabularyName = "Audience");
-		}
-
-		task ("Create an user via JSONWS") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Assign site role to user") {
-			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
-
-			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
-				roleTitle = "Site Owner",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a web content with Test Test via JSONWS") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 1");
-		}
-
-		task ("Create a web content with created user via JSONWS") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId1},
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 2",
-				userEmailAddress = "userea@liferay.com",
-				userPassword = PropsUtil.get("default.admin.password"));
-		}
-
-		task ("Login with Admin user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "test@liferay.com",
-				userLoginFullName = "Test Test");
-		}
-
-		task ("Navigate to Content Dashbaord") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Filter by Category: Category1 and Category2") {
-			ContentDashboard.filterByCategory(categoryNameList = "Category1,Category2");
-		}
-
-		task ("Filter by Author: Test test") {
-			ContentDashboard.filterByAuthor();
-		}
-
-		task ("Assert if only one asset is displayed") {
-			AssertTextEquals(
-				key_tableEntry = "Web Content Title 1",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Web Content Title 1");
-
-			AssertElementNotPresent(
-				key_tableEntry = "Web Content Title 2",
-				locator1 = "LexiconTable#TABLE_ENTRY");
-		}
-	}
-
 	@description = "LPS-115493 Validate if the user can filter by category"
 	@priority = 5
 	test FilterByCategory {
@@ -3420,99 +3328,7 @@ definition {
 		}
 	}
 
-	@description = "LPS-124960 When there's a WebContent1 authored by Author1 and has Category1 and Category2 and a WebContent2 authored by Author2 and has Category1, and the user filters by Author1 and Category1, only the WebContent1 is shown in the list"
-	@priority = 3
-	test FilterByCategoryAndAuthor {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		task ("Create two categories") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category2",
-				vocabularyName = "Audience");
-		}
-
-		task ("Create an user via JSONWS") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Assign site role to user") {
-			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
-
-			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
-				roleTitle = "Site Owner",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create a web content with Test Test via JSONWS") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 1");
-		}
-
-		task ("Create a web content with created user via JSONWS") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId1},
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 2",
-				userEmailAddress = "userea@liferay.com",
-				userPassword = PropsUtil.get("default.admin.password"));
-		}
-
-		task ("Login with Admin user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "test@liferay.com",
-				userLoginFullName = "Test Test");
-		}
-
-		task ("Navigate to Content Dashbaord") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Filter by Category: Category1") {
-			ContentDashboard.filterByCategory(categoryNameList = "Category1");
-		}
-
-		task ("Filter by Author: Test test") {
-			ContentDashboard.filterByAuthor();
-		}
-
-		task ("Assert if only one asset is displayed") {
-			AssertTextEquals(
-				key_tableEntry = "Web Content Title 1",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Web Content Title 1");
-
-			AssertElementNotPresent(
-				key_tableEntry = "Web Content Title 2",
-				locator1 = "LexiconTable#TABLE_ENTRY");
-		}
-	}
-
-	@description = "LPS-124960 When there's a WebContent1 authored by Author1 and has Category1 and Category2 and a WebContent2 authored by Author2 and has Category1, and the user filters by Author1, Author2 and Category1, both web content are shown in the list"
+	@description = "LPS-124960 When filtering by Category and Author combinations, only the web content matching all applied filters is shown in the list"
 	@priority = 3
 	test FilterByCategoryAndAuthors {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
@@ -3584,15 +3400,11 @@ definition {
 			ContentDashboard.goToContentDashboard();
 		}
 
-		task ("Filter by Category: Category1") {
+		task ("Filter by Category: Category1 and Author: Test test and userfn userln and assert both assets are displayed") {
 			ContentDashboard.filterByCategory(categoryNameList = "Category1");
-		}
 
-		task ("Filter by Author: Test test and userfn userln") {
 			ContentDashboard.filterByAuthor(authorNameList = "Test,userfn");
-		}
 
-		task ("Assert if both assets are displayed") {
 			AssertTextEquals(
 				key_tableEntry = "Web Content Title 1",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
@@ -3602,6 +3414,40 @@ definition {
 				key_tableEntry = "Web Content Title 2",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
 				value1 = "Web Content Title 2");
+		}
+
+		task ("Filter by Category: Category1 and Author: Test test and assert only the matching asset is displayed") {
+			ContentDashboard.clearFilters();
+
+			ContentDashboard.filterByCategory(categoryNameList = "Category1");
+
+			ContentDashboard.filterByAuthor();
+
+			AssertTextEquals(
+				key_tableEntry = "Web Content Title 1",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
+				value1 = "Web Content Title 1");
+
+			AssertElementNotPresent(
+				key_tableEntry = "Web Content Title 2",
+				locator1 = "LexiconTable#TABLE_ENTRY");
+		}
+
+		task ("Filter by Category: Category1 and Category2 and Author: Test test and assert only the matching asset is displayed") {
+			ContentDashboard.clearFilters();
+
+			ContentDashboard.filterByCategory(categoryNameList = "Category1,Category2");
+
+			ContentDashboard.filterByAuthor();
+
+			AssertTextEquals(
+				key_tableEntry = "Web Content Title 1",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
+				value1 = "Web Content Title 1");
+
+			AssertElementNotPresent(
+				key_tableEntry = "Web Content Title 2",
+				locator1 = "LexiconTable#TABLE_ENTRY");
 		}
 	}
 
