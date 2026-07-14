@@ -621,6 +621,10 @@ definition {
 				locator1 = "Button#ANY");
 		}
 
+		task ("Assert the results bar disappears") {
+			AssertElementNotPresent(locator1 = "Search#SEARCH_INFO");
+		}
+
 		task ("Asserting that all checkboxes turns deselected") {
 			AssertNotChecked(
 				key_nodeName = "Test 1",
@@ -1301,55 +1305,6 @@ definition {
 			ContentDashboard.cancelSelectFilterTreeview(optionsList = "Basic Web Content,Basic Document");
 
 			AssertElementNotPresent(locator1 = "ContentDashboard#FILTER_BAR");
-		}
-	}
-
-	@description = "LPS-155288 Given categories filter using treeview component And there is any category's checkbox selected When user clicks 'Clear All' button Then the results bar disappears "
-	@priority = 3
-	test ClearButtonCategoryAtTreeviewComponent {
-		task ("Adding vocabulary and category") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Test",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Adding Web Content") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Open filter modal at Content Dashboard and filtering category") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Categories");
-
-			Portlet.expandTree();
-
-			Click(
-				key_nodeName = "Test",
-				locator1 = "Treeview#NODE_ITEM");
-		}
-
-		task ("Assert 'Clear All' disapears after clicking it") {
-			ClickNoError(
-				key_text = "Clear All",
-				locator1 = "Button#ANY");
-
-			AssertElementNotPresent(
-				key_text = "Clear All",
-				locator1 = "Button#ANY");
-		}
-
-		task ("Checking if the results bar not appears") {
-			AssertElementNotPresent(locator1 = "Search#SEARCH_INFO");
 		}
 	}
 
