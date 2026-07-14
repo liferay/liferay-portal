@@ -74,6 +74,13 @@ jobs:
                                 cloud/terraform/aws/gitops/platform/*
                                 cloud/terraform/aws/gitops/resources/*
                             )
+                        elif [[ "${provider}" == "azure" ]]
+                        then
+                            files=(
+                                cloud/scripts/setup_azure.sh
+                                cloud/scripts/versions_azure.tfvars
+                                cloud/terraform/azure/aks/*
+                            )
                         elif [[ "${provider}" == "gcp" ]]
                         then
                             files=(

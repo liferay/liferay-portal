@@ -10,6 +10,11 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: aws
+    push-azure-bootstrap:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
+        with:
+            provider: azure
     push-gcp-bootstrap:
         if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
