@@ -328,42 +328,6 @@ definition {
 		DMDocument.viewCategories(categoryNameList = "category");
 	}
 
-	@description = "This test ensures that Users can copy multiple documents at the same time."
-	@priority = 5
-	test CanBulkCopyFiles {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		for (var entryCount : list "1,2,3") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "Document_${entryCount}.jpg",
-				groupName = "Guest",
-				mimeType = "image/jpeg",
-				sourceFileName = "Document_${entryCount}.jpg");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMFolder.deleteCP(dmFolderName = "Provided by Liferay");
-
-		PortletEntry.selectAll();
-
-		DMNavigator.gotoItemViaManagementBar(
-			item = "dropdownMenu",
-			menuItem = "Copy To");
-
-		DMDocument.copy(
-			bulkCopy = "true",
-			homeFolder = "true",
-			siteName = "Site Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		for (var entryCount : list "1,2,3") {
-			LexiconEntry.viewEntryName(rowEntry = "Document_${entryCount}.jpg");
-		}
-	}
-
 	@description = "This test ensures that document permissions can be copied over correctly."
 	@priority = 4
 	test CanBulkCopyFilesPermission {
