@@ -7,7 +7,7 @@ definition {
 	property liferay.faces.war.auto.deploy = "false";
 	property liferay.faces.war.file.names = "com.liferay.faces.demo.jsf.cdi.applicant.portlet";
 	property portal.release = "true";
-	property portal.upstream = "quarantine";
+	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";
 
 	setUp {

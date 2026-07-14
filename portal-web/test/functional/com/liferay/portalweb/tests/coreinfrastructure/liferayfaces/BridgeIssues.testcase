@@ -31,11 +31,6 @@ definition {
 
 	@priority = 3
 	test Faces1470And1478PortletSmoke {
-
-		// FACES_1470
-
-		property portal.upstream = "quarantine";
-
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-1470",
 			portletName = "FACES-1470");
@@ -245,11 +240,6 @@ definition {
 
 	@priority = 3
 	test Faces1635And1433PortletSmoke {
-
-		// FACES_1635Resources
-
-		property portal.upstream = "quarantine";
-
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "jsf-applicant?p_p_parallel=0",
 			portletName = "jsf-applicant");
@@ -319,11 +309,6 @@ definition {
 
 	@priority = 3
 	test FacesIssuesPortletSmoke {
-
-		// FACES_224
-
-		property portal.upstream = "quarantine";
-
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-224",
 			portletName = "FACES-224");
@@ -503,11 +488,6 @@ definition {
 
 	@priority = 3
 	test PrimefacesIssuesSmoke {
-
-		// FACES_1513_2185
-
-		property portal.upstream = "quarantine";
-
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-1513-2185",
 			portletName = "FACES-1513-2185");
