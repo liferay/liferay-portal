@@ -25,6 +25,7 @@ import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.S
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.TagSelectionFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.util.ActionUtil;
 import com.liferay.site.cmp.site.initializer.internal.util.ObjectEntryUtil;
+import com.liferay.site.cms.site.initializer.util.CMSDepotEntryGroupUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -48,6 +49,12 @@ public class ViewProjectsSectionDisplayContext
 
 		_assetTagLocalService = assetTagLocalService;
 		_depotEntryLocalService = depotEntryLocalService;
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"filter", CMSDepotEntryGroupUtil.getFilterString()
+		).build();
 	}
 
 	public String getAPIURL() {

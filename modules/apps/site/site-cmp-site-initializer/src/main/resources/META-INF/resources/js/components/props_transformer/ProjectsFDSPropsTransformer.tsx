@@ -165,6 +165,7 @@ export default function ProjectsFDSPropsTransformer({
 				manageMembersAction({
 					assetLibraryCreatorUserId: creatorUserId,
 					externalReferenceCode: scopeExternalReferenceCode,
+					filter: additionalProps?.filter,
 					hasAssignMembersPermission: 'assign-members' in actions,
 					title: Liferay.Language.get('all-members'),
 				});

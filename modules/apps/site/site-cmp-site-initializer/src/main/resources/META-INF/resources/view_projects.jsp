@@ -13,6 +13,7 @@ ViewProjectsSectionDisplayContext viewProjectsSectionDisplayContext = (ViewProje
 
 <div class="cms-section custom-empty-state">
 	<frontend-data-set:headless-display
+		additionalProps="<%= viewProjectsSectionDisplayContext.getAdditionalProps() %>"
 		apiURL="<%= viewProjectsSectionDisplayContext.getAPIURL() %>"
 		creationMenu="<%= viewProjectsSectionDisplayContext.getCreationMenu() %>"
 		emptyState="<%= viewProjectsSectionDisplayContext.getEmptyState() %>"
