@@ -2342,58 +2342,6 @@ definition {
 
 	@description = "LPS-164334 Add a Version History Page to Documents and Media"
 	@priority = 3
-	test DocumentsVersionHistoryFirstVersionOptions {
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add one version for the document") {
-				JSONDocument.checkOutFile(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name");
-
-				JSONDocument.checkInFile(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name");
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When there are more than one version entry And the user clicks on the kebab menu of the first entry") {
-			Click.waitForMenuToggleJSClick(
-				key_tableEntry = "1.1",
-				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
-		}
-
-		task ("Then the actions included in the Kebab menu will be Download,View and Delete") {
-			AssertVisible(
-				key_text = "download",
-				locator1 = "MenuItem#ANY_ICON");
-
-			AssertVisible(
-				key_menuItem = "View",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
-
-			AssertVisible(
-				key_menuItem = "Delete",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 3
 	@uitest
 	test DocumentsVersionHistoryInformation {
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
@@ -2463,44 +2411,6 @@ definition {
 
 	@description = "LPS-164334 Add a Version History Page to Documents and Media"
 	@priority = 3
-	test DocumentsVersionHistoryOfSingleVersion {
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When there's only one version entry And the user clicks on the kebab menu of the unique entry") {
-			Click.waitForMenuToggleJSClick(
-				key_tableEntry = "DM Document Title",
-				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
-		}
-
-		task ("Then the actions included in the Kebab menu will be Download and View") {
-			AssertVisible(
-				key_text = "download",
-				locator1 = "MenuItem#ANY_ICON");
-
-			AssertVisible(
-				key_menuItem = "View",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 3
 	@uitest
 	test DocumentsVersionHistoryOrdered {
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
@@ -2543,62 +2453,6 @@ definition {
 
 		task ("Then the table lists all the Version entries ordered by Version with the latest entries at the top") {
 			ContentDashboard.viewHistoryVersionOrder(assetVersionList = "1.11,1.10,1.9,1.8,1.7,1.6,1.5,1.4,1.3,1.2,1.1,1.0");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 3
-	test DocumentsVersionHistoryOtherVersionOptions {
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add one version for the document") {
-				JSONDocument.checkOutFile(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name");
-
-				JSONDocument.checkInFile(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name");
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When there are more than one version entry And the user clicks on the kebab menu of any entry different than the first one") {
-			Click.waitForMenuToggleJSClick(
-				key_tableEntry = "1.0",
-				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
-		}
-
-		task ("Then the actions included in the Kebab menu will be Download,View, Revert and Delete") {
-			AssertVisible(
-				key_text = "download",
-				locator1 = "MenuItem#ANY_ICON");
-
-			AssertVisible(
-				key_menuItem = "View",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
-
-			AssertVisible(
-				key_menuItem = "Revert",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
-
-			AssertVisible(
-				key_menuItem = "Delete",
-				locator1 = "MenuItem#ANY_MENU_ITEM");
 		}
 	}
 
@@ -2759,6 +2613,109 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
 				value1 = "Document - DM Document Type Name");
+		}
+	}
+
+	@description = "LPS-164334 Add a Version History Page to Documents and Media"
+	@priority = 3
+	test DocumentVersionHistoryKebabOptions {
+		task ("Given the Version History page for documents") {
+			task ("Create a Document") {
+				JSONDocument.addFileWithUploadedFile(
+					dmDocumentDescription = "DM Document Description",
+					dmDocumentTitle = "DM Document Title",
+					groupName = "Test Site Name",
+					mimeType = "text/plain",
+					sourceFileName = "Document_1.txt");
+			}
+
+			task ("Add one version for the document") {
+				JSONDocument.checkOutFile(
+					dmDocumentTitle = "DM Document Title",
+					groupName = "Test Site Name");
+
+				JSONDocument.checkInFile(
+					dmDocumentTitle = "DM Document Title",
+					groupName = "Test Site Name");
+			}
+
+			task ("Navigate to Version History Page") {
+				ContentDashboard.navigateToDocumentVersionHistoryPage(
+					dmDocumentTitle = "DM Document Title",
+					groupName = "Test Site Name",
+					siteURLKey = "test-site-name");
+			}
+		}
+
+		task ("When the user clicks on the kebab menu of the first entry Then the actions will be Download, View and Delete") {
+			Click.waitForMenuToggleJSClick(
+				key_tableEntry = "1.1",
+				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
+
+			AssertVisible(
+				key_text = "download",
+				locator1 = "MenuItem#ANY_ICON");
+
+			AssertVisible(
+				key_menuItem = "View",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
+
+			AssertVisible(
+				key_menuItem = "Delete",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
+		}
+
+		task ("When the user clicks on the kebab menu of any entry different than the first one Then the actions will be Download, View, Revert and Delete") {
+			ContentDashboard.navigateToDocumentVersionHistoryPage(
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name",
+				siteURLKey = "test-site-name");
+
+			Click.waitForMenuToggleJSClick(
+				key_tableEntry = "1.0",
+				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
+
+			AssertVisible(
+				key_text = "download",
+				locator1 = "MenuItem#ANY_ICON");
+
+			AssertVisible(
+				key_menuItem = "View",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
+
+			AssertVisible(
+				key_menuItem = "Revert",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
+
+			AssertVisible(
+				key_menuItem = "Delete",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
+		}
+
+		task ("When there is only one version entry And the user clicks on its kebab menu Then the actions will be Download and View") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title 2",
+				groupName = "Test Site Name",
+				mimeType = "text/plain",
+				sourceFileName = "Document_1.txt");
+
+			ContentDashboard.navigateToDocumentVersionHistoryPage(
+				dmDocumentTitle = "DM Document Title 2",
+				groupName = "Test Site Name",
+				siteURLKey = "test-site-name");
+
+			Click.waitForMenuToggleJSClick(
+				key_tableEntry = "DM Document Title 2",
+				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
+
+			AssertVisible(
+				key_text = "download",
+				locator1 = "MenuItem#ANY_ICON");
+
+			AssertVisible(
+				key_menuItem = "View",
+				locator1 = "MenuItem#ANY_MENU_ITEM");
 		}
 	}
 
