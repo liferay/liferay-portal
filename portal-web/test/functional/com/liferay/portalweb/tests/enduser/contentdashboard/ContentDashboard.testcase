@@ -636,65 +636,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-155288 Given categories filter using treeview component When user selects any category's checkbox Then a the amount of items selected appears at results bar"
-	@priority = 3
-	test CheckAmountOfCategoriesResultsBarAtTreeviewComponent {
-		property portal.acceptance = "false";
-
-		task ("Adding vocabulary and categories") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Test 1",
-				vocabularyName = "Vocabulary Name");
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Test 2",
-				vocabularyName = "Vocabulary Name");
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Test 3",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Adding Web Content") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Open filter modal at Content Dashboard and filtering category") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Categories");
-
-			Portlet.expandTree();
-
-			Click(
-				key_nodeName = "Test 1",
-				locator1 = "Treeview#NODE_ITEM");
-
-			Click(
-				key_nodeName = "Test 2",
-				locator1 = "Treeview#NODE_ITEM");
-
-			Click(
-				key_nodeName = "Test 3",
-				locator1 = "Treeview#NODE_ITEM");
-		}
-
-		task ("Checking if the results bar appears") {
-			AssertTextEquals(
-				locator1 = "Search#SEARCH_INFO",
-				value1 = "3 Items Selected");
-		}
-	}
-
 	@description = "LPS-155288 Given user has selected categories checkboxes And clicked 'Select' When returns to 'Select Categories' Then the results bar is present"
 	@priority = 3
 	test CheckCategoriesKeepResultsBarAtTreeviewComponent {
@@ -739,14 +680,22 @@ definition {
 	test CheckCategoriesResultsBarAtTreeviewComponent {
 		property portal.acceptance = "true";
 
-		task ("Adding vocabulary and category") {
+		task ("Adding vocabulary and categories") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
 				title = "Vocabulary Name");
 
 			var categoryId = JSONCategory.addCategory(
 				groupName = "Test Site Name",
-				title = "Test",
+				title = "Test 1",
+				vocabularyName = "Vocabulary Name");
+			var categoryId = JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Test 2",
+				vocabularyName = "Vocabulary Name");
+			var categoryId = JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Test 3",
 				vocabularyName = "Vocabulary Name");
 		}
 
@@ -766,50 +715,7 @@ definition {
 			Portlet.expandTree();
 
 			Click(
-				key_nodeName = "Test",
-				locator1 = "Treeview#NODE_ITEM");
-		}
-
-		task ("Checking if the results bar appears") {
-			AssertTextEquals(
-				locator1 = "Search#SEARCH_INFO",
-				value1 = "1 Item Selected");
-		}
-	}
-
-	@description = "LPS-155288 Given categories filter using treeview component When user selects any category's checkbox Then a 'Clear All' button appears at results bar"
-	@priority = 4
-	test CheckClearButtonCategoryResultsBarAtTreeviewComponent {
-		property portal.acceptance = "true";
-
-		task ("Adding vocabulary and category") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Test",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Adding Web Content") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Open filter modal at Content Dashboard and filtering category") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Categories");
-
-			Portlet.expandTree();
-
-			Click(
-				key_nodeName = "Test",
+				key_nodeName = "Test 1",
 				locator1 = "Treeview#NODE_ITEM");
 		}
 
@@ -823,6 +729,22 @@ definition {
 			AssertVisible(
 				key_text = "Clear All",
 				locator1 = "Button#ANY");
+		}
+
+		task ("Select the remaining categories") {
+			Click(
+				key_nodeName = "Test 2",
+				locator1 = "Treeview#NODE_ITEM");
+
+			Click(
+				key_nodeName = "Test 3",
+				locator1 = "Treeview#NODE_ITEM");
+		}
+
+		task ("Checking the amount of items selected at the results bar") {
+			AssertTextEquals(
+				locator1 = "Search#SEARCH_INFO",
+				value1 = "3 Items Selected");
 		}
 	}
 
