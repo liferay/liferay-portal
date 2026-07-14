@@ -6,6 +6,8 @@
 package com.liferay.portal.security.ldap.internal.authenticator;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PasswordExpiredException;
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.SafeLdapContext;
@@ -37,6 +40,7 @@ import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.security.ldap.exportimport.LDAPUserImporter;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
+import com.liferay.portal.security.ldap.internal.ssl.LDAPSSLSocketFactory;
 import com.liferay.portal.security.ldap.internal.util.SafeLdapReferralUtil;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
@@ -181,7 +185,17 @@ public class LDAPAuth implements Authenticator {
 			InitialLdapContext initialLdapContext = null;
 
 			try {
-				initialLdapContext = new InitialLdapContext(env, null);
+				if (PropsValues.FIPS_ENABLED) {
+					try (SafeCloseable safeCloseable =
+							ThreadContextClassLoaderUtil.swap(
+								LDAPSSLSocketFactory.class.getClassLoader())) {
+
+						initialLdapContext = new InitialLdapContext(env, null);
+					}
+				}
+				else {
+					initialLdapContext = new InitialLdapContext(env, null);
+				}
 
 				// Get LDAP bind results
 
