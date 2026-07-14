@@ -164,16 +164,14 @@ public class CMPTestUtil {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
 
-		if (objectDefinition != null) {
-			return group;
+		if (objectDefinition == null) {
+			_initialize(true, clazz, group);
+
+			objectDefinition =
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_CMP_PROJECT", TestPropsValues.getCompanyId());
 		}
-
-		_initialize(true, clazz, group);
-
-		objectDefinition =
-			ObjectDefinitionLocalServiceUtil.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.

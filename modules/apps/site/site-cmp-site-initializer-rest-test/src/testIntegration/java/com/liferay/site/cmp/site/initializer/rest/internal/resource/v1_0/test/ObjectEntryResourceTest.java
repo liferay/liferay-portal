@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -60,7 +62,7 @@ public class ObjectEntryResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMPTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
+		_group = CMPTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
 
 		_cmpProjectLinkObjectDefinition =
 			_objectDefinitionLocalService.
@@ -127,6 +129,31 @@ public class ObjectEntryResourceTest {
 			cmpProjectObjectEntryJSONObject.getLong("scopeId"));
 
 		Assert.assertEquals(DepotConstants.TYPE_PROJECT, depotEntry.getType());
+	}
+
+	@Test
+	public void testPostCMPProjectObjectEntryInitializesMissingDefaultLayoutPageTemplateEntry()
+		throws Exception {
+
+		long classNameId = PortalUtil.getClassNameId(
+			_cmpProjectObjectDefinition.getClassName());
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			_layoutPageTemplateEntryLocalService.
+				fetchDefaultLayoutPageTemplateEntry(
+					_group.getGroupId(), classNameId, 0));
+
+		Assert.assertNull(
+			_layoutPageTemplateEntryLocalService.
+				fetchDefaultLayoutPageTemplateEntry(
+					_group.getGroupId(), classNameId, 0));
+
+		_postCMPProjectObjectEntry();
+
+		Assert.assertNotNull(
+			_layoutPageTemplateEntryLocalService.
+				fetchDefaultLayoutPageTemplateEntry(
+					_group.getGroupId(), classNameId, 0));
 	}
 
 	@Test
@@ -348,8 +375,14 @@ public class ObjectEntryResourceTest {
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
+	private Group _group;
+
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
