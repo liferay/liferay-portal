@@ -211,4 +211,89 @@ describe('AIAssistantChat', () => {
 			})
 		);
 	});
+
+	it('renders a generated image from an image event', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({
+					agentDefinitionExternalReferenceCodes: ['agent-x'],
+					data: 'BASE64',
+					mimeType: 'image/png',
+					type: 'image',
+				})
+			);
+		});
+
+		expect(screen.getByAltText('generated-image')).toHaveAttribute(
+			'src',
+			'data:image/png;base64,BASE64'
+		);
+	});
+
+	it('accumulates several image events into a single balloon', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({
+					data: 'AAA',
+					mimeType: 'image/png',
+					type: 'image',
+				})
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({
+					data: 'BBB',
+					mimeType: 'image/png',
+					type: 'image',
+				})
+			);
+		});
+
+		const images = screen.getAllByAltText('generated-image');
+
+		expect(images).toHaveLength(2);
+		expect(images[0]).toHaveAttribute('src', 'data:image/png;base64,AAA');
+		expect(images[1]).toHaveAttribute('src', 'data:image/png;base64,BBB');
+
+		expect(
+			screen.getAllByRole('checkbox', {name: 'generated-image'})
+		).toHaveLength(2);
+	});
+
+	it('defaults the mime type to image/png when the image event omits it', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({data: 'CCC', type: 'image'})
+			);
+		});
+
+		expect(screen.getByAltText('generated-image')).toHaveAttribute(
+			'src',
+			'data:image/png;base64,CCC'
+		);
+	});
 });

@@ -32,6 +32,7 @@ import ContentTypeSelectorMessageBalloon, {
 	ContentType,
 } from './components/ContentTypeSelectorMessageBalloon';
 import ContentsMessageBalloon from './components/ContentsMessageBalloon';
+import ImageMessageBalloon from './components/ImageMessageBalloon';
 import UserMessageBalloon from './components/UserMessageBalloon';
 import {ChatMessageSentData, Message} from './types';
 import buildAssistantMessage from './utils/buildAssistantMessage';
@@ -58,6 +59,31 @@ interface AIAssistantChatProps {
 	triggerClassName?: string;
 	triggerLabel?: string;
 	triggerRound?: boolean;
+}
+
+function addAssistantImage(
+	messages: Message[],
+	agentDefinitionExternalReferenceCodes: string[],
+	image: string
+): Message[] {
+	const lastMessage = messages[messages.length - 1];
+
+	if (lastMessage?.images?.length && !lastMessage.text) {
+		return [
+			...messages.slice(0, -1),
+			{...lastMessage, images: [...lastMessage.images, image]},
+		];
+	}
+
+	return [
+		...messages,
+		{
+			agentDefinitionExternalReferenceCodes,
+			images: [image],
+			sender: 'assistant',
+			text: '',
+		},
+	];
 }
 
 const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
@@ -113,12 +139,25 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
 	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+	const fileUploadSelectorRef = useRef<string | undefined>(undefined);
 
 	useEffect(() => {
 		contextRef.current = context;
 		getContextRef.current = getContext;
 		instructionDefinitionScopeRef.current = instructionDefinitionScope;
 	}, [context, getContext, instructionDefinitionScope]);
+
+	useEffect(() => {
+		const fieldElement = triggerRef.current?.closest(
+			'[data-ai-assistant-field-id]'
+		);
+
+		if (fieldElement) {
+			fileUploadSelectorRef.current = `[data-ai-assistant-field-id="${fieldElement.getAttribute(
+				'data-ai-assistant-field-id'
+			)}"]`;
+		}
+	}, []);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -233,24 +272,51 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 			eventSourceRef.current.addEventListener(
 				'Chat Message Sent',
 				(event) => {
+					let dataJSON: ChatMessageSentData;
+
 					try {
-						const dataJSON: ChatMessageSentData = JSON.parse(
-							event.data
-						);
-
-						setMessages((previousMessages) => [
-							...previousMessages,
-							buildAssistantMessage(dataJSON),
-						]);
-
-						setMessage('');
+						dataJSON = JSON.parse(event.data);
 					}
 					catch {
 						setMessages((previousMessages) => [
 							...previousMessages,
 							{error: true, sender: 'assistant', text: ''},
 						]);
+
+						setIsGenerating(false);
+
+						return;
 					}
+
+					const agentDefinitionExternalReferenceCodes =
+						dataJSON.agentDefinitionExternalReferenceCodes ?? [];
+
+					if (dataJSON.type === 'image') {
+						const image = `data:${
+							dataJSON.mimeType ?? 'image/png'
+						};base64,${dataJSON.data}`;
+
+						setMessages((previousMessages) =>
+							addAssistantImage(
+								previousMessages,
+								agentDefinitionExternalReferenceCodes,
+								image
+							)
+						);
+
+						return;
+					}
+
+					setMessages((previousMessages) => [
+						...previousMessages,
+						{
+							agentDefinitionExternalReferenceCodes,
+							sender: 'assistant',
+							text: dataJSON.data ?? '',
+						},
+					]);
+
+					setMessage('');
 
 					setIsGenerating(false);
 				}
@@ -372,6 +438,32 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		};
 	}, []);
 
+	useEffect(() => {
+		const handleOpen = (payload: {
+			context?: ChatContext;
+			message?: string;
+		}) => {
+			setActive(true);
+
+			if (payload?.context) {
+				contextRef.current = {
+					...contextRef.current,
+					...payload.context,
+				};
+			}
+
+			if (payload?.message) {
+				sendMessage(payload.message);
+			}
+		};
+
+		Liferay.on('openAIAssistantChat', handleOpen);
+
+		return () => {
+			Liferay.detach('openAIAssistantChat', handleOpen);
+		};
+	}, [sendMessage]);
+
 	const chatSurface = (
 		<>
 			<div
@@ -422,6 +514,28 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 							<ContentsMessageBalloon
 								key={index}
 								message={item.text}
+							/>
+						);
+					}
+
+					if (item.images?.length) {
+						const context = {
+							...contextRef.current,
+							...getContextRef.current?.(),
+						};
+
+						return (
+							<ImageMessageBalloon
+								images={item.images}
+								key={index}
+								saveProps={{
+									fileUploadSelector:
+										context.fileUploadSelector ??
+										fileUploadSelectorRef.current,
+									groupId: context.groupId,
+									objectEntryFolderExternalReferenceCode:
+										context.objectEntryFolderExternalReferenceCode,
+								}}
 							/>
 						);
 					}
