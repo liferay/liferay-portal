@@ -1892,57 +1892,6 @@ definition {
 
 	@description = "LPS-162826 Add the Compare to Action to the Version History for Web Content"
 	@priority = 3
-	test CompareToLastVersionWebContent {
-		task ("Given the compare screen for Web Content") {
-			task ("Create a Web Content") {
-				JSONWebcontent.addWebContent(
-					content = "Web Content Content",
-					groupName = "Test Site Name",
-					title = "Web Content Title");
-			}
-
-			task ("Create a version for that web content") {
-				WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-				WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-				WebContent.editCP(
-					webContentContentEdit = "Web Content Content Edit",
-					webContentTitleEdit = "Web Content Title Edit");
-			}
-
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel sidebar") {
-				LexiconTable.clickEllipsisItem(
-					item = "Info",
-					tableEntry = "Web Content Title Edit");
-			}
-		}
-
-		task ("When the access to the compare screen from the Compare to action And the most recent version of a Web Content is the one selected") {
-			ContentDashboard.openVersionsTab();
-
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Compare to...",
-				versionName = "Version 1.1");
-		}
-
-		task ("Then this version should be compared to itself") {
-			AssertTextEquals(
-				locator1 = "WCViewHistory#COMPARED_VERSION_NEWER",
-				value1 = "Version 1.1");
-
-			AssertTextEquals(
-				locator1 = "WCViewHistory#COMPARED_VERSION_OLDER",
-				value1 = "Version 1.1");
-		}
-	}
-
-	@description = "LPS-162826 Add the Compare to Action to the Version History for Web Content"
-	@priority = 3
 	test CompareToVersionWebContent {
 		task ("Given the Versions tab in the Info panel of a Web Content") {
 			task ("Create a Web Content") {
@@ -1985,6 +1934,30 @@ definition {
 			AssertTextEquals(
 				locator1 = "WCViewHistory#VIEW_COMPARE_VERSIONS_CONTENT",
 				value1 = "Web Content Content Edit");
+		}
+
+		task ("When the user selects the most recent version of the Web Content in the Compare to action") {
+			ContentDashboard.goToContentDashboard();
+
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "Web Content Title Edit");
+
+			ContentDashboard.openVersionsTab();
+
+			ContentDashboard.clickMenuOfVersion(
+				menuItem = "Compare to...",
+				versionName = "Version 1.1");
+		}
+
+		task ("Then this version should be compared to itself") {
+			AssertTextEquals(
+				locator1 = "WCViewHistory#COMPARED_VERSION_NEWER",
+				value1 = "Version 1.1");
+
+			AssertTextEquals(
+				locator1 = "WCViewHistory#COMPARED_VERSION_OLDER",
+				value1 = "Version 1.1");
 		}
 	}
 
