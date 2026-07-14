@@ -8,6 +8,7 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 import com.liferay.headless.portal.instances.dto.v1_0.Admin;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
@@ -36,6 +37,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.EmailAddressValidatorFactory;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.vulcan.pagination.Page;
+
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -187,6 +191,40 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 	}
 
 	@Override
+	public PortalInstance postPortalInstanceImport(
+			PortalInstanceImport portalInstanceImport)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		_checkPermission();
+
+		if (portalInstanceImport == null) {
+			throw new BadRequestException("Import configuration is required");
+		}
+
+		String schemaName = portalInstanceImport.getSchemaName();
+
+		if (Validator.isNull(schemaName)) {
+			throw new BadRequestException("Schema name is required");
+		}
+
+		try {
+			return _toPortalInstance(
+				_companyService.addDBPartitionCompany(
+					schemaName, portalInstanceImport.getName(),
+					portalInstanceImport.getVirtualHost(),
+					portalInstanceImport.getWebId()));
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to import portal instance " + schemaName, exception);
+
+			throw exception;
+		}
+	}
+
+	@Override
 	public void putPortalInstanceActivate(String portalInstanceId)
 		throws Exception {
 
@@ -212,7 +250,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-11342")) {
 
-			throw new UnsupportedOperationException();
+			throw new NotFoundException();
 		}
 	}
 

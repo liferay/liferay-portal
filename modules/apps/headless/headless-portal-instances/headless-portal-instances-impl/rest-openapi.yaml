@@ -66,6 +66,29 @@ components:
                         The name of the source partition that was exported (e.g., lpartition_12345).
                     type: string
             type: object
+        PortalInstanceImport:
+            description:
+                Import configuration for a DB partition portal instance.
+            properties:
+                name:
+                    description:
+                        Optional display name for the imported portal instance.
+                    type: string
+                schemaName:
+                    description:
+                        The DB partition schema name to import (format lexported_[companyId]).
+                    type: string
+                virtualHost:
+                    description:
+                        Optional virtual host for the imported portal instance.
+                    type: string
+                webId:
+                    description:
+                        Optional web ID for the imported portal instance.
+                    type: string
+            required:
+                -   schemaName
+            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.portal.instances.client', and version '1.0.33'."
@@ -130,6 +153,31 @@ paths:
                     description:
                         default response
             # @review
+            tags: ["PortalInstance"]
+    /portal-instances/import:
+        post:
+            description:
+                Imports a DB partition portal instance
+            operationId: postPortalInstanceImport
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceImport"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceImport"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                    description:
+                        default response
             tags: ["PortalInstance"]
     /portal-instances/{portalInstanceId}:
         delete:
