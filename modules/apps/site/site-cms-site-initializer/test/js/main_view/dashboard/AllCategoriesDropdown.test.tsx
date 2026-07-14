@@ -14,24 +14,23 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
-import {AllCategoriesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/AllCategoriesDropdown';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
+import {AllCategoriesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/AllCategoriesDropdown';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/FilterDropdown';
 
 const WrappedComponent = ({
 	onSelectItem,
 }: {
 	onSelectItem: (item: Item) => void;
 }) => (
-	<InventoryContextProvider value={{}}>
-		<AllCategoriesDropdown
-			item={{
-				label: Liferay.Language.get('all-categories'),
-				value: 'all',
-			}}
-			onSelectItem={onSelectItem}
-		/>
-	</InventoryContextProvider>
+	<AllCategoriesDropdown
+		cmsGroupId="123"
+		depotEntryId="all"
+		item={{
+			label: Liferay.Language.get('all-categories'),
+			value: 'all',
+		}}
+		onSelectItem={onSelectItem}
+	/>
 );
 
 describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {

@@ -7,8 +7,8 @@ import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/FilterDropdown';
 import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
 import {GroupByDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/GroupByDropdown';
 import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 

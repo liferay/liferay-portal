@@ -14,10 +14,9 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
-import {AllVocabulariesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/AllVocabulariesDropdown';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
-import {initialFilters} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
+import {AllVocabulariesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/AllVocabulariesDropdown';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/FilterDropdown';
+import {initialFilters} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/filters';
 
 const WrappedComponent = ({
 	onSelectItem,
@@ -29,15 +28,15 @@ const WrappedComponent = ({
 	);
 
 	return (
-		<InventoryContextProvider value={{}}>
-			<AllVocabulariesDropdown
-				item={selectedItem}
-				onSelectItem={(item) => {
-					setSelectedItem(item);
-					onSelectItem(item);
-				}}
-			/>
-		</InventoryContextProvider>
+		<AllVocabulariesDropdown
+			cmsGroupId="123"
+			depotEntryId="all"
+			item={selectedItem}
+			onSelectItem={(item) => {
+				setSelectedItem(item);
+				onSelectItem(item);
+			}}
+		/>
 	);
 };
 

@@ -8,11 +8,11 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/filters/FilterDropdown';
 import {
 	InventoryContext,
 	State,
 } from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
 import {InventoryAnalysisCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 
 const mockContextValue: State = {

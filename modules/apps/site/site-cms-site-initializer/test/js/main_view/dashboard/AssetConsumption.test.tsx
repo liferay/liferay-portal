@@ -7,18 +7,32 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
+import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
 import {PerformanceContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/PerformanceContext';
 import PerformanceService from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/PerformanceService';
 import {AssetConsumption} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/components/AssetConsumption';
 
+const constants = {
+	cmsGroupId: '123',
+	ercContentStructures: 'CONTENT_STRUCTURES',
+	ercFileTypes: 'FILE_TYPES',
+};
+
 const renderComponent = () =>
 	render(
-		<PerformanceContextProvider>
+		<PerformanceContextProvider constants={constants}>
 			<AssetConsumption />
 		</PerformanceContextProvider>
 	);
 
 describe('AssetConsumption', () => {
+	beforeEach(() => {
+		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
+			data: {items: []},
+			error: null,
+		});
+	});
+
 	afterEach(() => {
 		jest.clearAllMocks();
 	});

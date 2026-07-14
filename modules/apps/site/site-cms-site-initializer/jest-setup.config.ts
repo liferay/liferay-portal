@@ -79,6 +79,7 @@ class MockBroadcastChannel {
 		getLanguageId: () => 'en_US',
 		getTimeZone: () => 'UTC',
 		getUserId: () => '1',
+		isImpersonated: () => false,
 	},
 	Util: {
 		...(globalThis.Liferay.Util || {}),
