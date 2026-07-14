@@ -58,77 +58,60 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-136766. It checks that comments can be disabled from the widget."
+	@description = "This is a test for LPS-136766 and LPS-136767. It checks that comments and related assets can be disabled from the widget."
 	@priority = 3
-	test CanDisableComments {
+	test CanDisableCommentsAndRelatedAssets {
 		property portal.acceptance = "false";
 
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+		task ("Add a blog entry and a second entry with the first as a related asset") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry1 Content",
+				entryTitle = "Blogs Entry1 Title");
 
-		Navigator.gotoPage(pageName = "Blogs Page");
+			BlogsNavigator.gotoAddEntry();
 
-		Portlet.gotoPortletOptions(portletOption = "Configuration");
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry2 Content",
+				entryTitle = "Blogs Entry2 Title");
 
-		BlogsConfiguration.selectConfigurationIFrame();
+			RelatedAssets.selectAsset(
+				assetTitle = "Blogs Entry1 Title",
+				assetType = "Blogs Entry",
+				scopeAssetType = "Blogs Entry");
 
-		BlogsConfiguration.uncheckComments();
+			PortletEntry.publish();
+		}
 
-		IFrame.saveConfiguration();
+		task ("Disable comments and related assets in the widget configuration") {
+			Navigator.gotoPage(pageName = "Blogs Page");
 
-		Navigator.gotoPage(pageName = "Blogs Page");
+			Portlet.gotoPortletOptions(portletOption = "Configuration");
 
-		AssertElementNotPresent(
-			key_text = "comments",
-			locator1 = "Icon#ANY");
+			BlogsConfiguration.selectConfigurationIFrame();
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+			BlogsConfiguration.uncheckComments();
 
-		AssertElementNotPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-	}
+			BlogsConfiguration.uncheckRelatedAssets();
 
-	@description = "This is a test for LPS-136767. It checks that related assets can be disabled from the widget."
-	@priority = 3
-	test CanDisableRelatedAssets {
-		property portal.acceptance = "false";
+			IFrame.saveConfiguration();
+		}
 
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry1 Content",
-			entryTitle = "Blogs Entry1 Title");
+		task ("View that comments and related assets are disabled") {
+			Navigator.gotoPage(pageName = "Blogs Page");
 
-		BlogsNavigator.gotoAddEntry();
+			AssertElementNotPresent(
+				key_text = "comments",
+				locator1 = "Icon#ANY");
 
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry2 Content",
-			entryTitle = "Blogs Entry2 Title");
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry2 Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		RelatedAssets.selectAsset(
-			assetTitle = "Blogs Entry1 Title",
-			assetType = "Blogs Entry",
-			scopeAssetType = "Blogs Entry");
+			AssertElementNotPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-		PortletEntry.publish();
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		Portlet.gotoPortletOptions(portletOption = "Configuration");
-
-		BlogsConfiguration.selectConfigurationIFrame();
-
-		BlogsConfiguration.uncheckRelatedAssets();
-
-		IFrame.saveConfiguration();
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry2 Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		AssertElementNotPresent(locator1 = "AssetRelatedAssets#HEADER");
+			AssertElementNotPresent(locator1 = "AssetRelatedAssets#HEADER");
+		}
 	}
 
 	@description = "This checks that an entry can be edited in card view"
