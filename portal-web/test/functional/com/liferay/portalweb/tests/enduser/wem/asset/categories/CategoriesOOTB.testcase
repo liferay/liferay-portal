@@ -1061,33 +1061,7 @@ definition {
 		}
 	}
 
-	@description = "When the user opens the "Categorization" section and there's a vocabulary marked as internal, that vocabulary is shown in the Internal categories section"
-	@priority = 5
-	test ViewInternalVocabularyInWebContentEditor {
-		property portal.acceptance = "true";
-
-		task ("Add a web content based on Basic Web Content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-		}
-
-		task ("View internal vocabularies in sidebar panel") {
-			Panel.expandPanel(panel = "Categorization");
-
-			AssertVisible(
-				key_text = "Internal Categories",
-				locator1 = "Sidebar#SUBTITLE");
-
-			for (var vocabularyName : list "Audience,Stage") {
-				AssertVisible(
-					key_vocabularyName = ${vocabularyName},
-					locator1 = "AssetCategorization#CATEGORIES_FIELD");
-			}
-		}
-	}
-
-	@description = "When the user opens the "Categorization" section and there's a vocabulary not marked as internal, that vocabulary is shown in the Public categories section"
+	@description = "When the user opens the "Categorization" section, vocabularies not marked as internal are shown in the Public categories section and vocabularies marked as internal are shown in the Internal categories section"
 	@priority = 5
 	test ViewPublicVocabularyInWebContentEditor {
 		property portal.acceptance = "true";
@@ -1098,7 +1072,7 @@ definition {
 			WebContentNavigator.gotoAddCP();
 		}
 
-		task ("View internal vocabularies in sidebar panel") {
+		task ("View public and internal vocabularies in sidebar panel") {
 			Panel.expandPanel(panel = "Categorization");
 
 			AssertVisible(
@@ -1108,6 +1082,16 @@ definition {
 			AssertVisible(
 				key_vocabularyName = "Topic",
 				locator1 = "AssetCategorization#CATEGORIES_FIELD");
+
+			AssertVisible(
+				key_text = "Internal Categories",
+				locator1 = "Sidebar#SUBTITLE");
+
+			for (var vocabularyName : list "Audience,Stage") {
+				AssertVisible(
+					key_vocabularyName = ${vocabularyName},
+					locator1 = "AssetCategorization#CATEGORIES_FIELD");
+			}
 		}
 	}
 
