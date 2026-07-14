@@ -6,9 +6,13 @@
 package com.liferay.document.library.webserver.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.BaseWebServerTestCase;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.friendly.url.resolver.FileEntryFriendlyURLResolver;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -64,6 +68,34 @@ public class CacheControlWebServerTest extends BaseWebServerTestCase {
 			mockHttpServletResponse.getHeader(HttpHeaders.CACHE_CONTROL));
 	}
 
+	@Test
+	public void testDownloadWhenCTCollectionIsCheckedOut() throws Exception {
+		String urlTitle = RandomTestUtil.randomString();
+
+		_addFileEntry(RandomTestUtil.randomString(), urlTitle);
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, group.getCompanyId(), TestPropsValues.getUserId(), 0,
+			RandomTestUtil.randomString(), null);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			MockHttpServletResponse mockHttpServletResponse = service(
+				HttpMethods.GET, _getFileEntryFriendlyURL(urlTitle),
+				Collections.emptyMap(),
+				HashMapBuilder.put(
+					"download", Boolean.TRUE.toString()
+				).build(),
+				TestPropsValues.getUser(), null);
+
+			Assert.assertEquals(
+				HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE,
+				mockHttpServletResponse.getHeader(HttpHeaders.CACHE_CONTROL));
+		}
+	}
+
 	private FileEntry _addFileEntry(String fileName, String urlTitle)
 		throws Exception {
 
@@ -82,6 +114,9 @@ public class CacheControlWebServerTest extends BaseWebServerTestCase {
 			"%s%s/%s", FriendlyURLResolverConstants.URL_SEPARATOR_X_FILE_ENTRY,
 			group.getFriendlyURL(), urlTitle);
 	}
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
