@@ -14,9 +14,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -48,10 +52,15 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 		LiferayPortletResponse liferayPortletResponse) {
 
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)liferayPortletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			Layout layout = themeDisplay.getLayout();
+
 			PortletURL viewContentURL =
 				PortletURLBuilder.createLiferayPortletURL(
-					liferayPortletResponse,
-					SearchResultsPortletKeys.SEARCH_RESULTS,
+					liferayPortletResponse, _getSearchResultsPortletId(layout),
 					PortletRequest.RENDER_PHASE
 				).setRedirect(
 					_portal.getCurrentURL(liferayPortletRequest)
@@ -87,16 +96,9 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 				viewURL = viewContentURL.toString();
 			}
 
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)liferayPortletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			Layout previousLayout = themeDisplay.getLayout();
-
 			return HttpComponentsUtil.addParameters(
 				viewURL, "p_l_back_url", themeDisplay.getURLCurrent(),
-				"p_l_back_url_title",
-				previousLayout.getName(themeDisplay.getLocale()));
+				"p_l_back_url_title", layout.getName(themeDisplay.getLocale()));
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -109,6 +111,36 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 		return StringPool.BLANK;
 	}
 
+	private String _getSearchResultsPortletId(Layout layout) {
+		if (layout.getLayoutType() instanceof LayoutTypePortlet) {
+			LayoutTypePortlet layoutTypePortlet =
+				(LayoutTypePortlet)layout.getLayoutType();
+
+			for (String portletId : layoutTypePortlet.getPortletIds()) {
+				if (SearchResultsPortletKeys.SEARCH_RESULTS.equals(
+						PortletIdCodec.decodePortletName(portletId))) {
+
+					return portletId;
+				}
+			}
+		}
+
+		for (PortletPreferences portletPreferences :
+				_portletPreferencesLocalService.getPortletPreferencesByPlid(
+					layout.getPlid())) {
+
+			String portletId = portletPreferences.getPortletId();
+
+			if (SearchResultsPortletKeys.SEARCH_RESULTS.equals(
+					PortletIdCodec.decodePortletName(portletId))) {
+
+				return portletId;
+			}
+		}
+
+		return SearchResultsPortletKeys.SEARCH_RESULTS;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetURLViewProviderImpl.class);
 
@@ -117,5 +149,8 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }
