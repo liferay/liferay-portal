@@ -171,6 +171,19 @@
 		},
 		{
 			"active": true,
+			"description": "This agent analyzes the raw content of a webpage and generates an SEO-optimized meta description to fix a missing or empty description.",
+			"externalReferenceCode": "L_SEO_STUDIO_DESCRIPTION_GENERATOR",
+			"inputVariables": "pageContent",
+			"outputVariable": "metaDescription",
+			"r_accountToAIHubAgentDefinitions_accountEntryERC": "L_SEO_STUDIO",
+			"system": true,
+			"title_i18n": {
+				"en_US": "SEO Studio Description Generator"
+			},
+			"workflowDefinitionName": "SEO Studio Description Generator"
+		},
+		{
+			"active": true,
 			"description": "This agent analyzes the raw content of a webpage and generates an SEO-optimized HTML title tag to fix a missing or empty title.",
 			"externalReferenceCode": "L_SEO_STUDIO_TITLE_GENERATOR",
 			"inputVariables": "pageContent",

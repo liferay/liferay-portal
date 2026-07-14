@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>SEO Studio Description Generator</name>
+	<version>1</version>
+	<llm>
+		<name>seoStudioDescriptionGenerator</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						276,
+						242
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				SEO Studio Description Generator
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+				[
+					{
+						"name": "pageContent",
+						"type": "string"
+					}
+				]
+			]]>
+		</input-variables>
+		<output-variables>
+			<![CDATA[
+				[
+					{
+						"name": "metaDescription",
+						"type": "string"
+					}
+				]
+			]]>
+		</output-variables>
+		<prompt>
+			<![CDATA[You are an expert SEO Specialist. Your task is to analyze the raw content of a webpage and generate optimized meta description candidates to fix a missing or empty description.
+
+SEO CONSTRAINTS & RULES:
+- Length: Each candidate must be between 120 and 160 characters.
+- Content: Summarize the core intent of the page in one or two sentences, naturally including the primary topic/keyword. Do not stuff keywords.
+- Style: Write in active voice. Avoid generic phrasing like "Welcome to our website". When it reads naturally, end with a soft call to action.
+- Provide 1 to 3 distinct candidates, each with a short rationale explaining why it fits the page.
+
+OUTPUT FORMAT:
+Return ONLY a JSON object shaped {"candidates":[{"title":"...","rationale":"..."}]}. The "title" field holds the candidate meta description text.
+Do not include any introductory text, markdown formatting (like ```json), or conversational explanations.
+Example of acceptable output:
+{"candidates":[{"title":"Discover our range of espresso machines built for home brewing, from entry-level models to professional-grade equipment—find the right fit for your kitchen today.","rationale":"Leads with the primary keyword and includes a call to action."}]}]]>
+		</prompt>
+		<tools>
+			<![CDATA[[]]]>
+		</tools>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						End
+					</label>
+				</labels>
+				<name>end</name>
+				<target>end</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+		<user-message>
+			<![CDATA[Page Content: {{pageContent}}]]>
+		</user-message>
+	</llm>
+	<state>
+		<name>start</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						273,
+						25
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<labels>
+			<label language-id="en_US">
+				Start
+			</label>
+		</labels>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						SEO Studio Description Generator
+					</label>
+				</labels>
+				<name>seoStudioDescriptionGenerator</name>
+				<target>seoStudioDescriptionGenerator</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<state>
+		<name>end</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						277,
+						459
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				End
+			</label>
+		</labels>
+	</state>
+</workflow-definition>
