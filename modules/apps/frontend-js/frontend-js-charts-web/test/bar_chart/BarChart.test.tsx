@@ -205,4 +205,189 @@ describe('BarChart', () => {
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});
+
+	it('wraps a horizontal label onto two lines when the band has room', () => {
+		const data = [
+			{label: 'Knowledge Base', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+			{label: 'Apr', value: 21},
+			{label: 'May', value: 7},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans).toHaveLength(2);
+		expect(
+			Array.from(tspans)
+				.map((tspan) => tspan.textContent)
+				.join(' ')
+		).toBe('Knowledge Base');
+		expect(label.textContent).not.toContain('…');
+	});
+
+	it('truncates a horizontal label to one line with an ellipsis when bands are crowded', () => {
+		const data = Array.from({length: 20}, (_, index) => ({
+			label:
+				index === 0
+					? 'A Very Long Label That Cannot Fit The Gutter'
+					: `Item ${index}`,
+			value: index + 1,
+		}));
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans).toHaveLength(1);
+		expect(label.textContent?.endsWith('…')).toBe(true);
+	});
+
+	it('truncates a single word longer than the gutter with an ellipsis', () => {
+		const data = [
+			{label: 'Supercalifragilistic', value: 12},
+			{label: 'Feb', value: 18},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+
+		expect(label.textContent?.endsWith('…')).toBe(true);
+	});
+
+	it('truncates a non-last wrapped line whose word alone overflows the gutter', () => {
+		const data = [
+			{label: 'Administration Console Settings', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+			{label: 'Apr', value: 21},
+			{label: 'May', value: 7},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans[0].textContent?.endsWith('…')).toBe(true);
+		expect(tspans[0].textContent).not.toBe('Administration');
+	});
+
+	it('does not double-ellipsize when the last wrapped line is an already-truncated overflowing word', () => {
+		const data = [
+			{label: 'Go Supercalifragilistic Dog Cat', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+			{label: 'Apr', value: 21},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans).toHaveLength(2);
+		expect(tspans[1].textContent?.endsWith('…')).toBe(true);
+		expect(tspans[1].textContent).not.toContain('……');
+	});
+
+	it('hides the truncated label text from assistive technology', async () => {
+		const data = [
+			{label: 'A Very Long Label That Cannot Fit The Gutter', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+
+		expect(label).toHaveAttribute('aria-hidden', 'true');
+		expect(label.querySelector('title')?.textContent).toBe(
+			'A Very Long Label That Cannot Fit The Gutter'
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('renders a single empty tspan for a horizontal label with no text', () => {
+		const data = [
+			{label: '', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans).toHaveLength(1);
+		expect(tspans[0].textContent).toBe('');
+	});
+
+	it('renders a single tspan for a horizontal label with only whitespace', () => {
+		const data = [
+			{label: '   ', value: 12},
+			{label: 'Feb', value: 18},
+			{label: 'Mar', value: 9},
+		];
+
+		const {container} = render(
+			<BarChart data={data} orientation="horizontal" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+		const tspans = label.querySelectorAll('tspan');
+
+		expect(tspans).toHaveLength(1);
+		expect(tspans[0].textContent).toBe('   ');
+	});
+
+	it('keeps a single label line for vertical orientation', () => {
+		const {container} = render(
+			<BarChart data={DATA} orientation="vertical" title="Visits" />
+		);
+
+		const label = container.querySelector(
+			'.charts-bar-chart__label'
+		) as SVGTextElement;
+
+		expect(label.querySelectorAll('tspan')).toHaveLength(1);
+	});
 });
