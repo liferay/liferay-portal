@@ -554,38 +554,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-134606 When there's a vocabulary in the "In use" box is in the second position of the list and user clicks on Save, the graph will feature that vocabulary in the checkbox legend above"
-	@priority = 5
-	test CheckSecondPositionVocabularyCheckbox {
-		property portal.acceptance = "true";
-
-		task ("Add a Web Content using categories via JSONWS") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = "${audienceId1},${stageId1}",
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-		}
-
-		task ("Navigate to Content Dashboard > Audic Graph configuration") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Check which vocabulary is displayed in x-axis") {
-			ContentDashboard.setVocabularyInUseSecondPosition(key_vocabularyName = "Stage");
-
-			AssertElementPresent(
-				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
-				xAxisCategoryName = "Audience 1");
-
-			ContentDashboard.setVocabularyInUseSecondPosition(key_vocabularyName = "Audience");
-
-			AssertElementPresent(
-				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
-				xAxisCategoryName = "Stage 1");
-		}
-	}
-
 	@description = "LPS-134606 When there's a vocabulary in the "In use" box is in the top position of the list and user clicks on Save, the graph will feature that vocabulary in the X axis"
 	@priority = 5
 	test CheckTopPositionVocabularyXAxis {
@@ -603,7 +571,7 @@ definition {
 			ContentDashboard.goToContentDashboard();
 		}
 
-		task ("Check which vocabulary is displayed in x-axis") {
+		task ("Check the x-axis vocabulary when a vocabulary is in the top position") {
 			ContentDashboard.setVocabularyInUseTopPosition(key_vocabularyName = "Stage");
 
 			AssertElementPresent(
@@ -615,6 +583,20 @@ definition {
 			AssertElementPresent(
 				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
 				xAxisCategoryName = "Audience 1");
+		}
+
+		task ("Check the x-axis vocabulary when a vocabulary is in the second position") {
+			ContentDashboard.setVocabularyInUseSecondPosition(key_vocabularyName = "Stage");
+
+			AssertElementPresent(
+				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
+				xAxisCategoryName = "Audience 1");
+
+			ContentDashboard.setVocabularyInUseSecondPosition(key_vocabularyName = "Audience");
+
+			AssertElementPresent(
+				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
+				xAxisCategoryName = "Stage 1");
 		}
 	}
 
