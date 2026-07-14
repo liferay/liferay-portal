@@ -122,7 +122,7 @@ export function AssetConsumption() {
 					orientation="horizontal"
 					rounded
 					size="inline"
-					title={Liferay.Language.get('asset-consumption')}
+					title=""
 					track
 				/>
 			);
