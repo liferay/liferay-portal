@@ -320,10 +320,11 @@ public class LayoutServiceTest {
 	@Test
 	@TestInfo({"LPD-78893", "LPD-94951"})
 	public void testGetTempFileNames() throws Exception {
-		Group companyGroup = _groupLocalService.getCompanyGroup(
-			TestPropsValues.getCompanyId());
 
 		// Company group with control panel permission
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_addUserWithControlPanelPermission(
@@ -502,7 +503,6 @@ public class LayoutServiceTest {
 		throws Exception {
 
 		User user = UserTestUtil.addUser();
-
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
