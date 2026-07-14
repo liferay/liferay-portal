@@ -1,12 +1,7 @@
 mock_provider "aws" {
 	mock_data "aws_iam_policy_document" {
 		defaults={
-			json=jsonencode(
-				{
-					Statement=[]
-					Version="2012-10-17"
-				}
-			)
+			json="{\"Statement\": [], \"Version\": \"2012-10-17\"}"
 		}
 	}
 	mock_resource "aws_iam_policy" {
