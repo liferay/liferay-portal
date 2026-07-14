@@ -10,6 +10,8 @@ package com.liferay.seo.studio.constants;
  */
 public class PageSpeedConstants {
 
+	public static final String SCAN_TYPE_PAGESPEED = "pageSpeed";
+
 	public static final String STATE_COMPLETED = "completed";
 
 	public static final String STATE_FAILED = "failed";

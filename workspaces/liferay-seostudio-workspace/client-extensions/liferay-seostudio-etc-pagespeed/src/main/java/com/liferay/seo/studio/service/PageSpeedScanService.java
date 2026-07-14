@@ -85,21 +85,13 @@ public class PageSpeedScanService {
 
 			thread.interrupt();
 
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to complete the PageSpeed scan " + url,
-					interruptedException);
-			}
-
-			return null;
+			throw new RuntimeException(
+				"Unable to complete the PageSpeed scan " + url,
+				interruptedException);
 		}
 		catch (IOException ioException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to get PageSpeed scores " + url, ioException);
-			}
-
-			return null;
+			throw new RuntimeException(
+				"Unable to get the PageSpeed scores " + url, ioException);
 		}
 	}
 
@@ -120,6 +112,7 @@ public class PageSpeedScanService {
 			defaultNoticeableFutures.add(defaultNoticeableFuture);
 		}
 
+		String errorMessage = null;
 		int pagesErrored = 0;
 
 		List<PageSpeedReport> pageSpeedReports = new ArrayList<>();
@@ -128,17 +121,27 @@ public class PageSpeedScanService {
 				defaultNoticeableFutures) {
 
 			try {
-				PageSpeedReport pageSpeedReport = defaultNoticeableFuture.get();
-
-				if (pageSpeedReport == null) {
-					pagesErrored++;
-				}
-				else {
-					pageSpeedReports.add(pageSpeedReport);
-				}
+				pageSpeedReports.add(defaultNoticeableFuture.get());
 			}
 			catch (Exception exception) {
 				pagesErrored++;
+
+				if (exception instanceof InterruptedException) {
+					Thread thread = Thread.currentThread();
+
+					thread.interrupt();
+				}
+
+				if (errorMessage == null) {
+					Throwable throwable = exception.getCause();
+
+					if (throwable != null) {
+						errorMessage = throwable.getMessage();
+					}
+					else {
+						errorMessage = exception.getMessage();
+					}
+				}
 
 				if (_log.isDebugEnabled()) {
 					_log.debug("Unable to add PageSpeed scores", exception);
@@ -150,8 +153,8 @@ public class PageSpeedScanService {
 
 		if (pagesScanned == 0) {
 			return new PageSpeedScanResult(
-				new PageSpeedReport(0, 0, 0, 0), pagesErrored, pagesScanned,
-				urls.size(), strategy);
+				new PageSpeedReport(0, 0, 0, 0), errorMessage, pagesErrored,
+				pagesScanned, urls.size(), strategy);
 		}
 
 		int totalAccessibility = 0;
@@ -173,8 +176,8 @@ public class PageSpeedScanService {
 			Math.round((float)totalSEO / pagesScanned));
 
 		return new PageSpeedScanResult(
-			averagePageSpeedReport, pagesErrored, pagesScanned, urls.size(),
-			strategy);
+			averagePageSpeedReport, errorMessage, pagesErrored, pagesScanned,
+			urls.size(), strategy);
 	}
 
 	private void _runScan(

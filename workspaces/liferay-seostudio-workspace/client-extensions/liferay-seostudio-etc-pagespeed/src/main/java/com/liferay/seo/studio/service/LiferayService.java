@@ -53,7 +53,10 @@ public class LiferayService extends BaseService {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/c/seostudioscans"
 		).queryParam(
-			"filter", "state eq '" + PageSpeedConstants.STATE_QUEUED + "'"
+			"filter",
+			StringBundler.concat(
+				"scanType eq '", PageSpeedConstants.SCAN_TYPE_PAGESPEED,
+				"' and state eq '", PageSpeedConstants.STATE_QUEUED, "'")
 		).queryParam(
 			"nestedFields", "seoStudioScanRun,seoStudioDomain,seoStudioInstance"
 		).queryParam(
@@ -143,6 +146,8 @@ public class LiferayService extends BaseService {
 			"accessibilityScore", averagePageSpeedReport.getAccessibility()
 		).put(
 			"bestPracticesScore", averagePageSpeedReport.getBestPractices()
+		).put(
+			"errorMessage", pageSpeedScanResult.getErrorMessage()
 		).put(
 			"pagesErrored", pageSpeedScanResult.getPagesErrored()
 		).put(

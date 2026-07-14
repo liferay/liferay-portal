@@ -11,10 +11,11 @@ package com.liferay.seo.studio.model;
 public class PageSpeedScanResult {
 
 	public PageSpeedScanResult(
-		PageSpeedReport averagePageSpeedReport, int pagesErrored,
-		int pagesScanned, int pagesTotal, String strategy) {
+		PageSpeedReport averagePageSpeedReport, String errorMessage,
+		int pagesErrored, int pagesScanned, int pagesTotal, String strategy) {
 
 		_averagePageSpeedReport = averagePageSpeedReport;
+		_errorMessage = errorMessage;
 		_pagesErrored = pagesErrored;
 		_pagesScanned = pagesScanned;
 		_pagesTotal = pagesTotal;
@@ -23,6 +24,10 @@ public class PageSpeedScanResult {
 
 	public PageSpeedReport getAveragePageSpeedReport() {
 		return _averagePageSpeedReport;
+	}
+
+	public String getErrorMessage() {
+		return _errorMessage;
 	}
 
 	public int getPagesErrored() {
@@ -42,6 +47,7 @@ public class PageSpeedScanResult {
 	}
 
 	private final PageSpeedReport _averagePageSpeedReport;
+	private final String _errorMessage;
 	private final int _pagesErrored;
 	private final int _pagesScanned;
 	private final int _pagesTotal;
