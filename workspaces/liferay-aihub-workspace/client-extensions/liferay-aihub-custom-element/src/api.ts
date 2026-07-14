@@ -77,12 +77,22 @@ async function postAuthorizationToken(): Promise<AuthorizationToken | null> {
 export async function getChatbotConfiguration(
 	chatbotExternalReferenceCode: string
 ): Promise<ChatbotConfiguration> {
+	const headers = new Headers({
+		Accept: 'application/json',
+	});
+
+	const languageId = (
+		window as any
+	).Liferay?.ThemeDisplay?.getBCP47LanguageId?.();
+
+	if (languageId) {
+		headers.set('Accept-Language', languageId);
+	}
+
 	const response = await fetch(
 		`${aiHubURL}${AI_HUB_ENDPOINT}/chatbots/by-external-reference-code/${chatbotExternalReferenceCode}`,
 		{
-			headers: new Headers({
-				Accept: 'application/json',
-			}),
+			headers,
 		}
 	);
 
