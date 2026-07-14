@@ -46,6 +46,10 @@ public class WorkflowDefinitionConstants {
 			"L_MESSAGE_BOARDS_USER_STATS_MODERATION";
 
 	public static final String
+		EXTERNAL_REFERENCE_CODE_SEO_STUDIO_DESCRIPTION_GENERATOR =
+			"L_SEO_STUDIO_DESCRIPTION_GENERATOR";
+
+	public static final String
 		EXTERNAL_REFERENCE_CODE_SEO_STUDIO_TITLE_GENERATOR =
 			"L_SEO_STUDIO_TITLE_GENERATOR";
 
@@ -80,6 +84,9 @@ public class WorkflowDefinitionConstants {
 
 	public static final String NAME_PAGE_BUILDER = "Page Builder";
 
+	public static final String NAME_SEO_STUDIO_DESCRIPTION_GENERATOR =
+		"SEO Studio Description Generator";
+
 	public static final String NAME_SEO_STUDIO_TITLE_GENERATOR =
 		"SEO Studio Title Generator";
 
@@ -94,7 +101,7 @@ public class WorkflowDefinitionConstants {
 		NAME_FIX_SPELLING_AND_GRAMMAR, NAME_GENERATE_CONTENT,
 		NAME_GENERATE_IMAGE, NAME_IMPROVE_WRITING, NAME_LIFERAY_SEARCH,
 		NAME_MAKE_LONGER, NAME_MAKE_SHORTER, NAME_PAGE_BUILDER,
-		NAME_SEO_STUDIO_TITLE_GENERATOR
+		NAME_SEO_STUDIO_DESCRIPTION_GENERATOR, NAME_SEO_STUDIO_TITLE_GENERATOR
 	};
 
 }
