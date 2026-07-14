@@ -226,8 +226,8 @@ export class TasksPage {
 		// The FDS view selector keeps focus after selecting Calendar and its
 		// tooltip overlaps the view switcher, so blur it before switching.
 
-		await this.page.evaluate(
-			() => (document.activeElement as HTMLElement)?.blur()
+		await this.page.evaluate(() =>
+			(document.activeElement as HTMLElement)?.blur()
 		);
 
 		await this.calendarView.dayViewButton.click();
@@ -242,8 +242,8 @@ export class TasksPage {
 		// The FDS view selector keeps focus after selecting Calendar and its
 		// tooltip overlaps the view switcher, so blur it before switching.
 
-		await this.page.evaluate(
-			() => (document.activeElement as HTMLElement)?.blur()
+		await this.page.evaluate(() =>
+			(document.activeElement as HTMLElement)?.blur()
 		);
 
 		await this.calendarView.weekViewButton.click();
