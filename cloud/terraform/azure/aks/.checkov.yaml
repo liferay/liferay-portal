@@ -1,0 +1,15 @@
+compact: true
+directory:
+    -   .
+download-external-modules: true
+framework:
+    -   helm
+    -   kubernetes
+    -   secrets
+    -   terraform
+quiet: true
+skip-check:
+    -   CKV_AZURE_4
+    -   CKV_AZURE_141
+    -   CKV_AZURE_170
+soft-fail: false
