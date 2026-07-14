@@ -600,12 +600,12 @@ definition {
 		}
 	}
 
-	@description = "LPS-119966 Given a document with no categories in any of the vocabularies featured in the graph then the document is NOT counted as an asset in the graph"
+	@description = "LPS-119966 A document is counted as an asset in the audit graph only when it has at least one category in a vocabulary featured in the graph"
 	@priority = 4
 	test DocumentWithNoCategories {
 		property portal.acceptance = "true";
 
-		task ("Create a new Document") {
+		task ("Create a new Document without categories") {
 			JSONDocument.addFile(
 				dmDocumentDescription = "DM Document Description",
 				dmDocumentTitle = "DM Document Title",
@@ -616,23 +616,17 @@ definition {
 			ContentDashboard.goToContentDashboard();
 		}
 
-		task ("Assert the are no info in the Audit Graph") {
+		task ("Assert the document without categories is not counted in the Audit Graph") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#EMPTY_AUDIT_GRAPH_TEXT",
 				value1 = "There is no data.");
 		}
-	}
 
-	@description = "LPS-119966 Given a document with at least one category in one of the vocabularies featured in the graph then the document is counted as an asset in the graph"
-	@priority = 4
-	test DocumentWithOneCategory {
-		property portal.acceptance = "true";
-
-		task ("Create a new Document") {
+		task ("Create a new Document with a category") {
 			JSONDocument.addFile(
 				assetCategoryIds = ${audienceId1},
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
+				dmDocumentDescription = "DM Document Description 2",
+				dmDocumentTitle = "DM Document Title 2",
 				groupName = "Test Site Name");
 		}
 
@@ -640,7 +634,7 @@ definition {
 			ContentDashboard.goToContentDashboard();
 		}
 
-		task ("Assert the document is counted as an asset") {
+		task ("Assert the document with a category is counted as an asset") {
 			AssertElementPresent(
 				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
 				xAxisCategoryName = "Audience 1");
