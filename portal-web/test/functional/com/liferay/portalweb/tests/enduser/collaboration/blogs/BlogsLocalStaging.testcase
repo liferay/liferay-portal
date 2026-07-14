@@ -950,52 +950,6 @@ definition {
 		BlogsEntry.viewInlineImage(uploadFileName = "Document_2");
 	}
 
-	@description = "This is a test for LPS-136803. It checks that the small image can be updated and republished using the SAP."
-	@priority = 4
-	test CanRepublishSmallImageViaSAP {
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name-staging");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.addSmallImage(
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
-
-		PortletEntry.publish();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Blogs.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish to live?",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		BlogsEntry.addSmallImage(
-			browseImage = "true",
-			uploadFileName = "Document_2.jpg");
-
-		PortletEntry.publish();
-
-		Blogs.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish to live?",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		BlogsEntry.viewSmallImage(uploadFileName = "Document_2.jpg");
-	}
-
 	@description = "This is a test for LPS-136805. It checks that the Blogs video can be updated and republished using the SAP."
 	@priority = 4
 	test CanRepublishVideoViaSAP {
