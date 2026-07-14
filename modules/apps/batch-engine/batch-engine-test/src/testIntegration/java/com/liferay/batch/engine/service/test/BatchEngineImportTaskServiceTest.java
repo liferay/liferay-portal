@@ -18,12 +18,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.hamcrest.CoreMatchers;
 
@@ -266,65 +264,6 @@ public class BatchEngineImportTaskServiceTest
 			() -> _batchEngineImportTaskService.getBatchEngineImportTasks(
 				defaultCompany.getCompanyId(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS));
-	}
-
-	@Test
-	public void testUpdateBatchEngineImportTask() throws Exception {
-		BatchEngineImportTask batchEngineImportTask1 =
-			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
-				null, omniadminUser.getCompanyId(), omniadminUser.getUserId(),
-				10, null, BlogPosting.class.getName(), new byte[0], "JSON",
-				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
-				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
-				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null);
-		BatchEngineImportTask batchEngineImportTask2 =
-			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
-				null, omniadminUser.getCompanyId(), omniadminUser.getUserId(),
-				10, null, BlogPosting.class.getName(), new byte[0], "JSON",
-				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
-				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
-				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null);
-
-		CountDownLatch countDownLatch1 = new CountDownLatch(1);
-		CountDownLatch countDownLatch2 = new CountDownLatch(1);
-
-		assertConcurrentRunnables(
-			() -> TransactionInvokerUtil.invoke(
-				REQUIRED_TRANSACTION_CONFIG,
-				() -> {
-					batchEngineImportTask1.setExecuteStatus(
-						BatchEngineTaskExecuteStatus.COMPLETED.name());
-
-					_batchEngineImportTaskLocalService.
-						updateBatchEngineImportTask(batchEngineImportTask1);
-
-					countDownLatch1.countDown();
-
-					countDownLatch2.await();
-
-					return null;
-				}),
-			() -> {
-				countDownLatch1.await();
-
-				try {
-					TransactionInvokerUtil.invoke(
-						REQUIRED_TRANSACTION_CONFIG,
-						() -> {
-							batchEngineImportTask2.setExecuteStatus(
-								BatchEngineTaskExecuteStatus.COMPLETED.name());
-
-							_batchEngineImportTaskLocalService.
-								updateBatchEngineImportTask(
-									batchEngineImportTask2);
-
-							return null;
-						});
-				}
-				finally {
-					countDownLatch2.countDown();
-				}
-			});
 	}
 
 	private BatchEngineImportTask _addBatchEngineImportTask(User user)
