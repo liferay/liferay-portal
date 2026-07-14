@@ -59,12 +59,12 @@ public class
 		_layoutPageTemplateStructureRelElementVariationLocalService.
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				externalReferenceCode, TestPropsValues.getUserId(),
-				group.getGroupId(),
+				group.getGroupId(), RandomTestUtil.randomBoolean(),
+				RandomTestUtil.randomString(), Collections.emptyMap(),
+				Collections.emptyMap(), RandomTestUtil.randomString(),
+				layout.getPlid(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
 				new String[] {RandomTestUtil.randomString()},
-				RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-				Collections.emptyMap(), Collections.emptyMap(),
-				RandomTestUtil.randomString(), layout.getPlid(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					group, TestPropsValues.getUserId()));
 

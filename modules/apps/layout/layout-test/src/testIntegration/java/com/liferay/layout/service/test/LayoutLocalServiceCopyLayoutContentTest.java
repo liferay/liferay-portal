@@ -1648,13 +1648,13 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		return _layoutPageTemplateStructureRelElementVariationLocalService.
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				layout.getGroupId(),
-				new String[] {RandomTestUtil.randomString()},
-				RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
+				layout.getGroupId(), RandomTestUtil.randomBoolean(),
+				RandomTestUtil.randomString(),
 				Collections.<Locale, String>emptyMap(),
 				Collections.<Locale, String>emptyMap(),
 				RandomTestUtil.randomString(), layout.getPlid(),
 				segmentsExperienceERC, RandomTestUtil.randomString(),
+				new String[] {RandomTestUtil.randomString()},
 				ServiceContextTestUtil.getServiceContext(
 					layout.getGroupId(), TestPropsValues.getUserId()));
 	}
