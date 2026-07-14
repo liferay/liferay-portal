@@ -10,6 +10,7 @@ export interface BarLayout {
 	barRx: number;
 	height: number;
 	labelAnchor: 'end' | 'middle';
+	labelLines: string[];
 	labelX: number;
 	labelY: number;
 	trackHeight: number;
@@ -77,6 +78,98 @@ const VALUE_CHAR_WIDTH = 7.5;
 const VALUE_HEIGHT = 18;
 const VALUE_PADDING_X = 6;
 
+const LABEL_CHAR_WIDTH = 6.5;
+export const LABEL_LINE_HEIGHT = 14;
+
+function estimateLabelWidth(text: string): number {
+	return text.length * LABEL_CHAR_WIDTH;
+}
+
+function truncateWithEllipsis(text: string, maxWidth: number): string {
+	const chars = Array.from(text);
+
+	while (
+		!!chars.length &&
+		estimateLabelWidth(`${chars.join('')}…`) > maxWidth
+	) {
+		chars.pop();
+	}
+
+	return `${chars.join('')}…`;
+}
+
+function packLabelLine(
+	words: string[],
+	startIndex: number,
+	maxWidth: number
+): {line: string; nextIndex: number} {
+	const seed = words[startIndex];
+
+	if (estimateLabelWidth(seed) > maxWidth) {
+		return {
+			line: truncateWithEllipsis(seed, maxWidth),
+			nextIndex: startIndex + 1,
+		};
+	}
+
+	let line = seed;
+	let index = startIndex + 1;
+
+	while (index < words.length) {
+		const candidate = `${line} ${words[index]}`;
+
+		if (estimateLabelWidth(candidate) > maxWidth) {
+			break;
+		}
+
+		line = candidate;
+		index += 1;
+	}
+
+	return {line, nextIndex: index};
+}
+
+/**
+ * Greedily packs whitespace-split words into at most `maxLines` lines whose
+ * estimated width stays within `maxWidth`. Every produced line is guaranteed
+ * to fit `maxWidth` — `packLabelLine` truncates a single word that alone
+ * overflows the width, no matter which line it lands on. When words remain
+ * unpacked after the last permitted line, that line is also suffixed with an
+ * ellipsis to signal the cut content.
+ */
+function wrapLabel(
+	label: string,
+	maxWidth: number,
+	maxLines: number
+): string[] {
+	const words = label.split(/\s+/).filter(Boolean);
+
+	if (!words.length) {
+		return [label];
+	}
+
+	const lines: string[] = [];
+	let index = 0;
+
+	while (index < words.length && lines.length < maxLines) {
+		const {line, nextIndex} = packLabelLine(words, index, maxWidth);
+
+		lines.push(line);
+		index = nextIndex;
+	}
+
+	const hasRemainingWords = index < words.length;
+	const lastLine = lines[lines.length - 1];
+
+	if (!hasRemainingWords || lastLine.endsWith('…')) {
+		return lines;
+	}
+
+	lines[lines.length - 1] = truncateWithEllipsis(lastLine, maxWidth);
+
+	return lines;
+}
+
 /**
  * Turns the chart props into the per-bar coordinates the SVG needs, keeping the
  * layout math out of the render tree. Vertical bars rise from the baseline;
@@ -102,6 +195,10 @@ export function getBarChartGeometry({
 	const barThickness = size === 'inline' ? 8 : Math.max(4, bandSize * 0.6);
 	const barRx = rounded ? barThickness / 2 : 2;
 
+	const horizontalLabelX = pad.left - 8;
+	const horizontalLabelMaxWidth = horizontalLabelX - 4;
+	const horizontalLabelMaxLines = bandSize >= 2 * LABEL_LINE_HEIGHT ? 2 : 1;
+
 	const bars = data.map((datum, index): BarLayout => {
 		const value = Math.max(0, datum.value);
 		const ratio = max === 0 ? 0 : value / max;
@@ -117,14 +214,28 @@ export function getBarChartGeometry({
 		const valueWidth =
 			String(datum.value).length * VALUE_CHAR_WIDTH + VALUE_PADDING_X * 2;
 
+		const labelLines = isVertical
+			? [datum.label]
+			: wrapLabel(
+					datum.label,
+					horizontalLabelMaxWidth,
+					horizontalLabelMaxLines
+				);
+
+		const labelY = isVertical
+			? height - pad.bottom + 16
+			: bandStart +
+				barThickness / 2 -
+				((labelLines.length - 1) * LABEL_LINE_HEIGHT) / 2 +
+				4;
+
 		return {
 			barRx,
 			height: isVertical ? length : barThickness,
 			labelAnchor: isVertical ? 'middle' : 'end',
-			labelX: isVertical ? x + barThickness / 2 : pad.left - 8,
-			labelY: isVertical
-				? height - pad.bottom + 16
-				: bandStart + barThickness / 2 + 4,
+			labelLines,
+			labelX: isVertical ? x + barThickness / 2 : horizontalLabelX,
+			labelY,
 			trackHeight: isVertical ? plotHeight : barThickness,
 			trackWidth: isVertical ? barThickness : plotWidth,
 			trackX: isVertical ? x : pad.left,

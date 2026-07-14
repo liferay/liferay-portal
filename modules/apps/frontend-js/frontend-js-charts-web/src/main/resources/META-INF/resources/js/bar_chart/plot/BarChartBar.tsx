@@ -6,6 +6,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import {LABEL_LINE_HEIGHT} from './geometry';
+
 import type {BarDatum} from '../types';
 import type {BarLayout} from './geometry';
 
@@ -85,7 +87,15 @@ export default function BarChartBar({
 				x={layout.labelX}
 				y={layout.labelY}
 			>
-				{datum.label}
+				{layout.labelLines.map((line, lineIndex) => (
+					<tspan
+						dy={lineIndex === 0 ? 0 : LABEL_LINE_HEIGHT}
+						key={`${line}-${lineIndex}`}
+						x={layout.labelX}
+					>
+						{line}
+					</tspan>
+				))}
 			</text>
 
 			<g
