@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
-import PageSpeedCharts from '../../../js/PageSpeedCharts';
+import PageSpeedCharts from '../../../js/pagespeed/PageSpeedCharts';
 
 jest.mock('frontend-js-web', () => ({
 	fetch: jest.fn(),
