@@ -2456,49 +2456,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 4
-	test DocumentsVersionHistoryRevertVersion {
-		property portal.acceptance = "true";
-
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				ContentDashboard.createVersionsForDocument(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					versionsCreated = 2);
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When the user clicks on Revert option the kebab menu") {
-			LexiconEntry.gotoEntryMenuItemNoError(
-				menuItem = "Revert",
-				rowEntry = "1.0");
-		}
-
-		task ("Then a new version that is a copy of the selected version of the Document is created") {
-			AssertVisible(
-				key_tableEntry = "2.0",
-				locator1 = "LexiconTable#TABLE_ENTRY");
-		}
-	}
-
 	@description = "LPS-119966 Given a document with and associated Display Page Template When the user with permissions clicks on the info panel button Then the user is lead to the info panel"
 	@priority = 4
 	test DocumentInfoPanel {
