@@ -899,6 +899,33 @@ test(
 
 			await expect(tasksPage.titleInput).toBeHidden();
 		});
+
+		await test.step('Saving from a day slot keeps the calendar on the navigated month', async () => {
+			const nextMonthTaskTitle = getRandomString();
+
+			const nextMonthDate = new Date();
+
+			nextMonthDate.setDate(15);
+			nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+
+			await tasksPage.calendarView.nextMonthButton.click();
+
+			const nextMonthDayCell =
+				tasksPage.getCalendarDayCell(nextMonthDate);
+
+			await clickAndExpectToBeVisible({
+				target: tasksPage.titleInput,
+				trigger: nextMonthDayCell,
+			});
+
+			await tasksPage.titleInput.fill(nextMonthTaskTitle);
+
+			await tasksPage.saveButton.click();
+
+			await expect(
+				nextMonthDayCell.getByText(nextMonthTaskTitle, {exact: true})
+			).toBeVisible();
+		});
 	}
 );
 

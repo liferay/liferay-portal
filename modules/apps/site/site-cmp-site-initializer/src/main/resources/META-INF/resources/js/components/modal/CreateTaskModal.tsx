@@ -31,6 +31,7 @@ type CreateTaskModalProps = {
 	closeModal: () => void;
 	dueDate?: string;
 	loadData: Function;
+	onItemsChange?: Function;
 	projectId?: string;
 	projectObjectDefinitionId: number;
 	state: string;
@@ -40,6 +41,7 @@ export default function CreateTaskModal({
 	closeModal,
 	dueDate = '',
 	loadData,
+	onItemsChange,
 	projectId,
 	projectObjectDefinitionId,
 	state,
@@ -71,7 +73,7 @@ export default function CreateTaskModal({
 			title: '',
 		},
 		onSubmit: async (values) => {
-			const {error} = await postTaskByScope({
+			const {data, error} = await postTaskByScope({
 				body: {
 					...values,
 					keywords: [
@@ -85,7 +87,20 @@ export default function CreateTaskModal({
 			if (!error) {
 				closeModal();
 
-				loadData();
+				// Inserting the created task into the shared FDS data keeps
+				// the current view mounted, while loadData unmounts it during
+				// the reload and resets its local state (unscheduled tasks
+				// panel, navigated month, selected view).
+
+				if (onItemsChange && data) {
+					onItemsChange({
+						itemKey: 'embedded.id',
+						items: [{embedded: data}],
+					});
+				}
+				else {
+					loadData();
+				}
 
 				displayCreateSuccessToast(values.title);
 			}
