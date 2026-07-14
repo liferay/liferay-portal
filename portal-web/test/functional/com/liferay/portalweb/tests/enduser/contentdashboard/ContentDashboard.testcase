@@ -3912,27 +3912,34 @@ definition {
 		}
 	}
 
-	@description = "LPS-146471 Given The Type filter modal When the user selects the Blogs Entry option Then the subtype selected appears as filter box above the Content table in the Content Dashboard, with the format ""Subtype: [Blogs Entry]"""
+	@description = "LPS-146471 Given The Type filter modal When the user selects a subtype option Then the subtype selected appears as filter box above the Content table in the Content Dashboard, with the format ""Subtype: [subtype]"""
 	@priority = 5
-	test FilterBySubtype {
+	test FilterBySubtypeLabel {
 		property portal.acceptance = "true";
 
-		task ("Create a Web Content") {
+		task ("Create a Web Content, a Basic Document and a blog") {
 			JSONWebcontent.addWebContent(
 				content = "Webcontent Content",
 				groupName = "Test Site Name",
 				title = "Webcontent Title");
+
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "Document_1",
+				groupName = "Test Site Name",
+				mimeType = "application/doc",
+				sourceFileName = "Document_1.doc");
+
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title",
+				groupName = "Test Site Name");
 		}
 
-		task ("Navigate to the content Dashboard") {
+		task ("Filter by subtype Basic Web Content and assert the subtype label is present") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter by Type") {
 			ContentDashboard.filterByType(typeName = "Basic Web Content");
-		}
 
-		task ("Assert that the web content and filter label are present") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Webcontent Title");
@@ -3941,57 +3948,22 @@ definition {
 				locator1 = "ContentDashboard#FILTER_TEXT",
 				value1 = "Subtype: Basic Web Content (Global)");
 		}
-	}
 
-	@description = "LPS-150510 Bug: Basic document cannot be selected in the subtype filter"
-	@priority = 4
-	test FilterBySubtypeBasicDocument {
-		property portal.acceptance = "true";
+		task ("Filter by subtype Basic Document and assert the subtype label is present") {
+			ContentDashboard.clearFilters();
 
-		task ("Create a Basic Document") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/doc",
-				sourceFileName = "Document_1.doc");
-		}
-
-		task ("Navigate to the content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Filter by Type: Basic Document") {
 			ContentDashboard.filterByType(typeName = "Basic Document");
-		}
 
-		task ("Assert that the web content and filter label are present") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FILTER_TEXT",
 				value1 = "Subtype: Basic Document");
 		}
-	}
 
-	@description = "LPS-146471 Given The Type filter modal When the user selects the Blogs Entry option Then the subtype selected appears as filter box above the Content table in the Content Dashboard, with the format ""Subtype: [Blogs Entry]"""
-	@priority = 5
-	test FilterBySubtypeBlogsEntry {
-		property portal.acceptance = "true";
+		task ("Filter by subtype Blogs Entry and assert the subtype label is present") {
+			ContentDashboard.clearFilters();
 
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to the content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Filter by Type") {
 			ContentDashboard.filterByType(typeName = "Blogs Entry");
-		}
 
-		task ("Assert that the web content and filter label are present") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Blogs Entry Title");
