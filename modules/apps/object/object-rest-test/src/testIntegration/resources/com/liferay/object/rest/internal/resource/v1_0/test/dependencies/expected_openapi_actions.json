@@ -138,6 +138,7 @@
 				}
 			},
 			"CollaboratorBrief": {
+				"description": "Brief of the collaborator record for the user making the request, present only when this asset is shared with them.",
 				"properties": {
 					"actionIds": {
 						"description": "The sharing actions granted to the user making the request (e.g. VIEW, UPDATE).",
@@ -173,7 +174,7 @@
 				}
 			},
 			"Comment": {
-				"description": "Optional field with the comments associated with this object entry, can be embedded with nestedFields",
+				"description": "Represents a comment. See [Comment](https://www.schema.org/Comment) for more details.",
 				"properties": {
 					"actions": {
 						"additionalProperties": {
@@ -255,7 +256,7 @@
 				}
 			},
 			"Creator": {
-				"description": "The comment's author.",
+				"description": "Represents the user account of the content's creator/author. Properties follow the [creator](https://schema.org/creator) specification.",
 				"properties": {
 					"additionalName": {
 						"description": "The author's additional name (e.g., middle name).",
@@ -1183,6 +1184,10 @@
 						"description": "The scope's name.",
 						"type": "string"
 					},
+					"liveExternalReferenceCode": {
+						"description": "The scope's live group external reference code.",
+						"type": "string"
+					},
 					"type": {
 						"description": "The scope's type.",
 						"enum": [
@@ -1317,7 +1322,7 @@
 				}
 			},
 			"UserGroupBrief": {
-				"description": "A list of userGroups information.",
+				"description": "The author's user groups information.",
 				"properties": {
 					"id": {
 						"description": "The ID of the user group.",
@@ -3930,6 +3935,7 @@
 						}
 					},
 					{
+						"description": "The required language ID of the source text (e.g., \"en_US\").",
 						"in": "query",
 						"name": "sourceLanguageId",
 						"schema": {
@@ -3937,6 +3943,7 @@
 						}
 					},
 					{
+						"description": "A required list of language IDs for the target translations (e.g., \"es_ES\", \"fr_FR\").",
 						"in": "query",
 						"name": "targetLanguageIds",
 						"schema": {
@@ -3944,6 +3951,7 @@
 						}
 					},
 					{
+						"description": "The XLIFF specification version to export.",
 						"in": "query",
 						"name": "version",
 						"schema": {
@@ -4020,6 +4028,7 @@
 						}
 					},
 					{
+						"description": "The required language ID of the source text (e.g., \"en_US\").",
 						"in": "path",
 						"name": "languageId",
 						"required": true,
@@ -4028,6 +4037,7 @@
 						}
 					},
 					{
+						"description": "The required language ID for the target translation (e.g., \"en_US\").",
 						"in": "query",
 						"name": "targetLanguageId",
 						"schema": {
