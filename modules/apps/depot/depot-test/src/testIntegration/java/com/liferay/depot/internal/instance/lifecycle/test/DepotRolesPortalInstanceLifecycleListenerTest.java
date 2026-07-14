@@ -92,11 +92,11 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			DepotRolesConstants.ASSET_LIBRARY_MEMBER, List.of(ActionKeys.VIEW));
 
 		_assertRoleResourcePermissions(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
 			List.of(ActionKeys.MANAGE_TAG));
 		_assertRoleResourcePermissions(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
 			List.of(ActionKeys.MANAGE_TAG));
 
@@ -129,13 +129,13 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			administratorResourceActions);
 
 		_assertResourcePermissions(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
 			List.of(ActionKeys.MANAGE_TAG));
 
 		_assertResourcePermissions(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
 			List.of(ActionKeys.MANAGE_TAG));
@@ -222,7 +222,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 
 		for (String actionId : actionIds) {
 			if (StringUtil.equals(resourceName, DepotEntry.class.getName()) ||
-				StringUtil.equals(resourceName, _ASSET_TAGS_RESOURCE_NAME)) {
+				StringUtil.equals(resourceName, "com.liferay.asset.tags")) {
 
 				if (Objects.equals(actionId, ActionKeys.ASSIGN_USER_ROLES)) {
 					continue;
@@ -244,9 +244,6 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 					administratorRole.getRoleId(), actionId));
 		}
 	}
-
-	private static final String _ASSET_TAGS_RESOURCE_NAME =
-		"com.liferay.asset.tags";
 
 	private Company _company;
 

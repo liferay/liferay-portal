@@ -57,7 +57,7 @@ public class DepotDesignLibraryRolesHelper {
 			administratorResourceActions.toArray(new String[0]));
 
 		_resourcePermissionLocalService.addResourcePermission(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			administratorRole.getRoleId(), ActionKeys.MANAGE_TAG);
 
@@ -65,7 +65,7 @@ public class DepotDesignLibraryRolesHelper {
 			companyId, DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
 
 		_resourcePermissionLocalService.addResourcePermission(
-			companyId, _ASSET_TAGS_RESOURCE_NAME,
+			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			contentReviewerRole.getRoleId(), ActionKeys.MANAGE_TAG);
 
@@ -120,9 +120,6 @@ public class DepotDesignLibraryRolesHelper {
 			PermissionThreadLocal.setAddResource(addResource);
 		}
 	}
-
-	private static final String _ASSET_TAGS_RESOURCE_NAME =
-		"com.liferay.asset.tags";
 
 	private final Language _language;
 	private final ResourceLocalService _resourceLocalService;
