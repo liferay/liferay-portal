@@ -4429,9 +4429,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-132254 When a user selects the value of the number of rows (4, 8, 40, 60) displayed in the list, the Content Dashboard will display the number of rows selected"
+	@description = "LPS-132254 The user can select the number of rows displayed per page and move across pages using the previous/next buttons and the page numbers"
 	@priority = 5
-	test PaginationDisplaySelectedNumberOfRows {
+	test Pagination {
 		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
 		property portal.acceptance = "true";
 
@@ -4446,76 +4446,36 @@ definition {
 			}
 		}
 
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
 		task ("Check if the correct number of entries are being displayed") {
+			ContentDashboard.goToContentDashboard();
+
 			Pagination.changePagination(itemsPerPage = 8);
 
 			Pagination.viewResults(results = "Showing 1 to 8 of 17 entries.");
 		}
-	}
-
-	@description = "LPS-132254 When a user use the <, > buttons, the page displayed moves forward/backward"
-	@priority = 3
-	test PaginationMoveAcrossPagesWithButtons {
-		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Create 6 WC using JSON") {
-			for (var count : list "1,2,3,4,5,6") {
-				JSONWebcontent.addWebContent(
-					content = "WC Content ${count}",
-					groupId = ${groupId},
-					title = "WC Title ${count}");
-			}
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
 
 		task ("Use < > buttons to move forth and back") {
+			ContentDashboard.goToContentDashboard();
+
 			Pagination.changePagination(itemsPerPage = 4);
 
 			Click(locator1 = "Pagination#NEXT_LINK");
 
-			Pagination.viewResults(results = "Showing 5 to 8 of 13 entries.");
+			Pagination.viewResults(results = "Showing 5 to 8 of 17 entries.");
 
 			Click(locator1 = "Pagination#PREVIOUS_LINK");
 
-			Pagination.viewResults(results = "Showing 1 to 4 of 13 entries.");
-		}
-	}
-
-	@description = "LPS-132254 When a user clicks on a page number, that page is displayed in the Content Dashboard"
-	@priority = 3
-	test PaginationMoveAcrossPagesWithNumber {
-		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Create 6 WC using JSON") {
-			for (var count : list "1,2,3,4,5,6") {
-				JSONWebcontent.addWebContent(
-					content = "WC Content ${count}",
-					groupId = ${groupId},
-					title = "WC Title ${count}");
-			}
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
+			Pagination.viewResults(results = "Showing 1 to 4 of 17 entries.");
 		}
 
 		task ("Use page numbers to move between pages") {
+			ContentDashboard.goToContentDashboard();
+
 			Pagination.changePagination(itemsPerPage = 4);
 
 			ContentDashboard.moveToPage(pageNumber = 2);
 
-			Pagination.viewResults(results = "Showing 5 to 8 of 13 entries.");
+			Pagination.viewResults(results = "Showing 5 to 8 of 17 entries.");
 		}
 	}
 
