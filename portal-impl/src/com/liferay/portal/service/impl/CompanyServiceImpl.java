@@ -6,8 +6,12 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.model.Address;
@@ -20,6 +24,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.service.base.CompanyServiceBaseImpl;
@@ -106,6 +112,56 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 			defaultAdminPassword, defaultAdminScreenName,
 			defaultAdminEmailAddress, defaultAdminFirstName,
 			defaultAdminMiddleName, defaultAdminLastName);
+	}
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public Company addDBPartitionCompany(
+			String schemaName, String name, String virtualHost, String webId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
+
+		if (!schemaName.startsWith(
+				_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX)) {
+
+			throw new IllegalArgumentException(
+				"Invalid schema name \"" + schemaName + "\"");
+		}
+
+		long companyId = GetterUtil.getLong(
+			schemaName.substring(
+				_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX.length()));
+
+		if (companyId <= 0) {
+			throw new IllegalArgumentException(
+				"Invalid schema name \"" + schemaName + "\"");
+		}
+
+		Company company = companyLocalService.addDBPartitionCompany(
+			companyId, name, virtualHost, webId);
+
+		if (AuditRouterUtil.isDeployed()) {
+			long userId = getUserId();
+
+			AuditRouterUtil.route(
+				new AuditMessage(
+					0, company.getCompanyId(), userId,
+					PortalUtil.getUserName(userId, StringPool.BLANK), null,
+					JSONUtil.put(
+						"virtualHostname", company.getVirtualHostname()
+					).put(
+						"webId", company.getWebId()
+					),
+					Company.class.getName(),
+					String.valueOf(company.getCompanyId()), "ADD", null));
+		}
+
+		return company;
 	}
 
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
@@ -490,6 +546,9 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 			companyId, authType, autoLogin, sendPassword, strangers,
 			strangersWithMx, strangersVerify, siteLogo);
 	}
+
+	private static final String
+		_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX = "lexported_";
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
