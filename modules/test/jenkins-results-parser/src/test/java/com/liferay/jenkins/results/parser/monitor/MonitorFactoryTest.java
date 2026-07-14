@@ -17,7 +17,8 @@ public class MonitorFactoryTest
 	@Test
 	public void testNewMonitorUnknownType() {
 		MonitorConfig monitorConfig = new MonitorConfig(
-			0, "a", null, MonitorConfig.Severity.MEDIUM, null, "unknown-type");
+			0, "a", null, MonitorConfig.Severity.MEDIUM, null, 60,
+			"unknown-type");
 
 		try {
 			MonitorFactory.newMonitor(monitorConfig);
