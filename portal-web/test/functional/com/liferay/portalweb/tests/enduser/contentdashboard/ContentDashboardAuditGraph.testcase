@@ -556,7 +556,7 @@ definition {
 
 	@description = "LPS-134606 When there's a vocabulary in the "In use" box is in the top position of the list and user clicks on Save, the graph will feature that vocabulary in the X axis"
 	@priority = 5
-	test CheckTopPositionVocabularyXAxis {
+	test AuditGraphVocabularyPositionSetsXAxis {
 		property portal.acceptance = "true";
 
 		task ("Add a Web Content using categories via JSONWS") {
