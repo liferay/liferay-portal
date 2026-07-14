@@ -73,7 +73,7 @@ public interface BatchEngineImportTaskLocalService
 	public BatchEngineImportTask addBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask);
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,
@@ -83,7 +83,7 @@ public interface BatchEngineImportTaskLocalService
 			String taskItemDelegateName)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,
@@ -352,9 +352,9 @@ public interface BatchEngineImportTaskLocalService
 	 * @return the batch engine import task that was updated
 	 */
 	@Indexable(type = IndexableType.REINDEX)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask updateBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1324455093
+// LIFERAY-SERVICE-BUILDER-HASH:591855085

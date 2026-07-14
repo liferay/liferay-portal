@@ -72,7 +72,7 @@ public interface BatchEngineExportTaskLocalService
 	public BatchEngineExportTask addBatchEngineExportTask(
 		BatchEngineExportTask batchEngineExportTask);
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineExportTask addBatchEngineExportTask(
 		String externalReferenceCode, long companyId, long userId,
 		String callbackURL, String className, String contentType,
@@ -343,9 +343,9 @@ public interface BatchEngineExportTaskLocalService
 	 * @return the batch engine export task that was updated
 	 */
 	@Indexable(type = IndexableType.REINDEX)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineExportTask updateBatchEngineExportTask(
 		BatchEngineExportTask batchEngineExportTask);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-587742894
+// LIFERAY-SERVICE-BUILDER-HASH:1604282754
