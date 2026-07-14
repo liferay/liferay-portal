@@ -619,35 +619,29 @@ public class JenkinsResultsParserUtilTest
 	private void _testGetJobVariant(
 		String expectedJobVariant, String name, String value) {
 
-		JSONObject parameterJSONObject = new JSONObject();
-
-		parameterJSONObject.put(
-			"name", name
-		).put(
-			"value", value
-		);
-
-		JSONObject actionJSONObject = new JSONObject();
-
-		actionJSONObject.put(
-			"parameters",
-			new JSONArray(
-			).put(
-				parameterJSONObject
-			));
-
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
-			"actions",
-			new JSONArray(
-			).put(
-				actionJSONObject
-			));
-
 		testEquals(
 			expectedJobVariant,
-			JenkinsResultsParserUtil.getJobVariant(jsonObject));
+			JenkinsResultsParserUtil.getJobVariant(
+				new JSONObject(
+				).put(
+					"actions",
+					new JSONArray(
+					).put(
+						new JSONObject(
+						).put(
+							"parameters",
+							new JSONArray(
+							).put(
+								new JSONObject(
+								).put(
+									"name", name
+								).put(
+									"value", value
+								)
+							)
+						)
+					)
+				)));
 	}
 
 	private void _testGetProperty(
