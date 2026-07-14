@@ -27,6 +27,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -526,9 +527,14 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 			_portalExecutorManager.getPortalExecutor(
 				ImportTaskResourceImpl.class.getName());
 
-		executorService.submit(
-			() -> _batchEngineImportTaskExecutor.execute(
-				batchEngineImportTask));
+		// Defer the asynchronous processing until after the current
+		// transaction commits so the processing thread reads a fully
+		// persisted batch engine import task.
+
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> executorService.submit(
+				() -> _batchEngineImportTaskExecutor.execute(
+					batchEngineImportTask)));
 
 		return _toImportTask(batchEngineImportTask);
 	}
