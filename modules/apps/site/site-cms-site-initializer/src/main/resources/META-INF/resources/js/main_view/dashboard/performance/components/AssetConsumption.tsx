@@ -9,7 +9,6 @@ import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {toThousands} from '@liferay/analytics-reports-js-components-web';
-import {BarChart} from '@liferay/frontend-js-charts-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
@@ -109,41 +108,32 @@ export function AssetConsumption() {
 			);
 		}
 
-		if (viewType === 'chart') {
-			return (
-				<BarChart
-					data={items.map(({count, title}) => ({
-						label:
-							title ||
-							sub(Liferay.Language.get('no-x'), groupByLabel),
-						value: count,
-					}))}
-					legend="none"
-					orientation="horizontal"
-					rounded
-					size="inline"
-					title=""
-					track
-				/>
-			);
-		}
+		const isChart = viewType === 'chart';
+		const cellClassName = isChart ? 'border-0' : '';
 
 		return (
 			<>
-				<Table columnsVisibility={false} hover={false}>
+				<Table
+					borderless={isChart}
+					columnsVisibility={false}
+					hover={false}
+					striped={false}
+				>
 					<Head
 						items={[
 							{
 								align: 'left' as const,
 								id: 'title',
 								name: groupByLabel,
-								width: 'calc(100% - 340px)',
+								width: isChart ? '200px' : 'calc(100% - 340px)',
 							},
 							{
-								align: 'right' as const,
+								align: isChart
+									? ('left' as const)
+									: ('right' as const),
 								id: 'views',
 								name: Liferay.Language.get('views'),
-								width: '200px',
+								width: isChart ? 'calc(100% - 340px)' : '200px',
 							},
 							{
 								align: 'right' as const,
@@ -167,30 +157,63 @@ export function AssetConsumption() {
 					</Head>
 
 					<Body items={items}>
-						{({count, title}) => (
-							<Row>
-								<Cell>
-									<Text size={3} weight="semi-bold">
-										{title ||
-											sub(
-												Liferay.Language.get('no-x'),
-												groupByLabel
-											)}
-									</Text>
-								</Cell>
+						{({count, title}) => {
+							const percentage = totalCount
+								? (count / totalCount) * 100
+								: 0;
 
-								<Cell align="right">{toThousands(count)}</Cell>
+							return (
+								<Row>
+									<Cell className={cellClassName}>
+										<Text size={3} weight="semi-bold">
+											{title ||
+												sub(
+													Liferay.Language.get(
+														'no-x'
+													),
+													groupByLabel
+												)}
+										</Text>
+									</Cell>
 
-								<Cell align="right">
-									{totalCount
-										? ((count / totalCount) * 100).toFixed(
-												2
-											)
-										: '0.00'}
-									%
-								</Cell>
-							</Row>
-						)}
+									<Cell
+										align={isChart ? undefined : 'right'}
+										className={cellClassName}
+									>
+										{isChart ? (
+											<div className="cms-dashboard__volume-chart">
+												<div
+													className="cms-dashboard__volume-chart__bar"
+													style={{
+														width: `${percentage}%`,
+													}}
+												/>
+
+												<div className="cms-dashboard__volume-chart__value">
+													<Text
+														size={3}
+														weight="semi-bold"
+													>
+														{toThousands(count)}
+													</Text>
+												</div>
+											</div>
+										) : (
+											toThousands(count)
+										)}
+									</Cell>
+
+									<Cell
+										align="right"
+										className={cellClassName}
+									>
+										<Text size={3} weight="semi-bold">
+											{percentage.toFixed(2)}%
+										</Text>
+									</Cell>
+								</Row>
+							);
+						}}
 					</Body>
 				</Table>
 
