@@ -42,7 +42,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 	extends BatchEngineImportTaskLocalServiceBaseImpl {
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,
@@ -64,7 +64,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,
@@ -157,7 +157,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.NESTED)
 	public BatchEngineImportTask updateBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask) {
 
