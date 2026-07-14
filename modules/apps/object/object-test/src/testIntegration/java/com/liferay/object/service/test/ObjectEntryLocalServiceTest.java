@@ -1927,7 +1927,6 @@ public class ObjectEntryLocalServiceTest {
 			_dlAppLocalService.fetchFileEntry(persistedFileEntryId));
 	}
 
-	@FeatureFlag("LPD-96750")
 	@Test
 	public void testAddObjectEntryWithDomain() throws Exception {
 		_domainObjectDefinition =

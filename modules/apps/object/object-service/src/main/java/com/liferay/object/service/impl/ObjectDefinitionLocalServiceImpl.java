@@ -3728,9 +3728,7 @@ public class ObjectDefinitionLocalServiceImpl
 					ObjectDefinitionSettingConstants.NAME_DOMAIN,
 					objectDefinitionSettingsValue.getKey())) {
 
-				if (!FeatureFlagManagerUtil.isEnabled(
-						objectDefinition.getCompanyId(), "LPD-96750") ||
-					!StringUtil.equals(
+				if (!StringUtil.equals(
 						objectDefinition.getScope(),
 						ObjectDefinitionConstants.SCOPE_DEPOT)) {
 
