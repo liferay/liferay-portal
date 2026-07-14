@@ -261,6 +261,30 @@ describe('Geolocation Google Maps loader', () => {
 		);
 
 		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
+		expect(window.Liferay.once.mock.calls).toEqual([
+			['gmapsReady', expect.any(Function)],
+			['gmapsReady', expect.any(Function)],
+		]);
+	});
+
+	it('skips injection when a loader script is already in the document', () => {
+		const script = document.createElement('script');
+
+		script.setAttribute(
+			'src',
+			'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady'
+		);
+
+		document.head.appendChild(script);
+
+		renderGoogleMapsField('first', 'geoFirst');
+
+		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
+		expect(window.Liferay.Maps.gmapsLoading).toBeUndefined();
+		expect(window.Liferay.once).toHaveBeenCalledWith(
+			'gmapsReady',
+			expect.any(Function)
+		);
 	});
 
 	it('re-injects the Google Maps API script after a failed load', () => {
