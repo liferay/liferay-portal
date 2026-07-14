@@ -28,8 +28,10 @@ export class TasksPage {
 		monthViewButton: Locator;
 		moreLinkButton: Locator;
 		moreLinkPopover: Locator;
+		nextDayButton: Locator;
 		nextMonthButton: Locator;
 		nextWeekButton: Locator;
+		previousDayButton: Locator;
 		previousMonthButton: Locator;
 		previousWeekButton: Locator;
 		title: Locator;
@@ -83,6 +85,10 @@ export class TasksPage {
 			}),
 			moreLinkButton: page.getByText(/\d+ More/),
 			moreLinkPopover: page.getByTestId('calendarMoreLinkPopover'),
+			nextDayButton: page.getByRole('button', {
+				exact: true,
+				name: 'Next Day',
+			}),
 			nextMonthButton: page.getByRole('button', {
 				exact: true,
 				name: 'Next Month',
@@ -90,6 +96,10 @@ export class TasksPage {
 			nextWeekButton: page.getByRole('button', {
 				exact: true,
 				name: 'Next Week',
+			}),
+			previousDayButton: page.getByRole('button', {
+				exact: true,
+				name: 'Previous Day',
 			}),
 			previousMonthButton: page.getByRole('button', {
 				exact: true,
@@ -171,6 +181,26 @@ export class TasksPage {
 		await this.page.goto(PORTLET_URLS.cmpTasks);
 	}
 
+	async openProjectDayView(
+		projectsPage: ProjectsPage,
+		projectPage: ProjectPage,
+		projectTitle: string
+	) {
+		await projectsPage.goto();
+
+		await projectsPage.getProject(projectTitle).click();
+
+		await projectPage.tasksTab.click();
+
+		await this.tableViewButton.click();
+
+		await this.calendarView.viewOption.click();
+
+		await this.calendarView.title.waitFor({state: 'visible'});
+
+		await this.switchToDayView();
+	}
+
 	async openProjectWeekView(
 		projectsPage: ProjectsPage,
 		projectPage: ProjectPage,
@@ -189,6 +219,22 @@ export class TasksPage {
 		await this.calendarView.title.waitFor({state: 'visible'});
 
 		await this.switchToWeekView();
+	}
+
+	async switchToDayView() {
+
+		// The FDS view selector keeps focus after selecting Calendar and its
+		// tooltip overlaps the view switcher, so blur it before switching.
+
+		await this.page.evaluate(
+			() => (document.activeElement as HTMLElement)?.blur()
+		);
+
+		await this.calendarView.dayViewButton.click();
+
+		await this.page
+			.locator('.fc-dayGridDay-view')
+			.waitFor({state: 'visible', timeout: 15000});
 	}
 
 	async switchToWeekView() {

@@ -930,6 +930,90 @@ test(
 );
 
 test(
+	'Day view navigates to the previous day, next day, and today',
+	{tag: ['@LPD-69885', '@LPD-94175']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const {calendarView} = tasksPage;
+
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectDayView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const todayTask = page
+			.locator(`[data-date="${todayDate}"]`)
+			.getByText(taskTitle, {exact: true});
+
+		await expect(todayTask).toBeVisible();
+
+		await calendarView.nextDayButton.click();
+
+		await expect(todayTask).toBeHidden();
+
+		await calendarView.previousDayButton.click();
+
+		await expect(todayTask).toBeVisible();
+
+		await calendarView.nextDayButton.click();
+
+		await expect(todayTask).toBeHidden();
+
+		await calendarView.todayButton.click();
+
+		await expect(todayTask).toBeVisible();
+	}
+);
+
+test(
+	'Day view shows a task on its due date with the expanded card',
+	{tag: ['@LPD-69885', '@LPD-94175']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectDayView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const todayCell = page.locator(`[data-date="${todayDate}"]`);
+
+		await expect(todayCell.getByText(taskTitle, {exact: true})).toBeVisible();
+
+		await expect(
+			todayCell.getByText('Not Started', {exact: true}).first()
+		).toBeVisible();
+	}
+);
+
+test(
 	'Ensure that the "All Tasks" tab disables highlighted bulk actions when project and workflow tasks are selected together',
 	{tag: ['@LPD-88846']},
 	async ({apiHelpers, assignWorkflowToAssetType, page, tasksPage}) => {
@@ -1182,7 +1266,6 @@ test(
 		await expect(tasksPage.viewSelectorButton).toBeHidden();
 	}
 );
-
 
 test(
 	'Week view navigates to the previous week, next week, and today',
