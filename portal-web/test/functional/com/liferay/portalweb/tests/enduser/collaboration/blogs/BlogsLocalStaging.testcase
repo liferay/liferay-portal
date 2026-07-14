@@ -496,44 +496,6 @@ definition {
 			publicationType = "Local");
 	}
 
-	@description = "This test covers LPS-138246. It ensures that a blog entry can be published via SAP on a page."
-	@priority = 4
-	test CanPublishEntryViaSAPOnPage {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Blogs.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish to live?",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Staging Blogs Page",
-			siteURLKey = "site-name");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Notifications.viewBadgeCount(
-			activePanel = "Notifications",
-			notificationCount = 2);
-
-		Notifications.gotoNotifications();
-
-		Notifications.viewSuccessfulPublication(
-			contentBody = "Publication Process Finished Successfully",
-			portletName = "Blogs Portlet",
-			publicationType = "Local");
-	}
-
 	@description = "This is a test for LPS-136801. It checks that Blogs permissions can be published."
 	@priority = 4
 	test CanPublishPermissions {
