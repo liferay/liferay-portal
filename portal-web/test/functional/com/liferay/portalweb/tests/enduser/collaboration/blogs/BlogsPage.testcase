@@ -168,34 +168,6 @@ definition {
 			pageName = "Blogs Page");
 	}
 
-	@description = "This checks that the title and content fields of a blog entry can be edited."
-	@e2etest
-	@priority = 5
-	@refactordone
-	test CanEditEntry {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		Blogs.editEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryContentEdit = "Blogs Entry Content Edit",
-			entryTitle = "Blogs Entry Title",
-			entryTitleEdit = "Blogs Entry Title Edit");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content Edit",
-			entryTitle = "Blogs Entry Title Edit");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content Edit",
-			entryTitle = "Blogs Entry Title Edit");
-	}
-
 	@description = "This checks that multiple comments can be edited in a blog entry and display with the editing user as the author."
 	@priority = 4
 	@refactordone
@@ -240,6 +212,34 @@ definition {
 			commentCount = 2,
 			entryComment = "2nd Blog Comment Edit",
 			userFullName = "Test Test (You)");
+	}
+
+	@description = "This checks that the title and content fields of a blog entry can be edited."
+	@e2etest
+	@priority = 5
+	@refactordone
+	test CanEditEntry {
+		JSONBlog.addEntry(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
+
+		Navigator.gotoPage(pageName = "Blogs Page");
+
+		Blogs.editEntryPG(
+			entryContent = "Blogs Entry Content",
+			entryContentEdit = "Blogs Entry Content Edit",
+			entryTitle = "Blogs Entry Title",
+			entryTitleEdit = "Blogs Entry Title Edit");
+
+		Navigator.gotoPage(pageName = "Blogs Page");
+
+		BlogsNavigator.gotoEntryPG(
+			entryContent = "Blogs Entry Content Edit",
+			entryTitle = "Blogs Entry Title Edit");
+
+		BlogsEntry.viewEntryPG(
+			entryContent = "Blogs Entry Content Edit",
+			entryTitle = "Blogs Entry Title Edit");
 	}
 
 	@description = "This checks that Blogs added and scoped to a page will not be seen in other pages."
