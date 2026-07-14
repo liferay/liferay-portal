@@ -15,6 +15,8 @@ import {FilesCard} from './components/FilesCard';
 import {InventoryAnalysisCard} from './components/InventoryAnalysisCard';
 import {LanguagesDropdown} from './components/LanguagesDropdown';
 
+import '../../../../css/dashboard/InventoryDashboard.scss';
+
 export default function InventoryDashboard({
 	constants,
 }: {

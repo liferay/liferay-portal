@@ -1,0 +1,17 @@
+.cms-dashboard {
+	&__content-and-files-card {
+		&__breakdown {
+			flex: 1 1 160px;
+			max-width: 245px;
+			min-width: 160px;
+		}
+	}
+
+	&__empty-state {
+		margin: 3.5rem auto 6rem;
+
+		.c-empty-state-title {
+			margin-top: 0;
+		}
+	}
+}

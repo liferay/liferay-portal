@@ -11,14 +11,6 @@
 		}
 	}
 
-	&__content-and-files-card {
-		&__breakdown {
-			flex: 1 1 160px;
-			max-width: 245px;
-			min-width: 160px;
-		}
-	}
-
 	&__volume-chart {
 		background-color: $light-d1;
 		border-radius: 8px;
@@ -44,14 +36,6 @@
 			position: absolute;
 			right: 24px;
 			top: 0;
-		}
-	}
-
-	&__empty-state {
-		margin: 3.5rem auto 6rem;
-
-		.c-empty-state-title {
-			margin-top: 0;
 		}
 	}
 }
