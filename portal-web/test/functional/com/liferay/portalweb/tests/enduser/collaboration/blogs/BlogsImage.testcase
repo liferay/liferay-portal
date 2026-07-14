@@ -193,83 +193,70 @@ definition {
 			locator1 = "BlogsEntry#ENTRY_COVER_IMAGE");
 	}
 
-	@description = "This is a usecase for LPS-83229. This is the only small image test for blogs."
+	@description = "This ensures that the small image can be replaced and removed."
 	@priority = 4
 	@refactordone
-	test CanRemoveSmallImage {
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+	test CanReplaceAndRemoveSmallImage {
+		task ("Add a blog entry with a small image") {
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry with Small Image");
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.addSmallImage(
-			navTab = "Documents and Media",
-			uploadFileName = "Document_1.jpg");
+			BlogsEntry.addSmallImage(
+				navTab = "Documents and Media",
+				uploadFileName = "Document_1.jpg");
 
-		PortletEntry.publish();
+			PortletEntry.publish();
+		}
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry with Small Image",
-			groupName = "Guest",
-			siteURLKey = "guest");
+		task ("Replace the small image and view the new image on the page") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		BlogsEntry.removeSmallImage(uploadFileName = "Document_1.jpg");
+			BlogsEntry.addSmallImage(
+				browseImage = "true",
+				navTab = "Documents and Media",
+				uploadFileName = "Document_2.jpg");
 
-		PortletEntry.publish();
+			PortletEntry.publish();
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry with Small Image",
-			groupName = "Guest",
-			siteURLKey = "guest");
+			Navigator.gotoPage(pageName = "Blogs Page");
 
-		AssertElementNotPresent(
-			key_smallImage = "Document_1.jpg",
-			locator1 = "BlogsEntry#SMALL_IMAGE");
+			AssertVisible(
+				key_imageFileName = "Document_2.jpg",
+				locator1 = "BlogsEntry#CONTENT_SMALL_IMAGE",
+				value1 = "Document_2.jpg");
+		}
 
-		AssertTextEquals(
-			locator1 = "Button#SELECT_FILE_SMALL_IMAGE",
-			value1 = "Select File");
-	}
+		task ("Remove the small image and view that it is absent") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-	@description = "This ensures that the small image can be replaced."
-	@priority = 4
-	@refactordone
-	test CanReplaceSmallImage {
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+			BlogsEntry.removeSmallImage(uploadFileName = "Document_2.jpg");
 
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			PortletEntry.publish();
 
-		BlogsEntry.addSmallImage(
-			navTab = "Documents and Media",
-			uploadFileName = "Document_1.jpg");
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		PortletEntry.publish();
+			AssertElementNotPresent(
+				key_smallImage = "Document_2.jpg",
+				locator1 = "BlogsEntry#SMALL_IMAGE");
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		BlogsEntry.addSmallImage(
-			browseImage = "true",
-			navTab = "Documents and Media",
-			uploadFileName = "Document_2.jpg");
-
-		PortletEntry.publish();
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		AssertVisible(
-			key_imageFileName = "Document_2.jpg",
-			locator1 = "BlogsEntry#CONTENT_SMALL_IMAGE",
-			value1 = "Document_2.jpg");
+			AssertTextEquals(
+				locator1 = "Button#SELECT_FILE_SMALL_IMAGE",
+				value1 = "Select File");
+		}
 	}
 
 	@description = "This checks that a cover image can be saved as a draft and then published in a blog."
