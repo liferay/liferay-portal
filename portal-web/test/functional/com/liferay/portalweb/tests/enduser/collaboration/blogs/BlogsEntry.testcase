@@ -323,9 +323,9 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-136772. It checks that the cover image caption can be deleted."
+	@description = "This is a test for LPS-136771, LPS-136772, and LPS-90966. It checks that the cover image caption can be added with a link, edited with special characters, and deleted."
 	@priority = 3
-	test CanDeleteCoverImageCaption {
+	test CanManageCoverImageCaption {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -337,84 +337,78 @@ definition {
 
 		Navigator.gotoPage(pageName = "Blogs Page");
 
-		Blogs.addEntryWithUploadedCoverImage(
-			captionField = "Cover Image Caption",
-			coverImageName = "Document_1",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
+		task ("Add a blog entry with a cover image caption and caption link") {
+			Blogs.addEntryWithUploadedCoverImage(
+				captionField = "Cover Image Caption",
+				captionFieldLink = "www.google.com",
+				coverImageName = "Document_1",
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title",
+				navTab = "Blog Images",
+				uploadFileName = "Document_1.jpg");
 
-		Button.clickPublish();
+			Button.clickPublish();
+		}
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+		task ("View that the cover image caption displays") {
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		AssertTextEquals(
-			locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_CAPTION",
-			value1 = "Cover Image Caption");
+			AssertTextEquals(
+				locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_CAPTION",
+				value1 = "Cover Image Caption");
+		}
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
+		task ("View that the caption link persists in the control panel") {
+			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.editCoverImageCaption(captionField = "");
+			BlogsEntry.viewEntryCP(
+				captionField = "true",
+				captionFieldLink = "Cover Image Caption",
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
 
-		Button.clickPublish();
+		task ("Edit the cover image caption with special characters") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+			BlogsEntry.editCoverImageCaption(captionField = "!@#$%^&*()");
 
-		AssertElementNotPresent(locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_CAPTION");
-	}
+			Button.clickPublish();
 
-	@description = "This is a test for LPS-136771. It checks that the cover image caption can be edited with special characters."
-	@priority = 3
-	test CanEditCoverImageCaptionWithSpecialCharacters {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
+			BlogsEntry.viewEntryPG(
+				entryCaption = "!@#$%^&*()",
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
 
-		Navigator.gotoPage(pageName = "Blogs Page");
+		task ("Delete the cover image caption") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		Blogs.addEntryWithUploadedCoverImage(
-			captionField = "Cover Image Caption",
-			coverImageName = "Document_1",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
+			BlogsEntry.editCoverImageCaption(captionField = "");
 
-		Button.clickPublish();
+			Button.clickPublish();
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		BlogsEntry.editCoverImageCaption(captionField = "!@#$%^&*()");
-
-		Button.clickPublish();
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		BlogsEntry.viewEntryPG(
-			entryCaption = "!@#$%^&*()",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			AssertElementNotPresent(locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_CAPTION");
+		}
 	}
 
 	@description = "This is a test for LPS-67515. It ensures that a blog entry with a cover image can be exported and imported between different sites."
@@ -797,31 +791,6 @@ definition {
 			progressBarInitialization = "0 Minutes 0 Seconds of 0 Minutes 0 Seconds",
 			videoDuration = "3 Minutes 30 Seconds",
 			videoPlayNode = "0 Minutes 10 Seconds of 3 Minutes 30 Seconds");
-	}
-
-	@description = "This is a test for LPS-90966. It checks that the caption link will keep persisting."
-	@priority = 3
-	test LinkToImageInCaptionPersistsAfterBeingAdded {
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-		Blogs.addEntryWithUploadedCoverImage(
-			captionField = "Cover Image Caption",
-			captionFieldLink = "www.google.com",
-			coverImageName = "Document_1",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
-
-		Button.clickPublish();
-
-		BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewEntryCP(
-			captionField = "true",
-			captionFieldLink = "Cover Image Caption",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
 	}
 
 	@description = "This test covers LPS-133714. The blog entry creator receives a notification of its own blog"
