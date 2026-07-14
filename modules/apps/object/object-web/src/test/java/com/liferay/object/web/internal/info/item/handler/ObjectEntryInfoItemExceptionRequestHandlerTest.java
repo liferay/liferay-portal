@@ -72,7 +72,7 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 
 			Assert.fail();
 		}
-		catch (InfoFormValidationException.TooManyAssetCategories
+		catch (InfoFormValidationException.AssetTooManyCategories
 					infoFormValidationException) {
 
 			Assert.assertSame(

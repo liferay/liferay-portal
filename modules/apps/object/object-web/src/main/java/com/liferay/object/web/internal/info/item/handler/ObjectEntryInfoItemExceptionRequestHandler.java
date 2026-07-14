@@ -55,7 +55,7 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 			else if (assetCategoryException.getType() ==
 						AssetCategoryException.TOO_MANY_CATEGORIES) {
 
-				throw new InfoFormValidationException.TooManyAssetCategories(
+				throw new InfoFormValidationException.AssetTooManyCategories(
 					assetCategoryException,
 					assetCategoryException.getVocabulary());
 			}
