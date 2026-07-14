@@ -17,6 +17,10 @@ public class RandomTestUtil {
 		return _random.nextDouble();
 	}
 
+	public static long randomLong() {
+		return _random.nextLong();
+	}
+
 	public static String randomString() {
 		UUID uuid = UUID.randomUUID();
 
