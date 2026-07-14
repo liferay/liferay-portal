@@ -282,9 +282,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the list of categories assigned to the content will be divided between public and internal vocabularies"
+	@description = "LPS-132510 Given the Content Dashboard when the info panel of a blog is open then the categories assigned to the content are divided between public and internal vocabularies and the tags are shown"
 	@priority = 3
-	test BlogCategoriesInInfoPanel {
+	test BlogCategorizationInInfoPanel {
 		task ("Add an internal vocabulary for Test Site Name") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
@@ -315,6 +315,7 @@ definition {
 		task ("Create a blog") {
 			JSONBlog.addEntry(
 				assetCategoryIds = "${categoryId1},${categoryId2}",
+				assetTagNames = "tagname",
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title",
 				groupName = "Test Site Name");
@@ -346,6 +347,14 @@ definition {
 			AssertVisible(
 				categoryName = "CategoryInternal",
 				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
+		}
+
+		task ("Check the tags are shown in the Info panel") {
+			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_TAGS_TITLE");
+
+			AssertVisible(
+				locator1 = "ContentDashboard#TAG_LABEL_INFO_PANEL",
+				tagName = "tagname");
 		}
 	}
 
@@ -427,36 +436,6 @@ definition {
 					key_tableHeader = ${columnHeader},
 					locator1 = "LexiconTable#TABLE_HEADER");
 			}
-		}
-	}
-
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then all the tags assigned to the blog appear as labels in the Tags section"
-	@priority = 3
-	test BlogTagsInInfoPanel {
-		task ("Create a blog with the tag") {
-			JSONBlog.addEntry(
-				assetTagNames = "tagname",
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the tags are shown in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			Navigator.gotoNavTab(navTab = "Categorization");
-
-			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_TAGS_TITLE");
-
-			AssertVisible(
-				locator1 = "ContentDashboard#TAG_LABEL_INFO_PANEL",
-				tagName = "tagname");
 		}
 	}
 
