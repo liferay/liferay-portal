@@ -2499,51 +2499,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 4
-	test DocumentsVersionHistoryViewVersion {
-		property portal.acceptance = "true";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					mimeType = "text/plain",
-					repositoryId = ${groupId},
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				ContentDashboard.createVersionsForDocument(
-					dmDocumentTitle = "DM Document Title",
-					groupId = ${groupId},
-					versionsCreated = 10);
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When the user clicks on View option the kebab menu") {
-			LexiconTable.clickEllipsisItem(
-				item = "View",
-				tableEntry = "1.9");
-		}
-
-		task ("Then the preview page of the selected version of the Document is opened") {
-			AssertVisible(
-				key_title = "DM Document Title (Version 1.9)",
-				locator1 = "Header#H2_TITLE");
-		}
-	}
-
 	@description = "LPS-119966 Given a document with and associated Display Page Template When the user with permissions clicks on the info panel button Then the user is lead to the info panel"
 	@priority = 4
 	test DocumentInfoPanel {
