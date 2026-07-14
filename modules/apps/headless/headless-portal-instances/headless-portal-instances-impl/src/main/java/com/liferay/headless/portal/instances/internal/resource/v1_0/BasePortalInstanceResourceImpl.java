@@ -7,6 +7,7 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -241,6 +242,31 @@ public abstract class BasePortalInstanceResourceImpl
 		throws Exception {
 
 		return new PortalInstanceExport();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-portal-instances/v1.0/portal-instances/import' -d $'{"name": ___, "schemaName": ___, "virtualHost": ___, "webId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Imports a DB partition portal instance"
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
+		}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/portal-instances/import")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public PortalInstance postPortalInstanceImport(
+			PortalInstanceImport portalInstanceImport)
+		throws Exception {
+
+		return new PortalInstance();
 	}
 
 	/**
@@ -754,4 +780,4 @@ public abstract class BasePortalInstanceResourceImpl
 		LogFactoryUtil.getLog(BasePortalInstanceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2056159458
+// LIFERAY-REST-BUILDER-HASH:57095092
