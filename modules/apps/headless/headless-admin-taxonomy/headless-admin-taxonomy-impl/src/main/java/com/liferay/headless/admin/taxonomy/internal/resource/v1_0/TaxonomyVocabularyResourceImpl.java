@@ -1180,7 +1180,7 @@ public class TaxonomyVocabularyResourceImpl
 		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564") &&
 			group.isCMS()) {
 
-			if (ArrayUtil.isNotEmpty(taxonomyVocabulary.getProjects())) {
+			if (taxonomyVocabulary.getProjects() != null) {
 				_assetVocabularyGroupRelLocalService.
 					setAssetVocabularyGroupRels(
 						assetVocabulary.getVocabularyId(),
@@ -1189,7 +1189,7 @@ public class TaxonomyVocabularyResourceImpl
 						DepotConstants.TYPE_PROJECT);
 			}
 
-			if (ArrayUtil.isNotEmpty(taxonomyVocabulary.getAssetLibraries())) {
+			if (taxonomyVocabulary.getAssetLibraries() != null) {
 				_assetVocabularyGroupRelLocalService.
 					setAssetVocabularyGroupRels(
 						assetVocabulary.getVocabularyId(),
