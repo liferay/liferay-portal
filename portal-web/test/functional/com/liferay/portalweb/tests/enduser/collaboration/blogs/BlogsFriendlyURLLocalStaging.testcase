@@ -38,9 +38,9 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the friendlyURL in Blogs can be published when local staging is enabled."
+	@description = "This ensures that the friendlyURL history in Blogs can be published when local staging is enabled, covering publishing a custom URL, restoring an old friendlyURL, and removing an old friendlyURL."
 	@priority = 5
-	test CanPublishFriendlyURL {
+	test CanPublishFriendlyURLHistory {
 		var portalURL = PropsUtil.get("portal.url");
 
 		JSONBlog.addEntry(
@@ -88,86 +88,6 @@ definition {
 		BlogsEntry.viewEntryPG(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
-	}
-
-	@description = "This ensures that the old friendlyURL in Blogs can be removed and published when local staging is enabled."
-	@priority = 4
-	test CanPublishRemovedOldFriendlyURL {
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		BlogsEntry.addCustomURL(customURL = "custom-url");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		BlogsNavigator.gotoFriendlyURLHistory();
-
-		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "blogs-entry-title");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToStagingCP(
-			groupName = "Site Name",
-			siteURLKey = "site-name-staging");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
-
-		Blogs.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish to live?",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/blogs-entry-title");
-
-		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/custom-url");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-	}
-
-	@description = "This ensures that the old friendlyURL in Blogs can be restored and published when local staging is enabled."
-	@priority = 4
-	test CanPublishRestoredOldFriendlyURL {
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		BlogsEntry.addCustomURL(customURL = "custom-url");
-
-		PortletEntry.publish();
 
 		BlogsNavigator.openToEditEntryInSite(
 			entryTitle = "Blogs Entry Title",
@@ -193,6 +113,38 @@ definition {
 		Blogs.publishViaSAP(
 			confirmMessage = "Are you sure you want to publish to live?",
 			entryTitle = "Blogs Entry Title");
+
+		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/blogs-entry-title");
+
+		BlogsEntry.viewEntryPG(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false",
+			siteURLKey = "site-name-staging");
+
+		BlogsNavigator.gotoFriendlyURLHistory();
+
+		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "custom-url");
+
+		PortletEntry.publish();
+
+		BlogsNavigator.openToStagingCP(
+			groupName = "Site Name",
+			siteURLKey = "site-name-staging");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
+
+		Blogs.publishViaSAP(
+			confirmMessage = "Are you sure you want to publish to live?",
+			entryTitle = "Blogs Entry Title");
+
+		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/custom-url");
+
+		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
 
 		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/staging-blogs-page/-/blogs/blogs-entry-title");
 
