@@ -843,11 +843,21 @@ public class LiferayDynamicRegistrationService
 		String scope = clientRegistration.getScope();
 
 		if (Validator.isBlank(scope)) {
-			OAuth2ErrorUtil.reportInvalidRequestError(
-				"An explicit scope is required for open registration",
-				OAuth2ProviderRESTEndpointConstants.
-					ERROR_INVALID_CLIENT_METADATA,
-				Response.Status.BAD_REQUEST);
+			List<String> allowedScopesList = ListUtil.fromArray(allowedScopes);
+
+			allowedScopesList.removeAll(Collections.singleton(StringPool.STAR));
+
+			if (allowedScopesList.isEmpty()) {
+				OAuth2ErrorUtil.reportInvalidRequestError(
+					"An explicit scope is required for open registration",
+					OAuth2ProviderRESTEndpointConstants.
+						ERROR_INVALID_CLIENT_METADATA,
+					Response.Status.BAD_REQUEST);
+			}
+
+			scope = StringUtil.merge(allowedScopesList, StringPool.SPACE);
+
+			clientRegistration.setScope(scope);
 		}
 
 		_validateOpenRegistrationAllowedValues(
