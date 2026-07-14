@@ -343,7 +343,7 @@ definition {
 			entryTitle = "Blogs Entry Title");
 	}
 
-	@description = "This is a test for LPS-136796. It checks that a deleted embedded linked image for Blogs can be published."
+	@description = "This is a test for LPS-136795 and LPS-136796. It checks that an embedded linked image for Blogs can be published and that its subsequent deletion can be published."
 	@priority = 4
 	test CanPublishDeletedEmbeddedLinkedImage {
 		Navigator.gotoStagedSitePage(
@@ -377,6 +377,14 @@ definition {
 		Staging.gotoPublishToLive();
 
 		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Staging Blogs Page",
+			siteName = "Site Name");
+
+		BlogsEntry.viewEntryEmbeddedImage(
+			entryContent = "Blogs Entry Content",
+			imageSourceURL = "document_1");
 
 		BlogsNavigator.openToEditEntryInSite(
 			entryTitle = "Blogs Entry Title",
@@ -445,50 +453,6 @@ definition {
 		Navigator.gotoNavTab(navTab = "Images");
 
 		LexiconEntry.viewNoEntry(rowEntry = "Document_1.jpg");
-	}
-
-	@description = "This is a test for LPS-136795. It checks that an embedded image using a link for Blogs can be published."
-	@priority = 4
-	test CanPublishEmbeddedImage {
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Portlet.gotoPortletOptions(
-			portletName = "Blogs",
-			portletOption = "Configuration");
-
-		BlogsConfiguration.selectConfigurationIFrame();
-
-		BlogsConfiguration.selectDisplayTemplate(displayTemplate = "Full Content");
-
-		IFrame.saveConfiguration();
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name-staging");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.addEntryExternalLinkViaBrowseButton(
-			navTab = "Documents and Media",
-			uploadFileName = "Document_1.jpg");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		BlogsEntry.viewEntryEmbeddedImage(
-			entryContent = "Blogs Entry Content",
-			imageSourceURL = "document_1");
 	}
 
 	@description = "This test covers LPS-77658. It publishes a blog entry to live via Single Asset Publishing."
