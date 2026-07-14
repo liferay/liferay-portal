@@ -6,7 +6,7 @@ then
 	}
 end
 
-local progressMessage = ""
+local progressMessage = "The system is initializing."
 local ready = false
 
 for _, condition in ipairs(obj.status.conditions)
