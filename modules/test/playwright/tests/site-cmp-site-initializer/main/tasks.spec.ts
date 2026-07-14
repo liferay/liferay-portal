@@ -793,7 +793,9 @@ test(
 
 		const todayCell = page.locator(`[data-date="${todayDate}"]`);
 
-		await expect(todayCell.getByText(taskTitle, {exact: true})).toBeVisible();
+		await expect(
+			todayCell.getByText(taskTitle, {exact: true})
+		).toBeVisible();
 
 		await expect(
 			todayCell.getByText('Not Started', {exact: true}).first()
@@ -1140,9 +1142,13 @@ test(
 		await test.step('Scheduling a task moves it onto its day', async () => {
 			await calendarView.unscheduledTasksButton.click();
 
-			await page.locator('[data-testid="calendarUnscheduledTasksSearch"]').fill(taskTitle);
+			await page
+				.locator('[data-testid="calendarUnscheduledTasksSearch"]')
+				.fill(taskTitle);
 
-			await page.getByRole('button', {exact: true, name: 'Actions'}).click();
+			await page
+				.getByRole('button', {exact: true, name: 'Actions'})
+				.click();
 
 			await page.getByRole('menuitem', {name: 'Edit'}).click();
 
@@ -1150,7 +1156,10 @@ test(
 
 			await tasksPage.saveButton.click();
 
-			await waitForAlert(page, `Success:${taskTitle} was updated successfully.`)
+			await waitForAlert(
+				page,
+				`Success:${taskTitle} was updated successfully.`
+			);
 
 			await projectPage.tasksTab.click();
 
@@ -1177,9 +1186,11 @@ test(
 		});
 
 		await test.step('Clearing the due date returns the task to the panel', async () => {
-			await page.getByRole('button', { name: taskTitle }).hover();
+			await page.getByRole('button', {name: taskTitle}).hover();
 
-			await page.getByRole('button', {exact: true, name: 'Actions'}).click();
+			await page
+				.getByRole('button', {exact: true, name: 'Actions'})
+				.click();
 
 			await page.getByRole('menuitem', {name: 'Edit'}).click();
 
@@ -1187,7 +1198,10 @@ test(
 
 			await tasksPage.saveButton.click();
 
-			await waitForAlert(page, `Success:${taskTitle} was updated successfully.`)
+			await waitForAlert(
+				page,
+				`Success:${taskTitle} was updated successfully.`
+			);
 
 			await projectPage.tasksTab.click();
 
@@ -1203,7 +1217,6 @@ test(
 			});
 
 			await expect(unscheduledEntry).toBeVisible();
-
 		});
 	}
 );
@@ -1234,7 +1247,9 @@ test(
 
 		const todayCell = page.locator(`[data-date="${todayDate}"]`);
 
-		await expect(todayCell.getByText(taskTitle, {exact: true})).toBeVisible();
+		await expect(
+			todayCell.getByText(taskTitle, {exact: true})
+		).toBeVisible();
 
 		await expect(
 			todayCell.getByText('Not Started', {exact: true}).first()

@@ -12,11 +12,15 @@ const projectDates = {
 
 describe('getProjectDateMarker', () => {
 	it('returns "dueDate" when the cell matches the due date', () => {
-		expect(getProjectDateMarker('2026-07-31', projectDates)).toBe('dueDate');
+		expect(getProjectDateMarker('2026-07-31', projectDates)).toBe(
+			'dueDate'
+		);
 	});
 
 	it('returns "startDate" when the cell matches the start date', () => {
-		expect(getProjectDateMarker('2026-07-01', projectDates)).toBe('startDate');
+		expect(getProjectDateMarker('2026-07-01', projectDates)).toBe(
+			'startDate'
+		);
 	});
 
 	it('returns null when project dates are missing', () => {
