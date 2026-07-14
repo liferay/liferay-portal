@@ -328,52 +328,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132509 Given a blog created in site A in the instance, and another one created in the site B When the user goes to the content dashboard Then the user can see both listed"
-	@priority = 5
-	test BlogsFromDifferentSitesAreListed {
-		property portal.acceptance = "true";
-
-		task ("Create another site") {
-			HeadlessSite.addSite(siteName = "Test Site Name 2");
-		}
-
-		task ("Create a blog in the first site") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content 1",
-				entryTitle = "Blogs Entry Title 1",
-				groupName = "Test Site Name");
-		}
-
-		task ("Create a blog in the first site") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content 2",
-				entryTitle = "Blogs Entry Title 2",
-				groupName = "Test Site Name 2");
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Check both blogs are listed") {
-			ContentDashboard.filterBySite(siteName = "Test Site Name");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title 1");
-
-			ContentDashboard.filterBySite(siteName = "Test Site Name 2");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title 2");
-		}
-
-		task ("Delete site created for this test") {
-			JSONGroup.deleteGroupByName(groupName = "Test Site Name 2");
-		}
-	}
-
 	@description = "LPS-132510 Given the Content Dashboard when the info panel of a blog is open then the blog title, author, status, type, version and dates are shown"
 	@priority = 3
 	test BlogInfoPanel {
@@ -438,6 +392,52 @@ definition {
 			AssertVisible(
 				key_text = "Share",
 				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "LPS-132509 Given a blog created in site A in the instance, and another one created in the site B When the user goes to the content dashboard Then the user can see both listed"
+	@priority = 5
+	test BlogsFromDifferentSitesAreListed {
+		property portal.acceptance = "true";
+
+		task ("Create another site") {
+			HeadlessSite.addSite(siteName = "Test Site Name 2");
+		}
+
+		task ("Create a blog in the first site") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content 1",
+				entryTitle = "Blogs Entry Title 1",
+				groupName = "Test Site Name");
+		}
+
+		task ("Create a blog in the first site") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content 2",
+				entryTitle = "Blogs Entry Title 2",
+				groupName = "Test Site Name 2");
+		}
+
+		task ("Go to Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Check both blogs are listed") {
+			ContentDashboard.filterBySite(siteName = "Test Site Name");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title 1");
+
+			ContentDashboard.filterBySite(siteName = "Test Site Name 2");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title 2");
+		}
+
+		task ("Delete site created for this test") {
+			JSONGroup.deleteGroupByName(groupName = "Test Site Name 2");
 		}
 	}
 
@@ -2197,6 +2197,78 @@ definition {
 		}
 	}
 
+	@description = "LPS-119966 Given a document with and associated Display Page Template When the user with permissions clicks on the info panel button Then the user is lead to the info panel"
+	@priority = 4
+	test DocumentInfoPanel {
+		property portal.acceptance = "true";
+
+		task ("Create a new Document") {
+			JSONDocument.addFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name");
+		}
+
+		task ("Go to Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Open the Info panel") {
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "DM Document Title");
+
+			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
+				value1 = "DM Document Title");
+		}
+
+		task ("Assert the WebDAV URL and Latest Version URL labels under Properties") {
+			Panel.expandPanel(panel = "Properties");
+
+			AssertElementPresent(
+				key_fieldLabel = "WebDAV URL",
+				locator1 = "ContentDashboard#URL_LABEL");
+
+			AssertElementPresent(
+				key_fieldLabel = "Latest Version URL",
+				locator1 = "ContentDashboard#URL_LABEL");
+		}
+
+		task ("Add a document type") {
+			DMNavigator.openDocumentTypesAdmin(siteURLKey = "test-site-name");
+
+			DMDocumentType.add(
+				dmDocumentTypeDescription = "DM Document Type Description",
+				dmDocumentTypeFieldNames = "Text",
+				dmDocumentTypeName = "DM Document Type Name");
+		}
+
+		task ("Add a document based on the document type created") {
+			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
+
+			DMDocument.addCP(
+				dmDocumentDescription = "DM Typed Document Description",
+				dmDocumentTitle = "DM Typed Document Title",
+				dmDocumentTypeName = "DM Document Type Name",
+				textField = "DM Document Text");
+		}
+
+		task ("Navigate to Content Dashboard and check the document type in the Info panel") {
+			ContentDashboard.goToContentDashboard();
+
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "DM Typed Document Title");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
+				value1 = "Document - DM Document Type Name");
+		}
+	}
+
 	@description = "LPS-119966 Given a document created in site A in the instance, and another one created in the site B When the user goes to the content dashboard Then the user can see both listed"
 	@priority = 5
 	test DocumentsFromDifferentSitesAreListed {
@@ -2407,78 +2479,6 @@ definition {
 
 		task ("Then the table lists all the Version entries ordered by Version with the latest entries at the top") {
 			ContentDashboard.viewHistoryVersionOrder(assetVersionList = "1.11,1.10,1.9,1.8,1.7,1.6,1.5,1.4,1.3,1.2,1.1,1.0");
-		}
-	}
-
-	@description = "LPS-119966 Given a document with and associated Display Page Template When the user with permissions clicks on the info panel button Then the user is lead to the info panel"
-	@priority = 4
-	test DocumentInfoPanel {
-		property portal.acceptance = "true";
-
-		task ("Create a new Document") {
-			JSONDocument.addFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Open the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "DM Document Title");
-
-			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
-				value1 = "DM Document Title");
-		}
-
-		task ("Assert the WebDAV URL and Latest Version URL labels under Properties") {
-			Panel.expandPanel(panel = "Properties");
-
-			AssertElementPresent(
-				key_fieldLabel = "WebDAV URL",
-				locator1 = "ContentDashboard#URL_LABEL");
-
-			AssertElementPresent(
-				key_fieldLabel = "Latest Version URL",
-				locator1 = "ContentDashboard#URL_LABEL");
-		}
-
-		task ("Add a document type") {
-			DMNavigator.openDocumentTypesAdmin(siteURLKey = "test-site-name");
-
-			DMDocumentType.add(
-				dmDocumentTypeDescription = "DM Document Type Description",
-				dmDocumentTypeFieldNames = "Text",
-				dmDocumentTypeName = "DM Document Type Name");
-		}
-
-		task ("Add a document based on the document type created") {
-			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "DM Typed Document Description",
-				dmDocumentTitle = "DM Typed Document Title",
-				dmDocumentTypeName = "DM Document Type Name",
-				textField = "DM Document Text");
-		}
-
-		task ("Navigate to Content Dashboard and check the document type in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "DM Typed Document Title");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
-				value1 = "Document - DM Document Type Name");
 		}
 	}
 
