@@ -794,112 +794,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132597 When a web content is associated to a Display Page and its status is Approved, a display page icon is displayed"
-	@priority = 5
-	test CheckDisplayPageIconofApprovedWebContent {
-		property portal.acceptance = "true";
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Web Content and set a Display Page") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Webcontent Title");
-		}
-
-		task ("Check in Content Dashboard if WC is assiciated with Display Page Template") {
-			ContentDashboard.goToContentDashboard();
-
-			AssertVisible(
-				key_tableEntry = "Webcontent Title",
-				key_text = "page",
-				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
-		}
-	}
-
-	@description = "LPS-132597 When a web content is NOT associated to a Display Page and its status is Approved, a display page icon is NOT displayed"
-	@priority = 5
-	test CheckDisplayPageIconofApprovedWebContentNotDisplayed {
-		property portal.acceptance = "true";
-
-		task ("Create a Web Content and set a Display Page") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Webcontent Title");
-		}
-
-		task ("Check in Content Dashboard if WC is assiciated with Display Page Template") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.viewTableEntryTitle(tableEntry = "Webcontent Title");
-
-			AssertElementNotPresent(
-				key_tableEntry = "Webcontent Title",
-				key_text = "page",
-				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
-		}
-	}
-
-	@description = "LPS-132597 When a web content is associated to a Display Page and its status is Pending, a display page icon is NOT displayed"
-	@priority = 5
-	test CheckDisplayPageIconofPendingWebContent {
-		property portal.acceptance = "true";
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Configure Web Content Article workflow to Single Approver") {
-			Workflow.openWorkflowAdmin(siteURLKey = "test-site-name");
-
-			Workflow.configureWorkflow(
-				workflowDefinition = "Single Approver",
-				workflowResourceValue = "Web Content Article");
-		}
-
-		task ("Create a Web Content and set a Display Page") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Webcontent Title");
-		}
-
-		task ("Check in Content Dashboard if WC is assiciated with Display Page Template") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.viewTableEntryTitle(tableEntry = "Webcontent Title");
-
-			AssertElementNotPresent(
-				key_tableEntry = "Webcontent Title",
-				key_text = "page",
-				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
-		}
-	}
-
 	@description = "LPS-117341 When there's a label with "..." indicating 'more categories' and the user hovers on it, a tooltip with the rest of categories assigned shows"
 	@priority = 5
 	test CheckForMoreCategories {
@@ -2133,6 +2027,86 @@ definition {
 			LexiconTable.viewTableEntryTitle(tableEntry = "WC Content");
 
 			LexiconTable.viewTableEntryTitle(tableEntry = "tree.png");
+		}
+	}
+
+	@description = "LPS-132597 A web content's display page icon in the Content Dashboard table reflects both its association with a Display Page and its status"
+	@priority = 5
+	test DisplayPageIconVisibility {
+		property portal.acceptance = "true";
+
+		task ("Create an approved Web Content without a Display Page") {
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "WC Not Associated");
+		}
+
+		task ("Assert the display page icon is not present for a not associated Web Content") {
+			ContentDashboard.goToContentDashboard();
+
+			LexiconTable.viewTableEntryTitle(tableEntry = "WC Not Associated");
+
+			AssertElementNotPresent(
+				key_tableEntry = "WC Not Associated",
+				key_text = "page",
+				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
+		}
+
+		task ("Create a default Display Page Template") {
+			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
+				contentType = "Web Content Article",
+				displayPageTemplateEntryName = "Display Page Name",
+				groupName = "Test Site Name",
+				statusKey = "APPROVED",
+				subType = "Basic Web Content");
+
+			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
+				groupName = "Test Site Name",
+				layoutPageTemplateEntryName = "Display Page Name",
+				type = "Display Page Template");
+		}
+
+		task ("Create an approved Web Content associated with the default Display Page") {
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "WC Approved");
+		}
+
+		task ("Assert the display page icon is present for an approved associated Web Content") {
+			ContentDashboard.goToContentDashboard();
+
+			AssertVisible(
+				key_tableEntry = "WC Approved",
+				key_text = "page",
+				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
+		}
+
+		task ("Configure Web Content Article workflow to Single Approver") {
+			Workflow.openWorkflowAdmin(siteURLKey = "test-site-name");
+
+			Workflow.configureWorkflow(
+				workflowDefinition = "Single Approver",
+				workflowResourceValue = "Web Content Article");
+		}
+
+		task ("Create a pending Web Content associated with the default Display Page") {
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "WC Pending");
+		}
+
+		task ("Assert the display page icon is not present for a pending associated Web Content") {
+			ContentDashboard.goToContentDashboard();
+
+			LexiconTable.viewTableEntryTitle(tableEntry = "WC Pending");
+
+			AssertElementNotPresent(
+				key_tableEntry = "WC Pending",
+				key_text = "page",
+				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
 		}
 	}
 
@@ -5490,66 +5464,6 @@ definition {
 				columnName = "modified-date",
 				tableEntry = "WC WebContent New Title",
 				tableEntryInfo = "0 Seconds Ago");
-		}
-	}
-
-	@description = "LPS-131886 Validade if a Web Content associated with a Display Page Template is shown"
-	@priority = 5
-	test ShouldExhibitWebContentAssociatedWithDisplayPage {
-		property portal.acceptance = "true";
-
-		task ("Create a default Display Page Template") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				statusKey = "APPROVED",
-				subType = "Basic Web Content");
-
-			JSONLayoutpagetemplate.setLayoutPageTemplateEntryAsDefault(
-				groupName = "Test Site Name",
-				layoutPageTemplateEntryName = "Display Page Name",
-				type = "Display Page Template");
-		}
-
-		task ("Create a Web Content and set a Display Page") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Webcontent Title");
-		}
-
-		task ("Check in Content Dashboard if WC is assiciated with Display Page Template") {
-			ContentDashboard.goToContentDashboard();
-
-			AssertVisible(
-				key_tableEntry = "Webcontent Title",
-				key_text = "page",
-				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
-		}
-	}
-
-	@description = "LPS-131886 Validade if a Web Content not associated with a Display Page Template is shown"
-	@priority = 5
-	test ShouldExhibitWebContentNotAssociatedWithDisplayPageTemplate {
-		property portal.acceptance = "true";
-
-		task ("Create WC via JSON") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-		}
-
-		task ("Check if WC is not associated in Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.viewTableEntryTitle(tableEntry = "WC Title");
-
-			AssertElementNotPresent(
-				key_tableEntry = "WC Title",
-				key_text = "page",
-				locator1 = "LexiconTable#TABLE_ENTRY_ICON");
 		}
 	}
 
