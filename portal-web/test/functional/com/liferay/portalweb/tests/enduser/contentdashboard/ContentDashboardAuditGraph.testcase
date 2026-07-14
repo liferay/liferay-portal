@@ -144,75 +144,6 @@ definition {
 				value1 = "Category: Stage 1");
 		}
 
-		task ("Clear filters") {
-			ContentDashboard.clearFilters();
-
-			AssertElementNotPresent(
-				categoryName = "Audience 1",
-				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME");
-
-			AssertElementNotPresent(
-				categoryName = "Stage 1",
-				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME");
-
-			AssertElementNotPresent(locator1 = "ContentDashboard#BAR_SELECTED_MESSAGE");
-		}
-	}
-
-	@description = "When a user clicks on one of the colored bars of the audit graph, the filters corresponding to the categories in that bar are applied, they are shown as filter labels in the management tool bar and the list of contents is filtered by them"
-	@priority = 5
-	test AuditGraphClickOnBarDeleteOneFilter {
-		property portal.acceptance = "true";
-
-		task ("Add two more categories") {
-			var audienceId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 2",
-				vocabularyName = "Audience");
-			var stageId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 2",
-				vocabularyName = "Stage");
-		}
-
-		task ("Add a first Web Content using categories1 via JSON") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = "${audienceId1},${stageId1}",
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "WC Title 1");
-		}
-
-		task ("Add a second Web Content using categories2 via JSON") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = "${audienceId2},${stageId2}",
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "WC Title 2");
-		}
-
-		task ("Navigate Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Click on first bar and assert elements") {
-			ContentDashboard.clickOnFirstBar();
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#BAR_SELECTED_MESSAGE",
-				value1 = "Press escape to remove the bar's category filters.");
-
-			AssertTextEquals(
-				categoryName = "Audience 1",
-				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME",
-				value1 = "Category: Audience 1");
-
-			AssertTextEquals(
-				categoryName = "Stage 1",
-				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME",
-				value1 = "Category: Stage 1");
-		}
-
 		task ("Let only one filter active and assert elements") {
 			ContentDashboard.deleteSecondCategoryFilter();
 
@@ -220,6 +151,20 @@ definition {
 				categoryName = "Audience 1",
 				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME",
 				value1 = "Category: Audience 1");
+
+			AssertElementNotPresent(
+				categoryName = "Stage 1",
+				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME");
+
+			AssertElementNotPresent(locator1 = "ContentDashboard#BAR_SELECTED_MESSAGE");
+		}
+
+		task ("Clear filters") {
+			ContentDashboard.clearFilters();
+
+			AssertElementNotPresent(
+				categoryName = "Audience 1",
+				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME");
 
 			AssertElementNotPresent(
 				categoryName = "Stage 1",
