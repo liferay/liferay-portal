@@ -4162,64 +4162,35 @@ definition {
 		}
 	}
 
-	@description = "LPS-160218 Make the Info Panel closed After navigation"
+	@description = "LPS-160218 Make the Info Panel remain closed after navigation or a page refresh"
 	@priority = 3
-	test InfoPanelClosedAfterNavigation {
-		task ("Given the info panel is open") {
-			task ("Crete an Asset") {
-				JSONWebcontent.addWebContent(
-					content = "Web Content Content",
-					groupName = "Test Site Name",
-					title = "Web Content Title");
-			}
-
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel") {
-				ContentDashboard.openInfoPanel(assetName = "Web Content Title");
-			}
+	test InfoPanelClosedAfterNavigationOrRefresh {
+		task ("Create an Asset") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = "Test Site Name",
+				title = "Web Content Title");
 		}
 
-		task ("When navigates away from the page") {
-			ApplicationsMenu.gotoSite(site = "Test Site Name");
-		}
-
-		task ("And returns to content dashboard") {
+		task ("Info panel is closed after navigating away and returning to the Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Then the info panel is closed") {
+			ContentDashboard.openInfoPanel(assetName = "Web Content Title");
+
+			ApplicationsMenu.gotoSite(site = "Test Site Name");
+
+			ContentDashboard.goToContentDashboard();
+
 			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
-	}
 
-	@description = "LPS-160218 Make the Info Panel Remain closed After a Page Refresh"
-	@priority = 3
-	test InfoPanelClosedAfterRefresh {
-		task ("Given the info panel is open") {
-			task ("Crete an Asset") {
-				JSONWebcontent.addWebContent(
-					content = "Web Content Content",
-					groupName = "Test Site Name",
-					title = "Web Content Title");
-			}
+		task ("Info panel is closed after a page refresh") {
+			ContentDashboard.goToContentDashboard();
 
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
+			ContentDashboard.openInfoPanel(assetName = "Web Content Title");
 
-			task ("Open info panel") {
-				ContentDashboard.openInfoPanel(assetName = "Web Content Title");
-			}
-		}
-
-		task ("When the page is refreshed") {
 			Refresh();
-		}
 
-		task ("Then the info panel is closed") {
 			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
 	}
