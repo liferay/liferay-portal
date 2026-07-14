@@ -42,13 +42,13 @@ const VolumeChart = ({
 	volume: number;
 }) => {
 	return (
-		<div className="cms-dashboard__inventory-analysis__bar-chart">
+		<div className="cms-dashboard__volume-chart">
 			<div
-				className="cms-dashboard__inventory-analysis__bar-chart__bar"
+				className="cms-dashboard__volume-chart__bar"
 				style={{width: `${percentage}%`}}
 			/>
 
-			<div className="cms-dashboard__inventory-analysis__bar-chart__value">
+			<div className="cms-dashboard__volume-chart__value">
 				<Text size={3} weight="semi-bold">
 					{volume}
 				</Text>
