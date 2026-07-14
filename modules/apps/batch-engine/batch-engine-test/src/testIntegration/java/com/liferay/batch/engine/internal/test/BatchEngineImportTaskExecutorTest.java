@@ -34,6 +34,9 @@ import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -407,6 +410,105 @@ public class BatchEngineImportTaskExecutorTest
 				blogPostingItemWithUnknownColumnRowNumber,
 				blogPostingItemWithInvalidValueRowNumber),
 			3);
+	}
+
+	@Test
+	public void testCreateBlogPostingsWithInvalidCSVFileAndOnErrorContinueInEnclosingTransaction()
+		throws Throwable {
+
+		// Run the import inside an enclosing transaction, the way portal
+		// instance registration and staging invoke it. Two items share an
+		// externalReferenceCode, so the second item's INSERT fails against the
+		// unique index on BlogsEntry. On PostgreSQL that statement error aborts
+		// the whole database transaction, so the third valid item imports, and
+		// the enclosing transaction commits, only because each item ran in its
+		// own nested savepoint that rolled back and restored the shared
+		// connection. Without the savepoint the poisoned connection would fail
+		// every later statement.
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			String[] fieldNames = {
+				"alternativeHeadline", "articleBody", "datePublished",
+				"friendlyUrlPath", "headline", "siteId"
+			};
+
+			StringBundler sb = new StringBundler();
+
+			_createCSVRow(sb, fieldNames);
+
+			String friendlyUrlPath = RandomTestUtil.randomString();
+
+			String[] blogPostingItem = {
+				"alternativeHeadline", "articleBody",
+				dateFormat.format(new Date(baseDate.getTime())),
+				friendlyUrlPath, "headline1",
+				String.valueOf(TestPropsValues.getGroupId())
+			};
+
+			_createCSVRow(sb, blogPostingItem);
+
+			String[] blogPostingItemWithDuplicateFriendlyUrlPath = {
+				"alternativeHeadline", "articleBody",
+				dateFormat.format(new Date(baseDate.getTime())),
+				friendlyUrlPath, "headline2",
+				String.valueOf(TestPropsValues.getGroupId())
+			};
+
+			int blogPostingItemWithDuplicateFriendlyUrlPathRowNumber = 2;
+
+			_createCSVRow(sb, blogPostingItemWithDuplicateFriendlyUrlPath);
+
+			String[] blogPostingItemAfterFailure = {
+				"alternativeHeadline", "articleBody",
+				dateFormat.format(new Date(baseDate.getTime())),
+				RandomTestUtil.randomString(), "headline3",
+				String.valueOf(TestPropsValues.getGroupId())
+			};
+
+			_createCSVRow(sb, blogPostingItemAfterFailure);
+
+			byte[] content = _compressContent(
+				sb.toString(
+				).getBytes(
+					StandardCharsets.UTF_8
+				),
+				"CSV");
+
+			TransactionConfig transactionConfig =
+				TransactionConfig.Factory.create(
+					Propagation.REQUIRED, new Class<?>[] {Exception.class});
+
+			try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.batch.engine.internal." +
+						"BatchEngineImportTaskExecutorImpl",
+					LoggerTestUtil.ERROR);
+				LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+					_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_EXECUTOR_IMPL,
+					LoggerTestUtil.ERROR)) {
+
+				TransactionInvokerUtil.invoke(
+					transactionConfig,
+					() -> {
+						_importBlogPostings(
+							BatchEngineTaskOperation.CREATE, content, "CSV",
+							null,
+							BatchEngineImportTaskConstants.
+								IMPORT_STRATEGY_ON_ERROR_CONTINUE);
+
+						return null;
+					});
+			}
+
+			_assertInvalidFileImportWithOnErrorContinueStrategy(
+				Arrays.asList(
+					blogPostingItemWithDuplicateFriendlyUrlPathRowNumber),
+				3);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
 	}
 
 	@Test
