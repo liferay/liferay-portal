@@ -1,0 +1,58 @@
+resource "kubernetes_manifest" "root_application" {
+	field_manager {
+		force_conflicts=true
+		name=local.terraform_manager_name
+	}
+	manifest={
+		apiVersion="argoproj.io/v1alpha1"
+		kind="Application"
+		metadata={
+			finalizers=["resources-finalizer.argocd.argoproj.io"]
+			labels=merge(
+				local.common_labels,
+				{
+					"app.kubernetes.io/name"="liferay-platform"
+				})
+			name="liferay-platform"
+			namespace=var.argocd_namespace
+		}
+		spec={
+			destination={
+				namespace=var.argocd_namespace
+				server="https://kubernetes.default.svc"
+			}
+			project="default"
+			sources=[
+				merge(
+					{
+						helm={
+							valuesObject=var.platform_helm_values
+						}
+						repoURL=var.platform_helm_chart_config.chart_url
+						targetRevision=var.platform_helm_chart_version
+					},
+					var.platform_helm_chart_config.path == null ? {
+						chart=var.platform_helm_chart_config.chart_name
+					} : {
+						path=var.platform_helm_chart_config.path
+					}
+				),
+			]
+			syncPolicy={
+				automated={
+					prune=true
+					selfHeal=true
+				}
+				retry={
+					backoff={
+						duration="30s"
+						factor=2
+						maxDuration="10m"
+					}
+					limit=10
+				}
+				syncOptions=["CreateNamespace=true"]
+			}
+		}
+	}
+}
