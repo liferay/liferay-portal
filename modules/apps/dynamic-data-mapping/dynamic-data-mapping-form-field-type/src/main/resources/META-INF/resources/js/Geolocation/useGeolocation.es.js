@@ -59,7 +59,7 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 	) {
 		callback();
 
-		return;
+		return undefined;
 	}
 
 	Liferay.namespace('Maps').onGMapsReady = function () {
@@ -69,7 +69,10 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 		Liferay.fire('gmapsReady');
 	};
 
-	Liferay.once('gmapsReady', () => callback());
+	Liferay.once('gmapsReady', callback);
+
+	const detachGMapsReadyListener = () =>
+		Liferay.detach('gmapsReady', callback);
 
 	if (
 		Liferay.Maps.gmapsLoading ||
@@ -77,7 +80,7 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 			'script[src*="maps.googleapis.com/maps/api/js"][src*="callback=Liferay.Maps.onGMapsReady"]'
 		)
 	) {
-		return;
+		return detachGMapsReadyListener;
 	}
 
 	Liferay.Maps.gmapsLoading = true;
@@ -101,6 +104,8 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 	document.head.appendChild(script);
 
 	script = null;
+
+	return detachGMapsReadyListener;
 };
 
 export function useGeolocation({
@@ -118,6 +123,8 @@ export function useGeolocation({
 	const onPositionChangeRef = useRef(null);
 
 	useEffect(() => {
+		let detachGMapsReadyListener;
+
 		if (!disabled || viewMode) {
 			const mapConfig = {
 				...MAP_CONFIG,
@@ -156,8 +163,9 @@ export function useGeolocation({
 					break;
 
 				case MAP_PROVIDER.googleMaps:
-					setupGoogleMaps(googleMapsAPIKey, () =>
-						registerMapBase(MapGoogleMaps, mapConfig)
+					detachGMapsReadyListener = setupGoogleMaps(
+						googleMapsAPIKey,
+						() => registerMapBase(MapGoogleMaps, mapConfig)
 					);
 					break;
 
@@ -167,6 +175,8 @@ export function useGeolocation({
 		}
 
 		return () => {
+			detachGMapsReadyListener?.();
+
 			if (mapRef.current) {
 				mapRef.current.dispose();
 			}

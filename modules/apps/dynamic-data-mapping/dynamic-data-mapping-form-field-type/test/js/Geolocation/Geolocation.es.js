@@ -213,6 +213,9 @@ describe('Geolocation Google Maps loader', () => {
 
 		window.Liferay.Maps = {};
 
+		window.Liferay.detach.mockClear();
+		window.Liferay.once.mockClear();
+
 		document
 			.querySelectorAll(gmapsScriptSelector)
 			.forEach((script) => script.remove());
@@ -287,6 +290,16 @@ describe('Geolocation Google Maps loader', () => {
 
 		expect(window.Liferay.Maps.gmapsLoading).toBe(false);
 		expect(window.Liferay.Maps.gmapsReady).toBe(true);
+	});
+
+	it('detaches the gmapsReady listener when the field unmounts', () => {
+		const {unmount} = renderGoogleMapsField('first', 'geoFirst');
+
+		const [eventName, listener] = window.Liferay.once.mock.calls[0];
+
+		unmount();
+
+		expect(window.Liferay.detach).toHaveBeenCalledWith(eventName, listener);
 	});
 });
 
