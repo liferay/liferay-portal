@@ -3159,115 +3159,68 @@ definition {
 	}
 
 	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
-	@priority = 4
-	test FilterBlogByStatusAndAuthor {
-		task ("Given the Filter and Order dropdown") {
-			task ("Create a blog with the tag") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content",
-					entryTitle = "Blogs Entry Title",
-					groupName = "Test Site Name");
-			}
+	@priority = 5
+	test FilterBlogByStatus {
+		task ("Create approved, draft and scheduled blogs") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Approved Blogs Entry Title",
+				groupName = "Test Site Name");
 
-			task ("Go to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Draft Blogs Entry Title",
+				groupName = "Test Site Name",
+				workflowAction = "DRAFT");
+
+			JSONBlog.addEntry(
+				displayDate = "true",
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Scheduled Blogs Entry Title",
+				groupName = "Test Site Name",
+				increaseYears = 1);
 		}
 
-		task ("When the user selects the option Filter by Status and another filter") {
+		task ("Filter by Status: Approved displays only Approved blogs") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByStatus(filterOption = "Approved");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Approved Blogs Entry Title");
+		}
+
+		task ("Filter by Status: Draft displays only Draft blogs") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByStatus(filterOption = "Draft");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Draft Blogs Entry Title");
+		}
+
+		task ("Filter by Status: Scheduled displays only Scheduled blogs") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByStatus(filterOption = "Scheduled");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Scheduled Blogs Entry Title");
+		}
+
+		task ("Filter by Status: Approved and Author: Me displays only contents included in both filters") {
+			ContentDashboard.goToContentDashboard();
+
 			ContentDashboard.filterByStatus(filterOption = "Approved");
 
 			ContentDashboard.filterByAuthorMe(filterOption = "Me");
-		}
 
-		task ("Then the list is filtered displaying only contents included in both filters, including Blogs") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
-		}
-	}
-
-	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
-	@priority = 5
-	test FilterBlogByStatusApproved {
-		task ("Given The Filter and Order dropdown") {
-			task ("Create an approved blog") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content",
-					entryTitle = "Blogs Entry Title",
-					groupName = "Test Site Name");
-			}
-
-			task ("Go to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-		}
-
-		task ("When the user selects the option Filter by Status: Approved") {
-			ContentDashboard.filterByStatus(filterOption = "Approved");
-		}
-
-		task ("Then the list is filtered displaying only contents labeled as Approved, including Blogs") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
-		}
-	}
-
-	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
-	@priority = 5
-	test FilterBlogByStatusDraft {
-		task ("Given The Filter and Order dropdown") {
-			task ("Create an approved blog") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content",
-					entryTitle = "Blogs Entry Title",
-					groupName = "Test Site Name",
-					workflowAction = "DRAFT");
-			}
-
-			task ("Go to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-		}
-
-		task ("When the user selects the option Filter by Status: Draft") {
-			ContentDashboard.filterByStatus(filterOption = "Draft");
-		}
-
-		task ("Then the list is filtered displaying only contents labeled as Draft, including Blogs") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
-		}
-	}
-
-	@description = "LPS-150553: Add Filtering by Status in Content Dashboard for Blogs"
-	@priority = 5
-	test FilterBlogByStatusScheduled {
-		task ("Given The Filter and Order dropdown") {
-			task ("Create an approved blog") {
-				JSONBlog.addEntry(
-					displayDate = "true",
-					entryContent = "Blogs Entry Content",
-					entryTitle = "Blogs Entry Title",
-					groupName = "Test Site Name",
-					increaseYears = 1);
-			}
-
-			task ("Go to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-		}
-
-		task ("When the user selects the option Filter by Status: Scheduled'") {
-			ContentDashboard.filterByStatus(filterOption = "Scheduled");
-		}
-
-		task ("Then the list is filtered displaying only contents labeled as Scheduled, including Blogs") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
+				value1 = "Approved Blogs Entry Title");
 		}
 	}
 
