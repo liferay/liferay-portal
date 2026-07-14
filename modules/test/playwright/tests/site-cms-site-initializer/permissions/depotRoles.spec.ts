@@ -219,3 +219,24 @@ test(
 		await expect(objectMenuItem(spaceObjectDefinition.id!)).toHaveCount(0);
 	}
 );
+
+test(
+	'Subtype selector is shown for depot role type',
+	{tag: '@LPD-97885'},
+	async ({rolePage, rolesPage}) => {
+		await rolesPage.goto();
+
+		await expect(rolesPage.rolesLink('Depot')).toBeVisible();
+
+		await rolesPage.rolesLink('Depot').click();
+
+		await expect(rolesPage.rolesTable.newButton).toBeVisible();
+
+		await expect(async () => {
+			await rolesPage.rolesTable.newButton.click();
+
+			await expect(rolePage.subtypeInput).toBeVisible();
+			await expect(rolePage.typeInput).toBeDisabled();
+		}).toPass();
+	}
+);
