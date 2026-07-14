@@ -31,6 +31,7 @@ type CreateTaskModalProps = {
 	closeModal: () => void;
 	dueDate?: string;
 	loadData: Function;
+	onItemsChange?: Function;
 	projectId?: string;
 	projectObjectDefinitionId: number;
 	state: string;
@@ -40,6 +41,7 @@ export default function CreateTaskModal({
 	closeModal,
 	dueDate = '',
 	loadData,
+	onItemsChange,
 	projectId,
 	projectObjectDefinitionId,
 	state,
@@ -71,7 +73,7 @@ export default function CreateTaskModal({
 			title: '',
 		},
 		onSubmit: async (values) => {
-			const {error} = await postTaskByScope({
+			const {data, error} = await postTaskByScope({
 				body: {
 					...values,
 					keywords: [
@@ -85,7 +87,15 @@ export default function CreateTaskModal({
 			if (!error) {
 				closeModal();
 
-				loadData();
+				if (onItemsChange && data) {
+					onItemsChange({
+						itemKey: 'embedded.id',
+						items: [{embedded: data}],
+					});
+				}
+				else {
+					loadData();
+				}
 
 				displayCreateSuccessToast(values.title);
 			}

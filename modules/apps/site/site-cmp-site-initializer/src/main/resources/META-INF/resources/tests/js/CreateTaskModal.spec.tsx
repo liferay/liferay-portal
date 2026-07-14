@@ -4,13 +4,14 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, waitFor} from '@testing-library/react';
+import {fireEvent, render, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import CreateTaskModal from '../../js/components/modal/CreateTaskModal';
 
 const mockGetAllProjects = jest.fn();
 const mockGetAllStates = jest.fn();
+const mockPostTaskByScope = jest.fn();
 
 jest.mock('@clayui/button', () => {
 	const Button = ({children, ...props}: any) => (
@@ -70,7 +71,7 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 jest.mock('../../js/utils/api', () => ({
 	getAllProjects: (...args: any[]) => mockGetAllProjects(...args),
 	getAllStates: (...args: any[]) => mockGetAllStates(...args),
-	postTaskByScope: () => {},
+	postTaskByScope: (...args: any[]) => mockPostTaskByScope(...args),
 }));
 
 jest.mock('../../js/components/StateSelector', () => ({
@@ -122,9 +123,17 @@ describe('CreateTaskModal', () => {
 				items: [{key: 'in-progress', name: 'In Progress'}],
 			},
 		});
+
+		mockPostTaskByScope.mockResolvedValue({
+			data: {id: 42, title: 'New Task'},
+			error: null,
+		});
 	});
 
-	const renderModal = (projectId?: string) =>
+	const renderModal = (
+		projectId?: string,
+		props: Partial<React.ComponentProps<typeof CreateTaskModal>> = {}
+	) =>
 		render(
 			<CreateTaskModal
 				closeModal={() => {}}
@@ -132,6 +141,7 @@ describe('CreateTaskModal', () => {
 				projectId={projectId}
 				projectObjectDefinitionId={123}
 				state=""
+				{...props}
 			/>
 		);
 
@@ -158,6 +168,47 @@ describe('CreateTaskModal', () => {
 
 			expect(projectPicker).not.toBeDisabled();
 			expect(projectPicker.value).toBe('0');
+		});
+	});
+
+	it('inserts the created task into the data set instead of reloading when onItemsChange is provided', async () => {
+		const loadData = jest.fn();
+		const onItemsChange = jest.fn();
+
+		const {getByLabelText, getByText} = renderModal('1', {
+			loadData,
+			onItemsChange,
+		});
+
+		await waitFor(() => {
+			expect(getByLabelText('project')).toBeDisabled();
+		});
+
+		fireEvent.click(getByText('save'));
+
+		await waitFor(() => {
+			expect(onItemsChange).toHaveBeenCalledWith({
+				itemKey: 'embedded.id',
+				items: [{embedded: {id: 42, title: 'New Task'}}],
+			});
+		});
+
+		expect(loadData).not.toHaveBeenCalled();
+	});
+
+	it('reloads the data set when onItemsChange is not provided', async () => {
+		const loadData = jest.fn();
+
+		const {getByLabelText, getByText} = renderModal('1', {loadData});
+
+		await waitFor(() => {
+			expect(getByLabelText('project')).toBeDisabled();
+		});
+
+		fireEvent.click(getByText('save'));
+
+		await waitFor(() => {
+			expect(loadData).toHaveBeenCalled();
 		});
 	});
 });

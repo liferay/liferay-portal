@@ -191,6 +191,7 @@ export default function CalendarView({
 					closeModal={closeModal}
 					dueDate={dueDate}
 					loadData={loadData}
+					onItemsChange={onItemsChange}
 					projectId={projectId}
 					projectObjectDefinitionId={projectObjectDefinitionId}
 					state={DEFAULT_TASK_STATE_KEY}
