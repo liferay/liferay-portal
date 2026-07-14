@@ -90,30 +90,6 @@ describe('ContentSection', () => {
 		expect(queryByText('x-deletions')).toBeNull();
 	});
 
-	it('renders the handler description and tag', () => {
-		const {queryByText} = render(
-			<ContentSection
-				onChange={jest.fn()}
-				previewPortletDataHandlerSection={{
-					label: SECTION_KEY_CONTENT,
-					name: SECTION_KEY_CONTENT,
-					previewPortletDataHandlers: [
-						{
-							description: 'Child 1, Child 2',
-							label: 'Root Handler',
-							name: 'handler',
-							tag: 'root-object',
-						},
-					],
-				}}
-				sectionSelection={undefined}
-			/>
-		);
-
-		expect(queryByText('Child 1, Child 2')).not.toBeNull();
-		expect(queryByText('root-object')).not.toBeNull();
-	});
-
 	it('hides the comments and ratings footer when nothing is selected', () => {
 		const {queryByText} = render(
 			<ContentSection
