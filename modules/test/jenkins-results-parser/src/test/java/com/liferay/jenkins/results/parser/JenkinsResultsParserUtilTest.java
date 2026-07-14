@@ -121,20 +121,11 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testGetJobVariant() throws Exception {
+	public void testGetJobVariant() {
 		String jobVariant = RandomTestUtil.randomString();
 
-		_testGetJobVariant(
-			jobVariant,
-			"{\"actions\": [null, {\"parameters\": [{\"name\": " +
-				"\"JOB_VARIANT\", \"value\": \"" + jobVariant + "\"}]}]}");
-		_testGetJobVariant(
-			"",
-			"{\"actions\": [{\"parameters\": [{\"name\": " +
-				"\"JENKINS_GITHUB_BRANCH_NAME\", \"value\": \"" + jobVariant +
-					"\"}]}]}");
-
-		_testGetJobVariant("", "{\"actions\": [{}]}");
+		_testGetJobVariant(jobVariant, "JOB_VARIANT", jobVariant);
+		_testGetJobVariant("", "JENKINS_GITHUB_BRANCH_NAME", jobVariant);
 	}
 
 	@Test
@@ -625,9 +616,38 @@ public class JenkinsResultsParserUtilTest
 		return JenkinsResultsParserUtil.getProperties(buildAwsPropertiesFile);
 	}
 
-	private void _testGetJobVariant(String expectedJobVariant, String json) {
+	private void _testGetJobVariant(
+		String expectedJobVariant, String name, String value) {
+
+		JSONObject parameterJSONObject = new JSONObject();
+
+		parameterJSONObject.put(
+			"name", name
+		).put(
+			"value", value
+		);
+
+		JSONObject actionJSONObject = new JSONObject();
+
+		actionJSONObject.put(
+			"parameters",
+			new JSONArray(
+			).put(
+				parameterJSONObject
+			));
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"actions",
+			new JSONArray(
+			).put(
+				actionJSONObject
+			));
+
 		testEquals(
-			expectedJobVariant, JenkinsResultsParserUtil.getJobVariant(json));
+			expectedJobVariant,
+			JenkinsResultsParserUtil.getJobVariant(jsonObject));
 	}
 
 	private void _testGetProperty(
