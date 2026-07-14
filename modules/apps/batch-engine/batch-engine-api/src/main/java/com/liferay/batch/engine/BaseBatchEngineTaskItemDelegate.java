@@ -126,8 +126,14 @@ public abstract class BaseBatchEngineTaskItemDelegate<T>
 			Collection<T> items, Map<String, Serializable> parameters)
 		throws Exception {
 
-		for (T item : items) {
-			updateItem(item, parameters);
+		for (T currentItem : items) {
+			importItemUnsafeBiConsumer.accept(
+				currentItem,
+				item -> {
+					updateItem(item, parameters);
+
+					return item;
+				});
 		}
 	}
 
