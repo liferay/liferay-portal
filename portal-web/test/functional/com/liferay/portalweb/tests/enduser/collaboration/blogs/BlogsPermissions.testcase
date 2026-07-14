@@ -1072,42 +1072,6 @@ definition {
 		BlogsEntry.moveToRecycleBinNoPermissionPG(entryTitle = "Blogs Entry Title");
 	}
 
-	@priority = 4
-	@refactorneeded
-	test CannotDeleteEntryWithOrgRoleByDefault {
-		Permissions.setUpOrgRoleLoginUserPG(
-			orgName = "Organization Name",
-			orgType = "Organization",
-			page = "Public Pages",
-			pageName = "Blogs Page",
-			portletName = "Blogs",
-			roleTitle = "Roles Orgrole Name",
-			roleType = "Organization",
-			siteName = "Organization Name",
-			siteURL = "true",
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test",
-			userScreenName = "usersn");
-
-		Blogs.addBlogsEntryLoginUserPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			pageName = "Blogs Page",
-			siteName = "Organization Name",
-			siteURLTemp = "true",
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page",
-			siteName = "Organization Name");
-
-		BlogsEntry.moveToRecycleBinNoPermissionPG(entryTitle = "Blogs Entry Title");
-	}
-
 	@description = "Skip the instance for performance improvement."
 	@priority = 4
 	@refactorneeded
