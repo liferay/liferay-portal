@@ -602,7 +602,7 @@ definition {
 
 	@description = "LPS-119966 A document is counted as an asset in the audit graph only when it has at least one category in a vocabulary featured in the graph"
 	@priority = 4
-	test DocumentWithNoCategories {
+	test AuditGraphDocumentCountedByCategory {
 		property portal.acceptance = "true";
 
 		task ("Create a new Document without categories") {
