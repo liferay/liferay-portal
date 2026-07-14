@@ -3066,9 +3066,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-146471 Given The Filter by... > Category When the user clicks on several categories and clicks Save Then the content list in the Content Dashboard filters accordingly, including Blogs"
+	@description = "LPS-146471 Given The Filter by... > Category, Sites and Asset Libraries or Tags When the user selects a filter Then the content list in the Content Dashboard filters accordingly, including Blogs"
 	@priority = 5
-	test FilterBlogByCategory {
+	test FilterBlogByMetadata {
 		property portal.acceptance = "true";
 
 		task ("Add a public vocabulary for Test Site Name") {
@@ -3077,48 +3077,46 @@ definition {
 				title = "Vocabulary Name");
 		}
 
-		task ("Create a category for Vocabulary Internal") {
+		task ("Create a category for Vocabulary Name") {
 			var categoryId1 = JSONCategory.addCategory(
 				groupName = "Test Site Name",
 				title = "Category Name",
 				vocabularyName = "Vocabulary Name");
 		}
 
-		task ("Create a blog") {
+		task ("Create a blog with a category and a tag") {
 			JSONBlog.addEntry(
 				assetCategoryIds = ${categoryId1},
+				assetTagNames = "tagname",
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title",
 				groupName = "Test Site Name");
 		}
 
-		ContentDashboard.goToContentDashboard();
+		task ("Filter by category and assert the blog is displayed") {
+			ContentDashboard.goToContentDashboard();
 
-		task ("Filter by category") {
 			ContentDashboard.filterByCategory(categoryNameList = "Category Name");
 
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Blogs Entry Title");
 		}
-	}
 
-	@description = "LPS-146471 Given The Filter by... > Sites and Asset Libraries When the user selects one site or asset library within the modal Then the list of contents that match the site or asset library selected is displayed, including Blogs"
-	@priority = 5
-	test FilterBlogBySite {
-		property portal.acceptance = "true";
-
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Filter asset by Global Site status in Content Dashboard") {
+		task ("Filter by site and assert the blog is displayed") {
 			ContentDashboard.goToContentDashboard();
 
 			ContentDashboard.filterBySite(siteName = "Test Site Name");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+		}
+
+		task ("Filter by tag and assert the blog is displayed") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByTag(tagName = "tagname");
 
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
@@ -3189,30 +3187,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "Approved Blogs Entry Title");
-		}
-	}
-
-	@description = "LPS-146471 Given The Filter by... > Tags When the user clicks on several tags and clicks Save Then the content list in the Content Dashboard filters accordingly, including Blogs"
-	@priority = 5
-	test FilterBlogByTag {
-		property portal.acceptance = "true";
-
-		task ("Create a blog with the tag") {
-			JSONBlog.addEntry(
-				assetTagNames = "tagname",
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Filter by tag at Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByTag(tagName = "tagname");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
 		}
 	}
 
