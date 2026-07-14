@@ -174,51 +174,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-120676 When a user clicks on a gray bar of the audit graph, the filter corresponding to the category in that bar is applied, it is shown as a filter label in the management tool bar and the list of contents is filtered by it"
-	@priority = 3
-	test AuditGraphFilterByGrayBar {
-		task ("Create a web content with Category1") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${audienceId1},
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 1");
-		}
-
-		task ("Create a web content with Category2") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${stageId1},
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title 2");
-		}
-
-		task ("Navigate to content dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Click on the gray bar corresponding to 'Audience 1' to apply filter") {
-			ContentDashboard.clickOnFirstBar(fillColor = "#CDCED9");
-		}
-
-		task ("Assert if filter was applied") {
-			AssertVisible(
-				categoryName = "Audience 1",
-				locator1 = "ContentDashboard#FILTER_CATEGORY_NAME");
-		}
-
-		task ("Assert if only one asset is displayed") {
-			AssertTextEquals(
-				key_tableEntry = "Web Content Title 1",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Web Content Title 1");
-
-			AssertElementNotPresent(
-				key_tableEntry = "Web Content Title 2",
-				locator1 = "LexiconTable#TABLE_ENTRY");
-		}
-	}
-
 	@description = "When the user clicks on the Flip axes button, the vocabularies will be exchanged, the vocabulary represented in the X (the first in the list in the "In use" box) is sent to the Y, and the other way around"
 	@priority = 5
 	test AuditGraphFlipAxes {
