@@ -168,36 +168,6 @@ definition {
 			pageName = "Blogs Page");
 	}
 
-	@description = "This checks that a comment can be edited in a blog entry."
-	@priority = 5
-	@refactorneeded
-	test CanEditComment {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		Comments.addPG(entryComment = "Blogs Entry Comment");
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		Comments.edit(
-			entryComment = "Blogs Entry Comment",
-			entryCommentEdit = "Blogs Entry Comment Edit");
-
-		Comments.viewPG(
-			commentCount = 1,
-			entryComment = "Blogs Entry Comment Edit",
-			userFullName = "Test Test (You)");
-	}
-
 	@description = "This checks that the title and content fields of a blog entry can be edited."
 	@e2etest
 	@priority = 5
@@ -226,10 +196,10 @@ definition {
 			entryTitle = "Blogs Entry Title Edit");
 	}
 
-	@description = "This checks that multiple comments can be edited in a blog entry."
+	@description = "This checks that multiple comments can be edited in a blog entry and display with the editing user as the author."
 	@priority = 4
 	@refactordone
-	test CanEditMultipleComments {
+	test CanEditComments {
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
@@ -265,6 +235,11 @@ definition {
 		Comments.edit(
 			entryComment = "2nd Blog Comment",
 			entryCommentEdit = "2nd Blog Comment Edit");
+
+		Comments.viewPG(
+			commentCount = 2,
+			entryComment = "2nd Blog Comment Edit",
+			userFullName = "Test Test (You)");
 	}
 
 	@description = "This checks that Blogs added and scoped to a page will not be seen in other pages."
