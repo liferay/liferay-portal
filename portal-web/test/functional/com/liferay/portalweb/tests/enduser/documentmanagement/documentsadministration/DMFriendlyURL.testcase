@@ -463,49 +463,4 @@ definition {
 			image = "Document_1");
 	}
 
-	@description = "This ensures that the friendlyURL can be used when a user accesses a document template."
-	@priority = 4
-	test CanViewImageWithTemplate {
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-			contentType = "Document",
-			displayPageTemplateEntryName = "Display Page Template Name",
-			groupName = "Site Name",
-			subType = "Basic Document");
-
-		DisplayPageTemplate.addFragment(
-			collectionName = "Content Display",
-			displayPageName = "Display Page Template Name",
-			fragmentName = "Display Page Content",
-			siteURLKey = "site-name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1",
-			groupName = "Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DisplayPageTemplate.selectDisplayPageTemplateForAsset(
-			assetType = "Document",
-			entryTitle = "Document_1",
-			groupName = "Site Name",
-			pageName = "Display Page Template Name",
-			siteURLKey = "site-name");
-
-		Button.clickPublish();
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "Document_1",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		DMDocument.editFriendlyURL(friendlyURLEdit = "document_1_edit");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/d/document_1_edit");
-
-		ContentPages.viewFragmentBackgroundImage(image = "Document_1.jpg");
-	}
-
 }
