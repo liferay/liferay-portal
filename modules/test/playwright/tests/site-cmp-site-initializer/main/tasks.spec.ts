@@ -1182,3 +1182,205 @@ test(
 		await expect(tasksPage.viewSelectorButton).toBeHidden();
 	}
 );
+
+
+test(
+	'Week view navigates to the previous week, next week, and today',
+	{tag: ['@LPD-69885', '@LPD-94174']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const {calendarView} = tasksPage;
+
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectWeekView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const todayTask = page
+			.locator(`[data-date="${todayDate}"]`)
+			.getByText(taskTitle, {exact: true});
+
+		await expect(todayTask).toBeVisible();
+
+		await calendarView.nextWeekButton.click();
+
+		await expect(todayTask).toBeHidden();
+
+		await calendarView.previousWeekButton.click();
+
+		await expect(todayTask).toBeVisible();
+
+		await calendarView.nextWeekButton.click();
+
+		await expect(todayTask).toBeHidden();
+
+		await calendarView.todayButton.click();
+
+		await expect(todayTask).toBeVisible();
+	}
+);
+
+test(
+	'Week view schedules and unschedules a task',
+	{tag: ['@LPD-69885', '@LPD-94174']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const {calendarView} = tasksPage;
+
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectWeekView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const todayCell = page.locator(`[data-date="${todayDate}"]`);
+
+		const unscheduledEntry = calendarView.unscheduledTasksPanel.getByText(
+			taskTitle,
+			{exact: true}
+		);
+
+		await test.step('Scheduling a task moves it onto its day', async () => {
+			await calendarView.unscheduledTasksButton.click();
+
+			await page.locator('[data-testid="calendarUnscheduledTasksSearch"]').fill(taskTitle);
+
+			await page.getByRole('button', {exact: true, name: 'Actions'}).click();
+
+			await page.getByRole('menuitem', {name: 'Edit'}).click();
+
+			await page.getByRole('textbox', {name: 'Due Date'}).fill(todayDate);
+
+			await tasksPage.saveButton.click();
+
+			await waitForAlert(page, `Success:${taskTitle} was updated successfully.`)
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await tasksPage.switchToWeekView();
+
+			await expect(
+				todayCell.getByText(taskTitle, {exact: true})
+			).toBeVisible();
+
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await expect(unscheduledEntry).toBeHidden();
+
+			await calendarView.unscheduledTasksButton.click();
+
+			await expect(calendarView.unscheduledTasksPanel).toBeHidden();
+		});
+
+		await test.step('Clearing the due date returns the task to the panel', async () => {
+			await page.getByRole('button', { name: taskTitle }).hover();
+
+			await page.getByRole('button', {exact: true, name: 'Actions'}).click();
+
+			await page.getByRole('menuitem', {name: 'Edit'}).click();
+
+			await page.getByRole('textbox', {name: 'Due Date'}).clear();
+
+			await tasksPage.saveButton.click();
+
+			await waitForAlert(page, `Success:${taskTitle} was updated successfully.`)
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await tasksPage.switchToWeekView();
+
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await expect(unscheduledEntry).toBeVisible();
+
+		});
+	}
+);
+
+test(
+	'Week view shows a task on its due date with the expanded card',
+	{tag: ['@LPD-69885', '@LPD-94174']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectWeekView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const todayCell = page.locator(`[data-date="${todayDate}"]`);
+
+		await expect(todayCell.getByText(taskTitle, {exact: true})).toBeVisible();
+
+		await expect(
+			todayCell.getByText('Not Started', {exact: true}).first()
+		).toBeVisible();
+	}
+);
+
+test(
+	'Week view shows seven day columns',
+	{tag: ['@LPD-69885', '@LPD-94174']},
+	async ({page, projectPage, projectsPage, tasksPage}) => {
+		await tasksPage.openProjectWeekView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		await expect(page.locator('.fc-daygrid-day')).toHaveCount(7);
+	}
+);
