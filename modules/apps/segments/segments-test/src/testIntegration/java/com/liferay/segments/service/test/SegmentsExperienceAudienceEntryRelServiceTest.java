@@ -112,6 +112,13 @@ public class SegmentsExperienceAudienceEntryRelServiceTest {
 		String audienceEntryERC = RandomTestUtil.randomString();
 
 		Assert.assertThrows(
+			NoSuchExperienceException.class,
+			() ->
+				_segmentsExperienceAudienceEntryRelService.
+					updateSegmentsExperienceAudienceEntryRels(
+						group.getGroupId(), new String[] {audienceEntryERC},
+						RandomTestUtil.randomString()));
+		Assert.assertThrows(
 			SegmentsExperienceAudienceEntryRelAudienceEntryERCException.class,
 			() ->
 				_segmentsExperienceAudienceEntryRelService.
@@ -119,7 +126,6 @@ public class SegmentsExperienceAudienceEntryRelServiceTest {
 						group.getGroupId(),
 						new String[] {audienceEntryERC, StringPool.BLANK},
 						segmentsExperience.getExternalReferenceCode()));
-
 		Assert.assertThrows(
 			SegmentsExperienceAudienceEntryRelAudienceEntryERCException.class,
 			() ->
@@ -128,14 +134,6 @@ public class SegmentsExperienceAudienceEntryRelServiceTest {
 						group.getGroupId(),
 						new String[] {audienceEntryERC, audienceEntryERC},
 						segmentsExperience.getExternalReferenceCode()));
-
-		Assert.assertThrows(
-			NoSuchExperienceException.class,
-			() ->
-				_segmentsExperienceAudienceEntryRelService.
-					updateSegmentsExperienceAudienceEntryRels(
-						group.getGroupId(), new String[] {audienceEntryERC},
-						RandomTestUtil.randomString()));
 
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
 
