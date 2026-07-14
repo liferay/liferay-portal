@@ -171,90 +171,83 @@ definition {
 		}
 	}
 
-	@description = "LPS-162826 Add the Compare to Action to the Version History for Web Content"
-	@priority = 3
-	test BackFromCompareToWebContent {
-		task ("Given the compare screen for Web Content") {
-			task ("Create a Web Content") {
-				JSONWebcontent.addWebContent(
-					content = "Web Content Content",
-					groupName = "Test Site Name",
-					title = "Web Content Title");
-			}
+	@description = "LPS-162826 The back button closes the Info Panel from the Compare screen, from the document version view and from the Version History page"
+	@priority = 4
+	@uitest
+	test BackClosesInfoPanel {
+		property portal.acceptance = "true";
 
-			task ("Create a version for that web content") {
-				WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+		task ("Back from the Compare screen for Web Content closes the Info Panel") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = "Test Site Name",
+				title = "Web Content Title");
 
-				WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
-				WebContent.editCP(
-					webContentContentEdit = "Web Content Content Edit",
-					webContentTitleEdit = "Web Content Title Edit");
-			}
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
+			WebContent.editCP(
+				webContentContentEdit = "Web Content Content Edit",
+				webContentTitleEdit = "Web Content Title Edit");
 
-			task ("Open info panel sidebar") {
-				ContentDashboard.openInfoPanel(assetName = "Web Content Title Edit");
-			}
+			ContentDashboard.goToContentDashboard();
 
-			task ("Go to compare screen") {
-				ContentDashboard.openVersionsTab();
+			ContentDashboard.openInfoPanel(assetName = "Web Content Title Edit");
 
-				ContentDashboard.clickMenuOfVersion(
-					menuItem = "Compare to...",
-					versionName = "Version 1.1");
-			}
-		}
+			ContentDashboard.openVersionsTab();
 
-		task ("When the user clicks on the back button") {
+			ContentDashboard.clickMenuOfVersion(
+				menuItem = "Compare to...",
+				versionName = "Version 1.1");
+
 			Navigator.gotoBack();
-		}
 
-		task ("Then the Info Panel is closed") {
 			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
-	}
 
-	@description = "LPS-162823: Add the View Action to the Version History for Documents and Media"
-	@priority = 3
-	test BackFromViewDocumentVersion {
-		task ("Given the version document page") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
+		task ("Back from the document version view closes the Info Panel") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name",
+				mimeType = "text/plain",
+				sourceFileName = "Document_1.txt");
 
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
+			ContentDashboard.goToContentDashboard();
 
-			task ("Open info panel sidebar") {
-				ContentDashboard.openInfoPanel(assetName = "DM Document Title");
-			}
+			ContentDashboard.openInfoPanel(assetName = "DM Document Title");
 
-			task ("Open versions tab") {
-				ContentDashboard.openVersionsTab();
-			}
+			ContentDashboard.openVersionsTab();
 
-			task ("Open view mode of a version") {
-				ContentDashboard.clickMenuOfVersion(
-					menuItem = "View",
-					versionName = "Version 1.0");
-			}
-		}
+			ContentDashboard.clickMenuOfVersion(
+				menuItem = "View",
+				versionName = "Version 1.0");
 
-		task ("When the user clicks on the back button") {
 			Navigator.gotoBack();
+
+			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
 
-		task ("Then the Info Panel is closed") {
+		task ("Back from the Version History page closes the Info Panel") {
+			var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
+
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title Versions",
+				mimeType = "text/plain",
+				repositoryId = ${groupId},
+				sourceFileName = "Document_1.txt");
+
+			ContentDashboard.createVersionsForDocument(
+				dmDocumentTitle = "DM Document Title Versions",
+				groupId = ${groupId},
+				versionsCreated = 10);
+
+			ContentDashboard.goToVersionHistoryPage(assetName = "DM Document Title Versions");
+
+			Navigator.gotoBack();
+
 			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
 	}
@@ -2256,45 +2249,6 @@ definition {
 			JSONGroup.deleteGroupByName(groupName = "Site Name 1");
 
 			JSONGroup.deleteGroupByName(groupName = "Site Name 2");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 4
-	@uitest
-	test DocumentsVersionHistoryClickBack {
-		property portal.acceptance = "true";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					mimeType = "text/plain",
-					repositoryId = ${groupId},
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				ContentDashboard.createVersionsForDocument(
-					dmDocumentTitle = "DM Document Title",
-					groupId = ${groupId},
-					versionsCreated = 10);
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.goToVersionHistoryPage(assetName = "DM Document Title");
-			}
-		}
-
-		task ("When the user clicks on back") {
-			Navigator.gotoBack();
-		}
-
-		task ("Then the Info Panel is closed") {
-			AssertElementNotPresent(locator1 = "ContentDashboard#INFO_PANEL");
 		}
 	}
 
