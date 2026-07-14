@@ -264,43 +264,6 @@ definition {
 
 	@description = ""
 	@priority = 4
-	test CheckBlogCategoriesColumnAtContentDashboard {
-		property portal.acceptance = "true";
-
-		task ("Add a global category") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Go to Content Dashboard and check the asset's categories under the respective column") {
-			ContentDashboard.goToContentDashboard();
-
-			AssertElementPresent(
-				key_tableHeader = "Audience",
-				locator1 = "LexiconTable#TABLE_HEADER");
-
-			AssertElementPresent(
-				key_tableHeader = "Stage",
-				locator1 = "LexiconTable#TABLE_HEADER");
-		}
-	}
-
-	@description = ""
-	@priority = 4
 	test CheckBlogCategoriesGraphAtContentDashboard {
 		property portal.acceptance = "true";
 
@@ -323,52 +286,40 @@ definition {
 				title = "Blogs Entry Title");
 		}
 
-		task ("Go to Content Dashboard and check the asset is being counted at graph") {
+		task ("Go to Content Dashboard") {
 			ApplicationsMenu.gotoSite(site = "Test Site Name");
 
 			ContentDashboard.goToContentDashboard();
+		}
 
+		task ("Assert the categories are shown as columns") {
+			AssertElementPresent(
+				key_tableHeader = "Audience",
+				locator1 = "LexiconTable#TABLE_HEADER");
+
+			AssertElementPresent(
+				key_tableHeader = "Stage",
+				locator1 = "LexiconTable#TABLE_HEADER");
+		}
+
+		task ("Assert the asset is counted in the graph x-axis") {
 			AssertTextEquals(
 				categoryIndex = 1,
 				locator1 = "ContentDashboard#X_AXIS_CATEGORIES_NAME",
 				value1 = "Audience 1");
+		}
 
-			ContentDashboard.moveVocabularyDisplayConfiguration(vocabularyName = "Audience");
+		task ("Assert the asset is listed when clicking on the first bar") {
+			ContentDashboard.clickOnFirstBar();
+
+			WaitForPageLoad();
 
 			AssertTextEquals(
-				categoryIndex = 1,
-				locator1 = "ContentDashboard#X_AXIS_CATEGORIES_NAME",
-				value1 = "Stage 1");
-		}
-	}
-
-	@description = ""
-	@priority = 4
-	test CheckBlogFilterByCategory {
-		property portal.acceptance = "true";
-
-		task ("Add a global category") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
 		}
 
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Go to Content Dashboard and check the asset is being counted at graph") {
-			ApplicationsMenu.gotoSite(site = "Test Site Name");
-
+		task ("Assert the asset is listed when filtering by category") {
 			ContentDashboard.goToContentDashboard();
 
 			ContentDashboard.filterByCategory(
@@ -379,6 +330,17 @@ definition {
 				key_tableEntry = "Blogs Entry Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
 				value1 = "Blogs Entry Title");
+		}
+
+		task ("Assert the graph x-axis updates when a vocabulary is removed") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.moveVocabularyDisplayConfiguration(vocabularyName = "Audience");
+
+			AssertTextEquals(
+				categoryIndex = 1,
+				locator1 = "ContentDashboard#X_AXIS_CATEGORIES_NAME",
+				value1 = "Stage 1");
 		}
 	}
 
@@ -587,45 +549,6 @@ definition {
 			AssertTextEquals.assertPartialText(
 				locator1 = "Fragment#CONTENT_DISPLAY_ASSET_BULLET_LIST_TEXT",
 				value1 = "Blogs Entry");
-		}
-	}
-
-	@description = ""
-	@priority = 4
-	test CheckBlogFilterByCategoryBar {
-		property portal.acceptance = "true";
-
-		task ("Add a global category") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Go to Content Dashboard and check the asset is being counted at graph") {
-			ApplicationsMenu.gotoSite(site = "Test Site Name");
-
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.clickOnFirstBar();
-
-			WaitForPageLoad();
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Blogs Entry Title");
 		}
 	}
 
