@@ -47,6 +47,19 @@
 		},
 		{
 			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SCHEDULED_SCAN_KEY",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Scheduled Scan Key"
+			},
+			"name": "scheduledScanKey",
+			"system": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
 			"businessType": "Picklist",
 			"defaultValue": "running",
 			"externalReferenceCode": "STATE",
