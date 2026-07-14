@@ -917,6 +917,27 @@ public class ActionUtil {
 					httpServletRequest,
 					objectEntryFolderExternalReferenceCode)));
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				PortalUtil.getCompanyId(httpServletRequest), "LPD-62272")) {
+
+			long groupId = InfoItemUtil.getGroupId(httpServletRequest);
+
+			dropdownItems.add(
+				getGenerateImageWithAIDropdownItem(
+					LanguageUtil.get(
+						httpServletRequest, "generate-single-image-with-ai"),
+					LanguageUtil.get(
+						httpServletRequest, "generate-single-image"),
+					groupId, objectEntryFolderExternalReferenceCode));
+			dropdownItems.add(
+				getGenerateImageWithAIDropdownItem(
+					LanguageUtil.get(
+						httpServletRequest, "generate-multiple-images-with-ai"),
+					LanguageUtil.get(
+						httpServletRequest, "generate-multiple-images"),
+					groupId, objectEntryFolderExternalReferenceCode));
+		}
+
 		List<DropdownItem> filesCustomDropdownItems =
 			getFilesCustomDropdownItems(
 				httpServletRequest, objectEntryFolderExternalReferenceCode);
@@ -975,6 +996,26 @@ public class ActionUtil {
 			"stars"
 		).setLabel(
 			LanguageUtil.get(httpServletRequest, "generate-content-with-ai")
+		).build();
+	}
+
+	public static DropdownItem getGenerateImageWithAIDropdownItem(
+		String label, String message, long groupId,
+		String objectEntryFolderExternalReferenceCode) {
+
+		return DropdownItemBuilder.putData(
+			"action", "generateImageWithAI"
+		).putData(
+			"groupId", String.valueOf(groupId)
+		).putData(
+			"message", message
+		).putData(
+			"objectEntryFolderExternalReferenceCode",
+			objectEntryFolderExternalReferenceCode
+		).setIcon(
+			"stars"
+		).setLabel(
+			label
 		).build();
 	}
 
