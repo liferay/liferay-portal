@@ -332,36 +332,6 @@ definition {
 			locator1 = "BlogsEntry#CONTENT_VIDEO");
 	}
 
-	@description = "This test ensures that a user is able to embed an external video in web content."
-	@priority = 4
-	@refactordone
-	test CanAddWCWithEmbeddedVideo {
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		VideoShortcut.addCP(
-			videoShortcutTitle = "Test YouTube Video Name",
-			videoURL = "https://www.youtube.com/watch?v=HOdbzGCI5ME");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		WebContentNavigator.gotoAddCP();
-
-		WebContent.addCP(
-			embedVideo = "true",
-			navTab = "Documents and Media",
-			videoShortcutTitle = "Test YouTube Video Name",
-			webContentContent = "WC WebContent Content",
-			webContentTitle = "WC WebContent Title");
-
-		WebContent.publishWithPermissions();
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		WebContent.viewVideoPreview(
-			service = "https://www.youtube.com",
-			webContentTitle = "WC WebContent Title");
-	}
-
 	@description = "This test ensures that a YouTube video added via item selector can be embedded when adding a WC."
 	@priority = 5
 	@refactordone
