@@ -3897,21 +3897,8 @@ definition {
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK",
 				value1 = "WC Title Draft");
 		}
-	}
 
-	@description = "LPS-114983 Validate if the user can filter by Status: Approved"
-	@priority = 5
-	test FilterByStatusApproved {
-		property portal.acceptance = "true";
-
-		task ("Create a Approved Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title Approved");
-		}
-
-		task ("Filter asset by Aproved status in Content Dashboard") {
+		task ("Filter asset by Approved status in Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
 
 			ContentDashboard.filterByStatus(filterOption = "Approved");
@@ -3919,20 +3906,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "WC Title Approved");
-		}
-	}
-
-	@description = "LPS-114983 Validate if the user can filter by Status: Draft"
-	@priority = 5
-	test FilterByStatusDraft {
-		property portal.acceptance = "true";
-
-		task ("Create a Draft Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC Title Draft",
-				workflowAction = "DRAFT");
 		}
 
 		task ("Filter asset by Draft status in Content Dashboard") {
