@@ -72,56 +72,34 @@ renderResponse.setTitle((role == null) ? LanguageUtil.get(request, "new-role") :
 	<div class="mt-4 sheet">
 		<div class="panel-group panel-group-flush">
 			<aui:fieldset>
-				<c:choose>
-					<c:when test="<%= role == null %>">
-						<aui:select label="type" name="roleType">
+				<aui:input label="type" name="typeLabel" type="resource" value="<%= LanguageUtil.get(request, currentRoleTypeContributor.getName()) %>" />
 
-							<%
-							for (RoleTypeContributor roleTypeContributor : RoleTypeContributorRetrieverUtil.getRoleTypeContributors(request)) {
-							%>
-
-								<aui:option label="<%= roleTypeContributor.getName() %>" value="<%= roleTypeContributor.getType() %>" />
-
-							<%
-							}
-							%>
-
-						</aui:select>
-					</c:when>
-					<c:otherwise>
-						<aui:input label="type" name="typeLabel" type="resource" value="<%= LanguageUtil.get(request, currentRoleTypeContributor.getName()) %>" />
-
-						<c:if test="<%= role == null %>">
-							<aui:input name="roleType" type="hidden" value="<%= String.valueOf(currentRoleTypeContributor.getType()) %>" />
-						</c:if>
-					</c:otherwise>
-				</c:choose>
+				<c:if test="<%= role == null %>">
+					<aui:input name="roleType" type="hidden" value="<%= String.valueOf(currentRoleTypeContributor.getType()) %>" />
+				</c:if>
 
 				<aui:input helpMessage="title-field-help" name="title" />
 				<aui:input name="description" />
 
-				<c:if test="<%= role != null %>">
+				<%
+				String[] subtypes = currentRoleTypeContributor.getSubtypes();
+				%>
 
-					<%
-					String[] subtypes = currentRoleTypeContributor.getSubtypes();
-					%>
+				<c:if test="<%= subtypes.length > 0 %>">
+					<aui:select name="subtype">
+						<aui:option value="" />
 
-					<c:if test="<%= subtypes.length > 0 %>">
-						<aui:select name="subtype">
-							<aui:option value="" />
+						<%
+						for (String curSubtype : subtypes) {
+						%>
 
-							<%
-							for (String curSubtype : subtypes) {
-							%>
+							<aui:option label="<%= curSubtype %>" selected="<%= subtype.equals(curSubtype) %>" />
 
-								<aui:option label="<%= curSubtype %>" selected="<%= subtype.equals(curSubtype) %>" />
+						<%
+						}
+						%>
 
-							<%
-							}
-							%>
-
-						</aui:select>
-					</c:if>
+					</aui:select>
 				</c:if>
 
 				<%
