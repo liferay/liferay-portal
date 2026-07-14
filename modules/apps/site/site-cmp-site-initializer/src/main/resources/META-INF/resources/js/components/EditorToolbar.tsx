@@ -15,11 +15,13 @@ import React, {useEffect, useId, useState} from 'react';
 export default function EditorToolbar({
 	backURL,
 	formSubmitURL,
+	groupId,
 	isNew,
 	title,
 }: {
 	backURL: string;
 	formSubmitURL?: string;
+	groupId: number;
 	isNew: boolean;
 	title: string;
 }) {
@@ -82,6 +84,7 @@ export default function EditorToolbar({
 				<>
 					<Toolbar.Item>
 						<AIAssistantChat
+							context={{groupId}}
 							hideTriggerLabel
 							instructionDefinitionScope="cms"
 							triggerRound

@@ -43,6 +43,7 @@ const renderComponent = (isNew = false) => {
 				defaultLanguageId="en_US"
 				displayDate="2025-10-31T13:00"
 				getPreviewDataURL="getPreviewDataURL"
+				groupId={0}
 				hasWorkflow={false}
 				headerTitle="New Content edit"
 				isNew={isNew}

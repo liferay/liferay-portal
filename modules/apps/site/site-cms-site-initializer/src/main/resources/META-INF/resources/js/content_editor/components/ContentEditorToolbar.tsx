@@ -48,6 +48,7 @@ export default function ContentEditorToolbar({
 	defaultLanguageId,
 	displayDate: initialDisplayDate,
 	getPreviewDataURL,
+	groupId,
 	hasWorkflow,
 	headerTitle,
 	isNew,
@@ -58,6 +59,7 @@ export default function ContentEditorToolbar({
 	defaultLanguageId: Liferay.Language.Locale;
 	displayDate: string;
 	getPreviewDataURL: string;
+	groupId: number;
 	hasWorkflow: boolean;
 	headerTitle: string;
 	isNew: boolean;
@@ -216,6 +218,7 @@ export default function ContentEditorToolbar({
 				<>
 					<Toolbar.Item>
 						<AIAssistantChat
+							context={{groupId}}
 							hideTriggerLabel
 							instructionDefinitionScope="cms"
 							triggerRound

@@ -67,7 +67,12 @@ const SUCCESS_MESSAGE_KEY =
 const renderComponent = (isNew = false) =>
 	render(
 		<>
-			<EditorToolbar backURL="/back" isNew={isNew} title="My Project" />
+			<EditorToolbar
+				backURL="/back"
+				groupId={0}
+				isNew={isNew}
+				title="My Project"
+			/>
 
 			<form className="lfr-main-form-container" id="formId">
 				<input

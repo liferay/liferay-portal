@@ -125,6 +125,8 @@ public class EditorToolbarComponentSectionFragmentRenderer
 				return null;
 			}
 		).put(
+			"groupId", objectEntry.getGroupId()
+		).put(
 			"isNew", objectEntry.isDraft()
 		).put(
 			"title",

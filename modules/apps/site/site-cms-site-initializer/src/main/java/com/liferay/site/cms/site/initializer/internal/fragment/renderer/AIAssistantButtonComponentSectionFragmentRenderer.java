@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.internal.util.InfoItemUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -75,6 +76,11 @@ public class AIAssistantButtonComponentSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>put(
+			"getContext",
+			HashMapBuilder.<String, Object>put(
+				"groupId", InfoItemUtil.getGroupId(httpServletRequest)
+			).build()
+		).put(
 			"instructionDefinitionScope", "cms"
 		).put(
 			"triggerRound", true

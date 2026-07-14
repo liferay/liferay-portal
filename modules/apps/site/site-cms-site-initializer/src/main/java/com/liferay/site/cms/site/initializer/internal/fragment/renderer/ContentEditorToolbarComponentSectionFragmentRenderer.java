@@ -87,7 +87,10 @@ public class ContentEditorToolbarComponentSectionFragmentRenderer
 
 		HashMapBuilder.HashMapWrapper<String, Object> hashMapWrapper =
 			HashMapBuilder.<String, Object>put(
-				"backURL", ParamUtil.getString(httpServletRequest, "redirect"));
+				"backURL", ParamUtil.getString(httpServletRequest, "redirect")
+			).put(
+				"groupId", InfoItemUtil.getGroupId(httpServletRequest)
+			);
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
