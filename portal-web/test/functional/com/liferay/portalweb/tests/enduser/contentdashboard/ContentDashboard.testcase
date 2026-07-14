@@ -530,9 +530,21 @@ definition {
 		}
 	}
 
-	@description = "LPS-131793 Given the categorization section in Documents and Media Then the OOTB Internal (Topic) and and Public (Audience & Stage) vocabularies are shown"
+	@description = "LPS-131793 Given the categorization section in Documents and Media Then the OOTB Internal (Topic) and Public (Audience & Stage) vocabularies are shown, together with newly created Global and Site internal vocabularies"
 	@priority = 3
 	test CategorizationInOOTBTable {
+		task ("Add a Global internal vocabulary and a Site internal vocabulary") {
+			JSONCategory.addVocabulary(
+				groupName = "Global",
+				title = "Global Vocabulary",
+				visibility = "internal");
+
+			JSONCategory.addVocabulary(
+				groupName = "Test Site Name",
+				title = "Site Vocabulary",
+				visibility = "internal");
+		}
+
 		task ("Go to Documents and Media and clik on Add Button and File Upload") {
 			DMNavigator.openToAddEntry(
 				groupName = "Test Site Name",
@@ -554,6 +566,16 @@ definition {
 
 			AssertElementPresent(
 				key_fieldLabel = "Stage",
+				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
+		}
+
+		task ("Check if the new Global and Site internal vocabularies are shown") {
+			AssertElementPresent(
+				key_fieldLabel = "Global Vocabulary",
+				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
+
+			AssertElementPresent(
+				key_fieldLabel = "Site Vocabulary",
 				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
 		}
 	}
@@ -4192,64 +4214,6 @@ definition {
 				fragmentName = "heading",
 				id = "element-text",
 				text = "WC WebContent Título");
-		}
-	}
-
-	@description = "LPS-131793 Given the categorization section in Documents and Media When the user creates a Global internal vocabulary Then the vocabulary is shown"
-	@priority = 3
-	test NewVocabularyGlobalInOOTBTable {
-		task ("Add a Global Internal Vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Global",
-				title = "Vocabulary 1",
-				visibility = "internal");
-		}
-
-		task ("Choose the site of interest") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "global");
-		}
-
-		task ("Go to Documents and Media and clik on Add Button and File Upload") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "File Upload");
-		}
-
-		task ("Check if the Vocabulary appears in the list") {
-			Panel.expandPanel(panel = "Categorization");
-
-			AssertElementPresent(
-				key_fieldLabel = "Vocabulary 1",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-		}
-	}
-
-	@description = "LPS-131793 Given the categorization section in Documents and Media When the user creates a Site internal vocabulary Then the vocabulary is shown"
-	@priority = 3
-	test NewVocabularyInternalInOOTBTable {
-		task ("Add a Site Internal Vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary 1",
-				visibility = "internal");
-		}
-
-		task ("Choose the site of interest") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
-		}
-
-		task ("Go to Documents and Media and clik on Add Button and File Upload") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "File Upload");
-		}
-
-		task ("Check if the Vocabulary appears in the list") {
-			Panel.expandPanel(panel = "Categorization");
-
-			AssertElementPresent(
-				key_fieldLabel = "Vocabulary 1",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
 		}
 	}
 
