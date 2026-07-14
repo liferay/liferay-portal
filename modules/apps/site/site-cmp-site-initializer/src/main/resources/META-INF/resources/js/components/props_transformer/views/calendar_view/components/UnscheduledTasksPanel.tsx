@@ -9,6 +9,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayEmptyState from '@clayui/empty-state';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import ClayList from '@clayui/list';
 import {Draggable} from '@fullcalendar/interaction';
 import {FrontendDataSetContext} from '@liferay/frontend-data-set-web';
@@ -16,6 +17,7 @@ import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-ty
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {TASK_DRAGGING_CLASS_NAME} from '../../../../../utils/constants';
+import getActionURL from '../../../../../utils/getActionURL';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../../../../utils/types';
 import StateLabel from '../../../../StateLabel';
@@ -166,6 +168,14 @@ export default function UnscheduledTasksPanel({
 								{actions: task.actions, embedded: task}
 							);
 
+							const viewURL = task.actions?.get
+								? getActionURL({
+										actionId: 'actionLink',
+										itemsActions: itemsActions ?? [],
+										task: {embedded: task},
+									})
+								: undefined;
+
 							return (
 								<ClayList.Item
 									className={DRAGGABLE_ITEM_CLASS_NAME}
@@ -182,9 +192,19 @@ export default function UnscheduledTasksPanel({
 
 									<ClayList.ItemField expand>
 										<ClayList.ItemTitle>
-											<span data-testid="calendarUnscheduledTaskTitle">
-												{task.title}
-											</span>
+											{viewURL ? (
+												<ClayLink
+													data-testid="calendarUnscheduledTaskTitle"
+													draggable={false}
+													href={viewURL}
+												>
+													{task.title}
+												</ClayLink>
+											) : (
+												<span data-testid="calendarUnscheduledTaskTitle">
+													{task.title}
+												</span>
+											)}
 										</ClayList.ItemTitle>
 
 										<ClayList.ItemText>

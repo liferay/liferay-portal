@@ -9,8 +9,14 @@ import {fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import UnscheduledTasksPanel from '../../js/components/props_transformer/views/calendar_view/components/UnscheduledTasksPanel';
+import getActionURL from '../../js/utils/getActionURL';
 import getTaskItemsActions from '../../js/utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../js/utils/types';
+
+jest.mock('../../js/utils/getActionURL', () => ({
+	__esModule: true,
+	default: jest.fn(() => '/view/1'),
+}));
 
 jest.mock('../../js/utils/getTaskItemsActions', () => ({
 	__esModule: true,
@@ -85,6 +91,7 @@ function renderUnscheduledTasksPanel(
 describe('UnscheduledTasksPanel', () => {
 	beforeEach(() => {
 		(getTaskItemsActions as jest.Mock).mockReturnValue([]);
+		(getActionURL as jest.Mock).mockReturnValue('/view/1');
 	});
 
 	it('filters the tasks by title as the user types', () => {
@@ -187,6 +194,22 @@ describe('UnscheduledTasksPanel', () => {
 		const {getByText} = renderUnscheduledTasksPanel([createTask()]);
 
 		expect(getByText('In Progress')).toBeInTheDocument();
+	});
+
+	it('renders the task title as a link to the view page when the user can view it', () => {
+		const {getByRole} = renderUnscheduledTasksPanel([
+			createTask({actions: {get: {href: '/view', method: 'GET'}}}),
+		]);
+
+		expect(
+			getByRole('link', {name: 'Design the landing page'})
+		).toHaveAttribute('href', '/view/1');
+	});
+
+	it('renders the task title as plain text when the user cannot view it', () => {
+		const {queryByRole} = renderUnscheduledTasksPanel([createTask()]);
+
+		expect(queryByRole('link')).not.toBeInTheDocument();
 	});
 
 	it('shows the empty state when the search matches no tasks', () => {
