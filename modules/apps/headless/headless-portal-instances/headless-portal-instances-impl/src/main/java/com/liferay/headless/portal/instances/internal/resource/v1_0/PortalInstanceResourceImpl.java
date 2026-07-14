@@ -39,7 +39,6 @@ import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -250,7 +249,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-11342")) {
 
-			throw new NotFoundException();
+			throw new UnsupportedOperationException();
 		}
 	}
 
