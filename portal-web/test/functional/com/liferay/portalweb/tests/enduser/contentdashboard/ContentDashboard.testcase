@@ -3974,44 +3974,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-146471 Given The Type filter modal When the user selects the Blogs Entry option + any other subtype/s Then the subtype Blogs + other subtypes preselected will be shown as a text with the format ""[number] Subtypes selected"""
-	@priority = 3
-	test FilterBySubtypeBlogsEntryAndWebContent {
-		task ("Create a Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to the content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Filter by Type") {
-			ContentDashboard.filterByType(typeNameList = "Basic Web Content,Blogs Entry");
-		}
-
-		task ("Assert if both assets are displayed") {
-			AssertTextEquals(
-				key_tableEntry = "Web Content Title",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Web Content Title");
-
-			AssertTextEquals(
-				key_tableEntry = "Blogs Entry Title",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Blogs Entry Title");
-		}
-	}
-
 	@description = "LPS-124960 Validate if the user can filter by tag"
 	@priority = 5
 	test FilterByTag {
@@ -4106,15 +4068,18 @@ definition {
 			WebContent.publishWithPermissions();
 		}
 
-		task ("Navigate to Content Dashbaord") {
+		task ("Create a blog") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title",
+				groupName = "Test Site Name");
+		}
+
+		task ("Filter assets by both structure types and assert both web content are displayed") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter assets by both structure types") {
 			ContentDashboard.filterByType(typeNameList = "Basic Web Content,WC Structure Name");
-		}
 
-		task ("Assert if both assets are displayed") {
 			AssertTextEquals(
 				key_tableEntry = "Web Content Title 1",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
@@ -4124,6 +4089,22 @@ definition {
 				key_tableEntry = "Web Content Title 2",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
 				value1 = "Web Content Title 2");
+		}
+
+		task ("Filter assets by a web content subtype and a blog subtype and assert both are displayed") {
+			ContentDashboard.clearFilters();
+
+			ContentDashboard.filterByType(typeNameList = "Basic Web Content,Blogs Entry");
+
+			AssertTextEquals(
+				key_tableEntry = "Web Content Title 1",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
+				value1 = "Web Content Title 1");
+
+			AssertTextEquals(
+				key_tableEntry = "Blogs Entry Title",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
+				value1 = "Blogs Entry Title");
 		}
 	}
 
