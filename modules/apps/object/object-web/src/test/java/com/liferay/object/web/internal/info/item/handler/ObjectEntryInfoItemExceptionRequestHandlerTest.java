@@ -8,6 +8,7 @@ package com.liferay.object.web.internal.info.item.handler;
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.info.exception.InfoFormValidationException;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -28,6 +29,7 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	@TestInfo("LPD-96532")
 	public void testHandleInfoFormException() throws Exception {
 		_testHandleInfoFormExceptionWhenAssetCategoryExceptionTypeIsAtLeastOneCategory();
 		_testHandleInfoFormExceptionWhenAssetCategoryExceptionTypeIsTooManyCategories();
