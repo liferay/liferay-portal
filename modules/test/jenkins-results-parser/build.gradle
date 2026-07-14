@@ -9,8 +9,6 @@ dependencies {
 	api group: "com.google.cloud", name: "google-cloud-storage", version: "2.48.0"
 	api group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	api group: "com.liferay", name: "com.liferay.poshi.core", version: "1.0.159"
-	api group: "com.liferay", name: "org.apache.activemq.client", version: "5.16.7.JAKARTA-LIFERAY-PATCHED-1"
-	api group: "com.liferay", name: "org.apache.geronimo.specs.jms", version: "1.1.1.JAKARTA-LIFERAY-PATCHED-1"
 	api group: "com.sun.mail", name: "jakarta.mail", version: "2.0.1"
 	api group: "commons-codec", name: "commons-codec", version: "1.15"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
