@@ -104,6 +104,7 @@ function Dashboards({
 					<PerformanceDashboard
 						admin={admin}
 						analyticsEnabled={analyticsEnabled}
+						constants={constants}
 					/>
 				) : null}
 			</ClayLayout.Container>

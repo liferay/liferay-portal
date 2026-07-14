@@ -17,9 +17,11 @@ import '../../../../css/dashboard/PerformanceDashboard.scss';
 export default function PerformanceDashboard({
 	admin,
 	analyticsEnabled,
+	constants,
 }: {
 	admin: boolean;
 	analyticsEnabled: boolean;
+	constants: {[key: string]: string};
 }) {
 	if (!analyticsEnabled) {
 		return (
@@ -33,7 +35,7 @@ export default function PerformanceDashboard({
 	}
 
 	return (
-		<PerformanceContextProvider>
+		<PerformanceContextProvider constants={constants}>
 			<Filters />
 
 			<Overview />

@@ -18,6 +18,7 @@ const initialRange: RangeSelector = {
 };
 
 type State = {
+	constants: {[key: string]: string};
 	range: RangeSelector;
 	setRange: (range: RangeSelector) => void;
 	setSpace: (space: SpaceOption) => void;
@@ -25,6 +26,7 @@ type State = {
 };
 
 const PerformanceContext = createContext<State>({
+	constants: {},
 	range: initialRange,
 	setRange: () => {},
 	setSpace: () => {},
@@ -33,13 +35,19 @@ const PerformanceContext = createContext<State>({
 
 PerformanceContext.displayName = 'PerformanceContext';
 
-function PerformanceContextProvider({children}: {children: React.ReactNode}) {
+function PerformanceContextProvider({
+	children,
+	constants = {},
+}: {
+	children: React.ReactNode;
+	constants?: {[key: string]: string};
+}) {
 	const [range, setRange] = useState<RangeSelector>(initialRange);
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
 	const value = useMemo(
-		() => ({range, setRange, setSpace, space}),
-		[range, space]
+		() => ({constants, range, setRange, setSpace, space}),
+		[constants, range, space]
 	);
 
 	return (
