@@ -42,7 +42,7 @@ public class CreateSEOStudioScansObjectActionExecutorImpl
 		throws Exception {
 
 		_seoStudioScanCreator.createScans(
-			payloadJSONObject.getLong("classPK"), "manual", userId);
+			null, payloadJSONObject.getLong("classPK"), "manual", userId);
 	}
 
 	@Reference
