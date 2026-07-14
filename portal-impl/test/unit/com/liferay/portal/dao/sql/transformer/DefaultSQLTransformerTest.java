@@ -28,7 +28,7 @@ public class DefaultSQLTransformerTest {
 	@Test
 	public void testTransformWithMultipleFunctions() {
 		SQLTransformer sqlTransformer = new DefaultSQLTransformer(
-			new Function[] {_toUpperCaseFunction, _trimFunction});
+			() -> new Function[] {_toUpperCaseFunction, _trimFunction});
 
 		String sql = sqlTransformer.transform(" select * from Table ");
 
@@ -40,7 +40,7 @@ public class DefaultSQLTransformerTest {
 		String sql = "select * from Foo";
 
 		SQLTransformer sqlTransformer = new DefaultSQLTransformer(
-			new Function[0]);
+			() -> new Function[0]);
 
 		Assert.assertEquals(sql, sqlTransformer.transform(sql));
 	}
@@ -49,7 +49,7 @@ public class DefaultSQLTransformerTest {
 	public void testTransformWithNullFunction() {
 		String sql = "select * from Foo";
 
-		SQLTransformer sqlTransformer = new DefaultSQLTransformer(null);
+		SQLTransformer sqlTransformer = new DefaultSQLTransformer(() -> null);
 
 		Assert.assertEquals(sql, sqlTransformer.transform(sql));
 	}
@@ -57,7 +57,7 @@ public class DefaultSQLTransformerTest {
 	@Test
 	public void testTransformWithOneFunction() {
 		SQLTransformer sqlTransformer = new DefaultSQLTransformer(
-			new Function[] {_dummyFunction});
+			() -> new Function[] {_dummyFunction});
 
 		Assert.assertNull(sqlTransformer.transform(null));
 	}

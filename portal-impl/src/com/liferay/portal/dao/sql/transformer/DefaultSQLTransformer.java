@@ -16,8 +16,8 @@ import java.util.function.Function;
  */
 public class DefaultSQLTransformer implements SQLTransformer {
 
-	public DefaultSQLTransformer(Function<String, String>[] functions) {
-		_functions = functions;
+	public DefaultSQLTransformer(SQLTransformerLogic sqlTransformerLogic) {
+		_functions = sqlTransformerLogic.getFunctions();
 	}
 
 	@Override

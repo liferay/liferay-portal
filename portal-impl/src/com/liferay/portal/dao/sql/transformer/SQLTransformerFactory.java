@@ -41,7 +41,7 @@ public class SQLTransformerFactory {
 			return sql -> sql;
 		}
 
-		return new DefaultSQLTransformer(sqlTransformerLogic.getFunctions());
+		return new DefaultSQLTransformer(sqlTransformerLogic);
 	}
 
 }
