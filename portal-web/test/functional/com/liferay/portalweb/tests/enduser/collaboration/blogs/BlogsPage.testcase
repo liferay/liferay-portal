@@ -442,61 +442,6 @@ definition {
 		Comments.viewSubscribedPG();
 	}
 
-	@description = "This is a usecase for LPS-82025"
-	@priority = 5
-	@refactorneeded
-	test CanUpdateFriendlyURL {
-		var portalURL = PropsUtil.get("portal.url");
-
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		ScrollWebElementIntoView(locator1 = "Button#PUBLISH");
-
-		Check(locator1 = "Radio#CUSTOM_URL");
-
-		Type(
-			locator1 = "TextInput#BLOGS_ENTRY_URL",
-			value1 = "custom-url-1");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			friendlyURL = "custom url 1",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		Blogs.expandPanel(panel = "Configuration");
-
-		ScrollWebElementIntoView(locator1 = "Button#PUBLISH");
-
-		Type(
-			locator1 = "TextInput#BLOGS_ENTRY_URL",
-			value1 = "custom-url-2");
-
-		PortletEntry.publish();
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/guest/blogs-page/-/blogs/custom-url-1");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/guest/blogs-page/-/blogs/custom-url-2");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-	}
-
 	@description = "This checks that the default abstract (appends to 400 characters) can display properly in the UI."
 	@priority = 4
 	@refactordone
@@ -768,46 +713,102 @@ definition {
 			locator1 = "Icon#ANY");
 	}
 
-	@description = "This is a usecase for LPS-66970. It checks that both the old and new blog URLs lead to the current entry."
+	@description = "This is a usecase for LPS-66970 and LPS-82025. It checks that both the old and new blog URLs lead to the current entry, whether the URL is renamed from the default or from a custom URL."
 	@priority = 4
 	@refactordone
 	test ViewBlogEntryViaEditedCustomURL {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+		var portalURL = PropsUtil.get("portal.url");
 
-		Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/blogs-entry-title");
+		task ("Rename an entry's default URL to a custom URL") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/blogs-entry-title");
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
 
-		Blogs.expandPanel(panel = "Friendly URL");
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		BlogsEntry.addCustomURL(customURL = "this-should-redirect-to-the-previous-entry");
+			Blogs.expandPanel(panel = "Friendly URL");
 
-		SelectFrameTop();
+			BlogsEntry.addCustomURL(customURL = "this-should-redirect-to-the-previous-entry");
 
-		PortletEntry.publish();
+			SelectFrameTop();
 
-		User.logoutPG();
+			PortletEntry.publish();
+		}
 
-		Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/this-should-redirect-to-the-previous-entry");
+		task ("Rename a custom URL to another custom URL and view that both resolve") {
+			BlogsNavigator.openToAddEntry(
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			BlogsEntry.addEntryContent(
+				entryContent = "Blogs Entry2 Content",
+				entryTitle = "Blogs Entry2 Title");
 
-		Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/blogs-entry-title");
+			Blogs.expandPanel(panel = "Friendly URL");
 
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			ScrollWebElementIntoView(locator1 = "Button#PUBLISH");
+
+			Check(locator1 = "Radio#CUSTOM_URL");
+
+			Type(
+				locator1 = "TextInput#BLOGS_ENTRY_URL",
+				value1 = "custom-url-1");
+
+			PortletEntry.publish();
+
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry2 Title",
+				friendlyURL = "custom url 1",
+				groupName = "Guest",
+				siteURLKey = "guest");
+
+			Blogs.expandPanel(panel = "Configuration");
+
+			ScrollWebElementIntoView(locator1 = "Button#PUBLISH");
+
+			Type(
+				locator1 = "TextInput#BLOGS_ENTRY_URL",
+				value1 = "custom-url-2");
+
+			PortletEntry.publish();
+
+			Navigator.openSpecificURL(url = "${portalURL}/web/guest/blogs-page/-/blogs/custom-url-1");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry2 Content",
+				entryTitle = "Blogs Entry2 Title");
+
+			Navigator.openSpecificURL(url = "${portalURL}/web/guest/blogs-page/-/blogs/custom-url-2");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry2 Content",
+				entryTitle = "Blogs Entry2 Title");
+		}
+
+		task ("View that both the old and new URLs resolve as guest") {
+			User.logoutPG();
+
+			Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/this-should-redirect-to-the-previous-entry");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+
+			Navigator.openSpecificURL(url = "/web/guest/blogs-page/-/blogs/blogs-entry-title");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
 	}
 
 	@description = "View the related assets in Blogs."
