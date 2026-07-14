@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -345,6 +346,46 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	}
 
 	@Test
+	public void testRegisterInOpenModeDefaultsMissingScope() throws Exception {
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		JSONObject jsonObject = _createOpenRegistrationJSONObject(
+			false, _getRandomRedirectURI());
+
+		String[] expectedScopes = {
+			RandomTestUtil.randomString(), RandomTestUtil.randomString()
+		};
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_createCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"oauth2.dynamic.registration.allowed.scopes",
+						ArrayUtil.append(
+							expectedScopes,
+							new String[] {StringPool.STAR, StringPool.STAR}))) {
+
+			Invocation.Builder invocationBuilder = registerWebTarget.request();
+
+			Response response = invocationBuilder.method(
+				"post", Entity.json(jsonObject.toString()));
+
+			Assert.assertEquals(201, response.getStatus());
+
+			JSONObject responseJSONObject = parseJSONObject(response);
+
+			String[] actualScopes = StringUtil.split(
+				responseJSONObject.getString("scope"), CharPool.SPACE);
+
+			Arrays.sort(actualScopes);
+
+			Arrays.sort(expectedScopes);
+
+			Assert.assertArrayEquals(expectedScopes, actualScopes);
+		}
+	}
+
+	@Test
 	public void testRegisterInOpenModeEnforcesAllowedHosts() throws Exception {
 
 		// Allow when the bracketed IPv6 host is compared with or without a port
@@ -533,15 +574,9 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			"oauth2.dynamic.registration.allowed.redirect.uri.patterns",
 			new String[] {"https://*.example.org/*"});
 
-		// Deny when the scope is missing, even when all scopes are allowed
+		// Deny when the scope is missing and only the wildcard scope is
+		// allowed, since there is no concrete scope to default to
 
-		_testRegisterInOpenModeWithInvalidRequest(
-			_createOpenRegistrationJSONObject(
-				false, _getRandomRedirectURI()
-			).toString(),
-			"invalid_client_metadata", 400,
-			"oauth2.dynamic.registration.allowed.scopes",
-			new String[] {"Liferay.Headless.Delivery.everything"});
 		_testRegisterInOpenModeWithInvalidRequest(
 			_createOpenRegistrationJSONObject(
 				false, _getRandomRedirectURI()
