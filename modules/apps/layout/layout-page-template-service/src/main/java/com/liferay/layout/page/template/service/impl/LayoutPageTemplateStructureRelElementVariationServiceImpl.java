@@ -33,11 +33,11 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-				String externalReferenceCode, long groupId,
-				String[] audienceEntryERCs, boolean active, String hide,
-				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
-				String name, long plid, String segmentsExperienceERC,
-				String targetElement, ServiceContext serviceContext)
+				String externalReferenceCode, long groupId, boolean active,
+				String hide, Map<Locale, String> htmlMap,
+				Map<Locale, String> jsMap, String name, long plid,
+				String segmentsExperienceERC, String targetElement,
+				String[] audienceEntryERCs, ServiceContext serviceContext)
 		throws PortalException {
 
 		_layoutModelResourcePermission.check(
@@ -45,9 +45,9 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 		return layoutPageTemplateStructureRelElementVariationLocalService.
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, getUserId(), groupId, audienceEntryERCs,
-				active, hide, htmlMap, jsMap, name, plid, segmentsExperienceERC,
-				targetElement, serviceContext);
+				externalReferenceCode, getUserId(), groupId, active, hide,
+				htmlMap, jsMap, name, plid, segmentsExperienceERC,
+				targetElement, audienceEntryERCs, serviceContext);
 	}
 
 	public void deleteLayoutPageTemplateStructureRelElementVariation(

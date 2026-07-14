@@ -40,10 +40,10 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String[] audienceEntryERCs, boolean active, String hide,
-				Map<Locale, String> htmlMap, Map<Locale, String> jsMap,
-				String name, long plid, String segmentsExperienceERC,
-				String targetElement, ServiceContext serviceContext)
+				boolean active, String hide, Map<Locale, String> htmlMap,
+				Map<Locale, String> jsMap, String name, long plid,
+				String segmentsExperienceERC, String targetElement,
+				String[] audienceEntryERCs, ServiceContext serviceContext)
 		throws PortalException {
 
 		_validate(audienceEntryERCs, name, targetElement);

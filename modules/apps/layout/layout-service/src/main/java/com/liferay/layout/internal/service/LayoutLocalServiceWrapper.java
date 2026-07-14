@@ -557,7 +557,6 @@ public class LayoutLocalServiceWrapper
 				addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 					PortalUUIDUtil.generate(), user.getUserId(),
 					targetLayout.getGroupId(),
-					audienceEntryERCs.toArray(new String[0]),
 					sourceLayoutPageTemplateStructureRelElementVariation.
 						isActive(),
 					sourceLayoutPageTemplateStructureRelElementVariation.
@@ -571,6 +570,7 @@ public class LayoutLocalServiceWrapper
 					targetLayout.getPlid(), segmentsExperienceERC,
 					sourceLayoutPageTemplateStructureRelElementVariation.
 						getTargetElement(),
+					audienceEntryERCs.toArray(new String[0]),
 					ServiceContextThreadLocal.getServiceContext());
 		}
 	}
