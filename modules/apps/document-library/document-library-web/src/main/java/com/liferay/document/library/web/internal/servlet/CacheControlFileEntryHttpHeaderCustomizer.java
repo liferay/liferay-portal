@@ -8,6 +8,7 @@ package com.liferay.document.library.web.internal.servlet;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.web.internal.configuration.CacheControlConfiguration;
 import com.liferay.document.library.web.internal.configuration.helper.CacheControlConfigurationHelper;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -49,6 +50,10 @@ public class CacheControlFileEntryHttpHeaderCustomizer
 
 	private String _getHttpHeaderValue(FileEntry fileEntry, String currentValue)
 		throws PortalException {
+
+		if (!CTCollectionThreadLocal.isProductionMode()) {
+			return HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE;
+		}
 
 		CacheControlConfiguration cacheControlConfiguration =
 			_cacheControlConfigurationHelper.
