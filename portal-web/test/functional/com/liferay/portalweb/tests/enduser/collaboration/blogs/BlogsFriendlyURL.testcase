@@ -100,50 +100,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the multiple old friendlyURLs can be viewed from the history."
-	@priority = 4
-	test CanAddMultipleOldFriendlyURLs {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		BlogsEntry.addCustomURL(customURL = "custom&");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			friendlyURL = "custom-",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		BlogsEntry.editCustomURL(customURL = "custom-url");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			friendlyURL = "custom-url",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		BlogsNavigator.gotoFriendlyURLHistory();
-
-		BlogsEntry.viewOldFriendlyURL(
-			lastOldFriendlyURL = "blogs-entry-title",
-			oldFriendlyURL = "custom-");
-
-		BlogsEntry.viewActiveURL(activeURL = "custom-url");
-	}
-
 	@description = "This ensures that a duplicate URL title cannot be used even if it is an old friendly URL."
 	@priority = 4
 	test CannotAddEntryWithDuplicateOldFriendlyURL {
@@ -182,7 +138,7 @@ definition {
 			value1 = "The URL title is already in use. Please enter a unique URL title.");
 	}
 
-	@description = "This ensures that both the active URL and old friendlyURL can be viewed from the history, and an old friendlyURL can be removed or restored from the history."
+	@description = "This ensures that both the active URL and multiple old friendlyURLs can be viewed from the history, and an old friendlyURL can be removed or restored from the history."
 	@priority = 5
 	test CanViewRestoreAndRemoveOldFriendlyURL {
 		var portalURL = PropsUtil.get("portal.url");
@@ -261,6 +217,42 @@ definition {
 		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/blogs-page/-/blogs/hola-adi%C3%B3s");
 
 		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			friendlyURL = "blogs-entry-title",
+			groupName = "Site Name",
+			siteURLKey = "site-name");
+
+		Blogs.expandPanel(panel = "Friendly URL");
+
+		BlogsEntry.addCustomURL(customURL = "custom&");
+
+		PortletEntry.publish();
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			friendlyURL = "custom-",
+			groupName = "Site Name",
+			siteURLKey = "site-name");
+
+		BlogsEntry.editCustomURL(customURL = "custom-url");
+
+		PortletEntry.publish();
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			friendlyURL = "custom-url",
+			groupName = "Site Name",
+			siteURLKey = "site-name");
+
+		BlogsNavigator.gotoFriendlyURLHistory();
+
+		BlogsEntry.viewOldFriendlyURL(
+			lastOldFriendlyURL = "blogs-entry-title",
+			oldFriendlyURL = "custom-");
+
+		BlogsEntry.viewActiveURL(activeURL = "custom-url");
 	}
 
 }
