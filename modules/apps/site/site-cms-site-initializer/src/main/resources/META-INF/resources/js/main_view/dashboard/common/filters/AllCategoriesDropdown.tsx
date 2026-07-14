@@ -4,16 +4,11 @@
  */
 
 import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 
 import ApiHelper from '../../../../common/services/ApiHelper';
-import {InventoryContext} from '../InventoryContext';
 import {FilterDropdown} from './FilterDropdown';
-import {
-	IAllFiltersDropdown,
-	filterBySpaces,
-	initialFilters,
-} from './InventoryAnalysisCard';
+import {IAllFiltersDropdown, filterBySpaces, initialFilters} from './filters';
 
 export type CategoryData = {
 	assetLibraries: {id: number}[];
@@ -36,20 +31,22 @@ type Category = {
 	value: string;
 };
 
+interface IAllCategoriesDropdown extends IAllFiltersDropdown {
+	cmsGroupId: string;
+	depotEntryId: string;
+}
+
 enum Context {
 	Categories = 'categories',
 	Vocabularies = 'vocabularies',
 }
 
-const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
+const AllCategoriesDropdown: React.FC<IAllCategoriesDropdown> = ({
+	cmsGroupId,
+	depotEntryId,
 	item,
 	onSelectItem,
 }) => {
-	const {
-		constants: {cmsGroupId},
-		filters: {space},
-	} = useContext(InventoryContext);
-
 	const [categories, setCategories] = useState([initialFilters.category]);
 	const [vocabularies, setVocabularies] = useState([initialFilters.category]);
 	const [parentCategory, setParentCategory] = useState<Category | null>(null);
@@ -88,11 +85,11 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 					return false;
 				}
 
-				if (space.value === 'all') {
+				if (depotEntryId === 'all') {
 					return true;
 				}
 
-				return filterBySpaces(assetLibraries, space.value);
+				return filterBySpaces(assetLibraries, depotEntryId);
 			})
 			.map(({id, name, numberOfTaxonomyCategories}) => {
 				const category: Category = {

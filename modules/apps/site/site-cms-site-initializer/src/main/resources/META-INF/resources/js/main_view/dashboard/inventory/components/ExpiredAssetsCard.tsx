@@ -16,6 +16,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import ApiHelper from '../../../../common/services/ApiHelper';
 import {openCMSModal} from '../../../../common/utils/openCMSModal';
 import {BaseCard} from '../../common/BaseCard';
+import {Item} from '../../common/filters/FilterDropdown';
 import {InventoryContext} from '../InventoryContext';
 import {
 	AssetType,
@@ -25,7 +26,6 @@ import {
 	AssetTypeIcons as _AssetTypeIcons,
 } from '../utils/assetTypes';
 import usePagination from '../utils/usePagination';
-import {Item} from './FilterDropdown';
 
 type ExpiredAsset = {
 

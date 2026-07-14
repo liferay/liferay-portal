@@ -4,30 +4,27 @@
  */
 
 import {Option, Picker} from '@clayui/core';
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import VocabularyService from '../../../../common/services/VocabularyService';
-import PickerTrigger from '../../common/PickerTrigger';
-import {InventoryContext} from '../InventoryContext';
+import PickerTrigger from '../PickerTrigger';
 import {Item} from './FilterDropdown';
-import {
-	IAllFiltersDropdown,
-	filterBySpaces,
-	initialFilters,
-} from './InventoryAnalysisCard';
+import {IAllFiltersDropdown, filterBySpaces, initialFilters} from './filters';
 
 type Vocabulary = {assetLibraries: {id: number}[]; id: string; name: string};
 
-const AllVocabulariesDropdown: React.FC<IAllFiltersDropdown> = ({
+interface IAllVocabulariesDropdown extends IAllFiltersDropdown {
+	cmsGroupId: string;
+	depotEntryId: string;
+}
+
+const AllVocabulariesDropdown: React.FC<IAllVocabulariesDropdown> = ({
 	className,
+	cmsGroupId,
+	depotEntryId,
 	item,
 	onSelectItem,
 }) => {
-	const {
-		constants: {cmsGroupId},
-		filters: {space},
-	} = useContext(InventoryContext);
-
 	const [rawVocabularies, setRawVocabularies] = useState<Vocabulary[]>([]);
 
 	useEffect(() => {
@@ -55,15 +52,15 @@ const AllVocabulariesDropdown: React.FC<IAllFiltersDropdown> = ({
 			...rawVocabularies
 				.filter(
 					({assetLibraries}) =>
-						space.value === 'all' ||
-						filterBySpaces(assetLibraries, space.value)
+						depotEntryId === 'all' ||
+						filterBySpaces(assetLibraries, depotEntryId)
 				)
 				.map(({id, name}) => ({
 					label: name,
 					value: String(id),
 				})),
 		],
-		[rawVocabularies, space.value]
+		[rawVocabularies, depotEntryId]
 	);
 
 	return (

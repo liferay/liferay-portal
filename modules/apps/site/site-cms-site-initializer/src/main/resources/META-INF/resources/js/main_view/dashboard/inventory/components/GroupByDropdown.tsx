@@ -7,8 +7,8 @@ import {Option, Picker} from '@clayui/core';
 import React from 'react';
 
 import PickerTrigger from '../../common/PickerTrigger';
-import {Item} from './FilterDropdown';
-import {IAllFiltersDropdown} from './InventoryAnalysisCard';
+import {Item} from '../../common/filters/FilterDropdown';
+import {IAllFiltersDropdown} from '../../common/filters/filters';
 
 const defaultStructureTypes: Item[] = [
 	{

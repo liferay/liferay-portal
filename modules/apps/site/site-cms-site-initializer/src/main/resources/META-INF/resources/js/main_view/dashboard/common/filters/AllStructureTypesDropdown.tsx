@@ -5,22 +5,26 @@
 
 import {Option, Picker} from '@clayui/core';
 import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import ApiHelper from '../../../../common/services/ApiHelper';
 import getLocalizedValue from '../../../../common/utils/getLocalizedValue';
-import PickerTrigger from '../../common/PickerTrigger';
-import {InventoryContext} from '../InventoryContext';
+import PickerTrigger from '../PickerTrigger';
 import {Item} from './FilterDropdown';
-import {IAllFiltersDropdown, initialFilters} from './InventoryAnalysisCard';
+import {IAllFiltersDropdown, initialFilters} from './filters';
 
-const AllStructureTypesDropdown: React.FC<IAllFiltersDropdown> = ({
+interface IAllStructureTypesDropdown extends IAllFiltersDropdown {
+	ercContentStructures: string;
+	ercFileTypes: string;
+}
+
+const AllStructureTypesDropdown: React.FC<IAllStructureTypesDropdown> = ({
 	className,
+	ercContentStructures,
+	ercFileTypes,
 	item,
 	onSelectItem,
 }) => {
-	const {constants} = useContext(InventoryContext);
-
 	const [structures, setStructures] = useState<Item[]>([
 		initialFilters.structure,
 	]);
@@ -28,7 +32,7 @@ const AllStructureTypesDropdown: React.FC<IAllFiltersDropdown> = ({
 	useEffect(() => {
 		const fetchStructures = async () => {
 			const queryParams = buildQueryString({
-				filter: `(objectFolderExternalReferenceCode eq '${constants.ercContentStructures}' or objectFolderExternalReferenceCode eq '${constants.ercFileTypes}')`,
+				filter: `(objectFolderExternalReferenceCode eq '${ercContentStructures}' or objectFolderExternalReferenceCode eq '${ercFileTypes}')`,
 			});
 
 			const {data, error} = await ApiHelper.get<{
@@ -55,7 +59,7 @@ const AllStructureTypesDropdown: React.FC<IAllFiltersDropdown> = ({
 		};
 
 		fetchStructures();
-	}, [constants.ercContentStructures, constants.ercFileTypes]);
+	}, [ercContentStructures, ercFileTypes]);
 
 	return (
 		<Picker

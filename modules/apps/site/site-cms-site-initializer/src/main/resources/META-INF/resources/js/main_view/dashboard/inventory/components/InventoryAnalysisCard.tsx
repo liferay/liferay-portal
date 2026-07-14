@@ -12,20 +12,16 @@ import React, {useContext, useEffect, useState} from 'react';
 import ApiHelper from '../../../../common/services/ApiHelper';
 import {BaseCard} from '../../common/BaseCard';
 import PickerTrigger from '../../common/PickerTrigger';
+import {AllCategoriesDropdown} from '../../common/filters/AllCategoriesDropdown';
+import {AllStructureTypesDropdown} from '../../common/filters/AllStructureTypesDropdown';
+import {AllTagsDropdown} from '../../common/filters/AllTagsDropdown';
+import {AllVocabulariesDropdown} from '../../common/filters/AllVocabulariesDropdown';
+import {Item} from '../../common/filters/FilterDropdown';
+import {initialFilters as baseFilters} from '../../common/filters/filters';
 import {InventoryContext} from '../InventoryContext';
 import usePagination from '../utils/usePagination';
-import {AllCategoriesDropdown} from './AllCategoriesDropdown';
-import {AllStructureTypesDropdown} from './AllStructureTypesDropdown';
-import {AllTagsDropdown} from './AllTagsDropdown';
-import {AllVocabulariesDropdown} from './AllVocabulariesDropdown';
-import {Item} from './FilterDropdown';
 import {GroupByDropdown} from './GroupByDropdown';
 import PaginatedTable from './PaginatedTable';
-
-export interface IAllFiltersDropdown extends React.HTMLAttributes<HTMLElement> {
-	item: Item;
-	onSelectItem: (item: Item) => void;
-}
 
 export type InventoryAnalysisDataType = {
 	inventoryAnalysisItems: {count: number; key: string; title: string}[];
@@ -35,26 +31,11 @@ export type InventoryAnalysisDataType = {
 	totalCount: number;
 };
 
-export const initialFilters = {
-	category: {
-		label: Liferay.Language.get('all-categories'),
-		value: 'all',
-	},
-	structure: {
-		label: Liferay.Language.get('all-content-structures'),
-		value: 'all',
-	},
+const initialFilters = {
+	...baseFilters,
 	structureType: {
 		label: Liferay.Language.get('category'),
 		value: 'category',
-	},
-	tag: {
-		label: Liferay.Language.get('all-tags'),
-		value: 'all',
-	},
-	vocabulary: {
-		label: Liferay.Language.get('all-vocabularies'),
-		value: 'all',
 	},
 };
 
@@ -110,25 +91,6 @@ async function fetchStructureData({
 	return null;
 }
 
-export function filterBySpaces(
-	assetLibraries: {id: number}[],
-	depotEntryId: string
-) {
-	return assetLibraries.some(({id}) => {
-
-		// Returns true if id belongs to all spaces (-1).
-
-		if (id === -1) {
-			return true;
-		}
-
-		// Decreasing -1 due a bug where response is increasing +1 in the id.
-		// Returns true if match id with id from space.
-
-		return String(id - 1) === depotEntryId;
-	});
-}
-
 type DropdownItem = {
 	icon: string;
 	name: string;
@@ -150,6 +112,7 @@ const dropdownItems: DropdownItem[] = [
 
 export function InventoryAnalysisCard() {
 	const {
+		constants,
 		filters: {language, space},
 	} = useContext(InventoryContext);
 
@@ -256,6 +219,10 @@ export function InventoryAnalysisCard() {
 						<div className="d-flex flex-wrap">
 							<div className="mb-2 mb-lg-0 mr-2">
 								<AllStructureTypesDropdown
+									ercContentStructures={
+										constants.ercContentStructures
+									}
+									ercFileTypes={constants.ercFileTypes}
 									item={filters.structure}
 									onSelectItem={(structure) =>
 										setFilters({
@@ -268,6 +235,8 @@ export function InventoryAnalysisCard() {
 
 							<div className="mb-2 mb-lg-0 mr-2">
 								<AllVocabulariesDropdown
+									cmsGroupId={constants.cmsGroupId}
+									depotEntryId={space.value}
 									item={filters.vocabulary}
 									onSelectItem={(vocabulary) => {
 										setFilters({
@@ -280,6 +249,8 @@ export function InventoryAnalysisCard() {
 
 							<div className="mb-2 mb-lg-0 mr-2">
 								<AllCategoriesDropdown
+									cmsGroupId={constants.cmsGroupId}
+									depotEntryId={space.value}
 									item={filters.category}
 									onSelectItem={(category) => {
 										setFilters({
@@ -292,6 +263,8 @@ export function InventoryAnalysisCard() {
 
 							<div className="mb-2 mb-lg-0">
 								<AllTagsDropdown
+									cmsGroupId={constants.cmsGroupId}
+									depotEntryId={space.value}
 									item={filters.tag}
 									onSelectItem={(tag) =>
 										setFilters({
