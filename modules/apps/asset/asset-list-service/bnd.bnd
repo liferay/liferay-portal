@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset List Service
 Bundle-SymbolicName: com.liferay.asset.list.service
-Bundle-Version: 3.0.108
+Bundle-Version: 3.0.109
 Liferay-Require-SchemaVersion: 3.0.0
 Liferay-Service: true
 -dsannotations-options: inherit
