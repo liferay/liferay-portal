@@ -59,6 +59,12 @@ public class ExportImportServiceConfigurationModelListenerTest {
 		_testOnBeforeSaveFailure(
 			"please-enter-a-relative-url-that-does-not-end-with-a-slash",
 			"/dl/");
+		_testOnBeforeSaveFailure(
+			"please-enter-a-relative-url-that-does-not-have-adjacent-slashes",
+			"/dl//entries");
+		_testOnBeforeSaveFailure(
+			"please-enter-a-relative-url-with-valid-characters",
+			"/dl/entries?id=1");
 
 		_configurationModelListener.onBeforeSave(
 			StringPool.BLANK,
