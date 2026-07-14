@@ -64,6 +64,14 @@ definition {
 		task ("Add categories from Audience and Stage Vocabularies") {
 			Blogs.expandPanel(panel = "Categorization");
 
+			AssertElementPresent(
+				key_categoryName = "Audience",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+			AssertElementPresent(
+				key_categoryName = "Stage",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
 			Click(
 				key_fieldName = "Audience",
 				locator1 = "Button#SELECT_BUTTON");
@@ -648,37 +656,6 @@ definition {
 				key_categoryName = "Stage 1",
 				locator1 = "AssetCategorization#CATEGORY",
 				value1 = "Stage 1");
-		}
-	}
-
-	@description = ""
-	@priority = 5
-	test CheckCategoriesAtBlogs {
-		property portal.acceptance = "true";
-
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Go to Blogs Admin and click to edit") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
-		}
-
-		task ("Click to see categorization, assert if Audience and Stage are visible") {
-			Blogs.expandPanel(panel = "Categorization");
-
-			AssertElementPresent(
-				key_categoryName = "Audience",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
-
-			AssertElementPresent(
-				key_categoryName = "Stage",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
 		}
 	}
 
