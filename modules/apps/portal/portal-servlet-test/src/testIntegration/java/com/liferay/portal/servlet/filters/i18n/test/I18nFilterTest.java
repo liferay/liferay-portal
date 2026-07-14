@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -142,6 +143,12 @@ public class I18nFilterTest {
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
 				3, LocaleUtil.US, LocaleUtil.SPAIN, null, null, null));
+	}
+
+	@Test
+	public void testGetRedirectPublicServletMapping() throws Exception {
+		_testGetRedirectPublicServletMapping(false);
+		_testGetRedirectPublicServletMapping(true);
 	}
 
 	@Test
@@ -419,6 +426,60 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			i18nLanguageId,
 			mockHttpServletRequest.getAttribute(WebKeys.I18N_LANGUAGE_ID));
+	}
+
+	private void _testGetRedirectPublicServletMapping(
+			boolean layoutFriendlyURLPublicServletMappingEnabled)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader("Host", "localhost");
+		mockHttpServletRequest.setServerName("localhost");
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI,
+			_group.getFriendlyURL());
+		mockHttpServletRequest.setRequestURI(
+			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+				_group.getFriendlyURL());
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		httpSession.setAttribute(WebKeys.LOCALE, LocaleUtil.SPAIN);
+
+		String i18nPath =
+			"/" + _portal.getI18nPathLanguageId(LocaleUtil.SPAIN, null);
+
+		String expectedRedirect = i18nPath + _group.getFriendlyURL();
+
+		if (layoutFriendlyURLPublicServletMappingEnabled) {
+			expectedRedirect =
+				i18nPath +
+					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+						_group.getFriendlyURL();
+		}
+
+		long companyId = PortalInstances.getCompanyId(mockHttpServletRequest);
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					PropsValues.class,
+					"LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING_ENABLED",
+					layoutFriendlyURLPublicServletMappingEnabled);
+			SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					companyId, PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE,
+					1)) {
+
+			Assert.assertEquals(
+				expectedRedirect,
+				ReflectionTestUtil.invoke(
+					_i18nFilter, "getRedirect",
+					new Class<?>[] {long.class, HttpServletRequest.class},
+					companyId, mockHttpServletRequest));
+		}
 	}
 
 	private void _testGetRequestedLanguageIdWithImpersonation()
