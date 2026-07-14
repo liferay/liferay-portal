@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser.history;
 
+import com.liferay.jenkins.results.parser.RandomTestUtil;
+
 import org.json.JSONObject;
 
 import org.junit.Assert;
@@ -27,7 +29,7 @@ public class HistoryFactoryTest
 
 		JSONObject jsonObject = new JSONObject();
 
-		String testClassName = "com.liferay.jenkins.results.parser.SampleTest";
+		String testClassName = RandomTestUtil.randomString();
 
 		TestClassHistory testClassHistory = HistoryFactory.newTestClassHistory(
 			unitBatchHistory, jsonObject, testClassName);
@@ -52,7 +54,7 @@ public class HistoryFactoryTest
 
 		JSONObject jsonObject = new JSONObject();
 
-		String testTaskName = "sample-test-task";
+		String testTaskName = RandomTestUtil.randomString();
 
 		TestTaskHistory testTaskHistory = HistoryFactory.newTestTaskHistory(
 			unitBatchHistory, jsonObject, testTaskName);

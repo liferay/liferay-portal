@@ -23,7 +23,8 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("build.properties.seeded", "true");
+		buildProperties.setProperty(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
