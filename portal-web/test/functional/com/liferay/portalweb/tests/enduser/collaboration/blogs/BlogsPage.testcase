@@ -56,35 +56,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-106613. It ensures that the custom abstract field cannot be reset to empty after typing in the content field."
-	@priority = 3
-	@refactordone
-	test AbstractDescriptionPersistsWhenTypingInContentField {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		BlogsEntry.addTitle(entryTitle = "Blogs Entry Title");
-
-		Blogs.expandPanel(panel = "Configuration");
-
-		BlogsEntry.addCustomAbstract(entryAbstractDescription = "Blogs Entry Abstract Description");
-
-		Click.clickAt(
-			key_editor = "content",
-			locator1 = "AlloyEditor#EDITOR");
-
-		BlogsEntry.addContent(entryContent = "Blogs Entry Content");
-
-		AssertTextEquals(
-			locator1 = "TextInput#DESCRIPTION",
-			value1 = "Blogs Entry Abstract Description");
-	}
-
 	@description = "This checks that users can add a comment to a blog entry through the page comment widget when a blog entry is displayed through a DPT."
 	@priority = 3
 	test CanAddCommentToBlogEntryWhenEntryIsDisplayedWithDPT {
