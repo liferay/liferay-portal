@@ -27,7 +27,7 @@ resource "helm_release" "argocd" {
 						cm={
 							"admin.enabled"=var.argocd_sso_config.enable_admin_login
 							"kustomize.buildOptions"="--enable-helm"
-							"resource.customizations.health.${var.infrastructure_api_group}_LiferayInfrastructure"=file("${path.module}/health-liferayinfrastructure.lua")
+							"resource.customizations.health.${var.infrastructure_api_group}_LiferayInfrastructure"=file("${path.module}/health-LiferayInfrastructure.lua")
 							"resource.customizations.health.argoproj.io_Application"=file("${path.module}/health-argoproj.io_Application.lua")
 							"resource.customizations.ignoreDifferences.${var.infrastructure_api_group}_LiferayInfrastructure"=yamlencode(
 								{
