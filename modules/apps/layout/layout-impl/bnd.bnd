@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Implementation
 Bundle-SymbolicName: com.liferay.layout.impl
-Bundle-Version: 6.0.170
+Bundle-Version: 6.0.171
 -dsannotations-options: inherit
