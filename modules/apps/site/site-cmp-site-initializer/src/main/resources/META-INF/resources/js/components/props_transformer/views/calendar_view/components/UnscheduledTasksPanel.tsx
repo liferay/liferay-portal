@@ -11,6 +11,7 @@ import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClayList from '@clayui/list';
+import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {Draggable} from '@fullcalendar/interaction';
 import {FrontendDataSetContext} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
@@ -24,6 +25,8 @@ import StateLabel from '../../../../StateLabel';
 import sortTasksByPriority from '../utils/sortTasksByPriority';
 
 import './UnscheduledTasksPanel.scss';
+
+const DELTAS = [20, 40, 60].map((size) => ({label: size}));
 
 // Marks the task rows the calendar Draggable picks up, and doubles as the
 // class name each row renders with so the two always match.
@@ -45,6 +48,8 @@ export default function UnscheduledTasksPanel({
 }: UnscheduledTasksPanelProps) {
 	const {itemsActions, loadData} = useContext(FrontendDataSetContext);
 
+	const [activePage, setActivePage] = useState(1);
+	const [delta, setDelta] = useState(DELTAS[0].label);
 	const [query, setQuery] = useState('');
 
 	const filteredTasks = useMemo(() => {
@@ -56,6 +61,11 @@ export default function UnscheduledTasksPanel({
 			)
 		);
 	}, [query, tasks]);
+
+	const paginatedTasks = useMemo(
+		() => filteredTasks.slice((activePage - 1) * delta, activePage * delta),
+		[activePage, delta, filteredTasks]
+	);
 
 	// Make the task rows draggable into the calendar's day cells. The
 	// Draggable matches rows through the item selector at drag time, so one
@@ -143,7 +153,10 @@ export default function UnscheduledTasksPanel({
 							aria-label={Liferay.Language.get('search')}
 							data-testid="calendarUnscheduledTasksSearch"
 							insetAfter
-							onChange={(event) => setQuery(event.target.value)}
+							onChange={(event) => {
+								setActivePage(1);
+								setQuery(event.target.value);
+							}}
 							placeholder={Liferay.Language.get('search')}
 							type="text"
 							value={query}
@@ -160,80 +173,108 @@ export default function UnscheduledTasksPanel({
 				</ClayInput.Group>
 
 				{filteredTasks.length ? (
-					<ClayList className="lfr__cmp-unscheduled-tasks-panel-list">
-						{filteredTasks.map((task) => {
-							const taskItemsActions = getTaskItemsActions(
-								itemsActions ?? [],
-								loadData,
-								{actions: task.actions, embedded: task}
-							);
+					<>
+						<ClayList className="lfr__cmp-unscheduled-tasks-panel-list">
+							{paginatedTasks.map((task) => {
+								const taskItemsActions = getTaskItemsActions(
+									itemsActions ?? [],
+									loadData,
+									{actions: task.actions, embedded: task}
+								);
 
-							const viewURL = task.actions?.get
-								? getActionURL({
-										actionId: 'actionLink',
-										itemsActions: itemsActions ?? [],
-										task: {embedded: task},
-									})
-								: undefined;
+								const viewURL = task.actions?.get
+									? getActionURL({
+											actionId: 'actionLink',
+											itemsActions: itemsActions ?? [],
+											task: {embedded: task},
+										})
+									: undefined;
 
-							return (
-								<ClayList.Item
-									className={DRAGGABLE_ITEM_CLASS_NAME}
-									data-task-id={task.id}
-									flex
-									key={task.id}
-								>
-									<ClayList.ItemField>
-										<AssigneeAvatar
-											name={task.assignTo?.name}
-											portrait={task.assignTo?.portrait}
-										/>
-									</ClayList.ItemField>
-
-									<ClayList.ItemField expand>
-										<ClayList.ItemTitle>
-											{viewURL ? (
-												<ClayLink
-													data-testid="calendarUnscheduledTaskTitle"
-													draggable={false}
-													href={viewURL}
-												>
-													{task.title}
-												</ClayLink>
-											) : (
-												<span data-testid="calendarUnscheduledTaskTitle">
-													{task.title}
-												</span>
-											)}
-										</ClayList.ItemTitle>
-
-										<ClayList.ItemText>
-											<StateLabel state={task.state} />
-										</ClayList.ItemText>
-									</ClayList.ItemField>
-
-									{!!taskItemsActions.length && (
+								return (
+									<ClayList.Item
+										className={DRAGGABLE_ITEM_CLASS_NAME}
+										data-task-id={task.id}
+										flex
+										key={task.id}
+									>
 										<ClayList.ItemField>
-											<ClayDropDownWithItems
-												items={taskItemsActions}
-												trigger={
-													<ClayButtonWithIcon
-														aria-label={Liferay.Language.get(
-															'actions'
-														)}
-														borderless
-														className="component-action"
-														displayType="secondary"
-														symbol="ellipsis-v"
-													/>
+											<AssigneeAvatar
+												name={task.assignTo?.name}
+												portrait={
+													task.assignTo?.portrait
 												}
 											/>
 										</ClayList.ItemField>
-									)}
-								</ClayList.Item>
-							);
-						})}
-					</ClayList>
+
+										<ClayList.ItemField expand>
+											<ClayList.ItemTitle>
+												{viewURL ? (
+													<ClayLink
+														data-testid="calendarUnscheduledTaskTitle"
+														draggable={false}
+														href={viewURL}
+													>
+														{task.title}
+													</ClayLink>
+												) : (
+													<span data-testid="calendarUnscheduledTaskTitle">
+														{task.title}
+													</span>
+												)}
+											</ClayList.ItemTitle>
+
+											<ClayList.ItemText>
+												<StateLabel
+													state={task.state}
+												/>
+											</ClayList.ItemText>
+										</ClayList.ItemField>
+
+										{!!taskItemsActions.length && (
+											<ClayList.ItemField>
+												<ClayDropDownWithItems
+													items={taskItemsActions}
+													trigger={
+														<ClayButtonWithIcon
+															aria-label={Liferay.Language.get(
+																'actions'
+															)}
+															borderless
+															className="component-action"
+															displayType="secondary"
+															symbol="ellipsis-v"
+														/>
+													}
+												/>
+											</ClayList.ItemField>
+										)}
+									</ClayList.Item>
+								);
+							})}
+						</ClayList>
+
+						<ClayPaginationBarWithBasicItems
+							active={activePage}
+							activeDelta={delta}
+							className="lfr__cmp-unscheduled-tasks-panel-pagination"
+							deltas={DELTAS}
+							ellipsisBuffer={1}
+							labels={{
+								paginationResults: Liferay.Language.get(
+									'showing-x-to-x-of-x-entries'
+								),
+								perPageItems: Liferay.Language.get('x-items'),
+								selectPerPageItems:
+									Liferay.Language.get('x-items'),
+							}}
+							onActiveChange={setActivePage}
+							onDeltaChange={(newDelta) => {
+								setActivePage(1);
+								setDelta(newDelta);
+							}}
+							totalItems={filteredTasks.length}
+						/>
+					</>
 				) : tasks.length ? (
 					<ClayEmptyState
 						description={Liferay.Language.get(

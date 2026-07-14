@@ -34,6 +34,28 @@ $cms-tab-navigation-height: 48px;
 		}
 	}
 
+	&-pagination {
+		flex-shrink: 0;
+		flex-wrap: nowrap;
+		margin-top: 1rem;
+
+		.pagination {
+			flex-shrink: 0;
+			flex-wrap: nowrap;
+		}
+
+		.pagination-items-per-page {
+			flex-shrink: 0;
+		}
+
+		.pagination-results {
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
 	&-search {
 		flex-shrink: 0;
 		margin-bottom: 1rem;
