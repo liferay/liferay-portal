@@ -62,9 +62,11 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -366,10 +368,25 @@ public class TaxonomyVocabularyResourceTest
 		_testPutSiteTaxonomyVocabularyByExternalReferenceCodeWithNonexistentAssetLibrary();
 	}
 
+	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPutTaxonomyVocabulary() throws Exception {
 		super.testPutTaxonomyVocabulary();
+
+		Group originalIrrelevantGroup = irrelevantGroup;
+		Group originalTestGroup = testGroup;
+
+		_addCMSGroup();
+
+		try {
+			_testPutTaxonomyVocabularyResetsProjectScope();
+			_testPutTaxonomyVocabularyResetsSpaceScope();
+		}
+		finally {
+			irrelevantGroup = originalIrrelevantGroup;
+			testGroup = originalTestGroup;
+		}
 
 		_testPutTaxonomyVocabularyUpdatesEmptyVocabulary();
 		_testPutTaxonomyVocabularyWithoutDescription();
@@ -464,6 +481,13 @@ public class TaxonomyVocabularyResourceTest
 		testGroup = GroupTestUtil.addGroup(
 			testDepotEntryGroup.getCompanyId(), TestPropsValues.getUserId(),
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
+	}
+
+	private <T> void _assertSingletonArrayEquals(
+		long expected, T[] array, Function<T, Long> function) {
+
+		Assert.assertEquals(Arrays.toString(array), 1, array.length);
+		Assert.assertEquals(Long.valueOf(expected), function.apply(array[0]));
 	}
 
 	private Project _randomProjectAssetLibrary() throws Exception {
@@ -894,6 +918,63 @@ public class TaxonomyVocabularyResourceTest
 
 		Assert.assertTrue(
 			ArrayUtil.isEmpty(putTaxonomyVocabulary.getAssetLibraries()));
+	}
+
+	private void _testPutTaxonomyVocabularyResetsProjectScope()
+		throws Exception {
+
+		Project project = _randomProjectAssetLibrary();
+
+		TaxonomyVocabulary randomTaxonomyVocabulary =
+			randomTaxonomyVocabulary();
+
+		randomTaxonomyVocabulary.setProjects(new Project[] {project});
+
+		TaxonomyVocabulary postTaxonomyVocabulary =
+			taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+				testGroup.getGroupId(), randomTaxonomyVocabulary);
+
+		_assertSingletonArrayEquals(
+			project.getId(), postTaxonomyVocabulary.getProjects(),
+			Project::getId);
+
+		postTaxonomyVocabulary.setProjects(new Project[0]);
+
+		TaxonomyVocabulary putTaxonomyVocabulary =
+			taxonomyVocabularyResource.putTaxonomyVocabulary(
+				postTaxonomyVocabulary.getId(), postTaxonomyVocabulary);
+
+		_assertSingletonArrayEquals(
+			GroupConstants.GROUP_ID_ALL, putTaxonomyVocabulary.getProjects(),
+			Project::getId);
+	}
+
+	private void _testPutTaxonomyVocabularyResetsSpaceScope() throws Exception {
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		TaxonomyVocabulary randomTaxonomyVocabulary =
+			randomTaxonomyVocabulary();
+
+		randomTaxonomyVocabulary.setAssetLibraries(
+			new AssetLibrary[] {assetLibrary});
+
+		TaxonomyVocabulary postTaxonomyVocabulary =
+			taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+				testGroup.getGroupId(), randomTaxonomyVocabulary);
+
+		_assertSingletonArrayEquals(
+			assetLibrary.getId(), postTaxonomyVocabulary.getAssetLibraries(),
+			AssetLibrary::getId);
+
+		postTaxonomyVocabulary.setAssetLibraries(new AssetLibrary[0]);
+
+		TaxonomyVocabulary putTaxonomyVocabulary =
+			taxonomyVocabularyResource.putTaxonomyVocabulary(
+				postTaxonomyVocabulary.getId(), postTaxonomyVocabulary);
+
+		_assertSingletonArrayEquals(
+			GroupConstants.GROUP_ID_ALL,
+			putTaxonomyVocabulary.getAssetLibraries(), AssetLibrary::getId);
 	}
 
 	private void _testPutTaxonomyVocabularyUpdatesEmptyVocabulary()
