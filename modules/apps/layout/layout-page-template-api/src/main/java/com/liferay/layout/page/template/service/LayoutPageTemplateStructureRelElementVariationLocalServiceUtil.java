@@ -60,18 +60,19 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 	public static LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
-				String[] audienceEntryERCs, boolean active, String hide,
+				boolean active, String hide,
 				Map<java.util.Locale, String> htmlMap,
 				Map<java.util.Locale, String> jsMap, String name, long plid,
 				String segmentsExperienceERC, String targetElement,
+				String[] audienceEntryERCs,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, userId, groupId, audienceEntryERCs,
-				active, hide, htmlMap, jsMap, name, plid, segmentsExperienceERC,
-				targetElement, serviceContext);
+				externalReferenceCode, userId, groupId, active, hide, htmlMap,
+				jsMap, name, plid, segmentsExperienceERC, targetElement,
+				audienceEntryERCs, serviceContext);
 	}
 
 	/**
@@ -483,4 +484,4 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 					class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2083718361
+// LIFERAY-SERVICE-BUILDER-HASH:-1355106791

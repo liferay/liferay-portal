@@ -45,12 +45,11 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 		LayoutPageTemplateStructureRelElementVariation
 				addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 					HttpPrincipal httpPrincipal, String externalReferenceCode,
-					long groupId, String[] audienceEntryERCs, boolean active,
-					String hide,
+					long groupId, boolean active, String hide,
 					java.util.Map<java.util.Locale, String> htmlMap,
 					java.util.Map<java.util.Locale, String> jsMap, String name,
 					long plid, String segmentsExperienceERC,
-					String targetElement,
+					String targetElement, String[] audienceEntryERCs,
 					com.liferay.portal.kernel.service.ServiceContext
 						serviceContext)
 			throws com.liferay.portal.kernel.exception.PortalException {
@@ -62,9 +61,9 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 				_addOrUpdateLayoutPageTemplateStructureRelElementVariationParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, audienceEntryERCs,
-				active, hide, htmlMap, jsMap, name, plid, segmentsExperienceERC,
-				targetElement, serviceContext);
+				methodKey, externalReferenceCode, groupId, active, hide,
+				htmlMap, jsMap, name, plid, segmentsExperienceERC,
+				targetElement, audienceEntryERCs, serviceContext);
 
 			Object returnObj = null;
 
@@ -184,9 +183,9 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 	private static final Class<?>[]
 		_addOrUpdateLayoutPageTemplateStructureRelElementVariationParameterTypes0 =
 			new Class[] {
-				String.class, long.class, String[].class, boolean.class,
-				String.class, java.util.Map.class, java.util.Map.class,
-				String.class, long.class, String.class, String.class,
+				String.class, long.class, boolean.class, String.class,
+				java.util.Map.class, java.util.Map.class, String.class,
+				long.class, String.class, String.class, String[].class,
 				com.liferay.portal.kernel.service.ServiceContext.class
 			};
 	private static final Class<?>[]
@@ -197,4 +196,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 			new Class[] {long.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-180312841
+// LIFERAY-SERVICE-BUILDER-HASH:1122815085
