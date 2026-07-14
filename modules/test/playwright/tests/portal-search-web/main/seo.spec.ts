@@ -100,6 +100,7 @@ test.describe('Search Widget SEO', () => {
 	});
 
 	test('Combines contributed parameters from multiple widgets in the canonical URL @LPD-86136', async ({
+		browser,
 		layout,
 		page,
 		searchPage,
@@ -112,19 +113,28 @@ test.describe('Search Widget SEO', () => {
 			await searchPage.addPortlet('Tag Facet', 'Search');
 		});
 
-		await test.step('Visit the page with both params and assert the canonical URL keeps both', async () => {
-			await page.goto(
-				'/web/guest' +
-					layout.friendlyURL +
-					'?category=shoes&tag=running'
-			);
+		await test.step('Visit the page as a guest with both params and assert the canonical URL keeps both', async () => {
+			const guestContext = await browser.newContext();
 
-			const canonicalHref = await page
-				.locator('link[rel="canonical"]')
-				.getAttribute('href');
+			try {
+				const guestPage = await guestContext.newPage();
 
-			expect(canonicalHref).toContain('category=shoes');
-			expect(canonicalHref).toContain('tag=running');
+				await guestPage.goto(
+					'/web/guest' +
+						layout.friendlyURL +
+						'?category=shoes&tag=running'
+				);
+
+				const canonicalHref = await guestPage
+					.locator('link[rel="canonical"]')
+					.getAttribute('href');
+
+				expect(canonicalHref).toContain('category=shoes');
+				expect(canonicalHref).toContain('tag=running');
+			}
+			finally {
+				await guestContext.close();
+			}
 		});
 	});
 
@@ -169,6 +179,7 @@ test.describe('Search Widget SEO', () => {
 	});
 
 	test('Strips unrecognized query parameters from the canonical URL @LPD-86136', async ({
+		browser,
 		layout,
 		page,
 		searchPage,
@@ -179,19 +190,28 @@ test.describe('Search Widget SEO', () => {
 			await searchPage.addPortlet('Category Facet', 'Search');
 		});
 
-		await test.step('Visit the page with a recognized and an unrecognized param and assert the canonical URL keeps only the recognized one', async () => {
-			await page.goto(
-				'/web/guest' +
-					layout.friendlyURL +
-					'?category=shoes&utm_source=email'
-			);
+		await test.step('Visit the page as a guest with a recognized and an unrecognized param and assert the canonical URL keeps only the recognized one', async () => {
+			const guestContext = await browser.newContext();
 
-			const canonicalHref = await page
-				.locator('link[rel="canonical"]')
-				.getAttribute('href');
+			try {
+				const guestPage = await guestContext.newPage();
 
-			expect(canonicalHref).toContain('category=shoes');
-			expect(canonicalHref).not.toContain('utm_source');
+				await guestPage.goto(
+					'/web/guest' +
+						layout.friendlyURL +
+						'?category=shoes&utm_source=email'
+				);
+
+				const canonicalHref = await guestPage
+					.locator('link[rel="canonical"]')
+					.getAttribute('href');
+
+				expect(canonicalHref).toContain('category=shoes');
+				expect(canonicalHref).not.toContain('utm_source');
+			}
+			finally {
+				await guestContext.close();
+			}
 		});
 	});
 });
