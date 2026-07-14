@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 import path from 'path';
 
@@ -37,7 +37,7 @@ const imageBase64 = readFileSync(
 	path.join(__dirname, '../../dependencies/sample_small_wide_400x300.jpg')
 ).toString('base64');
 
-async function fetchStatus(page, href: string) {
+async function fetchStatus(page: Page, href: string) {
 	return page.evaluate(
 		async (url) => (await fetch(url, {redirect: 'manual'})).status,
 		href

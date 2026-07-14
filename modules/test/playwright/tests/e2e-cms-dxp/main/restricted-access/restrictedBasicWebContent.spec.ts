@@ -30,7 +30,7 @@ const test = mergeTests(
 const APPLICATION_NAME = 'cms/basic-web-contents';
 
 test(
-	'A restricted Basic Web Content is denied to GUEST and to a non-member, and renders for a member at its DPT URL',
+	'A restricted Basic Web Content is denied to GUEST and renders for a member at its DPT URL',
 	{tag: ['@LPD-95542', '@LPD-95542/TC-19.g', '@LPD-95542/TC-19.j']},
 	async ({
 		apiHelpers,

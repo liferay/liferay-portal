@@ -12,6 +12,7 @@ import {fragmentsPagesTest} from '../../../../fixtures/fragmentPagesTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi, userData} from '../../../../utils/performLogin';
@@ -30,7 +31,7 @@ const test = mergeTests(
 	structureBuilderPagesTest
 );
 
-async function createSiteMember(apiHelpers, siteId: string) {
+async function createSiteMember(apiHelpers: DataApiHelpers, siteId: string) {
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 	userData[user.alternateName] = {
