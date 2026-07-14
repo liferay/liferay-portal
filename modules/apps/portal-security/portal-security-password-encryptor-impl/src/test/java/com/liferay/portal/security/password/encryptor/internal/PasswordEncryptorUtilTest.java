@@ -122,9 +122,13 @@ public class PasswordEncryptorUtilTest {
 
 	@Test
 	public void testEncryptFailure() throws Exception {
-		_testEncryptFailure(PasswordEncryptor.TYPE_SHA, "password", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=");
-		_testEncryptFailure(RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK);
-		_testEncryptFailure(StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
+		_testEncryptFailure(
+			PasswordEncryptor.TYPE_SHA, "password",
+			"W6ph5Mm5Pz8GgiULbPgzG37mj9g=");
+		_testEncryptFailure(
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK);
+		_testEncryptFailure(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
 		_testEncryptFailure(StringPool.BLANK, StringPool.BLANK, null);
 		_testEncryptFailure(StringPool.BLANK, null, StringPool.BLANK);
 		_testEncryptFailure(StringPool.BLANK, null, null);
