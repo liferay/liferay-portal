@@ -519,9 +519,7 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 	@Test
 	public void testDatabasePartitionSchemaNamePrefixes() throws Exception {
 		String[] databasePartitionSchemaNamePrefixes = {
-			ReflectionTestUtil.getFieldValue(
-				DBPartitionUtil.class,
-				"_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX"),
+			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX,
 			PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX
 		};
 

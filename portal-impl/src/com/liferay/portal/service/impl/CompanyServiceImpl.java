@@ -7,6 +7,7 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -126,16 +127,17 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
 		}
 
-		if (!schemaName.startsWith(
-				_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX)) {
+		String databaseExportedPartitionSchemaNamePrefix =
+			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX;
 
+		if (!schemaName.startsWith(databaseExportedPartitionSchemaNamePrefix)) {
 			throw new IllegalArgumentException(
 				"Invalid schema name \"" + schemaName + "\"");
 		}
 
 		long companyId = GetterUtil.getLong(
 			schemaName.substring(
-				_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX.length()));
+				databaseExportedPartitionSchemaNamePrefix.length()));
 
 		if (companyId <= 0) {
 			throw new IllegalArgumentException(
@@ -546,9 +548,6 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 			companyId, authType, autoLogin, sendPassword, strangers,
 			strangersWithMx, strangersVerify, siteLogo);
 	}
-
-	private static final String
-		_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX = "lexported_";
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
