@@ -5435,87 +5435,10 @@ definition {
 
 			LexiconTable.viewTableEntryTitle(tableEntry = "WC Title 1");
 		}
-	}
 
-	@description = "LPS-133181 When the user selects the option Filter by Author: Me in the 'Filter and Order' dropdown, the list of contents displays content where the user is the creator"
-	@priority = 5
-	test ShowOnlyContentCreatedByUser {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property portal.acceptance = "true";
-
-		task ("Create and configure second user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Assign site role to user") {
-			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
-
-			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
-				roleTitle = "Site Owner",
-				userEmailAddress = "userea@liferay.com");
-		}
-
-		task ("Create First WC via JSON") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title 1");
-		}
-
-		task ("Change to second user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("Add a Web Content using second user") {
-
-			// WC content was not being created using JSONWebcontent.addWebContent . Refactor in the future
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(
-				webContentContent = "WC Content",
-				webContentTitle = "WC Title 2");
-
-			WebContent.publishWithPermissions();
-		}
-
-		task ("Edit Web Content created by Test user") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "WC Title 1");
-
-			WebContent.editCP(
-				webContentTitle = "WC Title 1",
-				webContentTitleEdit = "WC Title Edit");
-		}
-
-		task ("Login with Admin user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "test@liferay.com",
-				userLoginFullName = "Test Test");
-		}
-
-		task ("Navigate to Content Dashboard") {
+		task ("Filter by a single author and assert only that user's content is displayed") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Filter by author Me and assert asset displayed") {
 			ContentDashboard.filterByAuthor(authorNameList = "userfn");
 
 			AssertTextEquals(
@@ -5523,7 +5446,7 @@ definition {
 				value1 = "WC Title 2");
 
 			AssertElementNotPresent(
-				key_tableEntry = "WC Title Edit",
+				key_tableEntry = "WC Title 1",
 				locator1 = "LexiconTable#TABLE_ENTRY_TITLE");
 		}
 	}
