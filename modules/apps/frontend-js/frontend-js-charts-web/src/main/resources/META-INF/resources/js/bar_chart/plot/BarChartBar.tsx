@@ -82,11 +82,14 @@ export default function BarChartBar({
 			/>
 
 			<text
+				aria-hidden="true"
 				className="charts-bar-chart__label"
 				textAnchor={layout.labelAnchor}
 				x={layout.labelX}
 				y={layout.labelY}
 			>
+				<title>{datum.label}</title>
+
 				{layout.labelLines.map((line, lineIndex) => (
 					<tspan
 						dy={lineIndex === 0 ? 0 : LABEL_LINE_HEIGHT}
