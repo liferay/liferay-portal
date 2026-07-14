@@ -52,9 +52,9 @@ definition {
 			fileExtension = ".txt");
 	}
 
-	@description = "This test ensures that a Japanese file can be downloaded by file name."
+	@description = "This test ensures that a Japanese file can be downloaded by file name or by title."
 	@priority = 4
-	test CanDownloadJapaneseFileByFileName {
+	test CanDownloadJapaneseFileByFileNameOrTitle {
 		var portalURL = PropsUtil.get("portal.url");
 		var siteId = JSONGroupAPI._getGroupIdByName(
 			groupName = "Guest",
@@ -74,22 +74,6 @@ definition {
 		AssertTextNotPresent(value1 = "The requested resource could not be found.");
 
 		DMDocument.assertFileNameFromTempFolder(fileName = "これは文書です.txt");
-	}
-
-	@description = "This test ensures that a Japanese file can be downloaded by title."
-	@priority = 4
-	test CanDownloadJapaneseFileByTitle {
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM文書記述",
-			dmDocumentTitle = "これは文書です",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "これは文書です.txt");
 
 		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/これは文書です");
 
