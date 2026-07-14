@@ -6,6 +6,8 @@
 package com.liferay.site.cmp.site.initializer.internal.model.listener;
 
 import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -14,15 +16,21 @@ import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -45,6 +53,7 @@ import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.event.generators.util.Attribute;
@@ -52,6 +61,8 @@ import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuild
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.site.cmp.site.initializer.internal.util.RoleUtil;
+import com.liferay.site.cmp.site.initializer.internal.util.SiteInitializerUtil;
+import com.liferay.site.initializer.SiteInitializer;
 
 import java.io.Serializable;
 
@@ -76,6 +87,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
+			_initializeSite(objectEntry);
 			_reindexLinkedObjectEntry(objectEntry);
 			_route("CMP_ADD_ASSET", objectEntry);
 			_setResourcePermissions(objectEntry);
@@ -210,6 +222,54 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 
 		return new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW};
+	}
+
+	private void _initializeSite(ObjectEntry objectEntry) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-58677")) {
+
+			return;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		if (!StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			return;
+		}
+
+		Group group = _groupLocalService.fetchGroup(
+			objectEntry.getCompanyId(), GroupConstants.CMS);
+
+		if (group == null) {
+			return;
+		}
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchDefaultLayoutPageTemplateEntry(
+						group.getGroupId(),
+						PortalUtil.getClassNameId(
+							objectDefinition.getClassName()),
+						0);
+
+			if (layoutPageTemplateEntry == null) {
+				SiteInitializerUtil.initialize(
+					objectEntry.getCompanyId(), _siteInitializer);
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(
+				"Unable to initialize the CMS site for company " +
+					objectEntry.getCompanyId(),
+				portalException);
+		}
 	}
 
 	private void _reindexKaleoTaskInstanceTokens(ObjectEntry objectEntry)
@@ -520,6 +580,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				}));
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectEntryModelListener.class);
+
 	@Reference
 	private AuditRouter _auditRouter;
 
@@ -536,6 +599,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		_kaleoTaskInstanceTokenLocalService;
 
 	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
@@ -549,6 +616,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 	@Reference
 	private RoleLocalService _roleLocalService;
+
+	@Reference(
+		target = "(site.initializer.key=com.liferay.site.initializer.cmp)"
+	)
+	private SiteInitializer _siteInitializer;
 
 	@Reference
 	private UserGroupRoleService _userGroupRoleService;
