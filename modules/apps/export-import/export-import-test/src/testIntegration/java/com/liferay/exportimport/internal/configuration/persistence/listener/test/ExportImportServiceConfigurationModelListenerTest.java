@@ -54,6 +54,16 @@ public class ExportImportServiceConfigurationModelListenerTest {
 	@Test
 	@TestInfo("LPS-184978")
 	public void testOnBeforeSave() throws Exception {
+		_configurationModelListener.onBeforeSave(
+			StringPool.BLANK,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"validateLayoutReferencesWhitelistedURLPatterns",
+				new String[] {
+					StringPool.BLANK, StringPool.STAR, "/dl/*",
+					StringPool.SLASH + RandomTestUtil.randomString()
+				}
+			).build());
+
 		_testOnBeforeSaveFailure(
 			"please-enter-a-relative-url-that-begins-with-a-slash", "dl/*");
 		_testOnBeforeSaveFailure(
@@ -65,16 +75,6 @@ public class ExportImportServiceConfigurationModelListenerTest {
 		_testOnBeforeSaveFailure(
 			"please-enter-a-relative-url-with-valid-characters",
 			"/dl/entries?id=1");
-
-		_configurationModelListener.onBeforeSave(
-			StringPool.BLANK,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"validateLayoutReferencesWhitelistedURLPatterns",
-				new String[] {
-					StringPool.BLANK, StringPool.STAR, "/dl/*",
-					StringPool.SLASH + RandomTestUtil.randomString()
-				}
-			).build());
 	}
 
 	private void _testOnBeforeSaveFailure(
