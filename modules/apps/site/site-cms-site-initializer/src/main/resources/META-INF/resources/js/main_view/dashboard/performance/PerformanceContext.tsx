@@ -9,7 +9,7 @@ import {
 } from '@liferay/analytics-reports-js-components-web';
 import React, {createContext, useMemo, useState} from 'react';
 
-import {SpaceOption, initialSpace} from '../common/SpacesDropdown';
+import {SpaceOption, initialSpace} from '../common/SpacePicker';
 import {DashboardAdditionalProps} from './types';
 
 const initialRange: RangeSelector = {

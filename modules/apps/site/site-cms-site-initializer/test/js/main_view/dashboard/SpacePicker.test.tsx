@@ -16,9 +16,9 @@ import React, {useState} from 'react';
 import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
 import {
 	SpaceOption,
-	SpacesDropdown,
+	SpacePicker,
 	initialSpace,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacesDropdown';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacePicker';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService'
@@ -29,10 +29,10 @@ const mockedSpaceService = SpaceService as jest.Mocked<typeof SpaceService>;
 const WrappedComponent = () => {
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
-	return <SpacesDropdown onSelectSpace={setSpace} selectedSpace={space} />;
+	return <SpacePicker onSelectSpace={setSpace} selectedSpace={space} />;
 };
 
-describe('[CMS Dashboard] Components: SpacesDropdown', () => {
+describe('[CMS Dashboard] Components: SpacePicker', () => {
 	const mockSpaces = [
 		{externalReferenceCode: 'ERC_01', id: '01', name: 'space 01'},
 		{externalReferenceCode: 'ERC_02', id: '02', name: 'space 02'},
