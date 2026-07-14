@@ -68,6 +68,9 @@ import javax.sql.DataSource;
  */
 public class DBPartitionUtil {
 
+	public static final String DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX =
+		"lexported_";
+
 	public static boolean addDBPartition(long companyId)
 		throws PortalException {
 
@@ -1306,7 +1309,7 @@ public class DBPartitionUtil {
 	}
 
 	private static String _getExportedPartitionName(long companyId) {
-		return _DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX + companyId;
+		return DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX + companyId;
 	}
 
 	private static String _getQuartzWhereClauseSQL(
@@ -1635,7 +1638,7 @@ public class DBPartitionUtil {
 					if (count == 0) {
 						count = StringUtil.count(
 							lowerCaseSQL,
-							_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX);
+							DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX);
 					}
 
 					if (count > 0) {
@@ -1720,9 +1723,6 @@ public class DBPartitionUtil {
 
 		};
 	}
-
-	private static final String
-		_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX = "lexported_";
 
 	private static final String _QUARTZ_TABLE_NAME_PREFIX = GetterUtil.get(
 		PropsUtil.get("persisted.scheduler.org.quartz.jobStore.tablePrefix"),
