@@ -4195,51 +4195,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-134692 Given the info panel of an asset When the user clicks on arrow next to the title of a section not collapsed Then the section will be collapsed"
-	@priority = 3
-	test InfoPanelCollapseSection {
-		task ("Adding vocabulary and category") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Adding Web Content") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Go to the Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Open the info panel and collapse the Public Categories section") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "WC WebContent Title");
-
-			Navigator.gotoNavTab(navTab = "Categorization");
-
-			AssertVisible(
-				categoryName = "Category Name",
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
-
-			Panel.collapsePanel(panel = "Public Categories");
-
-			AssertNotVisible(
-				categoryName = "Category Name",
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
-		}
-	}
-
 	@description = "LPS-134692 Given the info panel of an asset When the user clicks on arrow next to the title of a section collapsed Then the section will be displayed"
 	@priority = 3
 	test InfoPanelExpandSection {
