@@ -1167,31 +1167,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-152906 Given the Info panel of the Content Dashboard When the user accesses the Web Content information panel Then share button must not be present for Web Content"
-	@priority = 4
-	test CheckShareButtonNotPresentForWebContent {
-		task ("Create a Web Content and set a Display Page") {
-			JSONWebcontent.addWebContent(
-				content = "Webcontent Content",
-				groupName = "Test Site Name",
-				title = "WC Content");
-		}
-
-		task ("Navigate to the content Dashboard and the user accesses the Web Content information panel") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "WC Content");
-		}
-
-		task ("Check if the share button is not present at info panel") {
-			AssertElementNotPresent(
-				key_text = "Share",
-				locator1 = "Button#ANY");
-		}
-	}
-
 	@description = "LPS-133716 When in Content Dashboard, a column with the Site / assetLibraty header is shown."
 	@priority = 2
 	test CheckSiteAssertLibraryColumn {
@@ -6732,9 +6707,38 @@ definition {
 		}
 	}
 
-	@description = "LPS-151065 Given a Web Content asset using a Web Content Structure When the user opens Info Panel at Content Dashboard Then Web Content Article - and structure's name text will be exhibit"
-	@priority = 3
-	test WebContentStructureTypeInInfoPanel {
+	@description = "LPS-114912 Validate if the user can open de Info side panel of a web content"
+	@priority = 5
+	test WebContentInfoPanel {
+		property portal.acceptance = "true";
+
+		task ("Create a web content") {
+			JSONWebcontent.addWebContent(
+				content = "WC Content",
+				groupName = "Test Site Name",
+				title = "WC Title");
+		}
+
+		task ("Go to Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Open the Info panel") {
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "WC Title");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
+				value1 = "WC Title");
+		}
+
+		task ("Assert the Share button is not present in the Info panel") {
+			AssertElementNotPresent(
+				key_text = "Share",
+				locator1 = "Button#ANY");
+		}
+
 		task ("Create a web content structure") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
@@ -6761,11 +6765,9 @@ definition {
 			WebContent.publishWithPermissions();
 		}
 
-		task ("Navigate to Content Dashbaord") {
+		task ("Navigate to Content Dashboard and check the structure type in the Info panel") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Go to Content Dashboard and check the type in the Info panel") {
 			LexiconTable.clickEllipsisItem(
 				item = "Info",
 				tableEntry = "Web Content Title");
@@ -6773,33 +6775,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
 				value1 = "Web Content Article - WC Structure Name");
-		}
-	}
-
-	@description = "LPS-114912 Validate if the user can open de Info side panel of a web content"
-	@priority = 5
-	test WebContentViewInfoPanel {
-		property portal.acceptance = "true";
-
-		task ("Create a web content") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Open the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "WC Title");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
-				value1 = "WC Title");
 		}
 	}
 
