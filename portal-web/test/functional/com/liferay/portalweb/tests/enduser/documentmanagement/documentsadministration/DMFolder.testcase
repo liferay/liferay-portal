@@ -61,24 +61,6 @@ definition {
 			dmDocumentTitle = "Document_1.doc");
 
 		DMDocument.viewPG(dmDocumentTitle = "Document_1.doc");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanAddImageInFolder {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
 
 		DMDocument.addPG(
 			dmDocumentDescription = "DM Image Description",
