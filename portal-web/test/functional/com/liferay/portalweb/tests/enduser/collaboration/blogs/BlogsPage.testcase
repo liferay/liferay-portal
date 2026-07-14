@@ -357,10 +357,10 @@ definition {
 			value1 = "custom-url");
 	}
 
-	@description = "This checks that exact content search returns an entry when it includes the entire phrase being queried."
+	@description = "This checks that exact search returns an entry when the query includes the entire content phrase or title phrase, and returns nothing otherwise."
 	@priority = 4
 	@refactordone
-	test CanSearchForExactStringInContent {
+	test CanSearchForExactString {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Search Page");
@@ -369,66 +369,55 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Entry Title");
 
-		Navigator.gotoPage(pageName = "Search Page");
-
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs\"");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "Entry Title",
-			searchAssetType = "Blogs Entry",
-			searchTerm = "\"Blogs\"");
-
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Content\"");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "Entry Title",
-			searchAssetType = "Blogs Entry",
-			searchTerm = "\"Blogs Entry Content\"");
-
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs1\"");
-
-		SearchResults.viewNoSearchResults(searchTerm = "\"Blogs1\"");
-
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs1 Entry1 Content1\"");
-
-		SearchResults.viewNoSearchResults(searchTerm = "\"Blogs1 Entry1 Content1\"");
-	}
-
-	@description = "This checks that exact title search returns an entry when it includes the entire phrase being queried."
-	@priority = 4
-	@refactordone
-	test CanSearchForExactStringInTitle {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Search Page");
-
 		JSONBlog.addEntry(
 			entryContent = "Entry Content",
 			entryTitle = "Blogs Entry Title");
 
 		Navigator.gotoPage(pageName = "Search Page");
 
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs\"");
+		task ("Search for an exact content phrase") {
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs\"");
 
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "Blogs Entry Title",
-			searchAssetType = "Blogs Entry",
-			searchTerm = "\"Blogs\"");
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Entry Title",
+				searchAssetType = "Blogs Entry",
+				searchTerm = "\"Blogs\"");
 
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Title\"");
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Content\"");
 
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "Blogs Entry Title",
-			searchAssetType = "Blogs Entry",
-			searchTerm = "\"Blogs Entry Title\"");
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Entry Title",
+				searchAssetType = "Blogs Entry",
+				searchTerm = "\"Blogs Entry Content\"");
 
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs1\"");
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs1\"");
 
-		SearchResults.viewNoSearchResults(searchTerm = "\"Blogs1\"");
+			SearchResults.viewNoSearchResults(searchTerm = "\"Blogs1\"");
 
-		SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Title1\"");
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs1 Entry1 Content1\"");
 
-		SearchResults.viewNoSearchResults(searchTerm = "\"Blogs Entry Title1\"");
+			SearchResults.viewNoSearchResults(searchTerm = "\"Blogs1 Entry1 Content1\"");
+		}
+
+		task ("Search for an exact title phrase") {
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs\"");
+
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Blogs Entry Title",
+				searchAssetType = "Blogs Entry",
+				searchTerm = "\"Blogs\"");
+
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Title\"");
+
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Blogs Entry Title",
+				searchAssetType = "Blogs Entry",
+				searchTerm = "\"Blogs Entry Title\"");
+
+			SearchPage.searchEmbedded(searchTerm = "\"Blogs Entry Title1\"");
+
+			SearchResults.viewNoSearchResults(searchTerm = "\"Blogs Entry Title1\"");
+		}
 	}
 
 	@description = "This checks that a blog comment can be subscribed to."
