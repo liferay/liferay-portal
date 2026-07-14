@@ -51,6 +51,47 @@ definition {
 		}
 	}
 
+	@description = "LPS-132509 Given the Content Dashboard When an asset is listed in the assets list Then the following metadata columns are shown: Title, Author (Owner), Subtype, Site or Asset Library, Status, Category 1, Category 2, Modified Date"
+	@priority = 3
+	test AssetMetadataColumns {
+		task ("Create a category for Audiente and Staged") {
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Category1",
+				vocabularyName = "Audience");
+
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Category2",
+				vocabularyName = "Stage");
+		}
+
+		task ("Create a blog") {
+			JSONBlog.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title",
+				groupName = "Test Site Name");
+		}
+
+		task ("Go to Content Dashboard and check the title in the Info panel") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Assert columns displayed") {
+			for (var columnHeader : list "Title,Author,Subtype,Site or Asset Library,Status,Audience,Stage,Modified Date") {
+				AssertVisible(
+					key_tableHeader = ${columnHeader},
+					locator1 = "LexiconTable#TABLE_HEADER");
+			}
+		}
+
+		task ("Assert the Site or Asset Library column is displayed") {
+			AssertVisible(
+				locator1 = "ContentDashboard#SITE_ASSET_LIBRARY_COLUMN",
+				siteAssetValue = "Site or Asset Library");
+		}
+	}
+
 	@description = "LPS-120417 When there is web content published by a user different than the admin user and the admin user visit the Content Dashboard, the content is visible"
 	@priority = 3
 	test AssetNotFilteredByMe {
@@ -337,41 +378,6 @@ definition {
 
 		task ("Delete site created for this test") {
 			JSONGroup.deleteGroupByName(groupName = "Test Site Name 2");
-		}
-	}
-
-	@description = "LPS-132509 Given the Content Dashboard When a blog is listed in the assets list Then the following metadata are shown: Title, Author (Owner), Type, Site or Asset Library, Status, Category 1, Category 2, Modified Date"
-	@priority = 3
-	test BlogsMetadata {
-		task ("Create a category for Audiente and Staged") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category1",
-				vocabularyName = "Audience");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category2",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Assert columns displayed") {
-			for (var columnHeader : list "Title,Author,Subtype,Site or Asset Library,Status,Audience,Stage,Modified Date") {
-				AssertVisible(
-					key_tableHeader = ${columnHeader},
-					locator1 = "LexiconTable#TABLE_HEADER");
-			}
 		}
 	}
 
@@ -2206,41 +2212,6 @@ definition {
 				fragmentName = "heading",
 				id = "element-text",
 				text = "DM Document Title");
-		}
-	}
-
-	@description = "LPS-119966 Given the Content Dashboard When a document is listed in the assets list Then the following metadata are shown: Title, Author (Owner), Subtype, Site or Asset Library, Status, Category 1, Category 2, Modified Date"
-	@priority = 3
-	test DocumentMetadata {
-		task ("Create a category for Audiente and Staged") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category1",
-				vocabularyName = "Audience");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category2",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a Document using JSONWS") {
-			JSONDocument.addFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Assert columns displayed") {
-			for (var columnHeader : list "Title,Author,Subtype,Site or Asset Library,Status,Audience,Stage,Modified Date") {
-				AssertVisible(
-					key_tableHeader = ${columnHeader},
-					locator1 = "LexiconTable#TABLE_HEADER");
-			}
 		}
 	}
 
