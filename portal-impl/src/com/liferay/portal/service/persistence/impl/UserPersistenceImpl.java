@@ -3782,8 +3782,8 @@ public class UserPersistenceImpl
 					"countByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, false),
 				_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-				"type_ = 1", null,
+				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+				"user.type = 1", "user.type_ = 1", null,
 				new FinderColumn<>(
 					"user.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, User::getCompanyId));
@@ -3867,8 +3867,8 @@ public class UserPersistenceImpl
 				new String[] {Long.class.getName(), Long.class.getName()},
 				new String[] {"userId", "companyId"}, false),
 			_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-			"type_ = 1", null,
+			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "user.type = 1",
+			"user.type_ = 1", null,
 			new FinderColumn<>(
 				"user.", "userId", FinderColumn.Type.LONG, ">", true, true,
 				User::getUserId),
@@ -3910,8 +3910,8 @@ public class UserPersistenceImpl
 				new String[] {Long.class.getName(), Date.class.getName()},
 				new String[] {"companyId", "createDate"}, false),
 			_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-			"type_ = 1", null,
+			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "user.type = 1",
+			"user.type_ = 1", null,
 			new FinderColumn<>(
 				"user.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				User::getCompanyId),
@@ -3938,8 +3938,8 @@ public class UserPersistenceImpl
 				new String[] {Long.class.getName(), Date.class.getName()},
 				new String[] {"companyId", "modifiedDate"}, false),
 			_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-			"type_ = 1", null,
+			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "user.type = 1",
+			"user.type_ = 1", null,
 			new FinderColumn<>(
 				"user.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				User::getCompanyId),
@@ -4050,8 +4050,8 @@ public class UserPersistenceImpl
 				new String[] {Long.class.getName(), Integer.class.getName()},
 				new String[] {"companyId", "status"}, false),
 			_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-			"type_ = 1", null,
+			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "user.type = 1",
+			"user.type_ = 1", null,
 			new FinderColumn<>(
 				"user.", "companyId", FinderColumn.Type.LONG, "=", true, true,
 				User::getCompanyId),
@@ -4089,8 +4089,8 @@ public class UserPersistenceImpl
 					new String[] {"companyId", "createDate", "modifiedDate"},
 					false),
 				_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "type_ = 1",
-				"type_ = 1", null,
+				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+				"user.type = 1", "user.type_ = 1", null,
 				new FinderColumn<>(
 					"user.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, User::getCompanyId),
@@ -4218,4 +4218,4 @@ public class UserPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:228390115
+// LIFERAY-SERVICE-BUILDER-HASH:288719783
