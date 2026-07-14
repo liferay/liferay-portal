@@ -145,7 +145,7 @@ test(
 			await test.step('The version history lists all versions with timestamps', async () => {
 				await assetsPage.gotoContents();
 
-				await openVersionHistory(page, titleV3);
+				await openVersionHistory(assetsPage, titleV3);
 
 				const rows = page.locator('tbody tr');
 

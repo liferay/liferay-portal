@@ -114,7 +114,7 @@ test(
 		await test.step('The version history lists all three versions', async () => {
 			await assetsPage.gotoContents();
 
-			await openVersionHistory(page, title);
+			await openVersionHistory(assetsPage, title);
 
 			await expect(page.locator('tbody tr')).toHaveCount(3, {
 				timeout: 10000,

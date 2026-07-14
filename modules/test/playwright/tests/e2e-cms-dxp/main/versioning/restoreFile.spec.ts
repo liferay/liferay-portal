@@ -154,7 +154,7 @@ test(
 
 				await assetsPage.changeVisualizationMode('Table');
 
-				await openVersionHistory(page, titleV3);
+				await openVersionHistory(assetsPage, titleV3);
 
 				await restoreVersion(page, titleV1);
 			});

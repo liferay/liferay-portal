@@ -5,6 +5,8 @@
 
 import {Page, expect} from '@playwright/test';
 
+import {AssetsPage} from '../../../../site-cms-site-initializer/main/pages/AssetsPage';
+
 async function clickRowAction(page: Page, rowText: string, action: string) {
 	const actionsButton = page
 		.locator('tbody tr', {hasText: rowText})
@@ -77,11 +79,17 @@ export async function restoreVersionByNumber(
 	await expect(rows).toHaveCount(rowCount + 1, {timeout: 15000});
 }
 
-export async function openVersionHistory(page: Page, headTitle: string) {
-	await clickRowAction(page, headTitle, 'View History');
+export async function openVersionHistory(
+	assetsPage: AssetsPage,
+	headTitle: string
+) {
+	await assetsPage.execItemAction({
+		action: 'View History',
+		filter: headTitle,
+	});
 
 	await expect(
-		page.getByRole('heading', {name: `"${headTitle}" History`})
+		assetsPage.page.getByRole('heading', {name: `"${headTitle}" History`})
 	).toBeVisible({timeout: 15000});
 }
 

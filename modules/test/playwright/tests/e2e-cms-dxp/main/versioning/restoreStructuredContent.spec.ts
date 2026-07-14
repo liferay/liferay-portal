@@ -217,7 +217,7 @@ test(
 			await test.step('The CMS Administrator restores version 1', async () => {
 				await assetsPage.gotoContents();
 
-				await openVersionHistory(page, titleValue);
+				await openVersionHistory(assetsPage, titleValue);
 
 				await expect(page.locator('tbody tr')).toHaveCount(3, {
 					timeout: 10000,
