@@ -1,1 +1,0 @@
-../../.workspace-rules/rules/client-extension-types.md

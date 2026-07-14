@@ -1,1 +1,0 @@
-../../../.workspace-rules/skills/guided-client-extension/SKILL.md

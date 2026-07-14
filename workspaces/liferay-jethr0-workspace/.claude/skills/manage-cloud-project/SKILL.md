@@ -1,1 +1,0 @@
-../../../.workspace-rules/skills/manage-cloud-project/SKILL.md

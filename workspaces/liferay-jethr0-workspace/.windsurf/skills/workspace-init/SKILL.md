@@ -1,1 +1,0 @@
-../../../.workspace-rules/skills/workspace-init/SKILL.md

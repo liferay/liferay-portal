@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<suppressions>
-	<source-check>
-		<suppress checks="LocaleUtilCheck" files=".*/src/main/java/com/liferay/jethr0/util/LocaleUtil\.java" />
-		<suppress checks="StringMethodsCheck" files=".*/src/main/java/com/liferay/jethr0/util/StringUtil\.java" />
-	</source-check>
-</suppressions>

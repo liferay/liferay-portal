@@ -1,3 +1,0 @@
-assemble:
-    -   include:
-            -   data/*

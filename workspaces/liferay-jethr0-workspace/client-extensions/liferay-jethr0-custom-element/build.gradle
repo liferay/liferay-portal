@@ -1,4 +1,0 @@
-packageRunBuild {
-	inputs.dir "src"
-	outputs.dir "build"
-}
