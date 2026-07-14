@@ -974,38 +974,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-160210 Add WebDAV URL to Info Panel"
-	@priority = 3
-	test CheckDocumentURLLabel {
-		task ("Given a Document Asset at Content Dashboard") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name",
-				mimeType = "text/plain",
-				sourceFileName = "Document_1.txt");
-		}
-
-		task ("When the user accesses the information panel") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "DM Document Title");
-
-			Panel.expandPanel(panel = "Properties");
-		}
-
-		task ("Then the field labels should be added to distinguish between the two URLs ") {
-			AssertElementPresent(
-				key_fieldLabel = "WebDAV URL",
-				locator1 = "ContentDashboard#URL_LABEL");
-
-			AssertElementPresent(
-				key_fieldLabel = "Latest Version URL",
-				locator1 = "ContentDashboard#URL_LABEL");
-		}
-	}
-
 	@description = "LPS-117341 When there's a label with "..." indicating 'more categories' and the user hovers on it, a tooltip with the rest of categories assigned shows"
 	@priority = 5
 	test CheckForMoreCategories {
@@ -2952,46 +2920,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-151065 Given a Document asset using a New Document Type When the user opens Info Panel at Content Dashboard Then ""Document - "" and structure's name text will be exhibit"
-	@priority = 3
-	test DocumentTypeInInfoPanel {
-		task ("Add a document type") {
-			DMNavigator.openDocumentTypesAdmin(siteURLKey = "test-site-name");
-
-			DMDocumentType.add(
-				dmDocumentTypeDescription = "DM Document Type Description",
-				dmDocumentTypeFieldNames = "Text",
-				dmDocumentTypeName = "DM Document Type Name");
-		}
-
-		task ("Add a document") {
-			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				dmDocumentTypeName = "DM Document Type Name",
-				textField = "DM Document Text");
-		}
-
-		task ("Navigate to Content Dashbaord") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the type in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "DM Document Title");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
-				value1 = "Document - DM Document Type Name");
-		}
-	}
-
 	@description = "LPS-119966 Given a document with and associated Display Page Template When the user with permissions clicks on the info panel button Then the user is lead to the info panel"
 	@priority = 4
-	test DocumentViewInfoPanel {
+	test DocumentInfoPanel {
 		property portal.acceptance = "true";
 
 		task ("Create a new Document") {
@@ -3015,6 +2946,49 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
 				value1 = "DM Document Title");
+		}
+
+		task ("Assert the WebDAV URL and Latest Version URL labels under Properties") {
+			Panel.expandPanel(panel = "Properties");
+
+			AssertElementPresent(
+				key_fieldLabel = "WebDAV URL",
+				locator1 = "ContentDashboard#URL_LABEL");
+
+			AssertElementPresent(
+				key_fieldLabel = "Latest Version URL",
+				locator1 = "ContentDashboard#URL_LABEL");
+		}
+
+		task ("Add a document type") {
+			DMNavigator.openDocumentTypesAdmin(siteURLKey = "test-site-name");
+
+			DMDocumentType.add(
+				dmDocumentTypeDescription = "DM Document Type Description",
+				dmDocumentTypeFieldNames = "Text",
+				dmDocumentTypeName = "DM Document Type Name");
+		}
+
+		task ("Add a document based on the document type created") {
+			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
+
+			DMDocument.addCP(
+				dmDocumentDescription = "DM Typed Document Description",
+				dmDocumentTitle = "DM Typed Document Title",
+				dmDocumentTypeName = "DM Document Type Name",
+				textField = "DM Document Text");
+		}
+
+		task ("Navigate to Content Dashboard and check the document type in the Info panel") {
+			ContentDashboard.goToContentDashboard();
+
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "DM Typed Document Title");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
+				value1 = "Document - DM Document Type Name");
 		}
 	}
 
