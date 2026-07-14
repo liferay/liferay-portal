@@ -8,6 +8,9 @@ import {Locator, Page} from '@playwright/test';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 
+import type {ProjectPage} from './ProjectPage';
+import type {ProjectsPage} from './ProjectsPage';
+
 interface ExecItemActionArgs {
 	action: 'Assign Task' | 'Delete' | 'Update Due Date' | 'Update State';
 	filter: string;
@@ -25,7 +28,9 @@ export class TasksPage {
 		moreLinkButton: Locator;
 		moreLinkPopover: Locator;
 		nextMonthButton: Locator;
+		nextWeekButton: Locator;
 		previousMonthButton: Locator;
+		previousWeekButton: Locator;
 		title: Locator;
 		todayButton: Locator;
 		unscheduledTasksButton: Locator;
@@ -81,9 +86,17 @@ export class TasksPage {
 				exact: true,
 				name: 'Next Month',
 			}),
+			nextWeekButton: page.getByRole('button', {
+				exact: true,
+				name: 'Next Week',
+			}),
 			previousMonthButton: page.getByRole('button', {
 				exact: true,
 				name: 'Previous Month',
+			}),
+			previousWeekButton: page.getByRole('button', {
+				exact: true,
+				name: 'Previous Week',
 			}),
 			title: page.getByTestId('calendarTitle'),
 			todayButton: page.getByRole('button', {name: 'Today'}),
@@ -151,5 +164,41 @@ export class TasksPage {
 
 	async goto() {
 		await this.page.goto(PORTLET_URLS.cmpTasks);
+	}
+
+	async openProjectWeekView(
+		projectsPage: ProjectsPage,
+		projectPage: ProjectPage,
+		projectTitle: string
+	) {
+		await projectsPage.goto();
+
+		await projectsPage.getProject(projectTitle).click();
+
+		await projectPage.tasksTab.click();
+
+		await this.tableViewButton.click();
+
+		await this.calendarView.viewOption.click();
+
+		await this.calendarView.title.waitFor({state: 'visible'});
+
+		await this.switchToWeekView();
+	}
+
+	async switchToWeekView() {
+
+		// The FDS view selector keeps focus after selecting Calendar and its
+		// tooltip overlaps the view switcher, so blur it before switching.
+
+		await this.page.evaluate(
+			() => (document.activeElement as HTMLElement)?.blur()
+		);
+
+		await this.calendarView.weekViewButton.click();
+
+		await this.page
+			.locator('.fc-dayGridWeek-view')
+			.waitFor({state: 'visible', timeout: 15000});
 	}
 }
