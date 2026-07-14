@@ -20,8 +20,6 @@ import java.util.regex.Pattern;
 public class PostgreSQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	public PostgreSQLTransformerLogic(DB db) {
-		super(db);
-
 		Function[] functions = {
 			getAggregationFunction(), getBitwiseCheckFunction(),
 			getBitwiseOrFunction(), getBooleanFunction(),

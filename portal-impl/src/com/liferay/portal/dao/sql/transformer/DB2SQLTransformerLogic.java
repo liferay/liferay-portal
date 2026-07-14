@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	public DB2SQLTransformerLogic(DB db) {
-		super(db);
+		_db = db;
 
 		Function[] functions = {
 			getAggregationFunction(), getBooleanFunction(),
@@ -38,6 +38,13 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 		}
 
 		setFunctions(functions);
+	}
+
+	@Override
+	protected Function<String, String> getBooleanFunction() {
+		return (String sql) -> StringUtil.replace(
+			sql, new String[] {"[$FALSE$]", "[$TRUE$]"},
+			new String[] {_db.getTemplateFalse(), _db.getTemplateTrue()});
 	}
 
 	@Override
@@ -128,5 +135,7 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 		"LIKE \\?", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _selectPattern = Pattern.compile(
 		"select .+?from ", Pattern.CASE_INSENSITIVE);
+
+	private final DB _db;
 
 }

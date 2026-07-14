@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 public class OracleSQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	public OracleSQLTransformerLogic(DB db) {
-		super(db);
+		_db = db;
 
 		Function[] functions = {
 			getAggregationFunction(), getBitwiseOrFunction(),
@@ -37,6 +37,13 @@ public class OracleSQLTransformerLogic extends BaseSQLTransformerLogic {
 		}
 
 		setFunctions(functions);
+	}
+
+	@Override
+	protected Function<String, String> getBooleanFunction() {
+		return (String sql) -> StringUtil.replace(
+			sql, new String[] {"[$FALSE$]", "[$TRUE$]"},
+			new String[] {_db.getTemplateFalse(), _db.getTemplateTrue()});
 	}
 
 	@Override
@@ -84,5 +91,7 @@ public class OracleSQLTransformerLogic extends BaseSQLTransformerLogic {
 		return (String sql) -> StringUtil.replace(
 			sql, " != ''", " IS NOT NULL");
 	}
+
+	private final DB _db;
 
 }

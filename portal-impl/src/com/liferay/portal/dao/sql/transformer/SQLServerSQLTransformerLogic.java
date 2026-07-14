@@ -7,6 +7,7 @@ package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -18,7 +19,7 @@ import java.util.regex.Matcher;
 public class SQLServerSQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	public SQLServerSQLTransformerLogic(DB db) {
-		super(db);
+		_db = db;
 
 		Function[] functions = {
 			getAggregationFunction(), getBitwiseCheckFunction(),
@@ -36,6 +37,13 @@ public class SQLServerSQLTransformerLogic extends BaseSQLTransformerLogic {
 		}
 
 		setFunctions(functions);
+	}
+
+	@Override
+	protected Function<String, String> getBooleanFunction() {
+		return (String sql) -> StringUtil.replace(
+			sql, new String[] {"[$FALSE$]", "[$TRUE$]"},
+			new String[] {_db.getTemplateFalse(), _db.getTemplateTrue()});
 	}
 
 	@Override
@@ -64,5 +72,7 @@ public class SQLServerSQLTransformerLogic extends BaseSQLTransformerLogic {
 
 		return matcher.replaceAll(dropTableIfExists);
 	}
+
+	private final DB _db;
 
 }
