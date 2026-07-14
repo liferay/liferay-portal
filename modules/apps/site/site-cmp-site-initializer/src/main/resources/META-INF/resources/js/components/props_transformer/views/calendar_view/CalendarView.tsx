@@ -424,7 +424,7 @@ export default function CalendarView({
 				{...(Liferay.FeatureFlags['LPD-69885'] && {
 					dayCellContent: (arg) => (
 						<>
-							{arg.dayNumberText}
+							{arg.dayNumberText || String(arg.date.getDate())}
 
 							<ClayButtonWithIcon
 								aria-label={Liferay.Language.get('add-task')}
