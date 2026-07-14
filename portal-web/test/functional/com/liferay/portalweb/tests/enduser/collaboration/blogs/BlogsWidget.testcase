@@ -321,32 +321,53 @@ definition {
 			value1 = "Card");
 	}
 
-	@description = "This checks that the full content of an entry can be displayed."
+	@description = "This checks that the full content of an entry can be displayed with the Full Content display template and that the custom abstract can be viewed with the Card display template."
 	@priority = 4
 	@refactordone
-	test CanViewBlogWithFullContentDisplay {
+	test CanViewBlogWithFullContentAndCardDisplayTemplate {
 		JSONBlog.addEntry(
+			entryAbstractDescription = "Blogs Entry Abstract Description",
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Portlet.gotoPortletOptions(
-			portletName = "Blogs",
-			portletOption = "Configuration");
+		task ("View the full content with the Full Content display template") {
+			Portlet.gotoPortletOptions(
+				portletName = "Blogs",
+				portletOption = "Configuration");
 
-		BlogsConfiguration.selectConfigurationIFrame();
+			BlogsConfiguration.selectConfigurationIFrame();
 
-		BlogsConfiguration.selectDisplayTemplate(displayTemplate = "Full Content");
+			BlogsConfiguration.selectDisplayTemplate(displayTemplate = "Full Content");
 
-		IFrame.saveConfiguration();
+			IFrame.saveConfiguration();
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
 
-		BlogsEntry.viewEntryPG(
-			entryContent = ${entryContent},
-			entryTitle = "Blogs Entry Title");
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
+
+		task ("View the custom abstract with the Card display template") {
+			Portlet.gotoPortletOptions(
+				portletName = "Blogs",
+				portletOption = "Configuration");
+
+			BlogsConfiguration.selectConfigurationIFrame();
+
+			BlogsConfiguration.selectDisplayTemplate(displayTemplate = "Card");
+
+			IFrame.saveConfiguration();
+
+			Navigator.gotoPage(pageName = "Blogs Page");
+
+			BlogsEntry.viewWithAbstractDisplayTemplatePG(
+				entryAbstractDescription = "Blogs Entry Abstract Description",
+				entryTitle = "Blogs Entry Title");
+		}
 	}
 
 	@priority = 3
@@ -479,31 +500,6 @@ definition {
 
 		BlogsEntry.viewWithTitleDisplayTemplatePG(
 			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-	}
-
-	@description = "This is a test for LPS-90983. It checks that the custom abstract can be viewed in card display template."
-	@priority = 4
-	test CanViewCustomAbstractInCardDisplayTemplate {
-		JSONBlog.addEntry(
-			entryAbstractDescription = "Blogs Entry Abstract Description",
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Portlet.gotoPortletOptions(
-			portletName = "Blogs",
-			portletOption = "Configuration");
-
-		BlogsConfiguration.selectConfigurationIFrame();
-
-		BlogsConfiguration.selectDisplayTemplate(displayTemplate = "Card");
-
-		IFrame.saveConfiguration();
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsEntry.viewWithAbstractDisplayTemplatePG(
-			entryAbstractDescription = "Blogs Entry Abstract Description",
 			entryTitle = "Blogs Entry Title");
 	}
 
