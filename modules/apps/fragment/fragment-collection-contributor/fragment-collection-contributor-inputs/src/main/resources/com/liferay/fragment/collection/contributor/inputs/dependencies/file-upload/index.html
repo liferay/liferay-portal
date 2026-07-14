@@ -8,7 +8,7 @@
 	[#assign localFileUploaded = true]
 [/#if]
 
-<div class="file-upload">
+<div class="file-upload"[#if input.attributes.isCMS?? && input.attributes.isCMS] data-ai-assistant-field-id="${fragmentElementId}"[/#if]>
 	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0">
 		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" id="${fragmentElementId}-file-upload-label">
 			${htmlUtil.escape(input.label)}
