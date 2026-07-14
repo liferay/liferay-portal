@@ -3629,10 +3629,20 @@ definition {
 				title = "WC Title 2");
 		}
 
-		task ("Filter asset by tag in Content Dashboard") {
+		task ("Filter asset by multiple tags in Content Dashboard") {
 			ContentDashboard.goToContentDashboard();
 
 			ContentDashboard.filterByTag(tagName = "tagnumber1");
+
+			ContentDashboard.filterByTag(tagName = "tagnumber2");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "WC Title 1");
+		}
+
+		task ("Filter asset by a single tag in Content Dashboard") {
+			ContentDashboard.clearFilters();
 
 			ContentDashboard.filterByTag(tagName = "tagnumber2");
 
@@ -3971,30 +3981,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FILTER_TEXT",
 				value1 = "Subtype: Blogs Entry");
-		}
-	}
-
-	@description = "LPS-124960 Validate if the user can filter by tag"
-	@priority = 5
-	test FilterByTag {
-		property portal.acceptance = "true";
-
-		task ("Add web content with tag to the first site") {
-			JSONWebcontent.addWebContent(
-				assetTagNames = "test_tag",
-				content = "Web Content With Tag",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Filter by tag at Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByTag(tagName = "test_tag");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "Web Content Title");
 		}
 	}
 
