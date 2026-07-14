@@ -282,33 +282,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the blog author's avatar and name are shown"
-	@priority = 3
-	test BlogAuthorInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("When the info panel of a blog is open") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-		}
-
-		task ("Then the blog author's avatar and name are shown") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#INFO_PANEL_AUTHOR",
-				value1 = "Test Test");
-
-			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_AVATAR");
-		}
-	}
-
 	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the list of categories assigned to the content will be divided between public and internal vocabularies"
 	@priority = 3
 	test BlogCategoriesInInfoPanel {
@@ -373,110 +346,6 @@ definition {
 			AssertVisible(
 				categoryName = "CategoryInternal",
 				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
-		}
-	}
-
-	@description = "This is a test for LPS-132510 and LPS-164349. Given The Content Dashboard When the info panel of a blog is open Then the Creation date of the blog is shown in the Properties section"
-	@priority = 3
-	test BlogCreationDateInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the Creation date in the Properties section") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			AssertVisible(
-				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
-				typeOfDate = "Creation Date");
-		}
-	}
-
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the Display date of the blog is shown in the Details section"
-	@priority = 3
-	test BlogDisplayDateInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the Display date in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			Panel.expandPanel(panel = "Properties");
-
-			AssertVisible(
-				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
-				typeOfDate = "Display Date");
-		}
-	}
-
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the ID of the blog is shown in the Details section"
-	@priority = 3
-	test BlogIDDateInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the ID in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			Panel.expandPanel(panel = "Properties");
-
-			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_ID");
-		}
-	}
-
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the Modification date of the blog is shown in the Details section"
-	@priority = 3
-	test BlogModificationDateInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the Modified date in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			Panel.expandPanel(panel = "Properties");
-
-			AssertVisible(
-				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
-				typeOfDate = "Modified Date");
 		}
 	}
 
@@ -561,31 +430,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the blog status label is shown"
-	@priority = 3
-	test BlogStatusInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the status in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-
-			AssertVisible(
-				assetStatus = "Approved",
-				locator1 = "ContentDashboard#INFO_PANEL_STATUS");
-		}
-	}
-
 	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then all the tags assigned to the blog appear as labels in the Tags section"
 	@priority = 3
 	test BlogTagsInInfoPanel {
@@ -616,9 +460,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the title of the blog is shown"
+	@description = "LPS-132510 Given the Content Dashboard when the info panel of a blog is open then the blog title, author, status, type, version and dates are shown"
 	@priority = 3
-	test BlogTitleInInfoPanel {
+	test BlogInfoPanel {
 		task ("Create a blog") {
 			JSONBlog.addEntry(
 				entryContent = "Blogs Entry Content",
@@ -626,68 +470,54 @@ definition {
 				groupName = "Test Site Name");
 		}
 
-		task ("Go to Content Dashboard and check the title in the Info panel") {
+		task ("Open the info panel of the blog") {
 			ContentDashboard.goToContentDashboard();
-		}
 
-		task ("Go to Content Dashboard and check the title in the Info panel") {
 			LexiconTable.clickEllipsisItem(
 				item = "Info",
 				tableEntry = "Blogs Entry Title");
+		}
 
+		task ("Assert the title, author, status, type, version and creation date") {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
 				value1 = "Blogs Entry Title");
-		}
-	}
 
-	@description = "LPS-151065 Given a Blog When the user opens asset's Info Panel at Content Dashboard Then ""Blogs Entry"" text will be exhibit"
-	@priority = 3
-	test BlogTypeInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
+			AssertTextEquals(
+				locator1 = "ContentDashboard#INFO_PANEL_AUTHOR",
+				value1 = "Test Test");
 
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
+			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_AVATAR");
 
-		task ("Go to Content Dashboard and check the type in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
+			AssertVisible(
+				assetStatus = "Approved",
+				locator1 = "ContentDashboard#INFO_PANEL_STATUS");
 
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_ASSET_TYPE",
 				value1 = "Blogs Entry");
-		}
-	}
-
-	@description = "LPS-132510 Given The Content Dashboard When the info panel of a blog is open Then the blog version labels are shown"
-	@priority = 3
-	test BlogVersionInInfoPanel {
-		task ("Create a blog") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Go to Content Dashboard and check the title in the Info panel") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Go to Content Dashboard and check the version in the Info panel") {
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
 
 			AssertElementPresent(
 				assetVersion = "Version 1.0",
 				locator1 = "ContentDashboard#INFO_PANEL_VERSION");
+
+			AssertVisible(
+				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
+				typeOfDate = "Creation Date");
+		}
+
+		task ("Assert the display date, modified date and ID in the Properties section") {
+			Panel.expandPanel(panel = "Properties");
+
+			AssertVisible(
+				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
+				typeOfDate = "Display Date");
+
+			AssertVisible(
+				locator1 = "ContentDashboard#INFO_PANEL_TYPE_OF_DATE",
+				typeOfDate = "Modified Date");
+
+			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_ID");
 		}
 	}
 
