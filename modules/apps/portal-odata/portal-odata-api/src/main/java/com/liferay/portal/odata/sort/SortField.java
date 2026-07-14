@@ -64,6 +64,14 @@ public class SortField implements Serializable {
 		_parentEntityFields = null;
 	}
 
+	public EntityField.Type getEntityFieldType() {
+		if (_entityField == null) {
+			return null;
+		}
+
+		return _entityField.getType();
+	}
+
 	/**
 	 * Returns the field's name.
 	 *
