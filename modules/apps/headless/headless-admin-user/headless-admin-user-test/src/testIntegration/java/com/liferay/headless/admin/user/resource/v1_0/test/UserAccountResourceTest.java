@@ -715,6 +715,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testGetUserAccountsPageWithCustomFields();
 		_testGetUserAccountsPageWithSortCustomField();
 		_testGetUserAccountsPageWithSortFullName();
+		_testGetUserAccountsPageWithSortId();
 	}
 
 	@Ignore
@@ -2370,6 +2371,36 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		page = userAccountResource.getUserAccountsPage(
 			domainName, null, Pagination.of(1, 10), "name:desc");
+
+		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
+	}
+
+	private void _testGetUserAccountsPageWithSortId() throws Exception {
+		String domainName = StringUtil.randomString() + ".com";
+		List<UserAccount> userAccounts = new ArrayList<>();
+
+		userAccounts.add(
+			userAccountResource.postUserAccount(
+				null, null,
+				_randomUserAccount(
+					userAccount -> userAccount.setEmailAddress(
+						"aaa@" + domainName))));
+		userAccounts.add(
+			userAccountResource.postUserAccount(
+				null, null,
+				_randomUserAccount(
+					userAccount -> userAccount.setEmailAddress(
+						"bbb@" + domainName))));
+
+		Page<UserAccount> page = userAccountResource.getUserAccountsPage(
+			domainName, null, Pagination.of(1, 10), "id:asc");
+
+		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
+
+		Collections.reverse(userAccounts);
+
+		page = userAccountResource.getUserAccountsPage(
+			domainName, null, Pagination.of(1, 10), "id:desc");
 
 		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
 	}
