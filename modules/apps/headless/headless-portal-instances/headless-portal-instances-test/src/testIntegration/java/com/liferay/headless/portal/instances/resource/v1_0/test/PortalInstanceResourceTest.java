@@ -332,7 +332,7 @@ public class PortalInstanceResourceTest
 	private void _dropExportedSchema(long companyId) throws Exception {
 		DB db = DBManagerUtil.getDB();
 
-		String sql = "drop schema lexported_" + companyId;
+		String sql = "drop schema if exists lexported_" + companyId;
 
 		if (db.getDBType() == DBType.POSTGRESQL) {
 			sql = sql + " cascade";
@@ -701,6 +701,8 @@ public class PortalInstanceResourceTest
 		}
 		finally {
 			_deletePortalInstance(portalInstance);
+
+			_dropExportedSchema(_company.getCompanyId());
 		}
 	}
 
