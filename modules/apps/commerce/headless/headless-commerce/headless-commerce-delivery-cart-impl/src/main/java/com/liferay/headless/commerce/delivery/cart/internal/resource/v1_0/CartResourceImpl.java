@@ -130,6 +130,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -840,7 +841,8 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			String validationMode =
 				commerceAccountEntryValidationConfiguration.validationMode();
 
-			if (!validationMode.equals(
+			if (!Objects.equals(
+					validationMode,
 					CommerceAccountEntryValidationConstants.
 						VALIDATION_MODE_DISABLED)) {
 
@@ -1185,7 +1187,8 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		AccountEntryValidatorResult accountEntryValidatorResult,
 		String validationMode) {
 
-		if (validationMode.equals(
+		if (Objects.equals(
+				validationMode,
 				CommerceAccountEntryValidationConstants.
 					VALIDATION_MODE_ALLOW_ALL)) {
 
@@ -1193,7 +1196,8 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		}
 
 		if (!accountEntryValidatorResult.isValid() ||
-			(validationMode.equals(
+			(Objects.equals(
+				validationMode,
 				CommerceAccountEntryValidationConstants.
 					VALIDATION_MODE_ALLOW_SUCCESSES_ONLY) &&
 			 AccountEntryValidatorConstants.RESULT_WARNING.equals(
