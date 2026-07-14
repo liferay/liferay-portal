@@ -25,7 +25,6 @@ const MAP_CONFIG = {
 		CONTROLS.ZOOM,
 	],
 	geolocation: true,
-	position: {location: {}},
 };
 
 const getMapName = (name) => {
