@@ -47,8 +47,8 @@ $languageUtil.get($locale, $lang_key)#end
 #macro (language_format $lang_key $arguments)
 $languageUtil.format($locale, $lang_key, $arguments.toArray())#end
 
-#macro (languages $default_preferences $instance_id)
-	$theme.runtime("com.liferay.portal.kernel.servlet.taglib.ui.LanguageEntry", $portletProviderAction.VIEW, $!instance_id, $!default_preferences)
+#macro (languages $default_preferences)
+	$theme.runtime("com.liferay.portal.kernel.servlet.taglib.ui.LanguageEntry", $portletProviderAction.VIEW, "", $!default_preferences)
 #end
 
 #macro (navigation_menu $default_preferences $instance_id)

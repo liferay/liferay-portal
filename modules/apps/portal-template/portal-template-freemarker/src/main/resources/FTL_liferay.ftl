@@ -93,11 +93,9 @@ ${languageUtil.format(locale, key, arguments)}</#macro>
 
 <#macro languages
 	default_preferences = ""
-	instance_id = ""
 >
 	<@liferay_portlet["runtime"]
 		defaultPreferences=default_preferences
-		instanceId=instance_id
 		portletProviderAction=portletProviderAction.VIEW
 		portletProviderClassName="com.liferay.portal.kernel.servlet.taglib.ui.LanguageEntry"
 	/>

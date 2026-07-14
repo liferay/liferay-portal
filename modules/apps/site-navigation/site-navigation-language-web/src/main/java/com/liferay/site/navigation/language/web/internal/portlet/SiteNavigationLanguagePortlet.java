@@ -30,7 +30,6 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.css-class-wrapper=portlet-language",
 		"com.liferay.portlet.display-category=category.tools",
 		"com.liferay.portlet.icon=/icons/language.png",
-		"com.liferay.portlet.instanceable=true",
 		"com.liferay.portlet.layout-cacheable=true",
 		"com.liferay.portlet.preferences-owned-by-group=true",
 		"com.liferay.portlet.private-request-attributes=false",
