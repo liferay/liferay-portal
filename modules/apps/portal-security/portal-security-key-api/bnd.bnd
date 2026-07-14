@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.portal.security.key.api
 Bundle-Version: 1.0.2
 Export-Package:\
 	com.liferay.portal.security.key,\
-	com.liferay.portal.security.key.secret
+	com.liferay.portal.security.key.secret,\
+	com.liferay.portal.security.key.secret.exception

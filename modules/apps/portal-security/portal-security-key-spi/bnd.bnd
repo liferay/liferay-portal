@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.portal.security.key.spi
 Bundle-Version: 1.0.2
 Export-Package:\
 	com.liferay.portal.security.key.spi,\
-	com.liferay.portal.security.key.spi.profile
+	com.liferay.portal.security.key.spi.profile,\
+	com.liferay.portal.security.key.spi.secret
