@@ -13,6 +13,7 @@ spec:
         region: {{ .Values.backup.region | quote }}
         retentionDays: {{ .Values.backup.retentionDays }}
         storageClass: {{ .Values.backup.storageClass | quote }}
+        vaultTags: {{ .Values.backup.vaultTags | default dict | toYaml | nindent 12 }}
     cmk: {{ .Values.cmk | toYaml | nindent 8 }}
     commonTags:
         environment_id: {{ .Values.environmentId }}

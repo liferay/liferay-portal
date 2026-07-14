@@ -32,6 +32,11 @@ spec:
                                             type: integer
                                         storageClass:
                                             type: string
+                                        vaultTags:
+                                            additionalProperties:
+                                                type: string
+                                            default: {}
+                                            type: object
                                     type: object
                                 cmk:
                                     default:
@@ -95,6 +100,11 @@ spec:
                                             type: boolean
                                         region:
                                             type: string
+                                        tags:
+                                            additionalProperties:
+                                                type: string
+                                            default: {}
+                                            type: object
                                     type: object
                                 targetActiveDataPlane:
                                     enum:

@@ -7,6 +7,7 @@ backup:
     retentionDays: 30
     schedule: 0 5 * * *
     storageClass: NEARLINE
+    vaultTags: {}
 cmk:
     enabled: false
 database:
@@ -99,3 +100,4 @@ secretStoreName: ""
 storage:
     enableVersioning: true
     region: ""
+    tags: {}

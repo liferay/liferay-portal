@@ -19,7 +19,7 @@ spec:
         {{- end }}
         forceDestroy: {{ or $forceDestroy (ne $dataPlane $activeDataPlane) }}
         labels:
-            {{- $backupTargetLabels | toYaml | nindent 12 }}
+            {{- merge (dict) $backupTargetLabels ($storage.tags | default dict) | toYaml | nindent 12 }}
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
         location: {{ $storage.region | default $region }}
         storageClass: STANDARD

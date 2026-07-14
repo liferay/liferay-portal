@@ -168,7 +168,7 @@ spec:
         {{- end }}
         forceDestroy: {{ $forceDestroy }}
         labels:
-            {{- $backupVaultLabels | toYaml | nindent 12 }}
+            {{- merge (dict) $backupVaultLabels ($backup.vaultTags | default dict) | toYaml | nindent 12 }}
         lifecycleRule:
             -   action:
                     type: Delete

@@ -5,6 +5,7 @@ backup:
             ruleName: daily-backups
             schedule: cron(0 5 * * ? *)
             startWindow: 60
+    vaultTags: {}
 cmk:
     enabled: false
 database:
@@ -66,4 +67,5 @@ search:
         instanceType: t3.small.search
         username: liferay_search_admin
         volumeSizeGB: 20
-storage: {}
+storage:
+    tags: {}

@@ -48,6 +48,11 @@ spec:
                                                 type: object
                                             minItems: 1
                                             type: array
+                                        vaultTags:
+                                            additionalProperties:
+                                                type: string
+                                            default: {}
+                                            type: object
                                     required:
                                         -   rules
                                     type: object
@@ -148,6 +153,11 @@ spec:
                                     properties:
                                         region:
                                             type: string
+                                        tags:
+                                            additionalProperties:
+                                                type: string
+                                            default: {}
+                                            type: object
                                     type: object
                                 targetActiveDataPlane:
                                     enum:
@@ -622,6 +632,10 @@ spec:
                                         projectId: {{ $projectId }}
                                 {{- end }}
                                 region: {{ $backupRegion }}
+                                {{- with $backupSpec.vaultTags }}
+                                tags:
+                                    {{- . | toYaml | nindent 36 }}
+                                {{- end }}
                             managementPolicies: {{ $managementPolicies }}
                         {{- end }}
 
@@ -816,6 +830,9 @@ spec:
                                     Active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
                                     Backup: "true"
                                     Name: {{ $storageName }}-{{ $dataPlane }}
+                                    {{- with $storageSpec.tags }}
+                                    {{- . | toYaml | nindent 36 }}
+                                    {{- end }}
                             managementPolicies: {{ $managementPolicies }}
                         ---
                         apiVersion: s3.aws.m.upbound.io/v1beta1
