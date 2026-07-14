@@ -144,6 +144,20 @@ describe('UnscheduledTasksPanel', () => {
 		]);
 	});
 
+	it('paginates the tasks into pages of 20 by default', () => {
+		const {getAllByTestId, getByLabelText} = renderUnscheduledTasksPanel(
+			Array.from({length: 25}, (_, index) =>
+				createTask({id: index + 1, title: `Task ${index + 1}`})
+			)
+		);
+
+		expect(getAllByTestId('calendarUnscheduledTaskTitle')).toHaveLength(20);
+
+		fireEvent.click(getByLabelText('Go to page, 2'));
+
+		expect(getAllByTestId('calendarUnscheduledTaskTitle')).toHaveLength(5);
+	});
+
 	it('registers the task rows as draggable into the calendar', () => {
 		(Draggable as jest.Mock).mockClear();
 
@@ -210,6 +224,25 @@ describe('UnscheduledTasksPanel', () => {
 		const {queryByRole} = renderUnscheduledTasksPanel([createTask()]);
 
 		expect(queryByRole('link')).not.toBeInTheDocument();
+	});
+
+	it('resets to the first page when the search query changes', () => {
+		const {getByLabelText, getByTestId, getByText} =
+			renderUnscheduledTasksPanel(
+				Array.from({length: 25}, (_, index) =>
+					createTask({id: index + 1, title: `Task ${index + 1}`})
+				)
+			);
+
+		fireEvent.click(getByLabelText('Go to page, 2'));
+
+		expect(getByText('Task 21')).toBeInTheDocument();
+
+		fireEvent.change(getByTestId('calendarUnscheduledTasksSearch'), {
+			target: {value: 'task'},
+		});
+
+		expect(getByText('Task 1')).toBeInTheDocument();
 	});
 
 	it('shows the empty state when the search matches no tasks', () => {
