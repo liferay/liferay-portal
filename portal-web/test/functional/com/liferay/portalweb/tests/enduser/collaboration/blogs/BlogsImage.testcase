@@ -102,10 +102,10 @@ definition {
 			entryTitle = "Blog Entry Title New");
 	}
 
-	@description = "This checks that the cover image of a blog entry can be changed."
+	@description = "This checks that the cover image of a blog entry can be changed and removed."
 	@priority = 4
 	@refactordone
-	test CanChangeCoverImage {
+	test CanChangeAndRemoveCoverImage {
 		var imageId = JSONBlog.uploadBlogImage(
 			groupName = "Guest",
 			sourceFileName = "Document_1.jpg");
@@ -117,80 +117,60 @@ definition {
 			entryTitle = "Blogs Entry Title",
 			groupName = "Guest");
 
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
+		task ("View the initial cover image in the control panel") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
+			BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			uploadFileName = "Document_1");
+			BlogsEntry.viewEntryCP(
+				entryContent = "Blogs Entry Content",
+				entrySubtitle = "Blogs Entry Subtitle",
+				entryTitle = "Blogs Entry Title",
+				uploadFileName = "Document_1");
+		}
 
-		BlogsEntry.editCoverImage(
-			coverImageName = "document_2-jpg",
-			navTab = "Documents and Media",
-			uploadFileName = "Document_2.jpg");
+		task ("Change the cover image and view the new cover image") {
+			BlogsEntry.editCoverImage(
+				coverImageName = "document_2-jpg",
+				navTab = "Documents and Media",
+				uploadFileName = "Document_2.jpg");
 
-		PortletEntry.publish();
+			PortletEntry.publish();
 
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
+			BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			uploadFileName = "Document_2");
-	}
+			BlogsEntry.viewEntryCP(
+				entryContent = "Blogs Entry Content",
+				entrySubtitle = "Blogs Entry Subtitle",
+				entryTitle = "Blogs Entry Title",
+				uploadFileName = "Document_2");
+		}
 
-	@description = "This ensures that the cover image can be removed from the blog entry."
-	@priority = 4
-	@refactordone
-	test CanRemoveCoverImage {
-		var imageId = JSONBlog.uploadBlogImage(
-			groupName = "Guest",
-			sourceFileName = "Document_1.jpg");
+		task ("Remove the cover image and view that it is absent in the entry and on the page") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		JSONBlog.addEntryWithImage(
-			coverImageId = ${imageId},
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest");
+			BlogsEntry.removeCoverImage(coverImageName = "Document_2.jpg");
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
+			PortletEntry.publish();
 
-		BlogsEntry.removeCoverImage(coverImageName = "Document_1.jpg");
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
 
-		PortletEntry.publish();
+			AssertElementNotPresent(
+				key_coverImageName = "Document_2.jpg",
+				locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_UNPUBLISHED");
 
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
+			Navigator.gotoPage(pageName = "Blogs Page");
 
-		AssertElementNotPresent(
-			key_coverImageName = "Document_1.jpg",
-			locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_UNPUBLISHED");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		AssertElementNotPresent(
-			key_uploadFileName = "Document_1.jpg",
-			locator1 = "BlogsEntry#ENTRY_COVER_IMAGE");
+			AssertElementNotPresent(
+				key_uploadFileName = "Document_2.jpg",
+				locator1 = "BlogsEntry#ENTRY_COVER_IMAGE");
+		}
 	}
 
 	@description = "This ensures that the small image can be replaced and removed."
