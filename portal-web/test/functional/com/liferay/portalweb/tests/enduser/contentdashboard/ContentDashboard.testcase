@@ -1105,19 +1105,19 @@ definition {
 		}
 	}
 
-	@description = "LPS-112357 When click on the 'Other options' icon of Approved WC and has NOT a display page associated, View option NOT displayed"
+	@description = "LPS-112357 When click on the 'Other options' icon of an Approved WC with NO display page associated or a not Approved WC with a display page associated, View option NOT displayed"
 	@priority = 4
-	test CheckViewOptionNotDisplayedApprovedWCNotAssiciatedDPT {
+	test CheckViewOptionNotDisplayed {
 		property portal.acceptance = "true";
 
-		task ("Create a Web Content") {
+		task ("Create an Approved Web Content not associated with a Display Page Template") {
 			JSONWebcontent.addWebContent(
 				content = "Web Content Content",
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 		}
 
-		task ("Check in Content Dashboard if view option is NOT avalible for this WC") {
+		task ("Check in Content Dashboard if view option is NOT avalible for the Approved WC without a Display Page Template") {
 			ContentDashboard.goToContentDashboard();
 
 			Click.waitForMenuToggleJSClick(
@@ -1128,12 +1128,6 @@ definition {
 				key_menuItem = "View",
 				locator1 = "MenuItem#ANY_MENU_ITEM");
 		}
-	}
-
-	@description = "LPS-112357 When click on the 'Other options' icon of not Approved WC and has a display page associated, View option NOT displayed"
-	@priority = 4
-	test CheckViewOptionNotDisplayedNotApprovedWCAssiciatedDPT {
-		property portal.acceptance = "true";
 
 		task ("Create a default Display Page Template") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -1157,18 +1151,18 @@ definition {
 				workflowResourceValue = "Web Content Article");
 		}
 
-		task ("Create a Web Content") {
+		task ("Create a not Approved Web Content associated with a Display Page Template") {
 			JSONWebcontent.addWebContent(
 				content = "Web Content Content",
 				groupName = "Test Site Name",
-				title = "Web Content Title");
+				title = "Pending Web Content Title");
 		}
 
-		task ("Check in Content Dashboard if view option is NOT avalible for this WC") {
+		task ("Check in Content Dashboard if view option is NOT avalible for the not Approved WC with a Display Page Template") {
 			ContentDashboard.goToContentDashboard();
 
 			Click.waitForMenuToggleJSClick(
-				key_tableEntry = "Web Content Title",
+				key_tableEntry = "Pending Web Content Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
 			AssertElementNotPresent(
