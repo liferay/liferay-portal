@@ -2719,6 +2719,13 @@ definition {
 		task ("Assert in title was porperty edited") {
 			LexiconTable.viewTableEntryTitle(tableEntry = "WC Title Edited");
 		}
+
+		task ("Assert the modified date reflects the recent edit") {
+			LexiconTable.viewTableEntryInfo(
+				columnName = "modified-date",
+				tableEntry = "WC Title Edited",
+				tableEntryInfo = "0 Seconds Ago");
+		}
 	}
 
 	@description = "LPS-162827 Validate if the user can access to the Content Dashboard after s/he has expired a Web Content"
@@ -4741,35 +4748,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#FILTER_TEXT",
 				value1 = "Extension: doc");
-		}
-	}
-
-	@description = "LPS-131886 Validade if when Web Content is updated its being corectly displayed"
-	@priority = 3
-	test ShouldExhibitUpdatedWebContent {
-		task ("Create WC via JSON") {
-			JSONWebcontent.addWebContent(
-				content = "WC WebContent Content",
-				groupName = "Test Site Name",
-				title = "WC WebContent Title");
-		}
-
-		task ("Go to Content Dashboard and Edit WC") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.editAsset(
-				assetNewTitle = "WC WebContent New Title",
-				assetTitle = "WC WebContent Title",
-				isWebContent = "true");
-		}
-
-		task ("Check if content is correct") {
-			LexiconTable.viewTableEntryInfo(
-				columnName = "modified-date",
-				tableEntry = "WC WebContent New Title",
-				tableEntryInfo = "0 Seconds Ago");
 		}
 	}
 
