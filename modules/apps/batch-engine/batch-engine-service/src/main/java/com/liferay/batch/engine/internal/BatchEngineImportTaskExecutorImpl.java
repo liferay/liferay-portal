@@ -44,7 +44,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusMessageSender;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -228,8 +227,15 @@ public class BatchEngineImportTaskExecutorImpl
 		Exception exception, T item, int itemIndex) {
 
 		try {
+
+			// Record the error in a nested savepoint on the shared connection.
+			// The failing item has already rolled back to its own savepoint, so
+			// the connection is usable again and the error survives with the
+			// enclosing transaction. A separate connection is not needed and
+			// would risk deadlocking against the outer import transaction.
+
 			TransactionInvokerUtil.invoke(
-				_requiresNewTransactionConfig,
+				_nestedTransactionConfig,
 				() -> {
 					String errorMessage = ErrorMessageUtil.getErrorMessage(
 						exception, batchEngineImportTask.getUserId());
@@ -532,18 +538,17 @@ public class BatchEngineImportTaskExecutorImpl
 			unsafeFunction);
 
 		try {
-			if (LazyReferencingThreadLocal.isEnabled()) {
 
-				// A nested savepoint shares the enclosing transaction's
-				// connection; a REQUIRES_NEW transaction would deadlock on
-				// the row locks held by the outer import transaction
+			// Run every item in a nested savepoint. A failing item rolls back
+			// to the savepoint, which restores the shared connection to a
+			// usable state even on PostgreSQL, where any statement error
+			// otherwise aborts the whole transaction. Because the savepoint
+			// shares the enclosing connection, there is no second connection
+			// that could deadlock against the outer import transaction on
+			// databases that take table level write locks.
 
-				TransactionInvokerUtil.invoke(
-					_nestedTransactionConfig, importItemCallable);
-			}
-			else {
-				importItemCallable.call();
-			}
+			TransactionInvokerUtil.invoke(
+				_nestedTransactionConfig, importItemCallable);
 		}
 		catch (Throwable throwable) {
 			Exception exception =
@@ -669,9 +674,6 @@ public class BatchEngineImportTaskExecutorImpl
 	private static final TransactionConfig _nestedTransactionConfig =
 		TransactionConfig.Factory.create(
 			Propagation.NESTED, new Class<?>[] {Exception.class});
-	private static final TransactionConfig _requiresNewTransactionConfig =
-		TransactionConfig.Factory.create(
-			Propagation.REQUIRES_NEW, new Class<?>[] {Exception.class});
 
 	@Reference
 	private BackgroundTaskStatusMessageSender
