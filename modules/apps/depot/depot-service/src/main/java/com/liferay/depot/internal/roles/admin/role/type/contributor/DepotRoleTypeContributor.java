@@ -45,7 +45,7 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-17564")) {
 
-			return "space";
+			return "depot";
 		}
 
 		return "asset-library";
@@ -81,7 +81,7 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-17564")) {
 
-			return _language.get(locale, "space-roles");
+			return _language.get(locale, "depot-roles");
 		}
 
 		return _language.get(locale, "asset-library-roles");
@@ -92,7 +92,7 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-17564")) {
 
-			return _language.get(locale, "space-role");
+			return _language.get(locale, "depot-role");
 		}
 
 		return _language.get(locale, "asset-library-role");
