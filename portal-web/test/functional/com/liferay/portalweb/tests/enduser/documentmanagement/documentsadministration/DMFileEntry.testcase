@@ -2440,6 +2440,73 @@ definition {
 		}
 	}
 
+	@description = "This test covers LPS-104957. It ensures that JPG, PNG, and SVG files can be previewed."
+	@priority = 5
+	@refactordone
+	test CanPreviewImageFormats {
+		property portal.acceptance = "true";
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.jpg",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_1.jpg");
+
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "Document_1.jpg",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		AssertVisible(
+			key_dmDocumentFileName = "Document_1.jpg",
+			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
+
+		DMDocument.expandInfo();
+
+		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.png",
+			groupName = "Guest",
+			mimeType = "image/png",
+			sourceFileName = "Document_1.png");
+
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "Document_1.png",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		AssertVisible(
+			key_dmDocumentFileName = "Document_1.png",
+			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
+
+		DMDocument.expandInfo();
+
+		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.svg",
+			groupName = "Guest",
+			mimeType = "image/svg+xml",
+			sourceFileName = "Document_1.svg");
+
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "Document_1.svg",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		AssertVisible(
+			key_dmDocumentFileName = "Document_1.svg",
+			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
+
+		DMDocument.expandInfo();
+
+		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
+	}
+
 	@description = "This ensures that an image can be previewed through the original URL."
 	@priority = 5
 	@refactordone
@@ -2464,33 +2531,6 @@ definition {
 		var key_imageSourceURL = "${portalURL}/documents/${siteId}/0/Document_1";
 
 		WaitForVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
-	}
-
-	@description = "This test covers LPS-104957. It ensures that the JPG file can be previewed."
-	@priority = 5
-	@refactordone
-	test CanPreviewJPG {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_1.jpg",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertVisible(
-			key_dmDocumentFileName = "Document_1.jpg",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
-
-		DMDocument.expandInfo();
-
-		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
 	}
 
 	@description = "This is a use case for LPS-88785."
@@ -2597,33 +2637,6 @@ definition {
 			value2 = ${latestVersionURL});
 	}
 
-	@description = "This test covers LPS-104957. It ensures that the PNG file can be previewed."
-	@priority = 5
-	@refactordone
-	test CanPreviewPNG {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.png",
-			groupName = "Guest",
-			mimeType = "image/png",
-			sourceFileName = "Document_1.png");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_1.png",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertVisible(
-			key_dmDocumentFileName = "Document_1.png",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
-
-		DMDocument.expandInfo();
-
-		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
-	}
-
 	@description = "This ensures that users can preview a version entry from the Version History page."
 	@priority = 5
 	test CanPreviewSpecifiedFileVersionFromVersionPage {
@@ -2660,33 +2673,6 @@ definition {
 		DMDocument.viewCP(
 			dmDocumentTitle = "Document Version 1.9 (Version 1.9)",
 			previewImage = "Document_1.jpg");
-	}
-
-	@description = "This ensures that the SVG file can be previewed."
-	@priority = 5
-	@refactordone
-	test CanPreviewSVG {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.svg",
-			groupName = "Guest",
-			mimeType = "image/svg+xml",
-			sourceFileName = "Document_1.svg");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_1.svg",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertVisible(
-			key_dmDocumentFileName = "Document_1.svg",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
-
-		DMDocument.expandInfo();
-
-		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
 	}
 
 	@description = "This test ensures that a document with special characters in its title can be published successfully."
