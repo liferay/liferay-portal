@@ -24,6 +24,7 @@ name = AUIUtil.getNamespace(liferayPortletRequest, liferayPortletResponse) + nam
 >
 	<aui:script>
 		Liferay.namespace('Maps').onGMapsReady = function (event) {
+			Liferay.Maps.gmapsLoading = false;
 			Liferay.Maps.gmapsReady = true;
 
 			Liferay.fire('gmapsReady');

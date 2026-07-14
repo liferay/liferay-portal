@@ -63,7 +63,9 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 	}
 
 	Liferay.namespace('Maps').onGMapsReady = function () {
+		Liferay.Maps.gmapsLoading = false;
 		Liferay.Maps.gmapsReady = true;
+
 		Liferay.fire('gmapsReady');
 	};
 

@@ -277,6 +277,17 @@ describe('Geolocation Google Maps loader', () => {
 
 		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
 	});
+
+	it('clears the loading flag once the API is ready', () => {
+		renderGoogleMapsField('first', 'geoFirst');
+
+		expect(window.Liferay.Maps.gmapsLoading).toBe(true);
+
+		window.Liferay.Maps.onGMapsReady();
+
+		expect(window.Liferay.Maps.gmapsLoading).toBe(false);
+		expect(window.Liferay.Maps.gmapsReady).toBe(true);
+	});
 });
 
 describe('Geolocation map configuration', () => {
