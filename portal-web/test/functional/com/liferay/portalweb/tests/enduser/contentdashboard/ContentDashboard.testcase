@@ -4385,9 +4385,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-111323 Validate if the user can order by Modification Date"
+	@description = "LPS-111323 Validate if the user can order by title and Modification Date"
 	@priority = 5
-	test OrderByModificationDate {
+	test OrderByColumn {
 		property portal.acceptance = "true";
 
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
@@ -4401,9 +4401,27 @@ definition {
 			}
 		}
 
-		ContentDashboard.goToContentDashboard();
+		task ("Order assets by title in Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
 
-		task ("Order assets by modification data in Content Dashboard") {
+			ContentDashboard.orderByTitle(filterOption = "Title");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#LAST_ELEMENT_LISTED",
+				value1 = "WC Title 5");
+		}
+
+		task ("Change the order of assets by title") {
+			ManagementBar.sortAssets(sortDirection = "Descending");
+
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "WC Title 5");
+		}
+
+		task ("Order assets by modification date in Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
+
 			ContentDashboard.orderByModificationDate(filterOption = "Modified Date");
 
 			AssertTextEquals(
@@ -4411,7 +4429,7 @@ definition {
 				value1 = "WC Title 5");
 		}
 
-		task ("Change the order of assets") {
+		task ("Change the order of assets by modification date") {
 			ManagementBar.sortAssets(sortDirection = "Ascending");
 
 			AssertTextEquals(
@@ -4464,41 +4482,6 @@ definition {
 			AssertTextPresent(
 				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
 				value1 = "WC Title 1");
-		}
-	}
-
-	@description = "LPS-111323 Validate if the user can order by title"
-	@priority = 5
-	test OrderByTitle {
-		property portal.acceptance = "true";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Create 5 Web Contents") {
-			for (var count : list "1,2,3,4,5") {
-				JSONWebcontent.addWebContent(
-					content = "WC Content ${count}",
-					groupId = ${groupId},
-					title = "WC Title ${count}");
-			}
-		}
-
-		task ("Order assets by title in Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.orderByTitle(filterOption = "Title");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#LAST_ELEMENT_LISTED",
-				value1 = "WC Title 5");
-		}
-
-		task ("Change de order of assets") {
-			ManagementBar.sortAssets(sortDirection = "Descending");
-
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
-				value1 = "WC Title 5");
 		}
 	}
 
