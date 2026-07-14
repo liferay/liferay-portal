@@ -44,9 +44,9 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the friendlyURL in Blogs can be published when remote staging is enabled."
+	@description = "This ensures that the friendlyURL history in Blogs can be published when remote staging is enabled, covering publishing a custom URL, restoring an old friendlyURL, and removing an old friendlyURL."
 	@priority = 5
-	test CanPublishFriendlyURL {
+	test CanPublishFriendlyURLHistory {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -97,88 +97,12 @@ definition {
 		BlogsEntry.viewEntryPG(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
-	}
 
-	@description = "This ensures that the old friendlyURL in Blogs can be removed and published when remote staging is enabled."
-	@priority = 4
-	test CanPublishRemovedOldFriendlyURL {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		BlogsEntry.addCustomURL(customURL = "custom-url");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		BlogsNavigator.gotoFriendlyURLHistory();
-
-		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "blogs-entry-title");
-
-		PortletEntry.publish();
-
-		Navigator.openSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive(remoteStaging = "true");
-
-		User.logoutPG();
+		User.logoutPG(specificURL = "http://localhost:9080");
 
 		User.firstLoginUI(
 			password = PropsUtil.get("default.admin.password"),
-			specificURL = "http://localhost:9080",
 			userEmailAddress = "test@liferay.com");
-
-		Navigator.openSpecificURL(url = "http://localhost:9080/web/remote-site/staging-blogs-page/-/blogs/blogs-entry-title");
-
-		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
-
-		Navigator.openSpecificURL(url = "http://localhost:9080/web/remote-site/staging-blogs-page/-/blogs/custom-url");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-	}
-
-	@description = "This ensures that the old friendlyURL in Blogs can be restored and published when remote staging is enabled."
-	@priority = 4
-	test CanPublishRestoredOldFriendlyURL {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		Blogs.expandPanel(panel = "Friendly URL");
-
-		BlogsEntry.addCustomURL(customURL = "custom-url");
-
-		PortletEntry.publish();
 
 		BlogsNavigator.openToEditEntryInSite(
 			entryTitle = "Blogs Entry Title",
@@ -208,6 +132,48 @@ definition {
 			password = PropsUtil.get("default.admin.password"),
 			specificURL = "http://localhost:9080",
 			userEmailAddress = "test@liferay.com");
+
+		Navigator.openSpecificURL(url = "http://localhost:9080/web/remote-site/staging-blogs-page/-/blogs/blogs-entry-title");
+
+		BlogsEntry.viewEntryPG(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
+
+		User.logoutPG(specificURL = "http://localhost:9080");
+
+		User.firstLoginUI(
+			password = PropsUtil.get("default.admin.password"),
+			userEmailAddress = "test@liferay.com");
+
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name",
+			siteURLKey = "site-name");
+
+		BlogsNavigator.gotoFriendlyURLHistory();
+
+		BlogsEntry.removeOldFriendlyURL(oldFriendlyURL = "custom-url");
+
+		PortletEntry.publish();
+
+		Navigator.openSitePage(
+			pageName = "Staging Blogs Page",
+			siteName = "Site Name");
+
+		Staging.gotoPublishToLive();
+
+		Staging.publishToLive(remoteStaging = "true");
+
+		User.logoutPG();
+
+		User.firstLoginUI(
+			password = PropsUtil.get("default.admin.password"),
+			specificURL = "http://localhost:9080",
+			userEmailAddress = "test@liferay.com");
+
+		Navigator.openSpecificURL(url = "http://localhost:9080/web/remote-site/staging-blogs-page/-/blogs/custom-url");
+
+		Alert.viewErrorMessage(errorMessage = "The entry could not be found.");
 
 		Navigator.openSpecificURL(url = "http://localhost:9080/web/remote-site/staging-blogs-page/-/blogs/blogs-entry-title");
 
