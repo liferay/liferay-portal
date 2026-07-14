@@ -3965,6 +3965,32 @@ definition {
 		}
 	}
 
+	@description = "LPS-133354 Given The Extension filter modal When the user selects one or more extensions and clicks on ""Select"" button Then the extensions selected appear as filter boxes above the Content table in the Content Dashboard, with the format ""Extension: [extension_name]"""
+	@priority = 5
+	test FilterByExtensionLabel {
+		property portal.acceptance = "true";
+
+		task ("Add a text file") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "Document_1",
+				groupName = "Test Site Name",
+				mimeType = "application/doc",
+				sourceFileName = "Document_1.doc");
+		}
+
+		task ("Navigate to the content Dashboard and filter by file extension") {
+			ContentDashboard.goToContentDashboard();
+
+			ContentDashboard.filterByExtension(extensionName = "doc");
+		}
+
+		task ("Check if extension is present") {
+			AssertTextEquals(
+				locator1 = "ContentDashboard#FILTER_TEXT",
+				value1 = "Extension: doc");
+		}
+	}
+
 	@description = "LPS-124960 Validate if the user can filter by multiple tags"
 	@priority = 5
 	test FilterByMultipleTags {
@@ -4539,32 +4565,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-133354 Given The Extension filter modal When the user selects one or more extensions and clicks on ""Select"" button Then the extensions selected appear as filter boxes above the Content table in the Content Dashboard, with the format ""Extension: [extension_name]"""
-	@priority = 5
-	test FilteringExtensionsOnTheDashboard {
-		property portal.acceptance = "true";
-
-		task ("Add a text file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/doc",
-				sourceFileName = "Document_1.doc");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "doc");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: doc");
-		}
-	}
-
 	@description = "LPS-117419 When the item selector for tags displays all available tags and there's a tag that is created in two different sites with the same name, the repeated tag shows only once, the filter results retrieve contents labeled with those categories from the two sites and there's only one filter applied"
 	@priority = 5
 	test FilterTheListOfContentsByTag {
@@ -4982,242 +4982,6 @@ definition {
 				fragmentName = "heading",
 				id = "element-text",
 				text = "WC WebContent Título");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""audio"" Then the MIME type ""audio"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeAudio {
-		property portal.acceptance = "true";
-
-		task ("Add an audio file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "audio/mp3",
-				sourceFileName = "Document_1.mp3");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "mp3");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: mp3");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""code"" Then the MIME type ""code"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeCode {
-		property portal.acceptance = "true";
-
-		task ("Add a document") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "code/html",
-				sourceFileName = "fragment_freemarker_basic.html");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "html");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: html");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""compressed"" Then the MIME type ""compressed"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeCompressed {
-		property portal.acceptance = "true";
-
-		task ("Add a compressed file") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "Document Description",
-				dmDocumentFileName = "document.zip",
-				dmDocumentTitle = "Document_1",
-				nullFile = "true");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "zip");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: zip");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""others"" Then the MIME type ""others"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeOthers {
-		property portal.acceptance = "true";
-
-		task ("Add a vectorial file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/json",
-				sourceFileName = "checkbox_configuration.json");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "json");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: json");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""presentation"" Then the MIME type ""presentation"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypePresentation {
-		property portal.acceptance = "true";
-
-		task ("Add a compressed file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/powerpoint",
-				sourceFileName = "Document_1.pptx");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "pptx");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: pptx");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""spreadSheet"" Then the MIME type ""spreadSheet"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeSpreadsheet {
-		property portal.acceptance = "true";
-
-		task ("Add a spreadSheet file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/excel",
-				sourceFileName = "Document_1.xls");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "xls");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: xls");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""text"" Then the MIME type ""text"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeText {
-		property portal.acceptance = "true";
-
-		task ("Add a text file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/docx",
-				sourceFileName = "Document_1.docx");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "docx");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: docx");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""vectorial"" Then the MIME type ""vectorial"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeVectorial {
-		property portal.acceptance = "true";
-
-		task ("Add a vectorial file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "application/pdf",
-				sourceFileName = "Document_1.pdf");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "pdf");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: pdf");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are file extensions for the MIME type ""video"" Then the MIME type ""video"" appears as father and all of the file extensions for it appear as children and available to be selected"
-	@priority = 4
-	test MimeTypeVideo {
-		property portal.acceptance = "true";
-
-		task ("Add a video file") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_1",
-				groupName = "Test Site Name",
-				mimeType = "video/mp4",
-				sourceFileName = "Document_1.mp4");
-		}
-
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.filterByExtension(extensionName = "mp4");
-		}
-
-		task ("Check if extension is present") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#FILTER_TEXT",
-				value1 = "Extension: mp4");
 		}
 	}
 
