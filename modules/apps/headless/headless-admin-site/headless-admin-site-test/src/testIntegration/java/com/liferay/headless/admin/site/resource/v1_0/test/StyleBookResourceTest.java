@@ -384,8 +384,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		Assert.assertFalse(
 			names.toString(), names.contains("Other Theme Book"));
 
-		Assert.assertNotNull(designLibraryStyleBook);
-
 		Scope scope = designLibraryStyleBook.getScope();
 
 		Assert.assertEquals("AssetLibrary", scope.getTypeAsString());
