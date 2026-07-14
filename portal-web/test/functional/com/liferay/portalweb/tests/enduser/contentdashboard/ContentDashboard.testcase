@@ -498,6 +498,12 @@ definition {
 
 			AssertVisible(locator1 = "ContentDashboard#INFO_PANEL_ID");
 		}
+
+		task ("Assert the Share button is present") {
+			AssertVisible(
+				key_text = "Share",
+				locator1 = "Button#ANY");
+		}
 	}
 
 	@description = "LPS-114911 When the user selects vocabularies from the selection panel, vocabularies selected show in the table as headers and categories assigned to contents will show "
@@ -1222,31 +1228,6 @@ definition {
 					fillColor = "FF5F5F",
 					locator1 = "ContentDashboard#BAR_FROM_NO_VOCABULARY_SPECIFIED");
 			}
-		}
-	}
-
-	@description = "LPS-152906 Given a Blogs Asset at Content Dashboard When the user accesses the its information panel Then the share button must be present"
-	@priority = 4
-	test CheckShareButtonIsPresentForBlogs {
-		task ("Create a Blog Entry asset") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Navigate to the content Dashboard and the user accesses the Blog Asset information panel") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Blogs Entry Title");
-		}
-
-		task ("Check if the share button is not present at info panel") {
-			AssertVisible(
-				key_text = "Share",
-				locator1 = "Button#ANY");
 		}
 	}
 
