@@ -272,72 +272,68 @@ definition {
 			value1 = "Document_2.jpg");
 	}
 
-	@description = "This checks that a cover image can be saved as a draft."
-	@priority = 3
-	@refactordone
-	test CanSaveCoverImageAsDraft {
-		property portal.acceptance = "false";
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-		Blogs.addEntryWithUploadedCoverImage(
-			coverImageName = "Document_1",
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
-
-		BlogsEntry.saveAsDraft();
-
-		Click(locator1 = "Icon#BACK");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		Blogs.viewEntryTitle(entryTitle = "Blogs Entry Title");
-
-		AssertTextEquals(
-			key_entryTitle = "Blogs Entry Title",
-			locator1 = "Blogs#DESCRIPTIVE_VIEW_ENTRY_STATUS",
-			value1 = "Draft");
-
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			uploadFileName = "Document_1");
-	}
-
-	@description = "This checks that a cover image can be uploaded and published in a blog"
+	@description = "This checks that a cover image can be saved as a draft and then published in a blog."
 	@e2etest
 	@priority = 3
 	@refactordone
-	test CanUploadAndPublishCoverImage {
+	test CanUploadCoverImageAsDraftThenPublish {
 		property portal.acceptance = "false";
 
-		Navigator.gotoPage(pageName = "Blogs Page");
+		task ("Add a blog entry with a cover image and save it as a draft") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
-		Blogs.addEntryWithUploadedCoverImage(
-			coverImageName = "Document_1",
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Blog Images",
-			uploadFileName = "Document_1.jpg");
+			Blogs.addEntryWithUploadedCoverImage(
+				coverImageName = "Document_1",
+				entryContent = "Blogs Entry Content",
+				entrySubtitle = "Blogs Entry Subtitle",
+				entryTitle = "Blogs Entry Title",
+				navTab = "Blog Images",
+				uploadFileName = "Document_1.jpg");
 
-		Button.clickPublish();
+			BlogsEntry.saveAsDraft();
+		}
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
+		task ("View that the entry displays with a draft status") {
+			Click(locator1 = "Icon#BACK");
 
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			uploadFileName = "Document_1.jpg");
+			LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+			Blogs.viewEntryTitle(entryTitle = "Blogs Entry Title");
+
+			AssertTextEquals(
+				key_entryTitle = "Blogs Entry Title",
+				locator1 = "Blogs#DESCRIPTIVE_VIEW_ENTRY_STATUS",
+				value1 = "Draft");
+		}
+
+		task ("View the draft cover image in the control panel") {
+			BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
+
+			BlogsEntry.viewEntryCP(
+				entryContent = "Blogs Entry Content",
+				entrySubtitle = "Blogs Entry Subtitle",
+				entryTitle = "Blogs Entry Title",
+				uploadFileName = "Document_1");
+		}
+
+		task ("Publish the entry and view the cover image on the page") {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "Blogs Entry Title",
+				groupName = "Guest",
+				siteURLKey = "guest");
+
+			Button.clickPublish();
+
+			BlogsNavigator.openToBlogEntry(
+				entryTitle = "Blogs Entry Title",
+				layoutName = "Blogs Page",
+				siteURLKey = "guest");
+
+			BlogsEntry.viewEntryPG(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title",
+				uploadFileName = "Document_1.jpg");
+		}
 	}
 
 	@description = "This test covers LPS-111741. It ensures that a blog entry can be added with the same blog image."
