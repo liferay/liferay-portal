@@ -5,10 +5,13 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchPageTest} from '../../../fixtures/searchPageTest';
+import getRandomString from '../../../utils/getRandomString';
 
 const ROBOTS_META_SELECTOR = 'meta[name="robots"][content="noindex, nofollow"]';
 
@@ -21,47 +24,22 @@ export const test = mergeTests(
 	searchPageTest
 );
 
+// robots.txt resolves the site from the request Host header, so its assertions
+// need a site reachable by its own virtual host. These tests provision an
+// isolated site with a virtual host and fetch robots.txt through it, which
+// works regardless of the baseURL host (in CI the build machine's hostname).
+
+const robotsTest = mergeTests(
+	apiHelpersTest,
+	featureFlagsTest({
+		'LPD-71164': {enabled: true},
+	}),
+	isolatedSiteTest,
+	loginTest(),
+	searchPageTest
+);
+
 test.describe('Search Widget SEO', () => {
-	test('Adds disallow entries to robots.txt when indexing is disabled @LPD-86136', async ({
-		layout,
-		page,
-		searchPage,
-	}) => {
-		await test.step('Add Category Facet widget to the page', async () => {
-			await page.goto('/web/guest' + layout.friendlyURL);
-
-			await searchPage.addPortlet('Category Facet', 'Search');
-		});
-
-		await test.step('Disable web crawler indexing on the Category Facet widget', async () => {
-			await searchPage.openSearchPortletConfiguration('Category Facet');
-
-			await searchPage.selectPortletConfigurationsCheckbox([
-				{
-					label: 'Enable Web Crawler Indexing',
-					value: false,
-				},
-			]);
-
-			await searchPage.savePortletConfiguration();
-		});
-
-		await test.step('Fetch robots.txt and assert disallow entries for the page', async () => {
-			const response = await page.request.get('/robots.txt');
-
-			expect(response.ok()).toBe(true);
-
-			const body = await response.text();
-
-			expect(body).toContain(
-				`Disallow: ${layout.friendlyURL}*?category=`
-			);
-			expect(body).toContain(
-				`Disallow: ${layout.friendlyURL}*&category=`
-			);
-		});
-	});
-
 	test('Adds noindex robots meta tag when indexing is disabled and a category is selected @LPD-86136', async ({
 		layout,
 		page,
@@ -156,28 +134,6 @@ test.describe('Search Widget SEO', () => {
 		});
 	});
 
-	test('Does not contribute disallow entries to robots.txt when indexing is enabled @LPD-86136', async ({
-		layout,
-		page,
-		searchPage,
-	}) => {
-		await test.step('Add Category Facet widget to the page', async () => {
-			await page.goto('/web/guest' + layout.friendlyURL);
-
-			await searchPage.addPortlet('Category Facet', 'Search');
-		});
-
-		await test.step('Fetch robots.txt and assert no disallow entries for the page', async () => {
-			const response = await page.request.get('/robots.txt');
-
-			expect(response.ok()).toBe(true);
-
-			const body = await response.text();
-
-			expect(body).not.toContain(layout.friendlyURL);
-		});
-	});
-
 	test('Strips unrecognized query parameters from the canonical URL @LPD-86136', async ({
 		browser,
 		layout,
@@ -214,4 +170,107 @@ test.describe('Search Widget SEO', () => {
 			}
 		});
 	});
+});
+
+robotsTest.describe('Check robots.txt', () => {
+	robotsTest(
+		'Adds disallow entries to robots.txt when indexing is disabled @LPD-86136',
+		async ({apiHelpers, page, searchPage, site}) => {
+			const virtualHostname = `${getRandomString()}.com`;
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await apiHelpers.jsonWebServicesLayoutSet.updateVirtualHosts({
+				groupId: site.id,
+				virtualHostname,
+			});
+
+			await robotsTest.step(
+				'Add the Category Facet widget and disable web crawler indexing',
+				async () => {
+					await page.goto(
+						'/web' + site.friendlyUrlPath + layout.friendlyURL
+					);
+
+					await searchPage.addPortlet('Category Facet', 'Search');
+
+					await searchPage.openSearchPortletConfiguration(
+						'Category Facet'
+					);
+
+					await searchPage.selectPortletConfigurationsCheckbox([
+						{
+							label: 'Enable Web Crawler Indexing',
+							value: false,
+						},
+					]);
+
+					await searchPage.savePortletConfiguration();
+				}
+			);
+
+			await robotsTest.step(
+				'Fetch robots.txt through the site virtual host and assert disallow entries',
+				async () => {
+					const response = await page.request.get('/robots.txt', {
+						headers: {host: virtualHostname},
+					});
+
+					expect(response.ok()).toBe(true);
+
+					const body = await response.text();
+
+					expect(body).toContain(
+						`Disallow: ${layout.friendlyURL}*?category=`
+					);
+					expect(body).toContain(
+						`Disallow: ${layout.friendlyURL}*&category=`
+					);
+				}
+			);
+		}
+	);
+
+	robotsTest(
+		'Does not contribute disallow entries to robots.txt when indexing is enabled @LPD-86136',
+		async ({apiHelpers, page, searchPage, site}) => {
+			const virtualHostname = `${getRandomString()}.com`;
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await apiHelpers.jsonWebServicesLayoutSet.updateVirtualHosts({
+				groupId: site.id,
+				virtualHostname,
+			});
+
+			await robotsTest.step('Add the Category Facet widget', async () => {
+				await page.goto(
+					'/web' + site.friendlyUrlPath + layout.friendlyURL
+				);
+
+				await searchPage.addPortlet('Category Facet', 'Search');
+			});
+
+			await robotsTest.step(
+				'Fetch robots.txt through the site virtual host and assert no disallow entries',
+				async () => {
+					const response = await page.request.get('/robots.txt', {
+						headers: {host: virtualHostname},
+					});
+
+					expect(response.ok()).toBe(true);
+
+					const body = await response.text();
+
+					expect(body).not.toContain(layout.friendlyURL);
+				}
+			);
+		}
+	);
 });

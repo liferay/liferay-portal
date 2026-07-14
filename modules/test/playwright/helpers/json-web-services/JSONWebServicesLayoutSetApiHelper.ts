@@ -46,4 +46,30 @@ export class JSONWebServicesLayoutSetApiHelper {
 			}
 		);
 	}
+
+	async updateVirtualHosts({
+		groupId,
+		virtualHostname,
+	}: {
+		groupId: string;
+		virtualHostname: string;
+	}) {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('groupId', groupId);
+		urlSearchParams.append('privateLayout', false.toString());
+		urlSearchParams.append(
+			'virtualHostnames',
+			JSON.stringify({[virtualHostname]: 'en_US'})
+		);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/update-virtual-hosts`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
 }
