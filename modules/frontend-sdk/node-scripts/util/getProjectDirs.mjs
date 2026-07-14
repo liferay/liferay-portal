@@ -16,7 +16,6 @@ export const NO_RECURSE_PROJECT_DIRS = [
 	'build',
 	'classes',
 	'node_modules',
-	'osb-faro',
 	'sdk',
 	'test',
 	'vercel',
