@@ -2300,47 +2300,6 @@ definition {
 	}
 
 	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 4
-	test DocumentsVersionHistoryDownloadVersion {
-		property portal.acceptance = "true";
-
-		task ("Given the Version History page for documents") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				ContentDashboard.createVersionsForDocument(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					versionsCreated = 2);
-			}
-
-			task ("Navigate to Version History Page") {
-				ContentDashboard.navigateToDocumentVersionHistoryPage(
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					siteURLKey = "test-site-name");
-			}
-		}
-
-		task ("When the user clicks on Download option the kebab menu") {
-			ContentDashboard.downloadVersion(version = "1.2");
-
-			DownloadTempFile();
-		}
-
-		task ("Then the document is downloaded") {
-			DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.txt");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
 	@priority = 3
 	@uitest
 	test DocumentsVersionHistoryInformation {
