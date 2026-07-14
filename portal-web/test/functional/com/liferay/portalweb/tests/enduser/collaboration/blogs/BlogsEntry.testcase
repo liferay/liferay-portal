@@ -168,43 +168,6 @@ definition {
 			entryTitle = "Blogs Entry Title");
 	}
 
-	@description = "This is a usecase for LPS-75241. It checks that an embedded video can be added to a blog."
-	@priority = 4
-	@refactordone
-	test CanAddWithEmbeddedVideo {
-		property portal.acceptance = "true";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		Blogs.addEntry(
-			embedVideo = "https://www.youtube.com/watch?v=2EPZxIC5ogU",
-			entryContent = "video",
-			entryTitle = "Blogs Entry Title",
-			navTab = "URL",
-			videoService = "youtube");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoPG(
-			entryContent = "video",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewEntryPG(
-			embedVideo = "true",
-			entryContent = "video",
-			entryTitle = "Blogs Entry Title");
-	}
-
 	@description = "This test covers LPS-126756. It ensures that a blog entry can be added with a static gif."
 	@priority = 3
 	@refactorneeded
@@ -756,6 +719,8 @@ definition {
 	@description = "This checks that an external video embedded in a blog content can be played correctly."
 	@priority = 3
 	test ExternalVideoEmbeddedInBlogContentFieldCanBePlayed {
+		property portal.acceptance = "true";
+
 		PortalSettings.openToConfigInInstanceSettings(portletId = "com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration");
 
 		SystemSettings.configureSystemSetting(
