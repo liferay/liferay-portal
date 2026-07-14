@@ -13,7 +13,7 @@ import Breadcrumb from '../../common/components/Breadcrumb';
 import InventoryDashboard from './inventory/InventoryDashboard';
 import PerformanceDashboard from './performance/PerformanceDashboard';
 
-import '../../../css/dashboard/Dashboard.scss';
+import '../../../css/dashboard/Dashboards.scss';
 
 import {ILearnResourceContext} from 'frontend-js-components-web';
 
