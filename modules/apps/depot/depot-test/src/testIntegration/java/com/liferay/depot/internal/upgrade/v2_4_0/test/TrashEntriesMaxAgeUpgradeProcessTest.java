@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.model.Group;
@@ -163,6 +164,8 @@ public class TrashEntriesMaxAgeUpgradeProcessTest {
 
 			_entityCache.clearCache();
 			_multiVMPool.clear();
+
+			CentralizedThreadLocal.clearLongLivedCentralizedThreadLocals();
 		}
 	}
 
