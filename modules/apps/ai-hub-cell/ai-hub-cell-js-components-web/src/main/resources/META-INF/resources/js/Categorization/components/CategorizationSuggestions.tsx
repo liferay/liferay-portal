@@ -122,6 +122,7 @@ export default function CategorizationSuggestions({
 					disabled={committed}
 					displayType="secondary"
 					onClick={onRegenerate}
+					size="sm"
 				>
 					<ClayIcon
 						className="mr-2"
@@ -138,6 +139,7 @@ export default function CategorizationSuggestions({
 					disabled={committed || !suggestions.length}
 					displayType="primary"
 					onClick={() => onCommit(suggestions)}
+					size="sm"
 				>
 					{kind === 'categories'
 						? Liferay.Language.get('save-categories')
