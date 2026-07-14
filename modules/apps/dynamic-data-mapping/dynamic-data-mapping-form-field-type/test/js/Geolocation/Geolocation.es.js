@@ -227,6 +227,27 @@ describe('Geolocation Google Maps loader', () => {
 			.forEach((script) => script.remove());
 	});
 
+	it('clears the loading flag once the API is ready', () => {
+		renderGoogleMapsField('first', 'geoFirst');
+
+		expect(window.Liferay.Maps.gmapsLoading).toBe(true);
+
+		window.Liferay.Maps.onGMapsReady();
+
+		expect(window.Liferay.Maps.gmapsLoading).toBe(false);
+		expect(window.Liferay.Maps.gmapsReady).toBe(true);
+	});
+
+	it('detaches the gmapsReady listener when the field unmounts', () => {
+		const {unmount} = renderGoogleMapsField('first', 'geoFirst');
+
+		const [eventName, listener] = window.Liferay.once.mock.calls[0];
+
+		unmount();
+
+		expect(window.Liferay.detach).toHaveBeenCalledWith(eventName, listener);
+	});
+
 	it('injects the Google Maps API script only once for two fields', () => {
 		render(
 			<ConfigProvider value={{defaultLanguageId: 'en_US'}}>
@@ -267,26 +288,6 @@ describe('Geolocation Google Maps loader', () => {
 		]);
 	});
 
-	it('skips injection when a loader script is already in the document', () => {
-		const script = document.createElement('script');
-
-		script.setAttribute(
-			'src',
-			'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady'
-		);
-
-		document.head.appendChild(script);
-
-		renderGoogleMapsField('first', 'geoFirst');
-
-		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
-		expect(window.Liferay.Maps.gmapsLoading).toBeUndefined();
-		expect(window.Liferay.once).toHaveBeenCalledWith(
-			'gmapsReady',
-			expect.any(Function)
-		);
-	});
-
 	it('re-injects the Google Maps API script after a failed load', () => {
 		renderGoogleMapsField('first', 'geoFirst');
 
@@ -305,25 +306,24 @@ describe('Geolocation Google Maps loader', () => {
 		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
 	});
 
-	it('clears the loading flag once the API is ready', () => {
+	it('skips injection when a loader script is already in the document', () => {
+		const script = document.createElement('script');
+
+		script.setAttribute(
+			'src',
+			'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=Liferay.Maps.onGMapsReady'
+		);
+
+		document.head.appendChild(script);
+
 		renderGoogleMapsField('first', 'geoFirst');
 
-		expect(window.Liferay.Maps.gmapsLoading).toBe(true);
-
-		window.Liferay.Maps.onGMapsReady();
-
-		expect(window.Liferay.Maps.gmapsLoading).toBe(false);
-		expect(window.Liferay.Maps.gmapsReady).toBe(true);
-	});
-
-	it('detaches the gmapsReady listener when the field unmounts', () => {
-		const {unmount} = renderGoogleMapsField('first', 'geoFirst');
-
-		const [eventName, listener] = window.Liferay.once.mock.calls[0];
-
-		unmount();
-
-		expect(window.Liferay.detach).toHaveBeenCalledWith(eventName, listener);
+		expect(document.querySelectorAll(gmapsScriptSelector)).toHaveLength(1);
+		expect(window.Liferay.Maps.gmapsLoading).toBeUndefined();
+		expect(window.Liferay.once).toHaveBeenCalledWith(
+			'gmapsReady',
+			expect.any(Function)
+		);
 	});
 });
 
