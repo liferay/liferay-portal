@@ -82,7 +82,6 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			"space-owners-are-super-users-of-their-space-and-can-assign-" +
 				"space-roles-to-users",
 			DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner");
-
 		_assertRoleResourcePermissions(
 			companyId, DepotEntry.class.getName(),
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
@@ -90,7 +89,6 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 		_assertRoleResourcePermissions(
 			companyId, DepotEntry.class.getName(),
 			DepotRolesConstants.ASSET_LIBRARY_MEMBER, List.of(ActionKeys.VIEW));
-
 		_assertRoleResourcePermissions(
 			companyId, "com.liferay.asset.tags",
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
@@ -133,13 +131,11 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
 			List.of(ActionKeys.MANAGE_TAG));
-
 		_assertResourcePermissions(
 			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
 			List.of(ActionKeys.MANAGE_TAG));
-
 		_assertResourcePermissions(
 			companyId, DepotEntry.class.getName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
