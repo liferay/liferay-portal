@@ -1,4 +1,4 @@
-ext.expectedErrorMessage = "The value for the language key 'en_US' must be a string"
+ext.expectedErrorMessage = "The value for the language ID 'en_US' must be a string"
 ext.taskPath = ":invalid-setting-value-siteName_i18n-non-string:validateClientExtensions"
 
 apply from: project.property("commonScript.shouldFailTestCase.gradle")

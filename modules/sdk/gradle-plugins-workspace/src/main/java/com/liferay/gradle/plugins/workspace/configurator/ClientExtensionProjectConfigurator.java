@@ -1403,14 +1403,14 @@ public class ClientExtensionProjectConfigurator
 			if (value == null) {
 				throw new GradleException(
 					String.format(
-						"The value for the language key '%s' must be specified",
+						"The value for the language ID '%s' must be specified",
 						entry.getKey()));
 			}
 
 			if (!(value instanceof String)) {
 				throw new GradleException(
 					String.format(
-						"The value for the language key '%s' must be a string",
+						"The value for the language ID '%s' must be a string",
 						entry.getKey()));
 			}
 		}
