@@ -8,7 +8,12 @@ import {fetch} from 'frontend-js-web';
 
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
 
-export type ChatContext = Record<string, unknown>;
+export interface ChatContext {
+	fileUploadSelector?: string;
+	groupId?: number | string;
+	objectEntryFolderExternalReferenceCode?: string;
+	[key: string]: unknown;
+}
 
 export async function createEventSource() {
 	const editMode = document.body.classList.contains('has-edit-mode-menu');

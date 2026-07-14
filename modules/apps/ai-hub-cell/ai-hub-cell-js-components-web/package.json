@@ -5,6 +5,7 @@
 		"@ckeditor/ckeditor5-ui": "46.0.3",
 		"@clayui/alert": "^3.165.0",
 		"@clayui/button": "^3.165.0",
+		"@clayui/card": "^3.165.0",
 		"@clayui/core": "^3.165.0",
 		"@clayui/drop-down": "^3.165.0",
 		"@clayui/form": "^3.165.0",

@@ -255,6 +255,83 @@ html#{$cadmin-selector} .cadmin {
 			}
 		}
 
+		.ai-assistant-chat__image-message-balloon {
+			border-radius: 0.25rem;
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0.5rem;
+			padding: 0.5rem;
+
+			&-header {
+				display: flex;
+				flex-direction: row;
+				font-weight: 600;
+
+				&-icon {
+					color: $cadmin-primary;
+					font-size: 0.875rem;
+					margin-left: 0.5rem;
+					margin-top: 0.5rem;
+				}
+
+				&-text {
+					margin: 0.5rem;
+				}
+			}
+
+			&-images {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+				justify-content: center;
+				list-style: none;
+				margin: 0;
+				padding: 0 0.5rem;
+			}
+
+			&-item {
+				flex: 0 0 calc(50% - 0.25rem);
+
+				&:only-child {
+					flex-basis: 100%;
+				}
+			}
+
+			&-actions {
+				align-items: center;
+				display: flex;
+				gap: 0.5rem;
+				justify-content: flex-end;
+				margin-top: 0.5rem;
+			}
+
+			.card,
+			.card-item-first.card-item-last {
+				border-radius: 16px;
+			}
+
+			.card:hover,
+			.card-type-asset:hover {
+				box-shadow: none;
+				transform: none;
+			}
+
+			.card.card-type-asset {
+				border-color: transparent;
+				box-shadow: none;
+				outline-color: transparent;
+			}
+
+			.custom-control-input:checked ~ .custom-control-label::after {
+				filter: brightness(0) invert(1);
+			}
+
+			.loading-animation {
+				display: inline-block;
+				margin-right: 0.5rem;
+			}
+		}
+
 		.ai-feedback-actions-row {
 			gap: 0.375rem;
 		}
