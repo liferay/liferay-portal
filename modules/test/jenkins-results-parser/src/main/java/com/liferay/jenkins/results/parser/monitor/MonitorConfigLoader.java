@@ -40,26 +40,6 @@ public class MonitorConfigLoader {
 		return monitorConfigs;
 	}
 
-	private static long _getCadence(Properties buildProperties, String id) {
-		String cadenceString = JenkinsResultsParserUtil.getProperty(
-			buildProperties, _getKey(id, "cadence"));
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(cadenceString)) {
-			return 0;
-		}
-
-		try {
-			return Long.parseLong(cadenceString);
-		}
-		catch (NumberFormatException numberFormatException) {
-			throw new IllegalArgumentException(
-				JenkinsResultsParserUtil.combine(
-					"Invalid cadence for ", _getKey(id, "cadence"), ": ",
-					cadenceString),
-				numberFormatException);
-		}
-	}
-
 	private static TreeSet<String> _getIds(Properties buildProperties) {
 		TreeSet<String> ids = new TreeSet<>();
 
@@ -99,6 +79,40 @@ public class MonitorConfigLoader {
 		return JenkinsResultsParserUtil.combine("monitor[", id, "].", suffix);
 	}
 
+	private static long _getLongProperty(
+		Properties buildProperties, long defaultValue, String id,
+		String suffix) {
+
+		String propertyValue = JenkinsResultsParserUtil.getProperty(
+			buildProperties, _getKey(id, suffix));
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(propertyValue)) {
+			return defaultValue;
+		}
+
+		long value;
+
+		try {
+			value = Long.parseLong(propertyValue);
+		}
+		catch (NumberFormatException numberFormatException) {
+			throw new IllegalArgumentException(
+				JenkinsResultsParserUtil.combine(
+					"Invalid ", suffix, " for ", _getKey(id, suffix), ": ",
+					propertyValue),
+				numberFormatException);
+		}
+
+		if (value < 0) {
+			throw new IllegalArgumentException(
+				JenkinsResultsParserUtil.combine(
+					"Invalid ", suffix, " for ", _getKey(id, suffix), ": ",
+					propertyValue));
+		}
+
+		return value;
+	}
+
 	private static MonitorConfig _getMonitorConfig(
 		Properties buildProperties, String id) {
 
@@ -111,10 +125,11 @@ public class MonitorConfigLoader {
 		}
 
 		return new MonitorConfig(
-			_getCadence(buildProperties, id), id,
+			_getLongProperty(buildProperties, 0, id, "cadence"), id,
 			_getParameters(buildProperties, id),
 			_getSeverity(buildProperties, id),
-			_getThresholds(buildProperties, id), type);
+			_getThresholds(buildProperties, id),
+			_getLongProperty(buildProperties, 60, id, "timeout"), type);
 	}
 
 	private static Map<String, String> _getParameters(
