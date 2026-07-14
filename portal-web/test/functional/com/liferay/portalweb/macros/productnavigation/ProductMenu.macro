@@ -83,16 +83,15 @@ definition {
 
 	@summary = "Default summary"
 	macro gotoPortlet(site = null, portlet = null, category = null) {
-		if (IsElementNotPresent(locator1 = "ProductMenu#TOGGLE")) {
+		if (isSet(site)) {
+			var siteNameURL = StringUtil.replace(${site}, " ", "-");
+
+			var siteNameURL = StringUtil.lowerCase(${siteNameURL});
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteNameURL}/~/control_panel/manage");
+		}
+		else if (IsElementNotPresent(locator1 = "ProductMenu#TOGGLE")) {
 			ApplicationsMenu.gotoSite(site = ${site});
-
-			if (isSet(site)) {
-				var siteNameURL = StringUtil.replace(${site}, " ", "-");
-
-				var siteNameURL = StringUtil.lowerCase(${siteNameURL});
-
-				Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteNameURL}/~/control_panel/manage");
-			}
 		}
 
 		ProductMenuHelper.openProductMenu();
