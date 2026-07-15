@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.util.PortalInstances;
 
 import jakarta.validation.ValidationException;
 
@@ -34,6 +35,10 @@ public class MCPServerProfileDataMaskObjectEntryModelListener
 	@Override
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
+
+		if (PortalInstances.isCurrentCompanyInDeletionProcess()) {
+			return;
+		}
 
 		if (Validator.isNull(
 				MapUtil.getString(objectEntry.getValues(), "deleteReason"))) {
