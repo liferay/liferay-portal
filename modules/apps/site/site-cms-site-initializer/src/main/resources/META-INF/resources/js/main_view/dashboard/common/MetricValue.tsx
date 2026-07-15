@@ -44,10 +44,7 @@ const MetricValue = ({
 				<Text color={statsColor} size={3}>
 					{statsIcon && (
 						<span className="mr-1">
-							<ClayIcon
-								aria-label={statsIcon}
-								symbol={statsIcon}
-							/>
+							<ClayIcon symbol={statsIcon} />
 						</span>
 					)}
 

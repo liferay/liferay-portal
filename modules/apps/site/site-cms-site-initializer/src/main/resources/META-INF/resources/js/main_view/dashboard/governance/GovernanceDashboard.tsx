@@ -86,6 +86,8 @@ export default function GovernanceDashboard() {
 	const [selectedSpace, setSelectedSpace] =
 		useState<SpaceOption>(initialSpace);
 
+	const title = Liferay.Language.get('attention-required');
+
 	return (
 		<>
 			<div className="mb-4">
@@ -95,12 +97,9 @@ export default function GovernanceDashboard() {
 				/>
 			</div>
 
-			<SectionHeader
-				icon="semantic-search"
-				title={Liferay.Language.get('attention-required')}
-			/>
+			<SectionHeader icon="semantic-search" title={title} />
 
-			<ClayLayout.Row className="mt-3">
+			<ClayLayout.Row aria-label={title} className="mt-3" role="group">
 				{ATTENTION_CARDS.map(
 					({
 						color,
