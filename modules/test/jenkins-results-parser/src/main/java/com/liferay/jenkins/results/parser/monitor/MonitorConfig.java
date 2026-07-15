@@ -15,12 +15,12 @@ import java.util.Map;
 public class MonitorConfig {
 
 	public MonitorConfig(
-		long intervalSeconds, String id, Map<String, String> parameters,
+		String id, long intervalSeconds, Map<String, String> parameters,
 		Severity severity, Map<String, String> thresholds, long timeout,
 		String type) {
 
-		_intervalSeconds = intervalSeconds;
 		_id = id;
+		_intervalSeconds = intervalSeconds;
 		_parameters = _newUnmodifiableMap(parameters);
 		_severity = severity;
 		_thresholds = _newUnmodifiableMap(thresholds);

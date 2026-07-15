@@ -125,7 +125,7 @@ public class MonitorConfigLoader {
 		}
 
 		return new MonitorConfig(
-			_getLongProperty(buildProperties, 0, id, "interval"), id,
+			id, _getLongProperty(buildProperties, 0, id, "interval"),
 			_getParameters(buildProperties, id),
 			_getSeverity(buildProperties, id),
 			_getThresholds(buildProperties, id),
