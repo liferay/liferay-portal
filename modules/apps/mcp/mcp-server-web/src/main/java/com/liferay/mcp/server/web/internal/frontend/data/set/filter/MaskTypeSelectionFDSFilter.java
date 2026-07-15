@@ -39,8 +39,8 @@ public class MaskTypeSelectionFDSFilter extends BaseSelectionFDSFilter {
 		Locale locale) {
 
 		return List.of(
-			new SelectionFDSFilterItem("system", "system"),
-			new SelectionFDSFilterItem("custom", "custom"));
+			new SelectionFDSFilterItem("custom", "custom"),
+			new SelectionFDSFilterItem("system", "system"));
 	}
 
 	@Override
