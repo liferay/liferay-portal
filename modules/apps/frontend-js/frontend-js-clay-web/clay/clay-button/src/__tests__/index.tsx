@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Button, {ClayAiButton, ClayButtonWithIcon} from '..';
+import Button, {ClayAIButton, ClayButtonWithIcon} from '..';
 import Icon from '@clayui/icon';
 import {cleanup, render} from '@testing-library/react';
 import React from 'react';
@@ -185,11 +185,11 @@ describe('Button', () => {
 	});
 });
 
-describe('ClayAiButton', () => {
+describe('ClayAIButton', () => {
 	afterEach(cleanup);
 
 	it('renders the solid variant with the AI icon and default label', () => {
-		const {container} = render(<ClayAiButton />);
+		const {container} = render(<ClayAIButton />);
 
 		const button = container.querySelector('button');
 
@@ -201,7 +201,7 @@ describe('ClayAiButton', () => {
 	});
 
 	it('renders the gradient variant', () => {
-		const {container} = render(<ClayAiButton gradient />);
+		const {container} = render(<ClayAIButton gradient />);
 
 		expect(container.querySelector('button')).toHaveClass(
 			'btn-ai',
@@ -210,13 +210,13 @@ describe('ClayAiButton', () => {
 	});
 
 	it('renders a custom label', () => {
-		const {container} = render(<ClayAiButton label="Ask AI" />);
+		const {container} = render(<ClayAIButton label="Ask AI" />);
 
 		expect(container.querySelector('button')).toHaveTextContent('Ask AI');
 	});
 
 	it('renders icon-only with the label as aria-label when monospaced', () => {
-		const {container} = render(<ClayAiButton monospaced />);
+		const {container} = render(<ClayAIButton monospaced />);
 
 		const button = container.querySelector('button');
 
@@ -228,13 +228,13 @@ describe('ClayAiButton', () => {
 	});
 
 	it('renders the outline variant from the base button', () => {
-		const {container} = render(<ClayAiButton outline />);
+		const {container} = render(<ClayAIButton outline />);
 
 		expect(container.querySelector('button')).toHaveClass('btn-outline-ai');
 	});
 
 	it('renders the link variant as a borderless underline', () => {
-		const {container} = render(<ClayAiButton link />);
+		const {container} = render(<ClayAIButton link />);
 
 		expect(container.querySelector('button')).toHaveClass(
 			'btn-outline-borderless',

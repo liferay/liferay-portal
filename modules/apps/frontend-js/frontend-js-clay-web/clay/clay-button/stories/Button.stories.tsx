@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import ClayButton, {ClayAiButton, ClayButtonWithIcon} from '../src';
+import ClayButton, {ClayAIButton, ClayButtonWithIcon} from '../src';
 
 export default {
 	argTypes: {
@@ -157,7 +157,7 @@ export function AI() {
 	return (
 		<div className="p-4">
 			<p className="text-secondary">
-				<code>ClayAiButton</code> renders the AI icon and a{' '}
+				<code>ClayAIButton</code> renders the AI icon and a{' '}
 
 				<code>Chat with AI</code> label. The <code>gradient</code> prop
 				switches the filled variant from solid purple to the "calling"
@@ -192,7 +192,7 @@ export function AI() {
 
 							{AI_STATES.map((state) => (
 								<td className="p-3" key={state.label}>
-									<ClayAiButton
+									<ClayAIButton
 										{...variant.props}
 										className={state.className}
 										disabled={state.disabled}
@@ -201,7 +201,7 @@ export function AI() {
 							))}
 
 							<td className="p-3">
-								<ClayAiButton {...variant.props} monospaced />
+								<ClayAIButton {...variant.props} monospaced />
 							</td>
 						</tr>
 					))}
@@ -209,7 +209,7 @@ export function AI() {
 			</table>
 
 			<p className="mt-4 text-secondary">
-				With no children, <code>ClayAiButton</code> renders its{' '}
+				With no children, <code>ClayAIButton</code> renders its{' '}
 
 				<code>label</code> (default <code>Chat with AI</code>). A custom{' '}
 
@@ -224,7 +224,7 @@ export function AI() {
 						<td className="pr-3 text-secondary">Default label</td>
 
 						<td className="p-3">
-							<ClayAiButton />
+							<ClayAIButton />
 						</td>
 					</tr>
 
@@ -232,7 +232,7 @@ export function AI() {
 						<td className="pr-3 text-secondary">Custom label</td>
 
 						<td className="p-3">
-							<ClayAiButton label="Ask AI" />
+							<ClayAIButton label="Ask AI" />
 						</td>
 					</tr>
 
@@ -240,7 +240,7 @@ export function AI() {
 						<td className="pr-3 text-secondary">Children</td>
 
 						<td className="p-3">
-							<ClayAiButton>Improve writing</ClayAiButton>
+							<ClayAIButton>Improve writing</ClayAIButton>
 						</td>
 					</tr>
 				</tbody>

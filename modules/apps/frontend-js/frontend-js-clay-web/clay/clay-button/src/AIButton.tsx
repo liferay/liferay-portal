@@ -43,7 +43,7 @@ interface IProps
 
 export type Props = IProps;
 
-const ClayAiButton = React.forwardRef<HTMLButtonElement, IProps>(
+const ClayAIButton = React.forwardRef<HTMLButtonElement, IProps>(
 	(
 		{
 			'aria-label': ariaLabel,
@@ -90,6 +90,6 @@ const ClayAiButton = React.forwardRef<HTMLButtonElement, IProps>(
 	)
 );
 
-ClayAiButton.displayName = 'ClayAiButton';
+ClayAIButton.displayName = 'ClayAIButton';
 
-export default ClayAiButton;
+export default ClayAIButton;
