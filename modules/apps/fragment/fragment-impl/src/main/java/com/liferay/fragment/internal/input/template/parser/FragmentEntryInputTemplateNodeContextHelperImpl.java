@@ -1004,6 +1004,11 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			infoField.getUniqueId());
 
 		if (!(infoParameterMapValue instanceof RelatedInfoFieldValue<?>)) {
+			if (infoParameterMapValue instanceof Map) {
+				return _parseLocalizedValues(
+					infoField, (Map<Locale, ?>)infoParameterMapValue);
+			}
+
 			return infoParameterMapValue;
 		}
 
@@ -1053,7 +1058,8 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			InfoLocalizedValue<?> infoLocalizedValue =
 				(InfoLocalizedValue<?>)value;
 
-			return infoLocalizedValue.getValues();
+			return _parseLocalizedValues(
+				infoField, infoLocalizedValue.getValues());
 		}
 
 		return String.valueOf(value);
@@ -1282,6 +1288,23 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		}
 
 		return false;
+	}
+
+	private Map<Locale, String> _parseLocalizedValues(
+		InfoField infoField, Map<Locale, ?> values) {
+
+		Map<Locale, String> localizedValues = new HashMap<>();
+
+		for (Map.Entry<Locale, ?> entry : values.entrySet()) {
+			localizedValues.put(
+				entry.getKey(),
+				String.valueOf(
+					_parseValue(
+						StringPool.BLANK, infoField, entry.getKey(),
+						entry.getValue())));
+		}
+
+		return localizedValues;
 	}
 
 	private Object _parseValue(
