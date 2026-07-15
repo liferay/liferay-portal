@@ -24,6 +24,20 @@ const selectButton = document.getElementById(
 	`${fragmentElementId}-file-upload-button-label`
 );
 
+const aiAssistantContainer = wrapper.querySelector('.file-upload-ai-assistant');
+
+if (aiAssistantContainer && Liferay.FeatureFlags['LPD-62272']) {
+	import('@liferay/ai-hub-cell-js-components-web').then(
+		({renderAIAssistantChat}) => {
+			renderAIAssistantChat(aiAssistantContainer, {
+				hideTriggerLabel: true,
+				instructionDefinitionScope: 'cms',
+				triggerRound: true,
+			});
+		}
+	);
+}
+
 function showRemoveButton() {
 	removeButton.classList.remove('d-none');
 	removeButton.addEventListener('click', onRemoveFile);

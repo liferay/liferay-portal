@@ -30,9 +30,9 @@
 					<input accept="${(input.attributes.allowedFileExtensions?has_content)?then(input.attributes.allowedFileExtensions, '*')}" aria-describedby="${fragmentElementId}-file-upload-help-text" aria-labelledby="${fragmentElementId}-file-upload-label ${fragmentElementId}-file-upload-button-label [#if  input.errorMessage?has_content]${fragmentElementId}-file-upload-error-message[/#if]" class="file-upload-input sr-only" formenctype="multipart/form-data" id="${fragmentElementId}-file-upload" [#if !localFileUploaded]name="${input.name}"[/#if] ${input.required?then('required', '' )} type="${showDocumentLibrarySelector?then('text', 'file')}" [#if input.value??]value="${input.value}"[/#if] tabIndex="-1" />
 				</div>
 
-				<div class="ml-2">
-					<lfr-drop-zone data-lfr-drop-zone-id="aiAssistant"></lfr-drop-zone>
-				</div>
+				[#if input.attributes.isCMS?? && input.attributes.isCMS]
+					<div class="file-upload-ai-assistant ml-2"></div>
+				[/#if]
 
 				<strong aria-label="${htmlUtil.escape(input.label)}" class="forms-file-upload-file-name pl-2" data-placeholder="${languageUtil.get(locale, "no-file-selected")}" role="textbox" value="">
 					[#if input.attributes.fileName??]${htmlUtil.escape(input.attributes.fileName)}[/#if]
