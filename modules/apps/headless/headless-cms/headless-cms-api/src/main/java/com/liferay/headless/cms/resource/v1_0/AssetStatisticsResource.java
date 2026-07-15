@@ -43,7 +43,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface AssetStatisticsResource {
 
-	public AssetStatistics getAssetStatistics() throws Exception;
+	public AssetStatistics getAssetStatistics(Long assetLibraryId)
+		throws Exception;
 
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
@@ -133,4 +134,4 @@ public interface AssetStatisticsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1067241138
+// LIFERAY-REST-BUILDER-HASH:325639570

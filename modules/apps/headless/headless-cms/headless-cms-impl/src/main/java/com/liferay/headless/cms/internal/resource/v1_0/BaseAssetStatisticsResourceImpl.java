@@ -47,6 +47,14 @@ public abstract class BaseAssetStatisticsResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-cms/v1.0/asset-statistics'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "assetLibraryId"
+			)
+		}
+	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AssetStatistics")
@@ -56,7 +64,12 @@ public abstract class BaseAssetStatisticsResourceImpl
 	@jakarta.ws.rs.Path("/asset-statistics")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public AssetStatistics getAssetStatistics() throws Exception {
+	public AssetStatistics getAssetStatistics(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("assetLibraryId")
+			Long assetLibraryId)
+		throws Exception {
+
 		return new AssetStatistics();
 	}
 
@@ -505,4 +518,4 @@ public abstract class BaseAssetStatisticsResourceImpl
 		LogFactoryUtil.getLog(BaseAssetStatisticsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1233316681
+// LIFERAY-REST-BUILDER-HASH:1823472258

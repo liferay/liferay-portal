@@ -32,9 +32,11 @@ public interface AssetStatisticsResource {
 		return new Builder();
 	}
 
-	public AssetStatistics getAssetStatistics() throws Exception;
+	public AssetStatistics getAssetStatistics(Long assetLibraryId)
+		throws Exception;
 
-	public HttpInvoker.HttpResponse getAssetStatisticsHttpResponse()
+	public HttpInvoker.HttpResponse getAssetStatisticsHttpResponse(
+			Long assetLibraryId)
 		throws Exception;
 
 	public static class Builder {
@@ -146,9 +148,11 @@ public interface AssetStatisticsResource {
 	public static class AssetStatisticsResourceImpl
 		implements AssetStatisticsResource {
 
-		public AssetStatistics getAssetStatistics() throws Exception {
+		public AssetStatistics getAssetStatistics(Long assetLibraryId)
+			throws Exception {
+
 			HttpInvoker.HttpResponse httpResponse =
-				getAssetStatisticsHttpResponse();
+				getAssetStatisticsHttpResponse(assetLibraryId);
 
 			String content = httpResponse.getContent();
 
@@ -209,7 +213,8 @@ public interface AssetStatisticsResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse getAssetStatisticsHttpResponse()
+		public HttpInvoker.HttpResponse getAssetStatisticsHttpResponse(
+				Long assetLibraryId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -232,6 +237,11 @@ public interface AssetStatisticsResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (assetLibraryId != null) {
+				httpInvoker.parameter(
+					"assetLibraryId", String.valueOf(assetLibraryId));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
@@ -258,4 +268,4 @@ public interface AssetStatisticsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1229830636
+// LIFERAY-REST-BUILDER-HASH:563747107

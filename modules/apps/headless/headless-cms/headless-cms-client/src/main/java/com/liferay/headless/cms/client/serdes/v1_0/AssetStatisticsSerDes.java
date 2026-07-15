@@ -46,6 +46,16 @@ public class AssetStatisticsSerDes {
 
 		sb.append("{");
 
+		if (assetStatistics.getApprovedCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"approvedCount\": ");
+
+			sb.append(assetStatistics.getApprovedCount());
+		}
+
 		if (assetStatistics.getExpiredCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -76,6 +86,16 @@ public class AssetStatisticsSerDes {
 			sb.append(assetStatistics.getInDraftCount());
 		}
 
+		if (assetStatistics.getPendingCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"pendingCount\": ");
+
+			sb.append(assetStatistics.getPendingCount());
+		}
+
 		if (assetStatistics.getReviewDateOverdueCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -86,6 +106,16 @@ public class AssetStatisticsSerDes {
 			sb.append(assetStatistics.getReviewDateOverdueCount());
 		}
 
+		if (assetStatistics.getScheduledCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduledCount\": ");
+
+			sb.append(assetStatistics.getScheduledCount());
+		}
+
 		if (assetStatistics.getTotalCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -94,6 +124,16 @@ public class AssetStatisticsSerDes {
 			sb.append("\"totalCount\": ");
 
 			sb.append(assetStatistics.getTotalCount());
+		}
+
+		if (assetStatistics.getUpcomingReviewCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"upcomingReviewCount\": ");
+
+			sb.append(assetStatistics.getUpcomingReviewCount());
 		}
 
 		sb.append("}");
@@ -114,6 +154,15 @@ public class AssetStatisticsSerDes {
 		}
 
 		Map<String, String> map = new TreeMap<>();
+
+		if (assetStatistics.getApprovedCount() == null) {
+			map.put("approvedCount", null);
+		}
+		else {
+			map.put(
+				"approvedCount",
+				String.valueOf(assetStatistics.getApprovedCount()));
+		}
 
 		if (assetStatistics.getExpiredCount() == null) {
 			map.put("expiredCount", null);
@@ -142,6 +191,15 @@ public class AssetStatisticsSerDes {
 				String.valueOf(assetStatistics.getInDraftCount()));
 		}
 
+		if (assetStatistics.getPendingCount() == null) {
+			map.put("pendingCount", null);
+		}
+		else {
+			map.put(
+				"pendingCount",
+				String.valueOf(assetStatistics.getPendingCount()));
+		}
+
 		if (assetStatistics.getReviewDateOverdueCount() == null) {
 			map.put("reviewDateOverdueCount", null);
 		}
@@ -151,12 +209,30 @@ public class AssetStatisticsSerDes {
 				String.valueOf(assetStatistics.getReviewDateOverdueCount()));
 		}
 
+		if (assetStatistics.getScheduledCount() == null) {
+			map.put("scheduledCount", null);
+		}
+		else {
+			map.put(
+				"scheduledCount",
+				String.valueOf(assetStatistics.getScheduledCount()));
+		}
+
 		if (assetStatistics.getTotalCount() == null) {
 			map.put("totalCount", null);
 		}
 		else {
 			map.put(
 				"totalCount", String.valueOf(assetStatistics.getTotalCount()));
+		}
+
+		if (assetStatistics.getUpcomingReviewCount() == null) {
+			map.put("upcomingReviewCount", null);
+		}
+		else {
+			map.put(
+				"upcomingReviewCount",
+				String.valueOf(assetStatistics.getUpcomingReviewCount()));
 		}
 
 		return map;
@@ -177,7 +253,10 @@ public class AssetStatisticsSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "expiredCount")) {
+			if (Objects.equals(jsonParserFieldName, "approvedCount")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "expiredCount")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "expiringSoonCount")) {
@@ -186,12 +265,23 @@ public class AssetStatisticsSerDes {
 			else if (Objects.equals(jsonParserFieldName, "inDraftCount")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "pendingCount")) {
+				return false;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "reviewDateOverdueCount")) {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "scheduledCount")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "totalCount")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "upcomingReviewCount")) {
+
 				return false;
 			}
 
@@ -203,7 +293,13 @@ public class AssetStatisticsSerDes {
 			AssetStatistics assetStatistics, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "expiredCount")) {
+			if (Objects.equals(jsonParserFieldName, "approvedCount")) {
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setApprovedCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "expiredCount")) {
 				if (jsonParserFieldValue != null) {
 					assetStatistics.setExpiredCount(
 						Long.valueOf((String)jsonParserFieldValue));
@@ -221,6 +317,12 @@ public class AssetStatisticsSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "pendingCount")) {
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setPendingCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "reviewDateOverdueCount")) {
 
@@ -229,9 +331,23 @@ public class AssetStatisticsSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "scheduledCount")) {
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setScheduledCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "totalCount")) {
 				if (jsonParserFieldValue != null) {
 					assetStatistics.setTotalCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "upcomingReviewCount")) {
+
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setUpcomingReviewCount(
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -316,4 +432,4 @@ public class AssetStatisticsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1208800704
+// LIFERAY-REST-BUILDER-HASH:-650741636

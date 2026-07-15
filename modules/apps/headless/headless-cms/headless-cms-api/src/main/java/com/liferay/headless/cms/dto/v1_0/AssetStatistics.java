@@ -47,6 +47,47 @@ public class AssetStatistics implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getApprovedCount() {
+		if (_approvedCountSupplier != null) {
+			approvedCount = _approvedCountSupplier.get();
+
+			_approvedCountSupplier = null;
+		}
+
+		return approvedCount;
+	}
+
+	public void setApprovedCount(Long approvedCount) {
+		this.approvedCount = approvedCount;
+
+		_approvedCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setApprovedCount(
+		UnsafeSupplier<Long, Exception> approvedCountUnsafeSupplier) {
+
+		_approvedCountSupplier = () -> {
+			try {
+				return approvedCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long approvedCount;
+
+	@JsonIgnore
+	private Supplier<Long> _approvedCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getExpiredCount() {
 		if (_expiredCountSupplier != null) {
 			expiredCount = _expiredCountSupplier.get();
@@ -170,6 +211,47 @@ public class AssetStatistics implements Serializable {
 	private Supplier<Long> _inDraftCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getPendingCount() {
+		if (_pendingCountSupplier != null) {
+			pendingCount = _pendingCountSupplier.get();
+
+			_pendingCountSupplier = null;
+		}
+
+		return pendingCount;
+	}
+
+	public void setPendingCount(Long pendingCount) {
+		this.pendingCount = pendingCount;
+
+		_pendingCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPendingCount(
+		UnsafeSupplier<Long, Exception> pendingCountUnsafeSupplier) {
+
+		_pendingCountSupplier = () -> {
+			try {
+				return pendingCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long pendingCount;
+
+	@JsonIgnore
+	private Supplier<Long> _pendingCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getReviewDateOverdueCount() {
 		if (_reviewDateOverdueCountSupplier != null) {
 			reviewDateOverdueCount = _reviewDateOverdueCountSupplier.get();
@@ -209,6 +291,47 @@ public class AssetStatistics implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _reviewDateOverdueCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getScheduledCount() {
+		if (_scheduledCountSupplier != null) {
+			scheduledCount = _scheduledCountSupplier.get();
+
+			_scheduledCountSupplier = null;
+		}
+
+		return scheduledCount;
+	}
+
+	public void setScheduledCount(Long scheduledCount) {
+		this.scheduledCount = scheduledCount;
+
+		_scheduledCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScheduledCount(
+		UnsafeSupplier<Long, Exception> scheduledCountUnsafeSupplier) {
+
+		_scheduledCountSupplier = () -> {
+			try {
+				return scheduledCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long scheduledCount;
+
+	@JsonIgnore
+	private Supplier<Long> _scheduledCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getTotalCount() {
@@ -251,6 +374,47 @@ public class AssetStatistics implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _totalCountSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getUpcomingReviewCount() {
+		if (_upcomingReviewCountSupplier != null) {
+			upcomingReviewCount = _upcomingReviewCountSupplier.get();
+
+			_upcomingReviewCountSupplier = null;
+		}
+
+		return upcomingReviewCount;
+	}
+
+	public void setUpcomingReviewCount(Long upcomingReviewCount) {
+		this.upcomingReviewCount = upcomingReviewCount;
+
+		_upcomingReviewCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUpcomingReviewCount(
+		UnsafeSupplier<Long, Exception> upcomingReviewCountUnsafeSupplier) {
+
+		_upcomingReviewCountSupplier = () -> {
+			try {
+				return upcomingReviewCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long upcomingReviewCount;
+
+	@JsonIgnore
+	private Supplier<Long> _upcomingReviewCountSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -277,6 +441,18 @@ public class AssetStatistics implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		Long approvedCount = getApprovedCount();
+
+		if (approvedCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"approvedCount\": ");
+
+			sb.append(approvedCount);
+		}
 
 		Long expiredCount = getExpiredCount();
 
@@ -314,6 +490,18 @@ public class AssetStatistics implements Serializable {
 			sb.append(inDraftCount);
 		}
 
+		Long pendingCount = getPendingCount();
+
+		if (pendingCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"pendingCount\": ");
+
+			sb.append(pendingCount);
+		}
+
 		Long reviewDateOverdueCount = getReviewDateOverdueCount();
 
 		if (reviewDateOverdueCount != null) {
@@ -326,6 +514,18 @@ public class AssetStatistics implements Serializable {
 			sb.append(reviewDateOverdueCount);
 		}
 
+		Long scheduledCount = getScheduledCount();
+
+		if (scheduledCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduledCount\": ");
+
+			sb.append(scheduledCount);
+		}
+
 		Long totalCount = getTotalCount();
 
 		if (totalCount != null) {
@@ -336,6 +536,18 @@ public class AssetStatistics implements Serializable {
 			sb.append("\"totalCount\": ");
 
 			sb.append(totalCount);
+		}
+
+		Long upcomingReviewCount = getUpcomingReviewCount();
+
+		if (upcomingReviewCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"upcomingReviewCount\": ");
+
+			sb.append(upcomingReviewCount);
 		}
 
 		sb.append("}");
@@ -439,4 +651,4 @@ public class AssetStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-812723712
+// LIFERAY-REST-BUILDER-HASH:1350526058
