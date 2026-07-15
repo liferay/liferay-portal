@@ -4,37 +4,51 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-cd "$(dirname "${0}")" || exit
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 function main {
+	refresh_workspaces "${PWD}"
+	refresh_workspaces "${PWD}/../../liferay-portal-master-private/workspaces"
+}
+
+function refresh_workspaces {
+	local workspaces_dir=${1}
+
+	if [[ ! -d ${workspaces_dir} ]]
+	then
+		return
+	fi
+
 	local workspace_dir
 
-	for workspace_dir in "./"*
+	for workspace_dir in "${workspaces_dir}/"*
 	do
-		if [ "${workspace_dir}" = "./liferay-sample-workspace" ] ||
-		   [ ! -d "${workspace_dir}" ]
+		if [[ ${workspace_dir} = "${PWD}/liferay-sample-workspace" ]] ||
+		   [[ ! -d ${workspace_dir} ]]
 		then
 			continue
 		fi
 
 		rsync \
-			-a --delete \
-			--exclude "Jenkinsfile" \
-			--exclude "README.md" \
-			--exclude "build.gradle" \
-			--exclude "client-extensions" \
-			--exclude "gradle-local.properties" \
-			--exclude "language" \
-			--exclude "modules" \
-			--exclude "node_modules" \
-			--exclude "node_modules_cache" \
-			--exclude "package.json" \
-			--exclude "poshi" \
-			--exclude "quickstart" \
-			--exclude "test.properties" \
-			--exclude "themes" \
-			--exclude "yarn.lock" \
-			liferay-sample-workspace/ "${workspace_dir}"
+			--archive \
+			--delete \
+			--exclude Jenkinsfile \
+			--exclude README.md \
+			--exclude build.gradle \
+			--exclude client-extensions \
+			--exclude gradle-local.properties \
+			--exclude gradle.properties \
+			--exclude language \
+			--exclude modules \
+			--exclude node_modules \
+			--exclude node_modules_cache \
+			--exclude package.json \
+			--exclude poshi \
+			--exclude quickstart \
+			--exclude test.properties \
+			--exclude themes \
+			--exclude yarn.lock \
+			"${PWD}/liferay-sample-workspace/" "${workspace_dir}"
 	done
 }
 
