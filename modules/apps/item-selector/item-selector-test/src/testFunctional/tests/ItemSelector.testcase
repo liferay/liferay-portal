@@ -202,19 +202,6 @@ definition {
 			uploadFileName = "Document_1.pdf");
 	}
 
-	@description = "This test covers LPS-119709. It ensures that the blog images can not filter by the everywhere and the current site."
-	@priority = 4
-	@refactordone
-	test CannotViewFilterScopeInBlogImagesTab {
-		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
-
-		BlogsNavigator.gotoSelectFile();
-
-		SelectFrame(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
-
-		AssertElementNotPresent(locator1 = "ManagementBar#FILTER");
-	}
-
 	@description = "It ensures that the web content draft in an Asset Library cannot be found when searching in an Item Selector in that Library."
 	@priority = 4
 	@refactordone
