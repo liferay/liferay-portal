@@ -210,6 +210,51 @@ html#{$cadmin-selector} .cadmin {
 			background: $cadmin-gray-100;
 		}
 
+		.ai-assistant-chat__content-generation-balloon {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0.5rem;
+
+			&-header {
+				align-items: flex-start;
+				display: flex;
+				gap: 0.5rem;
+				padding: 0.5rem;
+
+				.lexicon-icon {
+					color: $cadmin-primary;
+					flex-shrink: 0;
+					margin-top: 0.125rem;
+				}
+			}
+
+			&-form {
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+				padding: 0.5rem;
+			}
+
+			&-icon {
+				align-items: center;
+				border: $cadmin-border-width solid $cadmin-border-color;
+				border-radius: 0.25rem;
+				color: $cadmin-gray-900;
+				display: inline-flex;
+				justify-content: center;
+				padding: 0.375rem;
+
+				.lexicon-icon {
+					margin-top: initial;
+				}
+			}
+
+			&-list {
+				background: transparent;
+				margin: 0 0.5rem 0.5rem;
+			}
+		}
+
 		.ai-feedback-actions-row {
 			gap: 0.375rem;
 		}
