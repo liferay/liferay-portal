@@ -42,7 +42,7 @@ public class MonitorConfigLoaderTest
 		testEquals("masters", monitorConfig.getId());
 		testEquals("http-endpoint", monitorConfig.getType());
 		testEquals(MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
-		testEquals(900L, monitorConfig.getInterval());
+		testEquals(900L, monitorConfig.getIntervalSeconds());
 		testEquals(30L, monitorConfig.getTimeout());
 
 		Map<String, String> parameters = monitorConfig.getParameters();
@@ -155,7 +155,7 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		testEquals(0L, monitorConfig.getInterval());
+		testEquals(0L, monitorConfig.getIntervalSeconds());
 	}
 
 	private void _testGetMonitorConfigsExpectedIllegalArgumentException(
