@@ -5,6 +5,7 @@
 
 import ClayLabel from '@clayui/label';
 import ClayList from '@clayui/list';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
 import {ElementVariation} from './elementVariationsReducer';
@@ -45,6 +46,10 @@ export default function ElementVariationsList({
 		},
 		{} as Record<string, ElementVariation[]>
 	);
+
+	if (!editableElementOptions.length) {
+		return <ClayLoadingIndicator className="mt-3" />;
+	}
 
 	return (
 		<>
