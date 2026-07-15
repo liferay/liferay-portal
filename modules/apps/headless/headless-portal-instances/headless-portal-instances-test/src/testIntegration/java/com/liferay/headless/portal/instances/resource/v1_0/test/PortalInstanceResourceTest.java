@@ -22,10 +22,12 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -58,6 +60,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,6 +85,38 @@ public class PortalInstanceResourceTest
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		_deletePortalInstance(_portalInstance);
+	}
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			return;
+		}
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
+
+			Company defaultCompany = _companyLocalService.getCompany(
+				PortalInstancePool.getDefaultCompanyId());
+
+			User defaultCompanyAdminUser = UserTestUtil.getAdminUser(
+				defaultCompany.getCompanyId());
+
+			portalInstanceResource = PortalInstanceResource.builder(
+			).authentication(
+				defaultCompanyAdminUser.getEmailAddress(),
+				PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				defaultCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+		}
 	}
 
 	@Override
@@ -627,7 +662,11 @@ public class PortalInstanceResourceTest
 
 		portalInstanceImport.setSchemaName(RandomTestUtil.randomString());
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.headless.portal.instances.internal.resource." +
+					"v1_0.PortalInstanceResourceImpl",
+				LoggerTestUtil.ERROR)) {
+
 			portalInstanceResource.postPortalInstanceImport(
 				portalInstanceImport);
 
@@ -641,7 +680,16 @@ public class PortalInstanceResourceTest
 	}
 
 	private void _testPostPortalInstanceImportSuccess() throws Exception {
-		_companyLocalService.exportCompany(_company.getCompanyId());
+		Company company = CompanyTestUtil.addCompany();
+
+		long companyId = company.getCompanyId();
+
+		try {
+			_companyLocalService.exportCompany(company.getCompanyId());
+		}
+		finally {
+			_companyLocalService.deleteCompany(company);
+		}
 
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
@@ -653,7 +701,7 @@ public class PortalInstanceResourceTest
 
 		portalInstanceImport.setSchemaName(
 			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
-				_company.getCompanyId());
+				companyId);
 		portalInstanceImport.setVirtualHost(virtualHost);
 		portalInstanceImport.setWebId(randomId);
 
@@ -672,7 +720,7 @@ public class PortalInstanceResourceTest
 		finally {
 			_deletePortalInstance(portalInstance);
 
-			_dropExportedSchema(_company.getCompanyId());
+			_dropExportedSchema(companyId);
 		}
 	}
 
@@ -731,9 +779,14 @@ public class PortalInstanceResourceTest
 			testPostPortalInstance_addPortalInstance(randomPortalInstance);
 
 		try {
-			Assert.assertNotNull(
-				_userLocalService.getUserByEmailAddress(
-					postPortalInstance.getCompanyId(), emailAddress));
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						postPortalInstance.getCompanyId())) {
+
+				Assert.assertNotNull(
+					_userLocalService.getUserByEmailAddress(
+						postPortalInstance.getCompanyId(), emailAddress));
+			}
 
 			assertEquals(randomPortalInstance, postPortalInstance);
 			assertValid(postPortalInstance);
