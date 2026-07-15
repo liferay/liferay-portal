@@ -29,7 +29,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		long intervalMillis = 1000L * 10L;
 
 		TestMonitor hangingTestMonitor = new TestMonitor(
-			_newMonitorConfig(intervalMillis / 1000, "a", 1)) {
+			_newMonitorConfig("a", intervalMillis / 1000, 1)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -48,10 +48,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		TestMonitor passingTestMonitor = new TestMonitor(
-			_newMonitorConfig(intervalMillis / 1000, "b", 0));
+			_newMonitorConfig("b", intervalMillis / 1000, 0));
 
 		TestMonitor throwingTestMonitor = new TestMonitor(
-			_newMonitorConfig(intervalMillis / 1000, "c", 0)) {
+			_newMonitorConfig("c", intervalMillis / 1000, 0)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -154,11 +154,11 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private MonitorConfig _newMonitorConfig(
-		long interval, String id, long timeout) {
+		String id, long intervalSeconds, long timeout) {
 
 		return new MonitorConfig(
-			interval, id, null, MonitorConfig.Severity.MEDIUM, null, timeout,
-			RandomTestUtil.randomString());
+			id, intervalSeconds, null, MonitorConfig.Severity.MEDIUM, null,
+			timeout, RandomTestUtil.randomString());
 	}
 
 }

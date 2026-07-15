@@ -33,7 +33,7 @@ public class MonitorSchedulerTest
 		long intervalMillis = 1000L * 10L;
 
 		List<Monitor> monitors = Arrays.<Monitor>asList(
-			new TestMonitor(_newMonitorConfig(intervalMillis / 1000, "a")));
+			new TestMonitor(_newMonitorConfig("a", intervalMillis / 1000)));
 
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
@@ -85,7 +85,7 @@ public class MonitorSchedulerTest
 			monitorResultStore);
 
 		List<Monitor> monitors = Arrays.<Monitor>asList(
-			new TestMonitor(_newMonitorConfig(0, "a")));
+			new TestMonitor(_newMonitorConfig("a", 0)));
 
 		monitorResultStore.store("a", _newMonitorResult(1000000L));
 
@@ -104,9 +104,9 @@ public class MonitorSchedulerTest
 		}
 	}
 
-	private MonitorConfig _newMonitorConfig(long interval, String id) {
+	private MonitorConfig _newMonitorConfig(String id, long intervalSeconds) {
 		return new MonitorConfig(
-			interval, id, null, MonitorConfig.Severity.MEDIUM, null,
+			id, intervalSeconds, null, MonitorConfig.Severity.MEDIUM, null,
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString());
 	}
 
