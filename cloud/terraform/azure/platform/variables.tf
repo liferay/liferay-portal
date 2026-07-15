@@ -5,27 +5,21 @@ variable "argocd_gateway_config" {
 		hostname=string
 		tls_external_secret_key=optional(string, null)
 	})
-	validation {
-		condition=var.argocd_gateway_config == null || can(regex("^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$", var.argocd_gateway_config.hostname))
-		error_message="The \"argocd_gateway_config.hostname\" value must be a lowercase DNS hostname."
-	}
 }
 variable "argocd_sso_credentials_secret_key" {
 	default=null
 	type=string
 }
-variable "cloud_provider" {
+variable "cluster_secret_store_provider_hcl" {
+	default=null
+	type=any
+}
+variable "deployment_name" {
 	type=string
 	validation {
-		condition=can(regex("^[a-z]+$", var.cloud_provider))
-		error_message="The \"cloud_provider\" value must be a lowercase cloud provider slug such as \"aws\", \"azure\", or \"gcp\"."
+		condition=can(regex("^[a-z][a-z0-9-]{2,17}$", var.deployment_name))
+		error_message="The variable \"deployment_name\" must be 3-18 characters, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens, so the derived \"<deployment_name>-vault\" Key Vault name fits Azure's 24-character limit."
 	}
-}
-variable "cluster_identity" {
-	type=map(string)
-}
-variable "cluster_secret_store_provider" {
-	type=any
 }
 variable "git_repository_config" {
 	default={}
@@ -43,10 +37,6 @@ variable "git_repository_config" {
 		}), null)
 		revision=optional(string, null)
 	})
-	validation {
-		condition=try(var.git_repository_config.credentials.method, null) == null || contains(["github_app", "https", "ssh"], var.git_repository_config.credentials.method)
-		error_message="The \"git_repository_config.credentials.method\" value must be \"github_app\", \"https\", or \"ssh\"."
-	}
 }
 variable "git_repository_url" {
 	type=string
@@ -68,14 +58,6 @@ variable "infrastructure_git_repository_config" {
 		revision=optional(string, null)
 		url=optional(string, null)
 	})
-	validation {
-		condition=var.infrastructure_git_repository_config.credentials == null || var.infrastructure_git_repository_config.url != null
-		error_message="The \"infrastructure_git_repository_config.credentials\" value requires \"infrastructure_git_repository_config.url\"."
-	}
-	validation {
-		condition=try(var.infrastructure_git_repository_config.credentials.method, null) == null || contains(["github_app", "https", "ssh"], var.infrastructure_git_repository_config.credentials.method)
-		error_message="The \"infrastructure_git_repository_config.credentials.method\" value must be \"github_app\", \"https\", or \"ssh\"."
-	}
 }
 variable "infrastructure_helm_chart_config" {
 	default={}
@@ -98,6 +80,10 @@ variable "infrastructure_provider_helm_chart_config" {
 }
 variable "infrastructure_provider_helm_chart_version" {
 	type=string
+}
+variable "keda_enabled" {
+	default=false
+	type=bool
 }
 variable "liferay_helm_chart_config" {
 	default={}
@@ -125,10 +111,6 @@ variable "observability_helm_chart_config" {
 variable "observability_helm_chart_version" {
 	type=string
 }
-variable "operators_helm_values" {
-	default={}
-	type=any
-}
 variable "platform_helm_chart_config" {
 	default={}
 	type=object({
@@ -138,5 +120,8 @@ variable "platform_helm_chart_config" {
 	})
 }
 variable "platform_helm_chart_version" {
+	type=string
+}
+variable "region" {
 	type=string
 }

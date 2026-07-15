@@ -5,10 +5,6 @@ variable "additional_values" {
 variable "argocd_helm_chart_version" {
 	type=string
 }
-variable "argocd_namespace" {
-	default="argocd-system"
-	type=string
-}
 variable "argocd_sso_config" {
 	default={}
 	type=object({

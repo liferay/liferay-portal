@@ -1,0 +1,23 @@
+module "platform" {
+	argocd_gateway_config=var.argocd_gateway_config
+	argocd_sso_credentials_secret_key=var.argocd_sso_credentials_secret_key
+	cloud_provider="azure"
+	cluster_identity=local.cluster_identity
+	cluster_secret_store_provider=local.cluster_secret_store_provider
+	git_repository_config=var.git_repository_config
+	git_repository_url=var.git_repository_url
+	infrastructure_git_repository_config=var.infrastructure_git_repository_config
+	infrastructure_helm_chart_config=var.infrastructure_helm_chart_config
+	infrastructure_helm_chart_version=var.infrastructure_helm_chart_version
+	infrastructure_provider_helm_chart_config=var.infrastructure_provider_helm_chart_config
+	infrastructure_provider_helm_chart_version=var.infrastructure_provider_helm_chart_version
+	liferay_helm_chart_config=var.liferay_helm_chart_config
+	liferay_helm_chart_version=var.liferay_helm_chart_version
+	observability_enabled=var.observability_enabled
+	observability_helm_chart_config=var.observability_helm_chart_config
+	observability_helm_chart_version=var.observability_helm_chart_version
+	operators_helm_values=local.operators_helm_values
+	platform_helm_chart_config=var.platform_helm_chart_config
+	platform_helm_chart_version=var.platform_helm_chart_version
+	source="../../modules/platform"
+}

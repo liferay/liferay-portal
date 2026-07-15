@@ -6,7 +6,7 @@ resource "helm_release" "argocd" {
 		kubernetes_secret.argocd_secret,
 	]
 	name="argocd"
-	namespace=var.argocd_namespace
+	namespace=local.argocd_namespace
 	repository="https://argoproj.github.io/argo-helm"
 	values=concat(
 		[
@@ -194,7 +194,7 @@ resource "helm_release" "argocd" {
 resource "kubernetes_namespace" "argocd" {
 	metadata {
 		labels=local.common_labels
-		name=var.argocd_namespace
+		name=local.argocd_namespace
 	}
 }
 resource "kubernetes_secret" "argocd_secret" {

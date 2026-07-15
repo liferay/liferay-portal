@@ -1,0 +1,5 @@
+infrastructure_helm_chart_version="0.1.0"
+infrastructure_provider_helm_chart_version="0.1.0"
+liferay_helm_chart_version="0.1.0"
+observability_helm_chart_version="1.0.0"
+platform_helm_chart_version="0.2.0"

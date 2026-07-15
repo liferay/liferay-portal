@@ -14,11 +14,11 @@ resource "kubernetes_manifest" "root_application" {
 					"app.kubernetes.io/name"="liferay-platform"
 				})
 			name="liferay-platform"
-			namespace=var.argocd_namespace
+			namespace=local.argocd_namespace
 		}
 		spec={
 			destination={
-				namespace=var.argocd_namespace
+				namespace=local.argocd_namespace
 				server="https://kubernetes.default.svc"
 			}
 			project="default"
@@ -26,16 +26,10 @@ resource "kubernetes_manifest" "root_application" {
 				merge(
 					{
 						helm={
-							valuesObject=var.platform_helm_values
+							valuesObject=local.platform_helm_values
 						}
-						repoURL=var.platform_helm_chart_config.chart_url
-						targetRevision=var.platform_helm_chart_version
 					},
-					var.platform_helm_chart_config.path == null ? {
-						chart=var.platform_helm_chart_config.chart_name
-					} : {
-						path=var.platform_helm_chart_config.path
-					}
+					local.chart_sources.platform
 				),
 			]
 			syncPolicy={
