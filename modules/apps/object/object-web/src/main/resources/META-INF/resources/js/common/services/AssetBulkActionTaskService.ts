@@ -23,7 +23,7 @@ async function getTasks({
 	sort?: string;
 }): Promise<RequestResult<IBulkActionTaskPage>> {
 	const url = new URL(
-		`${Liferay.ThemeDisplay.getPortalURL()}/o/cms/bulk-action-tasks`
+		`${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/cms/bulk-action-tasks`
 	);
 
 	Object.entries({filter, pageSize, sort}).map(([key, value]) => {

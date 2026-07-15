@@ -127,7 +127,7 @@ export default function ModalBulkDeleteObjectEntries({
 
 	const onSubmit = async () => {
 		const getBulkActionUrl = () => {
-			const baseUrl = `${Liferay.ThemeDisplay.getPortalURL()}/o/bulk/v1.0/bulk-action`;
+			const baseUrl = `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/bulk/v1.0/bulk-action`;
 
 			if (!isSelectAll) {
 				return baseUrl;

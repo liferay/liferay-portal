@@ -47,7 +47,7 @@ export default function SelectObjectDefinition({
 			headers: new Headers({'x-csrf-token': Liferay.authToken}),
 			method: 'GET',
 		},
-		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/object-admin/v1.0/object-definitions`,
+		link: `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/object-admin/v1.0/object-definitions`,
 		onNetworkStatusChange: setNetworkStatus,
 		variables: {
 			search,

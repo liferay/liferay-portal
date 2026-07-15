@@ -154,7 +154,7 @@ export function ModalAddObjectLayoutTab({
 			headers: new Headers({'x-csrf-token': Liferay.authToken}),
 			method: 'GET',
 		},
-		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/object-admin/v1.0/object-definitions/by-external-reference-code/${objectDefinitionExternalReferenceCode}/object-relationships`,
+		link: `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/object-admin/v1.0/object-definitions/by-external-reference-code/${objectDefinitionExternalReferenceCode}/object-relationships`,
 		onNetworkStatusChange: setNetworkStatus,
 		variables: {
 			filter: 'edge eq false',
