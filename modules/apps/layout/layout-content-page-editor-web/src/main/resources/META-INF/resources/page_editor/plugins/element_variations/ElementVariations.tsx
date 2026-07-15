@@ -47,6 +47,7 @@ interface Props {
 	previewURL: string;
 	selectedSegmentsExperienceId: number;
 	updateAudiencesPriorityURL: string;
+	updateElementVariationURL: string;
 }
 
 export default function (props: Props) {
@@ -88,6 +89,7 @@ function ElementVariations({
 	previewURL,
 	selectedSegmentsExperienceId,
 	updateAudiencesPriorityURL,
+	updateElementVariationURL,
 }: Props) {
 	const experienceId = useId();
 
@@ -279,6 +281,25 @@ function ElementVariations({
 													key,
 													type: 'EDIT_ELEMENT_VARIATION',
 												})
+											}
+											onUpdateElementVariation={(
+												elementVariation
+											) =>
+												ElementVariationService.updateElementVariation(
+													{
+														active: !elementVariation.active,
+														externalReferenceCode:
+															elementVariation.externalReferenceCode,
+														plid,
+														updateElementVariationURL,
+													}
+												).then(() =>
+													dispatch({
+														active: !elementVariation.active,
+														key: elementVariation.key,
+														type: 'UPDATE_ELEMENT_VARIATION',
+													})
+												)
 											}
 										/>
 									) : (

@@ -24,6 +24,13 @@ interface UpdateAudiencesPriorityParameters {
 	updateAudiencesPriorityURL: string;
 }
 
+interface UpdateElementVariationParameters {
+	active: boolean;
+	externalReferenceCode: string;
+	plid: number;
+	updateElementVariationURL: string;
+}
+
 export default {
 	addElementVariation({
 		addElementVariationURL,
@@ -72,6 +79,21 @@ export default {
 			body: {
 				audienceEntryERCs: JSON.stringify(audienceEntryERCs),
 				segmentsExperienceERC,
+			},
+		});
+	},
+
+	updateElementVariation({
+		active,
+		externalReferenceCode,
+		plid,
+		updateElementVariationURL,
+	}: UpdateElementVariationParameters) {
+		return serviceFetch<void>(updateElementVariationURL, {
+			body: {
+				active: String(active),
+				externalReferenceCode,
+				plid: String(plid),
 			},
 		});
 	},

@@ -26,6 +26,7 @@ interface Props {
 	elementVariations: ElementVariation[];
 	onDeleteElementVariation: (elementVariation: ElementVariation) => void;
 	onEditElementVariation: (key: string) => void;
+	onUpdateElementVariation: (elementVariation: ElementVariation) => void;
 }
 
 export default function ElementVariationsList({
@@ -34,6 +35,7 @@ export default function ElementVariationsList({
 	elementVariations,
 	onDeleteElementVariation,
 	onEditElementVariation,
+	onUpdateElementVariation,
 }: Props) {
 	const groupedElementVariations = elementVariations.reduce(
 		(groupedElementVariations, elementVariation) => {
@@ -161,6 +163,9 @@ export default function ElementVariationsList({
 													onEditElementVariation={
 														onEditElementVariation
 													}
+													onUpdateElementVariation={
+														onUpdateElementVariation
+													}
 												/>
 											</ClayList.QuickActionMenu>
 										</ClayList.ItemField>
@@ -179,12 +184,14 @@ interface ElementVariationActionsProps {
 	elementVariation: ElementVariation;
 	onDeleteElementVariation: (elementVariation: ElementVariation) => void;
 	onEditElementVariation: (key: string) => void;
+	onUpdateElementVariation: (elementVariation: ElementVariation) => void;
 }
 
 function ElementVariationActions({
 	elementVariation,
 	onDeleteElementVariation,
 	onEditElementVariation,
+	onUpdateElementVariation,
 }: ElementVariationActionsProps) {
 	return (
 		<ClayDropDownWithItems
@@ -198,7 +205,7 @@ function ElementVariationActions({
 					label: elementVariation.active
 						? Liferay.Language.get('disable')
 						: Liferay.Language.get('enable'),
-					onClick: () => {},
+					onClick: () => onUpdateElementVariation(elementVariation),
 					symbolLeft: 'check-circle',
 				},
 				{

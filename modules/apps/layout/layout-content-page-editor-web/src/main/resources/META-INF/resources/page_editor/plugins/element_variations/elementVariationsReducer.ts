@@ -47,6 +47,7 @@ export type Action =
 			type: 'SET_HIGHLIGHTED_TARGET_ELEMENT';
 	  }
 	| {languageId: string; type: 'SET_LANGUAGE_ID'}
+	| {active: boolean; key: string; type: 'UPDATE_ELEMENT_VARIATION'}
 	| {
 			properties: Partial<ElementVariation>;
 			type: 'UPDATE_ELEMENT_VARIATION_DRAFT';
@@ -190,6 +191,17 @@ export function reducer(state: State, action: Action): State {
 
 		case 'SET_LANGUAGE_ID':
 			return {...state, languageId: action.languageId};
+
+		case 'UPDATE_ELEMENT_VARIATION':
+			return {
+				...state,
+				elementVariations: state.elementVariations.map(
+					(elementVariation) =>
+						elementVariation.key === action.key
+							? {...elementVariation, active: action.active}
+							: elementVariation
+				),
+			};
 
 		case 'UPDATE_ELEMENT_VARIATION_DRAFT':
 			return {

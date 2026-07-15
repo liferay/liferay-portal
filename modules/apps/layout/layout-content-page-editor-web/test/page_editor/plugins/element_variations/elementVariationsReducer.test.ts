@@ -239,6 +239,24 @@ describe('elementVariationsReducer', () => {
 			expect(state.elementVariations).toEqual([]);
 		});
 
+		it('updates the active flag on UPDATE_ELEMENT_VARIATION', () => {
+			const elementVariation = buildElementVariation({
+				active: true,
+				key: 'key-1',
+			});
+
+			const state = reducer(
+				buildState({elementVariations: [elementVariation]}),
+				{
+					active: false,
+					key: 'key-1',
+					type: 'UPDATE_ELEMENT_VARIATION',
+				}
+			);
+
+			expect(state.elementVariations[0].active).toBe(false);
+		});
+
 		it('clears the draft and resets the language on CANCEL_ELEMENT_VARIATION_DRAFT', () => {
 			const state = reducer(
 				buildState({

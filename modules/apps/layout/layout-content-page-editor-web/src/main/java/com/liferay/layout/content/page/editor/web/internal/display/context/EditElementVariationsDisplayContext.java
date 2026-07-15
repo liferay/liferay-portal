@@ -130,6 +130,12 @@ public class EditElementVariationsDisplayContext {
 			_getActionURL(
 				"/layout_content_page_editor" +
 					"/update_segments_experience_audience_entry_rels")
+		).put(
+			"updateElementVariationURL",
+			_getActionURL(
+				"/layout_content_page_editor" +
+					"/update_layout_page_template_structure_rel_element" +
+						"_variation")
 		).build();
 	}
 
