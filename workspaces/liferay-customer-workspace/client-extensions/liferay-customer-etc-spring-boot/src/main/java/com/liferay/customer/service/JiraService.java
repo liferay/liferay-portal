@@ -399,9 +399,9 @@ public class JiraService extends BaseService {
 
 		StringBundler sb = new StringBundler(12);
 
-		sb.append("Organization in aqlFunction('\"External Key\" = \"");
+		sb.append("Organization in aqlFunction('\\\"External Key\\\" = \\\"");
 		sb.append(externalReferenceCode);
-		sb.append("\"') and (status not in ('");
+		sb.append("\\\"') and (status not in ('");
 		sb.append(
 			StringUtil.merge(
 				JiraIssueConstants.STATUSES_SOLVED_AND_CLOSED, "','"));
