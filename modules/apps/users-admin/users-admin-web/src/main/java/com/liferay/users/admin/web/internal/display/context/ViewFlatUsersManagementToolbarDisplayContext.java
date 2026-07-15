@@ -15,12 +15,15 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -58,8 +61,22 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 	@Override
 	public List<DropdownItem> getActionDropdownItems() {
-		return DropdownItemListBuilder.add(
-			() -> _showRestoreButton,
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		UserSearchTerms userSearchTerms =
+			(UserSearchTerms)searchContainer.getSearchTerms();
+
+		List<DropdownItem> dropdownItems = DropdownItemListBuilder.add(
+			() ->
+				_showRestoreButton &&
+				UserPermissionUtil.contains(
+					permissionChecker, ResourceConstants.PRIMKEY_DNE,
+					ActionKeys.ACTIVATE),
 			dropdownItem -> {
 				dropdownItem.putData("action", "activateUsers");
 				dropdownItem.putData(
@@ -79,11 +96,10 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 				dropdownItem.setQuickAction(true);
 			}
 		).add(
-			() -> _showDeleteButton,
+			() ->
+				_showDeleteButton &&
+				_hasDeletePermission(permissionChecker, userSearchTerms),
 			dropdownItem -> {
-				UserSearchTerms userSearchTerms =
-					(UserSearchTerms)searchContainer.getSearchTerms();
-
 				String action = "deleteUsers";
 				String cmd = Constants.DELETE;
 
@@ -118,6 +134,12 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 				dropdownItem.setQuickAction(true);
 			}
 		).build();
+
+		if (dropdownItems.isEmpty()) {
+			return null;
+		}
+
+		return dropdownItems;
 	}
 
 	@Override
@@ -235,6 +257,20 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 		).setParameter(
 			"orderByType", getOrderByType()
 		).buildPortletURL();
+	}
+
+	private boolean _hasDeletePermission(
+		PermissionChecker permissionChecker, UserSearchTerms userSearchTerms) {
+
+		if (userSearchTerms.isActive()) {
+			return UserPermissionUtil.contains(
+				permissionChecker, ResourceConstants.PRIMKEY_DNE,
+				ActionKeys.DEACTIVATE);
+		}
+
+		return UserPermissionUtil.contains(
+			permissionChecker, ResourceConstants.PRIMKEY_DNE,
+			ActionKeys.DELETE);
 	}
 
 	private final String _navigation;
