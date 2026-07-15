@@ -26,7 +26,7 @@ export default async function duplicateDataMaskAction({
 
 	if (error) {
 		openToast({
-			message: error,
+			message: Liferay.Util.escapeHTML(error),
 			type: 'danger',
 		});
 
@@ -39,7 +39,7 @@ export default async function duplicateDataMaskAction({
 		openToast({
 			message: Liferay.Util.sub(
 				Liferay.Language.get('x-was-saved-successfully'),
-				saved.name
+				Liferay.Util.escapeHTML(saved.name)
 			),
 			type: 'success',
 		});

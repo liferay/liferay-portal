@@ -102,7 +102,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 
 			if (error) {
 				openToast({
-					message: error,
+					message: Liferay.Util.escapeHTML(error),
 					type: 'danger',
 				});
 
@@ -113,7 +113,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 				openToast({
 					message: Liferay.Util.sub(
 						Liferay.Language.get('x-was-saved-successfully'),
-						saved.name
+						Liferay.Util.escapeHTML(saved.name)
 					),
 					type: 'success',
 				});

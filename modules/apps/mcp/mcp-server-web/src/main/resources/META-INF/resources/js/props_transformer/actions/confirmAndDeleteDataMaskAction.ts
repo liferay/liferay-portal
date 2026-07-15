@@ -91,7 +91,7 @@ export default async function confirmAndDeleteDataMaskAction({
 					openToast({
 						message: Liferay.Util.sub(
 							Liferay.Language.get('x-was-deleted-successfully'),
-							name
+							Liferay.Util.escapeHTML(name)
 						),
 						type: 'success',
 					});
