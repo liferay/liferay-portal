@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -62,7 +63,7 @@ public class MCPServerWebNavigationDisplayContext {
 		).add(
 			navigationItem -> {
 				navigationItem.setActive(
-					mvcRenderCommandName.isEmpty() ||
+					Validator.isNull(mvcRenderCommandName) ||
 					mvcRenderCommandName.equals("/mcp_server/edit_data_mask"));
 				navigationItem.setHref(
 					PortletURLBuilder.createRenderURL(
