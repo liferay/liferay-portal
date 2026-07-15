@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 import path from 'path';
 
-import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
@@ -16,7 +15,6 @@ import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/stru
 import {getAsGuest} from './getAsGuest';
 
 const test = mergeTests(
-	dataApiHelpersTest,
 	isolatedSiteTest,
 	loginTest(),
 	structureBuilderPagesTest
