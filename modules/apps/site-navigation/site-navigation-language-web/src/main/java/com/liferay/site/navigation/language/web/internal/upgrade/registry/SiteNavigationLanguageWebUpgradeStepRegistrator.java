@@ -50,7 +50,7 @@ public class SiteNavigationLanguageWebUpgradeStepRegistrator
 				protected String[] getPortletIds() {
 					return new String[] {
 						SiteNavigationLanguagePortletKeys.
-							SITE_NAVIGATION_LANGUAGE + "%"
+							SITE_NAVIGATION_LANGUAGE
 					};
 				}
 
