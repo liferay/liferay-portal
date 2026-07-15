@@ -35,7 +35,7 @@ const MetricValue = ({
 	return (
 		<>
 			<div className={valueClassName}>
-				<Text size={7} weight={textWeight}>
+				<Text size={9} weight={textWeight}>
 					{value}
 				</Text>
 			</div>
