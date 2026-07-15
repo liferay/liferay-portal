@@ -2,6 +2,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
+	api group: "com.amazonaws", name: "aws-java-sdk-cloudtrail", version: "1.12.719"
 	api group: "com.amazonaws", name: "aws-java-sdk-core", version: "1.12.719"
 	api group: "com.amazonaws", name: "aws-java-sdk-ec2", version: "1.12.719"
 	api group: "com.amazonaws", name: "aws-java-sdk-rds", version: "1.12.719"
