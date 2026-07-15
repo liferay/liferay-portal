@@ -9,10 +9,10 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.resource.v1_0.StyleBookResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
+import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
@@ -178,16 +178,16 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
+		long groupId = GroupUtil.getGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
 		Layout layout = _getLayout(
-			pageSpecificationExternalReferenceCode,
-			_getGroupId(siteExternalReferenceCode));
+			pageSpecificationExternalReferenceCode, groupId);
 
 		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
 			PermissionThreadLocal.getPermissionChecker(), layout);
 
 		long companyId = contextCompany.getCompanyId();
-
-		long groupId = _staging.getLiveGroupId(layout.getGroupId());
 
 		StyleBookEntry styleFromThemeStyleBookEntry =
 			StyleBookUtil.getStyleFromThemeStyleBookEntry(
@@ -700,9 +700,6 @@ public class StyleBookResourceImpl
 		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
 	)
 	private PortletResourcePermission _portletResourcePermission;
-
-	@Reference
-	private Staging _staging;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.StyleBookDTOConverter)"
