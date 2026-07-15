@@ -24,10 +24,10 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -112,8 +112,7 @@ public class FileWatcher implements Closeable {
 
 				List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 
-				List<CompletableFuture<Void>> completableFutures =
-					new ArrayList<>();
+				List<Future<?>> futures = new ArrayList<>();
 
 				for (Path path : _paths) {
 					for (WatchEvent<?> watchEvent : watchEvents) {
@@ -126,20 +125,22 @@ public class FileWatcher implements Closeable {
 							continue;
 						}
 
-						completableFutures.add(
-							CompletableFuture.runAsync(
-								() -> _consumer.accept(watchEventPath),
-								notificationsExecutorService));
+						futures.add(
+							notificationsExecutorService.submit(
+								() -> _consumer.accept(watchEventPath)));
 					}
 				}
 
-				CompletableFuture<Void> completableFuture =
-					CompletableFuture.allOf(
-						completableFutures.toArray(new CompletableFuture[0]));
-
 				try {
-					completableFuture.get(
-						notificationTimeout, notificationTimeUnit);
+					long deadline =
+						System.currentTimeMillis() +
+							notificationTimeUnit.toMillis(notificationTimeout);
+
+					for (Future<?> future : futures) {
+						future.get(
+							Math.max(0, deadline - System.currentTimeMillis()),
+							TimeUnit.MILLISECONDS);
+					}
 				}
 				catch (ExecutionException | InterruptedException |
 					   TimeoutException exception) {
