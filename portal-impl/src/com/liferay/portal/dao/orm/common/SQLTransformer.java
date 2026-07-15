@@ -22,45 +22,17 @@ import java.util.function.Function;
 public class SQLTransformer {
 
 	public static void reloadSQLTransformer() {
-		_instance._reloadSQLTransformer();
-	}
-
-	public static String transform(String sql) {
-		com.liferay.portal.dao.sql.transformer.SQLTransformer sqlTransformer =
-			_instance._getSQLTransformer();
-
-		return sqlTransformer.transform(sql);
-	}
-
-	public static String transformFromJPQLToHQL(String sql) {
-		return _instance._transformFromJPQLToHQL(sql);
-	}
-
-	private SQLTransformer() {
-		_reloadSQLTransformer();
-	}
-
-	private com.liferay.portal.dao.sql.transformer.SQLTransformer
-		_getSQLTransformer() {
-
-		return _sqlTransformer;
-	}
-
-	private void _reloadSQLTransformer() {
-		if (_transformedSQLsPortalCache == null) {
-			_transformedSQLsPortalCache = PortalCacheHelperUtil.getPortalCache(
-				PortalCacheManagerNames.SINGLE_VM,
-				SQLTransformer.class.getName());
-		}
-		else {
-			_transformedSQLsPortalCache.removeAll();
-		}
+		_transformedSQLsPortalCache.removeAll();
 
 		_sqlTransformer = SQLTransformerFactory.getSQLTransformer(
 			DBManagerUtil.getDB());
 	}
 
-	private String _transformFromJPQLToHQL(String sql) {
+	public static String transform(String sql) {
+		return _sqlTransformer.transform(sql);
+	}
+
+	public static String transformFromJPQLToHQL(String sql) {
 		String newSQL = _transformedSQLsPortalCache.get(sql);
 
 		if (newSQL != null) {
@@ -79,10 +51,11 @@ public class SQLTransformer {
 		return newSQL;
 	}
 
-	private static final SQLTransformer _instance = new SQLTransformer();
-
-	private com.liferay.portal.dao.sql.transformer.SQLTransformer
-		_sqlTransformer;
-	private PortalCache<String, String> _transformedSQLsPortalCache;
+	private static volatile
+		com.liferay.portal.dao.sql.transformer.SQLTransformer _sqlTransformer =
+			SQLTransformerFactory.getSQLTransformer(DBManagerUtil.getDB());
+	private static final PortalCache<String, String>
+		_transformedSQLsPortalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM, SQLTransformer.class.getName());
 
 }
