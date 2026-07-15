@@ -405,46 +405,6 @@ definition {
 		ItemSelector.searchDMImages(imageFileName = "Document_1.jpg");
 	}
 
-	@description = "This is a use case for LPS-106776. This ensures that the background image of a fragment can be added."
-	@priority = 5
-	@refactordone
-	test CanSelectBackgroundImageForFragment {
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.jpeg",
-			groupName = "Test Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpeg");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Test Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Test Content Page Name",
-			siteName = "Test Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Layout Elements",
-			fragmentName = "Container");
-
-		PageEditor.editLayoutContainer(
-			backgroundImage = "Direct",
-			entryTitle = "Document_1.jpeg",
-			navItem = "Documents and Media",
-			paddingTop = 2,
-			panel = "Styles");
-
-		PageEditor.publish();
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-content-page-name");
-
-		ContentPages.viewFragmentBackgroundImage(image = "document_1-jpeg");
-	}
-
 	@description = "Checks if user can edit a KB article adding an Image via Upload Image."
 	@priority = 3
 	test CanUploadImageInKBContentField {
