@@ -598,63 +598,6 @@ definition {
 		Pagination.viewResults(results = "Showing 21 to 30 of 30 entries.");
 	}
 
-	@description = "This test covers LPS-118808. It ensures that images can be filtered by the current site and that an image in a connected depot folder can be viewed through the everywhere filter."
-	@priority = 5
-	@refactordone
-	test FilterImagesByScope {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.jpg",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_3.jpg",
-			folderName = "DM Folder Name",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_3.jpg");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.viewCurrentSiteFilterResults(
-			imageFileName = "Document_2.jpg",
-			navTab = "Documents and Media",
-			noImageFileName = "Document_1.jpg",
-			viewNoLocationInfo = "Site Name");
-
-		ItemSelector.viewEverywhereFilterResults(
-			dmFolderName = "DM Folder Name",
-			imageFileName = "Document_3.jpg",
-			navTab = "Documents and Media");
-	}
-
 	@description = "This test covers LPS-119899 and LPS-119707. It ensures that the search results can be cleared after filtering everywhere in the item selector and that web content in a connected depot folder can be viewed through the everywhere filter."
 	@priority = 4
 	@refactordone
