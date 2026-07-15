@@ -3,6 +3,7 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "io.modelcontextprotocol.sdk", name: "mcp-core", version: "1.0.1"
 	testIntegrationImplementation group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "1.0.1"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"

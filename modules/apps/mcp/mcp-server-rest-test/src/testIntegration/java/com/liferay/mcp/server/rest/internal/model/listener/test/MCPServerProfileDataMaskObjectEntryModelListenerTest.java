@@ -9,14 +9,17 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PortalInstances;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,6 +72,35 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 
 		MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
 			RandomTestUtil.randomString(), mcpServerProfileDataMaskObjectEntry);
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId()));
+	}
+
+	@Test
+	public void testOnBeforeRemoveWhenCompanyInDeletionProcess()
+		throws Exception {
+
+		ObjectEntry dataMaskObjectEntry =
+			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				"mcp-server-profiles getMCPServerProfilesPage");
+
+		ObjectEntry mcpServerProfileDataMaskObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileDataMaskObjectEntry(
+				dataMaskObjectEntry.getObjectEntryId(), 1,
+				mcpServerProfileObjectEntry.getExternalReferenceCode());
+
+		try (SafeCloseable safeCloseable =
+				PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			_objectEntryLocalService.deleteObjectEntry(
+				mcpServerProfileDataMaskObjectEntry.getObjectEntryId());
+		}
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(

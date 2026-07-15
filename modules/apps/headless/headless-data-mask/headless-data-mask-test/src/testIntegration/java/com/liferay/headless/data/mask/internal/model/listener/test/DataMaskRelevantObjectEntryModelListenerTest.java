@@ -13,11 +13,16 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -113,6 +118,38 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
 				objectEntry2.getObjectEntryId()));
+	}
+
+	@Test
+	public void testOnBeforeRemoveWhenCompanyInDeletionProcess()
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		long companyId = company.getCompanyId();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			DataMaskTestUtil.processBatchEngineUnits();
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", companyId);
+
+		int objectEntriesCount = _objectEntryLocalService.getObjectEntriesCount(
+			0, objectDefinition.getObjectDefinitionId());
+
+		Assert.assertTrue(objectEntriesCount > 0);
+
+		_companyLocalService.deleteCompany(company);
+
+		Assert.assertNull(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", companyId));
 	}
 
 	@Test
@@ -299,6 +336,9 @@ public class DataMaskRelevantObjectEntryModelListenerTest {
 
 	private static final String _DATA_MASK_BATCH_FILE_NAME =
 		"com.liferay.headless.data.mask.impl_1.0.0 [1]";
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
