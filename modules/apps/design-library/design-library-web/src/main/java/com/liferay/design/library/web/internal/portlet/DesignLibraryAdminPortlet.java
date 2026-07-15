@@ -5,7 +5,7 @@
 
 package com.liferay.design.library.web.internal.portlet;
 
-import com.liferay.design.library.web.internal.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import jakarta.portlet.Portlet;

@@ -5,7 +5,7 @@
 
 package com.liferay.design.library.web.internal.portlet.action;
 
-import com.liferay.design.library.web.internal.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;

@@ -8,7 +8,7 @@ package com.liferay.design.library.web.internal.servlet.taglib;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.design.library.web.internal.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;

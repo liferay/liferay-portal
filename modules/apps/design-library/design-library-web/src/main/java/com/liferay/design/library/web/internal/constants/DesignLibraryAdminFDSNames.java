@@ -5,6 +5,8 @@
 
 package com.liferay.design.library.web.internal.constants;
 
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
+
 /**
  * @author Mario Leandro
  */
