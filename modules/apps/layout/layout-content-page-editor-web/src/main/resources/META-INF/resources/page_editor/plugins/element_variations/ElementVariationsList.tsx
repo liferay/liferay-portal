@@ -135,6 +135,14 @@ export default function ElementVariationsList({
 															)}
 														</ClayLabel>
 													) : null}
+
+													{elementVariation.active ? null : (
+														<ClayLabel displayType="danger">
+															{Liferay.Language.get(
+																'inactive'
+															)}
+														</ClayLabel>
+													)}
 												</div>
 											</ClayList.ItemText>
 										</ClayList.ItemField>
