@@ -16,7 +16,14 @@ async function getAssociatedProfiles(
 		return [];
 	}
 
-	const {data} = await getProfileDataMasks();
+	const {data, error} = await getProfileDataMasks();
+
+	if (error) {
+		openToast({
+			message: Liferay.Util.escapeHTML(error),
+			type: 'danger',
+		});
+	}
 
 	return (data?.items ?? [])
 		.filter(
@@ -77,9 +84,7 @@ export default async function confirmAndDeleteDataMaskAction({
 
 					if (error) {
 						openToast({
-							message: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
+							message: Liferay.Util.escapeHTML(error),
 							type: 'danger',
 						});
 
