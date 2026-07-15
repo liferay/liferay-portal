@@ -56,6 +56,8 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -687,15 +689,25 @@ public class ActionUtil {
 				objectEntryFolder.getExternalReferenceCode();
 		}
 
-		List<DropdownItem> dropdownItems = new ArrayList<>(
-			List.of(
-				getCreateFolderDropdownItem(
-					httpServletRequest, objectEntryFolderExternalReferenceCode),
-				getCMSBasicWebContentDropdownItem(
-					httpServletRequest, objectEntryFolderExternalReferenceCode),
-				getCMSBlogDropdownItem(
-					httpServletRequest,
-					objectEntryFolderExternalReferenceCode)));
+		List<DropdownItem> dropdownItems = new ArrayList<>();
+
+		dropdownItems.add(
+			getCreateFolderDropdownItem(
+				httpServletRequest, objectEntryFolderExternalReferenceCode));
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				PortalUtil.getCompanyId(httpServletRequest), "LPD-62272")) {
+
+			dropdownItems.add(
+				getGenerateContentWithAIDropdownItem(httpServletRequest));
+		}
+
+		dropdownItems.add(
+			getCMSBasicWebContentDropdownItem(
+				httpServletRequest, objectEntryFolderExternalReferenceCode));
+		dropdownItems.add(
+			getCMSBlogDropdownItem(
+				httpServletRequest, objectEntryFolderExternalReferenceCode));
 
 		List<DropdownItem> contentsCustomDropdownItems =
 			getContentsCustomDropdownItems(
@@ -918,6 +930,21 @@ public class ActionUtil {
 		dropdownItems.addAll(filesCustomDropdownItems);
 
 		return dropdownItems;
+	}
+
+	public static DropdownItem getGenerateContentWithAIDropdownItem(
+		HttpServletRequest httpServletRequest) {
+
+		return DropdownItemBuilder.putData(
+			"action", "generateContentWithAI"
+		).putData(
+			"contentTypes",
+			String.valueOf(_getContentTypesJSONArray(httpServletRequest))
+		).setIcon(
+			"stars"
+		).setLabel(
+			LanguageUtil.get(httpServletRequest, "generate-content-with-ai")
+		).build();
 	}
 
 	public static String getRecycleBinURL(ThemeDisplay themeDisplay) {
@@ -1497,6 +1524,58 @@ public class ActionUtil {
 		LayoutLocalServiceUtil.updateLayout(draftLayout);
 
 		return layoutPageTemplateEntry;
+	}
+
+	private static JSONArray _getContentTypesJSONArray(
+		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		List<ObjectDefinition> objectDefinitions = new ArrayList<>();
+
+		for (String externalReferenceCode :
+				new String[] {"L_CMS_BASIC_WEB_CONTENT", "L_CMS_BLOG"}) {
+
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, themeDisplay.getCompanyId());
+
+			if (objectDefinition != null) {
+				objectDefinitions.add(objectDefinition);
+			}
+		}
+
+		for (ObjectDefinition objectDefinition :
+				ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
+					themeDisplay.getCompanyId(),
+					new String[] {
+						ObjectFolderConstants.
+							EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES
+					})) {
+
+			if (!objectDefinition.isSystem()) {
+				objectDefinitions.add(objectDefinition);
+			}
+		}
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			jsonArray.put(
+				JSONUtil.put(
+					"externalReferenceCode",
+					objectDefinition.getExternalReferenceCode()
+				).put(
+					"label", objectDefinition.getLabel(themeDisplay.getLocale())
+				).put(
+					"name", objectDefinition.getName()
+				));
+		}
+
+		return jsonArray;
 	}
 
 	private static Layout _getEditContentLayout(

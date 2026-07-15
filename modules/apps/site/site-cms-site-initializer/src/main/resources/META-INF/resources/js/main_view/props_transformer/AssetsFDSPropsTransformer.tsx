@@ -248,6 +248,10 @@ export default function AssetsFDSPropsTransformer({
 			primaryItems: addOnClickToCreationMenuItems(
 				creationMenu.primaryItems,
 				ACTIONS
+			).map((item) =>
+				item.data?.action === 'generateContentWithAI'
+					? {...item, className: 'cms-generate-content-with-ai'}
+					: item
 			),
 		},
 		customRenderers: {
