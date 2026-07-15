@@ -113,7 +113,7 @@ public class ExportTaskResourceImpl extends BaseExportTaskResourceImpl {
 
 		// Defer the asynchronous processing until after the current
 		// transaction commits so the processing thread reads a fully
-		// persisted batch engine export task.
+		// persisted batch engine export task
 
 		TransactionCommitCallbackUtil.registerCallback(
 			() -> executorService.submit(

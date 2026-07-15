@@ -529,7 +529,7 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 
 		// Defer the asynchronous processing until after the current
 		// transaction commits so the processing thread reads a fully
-		// persisted batch engine import task.
+		// persisted batch engine import task
 
 		TransactionCommitCallbackUtil.registerCallback(
 			() -> executorService.submit(
