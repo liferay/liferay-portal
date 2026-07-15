@@ -17,6 +17,10 @@ components:
                     type: string
         AssetStatistics:
             properties:
+                approvedCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 expiredCount:
                     format: int64
                     readOnly: true
@@ -29,11 +33,23 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                pendingCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 reviewDateOverdueCount:
                     format: int64
                     readOnly: true
                     type: integer
+                scheduledCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 totalCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                upcomingReviewCount:
                     format: int64
                     readOnly: true
                     type: integer
@@ -82,6 +98,12 @@ paths:
     "/asset-statistics":
         get:
             operationId: getAssetStatistics
+            parameters:
+                -   in: query
+                    name: assetLibraryId
+                    schema:
+                        format: int64
+                        type: integer
             responses:
                 200:
                     content:
