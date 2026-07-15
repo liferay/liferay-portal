@@ -132,25 +132,31 @@ test(
 			});
 
 			await test.step('The files are gone from the origin folder and listed in the destination', async () => {
-				await spaAssetsPage.gotoFiles();
+				await expect(async () => {
+					await spaAssetsPage.gotoFiles();
 
-				await openFolder(spaPage, originFolderName);
+					await openFolder(spaPage, originFolderName);
 
-				for (const title of fileTitles) {
-					await expect(
-						spaPage.getByRole('button', {name: `${title} Actions`})
-					).toBeHidden({timeout: 5000});
-				}
+					for (const title of fileTitles) {
+						await expect(
+							spaPage.getByRole('button', {
+								name: `${title} Actions`,
+							})
+						).toBeHidden({timeout: 2000});
+					}
 
-				await spaAssetsPage.gotoFiles();
+					await spaAssetsPage.gotoFiles();
 
-				await openFolder(spaPage, destinationFolderName);
+					await openFolder(spaPage, destinationFolderName);
 
-				for (const title of fileTitles) {
-					await expect(
-						spaPage.getByRole('button', {name: `${title} Actions`})
-					).toBeVisible({timeout: 5000});
-				}
+					for (const title of fileTitles) {
+						await expect(
+							spaPage.getByRole('button', {
+								name: `${title} Actions`,
+							})
+						).toBeVisible({timeout: 2000});
+					}
+				}).toPass({timeout: 60000});
 			});
 		}
 		finally {

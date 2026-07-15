@@ -18,7 +18,11 @@ import {isImageLoaded} from '../../../../utils/isImageLoaded';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {AssetsPage} from '../../../site-cms-site-initializer/main/pages/AssetsPage';
 import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
-import {addSpaceUserWithSession, execBulkAction} from './utils/bulkOperations';
+import {
+	addSpaceUserWithSession,
+	confirmBulkDelete,
+	execBulkAction,
+} from './utils/bulkOperations';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -43,8 +47,6 @@ test(
 	'A Space Administrator bulk deletes files and they stop being accessible on the site',
 	{tag: ['@LPD-95537', '@LPD-95537/TC-14.d', '@LPD-97251']},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		test.fail();
-
 		test.setTimeout(480000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -199,6 +201,8 @@ test(
 					]);
 
 					await execBulkAction(spaPage, 'Delete');
+
+					await confirmBulkDelete(spaPage);
 				});
 
 				await test.step('The files are gone from the file list', async () => {

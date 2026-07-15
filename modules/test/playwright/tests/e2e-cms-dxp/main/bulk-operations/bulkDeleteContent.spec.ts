@@ -15,7 +15,11 @@ import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {AssetsPage} from '../../../site-cms-site-initializer/main/pages/AssetsPage';
 import {RecycleBinPage} from '../../../site-cms-site-initializer/main/pages/RecycleBinPage';
-import {addSpaceUserWithSession, execBulkAction} from './utils/bulkOperations';
+import {
+	addSpaceUserWithSession,
+	confirmBulkDelete,
+	execBulkAction,
+} from './utils/bulkOperations';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -36,8 +40,6 @@ test(
 	'A Content Reviewer bulk deletes Basic Web Content entries and they stop rendering for GUEST',
 	{tag: ['@LPD-95537', '@LPD-95537/TC-14.c', '@LPD-97251']},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		test.fail();
-
 		test.setTimeout(480000);
 
 		const spaceName = `Space ${getRandomString()}`;
@@ -169,6 +171,8 @@ test(
 					await scrAssetsPage.selectItems([mappedTitle, secondTitle]);
 
 					await execBulkAction(scrPage, 'Delete');
+
+					await confirmBulkDelete(scrPage);
 				});
 
 				await test.step('The entries are gone from the content list', async () => {

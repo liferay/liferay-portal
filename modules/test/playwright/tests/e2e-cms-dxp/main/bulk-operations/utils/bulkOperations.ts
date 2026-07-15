@@ -29,6 +29,20 @@ export async function execBulkAction(page: Page, action: string) {
 	await menuItem.click();
 }
 
+export async function confirmBulkDelete(page: Page) {
+	const modal = page.locator('.modal-dialog');
+
+	const deleteButton = modal
+		.locator('.modal-footer')
+		.getByRole('button', {exact: true, name: 'Delete'});
+
+	await expect(deleteButton).toBeVisible({timeout: 5000});
+
+	await deleteButton.click();
+
+	await expect(modal).toBeHidden({timeout: 10000});
+}
+
 export async function bulkMoveToFolder(
 	page: Page,
 	{
