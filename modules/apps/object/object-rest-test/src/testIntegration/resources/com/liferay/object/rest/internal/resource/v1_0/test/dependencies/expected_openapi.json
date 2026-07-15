@@ -2636,10 +2636,6 @@
 						"description": "The scope's name.",
 						"type": "string"
 					},
-					"liveExternalReferenceCode": {
-						"description": "The scope's live group external reference code.",
-						"type": "string"
-					},
 					"type": {
 						"description": "The scope's type.",
 						"enum": [
