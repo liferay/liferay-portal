@@ -110,7 +110,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	const instructionDefinitionScopeRef = useRef<string>(
 		instructionDefinitionScope
 	);
-	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
 	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -120,18 +120,26 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		instructionDefinitionScopeRef.current = instructionDefinitionScope;
 	}, [context, getContext, instructionDefinitionScope]);
 
+	useEffect(() => {
+		setTimeout(() => {
+			const container = messagesContainerRef.current;
+
+			container?.scrollTo({
+				behavior: 'smooth',
+				top: container.scrollHeight,
+			});
+		}, 0);
+	}, [messages]);
+
 	const sendMessage = useCallback((text: string) => {
 		if (!text.trim()) {
 			return;
 		}
 
-		setMessages((previousMessages) => {
-			setTimeout(() => {
-				messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-			}, 0);
-
-			return [...previousMessages, {sender: 'user', text}];
-		});
+		setMessages((previousMessages) => [
+			...previousMessages,
+			{sender: 'user', text},
+		]);
 
 		setMessage('');
 
@@ -227,25 +235,17 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 					try {
 						const dataJSON = JSON.parse(event.data);
 
-						setMessages((previousMessages) => {
-							setTimeout(() => {
-								messagesEndRef.current?.scrollIntoView({
-									behavior: 'smooth',
-								});
-							}, 0);
-
-							return [
-								...previousMessages,
-								{
-									agentDefinitionExternalReferenceCodes:
-										dataJSON[
-											'agentDefinitionExternalReferenceCodes'
-										] ?? [],
-									sender: 'assistant',
-									text: dataJSON['data'],
-								},
-							];
-						});
+						setMessages((previousMessages) => [
+							...previousMessages,
+							{
+								agentDefinitionExternalReferenceCodes:
+									dataJSON[
+										'agentDefinitionExternalReferenceCodes'
+									] ?? [],
+								sender: 'assistant',
+								text: dataJSON['data'],
+							},
+						]);
 
 						setMessage('');
 					}
@@ -285,22 +285,14 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 						text = '';
 					}
 
-					setMessages((previousMessages) => {
-						setTimeout(() => {
-							messagesEndRef.current?.scrollIntoView({
-								behavior: 'smooth',
-							});
-						}, 0);
-
-						return [
-							...previousMessages,
-							{
-								error: true,
-								sender: 'assistant',
-								text,
-							},
-						];
-					});
+					setMessages((previousMessages) => [
+						...previousMessages,
+						{
+							error: true,
+							sender: 'assistant',
+							text,
+						},
+					]);
 
 					setIsGenerating(false);
 				}
@@ -326,26 +318,17 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 		const handleCategorize = (payload: CategorizeEventPayload) => {
 			setActive(true);
 
-			setMessages((previousMessages) => {
-				setTimeout(() => {
-					messagesEndRef.current?.scrollIntoView({
-						behavior: 'smooth',
-					});
-				}, 0);
-
-				return [
-					...previousMessages,
-					{
-						sender: 'user',
-						text:
-							payload.agent ===
-							ECategorizationAgent.AUTO_CATEGORIZE
-								? Liferay.Language.get('add-categories')
-								: Liferay.Language.get('generate-tags'),
-					},
-					{categorization: payload, sender: 'assistant', text: ''},
-				];
-			});
+			setMessages((previousMessages) => [
+				...previousMessages,
+				{
+					sender: 'user',
+					text:
+						payload.agent === ECategorizationAgent.AUTO_CATEGORIZE
+							? Liferay.Language.get('add-categories')
+							: Liferay.Language.get('generate-tags'),
+				},
+				{categorization: payload, sender: 'assistant', text: ''},
+			]);
 		};
 
 		Liferay.on(CATEGORIZE_EVENT, handleCategorize);
@@ -357,7 +340,10 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 
 	const chatSurface = (
 		<>
-			<div className="ai-assistant-chat__messages-container">
+			<div
+				className="ai-assistant-chat__messages-container"
+				ref={messagesContainerRef}
+			>
 				{!initialMessage && (
 					<AIAssistantMessageBalloon
 						error={false}
@@ -422,8 +408,6 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 						</span>
 					</div>
 				)}
-
-				<div ref={messagesEndRef} />
 			</div>
 
 			{!!quickActions?.length && (
