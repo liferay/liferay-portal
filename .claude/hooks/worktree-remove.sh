@@ -8,7 +8,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 source _common.sh
 
-source "$(_resolve_db_brand).sh"
+_source_db_brand
 
 function main {
 	local bundles_dir=""

@@ -119,22 +119,30 @@ function _get_property_from_files {
 	echo "${default}"
 }
 
-function _resolve_db_brand {
+function _source_db_brand {
 	local brand
 
 	brand="$(echo "${WORKTREE_DB_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
 
 	case "${brand}" in
 		*psql*)
-			echo psql
+			brand=psql
 			;;
 		*mysql*)
-			echo mysql
+			brand=mysql
 			;;
 		*)
 			_die "WORKTREE_DB_BRAND must contain \"mysql\" or \"psql\" (got \"${brand}\")."
 			;;
 	esac
+
+	source "${brand}.sh"
+
+	for function_name in _drop_database _set_database
+	do
+		[[ "$(type -t "${function_name}")" == function ]] ||
+			_die "${brand}.sh must implement the function: \"${function_name}\"."
+	done
 }
 
 function _sed {
