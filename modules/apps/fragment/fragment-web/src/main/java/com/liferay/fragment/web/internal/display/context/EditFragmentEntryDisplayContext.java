@@ -18,6 +18,7 @@ import com.liferay.fragment.web.internal.info.field.type.CaptchaInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.FormButtonInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.LocalizationSelectInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.StepperInfoFieldType;
+import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
@@ -630,6 +631,12 @@ public class EditFragmentEntryDisplayContext {
 
 	private void _setViewAttributes() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+
+		if (DesignLibraryUtil.isDesignLibraryScope(
+				_themeDisplay.getScopeGroup())) {
+
+			portletDisplay.setPortletDecoratorId("barebone");
+		}
 
 		portletDisplay.setShowBackIcon(true);
 		portletDisplay.setURLBack(getRedirect());
