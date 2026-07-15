@@ -26,10 +26,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	public void testRunCycle() {
 		MonitorResultStore monitorResultStore = new MonitorResultStore();
 
-		long cadenceMillis = 1000L * 10L;
+		long intervalMillis = 1000L * 10L;
 
 		TestMonitor hangingTestMonitor = new TestMonitor(
-			_newMonitorConfig(cadenceMillis / 1000, "a", 1)) {
+			_newMonitorConfig(intervalMillis / 1000, "a", 1)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -48,10 +48,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		TestMonitor passingTestMonitor = new TestMonitor(
-			_newMonitorConfig(cadenceMillis / 1000, "b", 0));
+			_newMonitorConfig(intervalMillis / 1000, "b", 0));
 
 		TestMonitor throwingTestMonitor = new TestMonitor(
-			_newMonitorConfig(cadenceMillis / 1000, "c", 0)) {
+			_newMonitorConfig(intervalMillis / 1000, "c", 0)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -84,7 +84,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 				}
 			);
 
-			long virtualCurrentTime = cadenceMillis + 1L;
+			long virtualCurrentTime = intervalMillis + 1L;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
@@ -134,7 +134,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(1, monitorResults.size());
 
-			virtualCurrentTime += cadenceMillis;
+			virtualCurrentTime += intervalMillis;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
@@ -154,10 +154,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private MonitorConfig _newMonitorConfig(
-		long cadence, String id, long timeout) {
+		long interval, String id, long timeout) {
 
 		return new MonitorConfig(
-			cadence, id, null, MonitorConfig.Severity.MEDIUM, null, timeout,
+			interval, id, null, MonitorConfig.Severity.MEDIUM, null, timeout,
 			RandomTestUtil.randomString());
 	}
 

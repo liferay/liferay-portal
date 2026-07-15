@@ -22,7 +22,7 @@ public class MonitorConfigLoaderTest
 	public void testGetMonitorConfigs() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[masters].cadence", "900");
+		buildProperties.setProperty("monitor[masters].interval", "900");
 		buildProperties.setProperty(
 			"monitor[masters].parameter[target]",
 			"https://test-1-0.liferay.com/computer/api/json");
@@ -42,7 +42,7 @@ public class MonitorConfigLoaderTest
 		testEquals("masters", monitorConfig.getId());
 		testEquals("http-endpoint", monitorConfig.getType());
 		testEquals(MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
-		testEquals(900L, monitorConfig.getCadence());
+		testEquals(900L, monitorConfig.getInterval());
 		testEquals(30L, monitorConfig.getTimeout());
 
 		Map<String, String> parameters = monitorConfig.getParameters();
@@ -54,16 +54,6 @@ public class MonitorConfigLoaderTest
 		Map<String, String> thresholds = monitorConfig.getThresholds();
 
 		testEquals("85", thresholds.get("disk"));
-	}
-
-	@Test
-	public void testGetMonitorConfigsCadence() {
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty("monitor[a].cadence", "not-a-number");
-		buildProperties.setProperty("monitor[a].type", "http-endpoint");
-
-		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
 	}
 
 	@Test
@@ -95,6 +85,16 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
+	public void testGetMonitorConfigsInterval() {
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty("monitor[a].interval", "not-a-number");
+		buildProperties.setProperty("monitor[a].type", "http-endpoint");
+
+		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
+	}
+
+	@Test
 	public void testGetMonitorConfigsMissingType() {
 		Properties buildProperties = new Properties();
 
@@ -104,10 +104,10 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsNegativeCadence() {
+	public void testGetMonitorConfigsNegativeInterval() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[a].cadence", "-1");
+		buildProperties.setProperty("monitor[a].interval", "-1");
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
 		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
@@ -144,10 +144,10 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsZeroCadence() {
+	public void testGetMonitorConfigsZeroInterval() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[a].cadence", "0");
+		buildProperties.setProperty("monitor[a].interval", "0");
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
 		List<MonitorConfig> monitorConfigs =
@@ -155,7 +155,7 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		testEquals(0L, monitorConfig.getCadence());
+		testEquals(0L, monitorConfig.getInterval());
 	}
 
 	private void _testGetMonitorConfigsExpectedIllegalArgumentException(

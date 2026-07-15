@@ -30,17 +30,17 @@ public class MonitorSchedulerTest
 		MonitorScheduler monitorScheduler = new MonitorScheduler(
 			monitorResultStore);
 
-		long cadenceMillis = 1000L * 10L;
+		long intervalMillis = 1000L * 10L;
 
 		List<Monitor> monitors = Arrays.<Monitor>asList(
-			new TestMonitor(_newMonitorConfig(cadenceMillis / 1000, "a")));
+			new TestMonitor(_newMonitorConfig(intervalMillis / 1000, "a")));
 
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
 					Mockito.CALLS_REAL_METHODS)) {
 
-			long virtualCurrentTime = cadenceMillis + 1L;
+			long virtualCurrentTime = intervalMillis + 1L;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
@@ -53,7 +53,7 @@ public class MonitorSchedulerTest
 			monitorResultStore.store(
 				"a", _newMonitorResult(virtualCurrentTime));
 
-			virtualCurrentTime += cadenceMillis - 1L;
+			virtualCurrentTime += intervalMillis - 1L;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
@@ -78,7 +78,7 @@ public class MonitorSchedulerTest
 	}
 
 	@Test
-	public void testGetDueMonitorsZeroCadence() {
+	public void testGetDueMonitorsZeroInterval() {
 		MonitorResultStore monitorResultStore = new MonitorResultStore();
 
 		MonitorScheduler monitorScheduler = new MonitorScheduler(
@@ -104,9 +104,9 @@ public class MonitorSchedulerTest
 		}
 	}
 
-	private MonitorConfig _newMonitorConfig(long cadence, String id) {
+	private MonitorConfig _newMonitorConfig(long interval, String id) {
 		return new MonitorConfig(
-			cadence, id, null, MonitorConfig.Severity.MEDIUM, null,
+			interval, id, null, MonitorConfig.Severity.MEDIUM, null,
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString());
 	}
 
