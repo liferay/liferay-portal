@@ -128,10 +128,10 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		_httpServer.createContext(
 			"/thumbnail_1.png",
-			httpExchange -> _writeBytes(httpExchange, _thumbnail1Bytes));
+			httpExchange -> _writeBytes(_thumbnail1Bytes, httpExchange));
 		_httpServer.createContext(
 			"/thumbnail_2.png",
-			httpExchange -> _writeBytes(httpExchange, _thumbnail2Bytes));
+			httpExchange -> _writeBytes(_thumbnail2Bytes, httpExchange));
 
 		_httpServer.start();
 
@@ -431,7 +431,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
-	private static void _writeBytes(HttpExchange httpExchange, byte[] bytes)
+	private static void _writeBytes(byte[] bytes, HttpExchange httpExchange)
 		throws IOException {
 
 		Headers responseHeaders = httpExchange.getResponseHeaders();
