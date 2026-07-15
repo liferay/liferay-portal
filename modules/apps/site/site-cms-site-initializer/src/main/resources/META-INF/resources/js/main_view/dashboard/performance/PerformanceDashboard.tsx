@@ -11,14 +11,17 @@ import {AudienceAndDistribution} from './components/AudienceAndDistribution';
 import {ContentConsumption} from './components/ContentConsumption';
 import {Filters} from './components/Filters';
 import {Overview} from './components/Overview';
+import {DashboardAdditionalProps} from './types';
 
 import '../../../../css/dashboard/PerformanceDashboard.scss';
 
 export default function PerformanceDashboard({
+	additionalProps,
 	admin,
 	analyticsEnabled,
 	constants,
 }: {
+	additionalProps?: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
@@ -35,7 +38,10 @@ export default function PerformanceDashboard({
 	}
 
 	return (
-		<PerformanceContextProvider constants={constants}>
+		<PerformanceContextProvider
+			additionalProps={additionalProps}
+			constants={constants}
+		>
 			<Filters />
 
 			<Overview />

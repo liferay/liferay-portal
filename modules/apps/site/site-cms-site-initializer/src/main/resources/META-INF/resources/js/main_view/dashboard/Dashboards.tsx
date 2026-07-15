@@ -12,6 +12,7 @@ import React, {useState} from 'react';
 import Breadcrumb from '../../common/components/Breadcrumb';
 import InventoryDashboard from './inventory/InventoryDashboard';
 import PerformanceDashboard from './performance/PerformanceDashboard';
+import {DashboardAdditionalProps} from './performance/types';
 
 import '../../../css/dashboard/Dashboards.scss';
 
@@ -27,12 +28,14 @@ const TABS = {
 type TabId = keyof typeof TABS;
 
 function Wrapper({
+	additionalProps,
 	admin,
 	analyticsEnabled,
 	constants,
 	freeTier,
 	learnResources,
 }: {
+	additionalProps: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
@@ -49,6 +52,7 @@ function Wrapper({
 
 			<ClayTooltipProvider>
 				<Dashboards
+					additionalProps={additionalProps}
 					admin={admin}
 					analyticsEnabled={analyticsEnabled}
 					constants={constants}
@@ -61,12 +65,14 @@ function Wrapper({
 }
 
 function Dashboards({
+	additionalProps,
 	admin,
 	analyticsEnabled,
 	constants,
 	freeTier,
 	learnResources,
 }: {
+	additionalProps: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
@@ -102,6 +108,7 @@ function Dashboards({
 
 				{tabId === 'performance' ? (
 					<PerformanceDashboard
+						additionalProps={additionalProps}
 						admin={admin}
 						analyticsEnabled={analyticsEnabled}
 						constants={constants}

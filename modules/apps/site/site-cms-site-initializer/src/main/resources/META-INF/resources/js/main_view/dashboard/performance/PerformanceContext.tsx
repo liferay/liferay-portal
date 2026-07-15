@@ -10,6 +10,7 @@ import {
 import React, {createContext, useMemo, useState} from 'react';
 
 import {SpaceOption, initialSpace} from '../common/SpacesDropdown';
+import {DashboardAdditionalProps} from './types';
 
 const initialRange: RangeSelector = {
 	rangeEnd: '',
@@ -18,6 +19,7 @@ const initialRange: RangeSelector = {
 };
 
 type State = {
+	additionalProps?: DashboardAdditionalProps;
 	constants: {[key: string]: string};
 	range: RangeSelector;
 	setRange: (range: RangeSelector) => void;
@@ -26,6 +28,7 @@ type State = {
 };
 
 const PerformanceContext = createContext<State>({
+	additionalProps: undefined,
 	constants: {},
 	range: initialRange,
 	setRange: () => {},
@@ -36,9 +39,11 @@ const PerformanceContext = createContext<State>({
 PerformanceContext.displayName = 'PerformanceContext';
 
 function PerformanceContextProvider({
+	additionalProps,
 	children,
 	constants = {},
 }: {
+	additionalProps?: DashboardAdditionalProps;
 	children: React.ReactNode;
 	constants?: {[key: string]: string};
 }) {
@@ -46,8 +51,8 @@ function PerformanceContextProvider({
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
 	const value = useMemo(
-		() => ({constants, range, setRange, setSpace, space}),
-		[constants, range, space]
+		() => ({additionalProps, constants, range, setRange, setSpace, space}),
+		[additionalProps, constants, range, space]
 	);
 
 	return (

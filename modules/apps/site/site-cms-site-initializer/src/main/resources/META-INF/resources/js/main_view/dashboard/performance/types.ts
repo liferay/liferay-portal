@@ -5,6 +5,30 @@
 
 import {TrendClassification} from '@liferay/analytics-reports-js-components-web';
 
+import type {AdditionalProps} from '../../props_transformer/AssetsFDSPropsTransformer';
+
+export type DashboardAdditionalProps = Pick<
+	AdditionalProps,
+	| 'autocompleteURL'
+	| 'breadcrumbProps'
+	| 'candidateAssetLibraries'
+	| 'cmsGroupId'
+	| 'collaboratorURLs'
+	| 'contentViewURL'
+	| 'fileMimeTypeCssClasses'
+	| 'fileMimeTypeIcons'
+	| 'objectDefinitionCssClasses'
+	| 'objectDefinitionIcons'
+> & {
+	commentsProps: {
+		addCommentURL: string;
+		deleteCommentURL: string;
+		editCommentURL: string;
+		editorConfig: unknown;
+		getCommentsURL: string;
+	};
+};
+
 export type MetricType =
 	| 'downloadsMetric'
 	| 'impressionsMetric'
