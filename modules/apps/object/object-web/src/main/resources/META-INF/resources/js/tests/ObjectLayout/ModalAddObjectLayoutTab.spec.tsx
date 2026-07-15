@@ -66,6 +66,10 @@ describe('ModalAddObjectLayoutTab', () => {
 
 	afterEach(cleanup);
 
+	afterEach(() => {
+		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue('/');
+	});
+
 	it('calls onClose when the cancel button is clicked', () => {
 		(useResource as jest.Mock).mockReturnValue({resource: null});
 		render(<TestComponent />);
@@ -118,6 +122,21 @@ describe('ModalAddObjectLayoutTab', () => {
 		expect(useResource).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				variables: expect.objectContaining({search: 'my-test'}),
+			})
+		);
+	});
+
+	it('requests relationships with the context path prefixed', () => {
+		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue(
+			'/myportal'
+		);
+		(useResource as jest.Mock).mockReturnValue({resource: null});
+
+		render(<TestComponent />);
+
+		expect(useResource).toHaveBeenCalledWith(
+			expect.objectContaining({
+				link: 'http://localhost:8080/myportal/o/object-admin/v1.0/object-definitions/by-external-reference-code/test/object-relationships',
 			})
 		);
 	});
