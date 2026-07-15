@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, expect, mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -296,44 +296,6 @@ test(
 
 		unscheduledTaskDate.setDate(20);
 
-		// FullCalendar tracks the mouse itself rather than using native drag
-		// events, so simulate the drag with manual mouse actions instead of
-		// Playwright's dragTo.
-
-		const dragToDayCell = async (source: Locator, dayCell: Locator) => {
-			const getCenter = async (locator: Locator) => {
-				const box = await locator.boundingBox();
-
-				if (!box) {
-					throw new Error('The dragged element is not visible');
-				}
-
-				return {x: box.x + box.width / 2, y: box.y + box.height / 2};
-			};
-
-			const sourceCenter = await getCenter(source);
-
-			await source.hover();
-
-			await page.mouse.down();
-
-			// FullCalendar starts the drag only after the pointer travels a few
-			// pixels, so nudge it near the source before crossing over to the
-			// target.
-
-			await page.mouse.move(sourceCenter.x + 10, sourceCenter.y + 10, {
-				steps: 5,
-			});
-
-			const dayCellCenter = await getCenter(dayCell);
-
-			await page.mouse.move(dayCellCenter.x, dayCellCenter.y, {
-				steps: 10,
-			});
-
-			await page.mouse.up();
-		};
-
 		const {calendarView} = tasksPage;
 
 		await test.step('Create a task with a due date', async () => {
@@ -366,7 +328,7 @@ test(
 			const sourceCell = tasksPage.getCalendarDayCell(scheduledDate);
 			const targetCell = tasksPage.getCalendarDayCell(rescheduledDate);
 
-			await dragToDayCell(
+			await tasksPage.dragCalendarItemToDay(
 				sourceCell.getByText(taskTitle, {exact: true}),
 				targetCell
 			);
@@ -395,7 +357,7 @@ test(
 				trigger: calendarView.unscheduledTasksButton,
 			});
 
-			await dragToDayCell(
+			await tasksPage.dragCalendarItemToDay(
 				calendarView.unscheduledTasksPanel.getByText(taskNames[0], {
 					exact: true,
 				}),
@@ -930,6 +892,69 @@ test(
 );
 
 test(
+	'Day view disables task dragging but still accepts drops',
+	{tag: ['@LPD-69885', '@LPD-94176']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const {calendarView} = tasksPage;
+
+		const todayDate = toDateString(new Date());
+
+		const scheduledTaskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: scheduledTaskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectDayView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const dayCell = page.locator(
+			`.fc-daygrid-day[data-date="${todayDate}"]`
+		);
+
+		await test.step('The scheduled task is not draggable', async () => {
+			await expect(
+				dayCell.getByText(scheduledTaskTitle, {exact: true})
+			).toBeVisible();
+
+			await expect(page.locator('.fc-event-draggable')).toHaveCount(0);
+		});
+
+		await test.step('An unscheduled task can still be dropped onto the day', async () => {
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await tasksPage.dragCalendarItemToDay(
+				calendarView.unscheduledTasksPanel.getByText(taskNames[0], {
+					exact: true,
+				}),
+				dayCell
+			);
+
+			await waitForAlert(
+				page,
+				`${taskNames[0]} due date was successfully updated.`
+			);
+
+			await expect(
+				dayCell.getByText(taskNames[0], {exact: true})
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Day view navigates to the previous day, next day, and today',
 	{tag: ['@LPD-69885', '@LPD-94175']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
@@ -1266,6 +1291,71 @@ test(
 		await tasksPage.workflowTasksTab.click();
 
 		await expect(tasksPage.viewSelectorButton).toBeHidden();
+	}
+);
+
+test(
+	'Week view can drag tasks to update their due dates',
+	{tag: ['@LPD-69885', '@LPD-94176']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const todayDate = toDateString(new Date());
+
+		const taskTitle = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dueDate: `${todayDate}T00:00:00Z`,
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: taskTitle,
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await tasksPage.openProjectWeekView(
+			projectsPage,
+			projectPage,
+			project.title
+		);
+
+		const sourceCell = page.locator(
+			`.fc-daygrid-day[data-date="${todayDate}"]`
+		);
+
+		// Reschedule to another day in the visible week, resolved from the DOM
+		// so the test does not depend on the locale's first day of week.
+
+		const targetDate = await page
+			.locator('.fc-daygrid-day[data-date]')
+			.evaluateAll(
+				(cells, today) =>
+					cells
+						.map((cell) => cell.dataset.date)
+						.find((date) => date && date !== today) ?? '',
+				todayDate
+			);
+
+		const targetCell = page.locator(
+			`.fc-daygrid-day[data-date="${targetDate}"]`
+		);
+
+		await tasksPage.dragCalendarItemToDay(
+			sourceCell.getByText(taskTitle, {exact: true}),
+			targetCell
+		);
+
+		await waitForAlert(
+			page,
+			`${taskTitle} due date was successfully updated.`
+		);
+
+		await expect(
+			targetCell.getByText(taskTitle, {exact: true})
+		).toBeVisible();
+
+		await expect(
+			sourceCell.getByText(taskTitle, {exact: true})
+		).toBeHidden();
 	}
 );
 
