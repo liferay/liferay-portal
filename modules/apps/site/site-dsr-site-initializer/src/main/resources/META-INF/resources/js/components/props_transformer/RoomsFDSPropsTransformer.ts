@@ -204,7 +204,7 @@ export default function RoomsFDSPropsTransformer({
 							type: 'cancel',
 						},
 						{
-							displayType: 'primary',
+							displayType: 'warning',
 							label: Liferay.Language.get('archive'),
 							onClick: ({
 								processClose,
