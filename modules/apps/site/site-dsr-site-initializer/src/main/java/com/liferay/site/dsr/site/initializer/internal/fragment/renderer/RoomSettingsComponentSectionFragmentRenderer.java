@@ -10,13 +10,9 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
-import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
 import jakarta.servlet.ServletContext;
@@ -36,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  */
 @Component(service = FragmentRenderer.class)
-public class RoomSettingsToolbarComponentSectionFragmentRenderer
+public class RoomSettingsComponentSectionFragmentRenderer
 	implements FragmentRenderer {
 
 	@Override
@@ -65,7 +61,7 @@ public class RoomSettingsToolbarComponentSectionFragmentRenderer
 			ComponentTag componentTag = new ComponentTag();
 
 			componentTag.setModule(
-				"{RoomSettingsToolbar} from site-dsr-site-initializer");
+				"{RoomSettings} from site-dsr-site-initializer");
 			componentTag.setPageContext(
 				PageContextFactoryUtil.create(
 					httpServletRequest, httpServletResponse));
@@ -89,33 +85,20 @@ public class RoomSettingsToolbarComponentSectionFragmentRenderer
 	private Map<String, Object> _getProps(
 		HttpServletRequest httpServletRequest) {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		String title = null;
+		long roomId = 0;
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
 				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
-		if ((layoutDisplayPageObjectProvider != null) &&
-			(layoutDisplayPageObjectProvider.getDisplayObject() instanceof
-				ObjectEntry)) {
-
-			title = layoutDisplayPageObjectProvider.getTitle(
-				themeDisplay.getLocale());
-		}
-
-		if (Validator.isNull(title)) {
-			title = _language.get(themeDisplay.getLocale(), "room");
+		if (layoutDisplayPageObjectProvider != null) {
+			roomId = layoutDisplayPageObjectProvider.getClassPK();
 		}
 
 		return HashMapBuilder.<String, Object>put(
 			"backURL", ParamUtil.getString(httpServletRequest, "redirect")
 		).put(
-			"headerTitle",
-			_language.format(themeDisplay.getLocale(), "x-settings", title)
+			"roomId", roomId
 		).build();
 	}
 

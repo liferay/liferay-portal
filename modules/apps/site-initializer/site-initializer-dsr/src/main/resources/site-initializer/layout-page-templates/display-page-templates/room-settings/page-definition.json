@@ -4,178 +4,23 @@
 		"pageElements": [
 			{
 				"definition": {
-					"fragmentStyle": {
-						"paddingBottom": "40px",
-						"paddingLeft": "12px",
-						"paddingRight": "12px",
-						"paddingTop": "40px"
-					},
-					"indexed": true,
-					"layout": {
-						"paddingBottom": 6,
-						"paddingTop": 6
-					}
+					"indexed": true
 				},
 				"id": "b2e1c3d5-8c4f-4b02-9d3e-2f6a7b8c9d01",
 				"pageElements": [
 					{
 						"definition": {
-							"indexed": true,
-							"layout": {
-								"widthType": "Fixed"
-							}
+							"fragment": {
+								"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.RoomSettingsComponentSectionFragmentRenderer"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"indexed": true
 						},
 						"id": "c3f2d4e6-9d50-4c13-ae4f-3a7b8c9d0e12",
-						"pageElements": [
-							{
-								"definition": {
-									"formConfig": {
-										"formReference": {
-											"contextSource": "DisplayPageItem"
-										},
-										"formType": "simple",
-										"numberOfSteps": 0
-									},
-									"indexed": true,
-									"layout": {
-									}
-								},
-								"id": "e5b4f6a8-bf72-4e35-c061-5c9d0e1f2a34",
-								"pageElements": [
-									{
-										"definition": {
-											"fragment": {
-												"key": "INPUTS-inline-text-input"
-											},
-											"fragmentConfig": {
-												"inputFieldId": "ObjectField_name",
-												"showCharactersCount": false
-											},
-											"fragmentFields": [
-											],
-											"fragmentStyle": {
-												"marginBottom": "5"
-											},
-											"indexed": true
-										},
-										"id": "f6c5a7b9-c083-4f46-d172-6d0e1f2a3b45",
-										"type": "Fragment"
-									},
-									{
-										"definition": {
-											"fragment": {
-												"key": "INPUTS-text-input"
-											},
-											"fragmentConfig": {
-												"inputFieldId": "ObjectEntry_externalReferenceCode",
-												"inputRequired": true
-											},
-											"fragmentFields": [
-											],
-											"fragmentStyle": {
-												"marginBottom": "5"
-											},
-											"indexed": true
-										},
-										"id": "a7d6b8c0-d194-4057-e283-7e1f2a3b4c56",
-										"type": "Fragment"
-									},
-									{
-										"definition": {
-											"fragment": {
-												"key": "INPUTS-text-input"
-											},
-											"fragmentConfig": {
-												"inputFieldId": "ObjectField_friendlyURL",
-												"inputRequired": true
-											},
-											"fragmentFields": [
-											],
-											"fragmentStyle": {
-												"marginBottom": "5"
-											},
-											"indexed": true
-										},
-										"id": "b8e7c9d1-e2a5-4168-f394-8f2a3b4c5d67",
-										"type": "Fragment"
-									}
-								],
-								"type": "Form"
-							},
-							{
-								"definition": {
-									"fragment": {
-										"key": "BASIC_COMPONENT-heading"
-									},
-									"fragmentConfig": {
-										"headingLevel": "h5"
-									},
-									"fragmentFields": [
-										{
-											"id": "element-text",
-											"value": {
-												"fragmentLink": {
-												},
-												"text": {
-													"value_i18n": {
-														"en_US": "Site Id"
-													}
-												}
-											}
-										}
-									],
-									"fragmentStyle": {
-										"marginBottom": "0"
-									},
-									"indexed": true
-								},
-								"id": "c0a9d1e3-f3b6-4279-a4a5-9a3b4c5d6e78",
-								"type": "Fragment"
-							},
-							{
-								"definition": {
-									"fragment": {
-										"key": "BASIC_COMPONENT-paragraph"
-									},
-									"fragmentConfig": {
-									},
-									"fragmentFields": [
-										{
-											"id": "element-text",
-											"value": {
-												"fragmentLink": {
-												},
-												"text": {
-													"mapping": {
-														"fieldKey": "ObjectField_siteId",
-														"itemReference": {
-															"contextSource": "DisplayPageItem"
-														}
-													}
-												}
-											}
-										}
-									],
-									"fragmentStyle": {
-										"backgroundColor": "whiteColor",
-										"borderColor": "gray300Color",
-										"borderRadius": "0.5rem",
-										"borderWidth": "0.0625rem",
-										"color": "gray900Color",
-										"height": "2.5rem",
-										"marginTop": "0.5rem",
-										"paddingBottom": "0.4375rem",
-										"paddingLeft": "1rem",
-										"paddingRight": "1rem",
-										"paddingTop": "0.4375rem"
-									},
-									"indexed": true
-								},
-								"id": "d1b0e2f4-04c7-438a-b5b6-0b4c5d6e7f89",
-								"type": "Fragment"
-							}
-						],
-						"type": "Section"
+						"type": "Fragment"
 					}
 				],
 				"type": "Section"

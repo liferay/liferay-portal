@@ -8,6 +8,7 @@ export {default as EnterpriseProductMenuBanner} from './common/components/Enterp
 export {default as SpaceSelector} from './common/components/SpaceSelector';
 export {default as SpaceSticker} from './common/components/SpaceSticker';
 export {default as Toolbar} from './common/components/Toolbar';
+export {default as VerticalNavLayout} from './common/components/VerticalNavLayout';
 export {default as FieldPicker} from './common/components/forms/FieldPicker';
 export {default as FieldText} from './common/components/forms/FieldText';
 export {default as FieldWrapper} from './common/components/forms/FieldWrapper';

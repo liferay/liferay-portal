@@ -24,4 +24,4 @@ export {default as RoomGeneral} from './main_view/analytics/components/RoomGener
 export {default as RoomStatistics} from './main_view/analytics/components/RoomStatistics';
 export {default as RoomTrend} from './main_view/analytics/components/RoomTrend';
 export {default as TimelineEngagementChart} from './main_view/analytics/components/TimelineEngagementChart';
-export {default as RoomSettingsToolbar} from './main_view/rooms/RoomSettingsToolbar';
+export {default as RoomSettings} from './main_view/rooms/RoomSettings';

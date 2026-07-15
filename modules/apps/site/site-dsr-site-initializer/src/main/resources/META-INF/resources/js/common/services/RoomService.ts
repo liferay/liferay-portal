@@ -260,6 +260,34 @@ async function updateRoom(
 	throw new Error(error);
 }
 
+async function updateRoomSettings(
+	roomId: number,
+	{
+		externalReferenceCode,
+		friendlyURL,
+		name,
+	}: {
+		externalReferenceCode: string;
+		friendlyURL: string;
+		name: string;
+	}
+): Promise<IRoomObjectEntry> {
+	const {data, error} = await ApiHelper.patch<IRoomObjectEntry>(
+		{
+			externalReferenceCode,
+			friendlyURL,
+			name,
+		},
+		`${BASE_PATH}/${roomId}`
+	);
+
+	if (data) {
+		return data;
+	}
+
+	throw new Error(error);
+}
+
 async function updateRoomInvitedMember(
 	roomId: number,
 	invitedMemberId: number,
@@ -311,5 +339,6 @@ export default {
 	restoreRoom,
 	updateRoom,
 	updateRoomInvitedMember,
+	updateRoomSettings,
 	updateRoomUserAccount,
 };

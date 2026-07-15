@@ -4,20 +4,6 @@
 		"pageElements": [
 			{
 				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.RoomSettingsToolbarComponentSectionFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"id": "e1b0f2a4-b5d8-449b-c6c7-1c5d6e7f8a90",
-				"type": "Fragment"
-			},
-			{
-				"definition": {
 					"fragmentSettings": {
 						"unallowedFragments": [
 							{
