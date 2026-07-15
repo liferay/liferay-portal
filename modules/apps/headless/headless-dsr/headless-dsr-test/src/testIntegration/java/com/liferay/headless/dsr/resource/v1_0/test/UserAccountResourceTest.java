@@ -194,6 +194,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testPostRoomUserAccount();
 		_testPostRoomUserAccountSiteMember();
 		_testPostRoomUserAccountWithMembershipExpirationDate();
+		_testPostRoomUserAccountArchivedRoom();
 	}
 
 	@Override
@@ -413,6 +414,29 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 								NotificationRecipientSettingConstants.
 									NAME_TO)));
 				}));
+	}
+
+	private void _testPostRoomUserAccountArchivedRoom() throws Exception {
+		_objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), _objectEntry.getObjectEntryId(), 0,
+			HashMapBuilder.putAll(
+				_objectEntry.getValues()
+			).put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		try {
+			userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(), randomUserAccount());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			String message = problemException.getMessage();
+
+			Assert.assertTrue(message, message.contains("is archived"));
+		}
 	}
 
 	private void _testPostRoomUserAccountSiteMember() throws Exception {
