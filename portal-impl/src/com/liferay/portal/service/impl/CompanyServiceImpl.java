@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.service.base.CompanyServiceBaseImpl;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
@@ -130,7 +131,9 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		String databaseExportedPartitionSchemaNamePrefix =
 			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX;
 
-		if (!schemaName.startsWith(databaseExportedPartitionSchemaNamePrefix)) {
+		if (!StringUtil.startsWith(
+				schemaName, databaseExportedPartitionSchemaNamePrefix)) {
+
 			throw new IllegalArgumentException(
 				"Invalid schema name \"" + schemaName + "\"");
 		}
