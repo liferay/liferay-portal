@@ -5,13 +5,14 @@
 
 import ClayLayout from '@clayui/layout';
 import {TrendClassification} from '@liferay/analytics-reports-js-components-web';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {SectionHeader} from '../common/SectionHeader';
 import {SpaceOption, SpacePicker, initialSpace} from '../common/SpacePicker';
 import InteractiveCard, {
 	MetricColor,
 } from '../performance/components/InteractiveCard';
+import GovernanceService, {AssetStatistics} from './GovernanceService';
 
 const placeholderTrend = {
 	classification: TrendClassification.Positive,
@@ -23,12 +24,8 @@ type AttentionCard = {
 	description: string;
 	hoverContent: React.ReactNode;
 	icon: string;
+	statKey?: keyof AssetStatistics;
 	title: string;
-	trend: {
-		classification: TrendClassification;
-		percentage: number;
-	};
-	value: number;
 };
 
 const ATTENTION_CARDS: AttentionCard[] = [
@@ -40,8 +37,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		hoverContent: reviewText(Liferay.Language.get('review-broken-links')),
 		icon: 'link',
 		title: Liferay.Language.get('broken-links'),
-		trend: placeholderTrend,
-		value: 8,
 	},
 	{
 		color: 'orange',
@@ -50,9 +45,8 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		),
 		hoverContent: reviewText(Liferay.Language.get('review-expired-assets')),
 		icon: 'warning-full',
+		statKey: 'expiredCount',
 		title: Liferay.Language.get('expired-assets'),
-		trend: placeholderTrend,
-		value: 6,
 	},
 	{
 		color: 'dark',
@@ -63,9 +57,8 @@ const ATTENTION_CARDS: AttentionCard[] = [
 			Liferay.Language.get('review-overdue-reviews')
 		),
 		icon: 'date-time',
+		statKey: 'reviewDateOverdueCount',
 		title: Liferay.Language.get('overdue-reviews'),
-		trend: placeholderTrend,
-		value: 3,
 	},
 	{
 		color: 'purple',
@@ -76,15 +69,31 @@ const ATTENTION_CARDS: AttentionCard[] = [
 			Liferay.Language.get('review-pending-workflows')
 		),
 		icon: 'flag-empty',
+		statKey: 'pendingCount',
 		title: Liferay.Language.get('pending-workflows'),
-		trend: placeholderTrend,
-		value: 4,
 	},
 ];
 
 export default function GovernanceDashboard() {
+	const [loading, setLoading] = useState(true);
 	const [selectedSpace, setSelectedSpace] =
 		useState<SpaceOption>(initialSpace);
+	const [statistics, setStatistics] = useState<AssetStatistics>();
+
+	useEffect(() => {
+		async function fetchStatistics() {
+			setLoading(true);
+
+			const {data} = await GovernanceService.getAssetStatistics(
+				selectedSpace.value === 'all' ? undefined : selectedSpace.value
+			);
+
+			setStatistics(data ?? undefined);
+			setLoading(false);
+		}
+
+		fetchStatistics();
+	}, [selectedSpace]);
 
 	const title = Liferay.Language.get('attention-required');
 
@@ -106,9 +115,8 @@ export default function GovernanceDashboard() {
 						description,
 						hoverContent,
 						icon,
+						statKey,
 						title,
-						trend,
-						value,
 					}) => (
 						<ClayLayout.Col
 							className="mb-3"
@@ -121,9 +129,10 @@ export default function GovernanceDashboard() {
 								description={description}
 								hoverContent={hoverContent}
 								icon={icon}
+								loading={loading}
 								title={title}
-								trend={trend}
-								value={value}
+								trend={placeholderTrend}
+								value={(statKey && statistics?.[statKey]) || 0}
 							/>
 						</ClayLayout.Col>
 					)
