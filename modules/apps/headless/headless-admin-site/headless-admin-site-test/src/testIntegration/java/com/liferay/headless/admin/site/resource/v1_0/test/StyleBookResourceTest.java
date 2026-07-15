@@ -41,7 +41,6 @@ import com.liferay.style.book.util.StyleBookUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,6 +77,9 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	@Test
 	public void testGetSitePageSpecificationStyleBooksPage() throws Exception {
 		super.testGetSitePageSpecificationStyleBooksPage();
+
+		_styleBookEntryLocalService.deleteStyleBookEntries(
+			testGroup.getGroupId());
 
 		_testGetSitePageSpecificationStyleBooksPage();
 		_testGetSitePageSpecificationStyleBooksPageWithoutPermission();
@@ -338,15 +340,17 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		String themeId = theme.getThemeId();
 
 		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
-			testGroup.getGroupId(), themeId, "Site Book");
+			testGroup.getGroupId(), themeId, "Site Style Book");
 
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
 
 		StyleBookEntry designLibraryStyleBookEntry = _addStyleBookEntry(
-			designLibraryGroup.getGroupId(), themeId, "Design Library Book");
+			designLibraryGroup.getGroupId(), themeId,
+			"Design Library Style Book");
 
 		_addStyleBookEntry(
-			designLibraryGroup.getGroupId(), "other-theme", "Other Theme Book");
+			designLibraryGroup.getGroupId(), RandomTestUtil.randomString(),
+			"Other Theme Style Book");
 
 		StyleBookResource styleBookResource = StyleBookResource.builder(
 		).authentication(
@@ -362,27 +366,21 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				testGroup.getExternalReferenceCode(),
 				layout.getExternalReferenceCode(), null, Pagination.of(1, 50));
 
-		List<String> names = new ArrayList<>();
+		Assert.assertEquals(3, page.getTotalCount());
 
-		StyleBook designLibraryStyleBook = null;
+		List<StyleBook> items = new ArrayList<>(page.getItems());
 
-		for (StyleBook styleBook : page.getItems()) {
-			names.add(styleBook.getName());
+		StyleBook styleFromThemeLibraryStyleBook = items.get(0);
 
-			if (Objects.equals(
-					styleBook.getExternalReferenceCode(),
-					designLibraryStyleBookEntry.getExternalReferenceCode())) {
+		Assert.assertEquals(
+			"Styles from Classic Theme",
+			styleFromThemeLibraryStyleBook.getName());
 
-				designLibraryStyleBook = styleBook;
-			}
-		}
+		StyleBook designLibraryStyleBook = items.get(1);
 
-		Assert.assertTrue(
-			names.toString(), names.contains(siteStyleBookEntry.getName()));
-		Assert.assertTrue(
-			names.toString(), names.contains("Design Library Book"));
-		Assert.assertFalse(
-			names.toString(), names.contains("Other Theme Book"));
+		Assert.assertEquals(
+			designLibraryStyleBookEntry.getName(),
+			designLibraryStyleBook.getName());
 
 		Scope scope = designLibraryStyleBook.getScope();
 
@@ -392,6 +390,15 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			scope.getExternalReferenceCode());
 		Assert.assertEquals(
 			designLibraryGroup.getName("en-US"), scope.getLabel());
+
+		StyleBook siteStyleBook = items.get(2);
+
+		Assert.assertEquals(
+			siteStyleBookEntry.getName(), siteStyleBook.getName());
+
+		scope = siteStyleBook.getScope();
+
+		Assert.assertNull(scope);
 	}
 
 	private void _testGetSitePageSpecificationStyleBooksPageWithoutPermission()
