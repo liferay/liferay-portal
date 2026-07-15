@@ -6,6 +6,7 @@
 package com.liferay.portal.license.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
@@ -32,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -588,23 +588,24 @@ public class ClusterLicenseTest extends BaseLicenseTestCase {
 
 			String nodeName = message.substring(0, index + 1);
 
-			Map<String[], CompletableFuture<String>> completableFutures =
-				_completableFuturesMap.get(nodeName);
+			Map<String[], DefaultNoticeableFuture<String>>
+				defaultNoticeableFutures = _defaultNoticeableFuturesMap.get(
+					nodeName);
 
-			if (completableFutures == null) {
+			if (defaultNoticeableFutures == null) {
 				return;
 			}
 
-			Set<Map.Entry<String[], CompletableFuture<String>>> entries =
-				completableFutures.entrySet();
+			Set<Map.Entry<String[], DefaultNoticeableFuture<String>>> entries =
+				defaultNoticeableFutures.entrySet();
 
 			entries.removeIf(
 				entry -> {
 					if (_hasKeyword(entry.getKey(), message)) {
-						CompletableFuture<String> completableFuture =
-							entry.getValue();
+						DefaultNoticeableFuture<String>
+							defaultNoticeableFuture = entry.getValue();
 
-						completableFuture.complete(message);
+						defaultNoticeableFuture.set(message);
 
 						return true;
 					}
@@ -614,16 +615,17 @@ public class ClusterLicenseTest extends BaseLicenseTestCase {
 		}
 
 		public Future<String> register(int nodeId, String... keywords) {
-			CompletableFuture<String> completableFuture =
-				new CompletableFuture<>();
+			DefaultNoticeableFuture<String> defaultNoticeableFuture =
+				new DefaultNoticeableFuture<>();
 
-			Map<String[], CompletableFuture<String>> completableFutures =
-				_completableFuturesMap.computeIfAbsent(
-					_getKey(nodeId), key -> new ConcurrentHashMap<>());
+			Map<String[], DefaultNoticeableFuture<String>>
+				defaultNoticeableFutures =
+					_defaultNoticeableFuturesMap.computeIfAbsent(
+						_getKey(nodeId), key -> new ConcurrentHashMap<>());
 
-			completableFutures.put(keywords, completableFuture);
+			defaultNoticeableFutures.put(keywords, defaultNoticeableFuture);
 
-			return completableFuture;
+			return defaultNoticeableFuture;
 		}
 
 		private String _getKey(int nodeId) {
@@ -642,8 +644,9 @@ public class ClusterLicenseTest extends BaseLicenseTestCase {
 
 		private static final String _PREFIX = "[TomcatNode-";
 
-		private final Map<String, Map<String[], CompletableFuture<String>>>
-			_completableFuturesMap = new ConcurrentHashMap<>();
+		private final Map
+			<String, Map<String[], DefaultNoticeableFuture<String>>>
+				_defaultNoticeableFuturesMap = new ConcurrentHashMap<>();
 
 	}
 
