@@ -2050,7 +2050,8 @@ public class ContentPageEditorDisplayContext {
 				_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
 					layout);
 
-			if (Objects.equals(
+			if ((frontendTokenDefinition != null) &&
+				Objects.equals(
 					frontendTokenDefinition.getThemeId(),
 					styleBookEntry.getThemeId())) {
 
