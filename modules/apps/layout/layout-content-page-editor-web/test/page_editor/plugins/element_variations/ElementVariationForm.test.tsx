@@ -23,6 +23,7 @@ const BASE_ELEMENT_VARIATION: ElementVariationProp = {
 	hide: false,
 	html: {},
 	js: {},
+	key: 'variation-1',
 	name: 'My Variation',
 	targetElement: '',
 };
@@ -60,6 +61,7 @@ function renderForm(
 					...BASE_ELEMENT_VARIATION,
 					...elementVariation,
 				}}
+				elementVariations={[]}
 				languageId="en_US"
 				locales={LOCALES}
 				onCancel={jest.fn()}

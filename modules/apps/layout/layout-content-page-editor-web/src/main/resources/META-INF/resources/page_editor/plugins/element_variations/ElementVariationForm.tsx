@@ -13,6 +13,7 @@ import React from 'react';
 
 import CodeEditorField from './CodeEditorField';
 import {Action, ElementVariation} from './elementVariationsReducer';
+import getAvailableAudiences from './getAvailableAudiences';
 import {EditableElementOption} from './getEditableElementOptions';
 
 type ElementVariationFormData = Pick<
@@ -22,6 +23,7 @@ type ElementVariationFormData = Pick<
 	| 'hide'
 	| 'html'
 	| 'js'
+	| 'key'
 	| 'name'
 	| 'targetElement'
 >;
@@ -32,6 +34,7 @@ interface Props {
 	dispatch: React.Dispatch<Action>;
 	editableElementOptions: EditableElementOption[];
 	elementVariation: ElementVariationFormData;
+	elementVariations: ElementVariation[];
 	languageId: string;
 	locales: Array<{id: string; label: string; symbol: string}>;
 	onCancel: () => void;
@@ -47,6 +50,7 @@ export default function ElementVariationForm({
 	dispatch,
 	editableElementOptions,
 	elementVariation,
+	elementVariations,
 	languageId,
 	locales,
 	onCancel,
@@ -70,6 +74,12 @@ export default function ElementVariationForm({
 	const selectedTargetElementItem = targetElementItems.find(
 		(targetElementItem) =>
 			targetElementItem.value === elementVariation.targetElement
+	);
+
+	const availableAudiences = getAvailableAudiences(
+		audiences,
+		elementVariations,
+		elementVariation
 	);
 
 	const translating = languageId !== defaultLanguageId;
@@ -253,7 +263,7 @@ export default function ElementVariationForm({
 											),
 									});
 								}}
-								sourceItems={audiences}
+								sourceItems={availableAudiences}
 							/>
 						</ClayForm.Group>
 

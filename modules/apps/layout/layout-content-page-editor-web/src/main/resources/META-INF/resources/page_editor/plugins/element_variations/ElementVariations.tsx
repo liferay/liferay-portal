@@ -135,6 +135,7 @@ function ElementVariations({
 							dispatch={dispatch}
 							editableElementOptions={editableElementOptions}
 							elementVariation={draftElementVariation}
+							elementVariations={experienceElementVariations}
 							key={draftElementVariation.key}
 							languageId={languageId}
 							locales={locales}
