@@ -5,14 +5,13 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown, {ClayDropDownWithItems} from '@clayui/drop-down';
-import {IItemsActions} from '@liferay/frontend-data-set-web';
+import {IItemsActions, getItemActionURL} from '@liferay/frontend-data-set-web';
 import {Immutable} from '@liferay/frontend-js-state-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
 import classNames from 'classnames';
 import {navigate} from 'frontend-js-web';
 import React, {useMemo} from 'react';
 
-import getActionURL from '../../../../../utils/getActionURL';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
 import isOverdue from '../../../../../utils/isOverdue';
@@ -48,10 +47,8 @@ export default function CalendarMoreLinkPopover({
 	const sortedTasks = useMemo(() => sortTasksByPriority(tasks), [tasks]);
 
 	const handleViewTask = (task: Immutable<ITaskObjectEntry>) => {
-		const viewURL = getActionURL({
-			actionId: 'actionLink',
-			itemsActions,
-			task: {embedded: task},
+		const viewURL = getItemActionURL(itemsActions, 'actionLink', {
+			embedded: task,
 		});
 
 		if (viewURL) {

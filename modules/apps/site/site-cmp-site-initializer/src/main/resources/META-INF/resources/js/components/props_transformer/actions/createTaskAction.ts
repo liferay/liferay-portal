@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {rewriteRedirectParams} from '@liferay/frontend-data-set-web';
 import {navigate} from 'frontend-js-web';
 
 import {openCMPModal} from '../../../utils/openCMPModal';
@@ -20,9 +21,7 @@ export default function createTaskAction({
 	redirect?: string;
 }) {
 	if (redirect) {
-		const url = new URL(redirect);
-
-		navigate(url.pathname + url.search);
+		navigate(rewriteRedirectParams(redirect));
 
 		return;
 	}

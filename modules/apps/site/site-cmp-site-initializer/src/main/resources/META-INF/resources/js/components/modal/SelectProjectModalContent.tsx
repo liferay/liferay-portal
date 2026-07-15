@@ -78,6 +78,7 @@ export default function SelectProjectModalContent({
 			String(selectedProject.embedded.scopeId)
 		);
 		url.searchParams.set('projectId', String(selectedProject.embedded.id));
+		url.searchParams.set('redirect', window.location.href);
 
 		navigate(url);
 	};

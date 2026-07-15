@@ -6,13 +6,12 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import {IItemsActions} from '@liferay/frontend-data-set-web';
+import {IItemsActions, getItemActionURL} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
 import classNames from 'classnames';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
-import getActionURL from '../../../../../utils/getActionURL';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
 import isOverdue from '../../../../../utils/isOverdue';
@@ -47,10 +46,8 @@ export default function CalendarTaskCard({
 	const hasViewPermission = Boolean(task.actions?.get);
 
 	const handleViewTask = () => {
-		const viewURL = getActionURL({
-			actionId: 'actionLink',
-			itemsActions,
-			task: {embedded: task},
+		const viewURL = getItemActionURL(itemsActions, 'actionLink', {
+			embedded: task,
 		});
 
 		if (viewURL) {

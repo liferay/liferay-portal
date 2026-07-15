@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IItemsActions} from '@liferay/frontend-data-set-web';
+import {IItemsActions, getItemActionURL} from '@liferay/frontend-data-set-web';
 import {Immutable} from '@liferay/frontend-js-state-web';
 import {
 	displayErrorToast,
@@ -21,7 +21,6 @@ import {
 	postSubscribeTaskByExternalReferenceCode,
 	postUnsubscribeTaskByExternalReferenceCode,
 } from './api';
-import getActionURL from './getActionURL';
 import {openCMPModal} from './openCMPModal';
 import {
 	displayAssignSuccessToast,
@@ -43,11 +42,8 @@ export default function getTaskItemsActions(
 		topItems.push({
 			label: Liferay.Language.get('edit'),
 			onClick: () => {
-				const editURL = getActionURL({
-					actionId: 'edit',
-					itemsActions,
-					task,
-				});
+				const editURL = getItemActionURL(itemsActions, 'edit', task);
+
 				if (editURL) {
 					navigate(editURL);
 				}
@@ -60,11 +56,12 @@ export default function getTaskItemsActions(
 		topItems.push({
 			label: Liferay.Language.get('view'),
 			onClick: () => {
-				const viewURL = getActionURL({
-					actionId: 'actionLink',
+				const viewURL = getItemActionURL(
 					itemsActions,
-					task,
-				});
+					'actionLink',
+					task
+				);
+
 				if (viewURL) {
 					navigate(viewURL);
 				}
