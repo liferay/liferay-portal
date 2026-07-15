@@ -67,6 +67,10 @@ public class CIForwardProcessor {
 		String forwardedPullRequestURL = null;
 
 		try {
+			if (_isForwardCanceled()) {
+				return;
+			}
+
 			List<String> openForwardedPullRequestUrls =
 				_getOpenForwardedPullRequestUrls();
 
@@ -293,6 +297,20 @@ public class CIForwardProcessor {
 		}
 
 		return propertyValue.split("\\s*,\\s*");
+	}
+
+	private String _getCanceledCommentBody(String reason) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Pull request will not be forwarded to `");
+		sb.append(_recipientUsername);
+		sb.append("` because ");
+		sb.append(reason);
+		sb.append(".\n[Console](");
+		sb.append(_consoleLogURL);
+		sb.append(")\n");
+
+		return sb.toString();
 	}
 
 	private String _getCIForwardBranchName() throws IOException {
@@ -953,6 +971,87 @@ public class CIForwardProcessor {
 	private boolean _hasPassingStatus(String statusContext) {
 		return Objects.equals(
 			_getSenderSHAStatusState(statusContext), "success");
+	}
+
+	private boolean _isForwardCanceled() {
+		PullRequest pullRequest = PullRequestFactory.newPullRequest(
+			_pullRequest.getURL());
+
+		String state = pullRequest.getState();
+
+		if (state.equals("closed")) {
+			_pullRequest.addComment(
+				_getCanceledCommentBody("the pull request was closed"));
+
+			return true;
+		}
+
+		String gitHubCIUsername;
+
+		try {
+			gitHubCIUsername = JenkinsResultsParserUtil.getBuildProperty(
+				"github.ci.username");
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to get build property", ioException);
+		}
+
+		Date latestForwardCommentDate = null;
+		Date latestStopCommentDate = null;
+
+		for (PullRequest.Comment comment : pullRequest.getComments()) {
+			if (gitHubCIUsername.equals(comment.getUserLogin())) {
+				continue;
+			}
+
+			String body = comment.getBody();
+
+			if (body == null) {
+				continue;
+			}
+
+			body = body.trim();
+
+			body = body.toLowerCase();
+
+			Date commentDate = comment.getCreatedDate();
+
+			if (body.startsWith("ci:forward")) {
+				if ((latestForwardCommentDate == null) ||
+					commentDate.after(latestForwardCommentDate)) {
+
+					latestForwardCommentDate = commentDate;
+				}
+			}
+			else if (body.startsWith("ci:stop") &&
+					 !body.startsWith("ci:stop:")) {
+
+				if ((latestStopCommentDate == null) ||
+					commentDate.after(latestStopCommentDate)) {
+
+					latestStopCommentDate = commentDate;
+				}
+			}
+		}
+
+		if (latestForwardCommentDate == null) {
+			_pullRequest.addComment(
+				_getCanceledCommentBody("the ci:forward comment was removed"));
+
+			return true;
+		}
+
+		if ((latestStopCommentDate != null) &&
+			latestStopCommentDate.after(latestForwardCommentDate)) {
+
+			_pullRequest.addComment(
+				_getCanceledCommentBody("ci:stop was requested"));
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isForwardEligible() throws IOException {
