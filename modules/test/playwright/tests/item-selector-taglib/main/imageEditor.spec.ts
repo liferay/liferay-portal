@@ -11,11 +11,13 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 
 const DOCUMENT_2 = path.join(__dirname, 'dependencies/Document_2.jpg');
 
 const test = mergeTests(
 	apiHelpersTest,
+	blogsPagesTest,
 	documentLibraryPagesTest,
 	isolatedSiteTest,
 	loginTest()
@@ -148,6 +150,76 @@ test('Resizing an image saves the new dimensions', async ({
 	);
 
 	expect(await getImageSize(page, contentUrl)).toEqual({
+		height: 312,
+		width: 500,
+	});
+});
+
+test('Resizing an image from the item selector preview saves a copy', async ({
+	apiHelpers,
+	blogsEditBlogEntryPage,
+	page,
+	site,
+}) => {
+	await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(DOCUMENT_2),
+		{
+			documentFolderId: 0,
+			fileName: 'Document_2.jpg',
+			title: 'Document_2.jpg',
+		}
+	);
+
+	// Preview the image from the blog cover image selector
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('button', {name: 'Select File'}).first().click();
+
+	const itemSelector = page.frameLocator('iframe[title="Select File"]');
+
+	await itemSelector.getByRole('link', {name: 'Documents and Media'}).click();
+
+	await itemSelector.locator('.icon-view').first().click();
+
+	// Edit the previewed image: resizing and saving creates a copy
+
+	await itemSelector.getByRole('button', {name: 'Edit'}).click();
+
+	await itemSelector.getByRole('combobox').selectOption({label: '16:10'});
+
+	await itemSelector.getByRole('button', {name: 'Save'}).click();
+
+	// The original is preserved and a resized copy is created
+
+	let documentId: string | undefined;
+	let copyId: string | undefined;
+
+	await expect(async () => {
+		const {items} = await apiHelpers.headlessDelivery.getSiteDocumentsPage(
+			site.id
+		);
+
+		documentId = items.find((item) => item.title === 'Document_2.jpg')?.id;
+		copyId = items.find((item) => item.title === 'Document_2 (1).jpg')?.id;
+
+		expect(documentId).toBeTruthy();
+		expect(copyId).toBeTruthy();
+	}).toPass();
+
+	const {contentUrl: originalUrl} =
+		await apiHelpers.headlessDelivery.getDocument(documentId!);
+	const {contentUrl: copyUrl} = await apiHelpers.headlessDelivery.getDocument(
+		copyId!
+	);
+
+	expect(await getImageSize(page, originalUrl)).toEqual({
+		height: 313,
+		width: 500,
+	});
+
+	expect(await getImageSize(page, copyUrl)).toEqual({
 		height: 312,
 		width: 500,
 	});
