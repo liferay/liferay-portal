@@ -69,9 +69,9 @@ public class SearchResponseTranslatorTest {
 		List<String> fragments = Collections.singletonList(
 			"<liferay-hl>alpha</liferay-hl> beta");
 
-		builder.highlight(fieldName, fragments);
-
 		String fieldName = RandomTestUtil.randomString();
+
+		builder.highlight(fieldName, fragments);
 
 		String localizedFieldName = Field.getLocalizedName(
 			LocaleUtil.US, fieldName);
