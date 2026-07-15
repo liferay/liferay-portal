@@ -30,9 +30,9 @@ export default function AudiencePriority({
 	const [openModal, setOpenModal] = useState(false);
 
 	return (
-		<div className="px-3">
+		<div className="mb-3 px-3">
 			<div className="align-items-center d-flex">
-				<span className="font-weight-bold">
+				<span className="font-weight-bold text-3">
 					{Liferay.Language.get('audiences-priority')}
 				</span>
 
@@ -47,7 +47,7 @@ export default function AudiencePriority({
 				/>
 			</div>
 
-			<div className="align-items-center d-flex flex-wrap mt-1 text-secondary">
+			<div className="align-items-center d-flex flex-wrap text-secondary">
 				{audiences.map((audience, index) => (
 					<React.Fragment key={audience.value}>
 						{index > 0 ? (

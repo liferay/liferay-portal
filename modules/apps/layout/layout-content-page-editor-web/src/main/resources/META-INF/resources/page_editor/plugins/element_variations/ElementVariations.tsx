@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {useId} from 'frontend-js-components-web';
 import React, {useReducer, useRef} from 'react';
 
@@ -126,7 +127,7 @@ function ElementVariations({
 	return (
 		<div className="d-flex element-variations flex-column">
 			<div className="d-flex element-variations__content flex-grow-1">
-				<div className="bg-white border-right d-flex element-variations__sidebar flex-column flex-shrink-0">
+				<div className="bg-white d-flex element-variations__sidebar flex-column flex-shrink-0">
 					{draftElementVariation ? (
 						<ElementVariationForm
 							audiences={audiences}
@@ -178,7 +179,7 @@ function ElementVariations({
 							</div>
 
 							<div className="flex-grow-1">
-								<div className="form-group p-3">
+								<div className="p-3">
 									<label htmlFor={experienceId}>
 										{Liferay.Language.get('experience')}
 									</label>
@@ -222,55 +223,9 @@ function ElementVariations({
 									}
 								/>
 
-								{experienceElementVariations.length ? (
-									<ElementVariationsList
-										audiences={audiences}
-										editableElementOptions={
-											editableElementOptions
-										}
-										elementVariations={
-											experienceElementVariations
-										}
-										onDeleteElementVariation={(
-											elementVariation
-										) =>
-											ElementVariationService.deleteElementVariation(
-												{
-													deleteElementVariationURL,
-													externalReferenceCode:
-														elementVariation.externalReferenceCode,
-													plid,
-												}
-											).then(() =>
-												dispatch({
-													key: elementVariation.key,
-													type: 'DELETE_ELEMENT_VARIATION',
-												})
-											)
-										}
-										onEditElementVariation={(key) =>
-											dispatch({
-												key,
-												type: 'EDIT_ELEMENT_VARIATION',
-											})
-										}
-									/>
-								) : (
-									<ClayEmptyState
-										className="mb-0 px-3"
-										description={Liferay.Language.get(
-											'you-can-create-page-elements-variations-based-on-audiences'
-										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-										small
-										title={Liferay.Language.get(
-											'no-variations-yet'
-										)}
-									/>
-								)}
-
-								<div className="d-flex justify-content-center mt-2">
+								<div className="d-flex justify-content-start m-3">
 									<ClayButton
+										className="w-100"
 										displayType="secondary"
 										onClick={() =>
 											dispatch({
@@ -281,10 +236,63 @@ function ElementVariations({
 												type: 'CREATE_ELEMENT_VARIATION_DRAFT',
 											})
 										}
-										size="sm"
 									>
+										<ClayIcon
+											className="mr-2"
+											symbol="plus"
+										/>
+
 										{Liferay.Language.get('new-variation')}
 									</ClayButton>
+								</div>
+
+								<div className="border-top pt-3">
+									{experienceElementVariations.length ? (
+										<ElementVariationsList
+											audiences={audiences}
+											editableElementOptions={
+												editableElementOptions
+											}
+											elementVariations={
+												experienceElementVariations
+											}
+											onDeleteElementVariation={(
+												elementVariation
+											) =>
+												ElementVariationService.deleteElementVariation(
+													{
+														deleteElementVariationURL,
+														externalReferenceCode:
+															elementVariation.externalReferenceCode,
+														plid,
+													}
+												).then(() =>
+													dispatch({
+														key: elementVariation.key,
+														type: 'DELETE_ELEMENT_VARIATION',
+													})
+												)
+											}
+											onEditElementVariation={(key) =>
+												dispatch({
+													key,
+													type: 'EDIT_ELEMENT_VARIATION',
+												})
+											}
+										/>
+									) : (
+										<ClayEmptyState
+											className="mb-0 px-3"
+											description={Liferay.Language.get(
+												'you-can-create-page-elements-variations-based-on-audiences'
+											)}
+											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+											small
+											title={Liferay.Language.get(
+												'no-variations-yet'
+											)}
+										/>
+									)}
 								</div>
 							</div>
 						</>

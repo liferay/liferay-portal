@@ -321,21 +321,6 @@ export default function ElementVariationForm({
 									description={Liferay.Language.get(
 										'changes-persist-in-the-preview.-reload-to-update'
 									)}
-									footer={
-										<ClayButton
-											className="mt-2"
-											displayType="secondary"
-											onClick={onReloadPreview}
-											size="sm"
-										>
-											<ClayIcon
-												className="mr-2"
-												symbol="reload"
-											/>
-
-											{Liferay.Language.get('reload')}
-										</ClayButton>
-									}
 									initialValue={
 										elementVariation.js[languageId] ?? ''
 									}
@@ -353,6 +338,18 @@ export default function ElementVariationForm({
 								/>
 							</>
 						)}
+
+						<div className="mb-4">
+							<ClayButton
+								displayType="secondary"
+								onClick={onReloadPreview}
+								size="xs"
+							>
+								<ClayIcon className="mr-2" symbol="reload" />
+
+								{Liferay.Language.get('reload')}
+							</ClayButton>
+						</div>
 
 						<ClayForm.Group className="my-4" small>
 							<ClayCheckbox
