@@ -33,8 +33,30 @@ public class SQLTransformer {
 	}
 
 	public static String transform(String sql) {
+		return _transform(_sqlTransformerLogic, sql);
+	}
+
+	public static String transformFromJPQLToHQL(String sql) {
+		String newSQL = _transformedSQLsPortalCache.get(sql);
+
+		if (newSQL != null) {
+			return newSQL;
+		}
+
+		newSQL = transform(sql);
+
+		newSQL = _transform(_jpqlToHQLTransformerLogic, newSQL);
+
+		_transformedSQLsPortalCache.put(sql, newSQL);
+
+		return newSQL;
+	}
+
+	private static String _transform(
+		SQLTransformerLogic sqlTransformerLogic, String sql) {
+
 		Function<String, String>[] functions =
-			_sqlTransformerLogic.getFunctions();
+			sqlTransformerLogic.getFunctions();
 
 		if ((functions == null) || (sql == null)) {
 			return sql;
@@ -54,27 +76,10 @@ public class SQLTransformer {
 		return transformedSQL;
 	}
 
-	public static String transformFromJPQLToHQL(String sql) {
-		String newSQL = _transformedSQLsPortalCache.get(sql);
-
-		if (newSQL != null) {
-			return newSQL;
-		}
-
-		newSQL = transform(sql);
-
-		Function<String, String> countFunction =
-			JPQLToHQLTransformerLogic.getCountFunction();
-
-		newSQL = countFunction.apply(newSQL);
-
-		_transformedSQLsPortalCache.put(sql, newSQL);
-
-		return newSQL;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(SQLTransformer.class);
 
+	private static final SQLTransformerLogic _jpqlToHQLTransformerLogic =
+		new JPQLToHQLTransformerLogic();
 	private static volatile SQLTransformerLogic _sqlTransformerLogic =
 		SQLTransformerLogicFactory.getSQLTransformerLogic(
 			DBManagerUtil.getDB());

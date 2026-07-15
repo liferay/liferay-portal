@@ -12,9 +12,14 @@ import java.util.regex.Pattern;
 /**
  * @author Manuel de la Peña
  */
-public class JPQLToHQLTransformerLogic {
+public class JPQLToHQLTransformerLogic implements SQLTransformerLogic {
 
-	public static Function<String, String> getCountFunction() {
+	@Override
+	public Function<String, String>[] getFunctions() {
+		return new Function[] {_getCountFunction()};
+	}
+
+	private Function<String, String> _getCountFunction() {
 		return (String sql) -> {
 			Matcher matcher = _jpqlCountPattern.matcher(sql);
 
