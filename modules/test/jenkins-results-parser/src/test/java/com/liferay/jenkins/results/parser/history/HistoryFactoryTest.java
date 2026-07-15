@@ -34,15 +34,15 @@ public class HistoryFactoryTest
 		TestClassHistory testClassHistory = HistoryFactory.newTestClassHistory(
 			unitBatchHistory, jsonObject, testClassName);
 
-		Assert.assertSame(
-			testClassHistory,
-			HistoryFactory.newTestClassHistory(
-				unitBatchHistory, jsonObject, testClassName));
-
 		Assert.assertNotSame(
 			testClassHistory,
 			HistoryFactory.newTestClassHistory(
 				integrationBatchHistory, jsonObject, testClassName));
+
+		Assert.assertSame(
+			testClassHistory,
+			HistoryFactory.newTestClassHistory(
+				unitBatchHistory, jsonObject, testClassName));
 	}
 
 	@Test
@@ -59,15 +59,15 @@ public class HistoryFactoryTest
 		TestTaskHistory testTaskHistory = HistoryFactory.newTestTaskHistory(
 			unitBatchHistory, jsonObject, testTaskName);
 
-		Assert.assertSame(
-			testTaskHistory,
-			HistoryFactory.newTestTaskHistory(
-				unitBatchHistory, jsonObject, testTaskName));
-
 		Assert.assertNotSame(
 			testTaskHistory,
 			HistoryFactory.newTestTaskHistory(
 				integrationBatchHistory, jsonObject, testTaskName));
+
+		Assert.assertSame(
+			testTaskHistory,
+			HistoryFactory.newTestTaskHistory(
+				unitBatchHistory, jsonObject, testTaskName));
 	}
 
 	private BatchHistory _mockBatchHistory(
