@@ -908,7 +908,7 @@ com/liferay/portal/dao/orm/custom/sql/CustomSQL.replaceGroupBy(Ljava/lang/String
 com/liferay/portal/dao/orm/custom/sql/CustomSQL.replaceIsNull(Ljava/lang/String;)Ljava/lang/String;:0
 
 com/liferay/portal/dao/orm/common/SQLTransformer.transform(Ljava/lang/String;)Ljava/lang/String;:0
-com/liferay/portal/dao/orm/common/SQLTransformer.transformFromJPQLToHQL(Ljava/lang/String;)Ljava/lang/String;:0
+com/liferay/portal/dao/orm/common/SQLTransformer.transformForHibernate(Ljava/lang/String;)Ljava/lang/String;:0
 
 com/liferay/taglib/aui/AUIUtil.buildData(Ljava/util/Map;)Ljava/lang/String;:SAFE
 com/liferay/taglib/aui/AUIUtil.getNamespace(Ljavax/servlet/http/HttpServletRequest;)Ljava/lang/String;:SAFE

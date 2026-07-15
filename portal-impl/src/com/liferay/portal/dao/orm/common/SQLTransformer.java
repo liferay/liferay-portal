@@ -5,7 +5,7 @@
 
 package com.liferay.portal.dao.orm.common;
 
-import com.liferay.portal.dao.sql.transformer.JPQLToHQLTransformerLogic;
+import com.liferay.portal.dao.sql.transformer.HibernateSQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.SQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.SQLTransformerLogicFactory;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -36,7 +36,7 @@ public class SQLTransformer {
 		return _transform(_sqlTransformerLogic, sql);
 	}
 
-	public static String transformFromJPQLToHQL(String sql) {
+	public static String transformForHibernate(String sql) {
 		String newSQL = _transformedSQLsPortalCache.get(sql);
 
 		if (newSQL != null) {
@@ -45,7 +45,7 @@ public class SQLTransformer {
 
 		newSQL = transform(sql);
 
-		newSQL = _transform(_jpqlToHQLTransformerLogic, newSQL);
+		newSQL = _transform(_hibernateSQLTransformerLogic, newSQL);
 
 		_transformedSQLsPortalCache.put(sql, newSQL);
 
@@ -78,8 +78,8 @@ public class SQLTransformer {
 
 	private static final Log _log = LogFactoryUtil.getLog(SQLTransformer.class);
 
-	private static final SQLTransformerLogic _jpqlToHQLTransformerLogic =
-		new JPQLToHQLTransformerLogic();
+	private static final SQLTransformerLogic _hibernateSQLTransformerLogic =
+		new HibernateSQLTransformerLogic();
 	private static volatile SQLTransformerLogic _sqlTransformerLogic =
 		SQLTransformerLogicFactory.getSQLTransformerLogic(
 			DBManagerUtil.getDB());

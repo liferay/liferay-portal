@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * @author Manuel de la Peña
  */
-public class JPQLToHQLTransformerLogicTest {
+public class HibernateSQLTransformerLogicTest {
 
 	@ClassRule
 	@Rule
@@ -27,7 +27,7 @@ public class JPQLToHQLTransformerLogicTest {
 	public void testReplaceCount() {
 		Assert.assertEquals(
 			"SELECT COUNT(*) FROM Foo foo",
-			SQLTransformer.transformFromJPQLToHQL(
+			SQLTransformer.transformForHibernate(
 				"SELECT COUNT(foo) FROM Foo foo"));
 	}
 
@@ -35,14 +35,14 @@ public class JPQLToHQLTransformerLogicTest {
 	public void testReplaceCountWithIncorrectAlias() {
 		String sql = "SELECT COUNT(bar) FROM Foo foo";
 
-		Assert.assertEquals(sql, SQLTransformer.transformFromJPQLToHQL(sql));
+		Assert.assertEquals(sql, SQLTransformer.transformForHibernate(sql));
 	}
 
 	@Test
 	public void testReplaceCountWithNoCount() {
 		String sql = "SELECT * FROM Foo where foo != 1";
 
-		Assert.assertEquals(sql, SQLTransformer.transformFromJPQLToHQL(sql));
+		Assert.assertEquals(sql, SQLTransformer.transformForHibernate(sql));
 	}
 
 }

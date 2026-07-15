@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * @author Manuel de la Peña
  */
-public class JPQLToHQLTransformerLogic implements SQLTransformerLogic {
+public class HibernateSQLTransformerLogic implements SQLTransformerLogic {
 
 	@Override
 	public Function<String, String>[] getFunctions() {
@@ -21,7 +21,7 @@ public class JPQLToHQLTransformerLogic implements SQLTransformerLogic {
 
 	private Function<String, String> _getCountFunction() {
 		return (String sql) -> {
-			Matcher matcher = _jpqlCountPattern.matcher(sql);
+			Matcher matcher = _countPattern.matcher(sql);
 
 			if (matcher.find()) {
 				String countExpression = matcher.group(1);
@@ -38,7 +38,7 @@ public class JPQLToHQLTransformerLogic implements SQLTransformerLogic {
 
 	private static final String _HQL_COUNT_SQL = "SELECT COUNT(*) FROM $2 $3";
 
-	private static final Pattern _jpqlCountPattern = Pattern.compile(
+	private static final Pattern _countPattern = Pattern.compile(
 		"SELECT COUNT\\((\\S+)\\) FROM (\\S+) (\\S+)");
 
 }
