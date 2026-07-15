@@ -5,6 +5,7 @@
 
 package com.liferay.ai.hub.internal.agent.util;
 
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -13,7 +14,6 @@ import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import java.io.Serializable;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -25,21 +25,23 @@ import java.util.concurrent.TimeUnit;
 public class AgentUtil {
 
 	public static void complete(Message message) {
-		CompletableFuture<Map<String, Serializable>> completableFuture =
-			_completableFutures.remove(message.getLong("workflowInstanceId"));
+		DefaultNoticeableFuture<Map<String, Serializable>>
+			defaultNoticeableFuture = _defaultNoticeableFutures.remove(
+				message.getLong("workflowInstanceId"));
 
-		if (completableFuture != null) {
-			completableFuture.complete(
+		if (defaultNoticeableFuture != null) {
+			defaultNoticeableFuture.set(
 				(Map<String, Serializable>)message.get("workflowContext"));
 		}
 	}
 
 	public static void completeExceptionally(Message message) {
-		CompletableFuture<Map<String, Serializable>> completableFuture =
-			_completableFutures.remove(message.getLong("workflowInstanceId"));
+		DefaultNoticeableFuture<Map<String, Serializable>>
+			defaultNoticeableFuture = _defaultNoticeableFutures.remove(
+				message.getLong("workflowInstanceId"));
 
-		if (completableFuture != null) {
-			completableFuture.complete(
+		if (defaultNoticeableFuture != null) {
+			defaultNoticeableFuture.set(
 				HashMapBuilder.<String, Serializable>put(
 					"exception", (Exception)message.get("exception")
 				).build());
@@ -49,13 +51,13 @@ public class AgentUtil {
 	public static String getOutput(WorkflowInstance workflowInstance)
 		throws Exception {
 
-		CompletableFuture<Map<String, Serializable>> completableFuture =
-			new CompletableFuture<>();
+		DefaultNoticeableFuture<Map<String, Serializable>>
+			defaultNoticeableFuture = new DefaultNoticeableFuture<>();
 
-		_completableFutures.put(
-			workflowInstance.getWorkflowInstanceId(), completableFuture);
+		_defaultNoticeableFutures.put(
+			workflowInstance.getWorkflowInstanceId(), defaultNoticeableFuture);
 
-		Map<String, Serializable> workflowContext = completableFuture.get(
+		Map<String, Serializable> workflowContext = defaultNoticeableFuture.get(
 			1, TimeUnit.MINUTES);
 
 		if (workflowContext.containsKey("exception")) {
@@ -66,7 +68,7 @@ public class AgentUtil {
 	}
 
 	private static final ConcurrentMap
-		<Long, CompletableFuture<Map<String, Serializable>>>
-			_completableFutures = new ConcurrentHashMap<>();
+		<Long, DefaultNoticeableFuture<Map<String, Serializable>>>
+			_defaultNoticeableFutures = new ConcurrentHashMap<>();
 
 }
