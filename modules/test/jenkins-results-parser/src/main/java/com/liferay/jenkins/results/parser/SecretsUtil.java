@@ -95,97 +95,45 @@ public abstract class SecretsUtil {
 	public static void writeCachedSecrets(File cachedSecretsFile)
 		throws IOException {
 
-		if (!_isSecretsConfigured()) {
-			System.out.println(
-				"Secrets are not configured, unable to write 1Password cache");
+		String encryptedCachedSecrets = _getEncryptedCachedSecrets();
 
+		if (encryptedCachedSecrets == null) {
 			return;
 		}
 
-		PublicKey cachedSecretsPublicKey = _getCachedSecretsPublicKey();
-
-		if (cachedSecretsPublicKey == null) {
-			System.out.println(
-				"Unable to write encrypted 1Password cache, cached secrets " +
-					"public key is not configured");
-
-			return;
-		}
-
-		JSONObject jsonObject = new JSONObject();
-
-		for (Vault vault : Vault.getInstances()) {
-			String vaultName = vault.getName();
-
-			for (Item item : vault.getItems()) {
-				String itemId = item.getId();
-				String itemTitle = item.getTitle();
-
-				for (ItemField itemField : item.getItemFields()) {
-					String itemFieldValue = itemField.getValue();
-
-					if (JenkinsResultsParserUtil.isNullOrEmpty(
-							itemFieldValue)) {
-
-						continue;
-					}
-
-					String itemFieldLabel = itemField.getLabel();
-					String itemFieldId = itemField.getId();
-
-					jsonObject.put(
-						_getSecretReference(vaultName, itemId, itemFieldId),
-						itemFieldValue
-					).put(
-						_getSecretReference(vaultName, itemId, itemFieldLabel),
-						itemFieldValue
-					).put(
-						_getSecretReference(vaultName, itemTitle, itemFieldId),
-						itemFieldValue
-					).put(
-						_getSecretReference(
-							vaultName, itemTitle, itemFieldLabel),
-						itemFieldValue
-					);
-				}
-
-				for (ItemFile itemFile : item.getItemFiles()) {
-					String itemFileValue = itemFile.getValue();
-
-					if (JenkinsResultsParserUtil.isNullOrEmpty(itemFileValue)) {
-						continue;
-					}
-
-					String itemFileName = itemFile.getName();
-
-					jsonObject.put(
-						_getSecretReference(vaultName, itemId, itemFileName),
-						itemFileValue
-					).put(
-						_getSecretReference(vaultName, itemTitle, itemFileName),
-						itemFileValue
-					);
-				}
-			}
-		}
-
-		String encryptedCache = null;
-
-		try {
-			encryptedCache = _encrypt(
-				jsonObject.toString(), cachedSecretsPublicKey);
-		}
-		catch (GeneralSecurityException generalSecurityException) {
-			throw new IOException(
-				"Unable to encrypt 1Password cache", generalSecurityException);
-		}
-
-		JenkinsResultsParserUtil.write(cachedSecretsFile, encryptedCache);
+		JenkinsResultsParserUtil.write(
+			cachedSecretsFile, encryptedCachedSecrets);
 
 		System.out.println(
-			JenkinsResultsParserUtil.combine(
-				"Wrote ", String.valueOf(jsonObject.length()),
-				" encrypted secrets to ", cachedSecretsFile.toString()));
+			"Wrote encrypted 1Password cache to " + cachedSecretsFile);
+	}
+
+	public static void writeCachedSecrets(String cachedSecretsURL)
+		throws IOException {
+
+		if (cachedSecretsURL.startsWith("s3://")) {
+			String encryptedCachedSecrets = _getEncryptedCachedSecrets();
+
+			if (encryptedCachedSecrets == null) {
+				return;
+			}
+
+			CloudBucketUtil.uploadS3Object(
+				encryptedCachedSecrets, cachedSecretsURL);
+
+			System.out.println(
+				"Wrote encrypted 1Password cache to " + cachedSecretsURL);
+
+			return;
+		}
+
+		String filePrefix = "file://";
+
+		if (cachedSecretsURL.startsWith(filePrefix)) {
+			cachedSecretsURL = cachedSecretsURL.substring(filePrefix.length());
+		}
+
+		writeCachedSecrets(new File(cachedSecretsURL));
 	}
 
 	private static byte[] _convertPEMToDER(String pem) {
@@ -344,6 +292,12 @@ public abstract class SecretsUtil {
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(cachedSecretsURL)) {
 			_cachedSecretsContent = "";
+
+			return _cachedSecretsContent;
+		}
+
+		if (cachedSecretsURL.startsWith("s3://")) {
+			_cachedSecretsContent = _readS3Object(cachedSecretsURL);
 
 			return _cachedSecretsContent;
 		}
@@ -583,6 +537,98 @@ public abstract class SecretsUtil {
 		_connectURL = connectURL;
 
 		return _connectURL;
+	}
+
+	private static String _getEncryptedCachedSecrets() throws IOException {
+		if (!_isSecretsConfigured()) {
+			System.out.println(
+				"Secrets are not configured, unable to write 1Password cache");
+
+			return null;
+		}
+
+		PublicKey cachedSecretsPublicKey = _getCachedSecretsPublicKey();
+
+		if (cachedSecretsPublicKey == null) {
+			System.out.println(
+				"Unable to write encrypted 1Password cache, cached secrets " +
+					"public key is not configured");
+
+			return null;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		for (Vault vault : Vault.getInstances()) {
+			String vaultName = vault.getName();
+
+			for (Item item : vault.getItems()) {
+				String itemId = item.getId();
+				String itemTitle = item.getTitle();
+
+				for (ItemField itemField : item.getItemFields()) {
+					String itemFieldValue = itemField.getValue();
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(
+							itemFieldValue)) {
+
+						continue;
+					}
+
+					String itemFieldLabel = itemField.getLabel();
+					String itemFieldId = itemField.getId();
+
+					jsonObject.put(
+						_getSecretReference(vaultName, itemId, itemFieldId),
+						itemFieldValue
+					).put(
+						_getSecretReference(vaultName, itemId, itemFieldLabel),
+						itemFieldValue
+					).put(
+						_getSecretReference(vaultName, itemTitle, itemFieldId),
+						itemFieldValue
+					).put(
+						_getSecretReference(
+							vaultName, itemTitle, itemFieldLabel),
+						itemFieldValue
+					);
+				}
+
+				for (ItemFile itemFile : item.getItemFiles()) {
+					String itemFileValue = itemFile.getValue();
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(itemFileValue)) {
+						continue;
+					}
+
+					String itemFileName = itemFile.getName();
+
+					jsonObject.put(
+						_getSecretReference(vaultName, itemId, itemFileName),
+						itemFileValue
+					).put(
+						_getSecretReference(vaultName, itemTitle, itemFileName),
+						itemFileValue
+					);
+				}
+			}
+		}
+
+		String encryptedCachedSecrets = null;
+
+		try {
+			encryptedCachedSecrets = _encrypt(
+				jsonObject.toString(), cachedSecretsPublicKey);
+		}
+		catch (GeneralSecurityException generalSecurityException) {
+			throw new IOException(
+				"Unable to encrypt 1Password cache", generalSecurityException);
+		}
+
+		System.out.println(
+			"Encrypted " + jsonObject.length() + " 1Password secrets");
+
+		return encryptedCachedSecrets;
 	}
 
 	private static synchronized HTTPAuthorization _getHTTPAuthorization() {
@@ -843,6 +889,36 @@ public abstract class SecretsUtil {
 		}
 		catch (Exception exception) {
 			_cachedSecrets = null;
+		}
+	}
+
+	private static String _readS3Object(String s3ObjectURL) throws IOException {
+		File tempFile = File.createTempFile("cached-secrets-", ".json");
+
+		try {
+			Process process = JenkinsResultsParserUtil.executeBashCommands(
+				new File("."), true, false, 60000,
+				JenkinsResultsParserUtil.combine(
+					"aws s3 cp --quiet ", s3ObjectURL, " ",
+					JenkinsResultsParserUtil.getCanonicalPath(tempFile)));
+
+			if (process.exitValue() != 0) {
+				String errorMessage = JenkinsResultsParserUtil.readInputStream(
+					process.getErrorStream());
+
+				throw new IOException(
+					JenkinsResultsParserUtil.combine(
+						"Unable to download ", s3ObjectURL, "\n",
+						errorMessage));
+			}
+
+			return JenkinsResultsParserUtil.read(tempFile);
+		}
+		catch (TimeoutException timeoutException) {
+			throw new IOException(timeoutException);
+		}
+		finally {
+			JenkinsResultsParserUtil.delete(tempFile);
 		}
 	}
 
