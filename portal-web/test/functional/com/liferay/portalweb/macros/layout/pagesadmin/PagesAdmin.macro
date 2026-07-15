@@ -846,11 +846,20 @@ definition {
 			configurationName = "Deprecation",
 			configurationScope = "Virtual Instance Scope");
 
-		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Disabled")) {
+		if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "")) {
+			Search.searchCP(searchTerm = ${featureFlagName});
+		}
+
+		if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Enabled")) {
 			Check.checkToggleSwitch(
 				locator1 = "FeatureFlag#TOGGLE_ROW",
 				title_row = ${featureFlagName},
-				toggle_state = "Disabled");
+				toggle_state = "");
+
+			WaitForElementPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = ${featureFlagName},
+				toggle_state = "Enabled");
 		}
 
 		Navigator.openURL();
