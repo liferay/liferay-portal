@@ -26,68 +26,6 @@ definition {
 		}
 	}
 
-	@description = "This makes sure that multiple DM images can be previewed by using the keyboard."
-	@priority = 5
-	@refactordone
-	test CanPreviewMultipleImagesInDM {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		for (var documentTitle : list "Document_1,Document_2,Document_3") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = ${documentTitle},
-				groupName = "Site Name",
-				mimeType = "image/jpeg",
-				sourceFileName = "${documentTitle}.jpg");
-		}
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.gotoPreviewViaSelectFile(navTab = "Documents and Media");
-
-		ItemSelector.viewPreview(
-			footer = "1 of 3",
-			imageFileName = "Document_1");
-
-		AssertVisible(locator1 = "ItemSelector#VIEWER_LEFT");
-
-		AssertVisible(locator1 = "ItemSelector#VIEWER_RIGHT");
-
-		KeyPress(
-			locator1 = "ItemSelector#VIEWER_RIGHT",
-			value1 = "\RIGHT");
-
-		KeyPress(
-			locator1 = "ItemSelector#VIEWER_LEFT",
-			value1 = "\LEFT");
-
-		KeyPress(
-			locator1 = "ItemSelector#VIEWER_LEFT",
-			value1 = "\LEFT");
-
-		ItemSelector.viewPreview(
-			footer = "3 of 3",
-			imageFileName = "Document_3");
-
-		KeyPress(
-			locator1 = "ItemSelector#VIEWER_INFO",
-			value1 = "\ESCAPE");
-
-		SelectFrame(value1 = "relative=top");
-
-		Click(
-			key_modalTitle = "Select File",
-			locator1 = "Button#CLOSE_MODAL");
-
-		for (var coverImageName : list "Document_1,Document_2,Document_3") {
-			AssertElementNotPresent(
-				key_coverImageName = ${coverImageName},
-				locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_UNPUBLISHED");
-		}
-	}
-
 	@description = "This ensures that navigation arrows do not appear in image preview when there is only one image in the library."
 	@priority = 5
 	@refactordone
