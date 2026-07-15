@@ -13,10 +13,9 @@ import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.resource.v1_0.StyleBookResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.common.spi.util.GroupUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
-import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
-import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -518,19 +517,12 @@ public class StyleBookResourceImpl
 				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					externalReferenceCode, groupId);
 
-		if (layoutPageTemplateEntry != null) {
+		if ((layoutPageTemplateEntry != null) &&
+			(layoutPageTemplateEntry.getType() ==
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE)) {
+
 			return _layoutLocalService.getLayout(
 				layoutPageTemplateEntry.getPlid());
-		}
-
-		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			_layoutUtilityPageEntryService.
-				fetchLayoutUtilityPageEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
-
-		if (layoutUtilityPageEntry != null) {
-			return _layoutLocalService.getLayout(
-				layoutUtilityPageEntry.getPlid());
 		}
 
 		throw new NoSuchLayoutException(
@@ -692,9 +684,6 @@ public class StyleBookResourceImpl
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
-
-	@Reference
-	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
 
 	@Reference(
 		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
