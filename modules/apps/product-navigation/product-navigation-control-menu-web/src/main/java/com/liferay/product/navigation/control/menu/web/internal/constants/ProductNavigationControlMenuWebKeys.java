@@ -10,6 +10,8 @@ package com.liferay.product.navigation.control.menu.web.internal.constants;
  */
 public class ProductNavigationControlMenuWebKeys {
 
+	public static final String HIDE_PORTLET_HEADER = "HIDE_PORTLET_HEADER";
+
 	public static final String PORTLET_TITLE = "PORTLET_TITLE";
 
 }
