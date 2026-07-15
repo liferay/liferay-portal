@@ -176,6 +176,20 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		if (!absolutePath.contains("/modules/integrations/") &&
 			!absolutePath.contains("/modules/sdk/")) {
 
+			if (isAttributeValue(_AVOID_COMPLETABLE_FUTURE_KEY, absolutePath) &&
+				content.contains("java.util.concurrent.CompletableFuture") &&
+				!_isAllowedFileName(
+					absolutePath,
+					getAttributeValues(
+						_ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY,
+						absolutePath))) {
+
+				addMessage(
+					fileName,
+					"Do not use java.util.concurrent.CompletableFuture, use " +
+						"DefaultNoticeableFuture instead");
+			}
+
 			if (isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
 				content.contains("java.util.Optional") &&
 				!_isAllowedFileName(
@@ -259,11 +273,17 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		return false;
 	}
 
+	private static final String _ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY =
+		"allowedCompletableFutureFileNames";
+
 	private static final String _ALLOWED_OPTIONAL_FILE_NAMES_KEY =
 		"allowedOptionalFileNames";
 
 	private static final String _ALLOWED_STREAM_FILE_NAMES_KEY =
 		"allowedStreamFileNames";
+
+	private static final String _AVOID_COMPLETABLE_FUTURE_KEY =
+		"avoidCompletableFuture";
 
 	private static final String _AVOID_OPTIONAL_KEY = "avoidOptional";
 
