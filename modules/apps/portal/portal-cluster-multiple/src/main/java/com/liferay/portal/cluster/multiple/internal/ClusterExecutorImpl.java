@@ -8,6 +8,7 @@ package com.liferay.portal.cluster.multiple.internal;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.memory.FinalizeManager;
@@ -55,7 +56,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -284,12 +284,12 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	}
 
 	protected String getClusterNodeId(Address address) {
-		CompletableFuture<String> completableFuture =
-			_clusterNodeIdCompletableFutures.computeIfAbsent(
-				address, key -> new CompletableFuture<>());
+		DefaultNoticeableFuture<String> defaultNoticeableFuture =
+			_clusterNodeIdDefaultNoticeableFutures.computeIfAbsent(
+				address, key -> new DefaultNoticeableFuture<>());
 
 		try {
-			return completableFuture.get(
+			return defaultNoticeableFuture.get(
 				clusterExecutorConfiguration.clusterNodeAddressTimeout(),
 				TimeUnit.MILLISECONDS);
 		}
@@ -406,7 +406,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	protected void memberRemoved(List<Address> departAddresses) {
 		for (Address address : departAddresses) {
-			_clusterNodeIdCompletableFutures.remove(address);
+			_clusterNodeIdDefaultNoticeableFutures.remove(address);
 		}
 
 		List<ClusterNode> departClusterNodes = new ArrayList<>();
@@ -524,12 +524,12 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	}
 
 	private boolean _memberJoined(ClusterNodeStatus clusterNodeStatus) {
-		CompletableFuture<String> completableFuture =
-			_clusterNodeIdCompletableFutures.computeIfAbsent(
+		DefaultNoticeableFuture<String> defaultNoticeableFuture =
+			_clusterNodeIdDefaultNoticeableFutures.computeIfAbsent(
 				clusterNodeStatus.getAddress(),
-				key -> new CompletableFuture<>());
+				key -> new DefaultNoticeableFuture<>());
 
-		completableFuture.complete(clusterNodeStatus.getClusterNodeId());
+		defaultNoticeableFuture.set(clusterNodeStatus.getClusterNodeId());
 
 		ClusterNodeStatus oldClusterNodeStatus = _clusterNodeStatuses.put(
 			clusterNodeStatus.getClusterNodeId(), clusterNodeStatus);
@@ -559,8 +559,8 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	private ClusterChannel _clusterChannel;
 	private volatile ClusterChannelFactory _clusterChannelFactory;
-	private final Map<Address, CompletableFuture<String>>
-		_clusterNodeIdCompletableFutures = new ConcurrentHashMap<>();
+	private final Map<Address, DefaultNoticeableFuture<String>>
+		_clusterNodeIdDefaultNoticeableFutures = new ConcurrentHashMap<>();
 	private final Map<String, ClusterNodeStatus> _clusterNodeStatuses =
 		new ConcurrentHashMap<>();
 	private boolean _enabled;
