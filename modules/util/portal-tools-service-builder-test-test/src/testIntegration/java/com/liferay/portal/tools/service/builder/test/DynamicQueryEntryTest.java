@@ -511,6 +511,23 @@ public class DynamicQueryEntryTest {
 	}
 
 	@Test
+	public void testDynamicQueryWithProjectionAliasOrder() {
+		DynamicQuery dynamicQuery =
+			_dynamicQueryEntryLocalService.dynamicQuery();
+
+		dynamicQuery.setProjection(
+			ProjectionFactoryUtil.alias(
+				ProjectionFactoryUtil.sqlProjection(
+					"(select count(*) from DynamicQueryEntry where status = " +
+						"this_.status) AS statusCount",
+					new String[] {"statusCount"}, new Type[] {Type.LONG}),
+				"statusCount"));
+		dynamicQuery.addOrder(OrderFactoryUtil.desc("statusCount"));
+
+		_testDynamicQuery(dynamicQuery, 2L, 2L, 1L, 1L);
+	}
+
+	@Test
 	public void testDynamicQueryWithProjectionGroupProperty() {
 		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
