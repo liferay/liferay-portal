@@ -630,78 +630,83 @@ public abstract class SecretsUtil {
 
 		int secretRetriesMax = _getSecretRetriesMax();
 
-		for (int i = 0; i <= secretRetriesMax; i++) {
-			if (i > 0) {
-				JenkinsResultsParserUtil.sleep(
-					_getSecretRetryPeriodSeconds() * 1000L);
+		try {
+			for (int i = 0; i <= secretRetriesMax; i++) {
+				if (i > 0) {
+					JenkinsResultsParserUtil.sleep(
+						_getSecretRetryPeriodSeconds() * 1000L);
 
-				item.refresh();
-			}
-
-			try {
-				ItemField itemField = item.getItemField(fieldLabel);
-
-				if (itemField != null) {
-					String itemFieldValue = itemField.getValue();
-
-					if (!JenkinsResultsParserUtil.isNullOrEmpty(
-							itemFieldValue)) {
-
-						String itemFieldId = itemField.getId();
-						String itemFieldLabel = itemField.getLabel();
-
-						_secrets.put(
-							_getSecretReference(vaultName, itemId, itemFieldId),
-							itemFieldValue);
-						_secrets.put(
-							_getSecretReference(
-								vaultName, itemId, itemFieldLabel),
-							itemFieldValue);
-						_secrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFieldId),
-							itemFieldValue);
-						_secrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFieldLabel),
-							itemFieldValue);
-
-						return itemFieldValue;
-					}
+					item.refresh();
 				}
 
-				ItemFile itemFile = item.getItemFile(fieldLabel);
+				try {
+					ItemField itemField = item.getItemField(fieldLabel);
 
-				if (itemFile != null) {
-					String itemFileValue = itemFile.getValue();
+					if (itemField != null) {
+						String itemFieldValue = itemField.getValue();
 
-					if (!JenkinsResultsParserUtil.isNullOrEmpty(
-							itemFileValue)) {
+						if (!JenkinsResultsParserUtil.isNullOrEmpty(
+								itemFieldValue)) {
 
-						String itemFileName = itemFile.getName();
+							String itemFieldId = itemField.getId();
+							String itemFieldLabel = itemField.getLabel();
 
-						_secrets.put(
-							_getSecretReference(
-								vaultName, itemId, itemFileName),
-							itemFileValue);
-						_secrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFileName),
-							itemFileValue);
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemId, itemFieldId),
+								itemFieldValue);
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemId, itemFieldLabel),
+								itemFieldValue);
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemTitle, itemFieldId),
+								itemFieldValue);
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemTitle, itemFieldLabel),
+								itemFieldValue);
 
-						return itemFileValue;
+							return itemFieldValue;
+						}
+					}
+
+					ItemFile itemFile = item.getItemFile(fieldLabel);
+
+					if (itemFile != null) {
+						String itemFileValue = itemFile.getValue();
+
+						if (!JenkinsResultsParserUtil.isNullOrEmpty(
+								itemFileValue)) {
+
+							String itemFileName = itemFile.getName();
+
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemId, itemFileName),
+								itemFileValue);
+							_secrets.put(
+								_getSecretReference(
+									vaultName, itemTitle, itemFileName),
+								itemFileValue);
+
+							return itemFileValue;
+						}
 					}
 				}
-			}
-			catch (Exception exception) {
+				catch (Exception exception) {
+				}
 			}
 
-			System.out.println(
-				"Loaded " + _secrets.size() + " secrets from " +
-					_getConnectURL());
+			return null;
 		}
-
-		return null;
+		finally {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Loaded ", String.valueOf(_secrets.size()),
+					" secrets from ", _getConnectURL()));
+		}
 	}
 
 	private static String _getSecretReference(
@@ -832,8 +837,9 @@ public abstract class SecretsUtil {
 			}
 
 			System.out.println(
-				"Loaded " + _cachedSecrets.size() + " secrets from " +
-					_getCachedSecretsURL());
+				JenkinsResultsParserUtil.combine(
+					"Loaded ", String.valueOf(_cachedSecrets.size()),
+					" secrets from ", _getCachedSecretsURL()));
 		}
 		catch (Exception exception) {
 			_cachedSecrets = null;
