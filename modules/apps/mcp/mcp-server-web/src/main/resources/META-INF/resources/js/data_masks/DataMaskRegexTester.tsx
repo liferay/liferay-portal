@@ -7,12 +7,9 @@ import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import {FieldBase} from 'frontend-js-components-web';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {
-	ValidationResult,
-	postValidateDataMask,
-} from '../services/postValidateDataMask';
+import {Redaction, getRedaction} from '../services/getRedaction';
 
 interface DataMaskRegexTesterProps {
 	detectionRegex: string;
@@ -25,23 +22,27 @@ export function DataMaskRegexTester({
 	replacementRegex,
 	replacementValue,
 }: DataMaskRegexTesterProps) {
-	const [result, setResult] = useState<ValidationResult | null>(null);
+	const [redaction, setRedaction] = useState<Redaction | null>(null);
 	const [sampleText, setSampleText] = useState('');
 	const [testing, setTesting] = useState(false);
 
 	const canTest = Boolean(sampleText) && !testing;
 
+	useEffect(() => {
+		setRedaction(null);
+	}, [detectionRegex, replacementRegex, replacementValue]);
+
 	const handleTest = async () => {
 		setTesting(true);
 
-		const {data, error} = await postValidateDataMask({
+		const {data, error} = await getRedaction({
 			detectionRegex,
 			replacementRegex,
 			replacementValue,
 			text: sampleText,
 		});
 
-		setResult(data ?? {error: error ?? '', output: ''});
+		setRedaction(data ?? {error: error ?? '', output: ''});
 
 		setTesting(false);
 	};
@@ -94,7 +95,7 @@ export function DataMaskRegexTester({
 
 				<ClayLayout.Col lg size={12}>
 					<FieldBase
-						errorMessage={result?.error}
+						errorMessage={redaction?.error}
 						id="dataMaskOutput"
 						label={Liferay.Language.get('output')}
 					>
@@ -102,7 +103,11 @@ export function DataMaskRegexTester({
 							id="dataMaskOutput"
 							readOnly
 							type="text"
-							value={result && !result.error ? result.output : ''}
+							value={
+								redaction && !redaction.error
+									? redaction.output
+									: ''
+							}
 						/>
 					</FieldBase>
 				</ClayLayout.Col>

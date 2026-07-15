@@ -9,21 +9,21 @@ import ApiHelper, {RequestResult} from './ApiHelper';
 
 const REDACTION_URL = '/o/headless-data-mask/v1.0/redaction';
 
-export type ValidationRequest = {
+export type RedactionRequest = {
 	detectionRegex: string;
 	replacementRegex: string;
 	replacementValue: string;
 	text: string;
 };
 
-export type ValidationResult = {
+export type Redaction = {
 	error?: string;
 	output: string;
 };
 
-export function postValidateDataMask(
-	request: ValidationRequest
-): Promise<RequestResult<ValidationResult>> {
+export function getRedaction(
+	request: RedactionRequest
+): Promise<RequestResult<Redaction>> {
 	const params: Record<string, string> = {
 		detectionRegex: request.detectionRegex,
 		replacementValue: request.replacementValue,
@@ -34,5 +34,5 @@ export function postValidateDataMask(
 		params.replacementRegex = request.replacementRegex;
 	}
 
-	return ApiHelper.get<ValidationResult>(addParams(params, REDACTION_URL));
+	return ApiHelper.get<Redaction>(addParams(params, REDACTION_URL));
 }
