@@ -93,3 +93,44 @@ test('Preview navigates through multiple images with the keyboard', async ({
 		page.getByRole('button', {name: 'Select File'}).first()
 	).toBeVisible();
 });
+
+test('Preview hides navigation arrows for a single image', async ({
+	apiHelpers,
+	blogsEditBlogEntryPage,
+	page,
+	site,
+}) => {
+
+	// Seed a single image in the site's document library
+
+	await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(SAMPLE_IMAGE),
+		{
+			documentFolderId: 0,
+			fileName: `${getRandomString()}.png`,
+			title: 'Document 1',
+		}
+	);
+
+	// Open the blog cover image selector
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('button', {name: 'Select File'}).first().click();
+
+	const iframe = page.frameLocator('iframe[title="Select File"]');
+
+	await iframe.getByRole('link', {name: 'Documents and Media'}).click();
+
+	// Open the image preview
+
+	await iframe.locator('.icon-view').first().click();
+
+	await expect(iframe.locator('.footer')).toContainText('1 of 1');
+
+	// A single image shows no navigation arrows
+
+	await expect(iframe.locator('.pull-left .icon-arrow')).toBeHidden();
+	await expect(iframe.locator('.pull-right .icon-arrow')).toBeHidden();
+});
