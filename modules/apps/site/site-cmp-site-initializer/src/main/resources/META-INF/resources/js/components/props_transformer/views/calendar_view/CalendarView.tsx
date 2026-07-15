@@ -489,7 +489,7 @@ export default function CalendarView({
 
 					await rescheduleTask(droppedItem, droppedDate);
 				}}
-				eventStartEditable
+				eventStartEditable={currentView !== 'dayGridDay'}
 				events={events}
 				fixedWeekCount={false}
 				headerToolbar={false}
