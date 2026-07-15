@@ -151,6 +151,26 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 			findByP_SEERC(plid, segmentsExperienceERC);
 	}
 
+	public LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, boolean active)
+		throws PortalException {
+
+		LayoutPageTemplateStructureRelElementVariation
+			layoutPageTemplateStructureRelElementVariation =
+				layoutPageTemplateStructureRelElementVariationPersistence.
+					fetchByERC_G(externalReferenceCode, groupId);
+
+		if (layoutPageTemplateStructureRelElementVariation == null) {
+			return null;
+		}
+
+		layoutPageTemplateStructureRelElementVariation.setActive(active);
+
+		return layoutPageTemplateStructureRelElementVariationPersistence.update(
+			layoutPageTemplateStructureRelElementVariation);
+	}
+
 	private void _validate(
 			String[] audienceEntryERCs, String name, String targetElement)
 		throws PortalException {

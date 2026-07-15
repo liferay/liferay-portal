@@ -73,6 +73,20 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 			getLayoutPageTemplateStructureRelElementVariations(plid);
 	}
 
+	public LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, long plid,
+				boolean active)
+		throws PortalException {
+
+		_layoutModelResourcePermission.check(
+			getPermissionChecker(), plid, ActionKeys.UPDATE);
+
+		return layoutPageTemplateStructureRelElementVariationLocalService.
+			updateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, groupId, active);
+	}
+
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
 	)
