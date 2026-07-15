@@ -177,6 +177,51 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 		}
 	}
 
+	public static com.liferay.layout.page.template.model.
+		LayoutPageTemplateStructureRelElementVariation
+				updateLayoutPageTemplateStructureRelElementVariation(
+					HttpPrincipal httpPrincipal, String externalReferenceCode,
+					long groupId, long plid, boolean active)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				LayoutPageTemplateStructureRelElementVariationServiceUtil.class,
+				"updateLayoutPageTemplateStructureRelElementVariation",
+				_updateLayoutPageTemplateStructureRelElementVariationParameterTypes3);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, groupId, plid, active);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.layout.page.template.model.
+				LayoutPageTemplateStructureRelElementVariation)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateStructureRelElementVariationServiceHttp.class);
 
@@ -194,6 +239,9 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 	private static final Class<?>[]
 		_getLayoutPageTemplateStructureRelElementVariationsParameterTypes2 =
 			new Class[] {long.class};
+	private static final Class<?>[]
+		_updateLayoutPageTemplateStructureRelElementVariationParameterTypes3 =
+			new Class[] {String.class, long.class, long.class, boolean.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1122815085
+// LIFERAY-SERVICE-BUILDER-HASH:1619289181

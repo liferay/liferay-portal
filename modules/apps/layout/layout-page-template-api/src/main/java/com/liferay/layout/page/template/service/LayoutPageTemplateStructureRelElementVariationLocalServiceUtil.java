@@ -469,6 +469,16 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 				layoutPageTemplateStructureRelElementVariation);
 	}
 
+	public static LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, boolean active)
+		throws PortalException {
+
+		return getService().
+			updateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, groupId, active);
+	}
+
 	public static LayoutPageTemplateStructureRelElementVariationLocalService
 		getService() {
 
@@ -484,4 +494,4 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 					class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1355106791
+// LIFERAY-SERVICE-BUILDER-HASH:488687409

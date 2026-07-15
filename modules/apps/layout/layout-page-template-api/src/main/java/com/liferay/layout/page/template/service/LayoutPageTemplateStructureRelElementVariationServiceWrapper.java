@@ -81,6 +81,18 @@ public class LayoutPageTemplateStructureRelElementVariationServiceWrapper
 	}
 
 	@Override
+	public LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, long plid,
+				boolean active)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutPageTemplateStructureRelElementVariationService.
+			updateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, groupId, plid, active);
+	}
+
+	@Override
 	public LayoutPageTemplateStructureRelElementVariationService
 		getWrappedService() {
 
@@ -100,4 +112,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceWrapper
 		_layoutPageTemplateStructureRelElementVariationService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-622841873
+// LIFERAY-SERVICE-BUILDER-HASH:-1861794388

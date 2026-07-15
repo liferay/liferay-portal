@@ -73,5 +73,11 @@ public interface LayoutPageTemplateStructureRelElementVariationService
 	 */
 	public String getOSGiServiceIdentifier();
 
+	public LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, long plid,
+				boolean active)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-967527342
+// LIFERAY-SERVICE-BUILDER-HASH:1285643008

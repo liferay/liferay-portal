@@ -384,6 +384,11 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 			LayoutPageTemplateStructureRelElementVariation
 				layoutPageTemplateStructureRelElementVariation);
 
+	public LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, boolean active)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<LayoutPageTemplateStructureRelElementVariation>
@@ -403,4 +408,4 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-473839327
+// LIFERAY-SERVICE-BUILDER-HASH:-1184717029

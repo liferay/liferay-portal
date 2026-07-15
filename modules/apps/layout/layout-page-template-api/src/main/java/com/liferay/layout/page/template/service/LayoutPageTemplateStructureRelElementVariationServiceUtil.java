@@ -73,6 +73,17 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static LayoutPageTemplateStructureRelElementVariation
+			updateLayoutPageTemplateStructureRelElementVariation(
+				String externalReferenceCode, long groupId, long plid,
+				boolean active)
+		throws PortalException {
+
+		return getService().
+			updateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, groupId, plid, active);
+	}
+
 	public static LayoutPageTemplateStructureRelElementVariationService
 		getService() {
 
@@ -86,4 +97,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 				LayoutPageTemplateStructureRelElementVariationService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1887344421
+// LIFERAY-SERVICE-BUILDER-HASH:-776365267
