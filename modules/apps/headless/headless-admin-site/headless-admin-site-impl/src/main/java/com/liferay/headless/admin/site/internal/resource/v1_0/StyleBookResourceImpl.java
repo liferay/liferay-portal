@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -183,9 +182,8 @@ public class StyleBookResourceImpl
 			pageSpecificationExternalReferenceCode,
 			_getGroupId(siteExternalReferenceCode));
 
-		LayoutPermissionUtil.check(
-			PermissionThreadLocal.getPermissionChecker(), layout,
-			ActionKeys.UPDATE);
+		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
+			PermissionThreadLocal.getPermissionChecker(), layout);
 
 		long companyId = contextCompany.getCompanyId();
 
