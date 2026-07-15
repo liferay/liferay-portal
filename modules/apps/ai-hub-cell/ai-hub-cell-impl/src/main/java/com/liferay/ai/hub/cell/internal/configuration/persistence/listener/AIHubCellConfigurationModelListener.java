@@ -110,6 +110,7 @@ public class AIHubCellConfigurationModelListener
 				Arrays.asList(), false,
 				Arrays.asList(
 					"Liferay.Headless.Batch.Engine.everything",
+					"Liferay.Headless.CMP.everything.read",
 					"Liferay.Portal.Search.REST.everything.read"),
 				false, new ServiceContext());
 		}
