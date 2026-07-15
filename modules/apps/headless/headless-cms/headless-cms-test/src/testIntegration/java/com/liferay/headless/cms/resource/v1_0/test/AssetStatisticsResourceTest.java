@@ -390,15 +390,21 @@ public class AssetStatisticsResourceTest
 			TestPropsValues.getUserId(), pendingObjectEntry.getObjectEntryId(),
 			WorkflowConstants.STATUS_PENDING, serviceContext);
 
-		// Counts scoped to the first space only
+		// Counts scoped to the first space only, resolved by group ID and by
+		// depot entry ID
 
 		_assertAssetStatistics(
 			depotEntry1.getGroupId(), 2, 0, 0, 0, 0, 0, 0, 2, 1);
+		_assertAssetStatistics(
+			depotEntry1.getDepotEntryId(), 2, 0, 0, 0, 0, 0, 0, 2, 1);
 
-		// Counts scoped to the second space only
+		// Counts scoped to the second space only, resolved by group ID and by
+		// depot entry ID
 
 		_assertAssetStatistics(
 			depotEntry2.getGroupId(), 1, 0, 0, 0, 1, 0, 0, 2, 0);
+		_assertAssetStatistics(
+			depotEntry2.getDepotEntryId(), 1, 0, 0, 0, 1, 0, 0, 2, 0);
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
