@@ -695,6 +695,10 @@ public abstract class SecretsUtil {
 			}
 			catch (Exception exception) {
 			}
+
+			System.out.println(
+				"Loaded " + _secrets.size() + " secrets from " +
+					_getConnectURL());
 		}
 
 		return null;
@@ -826,6 +830,10 @@ public abstract class SecretsUtil {
 
 				JenkinsResultsParserUtil.addRedactToken(value);
 			}
+
+			System.out.println(
+				"Loaded " + _cachedSecrets.size() + " secrets from " +
+					_getCachedSecretsURL());
 		}
 		catch (Exception exception) {
 			_cachedSecrets = null;
