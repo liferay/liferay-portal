@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
@@ -55,20 +54,7 @@ public class ViewDashboardDisplayContext {
 
 	public Map<String, Object> getConstants() {
 		return HashMapBuilder.<String, Object>put(
-			"cmsGroupId",
-			() -> {
-				try {
-					Group group = _groupLocalService.getGroup(
-						_themeDisplay.getCompanyId(), GroupConstants.CMS);
-
-					return group.getGroupId();
-				}
-				catch (PortalException portalException) {
-					_log.error(portalException);
-				}
-
-				return null;
-			}
+			"cmsGroupId", () -> _getCMSGroupId()
 		).put(
 			"ercContentStructures",
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES
@@ -136,22 +122,7 @@ public class ViewDashboardDisplayContext {
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
 				_httpServletRequest, null)
 		).put(
-			"cmsGroupId",
-			() -> {
-				try {
-					Group group = _groupLocalService.getGroup(
-						_themeDisplay.getCompanyId(), GroupConstants.CMS);
-
-					return GetterUtil.getLong(group.getGroupId());
-				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(portalException);
-					}
-				}
-
-				return null;
-			}
+			"cmsGroupId", () -> _getCMSGroupId()
 		).put(
 			"collaboratorURLs",
 			() -> SectionDisplayContextUtil.getCollaboratorURLs(
@@ -195,6 +166,20 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
 		).build();
+	}
+
+	private Long _getCMSGroupId() {
+		try {
+			Group group = _groupLocalService.getGroup(
+				_themeDisplay.getCompanyId(), GroupConstants.CMS);
+
+			return group.getGroupId();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		return null;
 	}
 
 	private String _getLayoutName() {
