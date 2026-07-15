@@ -188,20 +188,6 @@ definition {
 		ItemSelector.previewEmbeddedVideo(invalidURL = "https://test.com/test");
 	}
 
-	@description = "This is a test for LPS-136947. It checks that unsupported files cannot be uploaded to Blogs."
-	@priority = 3
-	test CannotUploadUnsupportedFilesToBlogs {
-		property portal.acceptance = "false";
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.uploadFile(
-			invalidFileValidation = "Please enter a file with a valid extension (.gif,.jpeg,.jpg,.png).",
-			uploadFileName = "Document_1.pdf");
-	}
-
 	@description = "It ensures that the web content draft in an Asset Library cannot be found when searching in an Item Selector in that Library."
 	@priority = 4
 	@refactordone

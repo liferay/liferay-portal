@@ -11,11 +11,13 @@ import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.f
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
+import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 
 const baseTest = mergeTests(
 	apiHelpersTest,
+	blogsPagesTest,
 	documentLibraryPagesTest,
 	isolatedSiteTest,
 	journalPagesTest,
@@ -148,5 +150,36 @@ baseTest(
 		await expect(iframe.locator('.no-preview-image')).toBeVisible();
 		await expect(iframe.locator('.no-preview-title')).toBeVisible();
 		await expect(iframe.locator('.no-preview-description')).toBeVisible();
+	}
+);
+
+baseTest(
+	'Blog cover image selector rejects a file with an unsupported extension',
+	{
+		tag: '@LPS-136947',
+	},
+	async ({blogsEditBlogEntryPage, page, site}) => {
+		await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('button', {name: 'Select File'}).first().click();
+
+		const iframe = page.frameLocator('iframe[title="Select File"]');
+
+		await iframe
+			.locator('input[type="file"]')
+			.setInputFiles(
+				path.join(
+					__dirname,
+					'../../frontend-js-item-selector-web/main/dependencies/file.json'
+				)
+			);
+
+		await expect(
+			iframe.getByText(
+				'Please enter a file with a valid extension (.gif,.jpeg,.jpg,.png).'
+			)
+		).toBeVisible();
+
+		await expect(iframe.getByRole('button', {name: 'Add'})).toBeHidden();
 	}
 );
