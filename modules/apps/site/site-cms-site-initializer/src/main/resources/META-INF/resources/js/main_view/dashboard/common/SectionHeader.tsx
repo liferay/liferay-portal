@@ -20,7 +20,7 @@ const SectionHeader: React.FC<ISectionHeader> = ({
 }) => {
 	return (
 		<>
-			<div className="cms-dashboard__section-header">
+			<div className="d-flex">
 				<span className="mr-2">
 					<Text color="secondary" size={4}>
 						<ClayIcon symbol={icon} />
