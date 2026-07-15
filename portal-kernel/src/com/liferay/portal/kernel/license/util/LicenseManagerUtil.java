@@ -8,6 +8,7 @@ package com.liferay.portal.kernel.license.util;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.license.LicenseInfo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,10 @@ public class LicenseManagerUtil {
 
 	public static void checkLicense(String productId) {
 		_licenseManager.checkLicense(productId);
+	}
+
+	public static Date getAppExpirationDate(App app) {
+		return _licenseManager.getAppExpirationDate(app);
 	}
 
 	public static List<Map<String, String>> getClusterLicenseProperties(

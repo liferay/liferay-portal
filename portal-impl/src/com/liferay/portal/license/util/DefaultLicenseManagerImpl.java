@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.LicenseUtil;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,11 @@ public class DefaultLicenseManagerImpl implements LicenseManager {
 
 	@Override
 	public void checkLicense(String productId) {
+	}
+
+	@Override
+	public Date getAppExpirationDate(App app) {
+		return null;
 	}
 
 	@Override
