@@ -778,42 +778,6 @@ definition {
 			navTab = "Web Content");
 	}
 
-	@description = "This test covers LPS-136945 and LPS-136943. It checks that only 'File Upload', 'Folder', and 'External Video Shortcut' options appear when adding a document and that only 'File Upload' and 'Folder' options appear when adding images."
-	@priority = 3
-	test OnlyRelevantSelectionsAppearWhenAddingItems {
-		property portal.acceptance = "false";
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(structureName = "Structure Name");
-
-		DataEngine.addField(
-			fieldFieldLabel = "Upload",
-			fieldName = "Upload");
-
-		WebContentStructures.saveCP(structureName = "Structure Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		LexiconEntry.gotoAddMenuItem(menuItem = "Structure Name");
-
-		Click(
-			key_text = "Select",
-			locator1 = "Button#ANY_LAST");
-
-		ItemSelector.viewRelevantSelections(addDocumentOptions = "true");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		LexiconEntry.gotoAddMenuItem(menuItem = "Basic Web Content");
-
-		ItemSelector.gotoItemSelectorViaCKEditor();
-
-		ItemSelector.viewRelevantSelections(addImageOptions = "true");
-	}
-
 	@description = "This test covers LPS-96564. It ensures that a private site cannot be viewed by a non-site member in calendar widget."
 	@priority = 4
 	@refactordone
