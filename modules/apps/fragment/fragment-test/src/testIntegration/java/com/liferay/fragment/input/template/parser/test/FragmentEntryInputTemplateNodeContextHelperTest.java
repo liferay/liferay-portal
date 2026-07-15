@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -163,6 +164,64 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 				"myText", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	@Test
+	@TestInfo("LPD-98327")
+	public void testToInputTemplateNodeWithBooleanInfoFieldType()
+		throws Exception {
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		SessionMessages.add(
+			httpServletRequest, "infoFormParameterMap",
+			HashMapBuilder.<String, Object>put(
+				"ObjectField_myBoolean",
+				HashMapBuilder.<Locale, Object>put(
+					LocaleUtil.SPAIN, Boolean.TRUE
+				).put(
+					LocaleUtil.US, Boolean.FALSE
+				).build()
+			).build());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		serviceContext.setRequest(httpServletRequest);
+
+		InfoItemFormProvider<?> infoItemFormProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormProvider.class, _objectDefinition.getClassName());
+
+		try {
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			InputTemplateNode inputTemplateNode =
+				_fragmentEntryInputTemplateNodeContextHelper.
+					toInputTemplateNode(
+						Collections.emptyMap(), "Default",
+						_addInputFragmentEntryLink("myBoolean"),
+						httpServletRequest,
+						infoItemFormProvider.getInfoForm(
+							StringPool.BLANK, _group.getGroupId()),
+						LocaleUtil.getSiteDefault());
+
+			Assert.assertEquals(
+				Boolean.FALSE.toString(), inputTemplateNode.getInputValue());
+			Assert.assertEquals(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
+					Boolean.TRUE.toString()
+				).put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					Boolean.FALSE.toString()
+				).build(),
+				inputTemplateNode.getValueI18n());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test
