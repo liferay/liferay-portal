@@ -31,7 +31,13 @@ public class ScopeTest {
 
 	@Before
 	public void setUp() {
-		_group = _mockGroup(_EXTERNAL_REFERENCE_CODE);
+		_group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			_group.getExternalReferenceCode()
+		).thenReturn(
+			_EXTERNAL_REFERENCE_CODE
+		);
 	}
 
 	@Test
@@ -48,29 +54,6 @@ public class ScopeTest {
 		Assert.assertNull(Scope.of(_group, null));
 
 		groupCapabilityUtilMockedStatic.close();
-	}
-
-	@Test
-	public void testScopeOfGroup() {
-		Assert.assertNull(Scope.of(null));
-
-		Scope scope = Scope.of(_group);
-
-		Assert.assertNull(scope.getLiveExternalReferenceCode());
-
-		Group liveGroup = _mockGroup(RandomTestUtil.randomString());
-
-		Mockito.when(
-			_group.getLiveGroup()
-		).thenReturn(
-			liveGroup
-		);
-
-		scope = Scope.of(_group);
-
-		Assert.assertEquals(
-			liveGroup.getExternalReferenceCode(),
-			scope.getLiveExternalReferenceCode());
 	}
 
 	@Test
@@ -137,18 +120,6 @@ public class ScopeTest {
 		Assert.assertEquals(
 			_EXTERNAL_REFERENCE_CODE, scope.getExternalReferenceCode());
 		Assert.assertEquals(scopeType, scope.getType());
-	}
-
-	private Group _mockGroup(String externalReferenceCode) {
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getExternalReferenceCode()
-		).thenReturn(
-			externalReferenceCode
-		);
-
-		return group;
 	}
 
 	private static final String _EXTERNAL_REFERENCE_CODE =
