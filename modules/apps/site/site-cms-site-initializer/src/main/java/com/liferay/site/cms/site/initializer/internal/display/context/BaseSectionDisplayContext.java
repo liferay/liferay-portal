@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -222,7 +221,9 @@ public abstract class BaseSectionDisplayContext {
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		addBreadcrumbItem(jsonArray, false, null, _getLayoutName());
+		addBreadcrumbItem(
+			jsonArray, false, null,
+			SectionDisplayContextUtil.getLayoutName(themeDisplay));
 
 		return HashMapBuilder.<String, Object>put(
 			"breadcrumbItems", jsonArray
@@ -325,16 +326,6 @@ public abstract class BaseSectionDisplayContext {
 		).put(
 			"mimeType", translationInfoItemFieldValuesExporter.getMimeType()
 		);
-	}
-
-	private String _getLayoutName() {
-		Layout layout = themeDisplay.getLayout();
-
-		if (layout == null) {
-			return null;
-		}
-
-		return layout.getName(themeDisplay.getLocale(), true);
 	}
 
 	private JSONArray _getLocalesJSONArray(

@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -112,7 +111,8 @@ public class ViewDashboardDisplayContext {
 					JSONUtil.put(
 						"active", false
 					).put(
-						"label", _getLayoutName()
+						"label",
+						SectionDisplayContextUtil.getLayoutName(_themeDisplay)
 					))
 			).put(
 				"hideSpace", true
@@ -180,16 +180,6 @@ public class ViewDashboardDisplayContext {
 		}
 
 		return null;
-	}
-
-	private String _getLayoutName() {
-		Layout layout = _themeDisplay.getLayout();
-
-		if (layout == null) {
-			return null;
-		}
-
-		return layout.getName(_themeDisplay.getLocale(), true);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

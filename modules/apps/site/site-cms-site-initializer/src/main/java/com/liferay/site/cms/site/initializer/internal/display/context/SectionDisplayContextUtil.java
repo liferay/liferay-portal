@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -824,6 +825,16 @@ public class SectionDisplayContextUtil {
 			));
 
 		return fdsActionDropdownItems;
+	}
+
+	public static String getLayoutName(ThemeDisplay themeDisplay) {
+		Layout layout = themeDisplay.getLayout();
+
+		if (layout == null) {
+			return null;
+		}
+
+		return layout.getName(themeDisplay.getLocale(), true);
 	}
 
 	public static Map<String, String> getObjectDefinitionCssClasses() {
