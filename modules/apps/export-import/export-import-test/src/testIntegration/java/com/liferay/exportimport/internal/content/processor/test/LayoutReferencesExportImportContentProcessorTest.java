@@ -663,8 +663,8 @@ public class LayoutReferencesExportImportContentProcessorTest {
 
 		Group group = GroupTestUtil.addGroup();
 
-		GroupTestUtil.addLayoutSetVirtualHost(group, true);
 		GroupTestUtil.addLayoutSetVirtualHost(group, false);
+		GroupTestUtil.addLayoutSetVirtualHost(group, true);
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(group, true);
 
