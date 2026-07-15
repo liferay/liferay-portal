@@ -61,7 +61,7 @@ $date-picker-nav-btn: map-deep-merge(
 
 		active: (
 			background-color:
-				var(--date-picker-nav-btn-active-active, $gray-200),
+				var(--date-picker-nav-btn-active-background-color, $gray-200),
 		),
 
 		disabled: (
