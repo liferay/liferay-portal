@@ -141,7 +141,7 @@ public class SessionImpl implements Session {
 		throws ORMException {
 
 		try {
-			queryString = SQLTransformer.transformForHibernate(queryString);
+			queryString = SQLTransformer.transform(queryString);
 
 			return new SQLQueryImpl(
 				_session.createSQLQuery(queryString), strictName);
@@ -198,7 +198,7 @@ public class SessionImpl implements Session {
 		throws ORMException {
 
 		try {
-			queryString = SQLTransformer.transformForHibernate(queryString);
+			queryString = SQLTransformer.transform(queryString);
 
 			SQLQuery sqlQuery = new SQLQueryImpl(
 				_session.createSQLQuery(queryString), strictName);

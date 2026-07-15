@@ -43,9 +43,7 @@ public class SQLTransformer {
 			return newSQL;
 		}
 
-		newSQL = transform(sql);
-
-		newSQL = _transform(_hibernateSQLTransformerLogic, newSQL);
+		newSQL = _transform(_hibernateSQLTransformerLogic, sql);
 
 		_transformedSQLsPortalCache.put(sql, newSQL);
 

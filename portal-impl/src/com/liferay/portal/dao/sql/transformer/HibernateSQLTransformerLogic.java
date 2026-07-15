@@ -1,9 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.portal.dao.sql.transformer;
+
+import com.liferay.petra.string.StringBundler;
 
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -12,11 +14,49 @@ import java.util.regex.Pattern;
 /**
  * @author Manuel de la Peña
  */
-public class HibernateSQLTransformerLogic implements SQLTransformerLogic {
+public class HibernateSQLTransformerLogic extends BaseSQLTransformerLogic {
+
+	public HibernateSQLTransformerLogic() {
+		setFunctions(
+			getBooleanFunction(), getCastClobTextFunction(),
+			getCastDecimalFunction(), getCastLongFunction(),
+			getCastTextFunction(), getInstrFunction(), getNullDateFunction(),
+			getSubstrFunction(), _getCountFunction(),
+			_getUnsupportedMacroFunction(
+				"AGGREGATION", getAggregationPattern()),
+			_getUnsupportedMacroFunction("BITAND", getBitwiseCheckPattern()),
+			_getUnsupportedMacroFunction("BITOR", getBitwiseOrPattern()),
+			_getUnsupportedMacroFunction(
+				"DROP_TABLE_IF_EXISTS", getDropTableIfExistsTextPattern()),
+			_getUnsupportedMacroFunction(
+				"INTEGER_DIV", getIntegerDivisionPattern()),
+			_getUnsupportedMacroFunction(
+				"TRUNCATE TABLE", getTruncateTablePattern()));
+	}
 
 	@Override
-	public Function<String, String>[] getFunctions() {
-		return new Function[] {_getCountFunction()};
+	protected String replaceCastClobText(Matcher matcher) {
+		return matcher.replaceAll("SUBSTRING($1, 1, 4000)");
+	}
+
+	@Override
+	protected String replaceCastDecimal(Matcher matcher) {
+		return matcher.replaceAll("CAST($1 AS big_decimal)");
+	}
+
+	@Override
+	protected String replaceCastLong(Matcher matcher) {
+		return matcher.replaceAll("CAST($1 AS long)");
+	}
+
+	@Override
+	protected String replaceCastText(Matcher matcher) {
+		return matcher.replaceAll("CAST($1 AS string)");
+	}
+
+	@Override
+	protected String replaceInstr(Matcher matcher) {
+		return matcher.replaceAll("LOCATE($2, $1)");
 	}
 
 	private Function<String, String> _getCountFunction() {
@@ -30,6 +70,24 @@ public class HibernateSQLTransformerLogic implements SQLTransformerLogic {
 				if (entityAlias.equals(countExpression)) {
 					return matcher.replaceFirst(_HQL_COUNT_SQL);
 				}
+			}
+
+			return sql;
+		};
+	}
+
+	private Function<String, String> _getUnsupportedMacroFunction(
+		String macro, Pattern pattern) {
+
+		return (String sql) -> {
+			Matcher matcher = pattern.matcher(sql);
+
+			if (matcher.find()) {
+				throw new UnsupportedOperationException(
+					StringBundler.concat(
+						"The macro \"", macro,
+						"\" has no HQL equivalent and cannot be used in an ",
+						"HQL query: ", sql));
 			}
 
 			return sql;
