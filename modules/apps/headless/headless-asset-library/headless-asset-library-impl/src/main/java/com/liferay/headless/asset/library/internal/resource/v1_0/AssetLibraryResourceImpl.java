@@ -408,7 +408,8 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
 				group.getGroupId());
 
-			if (!externalReferenceCode.equals(
+			if (Validator.isNotNull(assetLibrary.getExternalReferenceCode()) &&
+				!externalReferenceCode.equals(
 					assetLibrary.getExternalReferenceCode())) {
 
 				group = depotEntry.getGroup();
