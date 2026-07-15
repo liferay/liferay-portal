@@ -7,17 +7,36 @@
 		background-color 0.15s ease-in-out,
 		border-color 0.15s ease-in-out;
 
-	&:hover {
-		background-color: $light-l1;
-		border-color: $secondary-l0;
-	}
-
 	&.active {
 		background-color: $primary-l3;
 		border-color: $primary;
 	}
 
+	&:focus-within:not(.active),
+	&:hover:not(.active) {
+		background-color: $light-l1;
+		border-color: $secondary-l0;
+
+		.cms-dashboard__interactive-card__hover-content {
+			opacity: 1;
+		}
+
+		.cms-dashboard__interactive-card__metric:has(
+				~ .cms-dashboard__interactive-card__hover-content
+			)
+			> div:nth-of-type(2) {
+			opacity: 0;
+		}
+	}
+
+	&__hover-content {
+		bottom: 0;
+		left: 0;
+		opacity: 0;
+	}
+
 	&__sticker {
+
 		&--green {
 			background-color: $green-l5;
 			color: $green;
@@ -37,5 +56,6 @@
 			background-color: $purple-l5;
 			color: $purple;
 		}
+
 	}
 }
