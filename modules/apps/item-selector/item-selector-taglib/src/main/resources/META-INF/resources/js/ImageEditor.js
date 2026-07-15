@@ -224,6 +224,7 @@ function ImageEditor({
 					<ClayToolbar.Item>
 						<ClayToolbar.Section>
 							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get('rotate')}
 								displayType={null}
 								onClick={handleRotate}
 								symbol="rotate"
@@ -235,6 +236,9 @@ function ImageEditor({
 						<ClayToolbar.Section>
 							<ClayButton.Group spaced>
 								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get(
+										'zoom-out'
+									)}
 									disabled={disabledZoomOut}
 									displayType={null}
 									onClick={handleZoomOut}
@@ -242,6 +246,7 @@ function ImageEditor({
 								/>
 
 								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get('zoom-in')}
 									disabled={disabledZoomIn}
 									displayType={null}
 									onClick={handleZoomIn}

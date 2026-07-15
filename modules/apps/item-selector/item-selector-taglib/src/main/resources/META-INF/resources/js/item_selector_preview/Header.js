@@ -27,6 +27,7 @@ const Header = ({
 					<ul className="navbar-nav">
 						<li className="nav-item">
 							<ClayButton
+								aria-label={Liferay.Language.get('back')}
 								borderless
 								displayType="secondary"
 								monospaced
@@ -50,6 +51,9 @@ const Header = ({
 							{showEditIcon && (
 								<li className="btn-group-item nav-item">
 									<ClayButton
+										aria-label={Liferay.Language.get(
+											'edit'
+										)}
 										borderless
 										displayType="secondary"
 										monospaced
@@ -63,6 +67,9 @@ const Header = ({
 							{showInfoIcon && (
 								<li className="btn-group-item nav-item">
 									<ClayButton
+										aria-label={Liferay.Language.get(
+											'info'
+										)}
 										borderless
 										displayType="secondary"
 										id="infoButtonRef"
