@@ -420,7 +420,7 @@ test(
 				newUserFullName
 			);
 
-			await spaceSummaryPage.viewAllMembersLink.click();
+			await spaceSummaryPage.openMembersDialog();
 
 			await expect(
 				page
@@ -447,7 +447,7 @@ test(
 
 			await spaceSummaryPage.goto(space.name);
 
-			await spaceSummaryPage.viewAllMembersLink.click();
+			await spaceSummaryPage.openMembersDialog();
 
 			await expect(page.getByRole('listitem').first()).toBeVisible();
 

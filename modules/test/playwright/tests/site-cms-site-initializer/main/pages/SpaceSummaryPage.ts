@@ -66,18 +66,28 @@ export class SpaceSummaryPage {
 	}
 
 	async goto(spaceName: string) {
-		await this.page.goto(PORTLET_URLS.cms);
-		await this.page.getByRole('menuitem', {name: spaceName}).click();
-		await this.page
-			.getByRole('heading', {exact: true, name: spaceName})
-			.waitFor();
+		await expect(async () => {
+			await this.page.goto(PORTLET_URLS.cms);
+
+			await this.page
+				.getByRole('menuitem', {name: spaceName})
+				.click({timeout: 3000});
+
+			await this.page
+				.getByRole('heading', {exact: true, name: spaceName})
+				.waitFor({timeout: 3000});
+		}).toPass();
 	}
 
-	async addRoleToSpaceMember(roleName: string, userName: string) {
+	async openMembersDialog() {
 		await clickAndExpectToBeVisible({
 			target: this.page.getByRole('dialog'),
 			trigger: this.viewAllMembersLink,
 		});
+	}
+
+	async addRoleToSpaceMember(roleName: string, userName: string) {
+		await this.openMembersDialog();
 
 		const userRow = this.page
 			.getByRole('listitem')
@@ -112,10 +122,7 @@ export class SpaceSummaryPage {
 	}
 
 	async addUserOrUserGroup(name: string, type: UserOrUserGroupType) {
-		await clickAndExpectToBeVisible({
-			target: this.page.getByRole('dialog'),
-			trigger: this.viewAllMembersLink,
-		});
+		await this.openMembersDialog();
 
 		const dialog = this.page.getByRole('dialog');
 
@@ -147,9 +154,7 @@ export class SpaceSummaryPage {
 	}
 
 	async removeUserOrUserGroup(name: string, type: UserOrUserGroupType) {
-		await this.viewAllMembersLink.click();
-
-		await this.page.getByRole('dialog').waitFor();
+		await this.openMembersDialog();
 
 		await this.page
 			.getByLabel('Add People to Collaborate', {exact: true})
