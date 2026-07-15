@@ -232,15 +232,8 @@ public class LayoutReferencesExportImportContentProcessor
 						url = urlWithoutLocale;
 					}
 					else {
-						Layout layout =
-							_layoutLocalService.fetchLayoutByFriendlyURL(
-								group.getGroupId(), false, urlWithoutLocale);
-
-						if (layout == null) {
-							layout =
-								_layoutLocalService.fetchLayoutByFriendlyURL(
-									group.getGroupId(), true, urlWithoutLocale);
-						}
+						Layout layout = _fetchLayoutByFriendlyURL(
+							group.getGroupId(), false, urlWithoutLocale);
 
 						if (layout != null) {
 							urlSB.append(localePath);
@@ -1034,14 +1027,8 @@ public class LayoutReferencesExportImportContentProcessor
 					url = urlWithoutLocale;
 				}
 				else {
-					Layout layout =
-						_layoutLocalService.fetchLayoutByFriendlyURL(
-							group.getGroupId(), false, urlWithoutLocale);
-
-					if (layout == null) {
-						layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-							group.getGroupId(), true, urlWithoutLocale);
-					}
+					Layout layout = _fetchLayoutByFriendlyURL(
+						group.getGroupId(), false, urlWithoutLocale);
 
 					if (layout != null) {
 						urlSB.append(localePath);
@@ -1119,13 +1106,8 @@ public class LayoutReferencesExportImportContentProcessor
 				privateLayout = layoutSet.isPrivateLayout();
 			}
 
-			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			Layout layout = _fetchLayoutByFriendlyURL(
 				groupId, privateLayout, url);
-
-			if (layout == null) {
-				layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-					groupId, !privateLayout, url);
-			}
 
 			if (layout != null) {
 				continue;
@@ -1196,6 +1178,20 @@ public class LayoutReferencesExportImportContentProcessor
 				throw exportImportContentValidationException;
 			}
 		}
+	}
+
+	private Layout _fetchLayoutByFriendlyURL(
+		long groupId, boolean privateLayout, String url) {
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			groupId, privateLayout, url);
+
+		if (layout != null) {
+			return layout;
+		}
+
+		return _layoutLocalService.fetchLayoutByFriendlyURL(
+			groupId, !privateLayout, url);
 	}
 
 	private String _getPortalURL(String url, String portalURL)
