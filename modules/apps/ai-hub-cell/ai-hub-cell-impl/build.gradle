@@ -1,10 +1,13 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:ai-hub-cell:ai-hub-cell-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:frontend-js:frontend-js-importmaps-extender-api")
 	compileOnly project(":apps:oauth2-provider:oauth2-provider-api")
 	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
+	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-string")
 }

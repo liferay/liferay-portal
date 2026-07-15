@@ -28,3 +28,4 @@ export type {
 	ReportFeedbackSurface,
 } from './ReportFeedback/api';
 export {default as WritingAssistant} from './WritingAssistant/WritingAssistant';
+export {default as renderAIAssistantChat} from './renderAIAssistantChat';
