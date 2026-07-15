@@ -65,6 +65,12 @@ public class DLAppServiceWhenGettingAFileEntryTest extends BaseDLAppTestCase {
 	}
 
 	@Test
+	public void testFetchFileEntry() throws Exception {
+		_testFetchFileEntryNotPresentInRootFolder();
+		_testFetchFileEntryPresentInRootFolder();
+	}
+
+	@Test
 	public void testGetExpiredFileEntryAsContentReviewer() throws Exception {
 		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
 			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -139,6 +145,25 @@ public class DLAppServiceWhenGettingAFileEntryTest extends BaseDLAppTestCase {
 
 		DLFileEntryLocalServiceUtil.checkFileEntries(
 			dlFileEntry.getCompanyId(), 60);
+	}
+
+	private void _testFetchFileEntryNotPresentInRootFolder() throws Exception {
+		Assert.assertNull(
+			dlAppService.fetchFileEntry(
+				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				StringUtil.randomString()));
+	}
+
+	private void _testFetchFileEntryPresentInRootFolder() throws Exception {
+		FileEntry fileEntry1 = DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		FileEntry fileEntry2 = dlAppService.fetchFileEntry(
+			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry1.getTitle());
+
+		Assert.assertEquals(
+			fileEntry1.getFileEntryId(), fileEntry2.getFileEntryId());
 	}
 
 	@DeleteAfterTestRun

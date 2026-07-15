@@ -36,6 +36,13 @@ public class DLAppLocalServiceWhenGettingAFileEntryTest
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Test
+	public void testFetchFileEntry() throws Exception {
+		_testFetchFileEntryByFileNameNotPresentInRootFolder();
+		_testFetchFileEntryNotPresentInRootFolder();
+		_testFetchFileEntryPresentInRootFolder();
+	}
+
 	@Test(expected = NoSuchFileEntryException.class)
 	public void testShouldFailIfNotPresentInRootFolder() throws Exception {
 		DLAppLocalServiceUtil.getFileEntry(
@@ -53,6 +60,38 @@ public class DLAppLocalServiceWhenGettingAFileEntryTest
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		FileEntry fileEntry2 = DLAppLocalServiceUtil.getFileEntry(
+			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry1.getTitle());
+
+		Assert.assertEquals(
+			fileEntry1.getFileEntryId(), fileEntry2.getFileEntryId());
+	}
+
+	private void _testFetchFileEntryByFileNameNotPresentInRootFolder()
+		throws Exception {
+
+		Assert.assertNull(
+			DLAppLocalServiceUtil.fetchFileEntryByFileName(
+				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				StringUtil.randomString()));
+	}
+
+	private void _testFetchFileEntryNotPresentInRootFolder() throws Exception {
+		Assert.assertNull(
+			DLAppLocalServiceUtil.fetchFileEntry(
+				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				StringUtil.randomString()));
+	}
+
+	private void _testFetchFileEntryPresentInRootFolder() throws Exception {
+		FileEntry fileEntry1 = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			new byte[0], null, null, null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		FileEntry fileEntry2 = DLAppLocalServiceUtil.fetchFileEntry(
 			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			fileEntry1.getTitle());
 
