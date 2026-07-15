@@ -32,7 +32,7 @@ public class MonitorConfig {
 		return _id;
 	}
 
-	public long getInterval() {
+	public long getIntervalSeconds() {
 		return _intervalSeconds;
 	}
 

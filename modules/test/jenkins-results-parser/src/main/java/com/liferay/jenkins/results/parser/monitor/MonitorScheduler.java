@@ -45,7 +45,7 @@ public class MonitorScheduler {
 		MonitorConfig monitorConfig = monitor.getMonitorConfig();
 
 		if ((currentTimeMillis - latestMonitorResult.getTimestamp()) >=
-				(monitorConfig.getInterval() * 1000)) {
+				(monitorConfig.getIntervalSeconds() * 1000)) {
 
 			return true;
 		}
