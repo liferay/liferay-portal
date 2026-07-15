@@ -47,6 +47,10 @@ describe('createTaskAction', () => {
 	});
 
 	describe('redirect path', () => {
+		afterEach(() => {
+			window.history.replaceState({}, '', '/');
+		});
+
 		it('navigates to redirect URL', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
@@ -55,8 +59,38 @@ describe('createTaskAction', () => {
 				redirect: 'http://localhost/redirect-url',
 			});
 
-			expect(mockNavigate).toHaveBeenCalledWith('/redirect-url');
+			expect(mockNavigate).toHaveBeenCalledWith(
+				'http://localhost/redirect-url'
+			);
 			expect(mockOpenModal).not.toHaveBeenCalled();
+		});
+
+		it('repoints the redirect parameter to the current location', () => {
+			window.history.replaceState(
+				{},
+				'',
+				'/web/cms/tasks?PROJECT_TASKS_fdsConfig=(view:kanban)'
+			);
+
+			createTaskAction({
+				addProjectURL: '/add-project',
+				addTaskURL: '/add-task',
+				projectObjectDefinitionId: 123,
+				redirect:
+					'http://localhost/web/cms/add_task?projectId=42&redirect=http://localhost/web/cms/tasks',
+			});
+
+			expect(mockOpenModal).not.toHaveBeenCalled();
+			expect(mockNavigate).toHaveBeenCalledTimes(1);
+
+			const url = new URL(
+				mockNavigate.mock.calls[0][0],
+				window.location.origin
+			);
+
+			expect(url.pathname).toBe('/web/cms/add_task');
+			expect(url.searchParams.get('projectId')).toBe('42');
+			expect(url.searchParams.get('redirect')).toBe(window.location.href);
 		});
 	});
 });

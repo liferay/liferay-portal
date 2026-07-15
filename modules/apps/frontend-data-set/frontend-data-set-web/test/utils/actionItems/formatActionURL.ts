@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import formatActionURL from '../../../src/main/resources/META-INF/resources/utils/actionItems/formatActionURL';
+import formatActionURL, {
+	rewriteRedirectParams,
+} from '../../../src/main/resources/META-INF/resources/utils/actionItems/formatActionURL';
 
 const specialChars = 'http://foo.bar?param=%áàäâ^/#{2}/ç';
 
@@ -334,5 +336,36 @@ describe('formatActionURL helper. Partial interpolation. Target is not "link". R
 			'/{id}/{urls.withRedirect}?backURL={urls.specialChars}#{name}',
 			`/${encodedItem.id}/${encodedItem.urls.withRedirect}?backURL=${encodedItem.urls.specialChars}#${encodedItem.name}`
 		);
+	});
+});
+
+describe('rewriteRedirectParams helper', () => {
+	it('Returns a URL without a query string as provided', () => {
+		expect(rewriteRedirectParams('/web/page')).toEqual('/web/page');
+	});
+
+	it('Modifies a preexisting redirect parameter to use the actual URL', () => {
+		expect(
+			rewriteRedirectParams('/web/page?redirect=http://www.somewhere.com')
+		).toEqual(
+			`/web/page?redirect=${encodeURIComponent('http://localhost/')}`
+		);
+	});
+
+	it('Adds the _redirect and _backURL parameters if the URL includes a p_p_id parameter', () => {
+		expect(rewriteRedirectParams('/web/page?p_p_id=random')).toEqual(
+			`/web/page?p_p_id=random&_random_redirect=${encodeURIComponent(
+				'http://localhost/'
+			)}&_random_backURL=${encodeURIComponent('http://localhost/')}`
+		);
+	});
+
+	it('Skips the rewrite when the given matchURL mentions neither redirect nor backURL', () => {
+		expect(
+			rewriteRedirectParams(
+				'/web/page?redirect=http://www.somewhere.com',
+				'/web/page?p=1'
+			)
+		).toEqual('/web/page?redirect=http://www.somewhere.com');
 	});
 });
