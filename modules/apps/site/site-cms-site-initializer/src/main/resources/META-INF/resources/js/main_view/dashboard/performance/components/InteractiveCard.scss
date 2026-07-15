@@ -34,28 +34,4 @@
 		left: 0;
 		opacity: 0;
 	}
-
-	&__sticker {
-
-		&--green {
-			background-color: $green-l5;
-			color: $green;
-		}
-
-		&--info {
-			background-color: $info-l2;
-			color: $info;
-		}
-
-		&--orange {
-			background-color: $orange-l5;
-			color: $orange;
-		}
-
-		&--purple {
-			background-color: $purple-l5;
-			color: $purple;
-		}
-
-	}
 }

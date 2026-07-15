@@ -49,7 +49,7 @@ describe('InteractiveCard', () => {
 	it('marks the card as active', () => {
 		renderComponent({
 			active: true,
-			color: 'info',
+			color: 'dark',
 			icon: 'view',
 			title: 'Views',
 			trend,

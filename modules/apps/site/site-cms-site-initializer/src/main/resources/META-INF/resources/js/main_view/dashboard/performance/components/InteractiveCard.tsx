@@ -16,7 +16,25 @@ import {MetricValue} from '../../common/MetricValue';
 
 import './InteractiveCard.scss';
 
-export type MetricColor = 'green' | 'info' | 'orange' | 'purple';
+export type MetricColor =
+	| 'dark'
+	| 'green'
+	| 'orange'
+	| 'pink'
+	| 'purple'
+	| 'red';
+
+const STICKER_DISPLAY_TYPES: Record<
+	MetricColor,
+	React.ComponentProps<typeof ClaySticker>['displayType']
+> = {
+	dark: 'outline-0',
+	green: 'outline-3',
+	orange: 'outline-5',
+	pink: 'outline-8',
+	purple: 'outline-1',
+	red: 'outline-4',
+};
 
 type Props = {
 	active?: boolean;
@@ -63,11 +81,8 @@ export default function InteractiveCard({
 				</div>
 
 				<ClaySticker
-					className={classNames(
-						'cms-dashboard__interactive-card__sticker flex-shrink-0 rounded',
-						`cms-dashboard__interactive-card__sticker--${color}`
-					)}
-					displayType="unstyled"
+					className="flex-shrink-0"
+					displayType={STICKER_DISPLAY_TYPES[color]}
 					size="lg"
 				>
 					<ClayIcon symbol={icon} />

@@ -22,13 +22,13 @@ type MetricConfig = {
 
 const METRICS: MetricConfig[] = [
 	{
-		color: 'purple',
+		color: 'pink',
 		icon: 'low-vision',
 		key: 'impressionsMetric',
 		title: Liferay.Language.get('impressions'),
 	},
 	{
-		color: 'info',
+		color: 'purple',
 		icon: 'view',
 		key: 'viewsMetric',
 		title: Liferay.Language.get('views'),
