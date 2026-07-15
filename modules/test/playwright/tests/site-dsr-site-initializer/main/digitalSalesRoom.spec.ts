@@ -1231,6 +1231,56 @@ test(
 );
 
 test(
+	'An admin cannot invite users from the share popup of an archived room',
+	{tag: '@LPD-97750'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomUsersPage,
+		digitalSalesRoomsPage,
+		editDigitalSalesRoomPage,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await expect(
+			digitalSalesRoomsPage.digitalSalesRoomsTable.searchInput
+		).toBeVisible();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			accountName: account.name,
+			roomName,
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await digitalSalesRoomsPage.archiveRoom(roomName);
+		await digitalSalesRoomsPage.showArchivedRooms();
+		await digitalSalesRoomsPage.clickRowActionsMenuItem(
+			roomName,
+			digitalSalesRoomsPage.shareMenuItem
+		);
+
+		await expect(digitalSalesRoomUsersPage.shareModalHeading).toBeVisible();
+		await expect(
+			digitalSalesRoomUsersPage.shareModalEmailInput
+		).toBeVisible();
+		await expect(
+			digitalSalesRoomUsersPage.shareModalEmailInput
+		).toBeDisabled();
+		await expect(
+			digitalSalesRoomUsersPage.shareModalInviteButton
+		).toBeDisabled();
+	}
+);
+
+test(
 	'A contributor can upload documents and make comments',
 	{tag: '@LPD-87116'},
 	async ({
