@@ -9,6 +9,7 @@ import {ApiHelpers} from '../ApiHelpers';
 
 type DepotEntry = {
 	depotEntryId: string;
+	groupId: number;
 };
 
 enum DepotType {
