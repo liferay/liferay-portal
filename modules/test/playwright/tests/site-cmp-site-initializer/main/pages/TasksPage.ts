@@ -160,6 +160,36 @@ export class TasksPage {
 		return this.page.locator(`[data-date="${toDateString(date)}"]`);
 	}
 
+	async dragCalendarItemToDay(source: Locator, dayCell: Locator) {
+		const getCenter = async (locator: Locator) => {
+			const box = await locator.boundingBox();
+
+			if (!box) {
+				throw new Error('The dragged element is not visible');
+			}
+
+			return {x: box.x + box.width / 2, y: box.y + box.height / 2};
+		};
+
+		const sourceCenter = await getCenter(source);
+
+		await source.hover();
+
+		await this.page.mouse.down();
+
+		await this.page.mouse.move(sourceCenter.x + 10, sourceCenter.y + 10, {
+			steps: 5,
+		});
+
+		const dayCellCenter = await getCenter(dayCell);
+
+		await this.page.mouse.move(dayCellCenter.x, dayCellCenter.y, {
+			steps: 10,
+		});
+
+		await this.page.mouse.up();
+	}
+
 	getItem(filter: string) {
 		return this.page
 			.getByRole('tabpanel')
