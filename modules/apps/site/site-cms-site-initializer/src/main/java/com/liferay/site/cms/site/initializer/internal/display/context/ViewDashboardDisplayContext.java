@@ -120,7 +120,7 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"candidateAssetLibraries",
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
-				_httpServletRequest, null)
+				_httpServletRequest)
 		).put(
 			"cmsGroupId", () -> _getCMSGroupId()
 		).put(
