@@ -840,31 +840,4 @@ definition {
 		LexiconCard.viewCardNotPresent(card = "Site A");
 	}
 
-	@description = "The user should see vertical nav items when more than 5 nav items appear on item selector modal."
-	@priority = 4
-	test VerticalNavItemsShowsWhenMoreThan5Items {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Content Page Name",
-			type = "content");
-
-		ContentPagesNavigator.openEditContentPage(
-			pageName = "Content Page Name",
-			siteName = "Site Name");
-
-		PageEditor.addFragment(
-			collectionName = "Content Display",
-			fragmentName = "Content Display");
-
-		PageEditor.editContentDisplay(
-			fragmentName = "Content Display",
-			navItemStyle = "vertical",
-			navTab = "Web Content");
-	}
-
 }

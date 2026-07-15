@@ -8,13 +8,17 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
+import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 
 const SAMPLE_IMAGE = path.join(
 	__dirname,
@@ -27,6 +31,15 @@ const test = mergeTests(
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()
+);
+
+// The Content Display fragment and its item selector are gated behind the
+// layout page editor feature flag.
+
+const pageEditorTest = mergeTests(
+	test,
+	featureFlagsTest({'LPS-178052': {enabled: true}}),
+	pageEditorPagesTest
 );
 
 test(
@@ -147,5 +160,51 @@ test(
 		await expect(
 			imageIframe.getByRole('menuitem', {name: 'Google Drive Shortcut'})
 		).toBeHidden();
+	}
+);
+
+pageEditorTest(
+	'Item selector shows a vertical navigation when it has more than five tabs',
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+		const contentDisplayId = getRandomString();
+
+		// Create a content page with a Content Display fragment, whose item
+		// selector exposes every asset type as a navigation tab
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					fragmentConfig: {
+						itemSelector: {
+							template: {
+								infoItemRendererKey:
+									'com.liferay.journal.web.internal.info.item.renderer.JournalArticleFullContentInfoItemRenderer',
+							},
+						},
+					},
+					id: contentDisplayId,
+					key: 'com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Open the Content Display item selector
+
+		await pageEditorPage.selectFragment(contentDisplayId);
+
+		await pageEditorPage.openMappingSelector();
+
+		// With more than five tabs, the navigation renders as a vertical
+		// menubar rather than as horizontal tabs
+
+		await expect(
+			page
+				.frameLocator('iframe[title="Select"]')
+				.locator('nav[class*="menubar-vertical"]')
+		).toBeVisible();
 	}
 );
