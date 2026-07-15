@@ -292,30 +292,6 @@ definition {
 		ItemSelector.previewEmbeddedVideo(validURL = "https://player.vimeo.com");
 	}
 
-	@description = "This ensures that users can preview the SVG image in item selector."
-	@priority = 5
-	@refactordone
-	test CanPreviewSVG {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.svg",
-			groupName = "Site Name",
-			mimeType = "image/svg+xml",
-			sourceFileName = "Document_1.svg");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.gotoPreviewViaSelectFile(navTab = "Documents and Media");
-
-		ItemSelector.viewPreview(
-			footer = "1 of 1",
-			imageFileName = "Document_1.svg");
-	}
-
 	@description = "This ensures that users can preview the YouTube video in item selector."
 	@priority = 5
 	@refactordone

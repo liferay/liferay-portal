@@ -18,6 +18,8 @@ const SAMPLE_IMAGE = path.join(
 	'../../frontend-js-item-selector-web/main/dependencies/sample_image.png'
 );
 
+const SVG_IMAGE = path.join(__dirname, 'dependencies/Document_1.svg');
+
 const test = mergeTests(
 	apiHelpersTest,
 	blogsPagesTest,
@@ -133,4 +135,47 @@ test('Preview hides navigation arrows for a single image', async ({
 
 	await expect(iframe.locator('.pull-left .icon-arrow')).toBeHidden();
 	await expect(iframe.locator('.pull-right .icon-arrow')).toBeHidden();
+});
+
+test('Preview renders an SVG image', async ({
+	apiHelpers,
+	blogsEditBlogEntryPage,
+	page,
+	site,
+}) => {
+
+	// Seed a single SVG in the site's document library
+
+	await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(SVG_IMAGE),
+		{
+			documentFolderId: 0,
+			fileName: 'Document_1.svg',
+			title: 'Document_1.svg',
+		}
+	);
+
+	// Open the blog cover image selector
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('button', {name: 'Select File'}).first().click();
+
+	const iframe = page.frameLocator('iframe[title="Select File"]');
+
+	await iframe.getByRole('link', {name: 'Documents and Media'}).click();
+
+	// Open the image preview and verify the SVG is shown
+
+	await iframe.locator('.icon-view').first().click();
+
+	const footer = iframe.locator('.footer');
+
+	await expect(footer).toContainText('Document_1.svg');
+	await expect(footer).toContainText('1 of 1');
+
+	await expect(
+		iframe.locator('.item-selector-preview img[src*="Document_1.svg"]')
+	).toBeVisible();
 });
