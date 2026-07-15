@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:document-library:document-library-taglib")
 	compileOnly project(":apps:fragment:fragment-api")
