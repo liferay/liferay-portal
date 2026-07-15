@@ -8,12 +8,41 @@ package com.liferay.fragment.web.internal.util;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
+
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Lourdes Fernández Besada
  */
 public class DesignLibraryUtil {
+
+	public static String getDesignLibraryResourcesURL(
+		Group depotGroup, HttpServletRequest httpServletRequest) {
+
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
+			depotGroup.getGroupId());
+
+		if (depotEntry == null) {
+			return null;
+		}
+
+		return PortletURLBuilder.create(
+			PortalUtil.getControlPanelPortletURL(
+				httpServletRequest, depotGroup,
+				DesignLibraryAdminPortletKeys.DESIGN_LIBRARY_ADMIN, 0, 0,
+				PortletRequest.RENDER_PHASE)
+		).setMVCRenderCommandName(
+			"/design_library/design_library_resources"
+		).setParameter(
+			"designLibraryEntryId", depotEntry.getDepotEntryId()
+		).buildString();
+	}
 
 	public static boolean isDesignLibraryScope(Group group) {
 		if ((group == null) || !group.isDepot()) {
