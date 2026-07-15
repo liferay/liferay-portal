@@ -10,7 +10,6 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryModel;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -2322,28 +2321,19 @@ public class DefaultObjectEntryManagerImpl
 				String scopeKey)
 		throws Exception {
 
-		try {
-			if (Validator.isNotNull(fileEntry.getExternalReferenceCode())) {
-				return _dlAppService.getFileEntryByExternalReferenceCode(
-					fileEntry.getExternalReferenceCode(),
-					_getFileEntryGroupId(
-						_getGroupExternalReferenceCode(fileEntry),
-						objectDefinition, scopeKey));
-			}
-
-			if (fileEntry.getId() != null) {
-				return _dlAppService.getFileEntry(fileEntry.getId());
-			}
-
-			return null;
+		if (Validator.isNotNull(fileEntry.getExternalReferenceCode())) {
+			return _dlAppService.fetchFileEntryByExternalReferenceCode(
+				fileEntry.getExternalReferenceCode(),
+				_getFileEntryGroupId(
+					_getGroupExternalReferenceCode(fileEntry), objectDefinition,
+					scopeKey));
 		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(noSuchFileEntryException);
-			}
 
-			return null;
+		if (fileEntry.getId() != null) {
+			return _dlAppService.fetchFileEntry(fileEntry.getId());
 		}
+
+		return null;
 	}
 
 	private String _getDateString(Date date) {

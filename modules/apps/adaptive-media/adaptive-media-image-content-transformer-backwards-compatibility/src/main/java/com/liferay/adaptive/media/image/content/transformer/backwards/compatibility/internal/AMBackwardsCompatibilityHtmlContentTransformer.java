@@ -10,15 +10,12 @@ import com.liferay.adaptive.media.image.content.transformer.backwards.compatibil
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
 import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
 import com.liferay.adaptive.media.image.mime.type.AMImageMimeTypeProvider;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -141,17 +138,15 @@ public class AMBackwardsCompatibilityHtmlContentTransformer
 		long folderId = GetterUtil.getLong(matcher.group(3));
 		String title = matcher.group(4);
 
-		try {
-			return _dlAppLocalService.getFileEntry(groupId, folderId, title);
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
-			}
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			groupId, folderId, title);
 
-			return _dlAppLocalService.getFileEntryByFileName(
-				groupId, folderId, title);
+		if (fileEntry != null) {
+			return fileEntry;
 		}
+
+		return _dlAppLocalService.getFileEntryByFileName(
+			groupId, folderId, title);
 	}
 
 	private Group _getGroup(long companyId, String name)
@@ -298,9 +293,6 @@ public class AMBackwardsCompatibilityHtmlContentTransformer
 	private static final String _OPEN_TAG_TOKEN_IMG = "<img";
 
 	private static final String _OPEN_TAG_TOKEN_PICTURE = "<picture";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AMBackwardsCompatibilityHtmlContentTransformer.class);
 
 	private static final Pattern _pattern = Pattern.compile(
 		"((?:/?[^\\s]*)/documents/(\\d+)/(\\d+)/([^/?]+)(?:/([-0-9a-fA-F]+))?" +

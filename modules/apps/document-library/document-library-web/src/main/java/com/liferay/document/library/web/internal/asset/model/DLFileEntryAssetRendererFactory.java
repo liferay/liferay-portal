@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.document.library.asset.model.DLFileEntryClassTypeReader;
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -77,34 +76,26 @@ public class DLFileEntryAssetRendererFactory
 	public AssetRenderer<FileEntry> getAssetRenderer(long classPK, int type)
 		throws PortalException {
 
-		FileEntry fileEntry = null;
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(classPK);
 		FileVersion fileVersion = null;
 
-		try {
-			fileEntry = _dlAppLocalService.getFileEntry(classPK);
-
-			if (type == TYPE_LATEST) {
-				fileVersion = fileEntry.getLatestFileVersion();
-			}
-			else if (type == TYPE_LATEST_APPROVED) {
-				fileVersion = fileEntry.getFileVersion();
-			}
-			else {
-				throw new IllegalArgumentException(
-					"Unknown asset renderer type " + type);
-			}
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
+		if (fileEntry == null) {
 
 			// LPS-52675
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
-			}
 
 			fileVersion = _dlAppLocalService.getFileVersion(classPK);
 
 			fileEntry = fileVersion.getFileEntry();
+		}
+		else if (type == TYPE_LATEST) {
+			fileVersion = fileEntry.getLatestFileVersion();
+		}
+		else if (type == TYPE_LATEST_APPROVED) {
+			fileVersion = fileEntry.getFileVersion();
+		}
+		else {
+			throw new IllegalArgumentException(
+				"Unknown asset renderer type " + type);
 		}
 
 		DLFileEntryAssetRenderer dlFileEntryAssetRenderer =

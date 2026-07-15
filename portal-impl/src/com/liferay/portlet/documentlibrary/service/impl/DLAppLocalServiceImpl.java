@@ -599,6 +599,22 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 		}
 	}
 
+	@Override
+	public FileEntry fetchFileEntry(long groupId, long folderId, String title)
+		throws PortalException {
+
+		try {
+			return dlAppLocalService.getFileEntry(groupId, folderId, title);
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFileEntryException);
+			}
+
+			return null;
+		}
+	}
+
 	/**
 	 * Returns the document library file entry with the matching external
 	 * reference code and group.
@@ -617,6 +633,24 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 
 		return localRepository.fetchFileEntryByExternalReferenceCode(
 			externalReferenceCode);
+	}
+
+	@Override
+	public FileEntry fetchFileEntryByFileName(
+			long groupId, long folderId, String fileName)
+		throws PortalException {
+
+		try {
+			return dlAppLocalService.getFileEntryByFileName(
+				groupId, folderId, fileName);
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFileEntryException);
+			}
+
+			return null;
+		}
 	}
 
 	@Override

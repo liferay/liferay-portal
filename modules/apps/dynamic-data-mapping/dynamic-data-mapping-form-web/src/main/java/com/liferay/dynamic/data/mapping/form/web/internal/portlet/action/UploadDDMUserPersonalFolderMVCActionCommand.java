@@ -5,7 +5,6 @@
 
 package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.util.DLValidator;
@@ -143,14 +142,7 @@ public class UploadDDMUserPersonalFolderMVCActionCommand
 				uploadPortletRequest.getParameter("fileEntryId"));
 
 			if (fileEntryId > 0) {
-				try {
-					fileEntry = _dlAppService.getFileEntry(fileEntryId);
-				}
-				catch (NoSuchFileEntryException noSuchFileEntryException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(noSuchFileEntryException);
-					}
-				}
+				fileEntry = _dlAppService.fetchFileEntry(fileEntryId);
 			}
 
 			String fileName = uploadPortletRequest.getFileName(

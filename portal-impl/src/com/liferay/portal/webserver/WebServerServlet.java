@@ -1480,15 +1480,11 @@ public class WebServerServlet extends HttpServlet {
 			String fileName = HttpComponentsUtil.decodeURL(pathArray[2]);
 
 			try {
-				try {
-					DLAppLocalServiceUtil.getFileEntryByFileName(
+				FileEntry fileEntry =
+					DLAppLocalServiceUtil.fetchFileEntryByFileName(
 						groupId, folderId, fileName);
-				}
-				catch (NoSuchFileEntryException noSuchFileEntryException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(noSuchFileEntryException);
-					}
 
+				if (fileEntry == null) {
 					DLAppLocalServiceUtil.getFileEntry(
 						groupId, folderId, fileName);
 				}
@@ -1920,41 +1916,30 @@ public class WebServerServlet extends HttpServlet {
 					0, fileName.indexOf(StringPool.QUESTION));
 			}
 
-			try {
-				FileEntry fileEntry =
-					DLAppLocalServiceUtil.getFileEntryByFileName(
-						groupId, folderId, fileName);
-
-				_checkFileEntry(fileEntry, httpServletRequest);
-
-				return fileEntry;
-			}
-			catch (NoSuchFileEntryException noSuchFileEntryException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(noSuchFileEntryException);
-				}
-
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+			FileEntry fileEntry =
+				DLAppLocalServiceUtil.fetchFileEntryByFileName(
 					groupId, folderId, fileName);
 
-				_checkFileEntry(fileEntry, httpServletRequest);
-
-				return fileEntry;
+			if (fileEntry == null) {
+				fileEntry = DLAppLocalServiceUtil.getFileEntry(
+					groupId, folderId, fileName);
 			}
-		}
-		else {
-			long groupId = GetterUtil.getLong(pathArray[0]);
-
-			String uuid = pathArray[3];
-
-			FileEntry fileEntry =
-				DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
-					uuid, groupId);
 
 			_checkFileEntry(fileEntry, httpServletRequest);
 
 			return fileEntry;
 		}
+
+		long groupId = GetterUtil.getLong(pathArray[0]);
+
+		String uuid = pathArray[3];
+
+		FileEntry fileEntry =
+			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(uuid, groupId);
+
+		_checkFileEntry(fileEntry, httpServletRequest);
+
+		return fileEntry;
 	}
 
 	private PermissionChecker _getPermissionChecker(

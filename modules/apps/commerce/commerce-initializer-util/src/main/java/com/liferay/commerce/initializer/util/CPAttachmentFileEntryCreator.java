@@ -7,7 +7,6 @@ package com.liferay.commerce.initializer.util;
 
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.StringPool;
@@ -102,25 +101,22 @@ public class CPAttachmentFileEntryCreator {
 		FileEntry fileEntry = null;
 
 		try {
-			fileEntry = _dlAppService.getFileEntry(
+			fileEntry = _dlAppService.fetchFileEntry(
 				serviceContext.getScopeGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName);
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
+
+			if (fileEntry == null) {
+				Repository repository = _repositoryProvider.getRepository(
+					serviceContext.getScopeGroupId());
+
+				file = _file.createTempFile(inputStream);
+
+				fileEntry = _dlAppService.addFileEntry(
+					null, repository.getRepositoryId(),
+					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
+					_mimeTypes.getContentType(file), fileName, null, null, null,
+					file, null, null, null, serviceContext);
 			}
-
-			Repository repository = _repositoryProvider.getRepository(
-				serviceContext.getScopeGroupId());
-
-			file = _file.createTempFile(inputStream);
-
-			fileEntry = _dlAppService.addFileEntry(
-				null, repository.getRepositoryId(),
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
-				_mimeTypes.getContentType(file), fileName, null, null, null,
-				file, null, null, null, serviceContext);
 		}
 		finally {
 			if (file != null) {

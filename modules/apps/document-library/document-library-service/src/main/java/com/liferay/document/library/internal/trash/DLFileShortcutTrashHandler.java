@@ -5,7 +5,6 @@
 
 package com.liferay.document.library.internal.trash;
 
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFileShortcut;
 import com.liferay.document.library.kernel.model.DLFileShortcutConstants;
@@ -194,23 +193,11 @@ public class DLFileShortcutTrashHandler extends BaseDLTrashHandler {
 			return false;
 		}
 
-		try {
-			FileEntry toFileEntry = _dlAppLocalService.getFileEntry(
-				dlFileShortcut.getToFileEntryId());
+		FileEntry toFileEntry = _dlAppLocalService.fetchFileEntry(
+			dlFileShortcut.getToFileEntryId());
 
-			if (toFileEntry.isInTrash()) {
-				return false;
-			}
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
-			}
-
-			return false;
-		}
-
-		if (!hasTrashPermission(
+		if ((toFileEntry == null) || toFileEntry.isInTrash() ||
+			!hasTrashPermission(
 				PermissionThreadLocal.getPermissionChecker(),
 				dlFileShortcut.getGroupId(), classPK,
 				TrashActionKeys.RESTORE)) {

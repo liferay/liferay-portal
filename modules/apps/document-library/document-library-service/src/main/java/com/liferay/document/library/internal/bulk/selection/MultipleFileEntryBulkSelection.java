@@ -10,13 +10,10 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.bulk.selection.BaseMultipleEntryBulkSelection;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionFactory;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.util.DLAssetHelper;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 
 import java.util.Map;
@@ -56,22 +53,12 @@ public class MultipleFileEntryBulkSelection
 	@Override
 	protected FileEntry fetchEntry(long fileEntryId) {
 		try {
-			return _dlAppService.getFileEntry(fileEntryId);
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(noSuchFileEntryException);
-			}
-
-			return null;
+			return _dlAppService.fetchFileEntry(fileEntryId);
 		}
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MultipleFileEntryBulkSelection.class);
 
 	private final AssetEntryLocalService _assetEntryLocalService;
 	private final DLAppService _dlAppService;

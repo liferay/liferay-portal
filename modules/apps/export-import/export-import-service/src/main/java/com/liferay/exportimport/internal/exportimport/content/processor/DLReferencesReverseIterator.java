@@ -391,18 +391,11 @@ public class DLReferencesReverseIterator
 					String title = MapUtil.getString(map, "title");
 
 					if (Validator.isNotNull(title)) {
-						try {
-							fileEntry =
-								DLAppLocalServiceUtil.getFileEntryByFileName(
-									groupId, folderId, title);
-						}
-						catch (NoSuchFileEntryException
-									noSuchFileEntryException) {
+						fileEntry =
+							DLAppLocalServiceUtil.fetchFileEntryByFileName(
+								groupId, folderId, title);
 
-							if (_log.isDebugEnabled()) {
-								_log.debug(noSuchFileEntryException);
-							}
-
+						if (fileEntry == null) {
 							fileEntry = DLAppLocalServiceUtil.getFileEntry(
 								groupId, folderId, title);
 						}

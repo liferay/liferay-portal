@@ -6,7 +6,6 @@
 package com.liferay.document.library.web.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.util.DLValidator;
@@ -216,23 +215,14 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 				UploadPortletRequest uploadPortletRequest)
 			throws PortalException {
 
-			try {
-				long fileEntryId = GetterUtil.getLong(
-					uploadPortletRequest.getParameter("fileEntryId"));
+			long fileEntryId = GetterUtil.getLong(
+				uploadPortletRequest.getParameter("fileEntryId"));
 
-				if (fileEntryId == 0) {
-					return null;
-				}
-
-				return _dlAppService.getFileEntry(fileEntryId);
-			}
-			catch (NoSuchFileEntryException noSuchFileEntryException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(noSuchFileEntryException);
-				}
-
+			if (fileEntryId == 0) {
 				return null;
 			}
+
+			return _dlAppService.fetchFileEntry(fileEntryId);
 		}
 
 		private String _getDescription(
