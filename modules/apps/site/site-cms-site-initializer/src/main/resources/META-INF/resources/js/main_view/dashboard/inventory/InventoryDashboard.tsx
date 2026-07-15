@@ -54,9 +54,7 @@ function InventoryDashboardContent() {
 			<ClayLayout.Row className="mb-2">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						icon="plus-squares"
-						role="heading"
 						title={Liferay.Language.get('what-is-new')}
 					/>
 				</ClayLayout.Col>
@@ -75,9 +73,7 @@ function InventoryDashboardContent() {
 			<ClayLayout.Row className="mb-2">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						icon="diagram"
-						role="heading"
 						title={Liferay.Language.get('assets-distributions')}
 					/>
 				</ClayLayout.Col>
@@ -92,9 +88,7 @@ function InventoryDashboardContent() {
 			<ClayLayout.Row className="mb-2">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						icon="order-form-pencil"
-						role="heading"
 						title={Liferay.Language.get('health-and-usage')}
 					/>
 				</ClayLayout.Col>

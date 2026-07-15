@@ -16,12 +16,10 @@ export function ContentConsumption() {
 			<ClayLayout.Row className="mb-3">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						description={Liferay.Language.get(
 							'find-how-your-content-is-being-consumed'
 						)}
 						icon="view"
-						role="heading"
 						title={Liferay.Language.get('content-consumption')}
 					/>
 				</ClayLayout.Col>

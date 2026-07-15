@@ -20,12 +20,10 @@ export function AudienceAndDistribution() {
 			<ClayLayout.Row className="mb-3">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						description={Liferay.Language.get(
 							'identify-where-your-audience-is-coming-from-and-what-content-theyre-engaging-with'
 						)}
 						icon="globe-pin"
-						role="heading"
 						title={Liferay.Language.get(
 							'audience-and-distribution'
 						)}
