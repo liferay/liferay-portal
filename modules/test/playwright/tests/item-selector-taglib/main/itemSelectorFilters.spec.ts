@@ -35,6 +35,38 @@ async function setScopeFilter(iframe: FrameLocator, scope: string) {
 	});
 }
 
+// The item selector has no semantic role for a result item, so each display
+// style is matched by the container class the repository entry browser renders
+// (card, list row, table row); the location badge and title both live inside it
+
+const ITEM_CONTAINER_BY_DISPLAY_STYLE = {
+	Cards: '.card',
+	List: '.list-group-item',
+	Table: 'tr',
+};
+
+async function setDisplayStyle(iframe: FrameLocator, displayStyle: string) {
+	const menuItem = iframe.getByRole('menuitem', {
+		exact: true,
+		name: displayStyle,
+	});
+
+	await clickAndExpectToBeVisible({
+		target: menuItem,
+		timeout: 3000,
+		trigger: iframe.getByLabel('Select View, Currently'),
+	});
+
+	// The menu item is a floating link, so force past the actionability check;
+	// the toggle label then reflects the view that took effect
+
+	await menuItem.click({force: true});
+
+	await expect(
+		iframe.getByLabel(`Select View, Currently Selected: ${displayStyle}`)
+	).toBeVisible();
+}
+
 let depotEntryId: string;
 
 test.afterEach(async ({apiHelpers}) => {
@@ -121,3 +153,86 @@ test(
 		await expect(iframe.getByTitle(libraryFolderImage)).toBeVisible();
 	}
 );
+
+test('Documents show their originating location in every display style when browsing everywhere', async ({
+	apiHelpers,
+	blogsEditBlogEntryPage,
+	page,
+	site,
+}) => {
+	const documentTitle1 = `${getRandomString()}.jpg`;
+	const documentTitle2 = `${getRandomString()}.jpg`;
+	const folderName = getRandomString();
+
+	// Seed the same document names in a folder and at the root of both the
+	// site and a connected asset library, so only the location badge tells
+	// the otherwise identical entries apart
+
+	const depotName = getRandomString();
+
+	const depot =
+		await apiHelpers.jsonWebServicesDepot.addDepotEntry(depotName);
+
+	depotEntryId = depot.depotEntryId;
+
+	for (const groupId of [site.id, depot.groupId]) {
+		await apiHelpers.headlessDelivery.postDocument(
+			groupId,
+			createReadStream(SAMPLE_IMAGE),
+			{
+				documentFolderId: 0,
+				fileName: documentTitle1,
+				title: documentTitle1,
+			}
+		);
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			groupId,
+			{name: folderName}
+		);
+
+		await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+			folder.id,
+			createReadStream(SAMPLE_IMAGE),
+			{fileName: documentTitle2, title: documentTitle2}
+		);
+	}
+
+	await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+		depot.depotEntryId,
+		String(site.id)
+	);
+
+	// Open the blog cover image selector on the Documents and Media tab and
+	// browse everywhere
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('button', {name: 'Select File'}).first().click();
+
+	const iframe = page.frameLocator('iframe[title="Select File"]');
+
+	await iframe.getByRole('link', {name: 'Documents and Media'}).click();
+
+	await setScopeFilter(iframe, 'Everywhere');
+
+	// Each entry, including the folder, reports its site or asset library
+	// as its location in the cards, list, and table views
+
+	for (const displayStyle of ['Cards', 'List', 'Table']) {
+		await setDisplayStyle(iframe, displayStyle);
+
+		for (const location of [site.name, depotName]) {
+			for (const title of [documentTitle1, documentTitle2, folderName]) {
+				await expect(
+					iframe
+						.locator(
+							ITEM_CONTAINER_BY_DISPLAY_STYLE[displayStyle],
+							{hasText: title}
+						)
+						.filter({hasText: location})
+				).toBeVisible();
+			}
+		}
+	}
+});
