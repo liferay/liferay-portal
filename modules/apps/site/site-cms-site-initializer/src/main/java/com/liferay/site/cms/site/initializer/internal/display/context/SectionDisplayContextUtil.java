@@ -9,6 +9,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.depot.service.DepotEntryServiceUtil;
+import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
@@ -17,7 +18,9 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryFolderLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -41,6 +44,8 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -229,6 +234,39 @@ public class SectionDisplayContextUtil {
 		return fdsActionDropdownItems;
 	}
 
+	public static String getAutocompleteURL() {
+		return StringBundler.concat(
+			"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
+			"com.liferay.portal.kernel.model.User,",
+			"com.liferay.portal.kernel.model.UserGroup&nestedFields=",
+			"embedded");
+	}
+
+	public static Map<String, String> getCollaboratorURLs(
+		long companyId, ObjectDefinitionService objectDefinitionService,
+		String[] objectFolderExternalReferenceCodes) {
+
+		Map<String, String> collaboratorURLs = new HashMap<>();
+
+		for (ObjectDefinition objectDefinition :
+				objectDefinitionService.getCMSObjectDefinitions(
+					companyId, objectFolderExternalReferenceCodes)) {
+
+			collaboratorURLs.put(
+				objectDefinition.getClassName(),
+				StringBundler.concat(
+					"/o", objectDefinition.getRESTContextPath(),
+					"/{objectEntryId}/collaborators"));
+		}
+
+		collaboratorURLs.put(
+			ObjectEntryFolder.class.getName(),
+			"/o/headless-object/v1.0/object-entry-folders" +
+				"/{objectEntryFolderId}/collaborators");
+
+		return collaboratorURLs;
+	}
+
 	public static List<DropdownItem> getContentsBulkActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
@@ -259,6 +297,15 @@ public class SectionDisplayContextUtil {
 		HttpServletRequest httpServletRequest) {
 
 		return getFDSActionDropdownItems(httpServletRequest);
+	}
+
+	public static String getContentViewURL(ThemeDisplay themeDisplay) {
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+			GroupConstants.CMS_FRIENDLY_URL,
+			"/edit_content_item?p_l_mode=read&p_p_state=",
+			LiferayWindowState.POP_UP, "&redirect=",
+			themeDisplay.getURLCurrent(), "&objectEntryId={embedded.id}");
 	}
 
 	public static CreationMenu getCreationMenu(
@@ -640,6 +687,74 @@ public class SectionDisplayContextUtil {
 			));
 	}
 
+	public static Map<String, String> getFileMimeTypeCssClasses(
+		DLConfiguration dlConfiguration) {
+
+		return HashMapBuilder.put(
+			"default", "file-icon-color-0"
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.codeFileMimeTypes(), "file-icon-color-7")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.compressedFileMimeTypes(), "file-icon-color-1")
+		).putAll(
+			_getFileMimeTypeValues(
+				ArrayUtil.append(
+					dlConfiguration.multimediaFileMimeTypes(),
+					ContentTypes.
+						APPLICATION_VND_LIFERAY_VIDEO_EXTERNAL_SHORTCUT_HTML),
+				"file-icon-color-3")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.presentationFileMimeTypes(),
+				"file-icon-color-4")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.spreadSheetFileMimeTypes(), "file-icon-color-2")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.textFileMimeTypes(), "file-icon-color-6")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.vectorialFileMimeTypes(), "file-icon-color-5")
+		).build();
+	}
+
+	public static Map<String, String> getFileMimeTypeIcons(
+		DLConfiguration dlConfiguration) {
+
+		return HashMapBuilder.put(
+			"default", "document-default"
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.codeFileMimeTypes(), "document-code")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.compressedFileMimeTypes(),
+				"document-compressed")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.presentationFileMimeTypes(),
+				"document-presentation")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.spreadSheetFileMimeTypes(), "document-table")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.textFileMimeTypes(), "document-text")
+		).putAll(
+			_getFileMimeTypeValues(
+				dlConfiguration.vectorialFileMimeTypes(), "document-vector")
+		).putAll(
+			_getFileMimeTypeMultimediaCssClasses(
+				ArrayUtil.append(
+					dlConfiguration.multimediaFileMimeTypes(),
+					ContentTypes.
+						APPLICATION_VND_LIFERAY_VIDEO_EXTERNAL_SHORTCUT_HTML))
+		).build();
+	}
+
 	public static List<DropdownItem> getFilesBulkActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
@@ -709,6 +824,30 @@ public class SectionDisplayContextUtil {
 			));
 
 		return fdsActionDropdownItems;
+	}
+
+	public static Map<String, String> getObjectDefinitionCssClasses() {
+		return HashMapBuilder.put(
+			"default", "content-icon-custom-structure"
+		).put(
+			"L_CMS_BASIC_WEB_CONTENT", "content-icon-basic-content"
+		).put(
+			"L_CMS_BLOG", "content-icon-blog"
+		).put(
+			"L_CMS_EXTERNAL_VIDEO", "file-icon-color-3"
+		).build();
+	}
+
+	public static Map<String, String> getObjectDefinitionIcons() {
+		return HashMapBuilder.put(
+			"default", "web-content"
+		).put(
+			"L_CMS_BASIC_WEB_CONTENT", "forms"
+		).put(
+			"L_CMS_BLOG", "blogs"
+		).put(
+			"L_CMS_EXTERNAL_VIDEO", "document-multimedia"
+		).build();
 	}
 
 	public static Map<Long, List<Long>> getObjectEntryFolderIdsMap(
@@ -989,6 +1128,37 @@ public class SectionDisplayContextUtil {
 		}
 
 		return jsonArray;
+	}
+
+	private static Map<String, String> _getFileMimeTypeMultimediaCssClasses(
+		String[] mimeTypes) {
+
+		Map<String, String> fileMimeTypeMultimediaCssClasses = new HashMap<>();
+
+		for (String mimeType : mimeTypes) {
+			if (mimeType.startsWith("image")) {
+				fileMimeTypeMultimediaCssClasses.put(
+					mimeType, "document-image");
+			}
+			else {
+				fileMimeTypeMultimediaCssClasses.put(
+					mimeType, "document-multimedia");
+			}
+		}
+
+		return fileMimeTypeMultimediaCssClasses;
+	}
+
+	private static Map<String, String> _getFileMimeTypeValues(
+		String[] mimeTypes, String value) {
+
+		Map<String, String> fileMimeTypeValues = new HashMap<>();
+
+		for (String mimeType : mimeTypes) {
+			fileMimeTypeValues.put(mimeType, value);
+		}
+
+		return fileMimeTypeValues;
 	}
 
 	private static JSONObject _getJSONObject(long groupId, Locale locale) {
