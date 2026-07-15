@@ -624,3 +624,23 @@ describe('ClayDropDown', () => {
 		);
 	});
 });
+
+describe('ClayDropDown AI variant', () => {
+	afterEach(cleanup);
+
+	it('adds the dropdown-menu-ai class to the menu when ai is set', () => {
+		const {getByText} = render(
+			<DropDownWithState ai>
+				<ClayDropDown.ItemList>
+					<ClayDropDown.Item>Improve writing</ClayDropDown.Item>
+				</ClayDropDown.ItemList>
+			</DropDownWithState>
+		);
+
+		fireEvent.click(getByText('Click Me'));
+
+		expect(document.querySelector('.dropdown-menu')).toHaveClass(
+			'dropdown-menu-ai'
+		);
+	});
+});

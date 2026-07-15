@@ -28,6 +28,11 @@ export type Props = {
 	active?: boolean;
 
 	/**
+	 * Flag to render the menu with the AI variant styling.
+	 */
+	ai?: boolean;
+
+	/**
 	 * Flag to align the DropDown menu within the viewport.
 	 */
 	alignmentByViewport?: boolean;

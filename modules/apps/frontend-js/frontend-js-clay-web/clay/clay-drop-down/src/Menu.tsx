@@ -32,6 +32,11 @@ export interface IProps extends React.HTMLAttributes<HTMLDivElement> {
 	active?: boolean;
 
 	/**
+	 * Flag to render the menu with the AI variant styling.
+	 */
+	ai?: boolean;
+
+	/**
 	 * HTML element that the menu should be aligned to
 	 */
 	alignElementRef: React.RefObject<HTMLElement>;
@@ -151,6 +156,7 @@ const Menu = React.forwardRef<HTMLDivElement, IProps>(
 	(
 		{
 			active = false,
+			ai,
 			alignElementRef,
 			alignmentByViewport = false,
 			alignmentPosition = Align.BottomLeft,
@@ -217,6 +223,7 @@ const Menu = React.forwardRef<HTMLDivElement, IProps>(
 						aria-hidden={!active ? true : undefined}
 						aria-modal={lock ? true : undefined}
 						className={classNames('dropdown-menu', className, {
+							'dropdown-menu-ai': ai,
 							'dropdown-menu-indicator-end': hasRightSymbols,
 							'dropdown-menu-indicator-start': hasLeftSymbols,
 							[`dropdown-menu-height-${height}`]: height,

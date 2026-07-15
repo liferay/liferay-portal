@@ -954,6 +954,29 @@ $cadmin-dropdown-menu-palette: map-deep-merge(
 				max-height: 432px,
 			),
 		),
+
+		'.dropdown-menu-ai': (
+			box-shadow:
+				unquote('0 0 10px hsl(from #{$cadmin-purple} h s l / 0.12)'),
+			max-width: none,
+
+			dropdown-item: (
+				hover: (
+					background-color: $cadmin-purple-l5,
+					color: $cadmin-purple,
+				),
+
+				focus: (
+					background-color: $cadmin-purple-l5,
+					color: $cadmin-purple,
+				),
+
+				active: (
+					background-color: $cadmin-purple-l5,
+					color: $cadmin-purple,
+				),
+			),
+		),
 	),
 	$cadmin-dropdown-menu-palette
 );
