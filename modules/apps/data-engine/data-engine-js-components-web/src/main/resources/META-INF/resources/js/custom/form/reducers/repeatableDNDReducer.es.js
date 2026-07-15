@@ -130,8 +130,17 @@ export default function repeatableDNDReducer(state, action) {
 							...newFields.slice(dropIndex - decIndex),
 						];
 
-						return newFields.map((field, index) => {
-							const newName = updateFieldName(field.name, index);
+						let currentRepeatedIndex = 0;
+
+						return newFields.map((field) => {
+							if (field.fieldName !== draggedField.fieldName) {
+								return field;
+							}
+
+							const newName = updateFieldName(
+								field.name,
+								currentRepeatedIndex++
+							);
 
 							return {
 								...field,
