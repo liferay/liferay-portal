@@ -6,12 +6,21 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 
-const test = mergeTests(dataApiHelpersTest, loginTest(), mcpServerWebPagesTest);
+const test = mergeTests(
+	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-63311': {enabled: true},
+		'LPD-89575': {enabled: true},
+	}),
+	loginTest(),
+	mcpServerWebPagesTest
+);
 
 const DATA_MASKS_API = 'data-masks';
 
