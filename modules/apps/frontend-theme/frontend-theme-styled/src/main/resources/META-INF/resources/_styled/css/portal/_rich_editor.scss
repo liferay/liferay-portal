@@ -1,3 +1,28 @@
 img.image_resized {
 	height: auto;
 }
+
+figure.image {
+	display: table;
+	margin: 0.9em auto;
+}
+
+figure.image img {
+	display: block;
+	max-width: 100%;
+}
+
+figure.image.image-style-block-align-left {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+figure.image.image-style-block-align-right {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+figure.image.image-style-side {
+	float: right;
+	max-width: 50%;
+}
