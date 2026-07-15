@@ -611,7 +611,7 @@ public class BatchEngineImportTaskExecutorImpl
 	}
 
 	private Map<String, Object> _processFieldNameValueMap(
-		String name, Map<String, Object> map) {
+		Map<String, Object> map, String name) {
 
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			entry.setValue(
@@ -631,7 +631,7 @@ public class BatchEngineImportTaskExecutorImpl
 				item -> _processValue(fieldName, parentFieldName, item));
 		}
 		else if (value instanceof Map) {
-			_processFieldNameValueMap(fieldName, (Map<String, Object>)value);
+			_processFieldNameValueMap((Map<String, Object>)value, fieldName);
 		}
 		else if (value instanceof String valueString) {
 			valueString = _invokeBatchEngineContentProcessors("*", valueString);
@@ -664,7 +664,7 @@ public class BatchEngineImportTaskExecutorImpl
 			batchEngineImportTask.getCompanyId(), fieldNameValueMap);
 
 		if (ExportImportThreadLocal.isImportInProcess()) {
-			_processFieldNameValueMap(null, fieldNameValueMap);
+			_processFieldNameValueMap(fieldNameValueMap, null);
 		}
 
 		return (T)BatchEngineImportTaskItemReaderUtil.convertValue(
