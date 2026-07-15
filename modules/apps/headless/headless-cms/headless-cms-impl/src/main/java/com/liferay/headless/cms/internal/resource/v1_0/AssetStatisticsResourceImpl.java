@@ -6,6 +6,7 @@
 package com.liferay.headless.cms.internal.resource.v1_0;
 
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.cms.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 
 import java.util.Date;
@@ -170,11 +172,15 @@ public class AssetStatisticsResourceImpl
 			return depotEntryGroupIds.toArray(new Long[0]);
 		}
 
-		if (!depotEntryGroupIds.contains(assetLibraryId)) {
+		Long groupId = GroupUtil.getDepotGroupId(
+			String.valueOf(assetLibraryId), contextCompany.getCompanyId(),
+			_depotEntryLocalService, groupLocalService);
+
+		if ((groupId == null) || !depotEntryGroupIds.contains(groupId)) {
 			return new Long[0];
 		}
 
-		return new Long[] {assetLibraryId};
+		return new Long[] {groupId};
 	}
 
 	private AssetStatistics _toAssetStatistics() {
@@ -199,6 +205,9 @@ public class AssetStatisticsResourceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetStatisticsResourceImpl.class);
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DepotEntryService _depotEntryService;
