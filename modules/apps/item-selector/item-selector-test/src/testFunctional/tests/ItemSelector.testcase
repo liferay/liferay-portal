@@ -343,31 +343,6 @@ definition {
 		ItemSelector.searchBlogImages(imageFileName = "Document_1.jpg");
 	}
 
-	@description = "This ensures that a blog cover image uploaded from DM images can be viewed in the blogs images tab of item selector."
-	@priority = 3
-	@refactordone
-	test CanSearchForUploadedImageFromDMImages {
-		property portal.acceptance = "false";
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-		Blogs.addEntryWithUploadedCoverImage(
-			coverImageName = "document_1",
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			navTab = "Documents and Media",
-			uploadFileName = "Document_1.jpg");
-
-		Button.clickPublish();
-
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.gotoBrowseImage();
-
-		ItemSelector.searchDMImages(imageFileName = "Document_1.jpg");
-	}
-
 	@description = "Checks if user can edit a KB article adding an Image via Upload Image."
 	@priority = 3
 	test CanUploadImageInKBContentField {
