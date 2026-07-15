@@ -113,3 +113,42 @@ test('Rotating an image is discarded on cancel and kept on save', async ({
 		width: 313,
 	});
 });
+
+test('Resizing an image saves the new dimensions', async ({
+	apiHelpers,
+	documentLibraryPage,
+	page,
+	site,
+}) => {
+	const document = await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(DOCUMENT_2),
+		{
+			documentFolderId: 0,
+			fileName: 'Document_2.jpg',
+			title: 'Document_2.jpg',
+		}
+	);
+
+	await documentLibraryPage.goto(site.friendlyUrlPath);
+
+	await openImageEditor(page);
+
+	await page
+		.getByRole('dialog')
+		.getByRole('combobox')
+		.selectOption({label: '16:10'});
+
+	await page.getByRole('dialog').getByRole('button', {name: 'Save'}).click();
+
+	await expect(page.getByRole('dialog')).toBeHidden();
+
+	const {contentUrl} = await apiHelpers.headlessDelivery.getDocument(
+		document.id
+	);
+
+	expect(await getImageSize(page, contentUrl)).toEqual({
+		height: 312,
+		width: 500,
+	});
+});

@@ -26,43 +26,6 @@ definition {
 		}
 	}
 
-	@description = "This makes sure that a resized image can be saved."
-	@priority = 5
-	test CanSaveResizedImage {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoEditImage(dmDocumentTitle = "Document_2.jpg");
-
-		ImageEditor.resizeImage(dimension = "16:10");
-
-		ImageEditor.saveChanges();
-
-		Refresh();
-
-		LexiconCard.checkCardCheckbox(card = "Document_2.jpg");
-
-		DMDocument.expandInfo();
-
-		DMDocument.viewDocumentMetadataCP(
-			metadataData = 312,
-			metadataLabel = "Image Length");
-
-		DMDocument.viewDocumentMetadataCP(
-			metadataData = 500,
-			metadataLabel = "Image Width");
-	}
-
 	@description = "This makes sure that a resized image preview can be saved and that a copy is made."
 	@priority = 5
 	test CanSaveResizedImagePreview {
