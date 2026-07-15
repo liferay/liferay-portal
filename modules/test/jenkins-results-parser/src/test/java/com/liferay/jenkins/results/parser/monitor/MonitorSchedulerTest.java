@@ -30,38 +30,47 @@ public class MonitorSchedulerTest
 		MonitorScheduler monitorScheduler = new MonitorScheduler(
 			monitorResultStore);
 
+		long cadenceMillis = 1000L * 10L;
+
 		List<Monitor> monitors = Arrays.<Monitor>asList(
-			new TestMonitor(_newMonitorConfig(900, "a")));
+			new TestMonitor(_newMonitorConfig(cadenceMillis / 1000, "a")));
 
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
 					Mockito.CALLS_REAL_METHODS)) {
 
+			long virtualCurrentTime = cadenceMillis + 1L;
+
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
-				1000000L
+				virtualCurrentTime
 			);
 
 			testEquals(monitors, monitorScheduler.getDueMonitors(monitors));
 
-			monitorResultStore.store("a", _newMonitorResult(1000000L));
+			monitorResultStore.store(
+				"a", _newMonitorResult(virtualCurrentTime));
+
+			virtualCurrentTime += cadenceMillis - 1L;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
-				1899000L
+				virtualCurrentTime
 			);
 
 			testEquals(
 				Collections.emptyList(),
 				monitorScheduler.getDueMonitors(monitors));
 
+			virtualCurrentTime += 2L;
+
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
-				1900000L
+				virtualCurrentTime
 			);
 
 			testEquals(monitors, monitorScheduler.getDueMonitors(monitors));

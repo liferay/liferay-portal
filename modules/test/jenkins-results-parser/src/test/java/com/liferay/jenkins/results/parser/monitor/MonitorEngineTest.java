@@ -26,8 +26,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	public void testRunCycle() {
 		MonitorResultStore monitorResultStore = new MonitorResultStore();
 
+		long cadenceMillis = 1000L * 10L;
+
 		TestMonitor hangingTestMonitor = new TestMonitor(
-			_newMonitorConfig("a", 1)) {
+			_newMonitorConfig(cadenceMillis / 1000, "a", 1)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -46,10 +48,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		TestMonitor passingTestMonitor = new TestMonitor(
-			_newMonitorConfig("b", 0));
+			_newMonitorConfig(cadenceMillis / 1000, "b", 0));
 
 		TestMonitor throwingTestMonitor = new TestMonitor(
-			_newMonitorConfig("c", 0)) {
+			_newMonitorConfig(cadenceMillis / 1000, "c", 0)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -82,10 +84,12 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 				}
 			);
 
+			long virtualCurrentTime = cadenceMillis + 1L;
+
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
-				1000000L
+				virtualCurrentTime
 			);
 
 			Map<Monitor, MonitorResult> monitorResultsMap =
@@ -102,14 +106,14 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 			testEquals(
 				"Monitor a timed out after 1000 ms",
 				latestMonitorResult.getMessage());
-			testEquals(1000000L, latestMonitorResult.getTimestamp());
+			testEquals(virtualCurrentTime, latestMonitorResult.getTimestamp());
 
 			latestMonitorResult = monitorResultStore.getLatestMonitorResult(
 				passingTestMonitor.getId());
 
 			testEquals(
 				MonitorResult.Status.OK, latestMonitorResult.getStatus());
-			testEquals(1000000L, latestMonitorResult.getTimestamp());
+			testEquals(virtualCurrentTime, latestMonitorResult.getTimestamp());
 
 			latestMonitorResult = monitorResultStore.getLatestMonitorResult(
 				throwingTestMonitor.getId());
@@ -130,10 +134,12 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(1, monitorResults.size());
 
+			virtualCurrentTime += cadenceMillis;
+
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
-				1900000L
+				virtualCurrentTime
 			);
 
 			monitorResultsMap = monitorEngine.runCycle();
@@ -147,9 +153,11 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		}
 	}
 
-	private MonitorConfig _newMonitorConfig(String id, long timeout) {
+	private MonitorConfig _newMonitorConfig(
+		long cadence, String id, long timeout) {
+
 		return new MonitorConfig(
-			900, id, null, MonitorConfig.Severity.MEDIUM, null, timeout,
+			cadence, id, null, MonitorConfig.Severity.MEDIUM, null, timeout,
 			RandomTestUtil.randomString());
 	}
 
