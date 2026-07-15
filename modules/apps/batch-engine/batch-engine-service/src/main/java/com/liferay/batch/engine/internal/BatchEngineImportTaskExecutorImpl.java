@@ -38,6 +38,10 @@ import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -208,8 +212,22 @@ public class BatchEngineImportTaskExecutorImpl
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		_batchEngineContentProcessors = ServiceTrackerListFactory.open(
-			bundleContext, BatchEngineContentProcessor.class);
+		ServiceReferenceMapper<String, BatchEngineContentProcessor>
+			propertyServiceReferenceMapper =
+				new PropertyServiceReferenceMapper<>("field.name");
+
+		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
+			bundleContext, BatchEngineContentProcessor.class, null,
+			(serviceReference, emitter) -> {
+				if (serviceReference.getProperty("field.name") == null) {
+					emitter.emit("*");
+				}
+				else {
+					propertyServiceReferenceMapper.map(
+						serviceReference, emitter);
+				}
+			});
+
 		_batchEngineImportTaskExceptionHandlers =
 			ServiceTrackerListFactory.open(
 				bundleContext, BatchEngineImportTaskExceptionHandler.class);
@@ -264,7 +282,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 	@Deactivate
 	protected void deactivate() {
-		_batchEngineContentProcessors.close();
+		_serviceTrackerMap.close();
 		_batchEngineImportTaskExceptionHandlers.close();
 		_importTaskPostActions.close();
 		_importTaskPreActions.close();
@@ -573,33 +591,57 @@ public class BatchEngineImportTaskExecutorImpl
 		}
 	}
 
+	private String _invokeBatchEngineContentProcessors(
+		String fieldName, String value) {
+
+		List<BatchEngineContentProcessor> batchEngineContentProcessors =
+			_serviceTrackerMap.getService(fieldName);
+
+		if (ListUtil.isEmpty(batchEngineContentProcessors)) {
+			return value;
+		}
+
+		for (BatchEngineContentProcessor batchEngineContentProcessor :
+				batchEngineContentProcessors) {
+
+			value = batchEngineContentProcessor.process(value);
+		}
+
+		return value;
+	}
+
 	private Map<String, Object> _processFieldNameValueMap(
-		Map<String, Object> map) {
+		String name, Map<String, Object> map) {
 
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			entry.setValue(_processValue(entry.getValue()));
+			entry.setValue(
+				_processValue(entry.getKey(), name, entry.getValue()));
 		}
 
 		return map;
 	}
 
-	private Object _processValue(Object value) {
+	private Object _processValue(
+		String fieldName, String parentFieldName, Object value) {
+
 		if (value instanceof List) {
 			List<Object> list = (List<Object>)value;
 
-			list.replaceAll(this::_processValue);
+			list.replaceAll(
+				item -> _processValue(fieldName, parentFieldName, item));
 		}
 		else if (value instanceof Map) {
-			_processFieldNameValueMap((Map<String, Object>)value);
+			_processFieldNameValueMap(fieldName, (Map<String, Object>)value);
 		}
 		else if (value instanceof String valueString) {
-			for (BatchEngineContentProcessor batchEngineContentProcessor :
-					_batchEngineContentProcessors) {
+			valueString = _invokeBatchEngineContentProcessors("*", valueString);
 
-				valueString = batchEngineContentProcessor.process(valueString);
+			if (parentFieldName != null) {
+				valueString = _invokeBatchEngineContentProcessors(
+					parentFieldName + "." + fieldName, valueString);
 			}
 
-			return valueString;
+			return _invokeBatchEngineContentProcessors(fieldName, valueString);
 		}
 
 		return value;
@@ -621,10 +663,8 @@ public class BatchEngineImportTaskExecutorImpl
 		_languageKeyResolver.expand(
 			batchEngineImportTask.getCompanyId(), fieldNameValueMap);
 
-		if (!_batchEngineContentProcessors.isEmpty() &&
-			ExportImportThreadLocal.isImportInProcess()) {
-
-			_processFieldNameValueMap(fieldNameValueMap);
+		if (ExportImportThreadLocal.isImportInProcess()) {
+			_processFieldNameValueMap(null, fieldNameValueMap);
 		}
 
 		return (T)BatchEngineImportTaskItemReaderUtil.convertValue(
@@ -679,9 +719,6 @@ public class BatchEngineImportTaskExecutorImpl
 	private BackgroundTaskStatusMessageSender
 		_backgroundTaskStatusMessageSender;
 
-	private ServiceTrackerList<BatchEngineContentProcessor>
-		_batchEngineContentProcessors;
-
 	@Reference
 	private BatchEngineImportTaskErrorLocalService
 		_batchEngineImportTaskErrorLocalService;
@@ -716,6 +753,9 @@ public class BatchEngineImportTaskExecutorImpl
 
 	@Reference
 	private LanguageKeyResolver _languageKeyResolver;
+
+	private ServiceTrackerMap<String, List<BatchEngineContentProcessor>>
+		_serviceTrackerMap;
 
 	@Reference
 	private UserLocalService _userLocalService;
