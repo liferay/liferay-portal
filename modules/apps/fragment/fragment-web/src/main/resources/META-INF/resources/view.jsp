@@ -43,139 +43,141 @@ ImportDisplayContext importDisplayContext = new ImportDisplayContext(request, re
 	size="xxxl"
 >
 	<clay:row>
-		<clay:col
-			lg="3"
-		>
-			<portlet:renderURL var="editFragmentCollectionURL">
-				<portlet:param name="mvcRenderCommandName" value="/fragment/edit_fragment_collection" />
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-			</portlet:renderURL>
+		<c:if test="<%= !fragmentDisplayContext.isHideCollectionsPanel() %>">
+			<clay:col
+				lg="3"
+			>
+				<portlet:renderURL var="editFragmentCollectionURL">
+					<portlet:param name="mvcRenderCommandName" value="/fragment/edit_fragment_collection" />
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+				</portlet:renderURL>
 
-			<c:choose>
-				<c:when test="<%= ListUtil.isNotEmpty(fragmentCollections) || ListUtil.isNotEmpty(fragmentCollectionContributors) || MapUtil.isNotEmpty(inheritedFragmentCollections) %>">
-					<clay:content-row
-						cssClass="mb-4"
-						verticalAlign="center"
-					>
-						<clay:content-col
-							expand="<%= true %>"
+				<c:choose>
+					<c:when test="<%= ListUtil.isNotEmpty(fragmentCollections) || ListUtil.isNotEmpty(fragmentCollectionContributors) || MapUtil.isNotEmpty(inheritedFragmentCollections) %>">
+						<clay:content-row
+							cssClass="mb-4"
+							verticalAlign="center"
 						>
-							<strong class="text-uppercase">
-								<liferay-ui:message key="fragment-sets" />
-							</strong>
-						</clay:content-col>
+							<clay:content-col
+								expand="<%= true %>"
+							>
+								<strong class="text-uppercase">
+									<liferay-ui:message key="fragment-sets" />
+								</strong>
+							</clay:content-col>
 
-						<clay:content-col>
-							<ul class="align-items-center navbar-nav">
-								<li>
-									<c:if test="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) %>">
-										<clay:link
-											borderless="<%= true %>"
-											cssClass="component-action lfr-portal-tooltip"
-											href="<%= editFragmentCollectionURL %>"
-											icon="plus"
-											title='<%= LanguageUtil.get(request, "add-fragment-set") %>'
-											type="button"
-										/>
-									</c:if>
-								</li>
-
-								<c:if test="<%= fragmentDisplayContext.isShowMarketplace() %>">
+							<clay:content-col>
+								<ul class="align-items-center navbar-nav">
 									<li>
-										<div>
-											<react:component
-												module="{MarketplaceButton} from layout-js-components-web"
-												props="<%= fragmentDisplayContext.getMarketplaceProps() %>"
+										<c:if test="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) %>">
+											<clay:link
+												borderless="<%= true %>"
+												cssClass="component-action lfr-portal-tooltip"
+												href="<%= editFragmentCollectionURL %>"
+												icon="plus"
+												title='<%= LanguageUtil.get(request, "add-fragment-set") %>'
+												type="button"
 											/>
-										</div>
+										</c:if>
 									</li>
-								</c:if>
 
-								<li>
+									<c:if test="<%= fragmentDisplayContext.isShowMarketplace() %>">
+										<li>
+											<div>
+												<react:component
+													module="{MarketplaceButton} from layout-js-components-web"
+													props="<%= fragmentDisplayContext.getMarketplaceProps() %>"
+												/>
+											</div>
+										</li>
+									</c:if>
 
-									<%
-									Map<String, Object> fragmentCollectionsViewContext = fragmentDisplayContext.getFragmentCollectionsViewContext();
-									%>
+									<li>
 
-									<clay:dropdown-actions
-										additionalProps='<%=
-											HashMapBuilder.<String, Object>put(
-												"deleteFragmentCollectionURL", fragmentCollectionsViewContext.get("deleteFragmentCollectionURL")
-											).put(
-												"exportFragmentCollectionsURL", fragmentCollectionsViewContext.get("exportFragmentCollectionsURL")
-											).put(
-												"importURL", fragmentCollectionsViewContext.get("importURL")
-											).put(
-												"viewDeleteFragmentCollectionsURL", fragmentCollectionsViewContext.get("viewDeleteFragmentCollectionsURL")
-											).put(
-												"viewExportFragmentCollectionsURL", fragmentCollectionsViewContext.get("viewExportFragmentCollectionsURL")
-											).put(
-												"viewImportURL", fragmentCollectionsViewContext.get("viewImportURL")
-											).build()
-										%>'
-										aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
-										dropdownItems="<%= fragmentDisplayContext.getCollectionsDropdownItems() %>"
-										propsTransformer="{FragmentCollectionViewDefaultPropsTransformer} from fragment-web"
-										title='<%= LanguageUtil.get(request, "fragment-sets-options") %>'
-									/>
-								</li>
-							</ul>
-						</clay:content-col>
-					</clay:content-row>
+										<%
+										Map<String, Object> fragmentCollectionsViewContext = fragmentDisplayContext.getFragmentCollectionsViewContext();
+										%>
 
-					<c:if test="<%= ListUtil.isNotEmpty(fragmentCollectionContributors) || ListUtil.isNotEmpty(systemFragmentCollections) %>">
-						<span class="text-truncate">
-							<liferay-ui:message key="default" />
-						</span>
+										<clay:dropdown-actions
+											additionalProps='<%=
+												HashMapBuilder.<String, Object>put(
+													"deleteFragmentCollectionURL", fragmentCollectionsViewContext.get("deleteFragmentCollectionURL")
+												).put(
+													"exportFragmentCollectionsURL", fragmentCollectionsViewContext.get("exportFragmentCollectionsURL")
+												).put(
+													"importURL", fragmentCollectionsViewContext.get("importURL")
+												).put(
+													"viewDeleteFragmentCollectionsURL", fragmentCollectionsViewContext.get("viewDeleteFragmentCollectionsURL")
+												).put(
+													"viewExportFragmentCollectionsURL", fragmentCollectionsViewContext.get("viewExportFragmentCollectionsURL")
+												).put(
+													"viewImportURL", fragmentCollectionsViewContext.get("viewImportURL")
+												).build()
+											%>'
+											aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+											dropdownItems="<%= fragmentDisplayContext.getCollectionsDropdownItems() %>"
+											propsTransformer="{FragmentCollectionViewDefaultPropsTransformer} from fragment-web"
+											title='<%= LanguageUtil.get(request, "fragment-sets-options") %>'
+										/>
+									</li>
+								</ul>
+							</clay:content-col>
+						</clay:content-row>
 
-						<clay:vertical-nav
-							verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(systemFragmentCollections, fragmentCollectionContributors) %>"
+						<c:if test="<%= ListUtil.isNotEmpty(fragmentCollectionContributors) || ListUtil.isNotEmpty(systemFragmentCollections) %>">
+							<span class="text-truncate">
+								<liferay-ui:message key="default" />
+							</span>
+
+							<clay:vertical-nav
+								verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(systemFragmentCollections, fragmentCollectionContributors) %>"
+							/>
+						</c:if>
+
+						<%
+						for (Map.Entry<String, List<FragmentCollection>> entry : inheritedFragmentCollections.entrySet()) {
+						%>
+
+							<span class="text-truncate"><%= entry.getKey() %></span>
+
+							<clay:vertical-nav
+								verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(entry.getValue()) %>"
+							/>
+
+						<%
+						}
+						%>
+
+						<c:if test="<%= ListUtil.isNotEmpty(fragmentCollections) %>">
+							<span class="text-truncate"><%= HtmlUtil.escape(fragmentDisplayContext.getGroupName(scopeGroupId)) %></span>
+
+							<clay:vertical-nav
+								verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(fragmentCollections) %>"
+							/>
+						</c:if>
+					</c:when>
+					<c:otherwise>
+						<p class="text-uppercase">
+							<strong><liferay-ui:message key="fragment-sets" /></strong>
+						</p>
+
+						<liferay-frontend:empty-result-message
+							actionDropdownItems="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) ? fragmentDisplayContext.getActionDropdownItems() : null %>"
+							additionalProps="<%= fragmentDisplayContext.getFragmentCollectionsViewContext() %>"
+							animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+							buttonPropsTransformer="{FragmentCollectionViewButtonPropsTransformer} from fragment-web"
+							description='<%= LanguageUtil.get(request, "fragment-sets-are-needed-to-create-fragments") %>'
+							elementType='<%= LanguageUtil.get(request, "fragment-sets") %>'
+							propsTransformer="{FragmentCollectionViewDefaultPropsTransformer} from fragment-web"
+							propsTransformerServletContext="<%= application %>"
 						/>
-					</c:if>
-
-					<%
-					for (Map.Entry<String, List<FragmentCollection>> entry : inheritedFragmentCollections.entrySet()) {
-					%>
-
-						<span class="text-truncate"><%= entry.getKey() %></span>
-
-						<clay:vertical-nav
-							verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(entry.getValue()) %>"
-						/>
-
-					<%
-					}
-					%>
-
-					<c:if test="<%= ListUtil.isNotEmpty(fragmentCollections) %>">
-						<span class="text-truncate"><%= HtmlUtil.escape(fragmentDisplayContext.getGroupName(scopeGroupId)) %></span>
-
-						<clay:vertical-nav
-							verticalNavItems="<%= fragmentDisplayContext.getVerticalNavItemList(fragmentCollections) %>"
-						/>
-					</c:if>
-				</c:when>
-				<c:otherwise>
-					<p class="text-uppercase">
-						<strong><liferay-ui:message key="fragment-sets" /></strong>
-					</p>
-
-					<liferay-frontend:empty-result-message
-						actionDropdownItems="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) ? fragmentDisplayContext.getActionDropdownItems() : null %>"
-						additionalProps="<%= fragmentDisplayContext.getFragmentCollectionsViewContext() %>"
-						animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
-						buttonPropsTransformer="{FragmentCollectionViewButtonPropsTransformer} from fragment-web"
-						description='<%= LanguageUtil.get(request, "fragment-sets-are-needed-to-create-fragments") %>'
-						elementType='<%= LanguageUtil.get(request, "fragment-sets") %>'
-						propsTransformer="{FragmentCollectionViewDefaultPropsTransformer} from fragment-web"
-						propsTransformerServletContext="<%= application %>"
-					/>
-				</c:otherwise>
-			</c:choose>
-		</clay:col>
+					</c:otherwise>
+				</c:choose>
+			</clay:col>
+		</c:if>
 
 		<clay:col
-			lg="9"
+			lg='<%= fragmentDisplayContext.isHideCollectionsPanel() ? "12" : "9" %>'
 		>
 
 			<%

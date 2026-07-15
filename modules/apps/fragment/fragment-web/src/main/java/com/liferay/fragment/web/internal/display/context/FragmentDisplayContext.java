@@ -18,6 +18,7 @@ import com.liferay.fragment.util.comparator.FragmentCollectionContributorNameCom
 import com.liferay.fragment.util.comparator.FragmentCompositionFragmentEntryNameComparator;
 import com.liferay.fragment.web.internal.constants.FragmentTypeConstants;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
+import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.fragment.web.internal.util.FragmentPortletUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
@@ -811,6 +812,11 @@ public class FragmentDisplayContext {
 		}
 
 		return _updatePermission;
+	}
+
+	public boolean isHideCollectionsPanel() {
+		return DesignLibraryUtil.isDesignLibraryScope(
+			_themeDisplay.getScopeGroup());
 	}
 
 	public boolean isLocked(FragmentCollection fragmentCollection) {
