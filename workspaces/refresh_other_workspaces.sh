@@ -7,10 +7,12 @@ set -o pipefail
 cd "$(dirname "${0}")" || exit
 
 function main {
-	for dir in "./"*
+	local workspace_dir
+
+	for workspace_dir in "./"*
 	do
-		if [ "${dir}" = "./liferay-sample-workspace" ] ||
-		   [ ! -d "${dir}" ]
+		if [ "${workspace_dir}" = "./liferay-sample-workspace" ] ||
+		   [ ! -d "${workspace_dir}" ]
 		then
 			continue
 		fi
@@ -32,7 +34,7 @@ function main {
 			--exclude "test.properties" \
 			--exclude "themes" \
 			--exclude "yarn.lock" \
-			liferay-sample-workspace/ "${dir}"
+			liferay-sample-workspace/ "${workspace_dir}"
 	done
 }
 
