@@ -339,9 +339,32 @@ public class FragmentDisplayContext {
 			return _fragmentCollectionId;
 		}
 
-		_fragmentCollectionId = ParamUtil.getLong(
-			_httpServletRequest, "fragmentCollectionId",
-			_getDefaultFragmentCollectionId());
+		long fragmentCollectionId = ParamUtil.getLong(
+			_httpServletRequest, "fragmentCollectionId");
+
+		if (fragmentCollectionId == 0) {
+			String externalReferenceCode = ParamUtil.getString(
+				_httpServletRequest, "fragmentCollectionExternalReferenceCode");
+
+			if (Validator.isNotNull(externalReferenceCode)) {
+				FragmentCollection fragmentCollection =
+					FragmentCollectionLocalServiceUtil.
+						fetchFragmentCollectionByExternalReferenceCode(
+							externalReferenceCode,
+							_themeDisplay.getScopeGroupId());
+
+				if (fragmentCollection != null) {
+					fragmentCollectionId =
+						fragmentCollection.getFragmentCollectionId();
+				}
+			}
+		}
+
+		if (fragmentCollectionId == 0) {
+			fragmentCollectionId = _getDefaultFragmentCollectionId();
+		}
+
+		_fragmentCollectionId = fragmentCollectionId;
 
 		return _fragmentCollectionId;
 	}
