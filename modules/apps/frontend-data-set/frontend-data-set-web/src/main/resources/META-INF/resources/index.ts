@@ -39,7 +39,11 @@ export {ACTION_ITEM_TARGETS} from './utils/actionItems/constants';
 
 export {default as findAction} from './utils/actionItems/findAction';
 
-export {replaceTokens} from './utils/actionItems/formatActionURL';
+export {
+	replaceTokens,
+	rewriteRedirectParams,
+} from './utils/actionItems/formatActionURL';
+export {default as getItemActionURL} from './utils/actionItems/getItemActionURL';
 export {readConfigFromURL} from './utils/configInURL';
 
 export {getConfigParamName, serializeFDSConfig} from './utils/configInURL';

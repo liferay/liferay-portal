@@ -91,30 +91,36 @@ export const replaceTokens = function (
 	);
 };
 
-const formatActionURL = function (
-	url: string | undefined,
-	item: any,
-	target?: string
+/**
+ * Rewrites the `redirect` and `backURL` parameters of `url` to the current
+ * browser location, including portlet namespaced variants such as
+ * `_<p_p_id>_redirect`. When the URL carries neither but has a `p_p_id`
+ * parameter, namespaced `redirect` and `backURL` parameters are added.
+ *
+ * The values of those parameters are rendered on the server as a snapshot of
+ * the page URL, so they predate any state the client writes to the URL
+ * afterwards, such as the active view. Rewriting them at navigation time
+ * allows navigating back to the page as the user left it.
+ *
+ * `matchURL` is the string inspected to decide whether `url` takes part in
+ * redirect handling at all, and defaults to `url` itself. `formatActionURL`
+ * passes the raw templated URL so that token interpolation cannot change
+ * that decision.
+ */
+export const rewriteRedirectParams = function (
+	url: string,
+	matchURL: string = url
 ): string {
-	if (!url) {
-		return '';
+	const queryIndex = url.indexOf('?');
+
+	if (queryIndex === -1) {
+		return url;
 	}
 
-	const replacedURL = replaceTokens(url, item);
-
-	const queryIndex = replacedURL.indexOf('?');
-
-	if (target !== 'link' || queryIndex === -1 || isFullInterpolation(url)) {
-		return replacedURL;
-	}
-
-	const hashIndex = replacedURL.indexOf('#');
+	const hashIndex = url.indexOf('#');
 
 	const searchParams = new URLSearchParams(
-		replacedURL.slice(
-			queryIndex,
-			hashIndex > queryIndex ? hashIndex : replacedURL.length
-		)
+		url.slice(queryIndex, hashIndex > queryIndex ? hashIndex : url.length)
 	);
 
 	const backURL = 'backURL';
@@ -128,7 +134,7 @@ const formatActionURL = function (
 
 	const redirectionURL = window.location.href;
 
-	if (redirectRegexp.test(url) || backURLRegexp.test(url)) {
+	if (redirectRegexp.test(matchURL) || backURLRegexp.test(matchURL)) {
 		for (const key of searchParams.keys()) {
 			if (redirectRegexp.test(key) || backURLRegexp.test(key)) {
 				searchParams.set(key, redirectionURL);
@@ -144,15 +150,33 @@ const formatActionURL = function (
 	}
 
 	if (!modifiedParams) {
-		return replacedURL;
+		return url;
 	}
 
 	return (
-		replacedURL.slice(0, queryIndex) +
+		url.slice(0, queryIndex) +
 		'?' +
 		searchParams.toString() +
-		(hashIndex > -1 ? replacedURL.slice(hashIndex) : '')
+		(hashIndex > -1 ? url.slice(hashIndex) : '')
 	);
+};
+
+const formatActionURL = function (
+	url: string | undefined,
+	item: any,
+	target?: string
+): string {
+	if (!url) {
+		return '';
+	}
+
+	const replacedURL = replaceTokens(url, item);
+
+	if (target !== 'link' || isFullInterpolation(url)) {
+		return replacedURL;
+	}
+
+	return rewriteRedirectParams(replacedURL, url);
 };
 
 export default formatActionURL;
