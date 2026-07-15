@@ -199,7 +199,7 @@ test(
 		});
 
 		await rolesPage.goto();
-		await rolesPage.rolesLink('Space').click();
+		await rolesPage.rolesLink('Depot').click();
 		await rolesPage.selectRole(spaceRole.name);
 
 		await rolePage.definePermissionsLink.click();
@@ -210,7 +210,7 @@ test(
 		await expect(objectMenuItem(spaceObjectDefinition.id!)).toBeVisible();
 
 		await rolesPage.goto();
-		await rolesPage.rolesLink('Space').click();
+		await rolesPage.rolesLink('Depot').click();
 		await rolesPage.selectRole(projectRole.name);
 
 		await rolePage.definePermissionsLink.click();
