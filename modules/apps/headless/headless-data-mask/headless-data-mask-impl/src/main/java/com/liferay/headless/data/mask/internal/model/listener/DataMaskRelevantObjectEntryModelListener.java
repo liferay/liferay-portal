@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.util.PortalInstances;
 
 import java.io.Serializable;
 
@@ -72,7 +73,9 @@ public class DataMaskRelevantObjectEntryModelListener
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		if (_isBatchEngineBundle()) {
+		if (_isBatchEngineBundle() ||
+			PortalInstances.isCurrentCompanyInDeletionProcess()) {
+
 			return;
 		}
 
