@@ -6,11 +6,14 @@
 package com.liferay.portal.dao.orm.common;
 
 import com.liferay.portal.dao.sql.transformer.JPQLToHQLTransformerLogic;
-import com.liferay.portal.dao.sql.transformer.SQLTransformerFactory;
+import com.liferay.portal.dao.sql.transformer.SQLTransformerLogic;
+import com.liferay.portal.dao.sql.transformer.SQLTransformerLogicFactory;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.function.Function;
 
@@ -24,12 +27,31 @@ public class SQLTransformer {
 	public static void reloadSQLTransformer() {
 		_transformedSQLsPortalCache.removeAll();
 
-		_sqlTransformer = SQLTransformerFactory.getSQLTransformer(
-			DBManagerUtil.getDB());
+		_sqlTransformerLogic =
+			SQLTransformerLogicFactory.getSQLTransformerLogic(
+				DBManagerUtil.getDB());
 	}
 
 	public static String transform(String sql) {
-		return _sqlTransformer.transform(sql);
+		Function<String, String>[] functions =
+			_sqlTransformerLogic.getFunctions();
+
+		if ((functions == null) || (sql == null)) {
+			return sql;
+		}
+
+		String transformedSQL = sql;
+
+		for (Function<String, String> function : functions) {
+			transformedSQL = function.apply(transformedSQL);
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Original SQL: " + sql);
+			_log.debug("Transformed SQL: " + transformedSQL);
+		}
+
+		return transformedSQL;
 	}
 
 	public static String transformFromJPQLToHQL(String sql) {
@@ -39,7 +61,7 @@ public class SQLTransformer {
 			return newSQL;
 		}
 
-		newSQL = _sqlTransformer.transform(sql);
+		newSQL = transform(sql);
 
 		Function<String, String> countFunction =
 			JPQLToHQLTransformerLogic.getCountFunction();
@@ -51,9 +73,11 @@ public class SQLTransformer {
 		return newSQL;
 	}
 
-	private static volatile
-		com.liferay.portal.dao.sql.transformer.SQLTransformer _sqlTransformer =
-			SQLTransformerFactory.getSQLTransformer(DBManagerUtil.getDB());
+	private static final Log _log = LogFactoryUtil.getLog(SQLTransformer.class);
+
+	private static volatile SQLTransformerLogic _sqlTransformerLogic =
+		SQLTransformerLogicFactory.getSQLTransformerLogic(
+			DBManagerUtil.getDB());
 	private static final PortalCache<String, String>
 		_transformedSQLsPortalCache = PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.SINGLE_VM, SQLTransformer.class.getName());

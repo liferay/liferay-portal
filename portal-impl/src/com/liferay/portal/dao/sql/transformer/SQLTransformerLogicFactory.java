@@ -12,36 +12,31 @@ import com.liferay.portal.kernel.dao.db.DBType;
  * @author Manuel de la Peña
  * @author Brian Wing Shun Chan
  */
-public class SQLTransformerFactory {
+public class SQLTransformerLogicFactory {
 
-	public static SQLTransformer getSQLTransformer(DB db) {
+	public static SQLTransformerLogic getSQLTransformerLogic(DB db) {
 		DBType dbType = db.getDBType();
 
-		SQLTransformerLogic sqlTransformerLogic = null;
-
 		if (dbType == DBType.DB2) {
-			sqlTransformerLogic = new DB2SQLTransformerLogic(db);
+			return new DB2SQLTransformerLogic(db);
 		}
 		else if (dbType == DBType.HYPERSONIC) {
-			sqlTransformerLogic = new HypersonicSQLTransformerLogic(db);
+			return new HypersonicSQLTransformerLogic(db);
 		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
-			sqlTransformerLogic = new MySQLSQLTransformerLogic(db);
+			return new MySQLSQLTransformerLogic(db);
 		}
 		else if (dbType == DBType.ORACLE) {
-			sqlTransformerLogic = new OracleSQLTransformerLogic(db);
+			return new OracleSQLTransformerLogic(db);
 		}
 		else if (dbType == DBType.POSTGRESQL) {
-			sqlTransformerLogic = new PostgreSQLTransformerLogic(db);
+			return new PostgreSQLTransformerLogic(db);
 		}
 		else if (dbType == DBType.SQLSERVER) {
-			sqlTransformerLogic = new SQLServerSQLTransformerLogic(db);
-		}
-		else {
-			return sql -> sql;
+			return new SQLServerSQLTransformerLogic(db);
 		}
 
-		return new DefaultSQLTransformer(sqlTransformerLogic);
+		return () -> null;
 	}
 
 }

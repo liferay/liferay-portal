@@ -5,7 +5,10 @@
 
 package com.liferay.portal.dao.sql.transformer;
 
+import com.liferay.portal.dao.db.DBManagerImpl;
 import com.liferay.portal.dao.db.MySQLDB;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -45,14 +48,14 @@ public class MySQLSQLTransformerLogicTest
 	public void testReplaceLower() {
 		Assert.assertEquals(
 			"select foo from Foo",
-			sqlTransformer.transform("select lower(foo) from Foo"));
+			SQLTransformer.transform("select lower(foo) from Foo"));
 	}
 
 	@Test
 	public void testReplaceLowerMultiple() {
 		Assert.assertEquals(
 			"select foo, bar, baaz from Foo",
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				"select lower(foo), bar, lower(baaz) from Foo"));
 	}
 
@@ -60,14 +63,14 @@ public class MySQLSQLTransformerLogicTest
 	public void testReplaceLowerRecursive() {
 		Assert.assertEquals(
 			"select lower(foo) from Foo",
-			sqlTransformer.transform("select lower(lower(foo)) from Foo"));
+			SQLTransformer.transform("select lower(lower(foo)) from Foo"));
 	}
 
 	@Test
 	public void testReplaceLowerWithoutClosing() {
 		String sql = "select lower(foo from Foo";
 
-		Assert.assertEquals(sql, sqlTransformer.transform(sql));
+		Assert.assertEquals(sql, SQLTransformer.transform(sql));
 	}
 
 	@Override
@@ -75,23 +78,26 @@ public class MySQLSQLTransformerLogicTest
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceSupportsStringCaseSensitiveQuery() {
 		String sql = "select * from foo";
 
-		MySQLDB mySQLDB = new MySQLDB(5, 7);
+		DBManagerImpl dbManagerImpl = new DBManagerImpl();
 
-		SQLTransformer sqlTransformer = SQLTransformerFactory.getSQLTransformer(
-			mySQLDB);
+		dbManagerImpl.setDB(new MySQLDB(5, 7));
 
-		Assert.assertEquals(sql, sqlTransformer.transform(sql));
+		DBManagerUtil.setDBManager(dbManagerImpl);
+
+		SQLTransformer.reloadSQLTransformer();
+
+		Assert.assertEquals(sql, SQLTransformer.transform(sql));
 
 		sql = "select lower(foo) from Foo";
 
-		Assert.assertEquals(sql, sqlTransformer.transform(sql));
+		Assert.assertEquals(sql, SQLTransformer.transform(sql));
 	}
 
 	@Override

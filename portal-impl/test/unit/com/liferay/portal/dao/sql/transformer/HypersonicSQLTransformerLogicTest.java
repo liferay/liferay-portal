@@ -7,6 +7,7 @@ package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.db.HypersonicDB;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -40,7 +41,7 @@ public class HypersonicSQLTransformerLogicTest
 	public void testReplaceBitwiseCheckWithExtraWhitespace() {
 		Assert.assertEquals(
 			getBitwiseCheckTransformedSQL(),
-			sqlTransformer.transform(getBitwiseCheckOriginalSQL()));
+			SQLTransformer.transform(getBitwiseCheckOriginalSQL()));
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class HypersonicSQLTransformerLogicTest
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Override

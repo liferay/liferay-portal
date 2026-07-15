@@ -6,6 +6,7 @@
 package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -40,14 +41,14 @@ public class OracleSQLTransformerLogicTest
 	public void testReplaceBitwiseCheckWithExtraWhitespace() {
 		Assert.assertEquals(
 			getBitwiseCheckTransformedSQL(),
-			sqlTransformer.transform(getBitwiseCheckOriginalSQL()));
+			SQLTransformer.transform(getBitwiseCheckOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceEscape() {
 		Assert.assertEquals(
 			"select foo from Foo where foo LIKE ? ESCAPE '\\'",
-			sqlTransformer.transform("select foo from Foo where foo LIKE ?"));
+			SQLTransformer.transform("select foo from Foo where foo LIKE ?"));
 	}
 
 	@Override
@@ -55,14 +56,14 @@ public class OracleSQLTransformerLogicTest
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceNotEqualsBlankString() {
 		Assert.assertEquals(
 			"select * from Foo where foo IS NOT NULL",
-			sqlTransformer.transform("select * from Foo where foo != ''"));
+			SQLTransformer.transform("select * from Foo where foo != ''"));
 	}
 
 	@Override

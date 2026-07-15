@@ -6,12 +6,16 @@
 package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.dao.db.DBManagerImpl;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.function.Function;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -21,28 +25,39 @@ import org.junit.Test;
 public abstract class BaseSQLTransformerLogicTestCase {
 
 	public BaseSQLTransformerLogicTestCase(DB db) {
-		sqlTransformer = SQLTransformerFactory.getSQLTransformer(db);
+		_db = db;
+	}
+
+	@Before
+	public void setUp() {
+		DBManagerImpl dbManagerImpl = new DBManagerImpl();
+
+		dbManagerImpl.setDB(_db);
+
+		DBManagerUtil.setDBManager(dbManagerImpl);
+
+		SQLTransformer.reloadSQLTransformer();
 	}
 
 	@Test
 	public void testReplaceAggregation() {
 		Assert.assertEquals(
 			getAggregationTransformedSQL(),
-			sqlTransformer.transform(getAggregationOriginalSQL()));
+			SQLTransformer.transform(getAggregationOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceBitwiseCheck() {
 		Assert.assertEquals(
 			getBitwiseCheckTransformedSQL(),
-			sqlTransformer.transform(getBitwiseCheckOriginalSQL()));
+			SQLTransformer.transform(getBitwiseCheckOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceBitwiseCheckWithExtraWhitespace() {
 		Assert.assertEquals(
 			getBitwiseCheckTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				_addExtraWhitespaceFunction.apply(
 					getBitwiseCheckOriginalSQL())));
 	}
@@ -51,70 +66,70 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testReplaceBitwiseOr() {
 		Assert.assertEquals(
 			getBitwiseOrTransformedSQL(),
-			sqlTransformer.transform(getBitwiseOrOriginalSQL()));
+			SQLTransformer.transform(getBitwiseOrOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceBoolean() {
 		Assert.assertEquals(
 			getBooleanTransformedSQL(),
-			sqlTransformer.transform(getBooleanOriginalSQL()));
+			SQLTransformer.transform(getBooleanOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceCastClobText() {
 		Assert.assertEquals(
 			getCastClobTextTransformedSQL(),
-			sqlTransformer.transform(getCastClobTextOriginalSQL()));
+			SQLTransformer.transform(getCastClobTextOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceCastDecimal() {
 		Assert.assertEquals(
 			getCastDecimalTransformedSQL(),
-			sqlTransformer.transform(getCastDecimalOriginalSQL()));
+			SQLTransformer.transform(getCastDecimalOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceCastLong() {
 		Assert.assertEquals(
 			getCastLongTransformedSQL(),
-			sqlTransformer.transform(getCastLongOriginalSQL()));
+			SQLTransformer.transform(getCastLongOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceCastText() {
 		Assert.assertEquals(
 			getCastTextTransformedSQL(),
-			sqlTransformer.transform(getCastTextOriginalSQL()));
+			SQLTransformer.transform(getCastTextOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceCrossJoin() {
 		Assert.assertEquals(
 			getCrossJoinTransformedSQL(),
-			sqlTransformer.transform(getCrossJoinOriginalSQL()));
+			SQLTransformer.transform(getCrossJoinOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceDropTableIfExistsText() {
 		Assert.assertEquals(
 			getDropTableIfExistsTextTransformedSQL(),
-			sqlTransformer.transform(getDropTableIfExistsTextOriginalSQL()));
+			SQLTransformer.transform(getDropTableIfExistsTextOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceInstr() {
 		Assert.assertEquals(
 			getInstrTransformedSQL(),
-			sqlTransformer.transform(getInstrOriginalSQL()));
+			SQLTransformer.transform(getInstrOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceInstrWithPostColumnModificator() {
 		Assert.assertEquals(
 			getInstrWithPostColumnModificatorTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				getInstrWithPostColumnModificatorOriginalSQL()));
 	}
 
@@ -122,7 +137,7 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testReplaceInstrWithPreColumnModificator() {
 		Assert.assertEquals(
 			getInstrWithPreColumnModificatorTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				getInstrWithPreColumnModificatorOriginalSQL()));
 	}
 
@@ -130,14 +145,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testReplaceIntegerDivision() {
 		Assert.assertEquals(
 			getIntegerDivisionTransformedSQL(),
-			sqlTransformer.transform(getIntegerDivisionOriginalSQL()));
+			SQLTransformer.transform(getIntegerDivisionOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceIntegerDivisionWithExtraWhitespace() {
 		Assert.assertEquals(
 			getIntegerDivisionTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				_addExtraWhitespaceFunction.apply(
 					getIntegerDivisionOriginalSQL())));
 	}
@@ -146,14 +161,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testReplaceMod() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				_addExtraWhitespaceFunction.apply(getModOriginalSQL())));
 	}
 
@@ -161,28 +176,28 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testReplaceNullDate() {
 		Assert.assertEquals(
 			getNullDateTransformedSQL(),
-			sqlTransformer.transform(getNullDateOriginalSQL()));
+			SQLTransformer.transform(getNullDateOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceReplace() {
 		Assert.assertEquals(
 			getReplaceTransformedSQL(),
-			sqlTransformer.transform(getReplaceOriginalSQL()));
+			SQLTransformer.transform(getReplaceOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceSubstr() {
 		Assert.assertEquals(
 			getSubstrTransformedSQL(),
-			sqlTransformer.transform(getSubstrOriginalSQL()));
+			SQLTransformer.transform(getSubstrOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceSubstrWithExtraWhitespace() {
 		Assert.assertEquals(
 			getSubstrTransformedSQL(),
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				_addExtraWhitespaceFunction.apply(getSubstrOriginalSQL())));
 	}
 
@@ -190,14 +205,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	public void testTransform() {
 		String sql = "select * from Foo";
 
-		Assert.assertEquals(sql, sqlTransformer.transform(sql));
+		Assert.assertEquals(sql, SQLTransformer.transform(sql));
 	}
 
 	@Test
 	public void testTruncateTable() {
 		Assert.assertEquals(
 			getTruncateTableTransformedSQL(),
-			sqlTransformer.transform(getTruncateTableOriginalSQL()));
+			SQLTransformer.transform(getTruncateTableOriginalSQL()));
 	}
 
 	protected String getAggregationOriginalSQL() {
@@ -354,9 +369,8 @@ public abstract class BaseSQLTransformerLogicTestCase {
 		return "TRUNCATE TABLE Foo";
 	}
 
-	protected SQLTransformer sqlTransformer;
-
 	private final Function<String, String> _addExtraWhitespaceFunction =
 		(String sql) -> StringUtil.replace(sql, CharPool.COMMA, "   ,   ");
+	private final DB _db;
 
 }

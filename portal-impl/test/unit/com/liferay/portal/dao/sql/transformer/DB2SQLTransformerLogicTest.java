@@ -7,6 +7,7 @@ package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -42,7 +43,7 @@ public class DB2SQLTransformerLogicTest
 	public void testReplaceBitwiseCheckWithExtraWhitespace() {
 		Assert.assertEquals(
 			getBitwiseCheckTransformedSQL(),
-			sqlTransformer.transform(getBitwiseCheckOriginalSQL()));
+			SQLTransformer.transform(getBitwiseCheckOriginalSQL()));
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class DB2SQLTransformerLogicTest
 		Assert.assertEquals(
 			"select * from Foo where foo LIKE CAST(bar AS VARCHAR(2000)) " +
 				"CONCAT ?",
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				"select * from Foo where foo LIKE CONCAT(CAST_TEXT(bar),?)"));
 	}
 
@@ -59,7 +60,7 @@ public class DB2SQLTransformerLogicTest
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Test
@@ -74,14 +75,14 @@ public class DB2SQLTransformerLogicTest
 
 		Assert.assertEquals(
 			"select * from Foo where foo = ? And bar = ?",
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				"select * from Foo where foo = ? And bar = ?"));
 		Assert.assertEquals(
 			"select * from Foo where foo = \" ?\"",
-			sqlTransformer.transform("select * from Foo where foo = \" ?\""));
+			SQLTransformer.transform("select * from Foo where foo = \" ?\""));
 		Assert.assertEquals(
 			"select * from Foo where foo = \' ?\'",
-			sqlTransformer.transform("select * from Foo where foo = \' ?\'"));
+			SQLTransformer.transform("select * from Foo where foo = \' ?\'"));
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public class DB2SQLTransformerLogicTest
 			StringUtil.replace(
 				sql, CharPool.QUESTION,
 				"COALESCE(CAST(? AS VARCHAR(2000)),'')"),
-			sqlTransformer.transform(sql));
+			SQLTransformer.transform(sql));
 	}
 
 }

@@ -6,6 +6,7 @@
 package com.liferay.portal.dao.sql.transformer;
 
 import com.liferay.portal.dao.db.PostgreSQLDB;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -38,7 +39,7 @@ public class PostgreSQLTransformerLogicTest
 		Assert.assertEquals(
 			"select foo from Foo order by CASE WHEN MIN(CAST(foo AS " +
 				"INTEGER)) = 1 THEN 1 ELSE 0 END",
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				"select foo from Foo order by AGGREGATION_BOOLEAN_MIN(foo)"));
 	}
 
@@ -47,17 +48,17 @@ public class PostgreSQLTransformerLogicTest
 	public void testReplaceModWithExtraWhitespace() {
 		Assert.assertEquals(
 			getModTransformedSQL(),
-			sqlTransformer.transform(getModOriginalSQL()));
+			SQLTransformer.transform(getModOriginalSQL()));
 	}
 
 	@Test
 	public void testReplaceNegativeComparison() {
 		Assert.assertEquals(
 			"select * from Foo where foo != (-1)",
-			sqlTransformer.transform("select * from Foo where foo != -1"));
+			SQLTransformer.transform("select * from Foo where foo != -1"));
 		Assert.assertEquals(
 			"select * from Foo where foo != (-1) and bar != (-1)",
-			sqlTransformer.transform(
+			SQLTransformer.transform(
 				"select * from Foo where foo != -1 and bar != -1"));
 	}
 
