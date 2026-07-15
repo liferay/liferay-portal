@@ -7,15 +7,14 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
-import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
@@ -52,6 +51,13 @@ public class StyleBookDTOConverter
 			DTOConverterContext dtoConverterContext,
 			StyleBookEntry styleBookEntry)
 		throws Exception {
+
+		Long scopeGroupId = (Long)dtoConverterContext.getAttribute(
+			"scopeGroupId");
+
+		if (scopeGroupId == null) {
+			throw new UnsupportedOperationException();
+		}
 
 		return new StyleBook() {
 			{
@@ -105,10 +111,9 @@ public class StyleBookDTOConverter
 						return fileEntry.getExternalReferenceCode();
 					});
 				setScope(
-					() -> Scope.of(
-						_groupLocalService.fetchGroup(
-							styleBookEntry.getGroupId()),
-						dtoConverterContext.getLocale()));
+					() -> ItemScopeUtil.getItemScope(
+						styleBookEntry.getGroupId(),
+						dtoConverterContext.getLocale(), scopeGroupId));
 				setThemeId(styleBookEntry::getThemeId);
 			}
 		};
@@ -116,9 +121,6 @@ public class StyleBookDTOConverter
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;

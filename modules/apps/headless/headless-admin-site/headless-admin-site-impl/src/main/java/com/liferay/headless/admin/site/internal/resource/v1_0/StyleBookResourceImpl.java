@@ -236,8 +236,10 @@ public class StyleBookResourceImpl
 		}
 
 		return Page.of(
-			transform(styleBookEntries, this::_toStyleBook), pagination,
-			styleBookEntriesCount);
+			transform(
+				styleBookEntries,
+				styleBookEntry -> _toStyleBook(groupId, styleBookEntry)),
+			pagination, styleBookEntriesCount);
 	}
 
 	@Override
@@ -649,17 +651,30 @@ public class StyleBookResourceImpl
 		return action;
 	}
 
-	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry)
+	private StyleBook _toStyleBook(
+			long scopeGroupId, StyleBookEntry styleBookEntry)
 		throws Exception {
 
-		return _styleBookDTOConverter.toDTO(
+		DefaultDTOConverterContext dtoConverterContext =
 			new DefaultDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(),
 				_getActions(styleBookEntry), _dtoConverterRegistry,
 				contextHttpServletRequest, styleBookEntry.getStyleBookEntryId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
-				contextUser),
-			styleBookEntry);
+				contextUser);
+
+		dtoConverterContext.setAttribute(
+			"companyId", contextCompany.getCompanyId());
+		dtoConverterContext.setAttribute("scopeGroupId", scopeGroupId);
+
+		return _styleBookDTOConverter.toDTO(
+			dtoConverterContext, styleBookEntry);
+	}
+
+	private StyleBook _toStyleBook(StyleBookEntry styleBookEntry)
+		throws Exception {
+
+		return _toStyleBook(styleBookEntry.getGroupId(), styleBookEntry);
 	}
 
 	@Reference
