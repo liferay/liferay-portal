@@ -26,18 +26,6 @@ public class BaseDownstreamBuildTest
 			BaseDownstreamBuild.class);
 
 		Mockito.when(
-			baseDownstreamBuild.getStatus()
-		).thenReturn(
-			"completed"
-		);
-
-		Mockito.when(
-			baseDownstreamBuild.getResult()
-		).thenReturn(
-			"UNSTABLE"
-		);
-
-		Mockito.when(
 			baseDownstreamBuild.getBatchName()
 		).thenReturn(
 			RandomTestUtil.randomString()
@@ -53,6 +41,18 @@ public class BaseDownstreamBuildTest
 			baseDownstreamBuild.getDisplayName()
 		).thenReturn(
 			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getResult()
+		).thenReturn(
+			"UNSTABLE"
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getStatus()
+		).thenReturn(
+			"completed"
 		);
 
 		String uniqueFailureMarker = RandomTestUtil.randomString();

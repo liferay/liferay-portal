@@ -76,15 +76,15 @@ public class HistoryFactoryTest
 		BatchHistory batchHistory = Mockito.mock(BatchHistory.class);
 
 		Mockito.when(
-			batchHistory.getPortalUpstreamBranchName()
-		).thenReturn(
-			portalUpstreamBranchName
-		);
-
-		Mockito.when(
 			batchHistory.getBatchName()
 		).thenReturn(
 			batchName
+		);
+
+		Mockito.when(
+			batchHistory.getPortalUpstreamBranchName()
+		).thenReturn(
+			portalUpstreamBranchName
 		);
 
 		return batchHistory;
