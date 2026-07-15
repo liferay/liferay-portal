@@ -21,6 +21,7 @@ export type MetricColor = 'green' | 'info' | 'orange' | 'purple';
 type Props = {
 	active?: boolean;
 	color: MetricColor;
+	description?: string;
 	icon: string;
 	loading?: boolean;
 	onClick?: () => void;
@@ -35,6 +36,7 @@ type Props = {
 export default function InteractiveCard({
 	active = false,
 	color,
+	description,
 	icon,
 	loading = false,
 	onClick,
@@ -69,6 +71,12 @@ export default function InteractiveCard({
 					<ClayIcon symbol={icon} />
 				</ClaySticker>
 			</div>
+
+			{description ? (
+				<Text color="secondary" size={3}>
+					{description}
+				</Text>
+			) : null}
 
 			<div className="d-flex flex-column justify-content-center mt-3">
 				{loading ? (
