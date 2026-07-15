@@ -30,14 +30,27 @@ export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
 	const [loading, setLoading] = useState(dataMaskId > 0);
 
 	useEffect(() => {
-		if (!dataMaskId) {
+		if (!dataMaskId || Number(dataMaskId) <= 0) {
 			return;
 		}
 
 		let active = true;
 
-		getDataMask(dataMaskId).then(({data}) => {
+		getDataMask(dataMaskId).then(({data, error}) => {
 			if (!active) {
+				return;
+			}
+
+			if (error || !data) {
+				openToast({
+					message: error
+						? Liferay.Util.escapeHTML(error)
+						: Liferay.Language.get('an-unexpected-error-occurred'),
+					type: 'danger',
+				});
+
+				navigate(backURL);
+
 				return;
 			}
 
@@ -48,7 +61,7 @@ export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
 		return () => {
 			active = false;
 		};
-	}, [dataMaskId]);
+	}, [backURL, dataMaskId]);
 
 	if (loading) {
 		return null;
