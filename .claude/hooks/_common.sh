@@ -125,14 +125,14 @@ function _source_db_brand {
 	brand="$(echo "${WORKTREE_DB_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
 
 	case "${brand}" in
-		*psql*)
+		*psql* | *postgres*)
 			brand=psql
 			;;
 		*mysql*)
 			brand=mysql
 			;;
 		*)
-			_die "WORKTREE_DB_BRAND must contain \"mysql\" or \"psql\" (got \"${brand}\")."
+			_die "WORKTREE_DB_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
 			;;
 	esac
 
