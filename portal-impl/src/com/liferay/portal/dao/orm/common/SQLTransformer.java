@@ -25,6 +25,8 @@ import java.util.function.Function;
 public class SQLTransformer {
 
 	public static void reloadSQLTransformer() {
+		_hibernateTransformedSQLsPortalCache.removeAll();
+
 		_transformedSQLsPortalCache.removeAll();
 
 		_sqlTransformerLogic =
@@ -33,25 +35,25 @@ public class SQLTransformer {
 	}
 
 	public static String transform(String sql) {
-		return _transform(_sqlTransformerLogic, sql);
+		return _transform(
+			_transformedSQLsPortalCache, _sqlTransformerLogic, sql);
 	}
 
 	public static String transformForHibernate(String sql) {
-		String newSQL = _transformedSQLsPortalCache.get(sql);
+		return _transform(
+			_hibernateTransformedSQLsPortalCache, _hibernateSQLTransformerLogic,
+			sql);
+	}
+
+	private static String _transform(
+		PortalCache<String, String> portalCache,
+		SQLTransformerLogic sqlTransformerLogic, String sql) {
+
+		String newSQL = portalCache.get(sql);
 
 		if (newSQL != null) {
 			return newSQL;
 		}
-
-		newSQL = _transform(_hibernateSQLTransformerLogic, sql);
-
-		_transformedSQLsPortalCache.put(sql, newSQL);
-
-		return newSQL;
-	}
-
-	private static String _transform(
-		SQLTransformerLogic sqlTransformerLogic, String sql) {
 
 		Function<String, String>[] functions =
 			sqlTransformerLogic.getFunctions();
@@ -71,6 +73,8 @@ public class SQLTransformer {
 			_log.debug("Transformed SQL: " + transformedSQL);
 		}
 
+		portalCache.put(sql, transformedSQL);
+
 		return transformedSQL;
 	}
 
@@ -78,6 +82,11 @@ public class SQLTransformer {
 
 	private static final SQLTransformerLogic _hibernateSQLTransformerLogic =
 		new HibernateSQLTransformerLogic();
+	private static final PortalCache<String, String>
+		_hibernateTransformedSQLsPortalCache =
+			PortalCacheHelperUtil.getPortalCache(
+				PortalCacheManagerNames.SINGLE_VM,
+				SQLTransformer.class.getName() + ".hibernate");
 	private static volatile SQLTransformerLogic _sqlTransformerLogic =
 		SQLTransformerLogicFactory.getSQLTransformerLogic(
 			DBManagerUtil.getDB());
