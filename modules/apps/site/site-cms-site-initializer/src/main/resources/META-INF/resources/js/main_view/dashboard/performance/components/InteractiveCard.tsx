@@ -81,9 +81,9 @@ export default function InteractiveCard({
 				</div>
 
 				<ClaySticker
+					borderless
 					className="flex-shrink-0"
 					displayType={STICKER_DISPLAY_TYPES[color]}
-					size="lg"
 				>
 					<ClayIcon symbol={icon} />
 				</ClaySticker>
