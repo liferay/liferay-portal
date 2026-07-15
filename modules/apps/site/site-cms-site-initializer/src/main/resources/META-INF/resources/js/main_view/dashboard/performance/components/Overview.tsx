@@ -83,12 +83,10 @@ export function Overview() {
 			<ClayLayout.Row className="mb-3">
 				<ClayLayout.Col size={12}>
 					<SectionHeader
-						ariaLevel={2}
 						description={Liferay.Language.get(
 							'get-a-high-level-view-of-performance-trends-to-spot-changes-and-guide-decisions'
 						)}
 						icon="analytics"
-						role="heading"
 						title={Liferay.Language.get('performance-overview')}
 					/>
 				</ClayLayout.Col>
