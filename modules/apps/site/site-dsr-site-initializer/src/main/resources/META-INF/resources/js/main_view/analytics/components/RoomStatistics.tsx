@@ -93,7 +93,7 @@ const formatData = (data: IRoomStatistics): IRoomStatisticsItem[] => {
 		},
 		{
 			className: 'icon-teal-light',
-			icon: 'click',
+			icon: 'bolt',
 			id: 'actions',
 			label: Liferay.Language.get('actions'),
 			value: data.totalActions || 0,

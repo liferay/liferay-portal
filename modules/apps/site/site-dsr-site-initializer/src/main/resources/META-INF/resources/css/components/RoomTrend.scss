@@ -14,7 +14,7 @@
 
 		&.btn-secondary {
 			background: $gray-200;
-			border: 1px solid $border-color;
+			border: 1px solid $secondary-l2;
 			border-radius: 4px;
 			color: $gray-600;
 
@@ -25,7 +25,7 @@
 				&:hover,
 				&:focus {
 					background-color: $gray-200;
-					border-color: $border-color;
+					border-color: $secondary-l2;
 					box-shadow: none;
 				}
 			}

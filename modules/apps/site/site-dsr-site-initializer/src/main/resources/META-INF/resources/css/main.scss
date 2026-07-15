@@ -23,6 +23,8 @@
 }
 
 .analytics-frame {
+	border: 1px solid $secondary-l2;
+
 	&-icon {
 		background-color: $primary-l3;
 		color: $primary;
@@ -159,7 +161,7 @@
 	background: $gray-200 url(../images/success_state.svg) no-repeat center
 		center;
 	background-size: 16rem;
-	border: 1px solid $gray-200;
+	border: 1px solid $secondary-l2;
 	border-radius: 0.5rem;
 	flex: 1;
 	min-height: 400px;
@@ -197,7 +199,7 @@
 
 .portlet-digital-sales-room-management {
 	background-color: $white;
-	border: 1px solid $gray-200;
+	border: 1px solid $secondary-l2;
 	border-radius: 0.5rem;
 	padding: 0.25rem 0;
 

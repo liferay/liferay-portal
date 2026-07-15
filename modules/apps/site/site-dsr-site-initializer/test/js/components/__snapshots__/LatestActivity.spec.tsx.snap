@@ -4,7 +4,7 @@ exports[`LatestActivity renders the component with provided data 1`] = `
 <body>
   <div>
     <section
-      class="analytics-frame border rounded-lg"
+      class="analytics-frame rounded-lg"
     >
       <header
         class="align-items-center border-bottom d-flex justify-content-between p-3"
@@ -16,11 +16,11 @@ exports[`LatestActivity renders the component with provided data 1`] = `
             class="analytics-frame-icon btn-monospaced rounded-lg"
           >
             <svg
-              class="lexicon-icon lexicon-icon-click"
+              class="lexicon-icon lexicon-icon-bolt"
               role="presentation"
             >
               <use
-                href="#click"
+                href="#bolt"
               />
             </svg>
           </span>

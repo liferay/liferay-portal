@@ -58,7 +58,7 @@ const LatestActivity = ({
 
 	return (
 		<AnalyticsFrame
-			icon="click"
+			icon="bolt"
 			title={Liferay.Language.get('latest-activity')}
 			url={isAnalyticsEnabled ? `${BASE_URL}/view-timeline` : undefined}
 		>

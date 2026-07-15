@@ -10,7 +10,7 @@
 				"type": "layout"
 			},
 			{
-				"displayIcon": "squares",
+				"displayIcon": "grid",
 				"externalReferenceCode": "DSRPRIMARYNAVIGATION2",
 				"friendlyURL": "/rooms",
 				"privateLayout": false,

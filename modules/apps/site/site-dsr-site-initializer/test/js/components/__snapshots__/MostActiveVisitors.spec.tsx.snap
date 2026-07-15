@@ -4,7 +4,7 @@ exports[`MostActiveVisitors renders the component with provided data 1`] = `
 <body>
   <div>
     <section
-      class="analytics-frame border rounded-lg"
+      class="analytics-frame rounded-lg"
     >
       <header
         class="align-items-center border-bottom d-flex justify-content-between p-3"

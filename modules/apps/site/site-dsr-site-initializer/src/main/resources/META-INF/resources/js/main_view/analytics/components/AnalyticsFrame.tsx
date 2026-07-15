@@ -25,7 +25,7 @@ const AnalyticsFrame = React.forwardRef(
 	) => {
 		return (
 			<section
-				className={`analytics-frame border rounded-lg ${className}`.trim()}
+				className={`analytics-frame rounded-lg ${className}`.trim()}
 				ref={ref}
 			>
 				{helpMessage || icon || title || url ? (

@@ -3,7 +3,7 @@
 exports[`RoomStatistics matches snapshot 1`] = `
 <div>
   <section
-    class="analytics-frame border rounded-lg"
+    class="analytics-frame rounded-lg"
   >
     <div>
       <div
@@ -137,11 +137,11 @@ exports[`RoomStatistics matches snapshot 1`] = `
               </div>
               <div>
                 <svg
-                  class="lexicon-icon lexicon-icon-click icon-teal-light"
+                  class="lexicon-icon lexicon-icon-bolt icon-teal-light"
                   role="presentation"
                 >
                   <use
-                    href="#click"
+                    href="#bolt"
                   />
                 </svg>
                 <span
