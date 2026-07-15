@@ -14,7 +14,6 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.ParentTaxonomyCategory;
 import com.liferay.headless.admin.site.dto.v1_0.ParentTaxonomyVocabulary;
 import com.liferay.headless.admin.site.dto.v1_0.TaxonomyCategoryBrief;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.util.LogUtil;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.common.spi.util.GroupUtil;
@@ -33,6 +32,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.scope.Scope;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -241,14 +241,12 @@ public class ServiceContextUtil {
 			taxonomyCategoryBrief -> {
 				long scopeGroupId = groupId;
 
-				String scopeExternalReferenceCode =
-					ItemScopeUtil.getItemScopeExternalReferenceCode(
-						taxonomyCategoryBrief.getScope(), scopeGroupId);
+				Scope scope = taxonomyCategoryBrief.getScope();
 
-				if (scopeExternalReferenceCode != null) {
+				if (scope != null) {
 					scopeGroupId = GroupUtil.getGroupId(
 						true, true, group.getCompanyId(),
-						scopeExternalReferenceCode);
+						scope.getExternalReferenceCode());
 				}
 
 				String parentTaxonomyCategoryExternalReferenceCode = null;
