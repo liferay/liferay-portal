@@ -80,3 +80,40 @@ test('Search finds a Documents and Media image, absent from Blog Images', async 
 
 	await expect(iframe.getByTitle(fileName)).toBeVisible();
 });
+
+test('Search finds a Blog Images upload, absent from Documents and Media', async ({
+	blogsEditBlogEntryPage,
+	page,
+	site,
+}) => {
+
+	// Open the blog cover image selector, which lands on the Blog Images tab
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('button', {name: 'Select File'}).first().click();
+
+	const iframe = page.frameLocator('iframe[title="Select File"]');
+
+	// Upload an image through the Blog Images tab
+
+	await iframe.locator('input[type="file"]').setInputFiles(SAMPLE_IMAGE);
+
+	await iframe.getByRole('button', {name: 'Add'}).click();
+
+	// Reopen the selector; the upload lives under Blog Images, not DM
+
+	await page.locator('button.browse-image').click();
+
+	await iframe.getByRole('link', {name: 'Documents and Media'}).click();
+
+	await expect(iframe.getByTitle('sample_image.png')).toBeHidden();
+
+	// Searching under Blog Images finds the upload
+
+	await iframe.getByRole('link', {name: 'Blog Images'}).click();
+
+	await searchForSingleResult(iframe, 'sample_image.png');
+
+	await expect(iframe.getByTitle('sample_image.png')).toBeVisible();
+});
