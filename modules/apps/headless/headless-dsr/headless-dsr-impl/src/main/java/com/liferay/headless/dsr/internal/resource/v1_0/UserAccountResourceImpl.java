@@ -200,9 +200,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
 
-		DSRRoomUtil.checkPermission(
-			objectEntry, PermissionThreadLocal.getPermissionChecker(),
-			ActionKeys.UPDATE);
+		if (DSRRoomUtil.isArchived(objectEntry)) {
+			throw new UnsupportedOperationException(
+				"Room " + roomId + " is archived");
+		}
 
 		Map<String, Serializable> values = objectEntry.getValues();
 

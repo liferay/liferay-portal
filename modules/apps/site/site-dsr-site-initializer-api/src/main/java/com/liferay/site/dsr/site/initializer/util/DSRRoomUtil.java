@@ -40,6 +40,16 @@ public class DSRRoomUtil {
 			objectEntry.getObjectEntryId(), actionId);
 	}
 
+	public static boolean isArchived(ObjectEntry objectEntry) {
+		if (MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
+				WorkflowConstants.STATUS_INACTIVE) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static boolean isReadOnly(
 		long groupId, PermissionChecker permissionChecker) {
 
@@ -82,13 +92,7 @@ public class DSRRoomUtil {
 			return false;
 		}
 
-		if (MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
-				WorkflowConstants.STATUS_INACTIVE) {
-
-			return true;
-		}
-
-		return false;
+		return isArchived(objectEntry);
 	}
 
 }
