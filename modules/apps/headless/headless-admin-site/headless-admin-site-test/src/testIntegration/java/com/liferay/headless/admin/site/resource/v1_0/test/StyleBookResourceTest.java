@@ -16,6 +16,9 @@ import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.StyleBookResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
@@ -24,6 +27,8 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -85,6 +90,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testGetSitePageSpecificationStyleBooksPageWithoutPermission();
 		_testGetSitePageSpecificationStyleBooksPageWithSearch();
 		_testGetSitePageSpecificationStyleBooksPageWithUnknownPageSpecification();
+		_testGetSitePageSpecificationStyleBooksPageWithLayoutTypes();
 	}
 
 	@Override
@@ -401,6 +407,92 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		Assert.assertNull(scope);
 	}
 
+	private void _testGetSitePageSpecificationStyleBooksPageWithLayout(
+			Layout layout, String pageSpecificationExternalReferenceCode)
+		throws Exception {
+
+		Theme theme = layout.getTheme();
+
+		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
+			testGroup.getGroupId(), theme.getThemeId(),
+			RandomTestUtil.randomString());
+
+		StyleBookEntry styleFromThemeStyleBookEntry =
+			StyleBookUtil.getStyleFromThemeStyleBookEntry(
+				layout, LocaleUtil.getDefault());
+
+		Page<StyleBook> page =
+			styleBookResource.getSitePageSpecificationStyleBooksPage(
+				testGroup.getExternalReferenceCode(),
+				pageSpecificationExternalReferenceCode, null,
+				Pagination.of(1, 50));
+
+		List<String> names = new ArrayList<>();
+
+		for (StyleBook styleBook : page.getItems()) {
+			names.add(styleBook.getName());
+		}
+
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(styleFromThemeStyleBookEntry.getName()));
+		Assert.assertTrue(
+			names.toString(), names.contains(siteStyleBookEntry.getName()));
+
+		_styleBookEntryLocalService.deleteStyleBookEntries(
+			testGroup.getGroupId());
+	}
+
+	private void _testGetSitePageSpecificationStyleBooksPageWithLayoutTypes()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		Layout widgetLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			widgetLayout, widgetLayout.getExternalReferenceCode());
+
+		Layout displayPageLayout =
+			LayoutPageTemplateEntryTestUtil.
+				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			displayPageLayout, displayPageLayout.getExternalReferenceCode());
+
+		Layout masterLayout =
+			LayoutPageTemplateEntryTestUtil.
+				getMasterLayoutPageTemplateEntryLayout(serviceContext);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			masterLayout, masterLayout.getExternalReferenceCode());
+
+		Layout utilityPageLayout =
+			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
+				serviceContext);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			utilityPageLayout, utilityPageLayout.getExternalReferenceCode());
+
+		Layout pageTemplateLayout =
+			LayoutPageTemplateEntryTestUtil.
+				getBasicLayoutPageTemplateEntryLayout(serviceContext);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			pageTemplateLayout, pageTemplateLayout.getExternalReferenceCode());
+
+		LayoutPageTemplateEntry widgetPageLayoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.
+				getWidgetPageLayoutPageTemplateEntry(serviceContext);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			_layoutLocalService.getLayout(
+				widgetPageLayoutPageTemplateEntry.getPlid()),
+			widgetPageLayoutPageTemplateEntry.getExternalReferenceCode());
+	}
+
 	private void _testGetSitePageSpecificationStyleBooksPageWithoutPermission()
 		throws Exception {
 
@@ -668,6 +760,9 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 	@Inject
 	private Language _language;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	private Layout _pageSpecificationLayout;
 
