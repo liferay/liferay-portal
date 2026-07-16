@@ -3762,8 +3762,8 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch-cli.jar</file-name>
-				<version>8.19.11</version>
-				<project-name>org.elasticsearch#cli;8.19.11</project-name>
+				<version>8.19.19</version>
+				<project-name>org.elasticsearch#cli;8.19.19</project-name>
 				<project-url>https://github.com/elastic/elasticsearch</project-url>
 				<licenses>
 					<license>
@@ -3774,8 +3774,8 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch-core.jar</file-name>
-				<version>8.19.11</version>
-				<project-name>org.elasticsearch#core;8.19.11</project-name>
+				<version>8.19.19</version>
+				<project-name>org.elasticsearch#core;8.19.19</project-name>
 				<project-url>https://github.com/elastic/elasticsearch</project-url>
 				<licenses>
 					<license>
@@ -3786,7 +3786,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch-java.jar</file-name>
-				<version>8.19.11</version>
+				<version>8.19.19</version>
 				<project-name>Elasticsearch Java API Client</project-name>
 				<project-url>https://github.com/elastic/elasticsearch-java/</project-url>
 				<licenses>
@@ -3798,8 +3798,8 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch-rest-client.jar</file-name>
-				<version>8.19.11</version>
-				<project-name>org.elasticsearch.client#rest;8.19.11</project-name>
+				<version>8.19.19</version>
+				<project-name>org.elasticsearch.client#rest;8.19.19</project-name>
 				<project-url>https://github.com/elastic/elasticsearch</project-url>
 				<licenses>
 					<license>
@@ -3810,8 +3810,8 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch-x-content.jar</file-name>
-				<version>8.19.11</version>
-				<project-name>org.elasticsearch#x-content;8.19.11</project-name>
+				<version>8.19.19</version>
+				<project-name>org.elasticsearch#x-content;8.19.19</project-name>
 				<project-url>https://github.com/elastic/elasticsearch</project-url>
 				<licenses>
 					<license>
@@ -3822,8 +3822,8 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!elasticsearch.jar</file-name>
-				<version>8.19.11</version>
-				<project-name>org.elasticsearch#server;8.19.11</project-name>
+				<version>8.19.19</version>
+				<project-name>org.elasticsearch#server;8.19.19</project-name>
 				<project-url>https://github.com/elastic/elasticsearch</project-url>
 				<licenses>
 					<license>
