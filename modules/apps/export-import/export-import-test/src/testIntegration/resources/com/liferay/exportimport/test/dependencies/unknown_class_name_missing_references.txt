@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<root>
+	<header available-locales="en_US" build-number="6200" export-date="Wed, 08 May 2013 01:36:12 +0000" type="portlet" company-group-id="10191" group-id="10179" private-layout="false" root-portlet-id="15" />
+	<missing-references>
+		<missing-reference class-name="my-custom-class-name" display-name="my-custom-display-name" group-id="99998" live-group-id="99998" type="dependency" uuid="xyz" />
+	</missing-references>
+	<portlet portlet-id="15" layout-id="1" path=" /group/10179/portlet/15/10182/portlet.xml" />
+</root>

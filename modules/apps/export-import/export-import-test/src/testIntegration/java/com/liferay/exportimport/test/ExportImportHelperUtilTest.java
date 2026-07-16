@@ -976,41 +976,8 @@ public class ExportImportHelperUtilTest {
 
 	@Test
 	public void testValidateMissingReferences() throws Exception {
-		String xml = replaceParameters(
-			getContent("missing_references.txt"), getFileEntry());
-
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
-
-		zipWriter.addEntry("/manifest.xml", xml);
-
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
-			PortletDataContext portletDataContextImport =
-				PortletDataContextFactoryUtil.createImportPortletDataContext(
-					_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
-					new HashMap<String, String[]>(), new TestUserIdStrategy(),
-					zipReader);
-
-			MissingReferences missingReferences =
-				ExportImportHelperUtil.validateMissingReferences(
-					portletDataContextImport);
-
-			Map<String, MissingReference> dependencyMissingReferences =
-				missingReferences.getDependencyMissingReferences();
-
-			Map<String, MissingReference> weakMissingReferences =
-				missingReferences.getWeakMissingReferences();
-
-			Assert.assertEquals(
-				dependencyMissingReferences.toString(), 2,
-				dependencyMissingReferences.size());
-			Assert.assertEquals(
-				weakMissingReferences.toString(), 1,
-				weakMissingReferences.size());
-		}
-
-		FileUtil.delete(zipWriter.getFile());
+		_testValidateMissingReferences();
+		_testValidateMissingReferencesWithUnknownClassName();
 	}
 
 	protected String getContent(String fileName) throws Exception {
@@ -1136,6 +1103,82 @@ public class ExportImportHelperUtilTest {
 				serviceRegistration.unregister();
 			}
 		};
+	}
+
+	private void _testValidateMissingReferences() throws Exception {
+		String xml = replaceParameters(
+			getContent("missing_references.txt"), getFileEntry());
+
+		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+
+		zipWriter.addEntry("/manifest.xml", xml);
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+				zipWriter.getFile())) {
+
+			PortletDataContext portletDataContextImport =
+				PortletDataContextFactoryUtil.createImportPortletDataContext(
+					_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
+					new HashMap<String, String[]>(), new TestUserIdStrategy(),
+					zipReader);
+
+			MissingReferences missingReferences =
+				ExportImportHelperUtil.validateMissingReferences(
+					portletDataContextImport);
+
+			Map<String, MissingReference> dependencyMissingReferences =
+				missingReferences.getDependencyMissingReferences();
+
+			Map<String, MissingReference> weakMissingReferences =
+				missingReferences.getWeakMissingReferences();
+
+			Assert.assertEquals(
+				dependencyMissingReferences.toString(), 2,
+				dependencyMissingReferences.size());
+			Assert.assertEquals(
+				weakMissingReferences.toString(), 1,
+				weakMissingReferences.size());
+		}
+
+		FileUtil.delete(zipWriter.getFile());
+	}
+
+	@TestInfo("LPS-161743")
+	private void _testValidateMissingReferencesWithUnknownClassName()
+		throws Exception {
+
+		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+
+		zipWriter.addEntry(
+			"/manifest.xml",
+			getContent("unknown_class_name_missing_references.txt"));
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+				zipWriter.getFile())) {
+
+			PortletDataContext portletDataContextImport =
+				PortletDataContextFactoryUtil.createImportPortletDataContext(
+					_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
+					new HashMap<String, String[]>(), new TestUserIdStrategy(),
+					zipReader);
+
+			MissingReferences missingReferences =
+				ExportImportHelperUtil.validateMissingReferences(
+					portletDataContextImport);
+
+			Map<String, MissingReference> dependencyMissingReferences =
+				missingReferences.getDependencyMissingReferences();
+
+			Assert.assertEquals(
+				dependencyMissingReferences.toString(), 1,
+				dependencyMissingReferences.size());
+			Assert.assertTrue(
+				dependencyMissingReferences.toString(),
+				dependencyMissingReferences.containsKey(
+					"my-custom-display-name"));
+		}
+
+		FileUtil.delete(zipWriter.getFile());
 	}
 
 	@DeleteAfterTestRun
