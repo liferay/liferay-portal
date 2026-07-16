@@ -56,6 +56,7 @@
 	<model name="com.liferay.portal.tools.service.builder.test.model.DSLQueryStatusEntry">
 		<field name="dslQueryStatusEntryId" type="long" />
 		<field name="dslQueryEntryId" type="long" />
+		<field name="weight" type="double" />
 		<field name="status" type="String" />
 		<field name="statusDate" type="Date" />
 	</model>

@@ -54,6 +54,7 @@ create table DSLQueryEntry (
 create table DSLQueryStatusEntry (
 	dslQueryStatusEntryId LONG not null primary key,
 	dslQueryEntryId LONG,
+	weight DOUBLE,
 	status VARCHAR(75) null,
 	statusDate DATE null
 );

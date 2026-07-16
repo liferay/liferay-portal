@@ -32,6 +32,8 @@ public class DSLQueryStatusEntryTable
 	public final Column<DSLQueryStatusEntryTable, Long> dslQueryEntryId =
 		createColumn(
 			"dslQueryEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<DSLQueryStatusEntryTable, Double> weight = createColumn(
+		"weight", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<DSLQueryStatusEntryTable, String> status = createColumn(
 		"status", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<DSLQueryStatusEntryTable, Date> statusDate =
@@ -43,4 +45,4 @@ public class DSLQueryStatusEntryTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-569883417
+// LIFERAY-SERVICE-BUILDER-HASH:-1837080576

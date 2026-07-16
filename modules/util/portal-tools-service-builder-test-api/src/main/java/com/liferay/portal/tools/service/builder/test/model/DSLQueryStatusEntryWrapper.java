@@ -35,6 +35,7 @@ public class DSLQueryStatusEntryWrapper
 
 		attributes.put("dslQueryStatusEntryId", getDslQueryStatusEntryId());
 		attributes.put("dslQueryEntryId", getDslQueryEntryId());
+		attributes.put("weight", getWeight());
 		attributes.put("status", getStatus());
 		attributes.put("statusDate", getStatusDate());
 
@@ -54,6 +55,12 @@ public class DSLQueryStatusEntryWrapper
 
 		if (dslQueryEntryId != null) {
 			setDslQueryEntryId(dslQueryEntryId);
+		}
+
+		Double weight = (Double)attributes.get("weight");
+
+		if (weight != null) {
+			setWeight(weight);
 		}
 
 		String status = (String)attributes.get("status");
@@ -124,6 +131,16 @@ public class DSLQueryStatusEntryWrapper
 		return model.getStatusDate();
 	}
 
+	/**
+	 * Returns the weight of this dsl query status entry.
+	 *
+	 * @return the weight of this dsl query status entry
+	 */
+	@Override
+	public double getWeight() {
+		return model.getWeight();
+	}
+
 	@Override
 	public void persist() {
 		model.persist();
@@ -179,6 +196,16 @@ public class DSLQueryStatusEntryWrapper
 		model.setStatusDate(statusDate);
 	}
 
+	/**
+	 * Sets the weight of this dsl query status entry.
+	 *
+	 * @param weight the weight of this dsl query status entry
+	 */
+	@Override
+	public void setWeight(double weight) {
+		model.setWeight(weight);
+	}
+
 	@Override
 	public String toXmlString() {
 		return model.toXmlString();
@@ -192,4 +219,4 @@ public class DSLQueryStatusEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-329802528
+// LIFERAY-SERVICE-BUILDER-HASH:733000632

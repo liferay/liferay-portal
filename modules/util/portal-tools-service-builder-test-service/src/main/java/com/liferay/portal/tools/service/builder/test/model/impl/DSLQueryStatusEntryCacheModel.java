@@ -55,12 +55,14 @@ public class DSLQueryStatusEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(9);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("{dslQueryStatusEntryId=");
 		sb.append(dslQueryStatusEntryId);
 		sb.append(", dslQueryEntryId=");
 		sb.append(dslQueryEntryId);
+		sb.append(", weight=");
+		sb.append(weight);
 		sb.append(", status=");
 		sb.append(status);
 		sb.append(", statusDate=");
@@ -77,6 +79,7 @@ public class DSLQueryStatusEntryCacheModel
 
 		dslQueryStatusEntryImpl.setDslQueryStatusEntryId(dslQueryStatusEntryId);
 		dslQueryStatusEntryImpl.setDslQueryEntryId(dslQueryEntryId);
+		dslQueryStatusEntryImpl.setWeight(weight);
 
 		if (status == null) {
 			dslQueryStatusEntryImpl.setStatus("");
@@ -102,6 +105,8 @@ public class DSLQueryStatusEntryCacheModel
 		dslQueryStatusEntryId = objectInput.readLong();
 
 		dslQueryEntryId = objectInput.readLong();
+
+		weight = objectInput.readDouble();
 		status = objectInput.readUTF();
 		statusDate = objectInput.readLong();
 	}
@@ -111,6 +116,8 @@ public class DSLQueryStatusEntryCacheModel
 		objectOutput.writeLong(dslQueryStatusEntryId);
 
 		objectOutput.writeLong(dslQueryEntryId);
+
+		objectOutput.writeDouble(weight);
 
 		if (status == null) {
 			objectOutput.writeUTF("");
@@ -124,8 +131,9 @@ public class DSLQueryStatusEntryCacheModel
 
 	public long dslQueryStatusEntryId;
 	public long dslQueryEntryId;
+	public double weight;
 	public String status;
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:165720623
+// LIFERAY-SERVICE-BUILDER-HASH:323440120

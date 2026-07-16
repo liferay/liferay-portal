@@ -76,6 +76,20 @@ public interface DSLQueryStatusEntryModel
 	public void setDslQueryEntryId(long dslQueryEntryId);
 
 	/**
+	 * Returns the weight of this dsl query status entry.
+	 *
+	 * @return the weight of this dsl query status entry
+	 */
+	public double getWeight();
+
+	/**
+	 * Sets the weight of this dsl query status entry.
+	 *
+	 * @param weight the weight of this dsl query status entry
+	 */
+	public void setWeight(double weight);
+
+	/**
 	 * Returns the status of this dsl query status entry.
 	 *
 	 * @return the status of this dsl query status entry
@@ -112,4 +126,4 @@ public interface DSLQueryStatusEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1943248939
+// LIFERAY-SERVICE-BUILDER-HASH:1737042334

@@ -59,8 +59,8 @@ public class DSLQueryStatusEntryModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"dslQueryStatusEntryId", Types.BIGINT},
-		{"dslQueryEntryId", Types.BIGINT}, {"status", Types.VARCHAR},
-		{"statusDate", Types.TIMESTAMP}
+		{"dslQueryEntryId", Types.BIGINT}, {"weight", Types.DOUBLE},
+		{"status", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -69,12 +69,13 @@ public class DSLQueryStatusEntryModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("dslQueryStatusEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dslQueryEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("weight", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("status", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("statusDate", Types.TIMESTAMP);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DSLQueryStatusEntry (dslQueryStatusEntryId LONG not null primary key,dslQueryEntryId LONG,status VARCHAR(75) null,statusDate DATE null)";
+		"create table DSLQueryStatusEntry (dslQueryStatusEntryId LONG not null primary key,dslQueryEntryId LONG,weight DOUBLE,status VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table DSLQueryStatusEntry";
@@ -225,6 +226,8 @@ public class DSLQueryStatusEntryModelImpl
 			attributeGetterFunctions.put(
 				"dslQueryEntryId", DSLQueryStatusEntry::getDslQueryEntryId);
 			attributeGetterFunctions.put(
+				"weight", DSLQueryStatusEntry::getWeight);
+			attributeGetterFunctions.put(
 				"status", DSLQueryStatusEntry::getStatus);
 			attributeGetterFunctions.put(
 				"statusDate", DSLQueryStatusEntry::getStatusDate);
@@ -255,6 +258,10 @@ public class DSLQueryStatusEntryModelImpl
 				"dslQueryEntryId",
 				(BiConsumer<DSLQueryStatusEntry, Long>)
 					DSLQueryStatusEntry::setDslQueryEntryId);
+			attributeSetterBiConsumers.put(
+				"weight",
+				(BiConsumer<DSLQueryStatusEntry, Double>)
+					DSLQueryStatusEntry::setWeight);
 			attributeSetterBiConsumers.put(
 				"status",
 				(BiConsumer<DSLQueryStatusEntry, String>)
@@ -296,6 +303,20 @@ public class DSLQueryStatusEntryModelImpl
 		}
 
 		_dslQueryEntryId = dslQueryEntryId;
+	}
+
+	@Override
+	public double getWeight() {
+		return _weight;
+	}
+
+	@Override
+	public void setWeight(double weight) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_weight = weight;
 	}
 
 	@Override
@@ -391,6 +412,7 @@ public class DSLQueryStatusEntryModelImpl
 		dslQueryStatusEntryImpl.setDslQueryStatusEntryId(
 			getDslQueryStatusEntryId());
 		dslQueryStatusEntryImpl.setDslQueryEntryId(getDslQueryEntryId());
+		dslQueryStatusEntryImpl.setWeight(getWeight());
 		dslQueryStatusEntryImpl.setStatus(getStatus());
 		dslQueryStatusEntryImpl.setStatusDate(getStatusDate());
 
@@ -408,6 +430,8 @@ public class DSLQueryStatusEntryModelImpl
 			this.<Long>getColumnOriginalValue("dslQueryStatusEntryId"));
 		dslQueryStatusEntryImpl.setDslQueryEntryId(
 			this.<Long>getColumnOriginalValue("dslQueryEntryId"));
+		dslQueryStatusEntryImpl.setWeight(
+			this.<Double>getColumnOriginalValue("weight"));
 		dslQueryStatusEntryImpl.setStatus(
 			this.<String>getColumnOriginalValue("status"));
 		dslQueryStatusEntryImpl.setStatusDate(
@@ -493,6 +517,8 @@ public class DSLQueryStatusEntryModelImpl
 
 		dslQueryStatusEntryCacheModel.dslQueryEntryId = getDslQueryEntryId();
 
+		dslQueryStatusEntryCacheModel.weight = getWeight();
+
 		dslQueryStatusEntryCacheModel.status = getStatus();
 
 		String status = dslQueryStatusEntryCacheModel.status;
@@ -574,6 +600,7 @@ public class DSLQueryStatusEntryModelImpl
 
 	private long _dslQueryStatusEntryId;
 	private long _dslQueryEntryId;
+	private double _weight;
 	private String _status;
 	private Date _statusDate;
 
@@ -608,6 +635,7 @@ public class DSLQueryStatusEntryModelImpl
 		_columnOriginalValues.put(
 			"dslQueryStatusEntryId", _dslQueryStatusEntryId);
 		_columnOriginalValues.put("dslQueryEntryId", _dslQueryEntryId);
+		_columnOriginalValues.put("weight", _weight);
 		_columnOriginalValues.put("status", _status);
 		_columnOriginalValues.put("statusDate", _statusDate);
 	}
@@ -627,9 +655,11 @@ public class DSLQueryStatusEntryModelImpl
 
 		columnBitmasks.put("dslQueryEntryId", 2L);
 
-		columnBitmasks.put("status", 4L);
+		columnBitmasks.put("weight", 4L);
 
-		columnBitmasks.put("statusDate", 8L);
+		columnBitmasks.put("status", 8L);
+
+		columnBitmasks.put("statusDate", 16L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -638,4 +668,4 @@ public class DSLQueryStatusEntryModelImpl
 	private DSLQueryStatusEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1159985028
+// LIFERAY-SERVICE-BUILDER-HASH:1589422519

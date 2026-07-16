@@ -115,6 +115,7 @@
 			<generator class="assigned" />
 		</id>
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="dslQueryEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="weight" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="status" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="statusDate" type="timestamp" />
 	</class>
