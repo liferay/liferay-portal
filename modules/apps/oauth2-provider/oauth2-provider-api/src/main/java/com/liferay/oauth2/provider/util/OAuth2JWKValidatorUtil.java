@@ -122,23 +122,11 @@ public class OAuth2JWKValidatorUtil {
 						" bits is not allowed in FIPS mode"));
 			}
 		}
-		else if (keyType.equals("oct")) {
-			int bits = _decodeBase64URLBitLength(jsonObject.getString("k"));
-
-			if (bits < _MIN_HMAC_KEY_BITS) {
-				throw new SecurityException(
-					StringBundler.concat(
-						"HMAC key of ", bits,
-						" bits is not allowed in FIPS mode"));
-			}
-		}
 		else {
 			throw new SecurityException(
 				"JWK key type \"" + keyType + "\" is not allowed in FIPS mode");
 		}
 	}
-
-	private static final int _MIN_HMAC_KEY_BITS = 112;
 
 	private static final int _MIN_RSA_KEY_BITS = 2048;
 
@@ -148,7 +136,7 @@ public class OAuth2JWKValidatorUtil {
 	private static final Set<String> _allowedECCurves = Set.of(
 		"P-256", "P-384", "P-521");
 	private static final Set<String> _allowedJWSAlgorithms = Set.of(
-		"ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "PS256", "PS384",
-		"PS512", "RS256", "RS384", "RS512");
+		"ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384",
+		"RS512");
 
 }
