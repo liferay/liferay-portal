@@ -62,27 +62,34 @@ function getGroupAudienceEntryERCs(targetElement) {
 	return groupAudienceEntryERCs;
 }
 
-function getPriorityIndex(audienceEntryERC) {
+function getScore(audienceEntryERC) {
 	const index = sortedAudienceEntryERCs.indexOf(audienceEntryERC);
 
-	return index === -1 ? sortedAudienceEntryERCs.length : index;
+	if (index !== -1) {
+		return index;
+	}
+
+	return (
+		sortedAudienceEntryERCs.length +
+		audiences.getPriority(audienceEntryERC)
+	);
 }
 
 function getWinnerAudienceEntryERC(targetElement) {
 	const matchedAudienceEntryERCs = audiences.get();
 
 	let winnerAudienceEntryERC = null;
-	let winnerPriorityIndex = Infinity;
+	let winnerScore = Infinity;
 
 	getGroupAudienceEntryERCs(targetElement).forEach((audienceEntryERC) => {
 		if (!matchedAudienceEntryERCs.has(audienceEntryERC)) {
 			return;
 		}
 
-		const priorityIndex = getPriorityIndex(audienceEntryERC);
+		const score = getScore(audienceEntryERC);
 
-		if (priorityIndex < winnerPriorityIndex) {
-			winnerPriorityIndex = priorityIndex;
+		if (score < winnerScore) {
+			winnerScore = score;
 			winnerAudienceEntryERC = audienceEntryERC;
 		}
 	});
