@@ -128,6 +128,28 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		}
 	}
 
+	public void deleteLayoutPageTemplateStructureRelElementVariations(
+		long plid, String segmentsExperienceERC) {
+
+		List<LayoutPageTemplateStructureRelElementVariation>
+			layoutPageTemplateStructureRelElementVariations =
+				layoutPageTemplateStructureRelElementVariationPersistence.
+					findByP_SEERC(plid, segmentsExperienceERC);
+
+		for (LayoutPageTemplateStructureRelElementVariation
+				layoutPageTemplateStructureRelElementVariation :
+					layoutPageTemplateStructureRelElementVariations) {
+
+			layoutPageTemplateStructureRelElementVariationPersistence.remove(
+				layoutPageTemplateStructureRelElementVariation);
+
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+					layoutPageTemplateStructureRelElementVariation.
+						getExternalReferenceCode());
+		}
+	}
+
 	public List<LayoutPageTemplateStructureRelElementVariation>
 		getLayoutPageTemplateStructureRelElementVariations(
 			boolean active, long plid, String segmentsExperienceERC) {

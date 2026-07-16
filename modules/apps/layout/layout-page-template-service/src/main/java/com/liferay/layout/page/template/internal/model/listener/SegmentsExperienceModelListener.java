@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.internal.model.listener;
 
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -28,6 +29,11 @@ public class SegmentsExperienceModelListener
 		throws ModelListenerException {
 
 		try {
+			_layoutPageTemplateStructureRelElementVariationLocalService.
+				deleteLayoutPageTemplateStructureRelElementVariations(
+					segmentsExperience.getPlid(),
+					segmentsExperience.getExternalReferenceCode());
+
 			_layoutPageTemplateStructureRelLocalService.
 				deleteLayoutPageTemplateStructureRelsBySegmentsExperienceId(
 					segmentsExperience.getSegmentsExperienceId());
@@ -50,6 +56,10 @@ public class SegmentsExperienceModelListener
 
 	@Reference(unbind = "-")
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
 
 	@Reference(unbind = "-")
 	private LayoutPageTemplateStructureRelLocalService
