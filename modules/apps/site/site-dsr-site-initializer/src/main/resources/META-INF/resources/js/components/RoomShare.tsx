@@ -417,67 +417,62 @@ function RoomShare({
 				<div className="mb-4">
 					<label className="d-block mb-3">
 						{Liferay.Language.get('email-addresses')}
+
+						<ClayIcon
+							className="ml-1 reference-mark"
+							symbol="asterisk"
+						/>
 					</label>
 
-					<div className="align-items-end d-flex">
-						<div className="dsr-site-role-input flex-grow-1 mr-3 position-relative">
-							<MultiSelect
-								allowDuplicateValues={false}
-								autoFocus={true}
-								data-testid="emailAddressesInput"
-								disabled={loading || readOnly}
-								inputName="userEmailAddresses"
-								items={emailAddresses}
-								onItemsChange={(emails: Array<any>) =>
-									setEmailAddresses(emails)
-								}
-								placeholder={Liferay.Language.get(
-									'type-a-comma-or-press-enter-to-input-email-addresses'
-								)}
-							/>
-
-							<DropDown
-								closeOnClick={true}
-								trigger={
-									<ClayButton
-										className="dsr-site-role-trigger-button"
-										data-testid="roleKeyButton"
-										disabled={loading || readOnly}
-										displayType="secondary"
-										size="xs"
-									>
-										{getRoleLabel(roleKey)}
-									</ClayButton>
-								}
-								triggerIcon="caret-bottom"
-							>
-								<DropDown.ItemList items={assignableRoles}>
-									{(item: any) => (
-										<DropDown.Item
-											data-testid={`roleKeyItem_${item.label}`}
-											key={item.key}
-											onClick={() => setRoleKey(item.key)}
-										>
-											<div className="font-weight-semi-bold">
-												{item.label}
-											</div>
-
-											<div className="small text-secondary">
-												{item.description}
-											</div>
-										</DropDown.Item>
-									)}
-								</DropDown.ItemList>
-							</DropDown>
-						</div>
-
-						<ClayButton
-							data-testid="inviteButton"
+					<div className="dsr-site-role-input position-relative">
+						<MultiSelect
+							allowDuplicateValues={false}
+							autoFocus={true}
+							data-testid="emailAddressesInput"
 							disabled={loading || readOnly}
-							onClick={handleInvite}
+							inputName="userEmailAddresses"
+							items={emailAddresses}
+							onItemsChange={(emails: Array<any>) =>
+								setEmailAddresses(emails)
+							}
+							placeholder={Liferay.Language.get(
+								'type-a-comma-or-press-enter-to-input-email-addresses'
+							)}
+						/>
+
+						<DropDown
+							closeOnClick={true}
+							trigger={
+								<ClayButton
+									className="dsr-site-role-trigger-button"
+									data-testid="roleKeyButton"
+									disabled={loading || readOnly}
+									displayType="secondary"
+									size="xs"
+								>
+									{getRoleLabel(roleKey)}
+								</ClayButton>
+							}
+							triggerIcon="caret-bottom"
 						>
-							{Liferay.Language.get('invite')}
-						</ClayButton>
+							<DropDown.ItemList items={assignableRoles}>
+								{(item: any) => (
+									<DropDown.Item
+										data-testid={`roleKeyItem_${item.label}`}
+										key={item.key}
+										onClick={() => setRoleKey(item.key)}
+									>
+										<div className="font-weight-semi-bold">
+											{item.label}
+										</div>
+
+										<div className="small text-secondary">
+											{item.description}
+										</div>
+									</DropDown.Item>
+								)}
+							</DropDown.ItemList>
+						</DropDown>
 					</div>
 
 					<div className="align-items-center border d-flex justify-content-between mt-3 px-3 py-2 rounded">
@@ -519,6 +514,15 @@ function RoomShare({
 							/>
 						</div>
 					</div>
+
+					<ClayButton
+						className="mt-3"
+						data-testid="inviteButton"
+						disabled={loading || readOnly || !emailAddresses.length}
+						onClick={handleInvite}
+					>
+						{Liferay.Language.get('invite')}
+					</ClayButton>
 				</div>
 
 				<div className="mt-4">
