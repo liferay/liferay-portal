@@ -7,8 +7,14 @@ package com.liferay.layout.page.template.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.internal.portlet.constants.LayoutPageTemplatePortletKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariationAudienceEntryRel;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -30,13 +36,13 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -78,13 +84,128 @@ public class SegmentsExperienceModelListenerTest {
 	}
 
 	@Test
-	public void test() throws Exception {
+	@TestInfo({"LPD-75847", "LPD-98435"})
+	public void testOnBeforeRemove() throws Exception {
+		_testOnBeforeRemoveWithFragmentEntryLinks();
+		_testOnBeforeRemoveWithLayoutPageTemplateStructureRelElementVariation();
+		_testOnBeforeRemoveWithLayoutPageTemplateStructureRels();
+		_testOnBeforeRemoveWithPortletPreferences();
+	}
+
+	private SegmentsExperience _getSegmentsExperience(String portletId)
+		throws Exception {
+
 		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.addSegmentsExperience(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				RandomTestUtil.randomString(), null, _layout.getPlid(),
-				RandomTestUtil.randomLocaleStringMap(), true,
-				new UnicodeProperties(true), _serviceContext);
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				"portletId", portletId
+			).toString(),
+			StringPool.BLANK, StringPool.BLANK, null, null, StringPool.BLANK,
+			StringPool.BLANK, _layout, StringPool.BLANK,
+			segmentsExperience.getSegmentsExperienceId(),
+			FragmentConstants.TYPE_PORTLET);
+
+		return segmentsExperience;
+	}
+
+	private void _testOnBeforeRemoveWithFragmentEntryLinks() throws Exception {
+		SegmentsExperience segmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			"{}", _layout, segmentsExperience.getSegmentsExperienceId());
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinksBySegmentsExperienceId(
+					_group.getGroupId(),
+					segmentsExperience.getSegmentsExperienceId(),
+					_layout.getPlid());
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			segmentsExperience);
+
+		fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinksBySegmentsExperienceId(
+					_group.getGroupId(),
+					segmentsExperience.getSegmentsExperienceId(),
+					_layout.getPlid());
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 0, fragmentEntryLinks.size());
+	}
+
+	private void _testOnBeforeRemoveWithLayoutPageTemplateStructureRelElementVariation()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_layoutPageTemplateStructureRelElementVariationLocalService.
+			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				_group.getGroupId(), true, RandomTestUtil.randomString(),
+				Collections.emptyMap(), Collections.emptyMap(),
+				RandomTestUtil.randomString(), _layout.getPlid(),
+				segmentsExperience.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
+				new String[] {RandomTestUtil.randomString()}, _serviceContext);
+
+		List<LayoutPageTemplateStructureRelElementVariation>
+			layoutPageTemplateStructureRelElementVariations =
+				_layoutPageTemplateStructureRelElementVariationLocalService.
+					getLayoutPageTemplateStructureRelElementVariations(
+						_layout.getPlid(),
+						segmentsExperience.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			layoutPageTemplateStructureRelElementVariations.toString(), 1,
+			layoutPageTemplateStructureRelElementVariations.size());
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			segmentsExperience);
+
+		layoutPageTemplateStructureRelElementVariations =
+			_layoutPageTemplateStructureRelElementVariationLocalService.
+				getLayoutPageTemplateStructureRelElementVariations(
+					_layout.getPlid(),
+					segmentsExperience.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			layoutPageTemplateStructureRelElementVariations.toString(), 0,
+			layoutPageTemplateStructureRelElementVariations.size());
+
+		List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels =
+				_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+					getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+						externalReferenceCode);
+
+		Assert.assertEquals(
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
+				toString(),
+			0,
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
+				size());
+	}
+
+	private void _testOnBeforeRemoveWithLayoutPageTemplateStructureRels()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
 		int count = 5;
 
@@ -120,11 +241,7 @@ public class SegmentsExperienceModelListenerTest {
 			layoutPageTemplateStructureRels.size());
 	}
 
-	@Test
-	@TestInfo("LPD-75847")
-	public void testDeleteSegmentsExperienceKeepsNoninstanceablePortletPreferences()
-		throws Exception {
-
+	private void _testOnBeforeRemoveWithPortletPreferences() throws Exception {
 		String portletId = PortletIdCodec.encode(
 			LayoutPageTemplatePortletKeys.
 				LAYOUT_PAGE_TEMPLATE_NONINSTANCEABLE_TEST_PORTLET,
@@ -163,29 +280,22 @@ public class SegmentsExperienceModelListenerTest {
 				portletId));
 	}
 
-	private SegmentsExperience _getSegmentsExperience(String portletId)
-		throws Exception {
-
-		SegmentsExperience segmentsExperience =
-			SegmentsTestUtil.addSegmentsExperience(
-				_group.getGroupId(), _layout.getPlid());
-
-		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-			JSONUtil.put(
-				"portletId", portletId
-			).toString(),
-			StringPool.BLANK, StringPool.BLANK, null, null, StringPool.BLANK,
-			StringPool.BLANK, _layout, StringPool.BLANK,
-			segmentsExperience.getSegmentsExperienceId(),
-			FragmentConstants.TYPE_PORTLET);
-
-		return segmentsExperience;
-	}
+	@Inject
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
 
 	private Layout _layout;
+
+	@Inject
+	private
+		LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureRelElementVariationLocalService
+		_layoutPageTemplateStructureRelElementVariationLocalService;
 
 	@Inject
 	private LayoutPageTemplateStructureRelLocalService
