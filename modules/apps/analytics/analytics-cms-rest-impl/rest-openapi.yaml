@@ -150,6 +150,12 @@ components:
                     type: string
                 title:
                     type: string
+        PerformanceHistogramMetric:
+            properties:
+                histograms:
+                    items:
+                        $ref: "#/components/schemas/Histogram"
+                    type: array
         PerformanceMetric:
             properties:
                 metricType:
@@ -619,6 +625,35 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PerformanceAssetConsumption"
             tags: ["PerformanceAssetConsumption"]
+    "/performance-histogram-metric":
+        get:
+            operationId: getPerformanceHistogramMetric
+            parameters:
+                -   in: query
+                    name: depotEntryIds
+                    schema:
+                        items:
+                            format: int64
+                            type: integer
+                        type: array
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: selectedMetric
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PerformanceHistogramMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PerformanceHistogramMetric"
+            tags: ["PerformanceHistogramMetric"]
     "/performance-metric":
         get:
             operationId: getPerformanceMetric
