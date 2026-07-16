@@ -119,6 +119,31 @@ describe('RoomShare', () => {
 		expect(
 			container.querySelector('[data-testid="inviteButton"]')
 		).toBeInTheDocument();
+		expect(container.querySelector('.reference-mark')).toBeInTheDocument();
+	});
+
+	it('disables the invite button until an email address is added', async () => {
+		const {container} = renderComponent({
+			roomId: 10,
+		});
+
+		await waitFor(() => {
+			expect(screen.getByText('John Doe')).toBeInTheDocument();
+		});
+
+		const inviteButton = container.querySelector(
+			'[data-testid="inviteButton"]'
+		) as HTMLButtonElement;
+
+		expect(inviteButton).toBeDisabled();
+
+		const emailInput = container.querySelector(
+			'[data-testid="emailAddressesInput"]'
+		) as HTMLInputElement;
+
+		await userEvent.type(emailInput, 'newuser@liferay.com,');
+
+		expect(inviteButton).not.toBeDisabled();
 	});
 
 	it('loads and displays users', async () => {
