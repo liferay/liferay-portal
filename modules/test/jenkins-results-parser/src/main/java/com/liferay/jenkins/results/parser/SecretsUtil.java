@@ -127,6 +127,11 @@ public abstract class SecretsUtil {
 			return;
 		}
 
+		if (JenkinsResultsParserUtil.isURL(cachedSecretsURL)) {
+			throw new IOException(
+				"Unable to write 1Password cache to " + cachedSecretsURL);
+		}
+
 		String filePrefix = "file://";
 
 		if (cachedSecretsURL.startsWith(filePrefix)) {
@@ -888,6 +893,8 @@ public abstract class SecretsUtil {
 					" secrets from ", _getCachedSecretsURL()));
 		}
 		catch (Exception exception) {
+			exception.printStackTrace();
+
 			_cachedSecrets = null;
 		}
 	}
@@ -899,8 +906,8 @@ public abstract class SecretsUtil {
 			Process process = JenkinsResultsParserUtil.executeBashCommands(
 				new File("."), true, false, 60000,
 				JenkinsResultsParserUtil.combine(
-					"aws s3 cp --quiet ", s3ObjectURL, " ",
-					JenkinsResultsParserUtil.getCanonicalPath(tempFile)));
+					"aws s3 cp --quiet \"", s3ObjectURL, "\" \"",
+					JenkinsResultsParserUtil.getCanonicalPath(tempFile), "\""));
 
 			if (process.exitValue() != 0) {
 				String errorMessage = JenkinsResultsParserUtil.readInputStream(
