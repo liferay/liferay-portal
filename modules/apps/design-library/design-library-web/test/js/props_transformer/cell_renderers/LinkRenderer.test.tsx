@@ -96,4 +96,28 @@ describe('LinkRenderer', () => {
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 		expect(screen.getByText('Set 1')).toBeInTheDocument();
 	});
+
+	it('decorates the link href with backURL and redirect when the action target is a portlet link', () => {
+		_renderLinkRenderer({
+			actions: [
+				{
+					data: {id: 'edit'},
+					href: '/o/fragment?p_p_id=fragment_portlet',
+					label: 'edit',
+					target: 'link',
+				},
+			],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+		});
+
+		const href = screen
+			.getByRole('link', {name: 'Set 1'})
+			.getAttribute('href');
+
+		expect(href).toContain('_fragment_portlet_backURL=');
+		expect(href).toContain('_fragment_portlet_redirect=');
+	});
 });
