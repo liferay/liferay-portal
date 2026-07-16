@@ -78,4 +78,30 @@ public class FaroProjectImplTest {
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.1.99"));
 	}
 
+	@Test
+	public void testIsDataPlatform() throws Exception {
+		FaroProject faroProject = new FaroProjectImpl();
+
+		faroProject.setSubscription(
+			JSONUtil.put(
+				"name", "Liferay Data Platform Enterprise"
+			).toString());
+
+		Assert.assertTrue(faroProject.isDataPlatform());
+
+		faroProject.setSubscription(
+			JSONUtil.put(
+				"name", "Liferay Data Platform (Private Beta)"
+			).toString());
+
+		Assert.assertTrue(faroProject.isDataPlatform());
+
+		faroProject.setSubscription(
+			JSONUtil.put(
+				"name", "Liferay Analytics Cloud Business"
+			).toString());
+
+		Assert.assertFalse(faroProject.isDataPlatform());
+	}
+
 }
