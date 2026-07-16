@@ -12,7 +12,6 @@ import {
 	render,
 	screen,
 	waitForElementToBeRemoved,
-	within,
 } from '@testing-library/react';
 import React from 'react';
 
@@ -117,10 +116,9 @@ describe('[CMS Dashboard] Components: ContentAndFilesCard', () => {
 		expect(trendParent).toHaveTextContent('42%');
 		expect(trendParent).toHaveClass('text-success');
 
-		const trendIcon = within(trendParent).getByRole('presentation', {
-			name: 'caret-top',
-		});
-		expect(trendIcon).toBeInTheDocument();
+		expect(
+			trendParent.querySelector('.lexicon-icon-caret-top')
+		).toBeInTheDocument();
 	});
 
 	it('renders correctly with NEGATIVE trend', async () => {
@@ -147,10 +145,9 @@ describe('[CMS Dashboard] Components: ContentAndFilesCard', () => {
 		expect(trendParent).toHaveTextContent('42%');
 		expect(trendParent).toHaveClass('text-danger');
 
-		const trendIcon = within(trendParent).getByRole('presentation', {
-			name: 'caret-bottom',
-		});
-		expect(trendIcon).toBeInTheDocument();
+		expect(
+			trendParent.querySelector('.lexicon-icon-caret-bottom')
+		).toBeInTheDocument();
 	});
 
 	it('formats percentage to two decimal places correctly', async () => {
