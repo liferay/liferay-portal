@@ -5,7 +5,7 @@
 
 package com.liferay.mcp.server.web.internal.portlet;
 
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebPortletKeys;
+import com.liferay.mcp.server.web.internal.constants.MCPServerPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
 import jakarta.portlet.Portlet;
@@ -32,12 +32,12 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view_data_masks.jsp",
-		"jakarta.portlet.name=" + MCPServerWebPortletKeys.MCP_SERVER_WEB,
+		"jakarta.portlet.name=" + MCPServerPortletKeys.MCP_SERVER,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
 		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )
-public class MCPServerWebPortlet extends MVCPortlet {
+public class MCPServerPortlet extends MVCPortlet {
 }

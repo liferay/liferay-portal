@@ -8,9 +8,9 @@ package com.liferay.mcp.server.web.internal.constants;
 /**
  * @author Jose Luis Navarro
  */
-public class MCPServerWebPortletKeys {
+public class MCPServerPortletKeys {
 
-	public static final String MCP_SERVER_WEB =
-		"com_liferay_mcp_server_web_internal_portlet_MCPServerWebPortlet";
+	public static final String MCP_SERVER =
+		"com_liferay_mcp_server_web_internal_portlet_MCPServerPortlet";
 
 }

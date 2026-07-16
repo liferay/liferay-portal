@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 const DATA_MASKS_URL =
-	'/group/guest/~/control_panel/manage?p_p_id=com_liferay_mcp_server_web_internal_portlet_MCPServerWebPortlet';
+	'/group/guest/~/control_panel/manage?p_p_id=com_liferay_mcp_server_web_internal_portlet_MCPServerPortlet';
 
 export class DataMasksPage {
 	readonly addFilterButton: Locator;

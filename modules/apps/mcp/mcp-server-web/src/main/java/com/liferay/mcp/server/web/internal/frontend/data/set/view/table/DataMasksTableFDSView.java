@@ -10,7 +10,7 @@ import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebFDSNames;
+import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 
 import java.util.Locale;
 
@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jose Luis Navarro
  */
 @Component(
-	property = "frontend.data.set.name=" + MCPServerWebFDSNames.DATA_MASKS,
+	property = "frontend.data.set.name=" + MCPServerFDSNames.DATA_MASKS,
 	service = FDSView.class
 )
 public class DataMasksTableFDSView extends BaseTableFDSView {

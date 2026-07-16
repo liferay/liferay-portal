@@ -8,7 +8,7 @@ package com.liferay.mcp.server.web.internal.frontend.data.set.filter;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebFDSNames;
+import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Jose Luis Navarro
  */
 @Component(
-	property = "frontend.data.set.name=" + MCPServerWebFDSNames.DATA_MASKS,
+	property = "frontend.data.set.name=" + MCPServerFDSNames.DATA_MASKS,
 	service = FDSFilter.class
 )
 public class MaskTypeSelectionFDSFilter extends BaseSelectionFDSFilter {

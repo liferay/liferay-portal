@@ -11,7 +11,7 @@ import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebFDSNames;
+import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -87,7 +87,7 @@ public class ViewDataMasksDisplayContext {
 	}
 
 	public String getFDSName() {
-		return MCPServerWebFDSNames.DATA_MASKS;
+		return MCPServerFDSNames.DATA_MASKS;
 	}
 
 	public FDSSortItemList getFDSSortItemList() {

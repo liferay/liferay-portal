@@ -5,7 +5,7 @@
 
 package com.liferay.mcp.server.web.internal.portlet.action;
 
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebPortletKeys;
+import com.liferay.mcp.server.web.internal.constants.MCPServerPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
 import jakarta.portlet.RenderRequest;
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"jakarta.portlet.name=" + MCPServerWebPortletKeys.MCP_SERVER_WEB,
+		"jakarta.portlet.name=" + MCPServerPortletKeys.MCP_SERVER,
 		"mvc.command.name=/mcp_server/edit_data_mask"
 	},
 	service = MVCRenderCommand.class

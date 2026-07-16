@@ -8,9 +8,9 @@ package com.liferay.mcp.server.web.internal.constants;
 /**
  * @author Jose Luis Navarro
  */
-public class MCPServerWebFDSNames {
+public class MCPServerFDSNames {
 
 	public static final String DATA_MASKS =
-		MCPServerWebPortletKeys.MCP_SERVER_WEB + "-dataMasks";
+		MCPServerPortletKeys.MCP_SERVER + "-dataMasks";
 
 }

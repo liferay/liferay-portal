@@ -8,7 +8,7 @@ package com.liferay.mcp.server.web.internal.application.list;
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
-import com.liferay.mcp.server.web.internal.constants.MCPServerWebPortletKeys;
+import com.liferay.mcp.server.web.internal.constants.MCPServerPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -41,7 +41,7 @@ public class MCPServerPanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return MCPServerWebPortletKeys.MCP_SERVER_WEB;
+		return MCPServerPortletKeys.MCP_SERVER;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class MCPServerPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(jakarta.portlet.name=" + MCPServerWebPortletKeys.MCP_SERVER_WEB + ")"
+		target = "(jakarta.portlet.name=" + MCPServerPortletKeys.MCP_SERVER + ")"
 	)
 	private Portlet _portlet;
 

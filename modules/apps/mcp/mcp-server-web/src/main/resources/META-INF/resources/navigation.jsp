@@ -9,5 +9,5 @@
 
 <clay:navigation-bar
 	inverted="<%= false %>"
-	navigationItems="<%= mcpServerWebNavigationDisplayContext.getNavigationItems() %>"
+	navigationItems="<%= mcpServerNavigationDisplayContext.getNavigationItems() %>"
 />

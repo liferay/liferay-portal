@@ -20,9 +20,9 @@ import java.util.List;
 /**
  * @author Jose Luis Navarro
  */
-public class MCPServerWebNavigationDisplayContext {
+public class MCPServerNavigationDisplayContext {
 
-	public MCPServerWebNavigationDisplayContext(
+	public MCPServerNavigationDisplayContext(
 		HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
