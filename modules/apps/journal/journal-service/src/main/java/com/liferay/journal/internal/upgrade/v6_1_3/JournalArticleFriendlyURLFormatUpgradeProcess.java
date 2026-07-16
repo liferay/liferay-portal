@@ -37,8 +37,7 @@ public class JournalArticleFriendlyURLFormatUpgradeProcess
 				StringBundler.concat(
 					"select distinct ctCollectionId, friendlyURLEntryId, ",
 					"languageId, urlTitle, groupId, classPK from ",
-					"FriendlyURLEntryLocalization where urlTitle like '%/' ",
-					"and classNameId = ?"));
+					"FriendlyURLEntryLocalization where classNameId = ?"));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				"select defaultLanguageId from JournalArticle where " +
 					"resourcePrimKey = ?")) {
