@@ -104,25 +104,27 @@ public class OAuth2JWKValidatorUtilTest {
 	}
 
 	@Test
-	public void testValidateJWKWithUnknownKeyType() {
-		Assert.assertThrows(
-			SecurityException.class,
-			() -> OAuth2JWKValidatorUtil.validateJWK(
-				JSONUtil.put(
-					"alg", "RS256"
-				).put(
-					"kty", "OKP"
-				).toString()));
+	public void testValidateJWKWithUnsupportedKeyType() {
+		for (String keyType : new String[] {"OKP", "oct"}) {
+			Assert.assertThrows(
+				SecurityException.class,
+				() -> OAuth2JWKValidatorUtil.validateJWK(
+					JSONUtil.put(
+						"alg", "RS256"
+					).put(
+						"kty", keyType
+					).toString()));
+		}
 	}
 
 	@Test
 	public void testValidateJWSAlgorithm() {
 		_testValidateJWSAlgorithm(
-			false, null, StringPool.BLANK, "ES256K", "EdDSA", "HS1", "RS1",
-			"RSA1_5", "garbage", "none", "rs256");
+			false, null, StringPool.BLANK, "ES256K", "EdDSA", "HS1", "HS256",
+			"HS384", "HS512", "RS1", "RSA1_5", "garbage", "none", "rs256");
 		_testValidateJWSAlgorithm(
-			true, "ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "PS256",
-			"PS384", "PS512", "RS256", "RS384", "RS512");
+			true, "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256",
+			"RS384", "RS512");
 	}
 
 	private String _generateECJWK(String algorithm, String curve) {
