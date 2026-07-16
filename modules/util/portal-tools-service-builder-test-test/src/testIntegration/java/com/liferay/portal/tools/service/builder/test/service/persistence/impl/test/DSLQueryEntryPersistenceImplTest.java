@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
@@ -69,6 +70,22 @@ public class DSLQueryEntryPersistenceImplTest {
 			_testDSLQueryEntry1, 2L, _TEST_STATUS_2, _currentTime);
 		_addDSLQueryStatusEntry(
 			_testDSLQueryEntry2, 3L, _TEST_STATUS_1, _currentTime - 1);
+	}
+
+	@Test
+	public void testDSLQueryAverage() {
+		List<Object> results = _dslQueryStatusEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				DSLFunctionFactoryUtil.avg(
+					DSLQueryStatusEntryTable.INSTANCE.weight
+				).as(
+					"average"
+				)
+			).from(
+				DSLQueryStatusEntryTable.INSTANCE
+			));
+
+		Assert.assertEquals(2.0, GetterUtil.getDouble(results.get(0)), 0.0);
 	}
 
 	@Test
@@ -550,6 +567,7 @@ public class DSLQueryEntryPersistenceImplTest {
 
 		dslQueryStatusEntry.setDslQueryEntryId(
 			dslQueryEntry.getDslQueryEntryId());
+		dslQueryStatusEntry.setWeight(id);
 		dslQueryStatusEntry.setStatus(status);
 		dslQueryStatusEntry.setStatusDate(new Date(time));
 
