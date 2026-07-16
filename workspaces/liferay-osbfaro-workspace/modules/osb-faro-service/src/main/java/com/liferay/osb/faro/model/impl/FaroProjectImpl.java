@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.model.impl;
 
+import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -82,6 +83,35 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isDataPlatform() {
+		try {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+				getSubscription());
+
+			String name = jsonObject.getString("name");
+
+			if (StringUtil.equals(
+					name,
+					ProductConstants.
+						DATA_PLATFORM_ENTERPRISE_PRODUCT_ENTRY_NAME) ||
+				StringUtil.equals(
+					name,
+					ProductConstants.
+						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME)) {
+
+				return true;
+			}
+
+			return false;
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+
+			return false;
+		}
 	}
 
 	@Override

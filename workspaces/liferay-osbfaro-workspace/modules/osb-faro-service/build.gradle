@@ -7,4 +7,5 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
 	compileOnly project(":modules:osb-faro-api")
+	compileOnly project(":modules:osb-faro-provisioning-client")
 }
