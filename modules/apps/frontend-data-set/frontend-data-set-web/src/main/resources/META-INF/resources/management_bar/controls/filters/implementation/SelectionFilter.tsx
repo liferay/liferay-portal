@@ -29,6 +29,7 @@ import {
 	FilterImplementationArgs,
 	IOdataStringArgs,
 	ISelectedItemsLabelArgs,
+	ISelectedItemsPreview,
 } from '../Filter';
 import {EEntityFieldType} from '../utils/types';
 
@@ -73,6 +74,7 @@ interface SearchOptions {
 
 const DEFAULT_DEBOUNCE_DELAY = 300;
 const DEFAULT_PAGE_SIZE = 10;
+const PREVIEW_ITEMS_COUNT = 3;
 
 function fetchData(
 	apiURL: string,
@@ -104,6 +106,21 @@ function getSelectedItemsLabel({
 		(exclude ? `(${Liferay.Language.get('exclude')}) ` : '') +
 		selectedItems.map((item) => item.label).join(', ')
 	);
+}
+
+function getSelectedItemsPreview({
+	selectedData,
+}: ISelectedItemsLabelArgs): ISelectedItemsPreview {
+	const {exclude, selectedItems} = selectedData as unknown as SelectedData;
+
+	const visibleItems = selectedItems.slice(0, PREVIEW_ITEMS_COUNT);
+
+	return {
+		hiddenItemsCount: selectedItems.length - visibleItems.length,
+		label:
+			(exclude ? `(${Liferay.Language.get('exclude')}) ` : '') +
+			visibleItems.map((item) => item.label).join(', '),
+	};
 }
 
 function getOdataString({
@@ -563,6 +580,7 @@ const filterImplementation: FilterImplementation<SelectionFilterImplementationAr
 		Component: SelectionFilter,
 		getOdataString,
 		getSelectedItemsLabel,
+		getSelectedItemsPreview,
 	};
 
 export default filterImplementation;

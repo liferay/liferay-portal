@@ -33,12 +33,21 @@ export interface ISelectedItemsLabelArgs {
 	clientExtensionFilterURL?: string;
 	selectedData?: Record<string, unknown>;
 }
+
+export interface ISelectedItemsPreview {
+	hiddenItemsCount: number;
+	label: string;
+}
+
 export interface FilterImplementation<
 	T extends FilterImplementationArgs<unknown>,
 > {
 	Component: (args: T) => ReactElement;
 	getOdataString: (args: IOdataStringArgs) => string;
 	getSelectedItemsLabel: (args: ISelectedItemsLabelArgs) => string;
+	getSelectedItemsPreview?: (
+		args: ISelectedItemsLabelArgs
+	) => ISelectedItemsPreview;
 }
 
 export interface FilterImplementationArgs<T> {

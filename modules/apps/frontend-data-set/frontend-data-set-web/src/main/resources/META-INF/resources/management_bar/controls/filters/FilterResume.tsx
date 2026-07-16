@@ -6,7 +6,9 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import classNames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useContext, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
@@ -29,19 +31,14 @@ function FilterResume({
 
 	const filterImplementation = FILTER_IMPLEMENTATIONS[type];
 
-	const button = (
-		<ClayButton
-			className={classNames(
-				'c-ml-2',
-				'component-label',
-				'filter-resume',
-				'tbar-label',
-				open && 'active'
-			)}
-			disabled={disabled}
-			displayType="secondary"
-			size="sm"
-		>
+	const {hiddenItemsCount, label: selectedItemsLabel} =
+		filterImplementation.getSelectedItemsPreview?.(filter) ?? {
+			hiddenItemsCount: 0,
+			label: filterImplementation.getSelectedItemsLabel(filter),
+		};
+
+	const labelContent = (
+		<>
 			<span className="inline-item inline-item-before">
 				<ClayIcon symbol={open ? 'caret-top' : 'caret-bottom'} />
 			</span>
@@ -49,52 +46,102 @@ function FilterResume({
 			<span className="label-section">
 				<span>{`${label}: `}</span>
 
-				<strong>
-					{filterImplementation.getSelectedItemsLabel(filter)}
-				</strong>
+				<strong>{selectedItemsLabel}</strong>
 			</span>
-		</ClayButton>
+		</>
 	);
 
-	const dropDownButtonGroup = (
-		<ClayButton.Group>
-			<ClayDropDown
-				active={open}
-				className="d-inline-flex"
-				onActiveChange={setOpen}
-				trigger={button}
-			>
-				<li className="dropdown-subheader">{label}</li>
-
-				<Filter {...filter} onClose={() => setOpen(false)} />
-			</ClayDropDown>
-
+	if (disabled) {
+		return (
 			<ClayButton
-				aria-label={Liferay.Language.get('remove-filter')}
-				className="filter-resume-close"
-				disabled={disabled}
+				className={classNames(
+					'c-ml-2',
+					'component-label',
+					'filter-resume',
+					'tbar-label'
+				)}
+				disabled
 				displayType="secondary"
-				monospaced
-				onClick={() => {
-					const filter = globalFDSState.filters.find(
-						(filter) => filter.id === id
-					);
-
-					if (!filter) {
-						return;
-					}
-
-					onFilterChange({changedFilter: deactivateFilter(filter)});
-				}}
 				size="sm"
-				title={Liferay.Language.get('remove-filter')}
 			>
-				<ClayIcon symbol="times-small" />
+				{labelContent}
 			</ClayButton>
-		</ClayButton.Group>
-	);
+		);
+	}
 
-	return disabled ? button : dropDownButtonGroup;
+	return (
+		<span
+			className={classNames(
+				'c-ml-2',
+				'component-label',
+				'filter-resume',
+				'label',
+				'label-dismissible',
+				'label-lg',
+				'label-secondary',
+				'tbar-label',
+				open && 'active'
+			)}
+		>
+			<ClayLabel.ItemExpand>
+				<ClayDropDown
+					active={open}
+					className="d-inline-flex"
+					onActiveChange={setOpen}
+					trigger={
+						<ClayButton
+							className="filter-resume-trigger"
+							displayType="unstyled"
+						>
+							{labelContent}
+						</ClayButton>
+					}
+				>
+					<li className="dropdown-subheader">{label}</li>
+
+					<Filter {...filter} onClose={() => setOpen(false)} />
+				</ClayDropDown>
+			</ClayLabel.ItemExpand>
+
+			{hiddenItemsCount > 0 && (
+				<ClayLabel.ItemAfter>
+					<span
+						aria-label={sub(
+							Liferay.Language.get('and-x-more'),
+							hiddenItemsCount
+						)}
+						className="badge badge-secondary filter-resume-badge"
+					>
+						{`+${hiddenItemsCount}`}
+					</span>
+				</ClayLabel.ItemAfter>
+			)}
+
+			<ClayLabel.ItemAfter>
+				<button
+					aria-label={Liferay.Language.get('remove-filter')}
+					className="close"
+					onClick={() => {
+						const filter = globalFDSState.filters.find(
+							(filter) => filter.id === id
+						);
+
+						if (!filter) {
+							return;
+						}
+
+						onFilterChange({
+							changedFilter: deactivateFilter(filter),
+						});
+					}}
+					title={Liferay.Language.get('remove-filter')}
+					type="button"
+				>
+					<ClayIcon symbol="times-small" />
+				</button>
+			</ClayLabel.ItemAfter>
+		</span>
+	);
 }
 
 export default FilterResume;
