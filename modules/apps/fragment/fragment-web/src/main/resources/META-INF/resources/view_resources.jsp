@@ -15,5 +15,6 @@ FragmentCollectionResourcesDisplayContext fragmentCollectionResourcesDisplayCont
 	folderId="<%= fragmentCollectionResourcesDisplayContext.getFolderId() %>"
 	includeExtension="<%= true %>"
 	repositoryId="<%= fragmentCollectionResourcesDisplayContext.getRepositoryId() %>"
+	standaloneBreadcrumb="<%= DesignLibraryUtil.isDesignLibraryScope(themeDisplay.getScopeGroup()) %>"
 	viewableByGuest="<%= true %>"
 />

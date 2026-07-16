@@ -56,6 +56,7 @@ page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.tagl
 page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib.FragmentEntryVerticalCardFactory" %><%@
 page import="com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission" %><%@
 page import="com.liferay.fragment.web.internal.servlet.taglib.util.FragmentCollectionActionDropdownItemsProvider" %><%@
+page import="com.liferay.fragment.web.internal.util.DesignLibraryUtil" %><%@
 page import="com.liferay.frontend.taglib.servlet.taglib.util.EmptyResultMessageKeys" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
