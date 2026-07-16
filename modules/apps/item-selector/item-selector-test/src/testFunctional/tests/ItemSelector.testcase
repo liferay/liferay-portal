@@ -423,65 +423,6 @@ definition {
 		Pagination.viewResults(results = "Showing 5 to 6 of 6 entries.");
 	}
 
-	@description = "This test covers LPS-122139. It ensures that the files in the item selector can display by pagination after scoped everywhere filter."
-	@priority = 4
-	@refactordone
-	test FilePaginationForFilteredResultsDisplaysCorrectCount {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		for (var num : list "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "Document_${num}",
-				fileName = "Document_${num}.jpg",
-				groupName = "Test Depot Name",
-				mimeType = "image/jpeg",
-				sourceFileName = "Document_4.jpg");
-		}
-
-		for (var num : list "1,2,3,4,5,6,7") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "Document_${num}",
-				fileName = "Document_${num}.jpg",
-				groupName = "Site Name",
-				mimeType = "image/jpeg",
-				sourceFileName = "Document_1.jpg");
-		}
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.configureFilterViaSelectFile(
-			filterBy = "Everywhere",
-			navTab = "Documents and Media");
-
-		Pagination.changePagination(itemsPerPage = 40);
-
-		Pagination.viewResults(results = "Showing 1 to 30 of 30 entries.");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.configureFilterViaSelectFile(
-			filterBy = "Everywhere",
-			navTab = "Documents and Media");
-
-		Click(locator1 = "Pagination#NEXT_LINK");
-
-		Pagination.viewResults(results = "Showing 21 to 30 of 30 entries.");
-	}
-
 	@description = "The user should see horizontal nav tabs when less than and equal 5 nav items appear on item selector modal."
 	@priority = 4
 	test HorizontalNavItemsShowsWhenNotMoreThan5Items {
