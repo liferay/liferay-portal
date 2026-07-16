@@ -60,9 +60,8 @@ public class BreadcrumbTagTest {
 
 		_breadcrumbEntryContributorUtilMockedStatic.clearInvocations();
 
-		breadcrumbTag.setSkipEntryContributors(true);
-
 		breadcrumbTag.setAttributes(mockHttpServletRequest);
+		breadcrumbTag.setSkipEntryContributors(true);
 
 		_breadcrumbEntryContributorUtilMockedStatic.verifyNoInteractions();
 	}
