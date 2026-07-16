@@ -13,7 +13,7 @@ export type DropZone = DropPosition | 'group';
 export function getDropPosition(
 	ref: React.RefObject<HTMLElement>,
 	monitor: DropTargetMonitor,
-	canGroup: boolean
+	{canGroup}: {canGroup: boolean}
 ): DropZone | null {
 	const clientOffset = monitor.getClientOffset();
 

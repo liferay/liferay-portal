@@ -369,7 +369,8 @@ function NestedGroup({
 			}
 
 			const targetIndex =
-				getDropPosition(groupRef, monitor, false) === DROP_POSITIONS.top
+				getDropPosition(groupRef, monitor, {canGroup: false}) ===
+				DROP_POSITIONS.top
 					? index
 					: index + 1;
 
@@ -383,7 +384,7 @@ function NestedGroup({
 		hover: (_item, monitor) => {
 			setDropPosition(
 				monitor.isOver({shallow: true})
-					? getDropPosition(groupRef, monitor, false)
+					? getDropPosition(groupRef, monitor, {canGroup: false})
 					: null
 			);
 		},

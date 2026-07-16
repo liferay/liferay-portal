@@ -97,7 +97,7 @@ export default function RuleRow({
 			isOver: monitor.isOver() && monitor.canDrop(),
 		}),
 		drop: (item, monitor) => {
-			const dropZone = getDropPosition(dropItemRef, monitor, canGroup);
+			const dropZone = getDropPosition(dropItemRef, monitor, {canGroup});
 
 			const insertIndex =
 				dropZone === DROP_POSITIONS.bottom ? index + 1 : index;
@@ -120,7 +120,7 @@ export default function RuleRow({
 		hover: (_item, monitor) => {
 			setDropPosition(
 				monitor.canDrop()
-					? getDropPosition(dropItemRef, monitor, canGroup)
+					? getDropPosition(dropItemRef, monitor, {canGroup})
 					: null
 			);
 		},
