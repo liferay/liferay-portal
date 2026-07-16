@@ -110,6 +110,35 @@ public class MCPServerTestUtil {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	public static ObjectEntry addMCPServerPromptObjectEntry(
+			String description, String identifier, String name, String prompt,
+			String promptStatus)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROMPT", TestPropsValues.getCompanyId());
+
+		return ObjectEntryLocalServiceUtil.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"description", description
+			).put(
+				"identifier", identifier
+			).put(
+				"name", name
+			).put(
+				"prompt", prompt
+			).put(
+				"promptStatus", () -> promptStatus
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	public static void deleteMCPServerProfileDataMaskObjectEntry(
 			String deleteReason, ObjectEntry objectEntry)
 		throws Exception {
@@ -177,6 +206,7 @@ public class MCPServerTestUtil {
 		BatchEngineTestUtil.processBatchEngineUnits(
 			"com.liferay.mcp.server.rest.impl", MCPServerTestUtil.class,
 			new String[] {
+				prefix + "00.list.type.definition",
 				prefix + "01.object.definition",
 				prefix + "02.object.definition",
 				prefix + "03.object.definition", prefix + "04.object.entry"
