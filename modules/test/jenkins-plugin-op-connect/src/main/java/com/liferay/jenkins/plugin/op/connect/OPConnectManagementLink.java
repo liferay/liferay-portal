@@ -44,10 +44,17 @@ public class OPConnectManagementLink extends ManagementLink {
 		JSONObject jsonObject = new JSONObject(
 			staplerRequest.getParameter("json"));
 
-		String accessToken = jsonObject.getString("accessToken");
+		String accessToken = jsonObject.optString("accessToken");
+
+		if (accessToken.isEmpty()) {
+			accessToken = opConnectDescriptor.getAccessToken();
+		}
+		else {
+			opConnectDescriptor.setAccessToken(accessToken);
+		}
+
 		String connectURL = jsonObject.getString("connectURL");
 
-		opConnectDescriptor.setAccessToken(accessToken);
 		opConnectDescriptor.setConnectURL(connectURL);
 
 		List<String> vaultNames = new ArrayList<>();

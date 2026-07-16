@@ -16,17 +16,14 @@
 
 				<j:set value="${it.opConnectDescriptor}" var="descriptor" />
 
-				<st:adjunct includes="com.liferay.jenkins.plugin.op.connect.OPConnectManagementLink.reveal" />
+				<st:adjunct includes="com.liferay.jenkins.plugin.op.connect.OPConnectManagementLink.style" />
 
 				<f:form action="opConnectConfiguration" method="post" name="opConnectConfiguration">
 					<f:entry title="Connect URL">
 						<f:textbox name="connectURL" value="${it.opConnectDescriptor.getConnectURL()}" />
 					</f:entry>
 					<f:entry title="Access Token">
-						<input class="setting-input" id="op-connect-token" name="accessToken" type="password" value="${it.opConnectDescriptor.getAccessToken()}" />
-						<div>
-							<a class="op-connect-reveal-token" href="#">Show</a>
-						</div>
+						<input autocomplete="off" class="setting-input" name="accessToken" placeholder="Leave blank to keep the current access token" type="password" value="" />
 					</f:entry>
 					<f:validateButton method="testConnection" title="Test Connection" with="connectURL,accessToken" />
 					<f:section title="Vaults">

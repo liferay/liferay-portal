@@ -58,6 +58,10 @@ public class OPConnectDescriptor
 		}
 
 		if ((accessToken == null) || accessToken.isEmpty()) {
+			accessToken = getAccessToken();
+		}
+
+		if ((accessToken == null) || accessToken.isEmpty()) {
 			return FormValidation.error("Access Token is required");
 		}
 
