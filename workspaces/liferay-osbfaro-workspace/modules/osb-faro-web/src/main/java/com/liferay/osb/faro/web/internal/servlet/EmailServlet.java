@@ -7,8 +7,10 @@ package com.liferay.osb.faro.web.internal.servlet;
 
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroEmailLocalService;
+import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
@@ -82,8 +84,20 @@ public class EmailServlet extends BaseAsahServlet {
 			return;
 		}
 
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(
+				faroUser.getGroupId());
+
+		String senderEmailAddress = "ac@liferay.com";
+		String senderName = "Analytics Cloud";
+
+		if (faroProject.isDataPlatform()) {
+			senderEmailAddress = "ldp@liferay.com";
+			senderName = "Liferay Data Platform";
+		}
+
 		InternetAddress from = new InternetAddress(
-			"ac@liferay.com", "Analytics Cloud");
+			senderEmailAddress, senderName);
 
 		User user = _userLocalService.getUser(faroUser.getLiveUserId());
 
@@ -147,6 +161,9 @@ public class EmailServlet extends BaseAsahServlet {
 
 	@Reference
 	private FaroEmailLocalService _faroEmailLocalService;
+
+	@Reference
+	private FaroProjectLocalService _faroProjectLocalService;
 
 	@Reference
 	private FaroUserLocalService _faroUserLocalService;
