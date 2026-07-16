@@ -86,7 +86,9 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portlet.exportimport.staging.StagingAdvicesThreadLocal;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.model.SegmentsExperienceAudienceEntryRel;
 import com.liferay.segments.model.SegmentsExperienceModel;
+import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
@@ -751,6 +753,41 @@ public class LayoutLocalServiceWrapper
 		finally {
 			StagingAdvicesThreadLocal.setEnabled(
 				stagingAdvicesThreadLocalEnabled);
+		}
+	}
+
+	private void _copySegmentsExperienceAudienceEntryRels(
+			Layout sourceLayout, Layout targetLayout, User user)
+		throws Exception {
+
+		for (SegmentsExperience sourceSegmentsExperience :
+				_segmentsExperienceLocalService.getSegmentsExperiences(
+					sourceLayout.getGroupId(), sourceLayout.getPlid())) {
+
+			String segmentsExperienceERC = _getTargetSegmentsExperienceERC(
+				sourceSegmentsExperience.getExternalReferenceCode(),
+				sourceLayout, targetLayout);
+
+			if (segmentsExperienceERC == null) {
+				continue;
+			}
+
+			List<SegmentsExperienceAudienceEntryRel>
+				segmentsExperienceAudienceEntryRels =
+					_segmentsExperienceAudienceEntryRelLocalService.
+						getSegmentsExperienceAudienceEntryRels(
+							sourceLayout.getGroupId(),
+							sourceSegmentsExperience.
+								getExternalReferenceCode());
+
+			_segmentsExperienceAudienceEntryRelLocalService.
+				updateSegmentsExperienceAudienceEntryRels(
+					user.getUserId(), targetLayout.getGroupId(),
+					TransformUtil.transformToArray(
+						segmentsExperienceAudienceEntryRels,
+						SegmentsExperienceAudienceEntryRel::getAudienceEntryERC,
+						String.class),
+					segmentsExperienceERC);
 		}
 	}
 
@@ -1438,6 +1475,10 @@ public class LayoutLocalServiceWrapper
 	private RoleLocalService _roleLocalService;
 
 	@Reference
+	private SegmentsExperienceAudienceEntryRelLocalService
+		_segmentsExperienceAudienceEntryRelLocalService;
+
+	@Reference
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
@@ -1479,6 +1520,9 @@ public class LayoutLocalServiceWrapper
 				}
 
 				_copyLayoutPageTemplateStructureRelElementVariations(
+					_sourceLayout, _targetLayout, _user);
+
+				_copySegmentsExperienceAudienceEntryRels(
 					_sourceLayout, _targetLayout, _user);
 
 				List<String> portletIds = _getLayoutPortletIds(

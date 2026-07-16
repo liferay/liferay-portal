@@ -10,6 +10,7 @@ package com.liferay.frontend.js.audiences;
  */
 public interface ElementVariationsProvider {
 
-	public ElementVariations getElementVariations(long plid);
+	public ElementVariations getElementVariations(
+		long plid, long segmentsExperienceId);
 
 }

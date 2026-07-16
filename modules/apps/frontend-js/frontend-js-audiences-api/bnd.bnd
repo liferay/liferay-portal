@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Audiences API
 Bundle-SymbolicName: com.liferay.frontend.js.audiences.api
-Bundle-Version: 1.1.0
+Bundle-Version: 2.0.0
 Export-Package: com.liferay.frontend.js.audiences

@@ -5,8 +5,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.frontend.js.audiences;
 
-import com.liferay.audiences.model.AudiencesEntry;
-import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.frontend.js.audiences.ElementVariations;
 import com.liferay.frontend.js.audiences.ElementVariationsProvider;
 import com.liferay.layout.content.page.editor.web.internal.frontend.js.audiences.util.ElementVariationsJSUtil;
@@ -20,7 +18,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -31,10 +28,11 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.model.SegmentsExperienceAudienceEntryRel;
+import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.List;
@@ -54,7 +52,9 @@ public class ElementVariationsProviderImpl
 	implements ElementVariationsProvider {
 
 	@Override
-	public ElementVariations getElementVariations(long plid) {
+	public ElementVariations getElementVariations(
+		long plid, long segmentsExperienceId) {
+
 		Layout layout = _layoutLocalService.fetchLayout(plid);
 
 		if ((layout == null) ||
@@ -64,29 +64,35 @@ public class ElementVariationsProviderImpl
 			return null;
 		}
 
-		ElementVariations elementVariations = _portalCache.get(plid);
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperienceId);
+
+		if ((segmentsExperience == null) ||
+			(segmentsExperience.getPlid() != plid)) {
+
+			return null;
+		}
+
+		String key = plid + StringPool.POUND + segmentsExperienceId;
+
+		ElementVariations elementVariations = _portalCache.get(key);
 
 		if (elementVariations != null) {
 			return elementVariations;
 		}
 
-		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperience(
-				plid);
-
-		if (segmentsExperience == null) {
-			return null;
-		}
-
 		String content = ElementVariationsJSUtil.getContent(
 			_getElementVariationsJS(
 				plid, segmentsExperience.getExternalReferenceCode()),
-			_getSortedAudienceEntryERCs(layout.getCompanyId()));
+			_getSortedAudienceEntryERCs(
+				layout.getGroupId(),
+				segmentsExperience.getExternalReferenceCode()));
 
 		elementVariations = new ElementVariations(
 			content, HashedFilesUtil.computeHash(content));
 
-		_portalCache.put(plid, elementVariations);
+		_portalCache.put(key, elementVariations);
 
 		return elementVariations;
 	}
@@ -94,7 +100,7 @@ public class ElementVariationsProviderImpl
 	@Activate
 	protected void activate() {
 		_portalCache =
-			(PortalCache<Long, ElementVariations>)_multiVMPool.getPortalCache(
+			(PortalCache<String, ElementVariations>)_multiVMPool.getPortalCache(
 				LayoutPageTemplateStructureRelElementVariation.class.getName());
 	}
 
@@ -224,17 +230,15 @@ public class ElementVariationsProviderImpl
 		return jsonObject;
 	}
 
-	private List<String> _getSortedAudienceEntryERCs(long companyId) {
-		return TransformUtil.transform(
-			_audiencesEntryLocalService.getAudiencesEntries(
-				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				OrderByComparatorFactoryUtil.create(
-					"AudiencesEntry", "createDate", true)),
-			AudiencesEntry::getExternalReferenceCode);
-	}
+	private List<String> _getSortedAudienceEntryERCs(
+		long groupId, String segmentsExperienceERC) {
 
-	@Reference
-	private AudiencesEntryLocalService _audiencesEntryLocalService;
+		return TransformUtil.transform(
+			_segmentsExperienceAudienceEntryRelLocalService.
+				getSegmentsExperienceAudienceEntryRels(
+					groupId, segmentsExperienceERC),
+			SegmentsExperienceAudienceEntryRel::getAudienceEntryERC);
+	}
 
 	@Reference
 	private JSONFactory _jsonFactory;
@@ -257,7 +261,11 @@ public class ElementVariationsProviderImpl
 	@Reference
 	private MultiVMPool _multiVMPool;
 
-	private PortalCache<Long, ElementVariations> _portalCache;
+	private PortalCache<String, ElementVariations> _portalCache;
+
+	@Reference
+	private SegmentsExperienceAudienceEntryRelLocalService
+		_segmentsExperienceAudienceEntryRelLocalService;
 
 	@Reference
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
