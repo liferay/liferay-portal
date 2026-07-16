@@ -277,22 +277,18 @@ public class ExportProcessResourceTest
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		try {
-			ObjectEntry[] objectEntries = _addObjectEntries(
-				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
+		ObjectEntry[] objectEntries = _addObjectEntries(
+			objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
-			_testPostExportProcessWithObjectDefinition(
-				exportProcessResource::postExportProcess,
-				companyGroup.getGroupId(), objectDefinition, objectEntries);
-			_testPostExportProcessWithDateRange(
-				companyGroup.getGroupId(), objectDefinition, objectEntries);
-			_testPostExportProcessWithPermissions(
-				companyGroup.getGroupId(), objectDefinition, objectEntries);
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		_testPostExportProcessWithObjectDefinition(
+			exportProcessResource::postExportProcess, companyGroup.getGroupId(),
+			objectDefinition, objectEntries);
+		_testPostExportProcessWithDateRange(
+			companyGroup.getGroupId(), objectDefinition, objectEntries);
+		_testPostExportProcessWithPermissions(
+			companyGroup.getGroupId(), objectDefinition, objectEntries);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@FeatureFlag("LPD-38869")

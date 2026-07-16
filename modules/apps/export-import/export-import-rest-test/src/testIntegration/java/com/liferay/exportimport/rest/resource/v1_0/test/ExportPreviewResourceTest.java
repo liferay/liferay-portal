@@ -440,32 +440,27 @@ public class ExportPreviewResourceTest
 			GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		try {
-			List<ObjectEntry> objectEntries =
-				_objectEntryLocalService.getObjectEntries(
-					GroupConstants.DEFAULT_PARENT_GROUP_ID,
-					objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				GroupConstants.DEFAULT_PARENT_GROUP_ID,
+				objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-			Assert.assertEquals(
-				objectEntries.toString(), 2, objectEntries.size());
+		Assert.assertEquals(objectEntries.toString(), 2, objectEntries.size());
 
-			_objectEntryLocalService.deleteObjectEntry(objectEntries.get(0));
+		_objectEntryLocalService.deleteObjectEntry(objectEntries.get(0));
 
-			PreviewPortletDataHandler previewPortletDataHandler =
-				_getPreviewPortletDataHandler(
-					exportPreviewResource.getExportPreview(null, null),
-					"PORTLET_DATA_" + objectDefinition.getPortletId());
+		PreviewPortletDataHandler previewPortletDataHandler =
+			_getPreviewPortletDataHandler(
+				exportPreviewResource.getExportPreview(null, null),
+				"PORTLET_DATA_" + objectDefinition.getPortletId());
 
-			Assert.assertEquals(
-				Long.valueOf(1), previewPortletDataHandler.getAdditionCount());
-			Assert.assertEquals(
-				Long.valueOf(1), previewPortletDataHandler.getDeletionCount());
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		Assert.assertEquals(
+			Long.valueOf(1), previewPortletDataHandler.getAdditionCount());
+		Assert.assertEquals(
+			Long.valueOf(1), previewPortletDataHandler.getDeletionCount());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private void _testGetExportPreviewWithDifferentScope(
