@@ -55,43 +55,38 @@ public class CMSFeatureFlagListenerTest {
 			titleMaps.put(name, role.getTitleMap());
 		}
 
-		try {
-			_featureFlagListener.onValue(companyId, "LPD-17564", false);
+		_featureFlagListener.onValue(companyId, "LPD-17564", false);
 
-			Map<String, String> titleMap = new HashMap<>();
+		Map<String, String> titleMap = new HashMap<>();
 
-			for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
-				Role role = _roleLocalService.getRole(companyId, name);
+		for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
+			Role role = _roleLocalService.getRole(companyId, name);
 
-				titleMap.put(name, role.getTitle(locale));
-			}
-
-			_featureFlagListener.onValue(companyId, "LPD-17564", true);
-
-			_assertTitle(
-				LanguageUtil.get(locale, "depot-administrator"),
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
-			_assertTitle(
-				LanguageUtil.get(locale, "depot-member"),
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
-			_assertTitle(
-				LanguageUtil.get(locale, "depot-owner"),
-				DepotRolesConstants.ASSET_LIBRARY_OWNER);
-
-			_featureFlagListener.onValue(companyId, "LPD-17564", false);
-
-			for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
-				_assertTitle(name, titleMap.get(name));
-			}
+			titleMap.put(name, role.getTitle(locale));
 		}
-		finally {
-			for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
-				Role role = _roleLocalService.getRole(companyId, name);
 
-				role.setTitleMap(titleMaps.get(name));
+		_featureFlagListener.onValue(companyId, "LPD-17564", true);
 
-				_roleLocalService.updateRole(role);
-			}
+		_assertTitle(
+			LanguageUtil.get(locale, "depot-administrator"),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
+		_assertTitle(
+			LanguageUtil.get(locale, "depot-member"),
+			DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+		_assertTitle(
+			LanguageUtil.get(locale, "depot-owner"),
+			DepotRolesConstants.ASSET_LIBRARY_OWNER);
+
+		_featureFlagListener.onValue(companyId, "LPD-17564", false);
+
+		for (String name : DepotRolesConstants.DEPOT_ROLE_NAMES) {
+			_assertTitle(name, titleMap.get(name));
+
+			Role role = _roleLocalService.getRole(companyId, name);
+
+			role.setTitleMap(titleMaps.get(name));
+
+			_roleLocalService.updateRole(role);
 		}
 	}
 
