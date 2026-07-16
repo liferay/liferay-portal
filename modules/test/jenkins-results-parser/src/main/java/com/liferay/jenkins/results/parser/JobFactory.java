@@ -264,6 +264,14 @@ public class JobFactory {
 			testSuiteName, upstreamBranchName);
 	}
 
+	public static Job newJob(
+		Job.BuildProfile buildProfile, String jobName, String testSuiteName) {
+
+		return _newJob(
+			buildProfile, jobName, null, null, null, null, null, null,
+			testSuiteName, null);
+	}
+
 	public static Job newJob(JSONObject jsonObject) {
 		return _newJob(
 			null, null, jsonObject, null, null, null, null, null, null, null);
