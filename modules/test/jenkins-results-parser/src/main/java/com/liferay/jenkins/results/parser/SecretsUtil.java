@@ -69,8 +69,8 @@ public abstract class SecretsUtil {
 		String secretReference = _getSecretReference(
 			vaultName, itemTitle, fieldLabel);
 
-		if (_secrets.containsKey(secretReference)) {
-			return _secrets.get(secretReference);
+		if (_connectSecrets.containsKey(secretReference)) {
+			return _connectSecrets.get(secretReference);
 		}
 
 		String cachedSecret = _getCachedSecret(secretReference);
@@ -81,7 +81,7 @@ public abstract class SecretsUtil {
 
 		_loadConnectSecrets();
 
-		String secret = _secrets.get(secretReference);
+		String secret = _connectSecrets.get(secretReference);
 
 		if (secret == null) {
 			System.out.println("Unable to find secret " + secretReference);
@@ -571,7 +571,7 @@ public abstract class SecretsUtil {
 
 		_loadConnectSecrets();
 
-		JSONObject jsonObject = new JSONObject(_secrets);
+		JSONObject jsonObject = new JSONObject(_connectSecrets);
 
 		String encryptedCachedSecrets = null;
 
@@ -682,7 +682,7 @@ public abstract class SecretsUtil {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Loaded ", String.valueOf(_cachedSecrets.size()),
-					" secrets from ", _getCachedSecretsURL()));
+					" cached secrets from ", _getCachedSecretsURL()));
 		}
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -721,16 +721,16 @@ public abstract class SecretsUtil {
 					String itemFieldId = itemField.getId();
 					String itemFieldLabel = itemField.getLabel();
 
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(vaultName, itemId, itemFieldId),
 						itemFieldValue);
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(vaultName, itemId, itemFieldLabel),
 						itemFieldValue);
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(vaultName, itemTitle, itemFieldId),
 						itemFieldValue);
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(
 							vaultName, itemTitle, itemFieldLabel),
 						itemFieldValue);
@@ -745,10 +745,10 @@ public abstract class SecretsUtil {
 
 					String itemFileName = itemFile.getName();
 
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(vaultName, itemId, itemFileName),
 						itemFileValue);
-					_secrets.put(
+					_connectSecrets.put(
 						_getSecretReference(vaultName, itemTitle, itemFileName),
 						itemFileValue);
 				}
@@ -757,8 +757,8 @@ public abstract class SecretsUtil {
 
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
-				"Loaded ", String.valueOf(_secrets.size()), " secrets from ",
-				_getConnectURL()));
+				"Loaded ", String.valueOf(_connectSecrets.size()),
+				" connect secrets from ", _getConnectURL()));
 	}
 
 	private static JSONArray _toJSONArray(String path) {
@@ -828,13 +828,13 @@ public abstract class SecretsUtil {
 	private static boolean _cachedSecretsPublicKeyInitialized;
 	private static String _cachedSecretsPublicKeyPEM;
 	private static String _cachedSecretsURL;
+	private static final Map<String, String> _connectSecrets =
+		new ConcurrentHashMap<>();
 	private static boolean _connectSecretsLoaded;
 	private static String _connectURL;
 	private static BearerHTTPAuthorization _httpAuthorization;
 	private static final Pattern _secretReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
-	private static final Map<String, String> _secrets =
-		new ConcurrentHashMap<>();
 
 	private static class Item {
 
