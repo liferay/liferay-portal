@@ -696,69 +696,84 @@ public abstract class SecretsUtil {
 			return;
 		}
 
-		_connectSecretsLoaded = true;
-
 		if (!_isSecretsConfigured()) {
+			_connectSecretsLoaded = true;
+
 			return;
 		}
 
-		for (Vault vault : Vault.getInstances()) {
-			String vaultName = vault.getName();
+		try {
+			for (Vault vault : Vault.getInstances()) {
+				String vaultName = vault.getName();
 
-			for (Item item : vault.getItems()) {
-				String itemId = item.getId();
-				String itemTitle = item.getTitle();
+				for (Item item : vault.getItems()) {
+					String itemId = item.getId();
+					String itemTitle = item.getTitle();
 
-				for (ItemField itemField : item.getItemFields()) {
-					String itemFieldValue = itemField.getValue();
+					for (ItemField itemField : item.getItemFields()) {
+						String itemFieldValue = itemField.getValue();
 
-					if (JenkinsResultsParserUtil.isNullOrEmpty(
-							itemFieldValue)) {
+						if (JenkinsResultsParserUtil.isNullOrEmpty(
+								itemFieldValue)) {
 
-						continue;
+							continue;
+						}
+
+						String itemFieldId = itemField.getId();
+						String itemFieldLabel = itemField.getLabel();
+
+						_connectSecrets.put(
+							_getSecretReference(vaultName, itemId, itemFieldId),
+							itemFieldValue);
+						_connectSecrets.put(
+							_getSecretReference(
+								vaultName, itemId, itemFieldLabel),
+							itemFieldValue);
+						_connectSecrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFieldId),
+							itemFieldValue);
+						_connectSecrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFieldLabel),
+							itemFieldValue);
 					}
 
-					String itemFieldId = itemField.getId();
-					String itemFieldLabel = itemField.getLabel();
+					for (ItemFile itemFile : item.getItemFiles()) {
+						String itemFileValue = itemFile.getValue();
 
-					_connectSecrets.put(
-						_getSecretReference(vaultName, itemId, itemFieldId),
-						itemFieldValue);
-					_connectSecrets.put(
-						_getSecretReference(vaultName, itemId, itemFieldLabel),
-						itemFieldValue);
-					_connectSecrets.put(
-						_getSecretReference(vaultName, itemTitle, itemFieldId),
-						itemFieldValue);
-					_connectSecrets.put(
-						_getSecretReference(
-							vaultName, itemTitle, itemFieldLabel),
-						itemFieldValue);
-				}
+						if (JenkinsResultsParserUtil.isNullOrEmpty(
+								itemFileValue)) {
 
-				for (ItemFile itemFile : item.getItemFiles()) {
-					String itemFileValue = itemFile.getValue();
+							continue;
+						}
 
-					if (JenkinsResultsParserUtil.isNullOrEmpty(itemFileValue)) {
-						continue;
+						String itemFileName = itemFile.getName();
+
+						_connectSecrets.put(
+							_getSecretReference(
+								vaultName, itemId, itemFileName),
+							itemFileValue);
+						_connectSecrets.put(
+							_getSecretReference(
+								vaultName, itemTitle, itemFileName),
+							itemFileValue);
 					}
-
-					String itemFileName = itemFile.getName();
-
-					_connectSecrets.put(
-						_getSecretReference(vaultName, itemId, itemFileName),
-						itemFileValue);
-					_connectSecrets.put(
-						_getSecretReference(vaultName, itemTitle, itemFileName),
-						itemFileValue);
 				}
 			}
-		}
 
-		System.out.println(
-			JenkinsResultsParserUtil.combine(
-				"Loaded ", String.valueOf(_connectSecrets.size()),
-				" connect secrets from ", _getConnectURL()));
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Loaded ", String.valueOf(_connectSecrets.size()),
+					" connect secrets from ", _getConnectURL()));
+
+			_connectSecretsLoaded = true;
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+
+			_connectSecrets.clear();
+		}
 	}
 
 	private static JSONArray _toJSONArray(String path) {
