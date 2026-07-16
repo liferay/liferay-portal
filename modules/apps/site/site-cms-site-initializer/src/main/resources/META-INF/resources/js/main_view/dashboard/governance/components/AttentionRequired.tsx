@@ -5,6 +5,7 @@
 
 import ClayLayout from '@clayui/layout';
 import {TrendClassification} from '@liferay/analytics-reports-js-components-web';
+import {navigate} from 'frontend-js-web';
 import React, {useContext, useEffect, useState} from 'react';
 
 import {SectionHeader} from '../../common/SectionHeader';
@@ -96,6 +97,12 @@ export function AttentionRequired() {
 		fetchStatistics();
 	}, [space]);
 
+	const openOverdueReviews = () => {
+		const url = `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/overdue-reviews`;
+
+		navigate(space.siteId ? `${url}?groupId=${space.siteId}` : url);
+	};
+
 	return (
 		<>
 			<SectionHeader icon="semantic-search" title={title} />
@@ -122,6 +129,11 @@ export function AttentionRequired() {
 								hoverContent={hoverContent}
 								icon={icon}
 								loading={loading}
+								onClick={
+									statKey === 'reviewDateOverdueCount'
+										? openOverdueReviews
+										: undefined
+								}
 								title={title}
 								trend={placeholderTrend}
 								value={(statKey && statistics?.[statKey]) || 0}
