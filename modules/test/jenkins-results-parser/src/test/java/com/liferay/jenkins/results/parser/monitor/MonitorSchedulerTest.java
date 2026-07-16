@@ -65,7 +65,7 @@ public class MonitorSchedulerTest
 				Collections.emptyList(),
 				monitorScheduler.getDueMonitors(monitors));
 
-			virtualCurrentTime += 2L;
+			virtualCurrentTime += 1L;
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
