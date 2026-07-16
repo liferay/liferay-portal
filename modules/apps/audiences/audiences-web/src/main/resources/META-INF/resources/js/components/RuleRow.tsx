@@ -7,11 +7,11 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import {useDragAndDrop} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
-import {DropTargetMonitor, useDrop} from 'react-dnd';
+import React, {useEffect, useRef, useState} from 'react';
+import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
+import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
 import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
@@ -24,10 +24,9 @@ import {
 } from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
 
-interface DragItem {
-	icon: string;
+interface RuleDragItem {
 	id: string;
-	name: string;
+	type: string;
 }
 
 interface AttributeDragItem {
@@ -35,24 +34,32 @@ interface AttributeDragItem {
 	type: string;
 }
 
+type RowDragItem = AttributeDragItem | RuleDragItem;
+
 interface IProps {
 	audiencesCriteria?: AudiencesCriteria;
+	canGroup: boolean;
 	iconColor: string;
 	index: number;
-	items: DragItem[];
-	navigationProps: NavigationItemProps;
+	movable: boolean;
+	navigationProps?: NavigationItemProps;
 	onAddRule: (audiencesCriteria: AudiencesCriteria, index?: number) => void;
 	onChange: (rule: Rule) => void;
 	onDelete: () => void;
 	onDuplicate: () => void;
-	onReorder: (items: DragItem[]) => void;
+	onGroup: (audiencesCriteria: AudiencesCriteria) => void;
+	onMoveGroup: (nodeId: string) => void;
+	onMoveRule: (nodeId: string, index: number) => void;
 	rule: Rule;
 }
 
+type DropZone = DropPosition | 'group';
+
 const getDropPosition = (
 	ref: React.RefObject<HTMLElement>,
-	monitor: DropTargetMonitor
-): DropPosition | null => {
+	monitor: DropTargetMonitor,
+	canGroup: boolean
+): DropZone | null => {
 	const clientOffset = monitor.getClientOffset();
 
 	if (!ref.current || !clientOffset) {
@@ -62,41 +69,51 @@ const getDropPosition = (
 	const dropItemBoundingRect = ref.current.getBoundingClientRect();
 	const hoverClientY = clientOffset.y - dropItemBoundingRect.top;
 
-	return hoverClientY < dropItemBoundingRect.height / 2 ? 'top' : 'bottom';
+	if (!canGroup) {
+		return hoverClientY < dropItemBoundingRect.height / 2
+			? DROP_POSITIONS.top
+			: DROP_POSITIONS.bottom;
+	}
+
+	if (hoverClientY < dropItemBoundingRect.height / 3) {
+		return DROP_POSITIONS.top;
+	}
+
+	if (hoverClientY > (dropItemBoundingRect.height * 2) / 3) {
+		return DROP_POSITIONS.bottom;
+	}
+
+	return 'group';
 };
 
 export default function RuleRow({
 	audiencesCriteria,
+	canGroup,
 	iconColor,
 	index,
-	items,
+	movable,
 	navigationProps,
 	onAddRule,
 	onChange,
 	onDelete,
 	onDuplicate,
-	onReorder,
+	onGroup,
+	onMoveGroup,
+	onMoveRule,
 	rule,
 }: IProps) {
-	const dragHandlerRef = useRef<HTMLButtonElement>(null);
 	const dropItemRef = useRef<HTMLDivElement | null>(null);
 
-	const setRowRef = (element: HTMLDivElement | null) => {
-		dropItemRef.current = element;
-
-		navigationProps.ref(element);
-	};
-
-	const [dropPosition, setDropPosition] = useState<DropPosition | null>(null);
+	const [dropPosition, setDropPosition] = useState<DropZone | null>(null);
 
 	const movementSource = useMovementSource();
 	const movementTarget = useMovementTarget();
 	const setMovementSource = useSetMovementSource();
 
-	const isMovementSource = movementSource?.ruleId === rule.id;
+	const isMovementSource = movable && movementSource?.ruleId === rule.id;
 
 	const isMovementTarget =
-		Boolean(movementSource) && movementTarget.index === index;
+		movable && Boolean(movementSource) && movementTarget.index === index;
 
 	const isMovementTargetBottomPosition =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
@@ -104,54 +121,77 @@ export default function RuleRow({
 	const isMovementTargetTopPosition =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.top;
 
-	const {isDragging, isDropBottomPosition, isDropTopPosition} =
-		useDragAndDrop<DragItem>({
-			dragHandlerRef,
-			dropItemRef,
-			item: items[index],
-			itemIndex: index,
-			items,
-			onDrop: onReorder,
-		});
-
-	const [{isOver}, attributeDrop] = useDrop<
-		AttributeDragItem,
+	const [{isDragging}, dragRef, dragPreviewRef] = useDrag<
+		RuleDragItem,
 		void,
-		{isOver: boolean}
+		{isDragging: boolean}
 	>({
-		accept: DRAG_TYPES.ATTRIBUTE,
-		collect: (monitor) => ({isOver: !!monitor.isOver()}),
-		drop: (item, monitor) => {
-			const dropPosition = getDropPosition(dropItemRef, monitor);
+		collect: (monitor) => ({isDragging: monitor.isDragging()}),
+		item: {id: rule.id, type: DRAG_TYPES.RULE},
+	});
 
-			onAddRule(
-				item.audiencesCriteria,
-				dropPosition === 'bottom' ? index + 1 : index
+	useEffect(() => {
+		dragPreviewRef(getEmptyImage(), {captureDraggingState: true});
+	}, [dragPreviewRef]);
+
+	const [{isOver}, dropRef] = useDrop<RowDragItem, void, {isOver: boolean}>({
+		accept: [DRAG_TYPES.ATTRIBUTE, DRAG_TYPES.RULE],
+		canDrop: (item) => !('id' in item) || item.id !== rule.id,
+		collect: (monitor) => ({
+			isOver: monitor.isOver() && monitor.canDrop(),
+		}),
+		drop: (item, monitor) => {
+			const dropZone = getDropPosition(dropItemRef, monitor, canGroup);
+
+			const insertIndex =
+				dropZone === DROP_POSITIONS.bottom ? index + 1 : index;
+
+			if ('audiencesCriteria' in item) {
+				if (dropZone === 'group') {
+					onGroup(item.audiencesCriteria);
+				}
+				else {
+					onAddRule(item.audiencesCriteria, insertIndex);
+				}
+			}
+			else if (dropZone === 'group') {
+				onMoveGroup(item.id);
+			}
+			else {
+				onMoveRule(item.id, insertIndex);
+			}
+		},
+		hover: (_item, monitor) => {
+			setDropPosition(
+				monitor.canDrop()
+					? getDropPosition(dropItemRef, monitor, canGroup)
+					: null
 			);
 		},
-		hover: (item, monitor) => {
-			let dropPosition: DropPosition | null = null;
-
-			if (isOver) {
-				dropPosition = getDropPosition(dropItemRef, monitor);
-			}
-
-			setDropPosition(dropPosition);
-		},
 	});
+
+	const setRowRef = (element: HTMLDivElement | null) => {
+		dropItemRef.current = element;
+
+		dropRef(element);
+
+		navigationProps?.ref(element);
+	};
 
 	if (!audiencesCriteria) {
 		return (
 			<ErrorRuleRow
 				dropBottom={
-					isDropBottomPosition || isMovementTargetBottomPosition
+					(isOver && dropPosition === DROP_POSITIONS.bottom) ||
+					isMovementTargetBottomPosition
 				}
-				dropTop={isDropTopPosition || isMovementTargetTopPosition}
+				dropTop={
+					(isOver && dropPosition === DROP_POSITIONS.top) ||
+					isMovementTargetTopPosition
+				}
+				navigationProps={navigationProps}
 				onDelete={onDelete}
-				onFocus={navigationProps.onFocus}
-				onKeyDown={navigationProps.onKeyDown}
 				rowRef={setRowRef}
-				tabIndex={navigationProps.tabIndex}
 			/>
 		);
 	}
@@ -161,104 +201,102 @@ export default function RuleRow({
 	const operators = getOperators(inputType, type);
 
 	return (
-		<div ref={attributeDrop} role="none">
-			<div
-				aria-label={label}
-				className={classNames(
-					'align-items-center audience-builder-rule d-flex justify-content-between p-3',
-					`audience-builder-rule--${iconColor}`,
-					{
-						'audience-builder-rule--dragging':
-							isDragging || isMovementSource,
-						'audience-builder-rule--drop-bottom':
-							isDropBottomPosition ||
-							(isOver && dropPosition === 'bottom') ||
-							isMovementTargetBottomPosition,
-						'audience-builder-rule--drop-top':
-							isDropTopPosition ||
-							(isOver && dropPosition === 'top') ||
-							isMovementTargetTopPosition,
-					}
-				)}
-				onFocus={navigationProps.onFocus}
-				onKeyDown={navigationProps.onKeyDown}
-				ref={setRowRef}
-				role="menuitem"
-				tabIndex={navigationProps.tabIndex}
-			>
-				<div className="align-items-center c-gap-3 d-flex">
-					<ClayButtonWithIcon
-						aria-label={sub(Liferay.Language.get('move-x'), label)}
-						borderless
-						className="audience-builder-grip text-secondary"
-						displayType="secondary"
-						onClick={(event) => {
-							if (event.detail === 0) {
-								setMovementSource({
-									icon: audiencesCriteria.icon,
-									name: label,
-									ruleId: rule.id,
-								});
-							}
-						}}
-						ref={dragHandlerRef}
-						size="sm"
-						symbol="drag"
-						tabIndex={navigationProps.tabIndex}
-						title={sub(Liferay.Language.get('move-x'), label)}
-					/>
-
-					<span className="font-weight-semi-bold text-4 text-nowrap">
-						{label}
-					</span>
-
-					<Picker
-						aria-label={Liferay.Language.get('operator')}
-						className="flex-shrink-0 form-control-sm w-auto"
-						items={operators.map((operator) => ({
-							label: getOperatorLabel(operator, inputType),
-							value: operator,
-						}))}
-						onSelectionChange={(key) =>
-							onChange({...rule, operator: key as string})
+		<div
+			aria-label={label}
+			className={classNames(
+				'align-items-center audience-builder-rule d-flex justify-content-between p-3',
+				`audience-builder-rule--${iconColor}`,
+				{
+					'audience-builder-rule--dragging':
+						isDragging || isMovementSource,
+					'audience-builder-rule--drop-bottom':
+						(isOver && dropPosition === DROP_POSITIONS.bottom) ||
+						isMovementTargetBottomPosition,
+					'audience-builder-rule--drop-group':
+						isOver && dropPosition === 'group',
+					'audience-builder-rule--drop-top':
+						(isOver && dropPosition === DROP_POSITIONS.top) ||
+						isMovementTargetTopPosition,
+				}
+			)}
+			onFocus={navigationProps?.onFocus}
+			onKeyDown={navigationProps?.onKeyDown}
+			ref={setRowRef}
+			role="menuitem"
+			tabIndex={navigationProps?.tabIndex ?? 0}
+		>
+			<div className="align-items-center c-gap-3 d-flex">
+				<ClayButtonWithIcon
+					aria-label={sub(Liferay.Language.get('move-x'), label)}
+					borderless
+					className="audience-builder-grip text-secondary"
+					displayType="secondary"
+					onClick={(event) => {
+						if (movable && event.detail === 0) {
+							setMovementSource({
+								icon: audiencesCriteria.icon,
+								name: label,
+								ruleId: rule.id,
+							});
 						}
-						selectedKey={rule.operator}
-					>
-						{(item) => (
-							<Option key={item.value}>{item.label}</Option>
-						)}
-					</Picker>
+					}}
+					ref={(element) => {
+						dragRef(element);
+					}}
+					size="sm"
+					symbol="drag"
+					tabIndex={navigationProps?.tabIndex ?? 0}
+					title={sub(Liferay.Language.get('move-x'), label)}
+				/>
 
-					<RuleValueField
-						inputType={inputType}
-						onChange={(value) => onChange({...rule, value})}
-						options={options}
-						type={type}
-						value={rule.value}
-					/>
-				</div>
+				<span className="font-weight-semi-bold text-4 text-nowrap">
+					{label}
+				</span>
 
-				<div className="align-items-baseline d-flex">
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('duplicate')}
-						borderless
-						displayType="secondary"
-						onClick={onDuplicate}
-						size="sm"
-						symbol="copy"
-						title={Liferay.Language.get('duplicate')}
-					/>
+				<Picker
+					aria-label={Liferay.Language.get('operator')}
+					className="flex-shrink-0 form-control-sm w-auto"
+					items={operators.map((operator) => ({
+						label: getOperatorLabel(operator, inputType),
+						value: operator,
+					}))}
+					onSelectionChange={(key) =>
+						onChange({...rule, operator: key as string})
+					}
+					selectedKey={rule.operator}
+				>
+					{(item) => <Option key={item.value}>{item.label}</Option>}
+				</Picker>
 
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('delete')}
-						borderless
-						displayType="secondary"
-						onClick={onDelete}
-						size="sm"
-						symbol="times-circle"
-						title={Liferay.Language.get('delete')}
-					/>
-				</div>
+				<RuleValueField
+					inputType={inputType}
+					onChange={(value) => onChange({...rule, value})}
+					options={options}
+					type={type}
+					value={rule.value}
+				/>
+			</div>
+
+			<div className="align-items-baseline d-flex">
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('duplicate')}
+					borderless
+					displayType="secondary"
+					onClick={onDuplicate}
+					size="sm"
+					symbol="copy"
+					title={Liferay.Language.get('duplicate')}
+				/>
+
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('delete')}
+					borderless
+					displayType="secondary"
+					onClick={onDelete}
+					size="sm"
+					symbol="times-circle"
+					title={Liferay.Language.get('delete')}
+				/>
 			</div>
 		</div>
 	);
@@ -308,21 +346,17 @@ function RuleValueField({
 interface ErrorRuleRowProps {
 	dropBottom: boolean;
 	dropTop: boolean;
+	navigationProps?: NavigationItemProps;
 	onDelete: () => void;
-	onFocus: (event: React.FocusEvent<HTMLDivElement>) => void;
-	onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 	rowRef: (node: HTMLDivElement | null) => void;
-	tabIndex: number;
 }
 
 function ErrorRuleRow({
 	dropBottom,
 	dropTop,
+	navigationProps,
 	onDelete,
-	onFocus,
-	onKeyDown,
 	rowRef,
-	tabIndex,
 }: ErrorRuleRowProps) {
 	return (
 		<div
@@ -336,11 +370,11 @@ function ErrorRuleRow({
 					'audience-builder-rule--drop-top': dropTop,
 				}
 			)}
-			onFocus={onFocus}
-			onKeyDown={onKeyDown}
+			onFocus={navigationProps?.onFocus}
+			onKeyDown={navigationProps?.onKeyDown}
 			ref={rowRef}
 			role="menuitem"
-			tabIndex={tabIndex}
+			tabIndex={navigationProps?.tabIndex ?? 0}
 		>
 			<div className="align-items-center c-gap-3 d-flex">
 				<ClayIcon className="text-danger" symbol="times-circle-full" />

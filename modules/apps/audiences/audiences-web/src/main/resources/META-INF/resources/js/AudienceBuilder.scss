@@ -60,6 +60,29 @@ $toolbar-height: 55px;
 	}
 }
 
+.audience-builder-group {
+	position: relative;
+
+	&--drop-bottom::after,
+	&--drop-top::before {
+		background-color: $primary;
+		content: '';
+		height: 4px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		z-index: 1;
+	}
+
+	&--drop-bottom::after {
+		bottom: 0;
+	}
+
+	&--drop-top::before {
+		top: 0;
+	}
+}
+
 .audience-builder-general-settings {
 	.collapse-icon.collapse-icon-middle .collapse-icon-closed,
 	.collapse-icon.collapse-icon-middle .collapse-icon-open {
@@ -89,10 +112,17 @@ $toolbar-height: 55px;
 	}
 
 	&--drop-bottom {
+		background-color: var(--primary-l3);
 		box-shadow: inset 0 -4px 0 0 $primary;
 	}
 
+	&--drop-group {
+		background-color: var(--primary-l3);
+		box-shadow: inset 0 0 0 4px $primary;
+	}
+
 	&--drop-top {
+		background-color: var(--primary-l3);
 		box-shadow: inset 0 4px 0 0 $primary;
 	}
 

@@ -16,7 +16,7 @@ import {
 	HOME_KEY_CODE,
 } from '../constants/keyboardCodes';
 import {Action} from '../reducer';
-import {Rule} from '../types';
+import {CriteriaNode} from '../types';
 import {
 	MovementSource,
 	MovementTarget,
@@ -47,14 +47,14 @@ export interface MovementItem {
 interface Props {
 	dispatch: Dispatch<Action>;
 	items: MovementItem[];
-	rules: Rule[];
+	nodes: CriteriaNode[];
 	source: MovementSource;
 }
 
 export default function KeyboardMovementManager({
 	dispatch,
 	items,
-	rules,
+	nodes,
 	source,
 }: Props) {
 	const disableMovement = useDisableKeyboardMovement();
@@ -83,7 +83,7 @@ export default function KeyboardMovementManager({
 			return;
 		}
 
-		setTarget(getInitialTarget(source, rules));
+		setTarget(getInitialTarget(source, nodes));
 
 		setText(
 			Liferay.Language.get(
@@ -94,7 +94,7 @@ export default function KeyboardMovementManager({
 		disableMovement,
 		dispatch,
 		items,
-		rules,
+		nodes,
 		setTarget,
 		setText,
 		source,
@@ -128,9 +128,15 @@ export default function KeyboardMovementManager({
 				});
 			}
 			else {
-				const sourceIndex = rules.findIndex(
-					(rule) => rule.id === source.ruleId
+				const sourceIndex = nodes.findIndex(
+					(node) => node.id === source.ruleId
 				);
+
+				if (sourceIndex === -1) {
+					disableMovement();
+
+					return;
+				}
 
 				if (
 					insertionIndex === sourceIndex ||
@@ -143,19 +149,19 @@ export default function KeyboardMovementManager({
 					return;
 				}
 
-				const nextRules = [...rules];
+				const nextNodes = [...nodes];
 
-				const [movedRule] = nextRules.splice(sourceIndex, 1);
+				const [movedNode] = nextNodes.splice(sourceIndex, 1);
 
-				nextRules.splice(
+				nextNodes.splice(
 					insertionIndex > sourceIndex
 						? insertionIndex - 1
 						: insertionIndex,
 					0,
-					movedRule
+					movedNode
 				);
 
-				dispatch({rules: nextRules, type: 'REORDER_RULES'});
+				dispatch({items: nextNodes, type: 'REORDER_RULES'});
 			}
 
 			setText(
@@ -225,16 +231,16 @@ export default function KeyboardMovementManager({
 
 export function getInitialTarget(
 	source: MovementSource,
-	rules: Rule[]
+	nodes: CriteriaNode[]
 ): MovementTarget {
 	if (source.ruleId) {
 		return {
-			index: rules.findIndex((rule) => rule.id === source.ruleId),
+			index: nodes.findIndex((node) => node.id === source.ruleId),
 			position: DROP_POSITIONS.bottom,
 		};
 	}
 
-	return {index: rules.length - 1, position: DROP_POSITIONS.bottom};
+	return {index: nodes.length - 1, position: DROP_POSITIONS.bottom};
 }
 
 export function getNextTarget(

@@ -142,9 +142,8 @@ export default function AudienceBuilder({
 									audiencesCriteriaTypes={
 										audiencesCriteriaTypes
 									}
-									conjunction={state.conjunction}
 									dispatch={dispatch}
-									rules={state.rules}
+									root={state.root}
 								/>
 							</div>
 						</div>
