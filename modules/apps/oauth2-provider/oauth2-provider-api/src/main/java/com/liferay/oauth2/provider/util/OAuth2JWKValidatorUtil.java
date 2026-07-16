@@ -112,6 +112,14 @@ public class OAuth2JWKValidatorUtil {
 					"EC curve \"" + curve + "\" is not allowed in FIPS mode");
 			}
 		}
+		else if (keyType.equals("OKP")) {
+			String curve = jsonObject.getString("crv");
+
+			if (!_allowedOKPCurves.contains(curve)) {
+				throw new SecurityException(
+					"OKP curve \"" + curve + "\" is not allowed in FIPS mode");
+			}
+		}
 		else if (keyType.equals("RSA")) {
 			int bits = _decodeBase64URLBitLength(jsonObject.getString("n"));
 
@@ -136,7 +144,9 @@ public class OAuth2JWKValidatorUtil {
 	private static final Set<String> _allowedECCurves = Set.of(
 		"P-256", "P-384", "P-521");
 	private static final Set<String> _allowedJWSAlgorithms = Set.of(
-		"ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384",
-		"RS512");
+		"ES256", "ES384", "ES512", "EdDSA", "PS256", "PS384", "PS512", "RS256",
+		"RS384", "RS512");
+	private static final Set<String> _allowedOKPCurves = Set.of(
+		"Ed25519", "Ed448");
 
 }
