@@ -41,6 +41,7 @@ export {default as filterItemActions} from './utils/actionItems/filterItemAction
 export {default as findAction} from './utils/actionItems/findAction';
 
 export {
+	default as formatActionURL,
 	replaceTokens,
 	rewriteRedirectParams,
 } from './utils/actionItems/formatActionURL';
