@@ -8,7 +8,7 @@ import ClayEmptyState from '@clayui/empty-state';
 import {useScreenReaderAnnounce} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import React, {Dispatch, Fragment, useRef, useState} from 'react';
-import {ConnectDropTarget, DropTargetMonitor, useDrop} from 'react-dnd';
+import {ConnectDropTarget, useDrop} from 'react-dnd';
 
 import {
 	CATEGORY_ICON_COLORS,
@@ -19,7 +19,7 @@ import {
 	DRAG_TYPES,
 	RowDragItem,
 } from '../constants/dragTypes';
-import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
+import {DROP_POSITIONS} from '../constants/dropPositions';
 import useKeyboardNavigation, {
 	NavigationItemProps,
 } from '../hooks/useKeyboardNavigation';
@@ -34,6 +34,7 @@ import {
 	CriteriaNode,
 	Group,
 } from '../types';
+import {DropZone, getDropPosition} from '../util/dropPosition';
 import {canGroupNode, isGroup} from '../util/tree';
 import RuleRow from './RuleRow';
 
@@ -41,24 +42,6 @@ interface IProps {
 	audiencesCriteriaTypes: AudiencesCriteriaType[];
 	dispatch: Dispatch<Action>;
 	root: Group;
-}
-
-function getGroupDropPosition(
-	ref: React.RefObject<HTMLElement>,
-	monitor: DropTargetMonitor
-): DropPosition | null {
-	const clientOffset = monitor.getClientOffset();
-
-	if (!ref.current || !clientOffset) {
-		return null;
-	}
-
-	const dropItemBoundingRect = ref.current.getBoundingClientRect();
-	const hoverClientY = clientOffset.y - dropItemBoundingRect.top;
-
-	return hoverClientY < dropItemBoundingRect.height / 2
-		? DROP_POSITIONS.top
-		: DROP_POSITIONS.bottom;
 }
 
 interface RenderContext {
@@ -373,7 +356,7 @@ function NestedGroup({
 
 	const groupRef = useRef<HTMLDivElement | null>(null);
 
-	const [dropPosition, setDropPosition] = useState<DropPosition | null>(null);
+	const [dropPosition, setDropPosition] = useState<DropZone | null>(null);
 
 	const [{isOver}, dropRef] = useDrop<RowDragItem, void, {isOver: boolean}>({
 		accept: [DRAG_TYPES.ATTRIBUTE, DRAG_TYPES.RULE],
@@ -386,7 +369,7 @@ function NestedGroup({
 			}
 
 			const targetIndex =
-				getGroupDropPosition(groupRef, monitor) === DROP_POSITIONS.top
+				getDropPosition(groupRef, monitor, false) === DROP_POSITIONS.top
 					? index
 					: index + 1;
 
@@ -400,7 +383,7 @@ function NestedGroup({
 		hover: (_item, monitor) => {
 			setDropPosition(
 				monitor.isOver({shallow: true})
-					? getGroupDropPosition(groupRef, monitor)
+					? getDropPosition(groupRef, monitor, false)
 					: null
 			);
 		},

@@ -10,11 +10,11 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
-import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
+import {useDrag, useDrop} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import {DRAG_TYPES, RowDragItem, RuleDragItem} from '../constants/dragTypes';
-import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
+import {DROP_POSITIONS} from '../constants/dropPositions';
 import {getOperatorLabel, getOperators} from '../constants/operators';
 import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
 import {
@@ -23,6 +23,7 @@ import {
 	useSetMovementSource,
 } from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
+import {DropZone, getDropPosition} from '../util/dropPosition';
 
 interface IProps {
 	audiencesCriteria?: AudiencesCriteria;
@@ -40,39 +41,6 @@ interface IProps {
 	onMoveRule: (nodeId: string, index: number) => void;
 	rule: Rule;
 }
-
-type DropZone = DropPosition | 'group';
-
-const getDropPosition = (
-	ref: React.RefObject<HTMLElement>,
-	monitor: DropTargetMonitor,
-	canGroup: boolean
-): DropZone | null => {
-	const clientOffset = monitor.getClientOffset();
-
-	if (!ref.current || !clientOffset) {
-		return null;
-	}
-
-	const dropItemBoundingRect = ref.current.getBoundingClientRect();
-	const hoverClientY = clientOffset.y - dropItemBoundingRect.top;
-
-	if (!canGroup) {
-		return hoverClientY < dropItemBoundingRect.height / 2
-			? DROP_POSITIONS.top
-			: DROP_POSITIONS.bottom;
-	}
-
-	if (hoverClientY < dropItemBoundingRect.height / 3) {
-		return DROP_POSITIONS.top;
-	}
-
-	if (hoverClientY > (dropItemBoundingRect.height * 2) / 3) {
-		return DROP_POSITIONS.bottom;
-	}
-
-	return 'group';
-};
 
 export default function RuleRow({
 	audiencesCriteria,
