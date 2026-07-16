@@ -149,6 +149,7 @@
 	<property name="definitions.dir" value="${project.dir}/definitions" />
 	<property name="doc.dir" value="${project.dir}/api" />
 	<property name="jacoco.agent.configuration" value="=destfile=${jacoco.dump.file},excludes=${jacoco.excludes},includes=${jacoco.includes},output=file,append=true" />
+	<property name="mockito.agent" value="-javaagent:${project.dir}/lib/development/mockito-core.jar" />
 
 	<var name="fork.mode" value="false" />
 	<var if:true="${jvm.debug}" name="fork.mode" value="true" />
@@ -1383,6 +1384,7 @@ information.
 				<jvmarg if:set="junit.java.add.opens" line="${junit.java.add.opens}" />
 				<jvmarg line="${app.server.jvm.args}" />
 				<jvmarg line="${junit.java.gc}" />
+				<jvmarg line="${mockito.agent}" />
 				<jvmarg line="${whip.agent}" />
 				<jvmarg value="-Dexternal-properties=${test.properties}" />
 				<jvmarg value="-Dfixed.issues=${fixed.issues}" />

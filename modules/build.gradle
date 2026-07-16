@@ -291,6 +291,18 @@ gradle.beforeProject {
 						testImplementation group: "org.mockito", name: "mockito-core", version: "5.15.2"
 						testImplementation group: "org.springframework", name: "spring-test", version: "6.2.19"
 					}
+
+					tasks.withType(Test) {
+						doFirst {
+							File mockitoCoreJarFile = classpath.find {
+								it.name.startsWith("mockito-core")
+							}
+
+							if (mockitoCoreJarFile != null) {
+								jvmArgs "-javaagent:${mockitoCoreJarFile.absolutePath}"
+							}
+						}
+					}
 				}
 			}
 
