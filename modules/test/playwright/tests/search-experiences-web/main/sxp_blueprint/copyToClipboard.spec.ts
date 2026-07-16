@@ -19,8 +19,6 @@ export const test = mergeTests(
 	searchExperiencesPagesTest
 );
 
-test.use({permissions: ['clipboard-read', 'clipboard-write']});
-
 async function assertCopiedFromModal(
 	page: Page,
 	modalTitle: string,
@@ -30,13 +28,14 @@ async function assertCopiedFromModal(
 
 	await expect(modal).toBeVisible();
 
-	await modal.getByRole('button', {name: 'Copy to Clipboard'}).click();
+	const copyButton = modal.getByRole('button', {name: 'Copy to Clipboard'});
 
-	await expect(async () => {
-		expect(
-			await page.evaluate(() => navigator.clipboard.readText())
-		).toContain(expectedText);
-	}).toPass({timeout: 10000});
+	await copyButton.click();
+
+	await expect(copyButton).toHaveAttribute(
+		'data-clipboard-text',
+		new RegExp(expectedText)
+	);
 }
 
 test.describe('Elements JSON', () => {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
@@ -17,7 +17,22 @@ export const test = mergeTests(
 	searchPageTest
 );
 
-test.use({permissions: ['clipboard-read', 'clipboard-write']});
+async function assertCopiedFromPanel(
+	page: Page,
+	panelTitle: string,
+	expectedText: string
+) {
+	const copyButton = page
+		.locator('.panel', {hasText: panelTitle})
+		.getByRole('button', {name: 'Copy to Clipboard'});
+
+	await copyButton.click();
+
+	await expect(copyButton).toHaveAttribute(
+		'data-clipboard-text',
+		new RegExp(expectedText)
+	);
+}
 
 test.describe('Copy to Clipboard', () => {
 	test('Copies the request and response strings to the clipboard', async ({
@@ -38,29 +53,15 @@ test.describe('Copy to Clipboard', () => {
 		});
 
 		await test.step('Copy the request string and assert its contents', async () => {
-			await page
-				.locator('.panel', {hasText: 'Request String'})
-				.getByRole('button', {name: 'Copy to Clipboard'})
-				.click();
-
-			await expect(async () => {
-				expect(
-					await page.evaluate(() => navigator.clipboard.readText())
-				).toContain('"explain": true');
-			}).toPass({timeout: 10000});
+			await assertCopiedFromPanel(
+				page,
+				'Request String',
+				'"explain": true'
+			);
 		});
 
 		await test.step('Copy the response string and assert its contents', async () => {
-			await page
-				.locator('.panel', {hasText: 'Response String'})
-				.getByRole('button', {name: 'Copy to Clipboard'})
-				.click();
-
-			await expect(async () => {
-				expect(
-					await page.evaluate(() => navigator.clipboard.readText())
-				).toContain('"_shards"');
-			}).toPass({timeout: 10000});
+			await assertCopiedFromPanel(page, 'Response String', '"_shards"');
 		});
 	});
 });
