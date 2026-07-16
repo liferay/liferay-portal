@@ -46,6 +46,7 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockPortletRequest;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -1123,6 +1125,51 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				AssetPublisherHelper.SCOPE_ID_LAYOUT_UUID_PREFIX,
 				importedSecondLayout.getUuid()),
 			StringUtil.merge(portletPreferences.getValues("scopeIds", null)));
+	}
+
+	@Test
+	@TestInfo("LPS-84201")
+	public void testSiblingGroupScopeIdWithRecreatedGroup() throws Exception {
+		Group siblingGroup = GroupTestUtil.addGroup();
+
+		try {
+			String portletId = LayoutTestUtil.addPortletToLayout(
+				TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+				HashMapBuilder.put(
+					"scopeIds",
+					new String[] {
+						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+							siblingGroup.getGroupId()
+					}
+				).build());
+
+			exportPortlet(portletId, layout);
+
+			String siblingGroupKey = siblingGroup.getGroupKey();
+
+			_groupLocalService.deleteGroup(siblingGroup);
+
+			siblingGroup = GroupTestUtil.addGroup(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				GroupConstants.DEFAULT_PARENT_GROUP_ID, siblingGroupKey);
+
+			importPortlet(portletId, layout);
+
+			PortletPreferences portletPreferences =
+				LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+			Assert.assertEquals(
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					siblingGroup.getGroupId(),
+				portletPreferences.getValue("scopeIds", null));
+		}
+		finally {
+			if (_groupLocalService.fetchGroup(siblingGroup.getGroupId()) !=
+					null) {
+
+				_groupLocalService.deleteGroup(siblingGroup);
+			}
+		}
 	}
 
 	@Test
