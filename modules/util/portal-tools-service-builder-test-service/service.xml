@@ -191,6 +191,7 @@
 		<!-- Other fields -->
 
 		<column name="dslQueryEntryId" type="long" />
+		<column name="weight" type="double" />
 		<column name="status" type="String" />
 		<column name="statusDate" type="Date" />
 	</entity>
