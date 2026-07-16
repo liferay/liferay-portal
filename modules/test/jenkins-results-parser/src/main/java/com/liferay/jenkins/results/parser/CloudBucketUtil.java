@@ -450,6 +450,8 @@ public class CloudBucketUtil {
 	}
 
 	public static String readS3Object(String s3ObjectPath) throws IOException {
+		s3ObjectPath = _replaceS3ObjectPath(s3ObjectPath);
+
 		String suffix = ".temp";
 
 		if (s3ObjectPath.endsWith(".gz")) {
@@ -459,9 +461,27 @@ public class CloudBucketUtil {
 		File s3TempFile = File.createTempFile("s3-", suffix);
 
 		try {
-			downloadS3File(s3TempFile, s3ObjectPath);
+			Process process = JenkinsResultsParserUtil.executeBashCommands(
+				new File("."), true, false, 1000 * 60 * 10,
+				JenkinsResultsParserUtil.combine(
+					"aws s3 cp --quiet \"", s3ObjectPath, "\" \"",
+					JenkinsResultsParserUtil.getCanonicalPath(s3TempFile),
+					"\""));
+
+			if (process.exitValue() != 0) {
+				String errorMessage = JenkinsResultsParserUtil.readInputStream(
+					process.getErrorStream());
+
+				throw new IOException(
+					JenkinsResultsParserUtil.combine(
+						"Unable to download ", s3ObjectPath, "\n",
+						errorMessage));
+			}
 
 			return JenkinsResultsParserUtil.read(s3TempFile);
+		}
+		catch (TimeoutException timeoutException) {
+			throw new IOException(timeoutException);
 		}
 		finally {
 			JenkinsResultsParserUtil.delete(s3TempFile);

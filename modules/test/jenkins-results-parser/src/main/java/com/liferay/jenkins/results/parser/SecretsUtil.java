@@ -302,7 +302,8 @@ public abstract class SecretsUtil {
 		}
 
 		if (cachedSecretsURL.startsWith("s3://")) {
-			_cachedSecretsContent = _readS3Object(cachedSecretsURL);
+			_cachedSecretsContent = CloudBucketUtil.readS3Object(
+				cachedSecretsURL);
 
 			return _cachedSecretsContent;
 		}
@@ -896,36 +897,6 @@ public abstract class SecretsUtil {
 			exception.printStackTrace();
 
 			_cachedSecrets = null;
-		}
-	}
-
-	private static String _readS3Object(String s3ObjectURL) throws IOException {
-		File tempFile = File.createTempFile("cached-secrets-", ".json");
-
-		try {
-			Process process = JenkinsResultsParserUtil.executeBashCommands(
-				new File("."), true, false, 60000,
-				JenkinsResultsParserUtil.combine(
-					"aws s3 cp --quiet \"", s3ObjectURL, "\" \"",
-					JenkinsResultsParserUtil.getCanonicalPath(tempFile), "\""));
-
-			if (process.exitValue() != 0) {
-				String errorMessage = JenkinsResultsParserUtil.readInputStream(
-					process.getErrorStream());
-
-				throw new IOException(
-					JenkinsResultsParserUtil.combine(
-						"Unable to download ", s3ObjectURL, "\n",
-						errorMessage));
-			}
-
-			return JenkinsResultsParserUtil.read(tempFile);
-		}
-		catch (TimeoutException timeoutException) {
-			throw new IOException(timeoutException);
-		}
-		finally {
-			JenkinsResultsParserUtil.delete(tempFile);
 		}
 	}
 
