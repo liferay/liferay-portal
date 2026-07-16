@@ -12,6 +12,7 @@ import PickerTrigger from './PickerTrigger';
 export type SpaceOption = {
 	externalReferenceCode?: string;
 	label: string;
+	siteId?: number;
 	value: string;
 };
 
@@ -39,9 +40,10 @@ const SpacePicker: React.FC<ISpacePicker> = ({
 
 			setSpaces([
 				initialSpace,
-				...spaces.map(({externalReferenceCode, id, name}) => ({
+				...spaces.map(({externalReferenceCode, id, name, siteId}) => ({
 					externalReferenceCode,
 					label: name,
+					siteId,
 					value: String(id),
 				})),
 			]);
