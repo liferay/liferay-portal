@@ -14,3 +14,7 @@ export function required(value: string): string | undefined {
 		? undefined
 		: Liferay.Language.get('this-field-is-required');
 }
+
+export function toODataStringLiteral(value: string): string {
+	return `'${value.replace(/'/g, "''")}'`;
+}

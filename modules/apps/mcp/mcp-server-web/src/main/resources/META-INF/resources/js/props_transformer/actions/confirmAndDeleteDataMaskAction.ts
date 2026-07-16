@@ -9,36 +9,31 @@ import {deleteDataMask} from '../../services/deleteDataMask';
 import {getProfileDataMasks} from '../../services/getProfileDataMasks';
 import {ActionContext} from '../../types';
 
-async function getAssociatedProfiles(
+async function getAssociatedProfilesCount(
 	dataMaskExternalReferenceCode?: string
-): Promise<string[]> {
+): Promise<number | null> {
 	if (!dataMaskExternalReferenceCode) {
-		return [];
+		return 0;
 	}
 
-	const {data, error} = await getProfileDataMasks();
+	const {data, error} = await getProfileDataMasks(
+		dataMaskExternalReferenceCode
+	);
 
 	if (error) {
 		openToast({
 			message: Liferay.Util.escapeHTML(error),
 			type: 'danger',
 		});
+
+		return null;
 	}
 
-	return (data?.items ?? [])
-		.filter(
-			(item) =>
-				item.dataMaskExternalReferenceCode ===
-				dataMaskExternalReferenceCode
-		)
-		.map((item) => item.mcpServerProfileExternalReferenceCode)
-		.filter((externalReferenceCode): externalReferenceCode is string =>
-			Boolean(externalReferenceCode)
-		);
+	return data?.totalCount ?? 0;
 }
 
-function deleteBody(profileNames: string[]) {
-	if (!profileNames.length) {
+function deleteBody(associatedProfilesCount: number) {
+	if (!associatedProfilesCount) {
 		return Liferay.Language.get('are-you-sure-you-want-to-delete-this');
 	}
 
@@ -47,7 +42,7 @@ function deleteBody(profileNames: string[]) {
 			Liferay.Language.get(
 				'this-mask-is-currently-being-used-in-x-profile-s-deleting-it-will-remove-the-masking-rules-from-all-of-them-and-matching-values-will-no-longer-be-masked-in-incoming-data'
 			),
-			String(profileNames.length)
+			String(associatedProfilesCount)
 		),
 		Liferay.Language.get('are-you-sure-you-want-to-proceed'),
 	].join(' ');
@@ -63,10 +58,16 @@ export default async function confirmAndDeleteDataMaskAction({
 		return;
 	}
 
-	const profileNames = await getAssociatedProfiles(externalReferenceCode);
+	const associatedProfilesCount = await getAssociatedProfilesCount(
+		externalReferenceCode
+	);
+
+	if (associatedProfilesCount === null) {
+		return;
+	}
 
 	openModal({
-		bodyHTML: deleteBody(profileNames),
+		bodyHTML: deleteBody(associatedProfilesCount),
 		buttons: [
 			{
 				displayType: 'secondary',
