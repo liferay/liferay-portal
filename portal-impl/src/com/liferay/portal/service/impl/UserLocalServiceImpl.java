@@ -6413,22 +6413,24 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			String key = entry.getKey();
 
-			if (key.equals("inherit")) {
+			if (Objects.equals(key, "inherit")) {
 				if (Boolean.TRUE.equals(entry.getValue())) {
 					return true;
 				}
 			}
-			else if (key.equals("noAccountEntriesAndNoOrganizations")) {
+			else if (Objects.equals(
+						key, "noAccountEntriesAndNoOrganizations")) {
+
 				if (!Boolean.TRUE.equals(entry.getValue())) {
 					return true;
 				}
 			}
-			else if (key.equals("noLDAPUsers")) {
+			else if (Objects.equals(key, "noLDAPUsers")) {
 				if (Boolean.TRUE.equals(entry.getValue())) {
 					return true;
 				}
 			}
-			else if (key.equals("noOrganizations")) {
+			else if (Objects.equals(key, "noOrganizations")) {
 				if (!Boolean.TRUE.equals(entry.getValue())) {
 					return true;
 				}
@@ -6441,20 +6443,22 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					return true;
 				}
 			}
-			else if (key.equals("organizationUsers")) {
+			else if (Objects.equals(key, "organizationUsers")) {
 				if (!Boolean.TRUE.equals(entry.getValue())) {
 					return true;
 				}
 			}
-			else if (!key.equals(Field.GROUP_ID) &&
-					 !key.equals("accountEntryIds") &&
-					 !key.equals("emailAddressDomains") &&
-					 !key.equals("inheritUsersGroups") &&
-					 !key.equals("types") && !key.equals("usersGroups") &&
-					 !key.equals("usersOrgs") &&
-					 !key.equals("usersOrgsCount") &&
-					 !key.equals("usersRoles") && !key.equals("usersTeams") &&
-					 !key.equals("usersUserGroups")) {
+			else if (!Objects.equals(key, Field.GROUP_ID) &&
+					 !Objects.equals(key, "accountEntryIds") &&
+					 !Objects.equals(key, "emailAddressDomains") &&
+					 !Objects.equals(key, "inheritUsersGroups") &&
+					 !Objects.equals(key, "types") &&
+					 !Objects.equals(key, "usersGroups") &&
+					 !Objects.equals(key, "usersOrgs") &&
+					 !Objects.equals(key, "usersOrgsCount") &&
+					 !Objects.equals(key, "usersRoles") &&
+					 !Objects.equals(key, "usersTeams") &&
+					 !Objects.equals(key, "usersUserGroups")) {
 
 				return true;
 			}
