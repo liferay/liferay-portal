@@ -52,7 +52,8 @@ public class ObjectEntryFolderModelDocumentContributor
 			document.addKeyword(
 				"objectDefinitionExternalReferenceCode",
 				ObjectEntryFolderConstants.
-					EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER);
+					EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER,
+				true);
 		}
 
 		document.addLocalizedKeyword(

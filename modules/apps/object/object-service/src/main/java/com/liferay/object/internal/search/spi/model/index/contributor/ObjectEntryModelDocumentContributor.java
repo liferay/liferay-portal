@@ -416,7 +416,7 @@ public class ObjectEntryModelDocumentContributor
 
 		document.addKeyword(
 			"objectDefinitionExternalReferenceCode",
-			objectDefinition.getExternalReferenceCode());
+			objectDefinition.getExternalReferenceCode(), true);
 		document.addKeyword(
 			"objectDefinitionId", objectEntry.getObjectDefinitionId());
 		document.addKeyword(
