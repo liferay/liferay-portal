@@ -121,7 +121,8 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 				getSubscription());
 
 			return StringUtil.equals(
-				jsonObject.getString("name"), "Liferay Analytics Cloud Basic");
+				jsonObject.getString("name"),
+				ProductConstants.BASIC_PRODUCT_ENTRY_NAME);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
