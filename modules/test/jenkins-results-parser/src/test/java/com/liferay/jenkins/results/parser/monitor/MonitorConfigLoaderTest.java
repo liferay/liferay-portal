@@ -43,7 +43,7 @@ public class MonitorConfigLoaderTest
 		testEquals("http-endpoint", monitorConfig.getType());
 		testEquals(MonitorConfig.Severity.HIGH, monitorConfig.getSeverity());
 		testEquals(900L, monitorConfig.getIntervalSeconds());
-		testEquals(30L, monitorConfig.getTimeout());
+		testEquals(30L, monitorConfig.getTimeoutSeconds());
 
 		Map<String, String> parameters = monitorConfig.getParameters();
 
@@ -81,7 +81,7 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		testEquals(60L, monitorConfig.getTimeout());
+		testEquals(60L, monitorConfig.getTimeoutSeconds());
 	}
 
 	@Test

@@ -154,11 +154,11 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private MonitorConfig _newMonitorConfig(
-		String id, long intervalSeconds, long timeout) {
+		String id, long intervalSeconds, long timeoutSeconds) {
 
 		return new MonitorConfig(
 			id, intervalSeconds, null, MonitorConfig.Severity.MEDIUM, null,
-			timeout, RandomTestUtil.randomString());
+			timeoutSeconds, RandomTestUtil.randomString());
 	}
 
 }
