@@ -15,6 +15,16 @@ import jenkins.model.Jenkins;
  */
 public class OPConnectUtil {
 
+	public static String getAccessToken() {
+		OPConnectDescriptor opConnectDescriptor = _getOPConnectDescriptor();
+
+		if (opConnectDescriptor == null) {
+			return null;
+		}
+
+		return opConnectDescriptor.getAccessToken();
+	}
+
 	public static List<String> getIgnoredValues() {
 		OPConnectDescriptor opConnectDescriptor = _getOPConnectDescriptor();
 

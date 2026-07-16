@@ -57,9 +57,14 @@ public class OPConnectConsoleLogFilter
 	private Pattern _getSecretValuesPattern() {
 		List<String> ignoredValues = OPConnectUtil.getIgnoredValues();
 
+		List<String> rawSecretValues = new ArrayList<>(
+			OPConnectUtil.getSecretValues());
+
+		rawSecretValues.add(OPConnectUtil.getAccessToken());
+
 		List<String> secretValues = new ArrayList<>();
 
-		for (String secretValue : OPConnectUtil.getSecretValues()) {
+		for (String secretValue : rawSecretValues) {
 			if (secretValue == null) {
 				continue;
 			}
