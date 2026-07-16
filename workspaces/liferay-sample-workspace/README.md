@@ -100,7 +100,7 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 - *liferay-sample-editor-config-contributor-5*
 
-	Add a Document Link Selector button to the CKEditor 5 link dialog as an example of augmenting the link plugin for document browsing without portal dependencies.
+	Add a document link selector button to the CKEditor 5 link dialog as an example of augmenting the link plugin for document browsing without portal dependencies.
 
 - *liferay-sample-etc-cron*
 
