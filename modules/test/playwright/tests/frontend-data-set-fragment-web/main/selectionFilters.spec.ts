@@ -1364,3 +1364,80 @@ test(
 		});
 	}
 );
+
+test(
+	'Selection filter of type "Object Picklist" shows a "+N" badge when more items are preselected than the pill preview can display',
+	{tag: '@LPD-98305'},
+	async ({
+		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
+		layout,
+		picklistApiHelpers,
+	}) => {
+		const filterLabel = getRandomString();
+		const badgePicklistName = getRandomString();
+		const badgePicklistOptionKeys = ['a', 'b', 'c', 'd'];
+
+		let badgePicklistERC: string;
+		let badgePicklistOptions: any[];
+
+		await test.step('Add a field, so FDS has something to show', async () => {
+			await dataSetManagerApiHelpers.createDataSetTableSection({
+				dataSetERC,
+				fieldName: 'renderer',
+				label_i18n: {en_US: 'Renderer'},
+			});
+		});
+
+		await test.step('Create a picklist with more options than the pill preview can display', async () => {
+			const badgePicklist = await picklistApiHelpers.createPicklist({
+				name: badgePicklistName,
+			});
+
+			badgePicklistERC = badgePicklist.externalReferenceCode;
+
+			badgePicklistOptions = await Promise.all(
+				badgePicklistOptionKeys.map((key) =>
+					picklistApiHelpers.editPicklist({
+						externalReferenceCode: badgePicklistERC,
+						key,
+						value: key,
+					})
+				)
+			);
+		});
+
+		await test.step('Create a selection filter preselecting all four values via the API', async () => {
+			await dataSetManagerApiHelpers.createDataSetSelectionFilter({
+				dataSetERC,
+				fieldName: 'renderer',
+				label_i18n: {en_US: filterLabel},
+				multiple: true,
+				preselectedValues: JSON.stringify(
+					badgePicklistOptions.map((option, index) => ({
+						label: badgePicklistOptionKeys[index],
+						value: option.externalReferenceCode,
+					}))
+				),
+				source: badgePicklistERC,
+				sourceType: 'OBJECT_PICKLIST',
+			});
+		});
+
+		await test.step('Configure Data Set fragment', async () => {
+			await dataSetFragmentPage.configureDataSetFragment({
+				dataSetLabel,
+				layout,
+			});
+		});
+
+		await test.step('Shows a "+1" badge for the one preselected value hidden beyond the three-item preview', async () => {
+			await expect(dataSetFragmentPage.filterResumeButton).toBeVisible();
+			await expect(dataSetFragmentPage.filterResumeBadge).toHaveText(
+				'+1'
+			);
+		});
+
+		await picklistApiHelpers.deletePicklist(badgePicklistERC);
+	}
+);

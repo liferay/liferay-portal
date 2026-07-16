@@ -21,6 +21,7 @@ export class DataSetFragmentPage {
 	readonly emptyStateTitle: Locator;
 	readonly filterButton: Locator;
 	readonly filterConfirmButton: Locator;
+	readonly filterResumeBadge: Locator;
 	readonly filterResumeButton: Locator;
 	readonly fragmentWidgetSearchInput: Locator;
 	readonly fragmentSelectionArea: Locator;
@@ -99,6 +100,7 @@ export class DataSetFragmentPage {
 		this.filterConfirmButton = page.getByRole('button', {
 			name: /add filter|show results|delete filter/i,
 		});
+		this.filterResumeBadge = page.locator('.filter-resume-badge');
 		this.filterResumeButton = page.locator('.filter-resume');
 		this.fragmentSelectionArea = page.getByText('Select a data set');
 		this.fragmentWidgetSearchInput = page.getByLabel(
