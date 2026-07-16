@@ -14,7 +14,26 @@ export interface AudiencesCriteria {
 
 export interface AudiencesCriteriaRulesGroup {
 	conjunction?: string;
-	rules?: Array<{attribute: string; operator: string; value: string}>;
+	rules?: Array<SerializedGroup | SerializedRule>;
+}
+
+export type CriteriaNode = Group | Rule;
+
+export interface Group {
+	conjunction: string;
+	id: string;
+	items: CriteriaNode[];
+}
+
+export interface SerializedGroup {
+	conjunction: string;
+	rules: Array<SerializedGroup | SerializedRule>;
+}
+
+export interface SerializedRule {
+	attribute: string;
+	operator: string;
+	value: string;
 }
 
 export interface AudiencesCriteriaType {
