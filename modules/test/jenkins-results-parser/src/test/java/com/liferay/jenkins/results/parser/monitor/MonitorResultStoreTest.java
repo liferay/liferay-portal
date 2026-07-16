@@ -25,9 +25,11 @@ public class MonitorResultStoreTest
 		testSame(null, monitorResultStore.getLatestMonitorResult("a"));
 
 		MonitorResult monitorResult1 = _newMonitorResult();
-		MonitorResult monitorResult2 = _newMonitorResult();
 
 		monitorResultStore.store("a", monitorResult1);
+
+		MonitorResult monitorResult2 = _newMonitorResult();
+
 		monitorResultStore.store("a", monitorResult2);
 
 		testSame(
@@ -44,9 +46,11 @@ public class MonitorResultStoreTest
 		Assert.assertTrue(monitorResults.isEmpty());
 
 		MonitorResult monitorResult1 = _newMonitorResult();
-		MonitorResult monitorResult2 = _newMonitorResult();
 
 		monitorResultStore.store("a", monitorResult1);
+
+		MonitorResult monitorResult2 = _newMonitorResult();
+
 		monitorResultStore.store("a", monitorResult2);
 
 		monitorResults = monitorResultStore.getMonitorResults("a");
@@ -92,11 +96,15 @@ public class MonitorResultStoreTest
 		MonitorResultStore monitorResultStore = new MonitorResultStore(2);
 
 		MonitorResult monitorResult1 = _newMonitorResult();
-		MonitorResult monitorResult2 = _newMonitorResult();
-		MonitorResult monitorResult3 = _newMonitorResult();
 
 		monitorResultStore.store("a", monitorResult1);
+
+		MonitorResult monitorResult2 = _newMonitorResult();
+
 		monitorResultStore.store("a", monitorResult2);
+
+		MonitorResult monitorResult3 = _newMonitorResult();
+
 		monitorResultStore.store("a", monitorResult3);
 
 		List<MonitorResult> monitorResults =
