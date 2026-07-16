@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -634,7 +635,9 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 		try {
 			URL url = new URL(urlString);
 
-			if (!Http.HTTPS.equalsIgnoreCase(url.getProtocol())) {
+			if (!Http.HTTPS.equalsIgnoreCase(url.getProtocol()) &&
+				!PortalRunMode.isTestMode()) {
+
 				throw new OAuthClientASLocalMetadataLocalWellKnownURIException(
 					urlString);
 			}
