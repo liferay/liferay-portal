@@ -90,7 +90,7 @@ public class MonitorConfigLoader {
 			return defaultValue;
 		}
 
-		long value;
+		long value = 0;
 
 		try {
 			value = Long.parseLong(propertyValue);
