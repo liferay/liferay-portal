@@ -7,4 +7,5 @@ Export-Package:\
 	com.liferay.digital.signature.mail,\
 	com.liferay.digital.signature.manager,\
 	com.liferay.digital.signature.model,\
+	com.liferay.digital.signature.request,\
 	com.liferay.digital.signature.url

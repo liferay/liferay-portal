@@ -44,6 +44,10 @@ public class DSEnvelope {
 		return emailSubject;
 	}
 
+	public LocalDateTime getExpireLocalDateTime() {
+		return expireLocalDateTime;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -54,6 +58,10 @@ public class DSEnvelope {
 
 	public String getStatus() {
 		return status;
+	}
+
+	public LocalDateTime getStatusChangedLocalDateTime() {
+		return statusChangedLocalDateTime;
 	}
 
 	public void setCreatedLocalDateTime(LocalDateTime createdLocalDateTime) {
@@ -80,6 +88,10 @@ public class DSEnvelope {
 		this.emailSubject = emailSubject;
 	}
 
+	public void setExpireLocalDateTime(LocalDateTime expireLocalDateTime) {
+		this.expireLocalDateTime = expireLocalDateTime;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -90,6 +102,12 @@ public class DSEnvelope {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public void setStatusChangedLocalDateTime(
+		LocalDateTime statusChangedLocalDateTime) {
+
+		this.statusChangedLocalDateTime = statusChangedLocalDateTime;
 	}
 
 	public JSONObject toJSONObject() {
@@ -132,9 +150,11 @@ public class DSEnvelope {
 	protected List<DSRecipient> dsRecipients;
 	protected String emailBlurb;
 	protected String emailSubject;
+	protected LocalDateTime expireLocalDateTime;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;
+	protected LocalDateTime statusChangedLocalDateTime;
 
 	private static final Log _log = LogFactoryUtil.getLog(DSEnvelope.class);
 

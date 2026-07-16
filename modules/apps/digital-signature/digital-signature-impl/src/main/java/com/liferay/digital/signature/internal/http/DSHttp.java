@@ -172,7 +172,21 @@ public class DSHttp {
 				},
 				true, maxRetries, 0, () -> _http.URLtoByteArray(options));
 
-		return retryableUnsafeSupplier.get();
+		byte[] bytes = retryableUnsafeSupplier.get();
+
+		Http.Response response = options.getResponse();
+
+		int responseCode = response.getResponseCode();
+
+		if ((responseCode < 200) || (responseCode >= 300)) {
+			throw new PortalException(
+				StringBundler.concat(
+					"DocuSign ", method, " ", location, " returned status ",
+					responseCode, ": ",
+					(bytes == null) ? StringPool.BLANK : new String(bytes)));
+		}
+
+		return bytes;
 	}
 
 	private boolean _isSocketTimeout(Throwable throwable) {

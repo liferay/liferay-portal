@@ -16,6 +16,7 @@ import com.liferay.digital.signature.model.DSDocument;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -62,6 +63,12 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 		dsEnvelope = _toDSEnvelope(
 			_dsHttp.post(
 				companyId, groupId, "envelopes", dsEnvelope.toJSONObject()));
+
+		if (Validator.isNull(dsEnvelope.getDSEnvelopeId())) {
+			throw new SystemException(
+				"DocuSign did not return an envelope ID for the created " +
+					"envelope");
+		}
 
 		_dsCustomFieldManager.addDSCustomFields(
 			companyId, groupId, dsEnvelope.getDSEnvelopeId(),
@@ -204,11 +211,25 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					dsRecipientId = signerJSONObject.getString("recipientId");
 					emailAddress = signerJSONObject.getString("email");
 					name = signerJSONObject.getString("name");
+					sentLocalDateTime = _toLocalDateTime(
+						signerJSONObject.getString("sentDateTime"));
 					status = signerJSONObject.getString("status");
+					statusLocalDateTime = _getStatusLocalDateTime(
+						signerJSONObject);
 					tabsJSONObject = signerJSONObject.getJSONObject("tabs");
 				}
 			},
 			_log);
+	}
+
+	private LocalDateTime _getStatusLocalDateTime(JSONObject signerJSONObject) {
+		String signedDateTime = signerJSONObject.getString("signedDateTime");
+
+		if (Validator.isNotNull(signedDateTime)) {
+			return _toLocalDateTime(signedDateTime);
+		}
+
+		return _toLocalDateTime(signerJSONObject.getString("declinedDateTime"));
 	}
 
 	private void _sendDSRecipientEmails(
@@ -307,7 +328,11 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					jsonObject.getJSONObject("recipients"));
 				emailBlurb = jsonObject.getString("emailBlurb");
 				emailSubject = jsonObject.getString("emailSubject");
+				expireLocalDateTime = _toLocalDateTime(
+					jsonObject.getString("expireDateTime"));
 				status = jsonObject.getString("status");
+				statusChangedLocalDateTime = _toLocalDateTime(
+					jsonObject.getString("statusChangedDateTime"));
 			}
 		};
 

@@ -10,6 +10,7 @@ import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.model.DSDocument;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -20,7 +21,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.IntegerWrapper;
@@ -58,11 +58,14 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 
 		User user = themeDisplay.getUser();
 
+		long[] fileEntryIds = ParamUtil.getLongValues(
+			resourceRequest, "fileEntryIds");
+
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
 			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
 			new DSEnvelope() {
 				{
-					dsDocuments = _getDSDocuments(resourceRequest);
+					dsDocuments = _getDSDocuments(fileEntryIds);
 					dsRecipients = _getDSRecipients(resourceRequest);
 					emailBlurb = ParamUtil.getString(
 						resourceRequest, "emailMessage");
@@ -74,18 +77,20 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 				}
 			});
 
+		_dsRequestManager.addDSRequest(
+			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
+			user.getUserId(), dsEnvelope, fileEntryIds);
+
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
 			JSONUtil.put("dsEnvelopeId", dsEnvelope.getDSEnvelopeId()));
 	}
 
-	private List<DSDocument> _getDSDocuments(ResourceRequest resourceRequest)
+	private List<DSDocument> _getDSDocuments(long[] fileEntryIds)
 		throws Exception {
 
 		return TransformUtil.transformToList(
-			ArrayUtil.toLongArray(
-				ParamUtil.getLongValues(resourceRequest, "fileEntryIds")),
-			fileEntryId -> _toDSDocument(fileEntryId));
+			fileEntryIds, fileEntryId -> _toDSDocument(fileEntryId));
 	}
 
 	private List<DSRecipient> _getDSRecipients(ResourceRequest resourceRequest)
@@ -124,6 +129,9 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 
 	@Reference
 	private DSEnvelopeManager _dsEnvelopeManager;
+
+	@Reference
+	private DSRequestManager _dsRequestManager;
 
 	@Reference
 	private JSONFactory _jsonFactory;
