@@ -521,6 +521,11 @@ public class FaroProjectWrapper
 		return model.isAllowedIPAddress(ipAddress);
 	}
 
+	@Override
+	public boolean isDataPlatform() {
+		return model.isDataPlatform();
+	}
+
 	/**
 	 * Returns <code>true</code> if this faro project is data source connected.
 	 *
@@ -834,4 +839,4 @@ public class FaroProjectWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-16707228
+// LIFERAY-SERVICE-BUILDER-HASH:461860127

@@ -57,7 +57,9 @@ public interface FaroProject extends FaroProjectModel, PersistedModel {
 
 	public boolean isAllowedIPAddress(String ipAddress);
 
+	public boolean isDataPlatform();
+
 	public boolean isTrial();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:798404575
+// LIFERAY-SERVICE-BUILDER-HASH:2145338527
