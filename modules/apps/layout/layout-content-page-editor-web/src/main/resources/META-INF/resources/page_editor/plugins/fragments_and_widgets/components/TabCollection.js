@@ -14,6 +14,7 @@ import {HIGHLIGHTED_COLLECTION_ID} from '../../../app/config/constants/highlight
 import {LIST_ITEM_TYPES} from '../../../app/config/constants/listItemTypes';
 import {config} from '../../../app/config/index';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
+import {ScopeIndicator} from './ScopeIndicator';
 import TabItem from './TabItem';
 
 export default function TabCollection({
@@ -54,6 +55,7 @@ export default function TabCollection({
 			deprecated={collection.deprecated}
 			isSearchResult={isSearchResult}
 			open={open}
+			scope={collection.scope}
 			setOpen={setOpen}
 			title={collection.label}
 		>
@@ -135,6 +137,7 @@ function TabCollectionCollapse({
 	deprecated,
 	isSearchResult,
 	open,
+	scope,
 	setOpen,
 	title,
 }) {
@@ -171,6 +174,8 @@ function TabCollectionCollapse({
 			>
 				<span className="panel-title">
 					<span className="c-mr-2">{title}</span>
+
+					<ScopeIndicator scope={scope} />
 
 					{deprecated ? <FeatureIndicator type="deprecated" /> : null}
 

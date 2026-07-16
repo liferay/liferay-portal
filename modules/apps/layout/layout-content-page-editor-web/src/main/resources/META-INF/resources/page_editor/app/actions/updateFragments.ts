@@ -20,11 +20,20 @@ export interface FragmentEntry {
 	type: FragmentEntryType;
 }
 
+export type ScopeType = 'design-library' | 'global' | 'site';
+
+export interface FragmentSetScope {
+	id: string;
+	label: string;
+	type: ScopeType;
+}
+
 export interface FragmentSet {
 	deprecated: boolean;
 	fragmentCollectionId: string;
 	fragmentEntries: Array<FragmentEntry | FragmentComposition>;
 	name: string;
+	scope?: FragmentSetScope;
 }
 
 export default function updateFragments({

@@ -159,6 +159,7 @@ export default function FragmentsSidebar() {
 					collectionId: collection.fragmentCollectionId,
 					deprecated: collection.deprecated,
 					label: collection.name,
+					scope: collection.scope,
 				})),
 				id: COLLECTION_IDS.fragments,
 				label: Liferay.Language.get('fragments'),

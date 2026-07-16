@@ -1,0 +1,13 @@
+html#{$cadmin-selector} .cadmin {
+	.page-editor__scope-indicator {
+		&--design-library {
+			background-color: $cadmin-teal-l5;
+			color: $cadmin-teal;
+		}
+
+		&--global {
+			background-color: $cadmin-blue-l5;
+			color: $cadmin-blue;
+		}
+	}
+}
