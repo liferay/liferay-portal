@@ -139,7 +139,7 @@ public class RepositoryBrowserTag extends IncludeTag {
 				PortalUtil.getLiferayPortletRequest(portletRequest),
 				PortalUtil.getLiferayPortletResponse(portletResponse),
 				portletRequest, _getRepositoryId(), getFolderId(),
-				isViewableByGuest()));
+				isStandaloneBreadcrumb(), isViewableByGuest()));
 	}
 
 	private Set<String> _getActionsSet() {

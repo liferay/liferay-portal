@@ -88,7 +88,7 @@ public class RepositoryBrowserTagDisplayContext {
 		boolean includeExtension, LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
 		PortletRequest portletRequest, long repositoryId, long rootFolderId,
-		boolean viewableByGuest) {
+		boolean standaloneBreadcrumb, boolean viewableByGuest) {
 
 		_actions = actions;
 		_dlAppService = dlAppService;
@@ -104,6 +104,7 @@ public class RepositoryBrowserTagDisplayContext {
 		_portletRequest = portletRequest;
 		_repositoryId = repositoryId;
 		_rootFolderId = rootFolderId;
+		_standaloneBreadcrumb = standaloneBreadcrumb;
 		_viewableByGuest = viewableByGuest;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -384,6 +385,10 @@ public class RepositoryBrowserTagDisplayContext {
 		}
 
 		return true;
+	}
+
+	public boolean isStandaloneBreadcrumb() {
+		return _standaloneBreadcrumb;
 	}
 
 	public boolean isVerticalCard(RepositoryEntry repositoryEntry) {
@@ -720,6 +725,7 @@ public class RepositoryBrowserTagDisplayContext {
 	private final long _repositoryId;
 	private final long _rootFolderId;
 	private SearchContainer<Object> _searchContainer;
+	private final boolean _standaloneBreadcrumb;
 	private final ThemeDisplay _themeDisplay;
 	private final boolean _viewableByGuest;
 

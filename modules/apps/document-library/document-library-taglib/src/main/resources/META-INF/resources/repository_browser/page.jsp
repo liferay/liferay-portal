@@ -23,6 +23,7 @@ RepositoryBrowserTagDisplayContext repositoryBrowserTagDisplayContext = (Reposit
 
 	<liferay-site-navigation:breadcrumb
 		breadcrumbEntries="<%= repositoryBrowserTagDisplayContext.getBreadcrumbEntries() %>"
+		skipEntryContributors="<%= repositoryBrowserTagDisplayContext.isStandaloneBreadcrumb() %>"
 	/>
 
 	<input class="hide" id="<portlet:namespace />file" type="file" />
