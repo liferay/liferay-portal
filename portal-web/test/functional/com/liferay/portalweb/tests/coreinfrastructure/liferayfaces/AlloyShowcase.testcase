@@ -3,6 +3,7 @@ definition {
 
 	property liferay.faces = "true";
 	property liferay.faces.war.file.names = "com.liferay.faces.demo.alloy.showcase.portlet";
+	property portal.acceptance = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";
