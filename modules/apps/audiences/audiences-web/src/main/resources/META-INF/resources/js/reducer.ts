@@ -10,21 +10,19 @@ import {
 	Group,
 	Rule,
 } from './types';
-import {
-	addGroup,
-	addRule,
-	deleteEmptyGroups,
-	deleteRule,
-	duplicateRule,
-	moveGroup,
-	moveRule,
-	parseRootGroup,
-	reorderGroup,
-	serializeGroup,
-	setConjunction,
-	unwrapRedundantGroups,
-	updateRule,
-} from './util/tree';
+import {addGroup} from './util/tree/addGroup';
+import {addRule} from './util/tree/addRule';
+import {deleteEmptyGroups} from './util/tree/deleteEmptyGroups';
+import {deleteRule} from './util/tree/deleteRule';
+import {duplicateRule} from './util/tree/duplicateRule';
+import {moveGroup} from './util/tree/moveGroup';
+import {moveRule} from './util/tree/moveRule';
+import {parseRootGroup} from './util/tree/parseRootGroup';
+import {reorderGroup} from './util/tree/reorderGroup';
+import {serializeGroup} from './util/tree/serializeGroup';
+import {setConjunction} from './util/tree/setConjunction';
+import {unwrapRedundantGroups} from './util/tree/unwrapRedundantGroups';
+import {updateRule} from './util/tree/updateRule';
 
 export interface State {
 	externalReferenceCode: string;

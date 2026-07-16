@@ -23,7 +23,7 @@ import {
 	useSetMovementSource,
 } from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
-import {DropZone, getDropPosition} from '../util/dropPosition';
+import {DropZone, getDropPosition} from '../util/getDropPosition';
 
 interface IProps {
 	audiencesCriteria?: AudiencesCriteria;

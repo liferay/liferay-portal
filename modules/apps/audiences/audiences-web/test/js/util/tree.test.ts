@@ -9,25 +9,23 @@ import {
 	Group,
 	SerializedGroup,
 } from '../../../src/main/resources/META-INF/resources/js/types';
-import {
-	addGroup,
-	addRule,
-	canGroupNode,
-	createGroup,
-	createRule,
-	deleteEmptyGroups,
-	deleteRule,
-	duplicateRule,
-	isGroup,
-	moveGroup,
-	moveRule,
-	parseRootGroup,
-	reorderGroup,
-	serializeGroup,
-	setConjunction,
-	unwrapRedundantGroups,
-	updateRule,
-} from '../../../src/main/resources/META-INF/resources/js/util/tree';
+import {addGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/addGroup';
+import {addRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/addRule';
+import {canGroupNode} from '../../../src/main/resources/META-INF/resources/js/util/tree/canGroupNode';
+import {createGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/createGroup';
+import {createRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/createRule';
+import {deleteEmptyGroups} from '../../../src/main/resources/META-INF/resources/js/util/tree/deleteEmptyGroups';
+import {deleteRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/deleteRule';
+import {duplicateRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/duplicateRule';
+import {isGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/isGroup';
+import {moveGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/moveGroup';
+import {moveRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/moveRule';
+import {parseRootGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/parseRootGroup';
+import {reorderGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/reorderGroup';
+import {serializeGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/serializeGroup';
+import {setConjunction} from '../../../src/main/resources/META-INF/resources/js/util/tree/setConjunction';
+import {unwrapRedundantGroups} from '../../../src/main/resources/META-INF/resources/js/util/tree/unwrapRedundantGroups';
+import {updateRule} from '../../../src/main/resources/META-INF/resources/js/util/tree/updateRule';
 
 function getNode(root: Group, path: number[]): CriteriaNode | undefined {
 	let node: CriteriaNode = root;

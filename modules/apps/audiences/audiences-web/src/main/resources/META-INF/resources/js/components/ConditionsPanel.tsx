@@ -34,8 +34,9 @@ import {
 	CriteriaNode,
 	Group,
 } from '../types';
-import {DropZone, getDropPosition} from '../util/dropPosition';
-import {canGroupNode, isGroup} from '../util/tree';
+import {DropZone, getDropPosition} from '../util/getDropPosition';
+import {canGroupNode} from '../util/tree/canGroupNode';
+import {isGroup} from '../util/tree/isGroup';
 import RuleRow from './RuleRow';
 
 interface IProps {
