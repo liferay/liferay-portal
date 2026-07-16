@@ -458,7 +458,7 @@ public class CloudBucketUtil {
 			suffix = ".temp.gz";
 		}
 
-		File s3TempFile = File.createTempFile("s3-", suffix);
+		File s3TempFile = _createTempFile(suffix);
 
 		try {
 			Process process = JenkinsResultsParserUtil.executeBashCommands(
@@ -625,12 +625,12 @@ public class CloudBucketUtil {
 			String s3ObjectContent, String s3ObjectPath)
 		throws IOException {
 
-		File s3TempFile = File.createTempFile("s3-", ".temp");
+		File s3TempFile = _createTempFile(".temp");
 
 		File s3TempGzipFile = null;
 
 		if (s3ObjectPath.endsWith(".gz")) {
-			s3TempGzipFile = File.createTempFile("s3-", ".temp.gz");
+			s3TempGzipFile = _createTempFile(".temp.gz");
 		}
 
 		try {
@@ -673,6 +673,16 @@ public class CloudBucketUtil {
 			s3DestinationPath + _CHECKSUM_FILE_EXTENSION, sourceChecksumFile);
 
 		sourceChecksumFile.delete();
+	}
+
+	private static File _createTempFile(String suffix) throws IOException {
+		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
+		}
+
+		return File.createTempFile("s3-", suffix, tempDir);
 	}
 
 	private static String _escapeParentheses(String s) {
