@@ -484,7 +484,7 @@ public class TaxonomyVocabularyResourceTest
 	}
 
 	private <T> void _assertSingletonArrayEquals(
-		long expected, T[] array, Function<T, Long> function) {
+		T[] array, long expected, Function<T, Long> function) {
 
 		Assert.assertEquals(Arrays.toString(array), 1, array.length);
 		Assert.assertEquals(Long.valueOf(expected), function.apply(array[0]));
@@ -935,7 +935,7 @@ public class TaxonomyVocabularyResourceTest
 				testGroup.getGroupId(), randomTaxonomyVocabulary);
 
 		_assertSingletonArrayEquals(
-			project.getId(), postTaxonomyVocabulary.getProjects(),
+			postTaxonomyVocabulary.getProjects(), project.getId(),
 			Project::getId);
 
 		postTaxonomyVocabulary.setProjects(new Project[0]);
@@ -945,7 +945,7 @@ public class TaxonomyVocabularyResourceTest
 				postTaxonomyVocabulary.getId(), postTaxonomyVocabulary);
 
 		_assertSingletonArrayEquals(
-			GroupConstants.GROUP_ID_ALL, putTaxonomyVocabulary.getProjects(),
+			putTaxonomyVocabulary.getProjects(), GroupConstants.GROUP_ID_ALL,
 			Project::getId);
 	}
 
@@ -963,7 +963,7 @@ public class TaxonomyVocabularyResourceTest
 				testGroup.getGroupId(), randomTaxonomyVocabulary);
 
 		_assertSingletonArrayEquals(
-			assetLibrary.getId(), postTaxonomyVocabulary.getAssetLibraries(),
+			postTaxonomyVocabulary.getAssetLibraries(), assetLibrary.getId(),
 			AssetLibrary::getId);
 
 		postTaxonomyVocabulary.setAssetLibraries(new AssetLibrary[0]);
@@ -973,8 +973,8 @@ public class TaxonomyVocabularyResourceTest
 				postTaxonomyVocabulary.getId(), postTaxonomyVocabulary);
 
 		_assertSingletonArrayEquals(
-			GroupConstants.GROUP_ID_ALL,
-			putTaxonomyVocabulary.getAssetLibraries(), AssetLibrary::getId);
+			putTaxonomyVocabulary.getAssetLibraries(),
+			GroupConstants.GROUP_ID_ALL, AssetLibrary::getId);
 	}
 
 	private void _testPutTaxonomyVocabularyUpdatesEmptyVocabulary()
