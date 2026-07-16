@@ -30,6 +30,10 @@ public class BreadcrumbTag extends IncludeTag {
 		return _cssClass;
 	}
 
+	public boolean isSkipEntryContributors() {
+		return _skipEntryContributors;
+	}
+
 	public void setBreadcrumbEntries(List<BreadcrumbEntry> breadcrumbEntries) {
 		_breadcrumbEntries = breadcrumbEntries;
 	}
@@ -45,12 +49,17 @@ public class BreadcrumbTag extends IncludeTag {
 		setServletContext(ServletContextUtil.getServletContext());
 	}
 
+	public void setSkipEntryContributors(boolean skipEntryContributors) {
+		_skipEntryContributors = skipEntryContributors;
+	}
+
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
 
 		_breadcrumbEntries = new ArrayList<>();
 		_cssClass = StringPool.BLANK;
+		_skipEntryContributors = false;
 	}
 
 	@Override
@@ -72,5 +81,6 @@ public class BreadcrumbTag extends IncludeTag {
 
 	private List<BreadcrumbEntry> _breadcrumbEntries = new ArrayList<>();
 	private String _cssClass = StringPool.BLANK;
+	private boolean _skipEntryContributors;
 
 }
