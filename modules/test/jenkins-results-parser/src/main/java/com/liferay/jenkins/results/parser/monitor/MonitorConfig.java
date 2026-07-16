@@ -16,7 +16,7 @@ public class MonitorConfig {
 
 	public MonitorConfig(
 		String id, long intervalSeconds, Map<String, String> parameters,
-		Severity severity, Map<String, String> thresholds, long timeout,
+		Severity severity, Map<String, String> thresholds, long timeoutSeconds,
 		String type) {
 
 		_id = id;
@@ -24,7 +24,7 @@ public class MonitorConfig {
 		_parameters = _newUnmodifiableMap(parameters);
 		_severity = severity;
 		_thresholds = _newUnmodifiableMap(thresholds);
-		_timeout = timeout;
+		_timeoutSeconds = timeoutSeconds;
 		_type = type;
 	}
 
@@ -48,8 +48,8 @@ public class MonitorConfig {
 		return _thresholds;
 	}
 
-	public long getTimeout() {
-		return _timeout;
+	public long getTimeoutSeconds() {
+		return _timeoutSeconds;
 	}
 
 	public String getType() {
@@ -75,7 +75,7 @@ public class MonitorConfig {
 	private final Map<String, String> _parameters;
 	private final Severity _severity;
 	private final Map<String, String> _thresholds;
-	private final long _timeout;
+	private final long _timeoutSeconds;
 	private final String _type;
 
 }

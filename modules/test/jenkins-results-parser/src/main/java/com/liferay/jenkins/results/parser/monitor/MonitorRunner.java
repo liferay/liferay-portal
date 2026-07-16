@@ -88,13 +88,13 @@ public class MonitorRunner {
 	private long _getTimeoutMillis(Monitor monitor) {
 		MonitorConfig monitorConfig = monitor.getMonitorConfig();
 
-		long timeout = monitorConfig.getTimeout();
+		long timeoutSeconds = monitorConfig.getTimeoutSeconds();
 
-		if (timeout <= 0) {
+		if (timeoutSeconds <= 0) {
 			return _defaultTimeoutMillis;
 		}
 
-		return timeout * 1000;
+		return timeoutSeconds * 1000;
 	}
 
 	private ExecutorService _newExecutorService(int threadCount) {
