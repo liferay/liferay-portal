@@ -256,7 +256,7 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 						) : null}
 
 						{isGroup(node) ? (
-							<NestedGroup
+							<GroupRow
 								context={context}
 								group={node}
 								index={index}
@@ -335,7 +335,7 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 	);
 }
 
-interface NestedGroupProps {
+interface GroupRowProps {
 	context: RenderContext;
 	group: Group;
 	index: number;
@@ -344,14 +344,14 @@ interface NestedGroupProps {
 	path: number[];
 }
 
-function NestedGroup({
+function GroupRow({
 	context,
 	group,
 	index,
 	onAddRule,
 	onMoveRule,
 	path,
-}: NestedGroupProps) {
+}: GroupRowProps) {
 	const {dispatch} = context;
 
 	const groupRef = useRef<HTMLDivElement | null>(null);
