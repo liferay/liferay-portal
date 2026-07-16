@@ -30,7 +30,7 @@ export function DataMaskRegexTester({
 
 	useEffect(() => {
 		setRedaction(null);
-	}, [detectionRegex, replacementRegex, replacementValue]);
+	}, [detectionRegex, replacementRegex, replacementValue, sampleText]);
 
 	const handleTest = async () => {
 		setTesting(true);
