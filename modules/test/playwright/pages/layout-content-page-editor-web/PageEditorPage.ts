@@ -220,7 +220,7 @@ export class PageEditorPage {
 		await this.page.getByLabel('Create Variations').click();
 
 		await this.page
-			.getByText('Element Variations', {exact: true})
+			.getByRole('heading', {name: 'Element Variations'})
 			.waitFor();
 	}
 

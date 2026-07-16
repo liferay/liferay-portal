@@ -254,3 +254,200 @@ test(
 		await audiencesPage.deleteAudience(audienceName);
 	}
 );
+
+test(
+	'Applies the highest priority variation when a visitor matches several audiences',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create two audiences that both match the browser language. The first
+		// created audience ranks higher in the definition order and therefore
+		// takes precedence.
+
+		const firstAudienceName = 'Audience ' + getRandomString();
+		const secondAudienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: firstAudienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: secondAudienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Bind a variation to each audience on the same heading element
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const firstVariationText = 'First ' + getRandomString();
+		const secondVariationText = 'Second ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: firstAudienceName,
+			html: `<span>${firstVariationText}</span>`,
+			name: 'First audience variation',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: secondAudienceName,
+			html: `<span>${secondVariationText}</span>`,
+			name: 'Second audience variation',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// Publish the page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The visitor matches both audiences, so only the higher priority
+		// audience variation is applied
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText(firstVariationText)).toBeVisible();
+
+		await expect(page.getByText(secondVariationText)).not.toBeVisible();
+
+		// Delete the audiences, which are company scoped and do not go away with
+		// the site
+
+		await audiencesPage.goto();
+
+		await audiencesPage.deleteAudience(firstAudienceName);
+
+		await audiencesPage.deleteAudience(secondAudienceName);
+	}
+);
+
+test(
+	'Applies the manually prioritized audience variation over the definition order',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create two audiences that both match the browser language
+
+		const firstAudienceName = 'Audience ' + getRandomString();
+		const secondAudienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: firstAudienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: secondAudienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Bind a variation to each audience on the same heading element
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const firstVariationText = 'First ' + getRandomString();
+		const secondVariationText = 'Second ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: firstAudienceName,
+			html: `<span>${firstVariationText}</span>`,
+			name: 'First audience variation',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await elementVariationsPage.createElementVariation({
+			audienceName: secondAudienceName,
+			html: `<span>${secondVariationText}</span>`,
+			name: 'Second audience variation',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// Move the later created audience to the top of the priority list. By
+		// default the first created audience wins, so the manual order takes
+		// precedence.
+
+		await elementVariationsPage.prioritizeAudience(secondAudienceName);
+
+		// Publish the page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The manually prioritized audience variation is applied in view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText(secondVariationText)).toBeVisible();
+
+		await expect(page.getByText(firstVariationText)).not.toBeVisible();
+
+		// Delete the audiences, which are company scoped and do not go away with
+		// the site
+
+		await audiencesPage.goto();
+
+		await audiencesPage.deleteAudience(firstAudienceName);
+
+		await audiencesPage.deleteAudience(secondAudienceName);
+	}
+);
