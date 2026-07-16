@@ -15,7 +15,6 @@ database:
     instanceType: db-custom-1-3840
     queryInsightsEnabled: true
     storageGB: 20
-deploymentName: ""
 deletionProtection: true
 enabled: true
 endpoints: {}
