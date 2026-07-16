@@ -1,4 +1,4 @@
-import {audiences} from '../../frontend-js-audiences-web/__liferay__/index.js';
+import {audiences} from '../../../frontend-js-audiences-web/__liferay__/index.js';
 
 const languageId = themeDisplay.getLanguageId();
 

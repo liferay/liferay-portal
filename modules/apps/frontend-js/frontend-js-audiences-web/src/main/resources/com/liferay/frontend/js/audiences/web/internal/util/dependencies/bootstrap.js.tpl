@@ -30,10 +30,11 @@ async function runAudiences() {
 		return;
 	}
 
-	const [plid, elementVariationsHash] = meta.content.split(':');
+	const [plid, segmentsExperienceId, elementVariationsHash] =
+		meta.content.split(':');
 
 	const variations = await import(
-		`${BASE_URL}o/audiences/${plid}/variations.(${elementVariationsHash}).js`
+		`${BASE_URL}o/audiences/${plid}/${segmentsExperienceId}/variations.(${elementVariationsHash}).js`
 	);
 
 	if (navigationId !== currentNavigationId) {

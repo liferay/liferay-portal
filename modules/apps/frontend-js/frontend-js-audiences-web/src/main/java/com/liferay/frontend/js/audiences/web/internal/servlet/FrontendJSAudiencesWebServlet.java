@@ -14,10 +14,9 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -83,7 +82,7 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 			contentType = ContentTypes.APPLICATION_JSON;
 			hash = audiencesDefinition.getHash();
 		}
-		else if ((parts.length == 3) && parts[2].startsWith("variations.")) {
+		else if ((parts.length == 4) && parts[3].startsWith("variations.")) {
 			ElementVariations elementVariations = _getElementVariations(parts);
 
 			if (elementVariations == null) {
@@ -134,31 +133,9 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 	}
 
 	private ElementVariations _getElementVariations(String[] parts) {
-		Long plid = _getPlid(parts[1]);
-
-		if (plid == null) {
-			return null;
-		}
-
-		return _elementVariationsProvider.getElementVariations(plid);
+		return _elementVariationsProvider.getElementVariations(
+			GetterUtil.getLong(parts[1]), GetterUtil.getLong(parts[2]));
 	}
-
-	private Long _getPlid(String plid) {
-		try {
-			return Long.valueOf(plid);
-		}
-		catch (NumberFormatException numberFormatException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to get plid from " + plid, numberFormatException);
-			}
-
-			return null;
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FrontendJSAudiencesWebServlet.class);
 
 	@Reference
 	private AudiencesDefinitionProvider _audiencesDefinitionProvider;

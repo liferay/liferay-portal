@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.portal.url.builder.ServletAbsolutePortalURLBuilder;
+import com.liferay.segments.manager.SegmentsExperienceManager;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -87,13 +89,22 @@ public class FrontendJSAudiencesWebTopHeadDynamicInclude
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		SegmentsExperienceManager segmentsExperienceManager =
+			new SegmentsExperienceManager(_segmentsExperienceLocalService);
+
+		long segmentsExperienceId =
+			segmentsExperienceManager.getSegmentsExperienceId(
+				httpServletRequest);
+
 		ElementVariations elementVariations =
 			_elementVariationsProvider.getElementVariations(
-				themeDisplay.getPlid());
+				themeDisplay.getPlid(), segmentsExperienceId);
 
 		if (elementVariations != null) {
 			printWriter.print("<meta content=\"");
 			printWriter.print(themeDisplay.getPlid());
+			printWriter.print(StringPool.COLON);
+			printWriter.print(segmentsExperienceId);
 			printWriter.print(StringPool.COLON);
 			printWriter.print(elementVariations.getHash());
 			printWriter.print("\" name=\"audiences-variations\">");
@@ -144,5 +155,8 @@ public class FrontendJSAudiencesWebTopHeadDynamicInclude
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 }

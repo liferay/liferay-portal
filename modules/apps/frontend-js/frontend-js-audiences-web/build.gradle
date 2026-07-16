@@ -10,6 +10,7 @@ dependencies {
 	compileOnly project(":apps:frontend-js:frontend-js-importmaps-extender-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
+	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
