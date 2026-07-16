@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -60,8 +61,9 @@ public class ObjectEntryFolderModelDocumentContributorTest {
 				"cms_section", "contents"
 			).put(
 				"objectDefinitionExternalReferenceCode",
-				ObjectEntryFolderConstants.
-					EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER
+				StringUtil.toLowerCase(
+					ObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER)
 			).build(),
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
 		_testContribute(
@@ -71,8 +73,9 @@ public class ObjectEntryFolderModelDocumentContributorTest {
 				"cms_section", "files"
 			).put(
 				"objectDefinitionExternalReferenceCode",
-				ObjectEntryFolderConstants.
-					EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER
+				StringUtil.toLowerCase(
+					ObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER)
 			).build(),
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES);
 		_testContribute(

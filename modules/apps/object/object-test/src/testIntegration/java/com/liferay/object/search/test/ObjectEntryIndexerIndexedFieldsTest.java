@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
@@ -76,7 +77,8 @@ public class ObjectEntryIndexerIndexedFieldsTest {
 				).query(
 					QueriesUtil.term(
 						"objectDefinitionExternalReferenceCode",
-						_objectDefinition.getExternalReferenceCode())
+						StringUtil.toLowerCase(
+							_objectDefinition.getExternalReferenceCode()))
 				).build()
 			).build());
 
