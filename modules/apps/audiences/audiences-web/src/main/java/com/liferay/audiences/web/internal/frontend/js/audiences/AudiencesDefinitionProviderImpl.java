@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 
 import java.util.List;
 
@@ -52,7 +53,9 @@ public class AudiencesDefinitionProviderImpl
 
 		List<AudiencesEntry> audiencesEntries =
 			_audiencesEntryLocalService.getAudiencesEntries(
-				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				OrderByComparatorFactoryUtil.create(
+					"AudiencesEntry", "createDate", true));
 
 		for (AudiencesEntry audiencesEntry : audiencesEntries) {
 			JSONObject jsonObject = _getAudiencesEntryJSONObject(
