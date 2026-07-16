@@ -94,9 +94,9 @@ public class SortUtilTest {
 			new IdEntityField("id", locale -> "entryClassPK", String::valueOf),
 			true);
 
-		Assert.assertEquals(Sort.LONG_TYPE, sorts[0].getType());
 		Assert.assertEquals("entryClassPK", sorts[0].getFieldName());
 		Assert.assertFalse(sorts[0].isReverse());
+		Assert.assertEquals(Sort.LONG_TYPE, sorts[0].getType());
 	}
 
 	private void _testGetSortsWithIdFieldDescending() {
@@ -104,8 +104,8 @@ public class SortUtilTest {
 			new IdEntityField("id", locale -> "entryClassPK", String::valueOf),
 			false);
 
-		Assert.assertEquals(Sort.LONG_TYPE, sorts[0].getType());
 		Assert.assertTrue(sorts[0].isReverse());
+		Assert.assertEquals(Sort.LONG_TYPE, sorts[0].getType());
 	}
 
 	private void _testGetSortsWithIntegerField() {

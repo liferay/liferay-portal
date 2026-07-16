@@ -2376,8 +2376,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	}
 
 	private void _testGetUserAccountsPageWithSortId() throws Exception {
-		String domainName = StringUtil.randomString() + ".com";
 		List<UserAccount> userAccounts = new ArrayList<>();
+
+		String domainName = StringUtil.randomString() + ".com";
 
 		userAccounts.add(
 			userAccountResource.postUserAccount(
