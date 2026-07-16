@@ -248,7 +248,12 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public File deployAppLicense(App app, long validityPeriod)
 		throws Exception {
 
-		long currentTimeMillis = System.currentTimeMillis();
+		return deployAppLicense(
+			app, System.currentTimeMillis(), validityPeriod);
+	}
+
+	public File deployAppLicense(App app, long startTime, long validityPeriod)
+		throws Exception {
 
 		StringBundler sb = new StringBundler(19);
 
@@ -261,10 +266,9 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append(_APP_LICENSE_TYPE);
 		sb.append("</license-type><license-version>3</license-version>");
 		sb.append("<start-date>");
-		sb.append(_DATE_FORMAT.format(new Date(currentTimeMillis)));
+		sb.append(_DATE_FORMAT.format(new Date(startTime)));
 		sb.append("</start-date><expiration-date>");
-		sb.append(
-			_DATE_FORMAT.format(new Date(currentTimeMillis + validityPeriod)));
+		sb.append(_DATE_FORMAT.format(new Date(startTime + validityPeriod)));
 		sb.append("</expiration-date><host-names>");
 		sb.append("<host-name>localhost</host-name>");
 		sb.append("</host-names><ip-addresses>");
