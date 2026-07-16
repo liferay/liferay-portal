@@ -8,6 +8,7 @@ package com.liferay.portal.license.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.util.Time;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -93,6 +95,8 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 
 			assertBundlesExisted(appSymbolicNames);
 
+			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
+
 			deployEnterprisePortalLicense(Time.HOUR);
 
 			assertLicensePropertiesNotExisted(getProductId(app));
@@ -101,13 +105,23 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 
 			assertBundlesNotExisted(appSymbolicNames);
 
-			File binaryFile = deployAppLicense(app, Time.HOUR);
+			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
+
+			long startTime = System.currentTimeMillis();
+
+			File binaryFile = deployAppLicense(app, startTime, Time.HOUR);
 
 			assertLicensePropertiesExisted(getProductId(app));
 
 			assertPortalLicenseRegistered();
 
 			assertBundlesExisted(appSymbolicNames);
+
+			Date expirationDate = LicenseManagerUtil.getAppExpirationDate(app);
+
+			Assert.assertEquals(
+				getDateString(new Date(startTime + Time.HOUR)),
+				getDateString(expirationDate));
 
 			binaryFile.delete();
 
@@ -120,6 +134,8 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 			assertPortalLicenseRegistered();
 
 			assertBundlesNotExisted(appSymbolicNames);
+
+			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
 		}
 	}
 

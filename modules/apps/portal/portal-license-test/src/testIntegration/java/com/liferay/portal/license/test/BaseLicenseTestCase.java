@@ -527,6 +527,10 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			classLoader.loadClass(className), methodSimpleName, parameterTypes);
 	}
 
+	protected static String getDateString(Date date) {
+		return _DATE_FORMAT.format(date);
+	}
+
 	protected static String getPortalProductId() {
 		return getProperty("product.id.portal");
 	}
