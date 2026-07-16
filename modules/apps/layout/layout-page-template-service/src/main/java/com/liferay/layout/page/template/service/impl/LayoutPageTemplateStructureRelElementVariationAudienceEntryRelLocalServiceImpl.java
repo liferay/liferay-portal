@@ -75,6 +75,14 @@ public class
 				layoutPageTemplateStructureRelElementVariationERC);
 	}
 
+	public void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
+			removeByC_AEERC(companyId, audienceEntryERC);
+	}
+
 	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
 		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			String layoutPageTemplateStructureRelElementVariationERC) {
