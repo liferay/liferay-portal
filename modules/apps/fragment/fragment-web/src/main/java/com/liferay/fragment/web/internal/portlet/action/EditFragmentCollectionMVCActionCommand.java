@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -69,13 +70,21 @@ public class EditFragmentCollectionMVCActionCommand
 					fragmentCollectionId, name, description);
 		}
 
-		String redirect = getRedirectURL(actionResponse, fragmentCollection);
+		String redirect = getRedirectURL(
+			actionRequest, actionResponse, fragmentCollection);
 
 		sendRedirect(actionRequest, actionResponse, redirect);
 	}
 
 	protected String getRedirectURL(
-		ActionResponse actionResponse, FragmentCollection fragmentCollection) {
+		ActionRequest actionRequest, ActionResponse actionResponse,
+		FragmentCollection fragmentCollection) {
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		if (Validator.isNotNull(redirect)) {
+			return redirect;
+		}
 
 		return PortletURLBuilder.createRenderURL(
 			_portal.getLiferayPortletResponse(actionResponse)
