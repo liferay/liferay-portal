@@ -61,7 +61,16 @@ export function parseGroup(serialized: SerializedGroup): Group {
 			.filter(
 				(node) => isSerializedGroup(node) || Boolean(node.attribute)
 			)
-			.map(parseNode),
+			.map((node) =>
+				isSerializedGroup(node)
+					? parseGroup(node)
+					: {
+							attribute: node.attribute,
+							id: `rule-${uuidv4()}`,
+							operator: node.operator,
+							value: node.value,
+						}
+			),
 	};
 }
 
@@ -72,7 +81,15 @@ export function parseRootGroup(serialized?: SerializedGroup): Group {
 export function serializeGroup(group: Group): SerializedGroup {
 	return {
 		conjunction: group.conjunction,
-		rules: group.items.map(serializeNode),
+		rules: group.items.map((node) =>
+			isGroup(node)
+				? serializeGroup(node)
+				: {
+						attribute: node.attribute,
+						operator: node.operator,
+						value: node.value,
+					}
+		),
 	};
 }
 
@@ -365,37 +382,12 @@ export function isSerializedGroup(
 	return Array.isArray((node as SerializedGroup).rules);
 }
 
-function parseNode(serialized: SerializedGroup | SerializedRule): CriteriaNode {
-	if (isSerializedGroup(serialized)) {
-		return parseGroup(serialized);
-	}
-
-	return {
-		attribute: serialized.attribute,
-		id: `rule-${uuidv4()}`,
-		operator: serialized.operator,
-		value: serialized.value,
-	};
-}
-
 function detachNode(group: Group, id: string): Group {
 	return {
 		...group,
 		items: group.items
 			.filter((node) => node.id !== id)
 			.map((node) => (isGroup(node) ? detachNode(node, id) : node)),
-	};
-}
-
-function serializeNode(node: CriteriaNode): SerializedGroup | SerializedRule {
-	if (isGroup(node)) {
-		return serializeGroup(node);
-	}
-
-	return {
-		attribute: node.attribute,
-		operator: node.operator,
-		value: node.value,
 	};
 }
 
