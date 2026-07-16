@@ -240,6 +240,18 @@ public class FaroProjectLocalServiceImpl
 			return;
 		}
 
+		String buttonLanguageKey = "go-to-analytics-cloud";
+		String senderEmailAddress = "ac@liferay.com";
+		String senderName = "Analytics Cloud";
+		String subjectLanguageKey = "welcome-to-analytics-cloud";
+
+		if (faroProject.isDataPlatform()) {
+			buttonLanguageKey = "go-to-liferay-data-platform";
+			senderEmailAddress = "ldp@liferay.com";
+			senderName = "Liferay Data Platform";
+			subjectLanguageKey = "welcome-to-liferay-data-platform";
+		}
+
 		String body = StringUtil.read(
 			getClassLoader(),
 			"com/liferay/osb/faro/dependencies/created-workspace.html");
@@ -249,8 +261,7 @@ public class FaroProjectLocalServiceImpl
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", user.getLocale(), getClass());
 
-		String subject = _language.get(
-			resourceBundle, "welcome-to-analytics-cloud");
+		String subject = _language.get(resourceBundle, subjectLanguageKey);
 
 		body = StringUtil.replace(
 			body,
@@ -266,7 +277,7 @@ public class FaroProjectLocalServiceImpl
 				"[$NOTIFICATION_MSG_6$]", "[$NOTIFICATION_MSG_7$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, "go-to-analytics-cloud"),
+				_language.get(resourceBundle, buttonLanguageKey),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -317,7 +328,7 @@ public class FaroProjectLocalServiceImpl
 
 		_mailService.sendEmail(
 			new MailMessage(
-				new InternetAddress("ac@liferay.com", "Analytics Cloud"),
+				new InternetAddress(senderEmailAddress, senderName),
 				new InternetAddress(faroUser.getEmailAddress(), null), subject,
 				body, true));
 
