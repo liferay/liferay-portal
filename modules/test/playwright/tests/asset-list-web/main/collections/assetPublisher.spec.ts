@@ -5,24 +5,24 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {assetPublisherPagesTest} from '../../../fixtures/assetPublisherPagesTest';
-import {assetPublisherWidgetPagesTest} from '../../../fixtures/assetPublisherWidgetPagesTest';
-import {collectionsPagesTest} from '../../../fixtures/collectionsPagesTest';
-import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../fixtures/loginTest';
-import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
-import getRandomString from '../../../utils/getRandomString';
-import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {assetPublisherPagesTest} from '../../../../fixtures/assetPublisherPagesTest';
+import {assetPublisherWidgetPagesTest} from '../../../../fixtures/assetPublisherWidgetPagesTest';
+import {collectionsPagesTest} from '../../../../fixtures/collectionsPagesTest';
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
+import getRandomString from '../../../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../../../utils/structured-content/getBasicWebContentStructureId';
 
 const test = mergeTests(
 	loginTest(),
 	isolatedSiteTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-39304': {enabled: true},
-		'LPD-78863': {enabled: true, system: true},
+		'LPD-39304': {enabled: true}, // Asset Selection for Asset Publisher
+		'LPD-78863': {enabled: true, system: true}, // DXP Segments
 	}),
 	assetPublisherPagesTest,
 	assetPublisherWidgetPagesTest,
@@ -30,7 +30,7 @@ const test = mergeTests(
 	pageViewModePagesTest
 );
 
-test.describe('Manual Collection in Asset Publisher', () => {
+test.describe('Personalized Variation', () => {
 	test('A personalized manual collection can be used in an Asset Publisher', {tag: '@LPS-93726'}, async ({
 		apiHelpers,
 		assetPublisherPage,
@@ -73,7 +73,7 @@ test.describe('Manual Collection in Asset Publisher', () => {
 
 			await collectionsPage.addNewManualCollection(collectionName);
 
-			await collectionsPage.configureManualCollectionItemType({
+			await collectionsPage.configureSourceItemType({
 				itemSubtype: 'All Subtypes',
 				itemType: 'Web Content Article',
 			});
@@ -107,7 +107,7 @@ test.describe('Manual Collection in Asset Publisher', () => {
 		});
 	});
 
-	test('The same content can be assigned to more than one variation', {tag: '@LPS-93726'}, async ({
+	test('The same web content can be assigned to more than one variation', {tag: '@LPS-93726'}, async ({
 		apiHelpers,
 		assetPublisherPage,
 		assetPublisherWidgetPage,
@@ -151,7 +151,7 @@ test.describe('Manual Collection in Asset Publisher', () => {
 
 			await collectionsPage.addNewManualCollection(collectionName);
 
-			await collectionsPage.configureManualCollectionItemType({
+			await collectionsPage.configureSourceItemType({
 				itemSubtype: 'All Subtypes',
 				itemType: 'Web Content Article',
 			});

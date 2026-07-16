@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect} from '@playwright/test';
+import {Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
@@ -27,14 +28,13 @@ export class CollectionsPage {
 	 * Creates a dynamic collection with the given name.
 	 */
 
-	async createWebContentDynamicCollection(name, siteUrl) {
+	async createWebContentDynamicCollection(name: string, siteUrl: string) {
 		await this.addNewDynamicCollection(name);
 
-		await this.configureCollectionWithWebContents();
-
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(this.page);
+		await this.configureSourceItemType({
+			itemSubtype: 'Basic Web Content',
+			itemType: 'Web Content Article',
+		});
 
 		return {
 			classPK: await this.getCollectionClassPK(name, siteUrl),
@@ -68,7 +68,7 @@ export class CollectionsPage {
 	 * Add a dynamic collection with the given name.
 	 */
 
-	async addNewDynamicCollection(name) {
+	async addNewDynamicCollection(name: string) {
 		await this.addNewCollection(name, true);
 	}
 
@@ -95,12 +95,18 @@ export class CollectionsPage {
 	 */
 
 	async addPersonalizedVariation(segmentName: string) {
-		await this.page
-			.getByRole('button', {name: 'Add Personalized Variation'})
-			.click();
+		await clickAndExpectToBeVisible({
+			target: this.page
+				.getByRole('dialog')
+				.filter({hasText: 'New Personalized Variation'}),
+			trigger: this.page.getByRole('button', {
+				name: 'Add Personalized Variation',
+			}),
+		});
 
 		await this.page
-			.frameLocator('iframe[id$="selectEntity_iframe_"]')
+			.getByRole('dialog')
+			.frameLocator('iframe')
 			.getByText(segmentName)
 			.click();
 
@@ -113,26 +119,13 @@ export class CollectionsPage {
 	 */
 
 	async deprioritizeVariation(variationTitle: string) {
-		const actionsButton = this.page.getByRole('button', {
-			name: `Actions for ${variationTitle}`,
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('button', {name: 'Deprioritize'}),
+			trigger: this.page.getByRole('button', {
+				name: `Actions for ${variationTitle}`,
+			}),
 		});
-
-		const deprioritizeButton = this.page.getByRole('button', {
-			name: 'Deprioritize',
-		});
-
-		// The actions ellipsis sometimes needs a second click to open its
-		// dropdown, so only click it while the menu is still closed.
-
-		await expect(async () => {
-			if (!(await deprioritizeButton.isVisible())) {
-				await actionsButton.click();
-			}
-
-			await expect(deprioritizeButton).toBeVisible({timeout: 2000});
-		}).toPass({timeout: 20000});
-
-		await deprioritizeButton.click();
 	}
 
 	async deleteCollection(name: string) {
@@ -179,12 +172,11 @@ export class CollectionsPage {
 	}
 
 	/**
-	 * On a manual collection's edit page, restricts the collection to multiple
-	 * item types by choosing "Select Types" and moving the given types out of
-	 * the "In Use" list, then saves.
+	 * Restricts the collection to multiple item types by choosing "Select
+	 * Types" and moving the given types out of the "In Use" list, then saves.
 	 */
 
-	async restrictManualCollectionItemTypes(excludedTypes: string[]) {
+	async restrictSourceItemTypes(excludedTypes: string[]) {
 		await this.page
 			.getByRole('combobox', {name: 'Item Type'})
 			.selectOption({label: 'Select Types'});
@@ -209,11 +201,11 @@ export class CollectionsPage {
 	}
 
 	/**
-	 * On a manual collection's edit page, restricts the collection to a single
-	 * item type (and optional subtype), then saves.
+	 * Configures the collection to a single item type (and optional subtype),
+	 * then saves.
 	 */
 
-	async configureManualCollectionItemType({
+	async configureSourceItemType({
 		itemSubtype,
 		itemType,
 	}: {
@@ -275,28 +267,10 @@ export class CollectionsPage {
 	}
 
 	/**
-	 * Configure a dynamic collection for Web Contents.
-	 */
-
-	async configureCollectionWithWebContents() {
-		await this.page
-			.getByLabel('Item Type')
-			.selectOption({label: 'Web Content Article'});
-
-		const select = await this.page
-			.locator('.asset-subtype:not(.hide)')
-			.getByLabel('Item Subtype');
-
-		await select.waitFor();
-
-		await select.selectOption({label: 'Basic Web Content'});
-	}
-
-	/**
 	 * Gets the collection classPK.
 	 */
 
-	async getCollectionClassPK(name, siteUrl) {
+	async getCollectionClassPK(name: string, siteUrl: string) {
 		await this.goto(siteUrl);
 
 		const classPK = await this.page

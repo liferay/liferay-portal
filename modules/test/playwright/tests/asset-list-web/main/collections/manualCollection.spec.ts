@@ -5,26 +5,26 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {collectionsPagesTest} from '../../../fixtures/collectionsPagesTest';
-import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../fixtures/loginTest';
-import getRandomString from '../../../utils/getRandomString';
-import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {collectionsPagesTest} from '../../../../fixtures/collectionsPagesTest';
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import getRandomString from '../../../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../../../utils/structured-content/getBasicWebContentStructureId';
 
 const test = mergeTests(
 	loginTest(),
 	isolatedSiteTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-39304': {enabled: true},
-		'LPD-78863': {enabled: true, system: true},
+		'LPD-39304': {enabled: true}, // Asset Selection for Asset Publisher
+		'LPD-78863': {enabled: true, system: true}, // DXP Segments
 	}),
 	collectionsPagesTest
 );
 
-test.describe('Manual Collection', () => {
+test.describe('Selection and Display', () => {
 	test('Only the selected item types are offered when adding assets', {tag: '@LPS-143093'}, async ({
 		collectionsPage,
 		page,
@@ -44,7 +44,7 @@ test.describe('Manual Collection', () => {
 		});
 
 		await test.step('Restrict the collection to every item type except Blogs Entry and Web Content Article', async () => {
-			await collectionsPage.restrictManualCollectionItemTypes(
+			await collectionsPage.restrictSourceItemTypes(
 				excludedTypes
 			);
 		});
@@ -93,7 +93,7 @@ test.describe('Manual Collection', () => {
 
 			await collectionsPage.addNewManualCollection(getRandomString());
 
-			await collectionsPage.configureManualCollectionItemType({
+			await collectionsPage.configureSourceItemType({
 				itemSubtype: 'Basic Web Content',
 				itemType: 'Web Content Article',
 			});
@@ -109,7 +109,9 @@ test.describe('Manual Collection', () => {
 			).toBeVisible();
 		});
 	});
+});
 
+test.describe('Personalized Variation', () => {
 	test('Can still be edited after deleting a segment used by a variation', {tag: '@LPS-98466'}, async ({
 		apiHelpers,
 		collectionsPage,
@@ -154,7 +156,7 @@ test.describe('Manual Collection', () => {
 
 			await collectionsPage.addNewManualCollection(collectionName);
 
-			await collectionsPage.configureManualCollectionItemType({
+			await collectionsPage.configureSourceItemType({
 				itemSubtype: 'All Subtypes',
 				itemType: 'Web Content Article',
 			});
