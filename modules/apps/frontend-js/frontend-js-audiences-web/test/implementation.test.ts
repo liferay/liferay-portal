@@ -6,6 +6,29 @@
 import * as audiences from '../src/main/resources/META-INF/resources/main/implementation';
 import {store} from '../src/main/resources/META-INF/resources/main/store';
 
+import type {AudiencesDefinition} from '../src/main/resources/META-INF/resources/main/index';
+
+const DEFINITION_URL = 'https://example.com/audiences.json';
+
+function mockAudiencesDefinition(audienceIds: string[]) {
+	const audiencesDefinition: AudiencesDefinition = {
+		audiences: audienceIds.map((audienceId) => ({
+			conjunction: 'AND',
+			id: audienceId,
+			rules: [],
+		})),
+	};
+
+	(global as any).fetch = jest.fn(() =>
+		Promise.resolve({
+			json: () => Promise.resolve(audiencesDefinition),
+			ok: true,
+			status: 200,
+			statusText: 'OK',
+		})
+	);
+}
+
 describe('implementation', () => {
 	afterEach(async () => {
 		store.clear();
@@ -73,6 +96,42 @@ describe('implementation', () => {
 			await audiences.runHandlers();
 
 			expect(runCount).toBe(1);
+		});
+	});
+
+	describe('getPriority', () => {
+		it('reflects the definition order', async () => {
+			mockAudiencesDefinition(['a', 'b', 'c']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(audiences.getPriority('a')).toBe(0);
+			expect(audiences.getPriority('b')).toBe(1);
+			expect(audiences.getPriority('c')).toBe(2);
+		});
+
+		it('returns Infinity for an audience absent from the definition', async () => {
+			mockAudiencesDefinition(['a']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(audiences.getPriority('missing')).toBe(Infinity);
+		});
+
+		it('refreshes the priorities on a second runDetection', async () => {
+			mockAudiencesDefinition(['a', 'b']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(audiences.getPriority('a')).toBe(0);
+			expect(audiences.getPriority('b')).toBe(1);
+
+			mockAudiencesDefinition(['b', 'a']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(audiences.getPriority('b')).toBe(0);
+			expect(audiences.getPriority('a')).toBe(1);
 		});
 	});
 });

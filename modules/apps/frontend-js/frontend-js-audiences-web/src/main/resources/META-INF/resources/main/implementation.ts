@@ -15,6 +15,8 @@ interface HandlersMap {
 
 const handlers: HandlersMap = {};
 
+let priorities: Map<AudienceId, number> = new Map();
+
 export function clear(): void {
 	store.clear();
 }
@@ -27,6 +29,12 @@ export function clearHandlers(): void {
 
 export function get(): Set<AudienceId> {
 	return store.getAudienceIds();
+}
+
+export function getPriority(audienceId: AudienceId): number {
+	const priority = priorities.get(audienceId);
+
+	return priority === undefined ? Infinity : priority;
 }
 
 export async function runDetection(
@@ -62,6 +70,13 @@ export async function runDetection(
 			`Unable to parse '${audiencesDefinitionURL}': ${getErrorMessage(error)}`
 		);
 	}
+
+	priorities = new Map(
+		audiencesDefinition.audiences.map((audience, index) => [
+			audience.id,
+			index,
+		])
+	);
 
 	const detection = new Detection(audiencesDefinition);
 
