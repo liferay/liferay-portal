@@ -47,6 +47,15 @@ const translateNameAndMetadataFields = async (
 	);
 };
 
+const setWebContentScope = async (iframe, scope) => {
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: iframe.getByRole('menuitem', {exact: true, name: scope}),
+		timeout: 3000,
+		trigger: iframe.getByLabel('Filter', {exact: true}),
+	});
+};
+
 const baseTest = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
@@ -479,6 +488,76 @@ translationAndAutosaveTest(
 		await expect(
 			articleSelectorIframe.getByText(unSelectableWebContent)
 		).toHaveCount(0);
+	}
+);
+
+baseTest(
+	'Web content draft in a connected asset library is not found when browsing everywhere',
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const fieldName = 'WebContentSelector';
+		const structureName = getRandomString();
+		const draftTitle = getRandomString();
+
+		// A structure with a web content field opens the web content item
+		// selector; connect an asset library whose only web content is a draft
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{fieldType: 'journal_article', name: fieldName}],
+				name: structureName,
+			})
+		);
+
+		const depot =
+			await apiHelpers.jsonWebServicesDepot.addDepotEntry(
+				getRandomString()
+			);
+
+		try {
+			await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+				depot.depotEntryId,
+				String(site.id)
+			);
+
+			await apiHelpers.headlessAdminContent.postStructuredContentDraft({
+				contentStructureId:
+					await getBasicWebContentStructureId(apiHelpers),
+				datePublished: '2026-01-01T00:00:00Z',
+				siteId: String(depot.groupId),
+				title: draftTitle,
+			});
+
+			// Open the web content item selector and browse everywhere
+
+			await journalEditArticlePage.goto({
+				siteUrl: site.friendlyUrlPath,
+				structureName,
+			});
+
+			await page
+				.getByTestId(fieldName)
+				.getByRole('button', {name: 'Select'})
+				.click();
+
+			const iframe = page.frameLocator('iframe[title="Web Content"]');
+
+			await setWebContentScope(iframe, 'Everywhere');
+
+			// The draft never surfaces, so the library reports no web content
+
+			await expect(
+				iframe.getByText('No web content was found.')
+			).toBeVisible();
+
+			await expect(iframe.getByText(draftTitle)).toHaveCount(0);
+		}
+		finally {
+			await apiHelpers.jsonWebServicesDepot.deleteDepotEntry(
+				depot.depotEntryId
+			);
+		}
 	}
 );
 

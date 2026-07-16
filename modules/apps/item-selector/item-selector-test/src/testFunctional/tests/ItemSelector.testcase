@@ -188,55 +188,6 @@ definition {
 		ItemSelector.previewEmbeddedVideo(invalidURL = "https://test.com/test");
 	}
 
-	@description = "It ensures that the web content draft in an Asset Library cannot be found when searching in an Item Selector in that Library."
-	@priority = 4
-	@refactordone
-	test CannotViewWCDraftViaFilterResults {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent Title",
-			workflowAction = "DRAFT");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(
-			structureDescription = "WC Structure Description",
-			structureName = "WC Structure Name");
-
-		DataEngine.addField(
-			fieldFieldLabel = "Web Content",
-			fieldName = "Web Content");
-
-		WebContentStructures.saveCP(structureName = "WC Structure Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
-
-		Click(
-			fieldLabel = "Web Content",
-			locator1 = "Button#BUTTON_LABEL",
-			text = "Select");
-
-		ItemSelector.viewWCEverywhereFilterResults(
-			draft = "true",
-			webContentTitle = "WC WebContent Title");
-	}
-
 	@description = "This ensures that users can preview the supported videos in the item selector."
 	@priority = 5
 	@refactordone
