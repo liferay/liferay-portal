@@ -68,7 +68,7 @@ public class ConversionUtil {
 		}
 		else if (value != null) {
 			return FieldDateMath.of(
-				fieldDateMath -> fieldDateMath.value(value));
+				fieldDateMath -> fieldDateMath.value(value.longValue()));
 		}
 
 		return null;
