@@ -12,6 +12,13 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationFactory;
 import com.liferay.exportimport.kernel.exception.LARTypeException;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
@@ -21,8 +28,11 @@ import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
+import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
@@ -77,9 +87,13 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.Node;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -92,6 +106,7 @@ import java.io.InputStream;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -327,6 +342,267 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 				importedGroup.getGroupId());
 
 		Assert.assertNotNull(importedLayout);
+	}
+
+	@Test
+	@TestInfo("LPS-98501")
+	public void testExportImportContentLayoutWithGlobalFragmentEntry()
+		throws Exception {
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		Group companyGroup = company.getGroup();
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(), companyGroup.getGroupId(),
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				ServiceContextTestUtil.getServiceContext(
+					companyGroup.getGroupId()));
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.addFragmentEntry(
+				null, TestPropsValues.getUserId(), companyGroup.getGroupId(),
+				fragmentCollection.getFragmentCollectionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, false, StringPool.BLANK, null, 0, false,
+				false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					companyGroup.getGroupId()));
+
+		Layout contentLayout = LayoutTestUtil.addTypeContentLayout(
+			group, RandomTestUtil.randomString());
+
+		Layout draftLayout = contentLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			StringPool.BLANK, fragmentEntry.getCss(),
+			fragmentEntry.getConfiguration(),
+			fragmentEntry.getExternalReferenceCode(),
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				fragmentEntry.getGroupId(), draftLayout.getGroupId()),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(), draftLayout,
+			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
+			0,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, contentLayout);
+
+		exportImportLayouts(
+			new long[] {contentLayout.getLayoutId()}, getImportParameterMap());
+
+		Layout importedLayout =
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				contentLayout.getExternalReferenceCode(),
+				importedGroup.getGroupId());
+
+		FragmentEntryLink importedFragmentEntryLink = _getFragmentEntryLink(
+			importedLayout);
+
+		FragmentEntry importedFragmentEntry =
+			importedFragmentEntryLink.fetchFragmentEntry();
+
+		Assert.assertEquals(
+			fragmentEntry.getFragmentEntryId(),
+			importedFragmentEntry.getFragmentEntryId());
+	}
+
+	@Test
+	@TestInfo("LPS-122296")
+	public void testExportImportContentLayoutWithMappedImageReference()
+		throws Exception {
+
+		Layout contentLayout = LayoutTestUtil.addTypeContentLayout(
+			group, RandomTestUtil.randomString());
+
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(group.getGroupId());
+
+		_addMappedImageFragmentEntryLink(contentLayout, fileEntry);
+
+		exportImportLayouts(
+			new long[] {contentLayout.getLayoutId()}, getImportParameterMap());
+
+		Layout importedLayout =
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				contentLayout.getExternalReferenceCode(),
+				importedGroup.getGroupId());
+
+		FileEntry importedFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), importedGroup.getGroupId());
+
+		FragmentEntryLink importedFragmentEntryLink = _getFragmentEntryLink(
+			importedLayout);
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			importedFragmentEntryLink.getEditableValues());
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		JSONObject imageJSONObject = editableProcessorJSONObject.getJSONObject(
+			"image-square");
+
+		Assert.assertEquals(
+			editableValuesJSONObject.toString(),
+			importedFileEntry.getExternalReferenceCode(),
+			imageJSONObject.getString("externalReferenceCode"));
+		Assert.assertEquals("smallImage", imageJSONObject.getString("fieldId"));
+	}
+
+	@Test
+	@TestInfo("LPS-184799")
+	public void testExportImportContentLayoutWithMappedLinkToPageField()
+		throws Exception {
+
+		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(
+			group, RandomTestUtil.randomString());
+
+		DDMForm ddmForm = new DDMForm();
+
+		ddmForm.setAvailableLocales(Collections.singleton(LocaleUtil.US));
+		ddmForm.setDefaultLocale(LocaleUtil.US);
+
+		DDMFormField ddmFormField = new DDMFormField(
+			"linkToPage", DDMFormFieldTypeConstants.LINK_TO_LAYOUT);
+
+		ddmFormField.setDataType("string");
+		ddmFormField.setDDMForm(ddmForm);
+		ddmFormField.setFieldNamespace("ddm");
+		ddmFormField.setLocalizable(true);
+		ddmFormField.setShowLabel(true);
+
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		ddmFormFields.add(ddmFormField);
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), JournalArticle.class.getName(), ddmForm,
+			LocaleUtil.US);
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			group.getGroupId(), ddmStructure.getStructureId(),
+			_portal.getClassNameId(JournalArticle.class));
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				group.getGroupId(),
+				DDMStructureTestUtil.getSampleStructuredContent(
+					"linkToPage",
+					JSONUtil.put(
+						"groupId", targetLayout.getGroupId()
+					).put(
+						"id", targetLayout.getUuid()
+					).put(
+						"layoutId", targetLayout.getLayoutId()
+					).put(
+						"name", targetLayout.getName()
+					).put(
+						"privateLayout", targetLayout.isPrivateLayout()
+					).put(
+						"returnType",
+						"com.liferay.item.selector.criteria." +
+							"UUIDItemSelectorReturnType"
+					).put(
+						"title", targetLayout.getTitle()
+					).toString()),
+				ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey());
+
+		Layout contentLayout = LayoutTestUtil.addTypeContentLayout(
+			group, RandomTestUtil.randomString());
+
+		Layout draftLayout = contentLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"link",
+					JSONUtil.put(
+						"className", JournalArticle.class.getName()
+					).put(
+						"classNameId",
+						String.valueOf(
+							_portal.getClassNameId(JournalArticle.class))
+					).put(
+						"classPK",
+						String.valueOf(journalArticle.getResourcePrimKey())
+					).put(
+						"classTypeId",
+						String.valueOf(ddmStructure.getStructureId())
+					).put(
+						"fieldId", "DDMStructure_" + ddmFormField.getName()
+					))
+			).toString(),
+			draftLayout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, contentLayout);
+
+		exportImportLayouts(
+			new long[] {
+				contentLayout.getLayoutId(), targetLayout.getLayoutId()
+			},
+			getImportParameterMap());
+
+		JournalArticle importedJournalArticle =
+			_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), importedGroup.getGroupId());
+
+		Layout importedLayout =
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				contentLayout.getExternalReferenceCode(),
+				importedGroup.getGroupId());
+
+		FragmentEntryLink importedFragmentEntryLink = _getFragmentEntryLink(
+			importedLayout);
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			importedFragmentEntryLink.getEditableValues());
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		JSONObject linkJSONObject = editableProcessorJSONObject.getJSONObject(
+			"link");
+
+		Assert.assertEquals(
+			editableValuesJSONObject.toString(),
+			importedJournalArticle.getExternalReferenceCode(),
+			linkJSONObject.getString("externalReferenceCode"));
+		Assert.assertEquals(
+			"DDMStructure_" + ddmFormField.getName(),
+			linkJSONObject.getString("fieldId"));
+
+		Layout importedTargetLayout =
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				targetLayout.getExternalReferenceCode(),
+				importedGroup.getGroupId());
+
+		Document document = SAXReaderUtil.read(
+			importedJournalArticle.getContent());
+
+		Node node = document.selectSingleNode("//dynamic-content");
+
+		JSONObject fieldValueJSONObject = JSONFactoryUtil.createJSONObject(
+			node.getText());
+
+		Assert.assertEquals(
+			fieldValueJSONObject.toString(), importedTargetLayout.getLayoutId(),
+			fieldValueJSONObject.getLong("layoutId"));
+		Assert.assertEquals(
+			fieldValueJSONObject.toString(), importedGroup.getGroupId(),
+			fieldValueJSONObject.getLong("groupId"));
 	}
 
 	@Test
@@ -1098,13 +1374,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), group.getGroupId(), null,
-			RandomTestUtil.randomString(), null,
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				draftLayout.getPlid()),
-			draftLayout.getPlid(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, StringPool.BLANK,
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			JSONUtil.put(
 				FragmentEntryProcessorConstants.
 					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
@@ -1114,8 +1384,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 						"className", FileEntry.class.getName()
 					).put(
 						"classNameId",
-						String.valueOf(
-							_portal.getClassNameId(FileEntry.class.getName()))
+						String.valueOf(_portal.getClassNameId(FileEntry.class))
 					).put(
 						"classPK", String.valueOf(fileEntry.getFileEntryId())
 					).put(
@@ -1124,9 +1393,11 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 						"fieldId", "smallImage"
 					))
 			).toString(),
-			StringPool.BLANK, 0, StringPool.BLANK,
-			FragmentConstants.TYPE_COMPONENT,
-			ServiceContextTestUtil.getServiceContext());
+			draftLayout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 	}
 
 	private void _assertFriendlyURL(Layout layout, String friendlyURL)
@@ -1157,22 +1428,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			Layout layout, Layout expectedLinkedLayout)
 		throws Exception {
 
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		List<FragmentEntryLink> fragmentEntryLinks =
-			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
-				layout.getGroupId(), draftLayout.getPlid());
-
-		if (fragmentEntryLinks.isEmpty()) {
-			fragmentEntryLinks =
-				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
-					layout.getGroupId(), layout.getPlid());
-		}
-
-		Assert.assertEquals(
-			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
-
-		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
+		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(layout);
 
 		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
 			fragmentEntryLink.getEditableValues());
@@ -1206,6 +1462,25 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		scanner.useDelimiter("\\Z");
 
 		return scanner.next();
+	}
+
+	private FragmentEntryLink _getFragmentEntryLink(Layout layout) {
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				layout.getGroupId(), draftLayout.getPlid());
+
+		if (fragmentEntryLinks.isEmpty()) {
+			fragmentEntryLinks =
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid());
+		}
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		return fragmentEntryLinks.get(0);
 	}
 
 	private void _testExportImportLayoutUtilityPageEntryWithPreviewFileEntry()
@@ -1276,6 +1551,9 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	@Inject
 	private FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
+
+	@Inject
+	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
