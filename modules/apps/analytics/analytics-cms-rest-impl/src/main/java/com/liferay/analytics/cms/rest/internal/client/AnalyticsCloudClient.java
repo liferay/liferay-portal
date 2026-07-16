@@ -21,6 +21,7 @@ import com.liferay.analytics.cms.rest.dto.v1_0.ObjectEntryMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.ObjectEntryTopPages;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceAssetConsumption;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceAssetConsumptionItem;
+import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceHistogramMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceOverviewMetric;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAsset;
@@ -438,6 +439,64 @@ public class AnalyticsCloudClient {
 
 			throw new PortalException(
 				"Unable to get performance asset consumption", exception);
+		}
+	}
+
+	public PerformanceHistogramMetric getPerformanceHistogramMetric(
+			AnalyticsConfiguration analyticsConfiguration, List<Long> groupIds,
+			Integer rangeKey, String selectedMetric)
+		throws Exception {
+
+		try {
+			Http.Options options = _getOptions(analyticsConfiguration);
+
+			options.setLocation(
+				_getLocation(
+					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
+					groupIds,
+					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
+					"/performance-overview-metric/histogram", rangeKey,
+					new String[] {selectedMetric}));
+
+			String content = _http.URLtoString(options);
+
+			Http.Response response = options.getResponse();
+
+			if (response.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				PerformanceHistogramMetric performanceHistogramMetric = null;
+
+				JsonNode jsonNode = ObjectMapperHolder._objectMapper.readTree(
+					content);
+
+				if (jsonNode != null) {
+					TypeFactory typeFactory = TypeFactory.defaultInstance();
+
+					ObjectReader objectReader =
+						ObjectMapperHolder._objectMapper.readerFor(
+							typeFactory.constructType(
+								PerformanceHistogramMetric.class));
+
+					performanceHistogramMetric = objectReader.readValue(
+						jsonNode);
+				}
+
+				return performanceHistogramMetric;
+			}
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("Response code " + response.getResponseCode());
+			}
+
+			throw new PortalException(
+				"Unable to get performance histogram metric");
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			throw new PortalException(
+				"Unable to get performance histogram metric", exception);
 		}
 	}
 
