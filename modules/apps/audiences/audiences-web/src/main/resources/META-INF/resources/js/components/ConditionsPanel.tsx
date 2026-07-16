@@ -7,7 +7,7 @@ import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import {useScreenReaderAnnounce} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
-import React, {Dispatch, Fragment, useRef, useState} from 'react';
+import React, {Dispatch, Fragment, useMemo, useRef, useState} from 'react';
 import {ConnectDropTarget, useDrop} from 'react-dnd';
 
 import {
@@ -80,28 +80,36 @@ export default function ConditionsPanel({
 	dispatch,
 	root,
 }: IProps) {
-	const audiencesCriterias = audiencesCriteriaTypes.flatMap(
-		(audiencesCriteriaType) => audiencesCriteriaType.audiencesCriterias
+	const audiencesCriteriasByKey: Record<string, AudiencesCriteria> = useMemo(
+		() =>
+			Object.fromEntries(
+				audiencesCriteriaTypes
+					.flatMap(
+						(audiencesCriteriaType) =>
+							audiencesCriteriaType.audiencesCriterias
+					)
+					.map((audiencesCriteria) => [
+						audiencesCriteria.key,
+						audiencesCriteria,
+					])
+			),
+		[audiencesCriteriaTypes]
 	);
 
-	const audiencesCriteriasByKey: Record<string, AudiencesCriteria> =
-		Object.fromEntries(
-			audiencesCriterias.map((audiencesCriteria) => [
-				audiencesCriteria.key,
-				audiencesCriteria,
-			])
-		);
-
-	const iconColorsByKey: Record<string, string> = Object.fromEntries(
-		audiencesCriteriaTypes.flatMap((audiencesCriteriaType) =>
-			audiencesCriteriaType.audiencesCriterias.map(
-				(audiencesCriteria) => [
-					audiencesCriteria.key,
-					CATEGORY_ICON_COLORS[audiencesCriteriaType.key] ??
-						DEFAULT_ICON_COLOR,
-				]
-			)
-		)
+	const iconColorsByKey: Record<string, string> = useMemo(
+		() =>
+			Object.fromEntries(
+				audiencesCriteriaTypes.flatMap((audiencesCriteriaType) =>
+					audiencesCriteriaType.audiencesCriterias.map(
+						(audiencesCriteria) => [
+							audiencesCriteria.key,
+							CATEGORY_ICON_COLORS[audiencesCriteriaType.key] ??
+								DEFAULT_ICON_COLOR,
+						]
+					)
+				)
+			),
+		[audiencesCriteriaTypes]
 	);
 
 	const announce = useScreenReaderAnnounce();
