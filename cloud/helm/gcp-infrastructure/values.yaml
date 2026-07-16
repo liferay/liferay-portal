@@ -15,6 +15,7 @@ database:
     instanceType: db-custom-1-3840
     queryInsightsEnabled: true
     storageGB: 20
+deploymentName: ""
 deletionProtection: true
 enabled: true
 endpoints: {}
@@ -35,7 +36,9 @@ license:
     externalSecretName: ""
     targetSecretName: liferay-license
 orphanOnDelete: false
-overlay:
+overlayAccess:
+    enabled: false
+overlayBucket:
     commonTags: {}
     enabled: false
     forceDestroy: false

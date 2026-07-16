@@ -101,6 +101,12 @@ spec:
                                     type: boolean
                                 orphanOnDelete:
                                     type: boolean
+                                overlayAccess:
+                                    properties:
+                                        enabled:
+                                            default: false
+                                            type: boolean
+                                    type: object
                                 projectId:
                                     type: string
                                 region:
@@ -1328,6 +1334,7 @@ spec:
                         {{- $environmentId := $xr.spec.environmentId -}}
                         {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
                         {{- $namespace := $xr.metadata.namespace -}}
+                        {{- $overlayAccess := $xr.spec.overlayAccess | default dict -}}
                         {{- $projectId := $xr.spec.projectId -}}
                         {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
                         {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
@@ -1630,6 +1637,7 @@ spec:
                                     type: Opaque
                             managementPolicies: {{ $managementPolicies }}
                         {{- end }}
+                        {{- if $overlayAccess.enabled }}
                         ---
                         apiVersion: kubernetes.m.crossplane.io/v1alpha1
                         kind: Object
@@ -1668,6 +1676,7 @@ spec:
                                                 uid: {{ .observed.composite.resource.metadata.uid }}
                                     type: Opaque
                             managementPolicies: {{ $managementPolicies }}
+                        {{- end }}
                         ---
                         {{ $isDatabaseReady := false -}}
                         {{- if and $databaseAddress $databasePassword $databasePort -}}

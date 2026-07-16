@@ -1,4 +1,4 @@
-{{- if .Values.overlay.enabled -}}
+{{- if .Values.overlayBucket.enabled -}}
 apiVersion: gcp.liferay.com/v1alpha1
 kind: LiferayOverlay
 metadata:
@@ -9,9 +9,9 @@ metadata:
     namespace: {{ .Release.Namespace }}
 spec:
     commonTags:
-        {{- merge (dict "project_id" .Values.projectId) (.Values.overlay.commonTags | default dict) | toYaml | nindent 8 }}
-    forceDestroy: {{ .Values.overlay.forceDestroy }}
-    orphanOnDelete: {{ .Values.overlay.orphanOnDelete }}
+        {{- merge (dict "project_id" .Values.projectId) (.Values.overlayBucket.commonTags | default dict) | toYaml | nindent 8 }}
+    forceDestroy: {{ .Values.overlayBucket.forceDestroy }}
+    orphanOnDelete: {{ .Values.overlayBucket.orphanOnDelete }}
     projectId: {{ .Values.projectId }}
     region: {{ .Values.region }}
 {{- end -}}

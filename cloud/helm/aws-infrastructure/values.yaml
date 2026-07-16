@@ -25,7 +25,9 @@ forceDestroy: false
 gateway: {}
 license: {}
 orphanOnDelete: false
-overlay:
+overlayAccess:
+    enabled: false
+overlayBucket:
     commonTags: {}
     enabled: false
     forceDestroy: false

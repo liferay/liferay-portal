@@ -16,7 +16,7 @@
 {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
 {{- $managementPoliciesNoUpdate := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson -}}
 {{- $namespace := $xr.metadata.namespace -}}
-{{- $overlay := $xr.spec.overlay | default dict -}}
+{{- $overlayAccess := $xr.spec.overlayAccess | default dict -}}
 {{- $projectId := $xr.spec.projectId -}}
 {{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
 {{- $searchName := printf "%s-es" $xr.metadata.name -}}

@@ -17,6 +17,8 @@ spec:
     environmentId: {{ .Values.environmentId }}
     forceDestroy: {{ .Values.forceDestroy }}
     orphanOnDelete: {{ .Values.orphanOnDelete }}
+    overlayAccess:
+        enabled: {{ .Values.overlayAccess.enabled }}
     projectId: {{ .Values.projectId }}
     region: {{ .Values.region }}
     search:

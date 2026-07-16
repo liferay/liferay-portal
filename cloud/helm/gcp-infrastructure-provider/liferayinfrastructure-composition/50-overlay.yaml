@@ -1,4 +1,4 @@
-{{- if $overlay.enabled }}
+{{- if $overlayAccess.enabled }}
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: BucketIAMMember
 metadata:

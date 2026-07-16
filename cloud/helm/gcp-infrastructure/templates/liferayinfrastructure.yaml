@@ -24,8 +24,8 @@ spec:
     environmentId: {{ .Values.environmentId }}
     forceDestroy: {{ .Values.forceDestroy }}
     orphanOnDelete: {{ .Values.orphanOnDelete }}
-    overlay:
-        enabled: {{ .Values.overlay.enabled }}
+    overlayAccess:
+        enabled: {{ .Values.overlayAccess.enabled }}
     projectId: {{ .Values.projectId }}
     region: {{ .Values.region }}
     storage: {{ .Values.storage | toYaml | nindent 8 }}

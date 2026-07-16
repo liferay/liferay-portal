@@ -14,7 +14,7 @@ tests:
                     value: false
         it: Defaults force destroy and orphan on delete to false
         set:
-            overlay.enabled: true
+            overlayBucket.enabled: true
     -   asserts:
             -   equal:
                     path: spec.commonTags.project_id
@@ -24,8 +24,8 @@ tests:
                     value: platform
         it: Merges the project identifier with the overlay common tags
         set:
-            overlay.commonTags.team: platform
-            overlay.enabled: true
+            overlayBucket.commonTags.team: platform
+            overlayBucket.enabled: true
             projectId: proj-456
     -   asserts:
             -   equal:
@@ -43,13 +43,13 @@ tests:
                     of: LiferayOverlay
         it: Names the LiferayOverlay after the release
         set:
-            overlay.enabled: true
+            overlayBucket.enabled: true
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the LiferayOverlay when the overlay is disabled
         set:
-            overlay.enabled: false
+            overlayBucket.enabled: false
     -   asserts:
             -   equal:
                     path: spec.projectId
@@ -59,7 +59,7 @@ tests:
                     value: us-central1
         it: Propagates the project and region into the spec
         set:
-            overlay.enabled: true
+            overlayBucket.enabled: true
             projectId: proj-456
             region: us-central1
     -   asserts:
@@ -71,6 +71,6 @@ tests:
                     value: true
         it: Reflects the force destroy and orphan on delete toggles
         set:
-            overlay.enabled: true
-            overlay.forceDestroy: true
-            overlay.orphanOnDelete: true
+            overlayBucket.enabled: true
+            overlayBucket.forceDestroy: true
+            overlayBucket.orphanOnDelete: true

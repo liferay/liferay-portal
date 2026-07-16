@@ -71,7 +71,7 @@ spec:
                                 orphanOnDelete:
                                     default: false
                                     type: boolean
-                                overlay:
+                                overlayAccess:
                                     properties:
                                         enabled:
                                             default: false

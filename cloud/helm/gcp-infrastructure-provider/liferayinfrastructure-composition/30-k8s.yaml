@@ -217,7 +217,7 @@ spec:
             type: Opaque
     managementPolicies: {{ $managementPolicies }}
 {{- end }}
-{{- if $overlay.enabled }}
+{{- if $overlayAccess.enabled }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
