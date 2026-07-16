@@ -38,7 +38,6 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -114,14 +113,7 @@ public class DesignLibraryResourcesDisplayContext {
 		).setMVCRenderCommandName(
 			"/style_book/edit_style_book_entry"
 		).setRedirect(
-			() -> PortletURLBuilder.createRenderURL(
-				_liferayPortletResponse
-			).setMVCRenderCommandName(
-				"/design_library/design_library_resources"
-			).setParameter(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-				designLibraryEntryId
-			).buildString()
+			_getDesignLibraryResourcesURL(designLibraryEntryId)
 		).setParameter(
 			"backURLTitle", depotGroup.getName(_themeDisplay.getLocale())
 		).setParameter(
@@ -149,26 +141,43 @@ public class DesignLibraryResourcesDisplayContext {
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.getDepotEntry(
 			designLibraryEntryId);
 
-		if (!_hasManageStyleBookEntriesPermission(depotEntry.getGroupId())) {
-			return HashMapBuilder.<String, Object>put(
-				"canAddStyleBook", false
-			).build();
-		}
+		Group depotGroup = depotEntry.getGroup();
+
+		boolean manageStyleBookEntriesPermission =
+			_hasManageStyleBookEntriesPermission(depotGroup.getGroupId());
 
 		return HashMapBuilder.<String, Object>put(
 			"addStyleBookEntryURL",
-			_getAddStyleBookEntryURL(
-				depotEntry.getGroup(), designLibraryEntryId,
-				_themeDisplay.getLocale())
+			() -> {
+				if (!manageStyleBookEntriesPermission) {
+					return null;
+				}
+
+				return _getAddStyleBookEntryURL(
+					depotGroup, designLibraryEntryId);
+			}
 		).put(
-			"canAddStyleBook", true
+			"canAddStyleBook", manageStyleBookEntriesPermission
 		).put(
 			"frontendTokenDefinitionProviders",
-			StyleBookUtil.getFrontendTokenDefinitionProviders(
-				_themeDisplay.getCompanyId(), _themeDisplay.getLocale())
+			() -> {
+				if (!manageStyleBookEntriesPermission) {
+					return null;
+				}
+
+				return StyleBookUtil.getFrontendTokenDefinitionProviders(
+					_themeDisplay.getCompanyId(), _themeDisplay.getLocale());
+			}
 		).put(
 			"styleBookNamespace",
-			PortalUtil.getPortletNamespace(StyleBookPortletKeys.STYLE_BOOK)
+			() -> {
+				if (!manageStyleBookEntriesPermission) {
+					return null;
+				}
+
+				return PortalUtil.getPortletNamespace(
+					StyleBookPortletKeys.STYLE_BOOK);
+			}
 		).build();
 	}
 
@@ -261,7 +270,7 @@ public class DesignLibraryResourcesDisplayContext {
 	}
 
 	private String _getAddStyleBookEntryURL(
-		Group depotGroup, long designLibraryEntryId, Locale locale) {
+		Group depotGroup, long designLibraryEntryId) {
 
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
@@ -271,16 +280,9 @@ public class DesignLibraryResourcesDisplayContext {
 		).setActionName(
 			"/style_book/add_style_book_entry"
 		).setRedirect(
-			PortletURLBuilder.createRenderURL(
-				_liferayPortletResponse
-			).setMVCRenderCommandName(
-				"/design_library/design_library_resources"
-			).setParameter(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-				designLibraryEntryId
-			).buildString()
+			_getDesignLibraryResourcesURL(designLibraryEntryId)
 		).setParameter(
-			"backURLTitle", depotGroup.getName(locale)
+			"backURLTitle", depotGroup.getName(_themeDisplay.getLocale())
 		).buildString();
 	}
 
@@ -306,6 +308,17 @@ public class DesignLibraryResourcesDisplayContext {
 			));
 	}
 
+	private String _getDesignLibraryResourcesURL(long designLibraryEntryId) {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/design_library/design_library_resources"
+		).setParameter(
+			DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
+			designLibraryEntryId
+		).buildString();
+	}
+
 	private String _getExportImportPortletURL(Group group, String portletId) {
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
@@ -318,7 +331,7 @@ public class DesignLibraryResourcesDisplayContext {
 
 	private boolean _hasManageStyleBookEntriesPermission(long groupId) {
 		PortletResourcePermission portletResourcePermission =
-			_portletResourcePermissionSnapshot.get();
+			_styleBookPortletResourcePermissionSnapshot.get();
 
 		if (portletResourcePermission == null) {
 			return false;
@@ -330,7 +343,7 @@ public class DesignLibraryResourcesDisplayContext {
 	}
 
 	private static final Snapshot<PortletResourcePermission>
-		_portletResourcePermissionSnapshot = new Snapshot<>(
+		_styleBookPortletResourcePermissionSnapshot = new Snapshot<>(
 			DesignLibraryResourcesDisplayContext.class,
 			PortletResourcePermission.class,
 			"(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")");
