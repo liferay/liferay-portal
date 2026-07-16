@@ -41,12 +41,12 @@ export function createGroup(
 	return {conjunction, id: `group-${uuidv4()}`, items};
 }
 
-export function cloneWithNewIds(node: CriteriaNode): CriteriaNode {
+export function cloneNode(node: CriteriaNode): CriteriaNode {
 	if (isGroup(node)) {
 		return {
 			...node,
 			id: `group-${uuidv4()}`,
-			items: node.items.map(cloneWithNewIds),
+			items: node.items.map(cloneNode),
 		};
 	}
 
@@ -123,11 +123,7 @@ export function duplicateRule(root: Group, path: number[]): Group {
 
 	return updateGroup(root, groupPath, (group) => ({
 		...group,
-		items: insertAt(
-			group.items,
-			index + 1,
-			cloneWithNewIds(group.items[index])
-		),
+		items: insertAt(group.items, index + 1, cloneNode(group.items[index])),
 	}));
 }
 
