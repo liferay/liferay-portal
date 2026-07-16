@@ -14,7 +14,11 @@ import {
 	CATEGORY_ICON_COLORS,
 	DEFAULT_ICON_COLOR,
 } from '../constants/categoryIconColors';
-import {DRAG_TYPES} from '../constants/dragTypes';
+import {
+	AttributeDragItem,
+	DRAG_TYPES,
+	RowDragItem,
+} from '../constants/dragTypes';
 import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
 import useKeyboardNavigation, {
 	NavigationItemProps,
@@ -38,18 +42,6 @@ interface IProps {
 	dispatch: Dispatch<Action>;
 	root: Group;
 }
-
-interface AttributeDragItem {
-	audiencesCriteria: AudiencesCriteria;
-	type: string;
-}
-
-interface RuleDragItem {
-	id: string;
-	type: string;
-}
-
-type RowDragItem = AttributeDragItem | RuleDragItem;
 
 function getGroupDropPosition(
 	ref: React.RefObject<HTMLElement>,

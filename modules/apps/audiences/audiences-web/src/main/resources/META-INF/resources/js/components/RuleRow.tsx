@@ -13,7 +13,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
 
-import {DRAG_TYPES} from '../constants/dragTypes';
+import {DRAG_TYPES, RowDragItem, RuleDragItem} from '../constants/dragTypes';
 import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
 import {getOperatorLabel, getOperators} from '../constants/operators';
 import {NavigationItemProps} from '../hooks/useKeyboardNavigation';
@@ -23,18 +23,6 @@ import {
 	useSetMovementSource,
 } from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
-
-interface RuleDragItem {
-	id: string;
-	type: string;
-}
-
-interface AttributeDragItem {
-	audiencesCriteria: AudiencesCriteria;
-	type: string;
-}
-
-type RowDragItem = AttributeDragItem | RuleDragItem;
 
 interface IProps {
 	audiencesCriteria?: AudiencesCriteria;
