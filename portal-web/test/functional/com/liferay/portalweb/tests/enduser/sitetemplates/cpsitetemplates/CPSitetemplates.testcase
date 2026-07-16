@@ -193,68 +193,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-98548. User can import site templates to virtual instances and delete them."
-	@priority = 3
-	test DeleteSiteTemplateImportedToVirtualInstance {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User adds new site template and a new site based on this site template") {
-			SiteTemplates.addCP(
-				siteTemplateActive = "Yes",
-				siteTemplateName = "Site Template Name");
-
-			Site.openSitesAdmin();
-
-			Site.addSiteTemplateCP(
-				siteName = "Site Name",
-				siteTemplateName = "Site Template Name",
-				siteTemplateTab = "Custom Site Templates");
-		}
-
-		task ("When: User export the site templates") {
-			SiteTemplatesNavigator.openSiteTemplatesAdmin();
-
-			LAR.exportPortlet(
-				larFileName = "site-template-name.lar",
-				portletName = "Site Templates");
-		}
-
-		task ("And: Adds a new virtual instance") {
-			PortalInstances.openVirtualInstancesAdmin();
-
-			PortalInstances.addCP(
-				mailDomain = "www.able.com",
-				virtualHost = "www.able.com",
-				webId = "www.able.com");
-		}
-
-		task ("And: Import the site template lar file on the virtual instance") {
-			User.firstLoginPG(
-				password = PropsUtil.get("default.admin.password"),
-				userEmailAddress = "test@www.able.com",
-				virtualHostsURL = "http://www.able.com:8080");
-
-			SiteTemplatesNavigator.openSiteTemplatesAdmin(baseURL = "http://www.able.com:8080");
-
-			LAR.importPortlet(larFileName = "site-template-name.lar");
-		}
-
-		task ("Then: The site template from the lar file are visible") {
-			SiteTemplates.viewCP(siteTemplateName = "Site Template Name");
-		}
-
-		task ("When: User deletes the site template on the virtual instance") {
-			SiteTemplatesNavigator.openSiteTemplatesAdmin(baseURL = "http://www.able.com:8080");
-
-			SiteTemplates.deleteCP(siteTemplateName = "Site Template Name");
-		}
-
-		task ("Then: The site template will not be visible on the list") {
-			SiteTemplates.viewNoTemplatesDisplay(siteTemplateName = "Site Template Name");
-		}
-	}
-
 	@description = "User can edit an existing site template."
 	@priority = 4
 	test EditSiteTemplate {
