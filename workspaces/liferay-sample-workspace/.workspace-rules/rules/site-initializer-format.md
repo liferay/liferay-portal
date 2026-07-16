@@ -81,7 +81,7 @@ client-extensions/<name>/
           page-definition.json
           master-page.json       # {"name": ...} — NOT page-template.json
           thumbnail.png          # optional
-    layout-set/                   # Site-wide navigation and theme settings
+    layout-set/                   # Site wide navigation and theme settings
       public/
         metadata.json
     layouts/                      # Site pages
