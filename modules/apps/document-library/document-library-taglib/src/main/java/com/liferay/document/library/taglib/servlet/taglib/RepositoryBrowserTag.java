@@ -59,6 +59,10 @@ public class RepositoryBrowserTag extends IncludeTag {
 		return _includeExtension;
 	}
 
+	public boolean isStandaloneBreadcrumb() {
+		return _standaloneBreadcrumb;
+	}
+
 	public boolean isViewableByGuest() {
 		return _viewableByGuest;
 	}
@@ -86,6 +90,10 @@ public class RepositoryBrowserTag extends IncludeTag {
 		_repositoryId = repositoryId;
 	}
 
+	public void setStandaloneBreadcrumb(boolean standaloneBreadcrumb) {
+		_standaloneBreadcrumb = standaloneBreadcrumb;
+	}
+
 	public void setViewableByGuest(boolean viewableByGuest) {
 		_viewableByGuest = viewableByGuest;
 	}
@@ -98,6 +106,7 @@ public class RepositoryBrowserTag extends IncludeTag {
 		_folderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
 		_includeExtension = false;
 		_repositoryId = 0;
+		_standaloneBreadcrumb = false;
 		_viewableByGuest = false;
 	}
 
@@ -181,6 +190,7 @@ public class RepositoryBrowserTag extends IncludeTag {
 	private long _folderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
 	private boolean _includeExtension;
 	private long _repositoryId;
+	private boolean _standaloneBreadcrumb;
 	private boolean _viewableByGuest;
 
 }

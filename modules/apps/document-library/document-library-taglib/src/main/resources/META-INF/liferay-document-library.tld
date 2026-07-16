@@ -53,6 +53,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>standaloneBreadcrumb</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>viewableByGuest</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
