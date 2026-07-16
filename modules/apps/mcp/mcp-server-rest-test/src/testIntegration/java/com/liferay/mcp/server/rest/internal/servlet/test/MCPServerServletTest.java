@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
+import com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata;
 import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
+import com.liferay.oauth.client.persistence.service.OAuthClientPRLocalMetadataLocalService;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -326,6 +328,23 @@ public class MCPServerServletTest {
 			new String[] {"everything"}, new String[] {"public"},
 			portalURL + "/o/oauth2/token", null);
 
+		String mcpResourceURI = _getMCPURL();
+
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
+			_oAuthClientPRLocalMetadataLocalService.
+				fetchOAuthClientPRLocalMetadata(
+					TestPropsValues.getCompanyId(), mcpResourceURI);
+
+		if (oAuthClientPRLocalMetadata != null) {
+			_oAuthClientPRLocalMetadataLocalService.
+				deleteOAuthClientPRLocalMetadata(oAuthClientPRLocalMetadata);
+		}
+
+		_oAuthClientPRLocalMetadataLocalService.addOAuthClientPRLocalMetadata(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			new String[] {portalURL}, new String[] {"header"}, true,
+			mcpResourceURI, "Liferay MCP Server", new String[] {"everything"});
+
 		Http.Options options = new Http.Options();
 
 		options.setFollowRedirects(false);
@@ -343,7 +362,9 @@ public class MCPServerServletTest {
 		Assert.assertTrue(matcher.find());
 
 		JSONObject protectedResourceMetadataJSONObject =
-			JSONFactoryUtil.createJSONObject(_get(matcher.group(1)));
+			JSONFactoryUtil.createJSONObject(
+				_get(
+					portalURL + "/.well-known/oauth-protected-resource/o/mcp"));
 
 		String authorizationServerURL = JSONUtil.getValueAsString(
 			protectedResourceMetadataJSONObject,
@@ -1063,6 +1084,10 @@ public class MCPServerServletTest {
 	@Inject
 	private OAuthClientASLocalMetadataLocalService
 		_oAuthClientASLocalMetadataLocalService;
+
+	@Inject
+	private OAuthClientPRLocalMetadataLocalService
+		_oAuthClientPRLocalMetadataLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
