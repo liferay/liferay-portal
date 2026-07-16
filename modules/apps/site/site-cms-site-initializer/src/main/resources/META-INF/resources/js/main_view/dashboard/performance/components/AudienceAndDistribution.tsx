@@ -111,7 +111,8 @@ function Card({
 					})}
 				/>
 			}
-			className="h-100"
+			className="d-flex flex-column h-100"
+			contentClassName="flex-grow-1"
 			description={description}
 			title={title}
 			uppercaseTitle={false}
@@ -137,7 +138,7 @@ function Card({
 							country: valueKey,
 							value,
 						}))}
-						legend="list"
+						legend="table"
 						title=""
 						variant="choropleth"
 					/>
