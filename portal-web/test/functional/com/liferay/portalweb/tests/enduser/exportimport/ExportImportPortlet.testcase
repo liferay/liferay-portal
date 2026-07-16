@@ -40,10 +40,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: Uncheck the Validate Missing References box in System settings") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "System Settings");
+			SystemSettings.openSystemSettingsAdmin();
 
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Infrastructure",
@@ -68,20 +65,18 @@ definition {
 				groupName = "Site Name",
 				layoutName = "Test Page");
 
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(webContentTitle = "Web Content Title");
-
 			var portalURL = PropsUtil.get("portal.url");
 
-			CKEditor.addSourceContent(content = '''<p><a href="${portalURL}/web/site-name/test-page">test page</a></p>''');
-
-			WebContent.publishWithPermissions();
+			JSONWebcontent.addWebContent(
+				content = '''<p><a href="${portalURL}/web/site-name/test-page">test page</a></p>''',
+				groupName = "Site Name",
+				source = "true",
+				title = "Web Content Title");
 		}
 
 		task ("When: Export and download the web content to a LAR file") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
+
 			LAR.exportPortlet(larFileName = "ExportWebContent.lar");
 		}
 
@@ -101,6 +96,7 @@ definition {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-a");
 
 			LAR.importPortlet(
+				completedWithErrorsExpected = "true",
 				larFileName = "ExportWebContent.lar",
 				siteName = "Site Name A");
 

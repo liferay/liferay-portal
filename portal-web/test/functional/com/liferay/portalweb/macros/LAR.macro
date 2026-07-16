@@ -342,6 +342,11 @@ definition {
 					locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
 					value1 = "Failed");
 			}
+			else if (isSet(completedWithErrorsExpected)) {
+				AssertTextEquals(
+					locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
+					value1 = "Completed With Errors");
+			}
 			else {
 				AssertTextEquals(
 					locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
@@ -734,7 +739,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro importPortlet(importSchemaVersionMismatching = null, importValidationMissingItem = null, cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, failureExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
+	macro importPortlet(importSchemaVersionMismatching = null, importValidationMissingItem = null, cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, failureExpected = null, completedWithErrorsExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
 		if (${copyAsNew} == "true") {
 			Staging.enableCopyAsNewImport();
 		}
@@ -743,6 +748,7 @@ definition {
 
 		LAR._selectImportFile(
 			cannotImport = ${cannotImport},
+			completedWithErrorsExpected = ${completedWithErrorsExpected},
 			copyAsNew = ${copyAsNew},
 			failureExpected = ${failureExpected},
 			importDeletions = ${importDeletions},

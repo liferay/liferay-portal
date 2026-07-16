@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>EDITOR</td>
-	<td>//div[contains(@class,'cke_editable_inline') and contains(@id,'_${key_editor}')] | //div[contains(@class,'ck-editor__editable') and contains(@id,'_${key_editor}')] | //div[contains(@class,'form-group')]//textarea[contains(@id,'_${key_editor}')]</td>
+	<td>//div[contains(@class,'cke_editable_inline') and contains(@id,'_${key_editor}')] | //div[contains(@class,'ck-editor__editable') and contains(@id,'_${key_editor}')] | //div[contains(@class,'form-group')]//textarea[contains(@id,'_${key_editor}')] | //div[contains(@id,'FragmentEntryLinkEditable')]//div[contains(@class,'ck-editor__editable_inline')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -78,12 +78,12 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_BOLD</td>
-	<td>//button[contains(@data-type,'button-bold')]</td>
+	<td>//button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Bold')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_ITALIC</td>
-	<td>//button[contains(@data-type,'button-italic')]</td>
+	<td>//button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Italic')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -93,12 +93,12 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_UNDERLINE</td>
-	<td>//button[contains(@data-type,'button-underline')]</td>
+	<td>//button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Underline')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK</td>
-	<td>//button[contains(@data-type,'button-link')]</td>
+	<td>//button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Link')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -108,12 +108,17 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT</td>
-	<td>//div[contains(@class,'ae-container-input')]//input[contains(@class,'ae-input')]</td>
+	<td>//form[contains(@class,'ck-link-form')]//div[contains(@class,'ck-labeled-field-view')][.//label[contains(text(),'Link URL')]]//input[contains(@class,'ck-input')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT_CONFIRM</td>
-	<td>//button[contains(@aria-label,'Confirm')]</td>
+	<td>//form[contains(@class,'ck-link-form')]//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TEXT_FORMATTING_LINK_FORM</td>
+	<td>//form[contains(@class,'ck-link-form')]</td>
 	<td></td>
 </tr>
 </tbody>

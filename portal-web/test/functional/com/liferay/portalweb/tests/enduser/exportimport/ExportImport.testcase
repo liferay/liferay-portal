@@ -1445,10 +1445,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: User disable the validation of file entries and layout references") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "System Settings");
+			SystemSettings.openSystemSettingsAdmin();
 
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Infrastructure",
@@ -1488,18 +1485,11 @@ definition {
 		}
 
 		task ("Then: User can create a new WC with the saved external link of the deleted document") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			WebContentNavigator.gotoAddCP();
-
-			PortletEntry.inputTitle(title = "WC WebContent Title");
-
-			CKEditor.addEntryExternalURL(
-				displayText = ${dmDocumentURL},
-				entryExternalURL = ${entryExternalURL},
-				fieldLabel = "Content");
-
-			PortletEntry.publish();
+			JSONWebcontent.addWebContent(
+				content = '''<a href="${entryExternalURL}">${dmDocumentURL}</a>''',
+				groupName = "Guest",
+				source = "true",
+				title = "WC WebContent Title");
 		}
 	}
 

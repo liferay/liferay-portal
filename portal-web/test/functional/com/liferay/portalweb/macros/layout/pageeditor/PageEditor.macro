@@ -472,6 +472,8 @@ definition {
 
 		Click(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_INPUT_CONFIRM");
 
+		WaitForElementNotPresent(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_FORM");
+
 		Click(locator1 = "PageEditor#CONTENT_PAGE_DISABLED_HEADER");
 
 		PageEditor.waitForAutoSave();
@@ -3466,6 +3468,10 @@ return	Array.from(getWebElement("(//div[@data-name='${fragmentName}'])[${index}]
 		else {
 			Click(locator1 = "Fragment#CONTRIBUTED_FRAGMENT_TEXT");
 		}
+
+		WaitForVisible(
+			key_editor = "content",
+			locator1 = "AlloyEditor#EDITOR");
 	}
 
 	@summary = "Default summary"
