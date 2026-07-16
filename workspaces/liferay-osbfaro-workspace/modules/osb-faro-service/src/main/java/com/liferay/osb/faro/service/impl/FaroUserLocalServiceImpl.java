@@ -291,10 +291,18 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
 			groupId);
 
-		return _language.format(
-			resourceBundle,
+		String notificationLanguageKey =
 			"you-have-been-added-as-a-team-x-on-the-analytics-cloud-x-" +
-				"workspace-by-x",
+				"workspace-by-x";
+
+		if (faroProject.isDataPlatform()) {
+			notificationLanguageKey =
+				"you-have-been-added-as-a-team-x-on-the-liferay-data-" +
+					"platform-x-workspace-by-x";
+		}
+
+		return _language.format(
+			resourceBundle, notificationLanguageKey,
 			new String[] {roleName, faroProject.getName(), userEmailAddress});
 	}
 
@@ -313,10 +321,26 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 	private void _sendEmailNewUser(FaroUser faroUser, long groupId, long roleId)
 		throws Exception {
 
+		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
+			groupId);
+
+		String buttonLanguageKey = "go-to-analytics-cloud";
+		String senderEmailAddress = "ac@liferay.com";
+		String senderName = "Analytics Cloud";
+		String subjectLanguageKey = "welcome-to-analytics-cloud";
+
+		if (faroProject.isDataPlatform()) {
+			buttonLanguageKey = "go-to-liferay-data-platform";
+			senderEmailAddress = "ldp@liferay.com";
+			senderName = "Liferay Data Platform";
+			subjectLanguageKey = "welcome-to-liferay-data-platform";
+		}
+
 		User user = _userLocalService.getUser(faroUser.getUserId());
 
 		InternetAddress from = new InternetAddress(
-			"ac@liferay.com", user.getFullName() + " (Analytics Cloud)");
+			senderEmailAddress,
+			StringBundler.concat(user.getFullName(), " (", senderName, ")"));
 
 		String toName = StringPool.BLANK;
 
@@ -346,8 +370,8 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 			body = StringUtil.read(
 				getClassLoader(),
 				"com/liferay/osb/faro/dependencies/invite-new-user.html");
-			subject = _language.get(
-				resourceBundle, "welcome-to-analytics-cloud");
+
+			subject = _language.get(resourceBundle, subjectLanguageKey);
 		}
 
 		body = StringUtil.replace(
@@ -361,7 +385,7 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, "go-to-analytics-cloud"),
+				_language.get(resourceBundle, buttonLanguageKey),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -407,13 +431,29 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 	}
 
 	private void _sendEmailRequest(long userId, long groupId) throws Exception {
+		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
+			groupId);
+
+		String buttonLanguageKey = "go-to-analytics-cloud";
+		String notificationLanguageKey =
+			"x-has-requested-to-join-the-analytics-cloud-x-workspace";
+		String senderEmailAddress = "ac@liferay.com";
+		String senderName = "Analytics Cloud";
+
+		if (faroProject.isDataPlatform()) {
+			buttonLanguageKey = "go-to-liferay-data-platform";
+			notificationLanguageKey =
+				"x-has-requested-to-join-the-liferay-data-platform-x-workspace";
+			senderEmailAddress = "ldp@liferay.com";
+			senderName = "Liferay Data Platform";
+		}
+
 		User senderUser = _userLocalService.getUser(userId);
 
 		InternetAddress from = new InternetAddress(
-			"ac@liferay.com", senderUser.getFullName() + " (Analytics Cloud)");
-
-		FaroProject faroProject = _faroProjectPersistence.findByGroupId(
-			groupId);
+			senderEmailAddress,
+			StringBundler.concat(
+				senderUser.getFullName(), " (", senderName, ")"));
 
 		FaroUser faroUser = fetchOwnerFaroUser(groupId);
 
@@ -449,7 +489,7 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, "go-to-analytics-cloud"),
+				_language.get(resourceBundle, buttonLanguageKey),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -471,8 +511,7 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 						"anytime"),
 				subject, EmailUtil.getLiferayIconURL(),
 				_language.format(
-					resourceBundle,
-					"x-has-requested-to-join-the-analytics-cloud-x-workspace",
+					resourceBundle, notificationLanguageKey,
 					new String[] {
 						StringBundler.concat(
 							senderUser.getFullName(), "(",

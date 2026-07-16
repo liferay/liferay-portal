@@ -9,11 +9,14 @@ import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.osb.faro.constants.FaroChannelConstants;
 import com.liferay.osb.faro.model.FaroChannel;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.base.FaroChannelLocalServiceBaseImpl;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -240,10 +243,31 @@ public class FaroChannelLocalServiceImpl
 			long userId)
 		throws Exception {
 
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(
+				faroChannel.getWorkspaceGroupId());
+
+		String buttonLanguageKey = "go-to-analytics-cloud";
+		String notificationLanguageKey =
+			"you-have-been-added-as-a-team-x-on-the-analytics-cloud-x-" +
+				"workspace-property-by-x";
+		String senderEmailAddress = "ac@liferay.com";
+		String senderName = "Analytics Cloud";
+
+		if (faroProject.isDataPlatform()) {
+			buttonLanguageKey = "go-to-liferay-data-platform";
+			notificationLanguageKey =
+				"you-have-been-added-as-a-team-x-on-the-liferay-data-" +
+					"platform-x-workspace-property-by-x";
+			senderEmailAddress = "ldp@liferay.com";
+			senderName = "Liferay Data Platform";
+		}
+
 		User user = _userLocalService.getUser(userId);
 
 		InternetAddress from = new InternetAddress(
-			"ac@liferay.com", user.getFullName() + " (Analytics Cloud)");
+			senderEmailAddress,
+			StringBundler.concat(user.getFullName(), " (", senderName, ")"));
 
 		User invitedUser = _userLocalService.getUser(invitedUserId);
 
@@ -281,7 +305,7 @@ public class FaroChannelLocalServiceImpl
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, "go-to-analytics-cloud"),
+				_language.get(resourceBundle, buttonLanguageKey),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -303,9 +327,7 @@ public class FaroChannelLocalServiceImpl
 						"anytime"),
 				subject, EmailUtil.getLiferayIconURL(),
 				_language.format(
-					resourceBundle,
-					"you-have-been-added-as-a-team-x-on-the-analytics-cloud-" +
-						"x-workspace-property-by-x",
+					resourceBundle, notificationLanguageKey,
 					new String[] {
 						roleName, faroChannel.getName(), user.getEmailAddress()
 					}),
@@ -320,6 +342,9 @@ public class FaroChannelLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FaroChannelLocalServiceImpl.class);
+
+	@Reference
+	private FaroProjectLocalService _faroProjectLocalService;
 
 	@Reference
 	private FaroUserLocalService _faroUserLocalService;
