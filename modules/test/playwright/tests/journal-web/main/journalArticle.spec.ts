@@ -562,6 +562,112 @@ baseTest(
 );
 
 baseTest(
+	'Web content in a connected asset library is reachable everywhere and cleared back to the current site',
+	{tag: ['@LPS-119899', '@LPS-119707']},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const fieldName = 'WebContentSelector';
+		const structureName = getRandomString();
+		const depotWebContent = getRandomString();
+		const depotFolderName = getRandomString();
+		const depotFolderWebContent = getRandomString();
+		const siteWebContent = getRandomString();
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		// A structure with a web content field opens the web content item
+		// selector; seed web content in the site and in the root and a folder
+		// of a connected asset library
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{fieldType: 'journal_article', name: fieldName}],
+				name: structureName,
+			})
+		);
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: siteWebContent},
+		});
+
+		const depot =
+			await apiHelpers.jsonWebServicesDepot.addDepotEntry(
+				getRandomString()
+			);
+
+		try {
+			await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+				depot.depotEntryId,
+				String(site.id)
+			);
+
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: depot.groupId,
+				titleMap: {en_US: depotWebContent},
+			});
+
+			const folder = await apiHelpers.jsonWebServicesJournal.addFolder({
+				groupId: depot.groupId,
+				name: depotFolderName,
+			});
+
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				folderId: folder.folderId,
+				groupId: depot.groupId,
+				titleMap: {en_US: depotFolderWebContent},
+			});
+
+			await journalEditArticlePage.goto({
+				siteUrl: site.friendlyUrlPath,
+				structureName,
+			});
+
+			await page
+				.getByTestId(fieldName)
+				.getByRole('button', {name: 'Select'})
+				.click();
+
+			const iframe = page.frameLocator('iframe[title="Web Content"]');
+
+			// Everywhere surfaces the site and asset library root web content
+
+			await setWebContentScope(iframe, 'Everywhere');
+
+			await expect(iframe.getByText(depotWebContent)).toBeVisible();
+
+			await expect(iframe.getByText(siteWebContent)).toBeVisible();
+
+			// Clearing the filter reverts to the current site only
+
+			await iframe.getByRole('button', {name: 'Clear'}).click();
+
+			await expect(iframe.getByText(siteWebContent)).toBeVisible();
+
+			await expect(iframe.getByText(depotWebContent)).toHaveCount(0);
+
+			// Everywhere again, the asset library folder holds its web content
+
+			await setWebContentScope(iframe, 'Everywhere');
+
+			await iframe.getByText(depotFolderName, {exact: true}).click();
+
+			await expect(iframe.getByText(depotFolderWebContent)).toBeVisible();
+		}
+		finally {
+			await apiHelpers.jsonWebServicesDepot.deleteDepotEntry(
+				depot.depotEntryId
+			);
+		}
+	}
+);
+
+baseTest(
 	'Navigate in ddm template selector',
 	{
 		tag: '@LPD-36441',
