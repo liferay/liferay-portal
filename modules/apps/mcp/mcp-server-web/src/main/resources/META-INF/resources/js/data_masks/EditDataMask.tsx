@@ -7,7 +7,6 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import {Form, FormikProvider, useFormik, useFormikContext} from 'formik';
-import {openToast} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
@@ -17,7 +16,7 @@ import {getDataMask} from '../services/getDataMask';
 import {patchDataMask} from '../services/patchDataMask';
 import {postDataMask} from '../services/postDataMask';
 import {DataMask, DataMaskFormValues, DataMaskPayload} from '../types';
-import {isSystemMask} from '../utils';
+import {isSystemMask, openErrorToast, openSuccessToast} from '../utils';
 import {DataMaskRegexTester} from './DataMaskRegexTester';
 
 interface EditDataMaskProps {
@@ -42,12 +41,10 @@ export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
 			}
 
 			if (error || !data) {
-				openToast({
-					message: error
-						? Liferay.Util.escapeHTML(error)
-						: Liferay.Language.get('an-unexpected-error-occurred'),
-					type: 'danger',
-				});
+				openErrorToast(
+					error ||
+						Liferay.Language.get('an-unexpected-error-occurred')
+				);
 
 				navigate(backURL);
 
@@ -101,22 +98,18 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 				: await postDataMask(payload);
 
 			if (error) {
-				openToast({
-					message: Liferay.Util.escapeHTML(error),
-					type: 'danger',
-				});
+				openErrorToast(error);
 
 				return;
 			}
 
 			if (saved) {
-				openToast({
-					message: Liferay.Util.sub(
+				openSuccessToast(
+					Liferay.Util.sub(
 						Liferay.Language.get('x-was-saved-successfully'),
-						Liferay.Util.escapeHTML(saved.name)
-					),
-					type: 'success',
-				});
+						saved.name
+					)
+				);
 
 				navigate(backURL);
 			}

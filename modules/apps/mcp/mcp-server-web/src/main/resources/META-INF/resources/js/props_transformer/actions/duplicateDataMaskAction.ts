@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {openToast} from 'frontend-js-components-web';
-
 import {postDataMask} from '../../services/postDataMask';
 import {ActionContext} from '../../types';
+import {openErrorToast, openSuccessToast} from '../../utils';
 
 export default async function duplicateDataMaskAction({
 	itemData,
@@ -25,10 +24,7 @@ export default async function duplicateDataMaskAction({
 	});
 
 	if (error) {
-		openToast({
-			message: Liferay.Util.escapeHTML(error),
-			type: 'danger',
-		});
+		openErrorToast(error);
 
 		return;
 	}
@@ -36,12 +32,11 @@ export default async function duplicateDataMaskAction({
 	loadData();
 
 	if (saved) {
-		openToast({
-			message: Liferay.Util.sub(
+		openSuccessToast(
+			Liferay.Util.sub(
 				Liferay.Language.get('x-was-saved-successfully'),
-				Liferay.Util.escapeHTML(saved.name)
-			),
-			type: 'success',
-		});
+				saved.name
+			)
+		);
 	}
 }

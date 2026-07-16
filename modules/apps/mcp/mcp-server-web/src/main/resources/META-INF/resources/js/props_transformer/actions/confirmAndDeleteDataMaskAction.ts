@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {openModal, openToast} from 'frontend-js-components-web';
+import {openModal} from 'frontend-js-components-web';
 
 import {deleteDataMask} from '../../services/deleteDataMask';
 import {getProfileDataMasks} from '../../services/getProfileDataMasks';
 import {ActionContext} from '../../types';
+import {openErrorToast, openSuccessToast} from '../../utils';
 
 async function getAssociatedProfilesCount(
 	dataMaskExternalReferenceCode?: string
@@ -21,10 +22,7 @@ async function getAssociatedProfilesCount(
 	);
 
 	if (error) {
-		openToast({
-			message: Liferay.Util.escapeHTML(error),
-			type: 'danger',
-		});
+		openErrorToast(error);
 
 		return null;
 	}
@@ -84,23 +82,19 @@ export default async function confirmAndDeleteDataMaskAction({
 					const {error} = await deleteDataMask(id);
 
 					if (error) {
-						openToast({
-							message: Liferay.Util.escapeHTML(error),
-							type: 'danger',
-						});
+						openErrorToast(error);
 
 						return;
 					}
 
 					loadData();
 
-					openToast({
-						message: Liferay.Util.sub(
+					openSuccessToast(
+						Liferay.Util.sub(
 							Liferay.Language.get('x-was-deleted-successfully'),
-							Liferay.Util.escapeHTML(name)
-						),
-						type: 'success',
-					});
+							name
+						)
+					);
 				},
 			},
 		],
