@@ -51,6 +51,8 @@ definition {
 
 	@priority = 5
 	test InputRichTextSmoke {
+		property portal.upstream = "quarantine";
+
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase/-/portal-tag/portal/inputrichtext/general");
 
 		AssertElementPresent(locator1 = "PortalShowcase#CHECKED_RENDERED_CHECKBOX");
