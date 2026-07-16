@@ -143,6 +143,9 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
 		String externalReferenceCode, long groupId);
 
+	public void deleteLayoutPageTemplateStructureRelElementVariations(
+		long plid, String segmentsExperienceERC);
+
 	/**
 	 * @throws PortalException
 	 */
@@ -408,4 +411,4 @@ public interface LayoutPageTemplateStructureRelElementVariationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1184717029
+// LIFERAY-SERVICE-BUILDER-HASH:-757430278

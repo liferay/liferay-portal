@@ -155,6 +155,16 @@ public class
 				layoutPageTemplateStructureRelElementVariationERC);
 	}
 
+	@Override
+	public void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -577,4 +587,4 @@ public class
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1708431927
+// LIFERAY-SERVICE-BUILDER-HASH:220700058

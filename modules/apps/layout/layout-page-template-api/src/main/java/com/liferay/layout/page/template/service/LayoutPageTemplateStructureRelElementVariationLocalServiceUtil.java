@@ -148,6 +148,13 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 			externalReferenceCode, groupId);
 	}
 
+	public static void deleteLayoutPageTemplateStructureRelElementVariations(
+		long plid, String segmentsExperienceERC) {
+
+		getService().deleteLayoutPageTemplateStructureRelElementVariations(
+			plid, segmentsExperienceERC);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -494,4 +501,4 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceUtil {
 					class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:488687409
+// LIFERAY-SERVICE-BUILDER-HASH:1014700075

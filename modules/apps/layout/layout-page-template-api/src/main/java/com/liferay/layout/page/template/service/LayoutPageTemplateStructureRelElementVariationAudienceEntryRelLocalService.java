@@ -144,6 +144,10 @@ public interface
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			String layoutPageTemplateStructureRelElementVariationERC);
 
+	public void
+		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC);
+
 	/**
 	 * @throws PortalException
 	 */
@@ -402,4 +406,4 @@ public interface
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-651643994
+// LIFERAY-SERVICE-BUILDER-HASH:1186327494
