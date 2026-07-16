@@ -1,0 +1,35 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-63311",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "L_MCP_STATUS",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "ACTIVE",
+					"key": "active",
+					"name": "Active",
+					"system": true
+				},
+				{
+					"externalReferenceCode": "INACTIVE",
+					"key": "inactive",
+					"name": "Inactive",
+					"system": true
+				}
+			],
+			"name": "MCP Status",
+			"system": true
+		}
+	]
+}

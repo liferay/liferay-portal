@@ -46,6 +46,28 @@
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
+						"en_US": "Identifier"
+					},
+					"name": "identifier",
+					"objectFieldSettings": [
+						{
+							"name": "uniqueValues",
+							"value": true
+						}
+					],
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
 						"en_US": "Name"
 					},
 					"name": "name",
@@ -75,6 +97,39 @@
 					"state": false,
 					"system": true,
 					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "inactive",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_MCP_STATUS",
+					"name": "promptStatus",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				}
+			],
+			"objectValidationRules": [
+				{
+					"active": true,
+					"engine": "ddm",
+					"engineLabel": "Expression Builder",
+					"errorLabel": {
+						"en_US": "Please enter a valid identifier (lowercase letters and numbers separated by single hyphens)."
+					},
+					"externalReferenceCode": "L_MCP_SERVER_PROMPT_VALID_IDENTIFIER",
+					"name": {
+						"en_US": "Valid Identifier"
+					},
+					"objectDefinitionExternalReferenceCode": "L_MCP_SERVER_PROMPT",
+					"script": "match(identifier, '^[a-z0-9]+(-[a-z0-9]+)*$')",
+					"system": true
 				}
 			],
 			"panelCategoryKey": "control_panel.object",
