@@ -5,6 +5,8 @@
 
 import {fetch} from 'frontend-js-web';
 
+import postAuthorizationToken from '../utils/postAuthorizationToken';
+
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
 
 export type ReportFeedbackReason =
@@ -30,14 +32,26 @@ export interface ReportFeedbackPayload {
 }
 
 export async function postAIIssueReport(payload: ReportFeedbackPayload) {
-	const response = await fetch(`${AI_HUB_ENDPOINT}/reports`, {
-		body: JSON.stringify(payload),
-		headers: new Headers({
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		}),
-		method: 'POST',
-	});
+	const authorizationToken = await postAuthorizationToken();
+
+	if (!authorizationToken) {
+		throw new Error('Unable to generate authorization token.');
+	}
+
+	const response = await fetch(
+		`${authorizationToken.serviceURL}${AI_HUB_ENDPOINT}/reports`,
+		{
+			body: JSON.stringify(payload),
+			headers: new Headers({
+				'Accept': 'application/json',
+				'Authorization': `Bearer ${authorizationToken.accessToken}`,
+				'Content-Type': 'application/json',
+				'Liferay-AI-Hub-Cell-On-Behalf-Of':
+					authorizationToken.userToken,
+			}),
+			method: 'POST',
+		}
+	);
 
 	if (!response.ok) {
 		throw new Error(
