@@ -13,12 +13,15 @@ import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.lang.reflect.Constructor;
 
 import java.security.MessageDigest;
 
@@ -228,6 +231,14 @@ public class PasswordEncryptorUtilTest {
 	}
 
 	@Test
+	public void testEncryptPBKDF2WithHmacSHA3256() throws Exception {
+		_runTests(
+			PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA3-256", "password",
+			"AAAAoAAT1iCgULNySMUK0wAAAAAAAAAAia+80Zp66bXQTJhPBXWCYtcezSo=",
+			PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA3-256");
+	}
+
+	@Test
 	public void testEncryptSHA() throws Exception {
 		_runTests(
 			PasswordEncryptor.TYPE_SHA, "password",
@@ -302,6 +313,44 @@ public class PasswordEncryptorUtilTest {
 	public void testEncryptWithLegacyAlgorithm() throws Exception {
 		_testEncryptWithLegacyAlgorithm(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testMacAlgorithm() throws Exception {
+		Assert.assertEquals("HmacSHA1", _getMacAlgorithm("PBKDF2WithHmacSHA1"));
+		Assert.assertEquals(
+			"HmacSHA256", _getMacAlgorithm("PBKDF2WithHmacSHA-256"));
+		Assert.assertEquals(
+			"HmacSHA256", _getMacAlgorithm("PBKDF2WithHmacSHA256"));
+		Assert.assertEquals(
+			"HmacSHA256", _getMacAlgorithm("PBKDF2WithHmacSHA256/128/1300000"));
+		Assert.assertEquals(
+			"HmacSHA3-256", _getMacAlgorithm("PBKDF2WithHmacSHA3-256"));
+		Assert.assertEquals(
+			"HmacSHA3-512", _getMacAlgorithm("PBKDF2WithHmacSHA3-512"));
+		Assert.assertEquals(
+			"HmacSHA384", _getMacAlgorithm("PBKDF2WithHmacSHA-384"));
+		Assert.assertEquals(
+			"HmacSHA512", _getMacAlgorithm("PBKDF2WithHmacSHA-512"));
+	}
+
+	private String _getMacAlgorithm(String algorithm) throws Exception {
+		Class<?> clazz = Class.forName(
+			PBKDF2PasswordEncryptor.class.getName() +
+				"$PBKDF2EncryptionConfiguration");
+
+		Constructor<?> constructor = clazz.getDeclaredConstructor();
+
+		constructor.setAccessible(true);
+
+		Object pbkdf2EncryptionConfiguration = constructor.newInstance();
+
+		ReflectionTestUtil.invoke(
+			pbkdf2EncryptionConfiguration, "configure",
+			new Class<?>[] {String.class, String.class}, algorithm, null);
+
+		return ReflectionTestUtil.invoke(
+			pbkdf2EncryptionConfiguration, "getMacAlgorithm", new Class<?>[0]);
 	}
 
 	private void _runTests(

@@ -1,6 +1,5 @@
 dependencies {
 	compileInclude group: "com.liferay", name: "org.vps.crypt", version: "1.0"
-	compileInclude group: "org.bouncycastle", name: "bcprov-jdk18on", version: "1.84"
 	compileOnly group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
