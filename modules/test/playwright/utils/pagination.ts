@@ -23,6 +23,20 @@ export async function gotoPage(page, pageNumber: number) {
 		.click();
 }
 
+export async function getResultsTotal(
+	page: Page | FrameLocator
+): Promise<number> {
+	const text =
+		(await page
+			.getByText(/Showing \d+ to \d+ of \d+ entries/)
+			.first()
+			.textContent()) || '';
+
+	const match = text.match(/of (\d+) entries/);
+
+	return match ? Number(match[1]) : 0;
+}
+
 export async function setItemsPerPage(page, limit: 20 | 40 | 60) {
 	const timeout = 300;
 	const option = getPaginator(page).getByRole('option', {
