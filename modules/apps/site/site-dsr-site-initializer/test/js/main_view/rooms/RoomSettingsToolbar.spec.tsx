@@ -13,7 +13,7 @@ const renderComponent = (props = {}) =>
 	render(
 		<RoomSettingsToolbar
 			backURL="/back"
-			headerTitle="Edit name1"
+			headerTitle="name1 Settings"
 			{...props}
 		/>
 	);
@@ -30,7 +30,7 @@ describe('RoomSettingsToolbar', () => {
 	it('renders the header title', () => {
 		renderComponent();
 
-		expect(screen.getByText('Edit name1')).toBeInTheDocument();
+		expect(screen.getByText('name1 Settings')).toBeInTheDocument();
 	});
 
 	it('renders a back action pointing to the back URL', () => {

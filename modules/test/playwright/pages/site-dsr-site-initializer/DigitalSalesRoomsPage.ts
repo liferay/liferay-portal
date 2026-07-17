@@ -91,7 +91,9 @@ export class DigitalSalesRoomsPage {
 			name: 'Save as Template',
 		});
 		this.shareMenuItem = page.getByRole('menuitem', {name: 'Share'});
-		this.settingsMenuItem = page.getByRole('menuitem', {name: 'Settings'});
+		this.settingsMenuItem = page.getByRole('menuitem', {
+			name: 'Room Settings',
+		});
 		this.showResultsButton = page.getByRole('button', {
 			name: 'Show Results',
 		});

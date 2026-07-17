@@ -8,6 +8,7 @@ import {Locator, Page} from '@playwright/test';
 export class DigitalSalesRoomSettingsPage {
 	readonly externalReferenceCodeInput: Locator;
 	readonly friendlyURLInput: Locator;
+	readonly headerTitle: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
@@ -20,6 +21,7 @@ export class DigitalSalesRoomSettingsPage {
 		this.friendlyURLInput = page.locator(
 			'[name="ObjectField_friendlyURL"]'
 		);
+		this.headerTitle = page.locator('.top-bar h1');
 		this.nameInput = page.locator('[name="ObjectField_name"]');
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});

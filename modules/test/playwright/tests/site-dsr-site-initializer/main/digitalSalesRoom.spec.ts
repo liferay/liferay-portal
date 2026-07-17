@@ -1875,3 +1875,46 @@ test(
 			verifyExpirationLifecycle(invitedEmail, invitedEmail));
 	}
 );
+
+test(
+	'The room settings action and page use the room-settings labels',
+	{tag: '@LPD-97482'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomSettingsPage,
+		digitalSalesRoomsPage,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		await apiHelpers.headlessDigitalSalesRoom.addRoom({
+			accountEntryId: account.id,
+			name: roomName,
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await expect(async () => {
+			await (
+				await digitalSalesRoomsPage.digitalSalesRoomsTable.rowActions(
+					roomName,
+					0,
+					false
+				)
+			).click();
+
+			await expect(digitalSalesRoomsPage.settingsMenuItem).toBeVisible({
+				timeout: 1000,
+			});
+		}).toPass({timeout: 10000});
+
+		await digitalSalesRoomsPage.settingsMenuItem.click();
+
+		await expect(digitalSalesRoomSettingsPage.headerTitle).toHaveText(
+			`${roomName} Settings`
+		);
+	}
+);
