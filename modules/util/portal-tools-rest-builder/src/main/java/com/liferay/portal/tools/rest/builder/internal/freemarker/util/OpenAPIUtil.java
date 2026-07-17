@@ -263,9 +263,10 @@ public class OpenAPIUtil {
 						String schemaKey = StringUtil.upperCaseFirstLetter(
 							iterator.next());
 
-						if (!allSchemas.containsKey(schemaKey)) {
-							allSchemas.put(schemaKey, oneOfSchema);
+						Schema curSchema = allSchemas.putIfAbsent(
+							schemaKey, oneOfSchema);
 
+						if (curSchema == null) {
 							queue.add(schemas);
 						}
 					}

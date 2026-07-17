@@ -7048,9 +7048,7 @@ public class ServiceBuilder {
 				EntityMapping entityMapping = new EntityMapping(
 					mappingTableName, entityName, columnEntityName);
 
-				if (!_entityMappings.containsKey(mappingTableName)) {
-					_entityMappings.put(mappingTableName, entityMapping);
-				}
+				_entityMappings.putIfAbsent(mappingTableName, entityMapping);
 			}
 		}
 
@@ -7539,16 +7537,11 @@ public class ServiceBuilder {
 		_entities.add(entity);
 
 		if (entity.isUADEnabled()) {
-			if (!_uadApplicationEntities.containsKey(uadApplicationName)) {
-				_uadApplicationEntities.put(
-					uadApplicationName, ListUtil.fromArray(entity));
-			}
-			else {
-				List<Entity> uadApplicationEntities =
-					_uadApplicationEntities.get(uadApplicationName);
+			List<Entity> uadApplicationEntities =
+				_uadApplicationEntities.computeIfAbsent(
+					uadApplicationName, key -> new ArrayList<>());
 
-				uadApplicationEntities.add(entity);
-			}
+			uadApplicationEntities.add(entity);
 		}
 
 		if (versioned) {

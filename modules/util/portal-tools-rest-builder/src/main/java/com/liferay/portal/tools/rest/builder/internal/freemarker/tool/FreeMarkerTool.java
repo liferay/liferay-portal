@@ -205,16 +205,19 @@ public class FreeMarkerTool {
 				List<String> tags = operation.getTags();
 
 				for (String tag : tags) {
-					if (!schemas.containsKey(tag)) {
-						if ((allExternalSchemas != null) &&
-							allExternalSchemas.containsKey(tag)) {
+					schemas.computeIfAbsent(
+						tag,
+						key -> {
+							if (allExternalSchemas != null) {
+								Schema schema = allExternalSchemas.get(key);
 
-							schemas.put(tag, allExternalSchemas.get(tag));
-						}
-						else {
-							schemas.put(tag, new Schema());
-						}
-					}
+								if (schema != null) {
+									return schema;
+								}
+							}
+
+							return new Schema();
+						});
 				}
 			}
 		}
@@ -1542,9 +1545,9 @@ public class FreeMarkerTool {
 			String returnSchema = returnType.substring(
 				returnType.lastIndexOf(".") + 1);
 
-			if (schemas.containsKey(returnSchema)) {
-				Schema schema = schemas.get(returnSchema);
+			Schema schema = schemas.get(returnSchema);
 
+			if (schema != null) {
 				Map<String, Schema> propertySchemas =
 					schema.getPropertySchemas();
 
@@ -1702,9 +1705,9 @@ public class FreeMarkerTool {
 			String schemaName = parameterType.substring(
 				parameterType.lastIndexOf(".") + 1);
 
-			if (schemas.containsKey(schemaName)) {
-				Schema schema = schemas.get(schemaName);
+			Schema schema = schemas.get(schemaName);
 
+			if (schema != null) {
 				Map<String, Schema> propertySchemas =
 					schema.getPropertySchemas();
 

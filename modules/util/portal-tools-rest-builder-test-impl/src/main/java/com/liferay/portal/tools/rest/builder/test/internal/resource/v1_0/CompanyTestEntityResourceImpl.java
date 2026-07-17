@@ -59,24 +59,21 @@ public class CompanyTestEntityResourceImpl
 		CompanyTestEntity companyTestEntity = doGetCompanyTestEntity(
 			companyTestEntityId);
 
-		if (!_permissions.containsKey(companyTestEntity.getId())) {
-			_permissions.put(
-				companyTestEntity.getId(),
-				new Permission[] {
-					new Permission() {
-						{
-							setActionIds(
-								new String[] {
-									"DELETE", "PERMISSIONS", "UPDATE", "VIEW"
-								});
-							setRoleName("Owner");
-						}
+		Permission[] permissions = _permissions.computeIfAbsent(
+			companyTestEntity.getId(),
+			key -> new Permission[] {
+				new Permission() {
+					{
+						setActionIds(
+							new String[] {
+								"DELETE", "PERMISSIONS", "UPDATE", "VIEW"
+							});
+						setRoleName("Owner");
 					}
-				});
-		}
+				}
+			});
 
-		return Page.of(
-			Arrays.asList(_permissions.get(companyTestEntity.getId())));
+		return Page.of(Arrays.asList(permissions));
 	}
 
 	@Override
@@ -227,11 +224,7 @@ public class CompanyTestEntityResourceImpl
 	private CompanyTestEntity _fetchCompanyTestEntity(long id)
 		throws Exception {
 
-		if (_companyTestEntities.containsKey(id)) {
-			return _companyTestEntities.get(id);
-		}
-
-		return null;
+		return _companyTestEntities.get(id);
 	}
 
 	private CompanyTestEntity _fetchCompanyTestEntity(

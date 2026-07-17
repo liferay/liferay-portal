@@ -74,12 +74,8 @@ public class PoshiRunnerWarningException extends Exception {
 	}
 
 	private static void _initPoshiRunnerWarningExceptions() {
-		String threadName = _getThreadName();
-
-		if (!_threadBasedPoshiRunnerWarningExceptions.containsKey(threadName)) {
-			_threadBasedPoshiRunnerWarningExceptions.put(
-				threadName, new ArrayList<>());
-		}
+		_threadBasedPoshiRunnerWarningExceptions.putIfAbsent(
+			_getThreadName(), new ArrayList<>());
 	}
 
 	private static final Map<String, List<PoshiRunnerWarningException>>

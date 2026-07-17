@@ -62,23 +62,21 @@ public class SiteTestEntityResourceImpl extends BaseSiteTestEntityResourceImpl {
 
 		SiteTestEntity siteTestEntity = doGetSiteTestEntity(siteTestEntityId);
 
-		if (!_permissions.containsKey(siteTestEntity.getId())) {
-			_permissions.put(
-				siteTestEntity.getId(),
-				new Permission[] {
-					new Permission() {
-						{
-							setActionIds(
-								new String[] {
-									"DELETE", "PERMISSIONS", "UPDATE", "VIEW"
-								});
-							setRoleName("Owner");
-						}
+		Permission[] permissions = _permissions.computeIfAbsent(
+			siteTestEntity.getId(),
+			key -> new Permission[] {
+				new Permission() {
+					{
+						setActionIds(
+							new String[] {
+								"DELETE", "PERMISSIONS", "UPDATE", "VIEW"
+							});
+						setRoleName("Owner");
 					}
-				});
-		}
+				}
+			});
 
-		return Page.of(Arrays.asList(_permissions.get(siteTestEntity.getId())));
+		return Page.of(Arrays.asList(permissions));
 	}
 
 	@Override

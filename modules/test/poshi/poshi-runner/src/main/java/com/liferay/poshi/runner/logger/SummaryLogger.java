@@ -36,26 +36,19 @@ import org.dom4j.Element;
 public final class SummaryLogger {
 
 	public static void clear(String testNamespacedClassCommandName) {
-		if (_summaryLoggers.containsKey(testNamespacedClassCommandName)) {
-			SummaryLogger summaryLogger = _summaryLoggers.get(
-				testNamespacedClassCommandName);
+		SummaryLogger summaryLogger = _summaryLoggers.remove(
+			testNamespacedClassCommandName);
 
+		if (summaryLogger != null) {
 			summaryLogger.stopRunning();
-
-			_summaryLoggers.remove(testNamespacedClassCommandName);
 		}
 	}
 
 	public static synchronized SummaryLogger getSummaryLogger(
 		String testNamespacedClassCommandName) {
 
-		if (!_summaryLoggers.containsKey(testNamespacedClassCommandName)) {
-			_summaryLoggers.put(
-				testNamespacedClassCommandName,
-				new SummaryLogger(testNamespacedClassCommandName));
-		}
-
-		return _summaryLoggers.get(testNamespacedClassCommandName);
+		return _summaryLoggers.computeIfAbsent(
+			testNamespacedClassCommandName, SummaryLogger::new);
 	}
 
 	public void createSummaryReport() throws Exception {
