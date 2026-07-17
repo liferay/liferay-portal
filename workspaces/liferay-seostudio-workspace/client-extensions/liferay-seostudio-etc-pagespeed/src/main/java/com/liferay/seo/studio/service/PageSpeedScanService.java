@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +35,15 @@ public class PageSpeedScanService {
 
 	@Scheduled(fixedDelay = 30000)
 	public void scheduledProcessQueuedScans() {
-		JSONArray scansJSONArray =
-			_liferayService.getQueuedSEOStudioScansJSONArray();
+		for (Object object :
+				_liferayService.getQueuedSEOStudioScansJSONArray()) {
 
-		for (Object object : scansJSONArray) {
-			JSONObject scanJSONObject = (JSONObject)object;
+			JSONObject seoStudioScanJSONObject = (JSONObject)object;
 
-			long seoStudioScanId = scanJSONObject.getLong("id");
+			long seoStudioScanId = seoStudioScanJSONObject.getLong("id");
 
 			try {
-				_runScan(scanJSONObject, seoStudioScanId);
+				_runScan(seoStudioScanId, seoStudioScanJSONObject);
 			}
 			catch (Exception exception1) {
 				_log.error(
@@ -164,20 +162,20 @@ public class PageSpeedScanService {
 			strategy);
 	}
 
-	private void _runScan(JSONObject scanJSONObject, long seoStudioScanId) {
+	private void _runScan(
+		long seoStudioScanId, JSONObject seoStudioScanJSONObject) {
+
 		_liferayService.patchSEOStudioScan(
 			null, seoStudioScanId, PageSpeedConstants.STATE_RUNNING);
 
-		long seoStudioScanRunId = scanJSONObject.getLong(
-			"r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId");
+		JSONObject seoStudioDomainJSONObject =
+			seoStudioScanJSONObject.getJSONObject(
+				"seoStudioScanRun"
+			).getJSONObject(
+				"seoStudioDomain"
+			);
 
-		JSONObject scanRunJSONObject = _liferayService.getScanRunJSONObject(
-			seoStudioScanRunId);
-
-		long domainId = scanRunJSONObject.getLong(
-			"r_seoStudioDomainToSEOStudioScanRuns_seoStudioDomainId");
-
-		Domain domain = _liferayService.getDomain(domainId);
+		Domain domain = new Domain(seoStudioDomainJSONObject);
 
 		String googlePageSpeedAPIKey = domain.getGooglePageSpeedAPIKey();
 
@@ -190,9 +188,8 @@ public class PageSpeedScanService {
 			return;
 		}
 
-		String scopeConfig = scanJSONObject.optString("scopeConfig");
-
-		JSONObject scopeConfigJSONObject = new JSONObject(scopeConfig);
+		JSONObject scopeConfigJSONObject = new JSONObject(
+			seoStudioScanJSONObject.optString("scopeConfig"));
 
 		int maxPagesPerScan = scopeConfigJSONObject.optInt(
 			"maxPagesPerScan", 100);
@@ -200,19 +197,16 @@ public class PageSpeedScanService {
 		List<String> urls = _liferayService.getSitemapPageURLs(
 			domain.getHostname(), maxPagesPerScan);
 
-		PageSpeedScanResult desktopPageSpeedScanResult =
+		_liferayService.postSEOStudioPageSpeedResult(
 			_getPageSpeedScanResult(
 				googlePageSpeedAPIKey, PageSpeedConstants.STRATEGY_DESKTOP,
-				urls);
-
+				urls),
+			seoStudioScanId);
 		_liferayService.postSEOStudioPageSpeedResult(
-			desktopPageSpeedScanResult, seoStudioScanId);
-
-		PageSpeedScanResult mobilePageSpeedScanResult = _getPageSpeedScanResult(
-			googlePageSpeedAPIKey, PageSpeedConstants.STRATEGY_MOBILE, urls);
-
-		_liferayService.postSEOStudioPageSpeedResult(
-			mobilePageSpeedScanResult, seoStudioScanId);
+			_getPageSpeedScanResult(
+				googlePageSpeedAPIKey, PageSpeedConstants.STRATEGY_MOBILE,
+				urls),
+			seoStudioScanId);
 
 		_liferayService.patchSEOStudioScan(
 			null, seoStudioScanId, PageSpeedConstants.STATE_COMPLETED);

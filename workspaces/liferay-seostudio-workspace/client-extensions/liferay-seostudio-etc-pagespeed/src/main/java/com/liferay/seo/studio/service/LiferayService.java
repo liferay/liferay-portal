@@ -14,7 +14,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.PageSpeedConstants;
-import com.liferay.seo.studio.model.Domain;
 import com.liferay.seo.studio.model.PageSpeedReport;
 import com.liferay.seo.studio.model.PageSpeedScanResult;
 
@@ -50,38 +49,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class LiferayService extends BaseService {
 
-	public Domain getDomain(long domainId) {
-		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/seo-studio/domains/" + domainId
-		).queryParam(
-			"nestedFields", "seoStudioInstance"
-		).build();
-
-		String responseJSON = get(_getAuthorization(), uriComponents.toUri());
-
-		String message = "Unable to get domain " + domainId;
-
-		if (Validator.isNull(responseJSON)) {
-			throw new IllegalArgumentException(message);
-		}
-
-		try {
-			return new Domain(new JSONObject(responseJSON));
-		}
-		catch (JSONException jsonException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(message, jsonException);
-			}
-
-			throw new IllegalArgumentException(message, jsonException);
-		}
-	}
-
 	public JSONArray getQueuedSEOStudioScansJSONArray() {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/c/seostudioscans"
 		).queryParam(
 			"filter", "state eq '" + PageSpeedConstants.STATE_QUEUED + "'"
+		).queryParam(
+			"nestedFields",
+			"seoStudioScanRun,seoStudioDomain,seoStudioInstance"
+		).queryParam(
+			"nestedFieldsDepth", 3
 		).queryParam(
 			"pageSize", 20
 		).build();
@@ -112,32 +89,6 @@ public class LiferayService extends BaseService {
 			}
 
 			return new JSONArray();
-		}
-	}
-
-	public JSONObject getScanRunJSONObject(long seoStudioScanRunId) {
-		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/c/seostudioscanruns/" + seoStudioScanRunId
-		).build();
-
-		String responseJSON = get(_getAuthorization(), uriComponents.toUri());
-
-		String message =
-			"Unable to get the SEO Studio scan run " + seoStudioScanRunId;
-
-		if (Validator.isNull(responseJSON)) {
-			throw new IllegalArgumentException(message);
-		}
-
-		try {
-			return new JSONObject(responseJSON);
-		}
-		catch (JSONException jsonException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(message, jsonException);
-			}
-
-			throw new IllegalArgumentException(message, jsonException);
 		}
 	}
 
