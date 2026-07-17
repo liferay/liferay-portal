@@ -1,0 +1,109 @@
+diff --git a/org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java b/org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java
+index 27cd451..628d6c7 100644
+--- a/org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java
++++ b/org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java
+@@ -29,7 +29,11 @@ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.TreeSet;
++import java.util.logging.Level;
++import java.util.logging.Logger;
+ 
++import javax.xml.XMLConstants;
++import javax.xml.parsers.ParserConfigurationException;
+ import javax.xml.parsers.SAXParserFactory;
+ import javax.xml.stream.XMLStreamException;
+ import javax.xml.transform.Source;
+@@ -40,6 +44,8 @@ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
+ import org.xml.sax.Locator;
++import org.xml.sax.SAXNotRecognizedException;
++import org.xml.sax.SAXNotSupportedException;
+ 
+ import com.ctc.wstx.msv.W3CSchema;
+ import com.sun.msv.grammar.ExpressionPool;
+@@ -53,6 +59,7 @@ import com.sun.msv.reader.xmlschema.SchemaState;
+ import com.sun.msv.reader.xmlschema.WSDLGrammarReaderController;
+ import com.sun.msv.reader.xmlschema.XMLSchemaReader;
+ 
++import org.apache.cxf.common.logging.LogUtils;
+ import org.codehaus.stax2.validation.XMLValidationSchema;
+ 
+ /**
+@@ -61,6 +68,8 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
+  */
+ public class W3CMultiSchemaFactory {
+ 
++    private static final Logger LOG = LogUtils.getL7dLogger(W3CMultiSchemaFactory.class);
++
+     private MultiSchemaReader multiSchemaReader;
+     private SAXParserFactory parserFactory;
+     private RecursiveAllowedXMLSchemaReader xmlSchemaReader;
+@@ -139,6 +148,17 @@ public class W3CMultiSchemaFactory {
+             }
+         }
+         parserFactory = SAXParserFactory.newInstance();
++        try {
++            parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
++        } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
++            LOG.log(Level.WARNING, "The property '" + XMLConstants.FEATURE_SECURE_PROCESSING + "', is not supported.");
++        }
++        try {
++            parserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
++        } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
++            LOG.log(Level.WARNING, "The property 'http://apache.org/xml/features/disallow-doctype-decl'"
++                    + " is not supported.");
++        }
+         parserFactory.setNamespaceAware(true);
+ 
+         WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
+@@ -162,3 +182,4 @@ public class W3CMultiSchemaFactory {
+     }
+ 
+ }
++/* @generated */
+diff --git a/org/apache/cxf/ws/addressing/EndpointReferenceUtils.java b/org/apache/cxf/ws/addressing/EndpointReferenceUtils.java
+index 93c9e84..55e61db 100644
+--- a/org/apache/cxf/ws/addressing/EndpointReferenceUtils.java
++++ b/org/apache/cxf/ws/addressing/EndpointReferenceUtils.java
+@@ -55,6 +55,8 @@ import org.w3c.dom.ls.LSInput;
+ import org.w3c.dom.ls.LSResourceResolver;
+ 
+ import org.xml.sax.InputSource;
++import org.xml.sax.SAXNotRecognizedException;
++import org.xml.sax.SAXNotSupportedException;
+ 
+ import org.apache.cxf.Bus;
+ import org.apache.cxf.BusFactory;
+@@ -488,6 +490,25 @@ public final class EndpointReferenceUtils {
+         Schema schema = serviceInfo.getProperty(Schema.class.getName(), Schema.class);
+         if (schema == null) {
+             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
++            try {
++                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
++            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
++                LOG.log(Level.WARNING, "The property '" + XMLConstants.FEATURE_SECURE_PROCESSING
++                    + "' is not supported.");
++            }
++
++            try {
++                factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
++            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
++                LOG.log(Level.WARNING, "The property '" + XMLConstants.ACCESS_EXTERNAL_DTD + "' is not supported.");
++            }
++
++            try {
++                factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
++            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
++                LOG.log(Level.WARNING, "The property '" + XMLConstants.ACCESS_EXTERNAL_SCHEMA + "' is not supported.");
++            }
++
+             Map<String, byte[]> schemaSourcesMap = new LinkedHashMap<>();
+             Map<String, Source> schemaSourcesMap2 = new LinkedHashMap<>();
+ 
+@@ -859,3 +880,4 @@ public final class EndpointReferenceUtils {
+     }
+ 
+ }
++/* @generated */
