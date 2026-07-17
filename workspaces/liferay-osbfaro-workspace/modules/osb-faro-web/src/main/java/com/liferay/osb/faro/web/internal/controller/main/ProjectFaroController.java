@@ -217,7 +217,6 @@ public class ProjectFaroController extends BaseFaroController {
 			_provisioningClient.addCorpProjectUsers(
 				faroProject.getCorpProjectUuid(),
 				new String[] {user.getUserUuid()});
-
 			_provisioningClient.addUserCorpProjectRoles(
 				faroProject.getCorpProjectUuid(),
 				new String[] {user.getUserUuid()},

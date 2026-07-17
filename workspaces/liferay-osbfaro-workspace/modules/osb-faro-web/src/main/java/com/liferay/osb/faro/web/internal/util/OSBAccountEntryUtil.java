@@ -25,6 +25,8 @@ public class OSBAccountEntryUtil {
 	public static OSBAccountEntry build(FaroProject faroProject)
 		throws Exception {
 
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
 		JSONObject subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
 			faroProject.getSubscription());
 
@@ -77,8 +79,6 @@ public class OSBAccountEntryUtil {
 				offeringEntries.add(curOSBOfferingEntry);
 			}
 		}
-
-		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
 
 		osbAccountEntry.setOfferingEntries(offeringEntries);
 
