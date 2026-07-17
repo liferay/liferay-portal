@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Objects;
@@ -77,9 +80,10 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 			throw new OAuthClientPRLocalMetadataProtectedResourceURIException();
 		}
 
-		_validateURL(
-			OAuthClientPRLocalMetadataProtectedResourceURIException.class,
-			protectedResourceURI);
+		if (!_isValidURL(protectedResourceURI)) {
+			throw new OAuthClientPRLocalMetadataProtectedResourceURIException(
+				protectedResourceURI);
+		}
 
 		protectedResourceURI = _removeTrailingSlash(protectedResourceURI);
 
@@ -271,16 +275,17 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 			throw new OAuthClientPRLocalMetadataProtectedResourceURIException();
 		}
 
+		if (!_isValidURL(protectedResourceURI)) {
+			throw new OAuthClientPRLocalMetadataProtectedResourceURIException(
+				protectedResourceURI);
+		}
+
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
 			oAuthClientPRLocalMetadataLocalService.
 				getOAuthClientPRLocalMetadata(oAuthClientPRLocalMetadataId);
 
 		String localWellKnownURI =
 			oAuthClientPRLocalMetadata.getLocalWellKnownURI();
-
-		_validateURL(
-			OAuthClientPRLocalMetadataProtectedResourceURIException.class,
-			protectedResourceURI);
 
 		protectedResourceURI = _removeTrailingSlash(protectedResourceURI);
 
@@ -367,6 +372,48 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 		}
 	}
 
+	private boolean _isValidURL(String urlString) {
+		if (Validator.isNull(urlString)) {
+			return true;
+		}
+
+		try {
+			URI uri = new URI(urlString);
+
+			String scheme = uri.getScheme();
+
+			if (!Http.HTTP.equalsIgnoreCase(scheme) &&
+				!Http.HTTPS.equalsIgnoreCase(scheme)) {
+
+				return false;
+			}
+
+			String host = uri.getHost();
+
+			if (Validator.isNull(host)) {
+				return false;
+			}
+
+			if (Validator.isNotNull(uri.getFragment()) ||
+				(!Http.HTTPS.equalsIgnoreCase(scheme) &&
+				 !Objects.equals(host, "127.0.0.1") &&
+				 !Objects.equals(host, "[::1]") &&
+				 !Objects.equals(host, "localhost"))) {
+
+				return false;
+			}
+		}
+		catch (URISyntaxException uriSyntaxException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(uriSyntaxException);
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private String _removeTrailingSlash(String urlString) {
 		if ((urlString == null) || !urlString.endsWith(StringPool.SLASH)) {
 			return urlString;
@@ -400,9 +447,10 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 		}
 
 		for (String authorizationServer : authorizationServers) {
-			_validateURL(
-				OAuthClientPRLocalMetadataMetadataJSONException.class,
-				authorizationServer);
+			if (!_isValidURL(authorizationServer)) {
+				throw new OAuthClientPRLocalMetadataMetadataJSONException(
+					authorizationServer);
+			}
 		}
 
 		if (ArrayUtil.isEmpty(bearerMethodsSupported)) {
@@ -437,47 +485,8 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 		}
 	}
 
-	private void _validateURL(
-			Class<? extends PortalException> clazz, String urlString)
-		throws PortalException {
-
-		if (Validator.isNull(urlString)) {
-			return;
-		}
-
-		try {
-			URI uri = new URI(urlString);
-
-			String scheme = uri.getScheme();
-
-			if (!Http.HTTP.equalsIgnoreCase(scheme) &&
-				!Http.HTTPS.equalsIgnoreCase(scheme)) {
-
-				throw clazz.newInstance();
-			}
-
-			String host = uri.getHost();
-
-			if (Validator.isNull(host)) {
-				throw clazz.newInstance();
-			}
-
-			if (Validator.isNotNull(uri.getFragment()) ||
-				(!Http.HTTPS.equalsIgnoreCase(scheme) &&
-				 !Objects.equals(host, "127.0.0.1") &&
-				 !Objects.equals(host, "[::1]") &&
-				 !Objects.equals(host, "localhost"))) {
-
-				throw clazz.newInstance();
-			}
-		}
-		catch (PortalException portalException) {
-			throw portalException;
-		}
-		catch (Exception exception) {
-			throw new PortalException(exception);
-		}
-	}
+	private static final Log _log = LogFactoryUtil.getLog(
+		OAuthClientPRLocalMetadataLocalServiceImpl.class);
 
 	@Reference
 	private JSONFactory _jsonFactory;
