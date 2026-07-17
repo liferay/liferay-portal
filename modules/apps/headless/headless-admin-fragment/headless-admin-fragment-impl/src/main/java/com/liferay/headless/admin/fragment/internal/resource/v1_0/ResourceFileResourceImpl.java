@@ -16,9 +16,11 @@ import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.FileURLReference;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFile;
+import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFileEntityModel;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ServiceContextUtil;
@@ -26,20 +28,37 @@ import com.liferay.headless.admin.fragment.internal.util.EnabledUtil;
 import com.liferay.headless.admin.fragment.resource.v1_0.ResourceFileResource;
 import com.liferay.headless.admin.site.dto.v1_0.util.URLUtil;
 import com.liferay.headless.common.spi.util.GroupUtil;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.SearchUtil;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.io.IOException;
+
+import java.util.Collections;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,6 +72,126 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = ResourceFileResource.class
 )
 public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _entityModel;
+	}
+
+	@Override
+	public Page<ResourceFile> getSiteFragmentSetResourceFilesPage(
+			String siteExternalReferenceCode,
+			String fragmentSetExternalReferenceCode, Pagination pagination)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getGroupId(
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
+
+		if (!_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), groupId,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionService.
+				getFragmentCollectionByExternalReferenceCode(
+					fragmentSetExternalReferenceCode, groupId);
+
+		long resourcesFolderId = fragmentCollection.getResourcesFolderId(false);
+
+		if (resourcesFolderId <= 0) {
+			return Page.of(Collections.emptyList());
+		}
+
+		return _getResourceFilesPage(resourcesFolderId, groupId, pagination);
+	}
+
+	@Override
+	public ResourceFile getSiteResourceFile(
+			String siteExternalReferenceCode,
+			String resourceFileExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		FileEntry fileEntry = _dlAppService.getFileEntryByExternalReferenceCode(
+			resourceFileExternalReferenceCode,
+			GroupUtil.getGroupId(
+				true, true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
+
+		_checkResourceFile(fileEntry);
+
+		return _toResourceFile(fileEntry);
+	}
+
+	@Override
+	public Page<ResourceFile> getSiteResourceFilesPage(
+			String siteExternalReferenceCode, Filter filter,
+			Pagination pagination)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getGroupId(
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
+
+		if (!_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), groupId,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
+		long[] resourcesFolderIds = transformToLongArray(
+			_fragmentCollectionLocalService.getFragmentCollections(groupId),
+			fragmentCollection -> {
+				long resourcesFolderId =
+					fragmentCollection.getResourcesFolderId(false);
+
+				if (resourcesFolderId <= 0) {
+					return null;
+				}
+
+				return resourcesFolderId;
+			});
+
+		if (ArrayUtil.isEmpty(resourcesFolderIds)) {
+			return Page.of(Collections.emptyList());
+		}
+
+		return _getResourceFilesPage(
+			booleanQuery -> {
+			},
+			filter, resourcesFolderIds, groupId, pagination);
+	}
+
+	@Override
+	public Page<ResourceFile> getSiteResourceFolderResourceFilesPage(
+			String siteExternalReferenceCode,
+			String resourceFolderExternalReferenceCode, Pagination pagination)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getGroupId(
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
+
+		Folder folder = _dlAppService.getFolderByExternalReferenceCode(
+			resourceFolderExternalReferenceCode, groupId);
+
+		ResourceFolderUtil.checkResourceFolder(
+			_dlFolderLocalService.getDLFolder(folder.getFolderId()));
+
+		return _getResourceFilesPage(folder.getFolderId(), groupId, pagination);
+	}
 
 	@Override
 	public ResourceFile postSiteFragmentSetResourceFile(
@@ -220,6 +359,45 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			contextUser.getUserId());
 	}
 
+	private Page<ResourceFile> _getResourceFilesPage(
+			long folderId, long groupId, Pagination pagination)
+		throws Exception {
+
+		return _getResourceFilesPage(
+			booleanQuery -> {
+				BooleanFilter booleanFilter =
+					booleanQuery.getPreBooleanFilter();
+
+				booleanFilter.add(
+					new TermFilter(Field.FOLDER_ID, String.valueOf(folderId)),
+					BooleanClauseOccur.MUST);
+			},
+			null, new long[] {folderId}, groupId, pagination);
+	}
+
+	private Page<ResourceFile> _getResourceFilesPage(
+			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
+			Filter filter, long[] folderIds, long groupId,
+			Pagination pagination)
+		throws Exception {
+
+		return SearchUtil.search(
+			Collections.emptyMap(), booleanQueryUnsafeConsumer, filter,
+			DLFileEntry.class.getName(), null, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+				searchContext.setFolderIds(folderIds);
+				searchContext.setGroupIds(new long[] {groupId});
+				searchContext.setVulcanCheckPermissions(false);
+			},
+			null,
+			document -> _toResourceFile(
+				_dlAppService.getFileEntry(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
+	}
+
 	private ServiceContext _getServiceContext(
 		long groupId, ResourceFile resourceFile) {
 
@@ -272,6 +450,9 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			fileEntry);
 	}
 
+	private static final EntityModel _entityModel =
+		new ResourceFileEntityModel();
+
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
@@ -286,6 +467,9 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	@Reference
 	private FragmentCollectionService _fragmentCollectionService;
