@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.segments.constants.SegmentsEntryConstants;
+import com.liferay.segments.service.SegmentsEntryLocalService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -246,16 +248,39 @@ public class AudiencesCriteriaProviderImpl
 		long companyId, Locale locale) {
 
 		try {
+			List<AudiencesCriteria> audiencesCriterias = new ArrayList<>();
+
+			List<AudiencesCriteria.Option> segmentsOptions =
+				TransformUtil.transform(
+					_segmentsEntryLocalService.getSegmentsEntriesBySource(
+						companyId,
+						SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+					segmentsEntry -> new AudiencesCriteria.Option(
+						segmentsEntry.getName(locale),
+						segmentsEntry.getExternalReferenceCode()));
+
+			if (!segmentsOptions.isEmpty()) {
+				audiencesCriterias.add(
+					AudiencesCriteriaBuilder.setIcon(
+						"users"
+					).setInputType(
+						AudiencesCriteria.InputType.SELECT
+					).setKey(
+						AudiencesCriteriaKeys.SEGMENTS
+					).setLabel(
+						_language.get(locale, "segments")
+					).setOptions(
+						segmentsOptions
+					).setType(
+						AudiencesCriteria.Type.STRING
+					).build());
+			}
+
 			List<CET> cets = _cetManager.getCETs(
 				companyId, null,
 				ClientExtensionEntryConstants.TYPE_AUDIENCES_CUSTOM_ATTRIBUTES,
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
-
-			if (cets.isEmpty()) {
-				return null;
-			}
-
-			List<AudiencesCriteria> audiencesCriterias = new ArrayList<>();
 
 			for (CET cet : cets) {
 				AudiencesCustomAttributesCET audiencesCustomAttributesCET =
@@ -289,6 +314,10 @@ public class AudiencesCriteriaProviderImpl
 							type
 						).build());
 				}
+			}
+
+			if (audiencesCriterias.isEmpty()) {
+				return null;
 			}
 
 			return new AudiencesCriteriaType(
@@ -375,5 +404,8 @@ public class AudiencesCriteriaProviderImpl
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 }
