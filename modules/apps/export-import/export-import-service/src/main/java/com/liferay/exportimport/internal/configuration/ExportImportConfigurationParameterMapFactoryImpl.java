@@ -84,13 +84,11 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 			_replaceParameterMap(parameterMap);
 		}
 
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.DATA_STRATEGY)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.DATA_STRATEGY,
-				new String[] {
-					PortletDataHandlerKeys.DATA_STRATEGY_MIRROR_OVERWRITE
-				});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.DATA_STRATEGY,
+			new String[] {
+				PortletDataHandlerKeys.DATA_STRATEGY_MIRROR_OVERWRITE
+			});
 
 		/*if (!parameterMap.containsKey(
 				PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS)) {
@@ -100,99 +98,57 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 				new String[] {Boolean.TRUE.toString()});
 		}*/
 
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.DELETE_LAYOUTS)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.DELETE_LAYOUTS,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.DELETE_LAYOUTS,
+			new String[] {Boolean.FALSE.toString()});
 
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.DELETE_PORTLET_DATA)) {
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.DELETE_PORTLET_DATA,
+			new String[] {Boolean.FALSE.toString()});
 
-			parameterMap.put(
-				PortletDataHandlerKeys.DELETE_PORTLET_DATA,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.FAVICON,
+			new String[] {Boolean.TRUE.toString()});
 
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.FAVICON)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.FAVICON,
-				new String[] {Boolean.TRUE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_LINK_ENABLED,
+			new String[] {Boolean.FALSE.toString()});
 
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_LINK_ENABLED)) {
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
+			new String[] {Boolean.FALSE.toString()});
 
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_LINK_ENABLED,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
+			new String[] {Boolean.FALSE.toString()});
 
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS)) {
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.LOGO,
+			new String[] {Boolean.FALSE.toString()});
 
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.PORTLET_CONFIGURATION,
+			new String[] {Boolean.TRUE.toString()});
 
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.LAYOUT_SET_SETTINGS)) {
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.FALSE.toString()});
 
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.FALSE.toString()});
 
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.LOGO)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LOGO,
-				new String[] {Boolean.FALSE.toString()});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.THEME_REFERENCE,
+			new String[] {Boolean.FALSE.toString()});
 
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.PORTLET_CONFIGURATION)) {
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.UPDATE_LAST_PUBLISH_DATE,
+			new String[] {Boolean.TRUE.toString()});
 
-			parameterMap.put(
-				PortletDataHandlerKeys.PORTLET_CONFIGURATION,
-				new String[] {Boolean.TRUE.toString()});
-		}
-
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.PORTLET_DATA)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.PORTLET_DATA,
-				new String[] {Boolean.FALSE.toString()});
-		}
-
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.PORTLET_DATA_ALL)) {
-
-			parameterMap.put(
-				PortletDataHandlerKeys.PORTLET_DATA_ALL,
-				new String[] {Boolean.FALSE.toString()});
-		}
-
-		if (!parameterMap.containsKey(PortletDataHandlerKeys.THEME_REFERENCE)) {
-			parameterMap.put(
-				PortletDataHandlerKeys.THEME_REFERENCE,
-				new String[] {Boolean.FALSE.toString()});
-		}
-
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.UPDATE_LAST_PUBLISH_DATE)) {
-
-			parameterMap.put(
-				PortletDataHandlerKeys.UPDATE_LAST_PUBLISH_DATE,
-				new String[] {Boolean.TRUE.toString()});
-		}
-
-		if (!parameterMap.containsKey(
-				PortletDataHandlerKeys.USER_ID_STRATEGY)) {
-
-			parameterMap.put(
-				PortletDataHandlerKeys.USER_ID_STRATEGY,
-				new String[] {UserIdStrategy.CURRENT_USER_ID});
-		}
+		parameterMap.putIfAbsent(
+			PortletDataHandlerKeys.USER_ID_STRATEGY,
+			new String[] {UserIdStrategy.CURRENT_USER_ID});
 
 		return parameterMap;
 	}
@@ -541,9 +497,7 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 			return;
 		}
 
-		if (!parameterMap.containsKey("portletResourceNames")) {
-			parameterMap.put("portletResourceNames", new String[0]);
-		}
+		parameterMap.putIfAbsent("portletResourceNames", new String[0]);
 
 		String[] portletResourceNames = parameterMap.get(
 			"portletResourceNames");
@@ -557,9 +511,7 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 	private void _populateStagedModelTypes(
 		Map<String, String[]> parameterMap, Portlet dataSiteLevelPortlet) {
 
-		if (!parameterMap.containsKey("stagedModelTypes")) {
-			parameterMap.put("stagedModelTypes", new String[0]);
-		}
+		parameterMap.putIfAbsent("stagedModelTypes", new String[0]);
 
 		PortletDataHandler portletDataHandler =
 			dataSiteLevelPortlet.getPortletDataHandlerInstance();
