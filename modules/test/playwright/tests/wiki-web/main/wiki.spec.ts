@@ -4,15 +4,20 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import getRandomString from '../../../utils/getRandomString';
 
 export const test = mergeTests(
+	apiHelpersTest,
 	featureFlagsTest({
 		'LPD-11235': {enabled: true},
 		'LPD-35013': {enabled: true},
@@ -20,6 +25,11 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	loginTest(),
 	wikiPagesTest
+);
+
+const SAMPLE_IMAGE = path.join(
+	__dirname,
+	'../../frontend-js-item-selector-web/main/dependencies/sample_image.png'
 );
 
 export const testWithWikiDeprecation = mergeTests(
@@ -148,3 +158,62 @@ testWithWikiDeprecation(
 		).not.toBeVisible();
 	}
 );
+
+test('Adds an image to a wiki page through the URL tab', async ({
+	apiHelpers,
+	page,
+	site,
+	wikiPage,
+}) => {
+	const fileName = `${getRandomString()}.png`;
+
+	// Seed a document to reference by its URL
+
+	const document = await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(SAMPLE_IMAGE),
+		{fileName}
+	);
+
+	// Open the wiki page editor and insert the document image via the URL tab
+
+	await wikiPage.goto(site.friendlyUrlPath);
+
+	await wikiPage.goToWikiNode('Main');
+
+	await wikiPage.goToEditFirstWikiPage();
+
+	await page.getByRole('button', {name: 'Image'}).click();
+
+	const itemSelector = page.frameLocator('iframe[title="Select Item"]');
+
+	await itemSelector.getByRole('link', {name: 'URL'}).click();
+
+	await itemSelector.getByPlaceholder('http://').fill(document.contentUrl);
+
+	const addImageButton = itemSelector.getByRole('button', {name: 'Add'});
+
+	await expect(addImageButton).toBeEnabled();
+
+	await addImageButton.click();
+
+	const contentEditor = page.frameLocator(
+		'iframe[title="Editor, _com_liferay_wiki_web_portlet_WikiAdminPortlet_contentEditor"]'
+	);
+
+	await expect(
+		contentEditor.locator(`img[src*="${fileName}"]`)
+	).toBeVisible();
+
+	// Publish, reopen the page, and verify the image renders
+
+	await wikiPage.publishPage();
+
+	await wikiPage.goto(site.friendlyUrlPath);
+
+	await wikiPage.goToWikiNode('Main');
+
+	await wikiPage.goToFirstWikiPage();
+
+	await expect(page.locator(`img[src*="${fileName}"]`)).toBeVisible();
+});

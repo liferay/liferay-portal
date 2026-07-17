@@ -153,40 +153,6 @@ definition {
 			videoShortcutTitle = "Test YouTube Video");
 	}
 
-	@description = "Checks if user can edit a Wiki page adding an Image via URL."
-	@priority = 3
-	test CanUploadImageInWikiPage {
-		property portal.release = "quarantine";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		JSONWiki.addWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki Page Content",
-			wikiPageName = "Wiki Page Title");
-
-		WikiNavigator.openToEditPage(
-			groupName = "Guest",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title");
-
-		WikiNode.addImage(
-			contentImageName = "Document_2.jpg",
-			imageSourceURL = "http://localhost:8080/webdav/guest/document_library/Document_2.jpg",
-			navTab = "URL");
-
-		WikiNode.viewImageIsPresent(
-			contentImageName = "Document_2.jpg",
-			wikiPageTitle = "Wiki Page Title");
-	}
-
 	@description = "This ensures that the video thumbnails can be viewed in Item Selector."
 	@priority = 5
 	@refactordone
