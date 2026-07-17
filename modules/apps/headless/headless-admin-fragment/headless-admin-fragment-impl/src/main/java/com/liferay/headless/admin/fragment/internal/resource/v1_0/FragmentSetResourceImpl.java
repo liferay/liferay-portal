@@ -20,6 +20,7 @@ import com.liferay.headless.admin.fragment.resource.v1_0.FragmentSetResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -186,6 +187,10 @@ public class FragmentSetResourceImpl
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
+			return Page.of(Collections.emptyList());
+		}
+
 		return _search(
 			filter, groupId, pagination,
 			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
@@ -331,6 +336,8 @@ public class FragmentSetResourceImpl
 			searchContext -> {
 				searchContext.setCompanyId(contextCompany.getCompanyId());
 				searchContext.setGroupIds(new long[] {groupId});
+				searchContext.setUserId(UserConstants.USER_ID_DEFAULT);
+				searchContext.setVulcanCheckPermissions(false);
 			},
 			null,
 			document -> _toFragmentSet(
