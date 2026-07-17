@@ -770,17 +770,12 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 		for (CPInstanceOptionValueRel cpInstanceOptionValueRel :
 				cpDefinitionCPInstanceOptionValueRels) {
 
-			if (!cpDefinitionOptionRelCPDefinitionOptionValueRelIds.containsKey(
-					cpInstanceOptionValueRel.getCPDefinitionOptionRelId())) {
-
-				continue;
-			}
-
 			List<Long> cpDefinitionOptionValueIds =
 				cpDefinitionOptionRelCPDefinitionOptionValueRelIds.get(
 					cpInstanceOptionValueRel.getCPDefinitionOptionRelId());
 
-			if (!cpDefinitionOptionValueIds.contains(
+			if ((cpDefinitionOptionValueIds == null) ||
+				!cpDefinitionOptionValueIds.contains(
 					cpInstanceOptionValueRel.
 						getCPDefinitionOptionValueRelId())) {
 
@@ -840,17 +835,12 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 		for (CPInstanceOptionValueRel cpInstanceOptionValueRel :
 				cpDefinitionCPInstanceOptionValueRels) {
 
-			if (!cpDefinitionOptionRelCPDefinitionOptionValueRelIds.containsKey(
-					cpInstanceOptionValueRel.getCPDefinitionOptionRelId())) {
-
-				continue;
-			}
-
 			List<Long> cpDefinitionOptionValueIds =
 				cpDefinitionOptionRelCPDefinitionOptionValueRelIds.get(
 					cpInstanceOptionValueRel.getCPDefinitionOptionRelId());
 
-			if (!cpDefinitionOptionValueIds.contains(
+			if ((cpDefinitionOptionValueIds == null) ||
+				!cpDefinitionOptionValueIds.contains(
 					cpInstanceOptionValueRel.
 						getCPDefinitionOptionValueRelId())) {
 
