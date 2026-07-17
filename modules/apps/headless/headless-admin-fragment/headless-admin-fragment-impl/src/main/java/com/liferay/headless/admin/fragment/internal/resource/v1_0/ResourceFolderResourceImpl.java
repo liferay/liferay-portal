@@ -226,6 +226,8 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
+		_checkManageFragmentEntriesPermission(groupId);
+
 		return _toResourceFolder(
 			_addDLFolder(
 				_getOrAddFragmentCollection(groupId, resourceFolder), groupId,
@@ -249,6 +251,8 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 				resourceFolderExternalReferenceCode, groupId);
 
 		if (dlFolder == null) {
+			_checkManageFragmentEntriesPermission(groupId);
+
 			resourceFolder.setExternalReferenceCode(
 				() -> resourceFolderExternalReferenceCode);
 
@@ -282,6 +286,14 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			contextHttpServletRequest,
 			contextAcceptLanguage.getPreferredLocale(), resourceFolder,
 			contextUser.getUserId());
+	}
+
+	private void _checkManageFragmentEntriesPermission(long groupId)
+		throws Exception {
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
 	private FragmentCollection _getOrAddFragmentCollection(
