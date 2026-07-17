@@ -117,6 +117,31 @@ public class StyleBookEntryProviderUtilTest {
 	}
 
 	@Test
+	@TestInfo("LPD-98556")
+	public void testGetStyleBookEntriesWhenChildSiteIsUsed() throws Exception {
+		try (FeatureFlagTemporarySwapper featureFlagTemporarySwapper =
+				new FeatureFlagTemporarySwapper(true, "LPD-57283")) {
+
+			Group parentGroup = _addGroup();
+
+			StyleBookEntry parentStyleBookEntry = _addStyleBookEntry(
+				parentGroup.getGroupId());
+
+			Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
+
+			_groups.add(childGroup);
+
+			List<StyleBookEntry> styleBookEntries =
+				StyleBookEntryProviderUtil.getStyleBookEntries(
+					TestPropsValues.getCompanyId(), childGroup.getGroupId());
+
+			Assert.assertFalse(
+				styleBookEntries.toString(),
+				styleBookEntries.contains(parentStyleBookEntry));
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-88081")
 	public void testGetStyleBookEntry() throws Exception {
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(_group.getGroupId());
@@ -155,17 +180,15 @@ public class StyleBookEntryProviderUtilTest {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
+			DepotConstants.TYPE_DESIGN_LIBRARY,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), _group.getGroupId());
 
-		Group group = depotEntry.getGroup();
+		_depotEntries.add(depotEntry);
 
-		_groups.add(group);
-
-		return group;
+		return depotEntry.getGroup();
 	}
 
 	private StyleBookEntry _addDepotEntryStyleBookEntry() throws Exception {
@@ -279,6 +302,9 @@ public class StyleBookEntryProviderUtilTest {
 	private static final String _THEME_ID_CLASSIC = "classic_WAR_classictheme";
 
 	private static final String _THEME_ID_OTHER = "other_WAR_othertheme";
+
+	@DeleteAfterTestRun
+	private List<DepotEntry> _depotEntries = new ArrayList<>();
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
