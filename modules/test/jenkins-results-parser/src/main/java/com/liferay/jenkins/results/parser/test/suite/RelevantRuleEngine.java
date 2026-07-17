@@ -257,15 +257,9 @@ public class RelevantRuleEngine {
 			for (String testPropertiesFilePath :
 					_getTestPropertiesFilePaths(modifiedFile, null)) {
 
-				if (!testPropertiesModifiedFilesMap.containsKey(
-						testPropertiesFilePath)) {
-
-					testPropertiesModifiedFilesMap.put(
-						testPropertiesFilePath, new HashSet<File>());
-				}
-
 				Set<File> testPropertiesModifiedFiles =
-					testPropertiesModifiedFilesMap.get(testPropertiesFilePath);
+					testPropertiesModifiedFilesMap.computeIfAbsent(
+						testPropertiesFilePath, key -> new HashSet<>());
 
 				testPropertiesModifiedFiles.add(modifiedFile);
 			}

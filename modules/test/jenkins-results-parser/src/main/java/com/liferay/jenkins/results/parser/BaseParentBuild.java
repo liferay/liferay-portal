@@ -528,11 +528,8 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 			String jenkinsMasterName = jenkinsMaster.getName();
 
-			if (!callableGroupCounter.containsKey(jenkinsMasterName)) {
-				callableGroupCounter.put(jenkinsMasterName, 0);
-			}
-
-			Integer buildCounter = callableGroupCounter.get(jenkinsMasterName);
+			Integer buildCounter = callableGroupCounter.computeIfAbsent(
+				jenkinsMasterName, key -> 0);
 
 			String sequentialCallableGroupName = jenkinsMasterName;
 

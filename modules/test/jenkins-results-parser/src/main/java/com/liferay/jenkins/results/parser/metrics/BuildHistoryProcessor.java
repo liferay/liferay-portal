@@ -388,13 +388,9 @@ public class BuildHistoryProcessor {
 		for (BuildJSONObject buildJSONObject : buildJSONObjects) {
 			String groupName = groupingFunction.apply(buildJSONObject);
 
-			if (!groupedBuildDataJSONObjectsMap.containsKey(groupName)) {
-				groupedBuildDataJSONObjectsMap.put(
-					groupName, new HashSet<BuildJSONObject>());
-			}
-
 			Set<BuildJSONObject> groupedBuildJSONObjects =
-				groupedBuildDataJSONObjectsMap.get(groupName);
+				groupedBuildDataJSONObjectsMap.computeIfAbsent(
+					groupName, key -> new HashSet<>());
 
 			groupedBuildJSONObjects.add(buildJSONObject);
 		}

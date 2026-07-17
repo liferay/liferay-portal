@@ -83,13 +83,9 @@ public class BuildReportFactory {
 		String buildURLString = JenkinsResultsParserUtil.getRemoteURL(
 			buildJSONObject.getString("url"));
 
-		if (!_topLevelBuildReports.containsKey(buildURLString)) {
-			_topLevelBuildReports.put(
-				buildURLString,
-				new URLTopLevelBuildReport(buildJSONObject, jobReport));
-		}
-
-		return _topLevelBuildReports.get(buildURLString);
+		return _topLevelBuildReports.computeIfAbsent(
+			buildURLString,
+			key -> new URLTopLevelBuildReport(buildJSONObject, jobReport));
 	}
 
 	public static TopLevelBuildReport newTopLevelBuildReport(
@@ -104,12 +100,9 @@ public class BuildReportFactory {
 		String buildURLString = JenkinsResultsParserUtil.getRemoteURL(
 			String.valueOf(topLevelBuildURL));
 
-		if (!_topLevelBuildReports.containsKey(buildURLString)) {
-			_topLevelBuildReports.put(
-				buildURLString, new TestrayTopLevelBuildReport(testrayBuild));
-		}
-
-		return _topLevelBuildReports.get(buildURLString);
+		return _topLevelBuildReports.computeIfAbsent(
+			buildURLString,
+			key -> new TestrayTopLevelBuildReport(testrayBuild));
 	}
 
 	public static TopLevelBuildReport newTopLevelBuildReport(
@@ -122,12 +115,8 @@ public class BuildReportFactory {
 		String buildURLString = JenkinsResultsParserUtil.getRemoteURL(
 			String.valueOf(buildURL));
 
-		if (!_topLevelBuildReports.containsKey(buildURLString)) {
-			_topLevelBuildReports.put(
-				buildURLString, new URLTopLevelBuildReport(buildURLString));
-		}
-
-		return _topLevelBuildReports.get(buildURLString);
+		return _topLevelBuildReports.computeIfAbsent(
+			buildURLString, URLTopLevelBuildReport::new);
 	}
 
 	private static final Map<String, TopLevelBuildReport>

@@ -166,9 +166,7 @@ public class GenerateReportsControllerBuildRunner
 			long defaultStartTime =
 				buildData.getStartTime() - _getReportStaleDuration(reportName);
 
-			if (!latestReportUpdateTimes.containsKey(reportName)) {
-				latestReportUpdateTimes.put(reportName, defaultStartTime);
-			}
+			latestReportUpdateTimes.putIfAbsent(reportName, defaultStartTime);
 		}
 
 		return latestReportUpdateTimes;

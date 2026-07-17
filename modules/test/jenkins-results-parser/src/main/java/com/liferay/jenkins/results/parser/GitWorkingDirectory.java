@@ -610,18 +610,11 @@ public class GitWorkingDirectory {
 			RemoteGitRepository remoteGitRepository =
 				remoteGitBranch.getRemoteGitRepository();
 
-			String remoteURL = remoteGitRepository.getRemoteURL();
-
-			if (!remoteURLGitBranchNameMap.containsKey(remoteURL)) {
-				remoteURLGitBranchNameMap.put(remoteURL, new HashSet<String>());
-			}
-
-			Set<String> remoteGitBranchNames = remoteURLGitBranchNameMap.get(
-				remoteURL);
+			Set<String> remoteGitBranchNames =
+				remoteURLGitBranchNameMap.computeIfAbsent(
+					remoteGitRepository.getRemoteURL(), key -> new HashSet<>());
 
 			remoteGitBranchNames.add(remoteGitBranch.getName());
-
-			remoteURLGitBranchNameMap.put(remoteURL, remoteGitBranchNames);
 		}
 
 		List<Callable<Boolean>> callables = new ArrayList<>(

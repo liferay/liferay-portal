@@ -527,14 +527,8 @@ public class ParallelExecutor<T> {
 
 						if (_parallelExecutor._excludeNulls == false) {
 							for (Callable<T> callable : _callables) {
-								int callableIndex = _callables.indexOf(
-									callable);
-
-								if (!_resultsSortedMap.containsKey(
-										callableIndex)) {
-
-									_resultsSortedMap.put(callableIndex, null);
-								}
+								_resultsSortedMap.putIfAbsent(
+									_callables.indexOf(callable), null);
 							}
 						}
 
@@ -604,16 +598,11 @@ public class ParallelExecutor<T> {
 					queueName = _PARALLEL_QUEUE_NAME;
 				}
 
-				if (!callablesMap.containsKey(queueName)) {
-					callablesMap.put(queueName, new ArrayList<Callable<T>>());
-				}
-
-				Collection<Callable<T>> callablesCollection = callablesMap.get(
-					queueName);
+				Collection<Callable<T>> callablesCollection =
+					callablesMap.computeIfAbsent(
+						queueName, key -> new ArrayList<>());
 
 				callablesCollection.add(callable);
-
-				callablesMap.put(queueName, callablesCollection);
 			}
 
 			return callablesMap;

@@ -35,14 +35,9 @@ public class JobReport {
 	}
 
 	public static JobReport getInstance(URL jenkinsJobURL) {
-		String key = JenkinsResultsParserUtil.getRemoteURL(
-			jenkinsJobURL.toString());
-
-		if (!_jobReports.containsKey(key)) {
-			_jobReports.put(key, new JobReport(jenkinsJobURL));
-		}
-
-		return _jobReports.get(key);
+		return _jobReports.computeIfAbsent(
+			JenkinsResultsParserUtil.getRemoteURL(jenkinsJobURL.toString()),
+			key -> new JobReport(jenkinsJobURL));
 	}
 
 	public JenkinsMaster getJenkinsMaster() {

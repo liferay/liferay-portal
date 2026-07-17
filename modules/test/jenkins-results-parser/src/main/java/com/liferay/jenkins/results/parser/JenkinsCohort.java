@@ -37,11 +37,7 @@ import org.json.JSONObject;
 public class JenkinsCohort {
 
 	public static synchronized JenkinsCohort getInstance(String cohortName) {
-		if (!_jenkinsCohorts.containsKey(cohortName)) {
-			_jenkinsCohorts.put(cohortName, new JenkinsCohort(cohortName));
-		}
-
-		return _jenkinsCohorts.get(cohortName);
+		return _jenkinsCohorts.computeIfAbsent(cohortName, JenkinsCohort::new);
 	}
 
 	public Set<String> getASGPrimaryLabels() {
@@ -742,11 +738,9 @@ public class JenkinsCohort {
 			jobName = jobName.replace("-downstream", "");
 		}
 
-		if (!_jenkinsCohortJobsMap.containsKey(jobName)) {
-			_jenkinsCohortJobsMap.put(jobName, new JenkinsCohortJob(jobName));
-		}
-
-		JenkinsCohortJob jenkinsCohortJob = _jenkinsCohortJobsMap.get(jobName);
+		JenkinsCohortJob jenkinsCohortJob =
+			_jenkinsCohortJobsMap.computeIfAbsent(
+				jobName, JenkinsCohortJob::new);
 
 		if (downstreamJobName == null) {
 			jenkinsCohortJob.addTopLevelBuildURL(buildURL);
@@ -786,13 +780,9 @@ public class JenkinsCohort {
 					jobName = jobName.replace("-downstream", "");
 				}
 
-				if (!_jenkinsCohortJobsMap.containsKey(jobName)) {
-					_jenkinsCohortJobsMap.put(
-						jobName, new JenkinsCohortJob(jobName));
-				}
-
-				JenkinsCohortJob jenkinsCohortJob = _jenkinsCohortJobsMap.get(
-					jobName);
+				JenkinsCohortJob jenkinsCohortJob =
+					_jenkinsCohortJobsMap.computeIfAbsent(
+						jobName, JenkinsCohortJob::new);
 
 				if (downstreamJobName == null) {
 					jenkinsCohortJob.addQueuedTopLevelBuildJsonMapEntry(

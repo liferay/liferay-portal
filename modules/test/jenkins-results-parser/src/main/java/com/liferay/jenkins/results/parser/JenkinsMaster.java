@@ -39,11 +39,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	public static final Integer SLAVES_PER_HOST_DEFAULT = 2;
 
 	public static synchronized JenkinsMaster getInstance(String masterName) {
-		if (!_jenkinsMasters.containsKey(masterName)) {
-			_jenkinsMasters.put(masterName, new JenkinsMaster(masterName));
-		}
-
-		return _jenkinsMasters.get(masterName);
+		return _jenkinsMasters.computeIfAbsent(masterName, JenkinsMaster::new);
 	}
 
 	public static Integer getSlaveRAMMinimumDefault() {
