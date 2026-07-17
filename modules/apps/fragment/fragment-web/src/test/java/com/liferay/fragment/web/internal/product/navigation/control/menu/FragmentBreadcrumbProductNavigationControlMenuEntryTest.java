@@ -64,7 +64,7 @@ public class FragmentBreadcrumbProductNavigationControlMenuEntryTest {
 
 	@Test
 	public void testIsShow() throws Exception {
-		_testIsShowWhenPortletIsNotFragment();
+		_testIsShowWhenNotInFragmentPortlet();
 		_testIsShowWhenScopeIsNotDesignLibrary();
 		_testIsShowInFragmentPortletAndDesignLibraryScope();
 	}
@@ -94,7 +94,7 @@ public class FragmentBreadcrumbProductNavigationControlMenuEntryTest {
 				ProductNavigationControlMenuWebKeys.HIDE_PORTLET_HEADER));
 	}
 
-	private void _testIsShowWhenPortletIsNotFragment() throws Exception {
+	private void _testIsShowWhenNotInFragmentPortlet() throws Exception {
 		Mockito.when(
 			_portletDisplay.getPortletName()
 		).thenReturn(
