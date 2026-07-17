@@ -7,7 +7,6 @@ $c-link: map-deep-merge(
 	(
 		text-decoration: none,
 		transition: clay-enable-transitions(box-shadow 0.15s ease-in-out),
-
 		hover: (
 			text-decoration: none,
 		),
@@ -370,7 +369,6 @@ $component-action: map-deep-merge(
 		transition: $component-transition,
 		vertical-align: middle,
 		width: map-get($link-monospaced, width),
-
 		hover: (
 			background-color: $secondary,
 			color: $white,

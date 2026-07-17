@@ -119,7 +119,6 @@ $clay-color-dropdown-menu-close: map-deep-merge(
 		color: var(--clay-color-dropdown-menu-close-color, $gray-600),
 		font-size: var(--clay-color-dropdown-menu-close-font-size, 16px),
 		opacity: var(--clay-color-dropdown-menu-close-opacity, 1),
-
 		hover: (
 			background-color:
 				var(
@@ -197,7 +196,6 @@ $clay-color-btn: map-deep-merge(
 		padding-right: var(--clay-color-btn-padding-right, 0),
 		padding-top: var(--clay-color-btn-padding-top, 0),
 		width: var(--clay-color-btn-width, 24px),
-
 		active: (
 			box-shadow:
 				var(
@@ -236,7 +234,6 @@ $clay-color-pointer: map-deep-merge(
 		transition:
 			var(--clay-color-pointer-transition, box-shadow 0.15s ease-in-out),
 		width: var(--clay-color-pointer-width, 14px),
-
 		focus: (
 			box-shadow:
 				var(
@@ -422,7 +419,6 @@ $clay-color-form-group: map-deep-merge(
 		display: flex,
 		margin-bottom: var(--clay-color-form-group-margin-bottom, 16px),
 		margin-top: var(--clay-color-form-group-margin-top, 4px),
-
 		clay-range: (
 			flex-grow: 1,
 			flex-shrink: 0,
@@ -559,7 +555,6 @@ $clay-color-slider-alpha: map-deep-merge(
 						#e7e7ed 25%,
 						transparent 25%
 					),
-
 				linear-gradient(
 					-45deg,
 					#e7e7ed 25%,

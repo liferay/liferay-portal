@@ -251,7 +251,6 @@ $panel-group-sm: () !default;
 $panel-group-sm: map-deep-merge(
 	(
 		font-size: var(--panel-group-sm-font-size, 0.875rem),
-
 		panel-header: (
 			padding-bottom:
 				var(--panel-group-sm-panel-header-padding-bottom, 0.5rem),
@@ -327,7 +326,6 @@ $panel-secondary: map-deep-merge(
 	(
 		border-color: var(--panel-secondary-border-color, $gray-300),
 		color: var(--panel-secondary-color, $gray-600),
-
 		panel-header: (
 			border-color:
 				var(--panel-secondary-panel-header-border-color, $gray-300),
@@ -364,7 +362,6 @@ $panel-unstyled: map-deep-merge(
 		border-radius: var(--panel-unstyled-border-radius, 0),
 		border-width: var(--panel-unstyled-border-width, 0),
 		margin-bottom: var(--panel-unstyled-margin-bottom, 24px),
-
 		panel-header: (
 			border-color:
 				var(--panel-unstyled-panel-header-border-color, $gray-500),
@@ -373,7 +370,6 @@ $panel-unstyled: map-deep-merge(
 			border-width:
 				var(--panel-unstyled-panel-header-border-width, 0 0 1px 0),
 			padding-left: var(--panel-unstyled-panel-header-padding-left, 0),
-
 			collapsed: (
 				border-color:
 					var(

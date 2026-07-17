@@ -158,7 +158,6 @@ $badge-primary: map-deep-merge(
 		background-color: var(--badge-primary-background-color, $primary),
 		border-color: var(--badge-primary-border-color, transparent),
 		color: var(--badge-primary-color, $white),
-
 		href: (
 			hover: (
 				background-color:
@@ -184,7 +183,6 @@ $badge-secondary: map-deep-merge(
 		background-color: var(--badge-secondary-background-color, $secondary-l3),
 		border-color: var(--badge-secondary-border-color, transparent),
 		color: var(--badge-secondary-color, $gray-900),
-
 		href: (
 			hover: (
 				background-color:
@@ -210,7 +208,6 @@ $badge-success: map-deep-merge(
 		background-color: var(--badge-success-background-color, $success),
 		border-color: var(--badge-success-border-color, transparent),
 		color: var(--badge-success-color, $white),
-
 		href: (
 			hover: (
 				background-color:
@@ -236,7 +233,6 @@ $badge-info: map-deep-merge(
 		background-color: var(--badge-info-background-color, $info),
 		border-color: var(--badge-info-border-color, transparent),
 		color: var(--badge-info-color, $white),
-
 		href: (
 			hover: (
 				background-color:
@@ -261,7 +257,6 @@ $badge-warning: map-deep-merge(
 		background-color: var(--badge-warning-background-color, $warning),
 		border-color: var(--badge-warning-border-color, transparent),
 		color: var(--badge-warning-color, $white),
-
 		href: (
 			hover: (
 				background-color:
@@ -287,7 +282,6 @@ $badge-danger: map-deep-merge(
 		background-color: var(--badge-danger-background-color, $danger),
 		border-color: var(--badge-danger-border-color, transparent),
 		color: var(--badge-danger-color, $white),
-
 		href: (
 			hover: (
 				background-color:

@@ -19,7 +19,6 @@ $menubar-primary: map-deep-merge(
 					border-color 0.15s ease-in-out,
 					box-shadow 0.15s ease-in-out}
 				),
-
 			before: (
 				bottom: var(--menubar-primary-nav-link-highlight-bottom, 0),
 				content: var(--menubar-primary-nav-link-highlight-content, ''),
@@ -46,7 +45,6 @@ $menubar-primary: map-deep-merge(
 				color: var(--menubar-primary-nav-link-hover-color, $gray-900),
 				letter-spacing:
 					var(--menubar-primary-nav-link-hover-letter-spacing, 0),
-
 				before: (
 					background-color:
 						var(
@@ -109,7 +107,6 @@ $menubar-primary: map-deep-merge(
 						--menubar-primary-nav-link-active-class-font-weight,
 						$font-weight-semi-bold
 					),
-
 				before: (
 					background-color:
 						var(
@@ -148,7 +145,6 @@ $menubar-primary: map-deep-merge(
 						--menubar-primary-nav-link-disabled-font-weight,
 						$font-weight-normal
 					),
-
 				before: (
 					content: none,
 				),
@@ -182,7 +178,6 @@ $menubar-primary: map-deep-merge(
 					var(--menubar-primary-autofit-row-margin-left, -0.25rem),
 				margin-right:
 					var(--menubar-primary-autofit-row-margin-right, -0.25rem),
-
 				autofit-col: (
 					padding-left:
 						var(--menubar-primary-autofit-col-padding-left, 0.25rem),
@@ -207,7 +202,6 @@ $menubar-primary: map-deep-merge(
 						--menubar-primary-collapse-icon-text-transform,
 						uppercase
 					),
-
 				collapse-icon-closed: (
 					bottom:
 						var(--menubar-primary-collapse-icon-close-bottom, auto),

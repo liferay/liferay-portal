@@ -156,7 +156,6 @@ $list-group-notification-item-primary: () !default;
 $list-group-notification-item-primary: map-deep-merge(
 	(
 		border-left-color: clay-lighten($component-active-bg, 22.94),
-
 		active-border-left-color: clay-lighten($component-active-bg, 22.94),
 	),
 	$list-group-notification-item-primary

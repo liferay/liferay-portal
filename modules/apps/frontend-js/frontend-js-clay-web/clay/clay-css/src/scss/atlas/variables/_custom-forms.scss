@@ -247,7 +247,6 @@ $custom-checkbox: map-deep-merge(
 			checked: (
 				custom-control-label: (
 					before: (),
-
 					after: (
 						background-image:
 							$custom-checkbox-indicator-icon-checked,

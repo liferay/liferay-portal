@@ -459,7 +459,6 @@ $pagination-sm: map-deep-merge(
 		pagination-items-per-page: (
 			border-radius:
 				clay-enable-rounded($pagination-link-border-radius-sm),
-
 			link: (
 				font-size: $pagination-font-size-sm,
 				height: $pagination-item-height-sm,
@@ -527,7 +526,6 @@ $pagination-lg: map-deep-merge(
 		pagination-items-per-page: (
 			border-radius:
 				clay-enable-rounded($pagination-link-border-radius-lg),
-
 			link: (
 				font-size: $pagination-font-size-lg,
 				height: $pagination-item-height-lg,

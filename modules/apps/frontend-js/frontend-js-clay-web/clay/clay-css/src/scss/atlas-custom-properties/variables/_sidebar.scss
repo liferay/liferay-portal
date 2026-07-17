@@ -9,7 +9,6 @@ $sidebar-header-component-title: () !default;
 $sidebar-header-component-title: map-deep-merge(
 	(
 		font-size: var(--sidebar-header-component-title, 16px),
-
 		href: (
 			color: var(--sidebar-header-component-title-link-color, $gray-900),
 		),
@@ -111,7 +110,6 @@ $sidebar: map-deep-merge(
 
 		close: (
 			color: var(--sidebar-close-color, $secondary),
-
 			hover: (
 				background-color:
 					var(
@@ -150,7 +148,6 @@ $sidebar: map-deep-merge(
 						--sidebar-close-disabled-opacity,
 						$component-disabled-opacity
 					),
-
 				active: (
 					pointer-events: none,
 				),
@@ -164,7 +161,6 @@ $sidebar: map-deep-merge(
 				var(--sidebar-header-padding-left, $sidebar-padding-left),
 			padding-right: var(--sidebar-header-padding-right, 16px),
 			padding-top: var(--sidebar-header-padding-top, $sidebar-padding-top),
-
 			component-subtitle: $sidebar-header-component-subtitle,
 			component-title: $sidebar-header-component-title,
 
@@ -241,7 +237,6 @@ $sidebar-sm: () !default;
 $sidebar-sm: map-deep-merge(
 	(
 		font-size: var(--sidebar-sm-font-size, 0.875rem),
-
 		panel-group: (
 			extend: '%clay-panel-group-sm',
 		),
@@ -290,7 +285,6 @@ $sidebar-light-navigation-bar: map-deep-merge(
 			var(--sidebar-light-navigation-bar-background-color, $white),
 		border-color:
 			var(--sidebar-light-navigation-bar-border-color, $secondary-l2),
-
 		navbar-nav: (
 			nav-link: (
 				color:
@@ -298,7 +292,6 @@ $sidebar-light-navigation-bar: map-deep-merge(
 						--sidebar-light-navigation-bar-link-color,
 						$navbar-light-color
 					),
-
 				hover: (
 					color:
 						var(
@@ -343,7 +336,6 @@ $sidebar-light: map-deep-merge(
 				unquote('-4px 0 8px -4px hsl(from #{$black} h s l / 0.1)')
 			),
 		color: var(--sidebar-light-color, $gray-900),
-
 		sidebar-header: (
 			background-color:
 				var(--sidebar-light-sidebar-header-background-color, inherit),

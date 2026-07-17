@@ -41,7 +41,6 @@ $cadmin-list-group-item-flex: map-deep-merge(
 		margin-bottom: calc(#{$cadmin-list-group-border-width} * -1),
 		padding-left: calc(#{$cadmin-list-group-item-padding-x} * 0.5),
 		padding-right: calc(#{$cadmin-list-group-item-padding-x} * 0.5),
-
 		autofit-col: (
 			justify-content: $cadmin-list-group-item-flex-align-items,
 			padding-left: calc(#{$cadmin-list-group-item-padding-x} * 0.5),

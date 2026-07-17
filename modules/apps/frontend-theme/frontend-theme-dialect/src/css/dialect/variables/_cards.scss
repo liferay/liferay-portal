@@ -80,7 +80,6 @@ $card-type-asset: (
 	card-body: (
 		padding-top: $card-body-padding-top,
 	),
-
 );
 
 // Card Variants
@@ -114,7 +113,6 @@ $card-elevated-interactive: map-deep-merge(
 			border-color: var(--card-elevated-border-color-hover),
 			box-shadow: var(--card-elevated-box-shadow-hover),
 		),
-
 	)
 );
 
@@ -143,7 +141,6 @@ $card-outlined-interactive: map-deep-merge(
 			border-color: var(--card-outlined-border-color-hover),
 			box-shadow: var(--card-outlined-box-shadow-hover),
 		),
-
 	)
 );
 
@@ -172,6 +169,5 @@ $card-flat-interactive: map-deep-merge(
 			border-color: var(--card-flat-border-color-hover),
 			box-shadow: var(--card-flat-box-shadow-hover),
 		),
-
 	)
 );

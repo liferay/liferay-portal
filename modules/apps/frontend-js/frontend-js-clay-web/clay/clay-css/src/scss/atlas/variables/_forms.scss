@@ -241,7 +241,6 @@ $input-danger-readonly: map-deep-merge(
 				map-get($input-readonly, background-color)
 			),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),
@@ -302,7 +301,6 @@ $input-warning-readonly: map-deep-merge(
 				map-get($input-readonly, background-color)
 			),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),
@@ -363,7 +361,6 @@ $input-success-readonly: map-deep-merge(
 				map-get($input-readonly, background-color)
 			),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),

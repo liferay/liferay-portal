@@ -81,7 +81,6 @@ $btn: map-deep-merge(
 
 		active: (
 			box-shadow: clay-enable-shadows($btn-active-box-shadow),
-
 			focus: (
 				box-shadow: clay-enable-shadows($btn-focus-box-shadow),
 			),
@@ -486,7 +485,6 @@ $btn-primary: map-deep-merge(
 		background-color: var(--btn-primary-background-color, $primary),
 		border-color: var(--btn-primary-border-color, transparent),
 		color: var(--btn-primary-color, $white),
-
 		hover: (
 			background-color:
 				var(--btn-primary-hover-background-color, $primary-d1),
@@ -495,7 +493,6 @@ $btn-primary: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(--btn-primary-active-background-color, $primary-d2),
@@ -519,7 +516,6 @@ $btn-secondary: map-deep-merge(
 		background-color: var(--btn-secondary-background-color, $white),
 		border-color: var(--btn-secondary-border-color, $secondary-l0),
 		color: var(--btn-secondary-color, $secondary),
-
 		hover: (
 			background-color:
 				var(--btn-secondary-hover-background-color, $gray-100),
@@ -528,7 +524,6 @@ $btn-secondary: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(--btn-secondary-active-background-color, $gray-200),
@@ -554,7 +549,6 @@ $btn-success: map-deep-merge(
 		background-color: var(--btn-success-background-color, $success),
 		border-color: var(--btn-success-border-color, transparent),
 		color: var(--btn-success-color, $white),
-
 		hover: (
 			background-color:
 				var(--btn-success-hover-background-color, $success-d1),
@@ -563,7 +557,6 @@ $btn-success: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(--btn-success-active-background-color, $success-d2),
@@ -587,7 +580,6 @@ $btn-info: map-deep-merge(
 		background-color: var(--btn-info-background-color, $info),
 		border-color: var(--btn-info-border-color, transparent),
 		color: var(--btn-info-color, $white),
-
 		hover: (
 			background-color: var(--btn-info-hover-background-color, $info-d1),
 			border-color: var(--btn-info-hover-border-color, transparent),
@@ -595,7 +587,6 @@ $btn-info: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: var(--btn-info-active-background-color, $info-d2),
 			border-color: var(--btn-info-active-border-color, transparent),
@@ -617,7 +608,6 @@ $btn-warning: map-deep-merge(
 		background-color: var(--btn-warning-background-color, $warning),
 		border-color: var(--btn-warning-border-color, transparent),
 		color: var(--btn-warning-color, $white),
-
 		hover: (
 			background-color:
 				var(--btn-warning-hover-background-color, $warning-d1),
@@ -626,7 +616,6 @@ $btn-warning: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(--btn-warning-active-background-color, $warning-d2),
@@ -650,7 +639,6 @@ $btn-danger: map-deep-merge(
 		background-color: var(--btn-danger-background-color, $danger),
 		border-color: var(--btn-danger-border-color, transparent),
 		color: var(--btn-danger-color, $white),
-
 		hover: (
 			background-color:
 				var(--btn-danger-hover-background-color, $danger-d1),
@@ -659,7 +647,6 @@ $btn-danger: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(--btn-danger-active-background-color, $danger-d2),
@@ -691,7 +678,6 @@ $btn-light: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: $light-d1,
 			border-color: transparent,
@@ -721,7 +707,6 @@ $btn-dark: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: $dark-d2,
 			border-color: transparent,
@@ -1217,7 +1202,6 @@ $btn-outline-primary: map-deep-merge(
 			var(--btn-outline-primary-background-color, transparent),
 		border-color: var(--btn-outline-primary-border-color, $primary),
 		color: var(--btn-outline-primary-color, $primary),
-
 		hover: (
 			background-color:
 				var(--btn-outline-primary-hover-background-color, $primary-l3),
@@ -1227,7 +1211,6 @@ $btn-outline-primary: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(
@@ -1297,7 +1280,6 @@ $btn-outline-secondary: map-deep-merge(
 			var(--btn-outline-secondary-background-color, transparent),
 		border-color: var(--btn-outline-secondary-border-color, $secondary-l2),
 		color: var(--btn-outline-secondary-color, $secondary),
-
 		hover: (
 			background-color:
 				var(
@@ -1310,7 +1292,6 @@ $btn-outline-secondary: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				var(
@@ -1353,7 +1334,6 @@ $btn-outline-success: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				map-deep-get($btn-success, active, background-color),
@@ -1382,7 +1362,6 @@ $btn-outline-info: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: map-deep-get($btn-info, active, background-color),
 			border-color: $info,
@@ -1412,7 +1391,6 @@ $btn-outline-warning: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				map-deep-get($btn-warning, active, background-color),
@@ -1441,7 +1419,6 @@ $btn-outline-danger: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color:
 				map-deep-get($btn-danger, active, background-color),
@@ -1470,7 +1447,6 @@ $btn-outline-light: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: map-deep-get($btn-light, active, background-color),
 			border-color: $light,
@@ -1498,7 +1474,6 @@ $btn-outline-dark: map-deep-merge(
 		),
 
 		focus: (),
-
 		active: (
 			background-color: map-deep-get($btn-dark, active, background-color),
 			border-color: $dark,

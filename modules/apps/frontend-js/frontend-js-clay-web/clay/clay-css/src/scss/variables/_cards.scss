@@ -259,7 +259,6 @@ $card-subtitle-link: () !default;
 $card-subtitle-link: map-deep-merge(
 	(
 		color: map-get($card-subtitle, color),
-
 		hover: (
 			color: clay-darken($gray-600, 15%),
 		),

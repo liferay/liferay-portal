@@ -89,7 +89,6 @@ $close: map-deep-merge(
 		text-shadow: $close-text-shadow,
 		transition: $component-transition,
 		width: var(--close-width, 32px),
-
 		hover: (
 			color: var(--close-hover-color, $close-color),
 			text-decoration: none,

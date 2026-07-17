@@ -244,7 +244,6 @@ $cadmin-card-title-link: () !default;
 $cadmin-card-title-link: map-deep-merge(
 	(
 		color: map-get($cadmin-card-title, color),
-
 		hover: (
 			color: map-get($cadmin-card-title, color),
 		),
@@ -277,7 +276,6 @@ $cadmin-card-subtitle-link: () !default;
 $cadmin-card-subtitle-link: map-deep-merge(
 	(
 		color: map-get($cadmin-card-subtitle, color),
-
 		hover: (
 			color: $cadmin-gray-600,
 		),
@@ -618,7 +616,6 @@ $cadmin-card-interactive-secondary: map-deep-merge(
 			background-color: $cadmin-white,
 			color: $cadmin-gray-900,
 			transform: translateY(-0.25rem),
-
 			after: (
 				bottom: -0.25rem,
 				content: '',
@@ -645,7 +642,6 @@ $cadmin-card-type-asset: map-deep-merge(
 
 		hover: (
 			transform: translateY(-0.25rem),
-
 			after: (
 				bottom: -0.25rem,
 				content: '',
@@ -982,7 +978,6 @@ $cadmin-template-card: map-deep-merge(
 
 		hover: (
 			transform: translateY(-0.25rem),
-
 			after: (
 				bottom: -0.25rem,
 				content: '',

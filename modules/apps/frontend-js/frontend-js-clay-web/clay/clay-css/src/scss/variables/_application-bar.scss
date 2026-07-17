@@ -33,7 +33,6 @@ $application-bar-dark: map-deep-merge(
 				$navbar-dark-color,
 				rgba($white, 0.5)
 			),
-
 		navbar-nav: (
 			nav-link: (
 				color:
@@ -42,7 +41,6 @@ $application-bar-dark: map-deep-merge(
 						$navbar-dark-color,
 						rgba($white, 0.5)
 					),
-
 				hover: (
 					color:
 						if(

@@ -10,7 +10,6 @@ $nav-base-link: (
 		right: 0,
 		width: auto,
 	),
-
 );
 
 // Nav Primary
@@ -30,14 +29,12 @@ $nav-underline-link: (
 	line-height: var(--tab-primary-item-line-height),
 	padding: var(--tab-primary-horizontal-item-padding-y)
 		var(--tab-primary-horizontal-item-padding-x),
-
 	active-class: (
 		background-color: var(--tab-primary-item-background-color-active),
 		border-color: var(--tab-primary-item-border-color-active),
 		box-shadow: var(--tab-primary-item-box-shadow-active),
 		color: var(--tab-primary-item-color-active),
 		font-weight: var(--tab-primary-item-font-weight-active),
-
 		after: (
 			background-color: var(--tab-primary-item-active-bar-color-active),
 			content: '',
@@ -60,7 +57,6 @@ $nav-underline-link: (
 		border: 0,
 		color: var(--tab-primary-item-color-disabled),
 		font-weight: var(--tab-secondary-item-font-weight),
-
 		after: (
 			content: none,
 		),
@@ -76,7 +72,6 @@ $nav-underline-link: (
 		box-shadow: var(--tab-primary-item-box-shadow-hover),
 		color: var(--tab-primary-item-color-hover),
 		font-weight: var(--tab-primary-item-font-weight),
-
 		after: (
 			background-color: var(--tab-primary-item-active-bar-color-hover),
 			content: '',
@@ -100,7 +95,6 @@ $nav-underline-link: (
 	inline-item-before: (
 		margin-right: var(--tab-primary-item-inline-item-spacer-x),
 	),
-
 );
 
 $nav-underline-link-active-bar-top: (
@@ -108,7 +102,6 @@ $nav-underline-link-active-bar-top: (
 	border-left-width: var(--tab-primary-horizontal-item-border-left-width),
 	border-right-width: var(--tab-primary-horizontal-item-border-right-width),
 	border-top-width: var(--tab-primary-horizontal-item-border-bottom-width),
-
 	active-class: (
 		border-bottom-color: transparent,
 	),
@@ -118,7 +111,6 @@ $nav-underline-link-active-bar-top: (
 		top: 0,
 		width: var(--tab-primary-horizontal-item-active-bar-width),
 	),
-
 );
 
 $nav-underline-link-vertical: (
@@ -128,7 +120,6 @@ $nav-underline-link-vertical: (
 	border-top-width: var(--tab-primary-vertical-item-border-top-width),
 	padding: var(--tab-primary-vertical-item-padding-y)
 		var(--tab-primary-vertical-item-padding-x),
-
 	active-class: (
 		border-right-color: transparent,
 	),
@@ -138,7 +129,6 @@ $nav-underline-link-vertical: (
 		top: 0,
 		width: var(--tab-primary-item-active-bar-thickness),
 	),
-
 );
 
 // Nav Secondary
@@ -162,14 +152,12 @@ $nav-secondary-link: map-deep-merge(
 		line-height: var(--tab-secondary-item-line-height),
 		padding: var(--tab-secondary-horizontal-item-padding-y)
 			var(--tab-secondary-horizontal-item-padding-x),
-
 		active-class: (
 			background-color: var(--tab-secondary-item-background-color-active),
 			border-color: var(--tab-secondary-item-border-color-active),
 			box-shadow: var(--tab-secondary-item-box-shadow-active),
 			color: var(--tab-secondary-item-color-active),
 			font-weight: var(--tab-secondary-item-font-weight-active),
-
 			after: (
 				content: '',
 			),
@@ -192,7 +180,6 @@ $nav-secondary-link: map-deep-merge(
 				var(--tab-secondary-item-background-color-disabled),
 			color: var(--tab-secondary-item-color-disabled),
 			font-weight: var(--tab-secondary-item-font-weight),
-
 			after: (
 				content: none,
 			),
@@ -207,7 +194,6 @@ $nav-secondary-link: map-deep-merge(
 			border-color: var(--tab-secondary-item-border-color-hover),
 			box-shadow: var(--tab-secondary-item-box-shadow-hover),
 			color: var(--tab-secondary-item-color-hover),
-
 			after: (
 				background-color:
 					var(--tab-secondary-item-active-bar-color-hover),
@@ -245,7 +231,6 @@ $nav-secondary-link-active-bar-top: (
 		top: 0,
 		width: var(--tab-secondary-horizontal-item-active-bar-width),
 	),
-
 );
 
 $nav-secondary-link-vertical: (
@@ -255,7 +240,6 @@ $nav-secondary-link-vertical: (
 	border-top-width: var(--tab-secondary-vertical-item-border-bottom-width),
 	padding: var(--tab-secondary-vertical-item-padding-y)
 		var(--tab-secondary-vertical-item-padding-x),
-
 	active-class: (
 		border-right-color: transparent,
 	),
@@ -265,7 +249,6 @@ $nav-secondary-link-vertical: (
 		top: 0,
 		width: var(--tab-secondary-item-active-bar-thickness),
 	),
-
 );
 
 // Nav Tertiary
@@ -320,7 +303,6 @@ $nav-tertiary-link: map-deep-merge(
 			border: 0,
 			color: var(--tab-tertiary-item-color-disabled),
 			font-weight: var(--tab-tertiary-item-font-weight),
-
 			after: (
 				content: none,
 			),
@@ -336,7 +318,6 @@ $nav-tertiary-link: map-deep-merge(
 			box-shadow: var(--tab-tertiary-item-box-shadow-hover),
 			color: var(--tab-tertiary-item-color-hover),
 			font-weight: var(--tab-tertiary-item-font-weight),
-
 			after: (
 				background-color:
 					var(--tab-tertiary-item-active-bar-color-hover),
@@ -352,7 +333,6 @@ $nav-tertiary-link: map-deep-merge(
 			color: var(--tab-tertiary-item-icon-color),
 			font-size: var(--tab-tertiary-item-icon-font-size),
 			margin-y: var(--tab-tertiary-item-inline-item-spacer-y),
-
 			active-class: (
 				color: var(--tab-tertiary-item-icon-color-active),
 			),
@@ -374,7 +354,6 @@ $nav-tertiary-link-active-bar-top: (
 	border-left-width: var(--tab-tertiary-horizontal-item-border-left-width),
 	border-right-width: var(--tab-tertiary-horizontal-item-border-right-width),
 	border-top-width: var(--tab-tertiary-horizontal-item-border-bottom-width),
-
 	active-class: (
 		border-bottom-color: transparent,
 	),
@@ -382,7 +361,6 @@ $nav-tertiary-link-active-bar-top: (
 	after: (
 		top: 0,
 	),
-
 );
 
 $nav-tertiary-link-vertical: (
@@ -392,7 +370,6 @@ $nav-tertiary-link-vertical: (
 	border-top-width: var(--tab-tertiary-vertical-item-border-top-width),
 	padding: var(--tab-tertiary-vertical-item-padding-y)
 		var(--tab-tertiary-vertical-item-padding-x),
-
 	after: (
 		height: var(--tab-tertiary-vertical-item-active-bar-height),
 		top: 0,
@@ -402,7 +379,6 @@ $nav-tertiary-link-vertical: (
 	active-class: (
 		border-right-color: transparent,
 	),
-
 );
 
 // Nav Segment
@@ -427,14 +403,12 @@ $nav-segment-link: (
 	font-weight: var(--tab-segment-item-font-weight),
 	line-height: var(--tab-segment-item-line-height),
 	padding: var(--tab-segment-item-padding-x) var(--tab-segment-item-padding-y),
-
 	active-class: (
 		background-color: var(--tab-segment-item-background-color-active),
 		border-color: var(--tab-segment-item-border-color-active),
 		box-shadow: var(--tab-segment-item-box-shadow-active),
 		color: var(--tab-segment-item-color-active),
 		font-weight: var(--tab-segment-item-font-weight-active),
-
 		inline-item: (
 			color: var(--tab-segment-item-icon-color-active),
 		),
@@ -444,7 +418,6 @@ $nav-segment-link: (
 		background-color: var(--tab-segment-item-background-color-disabled),
 		border-color: var(--tab-segment-item-border-color-disabled),
 		color: var(--tab-segment-item-color-disabled),
-
 		inline-item: (
 			color: var(--tab-segment-item-icon-color-disabled),
 		),
@@ -455,7 +428,6 @@ $nav-segment-link: (
 		border-color: var(--tab-segment-item-border-color-hover),
 		box-shadow: var(--tab-segment-item-box-shadow-hover),
 		color: var(--tab-segment-item-color-hover),
-
 		inline-item: (
 			color: var(--tab-segment-item-icon-color-hover),
 		),
@@ -474,7 +446,6 @@ $nav-segment-link: (
 	inline-item-before: (
 		margin-right: var(--tab-segment-item-inline-item-spacer-x),
 	),
-
 );
 
 // Nav Vertical

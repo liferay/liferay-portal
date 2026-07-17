@@ -308,10 +308,8 @@ $cadmin-c-table: map-deep-merge(
 							padding-right: 0px,
 						),
 					),
-
 				)
 			),
-
 		table-column-start: (
 			padding-left: $cadmin-table-cell-gutters,
 		),
@@ -351,7 +349,6 @@ $cadmin-c-table: map-deep-merge(
 						border-top: calc(2 * #{$cadmin-table-border-width})
 							solid $cadmin-table-border-color,
 					),
-
 				)
 			),
 		tfoot: $cadmin-c-table-tfoot,
@@ -940,7 +937,6 @@ $cadmin-c-table-list: map-merge(
 							$cadmin-table-list-head-vertical-alignment,
 						href: $cadmin-table-list-head-link,
 					),
-
 				)
 			),
 		table-cell: $cadmin-c-table-list-cell,
@@ -952,7 +948,6 @@ $cadmin-c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
-
 				)
 			),
 		tfoot:
@@ -962,7 +957,6 @@ $cadmin-c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
-
 				)
 			),
 		caption: $cadmin-c-table-list-caption,

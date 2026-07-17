@@ -80,7 +80,6 @@ $btn: map-deep-merge(
 
 		active: (
 			box-shadow: clay-enable-shadows($btn-active-box-shadow),
-
 			focus: (
 				box-shadow: clay-enable-shadows($btn-focus-box-shadow),
 			),
@@ -484,7 +483,6 @@ $btn-primary: map-deep-merge(
 		border-color: $primary,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($primary),
-
 		hover: (
 			background-color: clay-darken($primary, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($primary, 7.5%)),
@@ -512,7 +510,6 @@ $btn-primary: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($primary, 12.5%),
 			color: color-yiq(clay-darken($primary, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -549,7 +546,6 @@ $btn-secondary: map-deep-merge(
 		border-color: $secondary,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($secondary),
-
 		hover: (
 			background-color: clay-darken($secondary, 7.5%),
 			background-image:
@@ -585,7 +581,6 @@ $btn-secondary: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($secondary, 12.5%),
 			color: color-yiq(clay-darken($secondary, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -630,7 +625,6 @@ $btn-success: map-deep-merge(
 		border-color: $success,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($success),
-
 		hover: (
 			background-color: clay-darken($success, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($success, 7.5%)),
@@ -658,7 +652,6 @@ $btn-success: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($success, 12.5%),
 			color: color-yiq(clay-darken($success, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -695,7 +688,6 @@ $btn-info: map-deep-merge(
 		border-color: $info,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($info),
-
 		hover: (
 			background-color: clay-darken($info, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($info, 7.5%)),
@@ -723,7 +715,6 @@ $btn-info: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($info, 12.5%),
 			color: color-yiq(clay-darken($info, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -754,7 +745,6 @@ $btn-warning: map-deep-merge(
 		border-color: $warning,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($warning),
-
 		hover: (
 			background-color: clay-darken($warning, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($warning, 7.5%)),
@@ -782,7 +772,6 @@ $btn-warning: map-deep-merge(
 			background-image: clay-enable-gradients(clay-darken($warning, 10%)),
 			border-color: clay-darken($warning, 12.5%),
 			color: color-yiq(clay-darken($warning, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -819,7 +808,6 @@ $btn-danger: map-deep-merge(
 		border-color: $danger,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($danger),
-
 		hover: (
 			background-color: clay-darken($danger, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($danger, 7.5%)),
@@ -847,7 +835,6 @@ $btn-danger: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($danger, 12.5%),
 			color: color-yiq(clay-darken($danger, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -884,7 +871,6 @@ $btn-light: map-deep-merge(
 		border-color: $light,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($light),
-
 		hover: (
 			background-color: clay-darken($light, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($light, 7.5%)),
@@ -912,7 +898,6 @@ $btn-light: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($light, 12.5%),
 			color: color-yiq(clay-darken($light, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -943,7 +928,6 @@ $btn-dark: map-deep-merge(
 		border-color: $dark,
 		box-shadow: clay-enable-shadows($btn-box-shadow),
 		color: color-yiq($dark),
-
 		hover: (
 			background-color: clay-darken($dark, 7.5%),
 			background-image: clay-enable-gradients(clay-darken($dark, 7.5%)),
@@ -971,7 +955,6 @@ $btn-dark: map-deep-merge(
 			background-image: clay-enable-gradients(none),
 			border-color: clay-darken($dark, 12.5%),
 			color: color-yiq(clay-darken($dark, 10%)),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1469,7 +1452,6 @@ $btn-outline-primary: map-deep-merge(
 			background-color: $primary,
 			border-color: $primary,
 			color: color-yiq($primary),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1508,7 +1490,6 @@ $btn-outline-secondary: map-deep-merge(
 			background-color: $secondary,
 			border-color: $secondary,
 			color: color-yiq($secondary),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1547,7 +1528,6 @@ $btn-outline-success: map-deep-merge(
 			background-color: $success,
 			border-color: $success,
 			color: color-yiq($success),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1586,7 +1566,6 @@ $btn-outline-info: map-deep-merge(
 			background-color: $info,
 			border-color: $info,
 			color: color-yiq($info),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1625,7 +1604,6 @@ $btn-outline-warning: map-deep-merge(
 			background-color: $warning,
 			border-color: $warning,
 			color: color-yiq($warning),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1664,7 +1642,6 @@ $btn-outline-danger: map-deep-merge(
 			background-color: $danger,
 			border-color: $danger,
 			color: color-yiq($danger),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1703,7 +1680,6 @@ $btn-outline-light: map-deep-merge(
 			background-color: $light,
 			border-color: $light,
 			color: color-yiq($light),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
@@ -1742,7 +1718,6 @@ $btn-outline-dark: map-deep-merge(
 			background-color: $dark,
 			border-color: $dark,
 			color: color-yiq($dark),
-
 			focus: (
 				box-shadow:
 					clay-enable-shadows(

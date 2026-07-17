@@ -16,13 +16,10 @@ $lfr-page-layouts-card-after-highlight: map-merge(
 		position: map-get($card-interactive-after-highlight, position),
 		right: map-get($card-interactive-after-highlight, right),
 		transition: map-get($card-interactive-after-highlight, transition),
-
 		hover-bg: map-get($card-interactive-primary-after-highlight, hover-bg),
 		hover-height: map-get($card-interactive-after-highlight, hover-height),
-
 		focus-bg: map-get($card-interactive-primary-after-highlight, focus-bg),
 		focus-height: map-get($card-interactive-after-highlight, focus-height),
-
 		active-bg: map-get($card-interactive-primary-after-highlight, active-bg),
 		active-height: map-get($card-interactive-after-highlight, active-height),
 	),
@@ -37,17 +34,13 @@ $lfr-page-layouts-card: map-merge(
 		cursor: map-get($card-interactive, cursor),
 		outline: map-get($card-interactive, outline),
 		transition: map-get($card-interactive, transition),
-
 		hover-bg: map-get($card-interactive, hover-bg),
 		hover-box-shadow: map-get($card-interactive-primary, hover-box-shadow),
 		hover-text-decoration: map-get($card-interactive, hover-text-decoration),
-
 		focus-bg: map-get($card-interactive-primary, focus-bg),
 		focus-border-color: map-get($card-interactive, focus-border-color),
 		focus-box-shadow: map-get($card-interactive, focus-box-shadow),
-
 		active-bg: map-get($card-interactive-primary, active-bg),
-
 		after-highlight: $lfr-page-layouts-card-after-highlight,
 	),
 	$lfr-page-layouts-card

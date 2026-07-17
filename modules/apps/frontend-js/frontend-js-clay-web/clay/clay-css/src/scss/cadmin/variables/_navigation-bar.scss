@@ -420,7 +420,6 @@ $cadmin-navigation-bar-secondary: map-deep-merge(
 
 		navbar-brand: (
 			color: unquote('hsl(from #{$cadmin-white} h s l / 0.9)'),
-
 			hover: (
 				color: unquote('hsl(from #{$cadmin-white} h s l / 0.9)'),
 			),

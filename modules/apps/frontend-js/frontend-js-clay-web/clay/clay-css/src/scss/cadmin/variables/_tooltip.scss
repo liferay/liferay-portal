@@ -275,7 +275,6 @@ $cadmin-tooltip-top: map-deep-merge(
 			bottom: 0px,
 			left: 50%,
 			margin-left: calc(#{$cadmin-tooltip-arrow-width} * -0.5),
-
 			before: (
 				border-top-color: $cadmin-tooltip-arrow-color,
 				border-width: $cadmin-tooltip-arrow-height

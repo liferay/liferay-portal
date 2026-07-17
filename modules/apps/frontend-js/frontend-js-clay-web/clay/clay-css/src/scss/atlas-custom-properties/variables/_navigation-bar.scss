@@ -8,7 +8,6 @@ $navigation-bar-size: map-deep-merge(
 		height: var(--navigation-bar-height, 48px),
 		padding-x: var(--navigation-bar-padding-x, 0px),
 		padding-y: var(--navigation-bar-padding-y, 0px),
-
 		link-padding-x: var(--navigation-bar-nav-link-link-padding-x, 16px),
 		nav-item-dropdown-margin-top: 0,
 
@@ -304,7 +303,6 @@ $navigation-bar-light: map-deep-merge(
 						--navigation-bar-light-nav-link-font-weight,
 						$font-weight-semi-bold
 					),
-
 				hover: (
 					color: $gray-900,
 				),
@@ -409,7 +407,6 @@ $navigation-bar-secondary: map-deep-merge(
 
 		navbar-brand: (
 			color: unquote('hsl(from #{$white} h s l / 0.9)'),
-
 			hover: (
 				color: unquote('hsl(from #{$white} h s l / 0.9)'),
 			),

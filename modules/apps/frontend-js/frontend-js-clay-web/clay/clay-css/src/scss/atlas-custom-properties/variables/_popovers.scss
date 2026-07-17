@@ -411,7 +411,6 @@ $clay-popover-bottom: map-deep-merge(
 			margin: 0 0 0 calc(#{$popover-arrow-width} * -0.5),
 			top:
 				calc((#{$popover-arrow-height} + #{$popover-border-width}) * -1),
-
 			before: (
 				border-bottom-color: $popover-arrow-outer-color,
 				border-width: 0 calc(#{$popover-arrow-width} * 0.5)

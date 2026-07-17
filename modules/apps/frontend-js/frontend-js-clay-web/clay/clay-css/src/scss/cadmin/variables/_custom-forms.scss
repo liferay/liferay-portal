@@ -12,7 +12,6 @@ $cadmin-form-file: map-deep-merge(
 		display: flex,
 		position: relative,
 		transition: clay-enable-transitions($cadmin-input-transition),
-
 		focus-within: (
 			background-color: $cadmin-input-focus-bg,
 			box-shadow: $cadmin-input-focus-box-shadow,

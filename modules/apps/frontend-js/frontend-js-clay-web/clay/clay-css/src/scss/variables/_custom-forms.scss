@@ -16,7 +16,6 @@ $form-file: map-deep-merge(
 		display: flex,
 		position: relative,
 		transition: clay-enable-transitions($input-transition),
-
 		focus-within: (
 			background-color: $input-focus-bg,
 			box-shadow: $input-focus-box-shadow,

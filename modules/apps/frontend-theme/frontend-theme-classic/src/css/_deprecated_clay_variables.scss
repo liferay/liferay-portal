@@ -273,11 +273,8 @@ $grid-row-columns: 6 !default;
 
 $container-max-widths: (
 	sm: var(--container-max-sm, 540px),
-
 	md: var(--container-max-md, 720px),
-
 	lg: var(--container-max-lg, 960px),
-
 	xl: var(--container-max-xl, 1248px),
 ) !default;
 
@@ -542,7 +539,6 @@ $btn-primary: map-deep-merge(
 		border-color: var(--btn-primary-border-color, $primary),
 		box-shadow: $c-unset,
 		color: var(--btn-primary-color, color-yiq($primary)),
-
 		disabled: (
 			background-image: $c-unset,
 			border-color: $c-unset,
@@ -614,7 +610,6 @@ $btn-secondary: map-deep-merge(
 		border-color: var(--btn-secondary-border-color, $secondary-l2),
 		box-shadow: $c-unset,
 		color: var(--btn-secondary-color, $secondary),
-
 		disabled: (
 			background-image: $c-unset,
 		),
@@ -696,7 +691,6 @@ $btn-link: map-deep-merge(
 		border-radius: 1px,
 		box-shadow: $c-unset,
 		color: var(--btn-link-color, $link-color),
-
 		disabled: (
 			box-shadow: none,
 			color: $c-unset,

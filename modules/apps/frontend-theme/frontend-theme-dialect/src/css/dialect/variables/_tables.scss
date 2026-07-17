@@ -31,12 +31,10 @@ $table-title: (
 $table-title-link: (
 	color: var(--table-title-link-color),
 	text-decoration: var(--table-title-link-text-decoration),
-
 	hover: (
 		color: var(--table-title-link-color-hover),
 		text-decoration: var(--table-title-link-text-decoration-hover),
 	),
-
 );
 
 // Table Head
@@ -113,7 +111,6 @@ $table-spaced: (
 			clay-enable-rounded(var(--table-spaced-row-border-radius)),
 		box-shadow: var(--table-spaced-row-box-shadow),
 	),
-
 );
 
 $table-spaced-cell: (

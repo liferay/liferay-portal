@@ -55,7 +55,6 @@ $navigation-bar-light: map-deep-merge(
 						$navbar-light-color,
 						rgba($black, 0.5)
 					),
-
 				hover: (
 					color:
 						if(
@@ -98,7 +97,6 @@ $navigation-bar-light: map-deep-merge(
 										$navbar-light-color,
 										rgba($black, 0.5)
 									),
-
 								hover: (
 									color:
 										if(
@@ -169,7 +167,6 @@ $navigation-bar-secondary: map-deep-merge(
 		navbar-nav: (
 			nav-link: (
 				color: rgba(255, 255, 255, 0.65),
-
 				hover: (
 					color: rgba(255, 255, 255, 0.9),
 				),
@@ -187,7 +184,6 @@ $navigation-bar-secondary: map-deep-merge(
 
 		navbar-brand: (
 			color: rgba(255, 255, 255, 0.9),
-
 			hover: (
 				color: rgba(255, 255, 255, 0.9),
 			),
@@ -200,7 +196,6 @@ $navigation-bar-secondary: map-deep-merge(
 						navbar-nav: (
 							dropdown-item: (
 								color: rgba(255, 255, 255, 0.65),
-
 								hover: (
 									color: rgba(255, 255, 255, 0.9),
 								),

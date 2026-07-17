@@ -304,7 +304,6 @@ $pagination-link: map-deep-merge(
 				),
 			letter-spacing:
 				var(--pagination-link-active-class-letter-spacing, 0),
-
 			before: (
 				background-color:
 					var(
@@ -322,7 +321,6 @@ $pagination-link: map-deep-merge(
 			font-weight:
 				var(--pagination-link-show-font-weight, $font-weight-semi-bold),
 			letter-spacing: var(--pagination-link-show-letter-spacing, 0),
-
 			before: (
 				background-color:
 					var(
@@ -582,7 +580,6 @@ $pagination-items-per-page-link-disabled: map-deep-merge(
 				--pagination-items-per-page-link-disabled-letter-spacing,
 				0.033em
 			),
-
 		before: (
 			content: none,
 		),
@@ -691,7 +688,6 @@ $pagination-items-per-page-link: map-deep-merge(
 		disabled: $pagination-items-per-page-link-disabled,
 
 		show: map-get($pagination-link, show),
-
 		lexicon-icon: (
 			margin-left: $pagination-items-per-page-lexicon-icon-margin-left,
 			margin-top: $pagination-items-per-page-lexicon-icon-margin-top,
@@ -846,7 +842,6 @@ $pagination-sm: map-deep-merge(
 					--pagination-sm-pagination-items-per-page-page-link-border-radius,
 					clay-enable-rounded($pagination-link-border-radius-sm)
 				),
-
 			link: (
 				font-size:
 					var(
@@ -1001,7 +996,6 @@ $pagination-lg: map-deep-merge(
 					--pagination-lg-pagination-items-per-page-page-link-border-radius,
 					clay-enable-rounded($pagination-link-border-radius-lg)
 				),
-
 			link: (
 				font-size:
 					var(

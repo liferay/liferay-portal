@@ -96,7 +96,6 @@ $cadmin-management-bar-base: map-deep-merge(
 				navbar-expand-md: (
 					min-height:
 						map-get($cadmin-management-bar-size, min-height-mobile),
-
 					navbar-collapse-absolute: (
 						navbar-collapse: (
 							border-color: transparent,
@@ -208,7 +207,6 @@ $cadmin-management-bar-base: map-deep-merge(
 										) * 0.5
 								)
 							),
-
 						form-control: (
 							height:
 								map-get(
@@ -239,7 +237,6 @@ $cadmin-management-bar-base: map-deep-merge(
 							map-get($cadmin-management-bar-size, link-padding-x),
 						padding-right:
 							map-get($cadmin-management-bar-size, link-padding-x),
-
 						container: (
 							padding-left: 0px,
 							padding-right: 0px,

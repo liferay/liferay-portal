@@ -280,7 +280,6 @@ $table-action-link: map-deep-merge(
 		transition: $component-transition,
 		vertical-align: middle,
 		width: var(--table-action-link-width, 32px),
-
 		hover: (
 			background-color:
 				var(
@@ -358,10 +357,8 @@ $c-table: map-deep-merge(
 							padding-right: 0rem,
 						),
 					),
-
 				)
 			),
-
 		table-column-start: (
 			padding-left: $table-cell-gutters,
 		),
@@ -400,7 +397,6 @@ $c-table: map-deep-merge(
 						border-top: calc(2 * #{$table-border-width}) solid
 							$table-border-color,
 					),
-
 				)
 			),
 		tfoot: $c-table-tfoot,
@@ -728,7 +724,6 @@ $c-table-sort: map-deep-merge(
 			table-cell: (
 				cursor: pointer,
 				transition: clay-enable-transitions($component-transition),
-
 				hover: (
 					background-color: $primary-l3,
 					color: $gray-900,
@@ -1028,7 +1023,6 @@ $table-list-action-link: map-deep-merge(
 		transition: $component-transition,
 		vertical-align: middle,
 		width: var(--table-list-action-link-width, 32px),
-
 		hover: (
 			background-color:
 				var(
@@ -1095,7 +1089,6 @@ $c-table-list: map-merge(
 
 						href: $table-list-head-link,
 					),
-
 				)
 			),
 		table-cell: $c-table-list-cell,
@@ -1107,7 +1100,6 @@ $c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
-
 				)
 			),
 		tfoot:
@@ -1117,7 +1109,6 @@ $c-table-list: map-merge(
 					table-cell: (
 						vertical-align: middle,
 					),
-
 				)
 			),
 		caption: $c-table-list-caption,

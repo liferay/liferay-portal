@@ -36,7 +36,6 @@ $btn: map-deep-merge(
 				border-color 0.15s ease-in-out,
 				box-shadow 0.15s ease-in-out
 			),
-
 		focus: (
 			box-shadow:
 				var(
@@ -62,7 +61,6 @@ $btn-primary: map-deep-merge(
 		border-color: var(--btn-primary-border-color, transparent),
 		box-shadow: var(--btn-primary-box-shadow),
 		color: var(--btn-primary-color, $white),
-
 		hover: (
 			background-color:
 				var(--btn-primary-hover-background-color, $primary-d1),
@@ -88,7 +86,6 @@ $btn-primary: map-deep-merge(
 			border-color: var(--btn-primary-active-border-color, transparent),
 			box-shadow: var(--btn-primary-active-box-shadow),
 			color: var(--btn-primary-active-color, $white),
-
 			focus: (
 				box-shadow: var(--btn-primary-active-focus-box-shadow),
 			),
@@ -114,7 +111,6 @@ $btn-secondary: map-deep-merge(
 		border-color: var(--btn-secondary-border-color, $secondary-l0),
 		box-shadow: var(--btn-secondary-box-shadow),
 		color: var(--btn-secondary-color, $secondary),
-
 		hover: (
 			background-color:
 				var(--btn-secondary-hover-background-color, $gray-100),
@@ -141,7 +137,6 @@ $btn-secondary: map-deep-merge(
 				var(--btn-secondary-active-border-color, $secondary-l0),
 			box-shadow: var(--btn-secondary-active-box-shadow),
 			color: var(--btn-secondary-active-color, $gray-900),
-
 			focus: (
 				box-shadow: var(--btn-secondary-active-focus-box-shadow),
 			),

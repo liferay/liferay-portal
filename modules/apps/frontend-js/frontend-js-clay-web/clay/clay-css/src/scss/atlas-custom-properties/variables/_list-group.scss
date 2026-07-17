@@ -77,7 +77,6 @@ $list-group-item-flex: map-deep-merge(
 				--list-group-item-flex-padding-right,
 				calc(#{$list-group-item-padding-x} * 0.5)
 			),
-
 		autofit-col: (
 			justify-content:
 				var(
@@ -154,7 +153,6 @@ $list-group-title-link: map-deep-merge(
 				box-shadow 0.15s ease-in-out
 			),
 		max-width: var(--list-group-title-link-max-width, 100%),
-
 		hover: (
 			color: var(--list-group-title-link-hover-color, $gray-900),
 		),
@@ -208,7 +206,6 @@ $list-group-subtitle-link: map-deep-merge(
 				--list-group-subtitle-link-transition,
 				box-shadow 0.15s ease-in-out
 			),
-
 		hover: (
 			color: var(--list-group-subtitle-link-hover-color, $gray-900),
 		),
@@ -230,7 +227,6 @@ $list-group-subtitle: map-deep-merge(
 	(
 		color: var(--list-group-subtitle-color, $gray-600),
 		margin-bottom: var(--list-group-subtitle-margin-bottom, 0),
-
 		href: $list-group-subtitle-link,
 	),
 	$list-group-subtitle
@@ -247,7 +243,6 @@ $list-group-text-link: map-deep-merge(
 		max-width: 100%,
 		transition:
 			var(--list-group-text-link-transition, box-shadow 0.15s ease-in-out),
-
 		hover: (
 			color: var(--list-group-text-link-hover-color, $gray-900),
 		),
@@ -290,7 +285,6 @@ $list-group-subtext-link: map-deep-merge(
 				--list-group-subtext-link-transition,
 				box-shadow 0.15s ease-in-out
 			),
-
 		hover: (
 			color: var(--list-group-subtext-link-hover-color, $gray-900),
 		),
@@ -313,7 +307,6 @@ $list-group-subtext: map-deep-merge(
 		color: var(--list-group-subtext-color, $gray-600),
 		margin-bottom: var(--list-group-subtext-margin-bottom, 0),
 		margin-top: var(--list-group-subtext-margin-top, 8px),
-
 		href: $list-group-subtext-link,
 	),
 	$list-group-subtext

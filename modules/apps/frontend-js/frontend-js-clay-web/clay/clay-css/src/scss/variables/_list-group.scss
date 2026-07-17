@@ -40,7 +40,6 @@ $list-group-item-flex: map-deep-merge(
 		margin-bottom: calc(#{$list-group-border-width} * -1),
 		padding-left: calc(#{$list-group-item-padding-x} * 0.5),
 		padding-right: calc(#{$list-group-item-padding-x} * 0.5),
-
 		autofit-col: (
 			justify-content: $list-group-item-flex-align-items,
 			padding-left: calc(#{$list-group-item-padding-x} * 0.5),
@@ -228,7 +227,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'primary': (
 			background-color: theme-color-level(primary, -9),
 			color: theme-color-level(primary, 6),
-
 			hover: (
 				background-color:
 					clay-darken(theme-color-level(primary, -9), 5%),
@@ -245,7 +243,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'secondary': (
 			background-color: theme-color-level(secondary, -9),
 			color: theme-color-level(secondary, 6),
-
 			hover: (
 				background-color:
 					clay-darken(theme-color-level(secondary, -9), 5%),
@@ -262,7 +259,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'success': (
 			background-color: theme-color-level(success, -9),
 			color: theme-color-level(success, 6),
-
 			hover: (
 				background-color:
 					clay-darken(theme-color-level(success, -9), 5%),
@@ -279,7 +275,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'info': (
 			background-color: theme-color-level(info, -9),
 			color: theme-color-level(info, 6),
-
 			hover: (
 				background-color: clay-darken(theme-color-level(info, -9), 5%),
 				color: theme-color-level(info, 6),
@@ -295,7 +290,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'warning': (
 			background-color: theme-color-level(warning, -9),
 			color: theme-color-level(warning, 6),
-
 			hover: (
 				background-color:
 					clay-darken(theme-color-level(warning, -9), 5%),
@@ -312,7 +306,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'danger': (
 			background-color: theme-color-level(danger, -9),
 			color: theme-color-level(danger, 6),
-
 			hover: (
 				background-color: clay-darken(theme-color-level(danger, -9), 5%),
 				color: theme-color-level(danger, 6),
@@ -328,7 +321,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'light': (
 			background-color: theme-color-level(light, -9),
 			color: theme-color-level(light, 6),
-
 			hover: (
 				background-color: clay-darken(theme-color-level(light, -9), 5%),
 				color: theme-color-level(light, 6),
@@ -344,7 +336,6 @@ $list-group-item-theme-colors: map-deep-merge(
 		'dark': (
 			background-color: theme-color-level(dark, -9),
 			color: theme-color-level(dark, 6),
-
 			hover: (
 				background-color: clay-darken(theme-color-level(dark, -9), 5%),
 				color: theme-color-level(dark, 6),

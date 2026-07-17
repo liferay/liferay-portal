@@ -442,7 +442,6 @@ $input-readonly: map-deep-merge(
 		color: var(--input-readonly-color, $input-readonly-color),
 		cursor: $input-readonly-cursor,
 		opacity: var(--input-readonly-opacity, 1),
-
 		focus: (
 			background-color:
 				var(
@@ -905,7 +904,6 @@ $input-danger: map-deep-merge(
 			var(--input-danger-border-color, $input-danger-border-color),
 		box-shadow: var(--input-danger-box-shadow, $input-danger-box-shadow),
 		color: var(--input-danger-color, $input-danger-color),
-
 		focus: (
 			background-color:
 				var(
@@ -942,7 +940,6 @@ $input-danger-readonly: map-deep-merge(
 	(
 		background-color: map-get($input-readonly, background-color),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),
@@ -1009,7 +1006,6 @@ $has-error: map-deep-merge(
 				),
 				$input-danger
 			),
-
 		form-feedback-item: (
 			color: $form-feedback-invalid-color,
 		),
@@ -1032,7 +1028,6 @@ $has-error: map-deep-merge(
 						$input-danger-focus-box-shadow,
 						$input-danger-box-shadow
 					),
-
 				input-group-inset: (
 					background-color:
 						setter($input-danger-focus-bg, $input-danger-bg),
@@ -1041,7 +1036,6 @@ $has-error: map-deep-merge(
 							$input-danger-focus-border-color,
 							$input-danger-border-color
 						),
-
 					input-group-inset-item: (
 						background-color:
 							setter($input-danger-focus-bg, $input-danger-bg),
@@ -1101,7 +1095,6 @@ $input-warning: map-deep-merge(
 			var(--input-warning-border-color, $input-warning-border-color),
 		box-shadow: var(--input-warning-box-shadow, $input-warning-box-shadow),
 		color: var(--input-warning-color, $input-warning-color),
-
 		focus: (
 			background-color:
 				var(
@@ -1138,7 +1131,6 @@ $input-warning-readonly: map-deep-merge(
 	(
 		background-color: map-get($input-readonly, background-color),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),
@@ -1205,7 +1197,6 @@ $has-warning: map-deep-merge(
 				),
 				$input-warning
 			),
-
 		form-feedback-item: (
 			color: $form-feedback-warning-color,
 		),
@@ -1228,7 +1219,6 @@ $has-warning: map-deep-merge(
 						$input-warning-focus-box-shadow,
 						$input-warning-box-shadow
 					),
-
 				input-group-inset: (
 					background-color:
 						setter($input-warning-focus-bg, $input-warning-bg),
@@ -1237,7 +1227,6 @@ $has-warning: map-deep-merge(
 							$input-warning-focus-border-color,
 							$input-warning-border-color
 						),
-
 					input-group-inset-item: (
 						background-color:
 							setter($input-warning-focus-bg, $input-warning-bg),
@@ -1297,7 +1286,6 @@ $input-success: map-deep-merge(
 			var(--input-success-border-color, $input-success-border-color),
 		box-shadow: var(--input-success-box-shadow, $input-success-box-shadow),
 		color: var(--input-success-color, $input-success-color),
-
 		focus: (
 			background-color:
 				var(
@@ -1334,7 +1322,6 @@ $input-success-readonly: map-deep-merge(
 	(
 		background-color: map-get($input-readonly, background-color),
 		border-color: map-get($input-readonly, border-color),
-
 		focus: (
 			border-color: $input-focus-border-color,
 		),
@@ -1401,7 +1388,6 @@ $has-success: map-deep-merge(
 				),
 				$input-success
 			),
-
 		form-feedback-item: (
 			color: $form-feedback-valid-color,
 		),
@@ -1424,7 +1410,6 @@ $has-success: map-deep-merge(
 						$input-success-focus-box-shadow,
 						$input-success-box-shadow
 					),
-
 				input-group-inset: (
 					background-color:
 						setter($input-success-focus-bg, $input-success-bg),
@@ -1433,7 +1418,6 @@ $has-success: map-deep-merge(
 							$input-success-focus-border-color,
 							$input-success-border-color
 						),
-
 					input-group-inset-item: (
 						background-color:
 							setter($input-success-focus-bg, $input-success-bg),
@@ -1525,7 +1509,6 @@ $input-select: map-deep-merge(
 		padding-right:
 			var(--input-select-padding-right, $input-select-padding-right),
 		padding-top: var(--input-select-padding-top, $input-select-padding-top),
-
 		focus: (
 			background-color:
 				var(
@@ -1545,7 +1528,6 @@ $input-select: map-deep-merge(
 					--input-select-disabled-background-image,
 					$input-select-icon-disabled
 				),
-
 			option: (
 				cursor: $disabled-cursor,
 			),
@@ -1577,7 +1559,6 @@ $form-control-select: map-deep-merge(
 					color: inherit,
 					text-decoration: none,
 				),
-
 			)
 		)
 	),
@@ -1907,7 +1888,6 @@ $input-group-item-focusable: map-deep-merge(
 	(
 		border-radius: clay-enable-rounded($input-border-radius),
 		transition: clay-enable-transitions($input-transition),
-
 		focus-within: (
 			background-color: $input-focus-bg,
 			box-shadow: $input-focus-box-shadow,
