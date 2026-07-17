@@ -116,8 +116,8 @@ public class OAuth2JWKValidatorUtilTest {
 
 	@Test
 	public void testValidateJWKWithUnsupportedKeyType() {
-		_testValidateJWKWithUnsupportedKeyType("oct");
 		_testValidateJWKWithUnsupportedKeyType(RandomTestUtil.randomString());
+		_testValidateJWKWithUnsupportedKeyType("oct");
 	}
 
 	@Test
