@@ -147,6 +147,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Julio Camarero
  * @author Eduardo García
  */
+@FeatureFlag("LPD-82107")
 @RunWith(Arquillian.class)
 @Sync
 public class LayoutSetPrototypePropagationTest
