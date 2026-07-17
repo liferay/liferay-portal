@@ -442,19 +442,21 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			designLibraryGroup.getGroupId(), themeId,
 			RandomTestUtil.randomString());
 
-		Layout typePortletLayout = LayoutTestUtil.addTypePortletLayout(
-			testGroup);
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		Layout basicLayoutPageTemplateEntryLayout =
+			LayoutPageTemplateEntryTestUtil.
+				getBasicLayoutPageTemplateEntryLayout(serviceContext);
 
 		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
 			testGroup.getGroupId(), themeId, RandomTestUtil.randomString());
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			typePortletLayout.getExternalReferenceCode(), siteStyleBookEntry);
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				testGroup.getGroupId(), TestPropsValues.getUserId());
+			basicLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
+			siteStyleBookEntry);
 
 		Layout displayPageLayoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryTestUtil.
@@ -463,15 +465,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
 			displayPageLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
-			siteStyleBookEntry);
-
-		Layout masterLayoutPageTemplateEntryLayout =
-			LayoutPageTemplateEntryTestUtil.
-				getMasterLayoutPageTemplateEntryLayout(serviceContext);
-
-		_testGetSitePageSpecificationStyleBooksPageWithLayout(
-			designLibraryStyleBookEntry,
-			masterLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
 			siteStyleBookEntry);
 
 		Layout layoutUtilityPageEntryLayout =
@@ -483,14 +476,21 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			layoutUtilityPageEntryLayout.getExternalReferenceCode(),
 			siteStyleBookEntry);
 
-		Layout basicLayoutPageTemplateEntryLayout =
+		Layout masterLayoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryTestUtil.
-				getBasicLayoutPageTemplateEntryLayout(serviceContext);
+				getMasterLayoutPageTemplateEntryLayout(serviceContext);
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			basicLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
+			masterLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
 			siteStyleBookEntry);
+
+		Layout typePortletLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup);
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			designLibraryStyleBookEntry,
+			typePortletLayout.getExternalReferenceCode(), siteStyleBookEntry);
 
 		LayoutPageTemplateEntry widgetPageLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryTestUtil.
