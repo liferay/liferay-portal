@@ -205,12 +205,12 @@ public class AssetAutoTaggerConfigurationFactoryImpl
 				UnicodeProperties typeSettingsUnicodeProperties =
 					_group.getTypeSettingsProperties();
 
-				if (typeSettingsUnicodeProperties.containsKey(
-						"assetAutoTaggingEnabled")) {
+				String assetAutoTaggingEnabledString =
+					typeSettingsUnicodeProperties.get(
+						"assetAutoTaggingEnabled");
 
-					return GetterUtil.getBoolean(
-						typeSettingsUnicodeProperties.get(
-							"assetAutoTaggingEnabled"));
+				if (assetAutoTaggingEnabledString != null) {
+					return GetterUtil.getBoolean(assetAutoTaggingEnabledString);
 				}
 
 				AssetAutoTaggerGroupConfiguration
