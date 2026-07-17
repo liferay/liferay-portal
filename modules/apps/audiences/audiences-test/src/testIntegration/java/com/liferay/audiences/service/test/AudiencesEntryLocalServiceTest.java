@@ -62,7 +62,9 @@ public class AudiencesEntryLocalServiceTest {
 			StringBundler.concat(
 				"{\"conjunction\": \"AND\", \"rules\": [{\"attribute\": ",
 				"\"url\", \"operator\": \"eq\", \"value\": \"",
-				RandomTestUtil.randomString(), "\"}]}"),
+				RandomTestUtil.randomString(),
+				"\"}, {\"attribute\": \"segments\", \"operator\": \"eq\", ",
+				"\"value\": \"", RandomTestUtil.randomString(), "\"}]}"),
 			name);
 
 		Assert.assertEquals(
