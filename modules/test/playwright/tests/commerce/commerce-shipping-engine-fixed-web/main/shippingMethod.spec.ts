@@ -82,8 +82,10 @@ test(
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,
 				name: {en_US: 'Product2'},
-				shippingConfiguration: {
-					shippable: false,
+				productConfiguration: {
+					productShippingConfiguration: {
+						shippable: false,
+					},
 				},
 			});
 
