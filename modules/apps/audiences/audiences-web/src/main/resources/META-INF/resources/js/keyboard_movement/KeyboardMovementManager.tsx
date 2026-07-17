@@ -17,6 +17,7 @@ import {
 } from '../constants/keyboardCodes';
 import {Action} from '../reducer';
 import {Group} from '../types';
+import {DropZone} from '../util/getDropPosition';
 import {MoveTarget, getMoveTargets} from '../util/getMoveTargets';
 import {
 	MovementSource,
@@ -169,7 +170,7 @@ export default function KeyboardMovementManager({
 			setText(
 				sub(Liferay.Language.get('x-placed-on-x-of-x'), [
 					source.name,
-					moveTarget.position,
+					getPositionLabel(moveTarget.position),
 					namesById[moveTarget.nodeId] ?? '',
 				])
 			);
@@ -188,7 +189,7 @@ export default function KeyboardMovementManager({
 
 			setText(
 				sub(Liferay.Language.get('targeting-x-of-x'), [
-					moveTarget.position,
+					getPositionLabel(moveTarget.position),
 					namesById[moveTarget.nodeId] ?? '',
 				])
 			);
@@ -226,6 +227,18 @@ export default function KeyboardMovementManager({
 	});
 
 	return null;
+}
+
+function getPositionLabel(position: DropZone): string {
+	if (position === 'group') {
+		return Liferay.Language.get('group');
+	}
+
+	if (position === DROP_POSITIONS.top) {
+		return Liferay.Language.get('top');
+	}
+
+	return Liferay.Language.get('bottom');
 }
 
 function getInitialTarget(
