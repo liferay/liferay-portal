@@ -578,15 +578,11 @@ public class PatcherScanUtil {
 
 			foundPatcherFixTickets.removeAll(missingTickets);
 
-			if (patcherFixPackFixNamePatcherFixPackFixMap.containsKey(
-					StringUtil.merge(
-						foundPatcherFixTickets, StringPool.COMMA))) {
+			PatcherFix patcherFixPackFix =
+				patcherFixPackFixNamePatcherFixPackFixMap.get(
+					StringUtil.merge(foundPatcherFixTickets, StringPool.COMMA));
 
-				PatcherFix patcherFixPackFix =
-					patcherFixPackFixNamePatcherFixPackFixMap.get(
-						StringUtil.merge(
-							foundPatcherFixTickets, StringPool.COMMA));
-
+			if (patcherFixPackFix != null) {
 				patcherFixPackFixIds.remove(
 					patcherFixPackFix.getPatcherFixId());
 

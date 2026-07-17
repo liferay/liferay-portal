@@ -182,18 +182,10 @@ public class PoshiReportGenerator {
 		if ((element instanceof ExecutePoshiElement) &&
 			Validator.isNotNull(macroName)) {
 
-			Set<Element> elements = new HashSet<>();
+			Set<Element> elements = _executeMacroElementMap.computeIfAbsent(
+				macroName, key -> new HashSet<>());
 
-			if (_executeMacroElementMap.containsKey(macroName)) {
-				elements = _executeMacroElementMap.get(macroName);
-
-				elements.add(element);
-			}
-			else {
-				elements.add(element);
-
-				_executeMacroElementMap.put(macroName, elements);
-			}
+			elements.add(element);
 		}
 
 		List<Element> childElements = element.elements();

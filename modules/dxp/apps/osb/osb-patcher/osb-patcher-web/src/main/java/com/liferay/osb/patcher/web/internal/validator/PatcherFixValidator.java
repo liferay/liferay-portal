@@ -396,25 +396,13 @@ public class PatcherFixValidator {
 				continue;
 			}
 
-			Set<String> patcherFixComponentNameDependencies = new HashSet<>();
+			Set<String> patcherFixComponentNameDependencies =
+				patcherFixComponentDependencies.getOrDefault(
+					patcherFixComponent.getName(), Collections.emptySet());
 
-			if (patcherFixComponentDependencies.containsKey(
-					patcherFixComponent.getName())) {
-
-				patcherFixComponentNameDependencies =
-					patcherFixComponentDependencies.get(
-						patcherFixComponent.getName());
-			}
-
-			Set<String> requestComponentNameDependencies = new HashSet<>();
-
-			if (requestComponentDependencies.containsKey(
-					patcherFixComponent.getName())) {
-
-				requestComponentNameDependencies =
-					requestComponentDependencies.get(
-						patcherFixComponent.getName());
-			}
+			Set<String> requestComponentNameDependencies =
+				requestComponentDependencies.getOrDefault(
+					patcherFixComponent.getName(), Collections.emptySet());
 
 			if (!requestComponentNameDependencies.equals(
 					patcherFixComponentNameDependencies)) {

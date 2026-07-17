@@ -227,9 +227,9 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 		else {
 			String fqnToPath = Descriptors.fqnToPath(content);
 
-			if (resourceMap.containsKey(fqnToPath)) {
-				Resource resource = resourceMap.get(fqnToPath);
+			Resource resource = resourceMap.get(fqnToPath);
 
+			if (resource != null) {
 				addResourceApiUses(analyzer, content, resource);
 			}
 		}

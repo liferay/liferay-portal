@@ -39,9 +39,11 @@ public class RuntimeVariables {
 			while (matcher.find()) {
 				String variableKey = matcher.group(1);
 
-				if (context.containsKey(variableKey)) {
+				String variableValue = context.get(variableKey);
+
+				if (variableValue != null) {
 					locatorValue = locatorValue.replaceFirst(
-						regex, context.get(variableKey));
+						regex, variableValue);
 				}
 				else {
 					throw new Exception(

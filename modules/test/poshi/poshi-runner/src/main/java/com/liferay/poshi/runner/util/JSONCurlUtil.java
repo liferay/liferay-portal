@@ -339,11 +339,7 @@ public class JSONCurlUtil {
 		}
 
 		public String getRequestOptionType() {
-			if (_customOptionsMap.containsKey(_optionType)) {
-				return _customOptionsMap.get(_optionType);
-			}
-
-			return _optionType;
+			return _customOptionsMap.getOrDefault(_optionType, _optionType);
 		}
 
 		public String toString() {

@@ -793,11 +793,8 @@ public class TestIntegrationPlugin implements Plugin<Project> {
 	private int _updateStartedAppServerStopCounters(
 		File binDir, boolean increment) {
 
-		int originalCounter = 0;
-
-		if (_startedAppServerStopCounters.containsKey(binDir)) {
-			originalCounter = _startedAppServerStopCounters.get(binDir);
-		}
+		int originalCounter = _startedAppServerStopCounters.getOrDefault(
+			binDir, 0);
 
 		int counter = originalCounter;
 

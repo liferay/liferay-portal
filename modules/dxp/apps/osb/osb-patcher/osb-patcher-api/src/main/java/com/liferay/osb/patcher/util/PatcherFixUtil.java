@@ -270,17 +270,11 @@ public class PatcherFixUtil {
 
 			String dependentComponentName = componentNames[0];
 
-			Set<String> prerequisiteComponentNames = new HashSet<>();
-
-			if (componentDependencies.containsKey(dependentComponentName)) {
-				prerequisiteComponentNames = componentDependencies.get(
-					dependentComponentName);
-			}
+			Set<String> prerequisiteComponentNames =
+				componentDependencies.computeIfAbsent(
+					dependentComponentName, key -> new HashSet<>());
 
 			prerequisiteComponentNames.add(componentNames[1]);
-
-			componentDependencies.put(
-				dependentComponentName, prerequisiteComponentNames);
 		}
 
 		return componentDependencies;
@@ -580,28 +574,32 @@ public class PatcherFixUtil {
 			statusPatcherFixMap.put(patcherFix.getStatus(), patcherFix);
 		}
 
-		if (statusPatcherFixMap.containsKey(
-				WorkflowConstants.STATUS_FIX_REBASE_CONFLICT)) {
+		PatcherFix patcherFix = statusPatcherFixMap.get(
+			WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
 
-			return statusPatcherFixMap.get(
-				WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
+		if (patcherFix != null) {
+			return patcherFix;
 		}
-		else if (statusPatcherFixMap.containsKey(
-					WorkflowConstants.STATUS_FIX_REBASING)) {
 
-			return statusPatcherFixMap.get(
-				WorkflowConstants.STATUS_FIX_REBASING);
+		patcherFix = statusPatcherFixMap.get(
+			WorkflowConstants.STATUS_FIX_REBASING);
+
+		if (patcherFix != null) {
+			return patcherFix;
 		}
-		else if (statusPatcherFixMap.containsKey(
-					WorkflowConstants.STATUS_FIX_CONFLICT)) {
 
-			return statusPatcherFixMap.get(
-				WorkflowConstants.STATUS_FIX_CONFLICT);
+		patcherFix = statusPatcherFixMap.get(
+			WorkflowConstants.STATUS_FIX_CONFLICT);
+
+		if (patcherFix != null) {
+			return patcherFix;
 		}
-		else if (statusPatcherFixMap.containsKey(
-					WorkflowConstants.STATUS_FIX_ADDING)) {
 
-			return statusPatcherFixMap.get(WorkflowConstants.STATUS_FIX_ADDING);
+		patcherFix = statusPatcherFixMap.get(
+			WorkflowConstants.STATUS_FIX_ADDING);
+
+		if (patcherFix != null) {
+			return patcherFix;
 		}
 
 		return statusPatcherFixMap.get(WorkflowConstants.STATUS_FIX_COMPLETE);

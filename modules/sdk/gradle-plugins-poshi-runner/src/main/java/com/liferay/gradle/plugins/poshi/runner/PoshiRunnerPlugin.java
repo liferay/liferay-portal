@@ -845,8 +845,11 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 			Integer chromeMajorVersion = Integer.parseInt(
 				matcher.group("majorVersion"));
 
-			if (_chromeDriverVersions.containsKey(chromeMajorVersion)) {
-				return _chromeDriverVersions.get(chromeMajorVersion);
+			String chromeDriverVersion = _chromeDriverVersions.get(
+				chromeMajorVersion);
+
+			if (chromeDriverVersion != null) {
+				return chromeDriverVersion;
 			}
 
 			try {
@@ -870,7 +873,7 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 					_LEGACY_CHROME_DRIVER_BASE_URL + "LATEST_RELEASE_" +
 						chromeMajorVersion.toString());
 
-				String chromeDriverVersion = StringUtil.read(url.openStream());
+				chromeDriverVersion = StringUtil.read(url.openStream());
 
 				return chromeDriverVersion.trim();
 			}

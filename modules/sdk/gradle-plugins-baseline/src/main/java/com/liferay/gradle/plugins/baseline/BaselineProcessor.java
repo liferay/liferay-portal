@@ -125,12 +125,17 @@ public class BaselineProcessor extends Analyzer {
 					// current
 					// project
 
-				} else if (attrs.containsKey("file")) {
+				} else {
+					String file = attrs.get("file");
+
+					if (file == null) {
+						throw new IllegalArgumentException("Instruction must contain the version or file attribute!");
+					}
 
 					// Can be useful to specify a file
 					// for example when copying a bundle with a public api
 
-					File f = getFile(attrs.get("file"));
+					File f = getFile(file);
 					if (f != null && f.isFile()) {
 						Jar jar = new Jar(f);
 						addClose(jar);
@@ -138,9 +143,6 @@ public class BaselineProcessor extends Analyzer {
 					}
 					error("Specified file for baseline but could not find it %s", f);
 					return null;
-				}
-				else {
-					throw new IllegalArgumentException("Instruction must contain the version or file attribute!");
 				}
 
 				// Fetch the revision

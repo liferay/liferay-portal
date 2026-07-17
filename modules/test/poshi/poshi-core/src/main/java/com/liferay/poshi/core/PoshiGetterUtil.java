@@ -392,8 +392,10 @@ public class PoshiGetterUtil {
 	}
 
 	public static String getUtilityClassName(String simpleClassName) {
-		if (_utilityClassMap.containsKey(simpleClassName)) {
-			return _utilityClassMap.get(simpleClassName);
+		String utilityClassName = _utilityClassMap.get(simpleClassName);
+
+		if (utilityClassName != null) {
+			return utilityClassName;
 		}
 
 		throw new IllegalArgumentException(

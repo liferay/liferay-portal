@@ -35,9 +35,11 @@ public class LiferaySeleniumMethod {
 	}
 
 	public List<String> getParameterNames() {
-		if (_liferaySeleniumMethodNames.containsKey(getMethodName())) {
-			return Arrays.asList(
-				_liferaySeleniumMethodNames.get(getMethodName()));
+		String[] parameterNames = _liferaySeleniumMethodNames.get(
+			getMethodName());
+
+		if (parameterNames != null) {
+			return Arrays.asList(parameterNames);
 		}
 
 		int parameterCount = getParameterCount();

@@ -306,8 +306,10 @@ public class ParallelPrintStream extends PrintStream {
 
 		String currentThreadName = currentThread.getName();
 
-		if (_printStreams.containsKey(currentThreadName)) {
-			return _printStreams.get(currentThreadName);
+		PrintStream printStream = _printStreams.get(currentThreadName);
+
+		if (printStream != null) {
+			return printStream;
 		}
 
 		try {

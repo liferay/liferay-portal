@@ -1154,19 +1154,12 @@ public class PatcherBuildUtil {
 		}
 
 		for (PatcherFix rebasePatcherFix : rebasePatcherFixes) {
-			List<Long> patcherFixIds = new ArrayList<>();
-
-			if (patcherProjectVersionIdPatcherFixIdsMap.containsKey(
-					rebasePatcherFix.getPatcherProjectVersionId())) {
-
-				patcherFixIds = patcherProjectVersionIdPatcherFixIdsMap.get(
-					rebasePatcherFix.getPatcherProjectVersionId());
-			}
+			List<Long> patcherFixIds =
+				patcherProjectVersionIdPatcherFixIdsMap.computeIfAbsent(
+					rebasePatcherFix.getPatcherProjectVersionId(),
+					key -> new ArrayList<>());
 
 			patcherFixIds.add(rebasePatcherFix.getPatcherFixId());
-
-			patcherProjectVersionIdPatcherFixIdsMap.put(
-				rebasePatcherFix.getPatcherProjectVersionId(), patcherFixIds);
 		}
 
 		return patcherProjectVersionIdPatcherFixIdsMap;
