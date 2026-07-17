@@ -410,9 +410,10 @@ public class HttpImpl implements Http {
 			MultipartEntityBuilder multipartEntityBuilder =
 				MultipartEntityBuilder.create();
 
-			if (headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
-				ContentType contentType = ContentType.parse(
-					headers.get(HttpHeaders.CONTENT_TYPE));
+			String contentTypeValue = headers.get(HttpHeaders.CONTENT_TYPE);
+
+			if (contentTypeValue != null) {
+				ContentType contentType = ContentType.parse(contentTypeValue);
 
 				String boundary = contentType.getParameter("boundary");
 

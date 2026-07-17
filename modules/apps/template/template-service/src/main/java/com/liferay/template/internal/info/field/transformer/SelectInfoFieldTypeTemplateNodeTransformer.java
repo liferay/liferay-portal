@@ -56,11 +56,7 @@ public class SelectInfoFieldTypeTemplateNodeTransformer
 
 		String key = selectedOptionValuesJSONArray.getString(0);
 
-		if (optionsMap.containsKey(key)) {
-			return optionsMap.get(key);
-		}
-
-		return StringPool.BLANK;
+		return optionsMap.getOrDefault(key, StringPool.BLANK);
 	}
 
 	@Override

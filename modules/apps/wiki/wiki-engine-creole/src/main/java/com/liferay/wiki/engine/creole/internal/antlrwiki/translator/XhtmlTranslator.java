@@ -309,8 +309,10 @@ public class XhtmlTranslator extends XhtmlTranslationVisitor {
 
 		String postfix = StringPool.BLANK;
 
-		if (textCounts.containsKey(text)) {
-			postfix = StringPool.DASH + textCounts.get(text);
+		Integer textCount = textCounts.get(text);
+
+		if (textCount != null) {
+			postfix = StringPool.DASH + textCount;
 		}
 
 		return StringUtil.replace(

@@ -189,15 +189,15 @@ public class LiferaySecureUberspector extends SecureUberspector {
 	private void _checkMethodIsRestricted(Class<?> clazz, String methodName) {
 		String className = clazz.getName();
 
-		if (_restrictedMethodNames.containsKey(className)) {
-			Set<String> methodNames = _restrictedMethodNames.get(className);
+		Set<String> methodNames = _restrictedMethodNames.get(className);
 
-			if (methodNames.contains(StringUtil.toLowerCase(methodName))) {
-				throw new IllegalArgumentException(
-					StringBundler.concat(
-						"Denied access to method ", methodName, " of ",
-						clazz.getName()));
-			}
+		if ((methodNames != null) &&
+			methodNames.contains(StringUtil.toLowerCase(methodName))) {
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Denied access to method ", methodName, " of ",
+					clazz.getName()));
 		}
 	}
 

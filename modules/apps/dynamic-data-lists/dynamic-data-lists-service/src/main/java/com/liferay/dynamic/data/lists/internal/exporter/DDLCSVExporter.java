@@ -111,10 +111,10 @@ public class DDLCSVExporter extends BaseDDLExporter {
 			for (Map.Entry<String, DDMFormField> entry :
 					ddmFormFields.entrySet()) {
 
-				if (values.containsKey(entry.getKey())) {
-					DDMFormFieldRenderedValue ddmFormFieldRenderedValue =
-						values.get(entry.getKey());
+				DDMFormFieldRenderedValue ddmFormFieldRenderedValue =
+					values.get(entry.getKey());
 
+				if (ddmFormFieldRenderedValue != null) {
 					sb.append(
 						CSVUtil.encode(ddmFormFieldRenderedValue.getValue()));
 				}

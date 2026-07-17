@@ -60,8 +60,8 @@ public class AgentUtil {
 		Map<String, Serializable> workflowContext = defaultNoticeableFuture.get(
 			1, TimeUnit.MINUTES);
 
-		if (workflowContext.containsKey("exception")) {
-			throw (Exception)workflowContext.get("exception");
+		if (workflowContext.get("exception") instanceof Exception exception) {
+			throw exception;
 		}
 
 		return MapUtil.getString(workflowContext, "output");

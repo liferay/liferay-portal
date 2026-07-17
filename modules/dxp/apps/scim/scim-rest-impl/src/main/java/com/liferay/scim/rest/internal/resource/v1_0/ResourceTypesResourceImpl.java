@@ -56,9 +56,10 @@ public class ResourceTypesResourceImpl extends BaseResourceTypesResourceImpl {
 	private String _getResourceTypeJSON(String id)
 		throws AbstractCharonException {
 
-		if (_resourceTypeFileNames.containsKey(id)) {
-			JSONObject resourceTypeJSONObject = _read(
-				_resourceTypeFileNames.get(id));
+		String resourceTypeFileName = _resourceTypeFileNames.get(id);
+
+		if (resourceTypeFileName != null) {
+			JSONObject resourceTypeJSONObject = _read(resourceTypeFileName);
 
 			return resourceTypeJSONObject.toString();
 		}

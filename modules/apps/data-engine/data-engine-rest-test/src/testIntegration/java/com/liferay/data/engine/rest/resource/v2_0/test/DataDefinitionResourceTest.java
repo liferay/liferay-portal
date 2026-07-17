@@ -1171,9 +1171,11 @@ public class DataDefinitionResourceTest
 				customProperties1.containsKey("fieldReference"),
 				customProperties2.containsKey("fieldReference"));
 
-			if (customProperties1.containsKey("fieldReference")) {
+			Object fieldReference = customProperties1.get("fieldReference");
+
+			if (fieldReference != null) {
 				Assert.assertEquals(
-					"CopyOf" + customProperties1.get("fieldReference"),
+					"CopyOf" + fieldReference,
 					customProperties2.get("fieldReference"));
 			}
 

@@ -80,8 +80,10 @@ public class DateSXPParameter extends BaseSXPParameter {
 
 		Date date = _value;
 
-		if (options.containsKey("modifier")) {
-			date = _modify(date, options.get("modifier"));
+		String modifier = options.get("modifier");
+
+		if (modifier != null) {
+			date = _modify(date, modifier);
 		}
 
 		String dateFormatString = options.get("date_format");

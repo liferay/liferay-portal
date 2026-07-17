@@ -229,10 +229,11 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 		Map<Class<?>, String> exceptionMessageMap =
 			uadAnonymizer.getExceptionMessageMap(themeDisplay.getLocale());
 
-		if (exceptionMessageMap.containsKey(exception.getClass())) {
+		String exceptionMessage = exceptionMessageMap.get(exception.getClass());
+
+		if (exceptionMessage != null) {
 			SessionErrors.add(
-				actionRequest, "deleteUADEntityException",
-				exceptionMessageMap.get(exception.getClass()));
+				actionRequest, "deleteUADEntityException", exceptionMessage);
 
 			String redirect = ParamUtil.getString(actionRequest, "redirect");
 

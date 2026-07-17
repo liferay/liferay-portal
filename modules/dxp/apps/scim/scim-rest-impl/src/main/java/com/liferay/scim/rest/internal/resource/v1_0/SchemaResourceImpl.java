@@ -54,8 +54,10 @@ public class SchemaResourceImpl extends BaseSchemaResourceImpl {
 	}
 
 	private String _getSchemaJSON(String id) throws AbstractCharonException {
-		if (_schemaFileNames.containsKey(id)) {
-			JSONObject schemaJSONObject = _read(_schemaFileNames.get(id));
+		String schemaFileName = _schemaFileNames.get(id);
+
+		if (schemaFileName != null) {
+			JSONObject schemaJSONObject = _read(schemaFileName);
 
 			return schemaJSONObject.toString();
 		}

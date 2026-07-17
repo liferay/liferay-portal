@@ -79,11 +79,14 @@ public class EntityModelSchemaBasedEdmProvider extends SchemaBasedEdmProvider {
 
 		ComplexEntityField complexEntityField = (ComplexEntityField)entityField;
 
-		if (_csdlComplexTypes.containsKey(complexEntityField.getTypeKey())) {
-			return _csdlComplexTypes.get(complexEntityField.getTypeKey());
+		CsdlComplexType csdlComplexType = _csdlComplexTypes.get(
+			complexEntityField.getTypeKey());
+
+		if (csdlComplexType != null) {
+			return csdlComplexType;
 		}
 
-		CsdlComplexType csdlComplexType = new CsdlComplexType();
+		csdlComplexType = new CsdlComplexType();
 
 		_csdlComplexTypes.put(complexEntityField.getTypeKey(), csdlComplexType);
 

@@ -58,9 +58,10 @@ public class PropertyExpanderTest {
 
 			String value = "gamma";
 
-			if (options.containsKey("len")) {
-				value = StringUtil.shorten(
-					value, GetterUtil.getInteger(options.get("len")));
+			String len = options.get("len");
+
+			if (len != null) {
+				value = StringUtil.shorten(value, GetterUtil.getInteger(len));
 			}
 
 			if (options.containsKey("up")) {

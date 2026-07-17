@@ -85,9 +85,10 @@ public class TalendArchiveParserUtil {
 			if (talendArchive.hasJVMOptions()) {
 				String newJVMOptions = talendArchive.getJVMOptions();
 
-				if (unicodeProperties.containsKey("JAVA_OPTS")) {
-					newJVMOptions = getJVMOptions(
-						newJVMOptions, unicodeProperties.get("JAVA_OPTS"));
+				String jvmOptions = unicodeProperties.get("JAVA_OPTS");
+
+				if (jvmOptions != null) {
+					newJVMOptions = getJVMOptions(newJVMOptions, jvmOptions);
 				}
 
 				unicodeProperties.put("JAVA_OPTS", newJVMOptions);

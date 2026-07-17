@@ -144,9 +144,11 @@ public class SharingConfigurationFactoryImpl
 			UnicodeProperties typeSettingsUnicodeProperties =
 				_group.getTypeSettingsProperties();
 
-			if (typeSettingsUnicodeProperties.containsKey("sharingEnabled")) {
-				return GetterUtil.getBoolean(
-					typeSettingsUnicodeProperties.get("sharingEnabled"));
+			String sharingEnabled = typeSettingsUnicodeProperties.get(
+				"sharingEnabled");
+
+			if (sharingEnabled != null) {
+				return GetterUtil.getBoolean(sharingEnabled);
 			}
 
 			if (_sharingGroupConfiguration == null) {

@@ -265,16 +265,20 @@ public class JournalRSSHelper {
 			parameters.containsKey("i_id")) {
 
 			try {
+				String[] imageIdStrings = parameters.get("image_id");
+
+				if (imageIdStrings == null) {
+					imageIdStrings = parameters.get("img_id");
+				}
+
+				if (imageIdStrings == null) {
+					imageIdStrings = parameters.get("i_id");
+				}
+
 				long imageId = 0;
 
-				if (parameters.containsKey("image_id")) {
-					imageId = GetterUtil.getLong(parameters.get("image_id")[0]);
-				}
-				else if (parameters.containsKey("img_id")) {
-					imageId = GetterUtil.getLong(parameters.get("img_id")[0]);
-				}
-				else if (parameters.containsKey("i_id")) {
-					imageId = GetterUtil.getLong(parameters.get("i_id")[0]);
+				if (imageIdStrings != null) {
+					imageId = GetterUtil.getLong(imageIdStrings[0]);
 				}
 
 				image = _imageLocalService.getImage(imageId);

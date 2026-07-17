@@ -189,10 +189,10 @@ public class DDLXLSExporter extends BaseDDLExporter {
 
 			cell.setCellStyle(style);
 
-			if (values.containsKey(entry.getKey())) {
-				DDMFormFieldRenderedValue ddmFormFieldRenderedValue =
-					values.get(entry.getKey());
+			DDMFormFieldRenderedValue ddmFormFieldRenderedValue = values.get(
+				entry.getKey());
 
+			if (ddmFormFieldRenderedValue != null) {
 				cell.setCellValue(
 					GetterUtil.getString(ddmFormFieldRenderedValue.getValue()));
 			}

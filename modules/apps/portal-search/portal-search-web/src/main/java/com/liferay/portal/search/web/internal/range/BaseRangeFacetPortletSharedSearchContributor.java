@@ -100,8 +100,10 @@ public abstract class BaseRangeFacetPortletSharedSearchContributor {
 		Map<String, String> rangesMap = _getRangesMap(rangesJSONArray);
 
 		for (String selectedRange : selectedRanges) {
-			if (rangesMap.containsKey(selectedRange)) {
-				selectedRangeStrings.add(rangesMap.get(selectedRange));
+			String selectedRangeString = rangesMap.get(selectedRange);
+
+			if (selectedRangeString != null) {
+				selectedRangeStrings.add(selectedRangeString);
 			}
 			else if (aggregationType.equals("dateRange")) {
 				String rangeString = DateRangeFactoryUtil.getRangeString(

@@ -44,11 +44,7 @@ public class JsonFinder {
 		String locatorExpression, JsonObject jsonObject) {
 
 		if (!locatorExpression.contains(">")) {
-			if (jsonObject.containsKey(locatorExpression)) {
-				return jsonObject.get(locatorExpression);
-			}
-
-			return JsonValue.NULL;
+			return jsonObject.getOrDefault(locatorExpression, JsonValue.NULL);
 		}
 
 		int sublocationEndIdx = locatorExpression.indexOf(">");

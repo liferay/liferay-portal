@@ -187,9 +187,9 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 
 					String alias = amdRequire.getAlias();
 
-					if (usedAliases.containsKey(alias)) {
-						IntegerWrapper integerWrapper = usedAliases.get(alias);
+					IntegerWrapper integerWrapper = usedAliases.get(alias);
 
+					if (integerWrapper != null) {
 						alias += integerWrapper.getValue();
 
 						integerWrapper.increment();
@@ -244,10 +244,9 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 					String alias = esImport.getAlias();
 
 					if (!Validator.isBlank(alias)) {
-						if (usedAliases.containsKey(alias)) {
-							IntegerWrapper integerWrapper = usedAliases.get(
-								alias);
+						IntegerWrapper integerWrapper = usedAliases.get(alias);
 
+						if (integerWrapper != null) {
 							alias += integerWrapper.getValue();
 
 							integerWrapper.increment();

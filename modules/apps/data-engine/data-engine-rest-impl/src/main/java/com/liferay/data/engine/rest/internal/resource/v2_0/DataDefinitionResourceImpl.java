@@ -1852,10 +1852,10 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		Map<String, Object> customProperties =
 			dataDefinitionField.getCustomProperties();
 
-		if (customProperties.containsKey("fieldReference")) {
-			customProperties.put(
-				"fieldReference",
-				"CopyOf" + customProperties.get("fieldReference"));
+		Object fieldReference = customProperties.get("fieldReference");
+
+		if (fieldReference != null) {
+			customProperties.put("fieldReference", "CopyOf" + fieldReference);
 		}
 
 		if (!customProperties.containsKey("structureId") &&

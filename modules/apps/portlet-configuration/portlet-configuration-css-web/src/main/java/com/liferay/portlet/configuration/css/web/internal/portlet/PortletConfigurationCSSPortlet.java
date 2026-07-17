@@ -108,11 +108,7 @@ public class PortletConfigurationCSSPortlet extends MVCPortlet {
 		for (Locale locale : locales) {
 			String languageId = LocaleUtil.toLanguageId(locale);
 
-			String title = null;
-
-			if (customTitleMap.containsKey(locale)) {
-				title = customTitleMap.get(locale);
-			}
+			String title = customTitleMap.get(locale);
 
 			String rootPortletId = PortletIdCodec.decodePortletName(portletId);
 
