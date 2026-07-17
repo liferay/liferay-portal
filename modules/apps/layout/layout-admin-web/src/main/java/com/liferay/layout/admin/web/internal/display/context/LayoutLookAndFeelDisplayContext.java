@@ -276,8 +276,7 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"styleBooksApiURL",
 			() -> {
-				Group group = GroupLocalServiceUtil.fetchGroup(
-					_themeDisplay.getSiteGroupId());
+				Group group = _themeDisplay.getSiteGroup();
 
 				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
