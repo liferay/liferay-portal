@@ -119,6 +119,7 @@ export function reducer(state: State, action: Action): State {
 			return {
 				...state,
 				draftElementVariation: null,
+				highlightedTargetElement: null,
 				languageId: state.defaultLanguageId,
 			};
 
@@ -164,6 +165,7 @@ export function reducer(state: State, action: Action): State {
 								: elementVariation
 						)
 					: [...elementVariations, draftElementVariation],
+				highlightedTargetElement: null,
 				languageId: state.defaultLanguageId,
 			};
 		}

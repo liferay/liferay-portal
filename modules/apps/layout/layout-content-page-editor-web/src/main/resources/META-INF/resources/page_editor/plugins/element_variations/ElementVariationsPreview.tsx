@@ -4,6 +4,7 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {preventIframeNavigation} from '@liferay/layout-js-components-web';
 import React, {
 	forwardRef,
 	useCallback,
@@ -209,7 +210,7 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 
 				<iframe
 					className="border-0 flex-grow-1 w-100"
-					onLoad={() => {
+					onLoad={(event) => {
 						const iframeDocument =
 							iframeRef.current?.contentDocument;
 
@@ -223,6 +224,8 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 								type: 'SET_EDITABLE_ELEMENT_OPTIONS',
 							});
 						}
+
+						preventIframeNavigation(event);
 
 						applyDraftElementVariation();
 

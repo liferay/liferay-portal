@@ -217,6 +217,18 @@ describe('elementVariationsReducer', () => {
 			expect(state.languageId).toBe('en_US');
 		});
 
+		it('clears the highlighted target element on SAVE_ELEMENT_VARIATION_DRAFT', () => {
+			const state = reducer(
+				buildState({
+					draftElementVariation: buildElementVariation({key: 'new'}),
+					highlightedTargetElement: '.selector',
+				}),
+				{type: 'SAVE_ELEMENT_VARIATION_DRAFT'}
+			);
+
+			expect(state.highlightedTargetElement).toBeNull();
+		});
+
 		it('loads a variation into the draft on EDIT_ELEMENT_VARIATION', () => {
 			const elementVariation = buildElementVariation({key: 'key-1'});
 
@@ -268,6 +280,18 @@ describe('elementVariationsReducer', () => {
 
 			expect(state.draftElementVariation).toBeNull();
 			expect(state.languageId).toBe('en_US');
+		});
+
+		it('clears the highlighted target element on CANCEL_ELEMENT_VARIATION_DRAFT', () => {
+			const state = reducer(
+				buildState({
+					draftElementVariation: buildElementVariation(),
+					highlightedTargetElement: '.selector',
+				}),
+				{type: 'CANCEL_ELEMENT_VARIATION_DRAFT'}
+			);
+
+			expect(state.highlightedTargetElement).toBeNull();
 		});
 	});
 });
