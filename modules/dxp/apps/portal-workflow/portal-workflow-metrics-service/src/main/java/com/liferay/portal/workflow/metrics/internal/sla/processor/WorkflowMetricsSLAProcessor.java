@@ -343,8 +343,10 @@ public class WorkflowMetricsSLAProcessor {
 			TaskInterval taskInterval = _toTaskInterval(
 				document, lastCheckLocalDateTime, null);
 
+			String stopTimeMarker = stopTimeMarkers.get(nodeId);
+
 			if (pauseTimeMarkers.containsKey(nodeId) &&
-				!stopTimeMarkers.containsKey(nodeId)) {
+				(stopTimeMarker == null)) {
 
 				workflowMetricsSLAStopwatch.pause(
 					taskInterval._startLocalDateTime);
@@ -369,8 +371,6 @@ public class WorkflowMetricsSLAProcessor {
 						taskInterval._endLocalDateTime);
 				}
 			}
-
-			String stopTimeMarker = stopTimeMarkers.get(nodeId);
 
 			if (stopTimeMarker != null) {
 				if (Objects.equals(stopTimeMarker, "enter")) {

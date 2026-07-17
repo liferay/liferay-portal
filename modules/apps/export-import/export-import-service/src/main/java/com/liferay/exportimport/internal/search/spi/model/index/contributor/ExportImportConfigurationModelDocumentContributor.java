@@ -83,21 +83,19 @@ public class ExportImportConfigurationModelDocumentContributor
 	private void _populateLayoutIds(
 		Document document, Map<String, Serializable> settingsMap) {
 
-		if (!settingsMap.containsKey("layoutIdMap") &&
-			!settingsMap.containsKey("layoutIds")) {
+		Serializable layoutIdMap = settingsMap.get("layoutIdMap");
+		Serializable layoutIdsSetting = settingsMap.get("layoutIds");
 
+		if ((layoutIdMap == null) && (layoutIdsSetting == null)) {
 			return;
 		}
 
-		long[] layoutIds = GetterUtil.getLongValues(
-			settingsMap.get("layoutIds"));
+		long[] layoutIds = GetterUtil.getLongValues(layoutIdsSetting);
 
 		if (ArrayUtil.isEmpty(layoutIds)) {
-			Map<Long, Boolean> layoutIdMap =
-				(Map<Long, Boolean>)settingsMap.get("layoutIdMap");
-
 			try {
-				layoutIds = _exportImportHelper.getLayoutIds(layoutIdMap);
+				layoutIds = _exportImportHelper.getLayoutIds(
+					(Map<Long, Boolean>)layoutIdMap);
 			}
 			catch (PortalException portalException) {
 
@@ -123,12 +121,11 @@ public class ExportImportConfigurationModelDocumentContributor
 	private void _populateParameterMap(
 		Document document, Map<String, Serializable> settingsMap) {
 
-		if (!settingsMap.containsKey("parameterMap")) {
+		if (!(settingsMap.get("parameterMap") instanceof Map<?, ?> map)) {
 			return;
 		}
 
-		Map<String, String[]> parameterMap =
-			(Map<String, String[]>)settingsMap.get("parameterMap");
+		Map<String, String[]> parameterMap = (Map<String, String[]>)map;
 
 		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
 			String parameterName = entry.getKey();
