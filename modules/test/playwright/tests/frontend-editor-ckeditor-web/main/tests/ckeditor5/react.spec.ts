@@ -35,6 +35,7 @@ test(
 				'Redo',
 				'Bold',
 				'Italic',
+				'Link',
 				'Bookmark',
 				'Image',
 				'Video',
