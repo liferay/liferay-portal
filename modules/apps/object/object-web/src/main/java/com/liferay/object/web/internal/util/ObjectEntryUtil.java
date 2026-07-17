@@ -357,7 +357,10 @@ public class ObjectEntryUtil {
 				objectDefinition.getObjectDefinitionId());
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
-			if (!fieldsMap.containsKey(objectRelationship.getName())) {
+			Map<String, Object> objectRelationshipValues = fieldsMap.get(
+				objectRelationship.getName());
+
+			if (objectRelationshipValues == null) {
 				continue;
 			}
 
@@ -369,13 +372,6 @@ public class ObjectEntryUtil {
 					objectDefinitionId);
 
 			if (relatedObjectDefinition == null) {
-				continue;
-			}
-
-			Map<String, Object> objectRelationshipValues = fieldsMap.get(
-				objectRelationship.getName());
-
-			if (objectRelationshipValues == null) {
 				continue;
 			}
 
@@ -425,17 +421,15 @@ public class ObjectEntryUtil {
 					Map<String, Object> childProperties =
 						(Map<String, Object>)entry.getValue();
 
-					if (!childProperties.containsKey("externalReferenceCode")) {
-						String externalReferenceCode = GetterUtil.getString(
-							entry.getKey());
+					String externalReferenceCode = GetterUtil.getString(
+						entry.getKey());
 
-						childProperties.put(
-							"externalReferenceCode", externalReferenceCode);
-					}
+					childProperties.putIfAbsent(
+						"externalReferenceCode", externalReferenceCode);
 
 					_addRelatedProperties(
-						fieldsMap, relatedObjectDefinition, entry.getKey(),
-						childProperties);
+						fieldsMap, relatedObjectDefinition,
+						externalReferenceCode, childProperties);
 
 					relatedProperties.add(childProperties);
 				}

@@ -29,13 +29,17 @@ public class ObjectEntryValuesUtil {
 		String businessType, Map<String, Object> modelAttributes,
 		ObjectField objectField, User user, Map<String, ?> values) {
 
-		String objectFieldName = objectField.getName();
+		Map.Entry<String, ?> valueEntry = null;
 
-		if ((values == null) || !values.containsKey(objectFieldName)) {
+		if (values != null) {
+			valueEntry = MapUtil.getEntry(values, objectField.getName());
+		}
+
+		if (valueEntry == null) {
 			return modelAttributes.get(objectField.getDBColumnName());
 		}
 
-		Object value = values.get(objectFieldName);
+		Object value = valueEntry.getValue();
 
 		if (StringUtil.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN)) {
