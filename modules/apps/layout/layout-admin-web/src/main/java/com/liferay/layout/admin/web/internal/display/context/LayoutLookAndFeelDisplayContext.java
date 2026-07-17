@@ -20,6 +20,7 @@ import com.liferay.layout.admin.web.internal.item.selector.MasterLayoutPageTempl
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -45,7 +46,9 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
+import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -236,6 +239,28 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
+			"styleBookEntryDesignLibraryName",
+			() -> {
+				StyleBookEntry styleBookEntry =
+					StyleBookEntryProviderUtil.getStyleBookEntry(
+						_layoutsAdminDisplayContext.getSelLayout());
+
+				if ((styleBookEntry == null) ||
+					(styleBookEntry.getStyleBookEntryId() <= 0)) {
+
+					return null;
+				}
+
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					styleBookEntry.getGroupId());
+
+				if ((group == null) || !group.isDepot()) {
+					return null;
+				}
+
+				return group.getDescriptiveName(_themeDisplay.getLocale());
+			}
+		).put(
 			"styleBookEntryERC",
 			() -> {
 				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
@@ -244,11 +269,42 @@ public class LayoutLookAndFeelDisplayContext {
 			}
 		).put(
 			"styleBookEntryName", getStyleBookEntryName()
+		).put(
+			"styleBookEntryScopeERC",
+			() -> {
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				return GetterUtil.getString(
+					selLayout.getStyleBookEntryScopeERC());
+			}
+		).put(
+			"styleBooksApiURL",
+			() -> {
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					_themeDisplay.getSiteGroupId());
+
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				return StringBundler.concat(
+					_themeDisplay.getPortalURL(),
+					"/o/headless-admin-site/v1.0/sites/",
+					group.getExternalReferenceCode(), "/page-specifications/",
+					selLayout.getExternalReferenceCode(), "/style-books");
+			}
 		).build();
 	}
 
 	public String getStyleBookEntryName() {
 		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+		StyleBookEntry styleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(selLayout);
+
+		if ((styleBookEntry != null) &&
+			(styleBookEntry.getStyleBookEntryId() > 0)) {
+
+			return styleBookEntry.getName();
+		}
 
 		return DefaultStyleBookEntryUtil.getStyleBookEntryName(
 			selLayout, _themeDisplay.getLocale(),
