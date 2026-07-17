@@ -303,6 +303,46 @@ const getDefaultEditorConfig = ({
 					element: 'code',
 					name: Liferay.Language.get('computer-code'),
 				},
+				{
+					classes: ['text-primary'],
+					element: 'span',
+					name: Liferay.Language.get('primary'),
+				},
+				{
+					classes: ['text-secondary'],
+					element: 'span',
+					name: Liferay.Language.get('secondary'),
+				},
+				{
+					classes: ['text-success'],
+					element: 'span',
+					name: Liferay.Language.get('success'),
+				},
+				{
+					classes: ['text-danger'],
+					element: 'span',
+					name: Liferay.Language.get('danger'),
+				},
+				{
+					classes: ['text-warning'],
+					element: 'span',
+					name: Liferay.Language.get('warning'),
+				},
+				{
+					classes: ['text-info'],
+					element: 'span',
+					name: Liferay.Language.get('info'),
+				},
+				{
+					classes: ['text-dark'],
+					element: 'span',
+					name: Liferay.Language.get('dark'),
+				},
+				{
+					classes: ['text-light'],
+					element: 'span',
+					name: Liferay.Language.get('light'),
+				},
 			],
 		},
 		table: {
