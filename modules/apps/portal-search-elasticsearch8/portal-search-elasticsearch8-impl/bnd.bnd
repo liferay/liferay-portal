@@ -137,6 +137,8 @@ Import-Package:\
 	\
 	!sun.security.*,\
 	\
+	!tools.jackson.*,\
+	\
 	com.liferay.portal.search.analysis,\
 	\
 	org.joda.time.format,\
