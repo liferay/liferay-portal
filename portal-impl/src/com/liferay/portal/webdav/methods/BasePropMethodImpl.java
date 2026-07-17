@@ -99,9 +99,7 @@ public abstract class BasePropMethodImpl implements Method {
 
 		// Check DAV properties
 
-		if (props.contains(ALLPROP)) {
-			props.remove(ALLPROP);
-
+		if (props.remove(ALLPROP)) {
 			if (resource.isCollection()) {
 				props.addAll(_allCollectionProps);
 			}
@@ -110,9 +108,7 @@ public abstract class BasePropMethodImpl implements Method {
 			}
 		}
 
-		if (props.contains(CREATIONDATE)) {
-			props.remove(CREATIONDATE);
-
+		if (props.remove(CREATIONDATE)) {
 			Element successCreationDateElement = successPropElement.addElement(
 				CREATIONDATE);
 
@@ -122,9 +118,7 @@ public abstract class BasePropMethodImpl implements Method {
 			hasSuccess = true;
 		}
 
-		if (props.contains(DISPLAYNAME)) {
-			props.remove(DISPLAYNAME);
-
+		if (props.remove(DISPLAYNAME)) {
 			Element successDisplayNameElement = successPropElement.addElement(
 				DISPLAYNAME);
 
@@ -134,9 +128,7 @@ public abstract class BasePropMethodImpl implements Method {
 			hasSuccess = true;
 		}
 
-		if (props.contains(GETLASTMODIFIED)) {
-			props.remove(GETLASTMODIFIED);
-
+		if (props.remove(GETLASTMODIFIED)) {
 			Element successGetLastModifiedElement =
 				successPropElement.addElement(GETLASTMODIFIED);
 
@@ -146,9 +138,7 @@ public abstract class BasePropMethodImpl implements Method {
 			hasSuccess = true;
 		}
 
-		if (props.contains(GETCONTENTTYPE)) {
-			props.remove(GETCONTENTTYPE);
-
+		if (props.remove(GETCONTENTTYPE)) {
 			Element successGetContentTypeElement =
 				successPropElement.addElement(GETCONTENTTYPE);
 
@@ -158,9 +148,7 @@ public abstract class BasePropMethodImpl implements Method {
 			hasSuccess = true;
 		}
 
-		if (props.contains(GETCONTENTLENGTH)) {
-			props.remove(GETCONTENTLENGTH);
-
+		if (props.remove(GETCONTENTLENGTH)) {
 			if (!resource.isCollection()) {
 				Element successGetContentLengthElement =
 					successPropElement.addElement(GETCONTENTLENGTH);
@@ -177,9 +165,7 @@ public abstract class BasePropMethodImpl implements Method {
 			}
 		}
 
-		if (props.contains(ISREADONLY)) {
-			props.remove(ISREADONLY);
-
+		if (props.remove(ISREADONLY)) {
 			Element successIsReadOnlyElement = successPropElement.addElement(
 				ISREADONLY);
 
@@ -195,9 +181,7 @@ public abstract class BasePropMethodImpl implements Method {
 			hasSuccess = true;
 		}
 
-		if (props.contains(LOCKDISCOVERY)) {
-			props.remove(LOCKDISCOVERY);
-
+		if (props.remove(LOCKDISCOVERY)) {
 			Lock lock = resource.getLock();
 
 			if (lock != null) {
@@ -275,9 +259,7 @@ public abstract class BasePropMethodImpl implements Method {
 			}
 		}
 
-		if (props.contains(RESOURCETYPE)) {
-			props.remove(RESOURCETYPE);
-
+		if (props.remove(RESOURCETYPE)) {
 			Element resourceTypeElement = successPropElement.addElement(
 				RESOURCETYPE);
 
