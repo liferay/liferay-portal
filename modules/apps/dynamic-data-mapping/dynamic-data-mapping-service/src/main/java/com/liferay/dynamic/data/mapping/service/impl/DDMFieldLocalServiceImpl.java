@@ -878,13 +878,14 @@ public class DDMFieldLocalServiceImpl extends DDMFieldLocalServiceBaseImpl {
 				for (DDMFieldAttributeInfo ddmFieldAttributeInfo :
 						ddmFieldAttributeInfos) {
 
-					if ((ddmField != null) &&
-						ddmFieldsAttributesMap.containsKey(
-							ddmField.getFieldId())) {
+					Map<String, DDMFieldAttribute> ddmFieldAttributesMap = null;
 
-						Map<String, DDMFieldAttribute> ddmFieldAttributesMap =
-							ddmFieldsAttributesMap.get(ddmField.getFieldId());
+					if (ddmField != null) {
+						ddmFieldAttributesMap = ddmFieldsAttributesMap.get(
+							ddmField.getFieldId());
+					}
 
+					if (ddmFieldAttributesMap != null) {
 						DDMFieldAttribute ddmFieldAttribute =
 							ddmFieldAttributesMap.remove(
 								_getKey(
@@ -1100,9 +1101,14 @@ public class DDMFieldLocalServiceImpl extends DDMFieldLocalServiceBaseImpl {
 		Map<Long, Map<String, DDMFieldAttribute>> ddmFieldsAttributesMap,
 		Map<String, DDMFormField> ddmFormFieldsMap) {
 
-		if ((ddmField == null) ||
-			!ddmFieldsAttributesMap.containsKey(ddmField.getFieldId())) {
+		if (ddmField == null) {
+			return false;
+		}
 
+		Map<String, DDMFieldAttribute> ddmFieldAttributesMap =
+			ddmFieldsAttributesMap.get(ddmField.getFieldId());
+
+		if (ddmFieldAttributesMap == null) {
 			return false;
 		}
 
@@ -1115,9 +1121,6 @@ public class DDMFieldLocalServiceImpl extends DDMFieldLocalServiceBaseImpl {
 
 			return false;
 		}
-
-		Map<String, DDMFieldAttribute> ddmFieldAttributesMap =
-			ddmFieldsAttributesMap.get(ddmField.getFieldId());
 
 		for (DDMFieldAttribute ddmFieldAttribute :
 				ddmFieldAttributesMap.values()) {
