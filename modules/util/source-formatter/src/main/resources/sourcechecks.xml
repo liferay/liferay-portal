@@ -821,6 +821,10 @@
 			<category name="Styling" />
 			<description name="Sorts the values in `@FeatureFlags` and `@TestInfo` annotation." />
 		</check>
+		<check name="JavaFetchContractCatchCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds a catch of `PortalException` or a `NoSuch*Exception` that only returns the null or false absence sentinel, where the try block holds a single local service or persistence lookup, so the null-tolerant fetch sibling should be used instead." />
+		</check>
 		<check name="JavaFinderCacheCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that the method `BasePersistenceImpl.fetchByPrimaryKey` is overridden, when using `FinderPath`." />
