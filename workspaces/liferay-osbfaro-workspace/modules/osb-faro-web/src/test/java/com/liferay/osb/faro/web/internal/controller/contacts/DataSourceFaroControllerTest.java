@@ -304,11 +304,11 @@ public class DataSourceFaroControllerTest {
 
 		DataSource dataSource = argumentCaptor.getValue();
 
+		Assert.assertNull(dataSource.getCredentials());
 		Assert.assertTrue(
 			dataSource.getProvider() instanceof SalesforceProvider);
 		Assert.assertEquals(
 			"https://test.my.salesforce.com", dataSource.getUrl());
-		Assert.assertNull(dataSource.getCredentials());
 	}
 
 	@Test
