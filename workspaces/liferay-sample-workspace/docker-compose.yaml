@@ -32,7 +32,7 @@ services:
         environment:
             LIFERAY_DISABLE_TRIAL_LICENSE: "true"
             LIFERAY_JPDA_ENABLED: "true"
-            LIFERAY_JVM_OPTS: -Xms8192m -Xmx8192m -XX:NewSize=2048m -XX:MaxNewSize=2048m -XX:MetaspaceSize=768m -XX:MaxMetaspaceSize=1024m -XX:SurvivorRatio=7
+            LIFERAY_JVM_OPTS: -XX:MaxMetaspaceSize=1g -XX:MaxNewSize=2g -XX:MetaspaceSize=768m -XX:NewSize=2g -XX:SurvivorRatio=7 -Xms8g -Xmx8g
             LIFERAY_WORKSPACE_ENVIRONMENT: local
         healthcheck:
             interval: 10s
