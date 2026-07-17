@@ -14,7 +14,6 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
@@ -36,8 +35,7 @@ public class AudiencesEntryServiceImpl extends AudiencesEntryServiceBaseImpl {
 
 	@Override
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, String json, String name,
-			ServiceContext serviceContext)
+			String externalReferenceCode, String json, String name)
 		throws PortalException {
 
 		_portletResourcePermission.check(
@@ -45,7 +43,7 @@ public class AudiencesEntryServiceImpl extends AudiencesEntryServiceBaseImpl {
 			AudiencesActionKeys.MANAGE_AUDIENCES_ENTRIES);
 
 		return audiencesEntryLocalService.addAudiencesEntry(
-			externalReferenceCode, json, name, serviceContext);
+			externalReferenceCode, getUserId(), json, name);
 	}
 
 	@Override
@@ -134,7 +132,7 @@ public class AudiencesEntryServiceImpl extends AudiencesEntryServiceBaseImpl {
 			AudiencesActionKeys.MANAGE_AUDIENCES_ENTRIES);
 
 		return audiencesEntryLocalService.updateAudiencesEntry(
-			audiencesEntryId, externalReferenceCode, json, name);
+			externalReferenceCode, getUserId(), audiencesEntryId, json, name);
 	}
 
 	@Reference

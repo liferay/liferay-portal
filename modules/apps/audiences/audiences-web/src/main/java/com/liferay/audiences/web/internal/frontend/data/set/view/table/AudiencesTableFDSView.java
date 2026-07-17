@@ -44,6 +44,8 @@ public class AudiencesTableFDSView extends BaseTableFDSView {
 				fdsTableSchemaField.setContentRenderer("date");
 				fdsTableSchemaField.setSortable(true);
 			}
+		).add(
+			"userName", "last-modified-by"
 		).build();
 	}
 

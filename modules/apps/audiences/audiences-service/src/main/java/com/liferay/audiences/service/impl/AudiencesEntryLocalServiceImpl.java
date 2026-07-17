@@ -16,7 +16,6 @@ import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -38,8 +37,7 @@ public class AudiencesEntryLocalServiceImpl
 
 	@Override
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, String json, String name,
-			ServiceContext serviceContext)
+			String externalReferenceCode, long userId, String json, String name)
 		throws PortalException {
 
 		_validate(json, name);
@@ -49,7 +47,7 @@ public class AudiencesEntryLocalServiceImpl
 
 		audiencesEntry.setExternalReferenceCode(externalReferenceCode);
 
-		User user = _userLocalService.getUser(serviceContext.getUserId());
+		User user = _userLocalService.getUser(userId);
 
 		audiencesEntry.setCompanyId(user.getCompanyId());
 		audiencesEntry.setUserId(user.getUserId());
@@ -106,8 +104,8 @@ public class AudiencesEntryLocalServiceImpl
 
 	@Override
 	public AudiencesEntry updateAudiencesEntry(
-			long audiencesEntryId, String externalReferenceCode, String json,
-			String name)
+			String externalReferenceCode, long userId, long audiencesEntryId,
+			String json, String name)
 		throws PortalException {
 
 		_validate(json, name);
@@ -116,6 +114,12 @@ public class AudiencesEntryLocalServiceImpl
 			audiencesEntryPersistence.findByPrimaryKey(audiencesEntryId);
 
 		audiencesEntry.setExternalReferenceCode(externalReferenceCode);
+
+		User user = _userLocalService.getUser(userId);
+
+		audiencesEntry.setUserId(user.getUserId());
+		audiencesEntry.setUserName(user.getFullName());
+
 		audiencesEntry.setJSON(json);
 		audiencesEntry.setName(name);
 

@@ -16,7 +16,9 @@ import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -66,9 +68,16 @@ public class AudiencesFDSDataProvider
 
 		return TransformUtil.transform(
 			audiencesEntries,
-			audiencesEntry -> new FDSAudiencesEntry(
-				audiencesEntry.getAudiencesEntryId(),
-				audiencesEntry.getModifiedDate(), audiencesEntry.getName()));
+			audiencesEntry -> {
+				User user = _userLocalService.fetchUser(
+					audiencesEntry.getUserId());
+
+				return new FDSAudiencesEntry(
+					audiencesEntry.getAudiencesEntryId(),
+					audiencesEntry.getModifiedDate(), audiencesEntry.getName(),
+					(user == null) ? audiencesEntry.getUserName() :
+						user.getFullName());
+			});
 	}
 
 	@Override
@@ -105,5 +114,8 @@ public class AudiencesFDSDataProvider
 
 	@Reference
 	private AudiencesEntryService _audiencesEntryService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

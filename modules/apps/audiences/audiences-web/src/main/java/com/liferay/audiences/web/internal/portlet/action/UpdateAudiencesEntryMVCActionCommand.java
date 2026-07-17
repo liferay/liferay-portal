@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -58,15 +56,12 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 		String json = ParamUtil.getString(actionRequest, "json");
 		String name = ParamUtil.getString(actionRequest, "name");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			AudiencesEntry.class.getName(), actionRequest);
-
 		try {
 			AudiencesEntry audiencesEntry = null;
 
 			if (audiencesEntryId <= 0) {
 				audiencesEntry = _audiencesEntryService.addAudiencesEntry(
-					externalReferenceCode, json, name, serviceContext);
+					externalReferenceCode, json, name);
 			}
 			else {
 				audiencesEntry = _audiencesEntryService.updateAudiencesEntry(

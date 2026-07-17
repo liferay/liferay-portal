@@ -13,11 +13,13 @@ import java.util.Date;
 public class FDSAudiencesEntry {
 
 	public FDSAudiencesEntry(
-		long audiencesEntryId, Date modifiedDate, String name) {
+		long audiencesEntryId, Date modifiedDate, String name,
+		String userName) {
 
 		_audiencesEntryId = audiencesEntryId;
 		_modifiedDate = modifiedDate;
 		_name = name;
+		_userName = userName;
 	}
 
 	public long getAudiencesEntryId() {
@@ -32,8 +34,13 @@ public class FDSAudiencesEntry {
 		return _name;
 	}
 
+	public String getUserName() {
+		return _userName;
+	}
+
 	private final long _audiencesEntryId;
 	private final Date _modifiedDate;
 	private final String _name;
+	private final String _userName;
 
 }
