@@ -505,6 +505,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 	public void testToInputTemplateNodeWithRelationshipInfoFieldType()
 		throws Exception {
 
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"ObjectDefinition",
@@ -514,6 +516,12 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 						ObjectFieldConstants.DB_TYPE_STRING, "myText", "myText",
 						false)),
 				ObjectDefinitionConstants.SCOPE_SITE);
+
+		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
+			_layoutDisplayPageProviderRegistry.
+				getLayoutDisplayPageProviderByClassName(
+					objectDefinition.getCompanyId(),
+					objectDefinition.getClassName());
 
 		ObjectRelationship objectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
@@ -535,14 +543,6 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 				"myText", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
-
-		HttpServletRequest httpServletRequest = _getHttpServletRequest();
-
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
-			_layoutDisplayPageProviderRegistry.
-				getLayoutDisplayPageProviderByClassName(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getClassName());
 
 		httpServletRequest.setAttribute(
 			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
