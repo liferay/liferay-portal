@@ -5,8 +5,14 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
@@ -89,6 +95,53 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			resourceFile);
 	}
 
+	@Override
+	public ResourceFile putSiteResourceFile(
+			String siteExternalReferenceCode,
+			String resourceFileExternalReferenceCode, ResourceFile resourceFile)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getStagingAwareGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
+		DLFileEntry dlFileEntry =
+			_dlFileEntryLocalService.fetchFileEntryByExternalReferenceCode(
+				groupId, resourceFileExternalReferenceCode);
+
+		if (dlFileEntry == null) {
+			_portletResourcePermission.check(
+				PermissionThreadLocal.getPermissionChecker(), groupId,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+			resourceFile.setExternalReferenceCode(
+				() -> resourceFileExternalReferenceCode);
+
+			return _addResourceFile(
+				_getOrAddFragmentCollection(groupId, resourceFile), groupId,
+				resourceFile);
+		}
+
+		_checkResourceFile(
+			_dlAppService.getFileEntry(dlFileEntry.getFileEntryId()));
+
+		_checkName(resourceFile.getName());
+
+		byte[] bytes = _toByteArray(resourceFile.getFileURLReference());
+
+		_checkBytes(bytes);
+
+		return _toResourceFile(
+			_dlAppLocalService.updateFileEntry(
+				contextUser.getUserId(), dlFileEntry.getFileEntryId(),
+				resourceFile.getName(),
+				_mimeTypes.getContentType(resourceFile.getName()),
+				resourceFile.getName(), null, null, null,
+				DLVersionNumberIncrease.NONE, bytes, null, null, null,
+				_getServiceContext(groupId, resourceFile)));
+	}
+
 	private ResourceFile _addResourceFile(
 			FragmentCollection fragmentCollection, long groupId,
 			ResourceFile resourceFile)
@@ -134,6 +187,23 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 					contextAcceptLanguage.getPreferredLocale(),
 					"name-is-required"));
 		}
+	}
+
+	private void _checkResourceFile(FileEntry fileEntry) throws Exception {
+		DLFolder dlFolder = _dlFolderLocalService.fetchDLFolder(
+			fileEntry.getFolderId());
+
+		FragmentCollection fragmentCollection =
+			FragmentSetUtil.getFragmentCollection(dlFolder);
+
+		if (fragmentCollection == null) {
+			throw new NoSuchFileEntryException(
+				"No resource file exists with external reference code " +
+					fileEntry.getExternalReferenceCode());
+		}
+
+		_fragmentCollectionService.getFragmentCollection(
+			fragmentCollection.getFragmentCollectionId());
 	}
 
 	private FragmentCollection _getOrAddFragmentCollection(
@@ -204,6 +274,15 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLFolderLocalService _dlFolderLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
