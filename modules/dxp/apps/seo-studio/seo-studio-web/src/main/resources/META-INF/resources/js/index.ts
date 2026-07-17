@@ -4,9 +4,9 @@
  */
 
 export {default as SectionHeader} from './components/SectionHeader';
+export {default as InsightDetailView} from './components/insights_view/InsightDetailView';
 export {default as MetricsDashboard} from './components/metrics_dashboard/MetricsDashboard';
 export {default as HealthScanConfiguration} from './health_scan/components/HealthScanConfiguration';
-export {default as InsightDetailView} from './insights_view/InsightDetailView';
 export {default as Integrations} from './integrations/Integrations';
 export {default as OnPage} from './on_page/OnPage';
 export {default as PageSpeedCharts} from './pagespeed/PageSpeedCharts';

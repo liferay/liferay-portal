@@ -6,9 +6,9 @@
 import React from 'react';
 
 import SectionHeader from '../components/SectionHeader';
+import InsightsView from '../components/insights_view/InsightsView';
 import MetricsDashboard from '../components/metrics_dashboard/MetricsDashboard';
 import {Metrics} from '../components/metrics_dashboard/types';
-import InsightsView from '../insights_view/InsightsView';
 
 import './OnPage.scss';
 
