@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 	extends LayoutPageTemplateStructureRelElementVariationLocalServiceBaseImpl {
 
+	@Override
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long userId, long groupId,
@@ -110,6 +111,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		return layoutPageTemplateStructureRelElementVariation;
 	}
 
+	@Override
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
 		String externalReferenceCode, long groupId) {
 
@@ -128,6 +130,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		}
 	}
 
+	@Override
 	public void deleteLayoutPageTemplateStructureRelElementVariations(
 		long plid, String segmentsExperienceERC) {
 
@@ -150,6 +153,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 		}
 	}
 
+	@Override
 	public List<LayoutPageTemplateStructureRelElementVariation>
 		getLayoutPageTemplateStructureRelElementVariations(
 			boolean active, long plid, String segmentsExperienceERC) {
@@ -158,6 +162,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 			findByA_P_SEERC(active, plid, segmentsExperienceERC);
 	}
 
+	@Override
 	public List<LayoutPageTemplateStructureRelElementVariation>
 		getLayoutPageTemplateStructureRelElementVariations(long plid) {
 
@@ -165,6 +170,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 			findByPlid(plid);
 	}
 
+	@Override
 	public List<LayoutPageTemplateStructureRelElementVariation>
 		getLayoutPageTemplateStructureRelElementVariations(
 			long plid, String segmentsExperienceERC) {
@@ -173,6 +179,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 			findByP_SEERC(plid, segmentsExperienceERC);
 	}
 
+	@Override
 	public LayoutPageTemplateStructureRelElementVariation
 			updateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId, boolean active)
