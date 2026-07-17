@@ -53,14 +53,13 @@ public class DetectorService {
 				SEOStudioScanConstants.STATE_FAILED);
 		}
 
-		long accountEntryId = scanJSONObject.getLong(
-			"r_accountToSEOStudioScans_accountEntryId");
-
 		URI crawlURI = _seoStudioService.toCrawlURI(domain.getHostname());
 
 		for (BaseDetector detector : _detectors) {
 			detector.detect(
-				accountEntryId, crawlHits, crawlURI, seoStudioScanId);
+				scanJSONObject.getLong(
+					"r_accountToSEOStudioScans_accountEntryId"),
+				crawlHits, crawlURI, seoStudioScanId);
 		}
 
 		return new DetectorResult(null, SEOStudioScanConstants.STATE_COMPLETED);

@@ -51,10 +51,11 @@ public class SEOStudioService extends BaseService {
 		String lastURL = null;
 
 		while (true) {
-			JSONObject hitsJSONObject = new JSONObject(
-				_getCrawlHits(lastURL, 2000, seoStudioDomainId));
-
-			JSONArray itemsJSONArray = hitsJSONObject.optJSONArray("items");
+			JSONArray itemsJSONArray = new JSONObject(
+				_getCrawlHits(lastURL, 2000, seoStudioDomainId)
+			).optJSONArray(
+				"items"
+			);
 
 			if ((itemsJSONArray == null) || itemsJSONArray.isEmpty()) {
 				break;

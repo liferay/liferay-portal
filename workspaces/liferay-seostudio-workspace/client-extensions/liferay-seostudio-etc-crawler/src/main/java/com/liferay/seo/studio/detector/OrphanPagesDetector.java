@@ -82,9 +82,8 @@ public class OrphanPagesDetector extends BaseDetector {
 			return;
 		}
 
-		JSONObject definitionJSONObject = new JSONObject();
-
-		definitionJSONObject.put(
+		JSONObject definitionJSONObject = new JSONObject(
+		).put(
 			"category", "linksAndURLs"
 		).put(
 			"classification", "problem"
