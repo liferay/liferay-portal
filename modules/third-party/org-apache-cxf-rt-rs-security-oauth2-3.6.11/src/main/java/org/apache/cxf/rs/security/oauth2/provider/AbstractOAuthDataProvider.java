@@ -225,6 +225,16 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
     @Override
     public ServerAccessToken refreshAccessToken(Client client, String refreshTokenKey,
                                                 List<String> restrictedScopes) throws OAuthServiceException {
+        if (!recycleRefreshTokens) {
+            synchronized (refreshTokenLock) {
+                return doRefreshAccessToken(client, refreshTokenKey, restrictedScopes);
+            }
+        }
+        return doRefreshAccessToken(client, refreshTokenKey, restrictedScopes);
+    }
+
+    private ServerAccessToken doRefreshAccessToken(Client client, String refreshTokenKey,
+                                                   List<String> restrictedScopes) {
         RefreshToken currentRefreshToken = recycleRefreshTokens
             ? revokeRefreshToken(client, refreshTokenKey) : getRefreshToken(refreshTokenKey);
         if (currentRefreshToken == null) {
@@ -252,14 +262,20 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
 
     @Override
     public void revokeToken(Client client, String tokenKey, String tokenTypeHint) throws OAuthServiceException {
+        revokeToken(client, null, tokenKey, tokenTypeHint);
+    }
+
+    @Override
+    public void revokeToken(Client client, UserSubject callerSubject, String tokenKey, String tokenTypeHint)
+        throws OAuthServiceException {
         ServerAccessToken accessToken = null;
         if (!OAuthConstants.REFRESH_TOKEN.equals(tokenTypeHint)) {
-            accessToken = revokeAccessToken(client, tokenKey);
+            accessToken = revokeAccessToken(client, callerSubject, tokenKey);
         }
         if (accessToken != null) {
             handleLinkedRefreshToken(client, accessToken);
         } else if (!OAuthConstants.ACCESS_TOKEN.equals(tokenTypeHint)) {
-            RefreshToken currentRefreshToken = revokeRefreshToken(client, tokenKey);
+            RefreshToken currentRefreshToken = revokeRefreshToken(client, callerSubject, tokenKey);
             revokeAccessTokens(client, currentRefreshToken);
         }
     }
@@ -568,19 +584,40 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
     }
 
     protected ServerAccessToken revokeAccessToken(Client client, String accessTokenKey) {
+        return revokeAccessToken(client, null, accessTokenKey);
+    }
+
+    protected ServerAccessToken revokeAccessToken(Client client, UserSubject callerSubject, String accessTokenKey) {
         ServerAccessToken at = getAccessToken(accessTokenKey);
         if (at != null) {
             if (!at.getClient().getClientId().equals(client.getClientId())) {
+                throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
+            }
+            // IDOR guard: if the revocation request carries a resource owner identity,
+            // it must match the subject bound to the token.  This prevents User A from
+            // revoking User B's token when both share the same OAuth2 client.
+            if (callerSubject != null && at.getSubject() != null
+                && !callerSubject.getLogin().equals(at.getSubject().getLogin())) {
                 throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
             }
             doRevokeAccessToken(at);
         }
         return at;
     }
+
     protected RefreshToken revokeRefreshToken(Client client, String refreshTokenKey) {
+        return revokeRefreshToken(client, null, refreshTokenKey);
+    }
+
+    protected RefreshToken revokeRefreshToken(Client client, UserSubject callerSubject, String refreshTokenKey) {
         RefreshToken refreshToken = getRefreshToken(refreshTokenKey);
         if (refreshToken != null) {
             if (!refreshToken.getClient().getClientId().equals(client.getClientId())) {
+                throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
+            }
+            // IDOR guard: same subject check as for access tokens.
+            if (callerSubject != null && refreshToken.getSubject() != null
+                && !callerSubject.getLogin().equals(refreshToken.getSubject().getLogin())) {
                 throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
             }
             doRevokeRefreshToken(refreshToken);
@@ -697,3 +734,4 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
         this.issuer = issuer;
     }
 }
+/* @generated */

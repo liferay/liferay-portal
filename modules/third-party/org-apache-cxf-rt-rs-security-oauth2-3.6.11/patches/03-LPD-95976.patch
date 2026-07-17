@@ -1,0 +1,50 @@
+diff --git a/org/apache/cxf/rs/security/oauth2/filters/JwtAccessTokenValidator.java b/org/apache/cxf/rs/security/oauth2/filters/JwtAccessTokenValidator.java
+index f19a251..abc197c 100644
+--- a/org/apache/cxf/rs/security/oauth2/filters/JwtAccessTokenValidator.java
++++ b/org/apache/cxf/rs/security/oauth2/filters/JwtAccessTokenValidator.java
+@@ -33,6 +33,7 @@ import org.apache.cxf.rs.security.jose.jwt.JoseJwtConsumer;
+ import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
+ import org.apache.cxf.rs.security.jose.jwt.JwtConstants;
+ import org.apache.cxf.rs.security.jose.jwt.JwtToken;
++import org.apache.cxf.rs.security.jose.jwt.JwtUtils;
+ import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
+ import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
+ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
+@@ -47,6 +48,7 @@ public class JwtAccessTokenValidator extends JoseJwtConsumer implements AccessTo
+     private static final String USERNAME_PROP = "username";
+ 
+     private Map<String, String> jwtAccessTokenClaimMap;
++    private boolean validateAudience = true;
+ 
+     public List<String> getSupportedAuthorizationSchemes() {
+         return Collections.singletonList(OAuthConstants.BEARER_AUTHORIZATION_SCHEME);
+@@ -65,6 +67,15 @@ public class JwtAccessTokenValidator extends JoseJwtConsumer implements AccessTo
+         }
+     }
+ 
++    @Override
++    protected void validateToken(JwtToken jwt) {
++        // We must have an issuer
++        if (jwt.getClaim(JwtConstants.CLAIM_ISSUER) == null) {
++            throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
++        }
++
++        JwtUtils.validateTokenClaims(jwt.getClaims(), getTtl(), getClockOffset(), isValidateAudience());
++    }
+ 
+     private AccessTokenValidation convertClaimsToValidation(JwtClaims claims) {
+         AccessTokenValidation atv = new AccessTokenValidation();
+@@ -135,4 +146,13 @@ public class JwtAccessTokenValidator extends JoseJwtConsumer implements AccessTo
+         this.jwtAccessTokenClaimMap = jwtAccessTokenClaimMap;
+     }
+ 
++    public boolean isValidateAudience() {
++        return validateAudience;
++    }
++
++    public void setValidateAudience(boolean validateAudience) {
++        this.validateAudience = validateAudience;
++    }
++
+ }
++/* @generated */

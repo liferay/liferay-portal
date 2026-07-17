@@ -39,6 +39,7 @@ import org.apache.cxf.rs.security.oauth2.common.ServerAccessToken;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
 import org.apache.cxf.rs.security.oauth2.utils.JwtTokenUtils;
+import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
 
 import static org.apache.cxf.jaxrs.utils.ResourceUtils.getClasspathResourceURL;
 
@@ -274,7 +275,7 @@ public class JCacheOAuthDataProvider extends AbstractOAuthDataProvider {
     }
 
     protected static boolean isExpired(ServerAccessToken token) {
-        return System.currentTimeMillis() < (token.getIssuedAt() + token.getExpiresIn());
+        return OAuthUtils.isExpired(token.getIssuedAt(), token.getExpiresIn());
     }
 
     protected static CacheManager createCacheManager(String configFile, Bus bus) {
@@ -322,3 +323,4 @@ public class JCacheOAuthDataProvider extends AbstractOAuthDataProvider {
     }
 
 }
+/* @generated */

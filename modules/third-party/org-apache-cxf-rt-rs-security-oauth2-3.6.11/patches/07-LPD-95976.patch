@@ -1,0 +1,170 @@
+diff --git a/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java b/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
+index 703155b..9186ca2 100644
+--- a/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
++++ b/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
+@@ -262,14 +262,20 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
+ 
+     @Override
+     public void revokeToken(Client client, String tokenKey, String tokenTypeHint) throws OAuthServiceException {
++        revokeToken(client, null, tokenKey, tokenTypeHint);
++    }
++
++    @Override
++    public void revokeToken(Client client, UserSubject callerSubject, String tokenKey, String tokenTypeHint)
++        throws OAuthServiceException {
+         ServerAccessToken accessToken = null;
+         if (!OAuthConstants.REFRESH_TOKEN.equals(tokenTypeHint)) {
+-            accessToken = revokeAccessToken(client, tokenKey);
++            accessToken = revokeAccessToken(client, callerSubject, tokenKey);
+         }
+         if (accessToken != null) {
+             handleLinkedRefreshToken(client, accessToken);
+         } else if (!OAuthConstants.ACCESS_TOKEN.equals(tokenTypeHint)) {
+-            RefreshToken currentRefreshToken = revokeRefreshToken(client, tokenKey);
++            RefreshToken currentRefreshToken = revokeRefreshToken(client, callerSubject, tokenKey);
+             revokeAccessTokens(client, currentRefreshToken);
+         }
+     }
+@@ -578,21 +584,42 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
+     }
+ 
+     protected ServerAccessToken revokeAccessToken(Client client, String accessTokenKey) {
++        return revokeAccessToken(client, null, accessTokenKey);
++    }
++
++    protected ServerAccessToken revokeAccessToken(Client client, UserSubject callerSubject, String accessTokenKey) {
+         ServerAccessToken at = getAccessToken(accessTokenKey);
+         if (at != null) {
+             if (!at.getClient().getClientId().equals(client.getClientId())) {
+                 throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
+             }
++            // IDOR guard: if the revocation request carries a resource owner identity,
++            // it must match the subject bound to the token.  This prevents User A from
++            // revoking User B's token when both share the same OAuth2 client.
++            if (callerSubject != null && at.getSubject() != null
++                && !callerSubject.getLogin().equals(at.getSubject().getLogin())) {
++                throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
++            }
+             doRevokeAccessToken(at);
+         }
+         return at;
+     }
++
+     protected RefreshToken revokeRefreshToken(Client client, String refreshTokenKey) {
++        return revokeRefreshToken(client, null, refreshTokenKey);
++    }
++
++    protected RefreshToken revokeRefreshToken(Client client, UserSubject callerSubject, String refreshTokenKey) {
+         RefreshToken refreshToken = getRefreshToken(refreshTokenKey);
+         if (refreshToken != null) {
+             if (!refreshToken.getClient().getClientId().equals(client.getClientId())) {
+                 throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
+             }
++            // IDOR guard: same subject check as for access tokens.
++            if (callerSubject != null && refreshToken.getSubject() != null
++                && !callerSubject.getLogin().equals(refreshToken.getSubject().getLogin())) {
++                throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
++            }
+             doRevokeRefreshToken(refreshToken);
+         }
+         return refreshToken;
+diff --git a/org/apache/cxf/rs/security/oauth2/provider/OAuthDataProvider.java b/org/apache/cxf/rs/security/oauth2/provider/OAuthDataProvider.java
+index 8178edd..8dc40d7 100644
+--- a/org/apache/cxf/rs/security/oauth2/provider/OAuthDataProvider.java
++++ b/org/apache/cxf/rs/security/oauth2/provider/OAuthDataProvider.java
+@@ -113,6 +113,27 @@ public interface OAuthDataProvider {
+      */
+     void revokeToken(Client client, String tokenId, String tokenTypeHint) throws OAuthServiceException;
+ 
++    /**
++     * Revokes a refresh or access token, verifying that the authenticated resource owner's
++     * identity ({@code callerSubject}) matches the subject bound to the token.
++     * This prevents one user from revoking another user's token when multiple resource
++     * owners share the same OAuth2 client (IDOR guard).
++     * <p>
++     * {@code callerSubject} may be {@code null} for machine-to-machine (client credentials)
++     * flows where no end-user principal is present; in that case only the client-level
++     * check is applied.
++     *
++     * @param client the authenticated client
++     * @param callerSubject the authenticated resource owner, or {@code null} for M2M flows
++     * @param tokenId token identifier
++     * @param tokenTypeHint can be access_token or refresh_token or null
++     * @throws OAuthServiceException
++     */
++    default void revokeToken(Client client, UserSubject callerSubject, String tokenId, String tokenTypeHint)
++        throws OAuthServiceException {
++        revokeToken(client, tokenId, tokenTypeHint);
++    }
++
+     /**
+      * Converts the requested scopes to the list of permissions.
+      * The scopes are extracted from OAuth2 'scope' property which
+@@ -124,3 +145,4 @@ public interface OAuthDataProvider {
+     List<OAuthPermission> convertScopeToPermissions(Client client,
+                                                     List<String> requestedScopes);
+ }
++/* @generated */
+diff --git a/org/apache/cxf/rs/security/oauth2/services/TokenRevocationService.java b/org/apache/cxf/rs/security/oauth2/services/TokenRevocationService.java
+index f702d34..a4a5d92 100644
+--- a/org/apache/cxf/rs/security/oauth2/services/TokenRevocationService.java
++++ b/org/apache/cxf/rs/security/oauth2/services/TokenRevocationService.java
+@@ -25,8 +25,9 @@ import javax.ws.rs.Path;
+ import javax.ws.rs.Produces;
+ import javax.ws.rs.core.MultivaluedMap;
+ import javax.ws.rs.core.Response;
+-
++import javax.ws.rs.core.SecurityContext;
+ import org.apache.cxf.rs.security.oauth2.common.Client;
++import org.apache.cxf.rs.security.oauth2.common.UserSubject;
+ import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
+ import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
+ 
+@@ -59,7 +60,7 @@ public class TokenRevocationService extends AbstractTokenService {
+             return createErrorResponseFromErrorCode(OAuthConstants.UNSUPPORTED_TOKEN_TYPE);
+         }
+         try {
+-            getDataProvider().revokeToken(client, token, tokenTypeHint);
++            getDataProvider().revokeToken(client, getCallerUserSubject(client), token, tokenTypeHint);
+         } catch (OAuthServiceException ex) {
+             // Spec: The authorization server responds with HTTP status code 200 if the
+             // token has been revoked successfully or if the client submitted an
+@@ -67,4 +68,36 @@ public class TokenRevocationService extends AbstractTokenService {
+         }
+         return Response.ok().build();
+     }
+-}
+\ No newline at end of file
++
++    /**
++     * Resolves the resource owner identity from the JAX-RS security context.
++     * <p>
++     * In standard OAuth2 flows the revocation endpoint is authenticated by the
++     * <em>client</em> (HTTP Basic Auth, client_secret_post, mTLS, …), so
++     * {@code SecurityContext.getUserPrincipal()} normally carries the client's own
++     * name, not an end-user identity.  We must not mistake the client principal for
++     * a resource-owner subject, or we would block every legitimate client-initiated
++     * revocation (e.g. the canonical authorization-code flow where the client
++     * revokes its own token on logout).
++     * <p>
++     * A non-null {@link UserSubject} is returned only when a distinct end-user
++     * principal is present — i.e. the principal name differs from the authenticated
++     * client's {@code clientId}.  In that case the data provider will verify that
++     * the token belongs to that end-user (IDOR guard).  When the caller is the
++     * client itself, {@code null} is returned and only the client-level check applies.
++     */
++    private UserSubject getCallerUserSubject(Client client) {
++        SecurityContext sc = getMessageContext().getSecurityContext();
++        java.security.Principal principal = sc.getUserPrincipal();
++        if (principal == null || principal.getName() == null) {
++            return null;
++        }
++        // Principal name matches the client id → this is the client authenticating
++        // at the token endpoint, not an independent resource-owner identity.
++        if (principal.getName().equals(client.getClientId())) {
++            return null;
++        }
++        return new UserSubject(principal.getName());
++    }
++}
++/* @generated */

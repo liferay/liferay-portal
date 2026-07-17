@@ -1,0 +1,52 @@
+diff --git a/org/apache/cxf/rs/security/oauth2/grants/code/JCacheCodeDataProvider.java b/org/apache/cxf/rs/security/oauth2/grants/code/JCacheCodeDataProvider.java
+index ed9d982..cbdaf9a 100644
+--- a/org/apache/cxf/rs/security/oauth2/grants/code/JCacheCodeDataProvider.java
++++ b/org/apache/cxf/rs/security/oauth2/grants/code/JCacheCodeDataProvider.java
+@@ -32,6 +32,7 @@ import org.apache.cxf.rs.security.oauth2.common.Client;
+ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
+ import org.apache.cxf.rs.security.oauth2.provider.JCacheOAuthDataProvider;
+ import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
++import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
+ 
+ public class JCacheCodeDataProvider extends JCacheOAuthDataProvider
+     implements AuthorizationCodeDataProvider {
+@@ -133,7 +134,7 @@ public class JCacheCodeDataProvider extends JCacheOAuthDataProvider
+     }
+ 
+     protected static boolean isExpired(ServerAuthorizationCodeGrant grant) {
+-        return System.currentTimeMillis() < (grant.getIssuedAt() + grant.getExpiresIn());
++        return OAuthUtils.isExpired(grant.getIssuedAt(), grant.getExpiresIn());
+     }
+ 
+     @Override
+@@ -142,3 +143,4 @@ public class JCacheCodeDataProvider extends JCacheOAuthDataProvider
+         super.close();
+     }
+ }
++/* @generated */
+diff --git a/org/apache/cxf/rs/security/oauth2/provider/JCacheOAuthDataProvider.java b/org/apache/cxf/rs/security/oauth2/provider/JCacheOAuthDataProvider.java
+index 264915c..44a415c 100644
+--- a/org/apache/cxf/rs/security/oauth2/provider/JCacheOAuthDataProvider.java
++++ b/org/apache/cxf/rs/security/oauth2/provider/JCacheOAuthDataProvider.java
+@@ -39,6 +39,7 @@ import org.apache.cxf.rs.security.oauth2.common.ServerAccessToken;
+ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
+ import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
+ import org.apache.cxf.rs.security.oauth2.utils.JwtTokenUtils;
++import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
+ 
+ import static org.apache.cxf.jaxrs.utils.ResourceUtils.getClasspathResourceURL;
+ 
+@@ -274,7 +275,7 @@ public class JCacheOAuthDataProvider extends AbstractOAuthDataProvider {
+     }
+ 
+     protected static boolean isExpired(ServerAccessToken token) {
+-        return System.currentTimeMillis() < (token.getIssuedAt() + token.getExpiresIn());
++        return OAuthUtils.isExpired(token.getIssuedAt(), token.getExpiresIn());
+     }
+ 
+     protected static CacheManager createCacheManager(String configFile, Bus bus) {
+@@ -322,3 +323,4 @@ public class JCacheOAuthDataProvider extends AbstractOAuthDataProvider {
+     }
+ 
+ }
++/* @generated */

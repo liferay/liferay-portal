@@ -114,11 +114,11 @@ public class TokenIntrospectionService {
         SecurityContext sc = mc.getSecurityContext();
         if (!sc.isSecure() && blockUnsecureRequests) {
             LOG.warning("Unsecure HTTP, Transport Layer Security is recommended");
-            ExceptionUtils.toNotAuthorizedException(null,  null);
+            throw ExceptionUtils.toNotAuthorizedException(null,  null);
         }
         if (sc.getUserPrincipal() == null && blockUnauthorizedRequests) {
             LOG.warning("Authenticated Principal is not available");
-            ExceptionUtils.toNotAuthorizedException(null, null);
+            throw ExceptionUtils.toNotAuthorizedException(null, null);
         }
 
     }
@@ -161,3 +161,4 @@ public class TokenIntrospectionService {
     }
 
 }
+/* @generated */

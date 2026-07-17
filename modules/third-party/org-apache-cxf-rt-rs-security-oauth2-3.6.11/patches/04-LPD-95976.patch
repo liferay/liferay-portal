@@ -1,0 +1,26 @@
+diff --git a/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java b/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
+index 5782232..703155b 100644
+--- a/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
++++ b/org/apache/cxf/rs/security/oauth2/provider/AbstractOAuthDataProvider.java
+@@ -225,6 +225,16 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
+     @Override
+     public ServerAccessToken refreshAccessToken(Client client, String refreshTokenKey,
+                                                 List<String> restrictedScopes) throws OAuthServiceException {
++        if (!recycleRefreshTokens) {
++            synchronized (refreshTokenLock) {
++                return doRefreshAccessToken(client, refreshTokenKey, restrictedScopes);
++            }
++        }
++        return doRefreshAccessToken(client, refreshTokenKey, restrictedScopes);
++    }
++
++    private ServerAccessToken doRefreshAccessToken(Client client, String refreshTokenKey,
++                                                   List<String> restrictedScopes) {
+         RefreshToken currentRefreshToken = recycleRefreshTokens
+             ? revokeRefreshToken(client, refreshTokenKey) : getRefreshToken(refreshTokenKey);
+         if (currentRefreshToken == null) {
+@@ -697,3 +707,4 @@ public abstract class AbstractOAuthDataProvider implements OAuthDataProvider, Cl
+         this.issuer = issuer;
+     }
+ }
++/* @generated */

@@ -1,0 +1,53 @@
+diff --git a/org/apache/cxf/rs/security/oauth2/services/AbstractTokenService.java b/org/apache/cxf/rs/security/oauth2/services/AbstractTokenService.java
+index fb05cab..2334980 100644
+--- a/org/apache/cxf/rs/security/oauth2/services/AbstractTokenService.java
++++ b/org/apache/cxf/rs/security/oauth2/services/AbstractTokenService.java
+@@ -255,17 +255,18 @@ public class AbstractTokenService extends AbstractOAuthService {
+             return null;
+         }
+         Client client = null;
++        String sanitizedClientId = AuthorizationUtils.stripControlCharacters(clientId);
+         try {
+             client = getValidClient(clientId, clientSecret, params);
+         } catch (OAuthServiceException ex) {
+-            LOG.warning("No valid client found for clientId: " + clientId);
++            LOG.warning("No valid client found for clientId: " + sanitizedClientId);
+             if (ex.getError() != null) {
+                 reportInvalidClient(ex.getError());
+                 return null;
+             }
+         }
+         if (client == null) {
+-            LOG.warning("No valid client found for clientId: " + clientId);
++            LOG.warning("No valid client found for clientId: " + sanitizedClientId);
+             reportInvalidClient();
+         }
+         return client;
+@@ -301,3 +302,4 @@ public class AbstractTokenService extends AbstractOAuthService {
+         this.clientSecretVerifier = clientSecretVerifier;
+     }
+ }
++/* @generated */
+diff --git a/org/apache/cxf/rs/security/oauth2/utils/AuthorizationUtils.java b/org/apache/cxf/rs/security/oauth2/utils/AuthorizationUtils.java
+index b042eb6..a3a5cff 100644
+--- a/org/apache/cxf/rs/security/oauth2/utils/AuthorizationUtils.java
++++ b/org/apache/cxf/rs/security/oauth2/utils/AuthorizationUtils.java
+@@ -107,7 +107,7 @@ public final class AuthorizationUtils {
+         }
+         if (sb.length() > 0) {
+             if (realm != null) {
+-                sb.append(" realm=\"").append(realm).append('"');
++                sb.append(" realm=\"").append(stripControlCharacters(realm)).append('"');
+             }
+             rb.header(HttpHeaders.WWW_AUTHENTICATE, sb.toString());
+         }
+@@ -116,4 +116,9 @@ public final class AuthorizationUtils {
+         }
+         throw ExceptionUtils.toNotAuthorizedException(cause, rb.build());
+     }
++
++    public static String stripControlCharacters(String value) {
++        return value.replaceAll("[\\p{Cntrl}&&[^\\t]]", "_");
++    }
+ }
++/* @generated */
