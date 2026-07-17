@@ -50,7 +50,9 @@ public class AudiencesCriteriaProviderTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetAudiencesCriteriaTypes() throws Exception {
+	public void testGetBrowserAttributesAudiencesCriteriaType()
+		throws Exception {
+
 		List<AudiencesCriteriaType> audiencesCriteriaTypes =
 			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
 				TestPropsValues.getCompanyId(), LocaleUtil.getDefault());
@@ -72,7 +74,7 @@ public class AudiencesCriteriaProviderTest {
 	}
 
 	@Test
-	public void testGetAudiencesCriteriaTypesWithCustomAttribute()
+	public void testGetCustomAudiencesCriteriaTypeWithCustomAttribute()
 		throws Exception {
 
 		String name = RandomTestUtil.randomString();
