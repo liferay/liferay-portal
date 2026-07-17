@@ -184,13 +184,15 @@ public class DebugUtil {
 	}
 
 	private static void _printProcessingTimeInformation(CheckType checkType) {
-		if (!_checkNamesMap.containsKey(checkType)) {
+		List<String> checkNames = _checkNamesMap.get(checkType);
+
+		if (checkNames == null) {
 			return;
 		}
 
 		final Map<String, Double> checkTypeProcessingTimeMap = new HashMap<>();
 
-		for (String checkName : _checkNamesMap.get(checkType)) {
+		for (String checkName : checkNames) {
 			Double processingTime = _processingTimeMap.get(checkName);
 
 			if (processingTime != null) {

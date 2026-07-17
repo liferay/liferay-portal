@@ -120,13 +120,14 @@ public class XMLServiceFinderNameCheck extends BaseFileCheck {
 		if (finderColumns.size() == 1) {
 			Map<String, String> finderColumn = finderColumns.get(0);
 
-			if (!finderColumn.containsKey("name")) {
+			String name = finderColumn.get("name");
+
+			if (name == null) {
 				return;
 			}
 
 			String expectedFinderName = _checkCaps(
-				TextFormatter.format(
-					finderColumn.get("name"), TextFormatter.G));
+				TextFormatter.format(name, TextFormatter.G));
 
 			String comparator = finderColumn.get("comparator");
 
@@ -154,11 +155,11 @@ public class XMLServiceFinderNameCheck extends BaseFileCheck {
 
 		outerLoop:
 		for (Map<String, String> finderColumn : finderColumns) {
-			if (!finderColumn.containsKey("name")) {
+			String finderColumnName = finderColumn.get("name");
+
+			if (finderColumnName == null) {
 				continue;
 			}
-
-			String finderColumnName = finderColumn.get("name");
 
 			finderColumnName = StringUtil.upperCase(
 				finderColumnName.substring(0, 1));

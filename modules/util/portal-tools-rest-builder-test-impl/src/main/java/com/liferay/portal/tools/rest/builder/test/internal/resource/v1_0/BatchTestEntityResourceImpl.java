@@ -406,9 +406,10 @@ public class BatchTestEntityResourceImpl
 					() -> NestedFieldsSupplier.supply(
 						"relatedCompanyTestEntity",
 						nestedField -> {
-							if (!_relationships.containsKey(
-									originalBatchTestEntity.getId())) {
+							Long companyTestEntityId = _relationships.get(
+								originalBatchTestEntity.getId());
 
+							if (companyTestEntityId == null) {
 								return null;
 							}
 
@@ -421,9 +422,7 @@ public class BatchTestEntityResourceImpl
 								).build();
 
 							return companyTestEntityResource.
-								getCompanyTestEntity(
-									_relationships.get(
-										originalBatchTestEntity.getId()));
+								getCompanyTestEntity(companyTestEntityId);
 						}));
 			}
 		};
