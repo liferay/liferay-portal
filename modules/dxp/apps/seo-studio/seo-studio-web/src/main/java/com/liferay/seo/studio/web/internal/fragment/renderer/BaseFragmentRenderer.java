@@ -9,14 +9,22 @@ import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.data.set.serializer.FDSSerializer;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -24,6 +32,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -72,6 +82,60 @@ public abstract class BaseFragmentRenderer<T> implements FragmentRenderer {
 		}
 	}
 
+	protected JSONObject fetchSEOStudioScanMetricJSONObject(
+			HttpServletRequest httpServletRequest, String scope,
+			long seoStudioScanRunId)
+		throws Exception {
+
+		long companyId = portal.getCompanyId(httpServletRequest);
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_SEO_STUDIO_SCAN_METRIC", companyId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			companyId, objectDefinition, null, null,
+			getDTOConverterContext(objectDefinition),
+			StringBundler.concat(
+				"r_seoStudioScanRunToSEOStudioScanMetrics_seoStudioScanRunId ",
+				"eq '", seoStudioScanRunId, "' and scope eq '", scope, "'"),
+			Pagination.of(1, 1), null, null);
+
+		ObjectEntry objectEntry = page.fetchFirstItem();
+
+		if (objectEntry == null) {
+			return null;
+		}
+
+		Map<String, Object> properties = objectEntry.getProperties();
+
+		return JSONUtil.put(
+			"affectedPagesCount",
+			MapUtil.getInteger(properties, "affectedPagesCount")
+		).put(
+			"averageInsightsPerAffectedPage",
+			MapUtil.getDouble(properties, "averageInsightsPerAffectedPage")
+		).put(
+			"categoryBreakdown",
+			jsonFactory.createJSONObject(
+				MapUtil.getString(properties, "categoryBreakdown"))
+		).put(
+			"criticalInsights",
+			MapUtil.getInteger(properties, "criticalInsights")
+		).put(
+			"impactMix",
+			jsonFactory.createJSONObject(
+				MapUtil.getString(properties, "impactMix"))
+		).put(
+			"totalInsights", MapUtil.getInteger(properties, "totalInsights")
+		);
+	}
+
 	protected T getDisplayContext(HttpServletRequest httpServletRequest) {
 		return null;
 	}
@@ -89,6 +153,9 @@ public abstract class BaseFragmentRenderer<T> implements FragmentRenderer {
 
 	@Reference
 	protected FDSSerializer fdsSerializer;
+
+	@Reference
+	protected JSONFactory jsonFactory;
 
 	@Reference
 	protected Language language;

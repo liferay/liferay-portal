@@ -6,6 +6,8 @@
 import React from 'react';
 
 import SectionHeader from '../components/SectionHeader';
+import MetricsDashboard from '../components/metrics_dashboard/MetricsDashboard';
+import {Metrics} from '../components/metrics_dashboard/types';
 import InsightsView from '../insights_view/InsightsView';
 
 import './OnPage.scss';
@@ -18,6 +20,7 @@ export default function OnPage({
 	filters,
 	insightDetailsURL,
 	lastScanDate,
+	metrics,
 	views,
 }: {
 	apiURL: string;
@@ -27,6 +30,7 @@ export default function OnPage({
 	filters: any[];
 	insightDetailsURL: string;
 	lastScanDate: string | null;
+	metrics: Metrics | null;
 	views: any[];
 }) {
 	const handleSelectInsight = (externalReferenceCode: string) => {
@@ -42,6 +46,11 @@ export default function OnPage({
 			<SectionHeader
 				lastScanDate={lastScanDate}
 				title={Liferay.Language.get('on-page')}
+			/>
+
+			<MetricsDashboard
+				metrics={metrics}
+				scope={Liferay.Language.get('on-page')}
 			/>
 
 			<InsightsView

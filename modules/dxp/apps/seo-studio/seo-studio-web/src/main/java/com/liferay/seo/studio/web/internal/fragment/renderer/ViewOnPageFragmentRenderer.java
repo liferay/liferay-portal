@@ -10,6 +10,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
@@ -47,49 +48,26 @@ public class ViewOnPageFragmentRenderer
 	protected ViewOnPageDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		JSONArray filtersJSONArray = fdsSerializer.serializeFilters(
-			SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
-		ObjectEntry objectEntry = _fetchObjectEntry(httpServletRequest);
-		JSONArray viewsJSONArray = fdsSerializer.serializeViews(
-			SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
-
-		return new ViewOnPageDisplayContext(
-			filtersJSONArray, httpServletRequest, language, objectEntry,
-			_getSEOStudioScanIds(httpServletRequest, objectEntry),
-			viewsJSONArray);
-	}
-
-	@Override
-	protected String getJSPPath() {
-		return "/view_on_page.jsp";
-	}
-
-	private ObjectEntry _fetchObjectEntry(
-		HttpServletRequest httpServletRequest) {
-
 		try {
-			long companyId = portal.getCompanyId(httpServletRequest);
+			JSONArray filtersJSONArray = fdsSerializer.serializeFilters(
+				SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
+			ObjectEntry objectEntry = _fetchObjectEntry(httpServletRequest);
 
-			ObjectDefinition objectDefinition =
-				objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_SEO_STUDIO_SCAN_RUN", companyId);
+			JSONObject seoStudioScanMetricJSONObject = null;
 
-			if (objectDefinition == null) {
-				return null;
+			if (objectEntry != null) {
+				seoStudioScanMetricJSONObject =
+					fetchSEOStudioScanMetricJSONObject(
+						httpServletRequest, "onPage", objectEntry.getId());
 			}
 
-			Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
-				companyId, objectDefinition, null, null,
-				getDTOConverterContext(objectDefinition),
-				"state eq 'completed'", Pagination.of(1, 1), null,
-				new Sort[] {new Sort("requestDate", true)});
+			JSONArray viewsJSONArray = fdsSerializer.serializeViews(
+				SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
 
-			if (page == null) {
-				return null;
-			}
-
-			return page.fetchFirstItem();
+			return new ViewOnPageDisplayContext(
+				filtersJSONArray, httpServletRequest, language, objectEntry,
+				_getSEOStudioScanIds(httpServletRequest, objectEntry),
+				seoStudioScanMetricJSONObject, viewsJSONArray);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -100,45 +78,61 @@ public class ViewOnPageFragmentRenderer
 		}
 	}
 
+	@Override
+	protected String getJSPPath() {
+		return "/view_on_page.jsp";
+	}
+
+	private ObjectEntry _fetchObjectEntry(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		long companyId = portal.getCompanyId(httpServletRequest);
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_SEO_STUDIO_SCAN_RUN", companyId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			companyId, objectDefinition, null, null,
+			getDTOConverterContext(objectDefinition), "state eq 'completed'",
+			Pagination.of(1, 1), null,
+			new Sort[] {new Sort("requestDate", true)});
+
+		return page.fetchFirstItem();
+	}
+
 	private List<Long> _getSEOStudioScanIds(
-		HttpServletRequest httpServletRequest, ObjectEntry objectEntry) {
+			HttpServletRequest httpServletRequest, ObjectEntry objectEntry)
+		throws Exception {
 
 		if (objectEntry == null) {
 			return Collections.emptyList();
 		}
 
-		try {
-			long companyId = portal.getCompanyId(httpServletRequest);
+		long companyId = portal.getCompanyId(httpServletRequest);
 
-			ObjectDefinition objectDefinition =
-				objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_SEO_STUDIO_SCAN", companyId);
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_SEO_STUDIO_SCAN", companyId);
 
-			if (objectDefinition == null) {
-				return Collections.emptyList();
-			}
-
-			Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
-				companyId, objectDefinition, null, null,
-				getDTOConverterContext(objectDefinition),
-				"r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId eq '" +
-					objectEntry.getId() + "'",
-				Pagination.of(1, 100), null, null);
-
-			if (page == null) {
-				return Collections.emptyList();
-			}
-
-			return TransformUtil.transform(page.getItems(), ObjectEntry::getId);
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
-
+		if (objectDefinition == null) {
 			return Collections.emptyList();
 		}
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			companyId, objectDefinition, null, null,
+			getDTOConverterContext(objectDefinition),
+			"r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId eq '" +
+				objectEntry.getId() + "'",
+			Pagination.of(1, 100), null, null);
+
+		return TransformUtil.transform(page.getItems(), ObjectEntry::getId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

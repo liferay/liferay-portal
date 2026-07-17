@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -45,13 +46,14 @@ public class ViewOnPageDisplayContext {
 	public ViewOnPageDisplayContext(
 		JSONArray filtersJSONArray, HttpServletRequest httpServletRequest,
 		Language language, ObjectEntry objectEntry, List<Long> seoStudioScanIds,
-		JSONArray viewsJSONArray) {
+		JSONObject seoStudioScanMetricJSONObject, JSONArray viewsJSONArray) {
 
 		_filtersJSONArray = filtersJSONArray;
 		_httpServletRequest = httpServletRequest;
 		_language = language;
 		_objectEntry = objectEntry;
 		_seoStudioScanIds = seoStudioScanIds;
+		_seoStudioScanMetricJSONObject = seoStudioScanMetricJSONObject;
 		_viewsJSONArray = viewsJSONArray;
 	}
 
@@ -105,6 +107,8 @@ public class ViewOnPageDisplayContext {
 		).put(
 			"lastScanDate", lastScanDateString
 		).put(
+			"metrics", _seoStudioScanMetricJSONObject
+		).put(
 			"views", _viewsJSONArray
 		).build();
 	}
@@ -151,6 +155,8 @@ public class ViewOnPageDisplayContext {
 				"description",
 				_language.get(_httpServletRequest, "run-a-scan-to-see-insights")
 			).put(
+				"image", "/states/success_state.svg"
+			).put(
 				"title", _language.get(_httpServletRequest, "no-scans-yet")
 			).build();
 		}
@@ -170,6 +176,8 @@ public class ViewOnPageDisplayContext {
 				).build()
 			).build()
 		).put(
+			"image", "/states/success_state.svg"
+		).put(
 			"title", _language.get(_httpServletRequest, "no-insights-found")
 		).build();
 	}
@@ -179,6 +187,7 @@ public class ViewOnPageDisplayContext {
 	private final Language _language;
 	private final ObjectEntry _objectEntry;
 	private final List<Long> _seoStudioScanIds;
+	private final JSONObject _seoStudioScanMetricJSONObject;
 	private final JSONArray _viewsJSONArray;
 
 }

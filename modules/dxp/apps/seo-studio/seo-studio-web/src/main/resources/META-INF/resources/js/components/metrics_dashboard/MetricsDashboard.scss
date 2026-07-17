@@ -1,0 +1,263 @@
+.seo-studio-metrics-dashboard {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	.seo-studio-metrics-dashboard-legend-dot {
+		border-radius: 50%;
+		display: inline-block;
+		flex-shrink: 0;
+		height: 10px;
+		width: 10px;
+	}
+
+	.seo-studio-metrics-dashboard-tiles {
+		display: grid;
+		gap: 24px;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+		.seo-studio-metrics-dashboard-tile {
+			background-color: var(--white, #fff);
+			border: 1px solid var(--secondary-l2, #e7e7ed);
+			border-radius: 12px;
+			display: flex;
+			flex-direction: column;
+			padding: 20px 24px;
+
+			.seo-studio-metrics-dashboard-tile-header {
+				align-items: flex-start;
+				display: flex;
+				gap: 12px;
+				justify-content: space-between;
+
+				.seo-studio-metrics-dashboard-tile-title {
+					color: var(--gray-900, #1a1a25);
+					font-size: 1rem;
+					font-weight: 600;
+				}
+
+				.seo-studio-metrics-dashboard-tile-icon {
+					align-items: center;
+					background-color: var(--primary-l2, #e7f0ff);
+					border-radius: 8px;
+					color: var(--primary, #0b5fff);
+					display: flex;
+					flex-shrink: 0;
+					height: 32px;
+					justify-content: center;
+					width: 32px;
+				}
+			}
+
+			.seo-studio-metrics-dashboard-tile-description {
+				color: var(--secondary, #6b6c7e);
+				font-size: 0.875rem;
+				margin: 8px 0 16px;
+				min-height: 2.5em;
+			}
+
+			.seo-studio-metrics-dashboard-tile-value {
+				color: var(--gray-900, #1a1a25);
+				font-size: 2.5rem;
+				font-weight: 600;
+				line-height: 1;
+				margin-top: auto;
+			}
+
+			.seo-studio-metrics-dashboard-tile-value-empty {
+				font-size: 1.25rem;
+			}
+		}
+	}
+
+	.seo-studio-metrics-dashboard-panels {
+		display: grid;
+		gap: 24px;
+		grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+
+		.seo-studio-metrics-dashboard-panel {
+			background-color: var(--white, #fff);
+			border: 1px solid var(--secondary-l2, #e7e7ed);
+			border-radius: 12px;
+			padding: 24px;
+
+			.seo-studio-metrics-dashboard-panel-header {
+				margin-bottom: 24px;
+
+				.seo-studio-metrics-dashboard-panel-title {
+					font-size: 0.875rem;
+					font-weight: 600;
+					letter-spacing: 0.04em;
+					margin: 0;
+					text-transform: uppercase;
+				}
+
+				.seo-studio-metrics-dashboard-panel-subtitle {
+					font-size: 0.875rem;
+					margin: 4px 0 0;
+				}
+			}
+		}
+	}
+
+	.seo-studio-metrics-dashboard-category-tooltip {
+		background-color: var(--white, #fff);
+		border: 1px solid var(--secondary-l2, #e7e7ed);
+		border-radius: 8px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+		min-width: 150px;
+		padding: 12px 16px;
+
+		.seo-studio-metrics-dashboard-category-tooltip-title {
+			border-bottom: 1px solid var(--secondary-l2, #e7e7ed);
+			color: var(--gray-900, #1a1a25);
+			font-weight: 600;
+			padding-bottom: 8px;
+		}
+
+		.seo-studio-metrics-dashboard-category-tooltip-values {
+			color: var(--secondary, #6b6c7e);
+			display: flex;
+			gap: 24px;
+			padding-top: 8px;
+		}
+	}
+
+	.seo-studio-metrics-dashboard-impact-tooltip {
+		background-color: var(--white, #fff);
+		border: 1px solid var(--secondary-l2, #e7e7ed);
+		border-radius: 8px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+		min-width: 160px;
+		padding: 12px 16px;
+
+		.seo-studio-metrics-dashboard-impact-tooltip-title {
+			border-bottom: 1px solid var(--secondary-l2, #e7e7ed);
+			color: var(--gray-900, #1a1a25);
+			font-weight: 600;
+			padding-bottom: 8px;
+		}
+
+		.seo-studio-metrics-dashboard-impact-tooltip-rows {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			padding-top: 8px;
+
+			.seo-studio-metrics-dashboard-impact-tooltip-row {
+				align-items: center;
+				color: var(--secondary, #6b6c7e);
+				display: flex;
+				gap: 8px;
+
+				.seo-studio-metrics-dashboard-impact-tooltip-row-label {
+					flex: 1;
+				}
+			}
+		}
+	}
+
+	.seo-studio-metrics-dashboard-category {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 64px;
+
+		.seo-studio-metrics-dashboard-category-chart {
+			flex-shrink: 0;
+			height: 220px;
+			position: relative;
+			width: 220px;
+
+			.seo-studio-metrics-dashboard-category-center {
+				align-items: center;
+				color: var(--gray-900, #1a1a25);
+				display: flex;
+				font-size: 0.9375rem;
+				inset: 0;
+				justify-content: center;
+				pointer-events: none;
+				position: absolute;
+			}
+		}
+
+		.seo-studio-metrics-dashboard-category-legend {
+			flex: 1;
+			list-style: none;
+			margin: 0;
+			min-width: 220px;
+			padding: 0;
+
+			.seo-studio-metrics-dashboard-category-legend-item {
+				align-items: center;
+				display: flex;
+				gap: 12px;
+				padding: 6px 0;
+
+				.seo-studio-metrics-dashboard-category-legend-name {
+					color: var(--gray-900, #1a1a25);
+					flex: 1;
+				}
+
+				.seo-studio-metrics-dashboard-category-legend-count {
+					color: var(--gray-900, #1a1a25);
+					font-weight: 600;
+					text-align: right;
+					width: 48px;
+				}
+
+				.seo-studio-metrics-dashboard-category-legend-percent {
+					color: var(--secondary, #6b6c7e);
+					text-align: right;
+					width: 48px;
+				}
+			}
+		}
+	}
+
+	.seo-studio-metrics-dashboard-impact {
+		.seo-studio-metrics-dashboard-impact-caption {
+			font-size: 0.8125rem;
+			margin: 0 0 12px;
+		}
+
+		.seo-studio-metrics-dashboard-impact-legend {
+			display: flex;
+			gap: 24px;
+			justify-content: flex-end;
+			list-style: none;
+			margin: 12px 0 0;
+			padding: 0;
+
+			.seo-studio-metrics-dashboard-impact-legend-item {
+				align-items: center;
+				color: var(--secondary, #6b6c7e);
+				display: flex;
+				font-size: 0.875rem;
+				gap: 8px;
+			}
+		}
+	}
+
+	.seo-studio-metrics-dashboard-chart-empty {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		min-height: 260px;
+		text-align: center;
+
+		.seo-studio-metrics-dashboard-chart-empty-title {
+			color: var(--gray-900, #1a1a25);
+			font-size: 1rem;
+			font-weight: 600;
+			margin: 0 0 8px;
+		}
+
+		.seo-studio-metrics-dashboard-chart-empty-description {
+			font-size: 0.875rem;
+			margin: 0;
+			max-width: 320px;
+		}
+	}
+}
