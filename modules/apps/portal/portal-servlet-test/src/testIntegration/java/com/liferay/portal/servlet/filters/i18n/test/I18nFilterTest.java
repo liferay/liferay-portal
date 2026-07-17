@@ -432,8 +432,6 @@ public class I18nFilterTest {
 			boolean layoutFriendlyURLPublicServletMappingEnabled)
 		throws Exception {
 
-		long companyId = PortalInstances.getCompanyId(mockHttpServletRequest);
-
 		String i18nPath =
 			"/" + _portal.getI18nPathLanguageId(LocaleUtil.SPAIN, null);
 
@@ -462,6 +460,8 @@ public class I18nFilterTest {
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
 				_group.getFriendlyURL());
 		mockHttpServletRequest.setServerName("localhost");
+
+		long companyId = PortalInstances.getCompanyId(mockHttpServletRequest);
 
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
