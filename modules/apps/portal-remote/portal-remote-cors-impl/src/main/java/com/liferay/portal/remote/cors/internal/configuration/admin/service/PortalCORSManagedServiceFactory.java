@@ -125,9 +125,7 @@ public class PortalCORSManagedServiceFactory implements ManagedServiceFactory {
 		for (String urlPattern :
 				portalCORSConfiguration.filterMappingURLPatterns()) {
 
-			if (!corsSupports.containsKey(urlPattern)) {
-				corsSupports.put(urlPattern, corsSupport);
-			}
+			corsSupports.putIfAbsent(urlPattern, corsSupport);
 		}
 	}
 

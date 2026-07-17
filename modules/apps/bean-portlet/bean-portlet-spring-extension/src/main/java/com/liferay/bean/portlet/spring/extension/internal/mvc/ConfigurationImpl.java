@@ -119,9 +119,7 @@ public class ConfigurationImpl implements Configuration {
 				_portletContext.getInitParameter(initParameterName));
 		}
 
-		if (!_properties.containsKey(DEFAULT_VIEW_EXTENSION)) {
-			_properties.put(DEFAULT_VIEW_EXTENSION, "jsp");
-		}
+		_properties.putIfAbsent(DEFAULT_VIEW_EXTENSION, "jsp");
 	}
 
 	@Autowired

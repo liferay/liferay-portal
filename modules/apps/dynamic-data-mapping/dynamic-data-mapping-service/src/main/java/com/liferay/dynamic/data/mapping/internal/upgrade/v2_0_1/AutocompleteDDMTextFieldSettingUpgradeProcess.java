@@ -128,10 +128,8 @@ public class AutocompleteDDMTextFieldSettingUpgradeProcess
 			if (Objects.equals(ddmFormField.getType(), "text")) {
 				Map<String, Object> properties = ddmFormField.getProperties();
 
-				if (!properties.containsKey("autocomplete")) {
-					properties.put(
-						"autocomplete", _isAutocompleteEnabled(properties));
-				}
+				properties.putIfAbsent(
+					"autocomplete", _isAutocompleteEnabled(properties));
 			}
 		}
 

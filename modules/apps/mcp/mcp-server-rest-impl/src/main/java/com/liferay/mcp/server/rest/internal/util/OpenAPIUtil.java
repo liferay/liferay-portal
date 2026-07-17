@@ -438,9 +438,7 @@ public class OpenAPIUtil {
 			allOfSchemaMap.put("required", List.copyOf(requiredPropertyNames));
 		}
 
-		if (!allOfSchemaMap.containsKey("type")) {
-			allOfSchemaMap.put("type", "object");
-		}
+		allOfSchemaMap.putIfAbsent("type", "object");
 
 		_filterReadOnlyProperties(allOfSchemaMap);
 

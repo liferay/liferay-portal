@@ -468,7 +468,7 @@ public class ViewChangesDisplayContext {
 				ModelInfoKey selectedModelInfoKey = new ModelInfoKey(
 					_modelClassNameId, _modelClassPK);
 
-				if (!modelInfoMap.containsKey(selectedModelInfoKey)) {
+				if (modelInfoMap.get(selectedModelInfoKey) == null) {
 					modelInfoMap.put(
 						selectedModelInfoKey, new ModelInfo(modelKeyCounter++));
 
@@ -489,7 +489,7 @@ public class ViewChangesDisplayContext {
 						ModelInfoKey modelInfoKey = new ModelInfoKey(
 							classNameId, classPK);
 
-						if (!modelInfoMap.containsKey(modelInfoKey)) {
+						if (modelInfoMap.get(modelInfoKey) == null) {
 							modelInfoMap.put(
 								modelInfoKey, new ModelInfo(modelKeyCounter++));
 

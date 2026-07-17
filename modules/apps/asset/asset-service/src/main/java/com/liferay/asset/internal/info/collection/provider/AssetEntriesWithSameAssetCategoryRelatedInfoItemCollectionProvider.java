@@ -283,20 +283,15 @@ public class AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 
 			assetCategoryIds.add(assetEntryAssetCategoryId);
 
-			if (!otherAssetCategoriesAssetVocabulariesMap.containsKey(
-					assetCategory.getVocabularyId())) {
-
-				otherAssetCategoriesAssetVocabulariesMap.put(
-					assetCategory.getVocabularyId(),
-					ListUtil.filter(
-						ListUtil.toList(
-							_assetCategoryLocalService.getVocabularyCategories(
-								assetCategory.getVocabularyId(),
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-							AssetCategory.CATEGORY_ID_ACCESSOR),
-						categoryId -> !ArrayUtil.contains(
-							assetEntry.getCategoryIds(), categoryId)));
-			}
+			otherAssetCategoriesAssetVocabulariesMap.computeIfAbsent(
+				assetCategory.getVocabularyId(),
+				key -> ListUtil.filter(
+					ListUtil.toList(
+						_assetCategoryLocalService.getVocabularyCategories(
+							key, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+						AssetCategory.CATEGORY_ID_ACCESSOR),
+					categoryId -> !ArrayUtil.contains(
+						assetEntry.getCategoryIds(), categoryId)));
 		}
 
 		List<BooleanFilter> booleanFilters = new ArrayList<>();
