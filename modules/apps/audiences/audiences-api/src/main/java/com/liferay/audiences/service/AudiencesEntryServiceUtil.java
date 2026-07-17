@@ -32,12 +32,11 @@ public class AudiencesEntryServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.audiences.service.impl.AudiencesEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, String json, String name,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			String externalReferenceCode, String json, String name)
 		throws PortalException {
 
 		return getService().addAudiencesEntry(
-			externalReferenceCode, json, name, serviceContext);
+			externalReferenceCode, json, name);
 	}
 
 	public static AudiencesEntry deleteAudiencesEntry(long audiencesEntryId)
@@ -109,4 +108,4 @@ public class AudiencesEntryServiceUtil {
 			AudiencesEntryServiceUtil.class, AudiencesEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1816943745
+// LIFERAY-SERVICE-BUILDER-HASH:136972504

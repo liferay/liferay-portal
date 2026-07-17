@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -45,8 +44,7 @@ public interface AudiencesEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.audiences.service.impl.AudiencesEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the audiences entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link AudiencesEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, String json, String name,
-			ServiceContext serviceContext)
+			String externalReferenceCode, String json, String name)
 		throws PortalException;
 
 	public AudiencesEntry deleteAudiencesEntry(long audiencesEntryId)
@@ -88,4 +86,4 @@ public interface AudiencesEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:430037065
+// LIFERAY-SERVICE-BUILDER-HASH:-1154094722
