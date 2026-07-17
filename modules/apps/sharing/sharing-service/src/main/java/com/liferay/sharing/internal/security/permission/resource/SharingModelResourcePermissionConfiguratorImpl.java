@@ -29,10 +29,11 @@ import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.security.permission.resource.SharingModelResourcePermissionConfigurator;
 import com.liferay.sharing.service.SharingEntryLocalService;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import org.osgi.framework.BundleContext;
@@ -121,7 +122,8 @@ public class SharingModelResourcePermissionConfiguratorImpl
 	@Reference
 	private GroupLocalService _groupLocalService;
 
-	private final Set<String> _modelClassNames = new HashSet<>();
+	private final Set<String> _modelClassNames = Collections.newSetFromMap(
+		new ConcurrentHashMap<>());
 
 	@Reference
 	private SharingConfigurationFactory _sharingConfigurationFactory;
