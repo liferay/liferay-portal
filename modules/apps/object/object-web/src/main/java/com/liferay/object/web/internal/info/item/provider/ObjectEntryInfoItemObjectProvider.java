@@ -90,10 +90,11 @@ public class ObjectEntryInfoItemObjectProvider
 		Map<InfoItemIdentifier, ObjectEntry> objectEntries = _getObjectEntries(
 			serviceContext.getRequest());
 
-		if (objectEntries.containsKey(ercInfoItemIdentifier)) {
+		ObjectEntry curObjectEntry = objectEntries.get(ercInfoItemIdentifier);
+
+		if (curObjectEntry != null) {
 			return _resolveLatestApprovedObjectEntry(
-				objectEntries.get(ercInfoItemIdentifier),
-				ercInfoItemIdentifier.getVersion());
+				curObjectEntry, ercInfoItemIdentifier.getVersion());
 		}
 
 		Group group = null;

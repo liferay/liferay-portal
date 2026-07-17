@@ -167,14 +167,14 @@ public class ObjectEntryEntityModel implements EntityModel {
 	private Map<String, EntityField> _getObjectDefinitionEntityFieldsMap(
 		ObjectDefinition objectDefinition) {
 
-		if (_entityFieldsMaps.containsKey(
-				objectDefinition.getObjectDefinitionId())) {
+		Map<String, EntityField> entityFieldsMap = _entityFieldsMaps.get(
+			objectDefinition.getObjectDefinitionId());
 
-			return _entityFieldsMaps.get(
-				objectDefinition.getObjectDefinitionId());
+		if (entityFieldsMap != null) {
+			return entityFieldsMap;
 		}
 
-		Map<String, EntityField> entityFieldsMap = _getStringEntityFieldsMap(
+		entityFieldsMap = _getStringEntityFieldsMap(
 			objectDefinition,
 			ObjectFieldLocalServiceUtil.getObjectFields(
 				objectDefinition.getObjectDefinitionId()));
