@@ -69,13 +69,13 @@ export default function RuleRow({
 	const isMovementTarget =
 		Boolean(movementSource) && movementTarget.nodeId === rule.id;
 
-	const isMovementTargetBottomPosition =
+	const isMovementTargetBottom =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
 
-	const isMovementTargetGroupPosition =
+	const isMovementTargetGroup =
 		isMovementTarget && movementTarget.position === 'group';
 
-	const isMovementTargetTopPosition =
+	const isMovementTargetTop =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.top;
 
 	const [{isDragging}, dragRef, dragPreviewRef] = useDrag<
@@ -151,11 +151,11 @@ export default function RuleRow({
 			<ErrorRuleRow
 				dropBottom={
 					(isOver && dropPosition === DROP_POSITIONS.bottom) ||
-					isMovementTargetBottomPosition
+					isMovementTargetBottom
 				}
 				dropTop={
 					(isOver && dropPosition === DROP_POSITIONS.top) ||
-					isMovementTargetTopPosition
+					isMovementTargetTop
 				}
 				navigationProps={navigationProps}
 				nodeId={rule.id}
@@ -180,13 +180,13 @@ export default function RuleRow({
 						isDragging || isMovementSource,
 					'audience-builder-rule--drop-bottom':
 						(isOver && dropPosition === DROP_POSITIONS.bottom) ||
-						isMovementTargetBottomPosition,
+						isMovementTargetBottom,
 					'audience-builder-rule--drop-group':
 						(isOver && dropPosition === 'group') ||
-						isMovementTargetGroupPosition,
+						isMovementTargetGroup,
 					'audience-builder-rule--drop-top':
 						(isOver && dropPosition === DROP_POSITIONS.top) ||
-						isMovementTargetTopPosition,
+						isMovementTargetTop,
 				}
 			)}
 			data-keyboard-movement-id={rule.id}
