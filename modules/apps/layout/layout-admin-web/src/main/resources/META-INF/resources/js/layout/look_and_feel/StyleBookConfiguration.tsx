@@ -114,26 +114,23 @@ export default function StyleBookConfiguration({
 	changeStyleBookURL,
 	isReadOnly,
 	portletNamespace,
-	styleBookEntryDesignLibraryName: initialStyleBookEntryDesignLibraryName,
 	styleBookEntryERC: initialStyleBookEntryERC,
 	styleBookEntryName: initialStyleBookEntryName,
-	styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
+	styleBookEntryScope: initialStyleBookEntryScope,
 	styleBooksApiURL,
 }: {
 	changeStyleBookURL: string;
 	isReadOnly: boolean;
 	portletNamespace: string;
-	styleBookEntryDesignLibraryName: string | null;
 	styleBookEntryERC: string;
 	styleBookEntryName: string;
-	styleBookEntryScopeERC: string;
+	styleBookEntryScope: Scope | null;
 	styleBooksApiURL: string;
 }) {
 	const [styleBookEntry, setStyleBookEntry] = useState({
-		designLibraryName: initialStyleBookEntryDesignLibraryName,
 		name: initialStyleBookEntryName,
+		scope: initialStyleBookEntryScope,
 		styleBookEntryERC: initialStyleBookEntryERC,
-		styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 	});
 
 	const [selectedItems, setSelectedItems] = useState<StyleBook[]>([]);
@@ -151,14 +148,7 @@ export default function StyleBookConfiguration({
 					{
 						externalReferenceCode: styleBookEntry.styleBookEntryERC,
 						name: styleBookEntry.name,
-						scope: styleBookEntry.styleBookEntryScopeERC
-							? {
-									externalReferenceCode:
-										styleBookEntry.styleBookEntryScopeERC,
-									label:
-										styleBookEntry.designLibraryName ?? '',
-								}
-							: null,
+						scope: styleBookEntry.scope,
 					},
 				]);
 			}
@@ -173,10 +163,9 @@ export default function StyleBookConfiguration({
 						const itemValue = JSON.parse(selectedItem.value);
 
 						setStyleBookEntry({
-							designLibraryName: null,
 							name: itemValue.name,
+							scope: null,
 							styleBookEntryERC: itemValue.externalReferenceCode,
-							styleBookEntryScopeERC: '',
 						});
 					}
 				},
@@ -187,7 +176,7 @@ export default function StyleBookConfiguration({
 		}
 	};
 
-	const styleBookApiURLWithNestedFields = `${styleBooksApiURL}${styleBooksApiURL.includes('?') ? '&' : '?'}nestedFields=scope.key,scope.label`;
+	const styleBookApiURLWithNestedFields = `${styleBooksApiURL}${styleBooksApiURL.includes('?') ? '&' : '?'}nestedFields=scope.label`;
 
 	return (
 		<>
@@ -200,7 +189,7 @@ export default function StyleBookConfiguration({
 			<input
 				name={`${portletNamespace}styleBookEntryScopeERC`}
 				type="hidden"
-				value={styleBookEntry.styleBookEntryScopeERC}
+				value={styleBookEntry.scope?.externalReferenceCode ?? ''}
 			/>
 
 			<label htmlFor={`${portletNamespace}styleBookEntry`}>
@@ -227,10 +216,10 @@ export default function StyleBookConfiguration({
 				/>
 			</div>
 
-			{styleBookEntry.designLibraryName && (
+			{styleBookEntry.scope?.label && (
 				<div className="mt-2">
 					<DesignLibraryNameLabel
-						value={styleBookEntry.designLibraryName}
+						value={styleBookEntry.scope.label}
 					/>
 				</div>
 			)}
@@ -274,13 +263,10 @@ export default function StyleBookConfiguration({
 					onItemsChange={(items) => {
 						if (items[0]) {
 							setStyleBookEntry({
-								designLibraryName:
-									items[0].scope?.label ?? null,
 								name: items[0].name,
+								scope: items[0].scope ?? null,
 								styleBookEntryERC:
 									items[0].externalReferenceCode,
-								styleBookEntryScopeERC:
-									items[0].scope?.externalReferenceCode ?? '',
 							});
 						}
 

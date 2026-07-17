@@ -239,28 +239,6 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
-			"styleBookEntryDesignLibraryName",
-			() -> {
-				StyleBookEntry styleBookEntry =
-					StyleBookEntryProviderUtil.getStyleBookEntry(
-						_layoutsAdminDisplayContext.getSelLayout());
-
-				if ((styleBookEntry == null) ||
-					(styleBookEntry.getStyleBookEntryId() <= 0)) {
-
-					return null;
-				}
-
-				Group group = GroupLocalServiceUtil.fetchGroup(
-					styleBookEntry.getGroupId());
-
-				if ((group == null) || !group.isDepot()) {
-					return null;
-				}
-
-				return group.getDescriptiveName(_themeDisplay.getLocale());
-			}
-		).put(
 			"styleBookEntryERC",
 			() -> {
 				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
@@ -270,12 +248,32 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"styleBookEntryName", getStyleBookEntryName()
 		).put(
-			"styleBookEntryScopeERC",
+			"styleBookEntryScope",
 			() -> {
-				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+				StyleBookEntry styleBookEntry =
+					StyleBookEntryProviderUtil.getStyleBookEntry(
+						_layoutsAdminDisplayContext.getSelLayout());
 
-				return GetterUtil.getString(
-					selLayout.getStyleBookEntryScopeERC());
+				if ((styleBookEntry == null) ||
+					(styleBookEntry.getStyleBookEntryId() <= 0) ||
+					(styleBookEntry.getGroupId() ==
+						_themeDisplay.getSiteGroupId())) {
+
+					return null;
+				}
+
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					styleBookEntry.getGroupId());
+
+				if (group == null) {
+					return null;
+				}
+
+				return JSONUtil.put(
+					"externalReferenceCode", group.getExternalReferenceCode()
+				).put(
+					"label", group.getDescriptiveName(_themeDisplay.getLocale())
+				);
 			}
 		).put(
 			"styleBooksApiURL",

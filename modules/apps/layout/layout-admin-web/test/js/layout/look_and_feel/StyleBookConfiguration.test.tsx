@@ -59,10 +59,9 @@ const DEFAULT_PROPS = {
 	changeStyleBookURL: '/change-style-book',
 	isReadOnly: false,
 	portletNamespace: 'ns_',
-	styleBookEntryDesignLibraryName: null,
 	styleBookEntryERC: 'initial-erc',
 	styleBookEntryName: 'Initial Style Book',
-	styleBookEntryScopeERC: '',
+	styleBookEntryScope: null,
 	styleBooksApiURL: '/api/style-books',
 };
 
@@ -83,7 +82,10 @@ describe('StyleBookConfiguration', () => {
 		render(
 			<StyleBookConfiguration
 				{...DEFAULT_PROPS}
-				styleBookEntryDesignLibraryName="My Design Library"
+				styleBookEntryScope={{
+					externalReferenceCode: 'lib-erc',
+					label: 'My Design Library',
+				}}
 			/>
 		);
 
@@ -152,7 +154,10 @@ describe('StyleBookConfiguration', () => {
 		render(
 			<StyleBookConfiguration
 				{...DEFAULT_PROPS}
-				styleBookEntryDesignLibraryName="Old Library"
+				styleBookEntryScope={{
+					externalReferenceCode: 'lib-erc',
+					label: 'Old Library',
+				}}
 			/>
 		);
 
