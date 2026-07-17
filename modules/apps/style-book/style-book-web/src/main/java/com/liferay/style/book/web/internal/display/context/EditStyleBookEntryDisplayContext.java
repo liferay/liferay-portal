@@ -103,7 +103,7 @@ public class EditStyleBookEntryDisplayContext {
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		_setViewAttributes();
+		_updatePortletDisplay();
 	}
 
 	public Map<String, Object> getStyleBookEditorData() throws Exception {
@@ -689,7 +689,7 @@ public class EditStyleBookEntryDisplayContext {
 		return styleBookEntry.getName();
 	}
 
-	private void _setViewAttributes() {
+	private void _updatePortletDisplay() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
 		portletDisplay.setShowBackIcon(true);

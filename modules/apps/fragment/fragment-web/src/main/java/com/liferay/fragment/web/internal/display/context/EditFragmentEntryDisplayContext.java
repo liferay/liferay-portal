@@ -100,7 +100,7 @@ public class EditFragmentEntryDisplayContext {
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		_setViewAttributes();
+		_updatePortletDisplay();
 	}
 
 	public long getFragmentCollectionId() {
@@ -629,7 +629,7 @@ public class EditFragmentEntryDisplayContext {
 		return _readOnly;
 	}
 
-	private void _setViewAttributes() {
+	private void _updatePortletDisplay() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
 		if (DesignLibraryUtil.isDesignLibraryScope(

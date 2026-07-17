@@ -91,7 +91,7 @@ public class FragmentDisplayContext {
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		_setViewAttributes();
+		_updatePortletDisplay();
 	}
 
 	public List<DropdownItem> getActionDropdownItems() throws Exception {
@@ -1086,7 +1086,7 @@ public class FragmentDisplayContext {
 		return true;
 	}
 
-	private void _setViewAttributes() {
+	private void _updatePortletDisplay() {
 		if (!DesignLibraryUtil.isDesignLibraryScope(
 				_themeDisplay.getScopeGroup())) {
 
