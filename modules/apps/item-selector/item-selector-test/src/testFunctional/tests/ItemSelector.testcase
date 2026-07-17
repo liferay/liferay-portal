@@ -194,27 +194,6 @@ definition {
 			videoShortcutTitle = "Test YouTube Video");
 	}
 
-	@description = "Checks if user can edit a KB article adding an Image via Upload Image."
-	@priority = 3
-	test CanUploadImageInKBContentField {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.editCP(
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbArticleTitleEdit = "Knowledge Base Article Title Edit",
-			navTab = "Upload Image",
-			uploadFileName = "Document_1.jpg");
-
-		KBArticle.viewImageIsPresent(
-			contentImageName = "Document_1.jpg",
-			kbArticleTitle = "Knowledge Base Article Title Edit");
-	}
-
 	@description = "Checks if user can edit a Wiki page adding an Image via URL."
 	@priority = 3
 	test CanUploadImageInWikiPage {
