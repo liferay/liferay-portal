@@ -655,9 +655,7 @@ public class TestIntegrationPlugin implements Plugin<Project> {
 		Map<String, Object> systemProperties =
 			javaForkOptions.getSystemProperties();
 
-		if (!systemProperties.containsKey(key)) {
-			systemProperties.put(key, FileUtil.getAbsolutePath(file));
-		}
+		systemProperties.putIfAbsent(key, FileUtil.getAbsolutePath(file));
 	}
 
 	@SuppressWarnings("serial")
