@@ -179,10 +179,10 @@ public abstract class BaseDetector {
 		throws Exception {
 
 		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
+			JSONArray pagesJSONArray = new JSONArray();
+
 			List<String> batchPageURLs = pageURLs.subList(
 				i, Math.min(i + _BATCH_SIZE, pageURLs.size()));
-
-			JSONArray pagesJSONArray = new JSONArray();
 
 			for (String pageURL : batchPageURLs) {
 				pagesJSONArray.put(
@@ -206,10 +206,10 @@ public abstract class BaseDetector {
 		).toString();
 
 		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
+			JSONArray scanInsightsJSONArray = new JSONArray();
+
 			List<String> batchPageURLs = pageURLs.subList(
 				i, Math.min(i + _BATCH_SIZE, pageURLs.size()));
-
-			JSONArray scanInsightsJSONArray = new JSONArray();
 
 			for (String pageURL : batchPageURLs) {
 				Long seoStudioPageId = pageURLToPageIdMap.get(pageURL);
