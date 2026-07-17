@@ -6,10 +6,15 @@
 import {ClayAIButton} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import {InternalDispatch, useControlledState} from '@clayui/shared';
-import React, {useRef} from 'react';
+import {
+	InternalDispatch,
+	getFocusableList,
+	useControlledState,
+} from '@clayui/shared';
+import React, {useId, useRef} from 'react';
 
 import DropDown from './DropDown';
+import {FocusMenu} from './FocusMenu';
 
 type AIState = 'menu' | 'prompt' | 'result' | 'working';
 
@@ -303,6 +308,10 @@ export function ClayDropDownWithAI({
 	trigger,
 	workingLabel = 'Working on it…',
 }: Props) {
+	const menuId = useId();
+
+	const menuElementRef = useRef<HTMLDivElement>(null);
+
 	const triggerElementRef = useRef<HTMLElement | null>(null);
 
 	const [aiState, setAiState] = useControlledState({
@@ -331,14 +340,30 @@ export function ClayDropDownWithAI({
 	return (
 		<>
 			{React.cloneElement(trigger, {
-				onClick: (event: React.MouseEvent) => {
+				'aria-controls': internalActive ? menuId : undefined,
+				'aria-expanded': internalActive,
+				'aria-haspopup': true,
+				'onClick': (event: React.MouseEvent) => {
 					trigger.props.onClick?.(event);
 
 					if (openOnClick && (!internalActive || dismissable)) {
 						setInternalActive(!internalActive);
 					}
 				},
-				ref: (node: HTMLElement | null) => {
+				'onKeyDown': (event: React.KeyboardEvent) => {
+					trigger.props.onKeyDown?.(event);
+
+					if (
+						openOnClick &&
+						(event.key === 'Enter' || event.key === ' ') &&
+						(!internalActive || dismissable)
+					) {
+						event.preventDefault();
+
+						setInternalActive(!internalActive);
+					}
+				},
+				'ref': (node: HTMLElement | null) => {
 					triggerElementRef.current = node;
 
 					// Preserve a ref the consumer set on the trigger.
@@ -361,29 +386,48 @@ export function ClayDropDownWithAI({
 				closeOnClickOutside={dismissable}
 				hasLeftSymbols
 				hasRightSymbols
+				id={menuId}
 				onActiveChange={setInternalActive}
+				ref={menuElementRef}
 				triggerRef={triggerElementRef}
 			>
 				{aiState === 'menu' && (
-					<DropDown.ItemList>
-						{items.map((item, index) => (
-							<DropDown.Item
-								key={index}
-								onClick={() => {
-									item.onClick?.();
+					<FocusMenu
+						condition={internalActive}
+						onRender={() => {
 
-									onItemClick?.(item);
+							// Move focus into the menu when it opens so the
+							// options are reachable by keyboard.
 
-									setAiState('prompt');
-								}}
-								spritemap={spritemap}
-								symbolLeft={item.symbolLeft}
-								symbolRight={item.symbolRight}
-							>
-								{item.label}
-							</DropDown.Item>
-						))}
-					</DropDown.ItemList>
+							setTimeout(() => {
+								const list = getFocusableList(menuElementRef);
+
+								if (list.length) {
+									list[0]!.focus();
+								}
+							}, 10);
+						}}
+					>
+						<DropDown.ItemList>
+							{items.map((item, index) => (
+								<DropDown.Item
+									key={index}
+									onClick={() => {
+										item.onClick?.();
+
+										onItemClick?.(item);
+
+										setAiState('prompt');
+									}}
+									spritemap={spritemap}
+									symbolLeft={item.symbolLeft}
+									symbolRight={item.symbolRight}
+								>
+									{item.label}
+								</DropDown.Item>
+							))}
+						</DropDown.ItemList>
+					</FocusMenu>
 				)}
 
 				{aiState === 'prompt' && (
@@ -410,7 +454,10 @@ export function ClayDropDownWithAI({
 				)}
 
 				{aiState === 'working' && (
-					<div className="align-items-center d-flex dropdown-section">
+					<div
+						aria-live="polite"
+						className="align-items-center d-flex dropdown-section"
+					>
 						<span className="align-items-center d-flex text-purple">
 							<ClayIcon
 								className="mr-2"
@@ -435,7 +482,10 @@ export function ClayDropDownWithAI({
 				)}
 
 				{aiState === 'result' && (
-					<div className="align-items-center d-flex dropdown-section">
+					<div
+						aria-live="polite"
+						className="align-items-center d-flex dropdown-section"
+					>
 						<ClayAIButton
 							label={acceptLabel}
 							onClick={onAccept}
