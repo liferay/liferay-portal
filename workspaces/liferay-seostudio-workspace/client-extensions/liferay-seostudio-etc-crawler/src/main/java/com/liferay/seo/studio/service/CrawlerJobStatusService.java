@@ -37,7 +37,7 @@ public class CrawlerJobStatusService {
 	@Scheduled(fixedDelay = 60000)
 	public void scheduledUpdateStates() {
 		JSONArray itemsJSONArray = new JSONObject(
-			_seoStudioService.getActiveScans()
+			_seoStudioService.getActiveSEOStudioScans()
 		).optJSONArray(
 			"items"
 		);
@@ -47,12 +47,13 @@ public class CrawlerJobStatusService {
 		}
 
 		for (Object object : itemsJSONArray) {
-			JSONObject scanJSONObject = (JSONObject)object;
+			JSONObject seoStudioScanJSONObject = (JSONObject)object;
 
-			long seoStudioScanId = scanJSONObject.getLong("id");
+			long seoStudioScanId = seoStudioScanJSONObject.getLong("id");
 
 			try {
-				String executionId = scanJSONObject.optString("executionId");
+				String executionId = seoStudioScanJSONObject.optString(
+					"executionId");
 
 				if (Validator.isNull(executionId)) {
 					continue;
@@ -60,24 +61,24 @@ public class CrawlerJobStatusService {
 
 				Job job = _kubernetesJobService.getJob(executionId);
 
-				String state = _getScanState(job);
+				String state = _getSEOStudioScanState(job);
 
 				if (Validator.isNull(state) ||
-					state.equals(scanJSONObject.optString("state"))) {
+					state.equals(seoStudioScanJSONObject.optString("state"))) {
 
 					continue;
 				}
 
 				if (state.equals(SEOStudioScanConstants.STATE_COMPLETED)) {
 					DetectorResult detectorResult = _detectorService.detect(
-						scanJSONObject, seoStudioScanId);
+						seoStudioScanId, seoStudioScanJSONObject);
 
-					_seoStudioService.patchScan(
+					_seoStudioService.patchSEOStudioScan(
 						detectorResult.getErrorMessage(), seoStudioScanId,
 						detectorResult.getState());
 				}
 				else if (state.equals(SEOStudioScanConstants.STATE_FAILED)) {
-					_seoStudioService.patchScan(
+					_seoStudioService.patchSEOStudioScan(
 						_getErrorMessage(job), seoStudioScanId,
 						SEOStudioScanConstants.STATE_FAILED);
 				}
@@ -120,7 +121,7 @@ public class CrawlerJobStatusService {
 		return "Kubernetes job failed";
 	}
 
-	private String _getScanState(Job job) {
+	private String _getSEOStudioScanState(Job job) {
 		if (job == null) {
 			return SEOStudioScanConstants.STATE_FAILED;
 		}

@@ -33,7 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class SEOStudioService extends BaseService {
 
-	public String getActiveScans() {
+	public String getActiveSEOStudioScans() {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/scans"
 		).queryParam(
@@ -79,7 +79,7 @@ public class SEOStudioService extends BaseService {
 		return crawlHits;
 	}
 
-	public Domain getDomain(long seoStudioDomainId) {
+	public Domain getSEOStudioDomain(long seoStudioDomainId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
@@ -93,7 +93,9 @@ public class SEOStudioService extends BaseService {
 		return new Domain(new JSONObject(responseJSON));
 	}
 
-	public String getSEOStudioPage(int page, int pageSize, long seoStudioScanId) {
+	public String getSEOStudioPages(
+		int page, int pageSize, long seoStudioScanId) {
+
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/pages"
 		).queryParam(
@@ -109,7 +111,9 @@ public class SEOStudioService extends BaseService {
 		return get(_getAuthorization(), uriComponents.toUri());
 	}
 
-	public String patchSEOStudioDomain(JSONObject jsonObject, long seoStudioDomainId) {
+	public String patchSEOStudioDomain(
+		JSONObject jsonObject, long seoStudioDomainId) {
+
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
@@ -118,7 +122,9 @@ public class SEOStudioService extends BaseService {
 			_getAuthorization(), jsonObject.toString(), uriComponents.toUri());
 	}
 
-	public String patchScan(JSONObject jsonObject, long seoStudioScanId) {
+	public String patchSEOStudioScan(
+		JSONObject jsonObject, long seoStudioScanId) {
+
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/scans/" + seoStudioScanId
 		).build();
@@ -127,7 +133,7 @@ public class SEOStudioService extends BaseService {
 			_getAuthorization(), jsonObject.toString(), uriComponents.toUri());
 	}
 
-	public String patchScan(
+	public String patchSEOStudioScan(
 		String errorMessage, long seoStudioScanId, String state) {
 
 		JSONObject jsonObject = new JSONObject();
@@ -138,7 +144,7 @@ public class SEOStudioService extends BaseService {
 
 		jsonObject.put("state", state);
 
-		return patchScan(jsonObject, seoStudioScanId);
+		return patchSEOStudioScan(jsonObject, seoStudioScanId);
 	}
 
 	public String postSEOStudioInsightType(JSONObject jsonObject) {
@@ -150,7 +156,7 @@ public class SEOStudioService extends BaseService {
 			_getAuthorization(), jsonObject.toString(), uriComponents.toUri());
 	}
 
-	public String postPagesBatch(JSONArray jsonArray) {
+	public String postSEOStudioPagesBatch(JSONArray jsonArray) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/pages/batch"
 		).build();
@@ -159,7 +165,7 @@ public class SEOStudioService extends BaseService {
 			_getAuthorization(), jsonArray.toString(), uriComponents.toUri());
 	}
 
-	public String postScanInsightsBatch(JSONArray jsonArray) {
+	public String postSEOStudioScanInsightsBatch(JSONArray jsonArray) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/scan-insights/batch"
 		).build();

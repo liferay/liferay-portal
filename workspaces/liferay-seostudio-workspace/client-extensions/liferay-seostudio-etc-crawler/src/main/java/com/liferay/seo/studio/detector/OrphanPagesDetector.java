@@ -109,9 +109,10 @@ public class OrphanPagesDetector extends BaseDetector {
 			"severity", "2"
 		);
 
-		postInsights(
+		postSEOStudioScanInsights(
 			accountEntryId, definitionJSONObject, orphanPageURLs,
-			resolvePageIds(accountEntryId, orphanPageURLs, seoStudioScanId),
+			resolveSEOStudioPageIds(
+				accountEntryId, orphanPageURLs, seoStudioScanId),
 			seoStudioScanId);
 	}
 

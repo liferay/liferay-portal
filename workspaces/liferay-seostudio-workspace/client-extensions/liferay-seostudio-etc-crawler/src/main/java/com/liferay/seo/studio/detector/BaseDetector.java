@@ -38,9 +38,9 @@ public abstract class BaseDetector {
 			long seoStudioScanId)
 		throws Exception;
 
-	protected void postInsights(
+	protected void postSEOStudioScanInsights(
 			long accountEntryId, JSONObject definitionJSONObject,
-			List<String> pageURLs, Map<String, Long> pageIds,
+			List<String> pageURLs, Map<String, Long> seoStudioPageIds,
 			long seoStudioScanId)
 		throws Exception {
 
@@ -48,12 +48,12 @@ public abstract class BaseDetector {
 			return;
 		}
 
-		long seoStudioInsightTypeId = _postInsightType(
+		long seoStudioInsightTypeId = _postSEOStudioInsightType(
 			accountEntryId, definitionJSONObject, seoStudioScanId);
 
-		_postScanInsights(
+		_postSEOStudioScanInsights(
 			accountEntryId, definitionJSONObject.getString("classification"),
-			pageURLs, pageIds, seoStudioInsightTypeId,
+			pageURLs, seoStudioInsightTypeId, seoStudioPageIds,
 			seoStudioScanId);
 
 		if (_log.isInfoEnabled()) {
@@ -66,25 +66,26 @@ public abstract class BaseDetector {
 		}
 	}
 
-	protected Map<String, Long> resolvePageIds(
+	protected Map<String, Long> resolveSEOStudioPageIds(
 			long accountEntryId, List<String> pageURLs, long seoStudioScanId)
 		throws Exception {
 
-		Map<String, Long> pageIds = _getPageIds(seoStudioScanId);
+		Map<String, Long> seoStudioPageIds = _getSEOStudioPageIds(
+			seoStudioScanId);
 
 		List<String> missingPageURLs = ListUtil.filter(
-			pageURLs, pageURL -> !pageIds.containsKey(pageURL));
+			pageURLs, pageURL -> !seoStudioPageIds.containsKey(pageURL));
 
 		if (ListUtil.isEmpty(missingPageURLs)) {
-			return pageIds;
+			return seoStudioPageIds;
 		}
 
-		_postPages(accountEntryId, missingPageURLs, seoStudioScanId);
+		_postSEOStudioPages(accountEntryId, missingPageURLs, seoStudioScanId);
 
 		long deadline = System.currentTimeMillis() + 60000;
 
 		while (true) {
-			Set<String> existingPageURLs = pageIds.keySet();
+			Set<String> existingPageURLs = seoStudioPageIds.keySet();
 
 			if (existingPageURLs.containsAll(pageURLs)) {
 				break;
@@ -102,23 +103,23 @@ public abstract class BaseDetector {
 
 			Thread.sleep(1000);
 
-			pageIds.putAll(_getPageIds(seoStudioScanId));
+			seoStudioPageIds.putAll(_getSEOStudioPageIds(seoStudioScanId));
 		}
 
-		return pageIds;
+		return seoStudioPageIds;
 	}
 
 	@Autowired
 	protected SEOStudioService seoStudioService;
 
-	private Map<String, Long> _getPageIds(long seoStudioScanId) {
-		Map<String, Long> pageIds = new HashMap<>();
+	private Map<String, Long> _getSEOStudioPageIds(long seoStudioScanId) {
+		Map<String, Long> seoStudioPageIds = new HashMap<>();
 
 		int page = 1;
 
 		while (true) {
 			JSONArray itemsJSONArray = new JSONObject(
-				seoStudioService.getPage(page, 2000, seoStudioScanId)
+				seoStudioService.getSEOStudioPages(page, 2000, seoStudioScanId)
 			).optJSONArray(
 				"items"
 			);
@@ -130,7 +131,7 @@ public abstract class BaseDetector {
 			for (Object object : itemsJSONArray) {
 				JSONObject itemJSONObject = (JSONObject)object;
 
-				pageIds.put(
+				seoStudioPageIds.put(
 					itemJSONObject.getString("pageURL"),
 					itemJSONObject.getLong("id"));
 			}
@@ -138,15 +139,15 @@ public abstract class BaseDetector {
 			page++;
 		}
 
-		return pageIds;
+		return seoStudioPageIds;
 	}
 
-	private long _postInsightType(
+	private long _postSEOStudioInsightType(
 		long accountEntryId, JSONObject definitionJSONObject,
 		long seoStudioScanId) {
 
 		return new JSONObject(
-			seoStudioService.postInsightType(
+			seoStudioService.postSEOStudioInsightType(
 				new JSONObject(
 				).put(
 					"category", definitionJSONObject.getString("category")
@@ -174,29 +175,29 @@ public abstract class BaseDetector {
 		);
 	}
 
-	private void _postPages(
+	private void _postSEOStudioPages(
 			long accountEntryId, List<String> pageURLs, long seoStudioScanId)
 		throws Exception {
 
 		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
-			JSONArray pagesJSONArray = new JSONArray();
+			JSONArray seoStudioPagesJSONArray = new JSONArray();
 
 			List<String> batchPageURLs = pageURLs.subList(
 				i, Math.min(i + _BATCH_SIZE, pageURLs.size()));
 
 			for (String pageURL : batchPageURLs) {
-				pagesJSONArray.put(
-					_toPageJSONObject(
+				seoStudioPagesJSONArray.put(
+					_toSEOStudioPageJSONObject(
 						accountEntryId, pageURL, seoStudioScanId));
 			}
 
-			seoStudioService.postPagesBatch(pagesJSONArray);
+			seoStudioService.postSEOStudioPagesBatch(seoStudioPagesJSONArray);
 		}
 	}
 
-	private void _postScanInsights(
+	private void _postSEOStudioScanInsights(
 			long accountEntryId, String classification, List<String> pageURLs,
-			Map<String, Long> pageIds, long seoStudioInsightTypeId,
+			long seoStudioInsightTypeId, Map<String, Long> seoStudioPageIds,
 			long seoStudioScanId)
 		throws Exception {
 
@@ -206,13 +207,13 @@ public abstract class BaseDetector {
 		).toString();
 
 		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
-			JSONArray scanInsightsJSONArray = new JSONArray();
+			JSONArray seoStudioScanInsightsJSONArray = new JSONArray();
 
 			List<String> batchPageURLs = pageURLs.subList(
 				i, Math.min(i + _BATCH_SIZE, pageURLs.size()));
 
 			for (String pageURL : batchPageURLs) {
-				Long seoStudioPageId = pageIds.get(pageURL);
+				Long seoStudioPageId = seoStudioPageIds.get(pageURL);
 
 				if (seoStudioPageId == null) {
 					if (_log.isWarnEnabled()) {
@@ -222,22 +223,23 @@ public abstract class BaseDetector {
 					continue;
 				}
 
-				scanInsightsJSONArray.put(
-					_toScanInsightJSONObject(
+				seoStudioScanInsightsJSONArray.put(
+					_toSEOStudioScanInsightJSONObject(
 						accountEntryId, classification, detectedDateString,
 						seoStudioInsightTypeId, seoStudioPageId,
 						seoStudioScanId));
 			}
 
-			if (scanInsightsJSONArray.isEmpty()) {
+			if (seoStudioScanInsightsJSONArray.isEmpty()) {
 				continue;
 			}
 
-			seoStudioService.postScanInsightsBatch(scanInsightsJSONArray);
+			seoStudioService.postSEOStudioScanInsightsBatch(
+				seoStudioScanInsightsJSONArray);
 		}
 	}
 
-	private JSONObject _toPageJSONObject(
+	private JSONObject _toSEOStudioPageJSONObject(
 		long accountEntryId, String pageURL, long seoStudioScanId) {
 
 		return new JSONObject(
@@ -250,7 +252,7 @@ public abstract class BaseDetector {
 		);
 	}
 
-	private JSONObject _toScanInsightJSONObject(
+	private JSONObject _toSEOStudioScanInsightJSONObject(
 		long accountEntryId, String classification, String detectedDateString,
 		long seoStudioInsightTypeId, long seoStudioPageId,
 		long seoStudioScanId) {

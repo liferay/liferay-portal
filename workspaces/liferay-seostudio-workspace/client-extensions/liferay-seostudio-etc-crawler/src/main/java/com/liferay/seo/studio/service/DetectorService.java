@@ -28,13 +28,13 @@ import org.springframework.stereotype.Service;
 public class DetectorService {
 
 	public DetectorResult detect(
-			JSONObject scanJSONObject, long seoStudioScanId)
+			long seoStudioScanId, JSONObject seoStudioScanJSONObject)
 		throws Exception {
 
-		long seoStudioDomainId = scanJSONObject.getLong(
+		long seoStudioDomainId = seoStudioScanJSONObject.getLong(
 			"r_seoStudioDomainToSEOStudioScans_seoStudioDomainId");
 
-		Domain domain = _seoStudioService.getDomain(seoStudioDomainId);
+		Domain domain = _seoStudioService.getSEOStudioDomain(seoStudioDomainId);
 
 		if (domain == null) {
 			return new DetectorResult(
@@ -57,7 +57,7 @@ public class DetectorService {
 
 		for (BaseDetector detector : _detectors) {
 			detector.detect(
-				scanJSONObject.getLong(
+				seoStudioScanJSONObject.getLong(
 					"r_accountToSEOStudioScans_accountEntryId"),
 				crawlHits, crawlURI, seoStudioScanId);
 		}

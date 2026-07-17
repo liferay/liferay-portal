@@ -63,7 +63,8 @@ public class CrawlerRestController extends BaseRestController {
 			long seoStudioDomainId = valuesJSONObject.getLong(
 				"r_seoStudioDomainToSEOStudioScans_seoStudioDomainId");
 
-			Domain domain = _seoStudioService.getDomain(seoStudioDomainId);
+			Domain domain = _seoStudioService.getSEOStudioDomain(
+				seoStudioDomainId);
 
 			if (domain == null) {
 				if (_log.isWarnEnabled()) {
@@ -73,7 +74,7 @@ public class CrawlerRestController extends BaseRestController {
 				}
 
 				return ResponseEntity.ok(
-					_seoStudioService.patchScan(
+					_seoStudioService.patchSEOStudioScan(
 						"Unable to get a domain for SEO Studio domain ID " +
 							seoStudioDomainId,
 						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED));
@@ -85,7 +86,7 @@ public class CrawlerRestController extends BaseRestController {
 			String canonicalDomainURL = _resolveCanonicalDomainURL(domainURL);
 
 			if (!canonicalDomainURL.equals(domainURL)) {
-				_seoStudioService.patchDomain(
+				_seoStudioService.patchSEOStudioDomain(
 					new JSONObject(
 					).put(
 						"hostname", canonicalDomainURL
@@ -101,12 +102,12 @@ public class CrawlerRestController extends BaseRestController {
 				}
 
 				return ResponseEntity.ok(
-					_seoStudioService.patchScan(
+					_seoStudioService.patchSEOStudioScan(
 						"Unable to reach the sitemap at " + sitemapURL,
 						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED));
 			}
 
-			_seoStudioService.patchScan(
+			_seoStudioService.patchSEOStudioScan(
 				null, seoStudioScanId, SEOStudioScanConstants.STATE_RUNNING);
 
 			JSONObject scopeConfigJSONObject = new JSONObject(
@@ -122,20 +123,21 @@ public class CrawlerRestController extends BaseRestController {
 
 			ObjectMeta objectMeta = job.getMetadata();
 
-			JSONObject scanJSONObject = new JSONObject(
+			JSONObject seoStudioScanJSONObject = new JSONObject(
 			).put(
 				"executionId", objectMeta.getName()
 			);
 
-			_seoStudioService.patchScan(scanJSONObject, seoStudioScanId);
+			_seoStudioService.patchSEOStudioScan(
+				seoStudioScanJSONObject, seoStudioScanId);
 
-			return ResponseEntity.ok(scanJSONObject.toString());
+			return ResponseEntity.ok(seoStudioScanJSONObject.toString());
 		}
 		catch (Exception exception) {
 			_log.error("Unable to scan the domain", exception);
 
 			return ResponseEntity.ok(
-				_seoStudioService.patchScan(
+				_seoStudioService.patchSEOStudioScan(
 					"Unable to scan the domain: " + exception.getMessage(),
 					seoStudioScanId, SEOStudioScanConstants.STATE_FAILED));
 		}
