@@ -10,11 +10,6 @@ import com.liferay.bulk.selection.BaseMultipleEntryBulkSelection;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionFactory;
 import com.liferay.bulk.selection.EmptyBulkSelection;
-import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserNotificationEventException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 
@@ -49,26 +44,9 @@ public class MultipleUserNotificationEventBulkSelection
 
 	@Override
 	protected UserNotificationEvent fetchEntry(long entryId) {
-		try {
-			return _userNotificationEventLocalService.getUserNotificationEvent(
-				entryId);
-		}
-		catch (NoSuchUserNotificationEventException
-					noSuchUserNotificationEventException) {
-
-			if (_log.isWarnEnabled()) {
-				_log.warn(noSuchUserNotificationEventException);
-			}
-
-			return null;
-		}
-		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
-		}
+		return _userNotificationEventLocalService.fetchUserNotificationEvent(
+			entryId);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		MultipleUserNotificationEventBulkSelection.class);
 
 	private final UserNotificationEventLocalService
 		_userNotificationEventLocalService;
