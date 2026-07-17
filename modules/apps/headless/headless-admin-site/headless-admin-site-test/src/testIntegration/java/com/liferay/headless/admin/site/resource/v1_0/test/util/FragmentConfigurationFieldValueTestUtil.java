@@ -587,10 +587,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 	private static URLValue _getURLValue(
 		Map<String, Object> map, long scopeGroupId) {
 
-		if (map.containsKey("href")) {
+		String href = GetterUtil.getString(map.get("href"), null);
+
+		if (href != null) {
 			return new HrefURLValue() {
 				{
-					setHref(() -> GetterUtil.getString(map.get("href")));
+					setHref(() -> href);
 					setUrlType(() -> UrlType.HREF);
 				}
 			};

@@ -30,8 +30,11 @@ public class FieldTypeUtil {
 	}
 
 	public static String toInternalFieldType(FieldType externalFieldType) {
-		if (_externalToInternalValuesMap.containsKey(externalFieldType)) {
-			return _externalToInternalValuesMap.get(externalFieldType);
+		String internalFieldType = _externalToInternalValuesMap.get(
+			externalFieldType);
+
+		if (internalFieldType != null) {
+			return internalFieldType;
 		}
 
 		throw new UnsupportedOperationException();

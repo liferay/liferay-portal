@@ -19,8 +19,11 @@ public class FragmentConfigurationFieldValueTypeUtil {
 	public static FragmentConfigurationFieldValue.Type toExternalType(
 		String internalType) {
 
-		if (_internalToExternalValuesMap.containsKey(internalType)) {
-			return _internalToExternalValuesMap.get(internalType);
+		FragmentConfigurationFieldValue.Type fragmentConfigurationFieldType =
+			_internalToExternalValuesMap.get(internalType);
+
+		if (fragmentConfigurationFieldType != null) {
+			return fragmentConfigurationFieldType;
 		}
 
 		throw new UnsupportedOperationException();

@@ -35,8 +35,10 @@ public class SitePageTypeUtil {
 	}
 
 	public static String toInternalType(SitePage.Type externalType) {
-		if (_externalToInternalValuesMap.containsKey(externalType)) {
-			return _externalToInternalValuesMap.get(externalType);
+		String internalType = _externalToInternalValuesMap.get(externalType);
+
+		if (internalType != null) {
+			return internalType;
 		}
 
 		throw new UnsupportedOperationException();

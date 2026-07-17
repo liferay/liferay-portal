@@ -19,8 +19,11 @@ public class ContextualMenuTypeUtil {
 	public static ContextualMenuNavigationMenuValue.ContextualMenuType
 		toExternalType(String internalType) {
 
-		if (_internalToExternalValuesMap.containsKey(internalType)) {
-			return _internalToExternalValuesMap.get(internalType);
+		ContextualMenuNavigationMenuValue.ContextualMenuType
+			contextualMenuType = _internalToExternalValuesMap.get(internalType);
+
+		if (contextualMenuType != null) {
+			return contextualMenuType;
 		}
 
 		throw new UnsupportedOperationException();

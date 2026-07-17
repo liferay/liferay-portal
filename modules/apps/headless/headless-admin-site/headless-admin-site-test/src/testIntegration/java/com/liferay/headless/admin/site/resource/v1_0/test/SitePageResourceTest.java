@@ -853,10 +853,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		for (Map.Entry<Locale, String> entry : friendlyURLMap.entrySet()) {
 			List<String> friendlyURLs = ListUtil.fromArray(entry.getValue());
+
 			String languageId = LocaleUtil.toBCP47LanguageId(entry.getKey());
 
-			if (newFriendlyURLsMap.containsKey(languageId)) {
-				friendlyURLs.add(newFriendlyURLsMap.get(languageId));
+			String newFriendlyURL = newFriendlyURLsMap.get(languageId);
+
+			if (newFriendlyURL != null) {
+				friendlyURLs.add(newFriendlyURL);
 			}
 
 			expectedFriendlyURLsMap.put(languageId, friendlyURLs);

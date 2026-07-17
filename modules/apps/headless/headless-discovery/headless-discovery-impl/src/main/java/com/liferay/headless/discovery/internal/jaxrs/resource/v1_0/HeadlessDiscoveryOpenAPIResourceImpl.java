@@ -225,10 +225,9 @@ public class HeadlessDiscoveryOpenAPIResourceImpl {
 					return false;
 				}
 
-				if (_companyIds.containsKey(applicationDTO.base)) {
-					List<String> companyIds = _companyIds.get(
-						applicationDTO.base);
+				List<String> companyIds = _companyIds.get(applicationDTO.base);
 
+				if (companyIds != null) {
 					return companyIds.contains(
 						String.valueOf(CompanyThreadLocal.getCompanyId()));
 				}

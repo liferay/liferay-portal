@@ -30,8 +30,10 @@ public class ActionInteractionTypeUtil {
 	}
 
 	public static String toInternalType(ActionInteraction.Type externalType) {
-		if (_externalToInternalValuesMap.containsKey(externalType)) {
-			return _externalToInternalValuesMap.get(externalType);
+		String internalType = _externalToInternalValuesMap.get(externalType);
+
+		if (internalType != null) {
+			return internalType;
 		}
 
 		throw new UnsupportedOperationException();

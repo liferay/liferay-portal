@@ -469,8 +469,10 @@ public class UtilityPageResourceImpl
 	}
 
 	private String _getType(UtilityPage.Type type) {
-		if (_externalToInternalValuesMap.containsKey(type)) {
-			return _externalToInternalValuesMap.get(type);
+		String internalType = _externalToInternalValuesMap.get(type);
+
+		if (internalType != null) {
+			return internalType;
 		}
 
 		throw new IllegalArgumentException(

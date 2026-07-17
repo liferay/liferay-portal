@@ -900,10 +900,11 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		}
 
 		for (String excludedTypeSetting : _EXCLUDED_TYPE_SETTINGS) {
-			if (oldUnicodeProperties.containsKey(excludedTypeSetting)) {
-				unicodeProperties.put(
-					excludedTypeSetting,
-					oldUnicodeProperties.get(excludedTypeSetting));
+			String typeSettingValue = oldUnicodeProperties.get(
+				excludedTypeSetting);
+
+			if (typeSettingValue != null) {
+				unicodeProperties.put(excludedTypeSetting, typeSettingValue);
 			}
 		}
 

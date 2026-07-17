@@ -112,8 +112,11 @@ public class UtilityPageDTOConverter
 	}
 
 	private UtilityPage.Type _getType(String type) {
-		if (_internalToExternalValuesMap.containsKey(type)) {
-			return _internalToExternalValuesMap.get(type);
+		UtilityPage.Type utilityPageType = _internalToExternalValuesMap.get(
+			type);
+
+		if (utilityPageType != null) {
+			return utilityPageType;
 		}
 
 		throw new UnsupportedOperationException();
