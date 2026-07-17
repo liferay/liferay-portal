@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -7,27 +7,15 @@ package com.liferay.site.cms.site.initializer.internal.frontend.data.set.filter;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
-import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
-import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marco Leo
@@ -47,12 +35,8 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = FDSFilter.class
 )
-public class AssetCategorySelectionAllFDSFilter extends BaseSelectionFDSFilter {
-
-	@Override
-	public String getEntityFieldType() {
-		return FDSEntityFieldTypes.INTEGER;
-	}
+public class AssetCategorySelectionAllFDSFilter
+	extends BaseAssetCategorySelectionFDSFilter {
 
 	@Override
 	public String getId() {
@@ -65,57 +49,20 @@ public class AssetCategorySelectionAllFDSFilter extends BaseSelectionFDSFilter {
 	}
 
 	@Override
-	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
-		Locale locale) {
+	protected List<AssetVocabulary> getAssetVocabularies(long groupId)
+		throws PortalException {
 
-		Group group = _groupLocalService.fetchGroup(
-			CompanyThreadLocal.getCompanyId(), GroupConstants.CMS);
-
-		if (group == null) {
-			return Collections.emptyList();
-		}
-
-		try {
-			List<SelectionFDSFilterItem> selectionFDSFilterItems =
-				new ArrayList<>();
-
-			for (AssetVocabulary assetVocabulary :
-					_assetVocabularyLocalService.getGroupVocabularies(
-						group.getGroupId())) {
-
-				for (AssetCategory assetCategory :
-						_assetCategoryLocalService.getVocabularyCategories(
-							assetVocabulary.getVocabularyId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-					selectionFDSFilterItems.add(
-						new SelectionFDSFilterItem(
-							StringBundler.concat(
-								assetCategory.getTitle(locale), " (",
-								assetVocabulary.getTitle(locale), ")"),
-							assetCategory.getCategoryId()));
-				}
-			}
-
-			return selectionFDSFilterItems;
-		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
+		return assetVocabularyLocalService.getGroupVocabularies(groupId);
 	}
 
 	@Override
-	public boolean isAutocompleteEnabled() {
-		return true;
+	protected String getSelectionFDSFilterItemLabel(
+		AssetCategory assetCategory, AssetVocabulary assetVocabulary,
+		Locale locale) {
+
+		return StringBundler.concat(
+			assetCategory.getTitle(locale), " (",
+			assetVocabulary.getTitle(locale), ")");
 	}
-
-	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
-
-	@Reference
-	private AssetVocabularyLocalService _assetVocabularyLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 }
