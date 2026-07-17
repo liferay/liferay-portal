@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = FDSFilter.class
 )
-public class AssetCategorySelectionFDSFilter extends BaseSelectionFDSFilter {
+public class AssetCategorySelectionAllFDSFilter extends BaseSelectionFDSFilter {
 
 	@Override
 	public String getEntityFieldType() {
