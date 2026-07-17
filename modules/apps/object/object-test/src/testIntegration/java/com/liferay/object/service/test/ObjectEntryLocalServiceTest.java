@@ -141,6 +141,7 @@ import com.liferay.object.validation.rule.ObjectValidationRuleEngine;
 import com.liferay.object.validation.rule.ObjectValidationRuleResult;
 import com.liferay.object.validation.rule.setting.builder.ObjectValidationRuleSettingBuilder;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -163,6 +164,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -207,6 +209,7 @@ import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBu
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -5622,6 +5625,109 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetPrimaryKeysWithLocalizedObjectField() throws Exception {
+
+		// No value provided for the site default language
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			TestPropsValues.getCompanyId());
+		Locale defaultLocale = LocaleUtil.getDefault();
+		ObjectDefinition objectDefinition = null;
+
+		try {
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(),
+				new HashSet<>(
+					Arrays.asList(
+						LocaleUtil.BRAZIL, LocaleUtil.GERMANY, LocaleUtil.US)),
+				LocaleUtil.US);
+
+			String objectFieldName = "a" + RandomTestUtil.randomString();
+
+			ObjectField objectField = ObjectFieldUtil.createObjectField(
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+				ObjectFieldConstants.DB_TYPE_STRING, objectFieldName,
+				objectFieldName);
+
+			objectField.setLocalized(true);
+
+			objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+				Arrays.asList(objectField),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+			ObjectEntry objectEntry1 = _addObjectEntry(
+				TestPropsValues.getGroupId(), objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName + "_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+						"a" + RandomTestUtil.randomString()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+			ObjectEntry objectEntry2 = _addObjectEntry(
+				TestPropsValues.getGroupId(), objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName + "_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+						"b" + RandomTestUtil.randomString()
+					).put(
+						LocaleUtil.toLanguageId(LocaleUtil.US),
+						"c" + RandomTestUtil.randomString()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+			ObjectEntry objectEntry3 = _addObjectEntry(
+				TestPropsValues.getGroupId(), objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName + "_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.GERMANY),
+						RandomTestUtil.randomString()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+			ObjectEntry objectEntry4 = _addObjectEntry(
+				TestPropsValues.getGroupId(), objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName + "_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.US),
+						"d" + RandomTestUtil.randomString()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			_testGetPrimaryKeysWithLocalizedObjectField(
+				LocaleUtil.US, objectDefinition, objectFieldName, false,
+				Arrays.asList(objectEntry2, objectEntry4),
+				new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
+			_testGetPrimaryKeysWithLocalizedObjectField(
+				LocaleUtil.US, objectDefinition, objectFieldName, true,
+				Arrays.asList(objectEntry4, objectEntry2),
+				new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
+
+			// Value provided for the site default language
+
+			_testGetPrimaryKeysWithLocalizedObjectField(
+				LocaleUtil.BRAZIL, objectDefinition, objectFieldName, false,
+				Arrays.asList(objectEntry1, objectEntry2, objectEntry4),
+				new HashSet<>(Arrays.asList(objectEntry3)));
+		}
+		finally {
+			if (objectDefinition != null) {
+				_objectDefinitionLocalService.deleteObjectDefinition(
+					objectDefinition);
+			}
+
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(), availableLocales,
+				defaultLocale);
+		}
+	}
+
+	@Test
 	public void testGetValuesList() throws Exception {
 		Sort[] sorts = {new Sort("id", false)};
 
@@ -9908,6 +10014,63 @@ public class ObjectEntryLocalServiceTest {
 			expectedValues.get("richText"), actualValues.get("richText"));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	private void _testGetPrimaryKeysWithLocalizedObjectField(
+			Locale currentLocale, ObjectDefinition objectDefinition,
+			String objectFieldName, boolean reverse,
+			List<ObjectEntry> sortedObjectEntries,
+			Set<ObjectEntry> unsortedObjectEntries)
+		throws Exception {
+
+		// Entries with a value for the current display language or the site
+		// default language are sorted
+
+		Locale originalSiteDefaultLocale =
+			LocaleThreadLocal.getSiteDefaultLocale();
+		Locale originalThemeDisplayLocale =
+			LocaleThreadLocal.getThemeDisplayLocale();
+
+		try {
+			LocaleThreadLocal.setSiteDefaultLocale(LocaleUtil.US);
+			LocaleThreadLocal.setThemeDisplayLocale(currentLocale);
+
+			List<Long> actualPrimaryKeys =
+				_objectEntryLocalService.getPrimaryKeys(
+					new Long[] {TestPropsValues.getGroupId()},
+					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+					objectDefinition.getObjectDefinitionId(),
+					ObjectEntryTable.INSTANCE.objectEntryId.isNotNull(), false,
+					null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					new Sort[] {
+						new Sort(objectFieldName, Sort.STRING_TYPE, reverse)
+					});
+
+			List<Long> expectedPrimaryKeys = TransformUtil.transform(
+				sortedObjectEntries, ObjectEntry::getObjectEntryId);
+
+			Assert.assertTrue(
+				actualPrimaryKeys.toString(),
+				actualPrimaryKeys.size() >= expectedPrimaryKeys.size());
+			Assert.assertEquals(
+				actualPrimaryKeys.toString(), expectedPrimaryKeys,
+				actualPrimaryKeys.subList(0, expectedPrimaryKeys.size()));
+
+			// Untranslated entries are moved to the end
+
+			Assert.assertEquals(
+				actualPrimaryKeys.toString(),
+				new HashSet<>(
+					TransformUtil.transform(
+						unsortedObjectEntries, ObjectEntry::getObjectEntryId)),
+				new HashSet<>(
+					actualPrimaryKeys.subList(
+						expectedPrimaryKeys.size(), actualPrimaryKeys.size())));
+		}
+		finally {
+			LocaleThreadLocal.setThemeDisplayLocale(originalThemeDisplayLocale);
+			LocaleThreadLocal.setSiteDefaultLocale(originalSiteDefaultLocale);
+		}
 	}
 
 	private void _testPartialUpdateObjectEntryExternalReferenceCode()
