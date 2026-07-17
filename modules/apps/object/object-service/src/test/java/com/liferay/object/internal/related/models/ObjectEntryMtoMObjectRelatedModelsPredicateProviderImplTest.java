@@ -117,21 +117,16 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImplTest
 
 		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.US);
 
-		String predicateString;
+		String predicateString = _getPredicateString(
+			new Long[] {RandomTestUtil.randomLong()}, objectDefinition,
+			_mockObjectFieldLocalService(
+				objectDefinitionId2),
+			mockObjectRelationship(
+				objectDefinitionId1, objectDefinitionId2,
+				RandomTestUtil.randomString()),
+			relatedObjectDefinition);
 
-		try {
-			predicateString = _getPredicateString(
-				new Long[] {RandomTestUtil.randomLong()}, objectDefinition,
-				_mockObjectFieldLocalServiceWithLocalizedObjectField(
-					objectDefinitionId2),
-				mockObjectRelationship(
-					objectDefinitionId1, objectDefinitionId2,
-					RandomTestUtil.randomString()),
-				relatedObjectDefinition);
-		}
-		finally {
-			LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
-		}
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
 
 		Assert.assertTrue(
 			predicateString,
@@ -180,9 +175,11 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImplTest
 		return objectFieldLocalService;
 	}
 
-	private ObjectFieldLocalService
-		_mockObjectFieldLocalServiceWithLocalizedObjectField(
-			long objectDefinitionId) {
+	private ObjectFieldLocalService _mockObjectFieldLocalService(
+		long objectDefinitionId) {
+
+		ObjectFieldLocalService objectFieldLocalService =
+			_mockObjectFieldLocalService();
 
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
@@ -203,9 +200,6 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImplTest
 		).thenReturn(
 			true
 		);
-
-		ObjectFieldLocalService objectFieldLocalService =
-			_mockObjectFieldLocalService();
 
 		Mockito.when(
 			objectFieldLocalService.getLocalizedObjectFields(objectDefinitionId)
