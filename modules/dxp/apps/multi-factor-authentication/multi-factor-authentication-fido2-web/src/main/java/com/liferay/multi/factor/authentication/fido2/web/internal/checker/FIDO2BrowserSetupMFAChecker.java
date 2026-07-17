@@ -51,6 +51,7 @@ import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
 import com.yubico.webauthn.data.PublicKeyCredential;
 import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
 import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
+import com.yubico.webauthn.data.PublicKeyCredentialParameters;
 import com.yubico.webauthn.data.RelyingPartyIdentity;
 import com.yubico.webauthn.data.UserIdentity;
 
@@ -357,6 +358,10 @@ public class FIDO2BrowserSetupMFAChecker
 			_mfaFIDO2Configuration.allowOriginPort()
 		).allowOriginSubdomain(
 			_mfaFIDO2Configuration.allowOriginSubdomain()
+		).preferredPubkeyParams(
+			Arrays.asList(
+				PublicKeyCredentialParameters.ES256,
+				PublicKeyCredentialParameters.RS256)
 		).build();
 
 		if (PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
