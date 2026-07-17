@@ -35,47 +35,6 @@ definition {
 		}
 	}
 
-	@description = "This makes sure that an image can be uploaded via URL."
-	@priority = 5
-	@refactordone
-	test CanAddBlogsImageViaURL {
-		property portal.release = "quarantine";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
-
-		BlogsEntry.addTitle(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.addContent(entryContent = "Blogs Entry Content");
-
-		ItemSelector.gotoItemSelectorViaAlloyEditor();
-
-		ItemSelector.addImageFromURL(
-			imageSourceURL = "http://localhost:8080/webdav/guest/document_library/Document_2.jpg",
-			navTab = "URL");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewInlineImage(uploadFileName = "Document_2.jpg");
-	}
-
 	@description = "This ensures that a message is displayed in the preview section of the item selector when pasting an invalid URL."
 	@priority = 5
 	@refactordone

@@ -4,6 +4,8 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -21,6 +23,11 @@ const test = mergeTests(
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	})
+);
+
+const SAMPLE_IMAGE = path.join(
+	__dirname,
+	'../../frontend-js-item-selector-web/main/dependencies/sample_image.png'
 );
 
 test(
@@ -97,3 +104,62 @@ test(
 		}
 	}
 );
+
+test('Adds an image to the content field through the URL tab', async ({
+	apiHelpers,
+	blogsEditBlogEntryPage,
+	blogsPage,
+	page,
+	site,
+}) => {
+	const fileName = `${getRandomString()}.png`;
+	const title = getRandomString();
+
+	// Seed a document to reference by its URL
+
+	const document = await apiHelpers.headlessDelivery.postDocument(
+		site.id,
+		createReadStream(SAMPLE_IMAGE),
+		{fileName}
+	);
+
+	// Add a blog entry and insert the document image through the URL tab
+
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+	await blogsEditBlogEntryPage.fillTitle(title);
+
+	await blogsEditBlogEntryPage.contentEditor.click();
+
+	await page.getByRole('button', {name: 'Add'}).click();
+
+	await page.getByRole('button', {name: 'Insert Image'}).click();
+
+	const itemSelector = page.frameLocator('iframe[title="Select Item"]');
+
+	await itemSelector.getByRole('link', {name: 'URL'}).click();
+
+	await itemSelector.getByPlaceholder('http://').fill(document.contentUrl);
+
+	const addImageButton = itemSelector.getByRole('button', {name: 'Add'});
+
+	await expect(addImageButton).toBeEnabled();
+
+	await addImageButton.click();
+
+	await expect(
+		blogsEditBlogEntryPage.contentEditor.locator(`img[src*="${fileName}"]`)
+	).toBeVisible();
+
+	// Publish, reopen the entry, and verify the image persisted
+
+	await blogsEditBlogEntryPage.titleInput.click();
+
+	await blogsEditBlogEntryPage.publishBlogEntry();
+
+	await blogsPage.goToBlogEntryAction('Edit', title);
+
+	await expect(
+		blogsEditBlogEntryPage.contentEditor.locator(`img[src*="${fileName}"]`)
+	).toBeVisible();
+});
