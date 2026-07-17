@@ -14,14 +14,14 @@ import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,12 +44,6 @@ public class AudiencesEntryLocalServiceTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@Before
-	public void setUp() throws Exception {
-		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			TestPropsValues.getGroupId());
-	}
 
 	@Test
 	@TestInfo("LPD-95291")
@@ -126,8 +119,8 @@ public class AudiencesEntryLocalServiceTest {
 	public void testDeleteAudiencesEntry() throws Exception {
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
-				null, StringPool.BLANK, RandomTestUtil.randomString(),
-				_serviceContext);
+				null, TestPropsValues.getUserId(), StringPool.BLANK,
+				RandomTestUtil.randomString());
 
 		long audiencesEntryId = audiencesEntry.getAudiencesEntryId();
 
@@ -138,36 +131,43 @@ public class AudiencesEntryLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-95291")
+	@TestInfo({"LPD-94450", "LPD-95291"})
 	public void testUpdateAudiencesEntry() throws Exception {
 		AudiencesEntry audiencesEntry = _addAudiencesEntry(
 			null, StringPool.BLANK, RandomTestUtil.randomString());
+
+		_user = UserTestUtil.addUser();
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 		String name = RandomTestUtil.randomString();
 
 		audiencesEntry = _audiencesEntryLocalService.updateAudiencesEntry(
-			audiencesEntry.getAudiencesEntryId(), externalReferenceCode,
-			audiencesEntry.getJSON(), name);
+			externalReferenceCode, _user.getUserId(),
+			audiencesEntry.getAudiencesEntryId(), audiencesEntry.getJSON(),
+			name);
 
 		Assert.assertEquals(
 			externalReferenceCode, audiencesEntry.getExternalReferenceCode());
 		Assert.assertEquals(name, audiencesEntry.getName());
+		Assert.assertEquals(_user.getUserId(), audiencesEntry.getUserId());
+		Assert.assertEquals(_user.getFullName(), audiencesEntry.getUserName());
 
 		AudiencesEntry updatedAudiencesEntry = audiencesEntry;
 
 		AssertUtils.assertFailure(
 			AudiencesEntryNameException.class, null,
 			() -> _audiencesEntryLocalService.updateAudiencesEntry(
-				updatedAudiencesEntry.getAudiencesEntryId(),
 				updatedAudiencesEntry.getExternalReferenceCode(),
+				TestPropsValues.getUserId(),
+				updatedAudiencesEntry.getAudiencesEntryId(),
 				updatedAudiencesEntry.getJSON(), StringPool.BLANK));
 		AssertUtils.assertFailure(
 			AudiencesEntryJSONException.class,
 			"/conjunction: INVALID is not a valid enum value",
 			() -> _audiencesEntryLocalService.updateAudiencesEntry(
-				updatedAudiencesEntry.getAudiencesEntryId(),
 				updatedAudiencesEntry.getExternalReferenceCode(),
+				TestPropsValues.getUserId(),
+				updatedAudiencesEntry.getAudiencesEntryId(),
 				JSONUtil.put(
 					"conjunction", "INVALID"
 				).put(
@@ -187,7 +187,8 @@ public class AudiencesEntryLocalServiceTest {
 				externalReferenceCode, " and company ",
 				TestPropsValues.getCompanyId()),
 			() -> _audiencesEntryLocalService.updateAudiencesEntry(
-				audiencesEntryId, externalReferenceCode, StringPool.BLANK,
+				externalReferenceCode, TestPropsValues.getUserId(),
+				audiencesEntryId, StringPool.BLANK,
 				RandomTestUtil.randomString()));
 	}
 
@@ -197,7 +198,7 @@ public class AudiencesEntryLocalServiceTest {
 
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
-				externalReferenceCode, json, name, _serviceContext);
+				externalReferenceCode, TestPropsValues.getUserId(), json, name);
 
 		_audiencesEntries.add(audiencesEntry);
 
@@ -210,6 +211,7 @@ public class AudiencesEntryLocalServiceTest {
 	@Inject
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
-	private ServiceContext _serviceContext;
+	@DeleteAfterTestRun
+	private User _user;
 
 }

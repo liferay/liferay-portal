@@ -92,20 +92,7 @@ export class AudiencesPage {
 			});
 		}
 
-		if (valueType === 'select') {
-			const selectedValue = await this.valueInput.textContent();
-
-			if (!selectedValue?.includes(value)) {
-				await clickAndExpectToBeVisible({
-					autoClick: true,
-					target: this.page.getByRole('option', {name: value}),
-					trigger: this.valueInput,
-				});
-			}
-		}
-		else {
-			await this.valueInput.fill(value);
-		}
+		await this.setValue({value, valueType});
 
 		await this.saveButton.click();
 
@@ -164,5 +151,52 @@ export class AudiencesPage {
 				.locator('img')
 				.first()
 		).toBeVisible();
+	}
+
+	async setValue({
+		value,
+		valueType,
+	}: {
+		value: string;
+		valueType: 'select' | 'text';
+	}) {
+		if (valueType === 'select') {
+			const selectedValue = await this.valueInput.textContent();
+
+			if (!selectedValue?.includes(value)) {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: this.page.getByRole('option', {name: value}),
+					trigger: this.valueInput,
+				});
+			}
+		}
+		else {
+			await this.valueInput.fill(value);
+		}
+	}
+
+	async updateAudience({
+		name,
+		value,
+		valueType = 'text',
+	}: {
+		name: string;
+		value: string;
+		valueType?: 'select' | 'text';
+	}) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: this.page
+				.locator('tr', {hasText: name})
+				.locator('button.dropdown-toggle'),
+		});
+
+		await this.setValue({value, valueType});
+
+		await this.saveButton.click();
+
+		await waitForAlert(this.page);
 	}
 }
