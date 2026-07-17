@@ -178,14 +178,6 @@ public class FragmentEntryConfigurationParserTest {
 	public void testGetFieldValueURLConfiguration() throws Exception {
 		_testGetFieldValueURLConfiguration(null, StringPool.BLANK);
 		_testGetFieldValueURLConfiguration(null, RandomTestUtil.randomString());
-
-		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
-
-		ServiceContext serviceContext = _getAndPushServiceContext(
-			group, layout);
-
 		_testGetFieldValueURLConfiguration(
 			StringPool.POUND,
 			JSONUtil.put(
@@ -193,6 +185,13 @@ public class FragmentEntryConfigurationParserTest {
 				JSONUtil.put(
 					"externalReferenceCode", RandomTestUtil.randomString())
 			).toString());
+
+		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		ServiceContext serviceContext = _getAndPushServiceContext(
+			group, layout);
 
 		_testGetFieldValueURLConfiguration(
 			_portal.getLayoutFullURL(layout, serviceContext.getThemeDisplay()),
