@@ -68,14 +68,12 @@ public class CommerceTaxCalculationImpl implements CommerceTaxCalculation {
 				commerceOrderItem.getFinalPrice());
 
 			for (CommerceTaxValue commerceTaxValue : commerceTaxValues) {
-				CommerceTaxValue aggregatedCommerceTaxValue = null;
+				CommerceTaxValue aggregatedCommerceTaxValue = taxValueMap.get(
+					commerceTaxValue.getName());
 
 				BigDecimal amount = commerceTaxValue.getAmount();
 
-				if (taxValueMap.containsKey(commerceTaxValue.getName())) {
-					aggregatedCommerceTaxValue = taxValueMap.get(
-						commerceTaxValue.getName());
-
+				if (aggregatedCommerceTaxValue != null) {
 					amount = amount.add(aggregatedCommerceTaxValue.getAmount());
 				}
 

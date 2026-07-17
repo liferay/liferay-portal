@@ -42,11 +42,11 @@ public class CPSpecificationOptionModelPreFilterContributor
 
 		Map<String, Serializable> attributes = searchContext.getAttributes();
 
-		if (attributes.containsKey(CPField.FACETABLE)) {
-			boolean facetable = GetterUtil.getBoolean(
-				attributes.get(CPField.FACETABLE));
+		Serializable facetable = attributes.get(CPField.FACETABLE);
 
-			booleanFilter.addRequiredTerm(CPField.FACETABLE, facetable);
+		if (facetable != null) {
+			booleanFilter.addRequiredTerm(
+				CPField.FACETABLE, GetterUtil.getBoolean(facetable));
 		}
 	}
 
@@ -55,11 +55,11 @@ public class CPSpecificationOptionModelPreFilterContributor
 
 		Map<String, Serializable> attributes = searchContext.getAttributes();
 
-		if (attributes.containsKey(CPField.VISIBLE)) {
-			boolean visible = GetterUtil.getBoolean(
-				attributes.get(CPField.VISIBLE));
+		Serializable visible = attributes.get(CPField.VISIBLE);
 
-			booleanFilter.addRequiredTerm(CPField.VISIBLE, visible);
+		if (visible != null) {
+			booleanFilter.addRequiredTerm(
+				CPField.VISIBLE, GetterUtil.getBoolean(visible));
 		}
 	}
 

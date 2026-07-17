@@ -1933,19 +1933,10 @@ public class CPDefinitionLocalServiceImpl
 						key, searchContext.getLanguageId());
 				}
 
-				List<String> facetValues = null;
-
-				if (facetMap.containsKey(key)) {
-					facetValues = facetMap.get(key);
-				}
-
-				if (facetValues == null) {
-					facetValues = new ArrayList<>();
-				}
+				List<String> facetValues = facetMap.computeIfAbsent(
+					key, curKey -> new ArrayList<>());
 
 				facetValues.add(value);
-
-				facetMap.put(key, facetValues);
 			}
 
 			for (Map.Entry<String, List<String>> entry : facetMap.entrySet()) {

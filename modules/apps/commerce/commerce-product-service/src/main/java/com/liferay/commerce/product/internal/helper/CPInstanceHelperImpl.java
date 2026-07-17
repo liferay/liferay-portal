@@ -787,20 +787,8 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 				continue;
 			}
 
-			if (cpInstanceCPInstanceOptionValueHits.containsKey(
-					cpInstanceOptionValueRel.getCPInstanceId())) {
-
-				int value = cpInstanceCPInstanceOptionValueHits.get(
-					cpInstanceOptionValueRel.getCPInstanceId());
-
-				cpInstanceCPInstanceOptionValueHits.put(
-					cpInstanceOptionValueRel.getCPInstanceId(), value + 1);
-
-				continue;
-			}
-
-			cpInstanceCPInstanceOptionValueHits.put(
-				cpInstanceOptionValueRel.getCPInstanceId(), 1);
+			cpInstanceCPInstanceOptionValueHits.merge(
+				cpInstanceOptionValueRel.getCPInstanceId(), 1, Integer::sum);
 		}
 
 		if (cpInstanceCPInstanceOptionValueHits.isEmpty()) {
@@ -869,20 +857,8 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 				continue;
 			}
 
-			if (cpInstanceCPInstanceOptionValueHits.containsKey(
-					cpInstanceOptionValueRel.getCPInstanceId())) {
-
-				int value = cpInstanceCPInstanceOptionValueHits.get(
-					cpInstanceOptionValueRel.getCPInstanceId());
-
-				cpInstanceCPInstanceOptionValueHits.put(
-					cpInstanceOptionValueRel.getCPInstanceId(), value + 1);
-
-				continue;
-			}
-
-			cpInstanceCPInstanceOptionValueHits.put(
-				cpInstanceOptionValueRel.getCPInstanceId(), 1);
+			cpInstanceCPInstanceOptionValueHits.merge(
+				cpInstanceOptionValueRel.getCPInstanceId(), 1, Integer::sum);
 		}
 
 		if (cpInstanceCPInstanceOptionValueHits.isEmpty()) {

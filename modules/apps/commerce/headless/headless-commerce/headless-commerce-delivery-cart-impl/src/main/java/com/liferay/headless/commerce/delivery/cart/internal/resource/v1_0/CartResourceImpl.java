@@ -1110,14 +1110,12 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					commerceOrderItem.getCommerceOrderItemId(),
 					contextAcceptLanguage.getPreferredLocale()));
 
-			if (commerceOrderValidatorResults.containsKey(
-					commerceOrderItem.getCommerceOrderItemId())) {
+			List<CommerceOrderValidatorResult>
+				commerceOrderItemValidatorResults =
+					commerceOrderValidatorResults.get(
+						commerceOrderItem.getCommerceOrderItemId());
 
-				List<CommerceOrderValidatorResult>
-					commerceOrderItemValidatorResults =
-						commerceOrderValidatorResults.get(
-							commerceOrderItem.getCommerceOrderItemId());
-
+			if (commerceOrderItemValidatorResults != null) {
 				boolean cartItemValid = true;
 
 				for (CommerceOrderValidatorResult commerceOrderValidatorResult :

@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -378,26 +379,12 @@ public class SplitCommerceOrderByCatalogObjectActionExecutorImpl
 					CPDefinition cpDefinition =
 						commerceOrderItem.getCPDefinition();
 
-					CommerceCatalog commerceCatalog =
-						cpDefinition.getCommerceCatalog();
+					List<CommerceOrderItem> splitCommerceOrderItems =
+						commerceCatalogCommerceOrderItemsMap.computeIfAbsent(
+							cpDefinition.getCommerceCatalog(),
+							key -> new ArrayList<>());
 
-					if (commerceCatalogCommerceOrderItemsMap.containsKey(
-							commerceCatalog)) {
-
-						List<CommerceOrderItem> splitCommerceOrderItems =
-							commerceCatalogCommerceOrderItemsMap.get(
-								commerceCatalog);
-
-						splitCommerceOrderItems.add(commerceOrderItem);
-
-						commerceCatalogCommerceOrderItemsMap.put(
-							commerceCatalog, splitCommerceOrderItems);
-					}
-					else {
-						commerceCatalogCommerceOrderItemsMap.put(
-							commerceCatalog,
-							ListUtil.toList(commerceOrderItem));
-					}
+					splitCommerceOrderItems.add(commerceOrderItem);
 				}
 				catch (Exception exception) {
 					throw new RuntimeException(exception);

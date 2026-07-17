@@ -194,10 +194,12 @@ public class CommerceOrderNoteSystemObjectDefinitionManager
 		Map<String, Object> variables = super.getVariables(
 			contentType, objectDefinition, oldValues, payloadJSONObject);
 
-		if (variables.containsKey("commerceOrderId")) {
+		Object commerceOrderId = variables.get("commerceOrderId");
+
+		if (commerceOrderId != null) {
 			CommerceOrder commerceOrder =
 				_commerceOrderLocalService.fetchCommerceOrder(
-					GetterUtil.getLong(variables.get("commerceOrderId")));
+					GetterUtil.getLong(commerceOrderId));
 
 			if (commerceOrder == null) {
 				return variables;
