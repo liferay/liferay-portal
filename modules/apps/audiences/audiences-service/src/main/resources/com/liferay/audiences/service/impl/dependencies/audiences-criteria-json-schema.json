@@ -144,6 +144,7 @@
 							"attribute": {
 								"enum": [
 									"language",
+									"segments",
 									"user_language"
 								]
 							}
@@ -230,6 +231,7 @@
 								"pathname",
 								"referrer",
 								"request_parameters",
+								"segments",
 								"timezone",
 								"url",
 								"user_agent",
