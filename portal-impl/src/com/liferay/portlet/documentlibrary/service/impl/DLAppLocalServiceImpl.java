@@ -6,6 +6,7 @@
 package com.liferay.portlet.documentlibrary.service.impl;
 
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
@@ -684,6 +685,23 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 
 		return localRepository.fetchFileShortcutByExternalReferenceCode(
 			externalReferenceCode);
+	}
+
+	@Override
+	public Folder fetchFolder(long folderId) throws PortalException {
+		try {
+			LocalRepository localRepository =
+				RepositoryProviderUtil.getFolderLocalRepository(folderId);
+
+			return localRepository.getFolder(folderId);
+		}
+		catch (NoSuchFolderException noSuchFolderException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFolderException);
+			}
+
+			return null;
+		}
 	}
 
 	@Override
