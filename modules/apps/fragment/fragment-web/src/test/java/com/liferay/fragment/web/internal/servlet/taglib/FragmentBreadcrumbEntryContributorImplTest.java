@@ -65,11 +65,11 @@ public class FragmentBreadcrumbEntryContributorImplTest {
 	@Test
 	@TestInfo("LPD-97637")
 	public void testGetBreadcrumbEntries() {
+		_testGetBreadcrumbEntriesForDefaultCollection();
+		_testGetBreadcrumbEntriesForFragmentEntry();
+		_testGetBreadcrumbEntriesForSpecificCollection();
 		_testGetBreadcrumbEntriesWhenNotInFragmentPortlet();
 		_testGetBreadcrumbEntriesWhenScopeIsNotDesignLibrary();
-		_testGetBreadcrumbEntriesForDefaultCollection();
-		_testGetBreadcrumbEntriesForSpecificCollection();
-		_testGetBreadcrumbEntriesForFragmentEntry();
 	}
 
 	private FragmentCollection _mockFragmentCollection(
