@@ -347,12 +347,11 @@ public class FragmentConfigurationFieldValueTestUtil {
 				map.get("item"), scopeGroupId));
 		itemValue.setTemplateReference(
 			() -> {
-				if (!map.containsKey("template")) {
+				if (!(map.get("template") instanceof Map<?, ?> template)) {
 					return null;
 				}
 
-				Map<String, String> templateMap = (Map<String, String>)map.get(
-					"template");
+				Map<String, String> templateMap = (Map<String, String>)template;
 
 				return new TemplateReference() {
 					{
@@ -429,7 +428,10 @@ public class FragmentConfigurationFieldValueTestUtil {
 			return null;
 		}
 
-		if (map.containsKey("contextualMenu")) {
+		if (map.get("contextualMenu") instanceof
+				ContextualMenuNavigationMenuValue.ContextualMenuType
+					contextualMenuType) {
+
 			ContextualMenuNavigationMenuValue
 				contextualMenuNavigationMenuValue =
 					new ContextualMenuNavigationMenuValue() {
@@ -440,14 +442,14 @@ public class FragmentConfigurationFieldValueTestUtil {
 					};
 
 			contextualMenuNavigationMenuValue.setContextualMenuType(
-				() ->
-					(ContextualMenuNavigationMenuValue.ContextualMenuType)
-						map.get("contextualMenu"));
+				() -> contextualMenuType);
 
 			return contextualMenuNavigationMenuValue;
 		}
 
-		if (map.containsKey("siteNavigationMenu")) {
+		Object siteNavigationMenu = map.get("siteNavigationMenu");
+
+		if (siteNavigationMenu != null) {
 			SiteMenuNavigationMenuValue siteMenuNavigationMenuValue =
 				new SiteMenuNavigationMenuValue() {
 					{
@@ -458,7 +460,7 @@ public class FragmentConfigurationFieldValueTestUtil {
 
 			siteMenuNavigationMenuValue.setNavigationMenuItemExternalReference(
 				() -> ReferencesTestUtil.getItemExternalReference(
-					map.get("siteNavigationMenu"), scopeGroupId));
+					siteNavigationMenu, scopeGroupId));
 
 			siteMenuNavigationMenuValue.setParentMenuItemExternalReferenceCode(
 				() -> GetterUtil.getString(
