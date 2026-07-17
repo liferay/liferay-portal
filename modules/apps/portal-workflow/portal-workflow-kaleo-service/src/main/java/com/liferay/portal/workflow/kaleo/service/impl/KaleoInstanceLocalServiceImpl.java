@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.workflow.kaleo.exception.NoSuchInstanceException;
 import com.liferay.portal.workflow.kaleo.internal.search.KaleoInstanceTokenField;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
@@ -201,18 +200,14 @@ public class KaleoInstanceLocalServiceImpl
 	public KaleoInstance deleteKaleoInstance(long kaleoInstanceId)
 		throws PortalException {
 
-		KaleoInstance kaleoInstance = null;
+		KaleoInstance kaleoInstance =
+			kaleoInstancePersistence.fetchByPrimaryKey(kaleoInstanceId);
 
-		try {
-			kaleoInstance = kaleoInstancePersistence.remove(kaleoInstanceId);
-		}
-		catch (NoSuchInstanceException noSuchInstanceException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchInstanceException);
-			}
-
+		if (kaleoInstance == null) {
 			return null;
 		}
+
+		kaleoInstancePersistence.remove(kaleoInstance);
 
 		// Kaleo instance tokens
 
