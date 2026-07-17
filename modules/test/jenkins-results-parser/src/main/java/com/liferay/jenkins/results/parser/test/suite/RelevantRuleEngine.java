@@ -231,9 +231,7 @@ public class RelevantRuleEngine {
 		String testPropertiesFilePath =
 			JenkinsResultsParserUtil.getCanonicalPath(testPropertiesFile);
 
-		if (testPropertiesFile.exists() &&
-			!testPropertiesFilePaths.contains(testPropertiesFilePath)) {
-
+		if (testPropertiesFile.exists()) {
 			testPropertiesFilePaths.add(testPropertiesFilePath);
 		}
 
