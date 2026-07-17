@@ -250,9 +250,7 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"styleBookEntryScope",
 			() -> {
-				StyleBookEntry styleBookEntry =
-					StyleBookEntryProviderUtil.getStyleBookEntry(
-						_layoutsAdminDisplayContext.getSelLayout());
+				StyleBookEntry styleBookEntry = _getStyleBookEntry();
 
 				if ((styleBookEntry == null) ||
 					(styleBookEntry.getStyleBookEntryId() <= 0) ||
@@ -294,16 +292,15 @@ public class LayoutLookAndFeelDisplayContext {
 	}
 
 	public String getStyleBookEntryName() {
-		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
-
-		StyleBookEntry styleBookEntry =
-			StyleBookEntryProviderUtil.getStyleBookEntry(selLayout);
+		StyleBookEntry styleBookEntry = _getStyleBookEntry();
 
 		if ((styleBookEntry != null) &&
 			(styleBookEntry.getStyleBookEntryId() > 0)) {
 
 			return styleBookEntry.getName();
 		}
+
+		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
 		return DefaultStyleBookEntryUtil.getStyleBookEntryName(
 			selLayout, _themeDisplay.getLocale(),
@@ -570,6 +567,17 @@ public class LayoutLookAndFeelDisplayContext {
 			layoutSet.isPrivateLayout(), _themeDisplay.getLocale());
 	}
 
+	private StyleBookEntry _getStyleBookEntry() {
+		if (_styleBookEntry != null) {
+			return _styleBookEntry;
+		}
+
+		_styleBookEntry = StyleBookEntryProviderUtil.getStyleBookEntry(
+			_layoutsAdminDisplayContext.getSelLayout());
+
+		return _styleBookEntry;
+	}
+
 	private Boolean _hasEditableMasterLayout;
 	private Boolean _hasMasterLayout;
 	private final HttpServletRequest _httpServletRequest;
@@ -577,6 +585,7 @@ public class LayoutLookAndFeelDisplayContext {
 	private final LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _masterLayoutName;
+	private StyleBookEntry _styleBookEntry;
 	private final ThemeDisplay _themeDisplay;
 
 }
