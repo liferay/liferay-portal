@@ -509,16 +509,11 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		for (TestResult testResult : testResults) {
 			String testResultClassName = testResult.getClassName();
 
-			if (untestedTestClassMethodNamesMap.containsKey(
-					testResultClassName)) {
+			List<String> testClassMethodNames =
+				untestedTestClassMethodNamesMap.get(testResultClassName);
 
-				List<String> testClassMethodNames =
-					untestedTestClassMethodNamesMap.get(testResultClassName);
-
+			if (testClassMethodNames != null) {
 				testClassMethodNames.remove(testResult.getTestName());
-
-				untestedTestClassMethodNamesMap.put(
-					testResultClassName, testClassMethodNames);
 			}
 		}
 

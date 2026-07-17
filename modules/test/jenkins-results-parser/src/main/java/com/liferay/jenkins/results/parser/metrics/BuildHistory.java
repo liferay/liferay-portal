@@ -634,9 +634,7 @@ public class BuildHistory {
 		long totalValue = 0L;
 
 		for (String dateString : dateStrings) {
-			if (dailyValueMap.containsKey(dateString)) {
-				totalValue += dailyValueMap.get(dateString);
-			}
+			totalValue += dailyValueMap.getOrDefault(dateString, 0L);
 		}
 
 		return totalValue;

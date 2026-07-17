@@ -764,8 +764,12 @@ public class TestrayFactory {
 
 		Long testrayBuildId = testrayBuild.getId();
 
-		if (_topLevelBuildTestrayCaseResults.containsKey(testrayBuildId)) {
-			return _topLevelBuildTestrayCaseResults.get(testrayBuildId);
+		TopLevelStandaloneBuildTestrayCaseResult
+			topLevelStandaloneBuildTestrayCaseResult =
+				_topLevelBuildTestrayCaseResults.get(testrayBuildId);
+
+		if (topLevelStandaloneBuildTestrayCaseResult != null) {
+			return topLevelStandaloneBuildTestrayCaseResult;
 		}
 
 		if (testrayBuild == null) {

@@ -28,11 +28,11 @@ public class PersistentResourceFactory {
 
 		String key = buildDatabase.getBuildDatabaseFile() + "/" + type;
 
-		if (_persistentResources.containsKey(key)) {
-			return _persistentResources.get(key);
-		}
+		PersistentResource persistentResource = _persistentResources.get(key);
 
-		PersistentResource persistentResource = null;
+		if (persistentResource != null) {
+			return persistentResource;
+		}
 
 		if (type == PersistentResource.Type.ASAH_BUNDLE) {
 			persistentResource = new AsahBundlePersistentResource(

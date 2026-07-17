@@ -74,25 +74,11 @@ public abstract class BaseGlobJobProperty
 
 				relativeGlob = testClassGlob;
 
-				List<String> testClassMethodNames;
+				List<String> testClassMethodNames =
+					_globTestClassMethodNamesMap.computeIfAbsent(
+						testClassGlob, key -> new ArrayList<>());
 
-				if (_globTestClassMethodNamesMap.containsKey(testClassGlob)) {
-					testClassMethodNames = _globTestClassMethodNamesMap.get(
-						testClassGlob);
-
-					testClassMethodNames.add(testClassMethodName);
-
-					_globTestClassMethodNamesMap.replace(
-						relativeGlob, testClassMethodNames);
-				}
-				else {
-					testClassMethodNames = new ArrayList<>();
-
-					testClassMethodNames.add(testClassMethodName);
-
-					_globTestClassMethodNamesMap.put(
-						relativeGlob, testClassMethodNames);
-				}
+				testClassMethodNames.add(testClassMethodName);
 			}
 
 			relativeGlobs.add(relativeGlob);

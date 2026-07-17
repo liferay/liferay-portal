@@ -30,8 +30,11 @@ public class GitCommitFactory {
 		String gitHubCommitURL = _getGitHubCommitURL(
 			gitHubUsername, gitRepositoryName, sha);
 
-		if (_gitHubRemoteGitCommits.containsKey(gitHubCommitURL)) {
-			return _gitHubRemoteGitCommits.get(gitHubCommitURL);
+		GitHubRemoteGitCommit gitHubRemoteGitCommit =
+			_gitHubRemoteGitCommits.get(gitHubCommitURL);
+
+		if (gitHubRemoteGitCommit != null) {
+			return gitHubRemoteGitCommit;
 		}
 
 		try {

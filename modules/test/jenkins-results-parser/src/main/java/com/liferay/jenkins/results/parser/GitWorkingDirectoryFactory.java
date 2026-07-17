@@ -69,11 +69,12 @@ public class GitWorkingDirectoryFactory {
 				gitRepositoryDirPath, "-", upstreamBranchName);
 
 			synchronized (_gitWorkingDirectories) {
-				if (_gitWorkingDirectories.containsKey(key)) {
-					return _gitWorkingDirectories.get(key);
-				}
+				GitWorkingDirectory gitWorkingDirectory =
+					_gitWorkingDirectories.get(key);
 
-				GitWorkingDirectory gitWorkingDirectory = null;
+				if (gitWorkingDirectory != null) {
+					return gitWorkingDirectory;
+				}
 
 				if (gitRepositoryName.startsWith("com-liferay-") ||
 					gitRepositoryDirPath.matches(".*/com-liferay-[^/]*")) {

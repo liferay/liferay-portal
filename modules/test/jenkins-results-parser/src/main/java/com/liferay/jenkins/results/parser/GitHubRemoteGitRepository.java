@@ -116,8 +116,10 @@ public class GitHubRemoteGitRepository extends BaseRemoteGitRepository {
 	public List<Label> getLabels() {
 		String labelRequestURL = getLabelRequestURL();
 
-		if (_labelsLists.containsKey(labelRequestURL)) {
-			return _labelsLists.get(labelRequestURL);
+		List<Label> labelsList = _labelsLists.get(labelRequestURL);
+
+		if (labelsList != null) {
+			return labelsList;
 		}
 
 		JSONArray labelsJSONArray;

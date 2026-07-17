@@ -70,8 +70,10 @@ public class TestrayServer {
 	}
 
 	public TestrayBuild getTestrayBuildById(long buildId) {
-		if (_testrayBuilds.containsKey(buildId)) {
-			return _testrayBuilds.get(buildId);
+		TestrayBuild testrayBuild = _testrayBuilds.get(buildId);
+
+		if (testrayBuild != null) {
+			return testrayBuild;
 		}
 
 		try {
@@ -100,7 +102,7 @@ public class TestrayServer {
 				testrayProject.getTestrayRoutineById(
 					routineJSONObject.getLong("id"));
 
-			TestrayBuild testrayBuild = TestrayFactory.newTestrayBuild(
+			testrayBuild = TestrayFactory.newTestrayBuild(
 				testrayRoutine, entityJSONObject);
 
 			_testrayBuilds.put(testrayBuild.getId(), testrayBuild);
@@ -191,8 +193,10 @@ public class TestrayServer {
 	}
 
 	public TestrayProject getTestrayProjectById(long projectId) {
-		if (_testrayProjects.containsKey(projectId)) {
-			return _testrayProjects.get(projectId);
+		TestrayProject testrayProject = _testrayProjects.get(projectId);
+
+		if (testrayProject != null) {
+			return testrayProject;
 		}
 
 		try {
@@ -206,7 +210,7 @@ public class TestrayServer {
 
 			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
 
-			TestrayProject testrayProject = TestrayFactory.newTestrayProject(
+			testrayProject = TestrayFactory.newTestrayProject(
 				this, iterator.next());
 
 			_testrayProjects.put(testrayProject.getId(), testrayProject);
@@ -272,8 +276,10 @@ public class TestrayServer {
 	}
 
 	public TestrayRoutine getTestrayRoutineById(long routineId) {
-		if (_testrayRoutines.containsKey(routineId)) {
-			return _testrayRoutines.get(routineId);
+		TestrayRoutine testrayRoutine = _testrayRoutines.get(routineId);
+
+		if (testrayRoutine != null) {
+			return testrayRoutine;
 		}
 
 		try {
@@ -295,7 +301,7 @@ public class TestrayServer {
 			TestrayProject testrayProject = getTestrayProjectById(
 				projectJSONObject.getLong("id"));
 
-			TestrayRoutine testrayRoutine = TestrayFactory.newTestrayRoutine(
+			testrayRoutine = TestrayFactory.newTestrayRoutine(
 				testrayProject, entityJSONObject);
 
 			_testrayRoutines.put(testrayRoutine.getId(), testrayRoutine);

@@ -110,8 +110,10 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 	protected synchronized TestrayAttachment getTestrayAttachment(
 		BuildReport buildReport, String name, String key) {
 
-		if (_testrayAttachments.containsKey(key)) {
-			return _testrayAttachments.get(key);
+		TestrayAttachment testrayAttachment = _testrayAttachments.get(key);
+
+		if (testrayAttachment != null) {
+			return testrayAttachment;
 		}
 
 		if ((buildReport == null) ||
@@ -145,7 +147,7 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 			return null;
 		}
 
-		TestrayAttachment testrayAttachment = new CloudObjectTestrayAttachment(
+		testrayAttachment = new CloudObjectTestrayAttachment(
 			this, name, cloudObjectPath);
 
 		_testrayAttachments.put(key, testrayAttachment);

@@ -27,16 +27,8 @@ public class ScanCodeCloudObjectFactory {
 		String mapKey = JenkinsResultsParserUtil.combine(
 			scanCodeCloudBucket.getName(), "/", blob.getName());
 
-		if (_scanCodeCloudObjects.containsKey(mapKey)) {
-			return _scanCodeCloudObjects.get(mapKey);
-		}
-
-		ScanCodeCloudObject scanCodeCloudObject = new ScanCodeCloudObject(
-			blob, scanCodeCloudBucket);
-
-		_scanCodeCloudObjects.put(mapKey, scanCodeCloudObject);
-
-		return scanCodeCloudObject;
+		return _scanCodeCloudObjects.computeIfAbsent(
+			mapKey, key -> new ScanCodeCloudObject(blob, scanCodeCloudBucket));
 	}
 
 	private static final Map<String, ScanCodeCloudObject>

@@ -572,9 +572,9 @@ public class BuildHistoryProcessor {
 
 			Map<String, String> parameters = buildJSONObject.getParameters();
 
-			if (parameters.containsKey("JOB_VARIANT")) {
-				String jobVariant = parameters.get("JOB_VARIANT");
+			String jobVariant = parameters.get("JOB_VARIANT");
 
+			if (jobVariant != null) {
 				if (jobVariant.contains("functional")) {
 					return TestBatchType.POSHI.toString();
 				}
@@ -669,24 +669,20 @@ public class BuildHistoryProcessor {
 				Map<String, String> parameters =
 					buildJSONObject.getParameters();
 
-				if (parameters.containsKey("CI_TEST_SUITE")) {
-					_topLevelBuildTestSuiteMap.put(
-						buildJSONObject.getURL(),
-						parameters.get("CI_TEST_SUITE"));
+				String ciTestSuite = parameters.get("CI_TEST_SUITE");
 
-					return parameters.get("CI_TEST_SUITE");
+				if (ciTestSuite != null) {
+					_topLevelBuildTestSuiteMap.put(
+						buildJSONObject.getURL(), ciTestSuite);
+
+					return ciTestSuite;
 				}
 
 				return "[Unknown]";
 			}
 
-			String topLevelBuildURL = buildJSONObject.getTopLevelBuildURL();
-
-			if (_topLevelBuildTestSuiteMap.containsKey(topLevelBuildURL)) {
-				return _topLevelBuildTestSuiteMap.get(topLevelBuildURL);
-			}
-
-			return "[Unknown]";
+			return _topLevelBuildTestSuiteMap.getOrDefault(
+				buildJSONObject.getTopLevelBuildURL(), "[Unknown]");
 		}
 
 		private final Map<String, String> _topLevelBuildTestSuiteMap =

@@ -64,9 +64,9 @@ public class JIRAUtil {
 			return null;
 		}
 
-		if (_cachedIssues.containsKey(issueKey)) {
-			CachedIssue cachedIssue = _cachedIssues.get(issueKey);
+		CachedIssue cachedIssue = _cachedIssues.get(issueKey);
 
+		if (cachedIssue != null) {
 			if (!cachedIssue.isExpired()) {
 				return cachedIssue.issue;
 			}

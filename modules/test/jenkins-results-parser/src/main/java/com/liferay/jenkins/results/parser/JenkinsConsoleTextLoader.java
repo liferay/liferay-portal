@@ -45,8 +45,11 @@ public class JenkinsConsoleTextLoader {
 				".liferay.com/job/", jobName, "/",
 				matcher.group("buildNumber"));
 
-			if (_jenkinsConsoleTextLoaders.containsKey(buildURL)) {
-				return _jenkinsConsoleTextLoaders.get(buildURL);
+			JenkinsConsoleTextLoader jenkinsConsoleTextLoader =
+				_jenkinsConsoleTextLoaders.get(buildURL);
+
+			if (jenkinsConsoleTextLoader != null) {
+				return jenkinsConsoleTextLoader;
 			}
 
 			if (jobName.contains("-batch") || jobName.contains("-downstream") ||

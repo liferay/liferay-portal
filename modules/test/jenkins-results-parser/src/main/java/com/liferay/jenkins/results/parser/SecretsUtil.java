@@ -69,8 +69,10 @@ public abstract class SecretsUtil {
 		String secretReference = _getSecretReference(
 			vaultName, itemTitle, fieldLabel);
 
-		if (_connectSecrets.containsKey(secretReference)) {
-			return _connectSecrets.get(secretReference);
+		String secret = _connectSecrets.get(secretReference);
+
+		if (secret != null) {
+			return secret;
 		}
 
 		String cachedSecret = _getCachedSecret(secretReference);
@@ -81,7 +83,7 @@ public abstract class SecretsUtil {
 
 		_loadConnectSecrets();
 
-		String secret = _connectSecrets.get(secretReference);
+		secret = _connectSecrets.get(secretReference);
 
 		if (secret == null) {
 			System.out.println("Unable to find secret " + secretReference);

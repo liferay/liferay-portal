@@ -200,8 +200,10 @@ public abstract class BaseBuildReport implements BuildReport {
 
 	@Override
 	public synchronized URL getTestrayAttachmentURLBySuffix(String suffix) {
-		if (_testrayAttachmentURLsBySuffix.containsKey(suffix)) {
-			return _testrayAttachmentURLsBySuffix.get(suffix);
+		URL url = _testrayAttachmentURLsBySuffix.get(suffix);
+
+		if (url != null) {
+			return url;
 		}
 
 		URL matchedURL = null;

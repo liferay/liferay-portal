@@ -294,12 +294,7 @@ public class SlaveOfflineRule {
 
 		offlineSibling = configurationsMap.get("offlineSiblings");
 
-		if (configurationsMap.containsKey("shutdown")) {
-			shutdown = Boolean.parseBoolean(configurationsMap.get("shutdown"));
-		}
-		else {
-			shutdown = false;
-		}
+		shutdown = Boolean.parseBoolean(configurationsMap.get("shutdown"));
 	}
 
 	private static final Pattern _configurationsPattern = Pattern.compile(

@@ -1430,8 +1430,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	private List<String> _getLabels(String labelExpression) {
-		if (_labelExpressionLabels.containsKey(labelExpression)) {
-			return _labelExpressionLabels.get(labelExpression);
+		List<String> labelExpressionLabels = _labelExpressionLabels.get(
+			labelExpression);
+
+		if (labelExpressionLabels != null) {
+			return labelExpressionLabels;
 		}
 
 		Set<String> labels = new HashSet<>();

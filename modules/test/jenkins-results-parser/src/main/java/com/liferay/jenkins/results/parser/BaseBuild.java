@@ -1192,11 +1192,7 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public long getStatusDuration(String status) {
-		if (_statusDurations.containsKey(status)) {
-			return _statusDurations.get(status);
-		}
-
-		return 0;
+		return _statusDurations.getOrDefault(status, 0L);
 	}
 
 	@Override

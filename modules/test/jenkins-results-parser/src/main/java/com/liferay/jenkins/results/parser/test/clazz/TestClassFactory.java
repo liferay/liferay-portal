@@ -229,11 +229,12 @@ public class TestClassFactory {
 				File canonicalFile = _getCanonicalFile(
 					testClassFile, jsonObject);
 
-				if (_modulesJUnitTestClasses.containsKey(canonicalFile)) {
-					return _modulesJUnitTestClasses.get(canonicalFile);
-				}
+				ModulesJUnitTestClass modulesJUnitTestClass =
+					_modulesJUnitTestClasses.get(canonicalFile);
 
-				ModulesJUnitTestClass modulesJUnitTestClass = null;
+				if (modulesJUnitTestClass != null) {
+					return modulesJUnitTestClass;
+				}
 
 				if (jsonObject != null) {
 					modulesJUnitTestClass = new ModulesJUnitTestClass(
@@ -253,11 +254,12 @@ public class TestClassFactory {
 				File canonicalFile = _getCanonicalFile(
 					testClassFile, jsonObject);
 
-				if (_jUnitTestClasses.containsKey(canonicalFile)) {
-					return _jUnitTestClasses.get(canonicalFile);
-				}
+				JUnitTestClass jUnitTestClass = _jUnitTestClasses.get(
+					canonicalFile);
 
-				JUnitTestClass jUnitTestClass = null;
+				if (jUnitTestClass != null) {
+					return jUnitTestClass;
+				}
 
 				if (jsonObject != null) {
 					jUnitTestClass = new JUnitTestClass(
@@ -278,11 +280,11 @@ public class TestClassFactory {
 				File canonicalFile = _getCanonicalFile(
 					testClassFile, jsonObject);
 
-				if (_npmTestClasses.containsKey(canonicalFile)) {
-					return _npmTestClasses.get(canonicalFile);
-				}
+				NPMTestClass npmTestClass = _npmTestClasses.get(canonicalFile);
 
-				NPMTestClass npmTestClass = null;
+				if (npmTestClass != null) {
+					return npmTestClass;
+				}
 
 				if (jsonObject != null) {
 					npmTestClass = new NPMTestClass(
@@ -303,11 +305,12 @@ public class TestClassFactory {
 				File canonicalFile = _getCanonicalFile(
 					testClassFile, jsonObject);
 
-				if (_playwrightJUnitTestClasses.containsKey(canonicalFile)) {
-					return _playwrightJUnitTestClasses.get(canonicalFile);
-				}
+				PlaywrightJUnitTestClass playwrightJUnitTestClass =
+					_playwrightJUnitTestClasses.get(canonicalFile);
 
-				PlaywrightJUnitTestClass playwrightJUnitTestClass = null;
+				if (playwrightJUnitTestClass != null) {
+					return playwrightJUnitTestClass;
+				}
 
 				if (jsonObject != null) {
 					playwrightJUnitTestClass = new PlaywrightJUnitTestClass(

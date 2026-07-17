@@ -27,17 +27,16 @@ public class TestrayCloudObjectFactory {
 		String mapKey = JenkinsResultsParserUtil.combine(
 			testrayCloudBucket.getName(), "/", blob.getName());
 
-		if (_testrayCloudObjects.containsKey(mapKey)) {
-			TestrayCloudObject testrayCloudObject = _testrayCloudObjects.get(
-				mapKey);
+		TestrayCloudObject testrayCloudObject = _testrayCloudObjects.get(
+			mapKey);
 
+		if (testrayCloudObject != null) {
 			testrayCloudObject.setBlob(blob);
 
 			return testrayCloudObject;
 		}
 
-		TestrayCloudObject testrayCloudObject = new TestrayCloudObject(
-			testrayCloudBucket, blob);
+		testrayCloudObject = new TestrayCloudObject(testrayCloudBucket, blob);
 
 		_testrayCloudObjects.put(mapKey, testrayCloudObject);
 
