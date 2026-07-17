@@ -1,0 +1,44 @@
+.accordion {
+	margin-top: 16px;
+}
+
+.panel {
+	padding-bottom: 12px;
+	padding-top: 16px;
+}
+
+.range-selector {
+	margin-bottom: 16px;
+}
+
+.range-selector button {
+	background: #f8f9fa;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	margin-right: 4px;
+	padding: 4px 12px;
+}
+
+.range-selector button.active {
+	background: #007bff;
+	border-color: #007bff;
+	color: #fff;
+}
+
+.search {
+	border: 1px solid #d3d3d3;
+	font-size: 14px;
+	margin-bottom: 12px;
+	padding: 12px 12px 12px 40px;
+	position: relative;
+	width: 100%;
+}
+
+.table-wrapper {
+	max-height: 1080px;
+}
+
+.table-wrapper-full {
+	max-height: none;
+	overflow: visible;
+}

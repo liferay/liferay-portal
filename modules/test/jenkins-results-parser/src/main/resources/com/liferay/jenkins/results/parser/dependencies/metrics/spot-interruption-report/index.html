@@ -1,0 +1,99 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+
+		<title id="title"></title>
+	</head>
+
+	<body>
+		<h2 id="report-name"></h2>
+
+		<div class="date">
+			<p id="spot-interruption-data-date"></p>
+		</div>
+
+		<div>
+			<button class="accordion"><h3>Interruption Rate Over Time by ASG Type</h3></button>
+
+			<div class="panel">
+				<div class="chart-container">
+					<canvas id="spot-interruption-canvas"></canvas>
+				</div>
+
+				<br />
+			</div>
+
+			<div class="range-selector">
+				<button id="range-1" type="button">Today</button>
+				<button class="active" id="range-7" type="button">Last 7 Days</button>
+				<button id="range-0" type="button"></button>
+			</div>
+
+			<button class="accordion"><h3>Interruption Rate by ASG Type</h3></button>
+
+			<div class="panel">
+				<div class="table-wrapper table-wrapper-full">
+					<table class="sortable-theme-bootstrap" data-sortable id="spot-interruption-asg-type-table"></table>
+				</div>
+
+				<br />
+			</div>
+
+			<button class="accordion"><h3>Interruption Rate by Instance Type</h3></button>
+
+			<div class="panel">
+				<div class="table-wrapper">
+					<table class="sortable-theme-bootstrap" data-sortable id="spot-interruption-instance-type-table"></table>
+				</div>
+
+				<br />
+			</div>
+
+			<button class="accordion"><h3>Interruption Rate by Master</h3></button>
+
+			<div class="panel">
+				<div class="table-wrapper table-wrapper-full">
+					<table class="sortable-theme-bootstrap" data-sortable id="spot-interruption-master-table"></table>
+				</div>
+
+				<br />
+			</div>
+
+			<button class="accordion"><h3>Interruption Rate by Master and ASG Type</h3></button>
+
+			<div class="panel">
+				<div>
+					<i class="fa fa-search"></i>
+
+					<input class="search" id="spot-interruption-master-asg-type-search" placeholder="Filter by master or ASG type (e.g. test-1-41)" type="text" />
+				</div>
+
+				<div class="table-wrapper">
+					<table class="sortable-theme-bootstrap" data-sortable id="spot-interruption-master-asg-type-table"></table>
+				</div>
+
+				<br />
+			</div>
+		</div>
+
+		<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/css/sortable-theme-bootstrap.min.css" rel="stylesheet" />
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/js/utils.js"></script>
+
+		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@5efc3355b3fd817bc00f60c67b0feaa01d81909f/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/css/report.css" rel="stylesheet" />
+
+		<script src="js/table-data.js"></script>
+
+		<link href="css/main.css" rel="stylesheet" />
+
+		<script src="js/main.js"></script>
+	</body>
+</html>
