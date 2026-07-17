@@ -5,8 +5,10 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.aws.CloudTrailEventCrawler;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryProcessor;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryReport;
+import com.liferay.jenkins.results.parser.metrics.SpotInterruptionReport;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
 
@@ -21,12 +23,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +101,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		FLAKY_TEST_MASTER("Flaky Test master"),
 		PULL_REQUEST_HISTORY("Pull Request History"),
 		RELEASE_HISTORY("Release History"),
+		SPOT_INTERRUPTION("Spot Interruption"),
 		UPSTREAM_HISTORY("Upstream History"), UTILIZATION("Utilization");
 
 		public String getDirName() {
@@ -595,6 +600,10 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					_generateReleaseReport(reportName);
 				}
 
+				if (reportName.equals(Report.SPOT_INTERRUPTION.toString())) {
+					_generateSpotInterruptionReport(reportName);
+				}
+
 				if (reportName.equals(Report.UPSTREAM_HISTORY.toString())) {
 					_generateUpstreamReport(reportName);
 				}
@@ -635,6 +644,33 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		buildData.setBuildDescription(sb.toString());
 
 		updateBuildDescription();
+	}
+
+	private void _generateSpotInterruptionReport(String reportName)
+		throws IOException {
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Generating the ", reportName, " report"));
+
+		long reportDurationDays = _getReportDurationDays(reportName);
+
+		File spotInterruptionDataDir = new File(
+			_TMP_BASE_DIR_PATH, "spot-interruption-data");
+
+		_updateSpotInterruptionDataFiles(
+			reportDurationDays, spotInterruptionDataDir);
+
+		String filePath = _getReportFilePath(reportName);
+
+		SpotInterruptionReport spotInterruptionReport =
+			SpotInterruptionReport.newSpotInterruptionReport(
+				spotInterruptionDataDir, reportDurationDays, new File(filePath),
+				_getStartDateString(reportDurationDays - 1));
+
+		spotInterruptionReport.write();
+
+		_updateReport(filePath);
 	}
 
 	private void _generateUpstreamReport(String reportName) throws IOException {
@@ -951,6 +987,100 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		}
 	}
 
+	private void _updateSpotInterruptionDataFiles(
+			long reportDurationDays, File spotInterruptionDataDir)
+		throws IOException {
+
+		String s3SpotInterruptionPath = _getBuildProperty(
+			"cloud.ci.s3.bucket.spot.interruption.path");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(s3SpotInterruptionPath)) {
+			throw new RuntimeException(
+				"Please set \"cloud.ci.s3.bucket.spot.interruption.path\"");
+		}
+
+		LocalDate startLocalDate = LocalDate.parse(
+			_getStartDateString(reportDurationDays - 1), _dateTimeFormatter);
+
+		String[] dateStrings = JenkinsResultsParserUtil.getDateStrings(
+			reportDurationDays, startLocalDate);
+
+		int crawlStartIndex = Math.max(0, dateStrings.length - 2);
+
+		for (int i = 0; i < crawlStartIndex; i++) {
+			String s3FilePath = JenkinsResultsParserUtil.combine(
+				s3SpotInterruptionPath, "/", dateStrings[i],
+				"/spot-interruption.json");
+
+			if (!CloudBucketUtil.isS3ObjectPathAvailable(s3FilePath)) {
+				crawlStartIndex = i;
+
+				break;
+			}
+
+			CloudBucketUtil.downloadS3File(
+				new File(
+					spotInterruptionDataDir,
+					dateStrings[i] + "/spot-interruption.json"),
+				s3FilePath);
+		}
+
+		LocalDate crawlStartLocalDate = LocalDate.parse(
+			dateStrings[crawlStartIndex], _dateTimeFormatter);
+
+		ZonedDateTime crawlStartZonedDateTime =
+			crawlStartLocalDate.atStartOfDay(ZoneOffset.UTC);
+
+		Date endDate = new Date();
+		Date startDate = Date.from(crawlStartZonedDateTime.toInstant());
+
+		String regionName = _getBuildProperty("aws.cloudtrail.region");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(regionName)) {
+			regionName = "us-east-1";
+		}
+
+		CloudTrailEventCrawler cloudTrailEventCrawler =
+			new CloudTrailEventCrawler(regionName);
+
+		List<JSONObject> bidEvictedEventJSONObjects =
+			cloudTrailEventCrawler.getEventJSONObjects(
+				endDate, "BidEvictedEvent", startDate);
+
+		List<JSONObject> runInstancesEventJSONObjects =
+			cloudTrailEventCrawler.getEventJSONObjects(
+				endDate, "RunInstances", startDate);
+
+		if (runInstancesEventJSONObjects.isEmpty()) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"WARNING: CloudTrail returned no RunInstances events in ",
+					"region ", regionName,
+					", check the aws.cloudtrail.region property and the ",
+					"cloudtrail:LookupEvents permission"));
+		}
+
+		for (int i = crawlStartIndex; i < dateStrings.length; i++) {
+			File spotInterruptionDataFile = new File(
+				spotInterruptionDataDir,
+				dateStrings[i] + "/spot-interruption.json");
+
+			JSONObject dailyDataJSONObject =
+				SpotInterruptionReport.newDailyDataJSONObject(
+					bidEvictedEventJSONObjects, dateStrings[i],
+					runInstancesEventJSONObjects);
+
+			JenkinsResultsParserUtil.write(
+				spotInterruptionDataFile, dailyDataJSONObject.toString());
+
+			CloudBucketUtil.uploadS3File(
+				JenkinsResultsParserUtil.combine(
+					s3SpotInterruptionPath, "/", dateStrings[i],
+					"/spot-interruption.json"),
+				spotInterruptionDataFile);
+		}
+	}
+
 	private void _validateBuildParameters() {
 		String[] reportNames = _getReportNames();
 
@@ -1016,6 +1146,9 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					Report.PULL_REQUEST_HISTORY.toString(),
 					"pull-request-report");
 				put(Report.RELEASE_HISTORY.toString(), "release-report");
+				put(
+					Report.SPOT_INTERRUPTION.toString(),
+					"spot-interruption-report");
 				put(Report.UPSTREAM_HISTORY.toString(), "upstream-report");
 				put(Report.UTILIZATION.toString(), "utilization-report");
 			}
@@ -1029,8 +1162,8 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		Report.FLAKY_TEST_7_2_x.toString(), Report.FLAKY_TEST_7_3_x.toString(),
 		Report.FLAKY_TEST_MASTER.toString(),
 		Report.PULL_REQUEST_HISTORY.toString(),
-		Report.RELEASE_HISTORY.toString(), Report.UPSTREAM_HISTORY.toString(),
-		Report.UTILIZATION.toString());
+		Report.RELEASE_HISTORY.toString(), Report.SPOT_INTERRUPTION.toString(),
+		Report.UPSTREAM_HISTORY.toString(), Report.UTILIZATION.toString());
 
 	static {
 		Instant instant = Instant.now();
