@@ -363,6 +363,10 @@ public interface DLAppLocalService extends BaseLocalService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry fetchFileEntryByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FileShortcut fetchFileShortcut(long fileShortcutId)
 		throws PortalException;
 
@@ -815,4 +819,4 @@ public interface DLAppLocalService extends BaseLocalService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1235902289
+// LIFERAY-SERVICE-BUILDER-HASH:-1008036570

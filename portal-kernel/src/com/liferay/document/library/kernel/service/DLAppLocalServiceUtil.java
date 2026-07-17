@@ -434,6 +434,13 @@ public class DLAppLocalServiceUtil {
 			groupId, externalReferenceCode);
 	}
 
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntryByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException {
+
+		return getService().fetchFileEntryByUuidAndGroupId(uuid, groupId);
+	}
+
 	public static com.liferay.portal.kernel.repository.model.FileShortcut
 			fetchFileShortcut(long fileShortcutId)
 		throws PortalException {
@@ -1032,4 +1039,4 @@ public class DLAppLocalServiceUtil {
 	private static volatile DLAppLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1812234655
+// LIFERAY-SERVICE-BUILDER-HASH:1621021125
