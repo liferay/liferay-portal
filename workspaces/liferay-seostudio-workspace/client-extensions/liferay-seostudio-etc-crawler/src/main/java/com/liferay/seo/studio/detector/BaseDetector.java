@@ -145,30 +145,30 @@ public abstract class BaseDetector {
 		long accountEntryId, JSONObject definitionJSONObject,
 		long seoStudioScanId) {
 
-		JSONObject insightTypeJSONObject = new JSONObject();
-
-		insightTypeJSONObject.put(
-			"category", definitionJSONObject.getString("category")
-		).put(
-			"description", definitionJSONObject.optString("description")
-		).put(
-			"externalReferenceCode",
-			definitionJSONObject.getString("name") + "_" + seoStudioScanId
-		).put(
-			"fixHint", definitionJSONObject.optString("fixHint")
-		).put(
-			"name", definitionJSONObject.getString("name")
-		).put(
-			"r_accountToSEOStudioInsightTypes_accountEntryId", accountEntryId
-		).put(
-			"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId",
-			seoStudioScanId
-		).put(
-			"severity", definitionJSONObject.getString("severity")
-		);
-
 		return new JSONObject(
-			seoStudioService.postInsightType(insightTypeJSONObject)
+			seoStudioService.postInsightType(
+				new JSONObject(
+				).put(
+					"category", definitionJSONObject.getString("category")
+				).put(
+					"description", definitionJSONObject.optString("description")
+				).put(
+					"externalReferenceCode",
+					definitionJSONObject.getString("name") + "_" +
+						seoStudioScanId
+				).put(
+					"fixHint", definitionJSONObject.optString("fixHint")
+				).put(
+					"name", definitionJSONObject.getString("name")
+				).put(
+					"r_accountToSEOStudioInsightTypes_accountEntryId",
+					accountEntryId
+				).put(
+					"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId",
+					seoStudioScanId
+				).put(
+					"severity", definitionJSONObject.getString("severity")
+				))
 		).getLong(
 			"id"
 		);
