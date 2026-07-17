@@ -257,9 +257,8 @@ public abstract class BaseDetector {
 		long seoStudioInsightTypeId, long seoStudioPageId,
 		long seoStudioScanId) {
 
-		JSONObject scanInsightJSONObject = new JSONObject();
-
-		scanInsightJSONObject.put(
+		return new JSONObject(
+		).put(
 			"classification", classification
 		).put(
 			"detectedDate", detectedDateString
@@ -275,8 +274,6 @@ public abstract class BaseDetector {
 			"r_seoStudioScanToSEOStudioScanInsights_seoStudioScanId",
 			seoStudioScanId
 		);
-
-		return scanInsightJSONObject;
 	}
 
 	private static final int _BATCH_SIZE = 100;
