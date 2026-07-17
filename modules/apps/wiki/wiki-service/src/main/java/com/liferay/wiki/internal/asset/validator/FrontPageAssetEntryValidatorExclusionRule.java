@@ -7,9 +7,6 @@ package com.liferay.wiki.internal.asset.validator;
 
 import com.liferay.asset.kernel.validator.AssetEntryValidatorExclusionRule;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiPageConstants;
@@ -46,16 +43,11 @@ public class FrontPageAssetEntryValidatorExclusionRule
 		}
 
 		if (wikiPage == null) {
-			try {
-				wikiPage = _wikiPageLocalService.getPage(classPK, false);
-			}
-			catch (PortalException portalException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(portalException);
-				}
+			wikiPage = _wikiPageLocalService.fetchPage(classPK, false);
+		}
 
-				return false;
-			}
+		if (wikiPage == null) {
+			return false;
 		}
 
 		if (StringUtil.equals(
@@ -75,9 +67,6 @@ public class FrontPageAssetEntryValidatorExclusionRule
 		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
 			WikiGroupServiceConfiguration.class, properties);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FrontPageAssetEntryValidatorExclusionRule.class);
 
 	private volatile WikiGroupServiceConfiguration
 		_wikiGroupServiceConfiguration;
