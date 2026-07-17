@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.model.CrawlHit;
+import com.liferay.seo.studio.model.Domain;
 
 import java.net.URI;
 
@@ -77,12 +78,18 @@ public class SEOStudioService extends BaseService {
 		return crawlHits;
 	}
 
-	public String getDomain(long seoStudioDomainId) {
+	public Domain getDomain(long seoStudioDomainId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
 
-		return get(_getAuthorization(), uriComponents.toUri());
+		String responseJSON = get(_getAuthorization(), uriComponents.toUri());
+
+		if (Validator.isNull(responseJSON)) {
+			return null;
+		}
+
+		return new Domain(new JSONObject(responseJSON));
 	}
 
 	public String getPage(int page, int pageSize, long seoStudioScanId) {

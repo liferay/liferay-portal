@@ -6,11 +6,11 @@
 package com.liferay.seo.studio.service;
 
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.SEOStudioScanConstants;
 import com.liferay.seo.studio.detector.BaseDetector;
 import com.liferay.seo.studio.model.CrawlHit;
 import com.liferay.seo.studio.model.DetectorResult;
+import com.liferay.seo.studio.model.Domain;
 
 import java.net.URI;
 
@@ -34,9 +34,9 @@ public class DetectorService {
 		long seoStudioDomainId = scanJSONObject.getLong(
 			"r_seoStudioDomainToSEOStudioScans_seoStudioDomainId");
 
-		String domainJSON = _seoStudioService.getDomain(seoStudioDomainId);
+		Domain domain = _seoStudioService.getDomain(seoStudioDomainId);
 
-		if (Validator.isNull(domainJSON)) {
+		if (domain == null) {
 			return new DetectorResult(
 				"Unable to find a domain for SEO Studio domain ID " +
 					seoStudioDomainId,
@@ -56,12 +56,7 @@ public class DetectorService {
 		long accountEntryId = scanJSONObject.getLong(
 			"r_accountToSEOStudioScans_accountEntryId");
 
-		URI crawlURI = _seoStudioService.toCrawlURI(
-			new JSONObject(
-				domainJSON
-			).getString(
-				"hostname"
-			));
+		URI crawlURI = _seoStudioService.toCrawlURI(domain.getHostname());
 
 		for (BaseDetector detector : _detectors) {
 			detector.detect(

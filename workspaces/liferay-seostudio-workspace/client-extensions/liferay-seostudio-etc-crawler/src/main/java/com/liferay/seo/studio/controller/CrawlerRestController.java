@@ -8,6 +8,7 @@ package com.liferay.seo.studio.controller;
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.SEOStudioScanConstants;
+import com.liferay.seo.studio.model.Domain;
 import com.liferay.seo.studio.service.KubernetesJobService;
 import com.liferay.seo.studio.service.SEOStudioService;
 
@@ -62,9 +63,9 @@ public class CrawlerRestController extends BaseRestController {
 			long seoStudioDomainId = valuesJSONObject.getLong(
 				"r_seoStudioDomainToSEOStudioScans_seoStudioDomainId");
 
-			String domainJSON = _seoStudioService.getDomain(seoStudioDomainId);
+			Domain domain = _seoStudioService.getDomain(seoStudioDomainId);
 
-			if (Validator.isNull(domainJSON)) {
+			if (domain == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"Unable to find a domain for SEO Studio domain ID " +
@@ -78,14 +79,8 @@ public class CrawlerRestController extends BaseRestController {
 						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED));
 			}
 
-			String hostname = new JSONObject(
-				domainJSON
-			).getString(
-				"hostname"
-			);
-
 			String domainURL = _seoStudioService.toDomainURL(
-				_seoStudioService.toCrawlURI(hostname));
+				_seoStudioService.toCrawlURI(domain.getHostname()));
 
 			String canonicalDomainURL = _resolveCanonicalDomainURL(domainURL);
 
