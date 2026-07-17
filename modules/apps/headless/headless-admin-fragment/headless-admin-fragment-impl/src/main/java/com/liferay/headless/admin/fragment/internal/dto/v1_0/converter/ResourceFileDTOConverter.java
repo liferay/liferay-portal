@@ -128,7 +128,6 @@ public class ResourceFileDTOConverter
 
 		Company company = _companyLocalService.getCompany(
 			fileEntry.getCompanyId());
-
 		boolean secure = _isSecure();
 
 		String portalURL = _portal.getPortalURL(

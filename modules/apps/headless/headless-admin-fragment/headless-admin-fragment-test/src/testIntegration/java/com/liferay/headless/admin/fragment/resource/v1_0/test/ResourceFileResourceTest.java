@@ -109,11 +109,13 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			new InetSocketAddress("127.0.0.1", 0), 0);
 
 		_content1Bytes = RandomTestUtil.randomBytes();
-		_content2Bytes = RandomTestUtil.randomBytes();
 
 		_httpServer.createContext(
 			"/content_1.txt",
 			httpExchange -> _writeBytes(_content1Bytes, httpExchange));
+
+		_content2Bytes = RandomTestUtil.randomBytes();
+
 		_httpServer.createContext(
 			"/content_2.txt",
 			httpExchange -> _writeBytes(_content2Bytes, httpExchange));
@@ -1632,7 +1634,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private void _testPostSiteResourceFileFileURLReferenceURLLARProblemException()
 		throws Exception {
 
-		String url = "lar://12345/" + RandomTestUtil.randomString();
+		String url = "lar://" + RandomTestUtil.randomString();
 
 		_testPostSiteResourceFileFileURLReferenceProblemException(
 			"Unable to download file from " + url, url);
@@ -1650,8 +1652,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private void _testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException()
 		throws Exception {
 
-		String url =
-			"ftp://invalid.example.test/" + RandomTestUtil.randomString();
+		String url = "ftp://" + RandomTestUtil.randomString();
 
 		_testPostSiteResourceFileFileURLReferenceProblemException(
 			"Unable to download file from " + url +
