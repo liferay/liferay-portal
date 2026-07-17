@@ -153,11 +153,8 @@ public class CommerceMediaServlet extends HttpServlet {
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
 				GetterUtil.getLongStrict(cpAttachmentFileEntryIdParam));
 
-		return _getFileEntry(cpAttachmentFileEntry.getFileEntryId());
-	}
-
-	private FileEntry _getFileEntry(long fileEntryId) throws PortalException {
-		return _dlAppLocalService.fetchFileEntry(fileEntryId);
+		return _dlAppLocalService.fetchFileEntry(
+			cpAttachmentFileEntry.getFileEntryId());
 	}
 
 	private long _getGroupId(
@@ -328,7 +325,8 @@ public class CommerceMediaServlet extends HttpServlet {
 					return;
 				}
 
-				FileEntry fileEntry = _getFileEntry(fileEntryId);
+				FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+					fileEntryId);
 
 				if (fileEntry == null) {
 					_sendError(
@@ -620,7 +618,7 @@ public class CommerceMediaServlet extends HttpServlet {
 					return;
 				}
 
-				fileEntry = _getFileEntry(fileEntryId);
+				fileEntry = _dlAppLocalService.fetchFileEntry(fileEntryId);
 			}
 
 			ServletResponseUtil.sendFile(

@@ -100,10 +100,6 @@ public class AMImageHTMLExportImportContentProcessor
 		}
 	}
 
-	private FileEntry _getFileEntry(long fileEntryId) throws Exception {
-		return _dlAppLocalService.fetchFileEntry(fileEntryId);
-	}
-
 	private Document _parseDocument(String html) {
 		Document document = Jsoup.parseBodyFragment(html);
 
@@ -143,7 +139,8 @@ public class AMImageHTMLExportImportContentProcessor
 
 			long fileEntryId = amEmbeddedReferenceSet.importReference(path);
 
-			FileEntry fileEntry = _getFileEntry(fileEntryId);
+			FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+				fileEntryId);
 
 			if (fileEntry == null) {
 				continue;
