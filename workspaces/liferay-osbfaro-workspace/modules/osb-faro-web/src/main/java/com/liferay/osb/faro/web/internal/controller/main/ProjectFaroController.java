@@ -1001,11 +1001,10 @@ public class ProjectFaroController extends BaseFaroController {
 			faroProjectLocalService.updateFaroProject(faroProject));
 	}
 
+	@PATCH
 	@Path("/corpProjectUuid/{corpProjectUuid}/subscription")
-	@PUT
 	@RolesAllowed(StringPool.BLANK)
 	public ProjectDisplay updateSubscription(
-			@FormParam("corpProjectName") String corpProjectName,
 			@PathParam("corpProjectUuid") String corpProjectUuid,
 			@FormParam("offeringEntries") FaroParam<List<OSBOfferingEntry>>
 				offeringEntriesFaroParam)
@@ -1030,23 +1029,18 @@ public class ProjectFaroController extends BaseFaroController {
 
 		_validateOfferingEntries(offeringEntriesFaroParam.getValue());
 
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		osbAccountEntry.setOfferingEntries(offeringEntriesFaroParam.getValue());
+
 		FaroSubscriptionDisplay faroSubscriptionDisplay =
-			new FaroSubscriptionDisplay(
-				OSBAccountEntryBuilder.setCorpProjectUuid(
-					corpProjectUuid
-				).setName(
-					corpProjectName
-				).setOfferingEntries(
-					offeringEntriesFaroParam.getValue()
-				).build());
+			new FaroSubscriptionDisplay(osbAccountEntry);
 
 		if (_isSubscriptionPlanChanged(
 				faroProject, faroSubscriptionDisplay.getName())) {
 
 			faroProject.setSubscriptionModifiedTime(System.currentTimeMillis());
 		}
-
-		faroProject.setCorpProjectName(corpProjectName);
 
 		try {
 			if (Objects.equals(
@@ -1151,9 +1145,7 @@ public class ProjectFaroController extends BaseFaroController {
 		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
 			_validateOfferingEntries(offeringEntries);
 
-			osbAccountEntry = OSBAccountEntryBuilder.setCorpProjectUuid(
-				corpProjectUuid
-			).setName(
+			osbAccountEntry = OSBAccountEntryBuilder.setName(
 				corpProjectName
 			).setOfferingEntries(
 				offeringEntries
@@ -1832,6 +1824,34 @@ public class ProjectFaroController extends BaseFaroController {
 		if (ListUtil.isEmpty(offeringEntries)) {
 			throw new FaroValidationException(
 				"offeringEntries", "Offering entries are required");
+		}
+
+		for (OSBOfferingEntry offeringEntry : offeringEntries) {
+			String productEntryId = offeringEntry.getProductEntryId();
+
+			if ((productEntryId == null) ||
+				(ProductConstants.getProductName(productEntryId) == null)) {
+
+				throw new FaroValidationException(
+					"offeringEntries",
+					"Offering entries must have a valid \"productEntryId\"");
+			}
+
+			if (offeringEntry.getQuantity() < 1) {
+				throw new FaroValidationException(
+					"offeringEntries",
+					"Offering entries must have a positive \"quantity\"");
+			}
+
+			int status = offeringEntry.getStatus();
+
+			if ((status != 0) &&
+				(status != ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE)) {
+
+				throw new FaroValidationException(
+					"offeringEntries",
+					"Offering entries must have a valid \"status\"");
+			}
 		}
 	}
 

@@ -42,17 +42,12 @@ public class OSBAccountEntryUtilTest {
 			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
 		osbOfferingEntry.setQuantity(1);
 
-		OSBAccountEntry osbAccountEntry =
-			OSBAccountEntryBuilder.setCorpProjectUuid(
-				"corp-project-uuid"
-			).setName(
-				"Corp Project Name"
-			).setOfferingEntries(
-				Collections.singletonList(osbOfferingEntry)
-			).build();
+		OSBAccountEntry osbAccountEntry = OSBAccountEntryBuilder.setName(
+			"Corp Project Name"
+		).setOfferingEntries(
+			Collections.singletonList(osbOfferingEntry)
+		).build();
 
-		Assert.assertEquals(
-			"corp-project-uuid", osbAccountEntry.getCorpProjectUuid());
 		Assert.assertEquals("Corp Project Name", osbAccountEntry.getName());
 
 		List<OSBOfferingEntry> offeringEntries =
@@ -78,28 +73,13 @@ public class OSBAccountEntryUtilTest {
 		osbOfferingEntry.setStatus(
 			ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
 
-		OSBAccountEntry pushedOSBAccountEntry =
-			OSBAccountEntryBuilder.setCorpProjectUuid(
-				"corp-project-uuid"
-			).setName(
-				"Corp Project Name"
-			).setOfferingEntries(
-				Collections.singletonList(osbOfferingEntry)
-			).build();
+		OSBAccountEntry pushedOSBAccountEntry = OSBAccountEntryBuilder.setName(
+			"Corp Project Name"
+		).setOfferingEntries(
+			Collections.singletonList(osbOfferingEntry)
+		).build();
 
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
-
-		Mockito.when(
-			faroProject.getCorpProjectName()
-		).thenReturn(
-			"Corp Project Name"
-		);
-
-		Mockito.when(
-			faroProject.getCorpProjectUuid()
-		).thenReturn(
-			"corp-project-uuid"
-		);
 
 		Mockito.when(
 			faroProject.getSubscription()
@@ -110,10 +90,6 @@ public class OSBAccountEntryUtilTest {
 
 		OSBAccountEntry osbAccountEntry = OSBAccountEntryUtil.build(
 			faroProject);
-
-		Assert.assertEquals(
-			"corp-project-uuid", osbAccountEntry.getCorpProjectUuid());
-		Assert.assertEquals("Corp Project Name", osbAccountEntry.getName());
 
 		List<OSBOfferingEntry> offeringEntries =
 			osbAccountEntry.getOfferingEntries();

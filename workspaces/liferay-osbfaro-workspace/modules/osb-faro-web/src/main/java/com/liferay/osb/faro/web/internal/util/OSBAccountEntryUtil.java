@@ -8,7 +8,6 @@ package com.liferay.osb.faro.web.internal.util;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
-import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntryBuilder;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -79,13 +78,11 @@ public class OSBAccountEntryUtil {
 			}
 		}
 
-		return OSBAccountEntryBuilder.setCorpProjectUuid(
-			faroProject.getCorpProjectUuid()
-		).setName(
-			faroProject.getCorpProjectName()
-		).setOfferingEntries(
-			offeringEntries
-		).build();
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		osbAccountEntry.setOfferingEntries(offeringEntries);
+
+		return osbAccountEntry;
 	}
 
 	private static String _getProductEntryId(String name) {
