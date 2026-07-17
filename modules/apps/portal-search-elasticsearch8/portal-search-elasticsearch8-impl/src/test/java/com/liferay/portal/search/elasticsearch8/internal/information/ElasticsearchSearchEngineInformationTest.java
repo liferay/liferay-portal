@@ -82,9 +82,9 @@ public class ElasticsearchSearchEngineInformationTest {
 		String nodesString =
 			_elasticsearchSearchEngineInformation.getNodesString();
 
+		Assert.assertTrue(nodesString, nodesString.endsWith(")]"));
 		Assert.assertTrue(
 			nodesString, nodesString.startsWith(_CLUSTER_NAME + ": ["));
-		Assert.assertTrue(nodesString, nodesString.endsWith(")]"));
 	}
 
 	private static final String _CLUSTER_NAME =
