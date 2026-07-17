@@ -59,7 +59,11 @@ export class DesignLibrariesPage extends POM {
 		}
 	}
 
-	async createStyleBook(designLibraryName: string, styleBookName: string) {
+	async createStyleBook(
+		designLibraryName: string,
+		styleBookName: string,
+		baseThemeName?: string
+	) {
 		await this.goToDesignLibrary(designLibraryName);
 
 		await this.page.getByRole('button', {name: 'New Style Book'}).click();
@@ -67,6 +71,21 @@ export class DesignLibrariesPage extends POM {
 		const modal = this.page.getByRole('dialog');
 
 		await expect(modal).toBeVisible();
+
+		if (baseThemeName) {
+			await modal.getByLabel('Create Style Book For').click();
+
+			const option = this.page.getByRole('option', {
+				name: baseThemeName,
+			});
+
+			if ((await option.getAttribute('aria-selected')) === 'true') {
+				await this.page.keyboard.press('Escape');
+			}
+			else {
+				await option.click();
+			}
+		}
 
 		await modal.getByLabel('Name').fill(styleBookName);
 
