@@ -5,8 +5,6 @@
 
 package com.liferay.portal.search.internal.indexer;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,19 +45,7 @@ public class BaseModelRetrieverImpl implements BaseModelRetriever {
 		PersistedModelLocalService persistedModelLocalService =
 			_getPersistedModelLocalService(className);
 
-		try {
-			return persistedModelLocalService.getPersistedModel(classPK);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"No ", className, " found for class PK ", classPK),
-					portalException);
-			}
-
-			return null;
-		}
+		return persistedModelLocalService.fetchPersistedModel(classPK);
 	}
 
 	private PersistedModelLocalService _getPersistedModelLocalService(
