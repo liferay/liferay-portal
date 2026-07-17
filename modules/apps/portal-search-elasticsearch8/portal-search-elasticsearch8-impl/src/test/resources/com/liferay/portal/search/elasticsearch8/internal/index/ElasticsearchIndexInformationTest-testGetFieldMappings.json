@@ -1833,6 +1833,9 @@
 				"assetVocabularyIds": {
 					"type": "keyword"
 				},
+				"classExternalReferenceCode": {
+					"type": "keyword"
+				},
 				"classTypeId": {
 					"type": "keyword"
 				},
