@@ -9,6 +9,7 @@ import com.liferay.data.cleanup.internal.verify.util.PostUpgradeDataCleanupProce
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
@@ -90,129 +91,129 @@ public class ClassNamePostUpgradeDataCleanupProcess
 			tableNames.add(tableName);
 		}
 
-		processConcurrently(
-			classNames.toArray(new ClassName[0]),
-			className -> {
-				String value = className.getValue();
+		UnsafeConsumer<ClassName, Exception> unsafeConsumer = className -> {
+			String value = className.getValue();
 
-				if (!value.startsWith("com.liferay.")) {
+			if (!value.startsWith("com.liferay.")) {
+				return;
+			}
+
+			if (StringUtil.startsWith(
+					value,
+					ObjectDefinitionConstants.
+						CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION)) {
+
+				AtomicReference<ObjectDefinition> objectDefinition =
+					new AtomicReference<>();
+
+				String finalValue = value;
+
+				_companyLocalService.forEachCompanyId(
+					companyId -> {
+						if (objectDefinition.get() != null) {
+							return;
+						}
+
+						objectDefinition.set(
+							_objectDefinitionLocalService.
+								fetchObjectDefinitionByClassName(
+									companyId, finalValue));
+					});
+
+				if (objectDefinition.get() != null) {
 					return;
 				}
+			}
 
-				if (StringUtil.startsWith(
-						value,
-						ObjectDefinitionConstants.
-							CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION)) {
+			int index = value.indexOf(StringPool.DASH);
 
-					AtomicReference<ObjectDefinition> objectDefinition =
-						new AtomicReference<>();
+			if ((index != -1) &&
+				StringUtil.startsWith(value, Layout.class.getName())) {
 
-					String finalValue = value;
+				value = value.substring(0, index);
+			}
 
-					_companyLocalService.forEachCompanyId(
-						companyId -> {
-							if (objectDefinition.get() != null) {
-								return;
-							}
+			boolean missingClass = false;
 
-							objectDefinition.set(
-								_objectDefinitionLocalService.
-									fetchObjectDefinitionByClassName(
-										companyId, finalValue));
-						});
+			for (String currentValue : value.split("[-_]")) {
+				if (models.contains(currentValue)) {
+					continue;
+				}
 
-					if (objectDefinition.get() != null) {
+				Class<?> clazz = null;
+
+				for (Bundle bundle : bundleContext.getBundles()) {
+					try {
+						clazz = bundle.loadClass(currentValue);
+
+						break;
+					}
+					catch (ClassNotFoundException classNotFoundException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(classNotFoundException);
+						}
+					}
+					catch (Exception exception) {
+						_log.error(exception);
+
 						return;
 					}
 				}
 
-				int index = value.indexOf(StringPool.DASH);
+				if (clazz == null) {
+					missingClass = true;
 
-				if ((index != -1) &&
-					StringUtil.startsWith(value, Layout.class.getName())) {
-
-					value = value.substring(0, index);
+					break;
 				}
+			}
 
-				boolean missingClass = false;
+			if (!missingClass) {
+				return;
+			}
 
-				for (String currentValue : value.split("[-_]")) {
-					if (models.contains(currentValue)) {
-						continue;
-					}
+			Set<String> usedTableNames = new HashSet<>();
 
-					Class<?> clazz = null;
+			for (String tableName : tableNames) {
+				try (PreparedStatement preparedStatement =
+						connection.prepareStatement(
+							"select 1 from " + tableName +
+								" where classNameId = ?")) {
 
-					for (Bundle bundle : bundleContext.getBundles()) {
-						try {
-							clazz = bundle.loadClass(currentValue);
+					preparedStatement.setLong(1, className.getClassNameId());
 
-							break;
-						}
-						catch (ClassNotFoundException classNotFoundException) {
-							if (_log.isDebugEnabled()) {
-								_log.debug(classNotFoundException);
-							}
-						}
-						catch (Exception exception) {
-							_log.error(exception);
+					try (ResultSet resultSet =
+							preparedStatement.executeQuery()) {
 
-							return;
-						}
-					}
-
-					if (clazz == null) {
-						missingClass = true;
-
-						break;
-					}
-				}
-
-				if (!missingClass) {
-					return;
-				}
-
-				Set<String> usedTableNames = new HashSet<>();
-
-				for (String tableName : tableNames) {
-					try (PreparedStatement preparedStatement =
-							connection.prepareStatement(
-								"select 1 from " + tableName +
-									" where classNameId = ?")) {
-
-						preparedStatement.setLong(
-							1, className.getClassNameId());
-
-						try (ResultSet resultSet =
-								preparedStatement.executeQuery()) {
-
-							if (resultSet.next()) {
-								usedTableNames.add(tableName);
-							}
+						if (resultSet.next()) {
+							usedTableNames.add(tableName);
 						}
 					}
 				}
+			}
 
-				if (usedTableNames.isEmpty()) {
-					_classNameLocalService.deleteClassName(className);
+			if (usedTableNames.isEmpty()) {
+				_classNameLocalService.deleteClassName(className);
 
-					DataCleanupLoggingUtil.logDelete(
-						_log, 1, dbInspector.normalizeName("ClassName_"),
-						StringBundler.concat(
-							"\"", value,
-							"\" is not defined in any deployed module and is ",
-							"not in use"));
-				}
-				else if (_log.isWarnEnabled()) {
-					_log.warn(
-						StringBundler.concat(
-							"Class name ", value,
-							" is not defined in any deployed module but is ",
-							"referenced in the next tables: ",
-							String.join(", ", new TreeSet<>(usedTableNames))));
-				}
-			},
-			null);
+				DataCleanupLoggingUtil.logDelete(
+					_log, 1, dbInspector.normalizeName("ClassName_"),
+					StringBundler.concat(
+						"\"", value,
+						"\" is not defined in any deployed module and is not ",
+						"in use"));
+			}
+			else if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Class name ", value,
+						" is not defined in any deployed module but is ",
+						"referenced in the next tables: ",
+						String.join(", ", new TreeSet<>(usedTableNames))));
+			}
+		};
+
+		for (ClassName className : classNames) {
+			unsafeConsumer.accept(className);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
