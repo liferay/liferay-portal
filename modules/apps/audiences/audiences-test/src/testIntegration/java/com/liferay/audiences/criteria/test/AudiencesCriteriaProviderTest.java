@@ -16,11 +16,17 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.constants.SegmentsEntryConstants;
+import com.liferay.segments.criteria.Criteria;
+import com.liferay.segments.criteria.CriteriaSerializer;
+import com.liferay.segments.model.SegmentsEntry;
+import com.liferay.segments.test.util.SegmentsTestUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,6 +105,36 @@ public class AudiencesCriteriaProviderTest {
 	}
 
 	@Test
+	public void testGetCustomAudiencesCriteriaTypeWithSegment()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = _addSegmentsEntry();
+
+		List<AudiencesCriteriaType> audiencesCriteriaTypes =
+			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
+				TestPropsValues.getCompanyId(), LocaleUtil.getDefault());
+
+		AudiencesCriteriaType audiencesCriteriaType =
+			audiencesCriteriaTypes.get(2);
+
+		AudiencesCriteria audiencesCriteria = _getAudiencesCriteria(
+			audiencesCriteriaType.getAudiencesCriterias(), "segments");
+
+		Assert.assertEquals(
+			AudiencesCriteria.InputType.SELECT,
+			audiencesCriteria.getInputType());
+		Assert.assertEquals(
+			AudiencesCriteria.Type.STRING, audiencesCriteria.getType());
+
+		AudiencesCriteria.Option option = _getOption(
+			audiencesCriteria.getOptions(),
+			segmentsEntry.getSegmentsEntryKey());
+
+		Assert.assertEquals(
+			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
+	}
+
+	@Test
 	public void testGetGeneralAttributesAudiencesCriteriaType()
 		throws Exception {
 
@@ -158,12 +194,38 @@ public class AudiencesCriteriaProviderTest {
 				).buildString()));
 	}
 
+	private SegmentsEntry _addSegmentsEntry() throws Exception {
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			CriteriaSerializer.serialize(new Criteria()),
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+
+		_segmentsEntries.add(segmentsEntry);
+
+		return segmentsEntry;
+	}
+
 	private AudiencesCriteria _getAudiencesCriteria(
 		List<AudiencesCriteria> audiencesCriterias, String key) {
 
 		for (AudiencesCriteria audiencesCriteria : audiencesCriterias) {
 			if (key.equals(audiencesCriteria.getKey())) {
 				return audiencesCriteria;
+			}
+		}
+
+		return null;
+	}
+
+	private AudiencesCriteria.Option _getOption(
+		List<AudiencesCriteria.Option> options, String value) {
+
+		for (AudiencesCriteria.Option option : options) {
+			if (value.equals(option.getValue())) {
+				return option;
 			}
 		}
 
@@ -179,5 +241,8 @@ public class AudiencesCriteriaProviderTest {
 
 	@Inject
 	private ClientExtensionEntryLocalService _clientExtensionEntryLocalService;
+
+	@DeleteAfterTestRun
+	private final List<SegmentsEntry> _segmentsEntries = new ArrayList<>();
 
 }

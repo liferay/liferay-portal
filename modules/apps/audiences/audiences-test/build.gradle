@@ -3,5 +3,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:audiences:audiences-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
 	testIntegrationImplementation project(":apps:frontend-js:frontend-js-audiences-api")
+	testIntegrationImplementation project(":apps:segments:segments-api")
+	testIntegrationImplementation project(":apps:segments:segments-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
