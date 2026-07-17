@@ -42,15 +42,15 @@ public class ProjectTemplatesUtil {
 		Properties projectTemplateJarVersionsProperties =
 			getProjectTemplateJarVersionsProperties();
 
-		if (!projectTemplateJarVersionsProperties.containsKey(artifactId)) {
+		Object version = projectTemplateJarVersionsProperties.get(artifactId);
+
+		if (version == null) {
 			return null;
 		}
 
-		String version = String.valueOf(
-			projectTemplateJarVersionsProperties.get(artifactId));
-
 		try {
-			String jarName = getArchetypeJarName(artifactId, version);
+			String jarName = getArchetypeJarName(
+				artifactId, String.valueOf(version));
 
 			InputStream inputStream =
 				ProjectTemplatesUtil.class.getResourceAsStream(jarName);

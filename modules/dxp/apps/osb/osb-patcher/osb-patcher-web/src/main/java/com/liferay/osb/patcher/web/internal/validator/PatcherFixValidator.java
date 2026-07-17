@@ -373,16 +373,13 @@ public class PatcherFixValidator {
 				PatcherFixPackLocalServiceUtil.getPatcherFixPack(
 					patcherFixPackId);
 
-			if (patcherFixComponentIds.contains(
+			if (!patcherFixComponentIds.add(
 					patcherFixPack.getPatcherFixComponentId())) {
 
 				throw new PortalException(
 					"the-fix-cannot-be-in-multiple-fix-packs-with-the-same-" +
 						"component");
 			}
-
-			patcherFixComponentIds.add(
-				patcherFixPack.getPatcherFixComponentId());
 
 			PatcherFixComponent patcherFixComponent =
 				PatcherFixComponentLocalServiceUtil.getPatcherFixComponent(

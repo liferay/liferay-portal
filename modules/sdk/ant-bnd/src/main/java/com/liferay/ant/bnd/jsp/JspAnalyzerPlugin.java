@@ -277,8 +277,8 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 
 			Matcher matcher = _packagePattern.matcher(packageRef.getFQN());
 
-			if (matcher.matches() && !packages.containsKey(packageRef)) {
-				packages.put(packageRef, new Attrs());
+			if (matcher.matches()) {
+				packages.putIfAbsent(packageRef, new Attrs());
 			}
 		}
 	}
@@ -328,11 +328,9 @@ public class JspAnalyzerPlugin implements AnalyzerPlugin {
 		Set<String> taglibRequirements = new TreeSet<>();
 
 		for (String uri : getTaglibURIs(content)) {
-			if (taglibURIs.contains(uri)) {
+			if (!taglibURIs.add(uri)) {
 				continue;
 			}
-
-			taglibURIs.add(uri);
 
 			// Check to see if the JAR provides this TLD itself which would
 			// indicate that it already has access to the required classes

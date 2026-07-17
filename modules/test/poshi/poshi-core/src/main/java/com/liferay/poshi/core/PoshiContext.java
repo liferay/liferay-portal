@@ -291,20 +291,23 @@ public class PoshiContext {
 		String pathLocator = _pathLocators.get(
 			namespace + "." + pathLocatorKey);
 
-		String className =
-			PoshiGetterUtil.getClassNameFromNamespacedClassCommandName(
-				pathLocatorKey);
-
-		if ((pathLocator == null) &&
-			_pathExtensions.containsKey(namespace + "." + className)) {
+		if (pathLocator == null) {
+			String className =
+				PoshiGetterUtil.getClassNameFromNamespacedClassCommandName(
+					pathLocatorKey);
 
 			String pathExtension = _pathExtensions.get(
 				namespace + "." + className);
-			String commandName =
-				PoshiGetterUtil.getCommandNameFromNamespacedClassCommandName(
-					pathLocatorKey);
 
-			return getPathLocator(pathExtension + "#" + commandName, namespace);
+			if (pathExtension != null) {
+				String commandName =
+					PoshiGetterUtil.
+						getCommandNameFromNamespacedClassCommandName(
+							pathLocatorKey);
+
+				return getPathLocator(
+					pathExtension + "#" + commandName, namespace);
+			}
 		}
 
 		return pathLocator;

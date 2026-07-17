@@ -89,22 +89,22 @@ public class BaselineProcessor extends Analyzer {
 				Attrs attrs = e.getValue();
 				Version target;
 
-				if (attrs.containsKey("version")) {
+				String v = attrs.get("version");
+
+				if (v != null) {
 					SortedSet<Version> versions = removeStagedAndFilter(repo.versions(bsn), repo, bsn);
 
 					if (versions.isEmpty()) {
 						// We have a repo
-						Version v = new Version(getVersion());
-						if (v.getWithoutQualifier().compareTo(Version.ONE) > 0) {
+						if (version.getWithoutQualifier().compareTo(Version.ONE) > 0) {
 							warning("There is no baseline for %s in the baseline repo %s. The build is for version %s, which is <= 1.0.0 which suggests that there should be a prior version.",
-									getBsn(), repo, v);
+									getBsn(), repo, version);
 						}
 						return null;
 					}
 
 					// Specified version!
 
-					String v = attrs.get("version");
 					if (!Verifier.isVersion(v)) {
 						error("Not a valid version in %s %s", Constants.BASELINE, v);
 						return null;

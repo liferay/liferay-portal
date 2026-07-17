@@ -72,7 +72,9 @@ public class RuntimeVariables {
 			if (statementMatcher.find()) {
 				String operand = statementMatcher.group(1);
 
-				if (!context.containsKey(operand)) {
+				String operandValue = context.get(operand);
+
+				if (operandValue == null) {
 					continue;
 				}
 
@@ -88,8 +90,6 @@ public class RuntimeVariables {
 				}
 
 				String method = statementMatcher.group(2);
-
-				String operandValue = context.get(operand);
 
 				String replaceRegex = "\\$\\{([^}]*?)\\}";
 
@@ -135,13 +135,13 @@ public class RuntimeVariables {
 			else {
 				String varName = statement;
 
-				if (!context.containsKey(varName)) {
+				String result = context.get(varName);
+
+				if (result == null) {
 					continue;
 				}
 
 				String replaceRegex = "\\$\\{([^}]*?)\\}";
-
-				String result = context.get(varName);
 
 				result = Matcher.quoteReplacement(result);
 
@@ -163,11 +163,11 @@ public class RuntimeVariables {
 	public static boolean isVariableSet(
 		String varName, Map<String, String> context) {
 
-		if (!context.containsKey(varName)) {
+		String varValue = context.get(varName);
+
+		if (varValue == null) {
 			return false;
 		}
-
-		String varValue = context.get(varName);
 
 		varValue = StringUtil.replace(varValue, "${line.separator}", "");
 
