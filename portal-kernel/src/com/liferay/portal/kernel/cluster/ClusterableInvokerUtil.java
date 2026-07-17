@@ -120,37 +120,17 @@ public class ClusterableInvokerUtil {
 	private static void _populateContextFromThreadLocals(
 		Map<String, Serializable> context) {
 
-		if (!context.containsKey("companyId")) {
-			context.put("companyId", CompanyThreadLocal.getCompanyId());
-		}
-
-		if (!context.containsKey("defaultLocale")) {
-			context.put("defaultLocale", LocaleThreadLocal.getDefaultLocale());
-		}
-
-		if (!context.containsKey("groupId")) {
-			context.put("groupId", GroupThreadLocal.getGroupId());
-		}
-
-		if (!context.containsKey("principalName")) {
-			context.put("principalName", PrincipalThreadLocal.getName());
-		}
-
-		if (!context.containsKey("principalPassword")) {
-			context.put(
-				"principalPassword", PrincipalThreadLocal.getPassword());
-		}
-
-		if (!context.containsKey("siteDefaultLocale")) {
-			context.put(
-				"siteDefaultLocale", LocaleThreadLocal.getSiteDefaultLocale());
-		}
-
-		if (!context.containsKey("themeDisplayLocale")) {
-			context.put(
-				"themeDisplayLocale",
-				LocaleThreadLocal.getThemeDisplayLocale());
-		}
+		context.putIfAbsent("companyId", CompanyThreadLocal.getCompanyId());
+		context.putIfAbsent(
+			"defaultLocale", LocaleThreadLocal.getDefaultLocale());
+		context.putIfAbsent("groupId", GroupThreadLocal.getGroupId());
+		context.putIfAbsent("principalName", PrincipalThreadLocal.getName());
+		context.putIfAbsent(
+			"principalPassword", PrincipalThreadLocal.getPassword());
+		context.putIfAbsent(
+			"siteDefaultLocale", LocaleThreadLocal.getSiteDefaultLocale());
+		context.putIfAbsent(
+			"themeDisplayLocale", LocaleThreadLocal.getThemeDisplayLocale());
 	}
 
 	private static void _populateThreadLocalsFromContext(

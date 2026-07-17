@@ -227,11 +227,8 @@ public class ObjectEntryVariablesUtil {
 				objectDefinition.getObjectDefinitionId());
 
 		for (ObjectField objectField : objectFields) {
-			if (!allowedVariables.containsKey(objectField.getName())) {
-				allowedVariables.put(
-					objectField.getName(),
-					variables.get(objectField.getName()));
-			}
+			allowedVariables.putIfAbsent(
+				objectField.getName(), variables.get(objectField.getName()));
 		}
 
 		return allowedVariables;

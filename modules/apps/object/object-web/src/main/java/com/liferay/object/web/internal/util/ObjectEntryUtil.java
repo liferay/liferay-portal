@@ -399,12 +399,8 @@ public class ObjectEntryUtil {
 						String externalReferenceCode = GetterUtil.getString(
 							childEntry.getKey());
 
-						if (!childProperties.containsKey(
-								"externalReferenceCode")) {
-
-							childProperties.put(
-								"externalReferenceCode", externalReferenceCode);
-						}
+						childProperties.putIfAbsent(
+							"externalReferenceCode", externalReferenceCode);
 
 						_addRelatedProperties(
 							fieldsMap, relatedObjectDefinition,

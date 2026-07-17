@@ -414,11 +414,7 @@ public class DefaultTaskManagerImpl
 			for (Map.Entry<String, Serializable> entry :
 					storedWorkflowContext.entrySet()) {
 
-				String key = entry.getKey();
-
-				if (!workflowContext.containsKey(key)) {
-					workflowContext.put(key, entry.getValue());
-				}
+				workflowContext.putIfAbsent(entry.getKey(), entry.getValue());
 			}
 		}
 

@@ -52,14 +52,18 @@ public class ObjectEntryValuesUtil {
 		String siteDefaultLanguageId = LanguageUtil.getLanguageId(
 			LocaleUtil.getSiteDefault());
 
-		if (localizedValues.containsKey(siteDefaultLanguageId)) {
-			return localizedValues.get(siteDefaultLanguageId);
+		Object localizedValue = localizedValues.get(siteDefaultLanguageId);
+
+		if (localizedValue != null) {
+			return localizedValue;
 		}
 
-		if ((user != null) &&
-			localizedValues.containsKey(user.getLanguageId())) {
+		if (user != null) {
+			localizedValue = localizedValues.get(user.getLanguageId());
 
-			return localizedValues.get(user.getLanguageId());
+			if (localizedValue != null) {
+				return localizedValue;
+			}
 		}
 
 		return localizedValues.get(
