@@ -36,6 +36,7 @@ function refresh_workspaces {
 			--exclude README.md \
 			--exclude build.gradle \
 			--exclude client-extensions \
+			--exclude docker-compose-*.yaml \
 			--exclude gradle-local.properties \
 			--exclude gradle.properties \
 			--exclude language \
