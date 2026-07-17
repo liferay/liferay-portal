@@ -11,6 +11,7 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.web.internal.configuration.FragmentPortletConfiguration;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
+import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.item.selector.ItemSelector;
@@ -139,7 +140,9 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 							hasManageFragmentEntriesPermission &&
 							!_fragmentEntry.isReadOnly() &&
 							(_fragmentEntry.getGroupId() !=
-								_themeDisplay.getCompanyGroupId()),
+								_themeDisplay.getCompanyGroupId()) &&
+							!DesignLibraryUtil.isDesignLibraryScope(
+								_themeDisplay.getScopeGroup()),
 						_getViewFragmentEntryUsagesActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
