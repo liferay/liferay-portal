@@ -69,22 +69,30 @@ test.describe('Enable Configuration of oauth-authorization-server Well-Known URI
 		'Create an oauth-authorization-server and validate',
 		{tag: '@LPD-67473'},
 		async ({authServerLocalMetadatasPage}) => {
+			const issuer = 'https://localhost.com';
+			const supportedScopes = `${getRandomString()},${getRandomString()}`;
+			const wellKnownURI = `${issuer}/o/.well-known/oauth-authorization-server`;
+
 			await authServerLocalMetadatasPage.goTo();
 
-			await authServerLocalMetadatasPage.addAuthServerLocalMetadata(
-				'',
-				'The Issuer field is required.'
-			);
+			await authServerLocalMetadatasPage.addAuthServerLocalMetadata('', {
+				expectedMessage: 'The Issuer field is required.',
+			});
 
 			await authServerLocalMetadatasPage.addAuthServerLocalMetadata(
-				'https://localhost.com'
+				issuer,
+				{
+					supportedScopes,
+				}
 			);
 
 			authServerLocalMetadataCreated = true;
 
 			await authServerLocalMetadatasPage.addAuthServerLocalMetadata(
-				'https://localhost.com',
-				'Duplicate'
+				issuer,
+				{
+					expectedMessage: 'Duplicate',
+				}
 			);
 
 			if (
@@ -99,7 +107,7 @@ test.describe('Enable Configuration of oauth-authorization-server Well-Known URI
 			await authServerLocalMetadatasPage.oAuthAuthorizatoinServerTab.click();
 			await expect(
 				await authServerLocalMetadatasPage.page.getByRole('link', {
-					name: 'https://localhost.com/o/.well-known/oauth-authorization-server',
+					name: wellKnownURI,
 				})
 			).toBeVisible();
 
@@ -107,11 +115,22 @@ test.describe('Enable Configuration of oauth-authorization-server Well-Known URI
 
 			await expect(
 				await authServerLocalMetadatasPage.page.getByRole('link', {
-					name: 'https://localhost.com/.well-known/openid-configuration/1B2M2Y8AsgTpgAmY7PhCfg**/local',
+					name: `${issuer}/.well-known/openid-configuration/1B2M2Y8AsgTpgAmY7PhCfg**/local`,
 				})
 			).toBeVisible();
 
 			await authServerLocalMetadatasPage.oAuthAuthorizatoinServerTab.click();
+
+			// Reopen the entry and verify the supported scopes round-trip with
+			// the same comma delimiter they were saved with
+
+			await authServerLocalMetadatasPage.openAuthServerLocalMetadata(
+				wellKnownURI
+			);
+
+			await expect(
+				authServerLocalMetadatasPage.supportedScopes
+			).toHaveValue(supportedScopes);
 		}
 	);
 });

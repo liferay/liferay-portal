@@ -10,7 +10,6 @@ import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenu
 
 export class AuthServerLocalMetadatasPage {
 	readonly addOAuthAuthorizationServerButton: Locator;
-	readonly allowedScopes: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
 	readonly authServerLocalMetadataTab: Locator;
 	readonly authorizationEndpoint: Locator;
@@ -24,6 +23,7 @@ export class AuthServerLocalMetadatasPage {
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly subjectTypesSupported: Locator;
+	readonly supportedScopes: Locator;
 	readonly successMessage: Locator;
 	readonly tokenEndpoint: Locator;
 	readonly userinfoEnpoint: Locator;
@@ -33,7 +33,6 @@ export class AuthServerLocalMetadatasPage {
 		this.addOAuthAuthorizationServerButton = page.getByRole('link', {
 			name: 'Add OAuth Authorization',
 		});
-		this.allowedScopes = page.getByLabel('Allowed Scopes');
 		this.globalMenuPage = new GlobalMenuPage(page);
 		this.authServerLocalMetadataTab = page.getByRole('link', {
 			name: 'Auth Server Local Metadata',
@@ -60,15 +59,26 @@ export class AuthServerLocalMetadatasPage {
 		this.successMessage = page.getByText(
 			'Your request completed successfully'
 		);
+		this.supportedScopes = page.getByLabel('Supported Scopes');
 		this.tokenEndpoint = page.getByLabel('Token Endpoint');
 		this.userinfoEnpoint = page.getByLabel('Userinfo enpoint');
 		this.urlErrorMessage = page.getByText('Close Error: The URL is not a');
 	}
 
-	async addAuthServerLocalMetadata(issuer: string, expectedMessage?: string) {
+	async addAuthServerLocalMetadata(
+		issuer: string,
+		{
+			expectedMessage,
+			supportedScopes,
+		}: {expectedMessage?: string; supportedScopes?: string} = {}
+	) {
 		await this.addOAuthAuthorizationServerButton.click();
 
 		await this.issuer.fill(issuer);
+
+		if (supportedScopes !== undefined) {
+			await this.supportedScopes.fill(supportedScopes);
+		}
 
 		await this.saveButton.click();
 
@@ -135,5 +145,12 @@ export class AuthServerLocalMetadatasPage {
 		await expect(
 			await this.addOAuthAuthorizationServerButton
 		).toBeVisible();
+	}
+
+	async openAuthServerLocalMetadata(wellKnownURI: string) {
+		await clickAndExpectToBeVisible({
+			target: this.supportedScopes,
+			trigger: this.page.getByRole('link', {name: wellKnownURI}),
+		});
 	}
 }
