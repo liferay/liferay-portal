@@ -1372,8 +1372,10 @@ public class WorkflowMetricsRESTTestHelper {
 	}
 
 	private Object _getIndexer(String className) throws Exception {
-		if (_indexers.containsKey(className)) {
-			return _indexers.get(className);
+		Object indexer = _indexers.get(className);
+
+		if (indexer != null) {
+			return indexer;
 		}
 
 		Bundle bundle = FrameworkUtil.getBundle(
@@ -1405,7 +1407,7 @@ public class WorkflowMetricsRESTTestHelper {
 		}
 		while (serviceReference == null);
 
-		Object indexer = bundleContext.getService(serviceReference);
+		indexer = bundleContext.getService(serviceReference);
 
 		_indexers.put(className, indexer);
 

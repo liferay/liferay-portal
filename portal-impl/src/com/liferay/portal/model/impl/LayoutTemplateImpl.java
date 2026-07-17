@@ -85,10 +85,10 @@ public class LayoutTemplateImpl
 
 		String servletContextName = getServletContextName();
 
-		if (ServletContextPool.containsKey(servletContextName)) {
-			ServletContext servletContext = ServletContextPool.get(
-				servletContextName);
+		ServletContext servletContext = ServletContextPool.get(
+			servletContextName);
 
+		if (servletContext != null) {
 			return servletContext.getContextPath();
 		}
 

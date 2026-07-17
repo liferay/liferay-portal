@@ -77,11 +77,11 @@ public class JasperVersionDetector {
 				}
 			}
 
-			if (attributes.containsKey(
-					Attributes.Name.IMPLEMENTATION_VERSION)) {
+			Object implementationVersion = attributes.get(
+				Attributes.Name.IMPLEMENTATION_VERSION);
 
-				_jasperVersion = GetterUtil.getString(
-					attributes.get(Attributes.Name.IMPLEMENTATION_VERSION));
+			if (implementationVersion != null) {
+				_jasperVersion = GetterUtil.getString(implementationVersion);
 
 				if (_isValidJasperVersion(_jasperVersion)) {
 					return;
@@ -91,9 +91,10 @@ public class JasperVersionDetector {
 			Attributes.Name bundleVersionAttributesName = new Attributes.Name(
 				"Bundle-Version");
 
-			if (attributes.containsKey(bundleVersionAttributesName)) {
-				_jasperVersion = GetterUtil.getString(
-					attributes.get(bundleVersionAttributesName));
+			Object bundleVersion = attributes.get(bundleVersionAttributesName);
+
+			if (bundleVersion != null) {
+				_jasperVersion = GetterUtil.getString(bundleVersion);
 
 				if (_isValidJasperVersion(_jasperVersion)) {
 					return;

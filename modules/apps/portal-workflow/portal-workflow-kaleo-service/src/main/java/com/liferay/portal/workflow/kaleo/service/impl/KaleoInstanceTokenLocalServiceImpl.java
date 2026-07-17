@@ -92,13 +92,12 @@ public class KaleoInstanceTokenLocalServiceImpl
 			(String)workflowContext.get(
 				WorkflowConstants.CONTEXT_ENTRY_CLASS_NAME));
 
-		if (workflowContext.containsKey(
-				WorkflowConstants.CONTEXT_ENTRY_CLASS_PK)) {
+		if (
+				workflowContext.get(
+					WorkflowConstants.CONTEXT_ENTRY_CLASS_PK) instanceof
+						String classPK) {
 
-			kaleoInstanceToken.setClassPK(
-				GetterUtil.getLong(
-					(String)workflowContext.get(
-						WorkflowConstants.CONTEXT_ENTRY_CLASS_PK)));
+			kaleoInstanceToken.setClassPK(GetterUtil.getLong(classPK));
 		}
 
 		kaleoInstanceToken.setCompleted(false);

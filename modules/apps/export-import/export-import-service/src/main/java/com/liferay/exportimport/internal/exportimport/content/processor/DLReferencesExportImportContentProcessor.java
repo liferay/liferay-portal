@@ -276,9 +276,11 @@ public class DLReferencesExportImportContentProcessor
 		Map<Long, Long> groupIds) {
 
 		try {
-			if (groupIds.containsKey(documentLibraryReference.getGroupId())) {
-				return _groupLocalService.getGroup(
-					groupIds.get(documentLibraryReference.getGroupId()));
+			Long liveGroupId = groupIds.get(
+				documentLibraryReference.getGroupId());
+
+			if (liveGroupId != null) {
+				return _groupLocalService.getGroup(liveGroupId);
 			}
 
 			return _groupLocalService.fetchFriendlyURLGroup(

@@ -245,12 +245,15 @@ public class SharepointCachingExtRepository implements ExtRepository {
 		String extRepositoryModelKey =
 			extRepositoryFileEntry.getExtRepositoryModelKey();
 
-		if (extRepositoryFileVersionCache.containsKey(extRepositoryModelKey)) {
-			return extRepositoryFileVersionCache.get(extRepositoryModelKey);
+		List<ExtRepositoryFileVersion> extRepositoryFileVersions =
+			extRepositoryFileVersionCache.get(extRepositoryModelKey);
+
+		if (extRepositoryFileVersions != null) {
+			return extRepositoryFileVersions;
 		}
 
-		List<ExtRepositoryFileVersion> extRepositoryFileVersions =
-			_extRepository.getExtRepositoryFileVersions(extRepositoryFileEntry);
+		extRepositoryFileVersions = _extRepository.getExtRepositoryFileVersions(
+			extRepositoryFileEntry);
 
 		extRepositoryFileVersionCache.put(
 			extRepositoryModelKey, extRepositoryFileVersions);
@@ -267,11 +270,14 @@ public class SharepointCachingExtRepository implements ExtRepository {
 		Map<String, ExtRepositoryObject> extRepositoryObjectCache =
 			_extRepositoryObjectCache.get();
 
-		if (extRepositoryObjectCache.containsKey(extRepositoryObjectKey)) {
-			return (T)extRepositoryObjectCache.get(extRepositoryObjectKey);
+		T extRepositoryObject = (T)extRepositoryObjectCache.get(
+			extRepositoryObjectKey);
+
+		if (extRepositoryObject != null) {
+			return extRepositoryObject;
 		}
 
-		T extRepositoryObject = _extRepository.getExtRepositoryObject(
+		extRepositoryObject = _extRepository.getExtRepositoryObject(
 			extRepositoryObjectType, extRepositoryObjectKey);
 
 		extRepositoryObjectCache.put(
@@ -299,12 +305,14 @@ public class SharepointCachingExtRepository implements ExtRepository {
 		Map<String, List<ExtRepositoryObject>> extRepositoryObjectsCache =
 			_extRepositoryObjectsCache.get();
 
-		if (extRepositoryObjectsCache.containsKey(extRepositoryFolderKey)) {
-			return (List<T>)extRepositoryObjectsCache.get(
-				extRepositoryFolderKey);
+		List<T> extRepositoryObjects = (List<T>)extRepositoryObjectsCache.get(
+			extRepositoryFolderKey);
+
+		if (extRepositoryObjects != null) {
+			return extRepositoryObjects;
 		}
 
-		List<T> extRepositoryObjects = _extRepository.getExtRepositoryObjects(
+		extRepositoryObjects = _extRepository.getExtRepositoryObjects(
 			extRepositoryObjectType, extRepositoryFolderKey);
 
 		Map<String, ExtRepositoryObject> extRepositoryObjectCache =
@@ -341,15 +349,16 @@ public class SharepointCachingExtRepository implements ExtRepository {
 		Map<String, ExtRepositoryFolder> extRepositoryParentFolderCache =
 			_extRepositoryParentFolderCache.get();
 
-		if (extRepositoryParentFolderCache.containsKey(
-				extRepositoryObject.getExtRepositoryModelKey())) {
-
-			return extRepositoryParentFolderCache.get(
+		ExtRepositoryFolder extRepositoryParentFolder =
+			extRepositoryParentFolderCache.get(
 				extRepositoryObject.getExtRepositoryModelKey());
+
+		if (extRepositoryParentFolder != null) {
+			return extRepositoryParentFolder;
 		}
 
-		ExtRepositoryFolder extRepositoryParentFolder =
-			_extRepository.getExtRepositoryParentFolder(extRepositoryObject);
+		extRepositoryParentFolder = _extRepository.getExtRepositoryParentFolder(
+			extRepositoryObject);
 
 		extRepositoryParentFolderCache.put(
 			extRepositoryObject.getExtRepositoryModelKey(),

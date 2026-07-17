@@ -70,16 +70,23 @@ public class GroupUtil {
 	}
 
 	public static String getScopeKey(Map<String, Serializable> parameters) {
-		if (parameters.containsKey("scopeKey")) {
-			return String.valueOf(parameters.get("scopeKey"));
+		Serializable scopeKey = parameters.get("scopeKey");
+
+		if (scopeKey != null) {
+			return String.valueOf(scopeKey);
 		}
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
-			return String.valueOf(parameters.get("siteExternalReferenceCode"));
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
+			return String.valueOf(siteExternalReferenceCode);
 		}
 
-		if (parameters.containsKey("siteId")) {
-			return String.valueOf(parameters.get("siteId"));
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
+			return String.valueOf(siteId);
 		}
 
 		return null;

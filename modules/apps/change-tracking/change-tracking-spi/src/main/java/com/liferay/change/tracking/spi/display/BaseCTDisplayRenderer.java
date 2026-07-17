@@ -181,10 +181,10 @@ public abstract class BaseCTDisplayRenderer<T extends BaseModel<T>>
 		Map<String, Function<T, Object>> attributeGetterFunctions =
 			model.getAttributeGetterFunctions();
 
-		if (attributeGetterFunctions.containsKey("DDMStructureId")) {
-			Function<T, Object> ddmStructureIdGetterFunction =
-				attributeGetterFunctions.get("DDMStructureId");
+		Function<T, Object> ddmStructureIdGetterFunction =
+			attributeGetterFunctions.get("DDMStructureId");
 
+		if (ddmStructureIdGetterFunction != null) {
 			Function<T, Object> idGetterFunction = attributeGetterFunctions.get(
 				"id");
 

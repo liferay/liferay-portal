@@ -33,8 +33,10 @@ public abstract class ExtRepositoryObjectAdapter<T>
 			PermissionChecker permissionChecker, String actionId)
 		throws PortalException {
 
-		if (_unsupportedActionIds.containsKey(actionId)) {
-			return _unsupportedActionIds.get(actionId);
+		Boolean unsupportedActionIdValue = _unsupportedActionIds.get(actionId);
+
+		if (unsupportedActionIdValue != null) {
+			return unsupportedActionIdValue;
 		}
 
 		try {

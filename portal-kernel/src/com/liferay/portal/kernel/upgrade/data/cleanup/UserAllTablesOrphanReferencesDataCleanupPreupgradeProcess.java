@@ -160,8 +160,10 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 	private long _getAdminUserId(Connection connection, long companyId)
 		throws Exception {
 
-		if (_adminUserIds.containsKey(companyId)) {
-			return _adminUserIds.get(companyId);
+		Long adminUserId = _adminUserIds.get(companyId);
+
+		if (adminUserId != null) {
+			return adminUserId;
 		}
 
 		DBInspector dbInspector = new DBInspector(connection);

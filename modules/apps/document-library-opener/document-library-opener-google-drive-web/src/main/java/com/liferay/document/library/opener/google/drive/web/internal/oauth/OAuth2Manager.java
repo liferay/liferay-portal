@@ -209,10 +209,10 @@ public class OAuth2Manager {
 				dlGoogleDriveCompanyConfiguration =
 					_getDLGoogleDriveCompanyConfiguration(companyId);
 
-			if (_googleAuthorizationCodeFlows.containsKey(companyId)) {
-				GoogleAuthorizationCodeFlow googleAuthorizationCodeFlow =
-					_googleAuthorizationCodeFlows.get(companyId);
+			GoogleAuthorizationCodeFlow googleAuthorizationCodeFlow =
+				_googleAuthorizationCodeFlows.get(companyId);
 
+			if (googleAuthorizationCodeFlow != null) {
 				ClientParametersAuthentication clientParametersAuthentication =
 					(ClientParametersAuthentication)
 						googleAuthorizationCodeFlow.getClientAuthentication();
@@ -248,7 +248,7 @@ public class OAuth2Manager {
 				googleAuthorizationCodeFlowBuilder.setDataStoreFactory(
 					new StoredCredentialDataStoreFactory(companyId));
 
-			GoogleAuthorizationCodeFlow googleAuthorizationCodeFlow =
+			googleAuthorizationCodeFlow =
 				googleAuthorizationCodeFlowBuilder.build();
 
 			_googleAuthorizationCodeFlows.put(

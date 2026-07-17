@@ -22,8 +22,11 @@ public class LiferayDocumentFormatRegistry implements DocumentFormatRegistry {
 
 	@Override
 	public DocumentFormat getFormatByFileExtension(String extension) {
-		if (_documentFormatsByExtension.containsKey(extension)) {
-			return _documentFormatsByExtension.get(extension);
+		DocumentFormat documentFormat = _documentFormatsByExtension.get(
+			extension);
+
+		if (documentFormat != null) {
+			return documentFormat;
 		}
 
 		return _documentFormatRegistry.getFormatByFileExtension(extension);
@@ -31,8 +34,11 @@ public class LiferayDocumentFormatRegistry implements DocumentFormatRegistry {
 
 	@Override
 	public DocumentFormat getFormatByMimeType(String mimeType) {
-		if (_documentFormatsByMimeType.containsKey(mimeType)) {
-			return _documentFormatsByMimeType.get(mimeType);
+		DocumentFormat documentFormat = _documentFormatsByMimeType.get(
+			mimeType);
+
+		if (documentFormat != null) {
+			return documentFormat;
 		}
 
 		return _documentFormatRegistry.getFormatByMimeType(mimeType);

@@ -72,12 +72,9 @@ public class DefaultPortalKaleoManager
 					Group companyGroup = groupLocalService.getCompanyGroup(
 						companyId);
 
-					String definitionName =
-						WorkflowDefinitionConstants.NAME_SINGLE_APPROVER;
-
-					if (_definitionAssets.containsKey(assetClassName)) {
-						definitionName = _definitionAssets.get(assetClassName);
-					}
+					String definitionName = _definitionAssets.getOrDefault(
+						assetClassName,
+						WorkflowDefinitionConstants.NAME_SINGLE_APPROVER);
 
 					ServiceContext serviceContext = new ServiceContext();
 

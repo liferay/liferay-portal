@@ -57,8 +57,10 @@ public class LocalizedMapUtil {
 		for (Locale locale : availableLocales) {
 			String languageId = LocaleUtil.toLanguageId(locale);
 
-			if (localizedMap.containsKey(languageId)) {
-				i18nMap.put(languageId, localizedMap.get(languageId));
+			String value = localizedMap.get(languageId);
+
+			if (value != null) {
+				i18nMap.put(languageId, value);
 			}
 		}
 

@@ -69,8 +69,10 @@ public class RepositoryClassDefinition
 			_localRepositoriesMap.computeIfAbsent(
 				_getCompanyId(repositoryId), key -> new ConcurrentHashMap<>());
 
-		if (localRepositories.containsKey(repositoryId)) {
-			return localRepositories.get(repositoryId);
+		LocalRepository localRepository = localRepositories.get(repositoryId);
+
+		if (localRepository != null) {
+			return localRepository;
 		}
 
 		InitializedLocalRepository initializedLocalRepository =
@@ -91,8 +93,8 @@ public class RepositoryClassDefinition
 		defaultCapabilityRegistry.registerCapabilityRepositoryEvents(
 			defaultRepositoryEventRegistry);
 
-		LocalRepository localRepository =
-			_repositoryFactory.createLocalRepository(repositoryId);
+		localRepository = _repositoryFactory.createLocalRepository(
+			repositoryId);
 
 		LocalRepository wrappedLocalRepository =
 			defaultCapabilityRegistry.invokeCapabilityWrappers(localRepository);
@@ -117,8 +119,10 @@ public class RepositoryClassDefinition
 		Map<Long, Repository> repositories = _repositoriesMap.computeIfAbsent(
 			_getCompanyId(repositoryId), key -> new ConcurrentHashMap<>());
 
-		if (repositories.containsKey(repositoryId)) {
-			return repositories.get(repositoryId);
+		Repository repository = repositories.get(repositoryId);
+
+		if (repository != null) {
+			return repository;
 		}
 
 		InitializedRepository initializedRepository =
@@ -136,8 +140,7 @@ public class RepositoryClassDefinition
 			initializedRepository, defaultCapabilityRegistry,
 			defaultRepositoryEventRegistry);
 
-		Repository repository = _repositoryFactory.createRepository(
-			repositoryId);
+		repository = _repositoryFactory.createRepository(repositoryId);
 
 		defaultCapabilityRegistry.registerCapabilityRepositoryEvents(
 			defaultRepositoryEventRegistry);

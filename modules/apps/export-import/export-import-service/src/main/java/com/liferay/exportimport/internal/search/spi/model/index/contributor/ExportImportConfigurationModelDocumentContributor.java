@@ -71,15 +71,11 @@ public class ExportImportConfigurationModelDocumentContributor
 	private void _populateDates(
 		Document document, Map<String, Serializable> settingsMap) {
 
-		if (settingsMap.containsKey("endDate")) {
-			Date endDate = (Date)settingsMap.get("endDate");
-
+		if (settingsMap.get("endDate") instanceof Date endDate) {
 			document.addDate(_PREFIX_SETTING + "endDate", endDate);
 		}
 
-		if (settingsMap.containsKey("startDate")) {
-			Date startDate = (Date)settingsMap.get("startDate");
-
+		if (settingsMap.get("startDate") instanceof Date startDate) {
 			document.addDate(_PREFIX_SETTING + "startDate", startDate);
 		}
 	}

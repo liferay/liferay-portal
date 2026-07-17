@@ -211,11 +211,13 @@ public class CTEntryModelDocumentContributor
 		else {
 			Map<String, Object> modelAttributes = model.getModelAttributes();
 
-			if (modelAttributes.containsKey("groupId")) {
-				groupId = (long)modelAttributes.get("groupId");
+			if (modelAttributes.get("groupId") instanceof Long groupIdValue) {
+				groupId = groupIdValue;
 			}
-			else if (modelAttributes.containsKey("plid")) {
-				long plid = (long)modelAttributes.get("plid");
+			else {
+				if (!(modelAttributes.get("plid") instanceof Long plid)) {
+					return null;
+				}
 
 				try (SafeCloseable safeCloseable =
 						CTCollectionThreadLocal.
@@ -355,15 +357,11 @@ public class CTEntryModelDocumentContributor
 
 		Map<String, Object> modelAttributes = model.getModelAttributes();
 
-		if (modelAttributes.containsKey("plid")) {
-			long plid = (long)modelAttributes.get("plid");
-
+		if (modelAttributes.get("plid") instanceof Long plid) {
 			document.addKeyword("plid", plid);
 		}
 
-		if (modelAttributes.containsKey("status")) {
-			int status = (int)modelAttributes.get("status");
-
+		if (modelAttributes.get("status") instanceof Integer status) {
 			document.addKeyword(Field.STATUS, status);
 			document.addLocalizedKeyword(
 				"statusLabel",
