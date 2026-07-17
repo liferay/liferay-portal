@@ -755,7 +755,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		}
 
 		if (testPropertiesFile.exists() &&
-			!traversedPropertyFileSet.contains(testPropertiesFile)) {
+			traversedPropertyFileSet.add(testPropertiesFile)) {
 
 			JobProperty jobProperty = getJobProperty(
 				basePropertyName, file, jobType);
@@ -767,8 +767,6 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 
 				jobPropertiesList.add(jobProperty);
 			}
-
-			traversedPropertyFileSet.add(testPropertiesFile);
 		}
 
 		JobProperty ignoreParentsJobProperty = getJobProperty(

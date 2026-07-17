@@ -291,11 +291,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		List<DefaultBuild> oldDefaultBuilds = new ArrayList<>();
 
 		for (DefaultBuild defaultBuild : _defaultBuilds) {
-			if (!buildURLs.contains(defaultBuild.getBuildURL())) {
+			if (!buildURLs.remove(defaultBuild.getBuildURL())) {
 				oldDefaultBuilds.add(defaultBuild);
-			}
-			else {
-				buildURLs.remove(defaultBuild.getBuildURL());
 			}
 		}
 

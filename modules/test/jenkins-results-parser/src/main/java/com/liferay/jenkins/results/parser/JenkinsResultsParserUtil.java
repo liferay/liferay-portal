@@ -1762,11 +1762,9 @@ public class JenkinsResultsParserUtil {
 			String timeStamp = String.valueOf(getCurrentTimeMillis());
 
 			synchronized (_timeStamps) {
-				if (_timeStamps.contains(timeStamp)) {
+				if (!_timeStamps.add(timeStamp)) {
 					continue;
 				}
-
-				_timeStamps.add(timeStamp);
 			}
 
 			return timeStamp;

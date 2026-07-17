@@ -140,19 +140,13 @@ public class BuildHistoryProcessor {
 					for (Map.Entry<String, Set<BuildJSONObject>> entry :
 							groupedBuildDataJSONObjectsMap.entrySet()) {
 
-						String key = entry.getKey();
+						BuildHistory buildHistory =
+							buildHistories.computeIfAbsent(
+								entry.getKey(),
+								key -> new BuildHistory(
+									duration, key, startTime));
 
-						if (!buildHistories.containsKey(key)) {
-							BuildHistory buildHistory = new BuildHistory(
-								duration, key, startTime);
-
-							buildHistories.put(key, buildHistory);
-						}
-
-						BuildHistory buildHistory = buildHistories.get(key);
-
-						buildHistory.addBuildJSONObjects(
-							groupedBuildDataJSONObjectsMap.get(key));
+						buildHistory.addBuildJSONObjects(entry.getValue());
 					}
 				}
 
@@ -250,14 +244,9 @@ public class BuildHistoryProcessor {
 		for (Map.Entry<String, Set<BuildJSONObject>> entry :
 				groupedBuildDataJSONObjectsMap.entrySet()) {
 
-			if (!buildHistoriesMap.containsKey(entry.getKey())) {
-				BuildHistory buildHistory = new BuildHistory(
-					duration, entry.getKey(), startTime);
-
-				buildHistoriesMap.put(entry.getKey(), buildHistory);
-			}
-
-			BuildHistory buildHistory = buildHistoriesMap.get(entry.getKey());
+			BuildHistory buildHistory = buildHistoriesMap.computeIfAbsent(
+				entry.getKey(),
+				key -> new BuildHistory(duration, key, startTime));
 
 			buildHistory.addBuildJSONObjects(entry.getValue());
 		}
