@@ -16,6 +16,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,13 +41,17 @@ public class ResourceFolderUtil {
 			resourceFolder.getParentResourceFolderExternalReferenceCode(),
 			userId);
 
+		ServiceContext serviceContext = ServiceContextUtil.getServiceContext(
+			companyId, resourceFolder.getDateCreated(), groupId,
+			httpServletRequest, resourceFolder.getDateModified(), userId);
+
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(true);
+
 		Folder folder = DLAppServiceUtil.addFolder(
 			resourceFolder.getExternalReferenceCode(),
 			parentDLFolder.getRepositoryId(), parentDLFolder.getFolderId(),
-			resourceFolder.getName(), StringPool.BLANK,
-			ServiceContextUtil.getServiceContext(
-				companyId, resourceFolder.getDateCreated(), groupId,
-				httpServletRequest, resourceFolder.getDateModified(), userId));
+			resourceFolder.getName(), StringPool.BLANK, serviceContext);
 
 		return DLFolderLocalServiceUtil.getDLFolder(folder.getFolderId());
 	}
