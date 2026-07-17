@@ -86,16 +86,15 @@ export class ProtectedResourceLocalMetadatasPage {
 			.last();
 
 		while (await row.isVisible()) {
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: this.page.getByRole('link', {name: 'Delete'}),
-				trigger: row.locator('.dropdown-toggle'),
+			this.page.once('dialog', (dialog) => {
+				dialog.accept();
 			});
 
-			await this.page
-				.getByRole('alertdialog')
-				.getByRole('button', {name: 'OK'})
-				.click();
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: this.page.getByRole('menuitem', {name: 'Delete'}),
+				trigger: row.locator('.dropdown-toggle'),
+			});
 
 			await expect(this.successMessage).toBeVisible();
 
