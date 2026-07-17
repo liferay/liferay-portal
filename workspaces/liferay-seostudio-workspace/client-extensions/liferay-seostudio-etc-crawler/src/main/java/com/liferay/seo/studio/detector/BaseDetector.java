@@ -40,7 +40,7 @@ public abstract class BaseDetector {
 
 	protected void postInsights(
 			long accountEntryId, JSONObject definitionJSONObject,
-			List<String> pageURLs, Map<String, Long> pageURLToPageIdMap,
+			List<String> pageURLs, Map<String, Long> pageIds,
 			long seoStudioScanId)
 		throws Exception {
 
@@ -53,7 +53,7 @@ public abstract class BaseDetector {
 
 		_postScanInsights(
 			accountEntryId, definitionJSONObject.getString("classification"),
-			pageURLs, pageURLToPageIdMap, seoStudioInsightTypeId,
+			pageURLs, pageIds, seoStudioInsightTypeId,
 			seoStudioScanId);
 
 		if (_log.isInfoEnabled()) {
@@ -70,13 +70,13 @@ public abstract class BaseDetector {
 			long accountEntryId, List<String> pageURLs, long seoStudioScanId)
 		throws Exception {
 
-		Map<String, Long> pageURLToPageIdMap = _getPages(seoStudioScanId);
+		Map<String, Long> pageIds = _getPageIds(seoStudioScanId);
 
 		List<String> missingPageURLs = ListUtil.filter(
-			pageURLs, pageURL -> !pageURLToPageIdMap.containsKey(pageURL));
+			pageURLs, pageURL -> !pageIds.containsKey(pageURL));
 
 		if (ListUtil.isEmpty(missingPageURLs)) {
-			return pageURLToPageIdMap;
+			return pageIds;
 		}
 
 		_postPages(accountEntryId, missingPageURLs, seoStudioScanId);
@@ -84,7 +84,7 @@ public abstract class BaseDetector {
 		long deadline = System.currentTimeMillis() + 60000;
 
 		while (true) {
-			Set<String> existingPageURLs = pageURLToPageIdMap.keySet();
+			Set<String> existingPageURLs = pageIds.keySet();
 
 			if (existingPageURLs.containsAll(pageURLs)) {
 				break;
@@ -102,17 +102,17 @@ public abstract class BaseDetector {
 
 			Thread.sleep(1000);
 
-			pageURLToPageIdMap.putAll(_getPages(seoStudioScanId));
+			pageIds.putAll(_getPageIds(seoStudioScanId));
 		}
 
-		return pageURLToPageIdMap;
+		return pageIds;
 	}
 
 	@Autowired
 	protected SEOStudioService seoStudioService;
 
-	private Map<String, Long> _getPages(long seoStudioScanId) {
-		Map<String, Long> pageURLToPageIdMap = new HashMap<>();
+	private Map<String, Long> _getPageIds(long seoStudioScanId) {
+		Map<String, Long> pageIds = new HashMap<>();
 
 		int page = 1;
 
@@ -130,7 +130,7 @@ public abstract class BaseDetector {
 			for (Object object : itemsJSONArray) {
 				JSONObject itemJSONObject = (JSONObject)object;
 
-				pageURLToPageIdMap.put(
+				pageIds.put(
 					itemJSONObject.getString("pageURL"),
 					itemJSONObject.getLong("id"));
 			}
@@ -138,7 +138,7 @@ public abstract class BaseDetector {
 			page++;
 		}
 
-		return pageURLToPageIdMap;
+		return pageIds;
 	}
 
 	private long _postInsightType(
@@ -196,7 +196,7 @@ public abstract class BaseDetector {
 
 	private void _postScanInsights(
 			long accountEntryId, String classification, List<String> pageURLs,
-			Map<String, Long> pageURLToPageIdMap, long seoStudioInsightTypeId,
+			Map<String, Long> pageIds, long seoStudioInsightTypeId,
 			long seoStudioScanId)
 		throws Exception {
 
@@ -212,7 +212,7 @@ public abstract class BaseDetector {
 				i, Math.min(i + _BATCH_SIZE, pageURLs.size()));
 
 			for (String pageURL : batchPageURLs) {
-				Long seoStudioPageId = pageURLToPageIdMap.get(pageURL);
+				Long seoStudioPageId = pageIds.get(pageURL);
 
 				if (seoStudioPageId == null) {
 					if (_log.isWarnEnabled()) {
