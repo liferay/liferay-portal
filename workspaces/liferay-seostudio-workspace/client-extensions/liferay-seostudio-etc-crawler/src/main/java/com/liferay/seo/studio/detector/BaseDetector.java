@@ -216,9 +216,7 @@ public abstract class BaseDetector {
 
 				if (seoStudioPageId == null) {
 					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Unable to find a page for URL " + pageURL +
-								"; skipping scan insight");
+						_log.warn("Unable to get a page for URL " + pageURL);
 					}
 
 					continue;

@@ -68,13 +68,13 @@ public class CrawlerRestController extends BaseRestController {
 			if (domain == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						"Unable to find a domain for SEO Studio domain ID " +
+						"Unable to get a domain for SEO Studio domain ID " +
 							seoStudioDomainId);
 				}
 
 				return ResponseEntity.ok(
 					_seoStudioService.patchScan(
-						"Unable to find a domain for SEO Studio domain ID " +
+						"Unable to get a domain for SEO Studio domain ID " +
 							seoStudioDomainId,
 						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED));
 			}
