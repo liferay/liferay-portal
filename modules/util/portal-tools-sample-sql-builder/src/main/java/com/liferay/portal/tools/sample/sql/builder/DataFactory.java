@@ -7333,14 +7333,10 @@ public class DataFactory {
 
 			String key = jsonObject.getString("layoutColumnId");
 
-			if (portletNames.containsKey(key)) {
-				portletNames.put(
-					key,
-					portletNames.get(key) + StringPool.COMMA + portletName);
-			}
-			else {
-				portletNames.put(key, portletName);
-			}
+			portletNames.merge(
+				key, portletName,
+				(currentPortletName, newPortletName) ->
+					currentPortletName + StringPool.COMMA + newPortletName);
 		}
 
 		return ArrayUtil.toStringArray(portletNames.values());

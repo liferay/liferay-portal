@@ -470,11 +470,7 @@ public class YMLDefinitionOrderCheck extends BaseFileCheck {
 		}
 
 		private int _getParameterWeight(String definitionKey) {
-			if (_parametersWeightMap.containsKey(definitionKey)) {
-				return _parametersWeightMap.get(definitionKey);
-			}
-
-			return -1;
+			return _parametersWeightMap.getOrDefault(definitionKey, -1);
 		}
 
 		private int _sortMounts(String mountPath1, String mountPath2) {

@@ -1594,11 +1594,13 @@ public abstract class BaseCheck extends AbstractCheck {
 	}
 
 	private List<String> _getJSPImportNames(String directoryName) {
-		if (_jspImportNamesMap.containsKey(directoryName)) {
-			return _jspImportNamesMap.get(directoryName);
+		List<String> importNames = _jspImportNamesMap.get(directoryName);
+
+		if (importNames != null) {
+			return importNames;
 		}
 
-		List<String> importNames = new ArrayList<>();
+		importNames = new ArrayList<>();
 
 		String fileName = directoryName + "/init.jsp";
 

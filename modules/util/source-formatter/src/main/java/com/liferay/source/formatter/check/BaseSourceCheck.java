@@ -65,11 +65,8 @@ public abstract class BaseSourceCheck implements SourceCheck {
 	public Set<SourceFormatterMessage> getSourceFormatterMessages(
 		String fileName) {
 
-		if (_sourceFormatterMessagesMap.containsKey(fileName)) {
-			return _sourceFormatterMessagesMap.get(fileName);
-		}
-
-		return Collections.emptySet();
+		return _sourceFormatterMessagesMap.getOrDefault(
+			fileName, Collections.emptySet());
 	}
 
 	@Override

@@ -122,11 +122,14 @@ public class JavaDuplicateVariableCheck extends BaseJavaTermCheck {
 			String absolutePath, String fullyQualifiedClassName)
 		throws IOException {
 
-		if (_javaVariablesMap.containsKey(fullyQualifiedClassName)) {
-			return _javaVariablesMap.get(fullyQualifiedClassName);
+		Map<String, List<JavaVariable>> javaVariablesMap =
+			_javaVariablesMap.get(fullyQualifiedClassName);
+
+		if (javaVariablesMap != null) {
+			return javaVariablesMap;
 		}
 
-		Map<String, List<JavaVariable>> javaVariablesMap = new HashMap<>();
+		javaVariablesMap = new HashMap<>();
 
 		File file = JavaSourceUtil.getJavaFile(
 			fullyQualifiedClassName, _getRootDirName(absolutePath),

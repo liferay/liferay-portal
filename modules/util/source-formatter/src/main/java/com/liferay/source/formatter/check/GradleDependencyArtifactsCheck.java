@@ -251,10 +251,12 @@ public class GradleDependencyArtifactsCheck extends BaseFileCheck {
 				Map<String, String> projectNamesMap = _getProjectNamesMap(
 					absolutePath);
 
-				if (projectNamesMap.containsKey(name)) {
+				String projectName = projectNamesMap.get(name);
+
+				if (projectName != null) {
 					return StringUtil.replace(
 						content, dependency,
-						"project(\"" + projectNamesMap.get(name) + "\")");
+						"project(\"" + projectName + "\")");
 				}
 
 				addMessage(

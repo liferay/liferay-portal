@@ -593,8 +593,10 @@ public class OpenAPIParserUtil {
 							String key = getReferenceName(
 								parameter.getReference());
 
-							if (parameterMap.containsKey(key)) {
-								parameters.set(i, parameterMap.get(key));
+							Parameter curParameter = parameterMap.get(key);
+
+							if (curParameter != null) {
+								parameters.set(i, curParameter);
 							}
 						}
 					}

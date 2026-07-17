@@ -128,10 +128,11 @@ public class XMLServiceFinderNameCheck extends BaseFileCheck {
 				TextFormatter.format(
 					finderColumn.get("name"), TextFormatter.G));
 
-			if (finderColumn.containsKey("comparator")) {
+			String comparator = finderColumn.get("comparator");
+
+			if (comparator != null) {
 				expectedFinderName =
-					_comparatorNamesMap.get(finderColumn.get("comparator")) +
-						expectedFinderName;
+					_comparatorNamesMap.get(comparator) + expectedFinderName;
 			}
 
 			if (!finderName.startsWith(expectedFinderName)) {
@@ -164,9 +165,10 @@ public class XMLServiceFinderNameCheck extends BaseFileCheck {
 
 			String expectedFinderName = StringPool.BLANK;
 
-			if (finderColumn.containsKey("comparator")) {
-				expectedFinderName += _comparatorNamesMap.get(
-					finderColumn.get("comparator"));
+			String comparator = finderColumn.get("comparator");
+
+			if (comparator != null) {
+				expectedFinderName += _comparatorNamesMap.get(comparator);
 			}
 
 			expectedFinderName = expectedFinderName + finderColumnName;

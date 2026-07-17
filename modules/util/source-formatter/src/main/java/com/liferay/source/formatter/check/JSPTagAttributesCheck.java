@@ -414,8 +414,11 @@ public class JSPTagAttributesCheck extends BaseTagAttributesCheck {
 		throws Exception {
 
 		if (_tagSetMethodsMap != null) {
-			if (_tagSetMethodsMap.containsKey(tagName)) {
-				return _tagSetMethodsMap.get(tagName);
+			Map<String, String> tagSetMethodsMap = _tagSetMethodsMap.get(
+				tagName);
+
+			if (tagSetMethodsMap != null) {
+				return tagSetMethodsMap;
 			}
 
 			return _tagSetMethodsMap.get("liferay-" + tagName);
@@ -527,11 +530,14 @@ public class JSPTagAttributesCheck extends BaseTagAttributesCheck {
 			String tagFileName, String utilTaglibSrcDirName)
 		throws Exception {
 
-		if (_classSetMethodsMap.containsKey(tagFileName)) {
-			return _classSetMethodsMap.get(tagFileName);
+		Map<String, String> setMethodsMap = _classSetMethodsMap.get(
+			tagFileName);
+
+		if (setMethodsMap != null) {
+			return setMethodsMap;
 		}
 
-		Map<String, String> setMethodsMap = new HashMap<>();
+		setMethodsMap = new HashMap<>();
 
 		File tagFile = new File(tagFileName);
 

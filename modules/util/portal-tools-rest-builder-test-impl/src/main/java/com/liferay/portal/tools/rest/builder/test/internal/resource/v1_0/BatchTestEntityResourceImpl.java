@@ -301,11 +301,7 @@ public class BatchTestEntityResourceImpl
 	}
 
 	private BatchTestEntity _fetchBatchTestEntity(long id) {
-		if (_batchTestEntities.containsKey(id)) {
-			return _batchTestEntities.get(id);
-		}
-
-		return null;
+		return _batchTestEntities.get(id);
 	}
 
 	private BatchTestEntity _fetchBatchTestEntity(

@@ -120,8 +120,10 @@ public class PythonImportsFormatter extends BaseImportsFormatter {
 
 			String packageName = matcher.group(2);
 
-			if (packageImportsMap.containsKey(packageName)) {
-				importNamesList.addAll(packageImportsMap.get(packageName));
+			List<String> curImportNames = packageImportsMap.get(packageName);
+
+			if (curImportNames != null) {
+				importNamesList.addAll(curImportNames);
 			}
 
 			packageImportsMap.put(packageName, importNamesList);
