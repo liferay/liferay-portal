@@ -401,7 +401,7 @@ public class LayoutClassedModelUsagesDisplayContext {
 	private String _getLayoutClassedModelUsagesURL(
 		String className, long classPK) {
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(
 			PortalUtil.getPortalURL(
@@ -411,6 +411,8 @@ public class LayoutClassedModelUsagesDisplayContext {
 		sb.append(className);
 		sb.append("&classPK=");
 		sb.append(String.valueOf(classPK));
+		sb.append("&p_l_id=");
+		sb.append(_themeDisplay.getPlid());
 
 		return sb.toString();
 	}
