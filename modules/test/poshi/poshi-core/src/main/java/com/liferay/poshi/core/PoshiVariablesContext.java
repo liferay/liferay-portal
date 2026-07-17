@@ -22,20 +22,14 @@ import java.util.regex.Pattern;
 public class PoshiVariablesContext {
 
 	public static void clear(String classCommandName) {
-		if (_poshiVariablesContexts.containsKey(classCommandName)) {
-			_poshiVariablesContexts.remove(classCommandName);
-		}
+		_poshiVariablesContexts.remove(classCommandName);
 	}
 
 	public static synchronized PoshiVariablesContext getPoshiVariablesContext(
 		String classCommandName) {
 
-		if (!_poshiVariablesContexts.containsKey(classCommandName)) {
-			_poshiVariablesContexts.put(
-				classCommandName, new PoshiVariablesContext());
-		}
-
-		return _poshiVariablesContexts.get(classCommandName);
+		return _poshiVariablesContexts.computeIfAbsent(
+			classCommandName, key -> new PoshiVariablesContext());
 	}
 
 	public boolean containsKeyInCommandMap(String key) {

@@ -24,19 +24,14 @@ import org.dom4j.Element;
 public final class PoshiStackTrace {
 
 	public static void clear(String classCommandName) {
-		if (_poshiStackTraces.containsKey(classCommandName)) {
-			_poshiStackTraces.remove(classCommandName);
-		}
+		_poshiStackTraces.remove(classCommandName);
 	}
 
 	public static synchronized PoshiStackTrace getPoshiStackTrace(
 		String classCommandName) {
 
-		if (!_poshiStackTraces.containsKey(classCommandName)) {
-			_poshiStackTraces.put(classCommandName, new PoshiStackTrace());
-		}
-
-		return _poshiStackTraces.get(classCommandName);
+		return _poshiStackTraces.computeIfAbsent(
+			classCommandName, key -> new PoshiStackTrace());
 	}
 
 	public void emptyStackTrace() {
