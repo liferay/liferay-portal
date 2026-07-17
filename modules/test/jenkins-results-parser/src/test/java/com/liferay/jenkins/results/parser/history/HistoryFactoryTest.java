@@ -22,52 +22,50 @@ public class HistoryFactoryTest
 
 	@Test
 	public void testNewTestClassHistory() {
-		BatchHistory integrationBatchHistory = _mockBatchHistory(
-			"modules-integration", "master");
 		BatchHistory unitBatchHistory = _mockBatchHistory(
 			"modules-unit", "master");
-
 		JSONObject jsonObject = new JSONObject();
-
 		String testClassName = RandomTestUtil.randomString();
 
 		TestClassHistory testClassHistory = HistoryFactory.newTestClassHistory(
 			unitBatchHistory, jsonObject, testClassName);
 
-		Assert.assertNotSame(
-			testClassHistory,
-			HistoryFactory.newTestClassHistory(
-				integrationBatchHistory, jsonObject, testClassName));
-
 		Assert.assertSame(
 			testClassHistory,
 			HistoryFactory.newTestClassHistory(
 				unitBatchHistory, jsonObject, testClassName));
+
+		BatchHistory integrationBatchHistory = _mockBatchHistory(
+			"modules-integration", "master");
+
+		Assert.assertNotSame(
+			testClassHistory,
+			HistoryFactory.newTestClassHistory(
+				integrationBatchHistory, jsonObject, testClassName));
 	}
 
 	@Test
 	public void testNewTestTaskHistory() {
-		BatchHistory integrationBatchHistory = _mockBatchHistory(
-			"modules-integration", "master");
 		BatchHistory unitBatchHistory = _mockBatchHistory(
 			"modules-unit", "master");
-
 		JSONObject jsonObject = new JSONObject();
-
 		String testTaskName = RandomTestUtil.randomString();
 
 		TestTaskHistory testTaskHistory = HistoryFactory.newTestTaskHistory(
 			unitBatchHistory, jsonObject, testTaskName);
 
-		Assert.assertNotSame(
-			testTaskHistory,
-			HistoryFactory.newTestTaskHistory(
-				integrationBatchHistory, jsonObject, testTaskName));
-
 		Assert.assertSame(
 			testTaskHistory,
 			HistoryFactory.newTestTaskHistory(
 				unitBatchHistory, jsonObject, testTaskName));
+
+		BatchHistory integrationBatchHistory = _mockBatchHistory(
+			"modules-integration", "master");
+
+		Assert.assertNotSame(
+			testTaskHistory,
+			HistoryFactory.newTestTaskHistory(
+				integrationBatchHistory, jsonObject, testTaskName));
 	}
 
 	private BatchHistory _mockBatchHistory(
