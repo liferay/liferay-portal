@@ -176,8 +176,6 @@ public class FragmentEntryConfigurationParserTest {
 	@Test
 	@TestInfo("LPD-97996")
 	public void testGetFieldValueURLConfiguration() throws Exception {
-		_testGetFieldValueURLConfiguration(null, StringPool.BLANK);
-		_testGetFieldValueURLConfiguration(null, RandomTestUtil.randomString());
 		_testGetFieldValueURLConfiguration(
 			StringPool.POUND,
 			JSONUtil.put(
@@ -202,6 +200,9 @@ public class FragmentEntryConfigurationParserTest {
 			).toString());
 
 		ServiceContextThreadLocal.popServiceContext();
+
+		_testGetFieldValueURLConfiguration(null, RandomTestUtil.randomString());
+		_testGetFieldValueURLConfiguration(null, StringPool.BLANK);
 	}
 
 	@Test
