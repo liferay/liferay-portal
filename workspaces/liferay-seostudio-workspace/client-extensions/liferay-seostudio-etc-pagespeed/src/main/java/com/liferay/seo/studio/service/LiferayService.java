@@ -55,8 +55,7 @@ public class LiferayService extends BaseService {
 		).queryParam(
 			"filter", "state eq '" + PageSpeedConstants.STATE_QUEUED + "'"
 		).queryParam(
-			"nestedFields",
-			"seoStudioScanRun,seoStudioDomain,seoStudioInstance"
+			"nestedFields", "seoStudioScanRun,seoStudioDomain,seoStudioInstance"
 		).queryParam(
 			"nestedFieldsDepth", 3
 		).queryParam(

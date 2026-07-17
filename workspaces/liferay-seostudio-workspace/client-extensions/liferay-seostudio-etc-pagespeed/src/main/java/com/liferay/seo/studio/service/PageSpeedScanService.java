@@ -5,18 +5,21 @@
 
 package com.liferay.seo.studio.service;
 
-import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.PageSpeedConstants;
 import com.liferay.seo.studio.model.Domain;
 import com.liferay.seo.studio.model.PageSpeedReport;
 import com.liferay.seo.studio.model.PageSpeedScanResult;
 
+import jakarta.annotation.PreDestroy;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +35,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PageSpeedScanService {
+
+	@PreDestroy
+	public void preDestroy() {
+		_executorService.shutdown();
+	}
 
 	@Scheduled(fixedDelay = 30000)
 	public void scheduledProcessQueuedScans() {
@@ -98,22 +106,29 @@ public class PageSpeedScanService {
 	private PageSpeedScanResult _getPageSpeedScanResult(
 		String googlePageSpeedAPIKey, String strategy, List<String> urls) {
 
-		List<CompletableFuture<PageSpeedReport>> completableFutures =
-			TransformUtil.transform(
-				urls,
-				url -> CompletableFuture.supplyAsync(
+		List<DefaultNoticeableFuture<PageSpeedReport>>
+			defaultNoticeableFutures = new ArrayList<>();
+
+		for (String url : urls) {
+			DefaultNoticeableFuture<PageSpeedReport> defaultNoticeableFuture =
+				new DefaultNoticeableFuture<>(
 					() -> _getPageSpeedReport(
-						googlePageSpeedAPIKey, strategy, url)));
+						googlePageSpeedAPIKey, strategy, url));
+
+			_executorService.execute(defaultNoticeableFuture);
+
+			defaultNoticeableFutures.add(defaultNoticeableFuture);
+		}
 
 		int pagesErrored = 0;
 
 		List<PageSpeedReport> pageSpeedReports = new ArrayList<>();
 
-		for (CompletableFuture<PageSpeedReport> completableFuture :
-				completableFutures) {
+		for (DefaultNoticeableFuture<PageSpeedReport> defaultNoticeableFuture :
+				defaultNoticeableFutures) {
 
 			try {
-				PageSpeedReport pageSpeedReport = completableFuture.join();
+				PageSpeedReport pageSpeedReport = defaultNoticeableFuture.get();
 
 				if (pageSpeedReport == null) {
 					pagesErrored++;
@@ -214,6 +229,9 @@ public class PageSpeedScanService {
 
 	private static final Log _log = LogFactory.getLog(
 		PageSpeedScanService.class);
+
+	private final ExecutorService _executorService =
+		Executors.newFixedThreadPool(4);
 
 	@Autowired
 	private LiferayService _liferayService;
