@@ -10,10 +10,7 @@ import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -61,18 +58,8 @@ public class EntityModelFieldMapper {
 	}
 
 	public ExpandoColumn getExpandoColumn(String entityFieldName) {
-		long expandoColumnId = getExpandoColumnId(entityFieldName);
-
-		try {
-			return _expandoColumnLocalService.getColumn(expandoColumnId);
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to find Expando Column with id " + expandoColumnId,
-				portalException);
-
-			return null;
-		}
+		return _expandoColumnLocalService.fetchExpandoColumn(
+			getExpandoColumnId(entityFieldName));
 	}
 
 	public String getExpandoColumnEntityFieldName(ExpandoColumn expandoColumn) {
@@ -310,9 +297,6 @@ public class EntityModelFieldMapper {
 
 		return "string";
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		EntityModelFieldMapper.class);
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;
