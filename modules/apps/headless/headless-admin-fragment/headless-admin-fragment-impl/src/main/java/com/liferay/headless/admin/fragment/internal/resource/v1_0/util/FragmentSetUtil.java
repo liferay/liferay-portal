@@ -40,6 +40,10 @@ public class FragmentSetUtil {
 	}
 
 	public static FragmentCollection getFragmentCollection(DLFolder dlFolder) {
+		if (dlFolder == null) {
+			return null;
+		}
+
 		DLFolder parentDLFolder = DLFolderLocalServiceUtil.fetchDLFolder(
 			dlFolder.getParentFolderId());
 
