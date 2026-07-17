@@ -100,10 +100,7 @@ public class FragmentCollectionManager {
 
 		List<FragmentCollection> fragmentCollections =
 			_fragmentCollectionService.getFragmentCollections(
-				new long[] {
-					themeDisplay.getCompanyGroupId(), groupId,
-					CompanyConstants.SYSTEM
-				});
+				_getGroupIds(themeDisplay.getCompanyGroupId(), groupId));
 
 		for (FragmentCollection fragmentCollection : fragmentCollections) {
 			if (!includeSystem &&
@@ -507,6 +504,10 @@ public class FragmentCollectionManager {
 		}
 
 		return fragmentEntryKey + StringPool.POUND + group.getGroupKey();
+	}
+
+	private long[] _getGroupIds(long companyGroupId, long groupId) {
+		return new long[] {companyGroupId, groupId, CompanyConstants.SYSTEM};
 	}
 
 	private List<Map<String, Object>> _getSortedFragmentCollectionMapsList(
