@@ -78,36 +78,29 @@ public class AuthVerifierFilter extends BasePortalFilter {
 			}
 		}
 
-		if (_initParametersMap.containsKey("guest.allowed")) {
-			_guestAllowed = GetterUtil.getBoolean(
-				_initParametersMap.get("guest.allowed"), true);
+		Object guestAllowed = _initParametersMap.remove("guest.allowed");
 
-			_initParametersMap.remove("guest.allowed");
+		if (guestAllowed != null) {
+			_guestAllowed = GetterUtil.getBoolean(guestAllowed, true);
 		}
 
-		if (_initParametersMap.containsKey("hosts.allowed")) {
-			String hostsAllowedString = (String)_initParametersMap.get(
-				"hosts.allowed");
+		if (_initParametersMap.remove("hosts.allowed") instanceof
+				String hostsAllowedString) {
 
 			String[] hostsAllowed = StringUtil.split(hostsAllowedString);
 
 			for (String hostAllowed : hostsAllowed) {
 				_hostsAllowed.add(hostAllowed);
 			}
-
-			_initParametersMap.remove("hosts.allowed");
 		}
 
-		if (_initParametersMap.containsKey("https.required")) {
-			_httpsRequired = GetterUtil.getBoolean(
-				_initParametersMap.get("https.required"));
+		Object httpsRequired = _initParametersMap.remove("https.required");
 
-			_initParametersMap.remove("https.required");
+		if (httpsRequired != null) {
+			_httpsRequired = GetterUtil.getBoolean(httpsRequired);
 		}
 
-		if (_initParametersMap.containsKey("use_permission_checker")) {
-			_initParametersMap.remove("use_permission_checker");
-
+		if (_initParametersMap.remove("use_permission_checker") != null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn("use_permission_checker is deprecated");
 			}
