@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen, within} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -113,7 +113,7 @@ describe('AudienceBuilder', () => {
 				)
 			).toBeInTheDocument();
 
-			await userEvent.keyboard('{ArrowUp}');
+			await userEvent.keyboard('{ArrowUp}{ArrowUp}');
 
 			expect(
 				container.querySelector('.audience-builder-rule')
@@ -184,7 +184,9 @@ describe('AudienceBuilder', () => {
 				/>
 			);
 
-			fireEvent.click(screen.getAllByTitle('move-x')[0]);
+			screen.getAllByTitle('move-x')[0].focus();
+
+			await userEvent.keyboard('{Enter}');
 
 			await userEvent.keyboard('{ArrowDown}{Enter}');
 
@@ -208,14 +210,97 @@ describe('AudienceBuilder', () => {
 				/>
 			);
 
-			fireEvent.click(screen.getByTitle('move-x'));
+			screen.getByTitle('move-x').focus();
 
-			await userEvent.keyboard('{ArrowUp}{ArrowUp}{Enter}');
+			await userEvent.keyboard('{Enter}');
+
+			await userEvent.keyboard('{ArrowUp}{ArrowUp}{ArrowUp}{Enter}');
 
 			expect(getSerializedRuleAttributes(container)).toEqual([
 				'age',
 				'removed',
 			]);
+		});
+
+		it('moves a nested condition out of its group', async () => {
+			const {container} = render(
+				<AudienceBuilder
+					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+					rulesGroup={{
+						conjunction: 'AND',
+						rules: [
+							{attribute: 'age', operator: 'gt', value: '18'},
+							{
+								conjunction: 'OR',
+								rules: [
+									{
+										attribute: 'city',
+										operator: 'eq',
+										value: 'Madrid',
+									},
+									{
+										attribute: 'country',
+										operator: 'eq',
+										value: 'ES',
+									},
+								],
+							},
+						],
+					}}
+				/>
+			);
+
+			screen.getAllByTitle('move-x')[1].focus();
+
+			await userEvent.keyboard('{Enter}');
+
+			await userEvent.keyboard(
+				'{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{Enter}'
+			);
+
+			expect(getSerializedRuleAttributes(container)).toEqual([
+				'city',
+				'age',
+				'country',
+			]);
+		});
+
+		it('groups two conditions with the keyboard', async () => {
+			const {container} = render(
+				<AudienceBuilder
+					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+					rulesGroup={{
+						conjunction: 'AND',
+						rules: [
+							{attribute: 'age', operator: 'gt', value: '18'},
+							{
+								attribute: 'city',
+								operator: 'eq',
+								value: 'Madrid',
+							},
+							{attribute: 'country', operator: 'eq', value: 'ES'},
+						],
+					}}
+				/>
+			);
+
+			screen.getAllByTitle('move-x')[0].focus();
+
+			await userEvent.keyboard('{Enter}');
+
+			await userEvent.keyboard('{ArrowDown}{Enter}');
+
+			const input =
+				container.querySelector<HTMLInputElement>('input[name="json"]');
+
+			const serializedCriteria = JSON.parse(input!.value);
+
+			expect(
+				serializedCriteria.rules[0].rules.map(
+					(rule: {attribute: string}) => rule.attribute
+				)
+			).toEqual(['city', 'age']);
+			expect(serializedCriteria.rules[1].attribute).toBe('country');
 		});
 
 		it('cancels the movement with escape', async () => {
@@ -236,7 +321,9 @@ describe('AudienceBuilder', () => {
 				/>
 			);
 
-			fireEvent.click(screen.getAllByTitle('move-x')[0]);
+			screen.getAllByTitle('move-x')[0].focus();
+
+			await userEvent.keyboard('{Enter}');
 
 			await userEvent.keyboard('{ArrowDown}{Escape}');
 

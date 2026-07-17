@@ -26,6 +26,32 @@ export class AudiencesPage {
 		this.valueInput = page.getByLabel('Value');
 	}
 
+	async addCondition(attributeIndex: number) {
+		const attribute = this.page
+			.getByRole('menuitem', {name: /^Add /})
+			.nth(attributeIndex);
+
+		const ruleCount = await this.page
+			.locator('.audience-builder-rule')
+			.count();
+
+		// The first attribute drops immediately; later ones pick up then drop.
+
+		await attribute.press('Enter');
+
+		if (ruleCount) {
+			await expect(attribute).toHaveClass(
+				/audience-builder-attribute--dragging/
+			);
+
+			await attribute.press('Enter');
+		}
+
+		await expect(this.page.locator('.audience-builder-rule')).toHaveCount(
+			ruleCount + 1
+		);
+	}
+
 	async createAudience({
 		attributeName,
 		name,
@@ -99,5 +125,20 @@ export class AudiencesPage {
 
 	async goto() {
 		await this.page.goto(PORTLET_URLS.audiences);
+	}
+
+	async openNewAudience() {
+		await this.goto();
+
+		await this.newAudienceButton.click();
+
+		await expect(this.page.getByText('No Criteria Yet')).toBeVisible();
+
+		await expect(
+			this.page
+				.locator('.c-empty-state', {hasText: 'No Criteria Yet'})
+				.locator('img')
+				.first()
+		).toBeVisible();
 	}
 }

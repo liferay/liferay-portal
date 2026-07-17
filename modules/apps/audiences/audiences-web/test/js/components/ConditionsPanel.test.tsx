@@ -156,4 +156,51 @@ describe('ConditionsPanel', () => {
 			type: 'DELETE_RULE',
 		});
 	});
+
+	it('keeps only the current row in the tab order', () => {
+		renderConditionsPanel({
+			items: [
+				{attribute: 'age', id: 'rule-age', operator: 'gt', value: '18'},
+				{
+					attribute: 'city',
+					id: 'rule-city',
+					operator: 'eq',
+					value: 'Madrid',
+				},
+			],
+		});
+
+		const deleteButtons = screen.getAllByLabelText('delete');
+
+		expect(deleteButtons[0]).toHaveAttribute('tabindex', '0');
+		expect(deleteButtons[1]).toHaveAttribute('tabindex', '-1');
+	});
+
+	it('navigates into a nested group with arrow keys', async () => {
+		renderConditionsPanel({
+			items: [
+				{attribute: 'age', id: 'rule-age', operator: 'gt', value: '18'},
+				{
+					conjunction: 'OR',
+					id: 'group-nested',
+					items: [
+						{
+							attribute: 'city',
+							id: 'rule-city',
+							operator: 'eq',
+							value: 'Madrid',
+						},
+					],
+				},
+			],
+		});
+
+		const rows = screen.getAllByRole('menuitem');
+
+		rows[0].focus();
+
+		await userEvent.keyboard('{ArrowDown}');
+
+		expect(rows[1]).toHaveFocus();
+	});
 });

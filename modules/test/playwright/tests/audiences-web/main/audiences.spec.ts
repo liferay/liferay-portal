@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {audiencesPagesTest} from '../../../fixtures/audiencesPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -17,6 +18,7 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
 	apiHelpersTest,
+	audiencesPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-85746': {enabled: true},
@@ -367,5 +369,118 @@ test(
 		await expect(
 			page.locator('tr').filter({hasText: audienceName})
 		).toHaveCount(0);
+	}
+);
+
+test(
+	'Groups, navigates, keeps the conjunction independent, caps nesting, and unwraps',
+	{
+		tag: '@LPD-98159',
+	},
+	async ({audiencesPage, page}) => {
+		const attributes = page.locator('.audience-builder-attribute');
+		const groups = page.locator('.audience-builder-group');
+		const rules = page.locator('.audience-builder-rule');
+
+		await audiencesPage.openNewAudience();
+
+		await audiencesPage.addCondition(0);
+		await audiencesPage.addCondition(1);
+		await audiencesPage.addCondition(0);
+
+		// Pick the first condition up and drop it onto the second to group them
+
+		await page
+			.getByRole('button', {name: /^Move /})
+			.first()
+			.press('Enter');
+
+		await expect(
+			page.locator('.audience-builder-rule--dragging')
+		).toBeVisible();
+
+		await page.keyboard.press('ArrowDown');
+		await page.keyboard.press('Enter');
+
+		await expect(groups).toHaveCount(1);
+		await expect(groups.locator('.audience-builder-rule')).toHaveCount(2);
+		await expect(rules).toHaveCount(3);
+
+		// Arrow navigation reaches the rules nested inside the group
+
+		await rules.last().focus();
+
+		await page.keyboard.press('ArrowUp');
+
+		await expect(
+			groups.locator('.audience-builder-rule').last()
+		).toBeFocused();
+
+		// Tabbing past a condition's last action leaves the list
+
+		await rules.last().getByLabel('Delete').focus();
+
+		await page.keyboard.press('Tab');
+
+		await expect(
+			page.getByRole('menu', {name: 'Conditions'}).locator(':focus')
+		).toHaveCount(0);
+
+		// The new group defaults to All
+
+		await expect(groups.getByLabel('Conjunction')).toContainText('All');
+
+		// Switching the root to Any leaves the nested group on All
+
+		const rootConjunction = page.getByLabel('Conjunction').first();
+
+		await rootConjunction.click();
+
+		await page.getByRole('option', {exact: true, name: 'Any'}).click();
+
+		await expect(rootConjunction).toContainText('Any');
+		await expect(groups.getByLabel('Conjunction')).toContainText('All');
+
+		// Dropping onto a rule inside the group nests a third level
+
+		await expect(async () => {
+			await attributes
+				.first()
+				.dragTo(
+					groups.first().locator('.audience-builder-rule').first()
+				);
+
+			await expect(groups).toHaveCount(2);
+		}).toPass();
+
+		// A drop inside the deepest group adds a sibling but no fourth level
+
+		const beforeCount = await rules.count();
+
+		await expect(async () => {
+			await attributes
+				.first()
+				.dragTo(
+					groups.last().locator('.audience-builder-rule').first()
+				);
+
+			await expect(rules).toHaveCount(beforeCount + 1);
+		}).toPass();
+
+		await expect(groups).toHaveCount(2);
+
+		// Deleting conditions unwraps the groups back down to two rules
+
+		while ((await rules.count()) > 2) {
+			await groups
+				.last()
+				.locator('.audience-builder-rule')
+				.first()
+				.getByLabel('Delete')
+				.click();
+		}
+
+		await expect(groups).toHaveCount(0);
+		await expect(rules).toHaveCount(2);
 	}
 );
