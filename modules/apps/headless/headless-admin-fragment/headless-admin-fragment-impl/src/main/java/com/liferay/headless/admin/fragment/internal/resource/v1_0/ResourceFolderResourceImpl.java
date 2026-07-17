@@ -8,6 +8,8 @@ package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
@@ -27,6 +29,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -90,6 +94,13 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
+
+		if (!_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), groupId,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+
+			return Page.of(Collections.emptyList());
+		}
 
 		FragmentCollection fragmentCollection =
 			_fragmentCollectionService.
@@ -160,6 +171,13 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
+
+		if (!_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), groupId,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+
+			return Page.of(Collections.emptyList());
+		}
 
 		long[] resourcesFolderIds = transformToLongArray(
 			_fragmentCollectionLocalService.getFragmentCollections(groupId),
@@ -381,6 +399,11 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 	@Reference
 	private FragmentCollectionService _fragmentCollectionService;
+
+	@Reference(
+		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.fragment.internal.dto.v1_0.converter.ResourceFolderDTOConverter)"

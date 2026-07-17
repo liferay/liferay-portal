@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -51,11 +52,17 @@ public class ResourceFolderUtil {
 	}
 
 	public static void checkResourceFolder(DLFolder dlFolder) throws Exception {
-		if (FragmentSetUtil.getFragmentCollection(dlFolder) == null) {
+		FragmentCollection fragmentCollection =
+			FragmentSetUtil.getFragmentCollection(dlFolder);
+
+		if (fragmentCollection == null) {
 			throw new NoSuchFolderException(
 				"No resource folder exists with external reference code " +
 					dlFolder.getExternalReferenceCode());
 		}
+
+		FragmentCollectionServiceUtil.getFragmentCollection(
+			fragmentCollection.getFragmentCollectionId());
 	}
 
 	public static DLFolder getOrAddParentDLFolder(
