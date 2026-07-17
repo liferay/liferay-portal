@@ -197,6 +197,10 @@ public class FragmentCollectionServiceImpl
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
 		return fragmentCollectionLocalService.
 			getFragmentCollectionByExternalReferenceCode(
 				externalReferenceCode, groupId);
