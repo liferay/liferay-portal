@@ -24,6 +24,7 @@ export const PORTLET_URLS = {
 	cmsAllSpaces: 'web/cms/all-spaces',
 	cmsCategories: 'web/cms/categorization/view-categories',
 	cmsContents: 'web/cms/contents',
+	cmsDashboard: 'web/cms/dashboard',
 	cmsEditCategory: 'web/cms/categorization/edit-category',
 	cmsFiles: 'web/cms/files',
 	cmsHome: 'web/cms/home',

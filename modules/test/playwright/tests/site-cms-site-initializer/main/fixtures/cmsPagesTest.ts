@@ -13,6 +13,7 @@ import {FindAndReplacePage} from '../pages/FindAndReplacePage';
 import {FolderPage} from '../pages/FolderPage';
 import {HomePage} from '../pages/HomePage';
 import {InfoPanelPage} from '../pages/InfoPanelPage';
+import {PerformanceDashboardPage} from '../pages/PerformanceDashboardPage';
 import {PicklistBuilderPage} from '../pages/PicklistBuilderPage';
 import {RecycleBinPage} from '../pages/RecycleBinPage';
 import {ShareModalPage} from '../pages/ShareModalPage';
@@ -31,6 +32,7 @@ const cmsPagesTest = test.extend<{
 	folderPage: FolderPage;
 	homePage: HomePage;
 	infoPanelPage: InfoPanelPage;
+	performanceDashboardPage: PerformanceDashboardPage;
 	picklistBuilderPage: PicklistBuilderPage;
 	recycleBinPage: RecycleBinPage;
 	shareModalPage: ShareModalPage;
@@ -63,6 +65,9 @@ const cmsPagesTest = test.extend<{
 	},
 	infoPanelPage: async ({page}, use) => {
 		await use(new InfoPanelPage(page));
+	},
+	performanceDashboardPage: async ({page}, use) => {
+		await use(new PerformanceDashboardPage(page));
 	},
 	picklistBuilderPage: async ({page}, use) => {
 		await use(new PicklistBuilderPage(page));
