@@ -188,19 +188,19 @@ public class JournalRSSHelper {
 				}
 			}
 		}
-		else if (parameters.containsKey("uuid") &&
-				 parameters.containsKey("groupId")) {
+		else {
+			String[] uuids = parameters.get("uuid");
+			String[] groupIds = parameters.get("groupId");
 
-			try {
-				String uuid = parameters.get("uuid")[0];
-				long groupId = GetterUtil.getLong(parameters.get("groupId")[0]);
-
-				fileEntry = _dlAppLocalService.getFileEntryByUuidAndGroupId(
-					uuid, groupId);
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(exception);
+			if ((uuids != null) && (groupIds != null)) {
+				try {
+					fileEntry = _dlAppLocalService.getFileEntryByUuidAndGroupId(
+						uuids[0], GetterUtil.getLong(groupIds[0]));
+				}
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(exception);
+					}
 				}
 			}
 		}

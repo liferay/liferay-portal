@@ -73,11 +73,13 @@ public class JSONWebServiceClientImpl extends BaseJSONWebServiceClientImpl {
 	}
 
 	protected String getString(String key, Map<String, Object> properties) {
-		if (!properties.containsKey(key)) {
+		Object value = properties.get(key);
+
+		if (value == null) {
 			return null;
 		}
 
-		return String.valueOf(properties.get(key));
+		return String.valueOf(value);
 	}
 
 	@Override
