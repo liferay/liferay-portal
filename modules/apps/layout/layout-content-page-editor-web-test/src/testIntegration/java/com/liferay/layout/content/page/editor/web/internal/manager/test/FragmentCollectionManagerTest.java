@@ -72,7 +72,6 @@ public class FragmentCollectionManagerTest {
 	public void setUp() throws Exception {
 		_company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -211,7 +210,7 @@ public class FragmentCollectionManagerTest {
 		_testGetScopeMap("site", _group);
 
 		Assert.assertNull(
-			_invokeGetScopeMap(CompanyConstants.SYSTEM, new HashMap<>()));
+			_getScopeMap(CompanyConstants.SYSTEM, new HashMap<>()));
 	}
 
 	private DepotEntry _addDepotEntry(int type) throws Exception {
@@ -223,7 +222,7 @@ public class FragmentCollectionManagerTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private Map<String, Object> _invokeGetScopeMap(
+	private Map<String, Object> _getScopeMap(
 		long groupId, Map<Long, Map<String, Object>> scopeMaps) {
 
 		return ReflectionTestUtil.invoke(
@@ -251,7 +250,7 @@ public class FragmentCollectionManagerTest {
 
 		Map<Long, Map<String, Object>> scopeMaps = new HashMap<>();
 
-		Map<String, Object> scopeMap = _invokeGetScopeMap(
+		Map<String, Object> scopeMap = _getScopeMap(
 			group.getGroupId(), scopeMaps);
 
 		Assert.assertEquals(
@@ -261,7 +260,7 @@ public class FragmentCollectionManagerTest {
 			scopeMap.get("label"));
 		Assert.assertEquals(expectedType, scopeMap.get("type"));
 		Assert.assertSame(
-			scopeMap, _invokeGetScopeMap(group.getGroupId(), scopeMaps));
+			scopeMap, _getScopeMap(group.getGroupId(), scopeMaps));
 	}
 
 	private Company _company;
