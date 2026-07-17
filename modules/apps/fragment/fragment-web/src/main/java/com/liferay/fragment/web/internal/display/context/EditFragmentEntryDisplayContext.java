@@ -528,7 +528,7 @@ public class EditFragmentEntryDisplayContext {
 		).put(
 			"resources", resources
 		).put(
-			"showFieldTypes", _showFieldTypes()
+			"showFieldTypes", _isShowFieldTypes()
 		).put(
 			"spritemap", _themeDisplay.getPathThemeSpritemap()
 		).put(
@@ -629,7 +629,7 @@ public class EditFragmentEntryDisplayContext {
 		return _readOnly;
 	}
 
-	private boolean _showFieldTypes() {
+	private boolean _isShowFieldTypes() {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		if ((fragmentEntry == null) || !fragmentEntry.isTypeInput()) {
