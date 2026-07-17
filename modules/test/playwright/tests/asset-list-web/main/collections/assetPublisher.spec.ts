@@ -31,164 +31,176 @@ const test = mergeTests(
 );
 
 test.describe('Personalized Variation', () => {
-	test('A personalized manual collection can be used in an Asset Publisher', {tag: '@LPS-93726'}, async ({
-		apiHelpers,
-		assetPublisherPage,
-		assetPublisherWidgetPage,
-		collectionsPage,
-		page,
-		site,
-		widgetPagePage,
-	}) => {
-		const collectionName = getRandomString();
-		const segmentName = getRandomString();
-		const webContentTitle = getRandomString();
+	test(
+		'A personalized manual collection can be used in an Asset Publisher',
+		{tag: '@LPS-93726'},
+		async ({
+			apiHelpers,
+			assetPublisherPage,
+			assetPublisherWidgetPage,
+			collectionsPage,
+			page,
+			site,
+			widgetPagePage,
+		}) => {
+			const collectionName = getRandomString();
+			const segmentName = getRandomString();
+			const webContentTitle = getRandomString();
 
-		await test.step('Create a web content article and a segment', async () => {
-			await apiHelpers.jsonWebServicesJournal.addWebContent({
-				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
-				groupId: site.id,
-				titleMap: {en_US: webContentTitle},
-			});
+			await test.step('Create a web content article and a segment', async () => {
+				await apiHelpers.jsonWebServicesJournal.addWebContent({
+					ddmStructureId:
+						await getBasicWebContentStructureId(apiHelpers),
+					groupId: site.id,
+					titleMap: {en_US: webContentTitle},
+				});
 
-			await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
-				criteria: {
+				await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
 					criteria: {
-						user: {
-							conjunction: 'and',
-							filterString: `(screenName eq 'test')`,
-							typeValue: 'model',
+						criteria: {
+							user: {
+								conjunction: 'and',
+								filterString: `(screenName eq 'test')`,
+								typeValue: 'model',
+							},
 						},
+						filterString: {model: `(screenName eq 'test')`},
 					},
-					filterString: {model: `(screenName eq 'test')`},
-				},
-				groupId: site.id,
-				name: segmentName,
-				source: 'DEFAULT',
-			});
-		});
-
-		await test.step('Create a manual collection with a personalized variation', async () => {
-			await collectionsPage.goto(site.friendlyUrlPath);
-
-			await collectionsPage.addNewManualCollection(collectionName);
-
-			await collectionsPage.configureSourceItemType({
-				itemSubtype: 'All Subtypes',
-				itemType: 'Web Content Article',
+					groupId: site.id,
+					name: segmentName,
+					source: 'DEFAULT',
+				});
 			});
 
-			await collectionsPage.addPersonalizedVariation(segmentName);
+			await test.step('Create a manual collection with a personalized variation', async () => {
+				await collectionsPage.goto(site.friendlyUrlPath);
 
-			await collectionsPage.selectAssets([webContentTitle]);
+				await collectionsPage.addNewManualCollection(collectionName);
 
-			await collectionsPage.deprioritizeVariation('Anyone');
-		});
+				await collectionsPage.configureSourceItemType({
+					itemSubtype: 'All Subtypes',
+					itemType: 'Web Content Article',
+				});
 
-		await test.step('Use the collection in an Asset Publisher', async () => {
-			await assetPublisherWidgetPage.addAssetPublisherPortlet(site);
+				await collectionsPage.addPersonalizedVariation(segmentName);
 
-			await widgetPagePage.clickOnAction(
-				'Asset Publisher',
-				'Configuration'
-			);
+				await collectionsPage.selectAssets([webContentTitle]);
 
-			await assetPublisherWidgetPage.selectCollection(collectionName);
-
-			await assetPublisherPage.saveConfiguration();
-
-			await assetPublisherPage.closeConfiguration();
-		});
-
-		await test.step('The web content article is shown in the Asset Publisher', async () => {
-			await expect(
-				page.getByText(webContentTitle).filter({visible: true})
-			).toBeVisible();
-		});
-	});
-
-	test('The same web content can be assigned to more than one variation', {tag: '@LPS-93726'}, async ({
-		apiHelpers,
-		assetPublisherPage,
-		assetPublisherWidgetPage,
-		collectionsPage,
-		page,
-		site,
-		widgetPagePage,
-	}) => {
-		const collectionName = getRandomString();
-		const segmentName = getRandomString();
-		const webContentTitle = getRandomString();
-
-		let publicURL: string;
-
-		await test.step('Create a web content article and a segment', async () => {
-			await apiHelpers.jsonWebServicesJournal.addWebContent({
-				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
-				groupId: site.id,
-				titleMap: {en_US: webContentTitle},
+				await collectionsPage.deprioritizeVariation('Anyone');
 			});
 
-			await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
-				criteria: {
-					criteria: {
-						user: {
-							conjunction: 'and',
-							filterString: `(screenName eq 'test')`,
-							typeValue: 'model',
-						},
-					},
-					filterString: {model: `(screenName eq 'test')`},
-				},
-				groupId: site.id,
-				name: segmentName,
-				source: 'DEFAULT',
-			});
-		});
-
-		await test.step('Add the web content to both the default and a personalized variation', async () => {
-			await collectionsPage.goto(site.friendlyUrlPath);
-
-			await collectionsPage.addNewManualCollection(collectionName);
-
-			await collectionsPage.configureSourceItemType({
-				itemSubtype: 'All Subtypes',
-				itemType: 'Web Content Article',
-			});
-
-			await collectionsPage.selectAssets([webContentTitle]);
-
-			await collectionsPage.addPersonalizedVariation(segmentName);
-
-			await collectionsPage.selectAssets([webContentTitle]);
-		});
-
-		await test.step('Use the collection in an Asset Publisher', async () => {
-			const layout =
+			await test.step('Use the collection in an Asset Publisher', async () => {
 				await assetPublisherWidgetPage.addAssetPublisherPortlet(site);
 
-			publicURL = `${new URL(page.url()).origin}/web${
-				site.friendlyUrlPath
-			}${layout.friendlyURL}`;
+				await widgetPagePage.clickOnAction(
+					'Asset Publisher',
+					'Configuration'
+				);
 
-			await widgetPagePage.clickOnAction(
-				'Asset Publisher',
-				'Configuration'
-			);
+				await assetPublisherWidgetPage.selectCollection(collectionName);
 
-			await assetPublisherWidgetPage.selectCollection(collectionName);
+				await assetPublisherPage.saveConfiguration();
 
-			await assetPublisherPage.saveConfiguration();
+				await assetPublisherPage.closeConfiguration();
+			});
 
-			await assetPublisherPage.closeConfiguration();
-		});
+			await test.step('The web content article is shown in the Asset Publisher', async () => {
+				await expect(
+					page.getByText(webContentTitle).filter({visible: true})
+				).toBeVisible();
+			});
+		}
+	);
 
-		await test.step('The content is shown in the Asset Publisher', async () => {
-			await page.goto(publicURL);
+	test(
+		'The same web content can be assigned to more than one variation',
+		{tag: '@LPS-93726'},
+		async ({
+			apiHelpers,
+			assetPublisherPage,
+			assetPublisherWidgetPage,
+			collectionsPage,
+			page,
+			site,
+			widgetPagePage,
+		}) => {
+			const collectionName = getRandomString();
+			const segmentName = getRandomString();
+			const webContentTitle = getRandomString();
 
-			await expect(
-				page.getByText(webContentTitle).filter({visible: true})
-			).toBeVisible();
-		});
-	});
+			let publicURL: string;
+
+			await test.step('Create a web content article and a segment', async () => {
+				await apiHelpers.jsonWebServicesJournal.addWebContent({
+					ddmStructureId:
+						await getBasicWebContentStructureId(apiHelpers),
+					groupId: site.id,
+					titleMap: {en_US: webContentTitle},
+				});
+
+				await apiHelpers.jsonWebServicesSegmentsEntry.addSegmentsEntry({
+					criteria: {
+						criteria: {
+							user: {
+								conjunction: 'and',
+								filterString: `(screenName eq 'test')`,
+								typeValue: 'model',
+							},
+						},
+						filterString: {model: `(screenName eq 'test')`},
+					},
+					groupId: site.id,
+					name: segmentName,
+					source: 'DEFAULT',
+				});
+			});
+
+			await test.step('Add the web content to both the default and a personalized variation', async () => {
+				await collectionsPage.goto(site.friendlyUrlPath);
+
+				await collectionsPage.addNewManualCollection(collectionName);
+
+				await collectionsPage.configureSourceItemType({
+					itemSubtype: 'All Subtypes',
+					itemType: 'Web Content Article',
+				});
+
+				await collectionsPage.selectAssets([webContentTitle]);
+
+				await collectionsPage.addPersonalizedVariation(segmentName);
+
+				await collectionsPage.selectAssets([webContentTitle]);
+			});
+
+			await test.step('Use the collection in an Asset Publisher', async () => {
+				const layout =
+					await assetPublisherWidgetPage.addAssetPublisherPortlet(
+						site
+					);
+
+				publicURL = `${new URL(page.url()).origin}/web${
+					site.friendlyUrlPath
+				}${layout.friendlyURL}`;
+
+				await widgetPagePage.clickOnAction(
+					'Asset Publisher',
+					'Configuration'
+				);
+
+				await assetPublisherWidgetPage.selectCollection(collectionName);
+
+				await assetPublisherPage.saveConfiguration();
+
+				await assetPublisherPage.closeConfiguration();
+			});
+
+			await test.step('The content is shown in the Asset Publisher', async () => {
+				await page.goto(publicURL);
+
+				await expect(
+					page.getByText(webContentTitle).filter({visible: true})
+				).toBeVisible();
+			});
+		}
+	);
 });
