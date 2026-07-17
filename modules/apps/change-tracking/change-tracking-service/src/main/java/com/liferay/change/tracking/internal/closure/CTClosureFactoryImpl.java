@@ -308,9 +308,7 @@ public class CTClosureFactoryImpl implements CTClosureFactory {
 					Node childNode = new Node(
 						childClassNameId, resultSet.getLong(2));
 
-					if (!nodes.contains(parentNode)) {
-						nodes.add(parentNode);
-
+					if (nodes.add(parentNode)) {
 						if (newParentPrimaryKeys == null) {
 							newParentPrimaryKeys = new ArrayList<>();
 						}

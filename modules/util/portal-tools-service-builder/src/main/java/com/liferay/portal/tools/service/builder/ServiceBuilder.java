@@ -4827,11 +4827,7 @@ public class ServiceBuilder {
 					sb.append(sequenceName);
 					sb.append(";");
 
-					String sequenceSQL = sb.toString();
-
-					if (!sequenceSQLs.contains(sequenceSQL)) {
-						sequenceSQLs.add(sequenceSQL);
-					}
+					sequenceSQLs.add(sb.toString());
 				}
 			}
 		}

@@ -275,9 +275,7 @@ public class CORCommerceOrderValidator implements CommerceOrderValidator {
 		for (COREntry corEntry : corEntries) {
 			String type = corEntry.getType();
 
-			if (!validatedRuleType.contains(type)) {
-				validatedRuleType.add(type);
-
+			if (validatedRuleType.add(type)) {
 				COREntryType corEntryType =
 					_corEntryTypeRegistry.getCOREntryType(type);
 

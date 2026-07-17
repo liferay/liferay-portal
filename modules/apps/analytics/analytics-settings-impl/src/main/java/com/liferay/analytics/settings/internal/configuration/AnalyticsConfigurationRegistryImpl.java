@@ -979,9 +979,7 @@ public class AnalyticsConfigurationRegistryImpl
 					AnalyticsConfiguration.class, dictionary));
 		}
 
-		if (!_initializedCompanyIds.contains(companyId)) {
-			_initializedCompanyIds.add(companyId);
-
+		if (_initializedCompanyIds.add(companyId)) {
 			if (Validator.isNull(dictionary.get("previousToken"))) {
 				_activatedCompanyIds.remove(companyId);
 			}

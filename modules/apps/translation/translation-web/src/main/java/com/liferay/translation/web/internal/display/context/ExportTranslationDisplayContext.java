@@ -188,12 +188,7 @@ public class ExportTranslationDisplayContext {
 			availableSourceLocales.add(LocaleUtil.fromLanguageId(languageId));
 		}
 
-		if (!availableSourceLocales.contains(
-				PortalUtil.getSiteDefaultLocale(_groupId))) {
-
-			availableSourceLocales.add(
-				PortalUtil.getSiteDefaultLocale(_groupId));
-		}
+		availableSourceLocales.add(PortalUtil.getSiteDefaultLocale(_groupId));
 
 		return availableSourceLocales;
 	}

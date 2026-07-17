@@ -24,9 +24,7 @@ public class ServletRegistrationImpl implements ServletRegistration.Dynamic {
 	@Override
 	public Set<String> addMapping(String... urlPatterns) {
 		for (String urlPattern : urlPatterns) {
-			if (!_mappings.contains(urlPattern)) {
-				_mappings.add(urlPattern);
-			}
+			_mappings.add(urlPattern);
 		}
 
 		return new HashSet<>();

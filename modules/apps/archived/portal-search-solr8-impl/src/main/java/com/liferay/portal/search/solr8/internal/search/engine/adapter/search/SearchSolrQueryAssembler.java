@@ -201,9 +201,7 @@ public class SearchSolrQueryAssembler {
 		Set<String> selectedFieldNames = SetUtil.fromArray(
 			searchSearchRequest.getSelectedFieldNames());
 
-		if (!selectedFieldNames.contains(Field.UID)) {
-			selectedFieldNames.add(Field.UID);
-		}
+		selectedFieldNames.add(Field.UID);
 
 		solrQuery.setFields(selectedFieldNames.toArray(new String[0]));
 	}
