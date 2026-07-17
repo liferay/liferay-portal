@@ -110,9 +110,8 @@ public class FileWatcher implements Closeable {
 					return;
 				}
 
-				List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
-
 				List<Future<?>> futures = new ArrayList<>();
+				List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 
 				for (Path path : _paths) {
 					for (WatchEvent<?> watchEvent : watchEvents) {

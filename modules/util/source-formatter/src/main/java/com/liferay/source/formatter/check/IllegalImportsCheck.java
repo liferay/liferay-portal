@@ -186,8 +186,8 @@ public class IllegalImportsCheck extends BaseFileCheck {
 
 				addMessage(
 					fileName,
-					"Do not use java.util.concurrent.CompletableFuture, use " +
-						"DefaultNoticeableFuture instead");
+					"Use DefaultNoticeableFuture instead of " +
+						"java.util.concurrent.CompletableFuture");
 			}
 
 			if (isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
