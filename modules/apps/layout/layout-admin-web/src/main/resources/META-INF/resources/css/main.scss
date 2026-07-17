@@ -1,3 +1,4 @@
+@import 'atlas-custom-properties/_variables';
 @import 'atlas-variables';
 
 @import 'LayoutPageTemplateEntryCard';
@@ -6,6 +7,18 @@
 
 @import '../js/layout/look_and_feel/GlobalCSSCETsConfiguration';
 @import '../js/layout/look_and_feel/GlobalJSCETsConfiguration';
+
+.style-book-selector-card {
+	.aspect-ratio {
+		margin-left: 0;
+		margin-right: 0;
+		top: 0;
+	}
+
+	.card-type-asset-icon {
+		color: $purple;
+	}
+}
 
 .portlet-layouts-admin {
 	.card-page-item-directory {
