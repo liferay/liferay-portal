@@ -100,18 +100,16 @@ public class PortalInstanceResourceTest
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					PortalInstancePool.getDefaultCompanyId())) {
 
-			Company defaultCompany = _companyLocalService.getCompany(
+			Company company = _companyLocalService.getCompany(
 				PortalInstancePool.getDefaultCompanyId());
 
-			User defaultCompanyAdminUser = UserTestUtil.getAdminUser(
-				defaultCompany.getCompanyId());
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
 
 			portalInstanceResource = PortalInstanceResource.builder(
 			).authentication(
-				defaultCompanyAdminUser.getEmailAddress(),
-				PropsValues.DEFAULT_ADMIN_PASSWORD
+				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 			).endpoint(
-				defaultCompany.getVirtualHostname(),
+				company.getVirtualHostname(),
 				PortalUtil.getPortalServerPort(false), "http"
 			).locale(
 				LocaleUtil.getDefault()
