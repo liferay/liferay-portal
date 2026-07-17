@@ -23,13 +23,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +34,7 @@ import org.json.JSONObject;
 /**
  * @author Kenji Heigel
  */
-public class BuildHistoryReport {
+public class BuildHistoryReport extends BaseReport {
 
 	public static BuildHistoryReport newAggregateReport(
 		long durationDays, File outputDir, String startDateString) {
@@ -287,45 +284,7 @@ public class BuildHistoryReport {
 	}
 
 	public BuildHistoryReport(File outputDir) {
-		_outputDir = outputDir;
-	}
-
-	public void addFile(String fileContent, String fileName) {
-		_fileMap.put(new File(_outputDir, fileName), fileContent);
-	}
-
-	public void addFilesFromResource(
-		String resourceDirPath, String... fileNames) {
-
-		for (String fileName : fileNames) {
-			try {
-				addFile(
-					JenkinsResultsParserUtil.getResourceFileContent(
-						resourceDirPath + fileName),
-					fileName);
-			}
-			catch (IOException ioException) {
-				System.out.println(
-					"Unable to get file content from resource: " +
-						resourceDirPath + fileName);
-			}
-		}
-	}
-
-	public void write() throws IOException {
-		FileUtils.deleteDirectory(_outputDir);
-
-		for (Map.Entry<File, String> entry : _fileMap.entrySet()) {
-			File file = entry.getKey();
-
-			String filePath = file.getCanonicalPath();
-
-			if (filePath.contains(".html")) {
-				System.out.println("Report created at: file://" + filePath);
-			}
-
-			JenkinsResultsParserUtil.write(entry.getKey(), entry.getValue());
-		}
+		super(outputDir);
 	}
 
 	private static String _getGeneratedDateJavaScriptVariable() {
@@ -490,8 +449,5 @@ public class BuildHistoryReport {
 				"(|-downstream)\\(master\\)");
 	private static final Pattern _portalReleaseJobNamePattern = Pattern.compile(
 		"test-portal(|-fixpack|-hotfix)-release(|-downstream)");
-
-	private final Map<File, String> _fileMap = new HashMap<>();
-	private final File _outputDir;
 
 }
