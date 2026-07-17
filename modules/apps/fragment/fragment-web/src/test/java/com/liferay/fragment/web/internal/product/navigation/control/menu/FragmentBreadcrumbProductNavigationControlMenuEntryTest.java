@@ -64,9 +64,9 @@ public class FragmentBreadcrumbProductNavigationControlMenuEntryTest {
 
 	@Test
 	public void testIsShow() throws Exception {
+		_testIsShowInFragmentPortletAndDesignLibraryScope();
 		_testIsShowWhenNotInFragmentPortlet();
 		_testIsShowWhenScopeIsNotDesignLibrary();
-		_testIsShowInFragmentPortletAndDesignLibraryScope();
 	}
 
 	private void _testIsShowInFragmentPortletAndDesignLibraryScope()
@@ -95,6 +95,9 @@ public class FragmentBreadcrumbProductNavigationControlMenuEntryTest {
 	}
 
 	private void _testIsShowWhenNotInFragmentPortlet() throws Exception {
+		_mockHttpServletRequest.removeAttribute(
+			ProductNavigationControlMenuWebKeys.HIDE_PORTLET_HEADER);
+
 		Mockito.when(
 			_portletDisplay.getPortletName()
 		).thenReturn(
@@ -117,6 +120,9 @@ public class FragmentBreadcrumbProductNavigationControlMenuEntryTest {
 	}
 
 	private void _testIsShowWhenScopeIsNotDesignLibrary() throws Exception {
+		_mockHttpServletRequest.removeAttribute(
+			ProductNavigationControlMenuWebKeys.HIDE_PORTLET_HEADER);
+
 		Mockito.when(
 			_portletDisplay.getPortletName()
 		).thenReturn(
