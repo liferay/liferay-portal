@@ -287,7 +287,8 @@ public class LayoutLookAndFeelDisplayContext {
 					_themeDisplay.getPortalURL(),
 					"/o/headless-admin-site/v1.0/sites/",
 					group.getExternalReferenceCode(), "/page-specifications/",
-					selLayout.getExternalReferenceCode(), "/style-books");
+					selLayout.getExternalReferenceCode(),
+					"/style-books?nestedFields=scope.label");
 			}
 		).build();
 	}

@@ -176,8 +176,6 @@ export default function StyleBookConfiguration({
 		}
 	};
 
-	const styleBookApiURLWithNestedFields = `${styleBooksApiURL}${styleBooksApiURL.includes('?') ? '&' : '?'}nestedFields=scope.label`;
-
 	return (
 		<>
 			<input
@@ -226,7 +224,7 @@ export default function StyleBookConfiguration({
 
 			{open && Liferay.FeatureFlags['LPD-57283'] && (
 				<ItemSelectorModal<StyleBook>
-					apiURL={styleBookApiURLWithNestedFields}
+					apiURL={styleBooksApiURL}
 					fdsProps={{
 						customRenderers: {
 							tableCell: [
