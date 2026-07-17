@@ -123,6 +123,15 @@ public class JenkinsResultsParserUtilTest
 	@Test
 	public void testGetJenkinsBuildQueueId() {
 		testEquals(
+			"0",
+			String.valueOf(
+				JenkinsResultsParserUtil.getJenkinsBuildQueueId(
+					"https://test-1-1.liferay.com/job/test-job")));
+		testEquals(
+			"0",
+			String.valueOf(
+				JenkinsResultsParserUtil.getJenkinsBuildQueueId(null)));
+		testEquals(
 			"12345",
 			String.valueOf(
 				JenkinsResultsParserUtil.getJenkinsBuildQueueId(
@@ -132,15 +141,6 @@ public class JenkinsResultsParserUtilTest
 			String.valueOf(
 				JenkinsResultsParserUtil.getJenkinsBuildQueueId(
 					"http://test-1-1/queue/item/678/")));
-		testEquals(
-			"0",
-			String.valueOf(
-				JenkinsResultsParserUtil.getJenkinsBuildQueueId(null)));
-		testEquals(
-			"0",
-			String.valueOf(
-				JenkinsResultsParserUtil.getJenkinsBuildQueueId(
-					"https://test-1-1.liferay.com/job/test-job")));
 	}
 
 	@Test
