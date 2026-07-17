@@ -91,6 +91,17 @@ export default function RuleRow({
 		dragPreviewRef(getEmptyImage(), {captureDraggingState: true});
 	}, [dragPreviewRef]);
 
+	useEffect(() => {
+		dropItemRef.current
+			?.querySelectorAll<HTMLElement>('[role="combobox"]')
+			.forEach((element) =>
+				element.setAttribute(
+					'tabindex',
+					String(navigationProps?.tabIndex ?? 0)
+				)
+			);
+	});
+
 	const [{isOver}, dropRef] = useDrop<RowDragItem, void, {isOver: boolean}>({
 		accept: [DRAG_TYPES.ATTRIBUTE, DRAG_TYPES.RULE],
 		canDrop: (item) => !('id' in item) || item.id !== rule.id,
@@ -232,6 +243,7 @@ export default function RuleRow({
 					inputType={inputType}
 					onChange={(value) => onChange({...rule, value})}
 					options={options}
+					tabIndex={navigationProps?.tabIndex ?? 0}
 					type={type}
 					value={rule.value}
 				/>
@@ -245,6 +257,7 @@ export default function RuleRow({
 					onClick={onDuplicate}
 					size="sm"
 					symbol="copy"
+					tabIndex={navigationProps?.tabIndex ?? 0}
 					title={Liferay.Language.get('duplicate')}
 				/>
 
@@ -255,6 +268,7 @@ export default function RuleRow({
 					onClick={onDelete}
 					size="sm"
 					symbol="times-circle"
+					tabIndex={navigationProps?.tabIndex ?? 0}
 					title={Liferay.Language.get('delete')}
 				/>
 			</div>
@@ -266,6 +280,7 @@ interface RuleValueFieldProps {
 	inputType: AudiencesCriteria['inputType'];
 	onChange: (value: string) => void;
 	options: AudiencesCriteria['options'];
+	tabIndex: number;
 	type: AudiencesCriteria['type'];
 	value: string;
 }
@@ -274,6 +289,7 @@ function RuleValueField({
 	inputType,
 	onChange,
 	options,
+	tabIndex,
 	type,
 	value,
 }: RuleValueFieldProps) {
@@ -297,6 +313,7 @@ function RuleValueField({
 			className="form-control-sm text-3"
 			onChange={(event) => onChange(event.target.value)}
 			placeholder={inputType === 'date' ? 'YYYY-MM-DD' : undefined}
+			tabIndex={tabIndex}
 			type={type === 'number' ? 'number' : 'text'}
 			value={value}
 		/>
@@ -356,6 +373,7 @@ function ErrorRuleRow({
 				onClick={onDelete}
 				size="sm"
 				symbol="times-circle"
+				tabIndex={navigationProps?.tabIndex ?? 0}
 				title={Liferay.Language.get('delete')}
 			/>
 		</div>
