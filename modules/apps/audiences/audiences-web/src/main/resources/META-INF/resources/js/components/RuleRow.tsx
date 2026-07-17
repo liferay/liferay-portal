@@ -30,7 +30,6 @@ interface IProps {
 	canGroup: boolean;
 	iconColor: string;
 	index: number;
-	movable: boolean;
 	navigationProps?: NavigationItemProps;
 	onAddRule: (audiencesCriteria: AudiencesCriteria, index?: number) => void;
 	onChange: (rule: Rule) => void;
@@ -47,7 +46,6 @@ export default function RuleRow({
 	canGroup,
 	iconColor,
 	index,
-	movable,
 	navigationProps,
 	onAddRule,
 	onChange,
@@ -66,10 +64,10 @@ export default function RuleRow({
 	const movementTarget = useMovementTarget();
 	const setMovementSource = useSetMovementSource();
 
-	const isMovementSource = movable && movementSource?.ruleId === rule.id;
+	const isMovementSource = movementSource?.ruleId === rule.id;
 
 	const isMovementTarget =
-		movable && Boolean(movementSource) && movementTarget.index === index;
+		Boolean(movementSource) && movementTarget.nodeId === rule.id;
 
 	const isMovementTargetBottomPosition =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
@@ -146,6 +144,7 @@ export default function RuleRow({
 					isMovementTargetTopPosition
 				}
 				navigationProps={navigationProps}
+				nodeId={rule.id}
 				onDelete={onDelete}
 				rowRef={setRowRef}
 			/>
@@ -175,6 +174,7 @@ export default function RuleRow({
 						isMovementTargetTopPosition,
 				}
 			)}
+			data-keyboard-movement-id={rule.id}
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={setRowRef}
@@ -188,7 +188,7 @@ export default function RuleRow({
 					className="audience-builder-grip text-secondary"
 					displayType="secondary"
 					onClick={(event) => {
-						if (movable && event.detail === 0) {
+						if (event.detail === 0) {
 							setMovementSource({
 								icon: audiencesCriteria.icon,
 								name: label,
@@ -303,6 +303,7 @@ interface ErrorRuleRowProps {
 	dropBottom: boolean;
 	dropTop: boolean;
 	navigationProps?: NavigationItemProps;
+	nodeId: string;
 	onDelete: () => void;
 	rowRef: (node: HTMLDivElement | null) => void;
 }
@@ -311,6 +312,7 @@ function ErrorRuleRow({
 	dropBottom,
 	dropTop,
 	navigationProps,
+	nodeId,
 	onDelete,
 	rowRef,
 }: ErrorRuleRowProps) {
@@ -326,6 +328,7 @@ function ErrorRuleRow({
 					'audience-builder-rule--drop-top': dropTop,
 				}
 			)}
+			data-keyboard-movement-id={nodeId}
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={rowRef}

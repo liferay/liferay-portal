@@ -17,7 +17,7 @@ export interface MovementSource {
 }
 
 export interface MovementTarget {
-	index: number | null;
+	nodeId: string | null;
 	position: DropPosition | null;
 }
 
@@ -30,7 +30,7 @@ interface KeyboardMovementContextValue {
 }
 
 const INITIAL_TARGET: MovementTarget = {
-	index: null,
+	nodeId: null,
 	position: null,
 };
 

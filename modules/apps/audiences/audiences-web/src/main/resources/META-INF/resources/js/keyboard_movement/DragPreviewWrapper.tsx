@@ -13,13 +13,13 @@ export default function DragPreviewWrapper() {
 	const target = useMovementTarget();
 
 	const alignment = useMemo(() => {
-		if (!source || target.index === null || !target.position) {
+		if (!source || !target.nodeId || !target.position) {
 			return undefined;
 		}
 
-		const element = document.querySelectorAll<HTMLElement>(
-			'.audience-builder-rule'
-		)[target.index];
+		const element = document.querySelector<HTMLElement>(
+			`[data-keyboard-movement-id="${target.nodeId}"]`
+		);
 
 		if (!element) {
 			return undefined;

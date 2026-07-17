@@ -16,7 +16,8 @@ import {
 	HOME_KEY_CODE,
 } from '../constants/keyboardCodes';
 import {Action} from '../reducer';
-import {CriteriaNode} from '../types';
+import {Group} from '../types';
+import {MoveTarget, getMoveTargets} from '../util/getMoveTargets';
 import {
 	MovementSource,
 	MovementTarget,
@@ -26,35 +27,17 @@ import {
 	useSetMovementText,
 } from './KeyboardMovementContext';
 
-const ACTION_TYPES = {
-	add: 'add',
-	move: 'move',
-} as const;
-
-const DIRECTIONS = {
-	down: 'down',
-	up: 'up',
-} as const;
-
-type Direction = keyof typeof DIRECTIONS;
-
-export interface MovementItem {
-	icon: string;
-	id: string;
-	name: string;
-}
-
 interface Props {
 	dispatch: Dispatch<Action>;
-	items: MovementItem[];
-	nodes: CriteriaNode[];
+	namesById: Record<string, string>;
+	root: Group;
 	source: MovementSource;
 }
 
 export default function KeyboardMovementManager({
 	dispatch,
-	items,
-	nodes,
+	namesById,
+	root,
 	source,
 }: Props) {
 	const disableMovement = useDisableKeyboardMovement();
@@ -62,12 +45,28 @@ export default function KeyboardMovementManager({
 	const setText = useSetMovementText();
 	const target = useMovementTarget();
 
+	const targets = getMoveTargets(root);
+
+	const currentIndex = targets.findIndex(
+		(moveTarget) =>
+			moveTarget.nodeId === target.nodeId &&
+			moveTarget.position === target.position
+	);
+
+	const sourceIndex = source.ruleId
+		? targets.findIndex(
+				(moveTarget) =>
+					moveTarget.nodeId === source.ruleId &&
+					moveTarget.position === DROP_POSITIONS.top
+			)
+		: -1;
+
 	useEffect(() => {
-		if (target.index !== null) {
+		if (target.nodeId !== null) {
 			return;
 		}
 
-		if (!items.length) {
+		if (!targets.length) {
 			if (!source.ruleId && source.audiencesCriteria) {
 				dispatch({
 					audiencesCriteria: source.audiencesCriteria,
@@ -83,7 +82,7 @@ export default function KeyboardMovementManager({
 			return;
 		}
 
-		setTarget(getInitialTarget(source, nodes));
+		setTarget(toMovementTarget(getInitialTarget(targets, sourceIndex)));
 
 		setText(
 			Liferay.Language.get(
@@ -93,54 +92,30 @@ export default function KeyboardMovementManager({
 	}, [
 		disableMovement,
 		dispatch,
-		items,
-		nodes,
 		setTarget,
 		setText,
 		source,
+		sourceIndex,
 		target,
+		targets,
 	]);
 
 	useEffect(() => {
 		const executeAction = () => {
-			if (target.index === null || !target.position) {
+			const moveTarget = targets[currentIndex];
+
+			if (!moveTarget) {
 				return;
 			}
 
-			const insertionIndex =
-				target.position === DROP_POSITIONS.bottom
-					? target.index + 1
-					: target.index;
-
-			const actionType = source.ruleId
-				? ACTION_TYPES.move
-				: ACTION_TYPES.add;
-
-			if (actionType === ACTION_TYPES.add) {
-				if (!source.audiencesCriteria) {
-					return;
-				}
-
-				dispatch({
-					audiencesCriteria: source.audiencesCriteria,
-					index: insertionIndex,
-					type: 'ADD_RULE',
-				});
-			}
-			else {
-				const sourceIndex = nodes.findIndex(
-					(node) => node.id === source.ruleId
-				);
-
-				if (sourceIndex === -1) {
-					disableMovement();
-
-					return;
-				}
+			if (source.ruleId) {
+				const sourceTarget = targets[sourceIndex];
 
 				if (
-					insertionIndex === sourceIndex ||
-					insertionIndex === sourceIndex + 1
+					sourceTarget &&
+					moveTarget.groupId === sourceTarget.groupId &&
+					(moveTarget.index === sourceTarget.index ||
+						moveTarget.index === sourceTarget.index + 1)
 				) {
 					setText('');
 
@@ -149,43 +124,46 @@ export default function KeyboardMovementManager({
 					return;
 				}
 
-				const nextNodes = [...nodes];
-
-				const [movedNode] = nextNodes.splice(sourceIndex, 1);
-
-				nextNodes.splice(
-					insertionIndex > sourceIndex
-						? insertionIndex - 1
-						: insertionIndex,
-					0,
-					movedNode
-				);
-
-				dispatch({items: nextNodes, type: 'REORDER_RULES'});
+				dispatch({
+					nodeId: source.ruleId,
+					targetGroupId: moveTarget.groupId,
+					targetIndex: moveTarget.index,
+					type: 'MOVE_RULE',
+				});
+			}
+			else if (source.audiencesCriteria) {
+				dispatch({
+					audiencesCriteria: source.audiencesCriteria,
+					groupPath: moveTarget.groupPath,
+					index: moveTarget.index,
+					type: 'ADD_RULE',
+				});
 			}
 
 			setText(
 				sub(Liferay.Language.get('x-placed-on-x-of-x'), [
 					source.name,
-					target.position,
-					items[target.index].name,
+					moveTarget.position,
+					namesById[moveTarget.nodeId] ?? '',
 				])
 			);
 
 			disableMovement();
 		};
 
-		const moveTarget = (nextTarget: MovementTarget | null) => {
-			if (!nextTarget || nextTarget.index === null) {
+		const moveTo = (nextIndex: number) => {
+			const moveTarget = targets[nextIndex];
+
+			if (!moveTarget) {
 				return;
 			}
 
-			setTarget(nextTarget);
+			setTarget(toMovementTarget(moveTarget));
 
 			setText(
 				sub(Liferay.Language.get('targeting-x-of-x'), [
-					nextTarget.position,
-					items[nextTarget.index].name,
+					moveTarget.position,
+					namesById[moveTarget.nodeId] ?? '',
 				])
 			);
 		};
@@ -195,18 +173,13 @@ export default function KeyboardMovementManager({
 			event.stopPropagation();
 
 			if (event.code === ARROW_DOWN_KEY_CODE) {
-				moveTarget(
-					getNextTarget(target, DIRECTIONS.down, items.length)
-				);
+				moveTo(currentIndex + 1);
 			}
 			else if (event.code === ARROW_UP_KEY_CODE) {
-				moveTarget(getNextTarget(target, DIRECTIONS.up, items.length));
+				moveTo(currentIndex - 1);
 			}
 			else if (event.code === END_KEY_CODE) {
-				moveTarget({
-					index: items.length - 1,
-					position: DROP_POSITIONS.bottom,
-				});
+				moveTo(targets.length - 1);
 			}
 			else if (event.code === ENTER_KEY_CODE) {
 				executeAction();
@@ -217,7 +190,7 @@ export default function KeyboardMovementManager({
 				disableMovement();
 			}
 			else if (event.code === HOME_KEY_CODE) {
-				moveTarget({index: 0, position: DROP_POSITIONS.top});
+				moveTo(0);
 			}
 		};
 
@@ -229,50 +202,17 @@ export default function KeyboardMovementManager({
 	return null;
 }
 
-export function getInitialTarget(
-	source: MovementSource,
-	nodes: CriteriaNode[]
-): MovementTarget {
-	if (source.ruleId) {
-		return {
-			index: nodes.findIndex((node) => node.id === source.ruleId),
-			position: DROP_POSITIONS.bottom,
-		};
+function getInitialTarget(
+	targets: MoveTarget[],
+	sourceIndex: number
+): MoveTarget {
+	if (sourceIndex !== -1) {
+		return targets[sourceIndex + 1] ?? targets[sourceIndex];
 	}
 
-	return {index: nodes.length - 1, position: DROP_POSITIONS.bottom};
+	return targets[targets.length - 1];
 }
 
-export function getNextTarget(
-	target: MovementTarget,
-	direction: Direction,
-	itemsCount: number
-): MovementTarget | null {
-	const {index, position} = target;
-
-	if (index === null || !position) {
-		return null;
-	}
-
-	if (direction === DIRECTIONS.down) {
-		if (position === DROP_POSITIONS.top) {
-			return {index, position: DROP_POSITIONS.bottom};
-		}
-
-		if (index < itemsCount - 1) {
-			return {index: index + 1, position: DROP_POSITIONS.bottom};
-		}
-
-		return null;
-	}
-
-	if (position === DROP_POSITIONS.bottom) {
-		if (index === 0) {
-			return {index: 0, position: DROP_POSITIONS.top};
-		}
-
-		return {index: index - 1, position: DROP_POSITIONS.bottom};
-	}
-
-	return null;
+function toMovementTarget(moveTarget: MoveTarget): MovementTarget {
+	return {nodeId: moveTarget.nodeId, position: moveTarget.position};
 }
