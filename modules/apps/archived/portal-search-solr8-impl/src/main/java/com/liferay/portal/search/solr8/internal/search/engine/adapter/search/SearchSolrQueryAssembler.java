@@ -231,11 +231,9 @@ public class SearchSolrQueryAssembler {
 
 			String sortFieldName = getSortFieldName(sort, "score");
 
-			if (sortFieldNames.contains(sortFieldName)) {
+			if (!sortFieldNames.add(sortFieldName)) {
 				continue;
 			}
-
-			sortFieldNames.add(sortFieldName);
 
 			solrQuery.addSort(getSortClause(sort, sortFieldName));
 		}
