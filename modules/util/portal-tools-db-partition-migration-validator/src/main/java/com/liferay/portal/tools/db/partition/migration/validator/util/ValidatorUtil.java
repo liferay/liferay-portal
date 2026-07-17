@@ -142,10 +142,8 @@ public class ValidatorUtil {
 			targetLiferayDatabase.getTableNames());
 
 		for (String sourcePartitionedTableName : sourcePartitionedTableNames) {
-			if (targetPartitionedTableNames.contains(
+			if (targetPartitionedTableNames.remove(
 					sourcePartitionedTableName)) {
-
-				targetPartitionedTableNames.remove(sourcePartitionedTableName);
 
 				continue;
 			}

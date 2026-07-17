@@ -6951,10 +6951,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupRoles = new ArrayList<>(userGroupRoles);
 
 		for (UserGroupRole userGroupRole : previousUserGroupRoles) {
-			if (userGroupRoles.contains(userGroupRole)) {
-				userGroupRoles.remove(userGroupRole);
-			}
-			else {
+			if (!userGroupRoles.remove(userGroupRole)) {
 				_userGroupRoleLocalService.deleteUserGroupRole(userGroupRole);
 			}
 		}

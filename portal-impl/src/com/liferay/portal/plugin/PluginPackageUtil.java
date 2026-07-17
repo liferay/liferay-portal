@@ -526,9 +526,7 @@ public class PluginPackageUtil {
 		List<String> types = _readList(
 			pluginPackageElement.element("types"), "type");
 
-		if (types.contains("layout-template")) {
-			types.remove("layout-template");
-
+		if (types.remove("layout-template")) {
 			types.add(Plugin.TYPE_LAYOUT_TEMPLATE);
 		}
 

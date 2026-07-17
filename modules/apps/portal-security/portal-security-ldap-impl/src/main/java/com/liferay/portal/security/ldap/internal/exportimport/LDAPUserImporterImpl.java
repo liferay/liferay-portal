@@ -2032,10 +2032,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			if (userGroup.isAddedByLDAPImport()) {
 				long userGroupId = userGroup.getUserGroupId();
 
-				if (userGroupIds.contains(userGroupId)) {
-					userGroupIds.remove(userGroupId);
-				}
-				else {
+				if (!userGroupIds.remove(userGroupId)) {
 					ExpandoColumn expandoColumn = _getOrAddExpandoColumn(
 						userGroup.getCompanyId());
 

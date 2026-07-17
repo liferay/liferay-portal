@@ -545,9 +545,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 							"defaultSiteRoleIds"),
 						0L));
 
-				if (defaultSiteRoleIds.contains(role.getRoleId())) {
-					defaultSiteRoleIds.remove(role.getRoleId());
-
+				if (defaultSiteRoleIds.remove(role.getRoleId())) {
 					typeSettingsUnicodeProperties.setProperty(
 						"defaultSiteRoleIds",
 						ListUtil.toString(

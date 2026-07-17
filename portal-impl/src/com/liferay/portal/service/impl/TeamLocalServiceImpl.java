@@ -117,9 +117,7 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 						"defaultTeamIds"),
 					0L));
 
-			if (defaultTeamIds.contains(team.getTeamId())) {
-				defaultTeamIds.remove(team.getTeamId());
-
+			if (defaultTeamIds.remove(team.getTeamId())) {
 				typeSettingsUnicodeUnicodeProperties.setProperty(
 					"defaultTeamIds",
 					ListUtil.toString(defaultTeamIds, StringPool.BLANK));

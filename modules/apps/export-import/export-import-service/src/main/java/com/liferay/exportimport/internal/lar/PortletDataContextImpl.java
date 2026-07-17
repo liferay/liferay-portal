@@ -413,9 +413,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 				return referenceElement;
 			}
 
-			if (!_missingReferences.contains(referenceKey)) {
-				_missingReferences.add(referenceKey);
-
+			if (_missingReferences.add(referenceKey)) {
 				_addReferenceElement(
 					referrerClassedModel, null, classedModel, className,
 					binPath, referenceType, true);
@@ -552,11 +550,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 	@Override
 	public void cleanUpMissingReferences(ClassedModel classedModel) {
-		String referenceKey = _getReferenceKey(classedModel);
-
-		if (_missingReferences.contains(referenceKey)) {
-			_missingReferences.remove(referenceKey);
-
+		if (_missingReferences.remove(_getReferenceKey(classedModel))) {
 			Element missingReferenceElement = getMissingReferenceElement(
 				classedModel);
 
