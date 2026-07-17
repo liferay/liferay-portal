@@ -55,11 +55,12 @@ public class OSBAccountEntryUtilTest {
 
 		Assert.assertEquals(
 			offeringEntries.toString(), 1, offeringEntries.size());
+
+		OSBOfferingEntry rebuiltOSBOfferingEntry = offeringEntries.get(0);
+
 		Assert.assertEquals(
 			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID,
-			offeringEntries.get(
-				0
-			).getProductEntryId());
+			rebuiltOSBOfferingEntry.getProductEntryId());
 	}
 
 	@Test
