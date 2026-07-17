@@ -64,6 +64,10 @@
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column arrayable-operator="OR" name="source" />
 		</finder>
+		<finder name="C_SRC" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column arrayable-operator="OR" name="source" />
+		</finder>
 		<finder name="G_A_SRC" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="active" />
