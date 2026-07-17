@@ -59,30 +59,31 @@ public class FormRelationshipLayoutStructureItemImporter
 				_getLocalizedValuesJSONObject("buttonLabel", definitionMap));
 		}
 
-		if (definitionMap.containsKey("contentType")) {
+		Object contentType = definitionMap.get("contentType");
+
+		if (contentType != null) {
 			formRelationshipStyledLayoutStructureItem.setContentType(
-				String.valueOf(definitionMap.get("contentType")));
+				String.valueOf(contentType));
 		}
 
-		if (definitionMap.containsKey("cssClasses")) {
-			List<String> cssClasses = (List<String>)definitionMap.get(
-				"cssClasses");
-
+		if (definitionMap.get("cssClasses") instanceof List<?> cssClasses) {
 			formRelationshipStyledLayoutStructureItem.setCssClasses(
-				new HashSet<>(cssClasses));
+				new HashSet<>((List<String>)cssClasses));
 		}
 
-		if (definitionMap.containsKey("customCSS")) {
+		Object customCSS = definitionMap.get("customCSS");
+
+		if (customCSS != null) {
 			formRelationshipStyledLayoutStructureItem.setCustomCSS(
-				String.valueOf(definitionMap.get("customCSS")));
+				String.valueOf(customCSS));
 		}
 
-		if (definitionMap.containsKey("customCSSViewports")) {
-			List<Map<String, Object>> customCSSViewports =
-				(List<Map<String, Object>>)definitionMap.get(
-					"customCSSViewports");
+		if (definitionMap.get("customCSSViewports") instanceof
+				List<?> customCSSViewports) {
 
-			for (Map<String, Object> customCSSViewport : customCSSViewports) {
+			for (Map<String, Object> customCSSViewport :
+					(List<Map<String, Object>>)customCSSViewports) {
+
 				formRelationshipStyledLayoutStructureItem.setCustomCSSViewport(
 					(String)customCSSViewport.get("id"),
 					(String)customCSSViewport.get("customCSS"));
@@ -102,12 +103,12 @@ public class FormRelationshipLayoutStructureItemImporter
 				jsonObject);
 		}
 
-		if (definitionMap.containsKey("fragmentViewports")) {
-			List<Map<String, Object>> fragmentViewports =
-				(List<Map<String, Object>>)definitionMap.get(
-					"fragmentViewports");
+		if (definitionMap.get("fragmentViewports") instanceof
+				List<?> fragmentViewports) {
 
-			for (Map<String, Object> fragmentViewport : fragmentViewports) {
+			for (Map<String, Object> fragmentViewport :
+					(List<Map<String, Object>>)fragmentViewports) {
+
 				JSONObject jsonObject = JSONUtil.put(
 					(String)fragmentViewport.get("id"),
 					toFragmentViewportStylesJSONObject(fragmentViewport));
@@ -117,14 +118,18 @@ public class FormRelationshipLayoutStructureItemImporter
 			}
 		}
 
-		if (definitionMap.containsKey("name")) {
+		Object name = definitionMap.get("name");
+
+		if (name != null) {
 			formRelationshipStyledLayoutStructureItem.setName(
-				String.valueOf(definitionMap.get("name")));
+				String.valueOf(name));
 		}
 
-		if (definitionMap.containsKey("repeatable")) {
+		Object repeatable = definitionMap.get("repeatable");
+
+		if (repeatable != null) {
 			formRelationshipStyledLayoutStructureItem.setRepeatable(
-				GetterUtil.getBoolean(definitionMap.get("repeatable")));
+				GetterUtil.getBoolean(repeatable));
 		}
 
 		return formRelationshipStyledLayoutStructureItem;

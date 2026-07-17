@@ -464,9 +464,9 @@ public abstract class BaseLayoutStructureItemImporter {
 
 		if (Validator.isNull(textAlign)) {
 			for (String alignKey : _ALIGN_KEYS) {
-				if (styles.containsKey(alignKey)) {
-					textAlign = GetterUtil.getString(styles.get(alignKey));
+				textAlign = GetterUtil.getString(styles.get(alignKey), null);
 
+				if (textAlign != null) {
 					break;
 				}
 			}

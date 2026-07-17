@@ -67,25 +67,24 @@ public class FormLayoutStructureItemImporter
 			return formStyledLayoutStructureItem;
 		}
 
-		if (definitionMap.containsKey("cssClasses")) {
-			List<String> cssClasses = (List<String>)definitionMap.get(
-				"cssClasses");
-
+		if (definitionMap.get("cssClasses") instanceof List<?> cssClasses) {
 			formStyledLayoutStructureItem.setCssClasses(
-				new HashSet<>(cssClasses));
+				new HashSet<>((List<String>)cssClasses));
 		}
 
-		if (definitionMap.containsKey("customCSS")) {
+		Object customCSS = definitionMap.get("customCSS");
+
+		if (customCSS != null) {
 			formStyledLayoutStructureItem.setCustomCSS(
-				String.valueOf(definitionMap.get("customCSS")));
+				String.valueOf(customCSS));
 		}
 
-		if (definitionMap.containsKey("customCSSViewports")) {
-			List<Map<String, Object>> customCSSViewports =
-				(List<Map<String, Object>>)definitionMap.get(
-					"customCSSViewports");
+		if (definitionMap.get("customCSSViewports") instanceof
+				List<?> customCSSViewports) {
 
-			for (Map<String, Object> customCSSViewport : customCSSViewports) {
+			for (Map<String, Object> customCSSViewport :
+					(List<Map<String, Object>>)customCSSViewports) {
+
 				formStyledLayoutStructureItem.setCustomCSSViewport(
 					(String)customCSSViewport.get("id"),
 					(String)customCSSViewport.get("customCSS"));
@@ -134,9 +133,8 @@ public class FormLayoutStructureItemImporter
 					FormStyledLayoutStructureItem.FORM_CONFIG_OTHER_ITEM_TYPE);
 			}
 
-			if (sourceMap.containsKey("formType")) {
-				formStyledLayoutStructureItem.setFormType(
-					(String)sourceMap.get("formType"));
+			if (sourceMap.get("formType") instanceof String formType) {
+				formStyledLayoutStructureItem.setFormType(formType);
 			}
 
 			JSONObject localizationConfigJSONObject =
@@ -147,9 +145,11 @@ public class FormLayoutStructureItemImporter
 					localizationConfigJSONObject);
 			}
 
-			if (sourceMap.containsKey("numberOfSteps")) {
+			Object numberOfSteps = sourceMap.get("numberOfSteps");
+
+			if (numberOfSteps != null) {
 				formStyledLayoutStructureItem.setNumberOfSteps(
-					GetterUtil.getInteger(sourceMap.get("numberOfSteps")));
+					GetterUtil.getInteger(numberOfSteps));
 			}
 
 			JSONObject successMessageJSONObject = _getSuccessMessageJSONObject(
@@ -173,12 +173,12 @@ public class FormLayoutStructureItemImporter
 			formStyledLayoutStructureItem.updateItemConfig(jsonObject);
 		}
 
-		if (definitionMap.containsKey("fragmentViewports")) {
-			List<Map<String, Object>> fragmentViewports =
-				(List<Map<String, Object>>)definitionMap.get(
-					"fragmentViewports");
+		if (definitionMap.get("fragmentViewports") instanceof
+				List<?> fragmentViewports) {
 
-			for (Map<String, Object> fragmentViewport : fragmentViewports) {
+			for (Map<String, Object> fragmentViewport :
+					(List<Map<String, Object>>)fragmentViewports) {
+
 				JSONObject jsonObject = JSONUtil.put(
 					(String)fragmentViewport.get("id"),
 					toFragmentViewportStylesJSONObject(fragmentViewport));
@@ -187,9 +187,11 @@ public class FormLayoutStructureItemImporter
 			}
 		}
 
-		if (definitionMap.containsKey("indexed")) {
+		Object indexed = definitionMap.get("indexed");
+
+		if (indexed != null) {
 			formStyledLayoutStructureItem.setIndexed(
-				GetterUtil.getBoolean(definitionMap.get("indexed")));
+				GetterUtil.getBoolean(indexed));
 		}
 
 		Map<String, Object> formLayout = (Map<String, Object>)definitionMap.get(
@@ -237,9 +239,10 @@ public class FormLayoutStructureItemImporter
 			}
 		}
 
-		if (definitionMap.containsKey("name")) {
-			formStyledLayoutStructureItem.setName(
-				GetterUtil.getString(definitionMap.get("name")));
+		String name = GetterUtil.getString(definitionMap.get("name"), null);
+
+		if (name != null) {
+			formStyledLayoutStructureItem.setName(name);
 		}
 
 		return formStyledLayoutStructureItem;
@@ -378,24 +381,23 @@ public class FormLayoutStructureItemImporter
 
 			return messageJSONObject.put("type", "none");
 		}
-		else if (formSuccessSubmissionResultMap.containsKey("itemReference")) {
-			Map<String, Object> itemReference =
-				(Map<String, Object>)formSuccessSubmissionResultMap.get(
-					"itemReference");
+
+		if (formSuccessSubmissionResultMap.get("itemReference") instanceof
+				Map<?, ?> itemReference) {
 
 			return _setNotificationText(
 				JSONUtil.put(
 					"layout",
 					getLayoutFromItemReferenceJSONObject(
-						itemReference, layoutStructureItemImporterContext)),
+						(Map<String, Object>)itemReference,
+						layoutStructureItemImporterContext)),
 				formSuccessSubmissionResultMap
 			).put(
 				"type", "page"
 			);
 		}
-		else if (formSuccessSubmissionResultMap.containsKey(
-					"defaultDisplayPage")) {
 
+		if (formSuccessSubmissionResultMap.containsKey("defaultDisplayPage")) {
 			JSONObject displayPageTemplateJSONObject =
 				toDisplayPageFormSubmissionResultJSONObject(
 					formSuccessSubmissionResultMap,
@@ -404,7 +406,8 @@ public class FormLayoutStructureItemImporter
 			return _setNotificationText(
 				displayPageTemplateJSONObject, formSuccessSubmissionResultMap);
 		}
-		else if (formSuccessSubmissionResultMap.containsKey("url")) {
+
+		if (formSuccessSubmissionResultMap.containsKey("url")) {
 			return JSONUtil.put(
 				"type", "url"
 			).put(
