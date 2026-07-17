@@ -912,6 +912,8 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 				RenderParametersPool.get(
 					httpServletRequest, plid, _portletName);
 
+			Set<String> nullValueParameterNames = new HashSet<>();
+
 			if (privateRenderParameters != null) {
 				for (Map.Entry<String, String[]> entry :
 						privateRenderParameters.entrySet()) {
@@ -947,6 +949,10 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 						}
 					}
 
+					if (values == null) {
+						nullValueParameterNames.add(privateRenderParameterName);
+					}
+
 					allRenderParameters.put(privateRenderParameterName, values);
 				}
 			}
@@ -954,10 +960,10 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 			for (String privateRenderParameterName :
 					privateRenderParameterNames) {
 
-				if (!allRenderParameters.containsKey(
+				if (!nullValueParameterNames.contains(
 						privateRenderParameterName)) {
 
-					allRenderParameters.put(
+					allRenderParameters.putIfAbsent(
 						privateRenderParameterName,
 						dynamicServletRequest.getParameterValues(
 							privateRenderParameterName));
