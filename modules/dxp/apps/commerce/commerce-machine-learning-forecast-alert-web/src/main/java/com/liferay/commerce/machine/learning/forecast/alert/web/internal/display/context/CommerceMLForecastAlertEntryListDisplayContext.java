@@ -14,8 +14,6 @@ import com.liferay.commerce.machine.learning.forecast.alert.service.CommerceMLFo
 import com.liferay.commerce.machine.learning.forecast.alert.web.internal.display.context.helper.CommerceMLForecastAlertEntryRequestHelper;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -44,14 +42,7 @@ public class CommerceMLForecastAlertEntryListDisplayContext {
 	}
 
 	public AccountEntry getAccountEntry(long accountEntryId) {
-		try {
-			return _accountEntryLocalService.getAccountEntry(accountEntryId);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-
-			return null;
-		}
+		return _accountEntryLocalService.fetchAccountEntry(accountEntryId);
 	}
 
 	public PortletURL getPortletURL() {
@@ -106,9 +97,6 @@ public class CommerceMLForecastAlertEntryListDisplayContext {
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			CommerceMLForecastAlertActionKeys.VIEW_ALERTS);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceMLForecastAlertEntryListDisplayContext.class);
 
 	private final AccountEntryLocalService _accountEntryLocalService;
 	private final CommerceMLForecastAlertEntryRequestHelper
