@@ -2158,11 +2158,10 @@ public class LanguageImpl implements Language, Serializable {
 					languageCode = languageId.substring(0, pos);
 				}
 
-				if (_languageCodeLocalesMap.containsKey(languageCode)) {
+				if (_languageCodeLocalesMap.putIfAbsent(languageCode, locale) !=
+						null) {
+
 					duplicateLanguageCodes.add(languageCode);
-				}
-				else {
-					_languageCodeLocalesMap.put(languageCode, locale);
 				}
 
 				linkedHashMapWrapper.put(languageId, locale);
