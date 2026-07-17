@@ -248,12 +248,11 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			layoutPrototypeLayout.getTypeSettingsProperties();
 
 		if (newMergeFailCount == 0) {
-			if (prototypeTypeSettingsUnicodeProperties.containsKey(
-					Sites.MERGE_FAIL_COUNT)) {
-
+			String mergeFailCount =
 				prototypeTypeSettingsUnicodeProperties.remove(
 					Sites.MERGE_FAIL_COUNT);
 
+			if (mergeFailCount != null) {
 				updateLayoutPrototypeLayout = true;
 			}
 		}

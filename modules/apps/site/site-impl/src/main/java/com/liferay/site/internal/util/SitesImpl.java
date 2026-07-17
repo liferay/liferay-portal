@@ -254,10 +254,8 @@ public class SitesImpl implements Sites {
 		UnicodeProperties prototypeTypeSettingsUnicodeProperties =
 			layoutPrototypeLayout.getTypeSettingsProperties();
 
-		if (prototypeTypeSettingsUnicodeProperties.containsKey(
-				MERGE_FAIL_COUNT)) {
-
-			prototypeTypeSettingsUnicodeProperties.remove(MERGE_FAIL_COUNT);
+		if (prototypeTypeSettingsUnicodeProperties.remove(MERGE_FAIL_COUNT) !=
+				null) {
 
 			_layoutLocalService.updateLayout(layoutPrototypeLayout);
 		}
