@@ -1,0 +1,35 @@
+{
+	"_class": "hudson.model.ComputerSet",
+	"computer": [
+		{
+			"_class": "hudson.model.Hudson$MasterComputer",
+			"assignedLabels": [
+				{
+					"name": "built-in"
+				}
+			],
+			"displayName": "Built-In Node",
+			"executors": [
+			],
+			"idle": true,
+			"offline": false,
+			"offlineCauseReason": ""
+		},
+		{
+			"_class": "hudson.slaves.SlaveComputer",
+			"assignedLabels": [
+				{
+					"name": "test-9-1-1"
+				}
+			],
+			"displayName": "test-9-1-1",
+			"executors": [
+				{
+				}
+			],
+			"idle": true,
+			"offline": false,
+			"offlineCauseReason": ""
+		}
+	]
+}
