@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -112,6 +113,8 @@ public class FragmentCollectionManager {
 					themeDisplay.getCompanyId(),
 					themeDisplay.getCompanyGroupId(), groupId));
 
+		Map<Long, Map<String, Object>> scopeMapsByGroupId = new HashMap<>();
+
 		for (FragmentCollection fragmentCollection : fragmentCollections) {
 			if (!includeSystem &&
 				(fragmentCollection.getGroupId() !=
@@ -153,6 +156,12 @@ public class FragmentCollectionManager {
 					"fragmentEntries", fragmentEntryMapsList
 				).put(
 					"name", fragmentCollection.getName()
+				).put(
+					"scope",
+					_getScopeMap(
+						themeDisplay.getCompanyGroupId(),
+						fragmentCollection.getGroupId(),
+						themeDisplay.getLocale(), scopeMapsByGroupId)
 				).build());
 		}
 
@@ -533,6 +542,40 @@ public class FragmentCollectionManager {
 					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 				DepotEntry::getGroupId));
+	}
+
+	private Map<String, Object> _getScopeMap(
+			long companyGroupId, long groupId, Locale locale,
+			Map<Long, Map<String, Object>> scopeMaps)
+		throws PortalException {
+
+		if ((groupId > 0) && !scopeMaps.containsKey(groupId)) {
+			Group group = _groupLocalService.getGroup(groupId);
+
+			scopeMaps.put(
+				groupId,
+				HashMapBuilder.<String, Object>put(
+					"id", String.valueOf(groupId)
+				).put(
+					"label", group.getDescriptiveName(locale)
+				).put(
+					"type", _getScopeType(companyGroupId, group)
+				).build());
+		}
+
+		return scopeMaps.get(groupId);
+	}
+
+	private String _getScopeType(long companyGroupId, Group group) {
+		if (group.getGroupId() == companyGroupId) {
+			return "global";
+		}
+
+		if (group.isDepot()) {
+			return "design-library";
+		}
+
+		return "site";
 	}
 
 	private List<Map<String, Object>> _getSortedFragmentCollectionMapsList(
