@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -138,7 +139,7 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			com.liferay.change.tracking.model.CTCollection.class.getName(),
 			search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
+				Field.ENTRY_CLASS_PK, Field.UID),
 			searchContext -> {
 				searchContext.setAttribute("statuses", statuses);
 				searchContext.setCompanyId(contextCompany.getCompanyId());
@@ -148,8 +149,23 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 				}
 			},
 			sorts,
-			document -> _toCTCollection(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+			document -> {
+				long ctCollectionId = GetterUtil.getLong(
+					document.get(Field.ENTRY_CLASS_PK));
+
+				com.liferay.change.tracking.model.CTCollection ctCollection =
+					_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
+
+				if (ctCollection == null) {
+					_indexer.delete(
+						contextCompany.getCompanyId(), document.get(Field.UID));
+
+					return null;
+				}
+
+				return _ctCollectionDTOConverter.toDTO(
+					_getDTOConverterContext(ctCollection), ctCollection);
+			});
 	}
 
 	@Override
@@ -481,6 +497,11 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 
 	@Reference
 	private CTPreferencesService _ctPreferencesService;
+
+	@Reference(
+		target = "(indexer.class.name=com.liferay.change.tracking.model.CTCollection)"
+	)
+	private Indexer<?> _indexer;
 
 	@Reference
 	private PublishScheduler _publishScheduler;
