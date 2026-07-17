@@ -6,6 +6,7 @@
 package com.liferay.object.internal.sort;
 
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
@@ -79,40 +80,47 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 
 			columnExpression = _getColumnExpression(objectField, fieldTable);
 
-			if (objectField.isLocalized() && !_isParentComplexField(sort) &&
+			if (!_isParentComplexField(sort) && objectField.isLocalized() &&
 				(objectFieldTable instanceof
 					DynamicObjectDefinitionLocalizationTable)) {
 
 				localized = true;
 
-				Table defaultLanguageIdFieldTable = getAliasedTable(
-					"defaultLanguageId", objectFieldTable);
+				String activeLanguageId = ObjectEntrySearchUtil.getLanguageId();
+				String defaultLanguageId = _getDefaultLanguageId();
 
-				if (!contains(dslQuery, defaultLanguageIdFieldTable)) {
-					dslQuery = addLeftJoin(
-						getPrimaryKeyColumn(defaultLanguageIdFieldTable),
-						ObjectEntryTable.INSTANCE.objectEntryId, dslQuery,
-						defaultLanguageIdFieldTable,
-						_getLanguageIdColumn(
-							defaultLanguageIdFieldTable
-						).eq(
-							_getDefaultLanguageId()
-						));
+				if (!activeLanguageId.equals(defaultLanguageId)) {
+					DynamicObjectDefinitionLocalizationTable
+						defaultLanguageIdFieldTable =
+							(DynamicObjectDefinitionLocalizationTable)
+								getAliasedTable(
+									"defaultLanguageId", objectFieldTable);
+
+					if (!contains(dslQuery, defaultLanguageIdFieldTable)) {
+						dslQuery = addLeftJoin(
+							getPrimaryKeyColumn(defaultLanguageIdFieldTable),
+							ObjectEntryTable.INSTANCE.objectEntryId, dslQuery,
+							defaultLanguageIdFieldTable,
+							defaultLanguageIdFieldTable.getLanguageIdColumn(
+							).eq(
+								defaultLanguageId
+							));
+					}
+
+					Expression<String> activeExpression =
+						(Expression<String>)columnExpression;
+					Expression<String> defaultExpression =
+						(Expression<String>)_getColumnExpression(
+							objectField, defaultLanguageIdFieldTable);
+
+					columnExpression = DSLFunctionFactoryUtil.caseWhenThen(
+						activeExpression.isNotNull(), activeExpression
+					).whenThen(
+						defaultExpression.isNotNull(), defaultExpression
+					).elseEnd(
+						activeExpression
+					);
 				}
-
-				Expression<String> activeExpression =
-					(Expression<String>)columnExpression;
-				Expression<String> defaultExpression =
-					(Expression<String>)_getColumnExpression(
-						objectField, defaultLanguageIdFieldTable);
-
-				columnExpression = DSLFunctionFactoryUtil.caseWhenThen(
-					activeExpression.isNotNull(), activeExpression
-				).whenThen(
-					defaultExpression.isNotNull(), defaultExpression
-				).elseEnd(
-					activeExpression
-				);
 			}
 
 			if (Objects.equals(
@@ -195,10 +203,6 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 		}
 
 		return LocaleUtil.toLanguageId(locale);
-	}
-
-	private Column<?, String> _getLanguageIdColumn(Table<?> table) {
-		return (Column<?, String>)table.getColumn("languageId");
 	}
 
 	private OrderByExpression _getOrderByExpression(
