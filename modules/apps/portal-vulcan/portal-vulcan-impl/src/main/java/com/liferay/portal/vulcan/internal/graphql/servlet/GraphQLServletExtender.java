@@ -315,11 +315,11 @@ public class GraphQLServletExtender {
 
 				String registeredClassNamesKey = clazz.getName() + "_" + input;
 
-				if (_registeredClassNames.containsKey(
-						registeredClassNamesKey)) {
+				String registeredClassName = _registeredClassNames.get(
+					registeredClassNamesKey);
 
-					typeName = _registeredClassNames.get(
-						registeredClassNamesKey);
+				if (registeredClassName != null) {
+					typeName = registeredClassName;
 				}
 				else if (graphQLType != null) {
 					String name = clazz.getName();
@@ -980,8 +980,10 @@ public class GraphQLServletExtender {
 		}
 
 		synchronized (_servletDataServiceTrackerList) {
-			if (_servlets.containsKey(companyId)) {
-				return _servlets.get(companyId);
+			servlet = _servlets.get(companyId);
+
+			if (servlet != null) {
+				return servlet;
 			}
 
 			PropertyDataFetcher.clearReflectionCache();
@@ -1025,11 +1027,8 @@ public class GraphQLServletExtender {
 
 						Class<?> clazz = graphQLTypeExtension.value();
 
-						if (!classesMap.containsKey(clazz)) {
-							classesMap.put(clazz, new HashSet<>());
-						}
-
-						Set<Class<?>> classes = classesMap.get(clazz);
+						Set<Class<?>> classes = classesMap.computeIfAbsent(
+							clazz, key -> new HashSet<>());
 
 						classes.add(innerClasses);
 
@@ -1901,18 +1900,19 @@ public class GraphQLServletExtender {
 				_toGraphQLType(clazz.getComponentType(), graphQLTypes, input));
 		}
 
-		String key = (input ? "Input" : "") + clazz.getSimpleName();
+		GraphQLType graphQLType = graphQLTypes.get(
+			(input ? "Input" : "") + clazz.getSimpleName());
 
-		if (graphQLTypes.containsKey(key)) {
-			return graphQLTypes.get(key);
+		if (graphQLType != null) {
+			return graphQLType;
 		}
 
-		key =
+		graphQLType = graphQLTypes.get(
 			(input ? "Input" : "") +
-				StringUtil.replace(clazz.getName(), '.', '_');
+				StringUtil.replace(clazz.getName(), '.', '_'));
 
-		if (graphQLTypes.containsKey(key)) {
-			return graphQLTypes.get(key);
+		if (graphQLType != null) {
+			return graphQLType;
 		}
 
 		return _mapGraphQLScalarType;

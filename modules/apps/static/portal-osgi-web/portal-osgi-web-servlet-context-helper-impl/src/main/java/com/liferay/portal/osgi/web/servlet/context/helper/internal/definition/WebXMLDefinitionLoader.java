@@ -630,11 +630,8 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 		for (Map.Entry<String, String> entry :
 				fragmentContextParameters.entrySet()) {
 
-			String name = entry.getKey();
-
-			if (!assembledContextParameters.containsKey(name)) {
-				assembledContextParameters.put(name, entry.getValue());
-			}
+			assembledContextParameters.putIfAbsent(
+				entry.getKey(), entry.getValue());
 		}
 	}
 
@@ -649,9 +646,11 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 
 			String filterName = entry.getKey();
 
-			if (!assembledFilterDefinitions.containsKey(filterName)) {
-				assembledFilterDefinitions.put(filterName, entry.getValue());
+			FilterDefinition curFilterDefinition =
+				assembledFilterDefinitions.putIfAbsent(
+					filterName, entry.getValue());
 
+			if (curFilterDefinition == null) {
 				continue;
 			}
 
@@ -774,9 +773,11 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 
 			String servletName = entry.getKey();
 
-			if (!assembledServletDefinitions.containsKey(servletName)) {
-				assembledServletDefinitions.put(servletName, entry.getValue());
+			ServletDefinition curServletDefinition =
+				assembledServletDefinitions.putIfAbsent(
+					servletName, entry.getValue());
 
+			if (curServletDefinition == null) {
 				continue;
 			}
 
