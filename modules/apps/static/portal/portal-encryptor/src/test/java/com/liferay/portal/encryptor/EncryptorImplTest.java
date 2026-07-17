@@ -69,13 +69,12 @@ public class EncryptorImplTest {
 
 			Assert.assertThrows(
 				SecurityException.class,
-				() -> encryptor.encryptUnencoded(
+				() -> encryptor.decryptUnencodedAsBytes(
 					new SecretKeySpec(new byte[8], "AES"),
 					_PLAIN_TEXT.getBytes()));
-
 			Assert.assertThrows(
 				SecurityException.class,
-				() -> encryptor.decryptUnencodedAsBytes(
+				() -> encryptor.encryptUnencoded(
 					new SecretKeySpec(new byte[8], "AES"),
 					_PLAIN_TEXT.getBytes()));
 		}

@@ -76,16 +76,16 @@ public class EncryptorImpl implements Encryptor {
 		try {
 			String algorithm = key.getAlgorithm();
 
-			String cacheKey = algorithm + StringPool.POUND + key;
+			String decryptCiphersKey = algorithm + StringPool.POUND + key;
 
-			Cipher cipher = _decryptCipherMap.get(cacheKey);
+			Cipher cipher = _decryptCiphers.get(decryptCiphersKey);
 
 			if (cipher == null) {
 				cipher = Cipher.getInstance(algorithm);
 
 				cipher.init(Cipher.DECRYPT_MODE, key);
 
-				_decryptCipherMap.put(cacheKey, cipher);
+				_decryptCiphers.put(decryptCiphersKey, cipher);
 			}
 
 			synchronized (cipher) {
@@ -136,16 +136,16 @@ public class EncryptorImpl implements Encryptor {
 		try {
 			String algorithm = key.getAlgorithm();
 
-			String cacheKey = algorithm + StringPool.POUND + key;
+			String encryptCiphersKey = algorithm + StringPool.POUND + key;
 
-			Cipher cipher = _encryptCipherMap.get(cacheKey);
+			Cipher cipher = _encryptCiphers.get(encryptCiphersKey);
 
 			if (cipher == null) {
 				cipher = Cipher.getInstance(algorithm);
 
 				cipher.init(Cipher.ENCRYPT_MODE, key);
 
-				_encryptCipherMap.put(cacheKey, cipher);
+				_encryptCiphers.put(encryptCiphersKey, cipher);
 			}
 
 			synchronized (cipher) {
@@ -281,9 +281,9 @@ public class EncryptorImpl implements Encryptor {
 
 	private static final Log _log = LogFactoryUtil.getLog(EncryptorImpl.class);
 
-	private final Map<String, Cipher> _decryptCipherMap =
+	private final Map<String, Cipher> _decryptCiphers =
 		new ConcurrentHashMap<>(1, 1F, 1);
-	private final Map<String, Cipher> _encryptCipherMap =
+	private final Map<String, Cipher> _encryptCiphers =
 		new ConcurrentHashMap<>(1, 1F, 1);
 
 }
