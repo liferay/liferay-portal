@@ -13,6 +13,7 @@ import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -59,12 +60,26 @@ public class AudiencesEntryLocalServiceTest {
 
 		AudiencesEntry audiencesEntry = _addAudiencesEntry(
 			externalReferenceCode,
-			StringBundler.concat(
-				"{\"conjunction\": \"AND\", \"rules\": [{\"attribute\": ",
-				"\"url\", \"operator\": \"eq\", \"value\": \"",
-				RandomTestUtil.randomString(),
-				"\"}, {\"attribute\": \"segments\", \"operator\": \"eq\", ",
-				"\"value\": \"", RandomTestUtil.randomString(), "\"}]}"),
+			JSONUtil.put(
+				"conjunction", "AND"
+			).put(
+				"rules",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"attribute", "url"
+					).put(
+						"operator", "eq"
+					).put(
+						"value", RandomTestUtil.randomString()
+					),
+					JSONUtil.put(
+						"attribute", "segments"
+					).put(
+						"operator", "eq"
+					).put(
+						"value", RandomTestUtil.randomString()
+					))
+			).toString(),
 			name);
 
 		Assert.assertEquals(
@@ -79,7 +94,12 @@ public class AudiencesEntryLocalServiceTest {
 			AudiencesEntryJSONException.class,
 			"/conjunction: INVALID is not a valid enum value",
 			() -> _addAudiencesEntry(
-				null, "{\"conjunction\": \"INVALID\", \"rules\": []}",
+				null,
+				JSONUtil.put(
+					"conjunction", "INVALID"
+				).put(
+					"rules", JSONUtil.putAll()
+				).toString(),
 				RandomTestUtil.randomString()));
 		AssertUtils.assertFailure(
 			DuplicateAudiencesEntryExternalReferenceCodeException.class,
@@ -139,7 +159,11 @@ public class AudiencesEntryLocalServiceTest {
 			() -> _audiencesEntryLocalService.updateAudiencesEntry(
 				updatedAudiencesEntry.getAudiencesEntryId(),
 				updatedAudiencesEntry.getExternalReferenceCode(),
-				"{\"conjunction\": \"INVALID\", \"rules\": []}",
+				JSONUtil.put(
+					"conjunction", "INVALID"
+				).put(
+					"rules", JSONUtil.putAll()
+				).toString(),
 				updatedAudiencesEntry.getName()));
 
 		audiencesEntry = _addAudiencesEntry(
