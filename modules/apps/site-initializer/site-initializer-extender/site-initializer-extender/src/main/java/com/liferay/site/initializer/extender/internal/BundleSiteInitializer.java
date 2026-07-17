@@ -2765,9 +2765,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(
 			serviceContext.getScopeGroupId());
 
-		if (!nameMap.containsKey(siteDefaultLocale)) {
-			nameMap.put(siteDefaultLocale, pageJSONObject.getString("name"));
-		}
+		nameMap.putIfAbsent(
+			siteDefaultLocale, pageJSONObject.getString("name"));
 
 		String type = StringUtil.toLowerCase(pageJSONObject.getString("type"));
 
@@ -2785,10 +2784,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			SiteInitializerUtil.toMap(
 				pageJSONObject.getString("friendlyURL_i18n")));
 
-		if (!friendlyURLMap.containsKey(siteDefaultLocale)) {
-			friendlyURLMap.put(
-				siteDefaultLocale, pageJSONObject.getString("friendlyURL"));
-		}
+		friendlyURLMap.putIfAbsent(
+			siteDefaultLocale, pageJSONObject.getString("friendlyURL"));
 
 		UnicodeProperties unicodeProperties = new UnicodeProperties(true);
 

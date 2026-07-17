@@ -97,13 +97,9 @@ public class IndexedRecordJsonObjectConverter extends RejectHandler {
 					continue;
 				}
 
-				if (!nestedJsonObjectBuilders.containsKey(nameParts[0])) {
-					nestedJsonObjectBuilders.put(
-						nameParts[0], Json.createObjectBuilder());
-				}
-
-				currentJsonObjectBuilder = nestedJsonObjectBuilders.get(
-					nameParts[0]);
+				currentJsonObjectBuilder =
+					nestedJsonObjectBuilders.computeIfAbsent(
+						nameParts[0], key -> Json.createObjectBuilder());
 
 				fieldName = nameParts[1];
 			}

@@ -72,11 +72,7 @@ public abstract class BaseWorkflowPortletTab
 	protected Log getLog() {
 		Class<? extends BaseWorkflowPortletTab> clazz = getClass();
 
-		if (!_logs.containsKey(clazz)) {
-			_logs.put(clazz, LogFactoryUtil.getLog(clazz));
-		}
-
-		return _logs.get(clazz);
+		return _logs.computeIfAbsent(clazz, LogFactoryUtil::getLog);
 	}
 
 	private static final Map<Class<? extends BaseWorkflowPortletTab>, Log>

@@ -6,8 +6,8 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.osb.patcher.model.PatcherFix;
-import com.liferay.portal.kernel.util.ListUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,24 +22,18 @@ public class PatcherFixRadix {
 			_currentBucket = bucket;
 		}
 
-		if (!_map.containsKey(bucket)) {
-			_map.put(bucket, ListUtil.fromArray(patcherFix));
-		}
-		else {
-			List<PatcherFix> patcherFixes = _map.get(bucket);
+		List<PatcherFix> patcherFixes = _map.computeIfAbsent(
+			bucket, key -> new ArrayList<>());
 
-			patcherFixes.add(patcherFix);
-		}
+		patcherFixes.add(patcherFix);
 	}
 
 	public PatcherFix getPatcherFix() {
 		while (_currentBucket > 0) {
-			if (_map.containsKey(_currentBucket)) {
-				List<PatcherFix> patcherFixes = _map.get(_currentBucket);
+			List<PatcherFix> patcherFixes = _map.get(_currentBucket);
 
-				if (!patcherFixes.isEmpty()) {
-					return patcherFixes.remove(0);
-				}
+			if ((patcherFixes != null) && !patcherFixes.isEmpty()) {
+				return patcherFixes.remove(0);
 			}
 
 			_currentBucket--;

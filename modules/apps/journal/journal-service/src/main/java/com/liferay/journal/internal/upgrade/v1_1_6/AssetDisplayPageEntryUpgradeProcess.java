@@ -60,27 +60,13 @@ public class AssetDisplayPageEntryUpgradeProcess extends UpgradeProcess {
 			return PortalUUIDUtil.generate();
 		}
 
-		long liveGroupId = groupId;
+		long liveGroupId = _liveGroupIdsMap.getOrDefault(groupId, groupId);
 
-		if (_liveGroupIdsMap.containsKey(groupId)) {
-			liveGroupId = _liveGroupIdsMap.get(groupId);
-		}
+		Map<String, String> uuids = _uuidsMaps.computeIfAbsent(
+			liveGroupId, key -> new HashMap<>());
 
-		if (!_uuidsMaps.containsKey(liveGroupId)) {
-			_uuidsMaps.put(liveGroupId, new HashMap<>());
-		}
-
-		Map<String, String> uuids = _uuidsMaps.get(liveGroupId);
-
-		if (uuids.containsKey(journalArticleUuid)) {
-			return uuids.get(journalArticleUuid);
-		}
-
-		String newUuid = PortalUUIDUtil.generate();
-
-		uuids.put(journalArticleUuid, newUuid);
-
-		return newUuid;
+		return uuids.computeIfAbsent(
+			journalArticleUuid, key -> PortalUUIDUtil.generate());
 	}
 
 	private void _init(long companyId) throws Exception {

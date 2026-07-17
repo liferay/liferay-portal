@@ -479,11 +479,8 @@ public class UADHierarchyDisplay {
 		Map<String, List<Serializable>> entitiesMap,
 		List<Serializable> entities, String typeKey) {
 
-		if (!entitiesMap.containsKey(typeKey)) {
-			entitiesMap.put(typeKey, new ArrayList<>());
-		}
-
-		List<Serializable> entitiesList = entitiesMap.get(typeKey);
+		List<Serializable> entitiesList = entitiesMap.computeIfAbsent(
+			typeKey, key -> new ArrayList<>());
 
 		entitiesList.addAll(entities);
 	}
