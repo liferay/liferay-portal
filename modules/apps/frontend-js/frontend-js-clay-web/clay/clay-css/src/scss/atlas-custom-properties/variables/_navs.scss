@@ -526,7 +526,7 @@ $nav-tabs: () !default;
 $nav-tabs: map-deep-merge(
 	(
 		border-bottom: var(--nav-tabs-border-bottom, 1px solid $gray-400),
-		font-size: var(--nav-tabs-font-size, $nav-tabs-font-size),
+		font-size: $nav-tabs-font-size,
 		padding-left: var(--nav-tabs-padding-left, 24px),
 		padding-right: var(--nav-tabs-padding-right, 24px),
 		padding-top: var(--nav-tabs-padding-top, 7px),
