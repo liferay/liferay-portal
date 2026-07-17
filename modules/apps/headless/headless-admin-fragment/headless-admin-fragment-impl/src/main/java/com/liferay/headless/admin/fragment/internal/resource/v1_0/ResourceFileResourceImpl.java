@@ -203,7 +203,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		Folder folder = _dlAppService.getFolderByExternalReferenceCode(
+		Folder folder = _dlAppLocalService.getFolderByExternalReferenceCode(
 			resourceFolderExternalReferenceCode, groupId);
 
 		ResourceFolderUtil.checkResourceFolder(

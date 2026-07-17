@@ -7,7 +7,7 @@ package com.liferay.headless.admin.fragment.internal.resource.v1_0.util;
 
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolder;
-import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
@@ -48,8 +48,8 @@ public class ResourceFolderUtil {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		Folder folder = DLAppServiceUtil.addFolder(
-			resourceFolder.getExternalReferenceCode(),
+		Folder folder = DLAppLocalServiceUtil.addFolder(
+			resourceFolder.getExternalReferenceCode(), userId,
 			parentDLFolder.getRepositoryId(), parentDLFolder.getFolderId(),
 			resourceFolder.getName(), StringPool.BLANK, serviceContext);
 
