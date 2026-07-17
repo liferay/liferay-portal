@@ -281,9 +281,7 @@ public class IndexUpdaterUtil {
 			String tableName = element.substring(
 				element.indexOf("create table ") + 13, element.indexOf(" ("));
 
-			if (!indexesSQLMap.containsKey(tableName)) {
-				indexesSQLMap.put(tableName, StringPool.BLANK);
-			}
+			indexesSQLMap.putIfAbsent(tableName, StringPool.BLANK);
 		}
 
 		return indexesSQLMap;

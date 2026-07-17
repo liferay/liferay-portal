@@ -1807,9 +1807,7 @@ public class LanguageImpl implements Language, Serializable {
 				languageCode = languageId.substring(0, pos);
 			}
 
-			if (!groupLanguageCodeLocalesMap.containsKey(languageCode)) {
-				groupLanguageCodeLocalesMap.put(languageCode, locale);
-			}
+			groupLanguageCodeLocalesMap.putIfAbsent(languageCode, locale);
 
 			groupLanguageIdLocalesMap.put(languageId, locale);
 		}

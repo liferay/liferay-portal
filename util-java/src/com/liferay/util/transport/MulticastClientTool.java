@@ -97,13 +97,8 @@ public class MulticastClientTool {
 			}
 		}
 
-		if (!argsMap.containsKey("gzip")) {
-			argsMap.put("gzip", Boolean.FALSE);
-		}
-
-		if (!argsMap.containsKey("short")) {
-			argsMap.put("short", Boolean.FALSE);
-		}
+		argsMap.putIfAbsent("gzip", Boolean.FALSE);
+		argsMap.putIfAbsent("short", Boolean.FALSE);
 
 		return argsMap;
 	}

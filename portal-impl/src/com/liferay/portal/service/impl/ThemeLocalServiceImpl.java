@@ -832,9 +832,7 @@ public class ThemeLocalServiceImpl extends ThemeLocalServiceBaseImpl {
 				}
 			}
 
-			if (!_themes.containsKey(themeId)) {
-				_themes.put(themeId, theme);
-			}
+			_themes.putIfAbsent(themeId, theme);
 
 			_readPortletDecorators(
 				themeElement, theme.getPortletDecoratorsMap(),

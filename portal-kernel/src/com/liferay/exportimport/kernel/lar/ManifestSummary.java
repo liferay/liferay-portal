@@ -274,7 +274,10 @@ public class ManifestSummary implements Serializable {
 	public void incrementModelAdditionCount(StagedModelType stagedModelType) {
 		String manifestSummaryKey = getManifestSummaryKey(stagedModelType);
 
-		if (!_modelAdditionCounters.containsKey(manifestSummaryKey)) {
+		LongWrapper modelAdditionCounter = _modelAdditionCounters.get(
+			manifestSummaryKey);
+
+		if (modelAdditionCounter == null) {
 			_modelAdditionCounters.put(manifestSummaryKey, new LongWrapper(1));
 
 			_manifestSummaryKeys.add(manifestSummaryKey);
@@ -282,25 +285,22 @@ public class ManifestSummary implements Serializable {
 			return;
 		}
 
-		LongWrapper modelAdditionCounter = _modelAdditionCounters.get(
-			manifestSummaryKey);
-
 		modelAdditionCounter.increment();
 	}
 
 	public void incrementModelDeletionCount(StagedModelType stagedModelType) {
 		String manifestSummaryKey = getManifestSummaryKey(stagedModelType);
 
-		if (!_modelDeletionCounters.containsKey(manifestSummaryKey)) {
+		LongWrapper modelDeletionCounter = _modelDeletionCounters.get(
+			manifestSummaryKey);
+
+		if (modelDeletionCounter == null) {
 			_modelDeletionCounters.put(manifestSummaryKey, new LongWrapper(1));
 
 			_manifestSummaryKeys.add(manifestSummaryKey);
 
 			return;
 		}
-
-		LongWrapper modelDeletionCounter = _modelDeletionCounters.get(
-			manifestSummaryKey);
 
 		modelDeletionCounter.increment();
 	}

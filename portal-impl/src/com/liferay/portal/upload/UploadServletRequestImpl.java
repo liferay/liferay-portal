@@ -125,12 +125,8 @@ public class UploadServletRequestImpl
 				if (fileItem.isFormField()) {
 					String fieldName = fileItem.getFieldName();
 
-					if (!_regularParameters.containsKey(fieldName)) {
-						_regularParameters.put(
-							fieldName, new ArrayList<String>());
-					}
-
-					List<String> values = _regularParameters.get(fieldName);
+					List<String> values = _regularParameters.computeIfAbsent(
+						fieldName, key -> new ArrayList<>());
 
 					if (fileItem.getSize() > FileItem.THRESHOLD_SIZE) {
 						UploadException uploadException = new UploadException(
