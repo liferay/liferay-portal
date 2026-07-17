@@ -124,8 +124,11 @@ public class DLFileOrderManagedServiceFactory implements ManagedServiceFactory {
 		Map<T, DLFileOrderConfiguration> dlFileOrderConfigurations, T key,
 		Supplier<DLFileOrderConfiguration> supplier) {
 
-		if (dlFileOrderConfigurations.containsKey(key)) {
-			return dlFileOrderConfigurations.get(key);
+		DLFileOrderConfiguration dlFileOrderConfiguration =
+			dlFileOrderConfigurations.get(key);
+
+		if (dlFileOrderConfiguration != null) {
+			return dlFileOrderConfiguration;
 		}
 
 		return supplier.get();
@@ -144,17 +147,20 @@ public class DLFileOrderManagedServiceFactory implements ManagedServiceFactory {
 	}
 
 	private void _unmapPid(String pid) {
-		if (_companyIds.containsKey(pid)) {
-			long companyId = _companyIds.remove(pid);
+		Long companyId = _companyIds.remove(pid);
 
+		if (companyId != null) {
 			_companyDLFileOrderConfigurations.remove(companyId);
 
 			_groupDLFileOrderConfigurations.clear();
 			_groupKeys.clear();
-		}
-		else if (_groupKeys.containsKey(pid)) {
-			String groupKey = _groupKeys.remove(pid);
 
+			return;
+		}
+
+		String groupKey = _groupKeys.remove(pid);
+
+		if (groupKey != null) {
 			_groupDLFileOrderConfigurations.remove(groupKey);
 		}
 	}

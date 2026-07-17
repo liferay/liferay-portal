@@ -78,17 +78,20 @@ public class DLFileEntryConfigurationHelper {
 	}
 
 	public void unmapPid(String pid) {
-		if (_companyIds.containsKey(pid)) {
-			long companyId = _companyIds.remove(pid);
+		Long companyId = _companyIds.remove(pid);
 
+		if (companyId != null) {
 			_companyConfigurationBeans.remove(companyId);
 
 			_groupConfigurationBeans.clear();
 			_groupKeys.clear();
-		}
-		else if (_groupKeys.containsKey(pid)) {
-			String groupKey = _groupKeys.remove(pid);
 
+			return;
+		}
+
+		String groupKey = _groupKeys.remove(pid);
+
+		if (groupKey != null) {
 			_groupConfigurationBeans.remove(groupKey);
 		}
 	}
@@ -135,8 +138,11 @@ public class DLFileEntryConfigurationHelper {
 		T key, Map<T, DLFileEntryConfiguration> configurationBeans,
 		Supplier<DLFileEntryConfiguration> supplier) {
 
-		if (configurationBeans.containsKey(key)) {
-			return configurationBeans.get(key);
+		DLFileEntryConfiguration dlFileEntryConfiguration =
+			configurationBeans.get(key);
+
+		if (dlFileEntryConfiguration != null) {
+			return dlFileEntryConfiguration;
 		}
 
 		return supplier.get();

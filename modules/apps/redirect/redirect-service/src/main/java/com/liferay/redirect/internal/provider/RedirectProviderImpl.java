@@ -174,9 +174,9 @@ public class RedirectProviderImpl implements RedirectProvider {
 	}
 
 	private void _unmapPid(String pid) {
-		if (_groupIds.containsKey(pid)) {
-			Long groupId = _groupIds.remove(pid);
+		Long groupId = _groupIds.remove(pid);
 
+		if (groupId != null) {
 			_redirectPatternEntries.remove(groupId);
 		}
 	}

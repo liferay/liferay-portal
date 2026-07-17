@@ -142,17 +142,20 @@ public class DLSizeLimitConfigurationHelper {
 	}
 
 	public void unmapPid(String pid) {
-		if (_companyIds.containsKey(pid)) {
-			long companyId = _companyIds.remove(pid);
+		Long companyId = _companyIds.remove(pid);
 
+		if (companyId != null) {
 			_companyConfigurationBeans.remove(companyId);
 			_companyMimeTypeSizeLimitsMap.remove(companyId);
 
 			_groupMimeTypeSizeLimitsMap.clear();
-		}
-		else if (_groupKeys.containsKey(pid)) {
-			String groupKey = _groupKeys.remove(pid);
 
+			return;
+		}
+
+		String groupKey = _groupKeys.remove(pid);
+
+		if (groupKey != null) {
 			_groupConfigurationBeans.remove(groupKey);
 			_groupMimeTypeSizeLimitsMap.remove(groupKey);
 		}
@@ -231,8 +234,11 @@ public class DLSizeLimitConfigurationHelper {
 		T key, Map<T, DLSizeLimitConfiguration> configurationBeans,
 		Supplier<DLSizeLimitConfiguration> supplier) {
 
-		if (configurationBeans.containsKey(key)) {
-			return configurationBeans.get(key);
+		DLSizeLimitConfiguration dlSizeLimitConfiguration =
+			configurationBeans.get(key);
+
+		if (dlSizeLimitConfiguration != null) {
+			return dlSizeLimitConfiguration;
 		}
 
 		return supplier.get();

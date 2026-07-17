@@ -40,11 +40,8 @@ public class PersonalMenuConfigurationRegistryImpl
 	public PersonalMenuConfiguration getCompanyPersonalMenuConfiguration(
 		long companyId) {
 
-		if (_companyPersonalMenuConfigurations.containsKey(companyId)) {
-			return _companyPersonalMenuConfigurations.get(companyId);
-		}
-
-		return _systemPersonalMenuConfiguration;
+		return _companyPersonalMenuConfigurations.getOrDefault(
+			companyId, _systemPersonalMenuConfiguration);
 	}
 
 	@Activate
@@ -75,9 +72,9 @@ public class PersonalMenuConfigurationRegistryImpl
 	}
 
 	private void _unmapPid(String pid) {
-		if (_companyIds.containsKey(pid)) {
-			long companyId = _companyIds.remove(pid);
+		Long companyId = _companyIds.remove(pid);
 
+		if (companyId != null) {
 			_companyPersonalMenuConfigurations.remove(companyId);
 		}
 	}
