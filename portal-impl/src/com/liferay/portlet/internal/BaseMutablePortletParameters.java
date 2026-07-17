@@ -89,9 +89,9 @@ public abstract class BaseMutablePortletParameters
 
 		Map<String, String[]> parameterMap = getParameterMap();
 
-		if (parameterMap.containsKey(name)) {
-			parameterMap.remove(name);
+		Set<String> parameterNames = parameterMap.keySet();
 
+		if (parameterNames.remove(name)) {
 			_mutated = true;
 
 			return true;
