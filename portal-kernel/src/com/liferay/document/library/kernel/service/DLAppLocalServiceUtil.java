@@ -457,6 +457,13 @@ public class DLAppLocalServiceUtil {
 			externalReferenceCode, groupId);
 	}
 
+	public static com.liferay.portal.kernel.repository.model.Folder fetchFolder(
+			long folderId)
+		throws PortalException {
+
+		return getService().fetchFolder(folderId);
+	}
+
 	public static com.liferay.portal.kernel.repository.model.Folder
 			fetchFolderByExternalReferenceCode(
 				String externalReferenceCode, long groupId)
@@ -1039,4 +1046,4 @@ public class DLAppLocalServiceUtil {
 	private static volatile DLAppLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1621021125
+// LIFERAY-SERVICE-BUILDER-HASH:-1180157448

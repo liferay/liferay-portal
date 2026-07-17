@@ -376,6 +376,9 @@ public interface DLAppLocalService extends BaseLocalService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Folder fetchFolder(long folderId) throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Folder fetchFolderByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException;
@@ -819,4 +822,4 @@ public interface DLAppLocalService extends BaseLocalService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1008036570
+// LIFERAY-SERVICE-BUILDER-HASH:929140234

@@ -474,6 +474,14 @@ public class DLAppLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.repository.model.Folder fetchFolder(
+			long folderId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _dlAppLocalService.fetchFolder(folderId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.repository.model.Folder
 			fetchFolderByExternalReferenceCode(
 				String externalReferenceCode, long groupId)
@@ -1083,4 +1091,4 @@ public class DLAppLocalServiceWrapper
 	private DLAppLocalService _dlAppLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-543347863
+// LIFERAY-SERVICE-BUILDER-HASH:150245717
