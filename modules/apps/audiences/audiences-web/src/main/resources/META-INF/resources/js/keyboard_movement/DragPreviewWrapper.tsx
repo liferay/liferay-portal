@@ -13,7 +13,12 @@ export default function DragPreviewWrapper() {
 	const target = useMovementTarget();
 
 	const alignment = useMemo(() => {
-		if (!source || !target.nodeId || !target.position) {
+		if (
+			!source ||
+			!target.nodeId ||
+			!target.position ||
+			target.position === 'group'
+		) {
 			return undefined;
 		}
 

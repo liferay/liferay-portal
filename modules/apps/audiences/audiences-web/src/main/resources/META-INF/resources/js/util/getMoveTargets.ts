@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
+import {DROP_POSITIONS} from '../constants/dropPositions';
 import {Group} from '../types';
+import {DropZone} from './getDropPosition';
+import {canGroupNode} from './tree/canGroupNode';
 import {isGroup} from './tree/isGroup';
 
 export interface MoveTarget {
@@ -12,7 +14,7 @@ export interface MoveTarget {
 	groupPath: number[];
 	index: number;
 	nodeId: string;
-	position: DropPosition;
+	position: DropZone;
 }
 
 export function getMoveTargets(root: Group): MoveTarget[] {
@@ -30,6 +32,15 @@ export function getMoveTargets(root: Group): MoveTarget[] {
 
 			if (isGroup(node)) {
 				collectTargets(node, [...groupPath, index]);
+			}
+			else if (canGroupNode([...groupPath, index])) {
+				targets.push({
+					groupId: group.id,
+					groupPath,
+					index,
+					nodeId: node.id,
+					position: 'group',
+				});
 			}
 
 			if (index === group.items.length - 1) {

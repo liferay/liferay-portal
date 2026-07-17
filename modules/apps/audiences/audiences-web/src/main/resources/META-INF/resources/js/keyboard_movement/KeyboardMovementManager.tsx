@@ -4,7 +4,7 @@
  */
 
 import {sub} from 'frontend-js-web';
-import {Dispatch, useEffect} from 'react';
+import {Dispatch, useEffect, useMemo} from 'react';
 
 import {DROP_POSITIONS} from '../constants/dropPositions';
 import {
@@ -45,7 +45,15 @@ export default function KeyboardMovementManager({
 	const setText = useSetMovementText();
 	const target = useMovementTarget();
 
-	const targets = getMoveTargets(root);
+	const targets = useMemo(
+		() =>
+			getMoveTargets(root).filter(
+				(moveTarget) =>
+					moveTarget.position !== 'group' ||
+					moveTarget.nodeId !== source.ruleId
+			),
+		[root, source.ruleId]
+	);
 
 	const currentIndex = targets.findIndex(
 		(moveTarget) =>
@@ -109,35 +117,53 @@ export default function KeyboardMovementManager({
 			}
 
 			if (source.ruleId) {
-				const sourceTarget = targets[sourceIndex];
-
-				if (
-					sourceTarget &&
-					moveTarget.groupId === sourceTarget.groupId &&
-					(moveTarget.index === sourceTarget.index ||
-						moveTarget.index === sourceTarget.index + 1)
-				) {
-					setText('');
-
-					disableMovement();
-
-					return;
+				if (moveTarget.position === 'group') {
+					dispatch({
+						nodeId: source.ruleId,
+						targetId: moveTarget.nodeId,
+						type: 'MOVE_GROUP',
+					});
 				}
+				else {
+					const sourceTarget = targets[sourceIndex];
 
-				dispatch({
-					nodeId: source.ruleId,
-					targetGroupId: moveTarget.groupId,
-					targetIndex: moveTarget.index,
-					type: 'MOVE_RULE',
-				});
+					if (
+						sourceTarget &&
+						moveTarget.groupId === sourceTarget.groupId &&
+						(moveTarget.index === sourceTarget.index ||
+							moveTarget.index === sourceTarget.index + 1)
+					) {
+						setText('');
+
+						disableMovement();
+
+						return;
+					}
+
+					dispatch({
+						nodeId: source.ruleId,
+						targetGroupId: moveTarget.groupId,
+						targetIndex: moveTarget.index,
+						type: 'MOVE_RULE',
+					});
+				}
 			}
 			else if (source.audiencesCriteria) {
-				dispatch({
-					audiencesCriteria: source.audiencesCriteria,
-					groupPath: moveTarget.groupPath,
-					index: moveTarget.index,
-					type: 'ADD_RULE',
-				});
+				if (moveTarget.position === 'group') {
+					dispatch({
+						audiencesCriteria: source.audiencesCriteria,
+						targetId: moveTarget.nodeId,
+						type: 'ADD_GROUP',
+					});
+				}
+				else {
+					dispatch({
+						audiencesCriteria: source.audiencesCriteria,
+						groupPath: moveTarget.groupPath,
+						index: moveTarget.index,
+						type: 'ADD_RULE',
+					});
+				}
 			}
 
 			setText(

@@ -72,6 +72,9 @@ export default function RuleRow({
 	const isMovementTargetBottomPosition =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
 
+	const isMovementTargetGroupPosition =
+		isMovementTarget && movementTarget.position === 'group';
+
 	const isMovementTargetTopPosition =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.top;
 
@@ -168,7 +171,8 @@ export default function RuleRow({
 						(isOver && dropPosition === DROP_POSITIONS.bottom) ||
 						isMovementTargetBottomPosition,
 					'audience-builder-rule--drop-group':
-						isOver && dropPosition === 'group',
+						(isOver && dropPosition === 'group') ||
+						isMovementTargetGroupPosition,
 					'audience-builder-rule--drop-top':
 						(isOver && dropPosition === DROP_POSITIONS.top) ||
 						isMovementTargetTopPosition,
