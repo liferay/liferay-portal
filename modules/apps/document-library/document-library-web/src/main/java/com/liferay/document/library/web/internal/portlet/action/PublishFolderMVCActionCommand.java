@@ -70,7 +70,7 @@ public class PublishFolderMVCActionCommand extends BaseMVCActionCommand {
 
 	private Folder _getFolder(long folderId) {
 		try {
-			return _dlAppLocalService.getFolder(folderId);
+			return _dlAppLocalService.fetchFolder(folderId);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
