@@ -629,6 +629,16 @@ public class EditFragmentEntryDisplayContext {
 		return _readOnly;
 	}
 
+	private boolean _showFieldTypes() {
+		FragmentEntry fragmentEntry = getFragmentEntry();
+
+		if ((fragmentEntry == null) || !fragmentEntry.isTypeInput()) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private void _updatePortletDisplay() {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
@@ -658,16 +668,6 @@ public class EditFragmentEntryDisplayContext {
 					WorkflowConstants.getStatusLabel(
 						fragmentEntry.getStatus())),
 				")"));
-	}
-
-	private boolean _showFieldTypes() {
-		FragmentEntry fragmentEntry = getFragmentEntry();
-
-		if ((fragmentEntry == null) || !fragmentEntry.isTypeInput()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	private static final InfoFieldType[] _INFO_FIELD_TYPES = {
