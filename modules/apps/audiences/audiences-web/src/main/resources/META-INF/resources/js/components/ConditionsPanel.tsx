@@ -36,6 +36,7 @@ import {
 } from '../types';
 import {DropZone, getDropPosition} from '../util/getDropPosition';
 import {canGroupNode} from '../util/tree/canGroupNode';
+import {flattenRules} from '../util/tree/flattenRules';
 import {isGroup} from '../util/tree/isGroup';
 import RuleRow from './RuleRow';
 
@@ -51,6 +52,7 @@ interface RenderContext {
 	dispatch: Dispatch<Action>;
 	getItemProps: (index: number) => NavigationItemProps;
 	iconColorsByKey: Record<string, string>;
+	ruleIndexById: Map<string, number>;
 }
 
 function toMovementItems(
@@ -117,8 +119,14 @@ export default function ConditionsPanel({
 
 	const movementSource = useMovementSource();
 
+	const ruleIndexById = useMemo(
+		() =>
+			new Map(flattenRules(root).map((rule, index) => [rule.id, index])),
+		[root]
+	);
+
 	const {getItemProps} = useKeyboardNavigation({
-		itemCount: root.items.filter((node) => !isGroup(node)).length,
+		itemCount: ruleIndexById.size,
 	});
 
 	const keyboardMovementItems = toMovementItems(
@@ -152,6 +160,7 @@ export default function ConditionsPanel({
 		dispatch,
 		getItemProps,
 		iconColorsByKey,
+		ruleIndexById,
 	};
 
 	return (
@@ -216,6 +225,7 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 		dispatch,
 		getItemProps,
 		iconColorsByKey,
+		ruleIndexById,
 	} = context;
 
 	const topLevel = !path.length;
@@ -246,10 +256,6 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 		<>
 			{group.items.map((node, index) => {
 				const nodePath = [...path, index];
-
-				const ruleIndex = group.items
-					.slice(0, index)
-					.filter((item) => !isGroup(item)).length;
 
 				return (
 					<Fragment key={node.id}>
@@ -282,11 +288,9 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 								iconColor={iconColorsByKey[node.attribute]}
 								index={index}
 								movable={topLevel}
-								navigationProps={
-									topLevel
-										? getItemProps(ruleIndex)
-										: undefined
-								}
+								navigationProps={getItemProps(
+									ruleIndexById.get(node.id) ?? 0
+								)}
 								onAddRule={handleAddRule}
 								onChange={(rule) =>
 									dispatch({
