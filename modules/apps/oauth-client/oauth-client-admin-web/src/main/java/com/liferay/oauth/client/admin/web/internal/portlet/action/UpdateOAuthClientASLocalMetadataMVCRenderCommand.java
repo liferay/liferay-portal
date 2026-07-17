@@ -128,7 +128,7 @@ public class UpdateOAuthClientASLocalMetadataMVCRenderCommand
 		if (supportedScopes != null) {
 			renderRequest.setAttribute(
 				OAuthClientWebKeys.SUPPORTED_SCOPES,
-				supportedScopes.toString());
+				StringUtil.merge(supportedScopes));
 		}
 
 		OIDCProviderMetadata oidcProviderMetadata = OIDCProviderMetadata.parse(
