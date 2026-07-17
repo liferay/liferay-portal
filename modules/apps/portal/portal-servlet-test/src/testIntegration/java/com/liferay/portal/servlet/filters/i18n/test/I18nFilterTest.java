@@ -432,22 +432,7 @@ public class I18nFilterTest {
 			boolean layoutFriendlyURLPublicServletMappingEnabled)
 		throws Exception {
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.addHeader("Host", "localhost");
-		mockHttpServletRequest.setServerName("localhost");
-
-		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI,
-			_group.getFriendlyURL());
-		mockHttpServletRequest.setRequestURI(
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
-				_group.getFriendlyURL());
-
-		HttpSession httpSession = mockHttpServletRequest.getSession();
-
-		httpSession.setAttribute(WebKeys.LOCALE, LocaleUtil.SPAIN);
+		long companyId = PortalInstances.getCompanyId(mockHttpServletRequest);
 
 		String i18nPath =
 			"/" + _portal.getI18nPathLanguageId(LocaleUtil.SPAIN, null);
@@ -461,7 +446,22 @@ public class I18nFilterTest {
 						_group.getFriendlyURL();
 		}
 
-		long companyId = PortalInstances.getCompanyId(mockHttpServletRequest);
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader("Host", "localhost");
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		httpSession.setAttribute(WebKeys.LOCALE, LocaleUtil.SPAIN);
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI,
+			_group.getFriendlyURL());
+		mockHttpServletRequest.setRequestURI(
+			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+				_group.getFriendlyURL());
+		mockHttpServletRequest.setServerName("localhost");
 
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
