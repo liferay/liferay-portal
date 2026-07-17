@@ -412,13 +412,13 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			StyleBookEntry siteStyleBookEntry)
 		throws Exception {
 
+		List<String> names = new ArrayList<>();
+
 		Page<StyleBook> page =
 			styleBookResource.getSitePageSpecificationStyleBooksPage(
 				testGroup.getExternalReferenceCode(),
 				pageSpecificationExternalReferenceCode, null,
 				Pagination.of(1, 50));
-
-		List<String> names = new ArrayList<>();
 
 		for (StyleBook styleBook : page.getItems()) {
 			names.add(styleBook.getName());
@@ -434,58 +434,63 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private void _testGetSitePageSpecificationStyleBooksPageWithLayoutTypes()
 		throws Exception {
 
-		String themeId = _getPageSpecificationThemeId();
-
-		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
-			testGroup.getGroupId(), themeId, RandomTestUtil.randomString());
-
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		String themeId = _getPageSpecificationThemeId();
 
 		StyleBookEntry designLibraryStyleBookEntry = _addStyleBookEntry(
 			designLibraryGroup.getGroupId(), themeId,
 			RandomTestUtil.randomString());
 
+		Layout typePortletLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup);
+
+		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
+			testGroup.getGroupId(), themeId, RandomTestUtil.randomString());
+
+		_testGetSitePageSpecificationStyleBooksPageWithLayout(
+			designLibraryStyleBookEntry,
+			typePortletLayout.getExternalReferenceCode(), siteStyleBookEntry);
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
-		Layout widgetLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		_testGetSitePageSpecificationStyleBooksPageWithLayout(
-			designLibraryStyleBookEntry,
-			widgetLayout.getExternalReferenceCode(), siteStyleBookEntry);
-
-		Layout displayPageLayout =
+		Layout displayPageLayoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryTestUtil.
 				getDisplayPageLayoutPageTemplateEntryLayout(serviceContext);
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			displayPageLayout.getExternalReferenceCode(), siteStyleBookEntry);
+			displayPageLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
+			siteStyleBookEntry);
 
-		Layout masterLayout =
+		Layout masterLayoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryTestUtil.
 				getMasterLayoutPageTemplateEntryLayout(serviceContext);
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			masterLayout.getExternalReferenceCode(), siteStyleBookEntry);
+			masterLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
+			siteStyleBookEntry);
 
-		Layout utilityPageLayout =
+		Layout layoutUtilityPageEntryLayout =
 			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
 				serviceContext);
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			utilityPageLayout.getExternalReferenceCode(), siteStyleBookEntry);
+			layoutUtilityPageEntryLayout.getExternalReferenceCode(),
+			siteStyleBookEntry);
 
-		Layout pageTemplateLayout =
+		Layout basicLayoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryTestUtil.
 				getBasicLayoutPageTemplateEntryLayout(serviceContext);
 
 		_testGetSitePageSpecificationStyleBooksPageWithLayout(
 			designLibraryStyleBookEntry,
-			pageTemplateLayout.getExternalReferenceCode(), siteStyleBookEntry);
+			basicLayoutPageTemplateEntryLayout.getExternalReferenceCode(),
+			siteStyleBookEntry);
 
 		LayoutPageTemplateEntry widgetPageLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryTestUtil.
@@ -499,8 +504,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 	private void _testGetSitePageSpecificationStyleBooksPageWithoutPermission()
 		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
 		User user = UserTestUtil.addGroupUser(
 			testGroup, RoleConstants.SITE_MEMBER);
@@ -519,6 +522,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
 		try {
 			styleBookResource.getSitePageSpecificationStyleBooksPage(
