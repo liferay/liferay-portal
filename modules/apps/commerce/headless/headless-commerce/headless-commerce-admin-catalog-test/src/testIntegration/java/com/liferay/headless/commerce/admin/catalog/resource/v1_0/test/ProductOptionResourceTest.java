@@ -262,11 +262,10 @@ public class ProductOptionResourceTest
 		Collection<ProductOption> productOptions) {
 
 		for (ProductOption productOption : productOptions) {
-			long optionId = productOption.getOptionId();
+			ProductOption curProductOption = _productOptions.putIfAbsent(
+				productOption.getOptionId(), productOption);
 
-			if (!_productOptions.containsKey(optionId)) {
-				_productOptions.put(optionId, productOption);
-
+			if (curProductOption == null) {
 				return productOption;
 			}
 		}
