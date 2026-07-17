@@ -93,7 +93,7 @@ public class SEOStudioService extends BaseService {
 		return new Domain(new JSONObject(responseJSON));
 	}
 
-	public String getPage(int page, int pageSize, long seoStudioScanId) {
+	public String getSEOStudioPage(int page, int pageSize, long seoStudioScanId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/pages"
 		).queryParam(
@@ -109,7 +109,7 @@ public class SEOStudioService extends BaseService {
 		return get(_getAuthorization(), uriComponents.toUri());
 	}
 
-	public String patchDomain(JSONObject jsonObject, long seoStudioDomainId) {
+	public String patchSEOStudioDomain(JSONObject jsonObject, long seoStudioDomainId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
@@ -141,7 +141,7 @@ public class SEOStudioService extends BaseService {
 		return patchScan(jsonObject, seoStudioScanId);
 	}
 
-	public String postInsightType(JSONObject jsonObject) {
+	public String postSEOStudioInsightType(JSONObject jsonObject) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/insight-types"
 		).build();
