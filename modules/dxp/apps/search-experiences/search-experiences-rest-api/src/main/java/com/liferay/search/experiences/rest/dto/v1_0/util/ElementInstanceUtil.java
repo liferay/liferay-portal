@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.search.experiences.rest.dto.v1_0.ElementDefinition;
 import com.liferay.search.experiences.rest.dto.v1_0.ElementInstance;
 import com.liferay.search.experiences.rest.dto.v1_0.SXPElement;
 
@@ -45,23 +46,47 @@ public class ElementInstanceUtil {
 			return null;
 		}
 
-		ConfigurationUtil.unpack(elementInstance.getConfigurationEntry());
+		Object customSXPElement = null;
 
-		SXPElement sxpElement = elementInstance.getSxpElement();
+		Map<String, Object> uiConfigurationValues =
+			elementInstance.getUiConfigurationValues();
 
-		if (sxpElement != null) {
-			elementInstance.setSxpElement(
-				() -> SXPElementUtil.unpack(sxpElement));
+		if (MapUtil.isNotEmpty(uiConfigurationValues)) {
+			customSXPElement = uiConfigurationValues.get("sxpElement");
 		}
 
-		if (MapUtil.isNotEmpty(elementInstance.getUiConfigurationValues())) {
-			Map<String, Object> values1 =
-				elementInstance.getUiConfigurationValues();
+		if (customSXPElement instanceof String) {
+			SXPElement sxpElement = SXPElementUtil.toSXPElement(
+				(String)customSXPElement);
 
-			Map<String, Object> values2 = new HashMap<>(values1);
+			elementInstance.setSxpElement(() -> sxpElement);
 
-			values2.forEach(
-				(name, value) -> values1.put(name, UnpackUtil.unpack(value)));
+			ElementDefinition elementDefinition =
+				sxpElement.getElementDefinition();
+
+			if (elementDefinition != null) {
+				elementInstance.setConfigurationEntry(
+					elementDefinition::getConfiguration);
+			}
+		}
+		else {
+			SXPElement sxpElement = elementInstance.getSxpElement();
+
+			if (sxpElement != null) {
+				elementInstance.setSxpElement(
+					() -> SXPElementUtil.unpack(sxpElement));
+			}
+		}
+
+		ConfigurationUtil.unpack(elementInstance.getConfigurationEntry());
+
+		if (MapUtil.isNotEmpty(uiConfigurationValues)) {
+			Map<String, Object> unpackedUiConfigurationValues = new HashMap<>(
+				uiConfigurationValues);
+
+			unpackedUiConfigurationValues.forEach(
+				(name, value) -> uiConfigurationValues.put(
+					name, UnpackUtil.unpack(value)));
 		}
 
 		return elementInstance;
