@@ -5,23 +5,30 @@
 
 import getLocalizedFieldValue from './getLocalizedFieldValue';
 
-interface LocalizedTextDataRendererProps {
+interface ListEntry {
+	key: string;
+	name: string;
+}
+
+interface LocalizedPicklistDataRendererProps {
 	itemData: {[key: string]: any};
 	options: {fieldName: string};
 	value?: any;
 }
 
-export default function LocalizedTextDataRenderer({
+export default function LocalizedPicklistDataRenderer({
 	itemData,
 	options,
 	value,
-}: LocalizedTextDataRendererProps) {
+}: LocalizedPicklistDataRendererProps) {
 	const localizedFieldValue = getLocalizedFieldValue(
 		itemData,
 		options?.fieldName
 	);
 
-	return (
-		(localizedFieldValue === undefined ? value : localizedFieldValue) ?? ''
-	);
+	if (localizedFieldValue === undefined) {
+		return (typeof value === 'object' ? value?.name : value) ?? '';
+	}
+
+	return (localizedFieldValue as ListEntry)?.name ?? '';
 }

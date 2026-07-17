@@ -394,13 +394,10 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 
 		if (Validator.isNull(objectField.getRelationshipType())) {
 			_addFDSTableSchemaField(
-				objectField.getBusinessType(),
-				_getLocalizedTextContentRenderer(objectField),
+				objectField.getBusinessType(), _getContentRenderer(objectField),
 				objectField.getDBType(), fdsTableSchemaBuilder,
-				_getFieldName(
-					objectField.getBusinessType(), objectField.getName()),
-				label, false, objectField.getObjectFieldSettings(),
-				objectField.isIndexed());
+				_getFieldName(objectField), label, false,
+				objectField.getObjectFieldSettings(), objectField.isIndexed());
 		}
 		else if (Objects.equals(
 					objectField.getRelationshipType(),
@@ -429,7 +426,7 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 			else {
 				_addFDSTableSchemaField(
 					titleObjectField.getBusinessType(),
-					_getContentRenderer(titleObjectField.getName()),
+					_getContentRenderer(titleObjectField),
 					titleObjectField.getDBType(), fdsTableSchemaBuilder,
 					_getFieldName(
 						titleObjectField.getBusinessType(),
@@ -443,12 +440,48 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 		}
 	}
 
-	private String _getContentRenderer(String fieldName) {
-		if (Objects.equals(fieldName, "status")) {
-			return "status";
+	private String _getContentRenderer(ObjectField objectField) {
+		if (Objects.equals(objectField.getName(), "status")) {
+			return "statusDataRenderer";
 		}
 
-		return null;
+		if (!_isLocalizedTextField(objectField)) {
+			return null;
+		}
+
+		String businessType = objectField.getBusinessType();
+
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			return "localizedTextDataRenderer";
+		}
+
+		if (Objects.equals(
+				businessType,
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+			return "localizedMultiselectPicklistDataRenderer";
+		}
+
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+			return "localizedPicklistDataRenderer";
+		}
+
+		return "localizedRichTextDataRenderer";
+	}
+
+	private String _getFieldName(ObjectField objectField) {
+		if (_isLocalizedTextField(objectField)) {
+			return objectField.getName();
+		}
+
+		return _getFieldName(
+			objectField.getBusinessType(), objectField.getName());
 	}
 
 	private String _getFieldName(String businessType, String fieldName) {
@@ -517,12 +550,29 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 		return defaultLabel;
 	}
 
-	private String _getLocalizedTextContentRenderer(ObjectField objectField) {
-		if (objectField.isLocalized()) {
-			return "localizedTextDataRenderer";
+	private boolean _isLocalizedTextField(ObjectField objectField) {
+		if (!objectField.isLocalized()) {
+			return false;
 		}
 
-		return null;
+		String businessType = objectField.getBusinessType();
+
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
+			Objects.equals(
+				businessType,
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
