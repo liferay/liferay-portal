@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -38,9 +39,7 @@ import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -162,19 +161,18 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		List<Long> resourcesFolderIds = new ArrayList<>();
+		long[] resourcesFolderIds = transformToLongArray(
+			_fragmentCollectionLocalService.getFragmentCollections(groupId),
+			fragmentCollection -> {
+				long resourcesFolderId =
+					fragmentCollection.getResourcesFolderId(false);
 
-		for (FragmentCollection fragmentCollection :
-				_fragmentCollectionLocalService.getFragmentCollections(
-					groupId)) {
+				if (resourcesFolderId <= 0) {
+					return null;
+				}
 
-			long resourcesFolderId = fragmentCollection.getResourcesFolderId(
-				false);
-
-			if (resourcesFolderId > 0) {
-				resourcesFolderIds.add(resourcesFolderId);
-			}
-		}
+				return resourcesFolderId;
+			});
 
 		return _getResourceFoldersPage(
 			filter, groupId, pagination, resourcesFolderIds);
@@ -284,10 +282,10 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 	private Page<ResourceFolder> _getResourceFoldersPage(
 			Filter filter, long groupId, Pagination pagination,
-			List<Long> resourcesFolderIds)
+			long[] resourcesFolderIds)
 		throws Exception {
 
-		if (resourcesFolderIds.isEmpty()) {
+		if (ArrayUtil.isEmpty(resourcesFolderIds)) {
 			return Page.of(Collections.emptyList());
 		}
 
