@@ -443,11 +443,7 @@ public abstract class BaseWorkspaceGitRepository
 
 				commitsJSONArray.put(localGitCommit.toJSONObject());
 
-				String sha = localGitCommit.getSHA();
-
-				if (requiredCommitSHAs.contains(sha)) {
-					requiredCommitSHAs.remove(sha);
-				}
+				requiredCommitSHAs.remove(localGitCommit.getSHA());
 
 				if (requiredCommitSHAs.isEmpty()) {
 					break;

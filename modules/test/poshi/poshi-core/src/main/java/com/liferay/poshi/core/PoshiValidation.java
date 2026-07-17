@@ -991,9 +991,7 @@ public class PoshiValidation {
 
 			String propertyName = propertyPoshiElement.attributeValue("name");
 
-			if (requiredPropertyNames.contains(propertyName)) {
-				requiredPropertyNames.remove(propertyName);
-			}
+			requiredPropertyNames.remove(propertyName);
 		}
 
 		if (requiredPropertyNames.isEmpty()) {
@@ -1808,7 +1806,7 @@ public class PoshiValidation {
 		List<String> possibleTagElementNames = Arrays.asList(
 			"command", "property", "set-up", "tear-down", "var");
 
-		List<String> propertyNames = new ArrayList<>();
+		Set<String> propertyNames = new HashSet<>();
 
 		for (PoshiElement childPoshiElement : childPoshiElements) {
 			String childPoshiElementName = childPoshiElement.getName();
@@ -1839,10 +1837,7 @@ public class PoshiValidation {
 
 				String propertyName = childPoshiElement.attributeValue("name");
 
-				if (!propertyNames.contains(propertyName)) {
-					propertyNames.add(propertyName);
-				}
-				else {
+				if (!propertyNames.add(propertyName)) {
 					_exceptions.add(
 						new PoshiElementException(
 							childPoshiElement, "Duplicate property name ",

@@ -28,9 +28,7 @@ public class OrderedProperties extends Properties {
 
 	@Override
 	public Object put(Object key, Object value) {
-		if (_names.contains(key)) {
-			_names.remove(key);
-		}
+		_names.remove(key);
 
 		_names.add((String)key);
 
