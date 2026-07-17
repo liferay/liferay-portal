@@ -182,7 +182,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-95281")
+	@TestInfo({"LPD-88395", "LPD-95281"})
 	public void testDeleteSiteFragment() throws Exception {
 		super.testDeleteSiteFragment();
 
@@ -191,11 +191,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testDeleteSiteFragment(true, true);
 		_testDeleteSiteFragmentNonexistent();
 		_testDeleteSiteFragmentWithFormFragment();
+		_testDeleteSiteFragmentWithoutPermissionsProblemException();
+		_testDeleteSiteFragmentWithPermissions();
 	}
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88489", "LPD-95281"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281"})
 	public void testGetSiteFragment() throws Exception {
 		super.testGetSiteFragment();
 
@@ -205,6 +207,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentFragmentSet();
 		_testGetSiteFragmentThumbnailURLReference();
 		_testGetSiteFragmentWithFormFragment();
+		_testGetSiteFragmentWithoutPermissionsProblemException();
+		_testGetSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -233,7 +237,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88489", "LPD-95281"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281"})
 	public void testPostSiteFragment() throws Exception {
 		super.testPostSiteFragment();
 
@@ -264,11 +268,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentThumbnailURLReferenceURLUnreachableProblemException();
 		_testPostSiteFragmentThumbnailURLReferenceURLUnsupportedProtocolProblemException();
 		_testPostSiteFragmentWithFormFragment();
+		_testPostSiteFragmentWithoutPermissionsProblemException();
+		_testPostSiteFragmentWithPermissions();
 	}
 
 	@Override
 	@Test
-	@TestInfo("LPD-95281")
+	@TestInfo({"LPD-88395", "LPD-95281"})
 	public void testPostSiteFragmentSetFragment() throws Exception {
 		super.testPostSiteFragmentSetFragment();
 
@@ -284,11 +290,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentSetFragmentFragmentSetNonexisting();
 		_testPostSiteFragmentSetFragmentFragmentSetNull();
 		_testPostSiteFragmentSetFragmentWithFormFragment();
+		_testPostSiteFragmentSetFragmentWithoutPermissionsProblemException();
+		_testPostSiteFragmentSetFragmentWithPermissions();
 	}
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88489", "LPD-95281"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-95281"})
 	public void testPutSiteFragment() throws Exception {
 		_testPutSiteFragmentBatch();
 		_testPutSiteFragmentCreateApproved();
@@ -323,6 +331,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateThumbnailURLReferenceURL();
 		_testPutSiteFragmentUpdateTypeProblemException();
 		_testPutSiteFragmentWithFormFragment();
+		_testPutSiteFragmentWithoutPermissionsProblemException();
+		_testPutSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -1253,6 +1263,37 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Assert.assertTrue(fragmentEntryVersions.isEmpty());
 	}
 
+	private void _testDeleteSiteFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection));
+
+		try {
+			_userWithoutPermissionsFragmentResource.deleteSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteFragmentWithPermissions() throws Exception {
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection));
+
+		assertHttpResponseStatusCode(
+			204,
+			_userWithPermissionsFragmentResource.deleteSiteFragmentHttpResponse(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode()));
+	}
+
 	private void _testGetSiteFragment(boolean approved, boolean draft)
 		throws Exception {
 
@@ -1521,6 +1562,40 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			fragmentResource.getSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				fragment.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection));
+
+		try {
+			_userWithoutPermissionsFragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteFragmentWithPermissions() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection));
+
+		Fragment getFragment =
+			_userWithPermissionsFragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				postFragment.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			postFragment.getExternalReferenceCode(),
+			getFragment.getExternalReferenceCode());
 	}
 
 	private void _testPostFragmentApproved(
@@ -2071,6 +2146,41 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			_postSiteFragmentSetFragment(_randomFormFragment(fieldTypes)));
 	}
 
+	private void _testPostSiteFragmentSetFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		try {
+			_userWithoutPermissionsFragmentResource.postSiteFragmentSetFragment(
+				testGroup.getExternalReferenceCode(),
+				_fragmentCollection.getExternalReferenceCode(),
+				_randomFragment(true, true, _fragmentCollection));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPostSiteFragmentSetFragmentWithPermissions()
+		throws Exception {
+
+		Fragment fragment = _randomFragment(
+			true, true, RandomTestUtil.randomString(), _fragmentCollection,
+			null);
+
+		Fragment postFragment =
+			_userWithPermissionsFragmentResource.postSiteFragmentSetFragment(
+				testGroup.getExternalReferenceCode(),
+				_fragmentCollection.getExternalReferenceCode(), fragment);
+
+		Assert.assertEquals(
+			fragment.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
+	}
+
 	private void _testPostSiteFragmentThumbnailURLReferenceExternalReferenceCode()
 		throws Exception {
 
@@ -2280,6 +2390,37 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_assertProblemException(
 			"the-form-fragment-field-types-are-invalid",
 			() -> _postSiteFragment(_randomFormFragment(fieldTypes)));
+	}
+
+	private void _testPostSiteFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		try {
+			_userWithoutPermissionsFragmentResource.postSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				_randomFragment(true, true, _fragmentCollection));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPostSiteFragmentWithPermissions() throws Exception {
+		Fragment fragment = _randomFragment(
+			true, true, RandomTestUtil.randomString(), _fragmentCollection,
+			null);
+
+		Fragment postFragment =
+			_userWithPermissionsFragmentResource.postSiteFragment(
+				testGroup.getExternalReferenceCode(), fragment);
+
+		Assert.assertEquals(
+			fragment.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
 	}
 
 	private void _testPutFragment(
@@ -3023,6 +3164,36 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			() -> fragmentResource.putSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				formFragment.getExternalReferenceCode(), formFragment));
+	}
+
+	private void _testPutSiteFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		try {
+			_userWithoutPermissionsFragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
+				_randomFragment(true, true, _fragmentCollection));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutSiteFragmentWithPermissions() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Fragment putFragment =
+			_userWithPermissionsFragmentResource.putSiteFragment(
+				testGroup.getExternalReferenceCode(), externalReferenceCode,
+				_randomFragment(true, true, _fragmentCollection));
+
+		Assert.assertEquals(
+			externalReferenceCode, putFragment.getExternalReferenceCode());
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection) {
