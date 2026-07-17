@@ -65,11 +65,11 @@ public class FragmentBreadcrumbEntryContributorImplTest {
 	@Test
 	@TestInfo("LPD-97637")
 	public void testGetBreadcrumbEntries() {
-		_testGetBreadcrumbEntriesWhenPortletIsNotFragment();
+		_testGetBreadcrumbEntriesWhenNotInFragmentPortlet();
 		_testGetBreadcrumbEntriesWhenScopeIsNotDesignLibrary();
 		_testGetBreadcrumbEntriesForDefaultCollection();
 		_testGetBreadcrumbEntriesForSpecificCollection();
-		_testGetBreadcrumbEntriesForFragment();
+		_testGetBreadcrumbEntriesForFragmentEntry();
 	}
 
 	private FragmentCollection _mockFragmentCollection(
@@ -209,7 +209,7 @@ public class FragmentBreadcrumbEntryContributorImplTest {
 				originalBreadcrumbEntries, _mockHttpServletRequest));
 	}
 
-	private void _testGetBreadcrumbEntriesForFragment() {
+	private void _testGetBreadcrumbEntriesForFragmentEntry() {
 		_setUpFragmentPortletInDesignLibraryScope();
 
 		BreadcrumbEntry originalBreadcrumbEntry = new BreadcrumbEntry();
@@ -276,7 +276,7 @@ public class FragmentBreadcrumbEntryContributorImplTest {
 			breadcrumbEntries.toString(), 2, breadcrumbEntries.size());
 	}
 
-	private void _testGetBreadcrumbEntriesWhenPortletIsNotFragment() {
+	private void _testGetBreadcrumbEntriesWhenNotInFragmentPortlet() {
 		Mockito.when(
 			_portletDisplay.getPortletName()
 		).thenReturn(
