@@ -1132,43 +1132,38 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	public void testSiblingGroupScopeIdWithRecreatedGroup() throws Exception {
 		Group siblingGroup = GroupTestUtil.addGroup();
 
-		try {
-			String portletId = LayoutTestUtil.addPortletToLayout(
-				TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
-				HashMapBuilder.put(
-					"scopeIds",
-					new String[] {
-						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
-							siblingGroup.getGroupId()
-					}
-				).build());
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"scopeIds",
+				new String[] {
+					AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+						siblingGroup.getGroupId()
+				}
+			).build());
 
-			exportPortlet(portletId, layout);
+		exportPortlet(portletId, layout);
 
-			String siblingGroupKey = siblingGroup.getGroupKey();
+		String siblingGroupKey = siblingGroup.getGroupKey();
 
+		_groupLocalService.deleteGroup(siblingGroup);
+
+		siblingGroup = GroupTestUtil.addGroup(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, siblingGroupKey);
+
+		importPortlet(portletId, layout);
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+		Assert.assertEquals(
+			AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+				siblingGroup.getGroupId(),
+			portletPreferences.getValue("scopeIds", null));
+
+		if (_groupLocalService.fetchGroup(siblingGroup.getGroupId()) != null) {
 			_groupLocalService.deleteGroup(siblingGroup);
-
-			siblingGroup = GroupTestUtil.addGroup(
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				GroupConstants.DEFAULT_PARENT_GROUP_ID, siblingGroupKey);
-
-			importPortlet(portletId, layout);
-
-			PortletPreferences portletPreferences =
-				LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
-
-			Assert.assertEquals(
-				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
-					siblingGroup.getGroupId(),
-				portletPreferences.getValue("scopeIds", null));
-		}
-		finally {
-			if (_groupLocalService.fetchGroup(siblingGroup.getGroupId()) !=
-					null) {
-
-				_groupLocalService.deleteGroup(siblingGroup);
-			}
 		}
 	}
 
