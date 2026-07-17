@@ -1326,6 +1326,139 @@ public class SegmentsEntryPersistenceImpl
 			new Object[] {groupIds, ArrayUtil.sortedUnique(sources)}, groupIds);
 	}
 
+	private CollectionPersistenceFinder<SegmentsEntry, NoSuchEntryException>
+		_collectionPersistenceFinderByC_SRC;
+
+	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching segments entries
+	 */
+	@Override
+	public List<SegmentsEntry> findByC_SRC(
+		long companyId, String source, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_SRC.find(
+			finderCache, new Object[] {companyId, new String[] {source}}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first segments entry in the ordered set where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments entry
+	 * @throws NoSuchEntryException if a matching segments entry could not be found
+	 */
+	@Override
+	public SegmentsEntry findByC_SRC_First(
+			long companyId, String source,
+			OrderByComparator<SegmentsEntry> orderByComparator)
+		throws NoSuchEntryException {
+
+		return _collectionPersistenceFinderByC_SRC.findFirst(
+			finderCache, new Object[] {companyId, new String[] {source}},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first segments entry in the ordered set where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments entry, or <code>null</code> if a matching segments entry could not be found
+	 */
+	@Override
+	public SegmentsEntry fetchByC_SRC_First(
+		long companyId, String source,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_SRC.fetchFirst(
+			finderCache, new Object[] {companyId, new String[] {source}},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching segments entries
+	 */
+	@Override
+	public List<SegmentsEntry> findByC_SRC(
+		long companyId, String[] sources, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_SRC.find(
+			finderCache,
+			new Object[] {companyId, ArrayUtil.sortedUnique(sources)}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Removes all the segments entries where companyId = &#63; and source = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 */
+	@Override
+	public void removeByC_SRC(long companyId, String source) {
+		_collectionPersistenceFinderByC_SRC.remove(
+			finderCache, new Object[] {companyId, new String[] {source}});
+	}
+
+	/**
+	 * Returns the number of segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @return the number of matching segments entries
+	 */
+	@Override
+	public int countByC_SRC(long companyId, String source) {
+		return _collectionPersistenceFinderByC_SRC.count(
+			finderCache, new Object[] {companyId, new String[] {source}});
+	}
+
+	/**
+	 * Returns the number of segments entries where companyId = &#63; and source = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @return the number of matching segments entries
+	 */
+	@Override
+	public int countByC_SRC(long companyId, String[] sources) {
+		return _collectionPersistenceFinderByC_SRC.count(
+			finderCache,
+			new Object[] {companyId, ArrayUtil.sortedUnique(sources)});
+	}
+
 	private FilterCollectionPersistenceFinder
 		<SegmentsEntry, NoSuchEntryException>
 			_collectionPersistenceFinderByG_A_SRC;
@@ -2267,6 +2400,34 @@ public class SegmentsEntryPersistenceImpl
 					"segmentsEntry.", "source", FinderColumn.Type.STRING, "=",
 					false, true, true, SegmentsEntry::getSource));
 
+		_collectionPersistenceFinderByC_SRC = new CollectionPersistenceFinder<>(
+			this,
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_SRC",
+				new String[] {
+					Long.class.getName(), String.class.getName(),
+					Integer.class.getName(), Integer.class.getName(),
+					OrderByComparator.class.getName()
+				},
+				new String[] {"companyId", "source"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_SRC",
+				new String[] {Long.class.getName(), String.class.getName()},
+				new String[] {"companyId", "source"}, 0, 2, true, null),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_SRC",
+				new String[] {Long.class.getName(), String.class.getName()},
+				new String[] {"companyId", "source"}, 0, 2, false, null),
+			_SQL_SELECT_SEGMENTSENTRY_WHERE, _SQL_COUNT_SEGMENTSENTRY_WHERE,
+			SegmentsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			null,
+			new FinderColumn<>(
+				"segmentsEntry.", "companyId", FinderColumn.Type.LONG, "=",
+				true, true, SegmentsEntry::getCompanyId),
+			new ArrayableFinderColumn<>(
+				"segmentsEntry.", "source", FinderColumn.Type.STRING, "=",
+				false, true, true, SegmentsEntry::getSource));
+
 		_collectionPersistenceFinderByG_A_SRC =
 			new FilterCollectionPersistenceFinder<>(
 				this,
@@ -2392,4 +2553,4 @@ public class SegmentsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:648879012
+// LIFERAY-SERVICE-BUILDER-HASH:634004374

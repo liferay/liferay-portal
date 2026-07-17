@@ -899,6 +899,102 @@ public interface SegmentsEntryPersistence
 	public int filterCountByG_SRC(long[] groupIds, String[] sources);
 
 	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching segments entries
+	 */
+	public java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String source, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first segments entry in the ordered set where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments entry
+	 * @throws NoSuchEntryException if a matching segments entry could not be found
+	 */
+	public SegmentsEntry findByC_SRC_First(
+			long companyId, String source,
+			com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+				orderByComparator)
+		throws NoSuchEntryException;
+
+	/**
+	 * Returns the first segments entry in the ordered set where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching segments entry, or <code>null</code> if a matching segments entry could not be found
+	 */
+	public SegmentsEntry fetchByC_SRC_First(
+		long companyId, String source,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching segments entries
+	 */
+	public java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String[] sources, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Removes all the segments entries where companyId = &#63; and source = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 */
+	public void removeByC_SRC(long companyId, String source);
+
+	/**
+	 * Returns the number of segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @return the number of matching segments entries
+	 */
+	public int countByC_SRC(long companyId, String source);
+
+	/**
+	 * Returns the number of segments entries where companyId = &#63; and source = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @return the number of matching segments entries
+	 */
+	public int countByC_SRC(long companyId, String[] sources);
+
+	/**
 	 * Returns an ordered range of all the segments entries where groupId = &#63; and active = &#63; and source = &#63;.
 	 *
 	 * <p>
@@ -2041,6 +2137,122 @@ public interface SegmentsEntryPersistence
 	}
 
 	/**
+	 * Returns all the segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @return the matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String source) {
+
+		return findByC_SRC(
+			companyId, source,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @return the range of matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String source, int start, int end) {
+
+		return findByC_SRC(companyId, source, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param source the source
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String source, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator) {
+
+		return findByC_SRC(
+			companyId, source, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns all the segments entries where companyId = &#63; and source = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @return the matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String[] sources) {
+
+		return findByC_SRC(
+			companyId, sources,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the segments entries where companyId = &#63; and source = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @return the range of matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String[] sources, int start, int end) {
+
+		return findByC_SRC(companyId, sources, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the segments entries where companyId = &#63; and source = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.segments.model.impl.SegmentsEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param sources the sources
+	 * @param start the lower bound of the range of segments entries
+	 * @param end the upper bound of the range of segments entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching segments entries
+	 */
+	public default java.util.List<SegmentsEntry> findByC_SRC(
+		long companyId, String[] sources, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator) {
+
+		return findByC_SRC(
+			companyId, sources, start, end, orderByComparator, true);
+	}
+
+	/**
 	 * Returns all the segments entries where groupId = &#63; and active = &#63; and source = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -2237,4 +2449,4 @@ public interface SegmentsEntryPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1030634594
+// LIFERAY-SERVICE-BUILDER-HASH:1224424585

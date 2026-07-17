@@ -366,6 +366,14 @@ public class SegmentsEntryLocalServiceUtil {
 	}
 
 	public static List<SegmentsEntry> getSegmentsEntriesBySource(
+		long companyId, String source, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return getService().getSegmentsEntriesBySource(
+			companyId, source, start, end, orderByComparator);
+	}
+
+	public static List<SegmentsEntry> getSegmentsEntriesBySource(
 		String source, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
@@ -516,4 +524,4 @@ public class SegmentsEntryLocalServiceUtil {
 			SegmentsEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1670083519
+// LIFERAY-SERVICE-BUILDER-HASH:-1759649487

@@ -4,12 +4,12 @@ create index IX_9B8A5E80 on SExperienceAudienceEntryRel (groupId, segmentsExperi
 create unique index IX_1F1DEAC2 on SExperienceAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_F6225631 on SegmentsEntry (active_);
-create index IX_C6E84946 on SegmentsEntry (groupId, active_, source[$COLUMN_LENGTH:75$]);
+create index IX_2E0C3F77 on SegmentsEntry (groupId, active_);
 create unique index IX_E42D8589 on SegmentsEntry (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_DB53F1B1 on SegmentsEntry (groupId, segmentsEntryKey[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_1EDBDAA1 on SegmentsEntry (groupId, source[$COLUMN_LENGTH:75$]);
+create index IX_9B28F988 on SegmentsEntry (groupId, source[$COLUMN_LENGTH:75$], active_);
 create unique index IX_78D59000 on SegmentsEntry (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_90AB04A7 on SegmentsEntry (source[$COLUMN_LENGTH:75$]);
+create index IX_8F676121 on SegmentsEntry (source[$COLUMN_LENGTH:75$], companyId);
 create index IX_8046BADC on SegmentsEntry (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_64CBABA8 on SegmentsEntryRel (classNameId, classPK, groupId);
