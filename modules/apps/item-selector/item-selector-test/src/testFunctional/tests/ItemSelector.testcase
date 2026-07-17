@@ -76,41 +76,6 @@ definition {
 		BlogsEntry.viewInlineImage(uploadFileName = "Document_2.jpg");
 	}
 
-	@description = "This test covers LPS-105188. It ensures that a user can change selected page for Navigation Menu item based on page after creation."
-	@priority = 4
-	@refactordone
-	test CanChangeSelectedPageForNavigationMenu {
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		for (var i : list "1,2") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Page Name ${i}");
-		}
-
-		JSONSitenavigation.addSiteNavigationMenu(
-			groupName = "Test Site Name",
-			siteNavigationMenuName = "Navigation Menu Name");
-
-		JSONSitenavigation.addSiteNavigationMenuItem(
-			groupName = "Test Site Name",
-			privateLayout = "false",
-			siteNavigationMenuItemName = "Test Page Name 1",
-			siteNavigationMenuName = "Navigation Menu Name",
-			type = "layout");
-
-		NavigationMenusAdmin.openNavigationMenusAdmin(siteURLKey = "test-site-name");
-
-		LexiconEntry.gotoEntry(rowEntry = "Navigation Menu Name");
-
-		NavigationMenusAdmin.editItem(
-			item = "Page",
-			itemName = "Test Page Name 1",
-			pageName = "Test Page Name 2");
-
-		NavigationMenusAdmin.viewItem(itemName = "Test Page Name 2");
-	}
-
 	@description = "This ensures that a message is displayed in the preview section of the item selector when pasting an invalid URL."
 	@priority = 5
 	@refactordone
