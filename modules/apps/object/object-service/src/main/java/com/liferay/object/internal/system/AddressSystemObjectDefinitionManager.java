@@ -292,8 +292,10 @@ public class AddressSystemObjectDefinitionManager
 		Map<String, Object> variables = super.getVariables(
 			contentType, objectDefinition, oldValues, payloadJSONObject);
 
-		if (variables.containsKey("street1")) {
-			variables.put("streetAddressLine1", variables.get("street1"));
+		Object street1 = variables.get("street1");
+
+		if (street1 != null) {
+			variables.put("streetAddressLine1", street1);
 		}
 
 		return variables;

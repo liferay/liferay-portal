@@ -310,8 +310,10 @@ public class CPDefinitionSystemObjectDefinitionManager
 		Map<String, Object> variables = super.getVariables(
 			contentType, objectDefinition, oldValues, payloadJSONObject);
 
-		if (variables.containsKey("CProductId")) {
-			variables.put("productId", variables.get("CProductId"));
+		Object cProductId = variables.get("CProductId");
+
+		if (cProductId != null) {
+			variables.put("productId", cProductId);
 		}
 
 		return variables;
