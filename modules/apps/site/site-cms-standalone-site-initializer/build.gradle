@@ -49,6 +49,7 @@ dependencies {
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:site:site-memberships-api")
 	compileOnly project(":apps:staging:staging-api")
+	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":apps:style-book:style-book-api")
 	compileOnly project(":apps:template:template-api")
