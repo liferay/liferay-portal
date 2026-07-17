@@ -918,6 +918,24 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	@Override
+	public WikiPage fetchPage(long resourcePrimKey, Boolean head) {
+		WikiPageResource pageResource =
+			_wikiPageResourcePersistence.fetchByPrimaryKey(resourcePrimKey);
+
+		if (pageResource == null) {
+			return null;
+		}
+
+		if (head == null) {
+			return wikiPagePersistence.fetchByN_T_First(
+				pageResource.getNodeId(), pageResource.getTitle(), null);
+		}
+
+		return wikiPagePersistence.fetchByN_T_H_First(
+			pageResource.getNodeId(), pageResource.getTitle(), head, null);
+	}
+
+	@Override
 	public WikiPage fetchPage(long nodeId, String title) {
 		return wikiPagePersistence.fetchByN_T_H_First(
 			nodeId, title, true, null);
