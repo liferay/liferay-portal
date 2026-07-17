@@ -1,0 +1,27 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task patch(type: PatchTask)
+
+dependencies {
+	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
+	compileOnly group: "net.java.dev.msv", name: "msv-core", version: "2022.7"
+	compileOnly group: "org.apache.cxf", name: "cxf-core", version: "3.6.11"
+	compileOnly group: "org.codehaus.woodstox", name: "stax2-api", version: "4.2.1"
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/apache/cxf/attachment/AttachmentDeserializer.java"
+	fileNames "org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java"
+	fileNames "org/apache/cxf/ws/addressing/EndpointReferenceUtils.java"
+	originalLibModuleName = "cxf-core"
+}
