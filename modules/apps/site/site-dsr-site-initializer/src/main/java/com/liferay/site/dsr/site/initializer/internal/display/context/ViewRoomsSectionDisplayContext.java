@@ -206,7 +206,7 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 			).setIcon(
 				"cog"
 			).setLabel(
-				LanguageUtil.get(httpServletRequest, "settings")
+				LanguageUtil.get(httpServletRequest, "room-settings")
 			).setPermissionKey(
 				"update"
 			).build(

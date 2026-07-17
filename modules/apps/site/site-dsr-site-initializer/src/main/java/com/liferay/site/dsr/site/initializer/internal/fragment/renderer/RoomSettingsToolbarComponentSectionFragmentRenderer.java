@@ -115,7 +115,7 @@ public class RoomSettingsToolbarComponentSectionFragmentRenderer
 			"backURL", ParamUtil.getString(httpServletRequest, "redirect")
 		).put(
 			"headerTitle",
-			_language.format(themeDisplay.getLocale(), "edit-x", title)
+			_language.format(themeDisplay.getLocale(), "x-settings", title)
 		).build();
 	}
 
