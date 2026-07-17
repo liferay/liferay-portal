@@ -113,9 +113,10 @@ public class ViewRoomsSectionDisplayContextTest {
 
 		_languageUtilMockedStatic.when(
 			() -> LanguageUtil.get(
-				Mockito.any(HttpServletRequest.class), Mockito.eq("settings"))
+				Mockito.any(HttpServletRequest.class),
+				Mockito.eq("room-settings"))
 		).thenReturn(
-			"Settings"
+			"Room Settings"
 		);
 
 		_languageUtilMockedStatic.when(
@@ -408,7 +409,7 @@ public class ViewRoomsSectionDisplayContextTest {
 			StringBundler.concat(
 				DSRConstants.DSR_FRIENDLY_URL, "/e/room-settings/",
 				_CLASS_NAME_ID, "/{id}?redirect=", _URL_CURRENT),
-			"cog", "settings", "Settings", null, "update", null,
+			"cog", "settings", "Room Settings", null, "update", null,
 			fdsActionDropdownItems.get(3));
 		_assertFDSActionDropdownItem(
 			"#", "archive", "archive", "Archive", null, "update", null,
