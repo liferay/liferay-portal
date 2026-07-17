@@ -100,17 +100,8 @@ public class AMImageHTMLExportImportContentProcessor
 		}
 	}
 
-	private FileEntry _getFileEntry(long fileEntryId) {
-		try {
-			return _dlAppLocalService.getFileEntry(fileEntryId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return null;
-		}
+	private FileEntry _getFileEntry(long fileEntryId) throws Exception {
+		return _dlAppLocalService.fetchFileEntry(fileEntryId);
 	}
 
 	private Document _parseDocument(String html) {

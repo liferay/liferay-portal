@@ -156,17 +156,8 @@ public class CommerceMediaServlet extends HttpServlet {
 		return _getFileEntry(cpAttachmentFileEntry.getFileEntryId());
 	}
 
-	private FileEntry _getFileEntry(long fileEntryId) {
-		try {
-			return _dlAppLocalService.getFileEntry(fileEntryId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			return null;
-		}
+	private FileEntry _getFileEntry(long fileEntryId) throws PortalException {
+		return _dlAppLocalService.fetchFileEntry(fileEntryId);
 	}
 
 	private long _getGroupId(

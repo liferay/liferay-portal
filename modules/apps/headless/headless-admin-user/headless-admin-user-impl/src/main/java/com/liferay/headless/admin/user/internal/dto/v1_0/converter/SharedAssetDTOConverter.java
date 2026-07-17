@@ -301,7 +301,9 @@ public class SharedAssetDTOConverter
 		return fileEntry;
 	}
 
-	private String _getMimeType(SharingEntry sharingEntry) {
+	private String _getMimeType(SharingEntry sharingEntry)
+		throws PortalException {
+
 		if (StringUtil.equals(
 				ObjectEntryFolder.class.getName(),
 				sharingEntry.getClassName())) {
@@ -357,16 +359,10 @@ public class SharedAssetDTOConverter
 			return null;
 		}
 
-		com.liferay.portal.kernel.repository.model.FileEntry fileEntry = null;
+		com.liferay.portal.kernel.repository.model.FileEntry fileEntry =
+			_dlAppLocalService.fetchFileEntry(file);
 
-		try {
-			fileEntry = _dlAppLocalService.getFileEntry(file);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
+		if (fileEntry == null) {
 			return null;
 		}
 
