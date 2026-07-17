@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
@@ -190,7 +189,7 @@ public class ResourceBundleUtil {
 		}
 
 		if (resourceBundleLoader == null) {
-			if (!_portalResourceBundleClassLoaders.contains(classLoader)) {
+			if (_portalResourceBundleClassLoaders.get(classLoader) == null) {
 				try {
 					return ResourceBundle.getBundle(
 						baseName, locale, classLoader, UTF8Control.INSTANCE);
@@ -200,7 +199,8 @@ public class ResourceBundleUtil {
 						_log.debug(missingResourceException);
 					}
 
-					_portalResourceBundleClassLoaders.add(classLoader);
+					_portalResourceBundleClassLoaders.put(
+						classLoader, Boolean.TRUE);
 				}
 			}
 
@@ -214,9 +214,8 @@ public class ResourceBundleUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ResourceBundleUtil.class);
 
-	private static final Set<ClassLoader> _portalResourceBundleClassLoaders =
-		Collections.newSetFromMap(
-			new ConcurrentReferenceKeyHashMap<>(
-				FinalizeManager.WEAK_REFERENCE_FACTORY));
+	private static final Map<ClassLoader, Boolean>
+		_portalResourceBundleClassLoaders = new ConcurrentReferenceKeyHashMap<>(
+			FinalizeManager.WEAK_REFERENCE_FACTORY);
 
 }
