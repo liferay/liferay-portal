@@ -413,6 +413,10 @@ public class WikiPageLocalServiceUtil {
 		return getService().fetchPage(resourcePrimKey);
 	}
 
+	public static WikiPage fetchPage(long resourcePrimKey, Boolean head) {
+		return getService().fetchPage(resourcePrimKey, head);
+	}
+
 	public static WikiPage fetchPage(long nodeId, String title) {
 		return getService().fetchPage(nodeId, title);
 	}
@@ -1105,4 +1109,4 @@ public class WikiPageLocalServiceUtil {
 			WikiPageLocalServiceUtil.class, WikiPageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2131732958
+// LIFERAY-SERVICE-BUILDER-HASH:-1715222725

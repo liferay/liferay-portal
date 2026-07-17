@@ -460,6 +460,11 @@ public class WikiPageLocalServiceWrapper
 	}
 
 	@Override
+	public WikiPage fetchPage(long resourcePrimKey, Boolean head) {
+		return _wikiPageLocalService.fetchPage(resourcePrimKey, head);
+	}
+
+	@Override
 	public WikiPage fetchPage(long nodeId, String title) {
 		return _wikiPageLocalService.fetchPage(nodeId, title);
 	}
@@ -1287,4 +1292,4 @@ public class WikiPageLocalServiceWrapper
 	private WikiPageLocalService _wikiPageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1924662821
+// LIFERAY-SERVICE-BUILDER-HASH:1709699507

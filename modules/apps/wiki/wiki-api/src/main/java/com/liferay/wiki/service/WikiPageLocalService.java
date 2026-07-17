@@ -336,6 +336,9 @@ public interface WikiPageLocalService
 	public WikiPage fetchPage(long resourcePrimKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public WikiPage fetchPage(long resourcePrimKey, Boolean head);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WikiPage fetchPage(long nodeId, String title);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -801,4 +804,4 @@ public interface WikiPageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1265994469
+// LIFERAY-SERVICE-BUILDER-HASH:-1469070703
