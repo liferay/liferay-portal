@@ -344,8 +344,10 @@ $sidebar-light: map-deep-merge(
 		),
 
 		sidebar-footer: (
-			background-color: var(--sidebar-light-sidebar-footer, $white),
-			border: var(--sidebar-light-sidebar-footer, 0px solid $gray-300),
+			background-color:
+				var(--sidebar-light-sidebar-footer-background-color, $white),
+			border:
+				var(--sidebar-light-sidebar-footer-border, 0px solid $gray-300),
 		),
 
 		sidenav-start: (
