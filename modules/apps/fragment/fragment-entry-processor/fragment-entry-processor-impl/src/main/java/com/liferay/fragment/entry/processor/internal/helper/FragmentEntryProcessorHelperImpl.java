@@ -938,13 +938,14 @@ public class FragmentEntryProcessorHelperImpl
 	}
 
 	private String _getDefaultPattern(Locale locale) {
-		if (_defaultPatterns.containsKey(locale)) {
-			return _defaultPatterns.get(locale);
+		String defaultPattern = _defaultPatterns.get(locale);
+
+		if (defaultPattern != null) {
+			return defaultPattern;
 		}
 
-		String defaultPattern =
-			DateTimeFormatterBuilder.getLocalizedDateTimePattern(
-				FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale);
+		defaultPattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+			FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale);
 
 		_defaultPatterns.put(locale, defaultPattern);
 
@@ -1085,18 +1086,20 @@ public class FragmentEntryProcessorHelperImpl
 	}
 
 	private String _getShortTimeStylePattern(Locale locale) {
-		if (_shortTimeStylePatterns.containsKey(locale)) {
-			return _shortTimeStylePatterns.get(locale);
+		String shortTimeStylePattern = _shortTimeStylePatterns.get(locale);
+
+		if (shortTimeStylePattern != null) {
+			return shortTimeStylePattern;
 		}
 
-		String sortTimeStylePattern =
+		shortTimeStylePattern =
 			DateTimeFormatterBuilder.getLocalizedDateTimePattern(
 				FormatStyle.SHORT, FormatStyle.SHORT, IsoChronology.INSTANCE,
 				locale);
 
-		_shortTimeStylePatterns.put(locale, sortTimeStylePattern);
+		_shortTimeStylePatterns.put(locale, shortTimeStylePattern);
 
-		return sortTimeStylePattern;
+		return shortTimeStylePattern;
 	}
 
 	private <T> T _getSpecificIteration(

@@ -129,8 +129,10 @@ public class RichTextDDMFormFieldTemplateContextContributor
 		Map<String, Object> data = editorConfiguration.getData();
 
 		for (String key : data.keySet()) {
-			if (ddmFormFieldProperties.containsKey(key)) {
-				data.put(key, ddmFormFieldProperties.get(key));
+			Object value = ddmFormFieldProperties.get(key);
+
+			if (value != null) {
+				data.put(key, value);
 			}
 		}
 

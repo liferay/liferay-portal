@@ -95,8 +95,10 @@ public class StagingAssetEntryHelperImpl implements StagingAssetEntryHelper {
 
 		// Try to fetch the existing staged model from the importing group
 
-		if (assetEntryMap.containsKey(groupId)) {
-			return assetEntryMap.get(groupId);
+		AssetEntry groupAssetEntry = assetEntryMap.get(groupId);
+
+		if (groupAssetEntry != null) {
+			return groupAssetEntry;
 		}
 
 		// Try to fetch the existing staged model from parent sites
@@ -106,13 +108,10 @@ public class StagingAssetEntryHelperImpl implements StagingAssetEntryHelper {
 		Group parentGroup = group.getParentGroup();
 
 		while (parentGroup != null) {
-			if (assetEntryMap.containsKey(parentGroup.getGroupId())) {
-				AssetEntry assetEntry = assetEntryMap.get(
-					parentGroup.getGroupId());
+			AssetEntry assetEntry = assetEntryMap.get(parentGroup.getGroupId());
 
-				if (isAssetEntryApplicable(assetEntry)) {
-					return assetEntry;
-				}
+			if ((assetEntry != null) && isAssetEntryApplicable(assetEntry)) {
+				return assetEntry;
 			}
 
 			parentGroup = parentGroup.getParentGroup();
@@ -123,8 +122,11 @@ public class StagingAssetEntryHelperImpl implements StagingAssetEntryHelper {
 		Group companyGroup = _groupLocalService.fetchCompanyGroup(
 			group.getCompanyId());
 
-		if (assetEntryMap.containsKey(companyGroup.getGroupId())) {
-			return assetEntryMap.get(companyGroup.getGroupId());
+		AssetEntry companyGroupAssetEntry = assetEntryMap.get(
+			companyGroup.getGroupId());
+
+		if (companyGroupAssetEntry != null) {
+			return companyGroupAssetEntry;
 		}
 
 		// Try to fetch the existing staged model from the company

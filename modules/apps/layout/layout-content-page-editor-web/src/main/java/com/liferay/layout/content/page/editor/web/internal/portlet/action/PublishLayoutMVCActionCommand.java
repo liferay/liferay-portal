@@ -186,31 +186,31 @@ public class PublishLayoutMVCActionCommand
 			UnicodeProperties updatedTypeSettingsUnicodeProperties =
 				layout.getTypeSettingsProperties();
 
-			if (originalTypeSettingsUnicodeProperties.containsKey(
-					LayoutTypePortletConstants.SITEMAP_CHANGEFREQ)) {
+			String sitemapChangefreq =
+				originalTypeSettingsUnicodeProperties.get(
+					LayoutTypePortletConstants.SITEMAP_CHANGEFREQ);
 
+			if (sitemapChangefreq != null) {
 				updatedTypeSettingsUnicodeProperties.put(
 					LayoutTypePortletConstants.SITEMAP_CHANGEFREQ,
-					originalTypeSettingsUnicodeProperties.get(
-						LayoutTypePortletConstants.SITEMAP_CHANGEFREQ));
+					sitemapChangefreq);
 			}
 
-			if (originalTypeSettingsUnicodeProperties.containsKey(
-					LayoutTypePortletConstants.SITEMAP_INCLUDE)) {
+			String sitemapInclude = originalTypeSettingsUnicodeProperties.get(
+				LayoutTypePortletConstants.SITEMAP_INCLUDE);
 
+			if (sitemapInclude != null) {
 				updatedTypeSettingsUnicodeProperties.put(
-					LayoutTypePortletConstants.SITEMAP_INCLUDE,
-					originalTypeSettingsUnicodeProperties.get(
-						LayoutTypePortletConstants.SITEMAP_INCLUDE));
+					LayoutTypePortletConstants.SITEMAP_INCLUDE, sitemapInclude);
 			}
 
-			if (originalTypeSettingsUnicodeProperties.containsKey(
-					LayoutTypePortletConstants.SITEMAP_PRIORITY)) {
+			String sitemapPriority = originalTypeSettingsUnicodeProperties.get(
+				LayoutTypePortletConstants.SITEMAP_PRIORITY);
 
+			if (sitemapPriority != null) {
 				updatedTypeSettingsUnicodeProperties.put(
 					LayoutTypePortletConstants.SITEMAP_PRIORITY,
-					originalTypeSettingsUnicodeProperties.get(
-						LayoutTypePortletConstants.SITEMAP_PRIORITY));
+					sitemapPriority);
 			}
 
 			_cleanWidgetLayoutTypeSettings(

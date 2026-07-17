@@ -85,10 +85,12 @@ public class DDMFormValuesTransformer {
 				type = DDMFormFieldTypeConstants.RICH_TEXT;
 			}
 
-			if (_ddmFormFieldValueTransformersMap.containsKey(type)) {
+			DDMFormFieldValueTransformer ddmFormFieldValueTransformer =
+				_ddmFormFieldValueTransformersMap.get(type);
+
+			if (ddmFormFieldValueTransformer != null) {
 				performTransformation(
-					ddmFormFieldValues,
-					_ddmFormFieldValueTransformersMap.get(type));
+					ddmFormFieldValues, ddmFormFieldValueTransformer);
 			}
 
 			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {

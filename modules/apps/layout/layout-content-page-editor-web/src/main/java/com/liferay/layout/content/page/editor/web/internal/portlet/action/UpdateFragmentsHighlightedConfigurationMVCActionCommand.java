@@ -200,10 +200,9 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 			Map<String, Map<String, Object>> layoutElementMaps =
 				_getLayoutElementMaps(themeDisplay.getPermissionChecker());
 
-			if (layoutElementMaps.containsKey(key)) {
-				Map<String, Object> layoutElementMap = layoutElementMaps.get(
-					key);
+			Map<String, Object> layoutElementMap = layoutElementMaps.get(key);
 
+			if (layoutElementMap != null) {
 				String label = _language.get(
 					themeDisplay.getLocale(),
 					(String)layoutElementMap.get("languageKey"));

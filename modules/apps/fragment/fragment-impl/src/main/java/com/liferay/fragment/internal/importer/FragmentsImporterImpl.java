@@ -793,8 +793,10 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			long repositoryId, long userId)
 		throws Exception {
 
-		if (folderIdsMap.containsKey(folderPath)) {
-			return folderIdsMap.get(folderPath);
+		Long folderId = folderIdsMap.get(folderPath);
+
+		if (folderId != null) {
+			return folderId;
 		}
 
 		String folderName = folderPath;

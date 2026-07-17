@@ -121,10 +121,10 @@ public class DDMFormFieldSettingsUpgradeProcess extends UpgradeProcess {
 		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
 			Map<String, Object> properties = ddmFormField.getProperties();
 
-			if (properties.containsKey("ddmDataProviderInstanceId")) {
-				String ddmDataProviderInstanceId = GetterUtil.getString(
-					properties.get("ddmDataProviderInstanceId"));
+			String ddmDataProviderInstanceId = GetterUtil.getString(
+				properties.get("ddmDataProviderInstanceId"), null);
 
+			if (ddmDataProviderInstanceId != null) {
 				ddmFormField.setProperty(
 					"ddmDataProviderInstanceId",
 					"[\"" + ddmDataProviderInstanceId + "\"]");

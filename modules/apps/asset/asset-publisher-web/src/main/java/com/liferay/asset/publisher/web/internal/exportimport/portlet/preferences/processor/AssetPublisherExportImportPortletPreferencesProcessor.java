@@ -1434,9 +1434,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				if (Validator.isNumber(oldValue)) {
 					long groupId = Long.valueOf(oldValue);
 
-					if (groupIds.containsKey(groupId)) {
-						groupId = groupIds.get(groupId);
-					}
+					groupId = groupIds.getOrDefault(groupId, groupId);
 
 					Group group = groupLocalService.fetchGroup(groupId);
 

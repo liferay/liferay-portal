@@ -2366,12 +2366,17 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 					}
 				}
 			}
-			else if (favIconMap.containsKey("externalReferenceCode")) {
-				_addClientExtensionEntryRel(
-					String.valueOf(favIconMap.get("externalReferenceCode")),
-					layout, serviceContext,
-					ClientExtensionEntryConstants.TYPE_THEME_FAVICON, null,
-					userId);
+			else {
+				Object externalReferenceCode = favIconMap.get(
+					"externalReferenceCode");
+
+				if (externalReferenceCode != null) {
+					_addClientExtensionEntryRel(
+						String.valueOf(externalReferenceCode), layout,
+						serviceContext,
+						ClientExtensionEntryConstants.TYPE_THEME_FAVICON, null,
+						userId);
+				}
 			}
 		}
 

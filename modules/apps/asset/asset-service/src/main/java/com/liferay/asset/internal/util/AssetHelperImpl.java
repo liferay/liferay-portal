@@ -191,22 +191,11 @@ public class AssetHelperImpl implements AssetHelper {
 
 					long assetVocabularyId = assetCategory.getVocabularyId();
 
-					if (assetVocabularyAssetCategoryIds.containsKey(
-							assetVocabularyId)) {
-
-						String assetCategoryIds =
-							assetVocabularyAssetCategoryIds.get(
-								assetVocabularyId);
-
-						assetVocabularyAssetCategoryIds.put(
-							assetVocabularyId,
-							assetCategoryIds + StringPool.COMMA +
-								assetCategoryId);
-					}
-					else {
-						assetVocabularyAssetCategoryIds.put(
-							assetVocabularyId, String.valueOf(assetCategoryId));
-					}
+					assetVocabularyAssetCategoryIds.merge(
+						assetVocabularyId, String.valueOf(assetCategoryId),
+						(currentAssetCategoryIds, newAssetCategoryId) ->
+							currentAssetCategoryIds + StringPool.COMMA +
+								newAssetCategoryId);
 				}
 
 				for (Map.Entry<Long, String> entry :

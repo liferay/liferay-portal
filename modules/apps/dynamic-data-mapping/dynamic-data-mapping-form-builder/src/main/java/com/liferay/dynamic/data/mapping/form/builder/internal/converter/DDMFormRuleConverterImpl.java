@@ -107,7 +107,9 @@ public class DDMFormRuleConverterImpl implements SPIDDMFormRuleConverter {
 		List<SPIDDMFormRuleCondition.Operand> operands =
 			spiDDMFormRuleCondition.getOperands();
 
-		if (_operators.containsKey(operator)) {
+		String operatorText = _operators.get(operator);
+
+		if (operatorText != null) {
 			if (operands.size() < 2) {
 				return StringPool.BLANK;
 			}
@@ -116,7 +118,7 @@ public class DDMFormRuleConverterImpl implements SPIDDMFormRuleConverter {
 				_COMPARISON_EXPRESSION_FORMAT,
 				_convertOperand(
 					operands.get(0), spiDDMFormRuleSerializerContext),
-				_operators.get(operator),
+				operatorText,
 				_convertOperand(
 					operands.get(1), spiDDMFormRuleSerializerContext));
 		}

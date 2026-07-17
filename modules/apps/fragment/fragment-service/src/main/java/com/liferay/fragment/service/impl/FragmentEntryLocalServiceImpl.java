@@ -933,8 +933,10 @@ public class FragmentEntryLocalServiceImpl
 			long userId)
 		throws Exception {
 
-		if (folderIdMap.containsKey(folderPath)) {
-			return folderIdMap.get(folderPath);
+		Long folderId = folderIdMap.get(folderPath);
+
+		if (folderId != null) {
+			return folderId;
 		}
 
 		String folderName = folderPath;

@@ -200,9 +200,11 @@ public class DropZoneDocumentFragmentEntryProcessor
 				for (Element element : elements) {
 					String dropZoneId = element.attr("data-lfr-drop-zone-id");
 
-					if (fragmentDropZoneIdsMap.containsKey(dropZoneId)) {
-						element.attr(
-							"uuid", fragmentDropZoneIdsMap.get(dropZoneId));
+					String fragmentDropZoneItemId = fragmentDropZoneIdsMap.get(
+						dropZoneId);
+
+					if (fragmentDropZoneItemId != null) {
+						element.attr("uuid", fragmentDropZoneItemId);
 					}
 					else if (ListUtil.isNotEmpty(noFragmentDropZoneItemIds)) {
 						element.attr(

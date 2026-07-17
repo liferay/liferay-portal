@@ -85,9 +85,10 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 		String borderRadius = fragmentConfigValuesJSONObject.getString(
 			"borderRadius");
 
-		if (_borderRadiuses.containsKey(borderRadius)) {
-			stylesJSONObject.put(
-				"borderRadius", _borderRadiuses.get(borderRadius));
+		String borderRadiusValue = _borderRadiuses.get(borderRadius);
+
+		if (borderRadiusValue != null) {
+			stylesJSONObject.put("borderRadius", borderRadiusValue);
 		}
 	}
 
@@ -129,8 +130,10 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 		String shadowCssClass = fragmentConfigValuesJSONObject.getString(
 			"boxShadow");
 
-		if (_shadows.containsKey(shadowCssClass)) {
-			stylesJSONObject.put("shadow", _shadows.get(shadowCssClass));
+		String shadow = _shadows.get(shadowCssClass);
+
+		if (shadow != null) {
+			stylesJSONObject.put("shadow", shadow);
 		}
 	}
 

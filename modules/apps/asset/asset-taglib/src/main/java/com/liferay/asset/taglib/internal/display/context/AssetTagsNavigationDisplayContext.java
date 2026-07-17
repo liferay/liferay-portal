@@ -232,8 +232,10 @@ public class AssetTagsNavigationDisplayContext {
 	}
 
 	private Integer _getVisibleAssetsTagsCount(String tagName) {
-		if (_assetTagCounts.containsKey(tagName)) {
-			return _assetTagCounts.get(tagName);
+		Integer assetTagCount = _assetTagCounts.get(tagName);
+
+		if (assetTagCount != null) {
+			return assetTagCount;
 		}
 
 		int count = AssetTagServiceUtil.getVisibleAssetsTagsCount(
