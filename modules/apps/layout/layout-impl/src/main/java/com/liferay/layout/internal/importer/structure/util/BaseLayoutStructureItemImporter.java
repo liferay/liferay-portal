@@ -402,44 +402,38 @@ public abstract class BaseLayoutStructureItemImporter {
 
 		jsonObject.put("backgroundColor", styles.get("backgroundColor"));
 
-		if (styles.containsKey("backgroundFragmentImage") ||
-			styles.containsKey("backgroundImage")) {
+		Map<String, Object> childStyleMap = (Map<String, Object>)styles.get(
+			"backgroundFragmentImage");
 
+		if (MapUtil.isEmpty(childStyleMap)) {
+			childStyleMap = (Map<String, Object>)styles.get("backgroundImage");
+		}
+
+		if (MapUtil.isNotEmpty(childStyleMap)) {
 			JSONObject backgroundImageJSONObject =
 				JSONFactoryUtil.createJSONObject();
 
-			Map<String, Object> childStyleMap = (Map<String, Object>)styles.get(
-				"backgroundFragmentImage");
+			Map<String, Object> titleMap =
+				(Map<String, Object>)childStyleMap.get("title");
 
-			if (MapUtil.isEmpty(childStyleMap)) {
-				childStyleMap = (Map<String, Object>)styles.get(
-					"backgroundImage");
+			if (titleMap != null) {
+				backgroundImageJSONObject.put(
+					"title", getLocalizedValue(titleMap));
 			}
 
-			if (MapUtil.isNotEmpty(childStyleMap)) {
-				Map<String, Object> titleMap =
-					(Map<String, Object>)childStyleMap.get("title");
+			Map<String, Object> urlMap = (Map<String, Object>)childStyleMap.get(
+				"url");
 
-				if (titleMap != null) {
-					backgroundImageJSONObject.put(
-						"title", getLocalizedValue(titleMap));
-				}
+			if (urlMap != null) {
+				backgroundImageJSONObject.put("url", getLocalizedValue(urlMap));
 
-				Map<String, Object> urlMap =
-					(Map<String, Object>)childStyleMap.get("url");
-
-				if (urlMap != null) {
-					backgroundImageJSONObject.put(
-						"url", getLocalizedValue(urlMap));
-
-					processMapping(
-						backgroundImageJSONObject,
-						layoutStructureItemImporterContext,
-						(Map<String, Object>)urlMap.get("mapping"));
-				}
-
-				jsonObject.put("backgroundImage", backgroundImageJSONObject);
+				processMapping(
+					backgroundImageJSONObject,
+					layoutStructureItemImporterContext,
+					(Map<String, Object>)urlMap.get("mapping"));
 			}
+
+			jsonObject.put("backgroundImage", backgroundImageJSONObject);
 		}
 
 		Object borderColor = styles.get("borderColor");
@@ -464,9 +458,12 @@ public abstract class BaseLayoutStructureItemImporter {
 
 		if (Validator.isNull(textAlign)) {
 			for (String alignKey : _ALIGN_KEYS) {
-				textAlign = GetterUtil.getString(styles.get(alignKey), null);
+				Map.Entry<String, Object> alignEntry = MapUtil.getEntry(
+					styles, alignKey);
 
-				if (textAlign != null) {
+				if (alignEntry != null) {
+					textAlign = GetterUtil.getString(alignEntry.getValue());
+
 					break;
 				}
 			}

@@ -1009,14 +1009,9 @@ public class FragmentLayoutStructureItemImporter
 				"interaction",
 				ActionEditableElementConstants.INTERACTION_DISPLAY_PAGE);
 
-			if ((valueMap == null) || !valueMap.containsKey("mapping")) {
-				return;
-			}
+			if ((valueMap == null) ||
+				!(valueMap.get("mapping") instanceof Map<?, ?> mappingMap)) {
 
-			Map<String, Object> mappingMap = (Map<String, Object>)valueMap.get(
-				"mapping");
-
-			if (mappingMap == null) {
 				return;
 			}
 
@@ -1087,21 +1082,18 @@ public class FragmentLayoutStructureItemImporter
 			resultJSONObject.put(
 				"interaction", ActionEditableElementConstants.INTERACTION_PAGE);
 
-			if ((valueMap == null) || !valueMap.containsKey("itemReference")) {
-				return;
-			}
+			if ((valueMap == null) ||
+				!(valueMap.get("itemReference") instanceof
+					Map<?, ?> itemReference)) {
 
-			Map<String, Object> itemReference =
-				(Map<String, Object>)valueMap.get("itemReference");
-
-			if (itemReference == null) {
 				return;
 			}
 
 			resultJSONObject.put(
 				"page",
 				getLayoutFromItemReferenceJSONObject(
-					itemReference, layoutStructureItemImporterContext));
+					(Map<String, Object>)itemReference,
+					layoutStructureItemImporterContext));
 		}
 		else if (Objects.equals(
 					onResultMap.get("type"),

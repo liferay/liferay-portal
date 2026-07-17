@@ -347,14 +347,16 @@ public class CollectionLayoutStructureItemImporter
 			{
 				setDisplayMessage(
 					() -> {
-						if (!emptyCollectionConfig.containsKey(
-								"displayMessage")) {
+						Map.Entry<String, Object> displayMessageEntry =
+							MapUtil.getEntry(
+								emptyCollectionConfig, "displayMessage");
 
+						if (displayMessageEntry == null) {
 							return null;
 						}
 
 						return GetterUtil.getBoolean(
-							emptyCollectionConfig.get("displayMessage"), true);
+							displayMessageEntry.getValue(), true);
 					});
 				setMessage(
 					() -> (Map<String, String>)emptyCollectionConfig.get(
@@ -390,14 +392,16 @@ public class CollectionLayoutStructureItemImporter
 			JSONUtil.put(
 				"numberOfColumns",
 				() -> {
-					if (!collectionViewportDefinitionMap.containsKey(
-							"numberOfColumns")) {
+					Map.Entry<String, Object> numberOfColumnsEntry =
+						MapUtil.getEntry(
+							collectionViewportDefinitionMap, "numberOfColumns");
 
+					if (numberOfColumnsEntry == null) {
 						return null;
 					}
 
 					return GetterUtil.getInteger(
-						collectionViewportDefinitionMap.get("numberOfColumns"));
+						numberOfColumnsEntry.getValue());
 				}));
 	}
 

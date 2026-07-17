@@ -307,15 +307,16 @@ public class FormLayoutStructureItemImporter
 		).put(
 			"unlocalizedFieldsState",
 			() -> {
-				if (!localizationConfigResultMap.containsKey(
-						"unlocalizedFieldsState")) {
+				Map.Entry<String, Object> unlocalizedFieldsStateEntry =
+					MapUtil.getEntry(
+						localizationConfigResultMap, "unlocalizedFieldsState");
 
+				if (unlocalizedFieldsStateEntry == null) {
 					return null;
 				}
 
 				if (Objects.equals(
-						localizationConfigResultMap.get(
-							"unlocalizedFieldsState"),
+						unlocalizedFieldsStateEntry.getValue(),
 						LocalizationConfig.UnlocalizedFieldsState.DISABLED)) {
 
 					return "disabled";
@@ -362,7 +363,10 @@ public class FormLayoutStructureItemImporter
 			return null;
 		}
 
-		if (formSuccessSubmissionResultMap.containsKey("messageType")) {
+		Map.Entry<String, Object> messageTypeEntry = MapUtil.getEntry(
+			formSuccessSubmissionResultMap, "messageType");
+
+		if (messageTypeEntry != null) {
 			JSONObject messageJSONObject = _setNotificationText(
 				JSONUtil.put(
 					"message",
@@ -371,8 +375,7 @@ public class FormLayoutStructureItemImporter
 				formSuccessSubmissionResultMap);
 
 			if (Objects.equals(
-					String.valueOf(
-						formSuccessSubmissionResultMap.get("messageType")),
+					String.valueOf(messageTypeEntry.getValue()),
 					MessageFormSubmissionResult.MessageType.EMBEDDED.
 						getValue())) {
 
@@ -441,14 +444,15 @@ public class FormLayoutStructureItemImporter
 		).put(
 			"showNotification",
 			() -> {
-				if (!formSuccessSubmissionResultMap.containsKey(
-						"showNotification")) {
+				Map.Entry<String, Object> showNotificationEntry =
+					MapUtil.getEntry(
+						formSuccessSubmissionResultMap, "showNotification");
 
+				if (showNotificationEntry == null) {
 					return null;
 				}
 
-				return GetterUtil.getBoolean(
-					formSuccessSubmissionResultMap.get("showNotification"));
+				return GetterUtil.getBoolean(showNotificationEntry.getValue());
 			}
 		);
 	}

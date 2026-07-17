@@ -14,6 +14,7 @@ import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.HashSet;
 import java.util.List;
@@ -93,11 +94,14 @@ public class RowLayoutStructureItemImporter
 		rowStyledLayoutStructureItem.setNumberOfColumns(
 			(Integer)definitionMap.get("numberOfColumns"));
 
-		if (definitionMap.containsKey("reverseOrder")) {
-			rowStyledLayoutStructureItem.setModulesPerRow(
-				(Integer)definitionMap.get("modulesPerRow"));
-			rowStyledLayoutStructureItem.setReverseOrder(
-				(Boolean)definitionMap.get("reverseOrder"));
+		if (definitionMap.get("reverseOrder") instanceof Boolean reverseOrder) {
+			if (definitionMap.get("modulesPerRow") instanceof
+					Integer modulesPerRow) {
+
+				rowStyledLayoutStructureItem.setModulesPerRow(modulesPerRow);
+			}
+
+			rowStyledLayoutStructureItem.setReverseOrder(reverseOrder);
 		}
 
 		if (definitionMap.get("verticalAlignment") instanceof
@@ -178,36 +182,42 @@ public class RowLayoutStructureItemImporter
 			JSONUtil.put(
 				"modulesPerRow",
 				() -> {
-					if (!rowViewportDefinitionMap.containsKey(
-							"modulesPerRow")) {
+					Map.Entry<String, Object> modulesPerRowEntry =
+						MapUtil.getEntry(
+							rowViewportDefinitionMap, "modulesPerRow");
 
+					if (modulesPerRowEntry == null) {
 						return null;
 					}
 
-					return GetterUtil.getInteger(
-						rowViewportDefinitionMap.get("modulesPerRow"));
+					return GetterUtil.getInteger(modulesPerRowEntry.getValue());
 				}
 			).put(
 				"reverseOrder",
 				() -> {
-					if (!rowViewportDefinitionMap.containsKey("reverseOrder")) {
+					Map.Entry<String, Object> reverseOrderEntry =
+						MapUtil.getEntry(
+							rowViewportDefinitionMap, "reverseOrder");
+
+					if (reverseOrderEntry == null) {
 						return null;
 					}
 
-					return GetterUtil.getBoolean(
-						rowViewportDefinitionMap.get("reverseOrder"));
+					return GetterUtil.getBoolean(reverseOrderEntry.getValue());
 				}
 			).put(
 				"verticalAlignment",
 				() -> {
-					if (!rowViewportDefinitionMap.containsKey(
-							"verticalAlignment")) {
+					Map.Entry<String, Object> verticalAlignmentEntry =
+						MapUtil.getEntry(
+							rowViewportDefinitionMap, "verticalAlignment");
 
+					if (verticalAlignmentEntry == null) {
 						return null;
 					}
 
 					return GetterUtil.getString(
-						rowViewportDefinitionMap.get("verticalAlignment"));
+						verticalAlignmentEntry.getValue());
 				}
 			));
 	}

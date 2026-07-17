@@ -12,6 +12,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -96,12 +97,14 @@ public class ColumnLayoutStructureItemImporter
 			JSONUtil.put(
 				"size",
 				() -> {
-					if (!columnViewportDefinitionMap.containsKey("size")) {
+					Map.Entry<String, Object> sizeEntry = MapUtil.getEntry(
+						columnViewportDefinitionMap, "size");
+
+					if (sizeEntry == null) {
 						return null;
 					}
 
-					return GetterUtil.getInteger(
-						columnViewportDefinitionMap.get("size"));
+					return GetterUtil.getInteger(sizeEntry.getValue());
 				}));
 	}
 
