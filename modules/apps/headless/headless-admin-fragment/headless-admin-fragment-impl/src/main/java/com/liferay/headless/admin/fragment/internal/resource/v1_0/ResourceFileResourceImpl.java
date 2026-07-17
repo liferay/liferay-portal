@@ -223,10 +223,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		_portletResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), groupId,
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
 		return _addResourceFile(
 			_fragmentCollectionService.
 				getFragmentCollectionByExternalReferenceCode(
