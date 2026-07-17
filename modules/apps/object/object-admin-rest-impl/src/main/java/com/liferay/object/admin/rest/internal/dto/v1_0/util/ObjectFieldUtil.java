@@ -118,9 +118,7 @@ public class ObjectFieldUtil {
 
 				String key = objectStateJSONObject.getString("key");
 
-				if (listTypeEntries.containsKey(key)) {
-					listTypeEntries.remove(key);
-
+				if (listTypeEntries.remove(key) != null) {
 					continue;
 				}
 
@@ -148,9 +146,7 @@ public class ObjectFieldUtil {
 		String defaultObjectFieldSettingValue = GetterUtil.getString(
 			defaultObjectFieldSettings[0].getValue());
 
-		if (listTypeEntries.containsKey(defaultObjectFieldSettingValue)) {
-			listTypeEntries.remove(defaultObjectFieldSettingValue);
-		}
+		listTypeEntries.remove(defaultObjectFieldSettingValue);
 
 		listTypeEntryLocalService.addListTypeEntry(
 			null, userId, listTypeDefinition.getListTypeDefinitionId(),

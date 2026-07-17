@@ -598,9 +598,7 @@ public class PortletURLImpl
 
 		if (_portletSpecMajorVersion < 3) {
 			if (value == null) {
-				if (_portletURLParameterMap.containsKey(name)) {
-					_portletURLParameterMap.remove(name);
-				}
+				_portletURLParameterMap.remove(name);
 
 				return;
 			}
