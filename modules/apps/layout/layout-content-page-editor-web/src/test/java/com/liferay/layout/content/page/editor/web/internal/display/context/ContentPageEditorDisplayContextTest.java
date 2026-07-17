@@ -40,15 +40,16 @@ public class ContentPageEditorDisplayContextTest {
 
 	@Test
 	public void testGetStyleBookEntryERC() throws Exception {
-		Layout layout = Mockito.mock(Layout.class);
+		ContentPageEditorDisplayContext contentPageEditorDisplayContext =
+			Mockito.mock(ContentPageEditorDisplayContext.class);
 
-		_styleBookEntryProviderUtilMockedStatic.when(
-			() -> StyleBookEntryProviderUtil.getStyleBookEntry(layout)
-		).thenReturn(
-			Mockito.mock(StyleBookEntry.class)
-		);
+		ReflectionTestUtil.setFieldValue(
+			contentPageEditorDisplayContext, "_frontendTokenDefinitionRegistry",
+			Mockito.mock(FrontendTokenDefinitionRegistry.class));
 
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Layout layout = Mockito.mock(Layout.class);
 
 		Mockito.when(
 			themeDisplay.getLayout()
@@ -56,14 +57,14 @@ public class ContentPageEditorDisplayContextTest {
 			layout
 		);
 
-		ContentPageEditorDisplayContext contentPageEditorDisplayContext =
-			Mockito.mock(ContentPageEditorDisplayContext.class);
-
-		ReflectionTestUtil.setFieldValue(
-			contentPageEditorDisplayContext, "_frontendTokenDefinitionRegistry",
-			Mockito.mock(FrontendTokenDefinitionRegistry.class));
 		ReflectionTestUtil.setFieldValue(
 			contentPageEditorDisplayContext, "themeDisplay", themeDisplay);
+
+		_styleBookEntryProviderUtilMockedStatic.when(
+			() -> StyleBookEntryProviderUtil.getStyleBookEntry(layout)
+		).thenReturn(
+			Mockito.mock(StyleBookEntry.class)
+		);
 
 		Assert.assertEquals(
 			StringPool.BLANK,
