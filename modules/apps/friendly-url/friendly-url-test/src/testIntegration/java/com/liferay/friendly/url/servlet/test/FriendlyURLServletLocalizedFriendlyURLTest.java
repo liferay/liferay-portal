@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -271,6 +272,36 @@ public class FriendlyURLServletLocalizedFriendlyURLTest {
 			portletPreferences.reset(
 				PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE);
 		}
+	}
+
+	@Test
+	public void testLocalizedSiteLayoutFriendlyURLWithEncodedRequestURI()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		String layoutFriendlyURL = "/tést";
+
+		mockHttpServletRequest.setPathInfo(
+			_group.getFriendlyURL() + layoutFriendlyURL);
+		mockHttpServletRequest.setRequestURI(
+			HttpComponentsUtil.encodePath(
+				_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() +
+					layoutFriendlyURL));
+
+		Assert.assertEquals(
+			_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() + "/home",
+			ReflectionTestUtil.invoke(
+				_servlet, "_getLocalizedFriendlyURL",
+				new Class<?>[] {
+					HttpServletRequest.class, Layout.class, Locale.class,
+					Locale.class
+				},
+				mockHttpServletRequest,
+				LayoutTestUtil.addTypePortletLayout(
+					_group.getGroupId(), false, _nameMap, _friendlyURLMap),
+				LocaleUtil.US, null));
 	}
 
 	@Test
