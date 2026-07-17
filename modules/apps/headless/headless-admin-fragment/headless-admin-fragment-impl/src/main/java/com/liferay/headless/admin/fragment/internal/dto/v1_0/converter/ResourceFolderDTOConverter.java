@@ -12,6 +12,7 @@ import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
 import com.liferay.headless.admin.fragment.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
+import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
 import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -42,7 +43,9 @@ public class ResourceFolderDTOConverter
 				() -> FragmentSetUtil.getFragmentCollection(dlFolder));
 		UnsafeSupplierValue<DLFolder, Exception>
 			parentDLFolderUnsafeSupplierValue = new UnsafeSupplierValue<>(
-				() -> _getParentDLFolder(dlFolder));
+				() -> ResourceFolderUtil.getResourceDLFolder(
+					_dlFolderLocalService.fetchDLFolder(
+						dlFolder.getParentFolderId())));
 
 		return new ResourceFolder() {
 			{
@@ -94,26 +97,6 @@ public class ResourceFolderDTOConverter
 					});
 			}
 		};
-	}
-
-	private DLFolder _getParentDLFolder(DLFolder dlFolder) {
-		DLFolder parentDLFolder = _dlFolderLocalService.fetchDLFolder(
-			dlFolder.getParentFolderId());
-
-		if ((parentDLFolder == null) || parentDLFolder.isMountPoint()) {
-			return null;
-		}
-
-		DLFolder grandparentDLFolder = _dlFolderLocalService.fetchDLFolder(
-			parentDLFolder.getParentFolderId());
-
-		if ((grandparentDLFolder == null) ||
-			grandparentDLFolder.isMountPoint()) {
-
-			return null;
-		}
-
-		return parentDLFolder;
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection)
