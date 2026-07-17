@@ -619,6 +619,52 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 	}
 
 	@Override
+	public FileEntry fetchFileEntryByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException {
+
+		try {
+			LocalRepository localRepository = getLocalRepository(groupId);
+
+			return localRepository.getFileEntryByUuid(uuid);
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFileEntryException);
+			}
+		}
+
+		List<Repository> repositories = _repositoryPersistence.findByGroupId(
+			groupId);
+
+		for (Repository repository : repositories) {
+			if (Objects.equals(
+					repository.getClassName(),
+					TemporaryFileEntryRepository.class.getName())) {
+
+				if (_log.isDebugEnabled()) {
+					_log.debug("Skipping temporary file entry repository");
+				}
+
+				continue;
+			}
+
+			try {
+				LocalRepository localRepository = getLocalRepository(
+					repository.getRepositoryId());
+
+				return localRepository.getFileEntryByUuid(uuid);
+			}
+			catch (NoSuchFileEntryException noSuchFileEntryException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(noSuchFileEntryException);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	@Override
 	public FileShortcut fetchFileShortcut(long fileShortcutId)
 		throws PortalException {
 
@@ -758,49 +804,16 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 	public FileEntry getFileEntryByUuidAndGroupId(String uuid, long groupId)
 		throws PortalException {
 
-		try {
-			LocalRepository localRepository = getLocalRepository(groupId);
+		FileEntry fileEntry = fetchFileEntryByUuidAndGroupId(uuid, groupId);
 
-			return localRepository.getFileEntryByUuid(uuid);
-		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
-			}
+		if (fileEntry == null) {
+			throw new NoSuchFileEntryException(
+				StringBundler.concat(
+					"No DLFileEntry exists with the key {uuid=", uuid,
+					", groupId=", groupId, StringPool.CLOSE_CURLY_BRACE));
 		}
 
-		List<Repository> repositories = _repositoryPersistence.findByGroupId(
-			groupId);
-
-		for (Repository repository : repositories) {
-			if (Objects.equals(
-					repository.getClassName(),
-					TemporaryFileEntryRepository.class.getName())) {
-
-				if (_log.isDebugEnabled()) {
-					_log.debug("Skipping temporary file entry repository");
-				}
-
-				continue;
-			}
-
-			try {
-				LocalRepository localRepository = getLocalRepository(
-					repository.getRepositoryId());
-
-				return localRepository.getFileEntryByUuid(uuid);
-			}
-			catch (NoSuchFileEntryException noSuchFileEntryException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(noSuchFileEntryException);
-				}
-			}
-		}
-
-		throw new NoSuchFileEntryException(
-			StringBundler.concat(
-				"No DLFileEntry exists with the key {uuid=", uuid, ", groupId=",
-				groupId, StringPool.CLOSE_CURLY_BRACE));
+		return fileEntry;
 	}
 
 	/**
