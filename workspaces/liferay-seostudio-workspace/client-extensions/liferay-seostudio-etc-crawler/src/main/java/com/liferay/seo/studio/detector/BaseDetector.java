@@ -242,17 +242,14 @@ public abstract class BaseDetector {
 	private JSONObject _toPageJSONObject(
 		long accountEntryId, String pageURL, long seoStudioScanId) {
 
-		JSONObject pageJSONObject = new JSONObject();
-
-		pageJSONObject.put(
+		return new JSONObject(
+		).put(
 			"pageURL", pageURL
 		).put(
 			"r_accountToSEOStudioPages_accountEntryId", accountEntryId
 		).put(
 			"r_seoStudioScanToSEOStudioPages_seoStudioScanId", seoStudioScanId
 		);
-
-		return pageJSONObject;
 	}
 
 	private JSONObject _toScanInsightJSONObject(
