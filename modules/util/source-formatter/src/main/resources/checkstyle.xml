@@ -445,6 +445,11 @@
 			<property name="description" value="Finds cases where `*Factory` should be used when creating new instances of an object." />
 			<message key="factory.use" value="Use &quot;{0}&quot; to create new instance of &quot;{1}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.FetchContractCatchCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Finds code blocks that use `try-catch` to handle `NoSuch*Exception` or `PortalException` during entity lookups, which should be replaced by `fetch*` methods." />
+			<message key="fetch.use" value="Do not catch &quot;{0}&quot; around the lookup &quot;{1}&quot; to signal a missing entity, call the null-tolerant fetch sibling and check for null instead" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.FilterStringWhitespaceCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds missing and unnecessary whitespace in the value of the filter string in `ServiceTrackerFactory.open` or `WaiterUtil.waitForFilter`." />
