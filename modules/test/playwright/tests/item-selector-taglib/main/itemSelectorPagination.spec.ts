@@ -12,7 +12,11 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
-import {nextPage, setItemsPerPage} from '../../../utils/pagination';
+import {
+	getResultsTotal,
+	nextPage,
+	setItemsPerPage,
+} from '../../../utils/pagination';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 
 const SAMPLE_IMAGE = path.join(
@@ -121,6 +125,52 @@ test(
 
 		await expect(
 			iframe.getByText('Showing 21 to 30 of 30 entries')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Site results paginate correctly in the item selector',
+	{tag: '@LPS-107014'},
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
+
+		// Seed enough sites to span more than one page of the site selector
+
+		for (let i = 0; i < 20; i++) {
+			await apiHelpers.headlessAdminSite.postSite({
+				name: getRandomString(),
+			});
+		}
+
+		// Open the blog cover image selector and browse all sites and libraries
+
+		await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('button', {name: 'Select File'}).first().click();
+
+		const iframe = page.frameLocator('iframe[title="Select File"]');
+
+		await iframe.getByRole('link', {name: 'Documents and Media'}).click();
+
+		await iframe.getByRole('link', {name: 'Sites and Libraries'}).click();
+
+		// The default 20 per page shows the first of the available sites, with
+		// the remainder carried onto the next page
+
+		const total = await getResultsTotal(iframe);
+
+		expect(total).toBeGreaterThan(20);
+
+		await expect(
+			iframe.getByText(`Showing 1 to 20 of ${total} entries`)
+		).toBeVisible();
+
+		await nextPage(iframe);
+
+		await expect(
+			iframe.getByText(
+				`Showing 21 to ${Math.min(40, total)} of ${total} entries`
+			)
 		).toBeVisible();
 	}
 );

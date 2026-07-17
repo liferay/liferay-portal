@@ -111,32 +111,6 @@ definition {
 		NavigationMenusAdmin.viewItem(itemName = "Test Page Name 2");
 	}
 
-	@description = "This is a test for LPS-107014. It checks that the site pagination can be displayed correctly in item selector."
-	@priority = 4
-	test CanDisplaySitePaginationCorrectly {
-		for (var i : list "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20") {
-			HeadlessSite.addSite(siteName = "Site Name ${i}");
-		}
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.changeWorkspaces(
-			navTab = "Documents and Media",
-			workspacesType = "Site");
-
-		Pagination.viewResults(results = "Showing 1 to 20 of 22 entries.");
-
-		Click(locator1 = "Pagination#NEXT_LINK");
-
-		Pagination.viewResults(results = "Showing 21 to 22 of 22 entries.");
-
-		AssertTextNotPresent(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No sites were found.");
-	}
-
 	@description = "This ensures that a message is displayed in the preview section of the item selector when pasting an invalid URL."
 	@priority = 5
 	@refactordone
