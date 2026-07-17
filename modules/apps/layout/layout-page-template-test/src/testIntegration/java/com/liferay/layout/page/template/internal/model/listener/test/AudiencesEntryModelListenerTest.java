@@ -63,7 +63,6 @@ public class AudiencesEntryModelListenerTest {
 			_audiencesEntryLocalService.addAudiencesEntry(
 				null, StringPool.BLANK, RandomTestUtil.randomString(),
 				_serviceContext);
-
 		String audienceEntryERC = RandomTestUtil.randomString();
 		String externalReferenceCode = RandomTestUtil.randomString();
 
