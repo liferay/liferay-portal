@@ -36,10 +36,10 @@ public class ContentSiteGeneratorTableFDSView extends BaseTableFDSView {
 		FDSTableSchemaBuilder fdsTableSchemaBuilder =
 			_fdsTableSchemaBuilderFactory.create();
 
+		String moduleURL = null;
+
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
-
-		String moduleURL = null;
 
 		if ((serviceContext != null) && (serviceContext.getRequest() != null)) {
 			moduleURL =
