@@ -520,7 +520,9 @@ public class PoshiValidation {
 
 		String filePath = filePathURL.getFile();
 
-		if (_deprecatedMethodNames.containsKey(functionName)) {
+		String deprecatedMethodName = _deprecatedMethodNames.get(functionName);
+
+		if (deprecatedMethodName != null) {
 			String className = PoshiGetterUtil.getClassNameFromFilePath(
 				filePath);
 
@@ -528,10 +530,9 @@ public class PoshiValidation {
 
 			_logger.warning(
 				"Deprecated method \"selenium." + functionName +
-					"\" should be replaced with " +
-						_deprecatedMethodNames.get(functionName) + " at:\n" +
-							filePath + ":" +
-								poshiElement.getPoshiScriptLineNumber());
+					"\" should be replaced with " + deprecatedMethodName +
+						" at:\n" + filePath + ":" +
+							poshiElement.getPoshiScriptLineNumber());
 		}
 
 		if (_deprecatedFunctionNames.contains(functionName)) {
