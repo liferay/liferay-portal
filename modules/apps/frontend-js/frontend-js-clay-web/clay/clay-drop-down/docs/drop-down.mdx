@@ -488,6 +488,50 @@ const menus = {
 	will not behave correctly.
 </div>
 
+## AI Variant
+
+Set the `ai` prop to give the menu the AI treatment — items highlight in purple
+(`$purple-l5` background, `$purple` text) on hover, focus, and active. Use
+`symbolLeft` for leading sparkle/action icons and `ClayDropDown.Group` for the
+grouped headers. For the full stateful flow (menu → prompt → working → result),
+use `ClayDropDownWithAI`, which composes the prompt composer and the
+working/accept states with `ClayAIButton`.
+
+```jsx preview
+import {Provider} from '@clayui/core';
+import DropDown from '@clayui/drop-down';
+import Button from '@clayui/button';
+import React from 'react';
+
+import '@clayui/css/lib/css/atlas.css';
+
+export default function App() {
+	return (
+		<Provider spritemap="/public/icons.svg">
+			<DropDown
+				ai
+				hasLeftSymbols
+				hasRightSymbols
+				trigger={<Button>AI actions</Button>}
+				triggerIcon="caret-bottom"
+			>
+				<DropDown.ItemList>
+					<DropDown.Group header="Suggested">
+						<DropDown.Item symbolLeft="stars">
+							Improve writing
+						</DropDown.Item>
+
+						<DropDown.Item symbolLeft="check">
+							Fix spelling & grammar
+						</DropDown.Item>
+					</DropDown.Group>
+				</DropDown.ItemList>
+			</DropDown>
+		</Provider>
+	);
+}
+```
+
 ## Caveats
 
 One caveat with the drop down menu is that it is rendered inside of a [React Portal](https://reactjs.org/docs/portals.html) and is rendered directly to the `body` element. This means if you are using the `menuWidth` prop set to `auto`, it will not respect the size of the node parent of the drop down, since the menu is rendered directly to the body.

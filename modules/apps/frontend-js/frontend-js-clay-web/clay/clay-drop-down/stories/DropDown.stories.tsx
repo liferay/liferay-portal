@@ -4,12 +4,14 @@
  */
 
 import ClayButton from '@clayui/button';
+import {Heading} from '@clayui/core';
 import {ClayCheckbox, ClayInput, ClayRadio} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
 import React, {useRef, useState} from 'react';
 
 import ClayDropDown, {
 	Align,
+	ClayDropDownWithAI,
 	ClayDropDownWithDrilldown,
 	ClayDropDownWithItems,
 } from '../src';
@@ -692,5 +694,189 @@ export function KeyboardArrowsIndicator() {
 				<ClayDropDown.Item href="#grape">Grape</ClayDropDown.Item>
 			</ClayDropDown.ItemList>
 		</ClayDropDown>
+	);
+}
+
+const AI_ITEMS = [
+	{label: 'Improve writing', symbolLeft: 'stars'},
+	{label: 'Fix spelling & grammar', symbolLeft: 'check'},
+	{
+		label: 'Translate to',
+		symbolLeft: 'text',
+		symbolRight: 'angle-right',
+	},
+	{label: 'Make shorter', symbolLeft: 'list'},
+	{label: 'Make longer', symbolLeft: 'list'},
+];
+
+type AIFlowState = 'menu' | 'prompt' | 'result' | 'working';
+
+// Shared controlled flow: opens, walks menu -> prompt -> working, then fakes
+// the async AI request to reach result.
+
+function useAIFlow() {
+	const [active, setActive] = useState(false);
+	const [aiState, setAiState] = useState<AIFlowState>('menu');
+
+	return {
+		active,
+		aiState,
+		flowProps: {
+			active,
+			aiState,
+			onAccept: () => {
+				setActive(false);
+				setAiState('menu');
+			},
+			onActiveChange: setActive,
+			onAiStateChange: setAiState,
+			onReset: () => setAiState('menu'),
+			onSubmit: () => {
+
+				// Fake the async AI request; ignore the result if the user has
+				// meanwhile moved away from the working state (e.g. re-opened
+				// the menu with a right-click).
+
+				setTimeout(
+					() =>
+						setAiState((state) =>
+							state === 'working' ? 'result' : state
+						),
+					1500
+				);
+			},
+		},
+		setActive,
+		setAiState,
+	};
+}
+
+// Default: click a button to open.
+
+function AIDefault() {
+	const {flowProps} = useAIFlow();
+
+	return (
+		<ClayDropDownWithAI
+			{...flowProps}
+			items={AI_ITEMS}
+			trigger={<ClayButton>AI actions</ClayButton>}
+			workingLabel="Improving writing…"
+		/>
+	);
+}
+
+// Input trigger: the field itself opens the flow when clicked.
+
+function AIInput() {
+	const {flowProps} = useAIFlow();
+
+	return (
+		<ClayDropDownWithAI
+			{...flowProps}
+			items={AI_ITEMS}
+			trigger={
+				<div>
+					<ClayInput
+						aria-label="Click to open the AI menu"
+						defaultValue="I like milk"
+					/>
+				</div>
+			}
+			workingLabel="Improving writing…"
+		/>
+	);
+}
+
+// Input trigger with right-click + selection: the consumer owns the field,
+// wires the right-click opener, captures the current text selection, and drives
+// the async working -> result step.
+
+function AIInputSelection() {
+	const {active, aiState, flowProps, setActive, setAiState} = useAIFlow();
+	const triggerRef = useRef<HTMLDivElement>(null);
+	const [selectedText, setSelectedText] = useState('');
+
+	const captureSelection = () => {
+		const input = triggerRef.current?.querySelector('input');
+
+		if (input) {
+			setSelectedText(
+				input.value.slice(
+					input.selectionStart ?? 0,
+					input.selectionEnd ?? 0
+				)
+			);
+		}
+	};
+
+	return (
+		<ClayDropDownWithAI
+			{...flowProps}
+			items={AI_ITEMS}
+			openOnClick={false}
+			selectedText={selectedText}
+			trigger={
+				<div
+					onClick={() => {
+						if (aiState === 'menu' || aiState === 'prompt') {
+							setActive(false);
+						}
+					}}
+					onContextMenu={(event) => {
+						event.preventDefault();
+
+						// The working and result states can only be dismissed by
+						// their own controls, so ignore the right-click there.
+
+						if (
+							active &&
+							aiState !== 'menu' &&
+							aiState !== 'prompt'
+						) {
+							return;
+						}
+
+						captureSelection();
+
+						setAiState('menu');
+						setActive(true);
+					}}
+					ref={triggerRef}
+				>
+					<ClayInput
+						aria-label="Right-click to open the AI menu"
+						defaultValue="I like milk"
+						onSelect={captureSelection}
+					/>
+				</div>
+			}
+		/>
+	);
+}
+
+export function AI() {
+	return (
+		<div className="c-gap-5 d-flex flex-column">
+			<div>
+				<Heading level={3}>Default (button trigger)</Heading>
+
+				<AIDefault />
+			</div>
+
+			<div>
+				<Heading level={3}>Input trigger</Heading>
+
+				<AIInput />
+			</div>
+
+			<div>
+				<Heading level={3}>
+					Input trigger with right-click and text selection
+				</Heading>
+
+				<AIInputSelection />
+			</div>
+		</div>
 	);
 }
