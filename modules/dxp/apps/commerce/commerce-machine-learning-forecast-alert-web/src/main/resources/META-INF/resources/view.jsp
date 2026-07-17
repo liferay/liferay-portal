@@ -28,7 +28,7 @@ CommerceMLForecastAlertEntryListDisplayContext commerceMLForecastAlertEntryListD
 				>
 
 					<%
-					AccountEntry accountEntry = commerceMLForecastAlertEntryListDisplayContext.getAccountEntry(commerceMLForecastAlertEntry.getCommerceAccountId());
+					AccountEntry accountEntry = AccountEntryLocalServiceUtil.fetchAccountEntry(commerceMLForecastAlertEntry.getCommerceAccountId());
 
 					long logoId = accountEntry.getLogoId();
 					%>

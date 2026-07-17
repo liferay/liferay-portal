@@ -5,8 +5,6 @@
 
 package com.liferay.commerce.machine.learning.forecast.alert.web.internal.display.context;
 
-import com.liferay.account.model.AccountEntry;
-import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.machine.learning.forecast.alert.constants.CommerceMLForecastAlertActionKeys;
 import com.liferay.commerce.machine.learning.forecast.alert.constants.CommerceMLForecastAlertConstants;
 import com.liferay.commerce.machine.learning.forecast.alert.model.CommerceMLForecastAlertEntry;
@@ -27,22 +25,16 @@ import jakarta.portlet.RenderRequest;
 public class CommerceMLForecastAlertEntryListDisplayContext {
 
 	public CommerceMLForecastAlertEntryListDisplayContext(
-		AccountEntryLocalService accountEntryLocalService,
 		CommerceMLForecastAlertEntryService commerceMLForecastAlertEntryService,
 		PortletResourcePermission portletResourcePermission,
 		RenderRequest renderRequest) {
 
-		_accountEntryLocalService = accountEntryLocalService;
 		_commerceMLForecastAlertEntryService =
 			commerceMLForecastAlertEntryService;
 		_portletResourcePermission = portletResourcePermission;
 
 		_commerceMLForecastAlertEntryRequestHelper =
 			new CommerceMLForecastAlertEntryRequestHelper(renderRequest);
-	}
-
-	public AccountEntry getAccountEntry(long accountEntryId) {
-		return _accountEntryLocalService.fetchAccountEntry(accountEntryId);
 	}
 
 	public PortletURL getPortletURL() {
@@ -98,7 +90,6 @@ public class CommerceMLForecastAlertEntryListDisplayContext {
 			CommerceMLForecastAlertActionKeys.VIEW_ALERTS);
 	}
 
-	private final AccountEntryLocalService _accountEntryLocalService;
 	private final CommerceMLForecastAlertEntryRequestHelper
 		_commerceMLForecastAlertEntryRequestHelper;
 	private final CommerceMLForecastAlertEntryService
