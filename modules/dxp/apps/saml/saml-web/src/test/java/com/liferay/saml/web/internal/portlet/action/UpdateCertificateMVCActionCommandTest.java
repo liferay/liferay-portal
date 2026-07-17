@@ -52,7 +52,7 @@ public class UpdateCertificateMVCActionCommandTest {
 	@Test
 	public void testIsValidX509Certificate() {
 		Assert.assertTrue(
-			_isValidX509Certificate(_mockCertificateWithRSAKey(1024)));
+			_isValidX509Certificate(_mockX509Certificate(1024)));
 
 		X509Certificate x509Certificate = Mockito.mock(X509Certificate.class);
 
@@ -68,11 +68,11 @@ public class UpdateCertificateMVCActionCommandTest {
 			PropsValues.class, "FIPS_ENABLED", true);
 
 		Assert.assertFalse(
-			_isValidX509Certificate(_mockCertificateWithRSAKey(1024)));
+			_isValidX509Certificate(_mockX509Certificate(1024)));
 		Assert.assertTrue(
-			_isValidX509Certificate(_mockCertificateWithRSAKey(2048)));
+			_isValidX509Certificate(_mockX509Certificate(2048)));
 		Assert.assertTrue(
-			_isValidX509Certificate(_mockCertificateWithRSAKey(4096)));
+			_isValidX509Certificate(_mockX509Certificate(4096)));
 
 		Assert.assertFalse(_isValidX509Certificate(x509Certificate));
 
@@ -91,7 +91,7 @@ public class UpdateCertificateMVCActionCommandTest {
 			new Class<?>[] {X509Certificate.class}, x509Certificate);
 	}
 
-	private X509Certificate _mockCertificateWithRSAKey(int keySize) {
+	private X509Certificate _mockX509Certificate(int keySize) {
 		X509Certificate x509Certificate = Mockito.mock(X509Certificate.class);
 
 		RSAPublicKey rsaPublicKey = Mockito.mock(RSAPublicKey.class);

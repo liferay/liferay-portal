@@ -65,7 +65,7 @@ public class CertificateToolImplTest {
 		String organizationUnit = RandomTestUtil.randomString();
 		String state = RandomTestUtil.randomString();
 
-		X509Certificate x509Certificate1 = _generateCertificate(
+		X509Certificate x509Certificate1 = _generateX509Certificate(
 			country, commonName, locality, organization, organizationUnit,
 			state);
 
@@ -75,14 +75,14 @@ public class CertificateToolImplTest {
 		Assert.assertEquals(
 			x509Certificate1.getIssuerX500Principal(), subjectX500Principal);
 
-		String subjectDN = subjectX500Principal.getName();
+		String name = subjectX500Principal.getName();
 
-		Assert.assertTrue(subjectDN.contains("C=" + country));
-		Assert.assertTrue(subjectDN.contains("CN=" + commonName));
-		Assert.assertTrue(subjectDN.contains("L=" + locality));
-		Assert.assertTrue(subjectDN.contains("O=" + organization));
-		Assert.assertTrue(subjectDN.contains("OU=" + organizationUnit));
-		Assert.assertTrue(subjectDN.contains("ST=" + state));
+		Assert.assertTrue(name.contains("C=" + country));
+		Assert.assertTrue(name.contains("CN=" + commonName));
+		Assert.assertTrue(name.contains("L=" + locality));
+		Assert.assertTrue(name.contains("O=" + organization));
+		Assert.assertTrue(name.contains("OU=" + organizationUnit));
+		Assert.assertTrue(name.contains("ST=" + state));
 
 		String fingerprint = _certificateToolImpl.getFingerprint(
 			"SHA-256", x509Certificate1);
@@ -111,7 +111,7 @@ public class CertificateToolImplTest {
 		Assert.assertEquals(3, x509Certificate1.getVersion());
 		Assert.assertEquals(-1, x509Certificate1.getBasicConstraints());
 
-		X509Certificate x509Certificate2 = _generateCertificate(
+		X509Certificate x509Certificate2 = _generateX509Certificate(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
@@ -162,7 +162,7 @@ public class CertificateToolImplTest {
 		Assert.assertEquals(expectedBitLength, modulus.bitLength());
 	}
 
-	private X509Certificate _generateCertificate(
+	private X509Certificate _generateX509Certificate(
 			String country, String commonName, String locality,
 			String organization, String organizationUnit, String state)
 		throws Exception {
