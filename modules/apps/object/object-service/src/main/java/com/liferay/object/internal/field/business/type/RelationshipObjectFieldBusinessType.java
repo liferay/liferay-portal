@@ -167,8 +167,11 @@ public class RelationshipObjectFieldBusinessType
 
 		PortalException portalException1 = null;
 
-		if (values.containsKey(objectField.getName())) {
-			Object value = values.get(objectField.getName());
+		Map.Entry<String, Object> valueEntry = MapUtil.getEntry(
+			values, objectField.getName());
+
+		if (valueEntry != null) {
+			Object value = valueEntry.getValue();
 
 			if (value == null) {
 				return 0;
