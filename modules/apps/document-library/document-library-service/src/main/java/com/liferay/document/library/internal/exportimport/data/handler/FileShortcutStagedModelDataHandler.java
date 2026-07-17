@@ -259,7 +259,7 @@ public class FileShortcutStagedModelDataHandler
 
 	private FileEntry _fetchFileEntry(long fileEntryId) {
 		try {
-			return _dlAppLocalService.getFileEntry(fileEntryId);
+			return _dlAppLocalService.fetchFileEntry(fileEntryId);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
