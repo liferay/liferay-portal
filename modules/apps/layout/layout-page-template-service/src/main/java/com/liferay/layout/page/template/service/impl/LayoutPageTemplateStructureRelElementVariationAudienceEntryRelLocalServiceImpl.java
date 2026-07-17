@@ -29,6 +29,7 @@ public class
 	LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalServiceImpl
 		extends LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalServiceBaseImpl {
 
+	@Override
 	public LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
 			addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
 				long userId, long groupId, String audienceEntryERC,
@@ -66,6 +67,7 @@ public class
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRel);
 	}
 
+	@Override
 	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			String layoutPageTemplateStructureRelElementVariationERC) {
@@ -75,6 +77,7 @@ public class
 				layoutPageTemplateStructureRelElementVariationERC);
 	}
 
+	@Override
 	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsByAudienceEntryERC(
 			long companyId, String audienceEntryERC) {
@@ -83,6 +86,7 @@ public class
 			removeByC_AEERC(companyId, audienceEntryERC);
 	}
 
+	@Override
 	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
 		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			String layoutPageTemplateStructureRelElementVariationERC) {

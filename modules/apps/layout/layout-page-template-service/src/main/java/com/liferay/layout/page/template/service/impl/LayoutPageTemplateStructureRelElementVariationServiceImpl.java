@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 	extends LayoutPageTemplateStructureRelElementVariationServiceBaseImpl {
 
+	@Override
 	public LayoutPageTemplateStructureRelElementVariation
 			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId, boolean active,
@@ -50,6 +51,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 				targetElement, audienceEntryERCs, serviceContext);
 	}
 
+	@Override
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
 			String externalReferenceCode, long groupId, long plid)
 		throws PortalException {
@@ -62,6 +64,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 				externalReferenceCode, groupId);
 	}
 
+	@Override
 	public List<LayoutPageTemplateStructureRelElementVariation>
 			getLayoutPageTemplateStructureRelElementVariations(long plid)
 		throws PortalException {
@@ -73,6 +76,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 			getLayoutPageTemplateStructureRelElementVariations(plid);
 	}
 
+	@Override
 	public LayoutPageTemplateStructureRelElementVariation
 			updateLayoutPageTemplateStructureRelElementVariation(
 				String externalReferenceCode, long groupId, long plid,
