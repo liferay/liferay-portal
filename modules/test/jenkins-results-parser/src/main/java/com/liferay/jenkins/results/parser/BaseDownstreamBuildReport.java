@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -139,8 +141,10 @@ public abstract class BaseDownstreamBuildReport
 		JSONArray testResultsJSONArray = buildReportJSONObject.optJSONArray(
 			"testResults");
 
-		if (testResultsJSONArray == null) {
-			_testReports = testReports;
+		if ((testResultsJSONArray == null) ||
+			(testResultsJSONArray.length() == 0)) {
+
+			_testReports = _getLiveTestReports();
 
 			return _testReports;
 		}
@@ -210,6 +214,106 @@ public abstract class BaseDownstreamBuildReport
 		_topLevelBuildReport = topLevelBuildReport;
 
 		_buildCached = buildReportJSONObject.optBoolean("buildCached", false);
+	}
+
+	private List<TestReport> _getLiveTestReports() {
+		List<TestReport> testReports = new ArrayList<>();
+
+		JenkinsMaster jenkinsMaster = getJenkinsMaster();
+
+		if ((jenkinsMaster == null) || !jenkinsMaster.isAvailable()) {
+			return testReports;
+		}
+
+		String testReportURL = JenkinsResultsParserUtil.getLocalURL(
+			JenkinsResultsParserUtil.combine(
+				String.valueOf(getBuildURL()), "/testReport/api/json"));
+
+		JSONObject testReportJSONObject = null;
+
+		try {
+			if (!JenkinsResultsParserUtil.exists(new URL(testReportURL))) {
+				return testReports;
+			}
+
+			testReportJSONObject = JenkinsResultsParserUtil.toJSONObject(
+				testReportURL, false, 5000);
+		}
+		catch (Exception exception) {
+			return testReports;
+		}
+
+		if (testReportJSONObject == null) {
+			return testReports;
+		}
+
+		JSONArray suitesJSONArray = testReportJSONObject.optJSONArray("suites");
+
+		if (suitesJSONArray == null) {
+			return testReports;
+		}
+
+		for (int i = 0; i < suitesJSONArray.length(); i++) {
+			JSONObject suiteJSONObject = suitesJSONArray.getJSONObject(i);
+
+			JSONArray casesJSONArray = suiteJSONObject.optJSONArray("cases");
+
+			if (casesJSONArray == null) {
+				continue;
+			}
+
+			for (int j = 0; j < casesJSONArray.length(); j++) {
+				testReports.add(
+					TestReportFactory.newTestReport(
+						this,
+						_toTestResultJSONObject(
+							casesJSONArray.getJSONObject(j))));
+			}
+		}
+
+		return testReports;
+	}
+
+	private JSONObject _toTestResultJSONObject(JSONObject caseJSONObject) {
+		JSONObject testResultJSONObject = new JSONObject();
+
+		testResultJSONObject.put(
+			"duration", (long)(caseJSONObject.optDouble("duration", 0) * 1000));
+
+		String errorDetails = caseJSONObject.optString("errorDetails", null);
+
+		if (errorDetails != null) {
+			if (errorDetails.contains("\n")) {
+				errorDetails = errorDetails.substring(
+					0, errorDetails.indexOf("\n"));
+			}
+
+			if (errorDetails.length() > 200) {
+				errorDetails = errorDetails.substring(0, 200);
+			}
+
+			testResultJSONObject.put("errorDetails", errorDetails);
+		}
+
+		String status = caseJSONObject.optString("status");
+
+		if (!status.equals("FIXED") && !status.equals("PASSED") &&
+			!status.equals("SKIPPED")) {
+
+			testResultJSONObject.put(
+				"errorStackTrace", caseJSONObject.optString("errorStackTrace"));
+		}
+
+		testResultJSONObject.put(
+			"name",
+			JenkinsResultsParserUtil.combine(
+				caseJSONObject.optString("className"), ".",
+				caseJSONObject.optString("name"))
+		).put(
+			"status", status
+		);
+
+		return testResultJSONObject;
 	}
 
 	private final String _batchName;
