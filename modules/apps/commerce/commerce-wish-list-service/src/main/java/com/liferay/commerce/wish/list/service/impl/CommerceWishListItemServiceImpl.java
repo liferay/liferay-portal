@@ -78,7 +78,7 @@ public class CommerceWishListItemServiceImpl
 		throws PortalException {
 
 		CommerceWishListItem commerceWishListItem =
-			commerceWishListItemLocalService.getCommerceWishListItem(
+			commerceWishListItemPersistence.findByPrimaryKey(
 				commerceWishListItemId);
 
 		_commerceWishListModelResourcePermission.check(
@@ -106,7 +106,7 @@ public class CommerceWishListItemServiceImpl
 		throws PortalException {
 
 		CommerceWishListItem commerceWishListItem =
-			commerceWishListItemLocalService.getCommerceWishListItem(
+			commerceWishListItemPersistence.findByPrimaryKey(
 				commerceWishListItemId);
 
 		_commerceWishListModelResourcePermission.check(
@@ -124,7 +124,7 @@ public class CommerceWishListItemServiceImpl
 		_commerceWishListModelResourcePermission.check(
 			getPermissionChecker(), commerceWishListId, ActionKeys.VIEW);
 
-		return commerceWishListItemLocalService.getCommerceWishListItem(
+		return commerceWishListItemPersistence.findByCW_CPI_CP(
 			commerceWishListId, cpInstanceUuid, cProductId);
 	}
 
@@ -161,7 +161,7 @@ public class CommerceWishListItemServiceImpl
 		_commerceWishListModelResourcePermission.check(
 			getPermissionChecker(), commerceWishListId, ActionKeys.VIEW);
 
-		return commerceWishListItemLocalService.getCommerceWishListItems(
+		return commerceWishListItemPersistence.findByCommerceWishListId(
 			commerceWishListId, start, end, orderByComparator);
 	}
 
@@ -172,7 +172,7 @@ public class CommerceWishListItemServiceImpl
 		_commerceWishListModelResourcePermission.check(
 			getPermissionChecker(), commerceWishListId, ActionKeys.VIEW);
 
-		return commerceWishListItemLocalService.getCommerceWishListItemsCount(
+		return commerceWishListItemPersistence.countByCommerceWishListId(
 			commerceWishListId);
 	}
 

@@ -119,7 +119,7 @@ public class CommercePricingClassServiceImpl
 		throws PortalException {
 
 		CommercePricingClass commercePricingClass =
-			commercePricingClassLocalService.fetchCommercePricingClass(
+			commercePricingClassPersistence.fetchByPrimaryKey(
 				commercePricingClassId);
 
 		if (commercePricingClass != null) {
@@ -157,7 +157,7 @@ public class CommercePricingClassServiceImpl
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
 
-		return commercePricingClassLocalService.getCommercePricingClass(
+		return commercePricingClassPersistence.findByPrimaryKey(
 			commercePricingClassId);
 	}
 

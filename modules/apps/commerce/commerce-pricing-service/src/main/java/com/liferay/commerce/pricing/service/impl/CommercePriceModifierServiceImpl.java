@@ -74,7 +74,7 @@ public class CommercePriceModifierServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.fetchCommercePriceModifier(
+			commercePriceModifierPersistence.fetchByPrimaryKey(
 				commercePriceModifierId);
 
 		if ((commercePriceModifier == null) &&
@@ -116,7 +116,7 @@ public class CommercePriceModifierServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.getCommercePriceModifier(
+			commercePriceModifierPersistence.findByPrimaryKey(
 				commercePriceModifierId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -133,7 +133,7 @@ public class CommercePriceModifierServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.fetchCommercePriceModifier(
+			commercePriceModifierPersistence.fetchByPrimaryKey(
 				commercePriceModifierId);
 
 		if (commercePriceModifier != null) {
@@ -173,7 +173,7 @@ public class CommercePriceModifierServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.getCommercePriceModifier(
+			commercePriceModifierPersistence.findByPrimaryKey(
 				commercePriceModifierId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -192,7 +192,7 @@ public class CommercePriceModifierServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceModifierLocalService.getCommercePriceModifiers(
+		return commercePriceModifierPersistence.findByCommercePriceListId(
 			commercePriceListId, start, end, orderByComparator);
 	}
 
@@ -203,7 +203,7 @@ public class CommercePriceModifierServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceModifierLocalService.getCommercePriceModifiersCount(
+		return commercePriceModifierPersistence.countByCommercePriceListId(
 			commercePriceListId);
 	}
 
@@ -240,7 +240,7 @@ public class CommercePriceModifierServiceImpl
 			getPermissionChecker(), commercePriceListId, ActionKeys.UPDATE);
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.fetchCommercePriceModifier(
+			commercePriceModifierPersistence.fetchByPrimaryKey(
 				commercePriceModifierId);
 
 		if ((commercePriceModifier != null) &&

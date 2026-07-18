@@ -82,8 +82,7 @@ public class CommerceTaxMethodServiceImpl
 		throws PortalException {
 
 		CommerceTaxMethod commerceTaxMethod =
-			commerceTaxMethodLocalService.getCommerceTaxMethod(
-				commerceTaxMethodId);
+			commerceTaxMethodPersistence.findByPrimaryKey(commerceTaxMethodId);
 
 		_checkCommerceChannel(commerceTaxMethod.getGroupId());
 
@@ -98,8 +97,7 @@ public class CommerceTaxMethodServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxMethodLocalService.fetchCommerceTaxMethod(
-			groupId, engineKey);
+		return commerceTaxMethodPersistence.fetchByG_E(groupId, engineKey);
 	}
 
 	@Override
@@ -107,12 +105,11 @@ public class CommerceTaxMethodServiceImpl
 		throws PortalException {
 
 		CommerceTaxMethod commerceTaxMethod =
-			commerceTaxMethodLocalService.getCommerceTaxMethod(
-				commerceTaxMethodId);
+			commerceTaxMethodPersistence.findByPrimaryKey(commerceTaxMethodId);
 
 		_checkCommerceChannel(commerceTaxMethod.getGroupId());
 
-		return commerceTaxMethodLocalService.getCommerceTaxMethod(
+		return commerceTaxMethodPersistence.findByPrimaryKey(
 			commerceTaxMethodId);
 	}
 
@@ -122,7 +119,7 @@ public class CommerceTaxMethodServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxMethodLocalService.getCommerceTaxMethods(groupId);
+		return commerceTaxMethodPersistence.findByGroupId(groupId);
 	}
 
 	@Override
@@ -141,8 +138,7 @@ public class CommerceTaxMethodServiceImpl
 		throws PortalException {
 
 		CommerceTaxMethod commerceTaxMethod =
-			commerceTaxMethodLocalService.fetchCommerceTaxMethod(
-				commerceTaxMethodId);
+			commerceTaxMethodPersistence.fetchByPrimaryKey(commerceTaxMethodId);
 
 		if (commerceTaxMethod != null) {
 			_checkCommerceChannel(commerceTaxMethod.getGroupId());
@@ -171,8 +167,7 @@ public class CommerceTaxMethodServiceImpl
 		throws PortalException {
 
 		CommerceTaxMethod commerceTaxMethod =
-			commerceTaxMethodLocalService.getCommerceTaxMethod(
-				commerceTaxMethodId);
+			commerceTaxMethodPersistence.findByPrimaryKey(commerceTaxMethodId);
 
 		_checkCommerceChannel(commerceTaxMethod.getGroupId());
 

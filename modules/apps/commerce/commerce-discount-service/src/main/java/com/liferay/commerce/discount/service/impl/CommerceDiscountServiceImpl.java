@@ -284,8 +284,7 @@ public class CommerceDiscountServiceImpl
 		throws PortalException {
 
 		CommerceDiscount commerceDiscount =
-			commerceDiscountLocalService.fetchCommerceDiscount(
-				commerceDiscountId);
+			commerceDiscountPersistence.fetchByPrimaryKey(commerceDiscountId);
 
 		if (commerceDiscount != null) {
 			_commerceDiscountResourcePermission.check(
@@ -320,8 +319,7 @@ public class CommerceDiscountServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.VIEW);
 
-		return commerceDiscountLocalService.getCommerceDiscount(
-			commerceDiscountId);
+		return commerceDiscountPersistence.findByPrimaryKey(commerceDiscountId);
 	}
 
 	/**
@@ -349,7 +347,7 @@ public class CommerceDiscountServiceImpl
 			getPermissionChecker(), null,
 			CommerceDiscountActionKeys.VIEW_COMMERCE_DISCOUNTS);
 
-		return commerceDiscountLocalService.getCommerceDiscounts(
+		return commerceDiscountPersistence.findByC_L_A_S(
 			companyId, level, active, status);
 	}
 

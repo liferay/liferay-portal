@@ -379,7 +379,7 @@ public class CommercePaymentEntryLocalServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.getCommercePaymentEntry(
+			commercePaymentEntryPersistence.findByPrimaryKey(
 				commercePaymentEntryId);
 
 		CommercePaymentEntryRefundType commercePaymentEntryRefundType =
@@ -450,7 +450,7 @@ public class CommercePaymentEntryLocalServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.getCommercePaymentEntry(
+			commercePaymentEntryPersistence.findByPrimaryKey(
 				commercePaymentEntryId);
 
 		commercePaymentEntry.setNote(note);
@@ -465,7 +465,7 @@ public class CommercePaymentEntryLocalServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.getCommercePaymentEntry(
+			commercePaymentEntryPersistence.findByPrimaryKey(
 				commercePaymentEntryId);
 
 		CommercePaymentEntryRefundType commercePaymentEntryRefundType =

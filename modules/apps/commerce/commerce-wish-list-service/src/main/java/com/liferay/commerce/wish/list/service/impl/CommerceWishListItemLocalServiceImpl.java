@@ -79,7 +79,7 @@ public class CommerceWishListItemLocalServiceImpl
 		throws PortalException {
 
 		CommerceWishListItem commerceWishListItem =
-			commerceWishListItemLocalService.fetchCommerceWishListItem(
+			commerceWishListItemPersistence.fetchByCW_CPI_CP(
 				commerceWishListId, cpInstanceUuid, cProductId);
 
 		if (commerceWishListItem == null) {

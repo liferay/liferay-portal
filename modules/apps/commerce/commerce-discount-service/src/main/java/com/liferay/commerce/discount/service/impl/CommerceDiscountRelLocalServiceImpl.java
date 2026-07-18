@@ -237,7 +237,7 @@ public class CommerceDiscountRelLocalServiceImpl
 					),
 					classNameId, classPK, unitOfMeasureKey)),
 			commerceDiscountRelId ->
-				commerceDiscountRelLocalService.getCommerceDiscountRel(
+				commerceDiscountRelPersistence.findByPrimaryKey(
 					(Long)commerceDiscountRelId));
 	}
 

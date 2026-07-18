@@ -83,8 +83,7 @@ public class CommerceTermEntryServiceImpl
 		throws PortalException {
 
 		CommerceTermEntry commerceTermEntry =
-			commerceTermEntryLocalService.fetchCommerceTermEntry(
-				commerceTermEntryId);
+			commerceTermEntryPersistence.fetchByPrimaryKey(commerceTermEntryId);
 
 		if (commerceTermEntry != null) {
 			_commerceTermEntryModelResourcePermission.check(
@@ -132,7 +131,7 @@ public class CommerceTermEntryServiceImpl
 		_commerceTermEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceTermEntryId, ActionKeys.VIEW);
 
-		return commerceTermEntryLocalService.getCommerceTermEntry(
+		return commerceTermEntryPersistence.findByPrimaryKey(
 			commerceTermEntryId);
 	}
 

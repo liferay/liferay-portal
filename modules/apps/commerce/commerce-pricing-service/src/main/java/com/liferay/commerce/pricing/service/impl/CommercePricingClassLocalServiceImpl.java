@@ -316,7 +316,7 @@ public class CommercePricingClassLocalServiceImpl
 		throws PortalException {
 
 		CommercePricingClass commercePricingClass =
-			commercePricingClassLocalService.getCommercePricingClass(
+			commercePricingClassPersistence.findByPrimaryKey(
 				commercePricingClassId);
 
 		commercePricingClass.setExternalReferenceCode(externalReferenceCode);

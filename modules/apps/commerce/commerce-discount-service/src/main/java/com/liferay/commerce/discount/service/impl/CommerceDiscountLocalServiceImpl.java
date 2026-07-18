@@ -1334,8 +1334,7 @@ public class CommerceDiscountLocalServiceImpl
 		throws PortalException {
 
 		CommerceDiscount commerceDiscount =
-			commerceDiscountLocalService.getCommerceDiscount(
-				commerceDiscountId);
+			commerceDiscountPersistence.findByPrimaryKey(commerceDiscountId);
 
 		commerceDiscount.setExternalReferenceCode(externalReferenceCode);
 

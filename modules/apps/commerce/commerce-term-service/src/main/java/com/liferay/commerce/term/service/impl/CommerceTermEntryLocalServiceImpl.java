@@ -398,8 +398,7 @@ public class CommerceTermEntryLocalServiceImpl
 		throws PortalException {
 
 		CommerceTermEntry commerceTermEntry =
-			commerceTermEntryLocalService.getCommerceTermEntry(
-				commerceTermEntryId);
+			commerceTermEntryPersistence.findByPrimaryKey(commerceTermEntryId);
 
 		_validate(
 			commerceTermEntry, serviceContext.getCompanyId(), name, priority,

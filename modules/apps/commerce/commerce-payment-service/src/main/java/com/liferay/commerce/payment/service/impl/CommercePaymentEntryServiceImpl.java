@@ -128,7 +128,7 @@ public class CommercePaymentEntryServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.fetchCommercePaymentEntry(
+			commercePaymentEntryPersistence.fetchByPrimaryKey(
 				commercePaymentEntryId);
 
 		if (commercePaymentEntry != null) {
@@ -175,7 +175,7 @@ public class CommercePaymentEntryServiceImpl
 				ActionKeys.VIEW);
 		}
 
-		return commercePaymentEntryLocalService.getCommercePaymentEntries(
+		return commercePaymentEntryPersistence.findByC_C_C_T(
 			companyId, classNameId, classPK, type, start, end,
 			orderByComparator);
 	}
@@ -197,7 +197,7 @@ public class CommercePaymentEntryServiceImpl
 				ActionKeys.VIEW);
 		}
 
-		return commercePaymentEntryLocalService.getCommercePaymentEntries(
+		return commercePaymentEntryPersistence.findByC_C_C(
 			companyId, classNameId, classPK, start, end, orderByComparator);
 	}
 
@@ -217,7 +217,7 @@ public class CommercePaymentEntryServiceImpl
 				ActionKeys.VIEW);
 		}
 
-		return commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
+		return commercePaymentEntryPersistence.countByC_C_C_T(
 			companyId, classNameId, classPK, type);
 	}
 
@@ -229,7 +229,7 @@ public class CommercePaymentEntryServiceImpl
 		_commercePaymentEntryModelResourcePermission.check(
 			getPermissionChecker(), commercePaymentEntryId, ActionKeys.VIEW);
 
-		return commercePaymentEntryLocalService.getCommercePaymentEntry(
+		return commercePaymentEntryPersistence.findByPrimaryKey(
 			commercePaymentEntryId);
 	}
 

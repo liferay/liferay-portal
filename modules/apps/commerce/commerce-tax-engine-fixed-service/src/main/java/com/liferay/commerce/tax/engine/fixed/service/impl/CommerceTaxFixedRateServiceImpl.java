@@ -67,7 +67,7 @@ public class CommerceTaxFixedRateServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRate commerceTaxFixedRate =
-			commerceTaxFixedRateLocalService.getCommerceTaxFixedRate(
+			commerceTaxFixedRatePersistence.findByPrimaryKey(
 				commerceTaxFixedRateId);
 
 		_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
@@ -82,7 +82,7 @@ public class CommerceTaxFixedRateServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRate commerceTaxFixedRate =
-			commerceTaxFixedRateLocalService.fetchCommerceTaxFixedRate(
+			commerceTaxFixedRatePersistence.fetchByPrimaryKey(
 				commerceTaxFixedRateId);
 
 		if (commerceTaxFixedRate != null) {
@@ -98,7 +98,7 @@ public class CommerceTaxFixedRateServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRate commerceTaxFixedRate =
-			commerceTaxFixedRateLocalService.fetchCommerceTaxFixedRate(
+			commerceTaxFixedRatePersistence.fetchByC_C(
 				cpTaxCategoryId, commerceTaxMethodId);
 
 		if (commerceTaxFixedRate != null) {
@@ -116,7 +116,7 @@ public class CommerceTaxFixedRateServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxFixedRateLocalService.getCommerceTaxFixedRates(
+		return commerceTaxFixedRatePersistence.findByCommerceTaxMethodId(
 			commerceTaxMethodId, start, end, orderByComparator);
 	}
 
@@ -127,7 +127,7 @@ public class CommerceTaxFixedRateServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxFixedRateLocalService.getCommerceTaxFixedRatesCount(
+		return commerceTaxFixedRatePersistence.countByCommerceTaxMethodId(
 			commerceTaxMethodId);
 	}
 
@@ -137,7 +137,7 @@ public class CommerceTaxFixedRateServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRate commerceTaxFixedRate =
-			commerceTaxFixedRateLocalService.getCommerceTaxFixedRate(
+			commerceTaxFixedRatePersistence.findByPrimaryKey(
 				commerceTaxFixedRateId);
 
 		_checkCommerceChannel(commerceTaxFixedRate.getGroupId());

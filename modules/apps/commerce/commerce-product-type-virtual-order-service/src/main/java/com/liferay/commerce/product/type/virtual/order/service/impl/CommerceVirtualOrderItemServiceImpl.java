@@ -42,7 +42,7 @@ public class CommerceVirtualOrderItemServiceImpl
 		throws PortalException {
 
 		CommerceVirtualOrderItem commerceVirtualOrderItem =
-			commerceVirtualOrderItemLocalService.fetchCommerceVirtualOrderItem(
+			commerceVirtualOrderItemPersistence.fetchByPrimaryKey(
 				commerceVirtualOrderItemId);
 
 		if (commerceVirtualOrderItem != null) {
@@ -89,7 +89,7 @@ public class CommerceVirtualOrderItemServiceImpl
 		PermissionChecker permissionChecker = getPermissionChecker();
 
 		CommerceVirtualOrderItem commerceVirtualOrderItem =
-			commerceVirtualOrderItemLocalService.getCommerceVirtualOrderItem(
+			commerceVirtualOrderItemPersistence.findByPrimaryKey(
 				commerceVirtualOrderItemId);
 
 		_commerceVirtualOrderItemFileEntryModelResourcePermission.check(
@@ -118,7 +118,7 @@ public class CommerceVirtualOrderItemServiceImpl
 		throws PortalException {
 
 		CommerceVirtualOrderItem commerceVirtualOrderItem =
-			commerceVirtualOrderItemLocalService.getCommerceVirtualOrderItem(
+			commerceVirtualOrderItemPersistence.findByPrimaryKey(
 				commerceVirtualOrderItemId);
 
 		CommerceOrderItem commerceOrderItem =
