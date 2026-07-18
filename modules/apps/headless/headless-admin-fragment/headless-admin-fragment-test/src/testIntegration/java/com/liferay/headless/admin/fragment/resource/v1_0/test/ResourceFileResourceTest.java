@@ -650,15 +650,15 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private ResourceFileResource _getUserWithPermissionsResourceFileResource()
 		throws Exception {
 
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
 		Role role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
 			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
 			String.valueOf(testGroup.getGroupId()),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
 
 		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
 
