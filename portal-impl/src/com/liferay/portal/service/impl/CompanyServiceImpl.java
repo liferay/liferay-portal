@@ -171,6 +171,41 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
 	@Override
+	public Company copyDBPartitionCompany(
+			long fromCompanyId, Long toCompanyId, String name,
+			String virtualHost, String webId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
+
+		Company company = companyLocalService.copyDBPartitionCompany(
+			fromCompanyId, toCompanyId, name, virtualHost, webId);
+
+		if (AuditRouterUtil.isDeployed()) {
+			long userId = getUserId();
+
+			AuditRouterUtil.route(
+				new AuditMessage(
+					0, company.getCompanyId(), userId,
+					PortalUtil.getUserName(userId, StringPool.BLANK), null,
+					JSONUtil.put(
+						"virtualHostname", company.getVirtualHostname()
+					).put(
+						"webId", company.getWebId()
+					),
+					Company.class.getName(),
+					String.valueOf(company.getCompanyId()), "COPY", null));
+		}
+
+		return company;
+	}
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
 	public Company deleteCompany(long companyId) throws PortalException {
 		PermissionChecker permissionChecker = getPermissionChecker();
 
