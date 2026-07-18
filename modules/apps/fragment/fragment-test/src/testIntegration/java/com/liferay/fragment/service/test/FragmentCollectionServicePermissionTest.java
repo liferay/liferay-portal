@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -204,6 +205,36 @@ public class FragmentCollectionServicePermissionTest {
 
 		_fragmentCollectionService.fetchFragmentCollection(
 			fragmentCollection.getFragmentCollectionId());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-88395")
+	public void testGetFragmentCollectionByExternalReferenceCodeWithoutPermissions()
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentCollectionService.getFragmentCollectionByExternalReferenceCode(
+			fragmentCollection.getExternalReferenceCode(), _group.getGroupId());
+	}
+
+	@Test
+	@TestInfo("LPD-88395")
+	public void testGetFragmentCollectionByExternalReferenceCodeWithPermissions()
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentCollectionService.getFragmentCollectionByExternalReferenceCode(
+			fragmentCollection.getExternalReferenceCode(), _group.getGroupId());
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
