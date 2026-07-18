@@ -51,7 +51,7 @@ public class AssetCategoryPropertyServiceImpl
 		throws PortalException {
 
 		AssetCategoryProperty assetCategoryProperty =
-			assetCategoryPropertyLocalService.getAssetCategoryProperty(
+			assetCategoryPropertyPersistence.findByPrimaryKey(
 				categoryPropertyId);
 
 		AssetCategoryPermission.check(
@@ -68,7 +68,7 @@ public class AssetCategoryPropertyServiceImpl
 			if (AssetCategoryPermission.contains(
 					getPermissionChecker(), entryId, ActionKeys.VIEW)) {
 
-				return assetCategoryPropertyLocalService.getCategoryProperties(
+				return assetCategoryPropertyPersistence.findByCategoryId(
 					entryId);
 			}
 		}
@@ -99,7 +99,7 @@ public class AssetCategoryPropertyServiceImpl
 		throws PortalException {
 
 		AssetCategoryProperty assetCategoryProperty =
-			assetCategoryPropertyLocalService.getAssetCategoryProperty(
+			assetCategoryPropertyPersistence.findByPrimaryKey(
 				categoryPropertyId);
 
 		AssetCategoryPermission.check(

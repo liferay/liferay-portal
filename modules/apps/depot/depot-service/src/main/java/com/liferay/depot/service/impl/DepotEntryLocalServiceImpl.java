@@ -342,7 +342,7 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 		return TransformUtil.transform(
 			_depotEntryGroupRelPersistence.findByDDMSA_TGI(
 				ddmStructuresAvailable, groupId, start, end),
-			depotEntryGroupRel -> depotEntryLocalService.getDepotEntry(
+			depotEntryGroupRel -> depotEntryPersistence.findByPrimaryKey(
 				depotEntryGroupRel.getDepotEntryId()));
 	}
 
@@ -353,7 +353,7 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 
 		return TransformUtil.transform(
 			_getDepotEntryGroupRels(groupId, type, start, end),
-			depotEntryGroupRel -> depotEntryLocalService.getDepotEntry(
+			depotEntryGroupRel -> depotEntryPersistence.findByPrimaryKey(
 				depotEntryGroupRel.getDepotEntryId()));
 	}
 

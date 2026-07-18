@@ -43,7 +43,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.addAssetEntrySelection(
@@ -58,7 +58,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.addAssetEntrySelections(
@@ -117,7 +117,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.deleteAssetEntrySelection(
@@ -130,7 +130,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		for (long assetListEntryId : assetListEntriesIds) {
 			AssetListEntry assetListEntry =
-				assetListEntryLocalService.getAssetListEntry(assetListEntryId);
+				assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
 
 			_assetListEntryModelResourcePermission.check(
 				getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
@@ -144,7 +144,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		throws PortalException {
 
 		AssetListEntry assetListEntry =
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId);
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
@@ -159,7 +159,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.deleteAssetListEntry(
@@ -171,7 +171,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		throws PortalException {
 
 		AssetListEntry assetListEntry =
-			assetListEntryLocalService.fetchAssetListEntry(assetListEntryId);
+			assetListEntryPersistence.fetchByPrimaryKey(assetListEntryId);
 
 		if (assetListEntry != null) {
 			_assetListEntryModelResourcePermission.check(
@@ -348,7 +348,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		throws PortalException {
 
 		AssetListEntry assetListEntry =
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId);
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.VIEW);
@@ -361,9 +361,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			long groupId, String assetListEntryKey)
 		throws PortalException {
 
-		AssetListEntry assetListEntry =
-			assetListEntryLocalService.getAssetListEntry(
-				groupId, assetListEntryKey);
+		AssetListEntry assetListEntry = assetListEntryPersistence.findByG_ALEK(
+			groupId, assetListEntryKey);
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.VIEW);
@@ -376,9 +375,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		AssetListEntry assetListEntry =
-			assetListEntryLocalService.getAssetListEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		AssetListEntry assetListEntry = assetListEntryPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.VIEW);
@@ -391,9 +389,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			String uuid, long groupId)
 		throws PortalException {
 
-		AssetListEntry assetListEntry =
-			assetListEntryLocalService.getAssetListEntryByUuidAndGroupId(
-				uuid, groupId);
+		AssetListEntry assetListEntry = assetListEntryPersistence.findByUUID_G(
+			uuid, groupId);
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.VIEW);
@@ -409,7 +406,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.moveAssetEntrySelection(
@@ -424,7 +421,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.updateAssetListEntry(
@@ -438,7 +435,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		return assetListEntryLocalService.updateAssetListEntry(
@@ -452,7 +449,7 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(),
-			assetListEntryLocalService.getAssetListEntry(assetListEntryId),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
 			ActionKeys.UPDATE);
 
 		assetListEntryLocalService.updateAssetListEntryTypeSettings(

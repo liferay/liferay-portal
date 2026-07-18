@@ -301,7 +301,7 @@ public class FriendlyURLEntryLocalServiceImpl
 
 		if (count == 0) {
 			FriendlyURLEntry friendlyURLEntry =
-				friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				friendlyURLEntryPersistence.fetchByPrimaryKey(
 					friendlyURLEntryId);
 
 			if (friendlyURLEntry == null) {

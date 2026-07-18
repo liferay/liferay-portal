@@ -67,7 +67,7 @@ public class NotificationQueueEntryServiceImpl
 		_notificationQueueEntryModelResourcePermission.check(
 			getPermissionChecker(), notificationQueueEntryId, ActionKeys.VIEW);
 
-		return _notificationQueueEntryLocalService.getNotificationQueueEntry(
+		return notificationQueueEntryPersistence.findByPrimaryKey(
 			notificationQueueEntryId);
 	}
 

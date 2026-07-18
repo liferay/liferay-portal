@@ -76,8 +76,7 @@ public class ChangesetCollectionLocalServiceImpl
 		throws PortalException {
 
 		ChangesetCollection changesetCollection =
-			changesetCollectionLocalService.fetchChangesetCollection(
-				groupId, name);
+			changesetCollectionPersistence.fetchByG_N(groupId, name);
 
 		if (changesetCollection != null) {
 			return changesetCollection;

@@ -120,7 +120,7 @@ public class AudiencesEntryServiceImpl extends AudiencesEntryServiceBaseImpl {
 			getPermissionChecker(), 0,
 			AudiencesActionKeys.MANAGE_AUDIENCES_ENTRIES);
 
-		return audiencesEntryLocalService.getAudiencesEntry(audiencesEntryId);
+		return audiencesEntryPersistence.findByPrimaryKey(audiencesEntryId);
 	}
 
 	@Override

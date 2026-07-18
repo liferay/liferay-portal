@@ -32,7 +32,7 @@ public class EntryServiceImpl extends EntryServiceBaseImpl {
 		_entryModelResourcePermission.check(
 			getPermissionChecker(), entryId, ActionKeys.VIEW);
 
-		return entryLocalService.getEntry(entryId);
+		return entryPersistence.findByPrimaryKey(entryId);
 	}
 
 	@Reference(target = "(model.class.name=com.liferay.contacts.model.Entry)")

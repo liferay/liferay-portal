@@ -86,7 +86,7 @@ public class AssetDisplayPageEntryServiceImpl
 		_checkPermissions(
 			_portal.getClassName(classNameId), classPK, ActionKeys.VIEW);
 
-		return assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+		return assetDisplayPageEntryPersistence.fetchByG_C_C(
 			groupId, classNameId, classPK);
 	}
 
