@@ -6,6 +6,9 @@
 package com.liferay.fragment.importer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.configuration.FragmentServiceConfiguration;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentExportImportConstants;
@@ -35,12 +38,15 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLUtil;
@@ -57,6 +63,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -196,6 +203,44 @@ public class FragmentsImporterTest {
 		Assert.assertEquals(
 			"{SimpleInputField} from @liferay/fragment-impl/api",
 			fieldSetJSONObject.getString("customComponentModule"));
+	}
+
+	@Test
+	@TestInfo("LPD-98539")
+	public void testImportFragmentEntriesIntoDesignLibrarySkipsCompositions()
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		List<FragmentsImporterResultEntry> fragmentsImporterResultEntries =
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), depotEntry.getGroupId(), 0, _file,
+				FragmentsImportStrategy.DO_NOT_OVERWRITE, false);
+
+		_assertFragmentsImporterResultEntries(
+			ListUtil.filter(
+				fragmentsImporterResultEntries,
+				fragmentsImporterResultEntry -> Objects.equals(
+					fragmentsImporterResultEntry.getType(),
+					FragmentsImporterResultEntry.Type.COMPOSITION)),
+			FragmentsImporterResultEntry.Status.INVALID,
+			FragmentsImporterResultEntry.Type.COMPOSITION);
+		_assertFragmentsImporterResultEntries(
+			ListUtil.filter(
+				fragmentsImporterResultEntries,
+				fragmentsImporterResultEntry -> ArrayUtil.contains(
+					new String[] {
+						"Fragment", "Fragment With Icon",
+						"Input Fragment With Type Options"
+					},
+					fragmentsImporterResultEntry.getName())),
+			FragmentsImporterResultEntry.Status.IMPORTED,
+			FragmentsImporterResultEntry.Type.FRAGMENT);
 	}
 
 	@Test
@@ -726,6 +771,27 @@ public class FragmentsImporterTest {
 		}
 	}
 
+	private void _assertFragmentsImporterResultEntries(
+		List<FragmentsImporterResultEntry> fragmentsImporterResultEntries,
+		FragmentsImporterResultEntry.Status status,
+		FragmentsImporterResultEntry.Type type) {
+
+		Assert.assertFalse(
+			fragmentsImporterResultEntries.toString(),
+			fragmentsImporterResultEntries.isEmpty());
+
+		for (FragmentsImporterResultEntry fragmentsImporterResultEntry :
+				fragmentsImporterResultEntries) {
+
+			Assert.assertEquals(
+				fragmentsImporterResultEntry.toString(), status,
+				fragmentsImporterResultEntry.getStatus());
+			Assert.assertEquals(
+				fragmentsImporterResultEntry.toString(), type,
+				fragmentsImporterResultEntry.getType());
+		}
+	}
+
 	private void _deleteFragmentCollections(
 			List<FragmentCollection> fragmentCollections)
 		throws Exception {
@@ -1014,6 +1080,10 @@ public class FragmentsImporterTest {
 		_PATH_DEPENDENCIES + "resources-collection/";
 
 	private Bundle _bundle;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	private File _file;
 
 	@Inject
