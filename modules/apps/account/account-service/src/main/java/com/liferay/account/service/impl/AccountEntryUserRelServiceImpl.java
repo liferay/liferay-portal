@@ -194,7 +194,7 @@ public class AccountEntryUserRelServiceImpl
 		throws PortalException {
 
 		AccountEntryUserRel accountEntryUserRel =
-			accountEntryUserRelLocalService.fetchAccountEntryUserRel(
+			accountEntryUserRelPersistence.fetchByPrimaryKey(
 				accountEntryUserRelId);
 
 		if (accountEntryUserRel != null) {
@@ -215,7 +215,7 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.fetchAccountEntryUserRel(
+		return accountEntryUserRelPersistence.fetchByAEI_AUI(
 			accountEntryId, accountUserId);
 	}
 
@@ -228,7 +228,7 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.getAccountEntryUserRel(
+		return accountEntryUserRelPersistence.findByAEI_AUI(
 			accountEntryId, accountUserId);
 	}
 

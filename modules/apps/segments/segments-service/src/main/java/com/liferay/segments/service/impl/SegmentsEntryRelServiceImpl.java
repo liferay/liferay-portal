@@ -42,7 +42,7 @@ public class SegmentsEntryRelServiceImpl
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.VIEW);
 
-		return segmentsEntryRelLocalService.getSegmentsEntryRels(
+		return segmentsEntryRelPersistence.findBySegmentsEntryId(
 			segmentsEntryId);
 	}
 
@@ -55,7 +55,7 @@ public class SegmentsEntryRelServiceImpl
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.VIEW);
 
-		return segmentsEntryRelLocalService.getSegmentsEntryRels(
+		return segmentsEntryRelPersistence.findBySegmentsEntryId(
 			segmentsEntryId, start, end, orderByComparator);
 	}
 
@@ -68,7 +68,7 @@ public class SegmentsEntryRelServiceImpl
 			getPermissionChecker(), groupId,
 			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
 
-		return segmentsEntryRelLocalService.getSegmentsEntryRels(
+		return segmentsEntryRelPersistence.findByG_CN_CPK(
 			groupId, classNameId, classPK);
 	}
 
@@ -79,7 +79,7 @@ public class SegmentsEntryRelServiceImpl
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.VIEW);
 
-		return segmentsEntryRelLocalService.getSegmentsEntryRelsCount(
+		return segmentsEntryRelPersistence.countBySegmentsEntryId(
 			segmentsEntryId);
 	}
 
@@ -92,7 +92,7 @@ public class SegmentsEntryRelServiceImpl
 			getPermissionChecker(), groupId,
 			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
 
-		return segmentsEntryRelLocalService.getSegmentsEntryRelsCount(
+		return segmentsEntryRelPersistence.countByG_CN_CPK(
 			groupId, classNameId, classPK);
 	}
 

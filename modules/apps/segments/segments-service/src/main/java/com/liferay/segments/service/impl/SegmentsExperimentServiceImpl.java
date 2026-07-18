@@ -101,7 +101,7 @@ public class SegmentsExperimentServiceImpl
 		throws PortalException {
 
 		SegmentsExperiment segmentsExperiment =
-			segmentsExperimentLocalService.fetchSegmentsExperiment(
+			segmentsExperimentPersistence.fetchByG_S(
 				groupId, segmentsExperimentKey);
 
 		if ((segmentsExperiment != null) &&

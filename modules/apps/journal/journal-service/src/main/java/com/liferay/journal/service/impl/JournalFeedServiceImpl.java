@@ -70,7 +70,7 @@ public class JournalFeedServiceImpl extends JournalFeedServiceBaseImpl {
 
 	@Override
 	public JournalFeed getFeed(long feedId) throws PortalException {
-		JournalFeed feed = journalFeedLocalService.getFeed(feedId);
+		JournalFeed feed = journalFeedPersistence.findByPrimaryKey(feedId);
 
 		_journalFeedModelResourcePermission.check(
 			getPermissionChecker(), feed, ActionKeys.VIEW);

@@ -115,8 +115,7 @@ public class AccountRoleServiceImpl extends AccountRoleServiceBaseImpl {
 	public AccountRole getAccountRoleByRoleId(long roleId)
 		throws PortalException {
 
-		AccountRole accountRole =
-			accountRoleLocalService.getAccountRoleByRoleId(roleId);
+		AccountRole accountRole = accountRolePersistence.findByRoleId(roleId);
 
 		_accountRoleModelResourcePermission.check(
 			getPermissionChecker(), accountRole, ActionKeys.VIEW);

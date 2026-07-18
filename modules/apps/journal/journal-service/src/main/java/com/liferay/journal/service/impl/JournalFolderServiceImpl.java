@@ -73,7 +73,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 	public void deleteFolder(long folderId) throws PortalException {
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.DELETE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.DELETE);
 
 		journalFolderLocalService.deleteFolder(folderId);
 	}
@@ -84,14 +85,16 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.DELETE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.DELETE);
 
 		journalFolderLocalService.deleteFolder(folderId, includeTrashedEntries);
 	}
 
 	@Override
 	public JournalFolder fetchFolder(long folderId) throws PortalException {
-		JournalFolder folder = journalFolderLocalService.fetchFolder(folderId);
+		JournalFolder folder = journalFolderPersistence.fetchByPrimaryKey(
+			folderId);
 
 		if (folder != null) {
 			_journalFolderModelResourcePermission.check(
@@ -124,7 +127,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder getFolder(long folderId) throws PortalException {
-		JournalFolder folder = journalFolderLocalService.getFolder(folderId);
+		JournalFolder folder = journalFolderPersistence.findByPrimaryKey(
+			folderId);
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(), folder, ActionKeys.VIEW);
@@ -137,9 +141,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		JournalFolder folder =
-			journalFolderLocalService.getJournalFolderByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		JournalFolder folder = journalFolderPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(), folder, ActionKeys.VIEW);
@@ -402,7 +405,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.UPDATE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.UPDATE);
 
 		return journalFolderLocalService.moveFolder(
 			folderId, parentFolderId, serviceContext);
@@ -415,7 +419,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.UPDATE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.UPDATE);
 
 		return journalFolderLocalService.moveFolderFromTrash(
 			getUserId(), folderId, parentFolderId, serviceContext);
@@ -427,7 +432,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.DELETE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.DELETE);
 
 		return journalFolderLocalService.moveFolderToTrash(
 			getUserId(), folderId);
@@ -437,7 +443,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 	public void restoreFolderFromTrash(long folderId) throws PortalException {
 		_journalFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			journalFolderLocalService.getFolder(folderId), ActionKeys.UPDATE);
+			journalFolderPersistence.findByPrimaryKey(folderId),
+			ActionKeys.UPDATE);
 
 		journalFolderLocalService.restoreFolderFromTrash(getUserId(), folderId);
 	}

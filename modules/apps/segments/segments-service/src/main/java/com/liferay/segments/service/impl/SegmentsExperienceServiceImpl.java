@@ -201,7 +201,7 @@ public class SegmentsExperienceServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			segmentsExperienceLocalService.getSegmentsExperience(
+			segmentsExperiencePersistence.findByG_SEK_P(
 				groupId, segmentsExperienceKey, plid);
 
 		_segmentsExperienceResourcePermission.check(

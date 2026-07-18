@@ -287,7 +287,7 @@ public class SegmentsExperimentLocalServiceImpl
 			ProjectionFactoryUtil.property("segmentsExperienceId"));
 
 		List<Long> segmentsExperienceIds =
-			_segmentsExperienceLocalService.dynamicQuery(dynamicQuery);
+			_segmentsExperiencePersistence.findWithDynamicQuery(dynamicQuery);
 
 		if (segmentsExperienceIds.isEmpty()) {
 			return Collections.emptyList();
@@ -303,7 +303,7 @@ public class SegmentsExperimentLocalServiceImpl
 
 		dynamicQuery.addOrder(OrderFactoryUtil.desc("createDate"));
 
-		return segmentsExperimentLocalService.dynamicQuery(dynamicQuery);
+		return segmentsExperimentPersistence.findWithDynamicQuery(dynamicQuery);
 	}
 
 	@Override
@@ -612,12 +612,12 @@ public class SegmentsExperimentLocalServiceImpl
 					SegmentsExperience.class.getName()));
 
 			_publishSegmentsExperienceVariant(
-				_segmentsExperienceLocalService.getSegmentsExperience(
+				_segmentsExperiencePersistence.findByG_SEK_P(
 					draftLayout.getGroupId(),
 					segmentsExperiment.getSegmentsExperienceKey(),
 					draftLayout.getPlid()),
 				newSegmentsExperienceKey,
-				_segmentsExperienceLocalService.getSegmentsExperience(
+				_segmentsExperiencePersistence.findByG_SEK_P(
 					draftLayout.getGroupId(),
 					winnerSegmentsExperience.getSegmentsExperienceKey(),
 					draftLayout.getPlid()));

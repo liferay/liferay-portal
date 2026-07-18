@@ -488,7 +488,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 */
 	@Override
 	public JournalArticle getArticle(long id) throws PortalException {
-		JournalArticle article = journalArticleLocalService.getArticle(id);
+		JournalArticle article = journalArticlePersistence.findByPrimaryKey(id);
 
 		_journalArticleModelResourcePermission.check(
 			getPermissionChecker(), article, ActionKeys.VIEW);

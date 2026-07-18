@@ -171,7 +171,7 @@ public class AccountGroupLocalServiceImpl
 		throws PortalException {
 
 		return accountGroupLocalService.deleteAccountGroup(
-			accountGroupLocalService.getAccountGroup(accountGroupId));
+			accountGroupPersistence.findByPrimaryKey(accountGroupId));
 	}
 
 	@Override

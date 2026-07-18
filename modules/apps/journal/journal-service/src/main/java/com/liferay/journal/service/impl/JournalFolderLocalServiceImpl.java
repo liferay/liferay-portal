@@ -567,7 +567,7 @@ public class JournalFolderLocalServiceImpl
 		String uuid, long groupId, long parentFolderId, String name,
 		int count) {
 
-		JournalFolder folder = journalFolderLocalService.fetchFolder(
+		JournalFolder folder = journalFolderPersistence.fetchByG_P_N(
 			groupId, parentFolderId, name);
 
 		if ((folder == null) ||

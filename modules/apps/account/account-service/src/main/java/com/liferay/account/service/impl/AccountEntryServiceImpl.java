@@ -94,9 +94,8 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
 
-		AccountEntry accountEntry =
-			accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
-				externalReferenceCode, permissionChecker.getCompanyId());
+		AccountEntry accountEntry = accountEntryPersistence.fetchByERC_C(
+			externalReferenceCode, permissionChecker.getCompanyId());
 
 		long accountEntryId = 0;
 
@@ -166,7 +165,7 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(), accountEntryId, ActionKeys.VIEW);
 
-		return accountEntryLocalService.fetchAccountEntry(accountEntryId);
+		return accountEntryPersistence.fetchByPrimaryKey(accountEntryId);
 	}
 
 	@Override
@@ -174,9 +173,8 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		AccountEntry accountEntry =
-			accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		AccountEntry accountEntry = accountEntryPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (accountEntry != null) {
 			_accountEntryModelResourcePermission.check(
@@ -204,7 +202,7 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 				ActionKeys.VIEW);
 		}
 
-		return accountEntryLocalService.getAccountEntries(
+		return accountEntryPersistence.findByC_S(
 			companyId, status, start, end, orderByComparator);
 	}
 
@@ -212,7 +210,7 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 	public AccountEntry getAccountEntry(long accountEntryId)
 		throws PortalException {
 
-		AccountEntry accountEntry = accountEntryLocalService.getAccountEntry(
+		AccountEntry accountEntry = accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
 		_accountEntryModelResourcePermission.check(
@@ -226,9 +224,8 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		AccountEntry accountEntry =
-			accountEntryLocalService.getAccountEntryByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		AccountEntry accountEntry = accountEntryPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(), accountEntry.getAccountEntryId(),
@@ -297,7 +294,7 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 				AccountActionKeys.MANAGE_DOMAINS)) {
 
 			AccountEntry originalAccountEntry =
-				accountEntryLocalService.getAccountEntry(
+				accountEntryPersistence.findByPrimaryKey(
 					accountEntry.getAccountEntryId());
 
 			accountEntry.setDomains(originalAccountEntry.getDomains());

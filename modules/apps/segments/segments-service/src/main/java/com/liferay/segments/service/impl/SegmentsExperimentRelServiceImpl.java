@@ -109,7 +109,7 @@ public class SegmentsExperimentRelServiceImpl
 				getPermissionChecker(), segmentsExperimentId, ActionKeys.VIEW);
 		}
 
-		return segmentsExperimentRelLocalService.getSegmentsExperimentRels(
+		return segmentsExperimentRelPersistence.findBySegmentsExperimentId(
 			segmentsExperimentId);
 	}
 
@@ -119,7 +119,7 @@ public class SegmentsExperimentRelServiceImpl
 		throws PortalException {
 
 		SegmentsExperimentRel segmentsExperimentRel =
-			segmentsExperimentRelLocalService.getSegmentsExperimentRel(
+			segmentsExperimentRelPersistence.findByPrimaryKey(
 				segmentsExperimentRelId);
 
 		_segmentsExperimentResourcePermission.check(
@@ -137,7 +137,7 @@ public class SegmentsExperimentRelServiceImpl
 		throws PortalException {
 
 		SegmentsExperimentRel segmentsExperimentRel =
-			segmentsExperimentRelLocalService.getSegmentsExperimentRel(
+			segmentsExperimentRelPersistence.findByPrimaryKey(
 				segmentsExperimentRelId);
 
 		_segmentsExperimentResourcePermission.check(
