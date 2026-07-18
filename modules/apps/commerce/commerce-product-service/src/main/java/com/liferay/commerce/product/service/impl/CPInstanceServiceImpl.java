@@ -11,10 +11,10 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
-import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.base.CPInstanceServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CProductPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -202,7 +202,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			long cProductId, String cpInstanceUuid)
 		throws PortalException {
 
-		CProduct cProduct = _cProductLocalService.fetchCProduct(cProductId);
+		CProduct cProduct = _cProductPersistence.fetchByPrimaryKey(cProductId);
 
 		if (cProduct == null) {
 			return null;
@@ -517,6 +517,6 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
-	private CProductLocalService _cProductLocalService;
+	private CProductPersistence _cProductPersistence;
 
 }

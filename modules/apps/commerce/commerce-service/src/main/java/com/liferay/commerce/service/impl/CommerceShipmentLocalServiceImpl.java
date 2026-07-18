@@ -21,11 +21,12 @@ import com.liferay.commerce.model.CommerceShipmentTable;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.attributes.provider.CommerceModelAttributesProvider;
 import com.liferay.commerce.service.CommerceAddressLocalService;
-import com.liferay.commerce.service.CommerceOrderItemLocalService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.service.base.CommerceShipmentLocalServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
+import com.liferay.commerce.service.persistence.CommerceOrderPersistence;
+import com.liferay.commerce.service.persistence.CommerceShipmentItemPersistence;
+import com.liferay.commerce.service.persistence.CommerceShippingMethodPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.query.FromStep;
@@ -94,7 +95,7 @@ public class CommerceShipmentLocalServiceImpl
 		throws PortalException {
 
 		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+			_commerceOrderPersistence.findByPrimaryKey(commerceOrderId);
 
 		return commerceShipmentLocalService.addCommerceShipment(
 			null, commerceOrder.getGroupId(),
@@ -130,7 +131,7 @@ public class CommerceShipmentLocalServiceImpl
 		commerceShipment.setCommerceAddressId(commerceAddressId);
 
 		CommerceShippingMethod commerceShippingMethod =
-			_commerceShippingMethodLocalService.fetchCommerceShippingMethod(
+			_commerceShippingMethodPersistence.fetchByPrimaryKey(
 				commerceShippingMethodId);
 
 		if (commerceShippingMethod != null) {
@@ -169,8 +170,7 @@ public class CommerceShipmentLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		CommerceOrderItem commerceOrderItem =
-			_commerceOrderItemLocalService.getCommerceOrderItem(
-				commerceOrderItemId);
+			_commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
@@ -659,7 +659,7 @@ public class CommerceShipmentLocalServiceImpl
 			commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 
 		int commerceShipmentItemsCount =
-			_commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
+			_commerceShipmentItemPersistence.countByCommerceShipmentId(
 				commerceShipmentId);
 
 		if (commerceShipmentItemsCount == 0) {
@@ -891,17 +891,20 @@ public class CommerceShipmentLocalServiceImpl
 	private CommerceModelAttributesProvider _commerceModelAttributesProvider;
 
 	@Reference
-	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+	private CommerceOrderItemPersistence _commerceOrderItemPersistence;
 
 	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
+	private CommerceOrderPersistence _commerceOrderPersistence;
 
 	@Reference
 	private CommerceShipmentItemLocalService _commerceShipmentItemLocalService;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShipmentItemPersistence _commerceShipmentItemPersistence;
+
+	@Reference
+	private CommerceShippingMethodPersistence
+		_commerceShippingMethodPersistence;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

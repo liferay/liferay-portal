@@ -9,9 +9,9 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.model.CommerceShipmentItem;
-import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.base.CommerceShipmentItemServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -111,7 +111,7 @@ public class CommerceShipmentItemServiceImpl
 		_commerceShipmentModelResourcePermission.check(
 			getPermissionChecker(), commerceShipmentId, ActionKeys.VIEW);
 
-		return commerceShipmentItemLocalService.fetchCommerceShipmentItem(
+		return commerceShipmentItemPersistence.fetchByC_C_C(
 			commerceShipmentId, commerceOrderItemId,
 			commerceInventoryWarehouseId);
 	}
@@ -142,7 +142,7 @@ public class CommerceShipmentItemServiceImpl
 		throws PortalException {
 
 		CommerceShipmentItem commerceShipmentItem =
-			commerceShipmentItemLocalService.getCommerceShipmentItem(
+			commerceShipmentItemPersistence.findByPrimaryKey(
 				commerceShipmentItemId);
 
 		_commerceShipmentModelResourcePermission.check(
@@ -161,7 +161,7 @@ public class CommerceShipmentItemServiceImpl
 		_commerceShipmentModelResourcePermission.check(
 			getPermissionChecker(), commerceShipmentId, ActionKeys.VIEW);
 
-		return commerceShipmentItemLocalService.getCommerceShipmentItems(
+		return commerceShipmentItemPersistence.findByCommerceShipmentId(
 			commerceShipmentId, start, end, orderByComparator);
 	}
 
@@ -172,8 +172,7 @@ public class CommerceShipmentItemServiceImpl
 		throws PortalException {
 
 		CommerceOrderItem commerceOrderItem =
-			_commerceOrderItemLocalService.getCommerceOrderItem(
-				commerceOrderItemId);
+			_commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderItem.getCommerceOrderId(),
@@ -190,7 +189,7 @@ public class CommerceShipmentItemServiceImpl
 		_commerceShipmentModelResourcePermission.check(
 			getPermissionChecker(), commerceShipmentId, ActionKeys.VIEW);
 
-		return commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
+		return commerceShipmentItemPersistence.countByCommerceShipmentId(
 			commerceShipmentId);
 	}
 
@@ -248,7 +247,7 @@ public class CommerceShipmentItemServiceImpl
 	}
 
 	@Reference
-	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+	private CommerceOrderItemPersistence _commerceOrderItemPersistence;
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;

@@ -25,6 +25,7 @@ import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.base.CommerceShipmentItemLocalServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceShipmentPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -77,8 +78,7 @@ public class CommerceShipmentItemLocalServiceImpl
 		User user = _userLocalService.getUser(serviceContext.getUserId());
 
 		CommerceOrderItem commerceOrderItem =
-			_commerceOrderItemLocalService.getCommerceOrderItem(
-				commerceOrderItemId);
+			_commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
 
 		if (validateInventory) {
 			_validate(
@@ -213,7 +213,7 @@ public class CommerceShipmentItemLocalServiceImpl
 		// Commerce order item
 
 		CommerceOrderItem commerceOrderItem =
-			_commerceOrderItemLocalService.fetchCommerceOrderItem(
+			_commerceOrderItemPersistence.fetchByPrimaryKey(
 				commerceShipmentItem.getCommerceOrderItemId());
 
 		if (!restoreStockQuantity) {
@@ -376,7 +376,7 @@ public class CommerceShipmentItemLocalServiceImpl
 				commerceShipmentItemId);
 
 		CommerceOrderItem commerceOrderItem =
-			_commerceOrderItemLocalService.getCommerceOrderItem(
+			_commerceOrderItemPersistence.findByPrimaryKey(
 				commerceShipmentItem.getCommerceOrderItemId());
 
 		BigDecimal originalQuantity = commerceShipmentItem.getQuantity();
@@ -632,6 +632,9 @@ public class CommerceShipmentItemLocalServiceImpl
 
 	@Reference
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+	@Reference
+	private CommerceOrderItemPersistence _commerceOrderItemPersistence;
 
 	@Reference
 	private CommerceShipmentPersistence _commerceShipmentPersistence;

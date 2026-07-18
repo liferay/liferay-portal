@@ -63,6 +63,7 @@ import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.base.CommerceOrderItemLocalServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceOrderPersistence;
 import com.liferay.commerce.tax.CommerceTaxCalculation;
 import com.liferay.commerce.util.CommerceOrderItemThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
@@ -160,7 +161,7 @@ public class CommerceOrderItemLocalServiceImpl
 			_commerceOrderLocalServiceSnapshot.get();
 
 		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+			_commerceOrderPersistence.findByPrimaryKey(commerceOrderId);
 
 		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
 			cpInstanceId);
@@ -687,11 +688,8 @@ public class CommerceOrderItemLocalServiceImpl
 			json = _getCPInstanceOptionValueRelsJSON(cpInstanceId);
 		}
 
-		CommerceOrderLocalService commerceOrderLocalService =
-			_commerceOrderLocalServiceSnapshot.get();
-
 		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+			_commerceOrderPersistence.findByPrimaryKey(commerceOrderId);
 
 		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
 			cpInstanceId);
@@ -1371,8 +1369,7 @@ public class CommerceOrderItemLocalServiceImpl
 		throws PortalException {
 
 		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemLocalService.getCommerceOrderItem(
-				commerceOrderItemId);
+			commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
 
 		commerceOrderItem.setExpandoBridgeAttributes(serviceContext);
 
@@ -1386,8 +1383,7 @@ public class CommerceOrderItemLocalServiceImpl
 		throws PortalException {
 
 		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemLocalService.getCommerceOrderItem(
-				commerceOrderItemId);
+			commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
 
 		commerceOrderItem.setExternalReferenceCode(externalReferenceCode);
 
@@ -1407,11 +1403,8 @@ public class CommerceOrderItemLocalServiceImpl
 
 		SearchContext searchContext = new SearchContext();
 
-		CommerceOrderLocalService commerceOrderLocalService =
-			_commerceOrderLocalServiceSnapshot.get();
-
 		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+			_commerceOrderPersistence.findByPrimaryKey(commerceOrderId);
 
 		searchContext.setAttribute("commerceOrderId", commerceOrderId);
 
@@ -3085,6 +3078,9 @@ public class CommerceOrderItemLocalServiceImpl
 	private CommerceOptionValueHelper _commerceOptionValueHelper;
 
 	private CommerceOrderConfiguration _commerceOrderConfiguration;
+
+	@Reference
+	private CommerceOrderPersistence _commerceOrderPersistence;
 
 	@Reference
 	private CommerceOrderValidatorRegistry _commerceOrderValidatorRegistry;

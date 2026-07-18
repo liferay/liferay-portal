@@ -13,6 +13,7 @@ import com.liferay.commerce.wish.list.model.CommerceWishList;
 import com.liferay.commerce.wish.list.model.CommerceWishListItem;
 import com.liferay.commerce.wish.list.service.CommerceWishListItemLocalService;
 import com.liferay.commerce.wish.list.service.base.CommerceWishListLocalServiceBaseImpl;
+import com.liferay.commerce.wish.list.service.persistence.CommerceWishListItemPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
@@ -263,12 +264,12 @@ public class CommerceWishListLocalServiceImpl
 		// Commerce wish list items
 
 		List<CommerceWishListItem> fromCommerceWishListItems =
-			_commerceWishListItemLocalService.getCommerceWishListItems(
+			_commerceWishListItemPersistence.findByCommerceWishListId(
 				fromCommerceWishListId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null);
 
 		List<CommerceWishListItem> toCommerceWishListItems =
-			_commerceWishListItemLocalService.getCommerceWishListItems(
+			_commerceWishListItemPersistence.findByCommerceWishListId(
 				toCommerceWishListId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null);
 
@@ -347,6 +348,9 @@ public class CommerceWishListLocalServiceImpl
 
 	@Reference
 	private CommerceWishListItemLocalService _commerceWishListItemLocalService;
+
+	@Reference
+	private CommerceWishListItemPersistence _commerceWishListItemPersistence;
 
 	@Reference
 	private UserLocalService _userLocalService;
