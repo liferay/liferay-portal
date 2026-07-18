@@ -6,9 +6,13 @@
 package com.liferay.commerce.internal.upgrade.v14_0_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -28,9 +32,12 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -45,6 +52,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -244,6 +252,157 @@ public class ObjectDefinitionUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
+		Map<String, Object> modelAttributes = _getCPDefinitionModelAttributes();
+
+		ObjectEntry objectEntry = _addObjectEntry(modelAttributes);
+
+		_assertOneToManyObjectRelationshipFieldValue(
+			(long)modelAttributes.get("publishedCPDefinitionId"),
+			_objectDefinition2, _objectField.getName(),
+			objectEntry.getObjectEntryId());
+
+		_assertManyToManyObjectRelationshipFieldValue(
+			"CPDefinitionId",
+			(long)modelAttributes.get("publishedCPDefinitionId"),
+			_objectRelationship1.getDBTableName());
+
+		_runUpgrade();
+
+		_assertUpgrade(modelAttributes, objectEntry);
+	}
+
+	@Test
+	public void testUpgradeWithChangeTrackingCPDefinition() throws Exception {
+		Map<String, Object> modelAttributes = _getCPDefinitionModelAttributes();
+
+		ObjectEntry objectEntry = _addObjectEntry(modelAttributes);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						_company.getCompanyId(),
+						CTSettingsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CTCollection ctCollection =
+				_ctCollectionLocalService.addCTCollection(
+					null, _company.getCompanyId(), _user.getUserId(), 0,
+					RandomTestUtil.randomString(), null);
+
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						ctCollection.getCtCollectionId())) {
+
+				CPDefinition cpDefinition =
+					_cpDefinitionLocalService.getCPDefinition(
+						(long)modelAttributes.get("publishedCPDefinitionId"));
+
+				cpDefinition.setDepth(cpDefinition.getDepth() + 100.0);
+
+				_cpDefinitionLocalService.updateCPDefinition(cpDefinition);
+			}
+		}
+
+		_runUpgrade();
+
+		_assertUpgrade(modelAttributes, objectEntry);
+	}
+
+	private ObjectEntry _addObjectEntry(Map<String, Object> modelAttributes)
+		throws Exception {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, _user.getUserId(), _objectDefinition2.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				_objectField.getName(),
+				(long)modelAttributes.get("publishedCPDefinitionId")
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_objectRelationshipLocalService.addObjectRelationshipMappingTableValues(
+			_user.getUserId(), _objectRelationship1.getObjectRelationshipId(),
+			(long)modelAttributes.get("publishedCPDefinitionId"),
+			objectEntry.getObjectEntryId(),
+			ServiceContextTestUtil.getServiceContext());
+
+		return objectEntry;
+	}
+
+	private void _assertManyToManyObjectRelationshipFieldValue(
+			String columnName, long primaryKey, String tableName)
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			Assert.assertTrue(dbInspector.hasColumn(tableName, columnName));
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select count(*) as count from ", tableName,
+							" where ", columnName, " = ?"))) {
+
+				preparedStatement.setLong(1, primaryKey);
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertTrue(resultSet.next());
+
+					Assert.assertEquals(1L, resultSet.getLong("count"));
+				}
+			}
+		}
+	}
+
+	private void _assertOneToManyObjectRelationshipFieldValue(
+			long expectedValue, ObjectDefinition objectDefinition,
+			String objectFieldName, long primaryKey)
+		throws Exception {
+
+		Map<String, Serializable> values =
+			_objectEntryLocalService.
+				getExtensionDynamicObjectDefinitionTableValues(
+					objectDefinition, primaryKey);
+
+		Assert.assertEquals(expectedValue, values.get(objectFieldName));
+	}
+
+	private void _assertUpgrade(
+			Map<String, Object> modelAttributes, ObjectEntry objectEntry)
+		throws Exception {
+
+		_objectDefinition1 =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_COMMERCE_PRODUCT_DEFINITION", _company.getCompanyId());
+
+		Assert.assertEquals(
+			"CProductId", _objectDefinition1.getPKObjectFieldDBColumnName());
+		Assert.assertEquals(
+			"CProductId", _objectDefinition1.getPKObjectFieldName());
+
+		_assertManyToManyObjectRelationshipFieldValue(
+			"CProductId", (long)modelAttributes.get("CProductId"),
+			_objectRelationship1.getDBTableName());
+
+		_objectDefinition2 = _objectDefinitionLocalService.getObjectDefinition(
+			_objectDefinition2.getObjectDefinitionId());
+
+		_objectField = _objectFieldLocalService.getObjectField(
+			_objectRelationship2.getObjectFieldId2());
+
+		_assertOneToManyObjectRelationshipFieldValue(
+			(long)modelAttributes.get("CProductId"), _objectDefinition2,
+			_objectField.getName(), objectEntry.getObjectEntryId());
+	}
+
+	private Map<String, Object> _getCPDefinitionModelAttributes()
+		throws Exception {
+
 		Assert.assertEquals(
 			"CPDefinitionId",
 			_objectDefinition1.getPKObjectFieldDBColumnName());
@@ -280,34 +439,10 @@ public class ObjectDefinitionUpgradeProcessTest {
 				fetchBaseModelByExternalReferenceCode(
 					externalReferenceCode, _company.getCompanyId());
 
-		Map<String, Object> modelAttributes = baseModel.getModelAttributes();
+		return baseModel.getModelAttributes();
+	}
 
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, _user.getUserId(), _objectDefinition2.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				_objectField.getName(),
-				(long)modelAttributes.get("publishedCPDefinitionId")
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		_objectRelationshipLocalService.addObjectRelationshipMappingTableValues(
-			_user.getUserId(), _objectRelationship1.getObjectRelationshipId(),
-			(long)modelAttributes.get("publishedCPDefinitionId"),
-			objectEntry.getObjectEntryId(),
-			ServiceContextTestUtil.getServiceContext());
-
-		_assertManyToManyObjectRelationshipFieldValue(
-			"CPDefinitionId",
-			(long)modelAttributes.get("publishedCPDefinitionId"),
-			_objectRelationship1.getDBTableName());
-
-		_assertOneToManyObjectRelationshipFieldValue(
-			(long)modelAttributes.get("publishedCPDefinitionId"),
-			_objectDefinition2, _objectField.getName(),
-			objectEntry.getObjectEntryId());
-
+	private void _runUpgrade() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.OFF)) {
 
@@ -318,67 +453,6 @@ public class ObjectDefinitionUpgradeProcessTest {
 
 			_multiVMPool.clear();
 		}
-
-		_objectDefinition1 =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_COMMERCE_PRODUCT_DEFINITION", _company.getCompanyId());
-
-		Assert.assertEquals(
-			"CProductId", _objectDefinition1.getPKObjectFieldDBColumnName());
-		Assert.assertEquals(
-			"CProductId", _objectDefinition1.getPKObjectFieldName());
-
-		_assertManyToManyObjectRelationshipFieldValue(
-			"CProductId", (long)modelAttributes.get("CProductId"),
-			_objectRelationship1.getDBTableName());
-
-		_objectDefinition2 = _objectDefinitionLocalService.getObjectDefinition(
-			_objectDefinition2.getObjectDefinitionId());
-
-		_objectField = _objectFieldLocalService.getObjectField(
-			_objectRelationship2.getObjectFieldId2());
-
-		_assertOneToManyObjectRelationshipFieldValue(
-			(long)modelAttributes.get("CProductId"), _objectDefinition2,
-			_objectField.getName(), objectEntry.getObjectEntryId());
-	}
-
-	private void _assertManyToManyObjectRelationshipFieldValue(
-			String columnName, long primaryKey, String tableName)
-		throws Exception {
-
-		try (Connection connection = DataAccess.getConnection()) {
-			DBInspector dbInspector = new DBInspector(connection);
-
-			Assert.assertTrue(dbInspector.hasColumn(tableName, columnName));
-
-			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select count(*) as count from ", tableName, " where ",
-					columnName, " = ?"));
-
-			preparedStatement.setLong(1, primaryKey);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			Assert.assertNotNull(resultSet.next());
-
-			Assert.assertEquals(1L, resultSet.getLong("count"));
-		}
-	}
-
-	private void _assertOneToManyObjectRelationshipFieldValue(
-			long expectedValue, ObjectDefinition objectDefinition,
-			String objectFieldName, long primaryKey)
-		throws Exception {
-
-		Map<String, Serializable> values =
-			_objectEntryLocalService.
-				getExtensionDynamicObjectDefinitionTableValues(
-					objectDefinition, primaryKey);
-
-		Assert.assertEquals(expectedValue, values.get(objectFieldName));
 	}
 
 	private static final String _CLASS_NAME =
@@ -407,6 +481,12 @@ public class ObjectDefinitionUpgradeProcessTest {
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	private Company _company;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Inject
 	private MultiVMPool _multiVMPool;
