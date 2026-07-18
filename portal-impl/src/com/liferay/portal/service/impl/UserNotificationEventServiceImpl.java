@@ -23,7 +23,7 @@ public class UserNotificationEventServiceImpl
 		throws PortalException {
 
 		UserNotificationEvent userNotificationEvent =
-			userNotificationEventLocalService.getUserNotificationEvent(
+			userNotificationEventPersistence.findByPrimaryKey(
 				userNotificationEventId);
 
 		UserPermissionUtil.check(

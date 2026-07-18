@@ -43,8 +43,7 @@ public class MembershipRequestServiceImpl
 		throws PortalException {
 
 		MembershipRequest membershipRequest =
-			membershipRequestLocalService.getMembershipRequest(
-				membershipRequestId);
+			membershipRequestPersistence.findByPrimaryKey(membershipRequestId);
 
 		GroupPermissionUtil.check(
 			getPermissionChecker(), membershipRequest.getGroupId(),

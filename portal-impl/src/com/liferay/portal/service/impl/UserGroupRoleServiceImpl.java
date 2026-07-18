@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.permission.UserGroupRolePermissionUtil;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
@@ -133,7 +132,7 @@ public class UserGroupRoleServiceImpl extends UserGroupRoleServiceBaseImpl {
 		Group group = _groupLocalService.getGroup(groupId);
 
 		for (long roleId : roleIds) {
-			Role role = _roleLocalService.getRole(roleId);
+			Role role = _rolePersistence.findByPrimaryKey(roleId);
 
 			UserGroupRolePermissionUtil.check(
 				getPermissionChecker(), group, role);
@@ -273,9 +272,6 @@ public class UserGroupRoleServiceImpl extends UserGroupRoleServiceBaseImpl {
 
 	@BeanReference(type = GroupPersistence.class)
 	private GroupPersistence _groupPersistence;
-
-	@BeanReference(type = RoleLocalService.class)
-	private RoleLocalService _roleLocalService;
 
 	@BeanReference(type = RolePersistence.class)
 	private RolePersistence _rolePersistence;

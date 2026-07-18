@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.persistence.UserFinder;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
@@ -1012,7 +1011,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			User.class);
 
-		indexer.reindex(_userLocalService.fetchUser(userId));
+		indexer.reindex(userPersistence.fetchByPrimaryKey(userId));
 	}
 
 	/**
@@ -1187,7 +1186,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		UserGroup userGroup = userGroupPersistence.findByPrimaryKey(
 			userGroupId);
 
-		User user = _userLocalService.getUser(
+		User user = userPersistence.findByPrimaryKey(
 			GetterUtil.getLong(PrincipalThreadLocal.getName()));
 
 		Group group = userGroup.getGroup();
@@ -1365,7 +1364,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	}
 
 	protected void reindex(long userId) throws PortalException {
-		User user = _userLocalService.getUser(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		reindex(user.getCompanyId(), new long[] {userId});
 	}
@@ -1519,8 +1518,5 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 	@BeanReference(type = UserGroupGroupRoleLocalService.class)
 	private UserGroupGroupRoleLocalService _userGroupGroupRoleLocalService;
-
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
 
 }

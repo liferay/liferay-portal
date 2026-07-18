@@ -52,12 +52,12 @@ public class TeamServiceImpl extends TeamServiceBaseImpl {
 		GroupPermissionUtil.check(
 			getPermissionChecker(), groupId, ActionKeys.MANAGE_TEAMS);
 
-		return teamLocalService.getGroupTeams(groupId);
+		return teamPersistence.findByGroupId(groupId);
 	}
 
 	@Override
 	public Team getTeam(long teamId) throws PortalException {
-		Team team = teamLocalService.getTeam(teamId);
+		Team team = teamPersistence.findByPrimaryKey(teamId);
 
 		TeamPermissionUtil.check(getPermissionChecker(), team, ActionKeys.VIEW);
 
@@ -66,7 +66,7 @@ public class TeamServiceImpl extends TeamServiceBaseImpl {
 
 	@Override
 	public Team getTeam(long groupId, String name) throws PortalException {
-		Team team = teamLocalService.getTeam(groupId, name);
+		Team team = teamPersistence.findByG_N(groupId, name);
 
 		TeamPermissionUtil.check(getPermissionChecker(), team, ActionKeys.VIEW);
 

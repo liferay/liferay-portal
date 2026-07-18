@@ -76,12 +76,12 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 
 	@Override
 	public Country fetchCountry(long countryId) {
-		return countryLocalService.fetchCountry(countryId);
+		return countryPersistence.fetchByPrimaryKey(countryId);
 	}
 
 	@Override
 	public Country fetchCountryByA2(long companyId, String a2) {
-		return countryLocalService.fetchCountryByA2(companyId, a2);
+		return countryPersistence.fetchByC_A2(companyId, a2);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 
 	@Override
 	public Country fetchCountryByA3(long companyId, String a3) {
-		return countryLocalService.fetchCountryByA3(companyId, a3);
+		return countryPersistence.fetchByC_A3(companyId, a3);
 	}
 
 	/**
@@ -112,9 +112,8 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Country country =
-			countryLocalService.fetchCountryByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		Country country = countryPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (country != null) {
 			CountryPermissionUtil.check(
@@ -127,13 +126,13 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 
 	@Override
 	public List<Country> getCompanyCountries(long companyId) {
-		return countryLocalService.getCompanyCountries(companyId);
+		return countryPersistence.findByCompanyId(companyId);
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
 	@Override
 	public List<Country> getCompanyCountries(long companyId, boolean active) {
-		return countryLocalService.getCompanyCountries(companyId, active);
+		return countryPersistence.findByC_Active(companyId, active);
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 		long companyId, boolean active, int start, int end,
 		OrderByComparator<Country> orderByComparator) {
 
-		return countryLocalService.getCompanyCountries(
+		return countryPersistence.findByC_Active(
 			companyId, active, start, end, orderByComparator);
 	}
 
@@ -150,18 +149,18 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 		long companyId, int start, int end,
 		OrderByComparator<Country> orderByComparator) {
 
-		return countryLocalService.getCompanyCountries(
+		return countryPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
 	@Override
 	public int getCompanyCountriesCount(long companyId) {
-		return countryLocalService.getCompanyCountriesCount(companyId);
+		return countryPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
 	public int getCompanyCountriesCount(long companyId, boolean active) {
-		return countryLocalService.getCompanyCountriesCount(companyId, active);
+		return countryPersistence.countByC_Active(companyId, active);
 	}
 
 	/**
@@ -186,14 +185,14 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 
 	@Override
 	public Country getCountry(long countryId) throws PortalException {
-		return countryLocalService.getCountry(countryId);
+		return countryPersistence.findByPrimaryKey(countryId);
 	}
 
 	@Override
 	public Country getCountryByA2(long companyId, String a2)
 		throws PortalException {
 
-		return countryLocalService.getCountryByA2(companyId, a2);
+		return countryPersistence.findByC_A2(companyId, a2);
 	}
 
 	/**
@@ -209,7 +208,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 	public Country getCountryByA3(long companyId, String a3)
 		throws PortalException {
 
-		return countryLocalService.getCountryByA3(companyId, a3);
+		return countryPersistence.findByC_A3(companyId, a3);
 	}
 
 	/**
@@ -226,7 +225,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Country country = countryLocalService.getCountryByExternalReferenceCode(
+		Country country = countryPersistence.findByERC_C(
 			externalReferenceCode, companyId);
 
 		CountryPermissionUtil.check(
@@ -239,7 +238,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 	public Country getCountryByName(long companyId, String name)
 		throws PortalException {
 
-		return countryLocalService.getCountryByName(companyId, name);
+		return countryPersistence.findByC_Name(companyId, name);
 	}
 
 	/**
@@ -255,7 +254,7 @@ public class CountryServiceImpl extends CountryServiceBaseImpl {
 	public Country getCountryByNumber(long companyId, String number)
 		throws PortalException {
 
-		return countryLocalService.getCountryByNumber(companyId, number);
+		return countryPersistence.findByC_Number(companyId, number);
 	}
 
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)

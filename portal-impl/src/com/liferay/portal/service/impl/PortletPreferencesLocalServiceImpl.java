@@ -101,7 +101,7 @@ public class PortletPreferencesLocalServiceImpl
 
 		if (Validator.isNull(defaultPreferences)) {
 			LayoutRevision layoutRevision =
-				_layoutRevisionLocalService.fetchLayoutRevision(plid);
+				_layoutRevisionPersistence.fetchByPrimaryKey(plid);
 
 			if (layoutRevision != null) {
 				PortletPreferences layoutPortletPreferences =

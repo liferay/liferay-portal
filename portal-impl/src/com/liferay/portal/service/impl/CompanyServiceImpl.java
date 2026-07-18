@@ -218,7 +218,7 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 */
 	@Override
 	public List<Company> getCompanies() {
-		return companyLocalService.getCompanies();
+		return companyPersistence.findAll();
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 */
 	@Override
 	public Company getCompanyById(long companyId) throws PortalException {
-		return companyLocalService.getCompanyById(companyId);
+		return companyPersistence.findByPrimaryKey(companyId);
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 */
 	@Override
 	public Company getCompanyByWebId(String webId) throws PortalException {
-		return companyLocalService.getCompanyByWebId(webId);
+		return companyPersistence.findByWebId(webId);
 	}
 
 	/**

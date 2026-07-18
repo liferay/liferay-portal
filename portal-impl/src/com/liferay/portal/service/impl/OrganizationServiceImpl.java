@@ -238,9 +238,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		User user = getUser();
 
-		Organization organization =
-			organizationLocalService.fetchOrganizationByExternalReferenceCode(
-				externalReferenceCode, user.getCompanyId());
+		Organization organization = organizationPersistence.fetchByERC_C(
+			externalReferenceCode, user.getCompanyId());
 
 		if (organization == null) {
 			if (parentOrganizationId ==
@@ -395,7 +394,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	public Organization fetchOrganization(long organizationId)
 		throws PortalException {
 
-		Organization organization = organizationLocalService.fetchOrganization(
+		Organization organization = organizationPersistence.fetchByPrimaryKey(
 			organizationId);
 
 		if (organization != null) {
@@ -411,9 +410,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Organization organization =
-			organizationLocalService.fetchOrganizationByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		Organization organization = organizationPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (organization != null) {
 			OrganizationPermissionUtil.check(
@@ -464,7 +462,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	public Organization getOrganization(long organizationId)
 		throws PortalException {
 
-		Organization organization = organizationLocalService.getOrganization(
+		Organization organization = organizationPersistence.findByPrimaryKey(
 			organizationId);
 
 		OrganizationPermissionUtil.check(
@@ -478,9 +476,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Organization organization =
-			organizationLocalService.getOrganizationByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		Organization organization = organizationPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		OrganizationPermissionUtil.check(
 			getPermissionChecker(), organization, ActionKeys.VIEW);

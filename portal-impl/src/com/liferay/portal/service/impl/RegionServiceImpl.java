@@ -43,7 +43,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 
 	@Override
 	public void deleteRegion(long regionId) throws PortalException {
-		Region region = regionLocalService.getRegion(regionId);
+		Region region = regionPersistence.findByPrimaryKey(regionId);
 
 		CountryPermissionUtil.check(
 			getPermissionChecker(), region.getCountryId(), ActionKeys.UPDATE);
@@ -66,7 +66,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Region region = regionLocalService.fetchRegionByExternalReferenceCode(
+		Region region = regionPersistence.fetchByERC_C(
 			externalReferenceCode, companyId);
 
 		if (region != null) {
@@ -94,7 +94,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Region region = regionLocalService.getRegionByExternalReferenceCode(
+		Region region = regionPersistence.findByERC_C(
 			externalReferenceCode, companyId);
 
 		CountryPermissionUtil.check(
@@ -131,7 +131,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 		long countryId, boolean active, int start, int end,
 		OrderByComparator<Region> orderByComparator) {
 
-		return regionLocalService.getRegions(
+		return regionPersistence.findByC_A(
 			countryId, active, start, end, orderByComparator);
 	}
 
@@ -140,7 +140,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator) {
 
-		return regionLocalService.getRegions(
+		return regionPersistence.findByCountryId(
 			countryId, start, end, orderByComparator);
 	}
 
@@ -153,12 +153,12 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 
 	@Override
 	public int getRegionsCount(long countryId) {
-		return regionLocalService.getRegionsCount(countryId);
+		return regionPersistence.countByCountryId(countryId);
 	}
 
 	@Override
 	public int getRegionsCount(long countryId, boolean active) {
-		return regionLocalService.getRegionsCount(countryId, active);
+		return regionPersistence.countByC_A(countryId, active);
 	}
 
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
@@ -177,7 +177,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 	public Region updateActive(long regionId, boolean active)
 		throws PortalException {
 
-		Region region = regionLocalService.getRegion(regionId);
+		Region region = regionPersistence.findByPrimaryKey(regionId);
 
 		CountryPermissionUtil.check(
 			getPermissionChecker(), region.getCountryId(), ActionKeys.UPDATE);
@@ -191,7 +191,7 @@ public class RegionServiceImpl extends RegionServiceBaseImpl {
 			String name, double position, String regionCode)
 		throws PortalException {
 
-		Region region = regionLocalService.getRegion(regionId);
+		Region region = regionPersistence.findByPrimaryKey(regionId);
 
 		CountryPermissionUtil.check(
 			getPermissionChecker(), region.getCountryId(), ActionKeys.UPDATE);

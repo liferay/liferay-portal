@@ -121,7 +121,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 
 	@Override
 	public Role fetchRole(long roleId) throws PortalException {
-		Role role = roleLocalService.fetchRole(roleId);
+		Role role = rolePersistence.fetchByPrimaryKey(roleId);
 
 		if (role != null) {
 			RolePermissionUtil.check(
@@ -133,7 +133,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 
 	@Override
 	public Role fetchRole(long companyId, String name) throws PortalException {
-		Role role = roleLocalService.fetchRole(companyId, name);
+		Role role = rolePersistence.fetchByC_N(companyId, name);
 
 		if (role != null) {
 			RolePermissionUtil.check(
@@ -148,7 +148,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Role role = roleLocalService.fetchRoleByExternalReferenceCode(
+		Role role = rolePersistence.fetchByERC_C(
 			externalReferenceCode, companyId);
 
 		if (role != null) {
@@ -226,7 +226,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 		RolePermissionUtil.check(
 			getPermissionChecker(), roleId, ActionKeys.VIEW);
 
-		return roleLocalService.getRole(roleId);
+		return rolePersistence.findByPrimaryKey(roleId);
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 	 */
 	@Override
 	public Role getRole(long companyId, String name) throws PortalException {
-		Role role = roleLocalService.getRole(companyId, name);
+		Role role = rolePersistence.findByC_N(companyId, name);
 
 		RolePermissionUtil.check(
 			getPermissionChecker(), role.getRoleId(), ActionKeys.VIEW);
@@ -256,7 +256,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Role role = roleLocalService.getRoleByExternalReferenceCode(
+		Role role = rolePersistence.findByERC_C(
 			externalReferenceCode, companyId);
 
 		RolePermissionUtil.check(

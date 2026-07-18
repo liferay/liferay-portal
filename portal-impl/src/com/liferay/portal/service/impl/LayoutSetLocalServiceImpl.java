@@ -563,10 +563,9 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 			groupId, privateLayout);
 
 		if (!virtualHostnames.isEmpty()) {
-			long virtualHostsCount =
-				_virtualHostLocalService.getVirtualHostsCount(
-					layoutSet.getLayoutSetId(),
-					ArrayUtil.toStringArray(virtualHostnames.keySet()));
+			long virtualHostsCount = _virtualHostPersistence.countByNotL_H(
+				layoutSet.getLayoutSetId(),
+				ArrayUtil.toStringArray(virtualHostnames.keySet()));
 
 			if (virtualHostsCount > 0) {
 				throw new LayoutSetVirtualHostException();

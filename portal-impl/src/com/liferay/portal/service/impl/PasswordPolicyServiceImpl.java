@@ -60,7 +60,7 @@ public class PasswordPolicyServiceImpl extends PasswordPolicyServiceBaseImpl {
 		throws PortalException {
 
 		PasswordPolicy passwordPolicy =
-			passwordPolicyLocalService.fetchPasswordPolicy(passwordPolicyId);
+			passwordPolicyPersistence.fetchByPrimaryKey(passwordPolicyId);
 
 		if (passwordPolicy != null) {
 			PasswordPolicyPermissionUtil.check(

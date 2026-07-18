@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
-import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
@@ -203,7 +202,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		try {
 			WorkflowThreadLocal.setEnabled(false);
 
-			User user = userLocalService.fetchUserByExternalReferenceCode(
+			User user = userPersistence.fetchByERC_C(
 				externalReferenceCode, companyId);
 
 			if (user == null) {
@@ -1168,7 +1167,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		User user = userLocalService.fetchUserByExternalReferenceCode(
+		User user = userPersistence.fetchByERC_C(
 			externalReferenceCode, companyId);
 
 		if (user != null) {
@@ -1530,7 +1529,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		User user = userLocalService.getUserByExternalReferenceCode(
+		User user = userPersistence.findByERC_C(
 			externalReferenceCode, companyId);
 
 		UserPermissionUtil.check(
@@ -1697,7 +1696,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		if (!UserPermissionUtil.contains(
 				getPermissionChecker(), userId, ActionKeys.VIEW)) {
 
-			Role role = _roleLocalService.getRole(companyId, name);
+			Role role = rolePersistence.findByC_N(companyId, name);
 
 			RolePermissionUtil.check(
 				getPermissionChecker(), role.getRoleId(),
@@ -3719,8 +3718,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			// Add back any user group roles that the administrator does not
 			// have the rights to remove or that have a mandatory membership
 
-			oldUserGroupRoles = _userGroupRoleLocalService.getUserGroupRoles(
-				userId);
+			oldUserGroupRoles = _userGroupRolePersistence.findByUserId(userId);
 
 			for (UserGroupRole oldUserGroupRole : oldUserGroupRoles) {
 				Role role = oldUserGroupRole.getRole();
@@ -3971,9 +3969,6 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 	@BeanReference(type = UserGroupLocalService.class)
 	private UserGroupLocalService _userGroupLocalService;
-
-	@BeanReference(type = UserGroupRoleLocalService.class)
-	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@BeanReference(type = UserGroupRolePersistence.class)
 	private UserGroupRolePersistence _userGroupRolePersistence;

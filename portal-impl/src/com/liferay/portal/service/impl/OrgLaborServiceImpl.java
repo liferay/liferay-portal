@@ -64,7 +64,7 @@ public class OrgLaborServiceImpl extends OrgLaborServiceBaseImpl {
 		OrganizationPermissionUtil.check(
 			getPermissionChecker(), organizationId, ActionKeys.VIEW);
 
-		return orgLaborLocalService.getOrgLabors(organizationId);
+		return orgLaborPersistence.findByOrganizationId(organizationId);
 	}
 
 	@Override
