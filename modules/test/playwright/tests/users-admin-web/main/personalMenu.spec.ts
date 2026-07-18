@@ -180,43 +180,33 @@ test(
 	'Render apps with current theme',
 	{tag: '@LPD-81993'},
 	async ({page, personalMenuPage}) => {
-		await page.goto(liferayConfig.environment.baseUrl);
+		const renderNotifications = async () => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: personalMenuPage.notificationsMenuItem,
+				trigger: personalMenuPage.userPersonalMenuButton,
+			});
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: personalMenuPage.notificationsMenuItem,
-			trigger: personalMenuPage.userPersonalMenuButton,
+			await expect(personalMenuPage.notificationsHeading).toBeVisible();
+
+			await page.reload();
+
+			await expect(personalMenuPage.notificationsHeading).toBeVisible();
+		};
+
+		await test.step('Render in the current site theme', async () => {
+			await page.goto(liferayConfig.environment.baseUrl);
+
+			await renderNotifications();
 		});
 
-		await expect(personalMenuPage.notificationsHeading).toBeVisible();
+		await test.step('Render in the control panel theme', async () => {
+			await page.goto(
+				`${liferayConfig.environment.baseUrl}/group/control_panel/manage/-/com_liferay_users_admin_web_portlet_UsersAdminPortlet`
+			);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: personalMenuPage.notificationsMenuItem,
-			trigger: personalMenuPage.userPersonalMenuButton,
+			await renderNotifications();
 		});
-
-		await expect(personalMenuPage.notificationsHeading).toBeVisible();
-
-		await page.goto(
-			`${liferayConfig.environment.baseUrl}/group/control_panel/manage/-/com_liferay_users_admin_web_portlet_UsersAdminPortlet`
-		);
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: personalMenuPage.notificationsMenuItem,
-			trigger: personalMenuPage.userPersonalMenuButton,
-		});
-
-		await expect(personalMenuPage.notificationsHeading).toBeVisible();
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: personalMenuPage.notificationsMenuItem,
-			trigger: personalMenuPage.userPersonalMenuButton,
-		});
-
-		await expect(personalMenuPage.notificationsHeading).toBeVisible();
 	}
 );
 

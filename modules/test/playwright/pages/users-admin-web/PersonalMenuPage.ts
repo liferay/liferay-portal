@@ -116,9 +116,9 @@ export class PersonalMenuPage {
 		this.notFoundCode = page.getByText('404');
 		this.notFoundMessage = page.getByText('Page Not Found');
 		this.notificationsHeading = page.getByTestId('headerTitle');
-		this.notificationsMenuItem = page.getByRole('menuitem', {
-			name: 'Notifications',
-		});
+		this.notificationsMenuItem = page
+			.locator('.dropdown-menu-personal-menu')
+			.getByRole('menuitem', {exact: true, name: 'Notifications'});
 		this.page = page;
 		this.pageNameInput = page.getByLabel('Name');
 		this.personalBarAvatar = page.locator(
