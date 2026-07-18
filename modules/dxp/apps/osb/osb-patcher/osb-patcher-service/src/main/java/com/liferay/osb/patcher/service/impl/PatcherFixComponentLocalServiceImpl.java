@@ -9,9 +9,9 @@ import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherFixComponent;
 import com.liferay.osb.patcher.model.PatcherFixPack;
-import com.liferay.osb.patcher.service.PatcherFixLocalService;
 import com.liferay.osb.patcher.service.base.PatcherFixComponentLocalServiceBaseImpl;
 import com.liferay.osb.patcher.service.persistence.PatcherFixPackPersistence;
+import com.liferay.osb.patcher.service.persistence.PatcherFixPersistence;
 import com.liferay.osb.patcher.util.comparator.PatcherFixComponentNameComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -131,7 +131,7 @@ public class PatcherFixComponentLocalServiceImpl
 					"used-in-a-fix-pack");
 		}
 
-		List<PatcherFix> patcherFixes = _patcherFixLocalService.getPatcherFixes(
+		List<PatcherFix> patcherFixes = _patcherFixPersistence.findAll(
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (PatcherFix patcherFix : patcherFixes) {
@@ -176,10 +176,10 @@ public class PatcherFixComponentLocalServiceImpl
 	}
 
 	@Reference
-	private PatcherFixLocalService _patcherFixLocalService;
+	private PatcherFixPackPersistence _patcherFixPackPersistence;
 
 	@Reference
-	private PatcherFixPackPersistence _patcherFixPackPersistence;
+	private PatcherFixPersistence _patcherFixPersistence;
 
 	@Reference
 	private UserLocalService _userLocalService;
