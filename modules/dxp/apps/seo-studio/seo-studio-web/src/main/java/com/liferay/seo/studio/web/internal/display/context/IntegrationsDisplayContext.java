@@ -101,7 +101,7 @@ public class IntegrationsDisplayContext {
 		Set<String> configuredKeys = new HashSet<>();
 
 		for (ObjectEntry objectEntry : _seoStudioIntegrationObjectEntries) {
-			configuredKeys.add(_getProperty(objectEntry, "type"));
+			configuredKeys.add(_getPropertyValue(objectEntry, "type"));
 		}
 
 		return JSONUtil.toJSONArray(
@@ -123,7 +123,7 @@ public class IntegrationsDisplayContext {
 		return JSONUtil.toJSONArray(
 			_seoStudioIntegrationObjectEntries,
 			objectEntry -> {
-				String type = _getProperty(objectEntry, "type");
+				String type = _getPropertyValue(objectEntry, "type");
 
 				ListTypeEntry listTypeEntry = _fetchListTypeEntry(type);
 
@@ -135,7 +135,7 @@ public class IntegrationsDisplayContext {
 
 				Instant dateModifiedInstant = dateModified.toInstant();
 
-				String state = _getProperty(objectEntry, "state");
+				String state = _getPropertyValue(objectEntry, "state");
 
 				return JSONUtil.put(
 					"configurationURL",
@@ -157,7 +157,7 @@ public class IntegrationsDisplayContext {
 			});
 	}
 
-	private String _getProperty(ObjectEntry objectEntry, String key) {
+	private String _getPropertyValue(ObjectEntry objectEntry, String key) {
 		Map<String, Object> properties = objectEntry.getProperties();
 
 		if (properties == null) {
