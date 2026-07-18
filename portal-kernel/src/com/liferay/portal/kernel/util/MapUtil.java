@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.lang.reflect.Constructor;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -114,6 +115,18 @@ public class MapUtil {
 		}
 
 		return GetterUtil.getDouble(String.valueOf(value), defaultValue);
+	}
+
+	public static <K, V> Map.Entry<K, V> getEntry(Map<K, V> map, K key) {
+		Map<K, Object> objectMap = (Map<K, Object>)map;
+
+		Object value = objectMap.getOrDefault(key, _ABSENT_VALUE);
+
+		if (value == _ABSENT_VALUE) {
+			return null;
+		}
+
+		return new AbstractMap.SimpleImmutableEntry<>(key, (V)value);
 	}
 
 	public static int getInteger(Map<String, ?> map, String key) {
@@ -449,6 +462,8 @@ public class MapUtil {
 
 		return sb.toString();
 	}
+
+	private static final Object _ABSENT_VALUE = new Object();
 
 	private static final Log _log = LogFactoryUtil.getLog(MapUtil.class);
 
