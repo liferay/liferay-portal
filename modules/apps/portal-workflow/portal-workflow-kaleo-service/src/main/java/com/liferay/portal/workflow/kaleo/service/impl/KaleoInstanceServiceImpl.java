@@ -27,10 +27,10 @@ import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoNode;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.KaleoSignaler;
-import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoInstanceServiceBaseImpl;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionPersistence;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionVersionPersistence;
 
 import java.io.Serializable;
 
@@ -80,7 +80,7 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 		}
 
 		KaleoDefinitionVersion serviceBuilderKaleoDefinitionVersion =
-			_kaleoDefinitionVersionLocalService.getKaleoDefinitionVersion(
+			_kaleoDefinitionVersionPersistence.findByC_N_V(
 				serviceContext.getCompanyId(), kaleoDefinitionName,
 				_getVersion(kaleoDefinitionVersion));
 
@@ -162,8 +162,8 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 	private KaleoDefinitionPersistence _kaleoDefinitionPersistence;
 
 	@Reference
-	private KaleoDefinitionVersionLocalService
-		_kaleoDefinitionVersionLocalService;
+	private KaleoDefinitionVersionPersistence
+		_kaleoDefinitionVersionPersistence;
 
 	@Reference
 	private KaleoLogLocalService _kaleoLogLocalService;
