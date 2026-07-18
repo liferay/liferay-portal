@@ -11,6 +11,7 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
+	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
