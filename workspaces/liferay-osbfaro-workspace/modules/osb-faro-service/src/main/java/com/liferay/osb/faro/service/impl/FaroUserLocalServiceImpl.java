@@ -5,7 +5,6 @@
 
 package com.liferay.osb.faro.service.impl;
 
-import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroProject;
@@ -14,6 +13,7 @@ import com.liferay.osb.faro.service.FaroPreferencesLocalService;
 import com.liferay.osb.faro.service.base.FaroUserLocalServiceBaseImpl;
 import com.liferay.osb.faro.service.persistence.FaroProjectPersistence;
 import com.liferay.osb.faro.util.EmailUtil;
+import com.liferay.osb.faro.util.FaroEmailSender;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -36,8 +36,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-
-import jakarta.mail.internet.InternetAddress;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -270,112 +268,22 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 		return faroUserFinder.countByKeywords(groupId, query, statuses);
 	}
 
-	private String _getNotificationMessage(
-			long roleId, long groupId, ResourceBundle resourceBundle,
-			String userEmailAddress)
+	private String _getBodyNewUser(
+			FaroProject faroProject, FaroUser faroUser,
+			ResourceBundle resourceBundle, long roleId, String subject,
+			User user)
 		throws Exception {
 
-		String roleName = null;
-
-		Role role = _roleLocalService.getRole(roleId);
-
-		if (StringUtil.equals(
-				role.getName(), RoleConstants.SITE_ADMINISTRATOR)) {
-
-			roleName = "administrator-fragment";
-		}
-		else {
-			roleName = "member-fragment";
-		}
-
-		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
-			groupId);
-
-		String notificationLanguageKey =
-			"you-have-been-added-as-a-team-x-on-the-analytics-cloud-x-" +
-				"workspace-by-x";
-
-		if (faroProject.isDataPlatform()) {
-			notificationLanguageKey =
-				"you-have-been-added-as-a-team-x-on-the-liferay-data-" +
-					"platform-x-workspace-by-x";
-		}
-
-		return _language.format(
-			resourceBundle, notificationLanguageKey,
-			new String[] {roleName, faroProject.getName(), userEmailAddress});
-	}
-
-	private void _sendEmail(
-			FaroUser faroUser, long groupId, long roleId, long userId)
-		throws Exception {
-
-		if (faroUser.getStatus() == FaroUserConstants.STATUS_REQUESTED) {
-			_sendEmailRequest(userId, groupId);
-		}
-		else {
-			_sendEmailNewUser(faroUser, groupId, roleId);
-		}
-	}
-
-	private void _sendEmailNewUser(FaroUser faroUser, long groupId, long roleId)
-		throws Exception {
-
-		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
-			groupId);
-
-		String buttonLanguageKey = "go-to-analytics-cloud";
-		String senderEmailAddress = "ac@liferay.com";
-		String senderName = "Analytics Cloud";
-		String subjectLanguageKey = "welcome-to-analytics-cloud";
-
-		if (faroProject.isDataPlatform()) {
-			buttonLanguageKey = "go-to-liferay-data-platform";
-			senderEmailAddress = "ldp@liferay.com";
-			senderName = "Liferay Data Platform";
-			subjectLanguageKey = "welcome-to-liferay-data-platform";
-		}
-
-		User user = _userLocalService.getUser(faroUser.getUserId());
-
-		InternetAddress from = new InternetAddress(
-			senderEmailAddress,
-			StringBundler.concat(user.getFullName(), " (", senderName, ")"));
-
-		String toName = StringPool.BLANK;
+		String template =
+			"com/liferay/osb/faro/dependencies/invite-new-user.html";
 
 		if (faroUser.getLiveUserId() > 0) {
-			User receiverUser = _userLocalService.getUser(
-				faroUser.getLiveUserId());
-
-			toName = receiverUser.getFullName();
+			template =
+				"com/liferay/osb/faro/dependencies/invite-existing-user.html";
 		}
 
-		InternetAddress to = new InternetAddress(
-			faroUser.getEmailAddress(), toName);
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", user.getLocale(), getClass());
-
-		String body = null;
-		String subject = null;
-
-		if (faroUser.getLiveUserId() > 0) {
-			body = StringUtil.read(
-				getClassLoader(),
-				"com/liferay/osb/faro/dependencies/invite-existing-user.html");
-			subject = _language.get(resourceBundle, "new-workspace-access");
-		}
-		else {
-			body = StringUtil.read(
-				getClassLoader(),
-				"com/liferay/osb/faro/dependencies/invite-new-user.html");
-
-			subject = _language.get(resourceBundle, subjectLanguageKey);
-		}
-
-		body = StringUtil.replace(
-			body,
+		return StringUtil.replace(
+			StringUtil.read(getClassLoader(), template),
 			new String[] {
 				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$EMAIL_HEADER_URL$]",
 				"[$EMAIL_TITLE$]", "[$FARO_URL$]", "[$FOOTER_MENU_1$]",
@@ -385,7 +293,11 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, buttonLanguageKey),
+				_language.get(
+					resourceBundle,
+					EmailUtil.getLanguageKey(
+						faroProject, "go-to-analytics-cloud",
+						"go-to-liferay-data-platform")),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -407,7 +319,8 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 						"anytime"),
 				subject, EmailUtil.getLiferayIconURL(),
 				_getNotificationMessage(
-					roleId, groupId, resourceBundle, user.getEmailAddress()),
+					faroProject, roleId, resourceBundle,
+					user.getEmailAddress()),
 				_language.format(
 					resourceBundle,
 					"sign-in-with-your-existing-liferay-username-and-" +
@@ -420,63 +333,14 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 					}),
 				String.valueOf(DateUtil.getYear(new Date()))
 			});
-
-		_mailService.sendEmail(new MailMessage(from, to, subject, body, true));
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				"New user invite email notification sent to " +
-					to.getAddress());
-		}
 	}
 
-	private void _sendEmailRequest(long userId, long groupId) throws Exception {
-		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
-			groupId);
+	private String _getBodyRequest(
+			FaroProject faroProject, ResourceBundle resourceBundle,
+			User senderUser, String subject)
+		throws Exception {
 
-		String buttonLanguageKey = "go-to-analytics-cloud";
-		String notificationLanguageKey =
-			"x-has-requested-to-join-the-analytics-cloud-x-workspace";
-		String senderEmailAddress = "ac@liferay.com";
-		String senderName = "Analytics Cloud";
-
-		if (faroProject.isDataPlatform()) {
-			buttonLanguageKey = "go-to-liferay-data-platform";
-			notificationLanguageKey =
-				"x-has-requested-to-join-the-liferay-data-platform-x-workspace";
-			senderEmailAddress = "ldp@liferay.com";
-			senderName = "Liferay Data Platform";
-		}
-
-		User senderUser = _userLocalService.getUser(userId);
-
-		InternetAddress from = new InternetAddress(
-			senderEmailAddress,
-			StringBundler.concat(
-				senderUser.getFullName(), " (", senderName, ")"));
-
-		FaroUser faroUser = fetchOwnerFaroUser(groupId);
-
-		User receiverUser = null;
-
-		if (faroUser == null) {
-			receiverUser = _userLocalService.getUser(faroProject.getUserId());
-		}
-		else {
-			receiverUser = _userLocalService.getUserByEmailAddress(
-				_portal.getDefaultCompanyId(), faroUser.getEmailAddress());
-		}
-
-		InternetAddress to = new InternetAddress(
-			receiverUser.getEmailAddress(), receiverUser.getFullName());
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", receiverUser.getLocale(), getClass());
-
-		String subject = _language.get(
-			resourceBundle, "request-to-join-workspace");
-
-		String body = StringUtil.replace(
+		return StringUtil.replace(
 			StringUtil.read(
 				getClassLoader(),
 				"com/liferay/osb/faro/dependencies/join-request.html"),
@@ -489,7 +353,11 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
-				_language.get(resourceBundle, buttonLanguageKey),
+				_language.get(
+					resourceBundle,
+					EmailUtil.getLanguageKey(
+						faroProject, "go-to-analytics-cloud",
+						"go-to-liferay-data-platform")),
 				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
 				subject, FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
@@ -511,7 +379,13 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 						"anytime"),
 				subject, EmailUtil.getLiferayIconURL(),
 				_language.format(
-					resourceBundle, notificationLanguageKey,
+					resourceBundle,
+					EmailUtil.getLanguageKey(
+						faroProject,
+						"x-has-requested-to-join-the-analytics-cloud-x-" +
+							"workspace",
+						"x-has-requested-to-join-the-liferay-data-platform-x-" +
+							"workspace"),
 					new String[] {
 						StringBundler.concat(
 							senderUser.getFullName(), "(",
@@ -522,13 +396,152 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 					resourceBundle, "email-sign-in-to-approve-or-deny"),
 				String.valueOf(DateUtil.getYear(new Date()))
 			});
+	}
 
-		_mailService.sendEmail(new MailMessage(from, to, subject, body, true));
+	private String _getNotificationMessage(
+			FaroProject faroProject, long roleId, ResourceBundle resourceBundle,
+			String userEmailAddress)
+		throws Exception {
+
+		String roleName = null;
+
+		Role role = _roleLocalService.getRole(roleId);
+
+		if (StringUtil.equals(
+				role.getName(), RoleConstants.SITE_ADMINISTRATOR)) {
+
+			roleName = "administrator-fragment";
+		}
+		else {
+			roleName = "member-fragment";
+		}
+
+		return _language.format(
+			resourceBundle,
+			EmailUtil.getLanguageKey(
+				faroProject,
+				"you-have-been-added-as-a-team-x-on-the-analytics-cloud-x-" +
+					"workspace-by-x",
+				"you-have-been-added-as-a-team-x-on-the-liferay-data-" +
+					"platform-x-workspace-by-x"),
+			new String[] {roleName, faroProject.getName(), userEmailAddress});
+	}
+
+	private String _getSubjectNewUser(
+		FaroProject faroProject, FaroUser faroUser,
+		ResourceBundle resourceBundle) {
+
+		if (faroUser.getLiveUserId() > 0) {
+			return _language.get(resourceBundle, "new-workspace-access");
+		}
+
+		return _language.get(
+			resourceBundle,
+			EmailUtil.getLanguageKey(
+				faroProject, "welcome-to-analytics-cloud",
+				"welcome-to-liferay-data-platform"));
+	}
+
+	private void _sendEmail(
+			FaroUser faroUser, long groupId, long roleId, long userId)
+		throws Exception {
+
+		if (faroUser.getStatus() == FaroUserConstants.STATUS_REQUESTED) {
+			_sendEmailRequest(userId, groupId);
+		}
+		else {
+			_sendEmailNewUser(faroUser, groupId, roleId);
+		}
+	}
+
+	private void _sendEmailNewUser(FaroUser faroUser, long groupId, long roleId)
+		throws Exception {
+
+		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
+			groupId);
+
+		User user = _userLocalService.getUser(faroUser.getUserId());
+
+		String toName = StringPool.BLANK;
+
+		if (faroUser.getLiveUserId() > 0) {
+			User receiverUser = _userLocalService.getUser(
+				faroUser.getLiveUserId());
+
+			toName = receiverUser.getFullName();
+		}
+
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			"content.Language", user.getLocale(), getClass());
+
+		FaroEmailSender.create(
+			_mailService
+		).setBody(
+			_getBodyNewUser(
+				faroProject, faroUser, resourceBundle, roleId,
+				_getSubjectNewUser(faroProject, faroUser, resourceBundle), user)
+		).setFaroProject(
+			faroProject
+		).setFrom(
+			user
+		).setSubject(
+			_getSubjectNewUser(faroProject, faroUser, resourceBundle)
+		).setToEmailAddress(
+			faroUser.getEmailAddress()
+		).setToName(
+			toName
+		).send();
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				"New user invite email notification sent to " +
+					faroUser.getEmailAddress());
+		}
+	}
+
+	private void _sendEmailRequest(long userId, long groupId) throws Exception {
+		FaroProject faroProject = _faroProjectPersistence.fetchByGroupId(
+			groupId);
+
+		User senderUser = _userLocalService.getUser(userId);
+
+		FaroUser faroUser = fetchOwnerFaroUser(groupId);
+
+		User receiverUser = null;
+
+		if (faroUser == null) {
+			receiverUser = _userLocalService.getUser(faroProject.getUserId());
+		}
+		else {
+			receiverUser = _userLocalService.getUserByEmailAddress(
+				_portal.getDefaultCompanyId(), faroUser.getEmailAddress());
+		}
+
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			"content.Language", receiverUser.getLocale(), getClass());
+
+		FaroEmailSender.create(
+			_mailService
+		).setBody(
+			_getBodyRequest(
+				faroProject, resourceBundle, senderUser,
+				_language.get(resourceBundle, "request-to-join-workspace"))
+		).setFaroProject(
+			faroProject
+		).setFrom(
+			senderUser
+		).setSubject(
+			_language.get(resourceBundle, "request-to-join-workspace")
+		).setToEmailAddress(
+			receiverUser.getEmailAddress()
+		).setToName(
+			receiverUser.getFullName()
+		).send();
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
 				"Request to join workspace email notification sent to " +
-					to.getAddress());
+					receiverUser.getEmailAddress());
 		}
 	}
 

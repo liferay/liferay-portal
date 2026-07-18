@@ -5,7 +5,6 @@
 
 package com.liferay.osb.faro.service.impl;
 
-import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.model.FaroProject;
@@ -16,6 +15,7 @@ import com.liferay.osb.faro.service.FaroProjectEmailDomainLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.base.FaroProjectLocalServiceBaseImpl;
 import com.liferay.osb.faro.util.EmailUtil;
+import com.liferay.osb.faro.util.FaroEmailSender;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
@@ -42,8 +42,6 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
-
-import jakarta.mail.internet.InternetAddress;
 
 import java.util.Collections;
 import java.util.Date;
@@ -240,97 +238,32 @@ public class FaroProjectLocalServiceImpl
 			return;
 		}
 
-		String buttonLanguageKey = "go-to-analytics-cloud";
-		String senderEmailAddress = "ac@liferay.com";
-		String senderName = "Analytics Cloud";
-		String subjectLanguageKey = "welcome-to-analytics-cloud";
-
-		if (faroProject.isDataPlatform()) {
-			buttonLanguageKey = "go-to-liferay-data-platform";
-			senderEmailAddress = "ldp@liferay.com";
-			senderName = "Liferay Data Platform";
-			subjectLanguageKey = "welcome-to-liferay-data-platform";
-		}
-
-		String body = StringUtil.read(
-			getClassLoader(),
-			"com/liferay/osb/faro/dependencies/created-workspace.html");
-
 		User user = _userLocalService.getUser(faroProject.getUserId());
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", user.getLocale(), getClass());
 
-		String subject = _language.get(resourceBundle, subjectLanguageKey);
-
-		body = StringUtil.replace(
-			body,
-			new String[] {
-				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$EMAIL_HEADER_URL$]",
-				"[$EMAIL_TITLE$]", "[$FARO_URL$]", "[$FOOTER_MENU_1$]",
-				"[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]", "[$FOOTER_MSG_1$]",
-				"[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]", "[$FOOTER_MSG_4$]",
-				"[$HEADER_MSG_1$]", "[$ICON_CHECK_URL$]",
-				"[$LIFERAY_LOGO_URL$]", "[$NOTIFICATION_MSG_1$]",
-				"[$NOTIFICATION_MSG_2$]", "[$NOTIFICATION_MSG_3$]",
-				"[$NOTIFICATION_MSG_4$]", "[$NOTIFICATION_MSG_5$]",
-				"[$NOTIFICATION_MSG_6$]", "[$NOTIFICATION_MSG_7$]", "[$YEAR$]"
-			},
-			new String[] {
-				_language.get(resourceBundle, buttonLanguageKey),
-				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
-				subject, FaroPropsValues.FARO_URL,
-				_language.get(resourceBundle, "contact-support"),
-				_language.get(resourceBundle, "documentation"),
-				_language.get(resourceBundle, "announcements"),
-				_language.format(
-					resourceBundle, "this-email-was-sent-by-x",
-					new String[] {
-						"<a style=\"color: #0b5fff; text-decoration: none;\" " +
-							"href=\"https://liferay.com\" target=\"_blank\">",
-						"</a>"
-					}),
-				_language.get(resourceBundle, "need-help"),
-				_language.get(
-					resourceBundle, "let-our-team-do-the-work-for-you"),
+		FaroEmailSender.create(
+			_mailService
+		).setBody(
+			_getBody(
+				faroProject, faroUser, resourceBundle,
 				_language.get(
 					resourceBundle,
-					"liferay-experts-are-available-to-answer-your-questions-" +
-						"anytime"),
-				subject, EmailUtil.getCheckIconURL(),
-				EmailUtil.getLiferayIconURL(),
-				_language.format(
-					resourceBundle, "your-workspace-x-is-ready",
-					faroProject.getName()),
-				_language.format(
-					resourceBundle,
-					"sign-in-with-your-existing-liferay-username-and-" +
-						"password-or-create-an-account-using-x",
-					new String[] {
-						"<a style=\"color: #0b5fff; text-decoration: none;\" " +
-							"href=\"https://login.liferay.com/signin" +
-								"/register\" target=\"_blank\">",
-						"</a>", faroUser.getEmailAddress()
-					}),
-				_language.get(resourceBundle, "getting-started"),
-				_language.get(
-					resourceBundle, "get-up-and-running-in-three-steps"),
-				_language.get(
-					resourceBundle,
-					"copy-the-token-to-your-liferay-dxp-instance"),
-				_language.get(
-					resourceBundle,
-					"sync-your-dxp-sites-and-contacts-to-a-property"),
-				_language.get(
-					resourceBundle, "invite-teammates-to-collaborate"),
-				String.valueOf(DateUtil.getYear(new Date()))
-			});
-
-		_mailService.sendEmail(
-			new MailMessage(
-				new InternetAddress(senderEmailAddress, senderName),
-				new InternetAddress(faroUser.getEmailAddress(), null), subject,
-				body, true));
+					EmailUtil.getLanguageKey(
+						faroProject, "welcome-to-analytics-cloud",
+						"welcome-to-liferay-data-platform")))
+		).setFaroProject(
+			faroProject
+		).setSubject(
+			_language.get(
+				resourceBundle,
+				EmailUtil.getLanguageKey(
+					faroProject, "welcome-to-analytics-cloud",
+					"welcome-to-liferay-data-platform"))
+		).setToEmailAddress(
+			faroUser.getEmailAddress()
+		).send();
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
@@ -397,6 +330,81 @@ public class FaroProjectLocalServiceImpl
 		}
 
 		return faroProjectPersistence.update(faroProject);
+	}
+
+	private String _getBody(
+			FaroProject faroProject, FaroUser faroUser,
+			ResourceBundle resourceBundle, String subject)
+		throws Exception {
+
+		return StringUtil.replace(
+			StringUtil.read(
+				getClassLoader(),
+				"com/liferay/osb/faro/dependencies/created-workspace.html"),
+			new String[] {
+				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$EMAIL_HEADER_URL$]",
+				"[$EMAIL_TITLE$]", "[$FARO_URL$]", "[$FOOTER_MENU_1$]",
+				"[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]", "[$FOOTER_MSG_1$]",
+				"[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]", "[$FOOTER_MSG_4$]",
+				"[$HEADER_MSG_1$]", "[$ICON_CHECK_URL$]",
+				"[$LIFERAY_LOGO_URL$]", "[$NOTIFICATION_MSG_1$]",
+				"[$NOTIFICATION_MSG_2$]", "[$NOTIFICATION_MSG_3$]",
+				"[$NOTIFICATION_MSG_4$]", "[$NOTIFICATION_MSG_5$]",
+				"[$NOTIFICATION_MSG_6$]", "[$NOTIFICATION_MSG_7$]", "[$YEAR$]"
+			},
+			new String[] {
+				_language.get(
+					resourceBundle,
+					EmailUtil.getLanguageKey(
+						faroProject, "go-to-analytics-cloud",
+						"go-to-liferay-data-platform")),
+				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
+				subject, FaroPropsValues.FARO_URL,
+				_language.get(resourceBundle, "contact-support"),
+				_language.get(resourceBundle, "documentation"),
+				_language.get(resourceBundle, "announcements"),
+				_language.format(
+					resourceBundle, "this-email-was-sent-by-x",
+					new String[] {
+						"<a style=\"color: #0b5fff; text-decoration: none;\" " +
+							"href=\"https://liferay.com\" target=\"_blank\">",
+						"</a>"
+					}),
+				_language.get(resourceBundle, "need-help"),
+				_language.get(
+					resourceBundle, "let-our-team-do-the-work-for-you"),
+				_language.get(
+					resourceBundle,
+					"liferay-experts-are-available-to-answer-your-questions-" +
+						"anytime"),
+				subject, EmailUtil.getCheckIconURL(),
+				EmailUtil.getLiferayIconURL(),
+				_language.format(
+					resourceBundle, "your-workspace-x-is-ready",
+					faroProject.getName()),
+				_language.format(
+					resourceBundle,
+					"sign-in-with-your-existing-liferay-username-and-" +
+						"password-or-create-an-account-using-x",
+					new String[] {
+						"<a style=\"color: #0b5fff; text-decoration: none;\" " +
+							"href=\"https://login.liferay.com/signin" +
+								"/register\" target=\"_blank\">",
+						"</a>", faroUser.getEmailAddress()
+					}),
+				_language.get(resourceBundle, "getting-started"),
+				_language.get(
+					resourceBundle, "get-up-and-running-in-three-steps"),
+				_language.get(
+					resourceBundle,
+					"copy-the-token-to-your-liferay-dxp-instance"),
+				_language.get(
+					resourceBundle,
+					"sync-your-dxp-sites-and-contacts-to-a-property"),
+				_language.get(
+					resourceBundle, "invite-teammates-to-collaborate"),
+				String.valueOf(DateUtil.getYear(new Date()))
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
