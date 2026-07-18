@@ -9,7 +9,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
-import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoTaskInstanceTokenServiceBaseImpl;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,13 +34,9 @@ public class KaleoTaskInstanceTokenServiceImpl
 		_kaleoTaskInstanceTokenModelResourcePermission.check(
 			getPermissionChecker(), workflowTaskId, null);
 
-		return _kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
+		return kaleoTaskInstanceTokenPersistence.findByPrimaryKey(
 			workflowTaskId);
 	}
-
-	@Reference
-	private KaleoTaskInstanceTokenLocalService
-		_kaleoTaskInstanceTokenLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken)"

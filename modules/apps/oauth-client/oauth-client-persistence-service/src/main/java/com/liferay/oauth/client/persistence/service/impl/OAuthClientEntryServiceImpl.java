@@ -59,8 +59,7 @@ public class OAuthClientEntryServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.getOAuthClientEntry(
-				oAuthClientEntryId);
+			oAuthClientEntryPersistence.findByPrimaryKey(oAuthClientEntryId);
 
 		_oAuthClientEntryModelResourcePermission.check(
 			getPermissionChecker(), oAuthClientEntry, ActionKeys.DELETE);
@@ -75,7 +74,7 @@ public class OAuthClientEntryServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.getOAuthClientEntry(
+			oAuthClientEntryPersistence.findByC_A_C(
 				companyId, authServerWellKnownURI, clientId);
 
 		_oAuthClientEntryModelResourcePermission.check(
@@ -141,7 +140,7 @@ public class OAuthClientEntryServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.getOAuthClientEntry(
+			oAuthClientEntryPersistence.findByC_A_C(
 				companyId, authServerWellKnownURI, clientId);
 
 		_oAuthClientEntryModelResourcePermission.check(

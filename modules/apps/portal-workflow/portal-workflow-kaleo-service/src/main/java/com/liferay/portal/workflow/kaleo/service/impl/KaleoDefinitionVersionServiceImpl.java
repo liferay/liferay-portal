@@ -40,7 +40,7 @@ public class KaleoDefinitionVersionServiceImpl
 		_kaleoDefinitionModelResourcePermission.check(
 			getPermissionChecker(), null, ActionKeys.VIEW);
 
-		return _kaleoDefinitionVersionLocalService.getKaleoDefinitionVersion(
+		return kaleoDefinitionVersionPersistence.findByC_N_V(
 			companyId, name, version);
 	}
 

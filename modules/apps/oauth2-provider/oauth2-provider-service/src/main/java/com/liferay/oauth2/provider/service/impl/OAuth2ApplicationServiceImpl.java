@@ -91,8 +91,7 @@ public class OAuth2ApplicationServiceImpl
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(),
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				oAuth2ApplicationId),
+			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId),
 			ActionKeys.DELETE);
 
 		return oAuth2ApplicationLocalService.deleteOAuth2Application(
@@ -105,8 +104,7 @@ public class OAuth2ApplicationServiceImpl
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.fetchOAuth2Application(
-				companyId, clientId);
+			oAuth2ApplicationPersistence.fetchByC_C(companyId, clientId);
 
 		if (oAuth2Application != null) {
 			_oAuth2ApplicationModelResourcePermission.check(
@@ -121,8 +119,7 @@ public class OAuth2ApplicationServiceImpl
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				oAuth2ApplicationId);
+			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId);
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2Application, ActionKeys.VIEW);
@@ -136,8 +133,7 @@ public class OAuth2ApplicationServiceImpl
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				companyId, clientId);
+			oAuth2ApplicationPersistence.findByC_C(companyId, clientId);
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2Application, ActionKeys.VIEW);
@@ -166,8 +162,7 @@ public class OAuth2ApplicationServiceImpl
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(),
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				oAuth2ApplicationId),
+			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId),
 			ActionKeys.UPDATE);
 
 		return oAuth2ApplicationLocalService.updateIcon(
@@ -188,8 +183,7 @@ public class OAuth2ApplicationServiceImpl
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(),
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				oAuth2ApplicationId),
+			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId),
 			ActionKeys.UPDATE);
 
 		if (rememberDevice) {
@@ -225,8 +219,7 @@ public class OAuth2ApplicationServiceImpl
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.getOAuth2Application(
-				oAuth2ApplicationId);
+			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId);
 
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2Application, ActionKeys.UPDATE);

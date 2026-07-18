@@ -329,7 +329,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 			boolean notification)
 		throws PortalException {
 
-		Entry entry = entryLocalService.getEntry(entryId);
+		Entry entry = entryPersistence.findByPrimaryKey(entryId);
 
 		try {
 			_notifySubscribers(entry, emailAddresses, fileName, notification);
@@ -413,7 +413,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 			long entryId, ReportStatus status, String errorMessage)
 		throws PortalException {
 
-		Entry entry = entryLocalService.getEntry(entryId);
+		Entry entry = entryPersistence.findByPrimaryKey(entryId);
 
 		entry.setErrorMessage(errorMessage);
 		entry.setStatus(status.getValue());

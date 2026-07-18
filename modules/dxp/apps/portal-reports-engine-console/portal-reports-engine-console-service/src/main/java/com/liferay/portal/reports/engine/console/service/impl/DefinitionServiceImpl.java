@@ -71,7 +71,7 @@ public class DefinitionServiceImpl extends DefinitionServiceBaseImpl {
 		_definitionModelResourcePermission.check(
 			getPermissionChecker(), definitionId, ActionKeys.VIEW);
 
-		return definitionLocalService.getDefinition(definitionId);
+		return definitionPersistence.findByPrimaryKey(definitionId);
 	}
 
 	@Override

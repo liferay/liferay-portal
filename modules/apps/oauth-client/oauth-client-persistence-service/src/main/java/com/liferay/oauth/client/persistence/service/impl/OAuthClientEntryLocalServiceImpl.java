@@ -239,8 +239,7 @@ public class OAuthClientEntryLocalServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.getOAuthClientEntry(
-				oAuthClientEntryId);
+			oAuthClientEntryPersistence.findByPrimaryKey(oAuthClientEntryId);
 
 		_validateAuthServerWellKnownURI(
 			oAuthClientEntry.getCompanyId(), authServerWellKnownURI);

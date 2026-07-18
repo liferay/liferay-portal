@@ -41,7 +41,7 @@ public class OAuth2AuthorizationServiceImpl
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2ApplicationId, ActionKeys.VIEW);
 
-		return oAuth2AuthorizationLocalService.getOAuth2Authorizations(
+		return oAuth2AuthorizationPersistence.findByOAuth2ApplicationId(
 			oAuth2ApplicationId, start, end, orderByComparator);
 	}
 
@@ -52,7 +52,7 @@ public class OAuth2AuthorizationServiceImpl
 		_oAuth2ApplicationModelResourcePermission.check(
 			getPermissionChecker(), oAuth2ApplicationId, ActionKeys.VIEW);
 
-		return oAuth2AuthorizationLocalService.getOAuth2AuthorizationsCount(
+		return oAuth2AuthorizationPersistence.countByOAuth2ApplicationId(
 			oAuth2ApplicationId);
 	}
 
@@ -64,7 +64,7 @@ public class OAuth2AuthorizationServiceImpl
 
 		User user = getUser();
 
-		return oAuth2AuthorizationLocalService.getUserOAuth2Authorizations(
+		return oAuth2AuthorizationPersistence.findByUserId(
 			user.getUserId(), start, end, orderByComparator);
 	}
 
@@ -72,8 +72,7 @@ public class OAuth2AuthorizationServiceImpl
 	public int getUserOAuth2AuthorizationsCount() throws PortalException {
 		User user = getUser();
 
-		return oAuth2AuthorizationLocalService.getUserOAuth2AuthorizationsCount(
-			user.getUserId());
+		return oAuth2AuthorizationPersistence.countByUserId(user.getUserId());
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class OAuth2AuthorizationServiceImpl
 		User user = getUser();
 
 		List<OAuth2Authorization> oAuth2Authorizations =
-			oAuth2AuthorizationLocalService.getOAuth2Authorizations(
+			oAuth2AuthorizationPersistence.findByOAuth2ApplicationId(
 				oAuth2ApplicationId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null);
 
@@ -105,7 +104,7 @@ public class OAuth2AuthorizationServiceImpl
 		throws PortalException {
 
 		OAuth2Authorization oAuth2Authorization =
-			oAuth2AuthorizationLocalService.getOAuth2Authorization(
+			oAuth2AuthorizationPersistence.findByPrimaryKey(
 				oAuth2AuthorizationId);
 
 		User user = getUser();
