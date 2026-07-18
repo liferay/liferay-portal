@@ -356,11 +356,26 @@ public class DBPartitionUtil {
 			return false;
 		}
 
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					_defaultCompanyId)) {
+					_defaultCompanyId);
 
-			_importDBPartition(companyId);
+			Connection connection = dataSource.getConnection();
+
+			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+
+			_importDBPartition(connection, companyId);
+		}
+		catch (PortalException portalException) {
+			throw portalException;
+		}
+		catch (RuntimeException runtimeException) {
+			throw runtimeException;
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
 		}
 
 		return true;
@@ -1376,14 +1391,12 @@ public class DBPartitionUtil {
 		return " where trigger_name like '%@" + companyId + "'";
 	}
 
-	private static void _importDBPartition(long companyId)
+	private static void _importDBPartition(
+			Connection connection, long companyId)
 		throws PortalException {
 
 		String sourcePartitionName = _getExportedPartitionName(companyId);
 		String targetPartitionName = getPartitionName(companyId);
-
-		Connection connection = CurrentConnectionUtil.getConnection(
-			InfrastructureUtil.getDataSource());
 
 		try {
 			if (_dbPartitionDB.existsPartition(
@@ -1407,7 +1420,6 @@ public class DBPartitionUtil {
 			throw new PortalException(sqlException);
 		}
 
-		AutoCloseable autoCloseable = null;
 		List<String> copiedTableNames = new ArrayList<>();
 
 		try (Statement statement = connection.createStatement()) {
@@ -1417,8 +1429,6 @@ public class DBPartitionUtil {
 
 				statement.executeUpdate(renamePartitionSQL);
 			}
-
-			autoCloseable = _disableAutoCommit(connection);
 
 			DBInspector dbInspector = new DBInspector(connection);
 
@@ -1475,6 +1485,13 @@ public class DBPartitionUtil {
 			}
 		}
 		catch (Exception exception1) {
+			try {
+				connection.rollback();
+			}
+			catch (SQLException sqlException) {
+				exception1.addSuppressed(sqlException);
+			}
+
 			if (_dbPartitionDB.isDDLTransactional()) {
 				throw new PortalException(exception1);
 			}
@@ -1508,16 +1525,6 @@ public class DBPartitionUtil {
 			}
 
 			throw new PortalException(exception1);
-		}
-		finally {
-			if (autoCloseable != null) {
-				try {
-					autoCloseable.close();
-				}
-				catch (Exception exception) {
-					throw new PortalException(exception);
-				}
-			}
 		}
 	}
 
