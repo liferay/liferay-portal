@@ -88,6 +88,17 @@ public class CompanyServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.Company copyDBPartitionCompany(
+			long fromCompanyId, java.lang.Long toCompanyId,
+			java.lang.String name, java.lang.String virtualHost,
+			java.lang.String webId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _companyService.copyDBPartitionCompany(
+			fromCompanyId, toCompanyId, name, virtualHost, webId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.model.Company deleteCompany(long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -425,4 +436,4 @@ public class CompanyServiceWrapper
 	private CompanyService _companyService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1278552199
+// LIFERAY-SERVICE-BUILDER-HASH:-414763894
