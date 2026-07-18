@@ -112,9 +112,8 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 			String segmentsEntryERC, long groupId)
 		throws PortalException {
 
-		SegmentsEntry segmentsEntry =
-			segmentsEntryLocalService.fetchSegmentsEntryByExternalReferenceCode(
-				segmentsEntryERC, groupId);
+		SegmentsEntry segmentsEntry = segmentsEntryPersistence.fetchByERC_G(
+			segmentsEntryERC, groupId);
 
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntry.getSegmentsEntryId(),
@@ -144,8 +143,9 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 		long groupId, String[] sources, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryLocalService.getSegmentsEntries(
-			groupId, sources, start, end, orderByComparator);
+		return segmentsEntryPersistence.findByG_SRC(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, start,
+			end, orderByComparator);
 	}
 
 	@Override
@@ -164,8 +164,8 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 	public SegmentsEntry getSegmentsEntry(long segmentsEntryId)
 		throws PortalException {
 
-		SegmentsEntry segmentsEntry =
-			segmentsEntryLocalService.getSegmentsEntry(segmentsEntryId);
+		SegmentsEntry segmentsEntry = segmentsEntryPersistence.findByPrimaryKey(
+			segmentsEntryId);
 
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.VIEW);
@@ -178,9 +178,8 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 			String segmentsEntryERC, long groupId)
 		throws PortalException {
 
-		SegmentsEntry segmentsEntry =
-			segmentsEntryLocalService.getSegmentsEntryByExternalReferenceCode(
-				segmentsEntryERC, groupId);
+		SegmentsEntry segmentsEntry = segmentsEntryPersistence.findByERC_G(
+			segmentsEntryERC, groupId);
 
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntry.getSegmentsEntryId(),

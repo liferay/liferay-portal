@@ -45,6 +45,7 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.base.WikiPageServiceBaseImpl;
 import com.liferay.wiki.service.persistence.WikiNodePersistence;
 import com.liferay.wiki.util.comparator.PageCreateDateComparator;
+import com.liferay.wiki.util.comparator.PageVersionComparator;
 
 import java.io.File;
 import java.io.InputStream;
@@ -333,9 +334,9 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		WikiPage page =
-			wikiPageLocalService.fetchLatestPageByExternalReferenceCode(
-				groupId, externalReferenceCode);
+		WikiPage page = wikiPagePersistence.fetchByG_ERC_First(
+			groupId, externalReferenceCode,
+			PageVersionComparator.getInstance(false));
 
 		if (page != null) {
 			_wikiPageModelResourcePermission.check(
@@ -398,9 +399,9 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		WikiPage wikiPage =
-			wikiPageLocalService.getLatestPageByExternalReferenceCode(
-				groupId, externalReferenceCode);
+		WikiPage wikiPage = wikiPagePersistence.findByG_ERC_First(
+			groupId, externalReferenceCode,
+			PageVersionComparator.getInstance(false));
 
 		_wikiPageModelResourcePermission.check(
 			getPermissionChecker(), wikiPage, ActionKeys.VIEW);
@@ -532,7 +533,7 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 
 	@Override
 	public WikiPage getPageByPageId(long pageId) throws PortalException {
-		WikiPage page = wikiPageLocalService.getPageByPageId(pageId);
+		WikiPage page = wikiPagePersistence.findByPrimaryKey(pageId);
 
 		_wikiPageModelResourcePermission.check(
 			getPermissionChecker(), page, ActionKeys.VIEW);
@@ -648,7 +649,8 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 			String attachmentURLPrefix, Locale locale)
 		throws PortalException {
 
-		WikiPage page = wikiPageLocalService.fetchPage(nodeId, title);
+		WikiPage page = wikiPagePersistence.fetchByN_T_H_First(
+			nodeId, title, true, null);
 
 		if (page == null) {
 			_wikiNodeModelResourcePermission.check(
@@ -762,7 +764,8 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 
 		_wikiPageModelResourcePermission.check(
 			getPermissionChecker(),
-			wikiPageLocalService.fetchPage(nodeId, title), ActionKeys.UPDATE);
+			wikiPagePersistence.fetchByN_T_H_First(nodeId, title, true, null),
+			ActionKeys.UPDATE);
 
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), nodeId, ActionKeys.ADD_PAGE);
@@ -845,7 +848,8 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		WikiPage page = wikiPageLocalService.fetchPage(nodeId, title);
+		WikiPage page = wikiPagePersistence.fetchByN_T_H_First(
+			nodeId, title, true, null);
 
 		if (page == null) {
 			_wikiNodeModelResourcePermission.check(

@@ -215,9 +215,8 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		BlogsEntry entry =
-			blogsEntryLocalService.getBlogsEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		BlogsEntry entry = blogsEntryPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_blogsEntryModelResourcePermission.check(
 			getPermissionChecker(), entry, ActionKeys.VIEW);
@@ -338,7 +337,7 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 
 	@Override
 	public BlogsEntry getEntry(long entryId) throws PortalException {
-		BlogsEntry entry = blogsEntryLocalService.getEntry(entryId);
+		BlogsEntry entry = blogsEntryPersistence.findByPrimaryKey(entryId);
 
 		_blogsEntryModelResourcePermission.check(
 			getPermissionChecker(), entry, ActionKeys.VIEW);

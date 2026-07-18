@@ -9,12 +9,14 @@ import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.base.AccountGroupServiceBaseImpl;
+import com.liferay.account.service.persistence.AccountGroupRelPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -75,7 +77,7 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 	public AccountGroup fetchAccountGroup(long accountGroupId)
 		throws PortalException {
 
-		AccountGroup accountGroup = accountGroupLocalService.fetchAccountGroup(
+		AccountGroup accountGroup = accountGroupPersistence.fetchByPrimaryKey(
 			accountGroupId);
 
 		if (accountGroup != null) {
@@ -91,9 +93,8 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		AccountGroup accountGroup =
-			accountGroupLocalService.fetchAccountGroupByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		AccountGroup accountGroup = accountGroupPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (accountGroup != null) {
 			_accountGroupModelResourcePermission.check(
@@ -107,7 +108,7 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 	public AccountGroup getAccountGroup(long accountGroupId)
 		throws PortalException {
 
-		AccountGroup accountGroup = accountGroupLocalService.getAccountGroup(
+		AccountGroup accountGroup = accountGroupPersistence.findByPrimaryKey(
 			accountGroupId);
 
 		_accountGroupModelResourcePermission.check(
@@ -121,9 +122,8 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		AccountGroup accountGroup =
-			accountGroupLocalService.getAccountGroupByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		AccountGroup accountGroup = accountGroupPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_accountGroupModelResourcePermission.check(
 			getPermissionChecker(), accountGroup, ActionKeys.VIEW);
@@ -152,7 +152,8 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_ACCOUNT_GROUPS);
 
-		return accountGroupLocalService.getAccountGroupsCountByAccountEntryId(
+		return _accountGroupRelPersistence.countByC_C(
+			_classNameLocalService.getClassNameId(AccountEntry.class.getName()),
 			accountEntryId);
 	}
 
@@ -232,5 +233,11 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 	)
 	private ModelResourcePermission<AccountGroup>
 		_accountGroupModelResourcePermission;
+
+	@Reference
+	private AccountGroupRelPersistence _accountGroupRelPersistence;
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 }

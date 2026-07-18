@@ -75,8 +75,7 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 	public DepotEntry fetchGroupDepotEntry(long groupId)
 		throws PortalException {
 
-		DepotEntry depotEntry = depotEntryLocalService.fetchGroupDepotEntry(
-			groupId);
+		DepotEntry depotEntry = depotEntryPersistence.fetchByGroupId(groupId);
 
 		if (depotEntry != null) {
 			_depotEntryModelResourcePermission.check(
@@ -94,8 +93,7 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 		List<DepotEntry> filteredDepotEntries = getGroupConnectedDepotEntries(
 			groupId, type, start, end);
 
-		DepotEntry depotEntry = depotEntryLocalService.fetchGroupDepotEntry(
-			groupId);
+		DepotEntry depotEntry = depotEntryPersistence.fetchByGroupId(groupId);
 
 		if (depotEntry != null) {
 			filteredDepotEntries.add(depotEntry);
@@ -116,7 +114,7 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 				getPermissionChecker(), depotEntryId, ActionKeys.VIEW);
 		}
 
-		return depotEntryLocalService.getDepotEntry(depotEntryId);
+		return depotEntryPersistence.findByPrimaryKey(depotEntryId);
 	}
 
 	@Override
@@ -215,8 +213,7 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 
 	@Override
 	public DepotEntry getGroupDepotEntry(long groupId) throws PortalException {
-		DepotEntry depotEntry = depotEntryLocalService.getGroupDepotEntry(
-			groupId);
+		DepotEntry depotEntry = depotEntryPersistence.findByGroupId(groupId);
 
 		_depotEntryModelResourcePermission.check(
 			getPermissionChecker(), depotEntry, ActionKeys.VIEW);

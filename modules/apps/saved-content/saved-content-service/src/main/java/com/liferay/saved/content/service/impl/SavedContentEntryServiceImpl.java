@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.saved.content.constants.SavedContentConstants;
@@ -67,8 +68,9 @@ public class SavedContentEntryServiceImpl
 		throws PortalException {
 
 		SavedContentEntry savedContentEntry =
-			savedContentEntryLocalService.fetchSavedContentEntry(
-				getUserId(), groupId, className, classPK);
+			savedContentEntryPersistence.fetchByG_U_C_C(
+				groupId, getUserId(),
+				_classNameLocalService.getClassNameId(className), classPK);
 
 		if (savedContentEntry != null) {
 			_savedContentEntryModelResourcePermission.check(
@@ -112,14 +114,18 @@ public class SavedContentEntryServiceImpl
 		throws PortalException {
 
 		SavedContentEntry savedContentEntry =
-			savedContentEntryLocalService.getSavedContentEntry(
-				getUserId(), groupId, className, classPK);
+			savedContentEntryPersistence.findByG_U_C_C(
+				groupId, getUserId(),
+				_classNameLocalService.getClassNameId(className), classPK);
 
 		_savedContentEntryModelResourcePermission.check(
 			getPermissionChecker(), savedContentEntry, ActionKeys.VIEW);
 
 		return savedContentEntry;
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(resource.name=" + SavedContentConstants.RESOURCE_NAME + ")"

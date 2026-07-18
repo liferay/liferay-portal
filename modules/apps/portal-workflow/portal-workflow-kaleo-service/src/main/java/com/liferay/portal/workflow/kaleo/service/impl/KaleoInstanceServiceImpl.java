@@ -27,10 +27,10 @@ import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoNode;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.KaleoSignaler;
-import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoInstanceServiceBaseImpl;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionPersistence;
 
 import java.io.Serializable;
 
@@ -59,9 +59,8 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 			ServiceContext serviceContext, boolean waitForCompletion)
 		throws PortalException {
 
-		KaleoDefinition kaleoDefinition =
-			_kaleoDefinitionLocalService.getKaleoDefinition(
-				kaleoDefinitionName, serviceContext);
+		KaleoDefinition kaleoDefinition = _kaleoDefinitionPersistence.findByC_N(
+			serviceContext.getCompanyId(), kaleoDefinitionName);
 
 		if (Objects.equals(
 				kaleoDefinition.getScope(),
@@ -160,7 +159,7 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
+	private KaleoDefinitionPersistence _kaleoDefinitionPersistence;
 
 	@Reference
 	private KaleoDefinitionVersionLocalService

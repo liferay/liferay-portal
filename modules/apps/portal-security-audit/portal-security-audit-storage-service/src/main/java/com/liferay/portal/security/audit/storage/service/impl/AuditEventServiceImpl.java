@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.security.audit.storage.comparator.AuditEventCreateDateComparator;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.base.AuditEventServiceBaseImpl;
 
@@ -47,7 +48,8 @@ public class AuditEventServiceImpl extends AuditEventServiceBaseImpl {
 
 		_checkPermission(null, companyId);
 
-		return auditEventLocalService.getAuditEvents(companyId, start, end);
+		return auditEventPersistence.findByCompanyId(
+			companyId, start, end, new AuditEventCreateDateComparator());
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class AuditEventServiceImpl extends AuditEventServiceBaseImpl {
 
 		_checkPermission(null, companyId);
 
-		return auditEventLocalService.getAuditEvents(
+		return auditEventPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
@@ -105,7 +107,7 @@ public class AuditEventServiceImpl extends AuditEventServiceBaseImpl {
 	public int getAuditEventsCount(long companyId) throws PortalException {
 		_checkPermission(null, companyId);
 
-		return auditEventLocalService.getAuditEventsCount(companyId);
+		return auditEventPersistence.countByCompanyId(companyId);
 	}
 
 	@Override

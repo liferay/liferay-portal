@@ -57,7 +57,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 		throws PortalException {
 
 		KaleoDefinition kaleoDefinition =
-			_kaleoDefinitionLocalService.getKaleoDefinition(kaleoDefinitionId);
+			kaleoDefinitionPersistence.findByPrimaryKey(kaleoDefinitionId);
 
 		_kaleoDefinitionModelResourcePermission.check(
 			getPermissionChecker(), kaleoDefinition, ActionKeys.VIEW);
@@ -86,9 +86,8 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 			String name, ServiceContext serviceContext)
 		throws PortalException {
 
-		KaleoDefinition kaleoDefinition =
-			_kaleoDefinitionLocalService.getKaleoDefinition(
-				name, serviceContext);
+		KaleoDefinition kaleoDefinition = kaleoDefinitionPersistence.findByC_N(
+			serviceContext.getCompanyId(), name);
 
 		_kaleoDefinitionModelResourcePermission.check(
 			getPermissionChecker(), kaleoDefinition, ActionKeys.VIEW);

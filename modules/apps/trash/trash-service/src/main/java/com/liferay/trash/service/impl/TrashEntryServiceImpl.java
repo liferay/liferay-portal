@@ -180,8 +180,8 @@ public class TrashEntryServiceImpl extends TrashEntryServiceBaseImpl {
 	public void deleteEntry(String className, long classPK)
 		throws PortalException {
 
-		TrashEntry entry = trashEntryLocalService.fetchEntry(
-			className, classPK);
+		TrashEntry entry = trashEntryPersistence.fetchByCN_CPK(
+			_classNameLocalService.getClassNameId(className), classPK);
 
 		if (entry == null) {
 			entry = new TrashEntryImpl();

@@ -188,7 +188,7 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			getPermissionChecker(), groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
-		return styleBookEntryLocalService.getStyleBookEntriesCount(groupId);
+		return styleBookEntryPersistence.countByGroupId_Head(groupId, true);
 	}
 
 	@Override

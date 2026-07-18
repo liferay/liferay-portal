@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.kaleo.internal.search.KaleoTaskInstanceTokenField;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
+import com.liferay.portal.workflow.kaleo.model.KaleoTask;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
@@ -52,6 +53,7 @@ import com.liferay.portal.workflow.kaleo.service.KaleoTaskFormInstanceLocalServi
 import com.liferay.portal.workflow.kaleo.service.KaleoTimerInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoTaskInstanceTokenLocalServiceBaseImpl;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoInstanceTokenPersistence;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskAssignmentPersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormInstancePersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormPersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskInstanceTokenQuery;
@@ -572,12 +574,12 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		throws PortalException {
 
 		KaleoTaskInstanceToken kaleoTaskInstanceToken =
-			kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
-				workflowTaskId);
+			kaleoTaskInstanceTokenPersistence.findByPrimaryKey(workflowTaskId);
 
 		Collection<KaleoTaskAssignment> kaleoTaskAssignments =
 			_aggregateKaleoTaskAssignmentSelector.getKaleoTaskAssignments(
-				_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
+				_kaleoTaskAssignmentPersistence.findByKCN_KCPK(
+					KaleoTask.class.getName(),
 					kaleoTaskInstanceToken.getKaleoTaskId()),
 				_createExecutionContext(kaleoTaskInstanceToken));
 
@@ -1203,6 +1205,9 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 
 	@Reference
 	private KaleoTaskAssignmentLocalService _kaleoTaskAssignmentLocalService;
+
+	@Reference
+	private KaleoTaskAssignmentPersistence _kaleoTaskAssignmentPersistence;
 
 	@Reference
 	private KaleoTaskFormInstanceLocalService

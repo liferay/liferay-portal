@@ -9,14 +9,15 @@ import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupRel;
-import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.base.AccountGroupRelServiceBaseImpl;
+import com.liferay.account.service.persistence.AccountGroupPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 
 import java.util.Objects;
 
@@ -64,7 +65,7 @@ public class AccountGroupRelServiceImpl extends AccountGroupRelServiceBaseImpl {
 		throws PortalException {
 
 		AccountGroupRel accountGroupRel =
-			accountGroupRelLocalService.fetchAccountGroupRel(accountGroupRelId);
+			accountGroupRelPersistence.fetchByPrimaryKey(accountGroupRelId);
 
 		if (accountGroupRel == null) {
 			return null;
@@ -96,8 +97,9 @@ public class AccountGroupRelServiceImpl extends AccountGroupRelServiceBaseImpl {
 		throws PortalException {
 
 		AccountGroupRel accountGroupRel =
-			accountGroupRelLocalService.fetchAccountGroupRel(
-				accountGroupId, className, classPK);
+			accountGroupRelPersistence.fetchByA_C_C(
+				accountGroupId,
+				_classNameLocalService.getClassNameId(className), classPK);
 
 		if (accountGroupRel != null) {
 			_checkPermission(
@@ -112,7 +114,7 @@ public class AccountGroupRelServiceImpl extends AccountGroupRelServiceBaseImpl {
 		throws PortalException {
 
 		AccountGroupRel accountGroupRel =
-			accountGroupRelLocalService.getAccountGroupRel(accountGroupRelId);
+			accountGroupRelPersistence.findByPrimaryKey(accountGroupRelId);
 
 		_checkPermission(
 			accountGroupRel.getAccountGroupId(), accountGroupRel.getClassName(),
@@ -125,7 +127,7 @@ public class AccountGroupRelServiceImpl extends AccountGroupRelServiceBaseImpl {
 			long accountGroupId, String className, String actionId)
 		throws PortalException {
 
-		AccountGroup accountGroup = _accountGroupLocalService.getAccountGroup(
+		AccountGroup accountGroup = _accountGroupPersistence.findByPrimaryKey(
 			accountGroupId);
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -142,13 +144,16 @@ public class AccountGroupRelServiceImpl extends AccountGroupRelServiceBaseImpl {
 		}
 	}
 
-	@Reference
-	private AccountGroupLocalService _accountGroupLocalService;
-
 	@Reference(
 		target = "(model.class.name=com.liferay.account.model.AccountGroup)"
 	)
 	private ModelResourcePermission<AccountGroup>
 		_accountGroupModelResourcePermission;
+
+	@Reference
+	private AccountGroupPersistence _accountGroupPersistence;
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 }
