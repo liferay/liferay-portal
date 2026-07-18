@@ -124,11 +124,23 @@ public class DBPartitionUtil {
 			return false;
 		}
 
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					_defaultCompanyId)) {
+					_defaultCompanyId);
 
-			_copyDBPartition(fromCompanyId, toCompanyId);
+			Connection connection = dataSource.getConnection();
+
+			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+
+			_copyDBPartition(connection, fromCompanyId, toCompanyId);
+		}
+		catch (PortalException portalException) {
+			throw portalException;
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
 		}
 
 		return true;
@@ -561,16 +573,15 @@ public class DBPartitionUtil {
 		}
 	}
 
-	private static void _copyDBPartition(long fromCompanyId, long toCompanyId)
+	private static void _copyDBPartition(
+			Connection connection, long fromCompanyId, long toCompanyId)
 		throws PortalException {
 
-		Connection connection = CurrentConnectionUtil.getConnection(
-			InfrastructureUtil.getDataSource());
 		List<String> quartzTableNames = new ArrayList<>();
 		String sourcePartitionName = getPartitionName(fromCompanyId);
 		String targetPartitionName = getPartitionName(toCompanyId);
 
-		try (AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+		try {
 			_copySchema(connection, sourcePartitionName, targetPartitionName);
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -702,6 +713,13 @@ public class DBPartitionUtil {
 			_reloadQuartzJobs(fromCompanyId, toCompanyId);
 		}
 		catch (Exception exception1) {
+			try {
+				connection.rollback();
+			}
+			catch (SQLException sqlException) {
+				exception1.addSuppressed(sqlException);
+			}
+
 			if (!_dbPartitionDB.isDDLTransactional() ||
 				(exception1 instanceof SchedulerException)) {
 
@@ -715,6 +733,8 @@ public class DBPartitionUtil {
 					statement.executeUpdate(
 						_dbPartitionDB.getDropPartitionSQL(
 							targetPartitionName));
+
+					connection.commit();
 				}
 				catch (Exception exception2) {
 					throw new PortalException(
