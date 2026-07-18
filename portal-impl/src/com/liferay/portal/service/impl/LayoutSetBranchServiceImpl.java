@@ -6,6 +6,7 @@
 package com.liferay.portal.service.impl;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutSetBranchPermissionUtil;
+import com.liferay.portal.kernel.util.comparator.LayoutSetBranchCreateDateComparator;
 import com.liferay.portal.service.base.LayoutSetBranchServiceBaseImpl;
 
 import java.util.ArrayList;
@@ -70,8 +72,10 @@ public class LayoutSetBranchServiceImpl extends LayoutSetBranchServiceBaseImpl {
 			if (GroupPermissionUtil.contains(
 					getPermissionChecker(), groupId, ActionKeys.VIEW_STAGING)) {
 
-				return layoutSetBranchLocalService.getLayoutSetBranches(
-					groupId, privateLayout);
+				return layoutSetBranchPersistence.findByG_P(
+					groupId, privateLayout, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS,
+					LayoutSetBranchCreateDateComparator.getInstance(true));
 			}
 		}
 		catch (PortalException portalException) {

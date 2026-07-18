@@ -44,12 +44,12 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.PluginSettingLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -568,7 +568,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		Layout layout = layoutLocalService.fetchLayoutByExternalReferenceCode(
+		Layout layout = layoutPersistence.fetchByERC_G(
 			externalReferenceCode, groupId);
 
 		if (layout != null) {
@@ -954,7 +954,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+		LayoutSet layoutSet = _layoutSetPersistence.findByG_P(
 			groupId, privateLayout);
 
 		if (!MergeLayoutPrototypesThreadLocal.isInProgress() &&
@@ -1192,7 +1192,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 	public boolean hasPortletId(long plid, String portletId)
 		throws PortalException {
 
-		Layout layout = layoutLocalService.fetchLayout(plid);
+		Layout layout = layoutPersistence.fetchByPrimaryKey(plid);
 
 		if (layout == null) {
 			return false;
@@ -1914,8 +1914,8 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
 
-	@BeanReference(type = LayoutSetLocalService.class)
-	private LayoutSetLocalService _layoutSetLocalService;
+	@BeanReference(type = LayoutSetPersistence.class)
+	private LayoutSetPersistence _layoutSetPersistence;
 
 	@BeanReference(type = PluginSettingLocalService.class)
 	private PluginSettingLocalService _pluginSettingLocalService;

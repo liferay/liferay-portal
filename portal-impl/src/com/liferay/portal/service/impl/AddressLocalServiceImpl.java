@@ -40,12 +40,14 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ContactLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.persistence.ContactPersistence;
 import com.liferay.portal.kernel.service.persistence.CountryPersistence;
+import com.liferay.portal.kernel.service.persistence.ListTypePersistence;
+import com.liferay.portal.kernel.service.persistence.PhonePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -329,8 +331,10 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		address = addressPersistence.update(address);
 
 		if (Validator.isNotNull(phoneNumber)) {
-			List<Phone> phones = _phoneLocalService.getPhones(
-				address.getCompanyId(), Address.class.getName(), addressId);
+			List<Phone> phones = _phonePersistence.findByC_C_C(
+				address.getCompanyId(),
+				_classNameLocalService.getClassNameId(Address.class.getName()),
+				addressId);
 
 			if (ListUtil.isEmpty(phones)) {
 				_addAddressPhone(
@@ -556,7 +560,8 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			 (classNameId == _classNameLocalService.getClassNameId(
 				 "com.liferay.commerce.model.CommerceOrder")))) {
 
-			ListType listType = _listTypeLocalService.getListType(listTypeId);
+			ListType listType = _listTypePersistence.findByPrimaryKey(
+				listTypeId);
 
 			String externalReferenceCode =
 				AccountEntryAddressSubtypeConfigurationManagerUtil.
@@ -584,7 +589,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			long addressId, long companyId, String phoneNumber)
 		throws PortalException {
 
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypePersistence.fetchByC_N_T(
 			companyId, "phone-number", ListTypeConstants.ADDRESS_PHONE);
 
 		ServiceContext serviceContext =
@@ -601,7 +606,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			return;
 		}
 
-		Contact contact = _contactLocalService.fetchContact(classPK);
+		Contact contact = _contactPersistence.fetchByPrimaryKey(classPK);
 
 		if ((contact == null) ||
 			!Objects.equals(contact.getClassName(), User.class.getName())) {
@@ -628,8 +633,8 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 	@BeanReference(type = ClassNameLocalService.class)
 	private ClassNameLocalService _classNameLocalService;
 
-	@BeanReference(type = ContactLocalService.class)
-	private ContactLocalService _contactLocalService;
+	@BeanReference(type = ContactPersistence.class)
+	private ContactPersistence _contactPersistence;
 
 	@BeanReference(type = CountryPersistence.class)
 	private CountryPersistence _countryPersistence;
@@ -637,8 +642,14 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 	@BeanReference(type = ListTypeLocalService.class)
 	private ListTypeLocalService _listTypeLocalService;
 
+	@BeanReference(type = ListTypePersistence.class)
+	private ListTypePersistence _listTypePersistence;
+
 	@BeanReference(type = PhoneLocalService.class)
 	private PhoneLocalService _phoneLocalService;
+
+	@BeanReference(type = PhonePersistence.class)
+	private PhonePersistence _phonePersistence;
 
 	@BeanReference(type = UserPersistence.class)
 	private UserPersistence _userPersistence;

@@ -5,10 +5,12 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.service.base.EmailAddressServiceBaseImpl;
 import com.liferay.portal.service.permission.CommonPermissionUtil;
@@ -95,9 +97,8 @@ public class EmailAddressServiceImpl extends EmailAddressServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		EmailAddress emailAddress =
-			emailAddressLocalService.fetchEmailAddressByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		EmailAddress emailAddress = emailAddressPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (emailAddress != null) {
 			CommonPermissionUtil.check(
@@ -131,8 +132,9 @@ public class EmailAddressServiceImpl extends EmailAddressServiceBaseImpl {
 
 		User user = getUser();
 
-		return emailAddressLocalService.getEmailAddresses(
-			user.getCompanyId(), className, classPK);
+		return emailAddressPersistence.findByC_C_C(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Override
@@ -160,5 +162,8 @@ public class EmailAddressServiceImpl extends EmailAddressServiceBaseImpl {
 		return emailAddressLocalService.updateEmailAddress(
 			externalReferenceCode, emailAddressId, address, typeId, primary);
 	}
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 }

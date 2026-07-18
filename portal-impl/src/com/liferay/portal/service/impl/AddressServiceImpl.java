@@ -5,11 +5,13 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.service.base.AddressServiceBaseImpl;
 import com.liferay.portal.service.permission.CommonPermissionUtil;
@@ -77,9 +79,8 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Address address =
-			addressLocalService.fetchAddressByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		Address address = addressPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (address != null) {
 			CommonPermissionUtil.check(
@@ -110,8 +111,9 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 
 		User user = getUser();
 
-		return addressLocalService.getAddresses(
-			user.getCompanyId(), className, classPK);
+		return addressPersistence.findByC_C_C(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Override
@@ -124,8 +126,10 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 
 		User user = getUser();
 
-		return addressLocalService.getListTypeAddresses(
-			user.getCompanyId(), className, classPK, listTypeIds);
+		return addressPersistence.findByC_C_C_L(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(className), classPK,
+			listTypeIds);
 	}
 
 	@Override
@@ -219,5 +223,8 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 			addressPersistence.findByPrimaryKey(addressId),
 			externalReferenceCode);
 	}
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 }

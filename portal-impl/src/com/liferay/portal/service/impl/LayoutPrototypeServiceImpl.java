@@ -58,7 +58,7 @@ public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 		throws PortalException {
 
 		LayoutPrototype layoutPrototype =
-			layoutPrototypeLocalService.fetchLayoutPrototype(layoutPrototypeId);
+			layoutPrototypePersistence.fetchByPrimaryKey(layoutPrototypeId);
 
 		if (layoutPrototype != null) {
 			LayoutPrototypePermissionUtil.check(
@@ -73,7 +73,7 @@ public class LayoutPrototypeServiceImpl extends LayoutPrototypeServiceBaseImpl {
 		throws PortalException {
 
 		LayoutPrototype layoutPrototype =
-			layoutPrototypeLocalService.getLayoutPrototype(layoutPrototypeId);
+			layoutPrototypePersistence.findByPrimaryKey(layoutPrototypeId);
 
 		LayoutPrototypePermissionUtil.check(
 			getPermissionChecker(), layoutPrototypeId, ActionKeys.VIEW);
