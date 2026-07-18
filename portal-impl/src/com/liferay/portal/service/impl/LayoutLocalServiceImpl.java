@@ -86,8 +86,6 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
-import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
-import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -95,13 +93,13 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutFriendlyURLPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPrototypePersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
+import com.liferay.portal.kernel.service.persistence.LayoutSetPrototypePersistence;
 import com.liferay.portal.kernel.service.persistence.PortalPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
@@ -1378,7 +1376,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		dynamicQuery.add(typeProperty.eq(type));
 
-		List<Layout> layouts = layoutLocalService.dynamicQuery(dynamicQuery);
+		List<Layout> layouts = layoutPersistence.findWithDynamicQuery(
+			dynamicQuery);
 
 		Group group = _groupPersistence.findByPrimaryKey(groupId);
 
@@ -1867,7 +1866,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		try {
 			Group group = _groupLocalService.getGroup(groupId);
 
-			LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+			LayoutSet layoutSet = _layoutSetPersistence.findByG_P(
 				groupId, privateLayout);
 
 			List<Layout> layouts = layoutPersistence.findByG_P_P(
@@ -2753,7 +2752,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
-			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+			_layoutSetPrototypePersistence.findByPrimaryKey(
 				layoutSetPrototypeId),
 			layoutUuid);
 	}
@@ -3422,7 +3421,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		if (group.isLayoutPrototype()) {
 			LayoutPrototype layoutPrototype =
-				_layoutPrototypeLocalService.getLayoutPrototype(
+				_layoutPrototypePersistence.findByPrimaryKey(
 					group.getClassPK());
 
 			layoutPrototype.setModifiedDate(date);
@@ -3842,7 +3841,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setModifiedDate(new Date());
 		layout.setStatus(status);
 
-		User user = _userLocalService.getUser(userId);
+		User user = _userPersistence.findByPrimaryKey(userId);
 
 		layout.setStatusByUserId(user.getUserId());
 		layout.setStatusByUserName(user.getFullName());
@@ -4687,20 +4686,17 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	@BeanReference(type = LayoutFriendlyURLPersistence.class)
 	private LayoutFriendlyURLPersistence _layoutFriendlyURLPersistence;
 
-	@BeanReference(type = LayoutPrototypeLocalService.class)
-	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
-
 	@BeanReference(type = LayoutPrototypePersistence.class)
 	private LayoutPrototypePersistence _layoutPrototypePersistence;
-
-	@BeanReference(type = LayoutSetLocalService.class)
-	private LayoutSetLocalService _layoutSetLocalService;
 
 	@BeanReference(type = LayoutSetPersistence.class)
 	private LayoutSetPersistence _layoutSetPersistence;
 
 	@BeanReference(type = LayoutSetPrototypeLocalService.class)
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@BeanReference(type = LayoutSetPrototypePersistence.class)
+	private LayoutSetPrototypePersistence _layoutSetPrototypePersistence;
 
 	@BeanReference(type = PortalPreferencesPersistence.class)
 	private PortalPreferencesPersistence _portalPreferencesPersistence;
@@ -4726,9 +4722,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@BeanReference(type = UserGroupLocalService.class)
 	private UserGroupLocalService _userGroupLocalService;
-
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
 
 	@BeanReference(type = UserPersistence.class)
 	private UserPersistence _userPersistence;

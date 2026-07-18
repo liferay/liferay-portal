@@ -60,15 +60,17 @@ import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyRelLocalService;
 import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WebsiteLocalService;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.CountryPersistence;
+import com.liferay.portal.kernel.service.persistence.ListTypePersistence;
 import com.liferay.portal.kernel.service.persistence.RegionPersistence;
+import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserFinder;
+import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.tree.TreeModelTasksAdapter;
@@ -244,7 +246,7 @@ public class OrganizationLocalServiceImpl
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypePersistence.fetchByC_N_T(
 			user.getCompanyId(), ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
 			ListTypeConstants.ORGANIZATION_STATUS);
 
@@ -361,7 +363,7 @@ public class OrganizationLocalServiceImpl
 
 		// Role
 
-		Role role = _roleLocalService.getRole(
+		Role role = _rolePersistence.findByC_N(
 			organization.getCompanyId(), RoleConstants.ORGANIZATION_OWNER);
 
 		_userGroupRoleLocalService.addUserGroupRoles(
@@ -453,7 +455,7 @@ public class OrganizationLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		User user = _userLocalService.getUser(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		Organization organization = organizationPersistence.fetchByERC_C(
 			externalReferenceCode, user.getCompanyId());
@@ -734,7 +736,7 @@ public class OrganizationLocalServiceImpl
 
 				String[] types = getTypes();
 
-				ListType listType = _listTypeLocalService.getListType(
+				ListType listType = _listTypePersistence.fetchByC_N_T(
 					companyId, ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
 					ListTypeConstants.ORGANIZATION_STATUS);
 
@@ -1165,7 +1167,7 @@ public class OrganizationLocalServiceImpl
 			userPersistence.getOrganizationPrimaryKeys(userId));
 
 		List<UserGroupRole> userGroupRoles =
-			_userGroupRoleLocalService.getUserGroupRoles(userId);
+			_userGroupRolePersistence.findByUserId(userId);
 
 		for (UserGroupRole userGroupRole : userGroupRoles) {
 			Role role = userGroupRole.getRole();
@@ -1216,7 +1218,7 @@ public class OrganizationLocalServiceImpl
 			getUserOrganizations(userId));
 
 		List<UserGroupRole> userGroupRoles =
-			_userGroupRoleLocalService.getUserGroupRoles(userId);
+			_userGroupRolePersistence.findByUserId(userId);
 
 		for (UserGroupRole userGroupRole : userGroupRoles) {
 			Role role = userGroupRole.getRole();
@@ -2775,6 +2777,9 @@ public class OrganizationLocalServiceImpl
 	@BeanReference(type = ListTypeLocalService.class)
 	private ListTypeLocalService _listTypeLocalService;
 
+	@BeanReference(type = ListTypePersistence.class)
+	private ListTypePersistence _listTypePersistence;
+
 	@BeanReference(type = PasswordPolicyRelLocalService.class)
 	private PasswordPolicyRelLocalService _passwordPolicyRelLocalService;
 
@@ -2787,14 +2792,17 @@ public class OrganizationLocalServiceImpl
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
 
-	@BeanReference(type = RoleLocalService.class)
-	private RoleLocalService _roleLocalService;
+	@BeanReference(type = RolePersistence.class)
+	private RolePersistence _rolePersistence;
 
 	@BeanReference(type = UserFinder.class)
 	private UserFinder _userFinder;
 
 	@BeanReference(type = UserGroupRoleLocalService.class)
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
+
+	@BeanReference(type = UserGroupRolePersistence.class)
+	private UserGroupRolePersistence _userGroupRolePersistence;
 
 	@BeanReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;

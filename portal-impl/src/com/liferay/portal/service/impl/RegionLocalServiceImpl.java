@@ -35,9 +35,9 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.persistence.CountryPersistence;
 import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -77,7 +77,8 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		region.setExternalReferenceCode(externalReferenceCode);
 		region.setCompanyId(serviceContext.getCompanyId());
 
-		User user = _userLocalService.getUser(serviceContext.getUserId());
+		User user = _userPersistence.findByPrimaryKey(
+			serviceContext.getUserId());
 
 		region.setUserId(user.getUserId());
 		region.setUserName(user.getFullName());
@@ -403,7 +404,7 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 	@BeanReference(type = OrganizationPersistence.class)
 	private OrganizationPersistence _organizationPersistence;
 
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
+	@BeanReference(type = UserPersistence.class)
+	private UserPersistence _userPersistence;
 
 }

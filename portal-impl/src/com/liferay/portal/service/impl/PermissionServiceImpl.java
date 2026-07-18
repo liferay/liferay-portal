@@ -27,10 +27,9 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.service.permission.TeamPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.TeamPersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -89,7 +88,7 @@ public class PermissionServiceImpl extends PermissionServiceBaseImpl {
 		if (className.equals(Team.class.getName())) {
 			className = Group.class.getName();
 
-			Team team = _teamLocalService.fetchTeam(classPK);
+			Team team = _teamPersistence.fetchByPrimaryKey(classPK);
 
 			classPK = team.getGroupId();
 
@@ -170,7 +169,7 @@ public class PermissionServiceImpl extends PermissionServiceBaseImpl {
 			}
 
 			ResourcePermission resourcePermission =
-				_resourcePermissionLocalService.getResourcePermission(
+				_resourcePermissionPersistence.findByC_N_S_P_R(
 					permissionChecker.getCompanyId(), name,
 					ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 					permissionChecker.getOwnerRoleId());
@@ -217,14 +216,11 @@ public class PermissionServiceImpl extends PermissionServiceBaseImpl {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PermissionServiceImpl.class);
 
-	@BeanReference(type = ResourcePermissionLocalService.class)
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+	@BeanReference(type = ResourcePermissionPersistence.class)
+	private ResourcePermissionPersistence _resourcePermissionPersistence;
 
 	@BeanReference(type = RolePersistence.class)
 	private RolePersistence _rolePersistence;
-
-	@BeanReference(type = TeamLocalService.class)
-	private TeamLocalService _teamLocalService;
 
 	@BeanReference(type = TeamPersistence.class)
 	private TeamPersistence _teamPersistence;

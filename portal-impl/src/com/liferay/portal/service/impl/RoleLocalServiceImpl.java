@@ -81,8 +81,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.persistence.ResourceActionPersistence;
 import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.TeamPersistence;
+import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -437,8 +439,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			sourceRole.getSubtype(), serviceContext);
 
 		List<ResourcePermission> resourcePermissions =
-			_resourcePermissionLocalService.getRoleResourcePermissions(
-				sourceRole.getRoleId());
+			_resourcePermissionPersistence.findByRoleId(sourceRole.getRoleId());
 
 		if (ListUtil.isEmpty(resourcePermissions)) {
 			return targetRole;
@@ -452,7 +453,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			}
 
 			List<ResourceAction> resourceActions =
-				_resourceActionLocalService.getResourceActions(
+				_resourceActionPersistence.findByName(
 					resourcePermission.getName());
 
 			Set<String> actionIdsSet = new HashSet<>();
@@ -691,7 +692,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			userGroupGroupRoleDynamicQuery.setProjection(
 				ProjectionFactoryUtil.countDistinct("userGroupId"));
 
-			List<?> list = _userGroupRoleLocalService.dynamicQuery(
+			List<?> list = _userGroupRolePersistence.findWithDynamicQuery(
 				userGroupGroupRoleDynamicQuery);
 
 			Long count = (Long)list.get(0);
@@ -727,7 +728,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			userGroupRoleDynamicQuery.setProjection(
 				ProjectionFactoryUtil.countDistinct("userId"));
 
-			List<?> list = _userGroupRoleLocalService.dynamicQuery(
+			List<?> list = _userGroupRolePersistence.findWithDynamicQuery(
 				userGroupRoleDynamicQuery);
 
 			Long count = (Long)list.get(0);
@@ -2180,7 +2181,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			User.class);
 
-		indexer.reindex(_userLocalService.fetchUser(userId));
+		indexer.reindex(userPersistence.fetchByPrimaryKey(userId));
 	}
 
 	protected void setRolePermissions(
@@ -2267,6 +2268,9 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	@BeanReference(type = ResourceActionLocalService.class)
 	private ResourceActionLocalService _resourceActionLocalService;
 
+	@BeanReference(type = ResourceActionPersistence.class)
+	private ResourceActionPersistence _resourceActionPersistence;
+
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
 
@@ -2287,6 +2291,9 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 	@BeanReference(type = UserGroupRoleLocalService.class)
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
+
+	@BeanReference(type = UserGroupRolePersistence.class)
+	private UserGroupRolePersistence _userGroupRolePersistence;
 
 	@BeanReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;

@@ -32,7 +32,9 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.RecentLayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
+import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetBranchPersistence;
+import com.liferay.portal.kernel.service.persistence.PortletPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -172,7 +174,7 @@ public class LayoutRevisionLocalServiceImpl
 		}
 
 		List<PortletPreferences> portletPreferencesList =
-			_portletPreferencesLocalService.getPortletPreferencesByPlid(
+			_portletPreferencesPersistence.findByPlid(
 				layoutRevision.getLayoutRevisionId());
 
 		for (PortletPreferences portletPreferences : portletPreferencesList) {
@@ -661,8 +663,7 @@ public class LayoutRevisionLocalServiceImpl
 		LayoutRevision layoutRevision, long parentLayoutRevisionId) {
 
 		List<PortletPreferences> portletPreferencesList =
-			_portletPreferencesLocalService.getPortletPreferencesByPlid(
-				parentLayoutRevisionId);
+			_portletPreferencesPersistence.findByPlid(parentLayoutRevisionId);
 
 		for (PortletPreferences portletPreferences : portletPreferencesList) {
 			jakarta.portlet.PortletPreferences jxPortletPreferences =
@@ -708,7 +709,7 @@ public class LayoutRevisionLocalServiceImpl
 	protected long getUniqueLayoutRevisionId() {
 		long layoutRevisionId = counterLocalService.increment();
 
-		while (_layoutLocalService.fetchLayout(layoutRevisionId) != null) {
+		while (_layoutPersistence.fetchByPrimaryKey(layoutRevisionId) != null) {
 			layoutRevisionId = counterLocalService.increment();
 		}
 
@@ -781,11 +782,17 @@ public class LayoutRevisionLocalServiceImpl
 	@BeanReference(type = LayoutLocalService.class)
 	private LayoutLocalService _layoutLocalService;
 
+	@BeanReference(type = LayoutPersistence.class)
+	private LayoutPersistence _layoutPersistence;
+
 	@BeanReference(type = LayoutSetBranchPersistence.class)
 	private LayoutSetBranchPersistence _layoutSetBranchPersistence;
 
 	@BeanReference(type = PortletPreferencesLocalService.class)
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@BeanReference(type = PortletPreferencesPersistence.class)
+	private PortletPreferencesPersistence _portletPreferencesPersistence;
 
 	@BeanReference(type = PortletPreferenceValueLocalService.class)
 	private PortletPreferenceValueLocalService

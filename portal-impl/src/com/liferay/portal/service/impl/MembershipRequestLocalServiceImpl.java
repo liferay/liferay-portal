@@ -32,13 +32,14 @@ import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
+import com.liferay.portal.kernel.service.persistence.RolePersistence;
+import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.util.EscapableLocalizableFunction;
 import com.liferay.portal.kernel.util.EscapableObject;
@@ -278,11 +279,11 @@ public class MembershipRequestLocalServiceImpl
 				roleName.equals(RoleConstants.ORGANIZATION_ADMINISTRATOR) ||
 				roleName.equals(RoleConstants.ORGANIZATION_OWNER)) {
 
-				Role curRole = _roleLocalService.getRole(
+				Role curRole = _rolePersistence.findByC_N(
 					group.getCompanyId(), roleName);
 
 				List<UserGroupRole> userGroupRoles =
-					_userGroupRoleLocalService.getUserGroupRolesByGroupAndRole(
+					_userGroupRolePersistence.findByG_R(
 						groupId, curRole.getRoleId());
 
 				for (UserGroupRole userGroupRole : userGroupRoles) {
@@ -307,7 +308,7 @@ public class MembershipRequestLocalServiceImpl
 				currentCompanyActions.contains(ActionKeys.ASSIGN_MEMBERS)) {
 
 				List<UserGroupRole> currentUserGroupRoles =
-					_userGroupRoleLocalService.getUserGroupRolesByGroupAndRole(
+					_userGroupRolePersistence.findByG_R(
 						groupId, role.getRoleId());
 
 				for (UserGroupRole userGroupRole : currentUserGroupRoles) {
@@ -362,7 +363,8 @@ public class MembershipRequestLocalServiceImpl
 			statusKey = "pending";
 		}
 
-		Company company = _companyLocalService.getCompany(user.getCompanyId());
+		Company company = _companyPersistence.findByPrimaryKey(
+			user.getCompanyId());
 
 		MailTemplateContextBuilder mailTemplateContextBuilder =
 			MailTemplateFactoryUtil.createMailTemplateContextBuilder();
@@ -481,7 +483,7 @@ public class MembershipRequestLocalServiceImpl
 					toUser.getLocale(), mailTemplateContext),
 				true);
 
-			Company company = _companyLocalService.getCompany(
+			Company company = _companyPersistence.findByPrimaryKey(
 				toUser.getCompanyId());
 
 			mailMessage.setMessageId(
@@ -496,8 +498,8 @@ public class MembershipRequestLocalServiceImpl
 		}
 	}
 
-	@BeanReference(type = CompanyLocalService.class)
-	private CompanyLocalService _companyLocalService;
+	@BeanReference(type = CompanyPersistence.class)
+	private CompanyPersistence _companyPersistence;
 
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
@@ -508,8 +510,11 @@ public class MembershipRequestLocalServiceImpl
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
 
-	@BeanReference(type = UserGroupRoleLocalService.class)
-	private UserGroupRoleLocalService _userGroupRoleLocalService;
+	@BeanReference(type = RolePersistence.class)
+	private RolePersistence _rolePersistence;
+
+	@BeanReference(type = UserGroupRolePersistence.class)
+	private UserGroupRolePersistence _userGroupRolePersistence;
 
 	@BeanReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;

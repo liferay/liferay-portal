@@ -43,7 +43,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -82,7 +82,8 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 
 		Country country = countryPersistence.create(countryId);
 
-		User user = _userLocalService.getUser(serviceContext.getUserId());
+		User user = _userPersistence.findByPrimaryKey(
+			serviceContext.getUserId());
 
 		country.setExternalReferenceCode(externalReferenceCode);
 		country.setCompanyId(user.getCompanyId());
@@ -367,7 +368,7 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 			long countryId, boolean groupFilterEnabled)
 		throws PortalException {
 
-		Country country = countryLocalService.getCountry(countryId);
+		Country country = countryPersistence.findByPrimaryKey(countryId);
 
 		country.setGroupFilterEnabled(groupFilterEnabled);
 
@@ -552,7 +553,7 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
 
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
+	@BeanReference(type = UserPersistence.class)
+	private UserPersistence _userPersistence;
 
 }
