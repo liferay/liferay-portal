@@ -88,7 +88,7 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 
 	@Override
 	public int increment(long cProductId) throws PortalException {
-		CProduct cProduct = cProductLocalService.getCProduct(cProductId);
+		CProduct cProduct = cProductPersistence.findByPrimaryKey(cProductId);
 
 		cProduct.setLatestVersion(cProduct.getLatestVersion() + 1);
 
@@ -102,7 +102,7 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 			String externalReferenceCode, long cProductId)
 		throws PortalException {
 
-		CProduct cProduct = cProductLocalService.getCProduct(cProductId);
+		CProduct cProduct = cProductPersistence.findByPrimaryKey(cProductId);
 
 		if (externalReferenceCode.equals(cProduct.getExternalReferenceCode())) {
 			return cProduct;
@@ -122,7 +122,7 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 			long cProductId, long publishedCPDefinitionId)
 		throws PortalException {
 
-		CProduct cProduct = cProductLocalService.getCProduct(cProductId);
+		CProduct cProduct = cProductPersistence.findByPrimaryKey(cProductId);
 
 		long originalPublishedCPDefinitionId =
 			cProduct.getPublishedCPDefinitionId();

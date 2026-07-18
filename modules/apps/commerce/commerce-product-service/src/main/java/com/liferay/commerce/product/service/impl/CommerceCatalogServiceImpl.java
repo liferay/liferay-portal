@@ -79,7 +79,7 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 		throws PortalException {
 
 		CommerceCatalog commerceCatalog =
-			commerceCatalogLocalService.fetchCommerceCatalog(commerceCatalogId);
+			commerceCatalogPersistence.fetchByPrimaryKey(commerceCatalogId);
 
 		if (commerceCatalog != null) {
 			_commerceCatalogModelResourcePermission.check(
@@ -129,8 +129,7 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 		_commerceCatalogModelResourcePermission.check(
 			getPermissionChecker(), commerceCatalogId, ActionKeys.VIEW);
 
-		return commerceCatalogLocalService.getCommerceCatalog(
-			commerceCatalogId);
+		return commerceCatalogPersistence.findByPrimaryKey(commerceCatalogId);
 	}
 
 	@Override
@@ -169,8 +168,7 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 
 		if (!_hasViewCommerceCatalogsPermission()) {
 			CommerceCatalog commerceCatalog =
-				commerceCatalogLocalService.getCommerceCatalog(
-					commerceCatalogId);
+				commerceCatalogPersistence.findByPrimaryKey(commerceCatalogId);
 
 			accountEntryId = commerceCatalog.getAccountEntryId();
 		}

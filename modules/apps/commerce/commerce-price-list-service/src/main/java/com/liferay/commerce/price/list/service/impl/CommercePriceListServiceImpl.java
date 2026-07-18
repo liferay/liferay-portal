@@ -170,8 +170,7 @@ public class CommercePriceListServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListLocalService.fetchCommercePriceList(
-				commercePriceListId);
+			commercePriceListPersistence.fetchByPrimaryKey(commercePriceListId);
 
 		if (commercePriceList != null) {
 			_commercePriceListModelResourcePermission.check(
@@ -206,7 +205,7 @@ public class CommercePriceListServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListLocalService.getCommercePriceList(
+		return commercePriceListPersistence.findByPrimaryKey(
 			commercePriceListId);
 	}
 

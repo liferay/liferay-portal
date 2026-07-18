@@ -349,7 +349,7 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.getCommercePriceLists(
+			commercePriceListPersistence.findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (CommercePriceList commercePriceList : commercePriceLists) {
@@ -674,7 +674,7 @@ public class CommercePriceListLocalServiceImpl
 						groupId, currencyCode, type);
 
 			if (commercePromoPriceLists.size() <= 1) {
-				return commercePriceListLocalService.getCommercePriceList(
+				return commercePriceListPersistence.findByPrimaryKey(
 					commercePriceListId);
 			}
 
@@ -699,7 +699,7 @@ public class CommercePriceListLocalServiceImpl
 							CommercePriceListConstants.TYPE_PRICE_LIST);
 
 				if (commercePriceLists.isEmpty()) {
-					return commercePriceListLocalService.getCommercePriceList(
+					return commercePriceListPersistence.findByPrimaryKey(
 						commercePriceListId);
 				}
 
@@ -712,7 +712,7 @@ public class CommercePriceListLocalServiceImpl
 			}
 
 			if (commercePriceEntry == null) {
-				return commercePriceListLocalService.getCommercePriceList(
+				return commercePriceListPersistence.findByPrimaryKey(
 					commercePriceListId);
 			}
 
@@ -768,7 +768,7 @@ public class CommercePriceListLocalServiceImpl
 			}
 		}
 
-		return commercePriceListLocalService.getCommercePriceList(
+		return commercePriceListPersistence.findByPrimaryKey(
 			commercePriceListId);
 	}
 
@@ -1790,7 +1790,7 @@ public class CommercePriceListLocalServiceImpl
 			}
 
 			CommercePriceList commercePriceList =
-				commercePriceListLocalService.fetchCommercePriceList(
+				commercePriceListPersistence.fetchByPrimaryKey(
 					parentCommercePriceListId);
 
 			if ((commercePriceList != null) &&

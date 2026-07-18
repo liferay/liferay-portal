@@ -268,8 +268,7 @@ public class CommerceChannelLocalServiceImpl
 			return null;
 		}
 
-		return commerceChannelLocalService.fetchCommerceChannel(
-			group.getClassPK());
+		return commerceChannelPersistence.fetchByPrimaryKey(group.getClassPK());
 	}
 
 	@Override
@@ -283,7 +282,7 @@ public class CommerceChannelLocalServiceImpl
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			commerceChannelLocalService.getCommerceChannel(commerceChannelId);
+			commerceChannelPersistence.findByPrimaryKey(commerceChannelId);
 
 		return _groupLocalService.fetchGroup(
 			commerceChannel.getCompanyId(),
@@ -298,8 +297,7 @@ public class CommerceChannelLocalServiceImpl
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		return commerceChannelLocalService.getCommerceChannel(
-			group.getClassPK());
+		return commerceChannelPersistence.findByPrimaryKey(group.getClassPK());
 	}
 
 	@Override

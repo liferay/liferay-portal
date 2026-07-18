@@ -452,7 +452,7 @@ public class CommerceTierPriceEntryLocalServiceImpl
 		throws PortalException {
 
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =
-			commerceTierPriceEntryLocalService.getCommerceTierPriceEntries(
+			commerceTierPriceEntryPersistence.findByCommercePriceEntryId(
 				commercePriceEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (CommerceTierPriceEntry commerceTierPriceEntry :
@@ -477,7 +477,7 @@ public class CommerceTierPriceEntryLocalServiceImpl
 		// Commerce price entries
 
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =
-			commerceTierPriceEntryLocalService.getCommerceTierPriceEntries(
+			commerceTierPriceEntryPersistence.findByCommercePriceEntryId(
 				commerceTierPriceEntry.getCommercePriceEntryId(),
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 

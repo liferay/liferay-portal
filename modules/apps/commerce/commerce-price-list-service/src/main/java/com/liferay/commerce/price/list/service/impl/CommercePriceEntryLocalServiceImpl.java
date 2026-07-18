@@ -795,7 +795,7 @@ public class CommercePriceEntryLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.getCommercePriceEntry(
+			commercePriceEntryPersistence.findByPrimaryKey(
 				commercePriceEntryId);
 
 		commercePriceEntry.setBulkPricing(bulkPricing);

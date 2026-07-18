@@ -424,9 +424,8 @@ public class CPDefinitionLocalServiceImpl
 		throws PortalException {
 
 		if (Validator.isNotNull(externalReferenceCode)) {
-			CProduct cProduct =
-				_cProductLocalService.fetchCProductByExternalReferenceCode(
-					externalReferenceCode, serviceContext.getCompanyId());
+			CProduct cProduct = _cProductPersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
 
 			if (cProduct != null) {
 				if (cpDefinitionId == 0) {
@@ -1324,7 +1323,7 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		if (cpDefinitionsCount > 1) {
-			CProduct cProduct = _cProductLocalService.getCProduct(
+			CProduct cProduct = _cProductPersistence.findByPrimaryKey(
 				cpDefinition.getCProductId());
 
 			long publishedCPDefinitionId =
@@ -1482,9 +1481,8 @@ public class CPDefinitionLocalServiceImpl
 			return null;
 		}
 
-		CProduct cProduct =
-			_cProductLocalService.fetchCProductByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CProduct cProduct = _cProductPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cProduct == null) {
 			return null;
@@ -1515,9 +1513,8 @@ public class CPDefinitionLocalServiceImpl
 			return null;
 		}
 
-		CProduct cProduct =
-			_cProductLocalService.fetchCProductByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CProduct cProduct = _cProductPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cProduct == null) {
 			return null;
@@ -1531,7 +1528,7 @@ public class CPDefinitionLocalServiceImpl
 	public CPDefinition fetchCPDefinitionByCProductId(
 		long cProductId, boolean excludeDraft) {
 
-		CProduct cProduct = _cProductLocalService.fetchCProduct(cProductId);
+		CProduct cProduct = _cProductPersistence.fetchByPrimaryKey(cProductId);
 
 		if (cProduct == null) {
 			return null;
@@ -1615,7 +1612,7 @@ public class CPDefinitionLocalServiceImpl
 	public CPDefinition getCPDefinitionByCProductId(long cProductId)
 		throws PortalException {
 
-		CProduct cProduct = _cProductLocalService.getCProduct(cProductId);
+		CProduct cProduct = _cProductPersistence.findByPrimaryKey(cProductId);
 
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cProduct.getPublishedCPDefinitionId());
@@ -2088,7 +2085,7 @@ public class CPDefinitionLocalServiceImpl
 
 	@Override
 	public boolean isPublishedCPDefinition(CPDefinition cpDefinition) {
-		CProduct cProduct = _cProductLocalService.fetchCProduct(
+		CProduct cProduct = _cProductPersistence.fetchByPrimaryKey(
 			cpDefinition.getCProductId());
 
 		if ((cProduct != null) &&
@@ -2315,7 +2312,7 @@ public class CPDefinitionLocalServiceImpl
 			groupId, ddmStructureKey, metaTitleMap, metaDescriptionMap,
 			metaKeywordsMap, displayDate, expirationDate, productTypeName);
 
-		CProduct cProduct = _cProductLocalService.getCProduct(
+		CProduct cProduct = _cProductPersistence.findByPrimaryKey(
 			cpDefinition.getCProductId());
 
 		if (cpDefinitionLocalService.isVersionable(

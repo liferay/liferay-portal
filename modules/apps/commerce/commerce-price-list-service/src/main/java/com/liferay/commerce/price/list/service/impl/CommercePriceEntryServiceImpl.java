@@ -154,7 +154,7 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.getCommercePriceEntry(
+			commercePriceEntryPersistence.findByPrimaryKey(
 				commercePriceEntryId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -170,7 +170,7 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.fetchCommercePriceEntry(
+			commercePriceEntryPersistence.fetchByPrimaryKey(
 				commercePriceEntryId);
 
 		if (commercePriceEntry != null) {
@@ -222,7 +222,7 @@ public class CommercePriceEntryServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceEntryLocalService.getCommercePriceEntries(
+		return commercePriceEntryPersistence.findByCommercePriceListId(
 			commercePriceListId, start, end, orderByComparator);
 	}
 
@@ -233,7 +233,7 @@ public class CommercePriceEntryServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceEntryLocalService.getCommercePriceEntriesCount(
+		return commercePriceEntryPersistence.countByCommercePriceListId(
 			commercePriceListId);
 	}
 
@@ -242,7 +242,7 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.getCommercePriceEntry(
+			commercePriceEntryPersistence.findByPrimaryKey(
 				commercePriceEntryId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -273,7 +273,7 @@ public class CommercePriceEntryServiceImpl
 		}
 
 		List<CommercePriceEntry> commercePriceEntries =
-			commercePriceEntryLocalService.getInstanceCommercePriceEntries(
+			commercePriceEntryPersistence.findByCPInstanceUuid(
 				cpInstance.getCPInstanceUuid(), start, end,
 				CommercePriceEntryUOMCreateDateComparator.getInstance(true));
 
@@ -310,7 +310,7 @@ public class CommercePriceEntryServiceImpl
 		int count = 0;
 
 		List<CommercePriceEntry> commercePriceEntries =
-			commercePriceEntryLocalService.getInstanceCommercePriceEntries(
+			commercePriceEntryPersistence.findByCPInstanceUuid(
 				cpInstance.getCPInstanceUuid(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS,
 				CommercePriceEntryUOMCreateDateComparator.getInstance(true));
@@ -368,7 +368,7 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.getCommercePriceEntry(
+			commercePriceEntryPersistence.findByPrimaryKey(
 				commercePriceEntryId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -406,7 +406,7 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.getCommercePriceEntry(
+			commercePriceEntryPersistence.findByPrimaryKey(
 				commercePriceEntryId);
 
 		_commercePriceListModelResourcePermission.check(

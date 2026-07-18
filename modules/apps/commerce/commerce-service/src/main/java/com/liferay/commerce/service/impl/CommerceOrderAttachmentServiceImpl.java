@@ -70,7 +70,7 @@ public class CommerceOrderAttachmentServiceImpl
 		throws PortalException {
 
 		CommerceOrderAttachment commerceOrderAttachment =
-			commerceOrderAttachmentLocalService.fetchCommerceOrderAttachment(
+			commerceOrderAttachmentPersistence.fetchByPrimaryKey(
 				commerceOrderAttachmentId);
 
 		if (commerceOrderAttachment == null) {
@@ -112,7 +112,7 @@ public class CommerceOrderAttachmentServiceImpl
 		_commerceOrderAttachmentModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderAttachmentId, ActionKeys.VIEW);
 
-		return commerceOrderAttachmentLocalService.getCommerceOrderAttachment(
+		return commerceOrderAttachmentPersistence.findByPrimaryKey(
 			commerceOrderAttachmentId);
 	}
 
@@ -132,7 +132,7 @@ public class CommerceOrderAttachmentServiceImpl
 					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS);
 		}
 
-		return commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
+		return commerceOrderAttachmentPersistence.findByC_R(
 			commerceOrderId, restricted, start, end, orderByComparator);
 	}
 
@@ -155,7 +155,7 @@ public class CommerceOrderAttachmentServiceImpl
 					commerceOrderId, start, end, orderByComparator);
 		}
 
-		return commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
+		return commerceOrderAttachmentPersistence.findByC_R(
 			commerceOrderId, false, start, end, orderByComparator);
 	}
 

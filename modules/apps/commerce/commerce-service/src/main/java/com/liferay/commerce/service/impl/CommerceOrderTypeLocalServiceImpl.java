@@ -289,8 +289,7 @@ public class CommerceOrderTypeLocalServiceImpl
 		throws PortalException {
 
 		CommerceOrderType commerceOrderType =
-			commerceOrderTypeLocalService.getCommerceOrderType(
-				commerceOrderTypeId);
+			commerceOrderTypePersistence.findByPrimaryKey(commerceOrderTypeId);
 
 		commerceOrderType.setExternalReferenceCode(externalReferenceCode);
 

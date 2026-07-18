@@ -88,7 +88,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.fetchCommerceShippingMethod(
+			commerceShippingMethodPersistence.fetchByPrimaryKey(
 				commerceShippingMethodId);
 
 		if (commerceShippingMethod != null) {
@@ -121,7 +121,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(
@@ -138,7 +138,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(
@@ -154,8 +154,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.fetchCommerceShippingMethod(
-				groupId, engineKey);
+			commerceShippingMethodPersistence.fetchByG_E(groupId, engineKey);
 
 		if (commerceShippingMethod != null) {
 			_checkCommerceChannel(
@@ -172,7 +171,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(
@@ -189,7 +188,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(
@@ -205,7 +204,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(
@@ -222,7 +221,7 @@ public class CommerceShippingMethodServiceImpl
 
 		_checkCommerceChannel(ActionKeys.VIEW, groupId);
 
-		return commerceShippingMethodLocalService.getCommerceShippingMethods(
+		return commerceShippingMethodPersistence.findByG_A(
 			groupId, active, start, end, orderByComparator);
 	}
 
@@ -234,7 +233,7 @@ public class CommerceShippingMethodServiceImpl
 
 		_checkCommerceChannel(ActionKeys.VIEW, groupId);
 
-		return commerceShippingMethodLocalService.getCommerceShippingMethods(
+		return commerceShippingMethodPersistence.findByGroupId(
 			groupId, start, end, orderByComparator);
 	}
 
@@ -265,7 +264,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.fetchCommerceShippingMethod(
+			commerceShippingMethodPersistence.fetchByPrimaryKey(
 				commerceShippingMethodId);
 
 		if (commerceShippingMethod != null) {
@@ -297,7 +296,7 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodPersistence.findByPrimaryKey(
 				commerceShippingMethodId);
 
 		_checkCommerceChannel(

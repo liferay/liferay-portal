@@ -285,7 +285,7 @@ public class CommerceCatalogLocalServiceImpl
 		throws PortalException {
 
 		CommerceCatalog commerceCatalog =
-			commerceCatalogLocalService.getCommerceCatalog(commerceCatalogId);
+			commerceCatalogPersistence.findByPrimaryKey(commerceCatalogId);
 
 		Group group = _groupLocalService.fetchGroup(
 			commerceCatalog.getCompanyId(),

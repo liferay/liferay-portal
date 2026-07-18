@@ -80,8 +80,7 @@ public class CommerceOrderTypeServiceImpl
 		throws PortalException {
 
 		CommerceOrderType commerceOrderType =
-			commerceOrderTypeLocalService.fetchCommerceOrderType(
-				commerceOrderTypeId);
+			commerceOrderTypePersistence.fetchByPrimaryKey(commerceOrderTypeId);
 
 		if (commerceOrderType != null) {
 			_commerceOrderTypeModelResourcePermission.check(
@@ -116,7 +115,7 @@ public class CommerceOrderTypeServiceImpl
 		_commerceOrderTypeModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderTypeId, ActionKeys.VIEW);
 
-		return commerceOrderTypeLocalService.getCommerceOrderType(
+		return commerceOrderTypePersistence.findByPrimaryKey(
 			commerceOrderTypeId);
 	}
 

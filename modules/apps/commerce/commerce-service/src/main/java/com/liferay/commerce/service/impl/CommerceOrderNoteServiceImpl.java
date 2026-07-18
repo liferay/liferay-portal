@@ -66,9 +66,8 @@ public class CommerceOrderNoteServiceImpl
 		CommerceOrderNote commerceOrderNote = null;
 
 		if (commerceOrderNoteId > 0) {
-			commerceOrderNote =
-				commerceOrderNoteLocalService.fetchCommerceOrderNote(
-					commerceOrderNoteId);
+			commerceOrderNote = commerceOrderNotePersistence.fetchByPrimaryKey(
+				commerceOrderNoteId);
 		}
 		else {
 			commerceOrderNote =
@@ -97,8 +96,7 @@ public class CommerceOrderNoteServiceImpl
 		throws PortalException {
 
 		CommerceOrderNote commerceOrderNote =
-			commerceOrderNoteLocalService.getCommerceOrderNote(
-				commerceOrderNoteId);
+			commerceOrderNotePersistence.findByPrimaryKey(commerceOrderNoteId);
 
 		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
 
@@ -120,8 +118,7 @@ public class CommerceOrderNoteServiceImpl
 		throws PortalException {
 
 		CommerceOrderNote commerceOrderNote =
-			commerceOrderNoteLocalService.fetchCommerceOrderNote(
-				commerceOrderNoteId);
+			commerceOrderNotePersistence.fetchByPrimaryKey(commerceOrderNoteId);
 
 		_checkCommerceOrderNotePermissions(commerceOrderNote);
 
@@ -152,8 +149,7 @@ public class CommerceOrderNoteServiceImpl
 		throws PortalException {
 
 		CommerceOrderNote commerceOrderNote =
-			commerceOrderNoteLocalService.getCommerceOrderNote(
-				commerceOrderNoteId);
+			commerceOrderNotePersistence.findByPrimaryKey(commerceOrderNoteId);
 
 		_checkCommerceOrderNotePermissions(commerceOrderNote);
 
@@ -194,7 +190,7 @@ public class CommerceOrderNoteServiceImpl
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, actionId);
 
-		return commerceOrderNoteLocalService.getCommerceOrderNotes(
+		return commerceOrderNotePersistence.findByC_R(
 			commerceOrderId, restricted, start, end);
 	}
 
@@ -208,7 +204,7 @@ public class CommerceOrderNoteServiceImpl
 				CommerceOrderActionKeys.
 					MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES)) {
 
-			return commerceOrderNoteLocalService.getCommerceOrderNotes(
+			return commerceOrderNotePersistence.findByCommerceOrderId(
 				commerceOrderId, start, end);
 		}
 
@@ -224,7 +220,7 @@ public class CommerceOrderNoteServiceImpl
 			getPermissionChecker(), commerceOrderId,
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES);
 
-		return commerceOrderNoteLocalService.getCommerceOrderNotesCount(
+		return commerceOrderNotePersistence.countByCommerceOrderId(
 			commerceOrderId);
 	}
 
@@ -243,7 +239,7 @@ public class CommerceOrderNoteServiceImpl
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, actionId);
 
-		return commerceOrderNoteLocalService.getCommerceOrderNotesCount(
+		return commerceOrderNotePersistence.countByC_R(
 			commerceOrderId, restricted);
 	}
 
@@ -253,8 +249,7 @@ public class CommerceOrderNoteServiceImpl
 		throws PortalException {
 
 		CommerceOrderNote commerceOrderNote =
-			commerceOrderNoteLocalService.getCommerceOrderNote(
-				commerceOrderNoteId);
+			commerceOrderNotePersistence.findByPrimaryKey(commerceOrderNoteId);
 
 		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
 

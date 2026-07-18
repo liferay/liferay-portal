@@ -95,7 +95,7 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			commerceChannelLocalService.fetchCommerceChannel(commerceChannelId);
+			commerceChannelPersistence.fetchByPrimaryKey(commerceChannelId);
 
 		if (commerceChannel != null) {
 			_commerceChannelModelResourcePermission.check(
@@ -131,8 +131,7 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannelId, ActionKeys.VIEW);
 
-		return commerceChannelLocalService.getCommerceChannel(
-			commerceChannelId);
+		return commerceChannelPersistence.findByPrimaryKey(commerceChannelId);
 	}
 
 	@Override
@@ -221,8 +220,7 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 				permissionChecker, null, CPActionKeys.VIEW_COMMERCE_CHANNELS)) {
 
 			CommerceChannel commerceChannel =
-				commerceChannelLocalService.getCommerceChannel(
-					commerceChannelId);
+				commerceChannelPersistence.findByPrimaryKey(commerceChannelId);
 
 			accountEntryId = commerceChannel.getAccountEntryId();
 		}

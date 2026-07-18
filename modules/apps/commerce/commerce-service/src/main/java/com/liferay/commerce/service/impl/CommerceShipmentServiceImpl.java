@@ -109,8 +109,7 @@ public class CommerceShipmentServiceImpl
 		_commerceShipmentModelResourcePermission.check(
 			getPermissionChecker(), commerceShipmentId, ActionKeys.VIEW);
 
-		return commerceShipmentLocalService.getCommerceShipment(
-			commerceShipmentId);
+		return commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 	}
 
 	@Override
@@ -151,7 +150,7 @@ public class CommerceShipmentServiceImpl
 			return Collections.emptyList();
 		}
 
-		return commerceShipmentLocalService.getCommerceShipments(
+		return commerceShipmentPersistence.findByGroupId(
 			TransformUtil.transformToLongArray(
 				commerceChannels, CommerceChannel::getGroupId),
 			start, end, orderByComparator);
