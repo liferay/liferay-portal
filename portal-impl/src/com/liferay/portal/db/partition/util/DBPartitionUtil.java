@@ -80,11 +80,23 @@ public class DBPartitionUtil {
 			return false;
 		}
 
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					_defaultCompanyId)) {
+					_defaultCompanyId);
 
-			_addDBPartition(companyId);
+			Connection connection = dataSource.getConnection();
+
+			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+
+			_addDBPartition(connection, companyId);
+		}
+		catch (PortalException portalException) {
+			throw portalException;
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
 		}
 
 		return true;
@@ -449,14 +461,12 @@ public class DBPartitionUtil {
 		};
 	}
 
-	private static void _addDBPartition(long companyId) throws PortalException {
-		Connection connection = CurrentConnectionUtil.getConnection(
-			InfrastructureUtil.getDataSource());
+	private static void _addDBPartition(Connection connection, long companyId)
+		throws PortalException {
 
 		String partitionName = getPartitionName(companyId);
 
-		try (AutoCloseable autoCloseable = _disableAutoCommit(connection);
-			PreparedStatement preparedStatement = connection.prepareStatement(
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				_dbPartitionDB.getCreatePartitionSQL(
 					connection, partitionName))) {
 
@@ -517,6 +527,13 @@ public class DBPartitionUtil {
 			connection.commit();
 		}
 		catch (Exception exception) {
+			try {
+				connection.rollback();
+			}
+			catch (SQLException sqlException) {
+				exception.addSuppressed(sqlException);
+			}
+
 			if (!_dbPartitionDB.isDDLTransactional()) {
 				try (Statement statement = connection.createStatement()) {
 					statement.executeUpdate(
