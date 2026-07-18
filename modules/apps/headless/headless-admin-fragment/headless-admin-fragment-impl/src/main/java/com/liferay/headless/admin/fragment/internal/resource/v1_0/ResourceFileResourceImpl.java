@@ -10,7 +10,6 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.fragment.constants.FragmentActionKeys;
@@ -81,11 +80,12 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 		EnabledUtil.checkEnabled(contextCompany);
 
-		FileEntry fileEntry = _dlAppService.getFileEntryByExternalReferenceCode(
-			resourceFileExternalReferenceCode,
-			GroupUtil.getStagingAwareGroupId(
-				true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
+		FileEntry fileEntry =
+			_dlAppLocalService.getFileEntryByExternalReferenceCode(
+				resourceFileExternalReferenceCode,
+				GroupUtil.getStagingAwareGroupId(
+					true, contextCompany.getCompanyId(),
+					siteExternalReferenceCode));
 
 		_checkResourceFile(fileEntry);
 
@@ -138,11 +138,12 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 		EnabledUtil.checkEnabled(contextCompany);
 
-		FileEntry fileEntry = _dlAppService.getFileEntryByExternalReferenceCode(
-			resourceFileExternalReferenceCode,
-			GroupUtil.getGroupId(
-				true, true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
+		FileEntry fileEntry =
+			_dlAppLocalService.getFileEntryByExternalReferenceCode(
+				resourceFileExternalReferenceCode,
+				GroupUtil.getGroupId(
+					true, true, contextCompany.getCompanyId(),
+					siteExternalReferenceCode));
 
 		_checkResourceFile(fileEntry);
 
@@ -278,7 +279,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 		}
 
 		_checkResourceFile(
-			_dlAppService.getFileEntry(dlFileEntry.getFileEntryId()));
+			_dlAppLocalService.getFileEntry(dlFileEntry.getFileEntryId()));
 
 		_checkName(resourceFile.getName());
 
@@ -409,7 +410,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			},
 			null,
 			document -> _toResourceFile(
-				_dlAppService.getFileEntry(
+				_dlAppLocalService.getFileEntry(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
@@ -470,9 +471,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
-
-	@Reference
-	private DLAppService _dlAppService;
 
 	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;
