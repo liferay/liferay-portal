@@ -109,10 +109,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		if (!_portletResourcePermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), groupId,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
-
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
 			return Page.of(Collections.emptyList());
 		}
 
@@ -162,10 +159,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		if (!_portletResourcePermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), groupId,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
-
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
 			return Page.of(Collections.emptyList());
 		}
 
@@ -241,9 +235,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		_portletResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), groupId,
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+		_checkManageFragmentEntriesPermission(groupId);
 
 		return _addResourceFile(
 			_getOrAddFragmentCollection(groupId, resourceFile), groupId,
@@ -266,9 +258,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 				groupId, resourceFileExternalReferenceCode);
 
 		if (dlFileEntry == null) {
-			_portletResourcePermission.check(
-				PermissionThreadLocal.getPermissionChecker(), groupId,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+			_checkManageFragmentEntriesPermission(groupId);
 
 			resourceFile.setExternalReferenceCode(
 				() -> resourceFileExternalReferenceCode);
@@ -333,6 +323,14 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 					contextAcceptLanguage.getPreferredLocale(),
 					"a-file-url-reference-with-content-is-required"));
 		}
+	}
+
+	private void _checkManageFragmentEntriesPermission(long groupId)
+		throws Exception {
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
 	private void _checkName(String name) {
@@ -426,6 +424,12 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 		serviceContext.setAddGuestPermissions(true);
 
 		return serviceContext;
+	}
+
+	private boolean _hasManageFragmentEntriesPermission(long groupId) {
+		return _portletResourcePermission.contains(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
 	private byte[] _toByteArray(FileURLReference fileURLReference)

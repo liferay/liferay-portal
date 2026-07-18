@@ -95,10 +95,7 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		if (!_portletResourcePermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), groupId,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
-
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
 			return Page.of(Collections.emptyList());
 		}
 
@@ -172,10 +169,7 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
 
-		if (!_portletResourcePermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), groupId,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
-
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
 			return Page.of(Collections.emptyList());
 		}
 
@@ -380,6 +374,12 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			document -> _toResourceFolder(
 				_dlFolderLocalService.getDLFolder(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
+	}
+
+	private boolean _hasManageFragmentEntriesPermission(long groupId) {
+		return _portletResourcePermission.contains(
+			PermissionThreadLocal.getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
 	private ResourceFolder _toResourceFolder(DLFolder dlFolder)
