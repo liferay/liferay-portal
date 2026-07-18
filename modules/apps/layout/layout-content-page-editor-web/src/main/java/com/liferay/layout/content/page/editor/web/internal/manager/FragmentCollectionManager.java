@@ -109,7 +109,7 @@ public class FragmentCollectionManager {
 
 		List<FragmentCollection> fragmentCollections =
 			_fragmentCollectionService.getFragmentCollections(
-				_getGroupIds(
+				getGroupIds(
 					themeDisplay.getCompanyId(),
 					themeDisplay.getCompanyGroupId(), groupId));
 
@@ -227,6 +227,24 @@ public class FragmentCollectionManager {
 		}
 
 		return allFragmentCollectionMapsList;
+	}
+
+	public long[] getGroupIds(long companyId, long companyGroupId, long groupId)
+		throws PortalException {
+
+		long[] groupIds = {companyGroupId, groupId, CompanyConstants.SYSTEM};
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+			return groupIds;
+		}
+
+		return ArrayUtil.append(
+			groupIds,
+			TransformUtil.transformToLongArray(
+				_depotEntryLocalService.getGroupConnectedDepotEntries(
+					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				DepotEntry::getGroupId));
 	}
 
 	public Map<String, List<Map<String, Object>>> getLayoutElementMapsListMap(
@@ -523,25 +541,6 @@ public class FragmentCollectionManager {
 		}
 
 		return fragmentEntryKey + StringPool.POUND + group.getGroupKey();
-	}
-
-	private long[] _getGroupIds(
-			long companyId, long companyGroupId, long groupId)
-		throws PortalException {
-
-		long[] groupIds = {companyGroupId, groupId, CompanyConstants.SYSTEM};
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
-			return groupIds;
-		}
-
-		return ArrayUtil.append(
-			groupIds,
-			TransformUtil.transformToLongArray(
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				DepotEntry::getGroupId));
 	}
 
 	private Map<String, Object> _getScopeMap(
