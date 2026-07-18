@@ -124,7 +124,6 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ContactLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.MembershipRequestLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
@@ -145,6 +144,8 @@ import com.liferay.portal.kernel.service.UserIdMapperLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.ContactPersistence;
+import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
+import com.liferay.portal.kernel.service.persistence.TicketPersistence;
 import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -311,10 +312,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		long[] organizationIds = null;
 
-		Role adminRole = _roleLocalService.getRole(
+		Role adminRole = rolePersistence.findByC_N(
 			companyId, RoleConstants.ADMINISTRATOR);
 
-		Role powerUserRole = _roleLocalService.getRole(
+		Role powerUserRole = rolePersistence.findByC_N(
 			companyId, RoleConstants.POWER_USER);
 
 		long[] roleIds = {adminRole.getRoleId(), powerUserRole.getRoleId()};
@@ -329,7 +330,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		ServiceContext serviceContext = new ServiceContext();
 
-		Company company = _companyLocalService.getCompany(companyId);
+		Company company = _companyPersistence.findByPrimaryKey(companyId);
 
 		serviceContext.setPathMain(PortalUtil.getPathMain());
 		serviceContext.setPortalURL(company.getPortalURL(0));
@@ -486,9 +487,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return defaultServiceAccountUser;
 		}
 
-		Company company = _companyLocalService.getCompany(companyId);
+		Company company = _companyPersistence.findByPrimaryKey(companyId);
 
-		Role adminRole = _roleLocalService.getRole(
+		Role adminRole = rolePersistence.findByC_N(
 			company.getCompanyId(), RoleConstants.ADMINISTRATOR);
 
 		String screenName = UserConstants.SCREEN_NAME_DEFAULT_SERVICE_ACCOUNT;
@@ -770,7 +771,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				contact.getSkypeSn(), contact.getTwitterSn(), jobTitle,
 				user.getGroupIds(), user.getOrganizationIds(),
 				user.getRoleIds(),
-				_userGroupRoleLocalService.getUserGroupRoles(user.getUserId()),
+				_userGroupRolePersistence.findByUserId(user.getUserId()),
 				user.getUserGroupIds(), serviceContext);
 		}
 
@@ -2114,7 +2115,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Contact
 
-		Contact contact = _contactLocalService.fetchContact(
+		Contact contact = _contactPersistence.fetchByPrimaryKey(
 			user.getContactId());
 
 		if (contact != null) {
@@ -3044,7 +3045,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			long companyId, String roleName, int start, int end)
 		throws PortalException {
 
-		Role role = _roleLocalService.getRole(companyId, roleName);
+		Role role = rolePersistence.findByC_N(companyId, roleName);
 
 		return getUsersByRoleId(role.getRoleId(), start, end);
 	}
@@ -3854,7 +3855,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		long plid = serviceContext.getPlid();
 
 		if (plid > 0) {
-			Layout layout = _layoutLocalService.fetchLayout(plid);
+			Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
 
 			if (layout != null) {
 				Group group = layout.getGroup();
@@ -3889,7 +3890,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		String body = _getLocalizedValue(
 			localizedBodyMap, user.getLocale(), LocaleUtil.getDefault());
 
-		Company company = _companyLocalService.getCompany(user.getCompanyId());
+		Company company = _companyPersistence.findByPrimaryKey(
+			user.getCompanyId());
 
 		MailTemplateContextBuilder mailTemplateContextBuilder =
 			MailTemplateFactoryUtil.createMailTemplateContextBuilder();
@@ -4448,7 +4450,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		List<User> users = new ArrayList<>(userIds.length);
 
 		for (Long userId : userIds) {
-			User user = userLocalService.fetchUser(userId);
+			User user = userPersistence.fetchByPrimaryKey(userId);
 
 			if (user != null) {
 				users.add(user);
@@ -5406,8 +5408,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Group
 
-		Group group = _groupLocalService.getUserGroup(
-			user.getCompanyId(), userId);
+		Group group = groupPersistence.findByC_C_C(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(User.class), userId);
 
 		_groupLocalService.updateFriendlyURL(
 			group.getGroupId(), StringPool.SLASH + screenName);
@@ -5685,8 +5688,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		// Group
 
 		if (screenNameModified) {
-			Group group = _groupLocalService.getUserGroup(
-				user.getCompanyId(), userId);
+			Group group = groupPersistence.findByC_C_C(
+				user.getCompanyId(),
+				_classNameLocalService.getClassNameId(User.class), userId);
 
 			user.setGroup(
 				_groupLocalService.updateFriendlyURL(
@@ -6531,7 +6535,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			long plid = serviceContext.getPlid();
 
 			if (plid > 0) {
-				Layout layout = _layoutLocalService.fetchLayout(plid);
+				Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
 
 				if (layout != null) {
 					Group group = layout.getGroup();
@@ -6633,7 +6637,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			User.class);
 
-		User user = userLocalService.fetchUser(userId);
+		User user = userPersistence.fetchByPrimaryKey(userId);
 
 		indexer.reindex(user);
 	}
@@ -6645,7 +6649,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		List<User> users = new ArrayList<>(userIds.length);
 
 		for (Long userId : userIds) {
-			User user = userLocalService.fetchUser(userId);
+			User user = userPersistence.fetchByPrimaryKey(userId);
 
 			users.add(user);
 		}
@@ -7372,9 +7376,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	private void _invalidateTicket(User user) throws PortalException {
-		List<Ticket> tickets = _ticketLocalService.getTickets(
-			user.getCompanyId(), User.class.getName(), user.getUserId(),
-			TicketConstants.TYPE_PASSWORD);
+		List<Ticket> tickets = _ticketPersistence.findByC_C_C_T(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(User.class.getName()),
+			user.getUserId(), TicketConstants.TYPE_PASSWORD);
 
 		for (Ticket ticket : tickets) {
 			if (!ticket.isExpired()) {
@@ -7439,7 +7444,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					toUser.getLocale(), mailTemplateContext),
 				true);
 
-			Company company = _companyLocalService.getCompany(
+			Company company = _companyPersistence.findByPrimaryKey(
 				toUser.getCompanyId());
 
 			mailMessage.setMessageId(
@@ -7645,8 +7650,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	@BeanReference(type = ImageLocalService.class)
 	private ImageLocalService _imageLocalService;
 
-	@BeanReference(type = LayoutLocalService.class)
-	private LayoutLocalService _layoutLocalService;
+	@BeanReference(type = LayoutPersistence.class)
+	private LayoutPersistence _layoutPersistence;
 
 	@BeanReference(type = MembershipRequestLocalService.class)
 	private MembershipRequestLocalService _membershipRequestLocalService;
@@ -7722,6 +7727,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 	@BeanReference(type = TicketLocalService.class)
 	private TicketLocalService _ticketLocalService;
+
+	@BeanReference(type = TicketPersistence.class)
+	private TicketPersistence _ticketPersistence;
 
 	@BeanReference(type = UserGroupRoleLocalService.class)
 	private UserGroupRoleLocalService _userGroupRoleLocalService;

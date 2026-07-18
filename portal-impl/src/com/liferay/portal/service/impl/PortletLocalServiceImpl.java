@@ -73,10 +73,11 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
+import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.servlet.ServletContextClassLoaderPool;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -436,7 +437,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		throws PortalException {
 
 		long[] companyIds = ListUtil.toLongArray(
-			_companyLocalService.getCompanies(), Company::getCompanyId);
+			_companyPersistence.findAll(), Company::getCompanyId);
 
 		deployRemotePortlet(
 			companyIds, portlet, categoryNames, eagerDestroy, true);
@@ -1402,7 +1403,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 					continue;
 				}
 
-				Role role = _roleLocalService.fetchRole(
+				Role role = _rolePersistence.fetchByC_N(
 					portlet.getCompanyId(), roleName);
 
 				if (role == null) {
@@ -2979,6 +2980,9 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@BeanReference(type = CompanyLocalService.class)
 	private CompanyLocalService _companyLocalService;
 
+	@BeanReference(type = CompanyPersistence.class)
+	private CompanyPersistence _companyPersistence;
+
 	private final AtomicReference<String[]> _friendlyURLMapperRootPortletIds =
 		new AtomicReference<>(new String[0]);
 
@@ -2997,8 +3001,8 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@BeanReference(type = ResourcePermissionLocalService.class)
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
-	@BeanReference(type = RoleLocalService.class)
-	private RoleLocalService _roleLocalService;
+	@BeanReference(type = RolePersistence.class)
+	private RolePersistence _rolePersistence;
 
 	private ServiceTracker<FriendlyURLMapper, String[]> _serviceTracker;
 	private ServiceTrackerList<Consumer<Long>> _serviceTrackerList;

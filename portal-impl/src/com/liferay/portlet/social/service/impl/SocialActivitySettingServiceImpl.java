@@ -58,7 +58,7 @@ public class SocialActivitySettingServiceImpl
 		SocialActivityPermissionUtil.check(
 			getPermissionChecker(), groupId, ActionKeys.VIEW);
 
-		return socialActivitySettingLocalService.getActivitySettings(groupId);
+		return socialActivitySettingPersistence.findByG_A(groupId, 0);
 	}
 
 	@Override

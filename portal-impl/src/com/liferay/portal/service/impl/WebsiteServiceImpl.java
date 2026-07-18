@@ -5,10 +5,12 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.service.base.WebsiteServiceBaseImpl;
 import com.liferay.portal.service.permission.CommonPermissionUtil;
@@ -69,9 +71,8 @@ public class WebsiteServiceImpl extends WebsiteServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Website website =
-			websiteLocalService.fetchWebsiteByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		Website website = websitePersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (website != null) {
 			CommonPermissionUtil.check(
@@ -102,8 +103,9 @@ public class WebsiteServiceImpl extends WebsiteServiceBaseImpl {
 
 		User user = getUser();
 
-		return websiteLocalService.getWebsites(
-			user.getCompanyId(), className, classPK);
+		return websitePersistence.findByC_C_C(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Override
@@ -130,5 +132,8 @@ public class WebsiteServiceImpl extends WebsiteServiceBaseImpl {
 		return websiteLocalService.updateWebsite(
 			externalReferenceCode, websiteId, url, typeId, primary);
 	}
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 }

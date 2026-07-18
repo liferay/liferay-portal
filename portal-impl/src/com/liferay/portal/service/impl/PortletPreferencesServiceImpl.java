@@ -15,9 +15,11 @@ import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortletItemLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.PortletItemPersistence;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.service.base.PortletPreferencesServiceBaseImpl;
 
@@ -39,7 +41,7 @@ public class PortletPreferencesServiceImpl
 	public void deleteArchivedPreferences(long portletItemId)
 		throws PortalException {
 
-		PortletItem portletItem = _portletItemLocalService.getPortletItem(
+		PortletItem portletItem = _portletItemPersistence.findByPrimaryKey(
 			portletItemId);
 
 		GroupPermissionUtil.check(
@@ -64,7 +66,7 @@ public class PortletPreferencesServiceImpl
 
 		restoreArchivedPreferences(
 			groupId, layout, portletId,
-			_portletItemLocalService.getPortletItem(portletItemId),
+			_portletItemPersistence.findByPrimaryKey(portletItemId),
 			jxPortletPreferences);
 	}
 
@@ -97,8 +99,10 @@ public class PortletPreferencesServiceImpl
 			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException {
 
-		PortletItem portletItem = _portletItemLocalService.getPortletItem(
-			groupId, name, portletId, PortletPreferences.class.getName());
+		PortletItem portletItem = _portletItemPersistence.findByG_N_P_C(
+			groupId, name, portletId,
+			_classNameLocalService.getClassNameId(
+				PortletPreferences.class.getName()));
 
 		restoreArchivedPreferences(
 			groupId, layout, portletId, portletItem, jxPortletPreferences);
@@ -180,7 +184,13 @@ public class PortletPreferencesServiceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletPreferencesServiceImpl.class);
 
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
+
 	@BeanReference(type = PortletItemLocalService.class)
 	private PortletItemLocalService _portletItemLocalService;
+
+	@BeanReference(type = PortletItemPersistence.class)
+	private PortletItemPersistence _portletItemPersistence;
 
 }

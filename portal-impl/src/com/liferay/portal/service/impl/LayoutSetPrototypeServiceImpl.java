@@ -101,7 +101,7 @@ public class LayoutSetPrototypeServiceImpl
 		LayoutSetPrototypePermissionUtil.check(
 			getPermissionChecker(), layoutSetPrototypeId, ActionKeys.VIEW);
 
-		return layoutSetPrototypeLocalService.fetchLayoutSetPrototype(
+		return layoutSetPrototypePersistence.fetchByPrimaryKey(
 			layoutSetPrototypeId);
 	}
 
@@ -112,7 +112,7 @@ public class LayoutSetPrototypeServiceImpl
 		LayoutSetPrototypePermissionUtil.check(
 			getPermissionChecker(), layoutSetPrototypeId, ActionKeys.VIEW);
 
-		return layoutSetPrototypeLocalService.getLayoutSetPrototype(
+		return layoutSetPrototypePersistence.findByPrimaryKey(
 			layoutSetPrototypeId);
 	}
 

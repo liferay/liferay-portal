@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -265,8 +266,10 @@ public class LayoutSetPrototypeLocalServiceImpl
 			return layoutSetPrototype;
 		}
 
-		Group group = _groupLocalService.getLayoutSetPrototypeGroup(
-			layoutSetPrototype.getCompanyId(), layoutSetPrototypeId);
+		Group group = _groupPersistence.findByC_C_C(
+			layoutSetPrototype.getCompanyId(),
+			_classNameLocalService.getClassNameId(LayoutSetPrototype.class),
+			layoutSetPrototypeId);
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			group.getTypeSettingsProperties();
@@ -282,6 +285,9 @@ public class LayoutSetPrototypeLocalServiceImpl
 
 		return layoutSetPrototype;
 	}
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;

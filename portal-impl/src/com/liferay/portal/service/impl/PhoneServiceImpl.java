@@ -5,10 +5,12 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Phone;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.service.base.PhoneServiceBaseImpl;
 import com.liferay.portal.service.permission.CommonPermissionUtil;
@@ -69,7 +71,7 @@ public class PhoneServiceImpl extends PhoneServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Phone phone = phoneLocalService.fetchPhoneByExternalReferenceCode(
+		Phone phone = phonePersistence.fetchByERC_C(
 			externalReferenceCode, companyId);
 
 		if (phone != null) {
@@ -97,7 +99,7 @@ public class PhoneServiceImpl extends PhoneServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		Phone phone = phoneLocalService.getPhoneByExternalReferenceCode(
+		Phone phone = phonePersistence.findByERC_C(
 			externalReferenceCode, companyId);
 
 		CommonPermissionUtil.check(
@@ -116,8 +118,9 @@ public class PhoneServiceImpl extends PhoneServiceBaseImpl {
 
 		User user = getUser();
 
-		return phoneLocalService.getPhones(
-			user.getCompanyId(), className, classPK);
+		return phonePersistence.findByC_C_C(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Override
@@ -144,5 +147,8 @@ public class PhoneServiceImpl extends PhoneServiceBaseImpl {
 		return phoneLocalService.updatePhone(
 			externalReferenceCode, phoneId, number, extension, typeId, primary);
 	}
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 }
