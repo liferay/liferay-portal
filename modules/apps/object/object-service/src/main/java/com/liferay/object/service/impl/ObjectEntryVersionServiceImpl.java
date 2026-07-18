@@ -7,9 +7,9 @@ package com.liferay.object.service.impl;
 
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryVersion;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.base.ObjectEntryVersionServiceBaseImpl;
+import com.liferay.object.service.persistence.ObjectEntryPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -78,7 +78,7 @@ public class ObjectEntryVersionServiceImpl
 
 		_checkModelResourcePermission(objectEntryId, ActionKeys.UPDATE);
 
-		return objectEntryVersionLocalService.getObjectEntryVersion(
+		return objectEntryVersionPersistence.findByOEI_V(
 			objectEntryId, version);
 	}
 
@@ -89,7 +89,7 @@ public class ObjectEntryVersionServiceImpl
 
 		_checkModelResourcePermission(objectEntryId, ActionKeys.UPDATE);
 
-		return objectEntryVersionLocalService.getObjectEntryVersions(
+		return objectEntryVersionPersistence.findByObjectEntryId(
 			objectEntryId, start, end);
 	}
 
@@ -101,7 +101,7 @@ public class ObjectEntryVersionServiceImpl
 
 		_checkModelResourcePermission(objectEntryId, ActionKeys.UPDATE);
 
-		return objectEntryVersionLocalService.getObjectEntryVersions(
+		return objectEntryVersionPersistence.findByObjectEntryId(
 			objectEntryId, start, end, orderByComparator);
 	}
 
@@ -111,7 +111,7 @@ public class ObjectEntryVersionServiceImpl
 
 		_checkModelResourcePermission(objectEntryId, ActionKeys.UPDATE);
 
-		return objectEntryVersionLocalService.getObjectEntryVersionsCount(
+		return objectEntryVersionPersistence.countByObjectEntryId(
 			objectEntryId);
 	}
 
@@ -119,7 +119,7 @@ public class ObjectEntryVersionServiceImpl
 			long objectEntryId, String actionId)
 		throws PortalException {
 
-		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
+		ObjectEntry objectEntry = _objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
 		_objectEntryService.checkModelResourcePermission(
@@ -127,7 +127,7 @@ public class ObjectEntryVersionServiceImpl
 	}
 
 	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
+	private ObjectEntryPersistence _objectEntryPersistence;
 
 	@Reference
 	private ObjectEntryService _objectEntryService;

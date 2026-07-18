@@ -16,6 +16,7 @@ import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.service.ObjectStateTransitionLocalService;
 import com.liferay.object.service.base.ObjectStateFlowLocalServiceBaseImpl;
+import com.liferay.object.service.persistence.ObjectFieldSettingPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -117,7 +118,7 @@ public class ObjectStateFlowLocalServiceImpl
 				objectStateFlow.getObjectStateFlowId());
 
 		ObjectFieldSetting objectFieldSetting =
-			_objectFieldSettingLocalService.fetchObjectFieldSetting(
+			_objectFieldSettingPersistence.fetchByOFI_N(
 				objectFieldId, ObjectFieldSettingConstants.NAME_STATE_FLOW);
 
 		if (objectFieldSetting != null) {
@@ -236,7 +237,7 @@ public class ObjectStateFlowLocalServiceImpl
 		throws PortalException {
 
 		ObjectFieldSetting objectFieldSetting =
-			_objectFieldSettingLocalService.fetchObjectFieldSetting(
+			_objectFieldSettingPersistence.fetchByOFI_N(
 				objectFieldId, ObjectFieldSettingConstants.NAME_STATE_FLOW);
 
 		if (objectFieldSetting == null) {
@@ -257,6 +258,9 @@ public class ObjectStateFlowLocalServiceImpl
 
 	@Reference
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	@Reference
+	private ObjectFieldSettingPersistence _objectFieldSettingPersistence;
 
 	@Reference
 	private ObjectStateLocalService _objectStateLocalService;

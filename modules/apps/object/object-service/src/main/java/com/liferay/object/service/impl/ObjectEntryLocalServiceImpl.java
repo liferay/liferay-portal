@@ -124,7 +124,6 @@ import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.base.ObjectEntryLocalServiceBaseImpl;
@@ -135,6 +134,8 @@ import com.liferay.object.service.persistence.ObjectEntryVersionPersistence;
 import com.liferay.object.service.persistence.ObjectFieldPersistence;
 import com.liferay.object.service.persistence.ObjectFieldSettingPersistence;
 import com.liferay.object.service.persistence.ObjectRelationshipPersistence;
+import com.liferay.object.service.persistence.ObjectStateFlowPersistence;
+import com.liferay.object.service.persistence.ObjectStatePersistence;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.tree.Node;
@@ -425,7 +426,7 @@ public class ObjectEntryLocalServiceImpl
 		_validateValues(
 			defaultLanguageId, dlFileEntriesMap, null, groupId,
 			user.isGuestUser(), objectDefinition, null,
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectDefinition.getObjectDefinitionId()),
 			false, serviceContext, null, userId, null, values);
 
@@ -490,7 +491,7 @@ public class ObjectEntryLocalServiceImpl
 			extensionDynamicObjectDefinitionStaticValues) {
 
 			_addObjectRelationshipERCFieldValue(
-				_objectFieldLocalService.getObjectFields(
+				_objectFieldPersistence.findByObjectDefinitionId(
 					objectEntry.getObjectDefinitionId()),
 				insertedValues);
 
@@ -1212,7 +1213,7 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition, _objectFieldLocalService),
 			objectFieldBag, primaryKey, values);
 		_addObjectRelationshipERCFieldValue(
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectDefinition.getObjectDefinitionId()),
 			values);
 
@@ -1517,11 +1518,8 @@ public class ObjectEntryLocalServiceImpl
 			sorts = new Sort[] {new Sort("id", Sort.LONG_TYPE, false)};
 		}
 
-		ObjectRelationshipLocalService objectRelationshipLocalService =
-			_objectRelationshipLocalServiceSnapshot.get();
-
 		ObjectRelationship objectRelationship =
-			objectRelationshipLocalService.getObjectRelationship(
+			_objectRelationshipPersistence.findByPrimaryKey(
 				objectRelationshipId);
 
 		return objectEntryPersistence.dslQuery(
@@ -1680,7 +1678,7 @@ public class ObjectEntryLocalServiceImpl
 			).build();
 
 		for (ObjectField objectField :
-				_objectFieldLocalService.getObjectFields(
+				_objectFieldPersistence.findByObjectDefinitionId(
 					objectDefinition.getObjectDefinitionId())) {
 
 			if (!objectField.isSystem()) {
@@ -1743,7 +1741,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		ObjectField titleObjectField =
-			_objectFieldLocalService.fetchObjectField(
+			_objectFieldPersistence.fetchByPrimaryKey(
 				objectDefinition.getTitleObjectFieldId());
 
 		if (Objects.isNull(titleObjectField)) {
@@ -1844,7 +1842,7 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition, _objectFieldLocalService),
 			objectFieldBag, objectEntry.getObjectEntryId(), values);
 		_addObjectRelationshipERCFieldValue(
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectEntry.getObjectDefinitionId()),
 			values);
 
@@ -2230,7 +2228,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		int objectEntryVersionsCount =
-			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+			_objectEntryVersionPersistence.countByObjectEntryId(
 				objectEntry.getObjectEntryId());
 
 		if (objectEntryVersionsCount > 0) {
@@ -2453,9 +2451,8 @@ public class ObjectEntryLocalServiceImpl
 		if ((status == WorkflowConstants.STATUS_EXPIRED) ||
 			originalObjectEntry.isDraft() || originalObjectEntry.isPending()) {
 
-			int count =
-				_objectEntryVersionLocalService.getObjectEntryVersionsCount(
-					objectEntry.getObjectEntryId());
+			int count = _objectEntryVersionPersistence.countByObjectEntryId(
+				objectEntry.getObjectEntryId());
 
 			if (count > 0) {
 				_updateLatestObjectEntryVersion(
@@ -2537,7 +2534,7 @@ public class ObjectEntryLocalServiceImpl
 			_objectDefinitionPersistence.findByPrimaryKey(
 				objectEntry.getObjectDefinitionId()),
 			null,
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectEntry.getObjectDefinitionId()),
 			true, serviceContext, objectEntry.getStatus(),
 			serviceContext.getUserId(), validationErrors,
@@ -2750,7 +2747,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		long groupId = objectEntry.getNonzeroGroupId();
-		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+		ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
 			objectDefinition.getTitleObjectFieldId());
 		Map<String, String> urlTitleMap = new HashMap<>();
 
@@ -4130,7 +4127,7 @@ public class ObjectEntryLocalServiceImpl
 				objectRelationship.getObjectDefinitionId2());
 
 		List<ObjectField> objectFields =
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				relatedObjectDefinition.getObjectDefinitionId());
 
 		DynamicObjectDefinitionTable relatedDynamicObjectDefinitionTable =
@@ -4239,7 +4236,7 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 			ObjectField relationshipObjectField =
-				_objectFieldLocalService.getObjectField(
+				_objectFieldPersistence.findByPrimaryKey(
 					objectRelationship.getObjectFieldId2());
 
 			Column<DynamicObjectDefinitionTable, Long>
@@ -4349,7 +4346,7 @@ public class ObjectEntryLocalServiceImpl
 		Map<String, Object> columns = new HashMap<>();
 
 		List<ObjectField> objectFields =
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectDefinition.getObjectDefinitionId());
 
 		for (ObjectField objectField : objectFields) {
@@ -5093,7 +5090,7 @@ public class ObjectEntryLocalServiceImpl
 			return individualScopePredicate;
 		}
 
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
+		ObjectField objectField = _objectFieldPersistence.findByPrimaryKey(
 			objectDefinition.getAccountEntryRestrictedObjectFieldId());
 
 		Table<?> table = _objectFieldLocalService.getTable(
@@ -5215,7 +5212,7 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 			ObjectField relationshipObjectField =
-				_objectFieldLocalService.fetchObjectField(
+				_objectFieldPersistence.fetchByPrimaryKey(
 					objectRelationship.getObjectFieldId2());
 
 			if (!script.contains(
@@ -5238,7 +5235,7 @@ public class ObjectEntryLocalServiceImpl
 					objectDefinition2Table);
 
 			for (ObjectField objectField :
-					_objectFieldLocalService.getObjectFields(
+					_objectFieldPersistence.findByObjectDefinitionId(
 						objectDefinition1.getObjectDefinitionId())) {
 
 				String key =
@@ -5315,7 +5312,7 @@ public class ObjectEntryLocalServiceImpl
 				objectRelationship.getObjectDefinitionId1());
 
 		ObjectField titleObjectField =
-			_objectFieldLocalService.fetchObjectField(
+			_objectFieldPersistence.fetchByPrimaryKey(
 				objectDefinition.getTitleObjectFieldId());
 
 		Table<?> table = _objectFieldLocalService.getTable(
@@ -6159,7 +6156,7 @@ public class ObjectEntryLocalServiceImpl
 		List<ObjectValuePair<Long, Integer>> statusOVPs = new ArrayList<>();
 
 		List<ObjectEntryVersion> objectEntryVersions =
-			_objectEntryVersionLocalService.getObjectEntryVersions(
+			_objectEntryVersionPersistence.findByObjectEntryId(
 				objectEntry.getObjectEntryId());
 
 		if (ListUtil.isNotEmpty(objectEntryVersions)) {
@@ -6193,7 +6190,7 @@ public class ObjectEntryLocalServiceImpl
 			objectEntry.getObjectEntryId(), WorkflowConstants.STATUS_IN_TRASH);
 
 		for (ObjectEntryVersion objectEntryVersion :
-				_objectEntryVersionLocalService.getObjectEntryVersions(
+				_objectEntryVersionPersistence.findByObjectEntryId(
 					objectEntry.getObjectEntryId())) {
 
 			if (objectEntryVersion.getStatus() ==
@@ -6818,7 +6815,7 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition.getObjectDefinitionId(), true);
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
-			ObjectField objectField = _objectFieldLocalService.getObjectField(
+			ObjectField objectField = _objectFieldPersistence.findByPrimaryKey(
 				objectRelationship.getObjectFieldId2());
 
 			parentObjectEntryId = MapUtil.getLong(
@@ -7114,7 +7111,7 @@ public class ObjectEntryLocalServiceImpl
 			objectEntry.getValues(), objectEntry.getGroupId(),
 			user.isGuestUser(), objectDefinition,
 			objectEntry.getObjectEntryId(),
-			_objectFieldLocalService.getObjectFields(
+			_objectFieldPersistence.findByObjectDefinitionId(
 				objectDefinition.getObjectDefinitionId()),
 			partialUpdate, serviceContext, objectEntry.getStatus(), userId,
 			null, values);
@@ -7712,22 +7709,20 @@ public class ObjectEntryLocalServiceImpl
 				listTypeDefinitionId, String.valueOf(existingValue));
 
 		ObjectStateFlow objectStateFlow =
-			_objectStateFlowLocalService.fetchObjectFieldObjectStateFlow(
+			_objectStateFlowPersistence.fetchByObjectFieldId(
 				objectField.getObjectFieldId());
 
-		ObjectState sourceObjectState =
-			_objectStateLocalService.getObjectStateFlowObjectState(
-				originalListTypeEntry.getListTypeEntryId(),
-				objectStateFlow.getObjectStateFlowId());
+		ObjectState sourceObjectState = _objectStatePersistence.findByLTEI_OSFI(
+			originalListTypeEntry.getListTypeEntryId(),
+			objectStateFlow.getObjectStateFlowId());
 
 		ListTypeEntry listTypeEntry =
 			_listTypeEntryLocalService.getListTypeEntry(
 				listTypeDefinitionId, String.valueOf(value));
 
-		ObjectState targetObjectState =
-			_objectStateLocalService.getObjectStateFlowObjectState(
-				listTypeEntry.getListTypeEntryId(),
-				objectStateFlow.getObjectStateFlowId());
+		ObjectState targetObjectState = _objectStatePersistence.findByLTEI_OSFI(
+			listTypeEntry.getListTypeEntryId(),
+			objectStateFlow.getObjectStateFlowId());
 
 		if (sourceObjectState.getObjectStateId() ==
 				targetObjectState.getObjectStateId()) {
@@ -8720,10 +8715,13 @@ public class ObjectEntryLocalServiceImpl
 	private ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 
 	@Reference
-	private ObjectStateFlowLocalService _objectStateFlowLocalService;
+	private ObjectStateFlowPersistence _objectStateFlowPersistence;
 
 	@Reference
 	private ObjectStateLocalService _objectStateLocalService;
+
+	@Reference
+	private ObjectStatePersistence _objectStatePersistence;
 
 	@Reference
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
