@@ -64,9 +64,10 @@ public class UpgradeExecutorServiceUtil {
 		return threadPoolExecutor;
 	}
 
+	private static final int _RESERVED_CONNECTION_COUNT = 4;
+
 	private static final DCLSingleton<ExecutorService>
 		_dataExecutorServiceDCLSingleton = new DCLSingleton<>();
-	private static final int _RESERVED_CONNECTION_COUNT = 4;
 	private static final DCLSingleton<ExecutorService>
 		_schemaExecutorServiceDCLSingleton = new DCLSingleton<>();
 
