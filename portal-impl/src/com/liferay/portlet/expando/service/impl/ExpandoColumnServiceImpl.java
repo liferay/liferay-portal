@@ -57,7 +57,7 @@ public class ExpandoColumnServiceImpl extends ExpandoColumnServiceBaseImpl {
 		ExpandoColumnPermissionUtil.check(
 			getPermissionChecker(), columnId, ActionKeys.VIEW);
 
-		return expandoColumnLocalService.fetchExpandoColumn(columnId);
+		return expandoColumnPersistence.fetchByPrimaryKey(columnId);
 	}
 
 	@Override

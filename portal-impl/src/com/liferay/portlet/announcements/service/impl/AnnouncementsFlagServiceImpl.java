@@ -38,7 +38,7 @@ public class AnnouncementsFlagServiceImpl
 	public AnnouncementsFlag getFlag(long entryId, int value)
 		throws PortalException {
 
-		return announcementsFlagLocalService.getFlag(
+		return announcementsFlagPersistence.findByU_E_V(
 			getUserId(), entryId, value);
 	}
 

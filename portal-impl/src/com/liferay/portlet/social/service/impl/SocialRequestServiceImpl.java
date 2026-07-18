@@ -54,7 +54,7 @@ public class SocialRequestServiceImpl extends SocialRequestServiceBaseImpl {
 		}
 
 		if (actionId.equals(ActionKeys.UPDATE)) {
-			SocialRequest request = socialRequestLocalService.getSocialRequest(
+			SocialRequest request = socialRequestPersistence.findByPrimaryKey(
 				requestId);
 
 			if (permissionChecker.getUserId() == request.getReceiverUserId()) {

@@ -24,7 +24,7 @@ public class ExportImportConfigurationServiceImpl
 		throws PortalException {
 
 		ExportImportConfiguration exportImportConfiguration =
-			exportImportConfigurationLocalService.getExportImportConfiguration(
+			exportImportConfigurationPersistence.findByPrimaryKey(
 				exportImportConfigurationId);
 
 		GroupPermissionUtil.check(
@@ -41,7 +41,7 @@ public class ExportImportConfigurationServiceImpl
 		throws PortalException {
 
 		ExportImportConfiguration exportImportConfiguration =
-			exportImportConfigurationLocalService.getExportImportConfiguration(
+			exportImportConfigurationPersistence.findByPrimaryKey(
 				exportImportConfigurationId);
 
 		GroupPermissionUtil.check(
@@ -59,7 +59,7 @@ public class ExportImportConfigurationServiceImpl
 		throws PortalException {
 
 		ExportImportConfiguration exportImportConfiguration =
-			exportImportConfigurationLocalService.getExportImportConfiguration(
+			exportImportConfigurationPersistence.findByPrimaryKey(
 				exportImportConfigurationId);
 
 		GroupPermissionUtil.check(

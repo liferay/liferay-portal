@@ -232,7 +232,7 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public SocialActivity getActivity(long activityId) throws PortalException {
-		SocialActivity activity = socialActivityLocalService.getActivity(
+		SocialActivity activity = socialActivityPersistence.findByPrimaryKey(
 			activityId);
 
 		if (!hasPermission(
@@ -253,7 +253,7 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 		throws PortalException {
 
 		List<SocialActivity> activities =
-			socialActivityLocalService.getActivitySetActivities(
+			socialActivityPersistence.findByActivitySetId(
 				activitySetId, start, end);
 
 		return filterActivities(activities, start, end);
@@ -369,8 +369,8 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	public SocialActivity getMirrorActivity(long mirrorActivityId)
 		throws PortalException {
 
-		SocialActivity activity = socialActivityLocalService.getMirrorActivity(
-			mirrorActivityId);
+		SocialActivity activity =
+			socialActivityPersistence.findByMirrorActivityId(mirrorActivityId);
 
 		if (!hasPermission(
 				activity,
@@ -586,7 +586,7 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 		throws PortalException {
 
 		List<SocialActivity> activities =
-			socialActivityLocalService.getUserActivities(
+			socialActivityPersistence.findByUserId(
 				userId, 0,
 				end + PropsValues.SOCIAL_ACTIVITY_FILTER_SEARCH_LIMIT);
 
@@ -601,7 +601,7 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getUserActivitiesCount(long userId) {
-		return socialActivityLocalService.getUserActivitiesCount(userId);
+		return socialActivityPersistence.countByUserId(userId);
 	}
 
 	/**
