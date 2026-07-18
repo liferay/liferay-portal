@@ -361,13 +361,11 @@ public class Main {
 				StructuredContent structuredContent = _toStructuredContent(
 					fileName);
 
-				if (externalReferenceCodeStructuredContents.containsKey(
-						structuredContent.getExternalReferenceCode())) {
+				StructuredContent siteStructuredContent =
+					externalReferenceCodeStructuredContents.get(
+						structuredContent.getExternalReferenceCode());
 
-					StructuredContent siteStructuredContent =
-						externalReferenceCodeStructuredContents.get(
-							structuredContent.getExternalReferenceCode());
-
+				if (siteStructuredContent != null) {
 					importedStructuredContentIds.add(
 						siteStructuredContent.getId());
 
@@ -416,15 +414,13 @@ public class Main {
 					updatedStructuredContentCount++;
 				}
 				else {
-					if (friendlyUrlPathStructuredContents.containsKey(
-							structuredContent.getFriendlyUrlPath())) {
+					StructuredContent friendlyUrlPathSiteStructuredContent =
+						friendlyUrlPathStructuredContents.get(
+							structuredContent.getFriendlyUrlPath());
 
-						StructuredContent siteStructuredContent =
-							friendlyUrlPathStructuredContents.get(
-								structuredContent.getFriendlyUrlPath());
-
+					if (friendlyUrlPathSiteStructuredContent != null) {
 						importedStructuredContentIds.add(
-							siteStructuredContent.getId());
+							friendlyUrlPathSiteStructuredContent.getId());
 
 						String relativeFileName = StringUtil.removeSubstring(
 							fileName, _baseDirName);
@@ -447,7 +443,7 @@ public class Main {
 						_deleteRAGDocument(structuredContent.getId());
 
 						_structuredContentResource.deleteStructuredContent(
-							siteStructuredContent.getId());
+							friendlyUrlPathSiteStructuredContent.getId());
 					}
 
 					String relativeFileName = StringUtil.removeSubstring(

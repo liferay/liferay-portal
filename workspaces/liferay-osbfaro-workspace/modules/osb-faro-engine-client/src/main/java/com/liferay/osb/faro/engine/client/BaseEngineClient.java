@@ -428,8 +428,10 @@ public abstract class BaseEngineClient {
 	protected String getTemplatedURL(FaroProject faroProject, String type) {
 		String engineURL = getEngineURL(faroProject);
 
-		if (_urlPaths.containsKey(type)) {
-			return engineURL + _urlPaths.get(type);
+		String urlPath = _urlPaths.get(type);
+
+		if (urlPath != null) {
+			return engineURL + urlPath;
 		}
 
 		RestTemplate restTemplate = getRestTemplate(faroProject);

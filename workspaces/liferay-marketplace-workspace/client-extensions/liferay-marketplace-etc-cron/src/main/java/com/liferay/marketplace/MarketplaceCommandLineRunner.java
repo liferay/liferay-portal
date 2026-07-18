@@ -845,16 +845,14 @@ public class MarketplaceCommandLineRunner
 
 				String key = jsonObject.getString("key");
 
-				if (!projectsUsingMarketplace.containsKey(key)) {
-					projectsUsingMarketplace.put(
-						key,
-						new JSONObject(
-						).put(
-							"accountName", jsonObject.getString("name")
-						).put(
-							"orders", new JSONArray()
-						));
-				}
+				projectsUsingMarketplace.putIfAbsent(
+					key,
+					new JSONObject(
+					).put(
+						"accountName", jsonObject.getString("name")
+					).put(
+						"orders", new JSONArray()
+					));
 
 				projectsUsingMarketplace.get(
 					key
