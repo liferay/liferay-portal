@@ -6,6 +6,7 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -18,6 +19,7 @@ import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Georgel Pop
@@ -42,6 +44,10 @@ public class ValidateFragmentCompositionMVCActionCommand
 
 		boolean hasMissingFragmentEntry =
 			LayoutStructureUtil.hasMissingFragmentEntryFragmentEntryLinks(
+				_fragmentCollectionManager.getGroupIds(
+					themeDisplay.getCompanyId(),
+					themeDisplay.getCompanyGroupId(),
+					themeDisplay.getScopeGroupId()),
 				ParamUtil.getString(actionRequest, "itemId"),
 				LayoutStructureUtil.getLayoutStructure(
 					themeDisplay.getScopeGroupId(), themeDisplay.getPlid(),
@@ -49,5 +55,8 @@ public class ValidateFragmentCompositionMVCActionCommand
 
 		return JSONUtil.put("valid", !hasMissingFragmentEntry);
 	}
+
+	@Reference
+	private FragmentCollectionManager _fragmentCollectionManager;
 
 }

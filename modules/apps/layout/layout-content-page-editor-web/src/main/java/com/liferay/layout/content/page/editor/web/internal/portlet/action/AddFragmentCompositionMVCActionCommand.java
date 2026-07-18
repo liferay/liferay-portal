@@ -13,6 +13,7 @@ import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.fragment.service.FragmentCompositionService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
+import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.page.template.serializer.LayoutStructureItemJSONSerializer;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -66,6 +67,10 @@ public class AddFragmentCompositionMVCActionCommand
 			actionRequest, "segmentsExperienceId");
 
 		if (LayoutStructureUtil.hasMissingFragmentEntryFragmentEntryLinks(
+				_fragmentCollectionManager.getGroupIds(
+					themeDisplay.getCompanyId(),
+					themeDisplay.getCompanyGroupId(),
+					themeDisplay.getScopeGroupId()),
 				itemId,
 				LayoutStructureUtil.getLayoutStructure(
 					themeDisplay.getScopeGroupId(), themeDisplay.getPlid(),
@@ -200,6 +205,9 @@ public class AddFragmentCompositionMVCActionCommand
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private FragmentCollectionManager _fragmentCollectionManager;
 
 	@Reference
 	private FragmentCollectionService _fragmentCollectionService;
