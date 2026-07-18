@@ -7,6 +7,7 @@ package com.liferay.headless.portal.instances.internal.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.Admin;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceCopy;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResource;
@@ -150,6 +151,58 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 					finalCompanyId, portalInstance.getPortalInstanceId(),
 					portalInstance.getVirtualHost(), portalInstance.getDomain(),
 					0, true)));
+	}
+
+	@Override
+	public PortalInstance postPortalInstanceCopy(
+			String portalInstanceId, PortalInstanceCopy portalInstanceCopy)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		_checkPermission();
+
+		if (portalInstanceCopy == null) {
+			throw new BadRequestException("Copy configuration is required");
+		}
+
+		if (Validator.isNull(portalInstanceCopy.getName())) {
+			throw new BadRequestException("Name is required");
+		}
+
+		if (Validator.isNull(portalInstanceCopy.getVirtualHost())) {
+			throw new BadRequestException("Virtual host is required");
+		}
+
+		if (Validator.isNull(portalInstanceCopy.getWebId())) {
+			throw new BadRequestException("Web ID is required");
+		}
+
+		Company sourceCompany = _companyService.getCompanyByWebId(
+			portalInstanceId);
+
+		Long destinationCompanyId =
+			portalInstanceCopy.getDestinationCompanyId();
+
+		if ((destinationCompanyId != null) && (destinationCompanyId <= 0)) {
+			destinationCompanyId = null;
+		}
+
+		try {
+			return _toPortalInstance(
+				_companyService.copyDBPartitionCompany(
+					sourceCompany.getCompanyId(), destinationCompanyId,
+					portalInstanceCopy.getName(),
+					portalInstanceCopy.getVirtualHost(),
+					portalInstanceCopy.getWebId()));
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to copy portal instance " + portalInstanceId,
+				exception);
+
+			throw exception;
+		}
 	}
 
 	@Override

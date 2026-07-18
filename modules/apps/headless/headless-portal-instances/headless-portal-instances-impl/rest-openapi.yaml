@@ -53,6 +53,32 @@ components:
                 virtualHost:
                     type: string
             type: object
+        PortalInstanceCopy:
+            description:
+                Configuration for copying a portal instance.
+            properties:
+                destinationCompanyId:
+                    description:
+                        The company ID to assign to the new portal instance. Omit it or pass a non-positive value to generate one automatically.
+                    format: int64
+                    type: integer
+                name:
+                    description:
+                        The name of the new portal instance.
+                    type: string
+                virtualHost:
+                    description:
+                        The virtual host of the new portal instance.
+                    type: string
+                webId:
+                    description:
+                        The web ID of the new portal instance.
+                    type: string
+            required:
+                -   name
+                -   virtualHost
+                -   webId
+            type: object
         PortalInstanceExport:
             description:
                 The result of exporting a portal instance.
@@ -273,6 +299,37 @@ paths:
                         application/xml: {}
                     description:
                         default response
+            tags: ["PortalInstance"]
+    /portal-instances/{portalInstanceId}/copy:
+        post:
+            description:
+                Copies the portal instance
+            operationId: postPortalInstanceCopy
+            parameters:
+                -   in: path
+                    name: portalInstanceId
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceCopy"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceCopy"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                    description:
+                        The copied portal instance.
             tags: ["PortalInstance"]
     /portal-instances/{portalInstanceId}/deactivate:
         # @review
