@@ -316,7 +316,7 @@ public class PasswordEncryptorUtilTest {
 	}
 
 	@Test
-	public void testMacAlgorithm() throws Exception {
+	public void testGetMacAlgorithm() throws Exception {
 		Assert.assertEquals("HmacSHA1", _getMacAlgorithm("PBKDF2WithHmacSHA1"));
 		Assert.assertEquals(
 			"HmacSHA256", _getMacAlgorithm("PBKDF2WithHmacSHA-256"));
