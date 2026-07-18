@@ -485,8 +485,9 @@ public class CommerceCurrencyLocalServiceImpl
 			commerceCurrencyPersistence.findByPrimaryKey(commerceCurrencyId);
 
 		CommerceCurrency primaryCommerceCurrency =
-			commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
-				commerceCurrency.getCompanyId());
+			commerceCurrencyPersistence.fetchByC_P_A_First(
+				commerceCurrency.getCompanyId(), true, true,
+				CommerceCurrencyPriorityComparator.getInstance(false));
 
 		if (primaryCommerceCurrency == null) {
 			return;

@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -67,7 +68,7 @@ public class CommerceChannelRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelRel commerceChannelRel =
-			commerceChannelRelLocalService.getCommerceChannelRel(
+			commerceChannelRelPersistence.findByPrimaryKey(
 				commerceChannelRelId);
 
 		_commerceChannelModelResourcePermission.check(
@@ -101,8 +102,9 @@ public class CommerceChannelRelServiceImpl
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannelId, ActionKeys.VIEW);
 
-		return commerceChannelRelLocalService.fetchCommerceChannelRel(
-			className, classPK, commerceChannelId);
+		return commerceChannelRelPersistence.fetchByC_C_C(
+			_classNameLocalService.getClassNameId(className), classPK,
+			commerceChannelId);
 	}
 
 	@Override
@@ -110,7 +112,7 @@ public class CommerceChannelRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelRel commerceChannelRel =
-			commerceChannelRelLocalService.getCommerceChannelRel(
+			commerceChannelRelPersistence.findByPrimaryKey(
 				commerceChannelRelId);
 
 		_commerceChannelModelResourcePermission.check(
@@ -129,7 +131,7 @@ public class CommerceChannelRelServiceImpl
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannelId, ActionKeys.VIEW);
 
-		return commerceChannelRelLocalService.getCommerceChannelRels(
+		return commerceChannelRelPersistence.findByCommerceChannelId(
 			commerceChannelId, start, end, orderByComparator);
 	}
 
@@ -154,7 +156,7 @@ public class CommerceChannelRelServiceImpl
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannelId, ActionKeys.VIEW);
 
-		return commerceChannelRelLocalService.getCommerceChannelRelsCount(
+		return commerceChannelRelPersistence.countByCommerceChannelId(
 			commerceChannelId);
 	}
 
@@ -229,6 +231,9 @@ public class CommerceChannelRelServiceImpl
 		return commerceChannelRelLocalService.
 			getCountryCommerceChannelRelsCount(commerceChannelId, name);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"

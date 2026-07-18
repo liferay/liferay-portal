@@ -12,6 +12,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class CommerceTermEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceTermEntryRel commerceTermEntryRel =
-			commerceTermEntryRelLocalService.getCommerceTermEntryRel(
+			commerceTermEntryRelPersistence.findByPrimaryKey(
 				commerceTermEntryRelId);
 
 		_commerceTermEntryModelResourcePermission.check(
@@ -93,8 +94,9 @@ public class CommerceTermEntryRelServiceImpl
 		_commerceTermEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceTermEntryId, ActionKeys.VIEW);
 
-		return commerceTermEntryRelLocalService.fetchCommerceTermEntryRel(
-			className, classPK, commerceTermEntryId);
+		return commerceTermEntryRelPersistence.fetchByC_C_C(
+			_classNameLocalService.getClassNameId(className), classPK,
+			commerceTermEntryId);
 	}
 
 	@Override
@@ -129,7 +131,7 @@ public class CommerceTermEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceTermEntryRel commerceTermEntryRel =
-			commerceTermEntryRelLocalService.getCommerceTermEntryRel(
+			commerceTermEntryRelPersistence.findByPrimaryKey(
 				commerceTermEntryRelId);
 
 		_commerceTermEntryModelResourcePermission.check(
@@ -147,7 +149,7 @@ public class CommerceTermEntryRelServiceImpl
 		_commerceTermEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceTermEntryId, ActionKeys.VIEW);
 
-		return commerceTermEntryRelLocalService.getCommerceTermEntryRels(
+		return commerceTermEntryRelPersistence.findByCommerceTermEntryId(
 			commerceTermEntryId);
 	}
 
@@ -160,7 +162,7 @@ public class CommerceTermEntryRelServiceImpl
 		_commerceTermEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceTermEntryId, ActionKeys.VIEW);
 
-		return commerceTermEntryRelLocalService.getCommerceTermEntryRels(
+		return commerceTermEntryRelPersistence.findByCommerceTermEntryId(
 			commerceTermEntryId, start, end, orderByComparator);
 	}
 
@@ -171,9 +173,12 @@ public class CommerceTermEntryRelServiceImpl
 		_commerceTermEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceTermEntryId, ActionKeys.VIEW);
 
-		return commerceTermEntryRelLocalService.getCommerceTermEntryRelsCount(
+		return commerceTermEntryRelPersistence.countByCommerceTermEntryId(
 			commerceTermEntryId);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.term.model.CommerceTermEntry)"

@@ -8,10 +8,12 @@ package com.liferay.commerce.discount.service.impl;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRel;
 import com.liferay.commerce.discount.service.base.CommerceDiscountRelServiceBaseImpl;
+import com.liferay.commerce.discount.util.comparator.CommerceDiscountRelCreateDateComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -55,7 +57,7 @@ public class CommerceDiscountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountRel commerceDiscountRel =
-			commerceDiscountRelLocalService.getCommerceDiscountRel(
+			commerceDiscountRelPersistence.findByPrimaryKey(
 				commerceDiscountRelId);
 
 		_commerceDiscountResourcePermission.check(
@@ -72,8 +74,10 @@ public class CommerceDiscountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountRel commerceDiscountRel =
-			commerceDiscountRelLocalService.fetchCommerceDiscountRel(
-				commerceDiscountId, className, classPK);
+			commerceDiscountRelPersistence.fetchByCD_CN_CPK_First(
+				commerceDiscountId,
+				_classNameLocalService.getClassNameId(className), classPK,
+				CommerceDiscountRelCreateDateComparator.getInstance(false));
 
 		if (commerceDiscountRel != null) {
 			_commerceDiscountResourcePermission.check(
@@ -90,8 +94,9 @@ public class CommerceDiscountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountRel commerceDiscountRel =
-			commerceDiscountRelLocalService.fetchCommerceDiscountRel(
-				className, classPK);
+			commerceDiscountRelPersistence.fetchByCN_CPK_First(
+				_classNameLocalService.getClassNameId(className), classPK,
+				CommerceDiscountRelCreateDateComparator.getInstance(false));
 
 		if (commerceDiscountRel != null) {
 			_commerceDiscountResourcePermission.check(
@@ -144,7 +149,7 @@ public class CommerceDiscountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountRel commerceDiscountRel =
-			commerceDiscountRelLocalService.getCommerceDiscountRel(
+			commerceDiscountRelPersistence.findByPrimaryKey(
 				commerceDiscountRelId);
 
 		_commerceDiscountResourcePermission.check(
@@ -175,8 +180,10 @@ public class CommerceDiscountRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountRelLocalService.getCommerceDiscountRels(
-			commerceDiscountId, className, start, end, orderByComparator);
+		return commerceDiscountRelPersistence.findByCD_CN(
+			commerceDiscountId,
+			_classNameLocalService.getClassNameId(className), start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -187,8 +194,9 @@ public class CommerceDiscountRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountRelLocalService.getCommerceDiscountRelsCount(
-			commerceDiscountId, className);
+		return commerceDiscountRelPersistence.countByCD_CN(
+			commerceDiscountId,
+			_classNameLocalService.getClassNameId(className));
 	}
 
 	@Override
@@ -269,6 +277,9 @@ public class CommerceDiscountRelServiceImpl
 		return commerceDiscountRelLocalService.
 			getCPInstancesByCommerceDiscountIdCount(commerceDiscountId, sku);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.discount.model.CommerceDiscount)"

@@ -8,8 +8,8 @@ package com.liferay.commerce.pricing.service.impl;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
-import com.liferay.commerce.pricing.service.CommercePriceModifierLocalService;
 import com.liferay.commerce.pricing.service.base.CommercePriceModifierRelServiceBaseImpl;
+import com.liferay.commerce.pricing.service.persistence.CommercePriceModifierPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -43,7 +43,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			_commercePriceModifierLocalService.getCommercePriceModifier(
+			_commercePriceModifierPersistence.findByPrimaryKey(
 				commercePriceModifierId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -59,7 +59,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -79,8 +79,9 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.fetchCommercePriceModifierRel(
-				commercePriceModifierId, className, classPK);
+			commercePriceModifierRelPersistence.fetchByCPM_CN_CPK(
+				commercePriceModifierId,
+				_classNameLocalService.getClassNameId(className), classPK);
 
 		CommercePriceModifier commercePriceModifier =
 			commercePriceModifierRel.getCommercePriceModifier();
@@ -116,7 +117,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -136,7 +137,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -155,7 +156,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -177,7 +178,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -199,7 +200,7 @@ public class CommercePriceModifierRelServiceImpl
 		throws PortalException {
 
 		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
+			commercePriceModifierRelPersistence.findByPrimaryKey(
 				commercePriceModifierRelId);
 
 		CommercePriceModifier commercePriceModifier =
@@ -271,7 +272,6 @@ public class CommercePriceModifierRelServiceImpl
 		_commercePriceListModelResourcePermission;
 
 	@Reference
-	private CommercePriceModifierLocalService
-		_commercePriceModifierLocalService;
+	private CommercePriceModifierPersistence _commercePriceModifierPersistence;
 
 }

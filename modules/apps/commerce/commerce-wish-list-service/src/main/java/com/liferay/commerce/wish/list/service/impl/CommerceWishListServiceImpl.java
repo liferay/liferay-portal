@@ -62,8 +62,8 @@ public class CommerceWishListServiceImpl
 		throws PortalException {
 
 		CommerceWishList commerceWishList =
-			commerceWishListLocalService.fetchCommerceWishList(
-				getUserId(), groupId, defaultWishList, orderByComparator);
+			commerceWishListPersistence.fetchByG_U_D_First(
+				groupId, getUserId(), defaultWishList, orderByComparator);
 
 		if (commerceWishList != null) {
 			_commerceWishListModelResourcePermission.check(
@@ -80,8 +80,7 @@ public class CommerceWishListServiceImpl
 		_commerceWishListModelResourcePermission.check(
 			getPermissionChecker(), commerceWishListId, ActionKeys.VIEW);
 
-		return commerceWishListLocalService.getCommerceWishList(
-			commerceWishListId);
+		return commerceWishListPersistence.findByPrimaryKey(commerceWishListId);
 	}
 
 	@Override
@@ -93,8 +92,8 @@ public class CommerceWishListServiceImpl
 		_checkPortletResourcePermission(
 			groupId, CommerceWishListActionKeys.VIEW_COMMERCE_WISH_LISTS);
 
-		return commerceWishListLocalService.getCommerceWishLists(
-			getUserId(), groupId, start, end, orderByComparator);
+		return commerceWishListPersistence.findByG_U(
+			groupId, getUserId(), start, end, orderByComparator);
 	}
 
 	@Override
@@ -102,8 +101,7 @@ public class CommerceWishListServiceImpl
 		_checkPortletResourcePermission(
 			groupId, CommerceWishListActionKeys.VIEW_COMMERCE_WISH_LISTS);
 
-		return commerceWishListLocalService.getCommerceWishListsCount(
-			getUserId(), groupId);
+		return commerceWishListPersistence.countByG_U(groupId, getUserId());
 	}
 
 	@Override

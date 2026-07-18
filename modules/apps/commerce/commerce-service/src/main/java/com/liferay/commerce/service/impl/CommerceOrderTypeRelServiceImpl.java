@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -135,8 +136,9 @@ public class CommerceOrderTypeRelServiceImpl
 			getPermissionChecker(), null,
 			CommerceOrderActionKeys.VIEW_COMMERCE_ORDER_TYPES);
 
-		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
-			className, classPK, start, end, orderByComparator);
+		return commerceOrderTypeRelPersistence.findByC_C(
+			_classNameLocalService.getClassNameId(className), classPK, start,
+			end, orderByComparator);
 	}
 
 	@Override
@@ -151,9 +153,12 @@ public class CommerceOrderTypeRelServiceImpl
 			getPermissionChecker(), null,
 			CommerceOrderActionKeys.VIEW_COMMERCE_ORDER_TYPES);
 
-		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
-			className, classPK);
+		return commerceOrderTypeRelPersistence.countByC_C(
+			_classNameLocalService.getClassNameId(className), classPK);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.model.CommerceOrderType)"

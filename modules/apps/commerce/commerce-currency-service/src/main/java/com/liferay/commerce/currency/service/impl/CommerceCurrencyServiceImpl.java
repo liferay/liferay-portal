@@ -9,6 +9,7 @@ import com.liferay.commerce.currency.constants.CommerceCurrencyActionKeys;
 import com.liferay.commerce.currency.constants.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.base.CommerceCurrencyServiceBaseImpl;
+import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -93,8 +94,9 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
-			companyId);
+		return commerceCurrencyPersistence.fetchByC_P_A_First(
+			companyId, true, true,
+			CommerceCurrencyPriorityComparator.getInstance(false));
 	}
 
 	@Override
@@ -107,7 +109,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrencies(
+		return commerceCurrencyPersistence.findByC_A(
 			companyId, active, start, end, orderByComparator);
 	}
 
@@ -121,7 +123,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrencies(
+		return commerceCurrencyPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
@@ -133,8 +135,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrenciesCount(
-			companyId);
+		return commerceCurrencyPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
@@ -145,8 +146,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrenciesCount(
-			companyId, active);
+		return commerceCurrencyPersistence.countByC_A(companyId, active);
 	}
 
 	@Override
@@ -157,8 +157,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrency(
-			commerceCurrencyId);
+		return commerceCurrencyPersistence.findByPrimaryKey(commerceCurrencyId);
 	}
 
 	@Override
@@ -169,8 +168,7 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.getCommerceCurrency(
-			companyId, code);
+		return commerceCurrencyPersistence.findByC_C(companyId, code);
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public class CommerceQualifierEntryServiceImpl
 		throws PortalException {
 
 		CommerceQualifierEntry commerceQualifierEntry =
-			commerceQualifierEntryLocalService.getCommerceQualifierEntry(
+			commerceQualifierEntryPersistence.findByPrimaryKey(
 				commerceQualifierEntryId);
 
 		ModelResourcePermission<?> modelResourcePermission =
@@ -100,8 +100,11 @@ public class CommerceQualifierEntryServiceImpl
 
 		_checkPermission(sourceClassName, sourceClassPK, ActionKeys.UPDATE);
 
-		return commerceQualifierEntryLocalService.fetchCommerceQualifierEntry(
-			sourceClassName, sourceClassPK, targetClassName, targetClassPK);
+		return commerceQualifierEntryPersistence.fetchByS_S_T_T(
+			_classNameLocalService.getClassNameId(sourceClassName),
+			sourceClassPK,
+			_classNameLocalService.getClassNameId(targetClassName),
+			targetClassPK);
 	}
 
 	@Override
@@ -110,7 +113,7 @@ public class CommerceQualifierEntryServiceImpl
 		throws PortalException {
 
 		CommerceQualifierEntry commerceQualifierEntry =
-			commerceQualifierEntryLocalService.getCommerceQualifierEntry(
+			commerceQualifierEntryPersistence.findByPrimaryKey(
 				commerceQualifierEntryId);
 
 		ModelResourcePermission<?> modelResourcePermission =
