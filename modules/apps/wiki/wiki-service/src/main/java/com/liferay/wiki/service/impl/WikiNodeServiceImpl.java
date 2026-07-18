@@ -78,7 +78,7 @@ public class WikiNodeServiceImpl extends WikiNodeServiceBaseImpl {
 
 	@Override
 	public void deleteNode(long nodeId) throws PortalException {
-		WikiNode node = wikiNodeLocalService.getNode(nodeId);
+		WikiNode node = wikiNodePersistence.findByPrimaryKey(nodeId);
 
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), node, ActionKeys.DELETE);
@@ -88,7 +88,7 @@ public class WikiNodeServiceImpl extends WikiNodeServiceBaseImpl {
 
 	@Override
 	public WikiNode getNode(long nodeId) throws PortalException {
-		WikiNode node = wikiNodeLocalService.getNode(nodeId);
+		WikiNode node = wikiNodePersistence.findByPrimaryKey(nodeId);
 
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), node, ActionKeys.VIEW);
@@ -98,7 +98,7 @@ public class WikiNodeServiceImpl extends WikiNodeServiceBaseImpl {
 
 	@Override
 	public WikiNode getNode(long groupId, String name) throws PortalException {
-		WikiNode node = wikiNodeLocalService.getNode(groupId, name);
+		WikiNode node = wikiNodePersistence.findByG_N(groupId, name);
 
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), node, ActionKeys.VIEW);
@@ -172,7 +172,7 @@ public class WikiNodeServiceImpl extends WikiNodeServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		WikiNode node = wikiNodeLocalService.getWikiNodeByExternalReferenceCode(
+		WikiNode node = wikiNodePersistence.findByERC_G(
 			externalReferenceCode, groupId);
 
 		_wikiNodeModelResourcePermission.check(
@@ -204,7 +204,7 @@ public class WikiNodeServiceImpl extends WikiNodeServiceBaseImpl {
 
 	@Override
 	public void restoreNodeFromTrash(long nodeId) throws PortalException {
-		WikiNode node = wikiNodeLocalService.getNode(nodeId);
+		WikiNode node = wikiNodePersistence.findByPrimaryKey(nodeId);
 
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), nodeId, ActionKeys.DELETE);

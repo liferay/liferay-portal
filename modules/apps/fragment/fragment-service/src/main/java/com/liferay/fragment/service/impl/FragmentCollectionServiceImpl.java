@@ -72,7 +72,7 @@ public class FragmentCollectionServiceImpl
 		throws PortalException {
 
 		FragmentCollection fragmentCollection =
-			fragmentCollectionLocalService.getFragmentCollection(
+			fragmentCollectionPersistence.findByPrimaryKey(
 				fragmentCollectionId);
 
 		_portletResourcePermission.check(
@@ -107,7 +107,7 @@ public class FragmentCollectionServiceImpl
 
 		for (long fragmentCollectionId : fragmentCollectionIds) {
 			FragmentCollection fragmentCollection =
-				fragmentCollectionLocalService.getFragmentCollection(
+				fragmentCollectionPersistence.findByPrimaryKey(
 					fragmentCollectionId);
 
 			_portletResourcePermission.check(
@@ -182,7 +182,7 @@ public class FragmentCollectionServiceImpl
 		throws PortalException {
 
 		FragmentCollection fragmentCollection =
-			fragmentCollectionLocalService.getFragmentCollection(
+			fragmentCollectionPersistence.findByPrimaryKey(
 				fragmentCollectionId);
 
 		_portletResourcePermission.check(
@@ -208,7 +208,7 @@ public class FragmentCollectionServiceImpl
 		throws PortalException {
 
 		FragmentCollection fragmentCollection =
-			fragmentCollectionLocalService.getFragmentCollection(
+			fragmentCollectionPersistence.findByPrimaryKey(
 				fragmentCollectionId);
 
 		_portletResourcePermission.check(
@@ -388,7 +388,7 @@ public class FragmentCollectionServiceImpl
 		throws PortalException {
 
 		FragmentCollection fragmentCollection =
-			fragmentCollectionLocalService.getFragmentCollection(
+			fragmentCollectionPersistence.findByPrimaryKey(
 				fragmentCollectionId);
 
 		_portletResourcePermission.check(

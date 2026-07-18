@@ -245,7 +245,7 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		throws PortalException {
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			layoutUtilityPageEntryLocalService.fetchLayoutUtilityPageEntry(
+			layoutUtilityPageEntryPersistence.fetchByPrimaryKey(
 				layoutUtilityPageEntryId);
 
 		return layoutUtilityPageEntryLocalService.deleteLayoutUtilityPageEntry(

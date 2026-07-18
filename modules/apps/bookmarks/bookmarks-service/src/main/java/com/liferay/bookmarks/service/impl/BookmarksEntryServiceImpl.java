@@ -106,7 +106,7 @@ public class BookmarksEntryServiceImpl extends BookmarksEntryServiceBaseImpl {
 		_bookmarksEntryModelResourcePermission.check(
 			getPermissionChecker(), entryId, ActionKeys.VIEW);
 
-		return bookmarksEntryLocalService.getEntry(entryId);
+		return bookmarksEntryPersistence.findByPrimaryKey(entryId);
 	}
 
 	@Override

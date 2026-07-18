@@ -223,7 +223,7 @@ public class BookmarksFolderLocalServiceImpl
 			long folderId, boolean includeTrashedEntries)
 		throws PortalException {
 
-		BookmarksFolder folder = bookmarksFolderLocalService.getFolder(
+		BookmarksFolder folder = bookmarksFolderPersistence.findByPrimaryKey(
 			folderId);
 
 		return bookmarksFolderLocalService.deleteFolder(

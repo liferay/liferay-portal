@@ -227,9 +227,8 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 			return false;
 		}
 
-		Calendar stagedCalendar =
-			calendarLocalService.fetchCalendarByUuidAndGroupId(
-				calendar.getUuid(), stagingGroup.getGroupId());
+		Calendar stagedCalendar = calendarPersistence.fetchByUUID_G(
+			calendar.getUuid(), stagingGroup.getGroupId());
 
 		if (stagedCalendar == null) {
 			return false;

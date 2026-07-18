@@ -295,7 +295,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+			layoutPageTemplateEntryPersistence.fetchByG_L_N_T(
 				groupId, layoutPageTemplateCollectionId, name, type);
 
 		if (layoutPageTemplateEntry != null) {
@@ -929,7 +929,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+			layoutPageTemplateEntryPersistence.findByPrimaryKey(
 				layoutPageTemplateEntryId);
 
 		if (layoutPageTemplateEntry != null) {
@@ -947,7 +947,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+			layoutPageTemplateEntryPersistence.findByG_LPTEK(
 				groupId, layoutPageTemplateEntryKey);
 
 		_layoutPageTemplateEntryModelResourcePermission.check(

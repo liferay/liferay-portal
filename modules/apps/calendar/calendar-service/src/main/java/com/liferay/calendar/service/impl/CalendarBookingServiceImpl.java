@@ -243,7 +243,7 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 			getPermissionChecker(), calendarId,
 			CalendarActionKeys.MANAGE_BOOKINGS);
 
-		return calendarBookingLocalService.getCalendarBooking(
+		return calendarBookingPersistence.findByC_P(
 			calendarId, parentCalendarBookingId);
 	}
 
@@ -325,7 +325,7 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 		throws PortalException {
 
 		List<CalendarBooking> calendarBookings =
-			calendarBookingLocalService.getChildCalendarBookings(
+			calendarBookingPersistence.findByParentCalendarBookingId(
 				parentCalendarBookingId);
 
 		return _filterCalendarBookings(calendarBookings);
@@ -357,7 +357,7 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 		throws PortalException {
 
 		List<CalendarBooking> calendarBookings =
-			calendarBookingLocalService.getChildCalendarBookings(
+			calendarBookingPersistence.findByP_S(
 				parentCalendarBookingId, status);
 
 		return _filterCalendarBookings(calendarBookings);

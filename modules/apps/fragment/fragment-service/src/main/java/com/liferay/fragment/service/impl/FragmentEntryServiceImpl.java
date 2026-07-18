@@ -117,7 +117,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 		for (long fragmentEntryId : fragmentEntriesIds) {
 			FragmentEntry fragmentEntry =
-				fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+				fragmentEntryPersistence.findByPrimaryKey(fragmentEntryId);
 
 			_portletResourcePermission.check(
 				getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -131,8 +131,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public FragmentEntry deleteFragmentEntry(long fragmentEntryId)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -163,7 +163,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public FragmentEntry fetchFragmentEntry(long fragmentEntryId)
 		throws PortalException {
 
-		return fragmentEntryLocalService.fetchFragmentEntry(fragmentEntryId);
+		return fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			}
 
 			fragmentCompositionsAndFragmentEntries.add(
-				fragmentEntryLocalService.fetchFragmentEntry(
+				fragmentEntryPersistence.fetchByPrimaryKey(
 					GetterUtil.getLong(array[1])));
 		}
 
@@ -281,7 +281,7 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntries(long fragmentCollectionId) {
-		return fragmentEntryLocalService.getFragmentEntries(
+		return fragmentEntryPersistence.findByFragmentCollectionId(
 			fragmentCollectionId);
 	}
 
@@ -491,8 +491,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			long fragmentEntryId, long fragmentCollectionId)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -540,8 +540,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			long fragmentEntryId, boolean cacheable)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -556,8 +556,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			long fragmentEntryId, long previewFileEntryId)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -575,8 +575,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			boolean readOnly, String typeOptions, int status)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
@@ -592,8 +592,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	public FragmentEntry updateFragmentEntry(long fragmentEntryId, String name)
 		throws PortalException {
 
-		FragmentEntry fragmentEntry =
-			fragmentEntryLocalService.getFragmentEntry(fragmentEntryId);
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			fragmentEntryId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
