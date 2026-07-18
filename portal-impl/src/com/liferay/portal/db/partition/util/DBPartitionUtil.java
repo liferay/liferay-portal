@@ -185,11 +185,23 @@ public class DBPartitionUtil {
 			return false;
 		}
 
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					_defaultCompanyId)) {
+					_defaultCompanyId);
 
-			_exportDBPartition(companyId);
+			Connection connection = dataSource.getConnection();
+
+			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+
+			_exportDBPartition(connection, companyId);
+		}
+		catch (PortalException portalException) {
+			throw portalException;
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
 		}
 
 		return true;
@@ -979,17 +991,15 @@ public class DBPartitionUtil {
 		}
 	}
 
-	private static void _exportDBPartition(long companyId)
+	private static void _exportDBPartition(
+			Connection connection, long companyId)
 		throws PortalException {
-
-		Connection connection = CurrentConnectionUtil.getConnection(
-			InfrastructureUtil.getDataSource());
-
-		DBInspector dbInspector = new DBInspector(connection);
 
 		String exportedPartitionName = _getExportedPartitionName(companyId);
 
-		try (AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
+		DBInspector dbInspector = new DBInspector(connection);
+
+		try {
 			_copySchema(
 				connection, getPartitionName(companyId), exportedPartitionName);
 
@@ -1031,6 +1041,13 @@ public class DBPartitionUtil {
 			connection.commit();
 		}
 		catch (Exception exception) {
+			try {
+				connection.rollback();
+			}
+			catch (SQLException sqlException) {
+				exception.addSuppressed(sqlException);
+			}
+
 			if (!_dbPartitionDB.isDDLTransactional()) {
 				try (Statement statement = connection.createStatement()) {
 					statement.executeUpdate(
