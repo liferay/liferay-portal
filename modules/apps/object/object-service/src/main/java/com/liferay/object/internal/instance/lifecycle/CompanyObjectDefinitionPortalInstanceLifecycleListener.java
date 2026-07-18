@@ -90,19 +90,14 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 				continue;
 			}
 
-			try (AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
-				_executeUpdates(
-					_classNameColumnNamesMap, company.getCompanyId(),
-					connection, objectDefinition.getClassName(), className);
-				_executeUpdates(
-					_portletIdColumnNamesMap, company.getCompanyId(),
-					connection,
-					ObjectDefinitionUtil.getPortletId(
-						objectDefinition.getClassName()),
-					ObjectDefinitionUtil.getPortletId(className));
-
-				connection.commit();
-			}
+			_executeUpdates(
+				_classNameColumnNamesMap, company.getCompanyId(), connection,
+				objectDefinition.getClassName(), className);
+			_executeUpdates(
+				_portletIdColumnNamesMap, company.getCompanyId(), connection,
+				ObjectDefinitionUtil.getPortletId(
+					objectDefinition.getClassName()),
+				ObjectDefinitionUtil.getPortletId(className));
 
 			_ploEntryLocalService.deletePLOEntries(
 				company.getCompanyId(), "model.resource." + className);
@@ -173,16 +168,6 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 					objectDefinition);
 			}
 		}
-	}
-
-	private AutoCloseable _disableAutoCommit(Connection connection)
-		throws Exception {
-
-		boolean autoCommit = connection.getAutoCommit();
-
-		connection.setAutoCommit(false);
-
-		return () -> connection.setAutoCommit(autoCommit);
 	}
 
 	private void _executeUpdates(
