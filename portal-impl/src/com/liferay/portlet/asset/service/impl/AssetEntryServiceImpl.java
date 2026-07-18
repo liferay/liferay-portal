@@ -46,7 +46,7 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 
 	@Override
 	public AssetEntry fetchEntry(long entryId) throws PortalException {
-		AssetEntry entry = assetEntryLocalService.fetchEntry(entryId);
+		AssetEntry entry = assetEntryPersistence.fetchByPrimaryKey(entryId);
 
 		if (entry != null) {
 			AssetEntryPermission.check(
@@ -61,7 +61,7 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 		long companyId, int start, int end) {
 
 		return TransformUtil.transform(
-			assetEntryLocalService.getCompanyEntries(companyId, start, end),
+			assetEntryPersistence.findByCompanyId(companyId, start, end),
 			entry -> {
 				try {
 					if (AssetEntryPermission.contains(
@@ -82,7 +82,7 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 
 	@Override
 	public int getCompanyEntriesCount(long companyId) {
-		return assetEntryLocalService.getCompanyEntriesCount(companyId);
+		return assetEntryPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 
 	@Override
 	public AssetEntry getEntry(long entryId) throws PortalException {
-		AssetEntry entry = assetEntryLocalService.getEntry(entryId);
+		AssetEntry entry = assetEntryPersistence.findByPrimaryKey(entryId);
 
 		AssetEntryPermission.check(
 			getPermissionChecker(), entry, ActionKeys.VIEW);

@@ -193,7 +193,7 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		throws PortalException {
 
 		AssetVocabulary vocabulary =
-			assetVocabularyLocalService.fetchAssetVocabulary(vocabularyId);
+			assetVocabularyPersistence.fetchByPrimaryKey(vocabularyId);
 
 		if (vocabulary != null) {
 			AssetVocabularyPermission.check(
@@ -301,7 +301,7 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			return vocabularies;
 		}
 
-		int count = assetVocabularyLocalService.getGroupVocabulariesCount(
+		int count = assetVocabularyPersistence.countByGroupId(
 			new long[] {groupId});
 
 		if (count > 0) {
@@ -445,7 +445,7 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabularyId, ActionKeys.VIEW);
 
-		return assetVocabularyLocalService.getVocabulary(vocabularyId);
+		return assetVocabularyPersistence.findByPrimaryKey(vocabularyId);
 	}
 
 	@Override

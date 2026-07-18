@@ -36,7 +36,7 @@ public class AssetTagGroupRelServiceImpl
 		AssetTagsPermission.check(
 			getPermissionChecker(), tagId, ActionKeys.VIEW);
 
-		return assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(tagId);
+		return assetTagGroupRelPersistence.findByTagId(tagId);
 	}
 
 	@Override

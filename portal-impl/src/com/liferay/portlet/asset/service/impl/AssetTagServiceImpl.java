@@ -63,7 +63,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 	@Override
 	public void deleteTags(long[] tagIds) throws PortalException {
 		for (long tagId : tagIds) {
-			AssetTag tag = assetTagLocalService.getTag(tagId);
+			AssetTag tag = assetTagPersistence.findByPrimaryKey(tagId);
 
 			AssetTagsPermission.check(
 				getPermissionChecker(), tag.getGroupId(),
@@ -78,8 +78,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 		String externalReferenceCode, long groupId) {
 
 		return sanitize(
-			assetTagLocalService.fetchAssetTagByExternalReferenceCode(
-				externalReferenceCode, groupId));
+			assetTagPersistence.fetchByERC_G(externalReferenceCode, groupId));
 	}
 
 	@Override
@@ -93,8 +92,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 		throws PortalException {
 
 		return sanitize(
-			assetTagLocalService.getAssetTagByExternalReferenceCode(
-				externalReferenceCode, groupId));
+			assetTagPersistence.findByERC_G(externalReferenceCode, groupId));
 	}
 
 	@Override
@@ -148,7 +146,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 
 	@Override
 	public AssetTag getTag(long tagId) throws PortalException {
-		return sanitize(assetTagLocalService.getTag(tagId));
+		return sanitize(assetTagPersistence.findByPrimaryKey(tagId));
 	}
 
 	@Override
@@ -249,7 +247,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 
 	@Override
 	public void mergeTags(long fromTagId, long toTagId) throws PortalException {
-		AssetTag tag = assetTagLocalService.getTag(fromTagId);
+		AssetTag tag = assetTagPersistence.findByPrimaryKey(fromTagId);
 
 		AssetTagsPermission.check(
 			getPermissionChecker(), tag.getGroupId(), ActionKeys.MANAGE_TAG);
@@ -290,7 +288,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 
 	@Override
 	public void unsubscribeTag(long userId, long tagId) throws PortalException {
-		AssetTag tag = assetTagLocalService.getTag(tagId);
+		AssetTag tag = assetTagPersistence.findByPrimaryKey(tagId);
 
 		AssetTagsPermission.check(
 			getPermissionChecker(), tag.getGroupId(), ActionKeys.SUBSCRIBE);
@@ -304,7 +302,7 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		AssetTag tag = assetTagLocalService.getTag(tagId);
+		AssetTag tag = assetTagPersistence.findByPrimaryKey(tagId);
 
 		AssetTagsPermission.check(
 			getPermissionChecker(), tag.getGroupId(), ActionKeys.MANAGE_TAG);
