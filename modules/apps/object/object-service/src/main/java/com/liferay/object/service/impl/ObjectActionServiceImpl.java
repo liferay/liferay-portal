@@ -77,7 +77,7 @@ public class ObjectActionServiceImpl extends ObjectActionServiceBaseImpl {
 			getPermissionChecker(), objectAction.getObjectDefinitionId(),
 			ActionKeys.VIEW);
 
-		return objectActionLocalService.getObjectAction(objectActionId);
+		return objectActionPersistence.findByPrimaryKey(objectActionId);
 	}
 
 	@Override

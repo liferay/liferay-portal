@@ -63,7 +63,7 @@ public class ObjectFolderServiceImpl extends ObjectFolderServiceBaseImpl {
 		_objectFolderModelResourcePermission.check(
 			getPermissionChecker(), objectFolderId, ActionKeys.VIEW);
 
-		return objectFolderLocalService.getObjectFolder(objectFolderId);
+		return objectFolderPersistence.findByPrimaryKey(objectFolderId);
 	}
 
 	@Override
@@ -71,9 +71,8 @@ public class ObjectFolderServiceImpl extends ObjectFolderServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		ObjectFolder objectFolder =
-			objectFolderLocalService.getObjectFolderByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		ObjectFolder objectFolder = objectFolderPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_objectFolderModelResourcePermission.check(
 			getPermissionChecker(), objectFolder, ActionKeys.VIEW);

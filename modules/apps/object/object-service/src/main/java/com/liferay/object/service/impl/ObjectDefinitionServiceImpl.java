@@ -220,15 +220,14 @@ public class ObjectDefinitionServiceImpl
 
 	@Override
 	public int getObjectDefinitionsCount() throws PortalException {
-		return objectDefinitionLocalService.getObjectDefinitionsCount();
+		return objectDefinitionPersistence.countAll();
 	}
 
 	@Override
 	public int getObjectDefinitionsCount(long companyId)
 		throws PortalException {
 
-		return objectDefinitionLocalService.getObjectDefinitionsCount(
-			companyId);
+		return objectDefinitionPersistence.countByCompanyId(companyId);
 	}
 
 	@Override

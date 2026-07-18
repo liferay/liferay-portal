@@ -1288,7 +1288,7 @@ public class ObjectFieldLocalServiceImpl
 		}
 
 		List<ObjectField> objectFields = ListUtil.filter(
-			objectFieldLocalService.getObjectFields(
+			objectFieldPersistence.findByObjectDefinitionId(
 				objectField.getObjectDefinitionId()),
 			objectField1 -> !objectField1.isMetadata());
 

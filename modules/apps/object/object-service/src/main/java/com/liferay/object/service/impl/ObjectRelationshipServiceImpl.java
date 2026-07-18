@@ -140,7 +140,7 @@ public class ObjectRelationshipServiceImpl
 			getPermissionChecker(), objectRelationship.getObjectDefinitionId1(),
 			ActionKeys.VIEW);
 
-		return objectRelationshipLocalService.getObjectRelationship(
+		return objectRelationshipPersistence.findByPrimaryKey(
 			objectRelationshipId);
 	}
 

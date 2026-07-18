@@ -108,8 +108,7 @@ public class ObjectEntryFolderServiceImpl
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
-			objectEntryFolderLocalService.fetchObjectEntryFolder(
-				objectEntryFolderId);
+			objectEntryFolderPersistence.fetchByPrimaryKey(objectEntryFolderId);
 
 		if (objectEntryFolder != null) {
 			_modelResourcePermission.check(
@@ -145,8 +144,7 @@ public class ObjectEntryFolderServiceImpl
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
-			objectEntryFolderLocalService.getObjectEntryFolder(
-				objectEntryFolderId);
+			objectEntryFolderPersistence.findByPrimaryKey(objectEntryFolderId);
 
 		_modelResourcePermission.check(
 			getPermissionChecker(), objectEntryFolder, ActionKeys.VIEW);
@@ -181,7 +179,7 @@ public class ObjectEntryFolderServiceImpl
 			_modelResourcePermission, getPermissionChecker(), groupId,
 			parentObjectEntryFolderId, ActionKeys.VIEW);
 
-		return objectEntryFolderLocalService.getObjectEntryFolders(
+		return objectEntryFolderPersistence.findByG_C_P(
 			groupId, companyId, parentObjectEntryFolderId, start, end);
 	}
 
@@ -194,7 +192,7 @@ public class ObjectEntryFolderServiceImpl
 			_modelResourcePermission, getPermissionChecker(), groupId,
 			parentObjectEntryFolderId, ActionKeys.VIEW);
 
-		return objectEntryFolderLocalService.getObjectEntryFoldersCount(
+		return objectEntryFolderPersistence.countByG_C_P(
 			groupId, companyId, parentObjectEntryFolderId);
 	}
 

@@ -110,6 +110,7 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.service.base.ObjectDefinitionLocalServiceBaseImpl;
+import com.liferay.object.service.persistence.ObjectDefinitionSettingPersistence;
 import com.liferay.object.service.persistence.ObjectEntryPersistence;
 import com.liferay.object.service.persistence.ObjectFieldPersistence;
 import com.liferay.object.service.persistence.ObjectFolderPersistence;
@@ -1785,7 +1786,7 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		ObjectDefinitionSetting objectDefinitionSetting =
-			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
+			_objectDefinitionSettingPersistence.fetchByODI_N(
 				objectDefinition.getObjectDefinitionId(),
 				ObjectDefinitionSettingConstants.NAME_OLD_CLASS_NAME);
 
@@ -1940,7 +1941,7 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		objectDefinition.setObjectDefinitionSettings(
-			_objectDefinitionSettingLocalService.getObjectDefinitionSettings(
+			_objectDefinitionSettingPersistence.findByObjectDefinitionId(
 				objectDefinition.getObjectDefinitionId()));
 	}
 
@@ -2623,7 +2624,7 @@ public class ObjectDefinitionLocalServiceImpl
 					objectDefinition.getRootObjectDefinitionIds()) {
 
 				deployObjectDefinition(
-					objectDefinitionLocalService.fetchObjectDefinition(
+					objectDefinitionPersistence.fetchByPrimaryKey(
 						rootObjectDefinitionId));
 			}
 		}
@@ -3848,7 +3849,7 @@ public class ObjectDefinitionLocalServiceImpl
 			return;
 		}
 
-		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+		ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
 			objectFieldId);
 
 		if ((objectField == null) ||
@@ -4118,6 +4119,10 @@ public class ObjectDefinitionLocalServiceImpl
 	@Reference
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@Reference
+	private ObjectDefinitionSettingPersistence
+		_objectDefinitionSettingPersistence;
 
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;

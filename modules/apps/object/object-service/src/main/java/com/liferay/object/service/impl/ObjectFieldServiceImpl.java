@@ -92,7 +92,7 @@ public class ObjectFieldServiceImpl extends ObjectFieldServiceBaseImpl {
 			getPermissionChecker(), objectField.getObjectDefinitionId(),
 			ActionKeys.VIEW);
 
-		return objectFieldLocalService.getObjectField(objectFieldId);
+		return objectFieldPersistence.findByPrimaryKey(objectFieldId);
 	}
 
 	@Override
