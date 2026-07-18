@@ -44,7 +44,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -93,7 +93,7 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 
 		// Tag
 
-		User user = _userLocalService.getUser(userId);
+		User user = _userPersistence.findByPrimaryKey(userId);
 
 		long tagId = counterLocalService.increment();
 
@@ -906,7 +906,7 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
 
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
+	@BeanReference(type = UserPersistence.class)
+	private UserPersistence _userPersistence;
 
 }

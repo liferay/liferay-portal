@@ -53,8 +53,8 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -416,7 +416,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 			return;
 		}
 
-		User user = _userLocalService.getUser(userId);
+		User user = _userPersistence.findByPrimaryKey(userId);
 
 		assetEntryLocalService.incrementViewCounter(
 			assetEntry.getCompanyId(), user.getUserId(),
@@ -439,7 +439,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 			return getEntry(className, classPK);
 		}
 
-		User user = _userLocalService.getUser(userId);
+		User user = _userPersistence.findByPrimaryKey(userId);
 
 		assetEntryLocalService.incrementViewCounter(
 			companyId, user.getUserId(), className, classPK, 1);
@@ -880,7 +880,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 
 			entry.setUserId(userId);
 
-			User user = _userLocalService.fetchUser(userId);
+			User user = _userPersistence.fetchByPrimaryKey(userId);
 
 			if (user != null) {
 				entry.setUserName(user.getFullName());
@@ -1588,7 +1588,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	private SocialActivityCounterLocalService
 		_socialActivityCounterLocalService;
 
-	@BeanReference(type = UserLocalService.class)
-	private UserLocalService _userLocalService;
+	@BeanReference(type = UserPersistence.class)
+	private UserPersistence _userPersistence;
 
 }
