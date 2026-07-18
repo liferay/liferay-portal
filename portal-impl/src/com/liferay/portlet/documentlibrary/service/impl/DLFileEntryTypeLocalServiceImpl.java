@@ -42,13 +42,13 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
+import com.liferay.portal.kernel.service.persistence.ResourceActionPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -612,7 +612,7 @@ public class DLFileEntryTypeLocalServiceImpl
 					_DL_FILE_ENTRY_METADATA_DDM_STRUCTURE_CLASS_NAME);
 
 			List<ResourceAction> dlFileEntryMetadataResourceActions =
-				_resourceActionLocalService.getResourceActions(
+				_resourceActionPersistence.findByName(
 					_DL_FILE_ENTRY_METADATA_DDM_STRUCTURE_CLASS_NAME);
 
 			Set<String> dlFileEntryMetadataActionIds = new HashSet<>();
@@ -861,8 +861,8 @@ public class DLFileEntryTypeLocalServiceImpl
 	@BeanReference(type = DLFileVersionLocalService.class)
 	private DLFileVersionLocalService _dlFileVersionLocalService;
 
-	@BeanReference(type = ResourceActionLocalService.class)
-	private ResourceActionLocalService _resourceActionLocalService;
+	@BeanReference(type = ResourceActionPersistence.class)
+	private ResourceActionPersistence _resourceActionPersistence;
 
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;

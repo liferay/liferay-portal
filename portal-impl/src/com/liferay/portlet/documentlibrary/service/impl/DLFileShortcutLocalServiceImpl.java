@@ -30,10 +30,10 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.service.persistence.RepositoryPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.trash.helper.TrashHelper;
@@ -261,7 +261,7 @@ public class DLFileShortcutLocalServiceImpl
 
 		long groupId = repositoryId;
 
-		Repository repository = _repositoryLocalService.fetchRepository(
+		Repository repository = _repositoryPersistence.fetchByPrimaryKey(
 			repositoryId);
 
 		if (repository != null) {
@@ -563,8 +563,8 @@ public class DLFileShortcutLocalServiceImpl
 	@BeanReference(type = DLFolderPersistence.class)
 	private DLFolderPersistence _dlFolderPersistence;
 
-	@BeanReference(type = RepositoryLocalService.class)
-	private RepositoryLocalService _repositoryLocalService;
+	@BeanReference(type = RepositoryPersistence.class)
+	private RepositoryPersistence _repositoryPersistence;
 
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;

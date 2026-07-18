@@ -117,13 +117,13 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WebDAVPropsLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.persistence.RepositoryPersistence;
+import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.WebDAVPropsPersistence;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
@@ -2915,7 +2915,7 @@ public class DLFileEntryLocalServiceImpl
 	private long _getActiveCompanyAdminUserId(long companyId)
 		throws PortalException {
 
-		Role role = _roleLocalService.getRole(
+		Role role = _rolePersistence.findByC_N(
 			companyId, RoleConstants.ADMINISTRATOR);
 
 		Long userId = _getActiveUser(
@@ -2963,7 +2963,7 @@ public class DLFileEntryLocalServiceImpl
 	private Long _getActiveUser(long[] userIds) {
 		if (ArrayUtil.isNotEmpty(userIds)) {
 			for (long userId : userIds) {
-				User user = _userLocalService.fetchUser(userId);
+				User user = _userPersistence.fetchByPrimaryKey(userId);
 
 				if ((user != null) && user.isActive()) {
 					return userId;
@@ -3244,10 +3244,10 @@ public class DLFileEntryLocalServiceImpl
 			return;
 		}
 
-		User user = _userLocalService.fetchUser(fileVersion.getUserId());
+		User user = _userPersistence.fetchByPrimaryKey(fileVersion.getUserId());
 
 		if ((user == null) || !user.isActive()) {
-			user = _userLocalService.fetchUser(userId);
+			user = _userPersistence.fetchByPrimaryKey(userId);
 		}
 
 		DLGroupServiceSettings dlGroupServiceSettings =
@@ -3390,7 +3390,7 @@ public class DLFileEntryLocalServiceImpl
 			return;
 		}
 
-		User user = _userLocalService.fetchUser(fileVersion.getUserId());
+		User user = _userPersistence.fetchByPrimaryKey(fileVersion.getUserId());
 
 		if (user == null) {
 			return;
@@ -4268,8 +4268,8 @@ public class DLFileEntryLocalServiceImpl
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
 
-	@BeanReference(type = RoleLocalService.class)
-	private RoleLocalService _roleLocalService;
+	@BeanReference(type = RolePersistence.class)
+	private RolePersistence _rolePersistence;
 
 	@BeanReference(type = UserGroupLocalService.class)
 	private UserGroupLocalService _userGroupLocalService;
