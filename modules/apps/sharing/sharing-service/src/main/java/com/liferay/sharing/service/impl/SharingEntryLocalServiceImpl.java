@@ -393,7 +393,7 @@ public class SharingEntryLocalServiceImpl
 	public SharingEntry fetchSharingEntry(
 		long toUserId, long classNameId, long classPK) {
 
-		return sharingEntryLocalService.fetchSharingEntry(
+		return sharingEntryPersistence.fetchByTT_TUG_TU_C_C(
 			0, 0, toUserId, classNameId, classPK);
 	}
 
@@ -535,7 +535,7 @@ public class SharingEntryLocalServiceImpl
 			long toUserId, long classNameId, long classPK)
 		throws PortalException {
 
-		return sharingEntryLocalService.getSharingEntry(
+		return sharingEntryPersistence.findByTT_TUG_TU_C_C(
 			0, 0, toUserId, classNameId, classPK);
 	}
 

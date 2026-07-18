@@ -81,11 +81,11 @@ public class DispatchTriggerServiceImpl extends DispatchTriggerServiceBaseImpl {
 		PermissionChecker permissionChecker = getPermissionChecker();
 
 		if (permissionChecker.isCompanyAdmin()) {
-			return dispatchTriggerLocalService.getDispatchTriggers(
+			return dispatchTriggerPersistence.findByCompanyId(
 				permissionChecker.getCompanyId(), start, end);
 		}
 
-		return dispatchTriggerLocalService.getUserDispatchTriggers(
+		return dispatchTriggerPersistence.findByC_U(
 			permissionChecker.getCompanyId(), permissionChecker.getUserId(),
 			start, end);
 	}
@@ -95,11 +95,11 @@ public class DispatchTriggerServiceImpl extends DispatchTriggerServiceBaseImpl {
 		PermissionChecker permissionChecker = getPermissionChecker();
 
 		if (permissionChecker.isCompanyAdmin()) {
-			return dispatchTriggerLocalService.getDispatchTriggersCount(
+			return dispatchTriggerPersistence.countByCompanyId(
 				permissionChecker.getCompanyId());
 		}
 
-		return dispatchTriggerLocalService.getUserDispatchTriggersCount(
+		return dispatchTriggerPersistence.countByC_U(
 			permissionChecker.getCompanyId(), permissionChecker.getUserId());
 	}
 

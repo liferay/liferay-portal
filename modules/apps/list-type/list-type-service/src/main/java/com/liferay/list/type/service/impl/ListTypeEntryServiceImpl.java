@@ -71,9 +71,8 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 			long listTypeDefinitionId, String key)
 		throws PortalException {
 
-		ListTypeEntry listTypeEntry =
-			listTypeEntryLocalService.fetchListTypeEntry(
-				listTypeDefinitionId, key);
+		ListTypeEntry listTypeEntry = listTypeEntryPersistence.fetchByLTDI_K(
+			listTypeDefinitionId, key);
 
 		if (listTypeEntry != null) {
 			_listTypeDefinitionModelResourcePermission.check(
@@ -91,7 +90,7 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 		_listTypeDefinitionModelResourcePermission.check(
 			getPermissionChecker(), listTypeDefinitionId, ActionKeys.VIEW);
 
-		return listTypeEntryLocalService.getListTypeEntries(
+		return listTypeEntryPersistence.findByListTypeDefinitionId(
 			listTypeDefinitionId, start, end);
 	}
 
@@ -102,7 +101,7 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 		_listTypeDefinitionModelResourcePermission.check(
 			getPermissionChecker(), listTypeDefinitionId, ActionKeys.VIEW);
 
-		return listTypeEntryLocalService.getListTypeEntriesCount(
+		return listTypeEntryPersistence.countByListTypeDefinitionId(
 			listTypeDefinitionId);
 	}
 
@@ -117,7 +116,7 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 			getPermissionChecker(), listTypeEntry.getListTypeDefinitionId(),
 			ActionKeys.VIEW);
 
-		return listTypeEntryLocalService.getListTypeEntry(listTypeEntryId);
+		return listTypeEntryPersistence.findByPrimaryKey(listTypeEntryId);
 	}
 
 	@Override
@@ -126,9 +125,8 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 			long listTypeDefinitionId)
 		throws PortalException {
 
-		ListTypeEntry listTypeEntry =
-			listTypeEntryLocalService.getListTypeEntryByExternalReferenceCode(
-				externalReferenceCode, companyId, listTypeDefinitionId);
+		ListTypeEntry listTypeEntry = listTypeEntryPersistence.findByERC_C_LTDI(
+			externalReferenceCode, companyId, listTypeDefinitionId);
 
 		_listTypeDefinitionModelResourcePermission.check(
 			getPermissionChecker(), listTypeEntry.getListTypeDefinitionId(),

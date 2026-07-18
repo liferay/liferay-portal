@@ -118,7 +118,7 @@ public class RedirectNotFoundEntryLocalServiceImpl
 		long groupId, Boolean ignored, Date minModifiedDate, int start, int end,
 		OrderByComparator<RedirectNotFoundEntry> orderByComparator) {
 
-		return redirectNotFoundEntryLocalService.dynamicQuery(
+		return redirectNotFoundEntryPersistence.findWithDynamicQuery(
 			_getRedirectNotFoundEntriesDynamicQuery(
 				groupId, ignored, minModifiedDate, orderByComparator),
 			start, end);
@@ -129,7 +129,7 @@ public class RedirectNotFoundEntryLocalServiceImpl
 		long groupId, Date minModifiedDate, int start, int end,
 		OrderByComparator<RedirectNotFoundEntry> orderByComparator) {
 
-		return redirectNotFoundEntryLocalService.dynamicQuery(
+		return redirectNotFoundEntryPersistence.findWithDynamicQuery(
 			_getRedirectNotFoundEntriesDynamicQuery(
 				groupId, null, minModifiedDate, orderByComparator),
 			start, end);
@@ -154,7 +154,7 @@ public class RedirectNotFoundEntryLocalServiceImpl
 		long groupId, Boolean ignored, Date minModifiedDate) {
 
 		return GetterUtil.getInteger(
-			redirectNotFoundEntryLocalService.dynamicQueryCount(
+			redirectNotFoundEntryPersistence.countWithDynamicQuery(
 				_getRedirectNotFoundEntriesDynamicQuery(
 					groupId, ignored, minModifiedDate)));
 	}
@@ -164,7 +164,7 @@ public class RedirectNotFoundEntryLocalServiceImpl
 		long groupId, Date minModifiedDate) {
 
 		return GetterUtil.getInteger(
-			redirectNotFoundEntryLocalService.dynamicQueryCount(
+			redirectNotFoundEntryPersistence.countWithDynamicQuery(
 				_getRedirectNotFoundEntriesDynamicQuery(
 					groupId, null, minModifiedDate)));
 	}
@@ -176,7 +176,7 @@ public class RedirectNotFoundEntryLocalServiceImpl
 		throws PortalException {
 
 		RedirectNotFoundEntry redirectNotFoundEntry =
-			redirectNotFoundEntryLocalService.getRedirectNotFoundEntry(
+			redirectNotFoundEntryPersistence.findByPrimaryKey(
 				redirectNotFoundEntryId);
 
 		redirectNotFoundEntry.setIgnored(ignored);

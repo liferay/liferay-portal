@@ -33,7 +33,7 @@ public class DispatchLogServiceImpl extends DispatchLogServiceBaseImpl {
 
 	@Override
 	public void deleteDispatchLog(long dispatchLogId) throws PortalException {
-		DispatchLog dispatchLog = dispatchLogLocalService.getDispatchLog(
+		DispatchLog dispatchLog = dispatchLogPersistence.findByPrimaryKey(
 			dispatchLogId);
 
 		_dispatchTriggerModelResourcePermission.check(
@@ -47,7 +47,7 @@ public class DispatchLogServiceImpl extends DispatchLogServiceBaseImpl {
 	public DispatchLog getDispatchLog(long dispatchLogId)
 		throws PortalException {
 
-		DispatchLog dispatchLog = dispatchLogLocalService.getDispatchLog(
+		DispatchLog dispatchLog = dispatchLogPersistence.findByPrimaryKey(
 			dispatchLogId);
 
 		_dispatchTriggerModelResourcePermission.check(
@@ -65,7 +65,7 @@ public class DispatchLogServiceImpl extends DispatchLogServiceBaseImpl {
 		_dispatchTriggerModelResourcePermission.check(
 			getPermissionChecker(), dispatchTriggerId, ActionKeys.VIEW);
 
-		return dispatchLogLocalService.getDispatchLogs(
+		return dispatchLogPersistence.findByDispatchTriggerId(
 			dispatchTriggerId, start, end);
 	}
 
@@ -89,7 +89,8 @@ public class DispatchLogServiceImpl extends DispatchLogServiceBaseImpl {
 		_dispatchTriggerModelResourcePermission.check(
 			getPermissionChecker(), dispatchTriggerId, ActionKeys.VIEW);
 
-		return dispatchLogLocalService.getDispatchLogsCount(dispatchTriggerId);
+		return dispatchLogPersistence.countByDispatchTriggerId(
+			dispatchTriggerId);
 	}
 
 	@Reference(

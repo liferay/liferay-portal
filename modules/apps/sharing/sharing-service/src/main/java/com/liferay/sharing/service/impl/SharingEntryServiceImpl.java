@@ -146,7 +146,7 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 		throws PortalException {
 
 		return deleteSharingEntry(
-			sharingEntryLocalService.getSharingEntry(sharingEntryId));
+			sharingEntryPersistence.findByPrimaryKey(sharingEntryId));
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 		throws PortalException {
 
 		return deleteSharingEntry(
-			sharingEntryLocalService.getSharingEntryByExternalReferenceCode(
+			sharingEntryPersistence.findByERC_G(
 				externalReferenceCode, groupId));
 	}
 
@@ -176,8 +176,9 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 			long classNameId, long classPK)
 		throws PortalException {
 
-		SharingEntry sharingEntry = sharingEntryLocalService.fetchSharingEntry(
-			toTicketId, toUserGroupId, toUserId, classNameId, classPK);
+		SharingEntry sharingEntry =
+			sharingEntryPersistence.fetchByTT_TUG_TU_C_C(
+				toTicketId, toUserGroupId, toUserId, classNameId, classPK);
 
 		if (sharingEntry != null) {
 			sharingPermission.check(
@@ -194,9 +195,8 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		SharingEntry sharingEntry =
-			sharingEntryLocalService.fetchSharingEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		SharingEntry sharingEntry = sharingEntryPersistence.fetchByERC_G(
+			externalReferenceCode, groupId);
 
 		if (sharingEntry != null) {
 			sharingPermission.check(
@@ -217,7 +217,7 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 		sharingPermission.checkSharePermission(
 			getPermissionChecker(), classNameId, classPK, groupId);
 
-		return sharingEntryLocalService.getSharingEntries(
+		return sharingEntryPersistence.findByC_C(
 			classNameId, classPK, start, end, orderByComparator);
 	}
 
@@ -225,7 +225,7 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 	public SharingEntry getSharingEntry(long sharingEntryId)
 		throws PortalException {
 
-		SharingEntry sharingEntry = sharingEntryLocalService.getSharingEntry(
+		SharingEntry sharingEntry = sharingEntryPersistence.findByPrimaryKey(
 			sharingEntryId);
 
 		sharingPermission.check(
@@ -258,9 +258,8 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		SharingEntry sharingEntry =
-			sharingEntryLocalService.getSharingEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		SharingEntry sharingEntry = sharingEntryPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		sharingPermission.check(
 			getPermissionChecker(), sharingEntry.getClassNameId(),

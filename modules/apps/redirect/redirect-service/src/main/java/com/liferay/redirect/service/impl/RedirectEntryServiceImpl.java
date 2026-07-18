@@ -82,7 +82,7 @@ public class RedirectEntryServiceImpl extends RedirectEntryServiceBaseImpl {
 		throws PortalException {
 
 		RedirectEntry redirectEntry =
-			redirectEntryLocalService.fetchRedirectEntry(redirectEntryId);
+			redirectEntryPersistence.fetchByPrimaryKey(redirectEntryId);
 
 		if (redirectEntry != null) {
 			_redirectEntryModelResourcePermission.check(
@@ -109,7 +109,7 @@ public class RedirectEntryServiceImpl extends RedirectEntryServiceBaseImpl {
 				RedirectEntry.class.getName(), ActionKeys.VIEW);
 		}
 
-		return redirectEntryLocalService.getRedirectEntries(
+		return redirectEntryPersistence.findByGroupId(
 			groupId, start, end, orderByComparator);
 	}
 
@@ -126,7 +126,7 @@ public class RedirectEntryServiceImpl extends RedirectEntryServiceBaseImpl {
 				RedirectEntry.class.getName(), ActionKeys.VIEW);
 		}
 
-		return redirectEntryLocalService.getRedirectEntriesCount(groupId);
+		return redirectEntryPersistence.countByGroupId(groupId);
 	}
 
 	@Override

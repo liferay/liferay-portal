@@ -104,7 +104,7 @@ public class ListTypeDefinitionServiceImpl
 		_listTypeDefinitionModelResourcePermission.check(
 			getPermissionChecker(), listTypeDefinitionId, ActionKeys.VIEW);
 
-		return listTypeDefinitionLocalService.getListTypeDefinition(
+		return listTypeDefinitionPersistence.findByPrimaryKey(
 			listTypeDefinitionId);
 	}
 
@@ -127,13 +127,12 @@ public class ListTypeDefinitionServiceImpl
 
 	@Override
 	public List<ListTypeDefinition> getListTypeDefinitions(int start, int end) {
-		return listTypeDefinitionLocalService.getListTypeDefinitions(
-			start, end);
+		return listTypeDefinitionPersistence.findAll(start, end);
 	}
 
 	@Override
 	public int getListTypeDefinitionsCount() {
-		return listTypeDefinitionLocalService.getListTypeDefinitionsCount();
+		return listTypeDefinitionPersistence.countAll();
 	}
 
 	@Override

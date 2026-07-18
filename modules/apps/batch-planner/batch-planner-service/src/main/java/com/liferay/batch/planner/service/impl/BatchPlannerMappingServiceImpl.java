@@ -78,7 +78,7 @@ public class BatchPlannerMappingServiceImpl
 		_batchPlannerPlanModelResourcePermission.check(
 			getPermissionChecker(), batchPlannerPlanId, ActionKeys.VIEW);
 
-		return batchPlannerMappingLocalService.getBatchPlannerMappings(
+		return batchPlannerMappingPersistence.findByBatchPlannerPlanId(
 			batchPlannerPlanId);
 	}
 

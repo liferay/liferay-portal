@@ -54,7 +54,7 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
+			siteNavigationMenuItemPersistence.findByPrimaryKey(
 				siteNavigationMenuItemId);
 
 		_siteNavigationMenuModelResourcePermission.check(
@@ -72,7 +72,7 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
+			siteNavigationMenuItemPersistence.findByPrimaryKey(
 				siteNavigationMenuItemId);
 
 		_siteNavigationMenuModelResourcePermission.check(
@@ -192,7 +192,7 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
+			siteNavigationMenuItemPersistence.findByPrimaryKey(
 				siteNavigationMenuItemId);
 
 		_siteNavigationMenuModelResourcePermission.check(
@@ -211,7 +211,7 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
+			siteNavigationMenuItemPersistence.findByPrimaryKey(
 				siteNavigationMenuItemId);
 
 		_siteNavigationMenuModelResourcePermission.check(

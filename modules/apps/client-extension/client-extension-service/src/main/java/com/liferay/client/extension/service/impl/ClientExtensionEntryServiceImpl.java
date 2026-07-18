@@ -102,7 +102,7 @@ public class ClientExtensionEntryServiceImpl
 		_clientExtensionEntryModelResourcePermission.check(
 			getPermissionChecker(), clientExtensionEntryId, ActionKeys.VIEW);
 
-		return clientExtensionEntryLocalService.getClientExtensionEntry(
+		return clientExtensionEntryPersistence.findByPrimaryKey(
 			clientExtensionEntryId);
 	}
 

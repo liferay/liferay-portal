@@ -63,7 +63,7 @@ public class BatchPlannerPolicyServiceImpl
 		_batchPlannerPlanModelResourcePermission.check(
 			getPermissionChecker(), batchPlannerPlanId, ActionKeys.VIEW);
 
-		return batchPlannerPolicyLocalService.getBatchPlannerPolicies(
+		return batchPlannerPolicyPersistence.findByBatchPlannerPlanId(
 			batchPlannerPlanId);
 	}
 
@@ -75,7 +75,7 @@ public class BatchPlannerPolicyServiceImpl
 		_batchPlannerPlanModelResourcePermission.check(
 			getPermissionChecker(), batchPlannerPlanId, ActionKeys.VIEW);
 
-		return batchPlannerPolicyLocalService.getBatchPlannerPolicy(
+		return batchPlannerPolicyPersistence.findByBPPI_N(
 			batchPlannerPlanId, name);
 	}
 

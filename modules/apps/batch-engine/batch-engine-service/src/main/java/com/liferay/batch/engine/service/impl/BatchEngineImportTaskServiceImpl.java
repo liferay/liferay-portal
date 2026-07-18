@@ -7,7 +7,6 @@ package com.liferay.batch.engine.service.impl;
 
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
-import com.liferay.batch.engine.service.BatchEngineImportTaskErrorLocalService;
 import com.liferay.batch.engine.service.base.BatchEngineImportTaskServiceBaseImpl;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Shuyang Zhou
@@ -85,7 +83,7 @@ public class BatchEngineImportTaskServiceImpl
 		throws PortalException {
 
 		BatchEngineImportTask batchEngineImportTask =
-			batchEngineImportTaskLocalService.getBatchEngineImportTask(
+			batchEngineImportTaskPersistence.findByPrimaryKey(
 				batchEngineImportTaskId);
 
 		_checkPermission(batchEngineImportTask);
@@ -119,7 +117,7 @@ public class BatchEngineImportTaskServiceImpl
 		_checkPermission(companyId);
 
 		return _filterBatchEngineImportTasks(
-			batchEngineImportTaskLocalService.getBatchEngineImportTasks(
+			batchEngineImportTaskPersistence.findByCompanyId(
 				companyId, start, end));
 	}
 
@@ -132,7 +130,7 @@ public class BatchEngineImportTaskServiceImpl
 		_checkPermission(companyId);
 
 		return _filterBatchEngineImportTasks(
-			batchEngineImportTaskLocalService.getBatchEngineImportTasks(
+			batchEngineImportTaskPersistence.findByCompanyId(
 				companyId, start, end, orderByComparator));
 	}
 
@@ -144,7 +142,7 @@ public class BatchEngineImportTaskServiceImpl
 
 		List<BatchEngineImportTask> filteredBatchEngineImportTasks =
 			_filterBatchEngineImportTasks(
-				batchEngineImportTaskLocalService.getBatchEngineImportTasks(
+				batchEngineImportTaskPersistence.findByCompanyId(
 					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 		return filteredBatchEngineImportTasks.size();
@@ -155,7 +153,7 @@ public class BatchEngineImportTaskServiceImpl
 		throws PortalException {
 
 		_checkPermission(
-			batchEngineImportTaskLocalService.getBatchEngineImportTask(
+			batchEngineImportTaskPersistence.findByPrimaryKey(
 				batchEngineImportTaskId));
 
 		return batchEngineImportTaskLocalService.openContentInputStream(
@@ -223,9 +221,5 @@ public class BatchEngineImportTaskServiceImpl
 
 		return false;
 	}
-
-	@Reference
-	private BatchEngineImportTaskErrorLocalService
-		_batchEngineImportTaskErrorLocalService;
 
 }

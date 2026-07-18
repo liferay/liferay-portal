@@ -117,7 +117,7 @@ public class SiteNavigationMenuServiceImpl
 		_siteNavigationMenuModelResourcePermission.check(
 			getPermissionChecker(), siteNavigationMenuId, ActionKeys.VIEW);
 
-		return siteNavigationMenuLocalService.fetchSiteNavigationMenu(
+		return siteNavigationMenuPersistence.fetchByPrimaryKey(
 			siteNavigationMenuId);
 	}
 
