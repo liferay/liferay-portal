@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.util;
 
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 
@@ -39,6 +40,17 @@ public class EmailUtil {
 			"/o/osb-faro-web/images/email/email_header.png");
 	}
 
+	public static String getLanguageKey(
+		FaroProject faroProject, String analyticsCloudLanguageKey,
+		String dataPlatformLanguageKey) {
+
+		if (faroProject.isDataPlatform()) {
+			return dataPlatformLanguageKey;
+		}
+
+		return analyticsCloudLanguageKey;
+	}
+
 	public static String getLiferayIconURL() {
 		return FaroPropsValues.FARO_URL.concat(
 			"/o/osb-faro-web/images/email/liferay_logo_1.png");
@@ -52,6 +64,22 @@ public class EmailUtil {
 	public static String getLogoIconURL() {
 		return FaroPropsValues.FARO_URL.concat(
 			"/o/osb-faro-web/images/email/ac_chart.png");
+	}
+
+	public static String getSenderEmailAddress(FaroProject faroProject) {
+		if (faroProject.isDataPlatform()) {
+			return "ldp@liferay.com";
+		}
+
+		return "ac@liferay.com";
+	}
+
+	public static String getSenderName(FaroProject faroProject) {
+		if (faroProject.isDataPlatform()) {
+			return "Liferay Data Platform";
+		}
+
+		return "Analytics Cloud";
 	}
 
 	public static String getShareIconURL() {
