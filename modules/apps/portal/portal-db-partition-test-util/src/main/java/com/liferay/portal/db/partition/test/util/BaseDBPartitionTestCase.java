@@ -76,35 +76,19 @@ public abstract class BaseDBPartitionTestCase {
 	}
 
 	protected static void addDBPartitions() throws Exception {
-		CurrentConnection defaultCurrentConnection =
-			CurrentConnectionUtil.getCurrentConnection();
+		for (long companyId : COMPANY_IDS) {
+			DBPartitionUtil.addDBPartition(companyId);
 
-		try {
-			CurrentConnection currentConnection = dataSource -> connection;
-
-			ReflectionTestUtil.setFieldValue(
-				CurrentConnectionUtil.class, "_currentConnection",
-				currentConnection);
-
-			for (long companyId : COMPANY_IDS) {
-				DBPartitionUtil.addDBPartition(companyId);
-
-				PortalInstancePool.add(
-					new CompanyImpl() {
-						{
-							setCompanyId(companyId);
-							setWebId("Test" + companyId);
-						}
-					});
-			}
-
-			_clearCaches(COMPANY_IDS);
+			PortalInstancePool.add(
+				new CompanyImpl() {
+					{
+						setCompanyId(companyId);
+						setWebId("Test" + companyId);
+					}
+				});
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				CurrentConnectionUtil.class, "_currentConnection",
-				defaultCurrentConnection);
-		}
+
+		_clearCaches(COMPANY_IDS);
 	}
 
 	protected static void createControlTable(String tableName)
@@ -235,24 +219,8 @@ public abstract class BaseDBPartitionTestCase {
 	}
 
 	protected static void importDBPartitions() throws Exception {
-		CurrentConnection defaultCurrentConnection =
-			CurrentConnectionUtil.getCurrentConnection();
-
-		try {
-			CurrentConnection currentConnection = dataSource -> connection;
-
-			ReflectionTestUtil.setFieldValue(
-				CurrentConnectionUtil.class, "_currentConnection",
-				currentConnection);
-
-			for (long companyId : COMPANY_IDS) {
-				DBPartitionUtil.importDBPartition(companyId);
-			}
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				CurrentConnectionUtil.class, "_currentConnection",
-				defaultCurrentConnection);
+		for (long companyId : COMPANY_IDS) {
+			DBPartitionUtil.importDBPartition(companyId);
 		}
 	}
 
