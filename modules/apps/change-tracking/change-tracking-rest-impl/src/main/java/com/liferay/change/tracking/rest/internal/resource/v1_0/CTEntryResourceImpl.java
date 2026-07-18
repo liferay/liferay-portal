@@ -94,10 +94,11 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 				long ctEntryId = GetterUtil.getLong(
 					document.get(Field.ENTRY_CLASS_PK));
 
-				com.liferay.change.tracking.model.CTEntry ctEntry =
-					_ctEntryLocalService.fetchCTEntry(ctEntryId);
+				com.liferay.change.tracking.model.CTEntry
+					serviceBuilderCTEntry = _ctEntryLocalService.fetchCTEntry(
+						ctEntryId);
 
-				if (ctEntry == null) {
+				if (serviceBuilderCTEntry == null) {
 					_indexer.delete(
 						contextCompany.getCompanyId(), document.get(Field.UID));
 
@@ -105,7 +106,8 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 				}
 
 				return _ctEntryDTOConverter.toDTO(
-					_getDTOConverterContext(ctEntry), ctEntry);
+					_getDTOConverterContext(serviceBuilderCTEntry),
+					serviceBuilderCTEntry);
 			});
 	}
 
@@ -119,11 +121,11 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 			_ctCollectionHistoryProviderRegistry.getCTCollectionHistoryProvider(
 				modelClassNameId);
 
-		com.liferay.change.tracking.model.CTEntry ctEntry =
+		com.liferay.change.tracking.model.CTEntry serviceBuilderCTEntry =
 			ctCollectionHistoryProvider.getCTEntry(
 				ctCollectionId, modelClassNameId, modelClassPK);
 
-		if (ctEntry == null) {
+		if (serviceBuilderCTEntry == null) {
 			throw new NoSuchEntryException(
 				StringBundler.concat(
 					"No change tracking entry exists with change tracking ",
@@ -132,7 +134,8 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 		}
 
 		return _ctEntryDTOConverter.toDTO(
-			_getDTOConverterContext(ctEntry), ctEntry);
+			_getDTOConverterContext(serviceBuilderCTEntry),
+			serviceBuilderCTEntry);
 	}
 
 	@Override
@@ -225,11 +228,11 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 
 	private <T extends BaseModel<T>> DefaultDTOConverterContext
 			_getDTOConverterContext(
-				com.liferay.change.tracking.model.CTEntry ctEntry)
+				com.liferay.change.tracking.model.CTEntry serviceBuilderCTEntry)
 		throws Exception {
 
 		CTCollection ctCollection = _ctCollectionLocalService.getCTCollection(
-			ctEntry.getCtCollectionId());
+			serviceBuilderCTEntry.getCtCollectionId());
 
 		return new DefaultDTOConverterContext(
 			contextAcceptLanguage.isAcceptAllLanguages(),
@@ -241,8 +244,9 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctEntry.getCtCollectionId(),
-						"getCTEntry", _ctCollectionModelResourcePermission);
+						ActionKeys.UPDATE,
+						serviceBuilderCTEntry.getCtCollectionId(), "getCTEntry",
+						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"delete",
@@ -252,14 +256,15 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.DELETE, ctEntry.getCtCollectionId(),
-						"getCTEntry", _ctCollectionModelResourcePermission);
+						ActionKeys.DELETE,
+						serviceBuilderCTEntry.getCtCollectionId(), "getCTEntry",
+						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"get",
 				addAction(
-					ActionKeys.VIEW, ctEntry.getCtCollectionId(), "getCTEntry",
-					_ctCollectionModelResourcePermission)
+					ActionKeys.VIEW, serviceBuilderCTEntry.getCtCollectionId(),
+					"getCTEntry", _ctCollectionModelResourcePermission)
 			).put(
 				"move-changes",
 				() -> {
@@ -271,8 +276,9 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctEntry.getCtCollectionId(),
-						"getCTEntry", _ctCollectionModelResourcePermission);
+						ActionKeys.UPDATE,
+						serviceBuilderCTEntry.getCtCollectionId(), "getCTEntry",
+						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"update",
@@ -282,8 +288,9 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctEntry.getCtCollectionId(),
-						"getCTEntry", _ctCollectionModelResourcePermission);
+						ActionKeys.UPDATE,
+						serviceBuilderCTEntry.getCtCollectionId(), "getCTEntry",
+						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"view-discard",
@@ -293,11 +300,13 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctEntry.getCtCollectionId(),
-						"getCTEntry", _ctCollectionModelResourcePermission);
+						ActionKeys.UPDATE,
+						serviceBuilderCTEntry.getCtCollectionId(), "getCTEntry",
+						_ctCollectionModelResourcePermission);
 				}
 			).build(),
-			null, contextHttpServletRequest, ctEntry.getCtCollectionId(),
+			null, contextHttpServletRequest,
+			serviceBuilderCTEntry.getCtCollectionId(),
 			contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 			contextUser);
 	}
@@ -331,11 +340,12 @@ public class CTEntryResourceImpl extends BaseCTEntryResourceImpl {
 	}
 
 	private CTEntry _toCTEntry(Long ctEntryId) throws Exception {
-		com.liferay.change.tracking.model.CTEntry ctEntry =
+		com.liferay.change.tracking.model.CTEntry serviceBuilderCTEntry =
 			_ctEntryLocalService.getCTEntry(ctEntryId);
 
 		return _ctEntryDTOConverter.toDTO(
-			_getDTOConverterContext(ctEntry), ctEntry);
+			_getDTOConverterContext(serviceBuilderCTEntry),
+			serviceBuilderCTEntry);
 	}
 
 	private static final EntityModel _entityModel = new CTEntryEntityModel();

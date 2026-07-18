@@ -48,11 +48,11 @@ public class CTRemoteResourceImpl extends BaseCTRemoteResourceImpl {
 
 	@Override
 	public void deleteCTRemote(Long ctRemoteId) throws PortalException {
-		com.liferay.change.tracking.model.CTRemote ctRemote =
+		com.liferay.change.tracking.model.CTRemote serviceBuilderCTRemote =
 			_ctRemoteLocalService.fetchCTRemote(ctRemoteId);
 
-		if (ctRemote != null) {
-			_ctRemoteService.deleteCTRemote(ctRemote);
+		if (serviceBuilderCTRemote != null) {
+			_ctRemoteService.deleteCTRemote(serviceBuilderCTRemote);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class CTRemoteResourceImpl extends BaseCTRemoteResourceImpl {
 	}
 
 	private DefaultDTOConverterContext _getDTOConverterContext(
-			com.liferay.change.tracking.model.CTRemote ctRemote)
+			com.liferay.change.tracking.model.CTRemote serviceBuilderCTRemote)
 		throws Exception {
 
 		return new DefaultDTOConverterContext(
@@ -127,50 +127,53 @@ public class CTRemoteResourceImpl extends BaseCTRemoteResourceImpl {
 			HashMapBuilder.put(
 				"delete",
 				() -> addAction(
-					ActionKeys.DELETE, ctRemote.getCtRemoteId(),
+					ActionKeys.DELETE, serviceBuilderCTRemote.getCtRemoteId(),
 					"deleteCTRemote", _ctRemoteModelResourcePermission)
 			).put(
 				"get",
 				addAction(
-					ActionKeys.VIEW, ctRemote.getCtRemoteId(), "getCTRemote",
-					_ctRemoteModelResourcePermission)
+					ActionKeys.VIEW, serviceBuilderCTRemote.getCtRemoteId(),
+					"getCTRemote", _ctRemoteModelResourcePermission)
 			).put(
 				"permissions",
 				() -> addAction(
-					ActionKeys.PERMISSIONS, ctRemote.getCtRemoteId(),
-					"patchCTRemote", _ctRemoteModelResourcePermission)
+					ActionKeys.PERMISSIONS,
+					serviceBuilderCTRemote.getCtRemoteId(), "patchCTRemote",
+					_ctRemoteModelResourcePermission)
 			).put(
 				"update",
 				() -> addAction(
-					ActionKeys.UPDATE, ctRemote.getCtRemoteId(), "putCTRemote",
-					_ctRemoteModelResourcePermission)
+					ActionKeys.UPDATE, serviceBuilderCTRemote.getCtRemoteId(),
+					"putCTRemote", _ctRemoteModelResourcePermission)
 			).build(),
-			null, contextHttpServletRequest, ctRemote.getCtRemoteId(),
+			null, contextHttpServletRequest,
+			serviceBuilderCTRemote.getCtRemoteId(),
 			contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 			contextUser);
 	}
 
 	private CTRemote _toCTRemote(
-			com.liferay.change.tracking.model.CTRemote ctRemote)
+			com.liferay.change.tracking.model.CTRemote serviceBuilderCTRemote)
 		throws Exception {
 
-		if (ctRemote == null) {
+		if (serviceBuilderCTRemote == null) {
 			return null;
 		}
 
-		return _toCTRemote(ctRemote.getCtRemoteId());
+		return _toCTRemote(serviceBuilderCTRemote.getCtRemoteId());
 	}
 
 	private CTRemote _toCTRemote(Long ctRemoteId) throws Exception {
-		com.liferay.change.tracking.model.CTRemote ctRemote =
+		com.liferay.change.tracking.model.CTRemote serviceBuilderCTRemote =
 			_ctRemoteLocalService.getCTRemote(ctRemoteId);
 
 		_ctRemoteModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), ctRemote,
-			ActionKeys.VIEW);
+			PermissionThreadLocal.getPermissionChecker(),
+			serviceBuilderCTRemote, ActionKeys.VIEW);
 
 		return _ctRemoteDTOConverter.toDTO(
-			_getDTOConverterContext(ctRemote), ctRemote);
+			_getDTOConverterContext(serviceBuilderCTRemote),
+			serviceBuilderCTRemote);
 	}
 
 	private static final EntityModel _entityModel = new CTRemoteEntityModel();

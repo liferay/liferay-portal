@@ -110,13 +110,13 @@ public class CTProcessResourceImpl extends BaseCTProcessResourceImpl {
 			Long ctProcessId, String description, String name)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTProcess ctProcess =
+		com.liferay.change.tracking.model.CTProcess serviceBuilderCTProcess =
 			_ctProcessLocalService.getCTProcess(ctProcessId);
 
 		if (Validator.isNull(name)) {
 			CTCollection ctCollection =
 				_ctCollectionLocalService.getCTCollection(
-					ctProcess.getCtCollectionId());
+					serviceBuilderCTProcess.getCtCollectionId());
 
 			name = StringBundler.concat(
 				_language.get(
@@ -125,27 +125,27 @@ public class CTProcessResourceImpl extends BaseCTProcessResourceImpl {
 		}
 
 		_ctCollectionService.undoCTCollection(
-			ctProcess.getCtCollectionId(), contextUser.getUserId(), name,
-			description);
+			serviceBuilderCTProcess.getCtCollectionId(),
+			contextUser.getUserId(), name, description);
 	}
 
 	private DefaultDTOConverterContext _getDTOConverterContext(
-			com.liferay.change.tracking.model.CTProcess ctProcess)
+			com.liferay.change.tracking.model.CTProcess serviceBuilderCTProcess)
 		throws Exception {
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.getBackgroundTask(
-				ctProcess.getBackgroundTaskId());
+				serviceBuilderCTProcess.getBackgroundTaskId());
 
 		CTCollection ctCollection = _ctCollectionLocalService.getCTCollection(
-			ctProcess.getCtCollectionId());
+			serviceBuilderCTProcess.getCtCollectionId());
 
 		return new DefaultDTOConverterContext(
 			contextAcceptLanguage.isAcceptAllLanguages(),
 			HashMapBuilder.put(
 				"delete",
 				() -> addAction(
-					ActionKeys.DELETE, ctProcess.getCtProcessId(),
+					ActionKeys.DELETE, serviceBuilderCTProcess.getCtProcessId(),
 					"deleteCTProcess", _ctProcessModelResourcePermission)
 			).put(
 				"get",
@@ -157,7 +157,8 @@ public class CTProcessResourceImpl extends BaseCTProcessResourceImpl {
 					}
 
 					return addAction(
-						ActionKeys.VIEW, ctProcess.getCtCollectionId(),
+						ActionKeys.VIEW,
+						serviceBuilderCTProcess.getCtCollectionId(),
 						"getCTProcess", _ctCollectionModelResourcePermission);
 				}
 			).put(
@@ -181,17 +182,19 @@ public class CTProcessResourceImpl extends BaseCTProcessResourceImpl {
 						_ctCollectionModelResourcePermission);
 				}
 			).build(),
-			null, contextHttpServletRequest, ctProcess.getCtCollectionId(),
+			null, contextHttpServletRequest,
+			serviceBuilderCTProcess.getCtCollectionId(),
 			contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 			contextUser);
 	}
 
 	private CTProcess _toCTProcess(Long ctProcessId) throws Exception {
-		com.liferay.change.tracking.model.CTProcess ctProcess =
+		com.liferay.change.tracking.model.CTProcess serviceBuilderCTProcess =
 			_ctProcessLocalService.getCTProcess(ctProcessId);
 
 		return _ctProcessDTOConverter.toDTO(
-			_getDTOConverterContext(ctProcess), ctProcess);
+			_getDTOConverterContext(serviceBuilderCTProcess),
+			serviceBuilderCTProcess);
 	}
 
 	private static final EntityModel _entityModel = new CTProcessEntityModel();
