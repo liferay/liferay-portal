@@ -67,11 +67,12 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 
 	@Override
 	public void deleteCTCollection(Long ctCollectionId) throws PortalException {
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
 
-		if (ctCollection != null) {
-			_ctCollectionService.deleteCTCollection(ctCollection);
+		if (serviceBuilderCTCollection != null) {
+			_ctCollectionService.deleteCTCollection(serviceBuilderCTCollection);
 		}
 	}
 
@@ -80,12 +81,14 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			String externalReferenceCode)
 		throws PortalException {
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.fetchCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					fetchCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
-		if (ctCollection != null) {
-			_ctCollectionService.deleteCTCollection(ctCollection);
+		if (serviceBuilderCTCollection != null) {
+			_ctCollectionService.deleteCTCollection(serviceBuilderCTCollection);
 		}
 	}
 
@@ -107,11 +110,13 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.getCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					getCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
-		return _getShareLink(ctCollection.getCtCollectionId());
+		return _getShareLink(serviceBuilderCTCollection.getCtCollectionId());
 	}
 
 	@Override
@@ -153,10 +158,12 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 				long ctCollectionId = GetterUtil.getLong(
 					document.get(Field.ENTRY_CLASS_PK));
 
-				com.liferay.change.tracking.model.CTCollection ctCollection =
-					_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
+				com.liferay.change.tracking.model.CTCollection
+					serviceBuilderCTCollection =
+						_ctCollectionLocalService.fetchCTCollection(
+							ctCollectionId);
 
-				if (ctCollection == null) {
+				if (serviceBuilderCTCollection == null) {
 					_indexer.delete(
 						contextCompany.getCompanyId(), document.get(Field.UID));
 
@@ -164,7 +171,8 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 				}
 
 				return _ctCollectionDTOConverter.toDTO(
-					_getDTOConverterContext(ctCollection), ctCollection);
+					_getDTOConverterContext(serviceBuilderCTCollection),
+					serviceBuilderCTCollection);
 			});
 	}
 
@@ -178,13 +186,16 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			String externalReferenceCode, CTCollection ctCollection)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection ctCollectionModel =
-			_ctCollectionLocalService.fetchCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					fetchCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
 		return _toCTCollection(
 			_ctCollectionService.updateCTCollection(
-				contextUser.getUserId(), ctCollectionModel.getCtCollectionId(),
+				contextUser.getUserId(),
+				serviceBuilderCTCollection.getCtCollectionId(),
 				ctCollection.getName(), ctCollection.getDescription()));
 	}
 
@@ -203,12 +214,15 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.getCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					getCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
 		_ctCollectionService.publishCTCollection(
-			contextUser.getUserId(), ctCollection.getCtCollectionId());
+			contextUser.getUserId(),
+			serviceBuilderCTCollection.getCtCollectionId());
 	}
 
 	@Override
@@ -216,11 +230,14 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			String externalReferenceCode, Date publishDate)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.getCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					getCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
-		_schedulePublish(ctCollection.getCtCollectionId(), publishDate);
+		_schedulePublish(
+			serviceBuilderCTCollection.getCtCollectionId(), publishDate);
 	}
 
 	@Override
@@ -268,7 +285,8 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 	}
 
 	private DefaultDTOConverterContext _getDTOConverterContext(
-			com.liferay.change.tracking.model.CTCollection ctCollection)
+			com.liferay.change.tracking.model.CTCollection
+				serviceBuilderCTCollection)
 		throws Exception {
 
 		return new DefaultDTOConverterContext(
@@ -276,94 +294,106 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			HashMapBuilder.put(
 				"checkout",
 				() -> {
-					if (!ctCollection.isInProgress() ||
-						(ctCollection.getCtCollectionId() ==
+					if (!serviceBuilderCTCollection.isInProgress() ||
+						(serviceBuilderCTCollection.getCtCollectionId() ==
 							CTCollectionThreadLocal.getCTCollectionId())) {
 
 						return null;
 					}
 
 					return addAction(
-						ActionKeys.VIEW, ctCollection.getCtCollectionId(),
+						ActionKeys.VIEW,
+						serviceBuilderCTCollection.getCtCollectionId(),
 						"postCTCollectionCheckout",
 						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"delete",
 				() -> addAction(
-					ActionKeys.DELETE, ctCollection.getCtCollectionId(),
+					ActionKeys.DELETE,
+					serviceBuilderCTCollection.getCtCollectionId(),
 					"deleteCTCollection", _ctCollectionModelResourcePermission)
 			).put(
 				"get",
 				addAction(
-					ActionKeys.VIEW, ctCollection.getCtCollectionId(),
+					ActionKeys.VIEW,
+					serviceBuilderCTCollection.getCtCollectionId(),
 					"getCTCollection", _ctCollectionModelResourcePermission)
 			).put(
 				"permissions",
 				() -> {
-					if (!ctCollection.isInProgress()) {
+					if (!serviceBuilderCTCollection.isInProgress()) {
 						return null;
 					}
 
 					return addAction(
 						ActionKeys.PERMISSIONS,
-						ctCollection.getCtCollectionId(), "patchCTCollection",
+						serviceBuilderCTCollection.getCtCollectionId(),
+						"patchCTCollection",
 						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"publish",
 				() -> {
-					if (!_isPublishEnabled(ctCollection.getCtCollectionId())) {
+					if (!_isPublishEnabled(
+							serviceBuilderCTCollection.getCtCollectionId())) {
+
 						return null;
 					}
 
 					return addAction(
-						CTActionKeys.PUBLISH, ctCollection.getCtCollectionId(),
+						CTActionKeys.PUBLISH,
+						serviceBuilderCTCollection.getCtCollectionId(),
 						"postCTCollectionPublish",
 						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"reactivate",
 				() -> {
-					if (ctCollection.getStatus() !=
+					if (serviceBuilderCTCollection.getStatus() !=
 							WorkflowConstants.STATUS_EXPIRED) {
 
 						return null;
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctCollection.getCtCollectionId(),
+						ActionKeys.UPDATE,
+						serviceBuilderCTCollection.getCtCollectionId(),
 						"putCTCollection",
 						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"schedule",
 				() -> {
-					if (!_isPublishEnabled(ctCollection.getCtCollectionId()) ||
+					if (!_isPublishEnabled(
+							serviceBuilderCTCollection.getCtCollectionId()) ||
 						!PropsValues.SCHEDULER_ENABLED) {
 
 						return null;
 					}
 
 					return addAction(
-						CTActionKeys.PUBLISH, ctCollection.getCtCollectionId(),
+						CTActionKeys.PUBLISH,
+						serviceBuilderCTCollection.getCtCollectionId(),
 						"postCTCollectionSchedulePublish",
 						_ctCollectionModelResourcePermission);
 				}
 			).put(
 				"update",
 				() -> {
-					if (!ctCollection.isInProgress()) {
+					if (!serviceBuilderCTCollection.isInProgress()) {
 						return null;
 					}
 
 					return addAction(
-						ActionKeys.UPDATE, ctCollection.getCtCollectionId(),
+						ActionKeys.UPDATE,
+						serviceBuilderCTCollection.getCtCollectionId(),
 						"putCTCollection",
 						_ctCollectionModelResourcePermission);
 				}
 			).build(),
-			null, contextHttpServletRequest, ctCollection.getCtCollectionId(),
+			null, contextHttpServletRequest,
+			serviceBuilderCTCollection.getCtCollectionId(),
 			contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 			contextUser);
 	}
@@ -400,10 +430,11 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			return true;
 		}
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
 
-		return ctCollection.isInProgress();
+		return serviceBuilderCTCollection.isInProgress();
 	}
 
 	private void _schedulePublish(long ctCollectionId, Date publishDate)
@@ -423,10 +454,13 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 				"The publish time must be in the future");
 		}
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.fetchCTCollection(ctCollectionId);
 
-		if (ctCollection.getStatus() == WorkflowConstants.STATUS_SCHEDULED) {
+		if (serviceBuilderCTCollection.getStatus() ==
+				WorkflowConstants.STATUS_SCHEDULED) {
+
 			_publishScheduler.unschedulePublish(ctCollectionId);
 		}
 
@@ -435,33 +469,39 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 	}
 
 	private CTCollection _toCTCollection(
-			com.liferay.change.tracking.model.CTCollection ctCollection)
+			com.liferay.change.tracking.model.CTCollection
+				serviceBuilderCTCollection)
 		throws Exception {
 
-		if (ctCollection == null) {
+		if (serviceBuilderCTCollection == null) {
 			return null;
 		}
 
-		return _toCTCollection(ctCollection.getCtCollectionId());
+		return _toCTCollection(serviceBuilderCTCollection.getCtCollectionId());
 	}
 
 	private CTCollection _toCTCollection(Long ctCollectionId) throws Exception {
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.getCTCollection(ctCollectionId);
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.getCTCollection(ctCollectionId);
 
 		return _ctCollectionDTOConverter.toDTO(
-			_getDTOConverterContext(ctCollection), ctCollection);
+			_getDTOConverterContext(serviceBuilderCTCollection),
+			serviceBuilderCTCollection);
 	}
 
 	private CTCollection _toCTCollection(String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection ctCollection =
-			_ctCollectionLocalService.getCTCollectionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.change.tracking.model.CTCollection
+			serviceBuilderCTCollection =
+				_ctCollectionLocalService.
+					getCTCollectionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
 		return _ctCollectionDTOConverter.toDTO(
-			_getDTOConverterContext(ctCollection), ctCollection);
+			_getDTOConverterContext(serviceBuilderCTCollection),
+			serviceBuilderCTCollection);
 	}
 
 	private static final EntityModel _entityModel =
