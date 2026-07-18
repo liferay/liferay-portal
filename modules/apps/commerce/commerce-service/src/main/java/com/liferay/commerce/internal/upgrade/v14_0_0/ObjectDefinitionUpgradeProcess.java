@@ -144,8 +144,8 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 
 		runSQL(
 			StringBundler.concat(
-				"update ", dbTableName, " set ", oldDBColumnName, " = (select ",
-				_NEW_PK_OBJECT_FIELD_NAME, " from ",
+				"update ", dbTableName, " set ", oldDBColumnName,
+				" = (select max(", _NEW_PK_OBJECT_FIELD_NAME, ") from ",
 				objectDefinition.getDBTableName(), " where ",
 				_OLD_PK_OBJECT_FIELD_NAME, " = ", dbTableName, ".",
 				oldDBColumnName, ")"));
