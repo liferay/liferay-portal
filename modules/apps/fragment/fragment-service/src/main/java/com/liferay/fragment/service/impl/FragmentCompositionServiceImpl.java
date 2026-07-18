@@ -7,6 +7,7 @@ package com.liferay.fragment.service.impl;
 
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.internal.util.FragmentCompositionKeyUtil;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.base.FragmentCompositionServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
@@ -100,8 +101,10 @@ public class FragmentCompositionServiceImpl
 	public FragmentComposition fetchFragmentComposition(
 		long groupId, String fragmentCompositionKey) {
 
-		return fragmentCompositionLocalService.fetchFragmentComposition(
-			groupId, fragmentCompositionKey);
+		return fragmentCompositionPersistence.fetchByG_FCK(
+			groupId,
+			FragmentCompositionKeyUtil.getFragmentCompositionKey(
+				fragmentCompositionKey));
 	}
 
 	@Override

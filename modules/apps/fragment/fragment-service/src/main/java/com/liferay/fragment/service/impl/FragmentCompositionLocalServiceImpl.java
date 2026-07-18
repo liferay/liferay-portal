@@ -8,6 +8,7 @@ package com.liferay.fragment.service.impl;
 import com.liferay.fragment.exception.DuplicateFragmentCompositionKeyException;
 import com.liferay.fragment.exception.FragmentCompositionDescriptionException;
 import com.liferay.fragment.exception.FragmentCompositionNameException;
+import com.liferay.fragment.internal.util.FragmentCompositionKeyUtil;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.base.FragmentCompositionLocalServiceBaseImpl;
 import com.liferay.petra.string.CharPool;
@@ -64,8 +65,9 @@ public class FragmentCompositionLocalServiceImpl
 				groupId, name);
 		}
 
-		fragmentCompositionKey = _getFragmentCompositionKey(
-			fragmentCompositionKey);
+		fragmentCompositionKey =
+			FragmentCompositionKeyUtil.getFragmentCompositionKey(
+				fragmentCompositionKey);
 
 		_validateFragmentCompositionKey(groupId, fragmentCompositionKey);
 
@@ -161,12 +163,15 @@ public class FragmentCompositionLocalServiceImpl
 		long groupId, String fragmentCompositionKey) {
 
 		return fragmentCompositionPersistence.fetchByG_FCK(
-			groupId, _getFragmentCompositionKey(fragmentCompositionKey));
+			groupId,
+			FragmentCompositionKeyUtil.getFragmentCompositionKey(
+				fragmentCompositionKey));
 	}
 
 	@Override
 	public String generateFragmentCompositionKey(long groupId, String name) {
-		String fragmentCompositionKey = _getFragmentCompositionKey(name);
+		String fragmentCompositionKey =
+			FragmentCompositionKeyUtil.getFragmentCompositionKey(name);
 
 		fragmentCompositionKey = StringUtil.replace(
 			fragmentCompositionKey, CharPool.SPACE, CharPool.DASH);
@@ -373,16 +378,6 @@ public class FragmentCompositionLocalServiceImpl
 		return fragmentCompositionPersistence.update(fragmentComposition);
 	}
 
-	private String _getFragmentCompositionKey(String fragmentCompositionKey) {
-		if (fragmentCompositionKey != null) {
-			fragmentCompositionKey = fragmentCompositionKey.trim();
-
-			return StringUtil.toLowerCase(fragmentCompositionKey);
-		}
-
-		return StringPool.BLANK;
-	}
-
 	private void _validateDescription(String description)
 		throws PortalException {
 
@@ -403,8 +398,9 @@ public class FragmentCompositionLocalServiceImpl
 			long groupId, String fragmentCompositionKey)
 		throws PortalException {
 
-		fragmentCompositionKey = _getFragmentCompositionKey(
-			fragmentCompositionKey);
+		fragmentCompositionKey =
+			FragmentCompositionKeyUtil.getFragmentCompositionKey(
+				fragmentCompositionKey);
 
 		FragmentComposition fragmentComposition =
 			fragmentCompositionPersistence.fetchByG_FCK(
