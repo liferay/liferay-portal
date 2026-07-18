@@ -233,7 +233,7 @@ public class FragmentCollectionManagerTest {
 
 	private void _testGetGroupIds(long[] expectedGroupIds) throws Exception {
 		long[] groupIds = ReflectionTestUtil.invoke(
-			_fragmentCollectionManager, "_getGroupIds",
+			_fragmentCollectionManager, "getGroupIds",
 			new Class<?>[] {long.class, long.class, long.class},
 			_group.getCompanyId(), _company.getGroupId(), _group.getGroupId());
 
