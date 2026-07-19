@@ -249,7 +249,7 @@ public class ListTypeDefinitionLocalServiceImpl
 
 			if (listTypeEntry.getListTypeEntryId() > 0) {
 				existingListTypeEntry =
-					_listTypeEntryLocalService.fetchListTypeEntry(
+					_listTypeEntryPersistence.fetchByPrimaryKey(
 						listTypeEntry.getListTypeEntryId());
 			}
 
@@ -266,9 +266,8 @@ public class ListTypeDefinitionLocalServiceImpl
 			if ((existingListTypeEntry == null) &&
 				Validator.isNotNull(listTypeEntry.getKey())) {
 
-				existingListTypeEntry =
-					_listTypeEntryLocalService.fetchListTypeEntry(
-						listTypeDefinitionId, listTypeEntry.getKey());
+				existingListTypeEntry = _listTypeEntryPersistence.fetchByLTDI_K(
+					listTypeDefinitionId, listTypeEntry.getKey());
 			}
 
 			if (existingListTypeEntry == null) {
