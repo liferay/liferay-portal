@@ -145,6 +145,7 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.ContactPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
+import com.liferay.portal.kernel.service.persistence.PasswordPolicyPersistence;
 import com.liferay.portal.kernel.service.persistence.TicketPersistence;
 import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -7028,9 +7029,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(
 					ldapServerId, companyId)) {
 
-				passwordPolicy =
-					_passwordPolicyLocalService.getDefaultPasswordPolicy(
-						companyId);
+				passwordPolicy = _passwordPolicyPersistence.fetchByC_N(
+					companyId, PropsValues.PASSWORDS_DEFAULT_POLICY_NAME);
 			}
 
 			PwdToolkitUtil.validate(0, password1, password2, passwordPolicy);
@@ -7392,20 +7392,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	private boolean _isPasswordReset(long companyId) {
-		try {
-			PasswordPolicy passwordPolicy =
-				_passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
+		PasswordPolicy passwordPolicy = _passwordPolicyPersistence.fetchByC_N(
+			companyId, PropsValues.PASSWORDS_DEFAULT_POLICY_NAME);
 
-			if (passwordPolicy.isChangeable() &&
-				passwordPolicy.isChangeRequired()) {
+		if (passwordPolicy.isChangeable() &&
+			passwordPolicy.isChangeRequired()) {
 
-				return true;
-			}
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
+			return true;
 		}
 
 		return false;
@@ -7661,6 +7654,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 	@BeanReference(type = PasswordPolicyLocalService.class)
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
+
+	@BeanReference(type = PasswordPolicyPersistence.class)
+	private PasswordPolicyPersistence _passwordPolicyPersistence;
 
 	@BeanReference(type = PasswordPolicyRelLocalService.class)
 	private PasswordPolicyRelLocalService _passwordPolicyRelLocalService;

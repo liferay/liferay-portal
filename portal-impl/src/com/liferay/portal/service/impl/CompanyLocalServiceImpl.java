@@ -103,6 +103,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyInfoPersistence;
 import com.liferay.portal.kernel.service.persistence.ContactPersistence;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetPrototypePersistence;
+import com.liferay.portal.kernel.service.persistence.PasswordPolicyPersistence;
 import com.liferay.portal.kernel.service.persistence.PortalPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
@@ -1764,7 +1765,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		_passwordPolicyLocalService.deleteNondefaultPasswordPolicies(companyId);
 
 		PasswordPolicy defaultPasswordPolicy =
-			_passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
+			_passwordPolicyPersistence.fetchByC_N(
+				companyId, PropsValues.PASSWORDS_DEFAULT_POLICY_NAME);
 
 		if (defaultPasswordPolicy != null) {
 			_passwordPolicyLocalService.deletePasswordPolicy(
@@ -2676,6 +2678,9 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 	@BeanReference(type = PasswordPolicyLocalService.class)
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
+
+	@BeanReference(type = PasswordPolicyPersistence.class)
+	private PasswordPolicyPersistence _passwordPolicyPersistence;
 
 	private final Set<Company> _pendingCompanies = new HashSet<>();
 
