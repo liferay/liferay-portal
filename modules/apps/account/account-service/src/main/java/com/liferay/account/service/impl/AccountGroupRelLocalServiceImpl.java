@@ -12,9 +12,9 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.model.AccountGroupRelTable;
 import com.liferay.account.model.AccountGroupTable;
-import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.base.AccountGroupRelLocalServiceBaseImpl;
+import com.liferay.account.service.persistence.AccountEntryPersistence;
+import com.liferay.account.service.persistence.AccountGroupPersistence;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -67,13 +67,13 @@ public class AccountGroupRelLocalServiceImpl
 			(classPK != AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) &&
 			(classPK != AccountConstants.ACCOUNT_ENTRY_ID_GUEST)) {
 
-			_accountEntryLocalService.getAccountEntry(classPK);
+			_accountEntryPersistence.findByPrimaryKey(classPK);
 		}
 
 		accountGroupRel = createAccountGroupRel(
 			counterLocalService.increment());
 
-		AccountGroup accountGroup = _accountGroupLocalService.getAccountGroup(
+		AccountGroup accountGroup = _accountGroupPersistence.findByPrimaryKey(
 			accountGroupId);
 
 		User user = null;
@@ -283,10 +283,10 @@ public class AccountGroupRelLocalServiceImpl
 		AccountGroupRelLocalServiceImpl.class);
 
 	@Reference
-	private AccountEntryLocalService _accountEntryLocalService;
+	private AccountEntryPersistence _accountEntryPersistence;
 
 	@Reference
-	private AccountGroupLocalService _accountGroupLocalService;
+	private AccountGroupPersistence _accountGroupPersistence;
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

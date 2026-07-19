@@ -28,6 +28,7 @@ import com.liferay.oauth2.provider.redirect.OAuth2RedirectURIInterpolator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.oauth2.provider.service.base.OAuth2ApplicationLocalServiceBaseImpl;
+import com.liferay.oauth2.provider.service.persistence.OAuth2AuthorizationPersistence;
 import com.liferay.oauth2.provider.util.OAuth2JWKValidatorUtil;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.oauth2.provider.util.builder.OAuth2ScopeBuilder;
@@ -418,7 +419,7 @@ public class OAuth2ApplicationLocalServiceImpl
 			oAuth2Application, ResourceConstants.SCOPE_INDIVIDUAL);
 
 		List<OAuth2Authorization> oAuth2Authorizations =
-			_oAuth2AuthorizationLocalService.getOAuth2Authorizations(
+			_oAuth2AuthorizationPersistence.findByOAuth2ApplicationId(
 				oAuth2Application.getOAuth2ApplicationId(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
 
@@ -968,6 +969,9 @@ public class OAuth2ApplicationLocalServiceImpl
 
 	@Reference
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
+
+	@Reference
+	private OAuth2AuthorizationPersistence _oAuth2AuthorizationPersistence;
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;

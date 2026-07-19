@@ -14,9 +14,9 @@ import com.liferay.account.exception.AccountEntryUserRelEmailAddressException;
 import com.liferay.account.exception.DuplicateAccountEntryIdException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
-import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.account.service.base.AccountEntryUserRelLocalServiceBaseImpl;
+import com.liferay.account.service.persistence.AccountEntryPersistence;
 import com.liferay.account.validator.AccountEntryEmailAddressValidator;
 import com.liferay.account.validator.AccountEntryEmailAddressValidatorFactory;
 import com.liferay.mail.kernel.model.MailMessage;
@@ -108,7 +108,7 @@ public class AccountEntryUserRelLocalServiceImpl
 		}
 
 		if (accountEntryId != AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) {
-			_accountEntryLocalService.getAccountEntry(accountEntryId);
+			_accountEntryPersistence.findByPrimaryKey(accountEntryId);
 		}
 
 		User accountUser = _userLocalService.getUser(accountUserId);
@@ -140,7 +140,7 @@ public class AccountEntryUserRelLocalServiceImpl
 
 		if (accountEntryId != AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) {
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getAccountEntry(accountEntryId);
+				_accountEntryPersistence.findByPrimaryKey(accountEntryId);
 
 			companyId = accountEntry.getCompanyId();
 		}
@@ -200,7 +200,7 @@ public class AccountEntryUserRelLocalServiceImpl
 
 		if (user == null) {
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getAccountEntry(accountEntryId);
+				_accountEntryPersistence.findByPrimaryKey(accountEntryId);
 
 			Group group = accountEntry.getAccountEntryGroup();
 
@@ -252,7 +252,7 @@ public class AccountEntryUserRelLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+		AccountEntry accountEntry = _accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
 		if (!Objects.equals(
@@ -286,7 +286,7 @@ public class AccountEntryUserRelLocalServiceImpl
 			long accountEntryId, String emailAddress)
 		throws PortalException {
 
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+		AccountEntry accountEntry = _accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
 		User user = _userLocalService.getUserByEmailAddress(
@@ -455,7 +455,7 @@ public class AccountEntryUserRelLocalServiceImpl
 	public void setPersonTypeAccountEntryUser(long accountEntryId, long userId)
 		throws PortalException {
 
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+		AccountEntry accountEntry = _accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
 		if (!Objects.equals(
@@ -555,7 +555,7 @@ public class AccountEntryUserRelLocalServiceImpl
 	}
 
 	private String[] _getAccountDomains(long accountEntryId) {
-		AccountEntry accountEntry = _accountEntryLocalService.fetchAccountEntry(
+		AccountEntry accountEntry = _accountEntryPersistence.fetchByPrimaryKey(
 			accountEntryId);
 
 		if ((accountEntry == null) || !accountEntry.isRestrictMembership()) {
@@ -599,7 +599,7 @@ public class AccountEntryUserRelLocalServiceImpl
 				MailTemplateFactoryUtil.createMailTemplateContextBuilder();
 
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getAccountEntry(accountEntryId);
+				_accountEntryPersistence.findByPrimaryKey(accountEntryId);
 
 			mailTemplateContextBuilder.put(
 				"[$ACCOUNT_NAME$]",
@@ -702,7 +702,7 @@ public class AccountEntryUserRelLocalServiceImpl
 		_accountEntryEmailAddressValidatorFactory;
 
 	@Reference
-	private AccountEntryLocalService _accountEntryLocalService;
+	private AccountEntryPersistence _accountEntryPersistence;
 
 	@Reference
 	private AccountRoleLocalService _accountRoleLocalService;

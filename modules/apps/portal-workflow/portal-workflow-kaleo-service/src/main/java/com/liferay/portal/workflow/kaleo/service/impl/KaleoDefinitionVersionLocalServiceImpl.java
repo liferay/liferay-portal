@@ -66,6 +66,7 @@ import com.liferay.portal.workflow.kaleo.service.KaleoNodeLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoTransitionLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoDefinitionVersionLocalServiceBaseImpl;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoInstancePersistence;
 import com.liferay.portal.workflow.kaleo.util.comparator.KaleoDefinitionVersionIdComparator;
 
 import java.util.ArrayList;
@@ -148,9 +149,8 @@ public class KaleoDefinitionVersionLocalServiceImpl
 
 		// Kaleo definition version
 
-		int kaleoInstancesCount =
-			_kaleoInstanceLocalService.getKaleoInstancesCount(
-				kaleoDefinitionVersion.getKaleoDefinitionVersionId(), false);
+		int kaleoInstancesCount = _kaleoInstancePersistence.countByKDVI_C(
+			kaleoDefinitionVersion.getKaleoDefinitionVersionId(), false);
 
 		if (kaleoInstancesCount > 0) {
 			throw new IncompleteWorkflowInstancesException(kaleoInstancesCount);
@@ -205,9 +205,8 @@ public class KaleoDefinitionVersionLocalServiceImpl
 	public void deleteKaleoDefinitionVersions(KaleoDefinition kaleoDefinition)
 		throws PortalException {
 
-		int kaleoInstancesCount =
-			_kaleoInstanceLocalService.getKaleoDefinitionKaleoInstancesCount(
-				kaleoDefinition.getKaleoDefinitionId(), false);
+		int kaleoInstancesCount = _kaleoInstancePersistence.countByKDI_C(
+			kaleoDefinition.getKaleoDefinitionId(), false);
 
 		if (kaleoInstancesCount > 0) {
 			throw new IncompleteWorkflowInstancesException(kaleoInstancesCount);
@@ -555,6 +554,9 @@ public class KaleoDefinitionVersionLocalServiceImpl
 
 	@Reference
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+
+	@Reference
+	private KaleoInstancePersistence _kaleoInstancePersistence;
 
 	@Reference
 	private KaleoNodeLocalService _kaleoNodeLocalService;

@@ -15,8 +15,8 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTaskForm;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskFormInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.runtime.form.FormValueProcessor;
-import com.liferay.portal.workflow.kaleo.service.KaleoTaskFormLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoTaskFormInstanceLocalServiceBaseImpl;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormPersistence;
 
 import java.util.Date;
 import java.util.List;
@@ -69,7 +69,7 @@ public class KaleoTaskFormInstanceLocalServiceImpl
 		kaleoTaskFormInstance.setKaleoTaskFormId(kaleoTaskFormId);
 
 		KaleoTaskForm kaleoTaskForm =
-			_kaleoTaskFormLocalService.getKaleoTaskForm(kaleoTaskFormId);
+			_kaleoTaskFormPersistence.findByPrimaryKey(kaleoTaskFormId);
 
 		if (Validator.isNotNull(kaleoTaskForm.getFormDefinition())) {
 			kaleoTaskFormInstance.setFormValues(formValues);
@@ -145,7 +145,7 @@ public class KaleoTaskFormInstanceLocalServiceImpl
 	private FormValueProcessor _formValueProcessor;
 
 	@Reference
-	private KaleoTaskFormLocalService _kaleoTaskFormLocalService;
+	private KaleoTaskFormPersistence _kaleoTaskFormPersistence;
 
 	@Reference
 	private UserLocalService _userLocalService;

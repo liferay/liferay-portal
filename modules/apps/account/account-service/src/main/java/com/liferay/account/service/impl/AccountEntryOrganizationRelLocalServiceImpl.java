@@ -8,8 +8,8 @@ package com.liferay.account.service.impl;
 import com.liferay.account.exception.DuplicateAccountEntryOrganizationRelException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
-import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.base.AccountEntryOrganizationRelLocalServiceBaseImpl;
+import com.liferay.account.service.persistence.AccountEntryPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Organization;
@@ -46,7 +46,7 @@ public class AccountEntryOrganizationRelLocalServiceImpl
 			throw new DuplicateAccountEntryOrganizationRelException();
 		}
 
-		_accountEntryLocalService.getAccountEntry(accountEntryId);
+		_accountEntryPersistence.findByPrimaryKey(accountEntryId);
 		_organizationLocalService.getOrganization(organizationId);
 
 		AccountEntryOrganizationRel accountEntryOrganizationRel =
@@ -254,7 +254,7 @@ public class AccountEntryOrganizationRelLocalServiceImpl
 	}
 
 	@Reference
-	private AccountEntryLocalService _accountEntryLocalService;
+	private AccountEntryPersistence _accountEntryPersistence;
 
 	@Reference
 	private OrganizationLocalService _organizationLocalService;
