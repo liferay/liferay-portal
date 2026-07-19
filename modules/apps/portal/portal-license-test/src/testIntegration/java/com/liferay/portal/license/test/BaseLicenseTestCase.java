@@ -85,28 +85,12 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		Assume.assumeTrue(isReleaseBundle());
 	}
 
-	public static File deployFreeTierPortalLicense(long validityPeriod)
-		throws Exception {
-
-		return deployFreeTierPortalLicense(
-			_FREE_TIER_DOMAIN, StringPool.BLANK, validityPeriod);
-	}
-
-	public static File deployFreeTierPortalLicense(
-			String domain, long validityPeriod)
-		throws Exception {
-
-		return deployFreeTierPortalLicense(
-			domain, StringPool.BLANK, validityPeriod);
-	}
-
-	public static File deployFreeTierPortalLicense(
-			String domain, String key, long validityPeriod)
-		throws Exception {
+	public static String buildFreeTierPortalLicenseXML(
+		String domain, String key, long validityPeriod) {
 
 		StringBundler sb = new StringBundler(20);
 
-		sb.append("<?xml version=\"1.0\"?><license><account-name>");
+		sb.append("<license><account-name>");
 		sb.append(_FREE_TIER_ACCOUNT_NAME);
 		sb.append("</account-name><product-id>");
 		sb.append(getPortalProductId());
@@ -131,7 +115,30 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append(key);
 		sb.append("</key></license>");
 
-		_registerLicense(sb.toString());
+		return sb.toString();
+	}
+
+	public static File deployFreeTierPortalLicense(long validityPeriod)
+		throws Exception {
+
+		return deployFreeTierPortalLicense(
+			_FREE_TIER_DOMAIN, StringPool.BLANK, validityPeriod);
+	}
+
+	public static File deployFreeTierPortalLicense(
+			String domain, long validityPeriod)
+		throws Exception {
+
+		return deployFreeTierPortalLicense(
+			domain, StringPool.BLANK, validityPeriod);
+	}
+
+	public static File deployFreeTierPortalLicense(
+			String domain, String key, long validityPeriod)
+		throws Exception {
+
+		_registerLicense(
+			buildFreeTierPortalLicenseXML(domain, key, validityPeriod));
 
 		return _buildBinaryFile(
 			getPortalProductId(), _FREE_TIER_ACCOUNT_NAME,
@@ -245,19 +252,12 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		Assert.assertFalse(response.contains(_LICENSE_PAGE_KEY));
 	}
 
-	public File deployAppLicense(App app, long validityPeriod)
-		throws Exception {
-
-		return deployAppLicense(
-			app, System.currentTimeMillis(), validityPeriod);
-	}
-
-	public File deployAppLicense(App app, long startTime, long validityPeriod)
-		throws Exception {
+	public String buildAppLicenseXML(
+		App app, long startTime, long validityPeriod) {
 
 		StringBundler sb = new StringBundler(19);
 
-		sb.append("<?xml version=\"1.0\"?><license><product-id>");
+		sb.append("<license><product-id>");
 		sb.append(getProductId(app));
 		sb.append("</product-id><product-name>");
 		sb.append(app);
@@ -289,21 +289,15 @@ public abstract class BaseLicenseTestCase implements Serializable {
 
 		sb.append("</mac-addresses><key></key></license>");
 
-		_registerLicense(sb.toString());
-
-		return _buildBinaryFile(
-			getProductId(app), StringPool.BLANK, app.toString(),
-			_APP_LICENSE_TYPE);
+		return sb.toString();
 	}
 
-	public File deployEnterprisePortalLicense(long validityPeriod)
-		throws Exception {
-
+	public String buildEnterprisePortalLicenseXML(long validityPeriod) {
 		long currentTimeMillis = System.currentTimeMillis();
 
 		StringBundler sb = new StringBundler(19);
 
-		sb.append("<?xml version=\"1.0\"?><license><account-name>");
+		sb.append("<license><account-name>");
 		sb.append(_ENTERPRISE_ACCOUNT_NAME);
 		sb.append("</account-name><product-id>");
 		sb.append(getPortalProductId());
@@ -324,7 +318,30 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append("</domain><domain>localhost</domain></domains>");
 		sb.append("<key></key></license>");
 
-		_registerLicense(sb.toString());
+		return sb.toString();
+	}
+
+	public File deployAppLicense(App app, long validityPeriod)
+		throws Exception {
+
+		return deployAppLicense(
+			app, System.currentTimeMillis(), validityPeriod);
+	}
+
+	public File deployAppLicense(App app, long startTime, long validityPeriod)
+		throws Exception {
+
+		_registerLicense(buildAppLicenseXML(app, startTime, validityPeriod));
+
+		return _buildBinaryFile(
+			getProductId(app), StringPool.BLANK, app.toString(),
+			_APP_LICENSE_TYPE);
+	}
+
+	public File deployEnterprisePortalLicense(long validityPeriod)
+		throws Exception {
+
+		_registerLicense(buildEnterprisePortalLicenseXML(validityPeriod));
 
 		return _buildBinaryFile(
 			getPortalProductId(), _ENTERPRISE_ACCOUNT_NAME,
@@ -625,7 +642,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 				_licensePackageName, LoggerTestUtil.ALL)) {
 
 			LicenseManagerUtil.registerLicense(
-				JSONUtil.put("licenseXML", licenseXML));
+				JSONUtil.put(
+					"licenseXML", "<?xml version=\"1.0\"?>" + licenseXML));
 
 			_throwLogEntriesException(logCapture, null, LoggerTestUtil.ERROR);
 		}
