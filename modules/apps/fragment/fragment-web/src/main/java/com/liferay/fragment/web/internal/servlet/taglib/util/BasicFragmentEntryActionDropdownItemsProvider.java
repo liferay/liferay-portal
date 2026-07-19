@@ -133,21 +133,10 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 						() ->
 							hasManageFragmentEntriesPermission &&
 							!_fragmentEntry.isReadOnly() &&
-							((_fragmentEntry.getGroupId() ==
-								_themeDisplay.getCompanyGroupId()) ||
-							 (FeatureFlagManagerUtil.isEnabled(
-								 _fragmentEntry.getCompanyId(), "LPD-57283") &&
-							  DesignLibraryUtil.isDesignLibraryScope(
-								  _themeDisplay.getScopeGroup()))),
-						_getViewGroupFragmentEntryUsagesActionUnsafeConsumer()
-					).add(
-						() ->
-							hasManageFragmentEntriesPermission &&
-							!_fragmentEntry.isReadOnly() &&
-							(_fragmentEntry.getGroupId() !=
-								_themeDisplay.getCompanyGroupId()) &&
-							!DesignLibraryUtil.isDesignLibraryScope(
-								_themeDisplay.getScopeGroup()),
+							(FeatureFlagManagerUtil.isEnabled(
+								_fragmentEntry.getCompanyId(), "LPD-57283") ||
+							 !DesignLibraryUtil.isDesignLibraryScope(
+								 _themeDisplay.getScopeGroup())),
 						_getViewFragmentEntryUsagesActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
@@ -500,34 +489,36 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 	private UnsafeConsumer<DropdownItem, Exception>
 		_getViewFragmentEntryUsagesActionUnsafeConsumer() {
 
+		boolean viewSiteUsages = _isViewSiteUsages();
+
 		return dropdownItem -> {
 			dropdownItem.setDisabled(_fragmentEntry.getUsageCount() == 0);
 			dropdownItem.setHref(
 				_renderResponse.createRenderURL(), "mvcRenderCommandName",
-				"/fragment/view_fragment_entry_usages", "redirect",
-				_themeDisplay.getURLCurrent(), "fragmentCollectionId",
+				viewSiteUsages ? "/fragment/view_group_fragment_entry_usages" :
+					"/fragment/view_fragment_entry_usages",
+				"redirect", _themeDisplay.getURLCurrent(),
+				"fragmentCollectionId",
 				_fragmentEntry.getFragmentCollectionId(), "fragmentEntryId",
 				_fragmentEntry.getFragmentEntryId());
 			dropdownItem.setIcon("list-ul");
 			dropdownItem.setLabel(
-				LanguageUtil.get(_httpServletRequest, "view-usages"));
+				LanguageUtil.get(
+					_httpServletRequest,
+					viewSiteUsages ? "view-site-usages" : "view-usages"));
 		};
 	}
 
-	private UnsafeConsumer<DropdownItem, Exception>
-		_getViewGroupFragmentEntryUsagesActionUnsafeConsumer() {
+	private boolean _isViewSiteUsages() {
+		if ((_fragmentEntry.getGroupId() ==
+				_themeDisplay.getCompanyGroupId()) ||
+			DesignLibraryUtil.isDesignLibraryScope(
+				_themeDisplay.getScopeGroup())) {
 
-		return dropdownItem -> {
-			dropdownItem.setDisabled(_fragmentEntry.getUsageCount() == 0);
-			dropdownItem.setHref(
-				_renderResponse.createRenderURL(), "mvcRenderCommandName",
-				"/fragment/view_group_fragment_entry_usages", "redirect",
-				_themeDisplay.getURLCurrent(), "fragmentCollectionId",
-				_fragmentEntry.getFragmentCollectionId(), "fragmentEntryId",
-				_fragmentEntry.getFragmentEntryId());
-			dropdownItem.setLabel(
-				LanguageUtil.get(_httpServletRequest, "view-site-usages"));
-		};
+			return true;
+		}
+
+		return false;
 	}
 
 	private final FragmentEntry _fragmentEntry;
