@@ -807,31 +807,8 @@ public class PortletPreferencesLocalServiceImpl
 	}
 
 	private LayoutRevision _getLayoutRevision(long plid) {
-		if (plid <= 0) {
-			return null;
-		}
-
-		LayoutRevision layoutRevision =
-			_layoutRevisionPersistence.fetchByPrimaryKey(plid);
-
-		if (layoutRevision != null) {
-			return layoutRevision;
-		}
-
-		Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
-
-		if (layout == null) {
-			return null;
-		}
-
-		if (LayoutStagingUtil.isBranchingLayout(layout)) {
-			LayoutStagingHandler layoutStagingHandler =
-				new LayoutStagingHandler(layout);
-
-			return layoutStagingHandler.getLayoutRevision();
-		}
-
-		return null;
+		return PortletPreferencesPlidUtil.getLayoutRevision(
+			plid, _layoutRevisionPersistence, _layoutPersistence);
 	}
 
 	private List<PortletPreferenceValue> _getPortletPreferenceValues(
@@ -870,17 +847,8 @@ public class PortletPreferencesLocalServiceImpl
 	}
 
 	private long _swapPlidForPortletPreferences(long plid) {
-		if (!StagingAdvicesThreadLocal.isEnabled()) {
-			return plid;
-		}
-
-		LayoutRevision layoutRevision = _getLayoutRevision(plid);
-
-		if (layoutRevision == null) {
-			return plid;
-		}
-
-		return layoutRevision.getLayoutRevisionId();
+		return PortletPreferencesPlidUtil.swapPlidForPortletPreferences(
+			plid, _layoutRevisionPersistence, _layoutPersistence);
 	}
 
 	private long _swapPlidForPreferences(long plid) {

@@ -77,6 +77,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
+import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
+import com.liferay.portal.kernel.service.persistence.LayoutRevisionPersistence;
+import com.liferay.portal.kernel.service.persistence.PortletPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.servlet.ServletContextClassLoaderPool;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -307,8 +310,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			PortletPermissionUtil.getPrimaryKey(plid, portletId));
 
 		List<PortletPreferences> portletPreferencesList =
-			_portletPreferencesLocalService.getPortletPreferences(
-				plid, portletId);
+			_portletPreferencesPersistence.findByP_P(
+				PortletPreferencesPlidUtil.swapPlidForPortletPreferences(
+					plid, _layoutRevisionPersistence, _layoutPersistence),
+				portletId);
 
 		Portlet portlet = getPortletById(companyId, portletId);
 
@@ -2989,11 +2994,20 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	@BeanReference(type = LayoutLocalService.class)
 	private LayoutLocalService _layoutLocalService;
 
+	@BeanReference(type = LayoutPersistence.class)
+	private LayoutPersistence _layoutPersistence;
+
+	@BeanReference(type = LayoutRevisionPersistence.class)
+	private LayoutRevisionPersistence _layoutRevisionPersistence;
+
 	private PortalCache<String, PortletFriendlyURLMapperMatch>
 		_portletFriendlyURLMapperMatchPortalCache;
 
 	@BeanReference(type = PortletPreferencesLocalService.class)
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@BeanReference(type = PortletPreferencesPersistence.class)
+	private PortletPreferencesPersistence _portletPreferencesPersistence;
 
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
