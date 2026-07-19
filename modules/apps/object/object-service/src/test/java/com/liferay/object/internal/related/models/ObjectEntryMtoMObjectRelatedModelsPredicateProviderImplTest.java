@@ -119,8 +119,7 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImplTest
 
 		String predicateString = _getPredicateString(
 			new Long[] {RandomTestUtil.randomLong()}, objectDefinition,
-			_mockObjectFieldLocalService(
-				objectDefinitionId2),
+			_mockObjectFieldLocalService(objectDefinitionId2),
 			mockObjectRelationship(
 				objectDefinitionId1, objectDefinitionId2,
 				RandomTestUtil.randomString()),

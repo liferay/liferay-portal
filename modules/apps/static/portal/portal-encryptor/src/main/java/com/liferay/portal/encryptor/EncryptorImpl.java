@@ -281,9 +281,9 @@ public class EncryptorImpl implements Encryptor {
 
 	private static final Log _log = LogFactoryUtil.getLog(EncryptorImpl.class);
 
-	private final Map<String, Cipher> _decryptCiphers =
-		new ConcurrentHashMap<>(1, 1F, 1);
-	private final Map<String, Cipher> _encryptCiphers =
-		new ConcurrentHashMap<>(1, 1F, 1);
+	private final Map<String, Cipher> _decryptCiphers = new ConcurrentHashMap<>(
+		1, 1F, 1);
+	private final Map<String, Cipher> _encryptCiphers = new ConcurrentHashMap<>(
+		1, 1F, 1);
 
 }
