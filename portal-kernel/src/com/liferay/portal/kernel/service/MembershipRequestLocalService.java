@@ -302,4 +302,4 @@ public interface MembershipRequestLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-732807674
+// LIFERAY-SERVICE-BUILDER-HASH:551488430
