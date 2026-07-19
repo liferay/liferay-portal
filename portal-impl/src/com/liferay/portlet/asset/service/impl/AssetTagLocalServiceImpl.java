@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.exception.NoSuchTagException;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
-import com.liferay.asset.kernel.service.persistence.AssetEntryPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -288,7 +287,7 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	 */
 	@Override
 	public List<AssetTag> getEntryTags(long entryId) {
-		return _assetEntryPersistence.getAssetTags(entryId);
+		return assetEntryPersistence.getAssetTags(entryId);
 	}
 
 	/**
@@ -532,14 +531,14 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	 */
 	@Override
 	public List<AssetTag> getTags(long classNameId, long classPK) {
-		AssetEntry entry = _assetEntryPersistence.fetchByC_C(
+		AssetEntry entry = assetEntryPersistence.fetchByC_C(
 			classNameId, classPK);
 
 		if (entry == null) {
 			return Collections.emptyList();
 		}
 
-		return _assetEntryPersistence.getAssetTags(entry.getEntryId());
+		return assetEntryPersistence.getAssetTags(entry.getEntryId());
 	}
 
 	@Override
@@ -900,9 +899,6 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 
 	@BeanReference(type = AssetEntryLocalService.class)
 	private AssetEntryLocalService _assetEntryLocalService;
-
-	@BeanReference(type = AssetEntryPersistence.class)
-	private AssetEntryPersistence _assetEntryPersistence;
 
 	@BeanReference(type = ClassNameLocalService.class)
 	private ClassNameLocalService _classNameLocalService;

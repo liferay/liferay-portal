@@ -131,11 +131,7 @@ import com.liferay.portal.kernel.service.http.TunnelUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
-import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
 import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
-import com.liferay.portal.kernel.service.persistence.RolePersistence;
-import com.liferay.portal.kernel.service.persistence.UserGroupPersistence;
-import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -310,7 +306,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		// Group
 
-		User user = _userPersistence.findByPrimaryKey(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		if (site && (PropsValues.DATA_LIMIT_SITE_MAX_COUNT > 0) &&
 			(groupPersistence.countByC_S(user.getCompanyId(), site) >=
@@ -362,7 +358,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		while (true) {
 			groupId = counterLocalService.increment();
 
-			User screenNameUser = _userPersistence.fetchByC_SN(
+			User screenNameUser = userPersistence.fetchByC_SN(
 				user.getCompanyId(), String.valueOf(groupId));
 
 			if (screenNameUser == null) {
@@ -2251,7 +2247,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		for (Organization organization : organizations) {
 			organizationGroups.addAll(
-				_organizationPersistence.getGroups(
+				organizationPersistence.getGroups(
 					organization.getOrganizationId()));
 		}
 
@@ -2368,7 +2364,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		throws PortalException {
 
 		if (inherit) {
-			User user = _userPersistence.findByPrimaryKey(userId);
+			User user = userPersistence.findByPrimaryKey(userId);
 
 			return _getUserGroups(
 				user.getCompanyId(), user.getUserId(), inherit, start, end);
@@ -2422,7 +2418,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		for (UserGroup userGroup : userGroups) {
 			userGroupGroups.addAll(
-				_userGroupPersistence.getGroups(userGroup.getUserGroupId()));
+				userGroupPersistence.getGroups(userGroup.getUserGroupId()));
 		}
 
 		return userGroupGroups;
@@ -2503,7 +2499,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		UserBag userBag = PermissionCacheUtil.getUserBag(userId);
 
 		if (userBag == null) {
-			User user = _userPersistence.findByPrimaryKey(userId);
+			User user = userPersistence.findByPrimaryKey(userId);
 
 			return groupFinder.findByCompanyId(
 				user.getCompanyId(),
@@ -2568,7 +2564,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	public List<Group> getUserSitesGroups(long userId, int start, int end)
 		throws PortalException {
 
-		User user = _userPersistence.findByPrimaryKey(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		return groupFinder.findByCompanyId(
 			user.getCompanyId(),
@@ -3781,7 +3777,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 */
 	@Override
 	public void unsetRoleGroups(long roleId, long[] groupIds) {
-		_rolePersistence.removeGroups(roleId, groupIds);
+		rolePersistence.removeGroups(roleId, groupIds);
 	}
 
 	/**
@@ -3794,7 +3790,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	public void unsetUserGroups(long userId, long[] groupIds) {
 		_userGroupRoleLocalService.deleteUserGroupRoles(userId, groupIds);
 
-		_userPersistence.removeGroups(userId, groupIds);
+		userPersistence.removeGroups(userId, groupIds);
 	}
 
 	/**
@@ -3813,7 +3809,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			String[] assetTagNames)
 		throws PortalException {
 
-		User user = _userPersistence.findByPrimaryKey(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		Company company = _companyPersistence.findByPrimaryKey(
 			user.getCompanyId());
@@ -3844,7 +3840,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		Group group = groupPersistence.findByPrimaryKey(groupId);
 
 		if (group.isUser()) {
-			User user = _userPersistence.findByPrimaryKey(group.getClassPK());
+			User user = userPersistence.findByPrimaryKey(group.getClassPK());
 
 			friendlyURL = StringPool.SLASH + user.getScreenName();
 
@@ -3924,7 +3920,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 		else if (className.equals(Organization.class.getName())) {
 			Organization organization =
-				_organizationPersistence.findByPrimaryKey(classPK);
+				organizationPersistence.findByPrimaryKey(classPK);
 
 			groupKey = getOrgGroupName(organization.getName());
 		}
@@ -4032,11 +4028,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			return group;
 		}
 
-		User user = _userPersistence.fetchByPrimaryKey(
-			group.getCreatorUserId());
+		User user = userPersistence.fetchByPrimaryKey(group.getCreatorUserId());
 
 		if (user == null) {
-			user = _userPersistence.fetchByPrimaryKey(
+			user = userPersistence.fetchByPrimaryKey(
 				serviceContext.getUserId());
 		}
 
@@ -4562,7 +4557,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		Long roleId = (Long)params.remove("groupsRoles");
 
 		if (roleId != null) {
-			groups.retainAll(_rolePersistence.getGroups(roleId));
+			groups.retainAll(rolePersistence.getGroups(roleId));
 		}
 
 		String actionId = (String)params.remove("actionId");
@@ -4578,7 +4573,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		// Join by Users_Groups
 
 		Set<Group> joinedGroups = new HashSet<>(
-			_userPersistence.getGroups(userId));
+			userPersistence.getGroups(userId));
 
 		boolean inherit = GetterUtil.getBoolean(params.remove("inherit"), true);
 
@@ -4586,8 +4581,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			// Join by Users_Orgs
 
-			List<Organization> organizations =
-				_userPersistence.getOrganizations(userId);
+			List<Organization> organizations = userPersistence.getOrganizations(
+				userId);
 
 			for (Organization organization : organizations) {
 				for (Group group : groups) {
@@ -4608,18 +4603,18 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				// Join by Groups_Orgs and Users_Orgs
 
 				joinedGroups.addAll(
-					_organizationPersistence.getGroups(
+					organizationPersistence.getGroups(
 						organization.getOrganizationId()));
 			}
 
 			// Join by Groups_UserGroups and Users_UserGroups
 
-			long[] userGroupIds = _userPersistence.getUserGroupPrimaryKeys(
+			long[] userGroupIds = userPersistence.getUserGroupPrimaryKeys(
 				userId);
 
 			for (long userGroupId : userGroupIds) {
 				joinedGroups.addAll(
-					_userGroupPersistence.getGroups(userGroupId));
+					userGroupPersistence.getGroups(userGroupId));
 			}
 		}
 
@@ -5615,7 +5610,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				start, end);
 		}
 
-		return _userPersistence.getGroups(userId, start, end);
+		return userPersistence.getGroups(userId, start, end);
 	}
 
 	private Map<Locale, String> _normalizeNameMap(Map<Locale, String> nameMap) {
@@ -5764,9 +5759,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	@BeanReference(type = OrganizationLocalService.class)
 	private OrganizationLocalService _organizationLocalService;
 
-	@BeanReference(type = OrganizationPersistence.class)
-	private OrganizationPersistence _organizationPersistence;
-
 	@BeanReference(type = PortletLocalService.class)
 	private PortletLocalService _portletLocalService;
 
@@ -5787,9 +5779,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
-
-	@BeanReference(type = RolePersistence.class)
-	private RolePersistence _rolePersistence;
 
 	private ServiceRegistration<?> _serviceRegistration;
 
@@ -5820,17 +5809,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	@BeanReference(type = UserGroupLocalService.class)
 	private UserGroupLocalService _userGroupLocalService;
 
-	@BeanReference(type = UserGroupPersistence.class)
-	private UserGroupPersistence _userGroupPersistence;
-
 	@BeanReference(type = UserGroupRoleLocalService.class)
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@BeanReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;
-
-	@BeanReference(type = UserPersistence.class)
-	private UserPersistence _userPersistence;
 
 	@BeanReference(type = WorkflowDefinitionLinkLocalService.class)
 	private WorkflowDefinitionLinkLocalService

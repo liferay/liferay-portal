@@ -81,10 +81,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.TeamPersistence;
-import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -142,7 +140,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 		// Role
 
-		User user = _userPersistence.findByPrimaryKey(userId);
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		className = GetterUtil.getString(className);
 
@@ -419,7 +417,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	 */
 	@Override
 	public void clearUserRoles(long userId) throws PortalException {
-		_userPersistence.clearRoles(userId);
+		userPersistence.clearRoles(userId);
 
 		reindex(userId);
 	}
@@ -533,7 +531,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			(role.getType() == RoleConstants.TYPE_ORGANIZATION) ||
 			(role.getType() == RoleConstants.TYPE_SITE)) {
 
-			List<Group> groups = _groupPersistence.findByC_S(
+			List<Group> groups = groupPersistence.findByC_S(
 				role.getCompanyId(), true);
 
 			for (Group group : groups) {
@@ -591,7 +589,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	public void deleteUserRole(long userId, long roleId)
 		throws PortalException {
 
-		_userPersistence.removeRole(userId, roleId);
+		userPersistence.removeRole(userId, roleId);
 
 		reindex(userId);
 	}
@@ -607,7 +605,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	 */
 	@Override
 	public void deleteUserRole(long userId, Role role) throws PortalException {
-		_userPersistence.removeRole(userId, role);
+		userPersistence.removeRole(userId, role);
 
 		reindex(userId);
 	}
@@ -625,7 +623,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	public void deleteUserRoles(long userId, List<Role> roles)
 		throws PortalException {
 
-		_userPersistence.removeRoles(userId, roles);
+		userPersistence.removeRoles(userId, roles);
 
 		reindex(userId);
 	}
@@ -643,7 +641,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	public void deleteUserRoles(long userId, long[] roleIds)
 		throws PortalException {
 
-		_userPersistence.removeRoles(userId, roleIds);
+		userPersistence.removeRoles(userId, roleIds);
 
 		reindex(userId);
 	}
@@ -757,7 +755,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	 */
 	@Override
 	public Role getDefaultGroupRole(long groupId) throws PortalException {
-		Group group = _groupPersistence.findByPrimaryKey(groupId);
+		Group group = groupPersistence.findByPrimaryKey(groupId);
 
 		if (group.isLayout()) {
 			Layout layout = _layoutLocalService.getLayout(group.getClassPK());
@@ -1491,7 +1489,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		}
 
 		if (inherited) {
-			if (_userPersistence.containsRole(userId, role.getRoleId())) {
+			if (userPersistence.containsRole(userId, role.getRoleId())) {
 				return true;
 			}
 
@@ -1636,7 +1634,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			return value;
 		}
 
-		return _userPersistence.containsRole(userId, role.getRoleId());
+		return userPersistence.containsRole(userId, role.getRoleId());
 	}
 
 	/**
@@ -1909,12 +1907,12 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 		Arrays.sort(roleIds);
 
-		long[] currentRoleIds = _userPersistence.getRolePrimaryKeys(userId);
+		long[] currentRoleIds = userPersistence.getRolePrimaryKeys(userId);
 
 		Arrays.sort(currentRoleIds);
 
 		if (!Arrays.equals(currentRoleIds, roleIds)) {
-			_userPersistence.setRoles(userId, roleIds);
+			userPersistence.setRoles(userId, roleIds);
 
 			reindex(userId);
 		}
@@ -1933,7 +1931,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 		roleIds = UsersAdminUtil.removeRequiredRoles(userId, roleIds);
 
-		_userPersistence.removeRoles(userId, roleIds);
+		userPersistence.removeRoles(userId, roleIds);
 
 		reindex(userId);
 	}
@@ -2085,7 +2083,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			long groupId, long[] excludedRoleIds)
 		throws PortalException {
 
-		Group group = _groupPersistence.findByPrimaryKey(groupId);
+		Group group = groupPersistence.findByPrimaryKey(groupId);
 
 		if (group.isLayout()) {
 			group = group.getParentGroup();
@@ -2263,9 +2261,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
 
-	@BeanReference(type = GroupPersistence.class)
-	private GroupPersistence _groupPersistence;
-
 	@BeanReference(type = LayoutLocalService.class)
 	private LayoutLocalService _layoutLocalService;
 
@@ -2295,8 +2290,5 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 	@BeanReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;
-
-	@BeanReference(type = UserPersistence.class)
-	private UserPersistence _userPersistence;
 
 }

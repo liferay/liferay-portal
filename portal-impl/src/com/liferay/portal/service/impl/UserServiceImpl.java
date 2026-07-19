@@ -56,10 +56,6 @@ import com.liferay.portal.kernel.service.permission.TeamPermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserGroupRolePermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
-import com.liferay.portal.kernel.service.persistence.GroupPersistence;
-import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
-import com.liferay.portal.kernel.service.persistence.RolePersistence;
-import com.liferay.portal.kernel.service.persistence.UserGroupPersistence;
 import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -130,7 +126,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				User user = getUser();
 
 				if (user.getUserId() == userIds[0]) {
-					Group group = _groupPersistence.findByPrimaryKey(groupId);
+					Group group = groupPersistence.findByPrimaryKey(groupId);
 
 					if (user.getCompanyId() == group.getCompanyId()) {
 						int type = group.getType();
@@ -1328,7 +1324,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			long gtUserId, long organizationId, int size)
 		throws PortalException {
 
-		Organization organization = _organizationPersistence.findByPrimaryKey(
+		Organization organization = organizationPersistence.findByPrimaryKey(
 			organizationId);
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -1351,7 +1347,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			long gtUserId, long userGroupId, int size)
 		throws PortalException {
 
-		UserGroup userGroup = _userGroupPersistence.findByPrimaryKey(
+		UserGroup userGroup = userGroupPersistence.findByPrimaryKey(
 			userGroupId);
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -1585,7 +1581,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		UserGroupPermissionUtil.check(
 			getPermissionChecker(), userGroupId, ActionKeys.VIEW_MEMBERS);
 
-		return _userGroupPersistence.getUsers(userGroupId);
+		return userGroupPersistence.getUsers(userGroupId);
 	}
 
 	@Override
@@ -1807,7 +1803,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			getPermissionChecker(), roleId, ActionKeys.ASSIGN_MEMBERS);
 
 		Set<Long> unsetUserIds = SetUtil.fromArray(
-			_rolePersistence.getUserPrimaryKeys(roleId));
+			rolePersistence.getUserPrimaryKeys(roleId));
 
 		unsetUserIds.removeAll(SetUtil.fromArray(userIds));
 
@@ -1849,7 +1845,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			getPermissionChecker(), userGroupId, ActionKeys.ASSIGN_MEMBERS);
 
 		Set<Long> unsetUserIds = SetUtil.fromArray(
-			_userGroupPersistence.getUserPrimaryKeys(userGroupId));
+			userGroupPersistence.getUserPrimaryKeys(userGroupId));
 
 		unsetUserIds.removeAll(SetUtil.fromArray(userIds));
 
@@ -1931,7 +1927,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				User user = getUser();
 
 				if (user.getUserId() == userIds[0]) {
-					Group group = _groupPersistence.findByPrimaryKey(groupId);
+					Group group = groupPersistence.findByPrimaryKey(groupId);
 
 					if (user.getCompanyId() == group.getCompanyId()) {
 						int type = group.getType();
@@ -3494,7 +3490,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				continue;
 			}
 
-			Group group = _groupPersistence.findByPrimaryKey(groupId);
+			Group group = groupPersistence.findByPrimaryKey(groupId);
 
 			GroupPermissionUtil.check(
 				permissionChecker, group, ActionKeys.ASSIGN_MEMBERS);
@@ -3590,7 +3586,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			}
 
 			Organization organization =
-				_organizationPersistence.findByPrimaryKey(organizationId);
+				organizationPersistence.findByPrimaryKey(organizationId);
 
 			OrganizationPermissionUtil.check(
 				permissionChecker, organization, ActionKeys.ASSIGN_MEMBERS);
@@ -3736,7 +3732,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 				if (role.getType() == RoleConstants.TYPE_ORGANIZATION) {
 					Organization organization =
-						_organizationPersistence.findByPrimaryKey(
+						organizationPersistence.findByPrimaryKey(
 							group.getOrganizationId());
 
 					if (!UserGroupRolePermissionUtil.contains(
@@ -3967,26 +3963,14 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	@BeanReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
 
-	@BeanReference(type = GroupPersistence.class)
-	private GroupPersistence _groupPersistence;
-
 	@BeanReference(type = OrganizationLocalService.class)
 	private OrganizationLocalService _organizationLocalService;
-
-	@BeanReference(type = OrganizationPersistence.class)
-	private OrganizationPersistence _organizationPersistence;
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
 
-	@BeanReference(type = RolePersistence.class)
-	private RolePersistence _rolePersistence;
-
 	@BeanReference(type = UserGroupLocalService.class)
 	private UserGroupLocalService _userGroupLocalService;
-
-	@BeanReference(type = UserGroupPersistence.class)
-	private UserGroupPersistence _userGroupPersistence;
 
 	@BeanReference(type = UserGroupRoleLocalService.class)
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
