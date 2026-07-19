@@ -589,7 +589,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			long addressId, long companyId, String phoneNumber)
 		throws PortalException {
 
-		ListType listType = _listTypePersistence.fetchByC_N_T(
+		ListType listType = _listTypePersistence.findByC_N_T(
 			companyId, "phone-number", ListTypeConstants.ADDRESS_PHONE);
 
 		ServiceContext serviceContext =
