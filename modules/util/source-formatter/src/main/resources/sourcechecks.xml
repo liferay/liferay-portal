@@ -800,6 +800,11 @@
 			<property name="checkSelfRegistration" value="false" />
 			<property name="checkUsesInternalService" value="false" />
 		</check>
+		<check name="JavaConnectionTransactionCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that `commit`, `rollback`, and `setAutoCommit` are not called on a `java.sql.Connection`, see LPD-98668." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="JavaConstantsFileCheck">
 			<category name="Naming Conventions" />
 			<description name="Checks if constants names follow naming conventions." />
