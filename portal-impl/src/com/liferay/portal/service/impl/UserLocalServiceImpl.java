@@ -7395,6 +7395,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		PasswordPolicy passwordPolicy = _passwordPolicyPersistence.fetchByC_N(
 			companyId, PropsValues.PASSWORDS_DEFAULT_POLICY_NAME);
 
+		if (passwordPolicy == null) {
+			return false;
+		}
+
 		if (passwordPolicy.isChangeable() &&
 			passwordPolicy.isChangeRequired()) {
 
