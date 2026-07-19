@@ -20,6 +20,7 @@ import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.item.selector.criteria.upload.criterion.UploadItemSelectorCriterion;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -132,8 +133,12 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 						() ->
 							hasManageFragmentEntriesPermission &&
 							!_fragmentEntry.isReadOnly() &&
-							(_fragmentEntry.getGroupId() ==
-								_themeDisplay.getCompanyGroupId()),
+							((_fragmentEntry.getGroupId() ==
+								_themeDisplay.getCompanyGroupId()) ||
+							 (FeatureFlagManagerUtil.isEnabled(
+								 _fragmentEntry.getCompanyId(), "LPD-57283") &&
+							  DesignLibraryUtil.isDesignLibraryScope(
+								  _themeDisplay.getScopeGroup()))),
 						_getViewGroupFragmentEntryUsagesActionUnsafeConsumer()
 					).add(
 						() ->
