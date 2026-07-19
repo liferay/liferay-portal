@@ -246,7 +246,7 @@ public class OrganizationLocalServiceImpl
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		ListType listType = _listTypePersistence.fetchByC_N_T(
+		ListType listType = _listTypePersistence.findByC_N_T(
 			user.getCompanyId(), ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
 			ListTypeConstants.ORGANIZATION_STATUS);
 
@@ -736,7 +736,7 @@ public class OrganizationLocalServiceImpl
 
 				String[] types = getTypes();
 
-				ListType listType = _listTypePersistence.fetchByC_N_T(
+				ListType listType = _listTypePersistence.findByC_N_T(
 					companyId, ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
 					ListTypeConstants.ORGANIZATION_STATUS);
 
