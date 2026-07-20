@@ -91,6 +91,10 @@ export default function RuleRow({
 		dragPreviewRef(getEmptyImage(), {captureDraggingState: true});
 	}, [dragPreviewRef]);
 
+	// Clay's Picker forces tabindex="0" on its combobox trigger and ignores the
+	// tabindex prop, so mirror the roving value onto it to keep inactive rows
+	// out of the tab order.
+
 	useEffect(() => {
 		dropItemRef.current
 			?.querySelectorAll<HTMLElement>('[role="combobox"]')
@@ -100,7 +104,7 @@ export default function RuleRow({
 					String(navigationProps?.tabIndex ?? 0)
 				)
 			);
-	});
+	}, [navigationProps?.tabIndex]);
 
 	const [{isOver}, dropRef] = useDrop<RowDragItem, void, {isOver: boolean}>({
 		accept: [DRAG_TYPES.ATTRIBUTE, DRAG_TYPES.RULE],
