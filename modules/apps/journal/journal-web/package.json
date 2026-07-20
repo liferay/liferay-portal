@@ -15,6 +15,7 @@
 		"@clayui/popover": "^3.165.0",
 		"@clayui/table": "^3.165.0",
 		"@liferay/frontend-js-react-web": "*",
+		"@liferay/launch-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/template-web": "*",
 		"classnames": "2.3.1",

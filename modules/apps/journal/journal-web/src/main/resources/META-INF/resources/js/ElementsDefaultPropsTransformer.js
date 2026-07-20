@@ -13,6 +13,14 @@ import {addParams} from 'frontend-js-web';
 import openDeleteArticleModal from './modals/openDeleteArticleModal';
 
 const ACTIONS = {
+	addToLaunch({itemData}) {
+		Liferay.fire('addToLaunch', {
+			className: itemData.className,
+			classPK: itemData.classPK,
+			classVersion: itemData.classVersion,
+		});
+	},
+
 	compareVersions({itemData, portletNamespace}) {
 		openSelectionModal({
 			onSelect: (selectedItem) => {

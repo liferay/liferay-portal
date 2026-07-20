@@ -563,3 +563,12 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 	module="{Navigation} from journal-web"
 	servletContext="<%= application %>"
 />
+
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-72278") %>'>
+	<div id="<portlet:namespace />addToLaunchModal">
+		<react:component
+			componentId="addToLaunchModal"
+			module="{AddToLaunchModal} from launch-web"
+		/>
+	</div>
+</c:if>

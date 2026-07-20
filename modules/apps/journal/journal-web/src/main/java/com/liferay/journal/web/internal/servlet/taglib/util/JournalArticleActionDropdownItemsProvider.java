@@ -142,10 +142,17 @@ public class JournalArticleActionDropdownItemsProvider {
 						_getEditArticleActionUnsafeConsumer()
 					).add(
 						() ->
-							FeatureFlagManagerUtil.isEnabled("LPD-11228") &&
+							FeatureFlagManagerUtil.isEnabled(
+								_article.getCompanyId(), "LPD-11228") &&
 							hasUpdatePermission && _article.isDraft() &&
 							_article.hasApprovedVersion(),
 						_getDiscardDraftActionUnsafeConsumer()
+					).add(
+						() ->
+							FeatureFlagManagerUtil.isEnabled(
+								_article.getCompanyId(), "LPD-72278") &&
+							hasUpdatePermission && _article.isDraft(),
+						_getAddToLaunchArticleActionUnsafeConsumer()
 					).add(
 						() ->
 							hasViewPermission &&
@@ -300,6 +307,16 @@ public class JournalArticleActionDropdownItemsProvider {
 						this::_isRevertToVersionActionAvailable,
 						_getRevertArticleActionConsumer(
 							_themeDisplay.getURLCurrent())
+					).add(
+						() ->
+							FeatureFlagManagerUtil.isEnabled(
+								_article.getCompanyId(), "LPD-72278") &&
+							JournalArticlePermission.contains(
+								_themeDisplay.getPermissionChecker(), _article,
+								ActionKeys.UPDATE) &&
+							(_article.getStatus() ==
+								WorkflowConstants.STATUS_APPROVED),
+						_getAddToLaunchArticleActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
 			}
@@ -384,6 +401,20 @@ public class JournalArticleActionDropdownItemsProvider {
 				dropdownGroupItem.setSeparator(true);
 			}
 		).build();
+	}
+
+	private UnsafeConsumer<DropdownItem, Exception>
+		_getAddToLaunchArticleActionUnsafeConsumer() {
+
+		return dropdownItem -> {
+			dropdownItem.putData("action", "addToLaunch");
+			dropdownItem.putData("className", JournalArticle.class.getName());
+			dropdownItem.putData("classPK", _article.getResourcePrimKey());
+			dropdownItem.putData(
+				"classVersion", String.valueOf(_article.getVersion()));
+			dropdownItem.setLabel(
+				LanguageUtil.get(_httpServletRequest, "add-to-launch"));
+		};
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
