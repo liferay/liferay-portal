@@ -7710,7 +7710,7 @@ public class ObjectEntryLocalServiceImpl
 				listTypeDefinitionId, String.valueOf(existingValue));
 
 		ObjectStateFlow objectStateFlow =
-			_objectStateFlowPersistence.fetchByObjectFieldId(
+			_objectStateFlowPersistence.findByObjectFieldId(
 				objectField.getObjectFieldId());
 
 		ObjectState sourceObjectState = _objectStatePersistence.findByLTEI_OSFI(
