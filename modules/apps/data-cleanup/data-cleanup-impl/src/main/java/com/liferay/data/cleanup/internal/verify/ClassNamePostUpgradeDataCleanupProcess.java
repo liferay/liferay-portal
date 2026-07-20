@@ -125,6 +125,8 @@ public class ClassNamePostUpgradeDataCleanupProcess
 				}
 			}
 
+			boolean missing = false;
+
 			int index = value.indexOf(StringPool.DASH);
 
 			if ((index != -1) &&
@@ -132,8 +134,6 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 				value = value.substring(0, index);
 			}
-
-			boolean missingClass = false;
 
 			for (String currentValue : value.split("[-_]")) {
 				if (models.contains(currentValue)) {
@@ -161,13 +161,13 @@ public class ClassNamePostUpgradeDataCleanupProcess
 				}
 
 				if (clazz == null) {
-					missingClass = true;
+					missing = true;
 
 					break;
 				}
 			}
 
-			if (!missingClass) {
+			if (!missing) {
 				return;
 			}
 
