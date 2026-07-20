@@ -27,7 +27,7 @@ const SOURCE_OPTIONS = [
 	},
 ];
 
-export default function URLField({field, onValueSelect, value}) {
+export default function URLField({field, onValueSelect, value = {}}) {
 	const [nextHref, setNextHref] = useControlledState(value.href || '');
 
 	const [source, setSource] = useState(SOURCE_OPTION_MANUAL);
