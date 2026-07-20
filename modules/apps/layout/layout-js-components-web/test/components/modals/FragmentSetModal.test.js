@@ -56,7 +56,7 @@ describe('FragmentSetModal', () => {
 			jest.runAllTimers();
 		});
 
-		expect(screen.getByLabelText('fragment-sets')).toBeInTheDocument();
+		expect(screen.getByLabelText('fragment-set')).toBeInTheDocument();
 		expect(
 			screen.getByDisplayValue('-- not-selected --')
 		).toBeInTheDocument();
@@ -133,7 +133,7 @@ describe('FragmentSetModal', () => {
 			jest.runAllTimers();
 		});
 
-		fireEvent.change(screen.getByLabelText('fragment-sets'), {
+		fireEvent.change(screen.getByLabelText('fragment-set'), {
 			target: {value: '1'},
 		});
 
@@ -156,11 +156,11 @@ describe('FragmentSetModal', () => {
 			jest.runAllTimers();
 		});
 
-		fireEvent.change(screen.getByLabelText('name'), {
+		fireEvent.change(screen.getByLabelText('fragment-name'), {
 			target: {value: 'my-fragment'},
 		});
 
-		fireEvent.change(screen.getByLabelText('fragment-sets'), {
+		fireEvent.change(screen.getByLabelText('fragment-set'), {
 			target: {value: '1'},
 		});
 
@@ -186,7 +186,7 @@ describe('FragmentSetModal', () => {
 			jest.runAllTimers();
 		});
 
-		fireEvent.change(screen.getByLabelText('fragment-sets'), {
+		fireEvent.change(screen.getByLabelText('fragment-set'), {
 			target: {value: '1'},
 		});
 
