@@ -166,21 +166,19 @@ public class ExpandoRowLocalServiceImpl extends ExpandoRowLocalServiceBaseImpl {
 
 	@Override
 	public ExpandoRow getRow(
-		long companyId, long classNameId, String tableName, long classPK) {
+			long companyId, long classNameId, String tableName, long classPK)
+		throws PortalException {
 
-		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
+		ExpandoTable table = _expandoTablePersistence.findByC_C_N(
 			companyId, classNameId, tableName);
 
-		if (table == null) {
-			return null;
-		}
-
-		return expandoRowPersistence.fetchByT_C(table.getTableId(), classPK);
+		return expandoRowPersistence.findByT_C(table.getTableId(), classPK);
 	}
 
 	@Override
 	public ExpandoRow getRow(
-		long companyId, String className, String tableName, long classPK) {
+			long companyId, String className, String tableName, long classPK)
+		throws PortalException {
 
 		return expandoRowLocalService.getRow(
 			companyId, _classNameLocalService.getClassNameId(className),
