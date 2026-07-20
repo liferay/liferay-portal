@@ -75,20 +75,8 @@ public class EmbeddedLayoutTypeControllerTest {
 			"&parameter2=</script><script>alert(",
 			RandomTestUtil.randomString(), ")</script>");
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		_includeLayoutContent(
-			"http://example.com?" + queryString, mockHttpServletRequest);
-
-		StringWriter stringWriter = new StringWriter();
-
-		ScriptData scriptData = (ScriptData)mockHttpServletRequest.getAttribute(
-			WebKeys.AUI_SCRIPT_DATA);
-
-		scriptData.writeTo(stringWriter);
-
-		String content = String.valueOf(stringWriter.getBuffer());
+		String content = _includeLayoutContent(
+			"http://example.com?" + queryString);
 
 		Assert.assertTrue(
 			content,
@@ -96,9 +84,7 @@ public class EmbeddedLayoutTypeControllerTest {
 				StringUtil.replace(queryString, CharPool.SLASH, "\\/")));
 	}
 
-	private void _includeLayoutContent(
-			String embeddedLayoutURL,
-			MockHttpServletRequest mockHttpServletRequest)
+	private String _includeLayoutContent(String embeddedLayoutURL)
 		throws Exception {
 
 		UnicodeProperties typeSettingsUnicodeProperties =
@@ -111,17 +97,25 @@ public class EmbeddedLayoutTypeControllerTest {
 
 		_layout = _layoutLocalService.updateLayout(_layout);
 
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY,
-			ContentLayoutTestUtil.getThemeDisplay(
+		MockHttpServletRequest mockHttpServletRequest =
+			ContentLayoutTestUtil.getMockHttpServletRequest(
 				_companyLocalService.fetchCompany(
 					TestPropsValues.getCompanyId()),
-				_group, _layout));
+				_group, _layout);
 
 		mockHttpServletRequest.setMethod(HttpMethods.GET);
 
 		_layoutTypeController.includeLayoutContent(
 			mockHttpServletRequest, new MockHttpServletResponse(), _layout);
+
+		ScriptData scriptData = (ScriptData)mockHttpServletRequest.getAttribute(
+			WebKeys.AUI_SCRIPT_DATA);
+
+		StringWriter stringWriter = new StringWriter();
+
+		scriptData.writeTo(stringWriter);
+
+		return String.valueOf(stringWriter.getBuffer());
 	}
 
 	@Inject
