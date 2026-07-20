@@ -23,6 +23,7 @@ import com.liferay.bulk.rest.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.SelectionScope;
 import com.liferay.bulk.rest.dto.v1_0.StatusObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
+import com.liferay.bulk.rest.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.internal.odata.entity.v1_0.BulkActionEntityModel;
 import com.liferay.bulk.rest.internal.selection.v1_0.BulkActionBulkSelectionFactory;
 import com.liferay.bulk.rest.resource.v1_0.BulkActionResource;
@@ -524,6 +525,12 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 			return _updateObjectValuesBulkSelectionAction;
 		}
+		else if (BulkAction.Type.
+					UPDATE_REVIEW_DATE_OBJECT_BULK_SELECTION_ACTION.equals(
+						type)) {
+
+			return _updateReviewDateObjectBulkSelectionAction;
+		}
 
 		throw new UnsupportedOperationException();
 	}
@@ -743,6 +750,18 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 			return hashMapWrapper.put(
 				"values", (Serializable)updateValuesBulkAction.getValues()
+			).build();
+		}
+		else if (BulkAction.Type.
+					UPDATE_REVIEW_DATE_OBJECT_BULK_SELECTION_ACTION.equals(
+						type)) {
+
+			UpdateReviewDateObjectBulkSelectionAction
+				updateReviewDateBulkAction =
+					(UpdateReviewDateObjectBulkSelectionAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"reviewDate", updateReviewDateBulkAction.getReviewDate()
 			).build();
 		}
 
@@ -1260,5 +1279,9 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 	@Reference(target = "(bulk.selection.action.key=update.object.values)")
 	private BulkSelectionAction<Object> _updateObjectValuesBulkSelectionAction;
+
+	@Reference(target = "(bulk.selection.action.key=update.review.date.object)")
+	private BulkSelectionAction<Object>
+		_updateReviewDateObjectBulkSelectionAction;
 
 }
