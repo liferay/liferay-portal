@@ -4,14 +4,24 @@ import React from 'react';
 
 interface IGenericBarsCard {
 	cardTitle: string;
+	redactTitle?: boolean;
 }
 
-export const GenericBarsCard: React.FC<IGenericBarsCard> = ({cardTitle}) => (
+export const GenericBarsCard: React.FC<IGenericBarsCard> = ({
+	cardTitle,
+	redactTitle = false,
+}) => (
 	<ClayLayout.Col key={cardTitle} xl={4}>
 		<Card className="mt-4">
 			<Card.Header>
 				<Card.Title>
-					<h3>{cardTitle}</h3>
+					{redactTitle ? (
+						<div className="card-title-rectangle">
+							<span className="sr-only">{cardTitle}</span>
+						</div>
+					) : (
+						<h3>{cardTitle}</h3>
+					)}
 				</Card.Title>
 			</Card.Header>
 			<Card.Body>

@@ -1,3 +1,13 @@
+.card-title-rectangle {
+	background: $primaryLighten33;
+	border-radius: 4px;
+	flex: none;
+	flex-grow: 0;
+	height: 24px;
+	order: 0;
+	width: 203px;
+}
+
 .chart-bars {
 	display: flex;
 	flex-direction: column;
@@ -11,7 +21,7 @@
 	}
 
 	.small-bar {
-		background: #b3cdff;
+		background: $primaryLighten33;
 		border-radius: 4px;
 		height: 24px;
 		width: 25%;

@@ -6,6 +6,7 @@ import RouteNotFound from 'shared/components/RouteNotFound';
 import {compose} from 'shared/hoc';
 import {Routes} from 'shared/util/router';
 import {Switch, useParams} from 'react-router-dom';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useStore} from 'react-redux';
 import {withOnboarding} from 'shared/hoc';
 
@@ -109,11 +110,11 @@ const UsageOverview = lazy(
 	() => import(/* webpackChunkName: "UsageOverview" */ './UsageOverview')
 );
 
-const UsageOverviewSaaS = lazy(
+const UsageOverviewExternal = lazy(
 	() =>
 		import(
 
-			/* webpackChunkName: "UsageOverviewSaaS" */ './UsageOverviewSaaS'
+			/* webpackChunkName: "UsageOverviewExternal" */ './UsageOverviewExternal'
 		)
 );
 
@@ -124,17 +125,18 @@ const WorkspaceSettings = lazy(
 );
 
 export const Settings = () => {
-	const {groupId} = useParams();
+	const {groupId} = useParams<{groupId: string}>();
 	const store = useStore();
+	const isLDP = useLDPEnabled({groupId});
 
 	const project = store.getState().getIn(['projects', groupId, 'data']);
 	const recommendationsEnabled = store
 		.getState()
 		.getIn(['projects', groupId, 'data', 'recommendationsEnabled'], false);
 
-	const IS_PROJECT_SAAS = project?.faroSubscription
-		?.get('name')
-		?.includes('SaaS');
+	const subscriptionName = project?.faroSubscription?.get('name');
+
+	const IS_PROJECT_SAAS = subscriptionName?.includes('SaaS') || isLDP;
 
 	return (
 		<Suspense fallback={<Loading />}>
@@ -179,7 +181,7 @@ export const Settings = () => {
 
 				{IS_PROJECT_SAAS && (
 					<BundleRouter
-						data={UsageOverviewSaaS}
+						data={UsageOverviewExternal}
 						exact
 						path={Routes.SETTINGS_USAGE}
 					/>

@@ -8,14 +8,18 @@ import {compose, withProject} from 'shared/hoc';
 import {GenericBarsCard} from 'settings/components/usage-overview/GenericBarsCard';
 import {GenericDonutChart} from 'settings/components/usage-overview/GenericDonutChart';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useParams} from 'react-router-dom';
 
 export type Resource = {
 	capacity: string;
 	measurement: string;
 };
 
-export const UsageOverviewSaaS = () => {
+export const UsageOverviewExternal = () => {
 	const currentUser = useCurrentUser();
+	const {groupId} = useParams<{groupId: string}>();
+	const isLDP = useLDPEnabled({groupId});
 
 	let pageActions: {
 		displayType: string;
@@ -29,11 +33,15 @@ export const UsageOverviewSaaS = () => {
 		pageActions = [
 			{
 				displayType: 'primary',
-				href: 'https://support.liferay.com/',
+				href: isLDP
+					? 'https://one.liferay.com/'
+					: 'https://support.liferay.com/',
 				icon: {
 					symbol: 'shortcut',
 				},
-				label: Liferay.Language.get('go-to-customer-portal'),
+				label: isLDP
+					? Liferay.Language.get('go-to-liferay-one')
+					: Liferay.Language.get('go-to-customer-portal'),
 				target: '_blank',
 			},
 		];
@@ -64,18 +72,33 @@ export const UsageOverviewSaaS = () => {
 		<BasePage
 			key="UsageOverview"
 			pageActions={pageActions}
-			pageDescription={Liferay.Language.get(
-				'saas-plan-usage-is-determined-by-malus-and-apvs'
-			)}
+			pageDescription={
+				!isLDP &&
+				Liferay.Language.get(
+					'saas-plan-usage-is-determined-by-malus-and-apvs'
+				)
+			}
 			pageTitle={Liferay.Language.get('subscription-&-usage')}
 		>
 			<div className="saas-banner p-5 sm:p-8 md:p-10 xl:p-4">
 				<div className="text-white">
 					<h2 className="title">
-						{Liferay.Language.get('view-your-saas-project-metrics')}
+						{isLDP
+							? Liferay.Language.get(
+									'view-your-workspace-metrics'
+								)
+							: Liferay.Language.get(
+									'view-your-saas-project-metrics'
+								)}
 					</h2>
 					<p className="w-50 d-flex mb-0">
-						{Liferay.Language.get('as-a-saas-customer-description')}
+						{isLDP
+							? Liferay.Language.get(
+									'as-a-saas-customer-description-liferay-one'
+								)
+							: Liferay.Language.get(
+									'as-a-saas-customer-description-customer-portal'
+								)}
 					</p>
 				</div>
 			</div>
@@ -88,7 +111,11 @@ export const UsageOverviewSaaS = () => {
 					</div>
 					<ClayLayout.Row>
 						{cardTitles.map((title) => (
-							<GenericBarsCard cardTitle={title} key={title} />
+							<GenericBarsCard
+								cardTitle={title}
+								key={title}
+								redactTitle={isLDP}
+							/>
 						))}
 					</ClayLayout.Row>
 				</div>
@@ -113,4 +140,4 @@ export const UsageOverviewSaaS = () => {
 	);
 };
 
-export default compose(withProject)(UsageOverviewSaaS);
+export default compose(withProject)(UsageOverviewExternal);
