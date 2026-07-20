@@ -12,7 +12,7 @@ UnicodeProperties typeSettingsUnicodeProperties = layout.getTypeSettingsProperti
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"url", typeSettingsUnicodeProperties.getProperty("embeddedLayoutURL")
+			"url", HtmlUtil.escapeJSLink(typeSettingsUnicodeProperties.getProperty("embeddedLayoutURL"))
 		).build()
 	%>'
 	module="{embedded} from layout-type-controller-embedded"

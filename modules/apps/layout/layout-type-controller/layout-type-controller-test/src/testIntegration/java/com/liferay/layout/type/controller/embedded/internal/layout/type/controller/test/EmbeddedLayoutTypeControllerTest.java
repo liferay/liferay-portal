@@ -82,6 +82,16 @@ public class EmbeddedLayoutTypeControllerTest {
 			content,
 			content.contains(
 				StringUtil.replace(queryString, CharPool.SLASH, "\\/")));
+
+		String randomString = RandomTestUtil.randomString();
+
+		content = _includeLayoutContent(
+			"javascript:alert(" + randomString + ")");
+
+		Assert.assertFalse(
+			content, content.contains("javascript:alert(" + randomString));
+		Assert.assertTrue(
+			content, content.contains("javascript%3aalert(" + randomString));
 	}
 
 	private String _includeLayoutContent(String embeddedLayoutURL)
