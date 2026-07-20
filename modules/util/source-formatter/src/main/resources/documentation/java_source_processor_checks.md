@@ -168,6 +168,7 @@ JavaReturnStatementCheck | [Styling](styling_checks.md#styling-checks) | Finds u
 JavaRunSQLCheck | [Styling](styling_checks.md#styling-checks) | Applies rules to enforce consistency in code style. |
 JavaSQLStatementCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Perform several checks in SQL statements. |
 [JavaSeeAnnotationCheck](check/java_see_annotation_check.md#javaseeannotationcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for nested annotations inside `@see`. |
+JavaServiceHopCheck | [Performance](performance_checks.md#performance-checks) | Flags a service method that delegates to a same-bundle service pass-through method, so it can call persistence directly and skip the AOP proxy hop. |
 JavaServiceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Ensures that `afterPropertiesSet` and `destroy` methods in `*ServiceImpl` always call the method with the same name in the superclass. |
 JavaServiceImplErcUsageCheck | [Productivity](productivity_checks.md#productivity-checks) | Automatically generates and ensures that `externalReferenceCode` is properly used in remote `*ServiceImpl` add method. |
 JavaServiceImplGetFetchCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Flags a get-prefixed service method that returns a nullable fetch result, violating the non-null promise its name implies. |
