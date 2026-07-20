@@ -3,21 +3,17 @@ import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 import {ClayCheckbox} from '@clayui/form';
-import {sub} from 'shared/util/lang';
 
 interface IMarketoCampaignEntitiesProps {
 	disabled?: boolean;
 	enabledIndividuals: boolean;
-	individualsSyncedCount?: number;
 	loading?: boolean;
 	onIndividualsChange: () => void;
-	type?: string;
 }
 
 const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 	disabled = false,
 	enabledIndividuals,
-	individualsSyncedCount,
 	onIndividualsChange,
 }) => (
 	<div className="pt-1">
@@ -50,15 +46,6 @@ const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 							'represents-fields-from-the-leads-and-companies-table-within-marketo'
 						)}
 					</ClayList.ItemText>
-
-					{individualsSyncedCount !== undefined &&
-						individualsSyncedCount >= 0 && (
-							<ClayList.ItemText>
-								{sub(Liferay.Language.get('x-items-synced'), [
-									individualsSyncedCount,
-								])}
-							</ClayList.ItemText>
-						)}
 				</ClayList.ItemField>
 			</ClayList.Item>
 		</ClayList>

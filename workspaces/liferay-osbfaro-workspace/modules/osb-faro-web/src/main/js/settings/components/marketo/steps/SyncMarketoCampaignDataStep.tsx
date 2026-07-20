@@ -82,7 +82,6 @@ const SyncMarketoCampaignDataStep = ({
 					onIndividualsChange={() =>
 						setEnabledIndividuals(!enabledIndividuals)
 					}
-					type="checkbox"
 				/>
 			)}
 
