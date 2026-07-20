@@ -328,12 +328,10 @@ public class MCPServerServletTest {
 			new String[] {"everything"}, new String[] {"public"},
 			portalURL + "/o/oauth2/token", null);
 
-		String mcpResourceURI = _getMCPURL();
-
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
 			_oAuthClientPRLocalMetadataLocalService.
 				fetchOAuthClientPRLocalMetadata(
-					TestPropsValues.getCompanyId(), mcpResourceURI);
+					TestPropsValues.getCompanyId(), _getMCPURL());
 
 		if (oAuthClientPRLocalMetadata != null) {
 			_oAuthClientPRLocalMetadataLocalService.
@@ -343,7 +341,7 @@ public class MCPServerServletTest {
 		_oAuthClientPRLocalMetadataLocalService.addOAuthClientPRLocalMetadata(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			new String[] {portalURL}, new String[] {"header"}, true,
-			mcpResourceURI, "Liferay MCP Server", new String[] {"everything"});
+			_getMCPURL(), "Liferay MCP Server", new String[] {"everything"});
 
 		Http.Options options = new Http.Options();
 
