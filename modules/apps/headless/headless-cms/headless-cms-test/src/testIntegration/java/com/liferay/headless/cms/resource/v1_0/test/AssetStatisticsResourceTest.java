@@ -92,14 +92,15 @@ public class AssetStatisticsResourceTest
 	@Override
 	@Test
 	public void testGetAssetStatistics() throws Exception {
+
+		// Add object entry on irrelevant group and irrelevant object definition
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
 
 		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
 
 		long groupId = depotEntry.getGroupId();
-
-		// Add object entry on irrelevant group and irrelevant object definition
 
 		ObjectDefinition irrelevantObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
