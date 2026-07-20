@@ -181,10 +181,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		return new PortalInstanceExport() {
 			{
 				setExportedPartitionName(() -> "lexported_" + companyId);
-				setSourcePartitionName(
-					() ->
-						PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX +
-							companyId);
+				setSourceCompanyId(() -> companyId);
 			}
 		};
 	}

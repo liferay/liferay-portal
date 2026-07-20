@@ -577,8 +577,7 @@ public class PortalInstanceResourceTest
 					companyId,
 				portalInstanceExport.getExportedPartitionName());
 			Assert.assertEquals(
-				PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX + companyId,
-				portalInstanceExport.getSourcePartitionName());
+				Long.valueOf(companyId), portalInstanceExport.getSourceCompanyId());
 
 			List<String> configurationIds = _getExportedConfigurationIds(
 				companyId);
