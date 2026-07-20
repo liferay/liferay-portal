@@ -10,7 +10,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 	azure_policy_enabled=true
 	dns_prefix=var.deployment_name
 	image_cleaner_enabled=true
-	kubernetes_version=data.azurerm_kubernetes_service_versions.current.latest_version
 	local_account_disabled=true
 	location=var.region
 	name=local.cluster_name
@@ -23,7 +22,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 	workload_identity_enabled=true
 	azure_active_directory_role_based_access_control {
 		azure_rbac_enabled=true
-		tenant_id=data.azurerm_client_config.current.tenant_id
 	}
 	default_node_pool {
 		auto_scaling_enabled=true
