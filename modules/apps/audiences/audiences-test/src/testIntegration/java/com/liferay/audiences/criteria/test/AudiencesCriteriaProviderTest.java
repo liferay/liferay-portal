@@ -120,7 +120,7 @@ public class AudiencesCriteriaProviderTest {
 			audiencesCriteriaTypes.get(2);
 
 		AudiencesCriteria audiencesCriteria = _getAudiencesCriteria(
-			audiencesCriteriaType.getAudiencesCriterias(), "segments");
+			audiencesCriteriaType.getAudiencesCriterias(), "segment");
 
 		Assert.assertEquals(
 			AudiencesCriteria.InputType.SELECT,

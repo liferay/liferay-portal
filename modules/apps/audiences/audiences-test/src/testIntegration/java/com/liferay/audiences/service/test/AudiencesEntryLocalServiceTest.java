@@ -73,7 +73,7 @@ public class AudiencesEntryLocalServiceTest {
 						"value", RandomTestUtil.randomString()
 					),
 					JSONUtil.put(
-						"attribute", "segments"
+						"attribute", "segment"
 					).put(
 						"operator", "eq"
 					).put(
