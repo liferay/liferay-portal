@@ -49,9 +49,6 @@ public class Test {
 		Shell.setInstance(new Shell());
 
 		UrlReader.setInstance(new UrlReader());
-
-		setDeclaredFieldValue(
-			JenkinsResultsParserUtil.class, null, "_ciNode", null);
 	}
 
 	@Rule

@@ -29,9 +29,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		Environment.setInstance(Mockito.mock(Environment.class));
 
-		setDeclaredFieldValue(
-			JenkinsResultsParserUtil.class, null, "_ciNode", null);
-
 		UrlReader urlReader = mockUrlReader();
 
 		setUrlReaderOutput(
