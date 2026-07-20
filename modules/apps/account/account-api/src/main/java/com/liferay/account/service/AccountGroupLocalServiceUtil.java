@@ -355,7 +355,9 @@ public class AccountGroupLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static AccountGroup getDefaultAccountGroup(long companyId) {
+	public static AccountGroup getDefaultAccountGroup(long companyId)
+		throws PortalException {
+
 		return getService().getDefaultAccountGroup(companyId);
 	}
 
@@ -474,4 +476,4 @@ public class AccountGroupLocalServiceUtil {
 			AccountGroupLocalServiceUtil.class, AccountGroupLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1968204458
+// LIFERAY-SERVICE-BUILDER-HASH:-565231272

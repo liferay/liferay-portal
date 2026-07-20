@@ -420,7 +420,8 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public FragmentEntryLink getFragmentEntryLink(
-		long groupId, String originalFragmentEntryLinkERC, long plid) {
+			long groupId, String originalFragmentEntryLinkERC, long plid)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			groupId, originalFragmentEntryLinkERC, plid);
@@ -854,4 +855,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-15895300
+// LIFERAY-SERVICE-BUILDER-HASH:-84086422

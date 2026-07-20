@@ -411,7 +411,8 @@ public class AccountGroupLocalServiceWrapper
 
 	@Override
 	public com.liferay.account.model.AccountGroup getDefaultAccountGroup(
-		long companyId) {
+			long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _accountGroupLocalService.getDefaultAccountGroup(companyId);
 	}
@@ -560,4 +561,4 @@ public class AccountGroupLocalServiceWrapper
 	private AccountGroupLocalService _accountGroupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:573676555
+// LIFERAY-SERVICE-BUILDER-HASH:82523321

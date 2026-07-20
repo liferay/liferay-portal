@@ -352,7 +352,8 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 	public
 		com.liferay.commerce.product.type.virtual.model.
 			CPDefinitionVirtualSetting getCPDefinitionVirtualSetting(
-				String className, long classPK) {
+					String className, long classPK)
+				throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionVirtualSettingLocalService.
 			getCPDefinitionVirtualSetting(className, classPK);
@@ -587,4 +588,4 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 		_cpDefinitionVirtualSettingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-723309112
+// LIFERAY-SERVICE-BUILDER-HASH:1829592922

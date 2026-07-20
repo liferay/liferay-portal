@@ -310,7 +310,8 @@ public interface AccountGroupLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AccountGroup getDefaultAccountGroup(long companyId);
+	public AccountGroup getDefaultAccountGroup(long companyId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -384,4 +385,4 @@ public interface AccountGroupLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-298338204
+// LIFERAY-SERVICE-BUILDER-HASH:170682256

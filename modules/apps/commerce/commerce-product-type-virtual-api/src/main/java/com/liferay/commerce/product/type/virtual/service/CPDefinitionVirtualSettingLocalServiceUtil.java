@@ -291,7 +291,8 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 	}
 
 	public static CPDefinitionVirtualSetting getCPDefinitionVirtualSetting(
-		String className, long classPK) {
+			String className, long classPK)
+		throws PortalException {
 
 		return getService().getCPDefinitionVirtualSetting(className, classPK);
 	}
@@ -467,4 +468,4 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 			CPDefinitionVirtualSettingLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2073070156
+// LIFERAY-SERVICE-BUILDER-HASH:644056326

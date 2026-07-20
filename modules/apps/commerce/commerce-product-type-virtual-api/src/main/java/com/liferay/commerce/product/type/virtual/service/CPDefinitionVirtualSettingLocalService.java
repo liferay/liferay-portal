@@ -251,7 +251,8 @@ public interface CPDefinitionVirtualSettingLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionVirtualSetting getCPDefinitionVirtualSetting(
-		String className, long classPK);
+			String className, long classPK)
+		throws PortalException;
 
 	/**
 	 * Returns the cp definition virtual setting matching the UUID and group.
@@ -375,4 +376,4 @@ public interface CPDefinitionVirtualSettingLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1593314084
+// LIFERAY-SERVICE-BUILDER-HASH:960374904
