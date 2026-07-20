@@ -25,14 +25,14 @@ import java.util.Set;
 public class CMSDepotEntryGroupUtil {
 
 	public static String getFilterString() {
+		Set<Long> depotEntryUserGroupIds = new HashSet<>();
+
 		List<Long> depotEntryGroupIds =
 			DepotEntryLocalServiceUtil.getDepotEntryGroupIds(
 				CompanyThreadLocal.getCompanyId(), DepotConstants.TYPE_SPACE);
 
 		String filterString =
 			"groupIds in (" + StringUtil.merge(depotEntryGroupIds) + ")";
-
-		Set<Long> depotEntryUserGroupIds = new HashSet<>();
 
 		for (long depotEntryGroupId : depotEntryGroupIds) {
 			depotEntryUserGroupIds.addAll(
