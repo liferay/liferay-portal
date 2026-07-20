@@ -70,14 +70,3 @@ resource "azurerm_role_assignment" "acr_pull" {
 	role_definition_name="AcrPull"
 	scope=each.value.id
 }
-resource "terraform_data" "get_credentials" {
-	depends_on=[
-		azurerm_kubernetes_cluster.main,
-	]
-	provisioner "local-exec" {
-		command="az aks get-credentials --name ${azurerm_kubernetes_cluster.main.name} --overwrite-existing --resource-group ${azurerm_resource_group.main.name}"
-	}
-	triggers_replace=[
-		azurerm_kubernetes_cluster.main.id,
-	]
-}

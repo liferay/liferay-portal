@@ -337,6 +337,13 @@ function _set_up_azure_aks {
 
 	_terraform_init_and_apply "." "aks" "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}" "${@:6}"
 
+	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
+
+	az aks get-credentials \
+		--name "$(terraform output -raw cluster_name)" \
+		--overwrite-existing \
+		--resource-group "$(terraform output -raw resource_group_name)"
+
 	echo "Azure AKS cluster setup complete."
 
 	_popd
