@@ -108,6 +108,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		_depotEntry = _addDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY);
 		_userWithoutPermissionsFragmentSetResource =
 			_getUserWithoutPermissionsFragmentSetResource();
+		_userWithPermissionsDesignLibraryFragmentSetResource =
+			_getUserWithPermissionsDesignLibraryFragmentSetResource();
 		_userWithPermissionsFragmentSetResource =
 			_getUserWithPermissionsFragmentSetResource();
 	}
@@ -164,8 +166,12 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-88395")
 	public void testGetDesignLibraryFragmentSetsPage() throws Exception {
 		super.testGetDesignLibraryFragmentSetsPage();
+
+		_testGetDesignLibraryFragmentSetsPageWithoutPermissions();
+		_testGetDesignLibraryFragmentSetsPageWithPermissions();
 	}
 
 	@Override
@@ -594,6 +600,35 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		).build();
 	}
 
+	private FragmentSetResource
+			_getUserWithPermissionsDesignLibraryFragmentSetResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		Group group = _depotEntry.getGroup();
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(group.getGroupId()),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		return FragmentSetResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private FragmentSetResource _getUserWithPermissionsFragmentSetResource()
 		throws Exception {
 
@@ -746,6 +781,45 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				"/design-libraries/", group.getExternalReferenceCode(),
 				"/fragment-sets/", fragmentSet.getExternalReferenceCode()),
 			"delete", "get");
+	}
+
+	private void _testGetDesignLibraryFragmentSetsPageWithoutPermissions()
+		throws Exception {
+
+		_addDesignLibraryFragmentSet(
+			randomFragmentSet(), _depotEntry.getGroup());
+
+		Page<FragmentSet> page =
+			_userWithoutPermissionsFragmentSetResource.
+				getDesignLibraryFragmentSetsPage(
+					_depotEntry.getGroup(
+					).getExternalReferenceCode(),
+					null, Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetDesignLibraryFragmentSetsPageWithPermissions()
+		throws Exception {
+
+		FragmentSet fragmentSet = _addDesignLibraryFragmentSet(
+			randomFragmentSet(), _depotEntry.getGroup());
+
+		Page<FragmentSet> page =
+			_userWithPermissionsDesignLibraryFragmentSetResource.
+				getDesignLibraryFragmentSetsPage(
+					_depotEntry.getGroup(
+					).getExternalReferenceCode(),
+					null, Pagination.of(1, 1));
+
+		page =
+			_userWithPermissionsDesignLibraryFragmentSetResource.
+				getDesignLibraryFragmentSetsPage(
+					_depotEntry.getGroup(
+					).getExternalReferenceCode(),
+					null, Pagination.of(1, (int)page.getTotalCount()));
+
+		assertContains(fragmentSet, (List<FragmentSet>)page.getItems());
 	}
 
 	private void _testGetSiteFragmentSetActions() throws Exception {
@@ -1084,6 +1158,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	private UserLocalService _userLocalService;
 
 	private FragmentSetResource _userWithoutPermissionsFragmentSetResource;
+	private FragmentSetResource
+		_userWithPermissionsDesignLibraryFragmentSetResource;
 	private FragmentSetResource _userWithPermissionsFragmentSetResource;
 
 }
