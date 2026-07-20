@@ -1,0 +1,74 @@
+[
+	{
+		"actions": [
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			},
+			{
+				"actionId": "VIEW_MEMBERS",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			}
+		],
+		"description": {
+			"en-US": "Project Contributors can view project details, create and edit tasks, and participate in discussions."
+		},
+		"externalReferenceCode": "L_PROJECT_CONTRIBUTOR",
+		"name": "Project Contributor",
+		"name_i18n": {
+			"en-US": "Project Contributor"
+		},
+		"subtype": "project",
+		"type": 5
+	},
+	{
+		"actions": [
+			{
+				"actionId": "ASSIGN_MEMBERS",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			},
+			{
+				"actionId": "VIEW_MEMBERS",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			}
+		],
+		"description": {
+			"en-US": "Project Managers have full control over their projects, tasks, and members."
+		},
+		"externalReferenceCode": "L_PROJECT_MANAGER",
+		"name": "Project Manager",
+		"name_i18n": {
+			"en-US": "Project Manager"
+		},
+		"subtype": "project",
+		"type": 5
+	},
+	{
+		"actions": [
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 3
+			}
+		],
+		"description": {
+			"en-US": "Project Members have read-only access to project details and tasks and can participate in discussions."
+		},
+		"externalReferenceCode": "L_PROJECT_MEMBER",
+		"name": "Project Member",
+		"name_i18n": {
+			"en-US": "Project Member"
+		},
+		"subtype": "project",
+		"type": 5
+	}
+]
