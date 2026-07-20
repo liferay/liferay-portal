@@ -112,9 +112,9 @@ public class SecretManagerImplTest {
 
 		KeyReference keyReference = keyReferences.get(0);
 
-		Assert.assertEquals(KeyReference.Type.SECRET, keyReference.getType());
 		Assert.assertEquals(secretIdentifier, keyReference.getIdentifier());
 		Assert.assertEquals(secretProviderId, keyReference.getProviderId());
+		Assert.assertEquals(KeyReference.Type.SECRET, keyReference.getType());
 	}
 
 	@Test
