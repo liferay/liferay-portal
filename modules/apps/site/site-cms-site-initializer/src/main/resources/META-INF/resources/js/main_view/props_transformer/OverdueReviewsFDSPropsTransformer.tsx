@@ -63,6 +63,19 @@ export default function OverdueReviewsFDSPropsTransformer({
 		},
 		hideManagementBarInEmptyState: true,
 		itemsActions,
+		sorts: [
+			{
+				active: true,
+				direction: 'asc',
+				key: 'dateReview',
+				label: Liferay.Language.get('review-date'),
+			},
+			{
+				direction: 'asc',
+				key: 'title',
+				label: Liferay.Language.get('title'),
+			},
+		],
 		views: [
 			{
 				contentRenderer: 'list',
