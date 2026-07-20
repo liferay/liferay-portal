@@ -55,7 +55,7 @@ public class PageSpeedScanService {
 			}
 			catch (Exception exception1) {
 				_log.error(
-					"Unable to run the PageSpeed scan " + seoStudioScanId,
+					"Unable to run PageSpeed scan " + seoStudioScanId,
 					exception1);
 
 				try {
@@ -65,8 +65,7 @@ public class PageSpeedScanService {
 				}
 				catch (Exception exception2) {
 					_log.error(
-						"Unable to mark the scan " + seoStudioScanId +
-							" as failed",
+						"Unable to mark scan " + seoStudioScanId + " as failed",
 						exception2);
 				}
 			}
@@ -86,12 +85,12 @@ public class PageSpeedScanService {
 			thread.interrupt();
 
 			throw new RuntimeException(
-				"Unable to complete the PageSpeed scan " + url,
+				"Unable to complete PageSpeed scan " + url,
 				interruptedException);
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
-				"Unable to get the PageSpeed scores " + url, ioException);
+				"Unable to get PageSpeed scores " + url, ioException);
 		}
 	}
 
@@ -204,6 +203,25 @@ public class PageSpeedScanService {
 				seoStudioScanId, PageSpeedConstants.STATE_FAILED);
 
 			return;
+		}
+
+		try {
+			if (!_pageSpeedReportService.isValidAPIKey(googlePageSpeedAPIKey)) {
+				_liferayService.patchSEOStudioScan(
+					"Unable to validate Google PageSpeed API key for SEO " +
+						"Studio instance ID " + domain.getSEOStudioInstanceId(),
+					seoStudioScanId, PageSpeedConstants.STATE_FAILED);
+
+				return;
+			}
+		}
+		catch (InterruptedException interruptedException) {
+			Thread thread = Thread.currentThread();
+
+			thread.interrupt();
+
+			throw new RuntimeException(
+				"Unable to validate PageSpeed API key", interruptedException);
 		}
 
 		JSONObject scopeConfigJSONObject = new JSONObject(

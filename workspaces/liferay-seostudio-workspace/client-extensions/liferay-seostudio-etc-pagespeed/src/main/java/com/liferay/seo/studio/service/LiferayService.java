@@ -87,7 +87,7 @@ public class LiferayService extends BaseService {
 		catch (JSONException jsonException) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Unable to parse the queued scans response", jsonException);
+					"Unable to parse queued scans response", jsonException);
 			}
 
 			return new JSONArray();
@@ -146,9 +146,15 @@ public class LiferayService extends BaseService {
 			"accessibilityScore", averagePageSpeedReport.getAccessibility()
 		).put(
 			"bestPracticesScore", averagePageSpeedReport.getBestPractices()
-		).put(
-			"errorMessage", pageSpeedResult.getErrorMessage()
-		).put(
+		);
+
+		String errorMessage = pageSpeedResult.getErrorMessage();
+
+		if (Validator.isNotNull(errorMessage)) {
+			jsonObject.put("errorMessage", errorMessage);
+		}
+
+		jsonObject.put(
 			"pagesErrored", pageSpeedResult.getPagesErrored()
 		).put(
 			"pagesScanned", pageSpeedResult.getPagesScanned()
