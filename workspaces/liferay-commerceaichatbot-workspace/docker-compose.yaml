@@ -1,29 +1,22 @@
 name: liferay-stack
 services:
     database:
-        command: >
-            mysqld
-            --character-set-server=utf8mb4
-            --collation-server=utf8mb4_general_ci
-            --innodb-buffer-pool-size=512M
-            --innodb-doublewrite=OFF
-            --innodb-flush-log-at-trx-commit=2
-            --innodb-flush-method=O_DIRECT
-            --lower_case_table_names=1
-            --sync-binlog=0
         container_name: database
         environment:
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-            MYSQL_DATABASE: lportal
+            POSTGRES_DB: lportal
+            POSTGRES_HOST_AUTH_METHOD: trust
         healthcheck:
             interval: 5s
             retries: 10
             start_period: 5m
-            test: ["CMD", "mysqladmin", "ping", "--host", "localhost"]
+            test: >
+                pg_isready
+                --username
+                postgres
             timeout: 20s
-        image: mysql:8.0
+        image: postgres:16
         ports:
-            -   3306:3306
+            -   5432:5432
     liferay:
         container_name: liferay
         depends_on:
@@ -38,7 +31,11 @@ services:
             interval: 10s
             retries: 60
             start_period: 40s
-            test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/c/portal/status"]
+            test: >
+                curl
+                --fail
+                --silent
+                http://localhost:8080/c/portal/status
             timeout: 10s
         image: liferay:local
         mem_limit: 10g
