@@ -8,6 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.object.deployer;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
@@ -35,7 +36,9 @@ public class PIMObjectDefinitionDeployerImpl
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		if (!Objects.equals(
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-96666") ||
+			!Objects.equals(
 				objectDefinition.getObjectFolderExternalReferenceCode(),
 				PIMObjectFolderConstants.
 					EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES)) {
