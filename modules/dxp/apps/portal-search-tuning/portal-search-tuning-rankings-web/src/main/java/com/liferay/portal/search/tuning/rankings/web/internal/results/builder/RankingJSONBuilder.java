@@ -350,6 +350,11 @@ public class RankingJSONBuilder {
 		String content = sb.toString();
 
 		if (Validator.isBlank(content)) {
+			content = _document.getString(
+				Field.getLocalizedName(_locale, "objectEntryContent"));
+		}
+
+		if (Validator.isBlank(content)) {
 			content = _document.getString("objectEntryContent");
 		}
 
