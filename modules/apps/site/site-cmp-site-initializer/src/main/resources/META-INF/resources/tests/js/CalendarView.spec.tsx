@@ -32,15 +32,6 @@ jest.mock('@fullcalendar/react', () => {
 	};
 });
 
-jest.mock('../../js/utils/api', () => ({
-	getProjectById: jest.fn(() =>
-		Promise.resolve({
-			data: {dateCreated: '2026-07-01', dueDate: '2026-07-31'},
-		})
-	),
-	patchTaskById: jest.fn(() => Promise.resolve({})),
-}));
-
 const renderCalendarView = (hasAddTaskPermission: boolean) =>
 	render(
 		<CalendarView
