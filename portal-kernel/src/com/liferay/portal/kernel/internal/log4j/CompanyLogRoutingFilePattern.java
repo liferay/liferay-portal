@@ -48,6 +48,7 @@ public final class CompanyLogRoutingFilePattern {
 
 		@PluginBuilderAttribute("fileNamePattern")
 		@Required
+		@SuppressWarnings("log4j.public.setter")
 		private String _fileNamePattern;
 
 		@PluginElement("Layout")
