@@ -248,6 +248,19 @@ public class PasswordPolicyLocalServiceUtil {
 		return getService().fetchPasswordPolicy(companyId, name);
 	}
 
+	public static PasswordPolicy fetchPasswordPolicyByUser(
+			com.liferay.portal.kernel.model.User user)
+		throws PortalException {
+
+		return getService().fetchPasswordPolicyByUser(user);
+	}
+
+	public static PasswordPolicy fetchPasswordPolicyByUserId(long userId)
+		throws PortalException {
+
+		return getService().fetchPasswordPolicyByUserId(userId);
+	}
+
 	/**
 	 * Returns the password policy with the matching UUID and company.
 	 *
@@ -440,4 +453,4 @@ public class PasswordPolicyLocalServiceUtil {
 	private static volatile PasswordPolicyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2122577674
+// LIFERAY-SERVICE-BUILDER-HASH:1524807190
