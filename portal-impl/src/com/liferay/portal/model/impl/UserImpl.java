@@ -606,7 +606,7 @@ public class UserImpl extends UserBaseImpl {
 	public PasswordPolicy getPasswordPolicy() throws PortalException {
 		if (_passwordPolicy == null) {
 			_passwordPolicy =
-				PasswordPolicyLocalServiceUtil.getPasswordPolicyByUser(this);
+				PasswordPolicyLocalServiceUtil.fetchPasswordPolicyByUser(this);
 		}
 
 		return _passwordPolicy;

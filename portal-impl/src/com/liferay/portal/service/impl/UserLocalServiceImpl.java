@@ -7219,7 +7219,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		PasswordPolicy passwordPolicy =
-			_passwordPolicyLocalService.getPasswordPolicyByUserId(userId);
+			_passwordPolicyLocalService.fetchPasswordPolicyByUserId(userId);
 
 		PwdToolkitUtil.validate(userId, password1, password2, passwordPolicy);
 	}

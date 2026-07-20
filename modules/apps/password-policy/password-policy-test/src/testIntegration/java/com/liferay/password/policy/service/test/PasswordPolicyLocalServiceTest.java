@@ -39,6 +39,88 @@ public class PasswordPolicyLocalServiceTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
+	public void testFetchPasswordPolicyByUserIdWithLDAPPasswordPolicy()
+		throws Exception {
+
+		try (LDAPAuthConfigurationProviderTemporarySwapper
+				ldapAuthConfigurationProviderTemporarySwapper =
+					new LDAPAuthConfigurationProviderTemporarySwapper(
+						TestPropsValues.getCompanyId(), true)) {
+
+			User user = _addUser(true);
+
+			Assert.assertNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUserId(
+					user.getUserId()));
+
+			user = _addUser(false);
+
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUserId(
+					user.getUserId()));
+		}
+	}
+
+	@Test
+	public void testFetchPasswordPolicyByUserIdWithoutLDAPPasswordPolicy()
+		throws Exception {
+
+		try (LDAPAuthConfigurationProviderTemporarySwapper
+				ldapAuthConfigurationProviderTemporarySwapper =
+					new LDAPAuthConfigurationProviderTemporarySwapper(
+						TestPropsValues.getCompanyId(), false)) {
+
+			User user = _addUser(true);
+
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUserId(
+					user.getUserId()));
+
+			user = _addUser(false);
+
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUserId(
+					user.getUserId()));
+		}
+	}
+
+	@Test
+	public void testFetchPasswordPolicyByUserWithLDAPPasswordPolicy()
+		throws Exception {
+
+		try (LDAPAuthConfigurationProviderTemporarySwapper
+				ldapAuthConfigurationProviderTemporarySwapper =
+					new LDAPAuthConfigurationProviderTemporarySwapper(
+						TestPropsValues.getCompanyId(), true)) {
+
+			Assert.assertNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUser(
+					_addUser(true)));
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUser(
+					_addUser(false)));
+		}
+	}
+
+	@Test
+	public void testFetchPasswordPolicyByUserWithoutLDAPPasswordPolicy()
+		throws Exception {
+
+		try (LDAPAuthConfigurationProviderTemporarySwapper
+				ldapAuthConfigurationProviderTemporarySwapper =
+					new LDAPAuthConfigurationProviderTemporarySwapper(
+						TestPropsValues.getCompanyId(), false)) {
+
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUser(
+					_addUser(true)));
+			Assert.assertNotNull(
+				_passwordPolicyLocalService.fetchPasswordPolicyByUser(
+					_addUser(false)));
+		}
+	}
+
+	@Test
 	public void testGetDefaultPasswordPolicyWithLDAPPasswordPolicy()
 		throws Exception {
 
@@ -50,88 +132,6 @@ public class PasswordPolicyLocalServiceTest {
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
 					TestPropsValues.getCompanyId()));
-		}
-	}
-
-	@Test
-	public void testGetPasswordPolicyByUserIdWithLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), true)) {
-
-			User user = _addUser(true);
-
-			Assert.assertNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUserId(
-					user.getUserId()));
-
-			user = _addUser(false);
-
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUserId(
-					user.getUserId()));
-		}
-	}
-
-	@Test
-	public void testGetPasswordPolicyByUserIdWithoutLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), false)) {
-
-			User user = _addUser(true);
-
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUserId(
-					user.getUserId()));
-
-			user = _addUser(false);
-
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUserId(
-					user.getUserId()));
-		}
-	}
-
-	@Test
-	public void testGetPasswordPolicyByUserWithLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), true)) {
-
-			Assert.assertNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUser(
-					_addUser(true)));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUser(
-					_addUser(false)));
-		}
-	}
-
-	@Test
-	public void testGetPasswordPolicyByUserWithoutLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), false)) {
-
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUser(
-					_addUser(true)));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicyByUser(
-					_addUser(false)));
 		}
 	}
 

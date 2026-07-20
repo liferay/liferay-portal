@@ -53,7 +53,7 @@ public class PasswordTrackerLocalServiceImpl
 		throws PortalException {
 
 		PasswordPolicy passwordPolicy =
-			_passwordPolicyLocalService.getPasswordPolicyByUserId(userId);
+			_passwordPolicyLocalService.fetchPasswordPolicyByUserId(userId);
 
 		if ((passwordPolicy == null) || !passwordPolicy.isHistory()) {
 			return true;
@@ -91,7 +91,7 @@ public class PasswordTrackerLocalServiceImpl
 		throws PortalException {
 
 		PasswordPolicy passwordPolicy =
-			_passwordPolicyLocalService.getPasswordPolicyByUserId(userId);
+			_passwordPolicyLocalService.fetchPasswordPolicyByUserId(userId);
 
 		if ((passwordPolicy != null) && passwordPolicy.isHistory()) {
 			long passwordTrackerId = counterLocalService.increment();
