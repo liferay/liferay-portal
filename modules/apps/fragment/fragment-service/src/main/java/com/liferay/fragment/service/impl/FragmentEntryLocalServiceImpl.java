@@ -983,10 +983,14 @@ public class FragmentEntryLocalServiceImpl
 	private void _propagateChanges(FragmentEntry fragmentEntry)
 		throws PortalException {
 
+		Group group = _groupLocalService.getGroup(fragmentEntry.getGroupId());
+
+		if (group.isDepot()) {
+			return;
+		}
+
 		ActionableDynamicQuery actionableDynamicQuery =
 			_fragmentEntryLinkLocalService.getActionableDynamicQuery();
-
-		Group group = _groupLocalService.getGroup(fragmentEntry.getGroupId());
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
