@@ -267,7 +267,7 @@ public class AudiencesCriteriaProviderImpl
 					).setInputType(
 						AudiencesCriteria.InputType.SELECT
 					).setKey(
-						AudiencesCriteriaKeys.SEGMENTS
+						AudiencesCriteriaKeys.SEGMENT
 					).setLabel(
 						_language.get(locale, "segments")
 					).setOptions(

@@ -144,7 +144,7 @@
 							"attribute": {
 								"enum": [
 									"language",
-									"segments",
+									"segment",
 									"user_language"
 								]
 							}
