@@ -73,7 +73,7 @@ export default function RuleRow({
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.bottom;
 
 	const isMovementTargetGroup =
-		isMovementTarget && movementTarget.position === 'group';
+		isMovementTarget && movementTarget.position === 'middle';
 
 	const isMovementTargetTop =
 		isMovementTarget && movementTarget.position === DROP_POSITIONS.top;
@@ -115,14 +115,14 @@ export default function RuleRow({
 				dropZone === DROP_POSITIONS.bottom ? index + 1 : index;
 
 			if ('audiencesCriteria' in item) {
-				if (dropZone === 'group') {
+				if (dropZone === 'middle') {
 					onGroup(item.audiencesCriteria);
 				}
 				else {
 					onAddRule(item.audiencesCriteria, insertIndex);
 				}
 			}
-			else if (dropZone === 'group') {
+			else if (dropZone === 'middle') {
 				onMoveGroup(item.id);
 			}
 			else {
@@ -182,7 +182,7 @@ export default function RuleRow({
 						(isOver && dropPosition === DROP_POSITIONS.bottom) ||
 						isMovementTargetBottom,
 					'audience-builder-rule--drop-group':
-						(isOver && dropPosition === 'group') ||
+						(isOver && dropPosition === 'middle') ||
 						isMovementTargetGroup,
 					'audience-builder-rule--drop-top':
 						(isOver && dropPosition === DROP_POSITIONS.top) ||

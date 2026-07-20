@@ -41,12 +41,12 @@ describe('getMoveTargets', () => {
 			)
 		).toEqual([
 			'age:top:root:0',
-			'age:group:root:0',
+			'age:middle:root:0',
 			'group:top:root:1',
 			'city:top:group:0',
-			'city:group:group:0',
+			'city:middle:group:0',
 			'country:top:group:1',
-			'country:group:group:1',
+			'country:middle:group:1',
 			'country:bottom:group:2',
 			'group:bottom:root:2',
 		]);
@@ -68,9 +68,9 @@ describe('getMoveTargets', () => {
 			)
 		).toEqual([
 			'age:top',
-			'age:group',
+			'age:middle',
 			'city:top',
-			'city:group',
+			'city:middle',
 			'city:bottom',
 		]);
 	});

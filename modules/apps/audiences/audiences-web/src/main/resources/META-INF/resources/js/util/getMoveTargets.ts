@@ -39,7 +39,7 @@ export function getMoveTargets(root: Group): MoveTarget[] {
 					groupPath,
 					index,
 					nodeId: node.id,
-					position: 'group',
+					position: 'middle',
 				});
 			}
 

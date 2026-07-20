@@ -51,7 +51,7 @@ export default function KeyboardMovementManager({
 		() =>
 			getMoveTargets(root).filter(
 				(moveTarget) =>
-					moveTarget.position !== 'group' ||
+					moveTarget.position !== 'middle' ||
 					moveTarget.nodeId !== source.ruleId
 			),
 		[root, source.ruleId]
@@ -119,7 +119,7 @@ export default function KeyboardMovementManager({
 			}
 
 			if (source.ruleId) {
-				if (moveTarget.position === 'group') {
+				if (moveTarget.position === 'middle') {
 					dispatch({
 						nodeId: source.ruleId,
 						targetId: moveTarget.nodeId,
@@ -151,7 +151,7 @@ export default function KeyboardMovementManager({
 				}
 			}
 			else if (source.audiencesCriteria) {
-				if (moveTarget.position === 'group') {
+				if (moveTarget.position === 'middle') {
 					dispatch({
 						audiencesCriteria: source.audiencesCriteria,
 						targetId: moveTarget.nodeId,
@@ -234,7 +234,7 @@ export default function KeyboardMovementManager({
 }
 
 function getPositionLabel(position: DropZone): string {
-	if (position === 'group') {
+	if (position === 'middle') {
 		return Liferay.Language.get('group');
 	}
 

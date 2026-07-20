@@ -8,7 +8,7 @@ import {DropTargetMonitor} from 'react-dnd';
 
 import {DROP_POSITIONS, DropPosition} from '../constants/dropPositions';
 
-export type DropZone = DropPosition | 'group';
+export type DropZone = DropPosition | 'middle';
 
 export function getDropPosition(
 	ref: React.RefObject<HTMLElement>,
@@ -41,5 +41,5 @@ export function getDropPosition(
 		return DROP_POSITIONS.bottom;
 	}
 
-	return 'group';
+	return 'middle';
 }
