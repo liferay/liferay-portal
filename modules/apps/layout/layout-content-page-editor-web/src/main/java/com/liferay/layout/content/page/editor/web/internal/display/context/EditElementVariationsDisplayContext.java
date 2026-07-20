@@ -139,6 +139,16 @@ public class EditElementVariationsDisplayContext {
 		).build();
 	}
 
+	public String getLayoutName() {
+		Layout layout = _layoutLocalService.fetchLayout(_getPlid());
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
+		return layout.getName(_themeDisplay.getLocale());
+	}
+
 	public String getRedirect() {
 		if (Validator.isNotNull(_redirect)) {
 			return _redirect;

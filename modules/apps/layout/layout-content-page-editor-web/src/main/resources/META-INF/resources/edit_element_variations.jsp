@@ -14,7 +14,7 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(editElementVariationsDisplayContext.getRedirect());
 portletDisplay.setURLBackTitle(ParamUtil.getString(request, "backURLTitle"));
 
-renderResponse.setTitle(LanguageUtil.get(request, "element-variations"));
+renderResponse.setTitle(editElementVariationsDisplayContext.getLayoutName());
 %>
 
 <liferay-product-navigation:control-menu />
