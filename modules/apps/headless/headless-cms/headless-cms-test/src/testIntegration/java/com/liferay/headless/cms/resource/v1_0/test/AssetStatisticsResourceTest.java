@@ -97,7 +97,7 @@ public class AssetStatisticsResourceTest
 
 		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
 
-		long assetLibraryId = depotEntry.getGroupId();
+		long groupId = depotEntry.getGroupId();
 
 		// Add object entry on irrelevant group and irrelevant object definition
 
@@ -124,7 +124,7 @@ public class AssetStatisticsResourceTest
 			irrelevantObjectEntry.getObjectEntryId(),
 			WorkflowConstants.STATUS_DRAFT, serviceContext);
 
-		_assertAssetStatistics(assetLibraryId, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		_assertAssetStatistics(groupId, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 		ObjectDefinition objectDefinition =
 			_getBasicWebContentObjectDefinition();
@@ -141,7 +141,7 @@ public class AssetStatisticsResourceTest
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry1);
 
-		_assertAssetStatistics(assetLibraryId, 1, 0, 0, 0, 0, 0, 0, 1, 0);
+		_assertAssetStatistics(groupId, 1, 0, 0, 0, 0, 0, 0, 1, 0);
 
 		// Add object entry with future review date
 
@@ -152,7 +152,7 @@ public class AssetStatisticsResourceTest
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry2);
 
-		_assertAssetStatistics(assetLibraryId, 2, 0, 0, 0, 0, 0, 0, 2, 1);
+		_assertAssetStatistics(groupId, 2, 0, 0, 0, 0, 0, 0, 2, 1);
 
 		// Add object entry with imminent expiration date
 
@@ -164,7 +164,7 @@ public class AssetStatisticsResourceTest
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry3);
 
-		_assertAssetStatistics(assetLibraryId, 3, 0, 1, 0, 0, 0, 0, 3, 1);
+		_assertAssetStatistics(groupId, 3, 0, 1, 0, 0, 0, 0, 3, 1);
 
 		// Add object entry with already passed expiration date
 
@@ -176,7 +176,7 @@ public class AssetStatisticsResourceTest
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry4);
 
-		_assertAssetStatistics(assetLibraryId, 4, 0, 2, 0, 0, 0, 0, 4, 1);
+		_assertAssetStatistics(groupId, 4, 0, 2, 0, 0, 0, 0, 4, 1);
 
 		// Add object entry with overdue review date
 
@@ -187,7 +187,7 @@ public class AssetStatisticsResourceTest
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry5);
 
-		_assertAssetStatistics(assetLibraryId, 5, 0, 2, 0, 0, 1, 0, 5, 1);
+		_assertAssetStatistics(groupId, 5, 0, 2, 0, 0, 1, 0, 5, 1);
 
 		// Add object entry with status draft
 
@@ -198,7 +198,7 @@ public class AssetStatisticsResourceTest
 			TestPropsValues.getUserId(), objectEntry6.getObjectEntryId(),
 			WorkflowConstants.STATUS_DRAFT, serviceContext);
 
-		_assertAssetStatistics(assetLibraryId, 5, 0, 2, 1, 0, 1, 0, 6, 1);
+		_assertAssetStatistics(groupId, 5, 0, 2, 1, 0, 1, 0, 6, 1);
 
 		// Add object entry with status expired
 
@@ -209,7 +209,7 @@ public class AssetStatisticsResourceTest
 			TestPropsValues.getUserId(), objectEntry7.getObjectEntryId(),
 			WorkflowConstants.STATUS_EXPIRED, serviceContext);
 
-		_assertAssetStatistics(assetLibraryId, 5, 1, 2, 1, 0, 1, 0, 7, 1);
+		_assertAssetStatistics(groupId, 5, 1, 2, 1, 0, 1, 0, 7, 1);
 
 		// Add object entry in a status that is not visible in the All view
 
@@ -220,7 +220,7 @@ public class AssetStatisticsResourceTest
 			TestPropsValues.getUserId(), objectEntry8.getObjectEntryId(),
 			WorkflowConstants.STATUS_DENIED, serviceContext);
 
-		_assertAssetStatistics(assetLibraryId, 5, 1, 2, 1, 0, 1, 0, 7, 1);
+		_assertAssetStatistics(groupId, 5, 1, 2, 1, 0, 1, 0, 7, 1);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			irrelevantObjectDefinition);
@@ -368,8 +368,6 @@ public class AssetStatisticsResourceTest
 
 		Date date = new Date();
 
-		// First space: two approved entries, one with an upcoming review date
-
 		_addObjectEntry(depotEntry1, objectDefinition);
 
 		ObjectEntry objectEntry = _addObjectEntry(
@@ -378,8 +376,6 @@ public class AssetStatisticsResourceTest
 		objectEntry.setReviewDate(new Date(date.getTime() + (3 * Time.DAY)));
 
 		_objectEntryLocalService.updateObjectEntry(objectEntry);
-
-		// Second space: one approved entry and one pending entry
 
 		_addObjectEntry(depotEntry2, objectDefinition);
 
@@ -390,16 +386,10 @@ public class AssetStatisticsResourceTest
 			TestPropsValues.getUserId(), pendingObjectEntry.getObjectEntryId(),
 			WorkflowConstants.STATUS_PENDING, serviceContext);
 
-		// Counts scoped to the first space only, resolved by group ID and by
-		// depot entry ID
-
 		_assertAssetStatistics(
 			depotEntry1.getGroupId(), 2, 0, 0, 0, 0, 0, 0, 2, 1);
 		_assertAssetStatistics(
 			depotEntry1.getDepotEntryId(), 2, 0, 0, 0, 0, 0, 0, 2, 1);
-
-		// Counts scoped to the second space only, resolved by group ID and by
-		// depot entry ID
 
 		_assertAssetStatistics(
 			depotEntry2.getGroupId(), 1, 0, 0, 0, 1, 0, 0, 2, 0);
