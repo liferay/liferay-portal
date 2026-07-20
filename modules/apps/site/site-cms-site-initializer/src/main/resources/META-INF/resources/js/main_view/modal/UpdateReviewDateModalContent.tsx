@@ -10,6 +10,7 @@ import React, {useRef, useState} from 'react';
 
 import ScheduleField, {
 	dateConfig,
+	isPastDate,
 	toMomentDate,
 } from '../../content_editor/components/ScheduleField';
 
@@ -45,8 +46,16 @@ export default function UpdateReviewDateModalContent({
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (!field.neverReview && !fieldRef.current?.validate()) {
-			return;
+		if (!field.neverReview) {
+			fieldRef.current?.validate();
+
+			const isReviewDateInvalid =
+				!moment(field.value, dateConfig.momentFormat, true).isValid() ||
+				isPastDate(field.value);
+
+			if (isReviewDateInvalid) {
+				return;
+			}
 		}
 
 		setSaving(true);
