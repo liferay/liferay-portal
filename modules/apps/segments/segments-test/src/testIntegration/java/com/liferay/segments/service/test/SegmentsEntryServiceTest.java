@@ -80,7 +80,7 @@ public class SegmentsEntryServiceTest {
 		throws Exception {
 
 		_segmentsEntryService.addSegmentsEntry(
-			RandomTestUtil.randomString(),
+			null, RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), true,
 			CriteriaSerializer.serialize(new Criteria()),
@@ -106,7 +106,7 @@ public class SegmentsEntryServiceTest {
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
 
 			_segmentsEntryService.addSegmentsEntry(
-				RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(), true,
 				CriteriaSerializer.serialize(new Criteria()),
@@ -124,7 +124,7 @@ public class SegmentsEntryServiceTest {
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
 
 			_segmentsEntryService.addSegmentsEntry(
-				RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(), true,
 				RandomTestUtil.randomString(),

@@ -3996,7 +3996,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			if (segmentsEntry == null) {
 				segmentsEntry = _segmentsEntryLocalService.addSegmentsEntry(
-					jsonObject.getString("segmentsEntryKey"),
+					null, jsonObject.getString("segmentsEntryKey"),
 					SiteInitializerUtil.toMap(
 						jsonObject.getString("name_i18n")),
 					null, jsonObject.getBoolean("active", true),

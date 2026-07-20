@@ -42,7 +42,7 @@ public class SegmentsEntryExternalReferenceCodeUpgradeProcessTest
 
 		return new ExternalReferenceCodeModel[] {
 			_segmentsEntryLocalService.addSegmentsEntry(
-				RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(),
 				Collections.singletonMap(
 					defaultLocale, RandomTestUtil.randomString()),
 				Collections.singletonMap(

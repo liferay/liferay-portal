@@ -96,7 +96,7 @@ public class SegmentsTestUtil {
 		throws PortalException {
 
 		return SegmentsEntryLocalServiceUtil.addSegmentsEntry(
-			segmentsEntryKey,
+			null, segmentsEntryKey,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), name
 			).build(),

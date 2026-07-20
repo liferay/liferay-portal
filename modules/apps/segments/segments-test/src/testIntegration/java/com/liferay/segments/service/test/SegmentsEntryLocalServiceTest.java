@@ -515,7 +515,7 @@ public class SegmentsEntryLocalServiceTest {
 	private void _testAddSegmentsEntryWithoutSource() throws Exception {
 		SegmentsEntry segmentsEntry =
 			_segmentsEntryLocalService.addSegmentsEntry(
-				RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomBoolean(),

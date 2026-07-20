@@ -101,7 +101,7 @@ public class UpdateSegmentsEntryMVCActionCommand extends BaseMVCActionCommand {
 				String source = null;
 
 				segmentsEntry = _segmentsEntryService.addSegmentsEntry(
-					segmentsEntryKey, nameMap, descriptionMap, active,
+					null, segmentsEntryKey, nameMap, descriptionMap, active,
 					CriteriaSerializer.serialize(criteria), source,
 					serviceContext);
 			}

@@ -115,8 +115,9 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 
 			if (segmentsEntry == null) {
 				_segmentsEntryLocalService.addSegmentsEntry(
-					individualSegment.getId(), nameMap, Collections.emptyMap(),
-					true, null, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+					null, individualSegment.getId(), nameMap,
+					Collections.emptyMap(), true, null,
+					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 					serviceContext);
 
 				return;

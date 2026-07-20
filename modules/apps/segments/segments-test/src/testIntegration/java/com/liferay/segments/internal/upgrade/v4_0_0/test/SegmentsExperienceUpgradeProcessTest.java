@@ -217,7 +217,7 @@ public class SegmentsExperienceUpgradeProcessTest
 		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		return _segmentsEntryLocalService.addSegmentsEntry(
-			RandomTestUtil.randomString(),
+			null, RandomTestUtil.randomString(),
 			Collections.singletonMap(
 				defaultLocale, RandomTestUtil.randomString()),
 			Collections.singletonMap(

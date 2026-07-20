@@ -222,8 +222,8 @@ public class ContentTargetingUpgradeProcess extends UpgradeProcess {
 					LocaleThreadLocal.setSiteDefaultLocale(defaultLocale);
 
 					_segmentsEntryLocalService.addSegmentsEntry(
-						"ct_" + userSegmentId, nameMap, descriptionMap, true,
-						_getCriteria(userSegmentId),
+						null, "ct_" + userSegmentId, nameMap, descriptionMap,
+						true, _getCriteria(userSegmentId),
 						SegmentsEntryConstants.SOURCE_DEFAULT, serviceContext);
 				}
 				finally {
