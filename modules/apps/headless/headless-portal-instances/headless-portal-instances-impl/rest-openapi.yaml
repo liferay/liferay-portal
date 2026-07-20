@@ -61,10 +61,11 @@ components:
                     description:
                         The name of the schema created by the export (e.g., lexported_12345).
                     type: string
-                sourcePartitionName:
+                sourceCompanyId:
                     description:
-                        The name of the source partition that was exported (e.g., lpartition_12345).
-                    type: string
+                        The ID of the source company that was exported (e.g., 12345).
+                    format: int64
+                    type: integer
             type: object
         PortalInstanceImport:
             description:
