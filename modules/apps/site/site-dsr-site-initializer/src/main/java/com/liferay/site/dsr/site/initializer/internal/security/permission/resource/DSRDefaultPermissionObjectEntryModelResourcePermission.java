@@ -132,9 +132,9 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 			return true;
 		}
 
-		long siteId = MapUtil.getLong(objectEntry.getValues(), "siteId");
-
 		boolean hasGroupPermission = false;
+
+		long siteId = MapUtil.getLong(objectEntry.getValues(), "siteId");
 
 		if ((siteId > 0) &&
 			(permissionChecker.isGroupMember(siteId) ||
