@@ -96,12 +96,12 @@ public class JenkinsMasterTestUtil {
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(masterName);
 
 		Test.setDeclaredFieldValue(
-			JenkinsMaster.class, jenkinsMaster, "_awsFleetClouds",
-			new ArrayList<>());
-		Test.setDeclaredFieldValue(
 			JenkinsMaster.class, jenkinsMaster,
 			"_awsFleetCloudLastUpdateTimestamp",
 			JenkinsResultsParserUtil.getCurrentTimeMillis());
+		Test.setDeclaredFieldValue(
+			JenkinsMaster.class, jenkinsMaster, "_awsFleetClouds",
+			new ArrayList<>());
 
 		return jenkinsMaster;
 	}
