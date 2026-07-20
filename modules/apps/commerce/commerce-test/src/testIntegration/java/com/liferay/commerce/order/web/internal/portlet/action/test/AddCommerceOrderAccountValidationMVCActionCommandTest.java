@@ -11,6 +11,7 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorResult;
+import com.liferay.account.validator.vies.configuration.VIESAccountEntryValidatorConfiguration;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
@@ -18,14 +19,15 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
+import com.liferay.commerce.test.util.AccountEntryValidatorResultTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.filter.factory.FilterFactory;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -91,6 +93,14 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 		_group = GroupTestUtil.addGroup();
 		_user = UserTestUtil.addUser();
 
+		_companyConfigurationTemporarySwapper =
+			new CompanyConfigurationTemporarySwapper(
+				_group.getCompanyId(),
+				VIESAccountEntryValidatorConfiguration.class.getName(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"enabled", "false"
+				).build());
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId());
@@ -114,15 +124,18 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 			commerceCurrency.getCommerceCurrencyId());
 
 		_objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_ACCOUNT_VALIDATOR_RESULT", _accountEntry.getCompanyId());
+			AccountEntryValidatorResultTestUtil.getOrAddObjectDefinition(
+				AddCommerceOrderAccountValidationMVCActionCommandTest.class);
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
+		}
+
+		if (_companyConfigurationTemporarySwapper != null) {
+			_companyConfigurationTemporarySwapper.close();
 		}
 	}
 
@@ -268,6 +281,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 
 	private AccountEntry _accountEntry;
 	private CommerceOrder _commerceOrder;
+	private CompanyConfigurationTemporarySwapper
+		_companyConfigurationTemporarySwapper;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
@@ -284,9 +299,6 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 	private MVCActionCommand _mvcActionCommand;
 
 	private ObjectDefinition _objectDefinition;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

@@ -22,9 +22,11 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-tax-api")
 	compileOnly project(":apps:commerce:commerce-tax-engine-fixed-api")
 	compileOnly project(":apps:list-type:list-type-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-test-util")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }
 
