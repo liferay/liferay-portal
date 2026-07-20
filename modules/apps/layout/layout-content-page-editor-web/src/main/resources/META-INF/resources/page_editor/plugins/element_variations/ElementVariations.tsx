@@ -126,6 +126,12 @@ function ElementVariations({
 	const elementVariationsPreviewRef =
 		useRef<ElementVariationsPreviewRef>(null);
 
+	const createElementVariationDraft = () =>
+		dispatch({
+			draftElementVariation: createElementVariation(experienceKey),
+			type: 'CREATE_ELEMENT_VARIATION_DRAFT',
+		});
+
 	return (
 		<div className="d-flex element-variations flex-column">
 			<div className="d-flex element-variations__content flex-grow-1">
@@ -226,28 +232,26 @@ function ElementVariations({
 									}
 								/>
 
-								<div className="d-flex justify-content-start m-3">
-									<ClayButton
-										className="w-100"
-										displayType="secondary"
-										onClick={() =>
-											dispatch({
-												draftElementVariation:
-													createElementVariation(
-														experienceKey
-													),
-												type: 'CREATE_ELEMENT_VARIATION_DRAFT',
-											})
-										}
-									>
-										<ClayIcon
-											className="mr-2"
-											symbol="plus"
-										/>
+								{experienceElementVariations.length ? (
+									<div className="d-flex justify-content-start m-3">
+										<ClayButton
+											className="w-100"
+											displayType="secondary"
+											onClick={
+												createElementVariationDraft
+											}
+										>
+											<ClayIcon
+												className="mr-2"
+												symbol="plus"
+											/>
 
-										{Liferay.Language.get('new-variation')}
-									</ClayButton>
-								</div>
+											{Liferay.Language.get(
+												'new-variation'
+											)}
+										</ClayButton>
+									</div>
+								) : null}
 
 								<div className="border-top pt-3">
 									{experienceElementVariations.length ? (
@@ -313,7 +317,16 @@ function ElementVariations({
 											title={Liferay.Language.get(
 												'no-variations-yet'
 											)}
-										/>
+										>
+											<ClayButton
+												displayType="secondary"
+												onClick={
+													createElementVariationDraft
+												}
+											>
+												{Liferay.Language.get('new')}
+											</ClayButton>
+										</ClayEmptyState>
 									)}
 								</div>
 							</div>
