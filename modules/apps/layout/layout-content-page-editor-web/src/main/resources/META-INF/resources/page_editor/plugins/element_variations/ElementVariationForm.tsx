@@ -470,7 +470,7 @@ export default function ElementVariationForm({
 function RequiredFieldFeedback() {
 	return (
 		<ClayForm.FeedbackGroup role="alert">
-			<ClayForm.FeedbackItem>
+			<ClayForm.FeedbackItem className="text-2">
 				<ClayForm.FeedbackIndicator symbol="times-circle-full" />
 
 				{Liferay.Language.get('this-field-is-required')}

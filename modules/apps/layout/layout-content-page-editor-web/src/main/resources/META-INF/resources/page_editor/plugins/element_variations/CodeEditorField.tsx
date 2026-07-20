@@ -79,7 +79,7 @@ export default function CodeEditorField({
 			{defaultLanguageValue !== undefined ? (
 				<p
 					className={classNames(
-						'element-variations__default-language-value mt-2 pl-2 text-3 text-break',
+						'element-variations__default-language-value mt-2 pl-2 text-2 text-break',
 						{
 							'element-variations__default-language-value--empty':
 								!defaultLanguageValue,
