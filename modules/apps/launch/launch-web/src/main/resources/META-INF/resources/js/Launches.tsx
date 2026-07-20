@@ -16,6 +16,8 @@ import {
 	replaceViewInURL,
 } from './util/viewURLState';
 
+export {default as AddToLaunchModal} from './components/AddToLaunchModal';
+
 interface Props {
 	getLaunchEntryContentResourceURL: string;
 	portletNamespace: string;

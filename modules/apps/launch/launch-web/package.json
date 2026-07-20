@@ -6,8 +6,10 @@
 		"@clayui/form": "^3.165.0",
 		"@clayui/icon": "^3.165.0",
 		"@clayui/label": "^3.165.0",
+		"@clayui/modal": "^3.165.0",
 		"@clayui/table": "^3.165.0",
 		"@clayui/tabs": "^3.165.0",
+		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
