@@ -263,7 +263,8 @@ public class CookiesConsentPreferenceLocalServiceUtil {
 	}
 
 	public static CookiesConsentPreference getCookiesConsentPreference(
-		long userId, String domain, String name) {
+			long userId, String domain, String name)
+		throws PortalException {
 
 		return getService().getCookiesConsentPreference(userId, domain, name);
 	}
@@ -352,4 +353,4 @@ public class CookiesConsentPreferenceLocalServiceUtil {
 			CookiesConsentPreferenceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1672528352
+// LIFERAY-SERVICE-BUILDER-HASH:-1988590670

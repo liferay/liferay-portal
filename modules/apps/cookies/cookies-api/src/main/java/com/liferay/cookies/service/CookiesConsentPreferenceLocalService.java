@@ -227,7 +227,8 @@ public interface CookiesConsentPreferenceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CookiesConsentPreference getCookiesConsentPreference(
-		long userId, String domain, String name);
+			long userId, String domain, String name)
+		throws PortalException;
 
 	/**
 	 * Returns a range of all the cookies consent preferences.
@@ -289,4 +290,4 @@ public interface CookiesConsentPreferenceLocalService
 		CookiesConsentPreference cookiesConsentPreference);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2105518075
+// LIFERAY-SERVICE-BUILDER-HASH:-1885118937
