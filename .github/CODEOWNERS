@@ -297,7 +297,7 @@ modules/apps/portal-portlet-bridge/portal-portlet-bridge-mvc-test/    @liferay-c
 modules/apps/portal-relationship/
 modules/apps/portal-remote/
 modules/apps/portal-reports-engine/    @liferay-bpm
-modules/apps/portal-rules-engine/
+modules/apps/portal-rules-engine/    @liferay-bpm
 modules/apps/portal-scheduler/    @liferay-core-infra
 modules/apps/portal-scripting/
 modules/apps/portal-search/    @liferay-search
