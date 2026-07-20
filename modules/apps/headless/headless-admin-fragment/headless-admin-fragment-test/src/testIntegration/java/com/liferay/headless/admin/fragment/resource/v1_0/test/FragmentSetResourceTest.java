@@ -7,6 +7,7 @@ package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentActionKeys;
@@ -31,6 +32,8 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -106,6 +109,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			TestPropsValues.getCompanyId(), true, "LPD-57283");
 
 		_depotEntry = _addDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY);
+		_designLibraryOwnerFragmentSetResource =
+			_getDesignLibraryOwnerFragmentSetResource();
 		_userWithoutPermissionsFragmentSetResource =
 			_getUserWithoutPermissionsFragmentSetResource();
 		_userWithPermissionsDesignLibraryFragmentSetResource =
@@ -170,6 +175,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	public void testGetDesignLibraryFragmentSetsPage() throws Exception {
 		super.testGetDesignLibraryFragmentSetsPage();
 
+		_testGetDesignLibraryFragmentSetsPageAsDesignLibraryOwner();
 		_testGetDesignLibraryFragmentSetsPageWithoutPermissions();
 		_testGetDesignLibraryFragmentSetsPageWithPermissions();
 	}
@@ -579,6 +585,36 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		}
 	}
 
+	private FragmentSetResource _getDesignLibraryOwnerFragmentSetResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		Group group = _depotEntry.getGroup();
+
+		_userLocalService.addGroupUser(group.getGroupId(), user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_OWNER);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), group.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		return FragmentSetResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private FragmentSetResource _getUserWithoutPermissionsFragmentSetResource()
 		throws Exception {
 
@@ -781,6 +817,22 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				"/design-libraries/", group.getExternalReferenceCode(),
 				"/fragment-sets/", fragmentSet.getExternalReferenceCode()),
 			"delete", "get");
+	}
+
+	private void _testGetDesignLibraryFragmentSetsPageAsDesignLibraryOwner()
+		throws Exception {
+
+		FragmentSet fragmentSet = _addDesignLibraryFragmentSet(
+			randomFragmentSet(), _depotEntry.getGroup());
+
+		Page<FragmentSet> page =
+			_designLibraryOwnerFragmentSetResource.
+				getDesignLibraryFragmentSetsPage(
+					_depotEntry.getGroup(
+					).getExternalReferenceCode(),
+					null, Pagination.of(1, 10));
+
+		assertContains(fragmentSet, (List<FragmentSet>)page.getItems());
 	}
 
 	private void _testGetDesignLibraryFragmentSetsPageWithoutPermissions()
@@ -1145,6 +1197,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
+	private FragmentSetResource _designLibraryOwnerFragmentSetResource;
+
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
@@ -1153,6 +1207,12 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Inject
 	private Language _language;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
