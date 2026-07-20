@@ -1496,14 +1496,6 @@ test(
 	'All section can be filtered by Type',
 	{tag: ['@LPD-85551', '@LPD-87956', '@LPD-97359']},
 	async ({apiHelpers, assetsPage, page}) => {
-
-		// LPD-97359: the CMS Type filter (objectDefinitionExternalReferenceCode)
-		// returns "No Results Found" for a valid type, in both the Recycle Bin
-		// and the All section. Recorded as an expected failure until the fix
-		// lands, at which point this test turns green and test.fail() is removed.
-
-		test.fail();
-
 		const documentTitle = getRandomString();
 		const webContentTitle = getRandomString();
 
