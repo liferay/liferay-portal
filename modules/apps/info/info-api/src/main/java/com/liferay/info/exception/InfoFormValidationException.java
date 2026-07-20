@@ -110,6 +110,46 @@ public class InfoFormValidationException extends InfoFormException {
 
 	}
 
+	public static class DuplicateExternalReferenceCode
+		extends InfoFormValidationException {
+
+		public DuplicateExternalReferenceCode(String infoFieldUniqueId) {
+			super(infoFieldUniqueId);
+		}
+
+		@Override
+		public String getLocalizedMessage(Locale locale) {
+			return LanguageUtil.get(
+				locale, "this-external-reference-code-is-already-in-use");
+		}
+
+		@Override
+		public String getLocalizedMessage(String fieldLabel, Locale locale) {
+			return getLocalizedMessage(locale);
+		}
+
+	}
+
+	public static class DuplicateFriendlyURL
+		extends InfoFormValidationException {
+
+		public DuplicateFriendlyURL(String infoFieldUniqueId) {
+			super(infoFieldUniqueId);
+		}
+
+		@Override
+		public String getLocalizedMessage(Locale locale) {
+			return LanguageUtil.get(
+				locale, "please-enter-a-unique-friendly-url");
+		}
+
+		@Override
+		public String getLocalizedMessage(String fieldLabel, Locale locale) {
+			return getLocalizedMessage(locale);
+		}
+
+	}
+
 	public static class ExceedsMaxEntries extends InfoFormValidationException {
 
 		public ExceedsMaxEntries(String infoFormLabel, String messageKey) {

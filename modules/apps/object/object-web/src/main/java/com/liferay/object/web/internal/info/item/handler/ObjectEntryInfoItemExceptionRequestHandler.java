@@ -22,6 +22,8 @@ import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldSettingLocalServiceUtil;
 import com.liferay.object.validation.rule.ObjectValidationRuleResult;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.DuplicateExternalReferenceCodeException;
+import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
@@ -61,11 +63,46 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 			}
 		}
 
+		if (exception instanceof DuplicateExternalReferenceCodeException) {
+			String infoFieldUniqueId = _getInfoFieldUniqueId(
+				groupId, infoItemFormProvider, objectDefinition,
+				"externalReferenceCode");
+
+			if (infoFieldUniqueId == null) {
+				throw new InfoFormException();
+			}
+
+			throw new InfoFormValidationException.
+				DuplicateExternalReferenceCode(infoFieldUniqueId);
+		}
+
 		if (exception instanceof ModelListenerException) {
 			ModelListenerException modelListenerException =
 				(ModelListenerException)exception;
 
 			Throwable throwable = modelListenerException.getCause();
+
+			if (throwable instanceof GroupFriendlyURLException) {
+				GroupFriendlyURLException groupFriendlyURLException =
+					(GroupFriendlyURLException)throwable;
+
+				int type = groupFriendlyURLException.getType();
+
+				if ((type == GroupFriendlyURLException.DUPLICATE) ||
+					(type == GroupFriendlyURLException.POSSIBLE_DUPLICATE)) {
+
+					String infoFieldUniqueId = _getInfoFieldUniqueId(
+						groupId, infoItemFormProvider, objectDefinition,
+						"friendlyURL");
+
+					if (infoFieldUniqueId == null) {
+						throw new InfoFormException();
+					}
+
+					throw new InfoFormValidationException.DuplicateFriendlyURL(
+						infoFieldUniqueId);
+				}
+			}
 
 			if (throwable instanceof ObjectValidationRuleEngineException) {
 				ObjectValidationRuleEngineException
