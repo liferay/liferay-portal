@@ -58,7 +58,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testGetRecentBatchSizesTotalPrunesExpiredEntries() {
+	public void testGetAvailableSlavesCount() {
 		int availableSlavesCount = _jenkinsMaster.getAvailableSlavesCount(null);
 
 		JenkinsMaster.maxRecentBatchAge = -1;
@@ -81,7 +81,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testUpdatePreservesRecentBatchDebit() {
+	public void testUpdate() {
 		_jenkinsMaster.update();
 
 		int availableSlavesCount = _jenkinsMaster.getAvailableSlavesCount(null);

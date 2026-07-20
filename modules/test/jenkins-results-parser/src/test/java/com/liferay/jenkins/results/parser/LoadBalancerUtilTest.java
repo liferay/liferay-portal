@@ -34,7 +34,7 @@ public class LoadBalancerUtilTest
 	}
 
 	@Test
-	public void testGetAvailableJenkinsMastersExcludesBlacklistedMasters() {
+	public void testGetAvailableJenkinsMasters() {
 		Properties properties = JenkinsMasterTestUtil.stageFleet("test-9", 5);
 
 		List<String> masterNames = _getMasterNames(
@@ -59,7 +59,7 @@ public class LoadBalancerUtilTest
 	}
 
 	@Test
-	public void testGetMostAvailableMasterURLRoundRobin() {
+	public void testGetMostAvailableMasterURL() {
 		Properties properties = JenkinsMasterTestUtil.stageFleet("test-9", 5);
 
 		properties.setProperty("blacklist", "test-9-5");
