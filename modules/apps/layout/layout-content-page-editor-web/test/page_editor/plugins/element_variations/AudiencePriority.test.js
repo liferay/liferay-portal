@@ -51,6 +51,19 @@ describe('AudiencePriority', () => {
 		expect(labels).toEqual(['VIP', 'Audience 1']);
 	});
 
+	it('hides the edit button and shows a message when there are no audiences', () => {
+		render(
+			<AudiencePriority
+				audiences={[]}
+				segmentsExperienceERC="experience-erc"
+				updateAudiencesPriorityURL="http://localhost/update-audiences-priority"
+			/>
+		);
+
+		expect(screen.getByText('no-audiences-available')).toBeInTheDocument();
+		expect(screen.queryByLabelText('edit')).not.toBeInTheDocument();
+	});
+
 	it('saves the reordered audiences for the experience', async () => {
 		frontendJsWebMock.fetch.mockImplementation(() =>
 			Promise.resolve({
