@@ -88,9 +88,10 @@ public class SegmentsEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SegmentsEntry addSegmentsEntry(
-			String segmentsEntryKey, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active, String criteria,
-			String source, ServiceContext serviceContext)
+			String externalReferenceCode, String segmentsEntryKey,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, String criteria, String source,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Segments entry
@@ -114,6 +115,7 @@ public class SegmentsEntryLocalServiceImpl
 			segmentsEntryId);
 
 		segmentsEntry.setUuid(serviceContext.getUuid());
+		segmentsEntry.setExternalReferenceCode(externalReferenceCode);
 		segmentsEntry.setGroupId(groupId);
 		segmentsEntry.setCompanyId(user.getCompanyId());
 		segmentsEntry.setUserId(user.getUserId());
