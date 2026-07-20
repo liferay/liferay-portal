@@ -24,6 +24,13 @@ public class ListTypeServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.ListType fetchListType(
+		long companyId, java.lang.String name, java.lang.String type) {
+
+		return _listTypeService.fetchListType(companyId, name, type);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.model.ListType getListType(long listTypeId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -32,7 +39,8 @@ public class ListTypeServiceWrapper
 
 	@Override
 	public com.liferay.portal.kernel.model.ListType getListType(
-		long companyId, java.lang.String name, java.lang.String type) {
+			long companyId, java.lang.String name, java.lang.String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _listTypeService.getListType(companyId, name, type);
 	}
@@ -89,4 +97,4 @@ public class ListTypeServiceWrapper
 	private ListTypeService _listTypeService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1315426182
+// LIFERAY-SERVICE-BUILDER-HASH:558814426

@@ -123,8 +123,9 @@ public class CommerceAddressLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceAddress>
-		getBillingAndShippingCommerceAddresses(
-			long companyId, String className, long classPK) {
+			getBillingAndShippingCommerceAddresses(
+				long companyId, String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceAddressLocalService.
 			getBillingAndShippingCommerceAddresses(
@@ -143,9 +144,10 @@ public class CommerceAddressLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceAddress>
-		getBillingCommerceAddresses(
-			long channelId, String className, long classPK, int start,
-			int end) {
+			getBillingCommerceAddresses(
+				long channelId, String className, long classPK, int start,
+				int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceAddressLocalService.getBillingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -166,7 +168,8 @@ public class CommerceAddressLocalServiceWrapper
 
 	@Override
 	public int getBillingCommerceAddressesCount(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceAddressLocalService.getBillingCommerceAddressesCount(
 			channelId, className, classPK, start, end);
@@ -300,9 +303,10 @@ public class CommerceAddressLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceAddress>
-		getShippingCommerceAddresses(
-			long channelId, String className, long classPK, int start,
-			int end) {
+			getShippingCommerceAddresses(
+				long channelId, String className, long classPK, int start,
+				int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceAddressLocalService.getShippingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -388,4 +392,4 @@ public class CommerceAddressLocalServiceWrapper
 	private CommerceAddressLocalService _commerceAddressLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:786935859
+// LIFERAY-SERVICE-BUILDER-HASH:664406615

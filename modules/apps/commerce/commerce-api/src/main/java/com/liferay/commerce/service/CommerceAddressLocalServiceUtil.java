@@ -106,7 +106,8 @@ public class CommerceAddressLocalServiceUtil {
 	}
 
 	public static List<CommerceAddress> getBillingAndShippingCommerceAddresses(
-		long companyId, String className, long classPK) {
+			long companyId, String className, long classPK)
+		throws PortalException {
 
 		return getService().getBillingAndShippingCommerceAddresses(
 			companyId, className, classPK);
@@ -121,7 +122,8 @@ public class CommerceAddressLocalServiceUtil {
 	}
 
 	public static List<CommerceAddress> getBillingCommerceAddresses(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return getService().getBillingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -139,7 +141,8 @@ public class CommerceAddressLocalServiceUtil {
 	}
 
 	public static int getBillingCommerceAddressesCount(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return getService().getBillingCommerceAddressesCount(
 			channelId, className, classPK, start, end);
@@ -247,7 +250,8 @@ public class CommerceAddressLocalServiceUtil {
 	}
 
 	public static List<CommerceAddress> getShippingCommerceAddresses(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return getService().getShippingCommerceAddresses(
 			channelId, className, classPK, start, end);
@@ -322,4 +326,4 @@ public class CommerceAddressLocalServiceUtil {
 			CommerceAddressLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1116480905
+// LIFERAY-SERVICE-BUILDER-HASH:-947118601

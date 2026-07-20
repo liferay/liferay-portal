@@ -236,6 +236,13 @@ public class ListTypeLocalServiceWrapper
 		return _listTypeLocalService.fetchListType(listTypeId);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.model.ListType fetchListType(
+		long companyId, String name, String type) {
+
+		return _listTypeLocalService.fetchListType(companyId, name, type);
+	}
+
 	/**
 	 * Returns the list type with the matching UUID and company.
 	 *
@@ -291,7 +298,8 @@ public class ListTypeLocalServiceWrapper
 
 	@Override
 	public com.liferay.portal.kernel.model.ListType getListType(
-		long companyId, String name, String type) {
+			long companyId, String name, String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _listTypeLocalService.getListType(companyId, name, type);
 	}
@@ -423,4 +431,4 @@ public class ListTypeLocalServiceWrapper
 	private ListTypeLocalService _listTypeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-214153983
+// LIFERAY-SERVICE-BUILDER-HASH:-139184102

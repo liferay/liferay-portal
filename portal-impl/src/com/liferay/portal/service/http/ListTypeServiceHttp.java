@@ -81,13 +81,13 @@ public class ListTypeServiceHttp {
 		}
 	}
 
-	public static com.liferay.portal.kernel.model.ListType getListType(
+	public static com.liferay.portal.kernel.model.ListType fetchListType(
 		HttpPrincipal httpPrincipal, long companyId, String name, String type) {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				ListTypeServiceUtil.class, "getListType",
-				_getListTypeParameterTypes1);
+				ListTypeServiceUtil.class, "fetchListType",
+				_fetchListTypeParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, name, type);
@@ -113,13 +113,54 @@ public class ListTypeServiceHttp {
 		}
 	}
 
+	public static com.liferay.portal.kernel.model.ListType getListType(
+			HttpPrincipal httpPrincipal, long companyId, String name,
+			String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				ListTypeServiceUtil.class, "getListType",
+				_getListTypeParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, name, type);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.kernel.model.ListType)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static long getListTypeId(
 		HttpPrincipal httpPrincipal, long companyId, String name, String type) {
 
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeServiceUtil.class, "getListTypeId",
-				_getListTypeIdParameterTypes2);
+				_getListTypeIdParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, name, type);
@@ -151,7 +192,7 @@ public class ListTypeServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeServiceUtil.class, "getListTypes",
-				_getListTypesParameterTypes3);
+				_getListTypesParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, type);
@@ -186,7 +227,7 @@ public class ListTypeServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeServiceUtil.class, "validate",
-				_validateParameterTypes4);
+				_validateParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, listTypeId, classNameId, type);
@@ -222,7 +263,7 @@ public class ListTypeServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeServiceUtil.class, "validate",
-				_validateParameterTypes5);
+				_validateParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, listTypeId, type);
@@ -256,20 +297,22 @@ public class ListTypeServiceHttp {
 	private static final Class<?>[] _getListTypeParameterTypes0 = new Class[] {
 		long.class
 	};
-	private static final Class<?>[] _getListTypeParameterTypes1 = new Class[] {
+	private static final Class<?>[] _fetchListTypeParameterTypes1 =
+		new Class[] {long.class, String.class, String.class};
+	private static final Class<?>[] _getListTypeParameterTypes2 = new Class[] {
 		long.class, String.class, String.class
 	};
-	private static final Class<?>[] _getListTypeIdParameterTypes2 =
+	private static final Class<?>[] _getListTypeIdParameterTypes3 =
 		new Class[] {long.class, String.class, String.class};
-	private static final Class<?>[] _getListTypesParameterTypes3 = new Class[] {
+	private static final Class<?>[] _getListTypesParameterTypes4 = new Class[] {
 		long.class, String.class
 	};
-	private static final Class<?>[] _validateParameterTypes4 = new Class[] {
+	private static final Class<?>[] _validateParameterTypes5 = new Class[] {
 		long.class, long.class, String.class
 	};
-	private static final Class<?>[] _validateParameterTypes5 = new Class[] {
+	private static final Class<?>[] _validateParameterTypes6 = new Class[] {
 		long.class, String.class
 	};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:859136583
+// LIFERAY-SERVICE-BUILDER-HASH:614428720

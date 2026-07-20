@@ -42,10 +42,14 @@ public interface ListTypeService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.portal.service.impl.ListTypeServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the list type remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ListTypeServiceUtil} if injection and service tracking are not available.
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ListType fetchListType(long companyId, String name, String type);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ListType getListType(long listTypeId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ListType getListType(long companyId, String name, String type);
+	public ListType getListType(long companyId, String name, String type)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getListTypeId(long companyId, String name, String type);
@@ -66,4 +70,4 @@ public interface ListTypeService extends BaseService {
 	public void validate(long listTypeId, String type) throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1115632999
+// LIFERAY-SERVICE-BUILDER-HASH:-2120261031

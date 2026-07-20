@@ -29,12 +29,18 @@ public class ListTypeServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portal.service.impl.ListTypeServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static ListType fetchListType(
+		long companyId, String name, String type) {
+
+		return getService().fetchListType(companyId, name, type);
+	}
+
 	public static ListType getListType(long listTypeId) throws PortalException {
 		return getService().getListType(listTypeId);
 	}
 
-	public static ListType getListType(
-		long companyId, String name, String type) {
+	public static ListType getListType(long companyId, String name, String type)
+		throws PortalException {
 
 		return getService().getListType(companyId, name, type);
 	}
@@ -79,4 +85,4 @@ public class ListTypeServiceUtil {
 	private static volatile ListTypeService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1001508198
+// LIFERAY-SERVICE-BUILDER-HASH:-1762656099
