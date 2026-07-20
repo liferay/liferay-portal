@@ -59,6 +59,9 @@ public class WorkflowDefinitionConstants {
 	public static final String EXTERNAL_REFERENCE_CODE_SINGLE_APPROVER =
 		"L_SINGLE_APPROVER";
 
+	public static final String EXTERNAL_REFERENCE_CODE_TRANSLATE_CONTENT =
+		"L_TRANSLATE_CONTENT";
+
 	public static final String NAME_CHANGE_TONE = "Change Tone";
 
 	public static final String NAME_CONTENT_GAP_ANALYSIS =
@@ -98,6 +101,8 @@ public class WorkflowDefinitionConstants {
 
 	public static final String NAME_SINGLE_APPROVER = "Single Approver";
 
+	public static final String NAME_TRANSLATE_CONTENT = "Translate Content";
+
 	public static final String SCOPE_AI = "ai";
 
 	public static final String SCOPE_ALL = "all";
@@ -107,7 +112,8 @@ public class WorkflowDefinitionConstants {
 		NAME_FIX_SPELLING_AND_GRAMMAR, NAME_GENERATE_CONTENT,
 		NAME_GENERATE_IMAGE, NAME_IMPROVE_WRITING, NAME_LIFERAY_SEARCH,
 		NAME_MAKE_LONGER, NAME_MAKE_SHORTER, NAME_PAGE_BUILDER,
-		NAME_SEO_STUDIO_DESCRIPTION_GENERATOR, NAME_SEO_STUDIO_TITLE_GENERATOR
+		NAME_SEO_STUDIO_DESCRIPTION_GENERATOR, NAME_SEO_STUDIO_TITLE_GENERATOR,
+		NAME_TRANSLATE_CONTENT
 	};
 
 }
