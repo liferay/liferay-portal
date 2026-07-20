@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.PageSpeedConstants;
 import com.liferay.seo.studio.model.Domain;
 import com.liferay.seo.studio.model.PageSpeedReport;
-import com.liferay.seo.studio.model.PageSpeedScanResult;
+import com.liferay.seo.studio.model.PageSpeedResult;
 
 import jakarta.annotation.PreDestroy;
 
@@ -95,7 +95,7 @@ public class PageSpeedScanService {
 		}
 	}
 
-	private PageSpeedScanResult _getPageSpeedScanResult(
+	private PageSpeedResult _getPageSpeedResult(
 		String googlePageSpeedAPIKey, String strategy, List<String> urls) {
 
 		List<DefaultNoticeableFuture<PageSpeedReport>>
@@ -152,7 +152,7 @@ public class PageSpeedScanService {
 		int pagesScanned = pageSpeedReports.size();
 
 		if (pagesScanned == 0) {
-			return new PageSpeedScanResult(
+			return new PageSpeedResult(
 				new PageSpeedReport(0, 0, 0, 0), errorMessage, pagesErrored,
 				pagesScanned, urls.size(), strategy);
 		}
@@ -175,7 +175,7 @@ public class PageSpeedScanService {
 			Math.round((float)totalPerformance / pagesScanned),
 			Math.round((float)totalSEO / pagesScanned));
 
-		return new PageSpeedScanResult(
+		return new PageSpeedResult(
 			averagePageSpeedReport, errorMessage, pagesErrored, pagesScanned,
 			urls.size(), strategy);
 	}
@@ -216,12 +216,12 @@ public class PageSpeedScanService {
 			domain.getHostname(), maxPagesPerScan);
 
 		_liferayService.postSEOStudioPageSpeedResult(
-			_getPageSpeedScanResult(
+			_getPageSpeedResult(
 				googlePageSpeedAPIKey, PageSpeedConstants.STRATEGY_DESKTOP,
 				urls),
 			seoStudioScanId);
 		_liferayService.postSEOStudioPageSpeedResult(
-			_getPageSpeedScanResult(
+			_getPageSpeedResult(
 				googlePageSpeedAPIKey, PageSpeedConstants.STRATEGY_MOBILE,
 				urls),
 			seoStudioScanId);

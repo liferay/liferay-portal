@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.constants.PageSpeedConstants;
 import com.liferay.seo.studio.model.PageSpeedReport;
-import com.liferay.seo.studio.model.PageSpeedScanResult;
+import com.liferay.seo.studio.model.PageSpeedResult;
 
 import java.io.IOException;
 
@@ -136,10 +136,10 @@ public class LiferayService extends BaseService {
 	}
 
 	public String postSEOStudioPageSpeedResult(
-		PageSpeedScanResult pageSpeedScanResult, long seoStudioScanId) {
+		PageSpeedResult pageSpeedResult, long seoStudioScanId) {
 
 		PageSpeedReport averagePageSpeedReport =
-			pageSpeedScanResult.getAveragePageSpeedReport();
+			pageSpeedResult.getAveragePageSpeedReport();
 
 		JSONObject jsonObject = new JSONObject(
 		).put(
@@ -147,13 +147,13 @@ public class LiferayService extends BaseService {
 		).put(
 			"bestPracticesScore", averagePageSpeedReport.getBestPractices()
 		).put(
-			"errorMessage", pageSpeedScanResult.getErrorMessage()
+			"errorMessage", pageSpeedResult.getErrorMessage()
 		).put(
-			"pagesErrored", pageSpeedScanResult.getPagesErrored()
+			"pagesErrored", pageSpeedResult.getPagesErrored()
 		).put(
-			"pagesScanned", pageSpeedScanResult.getPagesScanned()
+			"pagesScanned", pageSpeedResult.getPagesScanned()
 		).put(
-			"pagesTotal", pageSpeedScanResult.getPagesTotal()
+			"pagesTotal", pageSpeedResult.getPagesTotal()
 		).put(
 			"performanceScore", averagePageSpeedReport.getPerformance()
 		).put(
@@ -162,7 +162,7 @@ public class LiferayService extends BaseService {
 		).put(
 			"seoScore", averagePageSpeedReport.getSEO()
 		).put(
-			"strategy", pageSpeedScanResult.getStrategy()
+			"strategy", pageSpeedResult.getStrategy()
 		);
 
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(

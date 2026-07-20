@@ -8,9 +8,9 @@ package com.liferay.seo.studio.model;
 /**
  * @author Kiana Suetani
  */
-public class PageSpeedScanResult {
+public class PageSpeedResult {
 
-	public PageSpeedScanResult(
+	public PageSpeedResult(
 		PageSpeedReport averagePageSpeedReport, String errorMessage,
 		int pagesErrored, int pagesScanned, int pagesTotal, String strategy) {
 
