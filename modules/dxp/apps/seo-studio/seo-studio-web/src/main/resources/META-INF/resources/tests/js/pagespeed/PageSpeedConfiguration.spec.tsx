@@ -24,6 +24,7 @@ function renderConfiguration(props: Partial<ConfigurationProps> = {}) {
 			backURL={Math.random().toString(36).slice(2)}
 			domainsURL={Math.random().toString(36).slice(2)}
 			instancesURL={Math.random().toString(36).slice(2)}
+			integrationsURL={Math.random().toString(36).slice(2)}
 			{...props}
 		/>
 	);
@@ -48,9 +49,14 @@ function getToggleButton() {
 function mockInitialLoad({
 	domains = [],
 	instances = [],
+	integrations = [],
 }: {
 	domains?: Array<{id: number}>;
 	instances?: Array<{googlePageSpeedAPIKey?: string; id: number}>;
+	integrations?: Array<{
+		id: number;
+		r_seoStudioInstanceToSEOStudioIntegrations_seoStudioInstanceId: number;
+	}>;
 } = {}) {
 	const fetchMock = Liferay.Util.fetch as jest.Mock;
 
@@ -60,6 +66,10 @@ function mockInitialLoad({
 	});
 	fetchMock.mockResolvedValueOnce({
 		json: () => Promise.resolve({items: instances}),
+		ok: true,
+	});
+	fetchMock.mockResolvedValueOnce({
+		json: () => Promise.resolve({items: integrations}),
 		ok: true,
 	});
 }
@@ -157,6 +167,10 @@ describe('PageSpeedConfiguration', () => {
 				json: () => Promise.resolve({}),
 				ok: false,
 			});
+			fetchMock.mockResolvedValueOnce({
+				json: () => Promise.resolve({}),
+				ok: false,
+			});
 
 			renderConfiguration();
 
@@ -236,6 +250,7 @@ describe('PageSpeedConfiguration', () => {
 			fetchMock.mockResolvedValueOnce({
 				json: () => Promise.resolve({}),
 			});
+			fetchMock.mockResolvedValueOnce({ok: true});
 			fetchMock.mockResolvedValueOnce({ok: true});
 
 			renderConfiguration({backURL: BACK_URL});
@@ -324,6 +339,7 @@ describe('PageSpeedConfiguration', () => {
 				json: () => Promise.resolve({}),
 			});
 			fetchMock.mockResolvedValueOnce({ok: false});
+			fetchMock.mockResolvedValueOnce({ok: true});
 
 			renderConfiguration();
 

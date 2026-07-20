@@ -15,20 +15,30 @@ import RequiredMark from '../components/RequiredMark';
 
 import './PageSpeedConfiguration.scss';
 
+const INSTANCE_FIELD =
+	'r_seoStudioInstanceToSEOStudioIntegrations_seoStudioInstanceId';
+
+const TYPE_PAGESPEED = 'pageSpeed';
+
 interface Props {
 	backURL: string;
 	domainsURL: string;
 	instancesURL: string;
+	integrationsURL: string;
 }
 
 export default function PageSpeedConfiguration({
 	backURL,
 	domainsURL,
 	instancesURL,
+	integrationsURL,
 }: Props) {
 	const [apiKey, setAPIKey] = useState('');
 	const [domainExists, setDomainExists] = useState(false);
 	const [instanceIds, setInstanceIds] = useState<number[]>([]);
+	const [integrationsByInstance, setIntegrationsByInstance] = useState<
+		Map<number, number>
+	>(new Map());
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [validationError, setValidationError] = useState('');
@@ -54,8 +64,18 @@ export default function PageSpeedConfiguration({
 
 				return response.json();
 			}),
+			Liferay.Util.fetch(
+				`${integrationsURL}?filter=type%20eq%20%27${TYPE_PAGESPEED}%27&pageSize=100`,
+				{headers: {Accept: 'application/json'}}
+			).then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status}`);
+				}
+
+				return response.json();
+			}),
 		])
-			.then(([domainsData, instancesData]) => {
+			.then(([domainsData, instancesData, integrationsData]) => {
 				setDomainExists(!!(domainsData.items || []).length);
 
 				const instances = instancesData.items || [];
@@ -72,6 +92,17 @@ export default function PageSpeedConfiguration({
 				if (firstInstance) {
 					setAPIKey(firstInstance.googlePageSpeedAPIKey);
 				}
+
+				const integrationsMap = new Map<number, number>();
+
+				for (const integration of integrationsData.items || []) {
+					integrationsMap.set(
+						integration[INSTANCE_FIELD],
+						integration.id
+					);
+				}
+
+				setIntegrationsByInstance(integrationsMap);
 			})
 			.catch(() => {
 				openToast({
@@ -82,7 +113,7 @@ export default function PageSpeedConfiguration({
 				});
 			})
 			.finally(() => setLoading(false));
-	}, [domainsURL, instancesURL]);
+	}, [domainsURL, instancesURL, integrationsURL]);
 
 	const validateAPIKey = (key: string): Promise<boolean> =>
 		Liferay.Util.fetch(
@@ -106,16 +137,53 @@ export default function PageSpeedConfiguration({
 			.catch(() => false);
 
 	const saveAPIKey = (): Promise<boolean> => {
-		const requests = instanceIds.map((instanceId) =>
-			Liferay.Util.fetch(`${instancesURL}/${instanceId}`, {
-				body: JSON.stringify({googlePageSpeedAPIKey: apiKey}),
+		const requests = instanceIds.flatMap((instanceId) => {
+			const instanceRequest = Liferay.Util.fetch(
+				`${instancesURL}/${instanceId}`,
+				{
+					body: JSON.stringify({googlePageSpeedAPIKey: apiKey}),
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					method: 'PATCH',
+				}
+			).then((response) => response.ok);
+
+			const integrationId = integrationsByInstance.get(instanceId);
+
+			if (integrationId) {
+				const integrationRequest = Liferay.Util.fetch(
+					`${integrationsURL}/${integrationId}`,
+					{
+						body: JSON.stringify({state: 'active'}),
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+						},
+						method: 'PATCH',
+					}
+				).then((response) => response.ok);
+
+				return [instanceRequest, integrationRequest];
+			}
+
+			const integrationRequest = Liferay.Util.fetch(integrationsURL, {
+				body: JSON.stringify({
+					[INSTANCE_FIELD]: instanceId,
+					scope: 'instance',
+					state: 'active',
+					type: TYPE_PAGESPEED,
+				}),
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json',
 				},
-				method: 'PATCH',
-			}).then((response) => response.ok)
-		);
+				method: 'POST',
+			}).then((response) => response.ok);
+
+			return [instanceRequest, integrationRequest];
+		});
 
 		return Promise.all(requests)
 			.then((results) => results.every(Boolean))

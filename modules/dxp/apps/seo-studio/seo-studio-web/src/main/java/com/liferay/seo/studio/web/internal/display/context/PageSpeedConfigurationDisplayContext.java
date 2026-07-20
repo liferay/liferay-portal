@@ -37,6 +37,8 @@ public class PageSpeedConfigurationDisplayContext {
 			"domainsURL", "/o/seo-studio/domains"
 		).put(
 			"instancesURL", "/o/seo-studio/instances"
+		).put(
+			"integrationsURL", "/o/seo-studio/integrations"
 		).build();
 	}
 
