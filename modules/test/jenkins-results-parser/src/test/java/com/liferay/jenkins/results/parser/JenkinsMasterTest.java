@@ -50,7 +50,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			read(new File(dependenciesDirs.get(0), "computer-api.json")),
 			"http://test-9-1/computer/api/json", urlReader);
 
-		_jenkinsMaster = JenkinsMasterTestUtil.stageMaster(
+		_jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
 			"test-9-1", "http://test-9-1");
 	}
 

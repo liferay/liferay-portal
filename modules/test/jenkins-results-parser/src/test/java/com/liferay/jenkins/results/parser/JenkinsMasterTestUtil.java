@@ -16,36 +16,9 @@ import java.util.Properties;
  */
 public class JenkinsMasterTestUtil {
 
-	public static Map<String, Map<Long, Integer>> getLabelBatchSizes(
-		JenkinsMaster jenkinsMaster) {
+	public static Properties getJenkinsCohortProperties(
+		String cohortName, int masterCount) {
 
-		return ReflectionTestUtil.getFieldValue(
-			jenkinsMaster, "_labelBatchSizes");
-	}
-
-	public static void resetCaches() {
-		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
-			LoadBalancerUtil.class, "_jenkinsMastersMap");
-
-		jenkinsMastersMap.clear();
-
-		Map<String, ?> roundRobinCounters = ReflectionTestUtil.getFieldValue(
-			LoadBalancerUtil.class, "_roundRobinCounters");
-
-		roundRobinCounters.clear();
-
-		Map<String, ?> jenkinsMasters = ReflectionTestUtil.getFieldValue(
-			JenkinsMaster.class, "_jenkinsMasters");
-
-		jenkinsMasters.clear();
-
-		List<String> jenkinsMastersBlacklist = ReflectionTestUtil.getFieldValue(
-			JenkinsMaster.class, "_jenkinsMastersBlacklist");
-
-		jenkinsMastersBlacklist.clear();
-	}
-
-	public static Properties stageFleet(String cohortName, int masterCount) {
 		Hashtable<Object, Object> buildProperties = new Hashtable<>();
 
 		buildProperties.put(
@@ -75,7 +48,7 @@ public class JenkinsMasterTestUtil {
 		return properties;
 	}
 
-	public static JenkinsMaster stageMaster(
+	public static JenkinsMaster getJenkinsMaster(
 		String masterName, String masterURL) {
 
 		Hashtable<Object, Object> buildProperties = new Hashtable<>();
@@ -98,6 +71,35 @@ public class JenkinsMasterTestUtil {
 			jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
 
 		return jenkinsMaster;
+	}
+
+	public static Map<String, Map<Long, Integer>> getLabelBatchSizes(
+		JenkinsMaster jenkinsMaster) {
+
+		return ReflectionTestUtil.getFieldValue(
+			jenkinsMaster, "_labelBatchSizes");
+	}
+
+	public static void resetCaches() {
+		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_jenkinsMastersMap");
+
+		jenkinsMastersMap.clear();
+
+		Map<String, ?> roundRobinCounters = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_roundRobinCounters");
+
+		roundRobinCounters.clear();
+
+		Map<String, ?> jenkinsMasters = ReflectionTestUtil.getFieldValue(
+			JenkinsMaster.class, "_jenkinsMasters");
+
+		jenkinsMasters.clear();
+
+		List<String> jenkinsMastersBlacklist = ReflectionTestUtil.getFieldValue(
+			JenkinsMaster.class, "_jenkinsMastersBlacklist");
+
+		jenkinsMastersBlacklist.clear();
 	}
 
 }
