@@ -1918,3 +1918,75 @@ test(
 		);
 	}
 );
+
+test(
+	'When a room is archived, there is a warning on the site',
+	{tag: '@LPD-97849'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomsPage,
+		editDigitalSalesRoomPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			'L_DSR_SELLER',
+			userAccount.id
+		);
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			[userAccount.emailAddress]
+		);
+
+		await performUserSwitch(page, userAccount.alternateName);
+
+		await test.step('The seller creates and archives a room', async () => {
+			await digitalSalesRoomsPage.goToRoomsPageAsSeller();
+
+			await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+			await editDigitalSalesRoomPage.addDigitalSalesRoom({
+				accountName: account.name,
+				roomName,
+			});
+
+			await digitalSalesRoomsPage.goToRoomsPageAsSeller();
+
+			await digitalSalesRoomsPage.archiveRoom(roomName);
+		});
+
+		await test.step('The archived room shows the warning to the seller', async () => {
+			await digitalSalesRoomsPage.showArchivedRooms();
+
+			await digitalSalesRoomsPage.clickRowActionsMenuItem(
+				roomName,
+				digitalSalesRoomsPage.viewMenuItem
+			);
+
+			await expect(
+				digitalSalesRoomsPage.archivedRoomWarning
+			).toBeVisible();
+
+			await expect(
+				digitalSalesRoomsPage.archivedRoomWarning
+			).toContainText(
+				'This Digital Sales Room is archived. New comments cannot be added, and it can no longer be shared.'
+			);
+		});
+	}
+);

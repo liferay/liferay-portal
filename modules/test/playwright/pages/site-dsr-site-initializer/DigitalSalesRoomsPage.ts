@@ -11,6 +11,7 @@ import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenu
 export class DigitalSalesRoomsPage {
 	readonly archiveButton: Locator;
 	readonly archiveMenuItem: Locator;
+	readonly archivedRoomWarning: Locator;
 	readonly archivedStatusFilterRadio: Locator;
 	readonly deleteButton: Locator;
 	readonly deleteConfirmationModal: Locator;
@@ -43,6 +44,7 @@ export class DigitalSalesRoomsPage {
 	constructor(page: Page) {
 		this.archiveButton = page.getByRole('button', {name: 'Archive'});
 		this.archiveMenuItem = page.getByRole('menuitem', {name: 'Archive'});
+		this.archivedRoomWarning = page.locator('#dsr-archived-room-warning');
 		this.archivedStatusFilterRadio = page.getByRole('radio', {
 			name: 'Archived',
 		});
