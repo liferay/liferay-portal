@@ -123,15 +123,15 @@ public class SecretManagerImplTest {
 		// Delegates to the provider
 
 		long companyId = RandomTestUtil.randomLong();
-		String identifier = RandomTestUtil.randomString();
+		String secretIdentifier = RandomTestUtil.randomString();
 		String secretProviderId = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_secretProvider.getSecret(companyId, identifier)
+			_secretProvider.getSecret(companyId, secretIdentifier)
 		).thenReturn(
 			new Secret(
 				RandomTestUtil.randomBytes(),
-				_keyReference(secretProviderId, identifier))
+				_keyReference(secretProviderId, secretIdentifier))
 		);
 
 		Mockito.when(
@@ -147,12 +147,12 @@ public class SecretManagerImplTest {
 		);
 
 		_secretManagerImpl.getSecret(
-			companyId, _keyReference(secretProviderId, identifier));
+			companyId, _keyReference(secretProviderId, secretIdentifier));
 
 		Mockito.verify(
 			_secretProvider
 		).getSecret(
-			companyId, identifier
+			companyId, secretIdentifier
 		);
 
 		// Throws when the provider is in an error state
@@ -232,10 +232,10 @@ public class SecretManagerImplTest {
 		);
 
 		long companyId = RandomTestUtil.randomLong();
-		String identifier = RandomTestUtil.randomString();
+		String secretIdentifier = RandomTestUtil.randomString();
 
 		try (Secret secret = new Secret(
-				_keyReference(secretProviderId, identifier),
+				_keyReference(secretProviderId, secretIdentifier),
 				RandomTestUtil.randomString())) {
 
 			_secretManagerImpl.putSecret(companyId, secret);
@@ -258,10 +258,10 @@ public class SecretManagerImplTest {
 	}
 
 	private KeyReference _keyReference(
-		String secretProviderId, String identifier) {
+		String secretProviderId, String secretIdentifier) {
 
 		return new KeyReference(
-			identifier, secretProviderId, KeyReference.Type.SECRET);
+			secretIdentifier, secretProviderId, KeyReference.Type.SECRET);
 	}
 
 	private void _testPutSecretResolvesProviderWildcard(long companyId)
