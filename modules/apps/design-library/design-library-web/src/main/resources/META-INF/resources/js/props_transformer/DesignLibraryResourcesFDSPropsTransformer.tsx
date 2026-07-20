@@ -10,16 +10,17 @@ import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 import {AddStyleBookModalContent} from 'style-book-web';
 
-import {TableCellContentType} from '../constants';
+import {
+	FRAGMENT_COLLECTION_ENTRY_CLASS_NAME,
+	TableCellContentType,
+} from '../constants';
 import {
 	AuthorRenderer,
 	FromNowDateTimeRenderer,
 	LinkRenderer,
+	ResourceTypeRenderer,
 	createSetItemComponentProps,
 } from './cell_renderers';
-
-const FRAGMENT_COLLECTION_ENTRY_CLASS_NAME =
-	'com.liferay.fragment.model.FragmentCollection';
 
 const FRAGMENT_TYPE_COMPONENT = 1;
 const FRAGMENT_TYPE_INPUT = 3;
@@ -188,14 +189,7 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 					type: 'internal',
 				},
 				{
-					component: ({itemData}: any) => (
-						<span>
-							{itemData?.entryClassName ===
-							FRAGMENT_COLLECTION_ENTRY_CLASS_NAME
-								? Liferay.Language.get('fragment-set')
-								: Liferay.Language.get('style-book')}
-						</span>
-					),
+					component: ResourceTypeRenderer,
 					name: TableCellContentType.RESOURCE_TYPE,
 					type: 'internal',
 				},

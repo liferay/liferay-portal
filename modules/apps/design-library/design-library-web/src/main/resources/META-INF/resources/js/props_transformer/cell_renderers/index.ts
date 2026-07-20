@@ -6,5 +6,6 @@
 export {default as AuthorRenderer} from './AuthorRenderer';
 export {default as FromNowDateTimeRenderer} from './FromNowDateTimeRenderer';
 export {default as LinkRenderer} from './LinkRenderer';
+export {default as ResourceTypeRenderer} from './ResourceTypeRenderer';
 
 export {default as createSetItemComponentProps} from './createSetItemComponentProps';
