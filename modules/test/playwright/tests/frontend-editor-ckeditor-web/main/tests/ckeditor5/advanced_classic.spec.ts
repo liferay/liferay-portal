@@ -420,17 +420,27 @@ test(
 	async ({classicPage, page}) => {
 		await expect(classicPage.editable).toBeVisible();
 
-		const hasPasteFromOfficeEnhanced = await page.evaluate(() => {
-			const editorElement = Array.from(
-				document.querySelectorAll('.lfr-ck *')
-			).find((element) => (element as any).ckeditorInstance);
+		const {hasPasteFromOfficeEnhanced, showPasteFromOfficeEnhanced} =
+			await page.evaluate(() => {
+				const editorElement = Array.from(
+					document.querySelectorAll('.lfr-ck *')
+				).find((element) => (element as any).ckeditorInstance);
 
-			return (
-				(editorElement as any)?.ckeditorInstance?.plugins.has(
-					'PasteFromOfficeEnhanced'
-				) ?? false
-			);
-		});
+				const editor = (editorElement as any)?.ckeditorInstance;
+
+				return {
+					hasPasteFromOfficeEnhanced:
+						editor?.plugins.has('PasteFromOfficeEnhanced') ?? false,
+					showPasteFromOfficeEnhanced:
+						editor?.config.get('showPasteFromOfficeEnhanced') ??
+						false,
+				};
+			});
+
+		test.skip(
+			!showPasteFromOfficeEnhanced,
+			'Enhanced Paste from Office is only available on licensed DXP installations'
+		);
 
 		expect(hasPasteFromOfficeEnhanced).toBe(true);
 	}
