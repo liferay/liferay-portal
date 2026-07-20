@@ -63,16 +63,20 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsMaster.maxRecentBatchAge = -1;
 
-		_jenkinsMaster.addRecentBatch(7, "label-a");
+		String label = RandomTestUtil.randomString();
+
+		_jenkinsMaster.addRecentBatch(7, label);
 
 		Map<String, Map<Long, Integer>> labelBatchSizes =
 			JenkinsMasterTestUtil.getLabelBatchSizes(_jenkinsMaster);
 
-		Map<Long, Integer> batchSizes = labelBatchSizes.get("label-a");
+		Map<Long, Integer> batchSizes = labelBatchSizes.get(label);
 
 		Assert.assertEquals(batchSizes.toString(), 1, batchSizes.size());
 
-		_jenkinsMaster.getAvailableSlavesCount("label-b");
+		String otherLabel = RandomTestUtil.randomString();
+
+		_jenkinsMaster.getAvailableSlavesCount(otherLabel);
 
 		Assert.assertTrue(batchSizes.isEmpty());
 
