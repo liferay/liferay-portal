@@ -85,7 +85,7 @@ public class CommerceWishListHttpHelperImpl
 			cookieName, httpServletRequest);
 
 		CommerceWishList commerceWishList =
-			_commerceWishListLocalService.getDefaultCommerceWishList(
+			_commerceWishListLocalService.fetchDefaultCommerceWishList(
 				user.getUserId(), groupId, guestUuid);
 
 		if (commerceWishList == null) {

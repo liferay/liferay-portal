@@ -109,7 +109,7 @@ public class CommerceWishListServiceImpl
 		throws PortalException {
 
 		CommerceWishList commerceWishList =
-			commerceWishListLocalService.getDefaultCommerceWishList(
+			commerceWishListLocalService.fetchDefaultCommerceWishList(
 				getUserId(), groupId, null);
 
 		if (commerceWishList != null) {
