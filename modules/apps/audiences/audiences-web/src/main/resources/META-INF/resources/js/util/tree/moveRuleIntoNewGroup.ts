@@ -12,7 +12,7 @@ import {insertIntoGroup} from './insertIntoGroup';
 import {unwrapRedundantGroups} from './unwrapRedundantGroups';
 import {wrapNode} from './wrapNode';
 
-export function moveGroup(
+export function moveRuleIntoNewGroup(
 	root: Group,
 	nodeId: string,
 	targetId: string,

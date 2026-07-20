@@ -325,7 +325,7 @@ function GroupItems({context, group, path}: GroupItemsProps) {
 									dispatch({
 										nodeId,
 										targetId: node.id,
-										type: 'MOVE_GROUP',
+										type: 'MOVE_RULE_INTO_NEW_GROUP',
 									})
 								}
 								onMoveRule={handleMoveRule}

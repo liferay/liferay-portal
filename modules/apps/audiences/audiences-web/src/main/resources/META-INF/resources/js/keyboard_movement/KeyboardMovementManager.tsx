@@ -123,7 +123,7 @@ export default function KeyboardMovementManager({
 					dispatch({
 						nodeId: source.ruleId,
 						targetId: moveTarget.nodeId,
-						type: 'MOVE_GROUP',
+						type: 'MOVE_RULE_INTO_NEW_GROUP',
 					});
 				}
 				else {
