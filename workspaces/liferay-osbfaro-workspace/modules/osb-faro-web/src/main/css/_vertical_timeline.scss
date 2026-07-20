@@ -17,10 +17,6 @@
 				margin-right: 4px;
 			}
 
-			.subtitle {
-				font-size: $fontSizeSmall;
-			}
-
 			.title {
 				font-weight: $fontWeightSemiBold;
 				line-height: 1;
@@ -75,6 +71,7 @@
 					.description {
 						color: $mainLighten28;
 						font-weight: $fontWeightSemiBold;
+						line-height: 16px;
 					}
 
 					.timeline-panel-body-content-details {
@@ -82,12 +79,7 @@
 						width: auto;
 					}
 
-					.subtitle {
-						font-size: $fontSizeExtraSmall;
-					}
-
 					.title {
-						font-size: $fontSizeSmall;
 						line-height: 1;
 
 						.text-truncate {
@@ -114,28 +106,33 @@
 		padding: 0;
 		position: relative;
 
-		.event-icon {
-			font-size: $fontSizeExtraLarge;
-		}
-
 		.item-count {
 			font-size: $fontSizeSmall;
 			margin-left: 6px;
 		}
 
+		.description,
 		.subtitle {
 			color: $mainLighten28;
-			font-size: $fontSizeSmall;
 
 			span:not(:first-child) {
 				margin-left: 8px;
 			}
 		}
 
+		.subtitle {
+			display: inline-block;
+			max-width: 100%;
+
+			.text-truncate {
+				display: block;
+			}
+		}
+
 		.timeline-panel-body-content {
 			align-items: center;
 			display: flex;
-			padding: 16px 24px 8px 150px;
+			padding: 0 1rem 1rem 150px;
 
 			.sticker-container + .timeline-panel-body-content-text {
 				margin-left: 16px;
@@ -227,7 +224,6 @@
 
 		.title {
 			color: $main;
-			font-size: $fontSizeMedium;
 
 			a {
 				color: $main;
@@ -243,29 +239,34 @@
 
 		&.expanded {
 			background-color: $primaryLighten45;
-
-			.timeline-panel-body-content:not(.selectable) {
-				background-color: $white;
-			}
 		}
 
 		&.header {
 			background-color: $white;
 			border-bottom: $borderSize1 solid $mainLighten74;
-			height: 80px;
-			padding-bottom: 16px;
-			padding-top: 39px;
+			margin-bottom: 8px;
+			padding-bottom: 8px;
+			padding-top: 1rem;
 
 			.timeline-panel-body-content {
 				padding: 8px 24px;
+			}
 
-				.description {
-					color: $mainLighten28;
-					font-weight: $fontWeightSemiBold;
-				}
+			.title {
+				font-size: 16px;
+			}
+		}
 
-				.title {
-					font-size: $fontSizeLarge;
+		&.user-header {
+			background-color: $white;
+
+			.timeline-panel-body-content.user-header-content {
+				align-items: center;
+				display: flex;
+				padding: 8px 24px 0;
+
+				.user-header-name {
+					color: $primary;
 					font-weight: $fontWeightSemiBold;
 				}
 			}
@@ -295,6 +296,21 @@
 		&:before {
 			visibility: hidden;
 		}
+	}
+
+	.timeline-item.group-end
+		.timeline-nested
+		> .timeline-item:last-child
+		.timeline-line {
+		height: 26px;
+	}
+
+	.timeline-item.group-start
+		> .timeline-panel
+		> .timeline-panel-body
+		> .timeline-line {
+		height: calc(100% - 33px);
+		top: 34px;
 	}
 
 	.timeline-increment {

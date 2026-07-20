@@ -6,10 +6,13 @@ export interface AccountUserSessionEvent {
 	assetTitle: string;
 	canonicalUrl: string;
 	createDate: string;
+	eventDate: string;
+	eventId: string;
 	name: string;
 	pageDescription: string;
 	pageKeywords: string;
 	pageTitle: string;
+	properties: Array<{name: string; value: string}>;
 	referrer: string;
 	url: string;
 }
@@ -27,6 +30,7 @@ export interface AccountUserSession {
 	screenWidth: number;
 	timezoneOffset: string;
 	userAgent: string;
+	userId: string | null;
 	userName: string | null;
 }
 
@@ -92,10 +96,16 @@ export default gql`
 						assetTitle
 						canonicalUrl
 						createDate
+						eventDate
+						eventId
 						name
 						pageDescription
 						pageKeywords
 						pageTitle
+						properties {
+							name
+							value
+						}
 						referrer
 						url
 					}
@@ -104,6 +114,7 @@ export default gql`
 					screenWidth
 					timezoneOffset
 					userAgent
+					userId
 					userName
 				}
 			}

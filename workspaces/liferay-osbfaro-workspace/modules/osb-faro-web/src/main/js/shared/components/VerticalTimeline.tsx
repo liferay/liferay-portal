@@ -1,6 +1,7 @@
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
+import ClaySticker from '@clayui/sticker';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {FC, useState} from 'react';
@@ -50,9 +51,13 @@ type ITEM_SHAPE = {
 	attributes: Record<string, unknown>;
 	browserName: string;
 	description: string;
+	descriptionUrl?: string;
 	device: string;
 	endTime: number;
+	groupEnd?: boolean;
+	groupStart?: boolean;
 	header: boolean;
+	isAnonymous?: boolean;
 	nestedItems: ITEM_SHAPE[];
 	subtitle: string;
 	time: string;
@@ -60,6 +65,8 @@ type ITEM_SHAPE = {
 	totalEvents: number;
 	url: string;
 	userAgent: string;
+	userHeader?: boolean;
+	userHeaderUrl?: string;
 };
 
 type ITimelineItemProps = {
@@ -81,9 +88,13 @@ const TimelineItem: FC<ITimelineItemProps> = ({
 		attributes,
 		browserName,
 		description,
+		descriptionUrl,
 		device,
 		endTime,
+		groupEnd,
+		groupStart,
 		header,
+		isAnonymous,
 		nestedItems,
 		subtitle,
 		time,
@@ -91,16 +102,56 @@ const TimelineItem: FC<ITimelineItemProps> = ({
 		totalEvents,
 		url,
 		userAgent,
+		userHeader,
+		userHeaderUrl,
 	},
 	timeZoneId,
 }) => {
 	const [expanded, setExpanded] = useState<boolean>(initialExpanded);
 	const expandable = !!attributes;
 
+	if (userHeader) {
+		return (
+			<li className={getCN('timeline-item', 'user-header', className)}>
+				<div className="timeline-panel">
+					<div className="timeline-panel-body">
+						<div className="timeline-panel-body-content user-header-content">
+							<ClaySticker
+								className="user-header-sticker mr-2"
+								shape="user-icon"
+								size="sm"
+							>
+								<ClayIcon
+									color="gray"
+									symbol={isAnonymous ? 'anonymize' : 'user'}
+								/>
+							</ClaySticker>
+
+							{userHeaderUrl ? (
+								<ClayLink
+									className="user-header-name"
+									href={userHeaderUrl}
+								>
+									{title}
+								</ClayLink>
+							) : (
+								<span className="user-header-name">
+									{title}
+								</span>
+							)}
+						</div>
+					</div>
+				</div>
+			</li>
+		);
+	}
+
 	return (
 		<li
 			className={getCN('timeline-item', className, {
 				expanded,
+				'group-end': groupEnd,
+				'group-start': groupStart,
 				header,
 			})}
 		>
@@ -129,6 +180,7 @@ const TimelineItem: FC<ITimelineItemProps> = ({
 								}
 							)}
 							description={description}
+							descriptionUrl={descriptionUrl}
 							header={header}
 							subtitle={subtitle}
 							title={title}
@@ -275,12 +327,22 @@ const TimelinePanelBodyContentDetails: FC<{
 const TimelinePanelBodyContentText: FC<{
 	className: string;
 	description: string;
+	descriptionUrl?: string;
 	header: boolean;
 	subtitle: string;
 	title: string;
 	totalEvents: number;
 	url: string;
-}> = ({className, header, subtitle, title, totalEvents, url}) => {
+}> = ({
+	className,
+	description,
+	descriptionUrl,
+	header,
+	subtitle,
+	title,
+	totalEvents,
+	url,
+}) => {
 	const eventTitle =
 		title && !header ? <TextTruncate title={`${title}`} /> : title;
 
@@ -296,20 +358,32 @@ const TimelinePanelBodyContentText: FC<{
 				<span className="title">{eventTitle}</span>
 			)}
 
+			{!header && description && (
+				<div className="description">
+					{descriptionUrl ? (
+						<ClayLink className="subtitle" href={descriptionUrl}>
+							<TextTruncate title={description} />
+						</ClayLink>
+					) : (
+						<TextTruncate title={description} />
+					)}
+				</div>
+			)}
+
 			{header && (
-				<>
+				<span className="item-count text-secondary">
 					<ClayIcon
-						className="event-icon icon-root"
-						symbol="ac_event_icon"
+						className="event-icon icon-root mr-2"
+						symbol="click"
 					/>
 
-					<span className="item-count">{totalEvents}</span>
-				</>
+					{totalEvents}
+				</span>
 			)}
 
 			{subtitle && (
 				<ClayLink
-					className="d-inline-block subtitle"
+					className="subtitle"
 					href={subtitle}
 					rel="noopener noreferrer"
 					target="_blank"
