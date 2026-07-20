@@ -140,7 +140,7 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 
 	@Test
 	@TestInfo("LPD-63087")
-	public void testGetActionDropdownItemstForMarketplaceFragmentEntry()
+	public void testGetActionDropdownItemsForMarketplaceFragmentEntry()
 		throws Exception {
 
 		setUpFragmentPermission(true);
