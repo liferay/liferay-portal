@@ -46,7 +46,11 @@ public class OPConnectUtil {
 		List<String> secretValues = new ArrayList<>(
 			opConnectDescriptor.getSecretValues());
 
-		secretValues.add(opConnectDescriptor.getAccessToken());
+		String accessToken = opConnectDescriptor.getAccessToken();
+
+		if ((accessToken != null) && !accessToken.isEmpty()) {
+			secretValues.add(accessToken);
+		}
 
 		return secretValues;
 	}
