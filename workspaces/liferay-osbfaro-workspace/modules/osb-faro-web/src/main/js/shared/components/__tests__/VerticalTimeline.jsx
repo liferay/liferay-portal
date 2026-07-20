@@ -310,4 +310,52 @@ describe('VerticalTimeline', () => {
 
 		expect(getByText('DXP')).toBeInTheDocument();
 	});
+
+	it('renders a known individual user header with the user icon', () => {
+		const {container, getByText} = render(
+			<DefaultComponent
+				items={[{title: 'Ada Lovelace', userHeader: true}]}
+			/>
+		);
+
+		expect(getByText('Ada Lovelace')).toBeInTheDocument();
+		expect(
+			container.querySelector('.user-header .lexicon-icon-user')
+		).toBeInTheDocument();
+	});
+
+	it('renders an anonymous user header with the anonymize icon', () => {
+		const {container, getByText} = render(
+			<DefaultComponent
+				items={[
+					{isAnonymous: true, title: 'Anonymous', userHeader: true}
+				]}
+			/>
+		);
+
+		expect(getByText('Anonymous')).toBeInTheDocument();
+		expect(
+			container.querySelector('.user-header .lexicon-icon-anonymize')
+		).toBeInTheDocument();
+	});
+
+	it('renders the user header name as a link when a url is provided', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				items={[
+					{
+						title: 'Ada Lovelace',
+						userHeader: true,
+						userHeaderUrl:
+							'/workspace/liferay.com/1/contacts/individuals/known-individuals/abc'
+					}
+				]}
+			/>
+		);
+
+		expect(getByText('Ada Lovelace').closest('a')).toHaveAttribute(
+			'href',
+			'/workspace/liferay.com/1/contacts/individuals/known-individuals/abc'
+		);
+	});
 });

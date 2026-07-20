@@ -15,6 +15,12 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('shared/hooks/useTimeZone', () => ({
+	useTimeZone: () => ({
+		timeZoneId: 'UTC',
+	}),
+}));
+
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

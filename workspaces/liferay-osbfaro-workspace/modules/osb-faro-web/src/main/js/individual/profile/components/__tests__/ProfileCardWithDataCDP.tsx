@@ -79,32 +79,24 @@ describe('IndividualProfileCard', () => {
 		expect(getByPlaceholderText('Search')).toBeInTheDocument();
 	});
 
-	it('should clear search input when clear button is clicked', async () => {
-		const {container, getByPlaceholderText, getByText} = render(
+	it('does not render the activities trend summary', async () => {
+		const {container} = render(
 			<DefaultComponent>
 				<MockedProvider
 					mocks={[
-						mockEventMetrics(),
+						mockEventMetrics({
+							rangeKey: 30,
+						}),
 						mockTimeRangeReq(),
 						mockPreferenceReq(),
-						mockSessions(),
-						mockEventMetrics(),
-						mockSessions(),
-						mockEventMetrics(),
-						mockSessions(),
-						mockEventMetrics(),
-						mockSessions(),
-						mockEventMetrics(searchKeyword),
-						mockSessions(searchKeyword),
-						mockEventMetrics(searchKeyword),
-						mockSessions(searchKeyword),
-						mockEventMetrics(searchKeyword),
-						mockSessions(searchKeyword),
+						mockSessions({
+							rangeKey: 30,
+						}),
 					]}
 				>
 					<ProfileCardWithDataCDP
 						channelId="123123"
-						delta={20}
+						delta={50}
 						entity={new Individual(mockIndividual())}
 						interval="D"
 						onChangeInterval={jest.fn()}
@@ -112,8 +104,8 @@ describe('IndividualProfileCard', () => {
 						onPageChange={jest.fn()}
 						onQueryChange={jest.fn()}
 						onRangeSelectorsChange={jest.fn()}
-						page={0}
-						query="add to cart"
+						page={1}
+						query=""
 						rangeSelectors={{
 							rangeEnd: '',
 							rangeKey: RangeKeyTimeRanges.Last30Days,
@@ -128,27 +120,7 @@ describe('IndividualProfileCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		jest.runAllTimers();
-
-		const searchInput = getByPlaceholderText('Search');
-
-		fireEvent.change(searchInput, {target: {value: inputValue}});
-
-		fireEvent.keyDown(searchInput, {
-			charCode: 13,
-			code: 'Enter',
-			key: 'Enter',
-		});
-
-		jest.runAllTimers();
-
-		expect(getByPlaceholderText('Search')).toHaveValue(inputValue);
-
-		fireEvent.click(getByText('Clear'));
-
-		jest.runAllTimers();
-
-		expect(getByPlaceholderText('Search')).toHaveValue('');
+		expect(container.querySelector('.trend-summary')).toBeNull();
 	});
 
 	it('should clear search input when X clear button is clicked', async () => {
