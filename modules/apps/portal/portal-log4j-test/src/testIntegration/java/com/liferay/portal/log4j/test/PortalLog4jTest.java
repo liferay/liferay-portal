@@ -393,12 +393,8 @@ public class PortalLog4jTest {
 		// Throwable
 
 		if (expectedThrowable != null) {
-			Class<?> expectedThrowableClass = expectedThrowable.getClass();
-
 			Assert.assertEquals(
-				expectedThrowableClass.getName() + ": " +
-					expectedThrowable.getMessage(),
-				outputLines[outputLineIndex]);
+				expectedThrowable.toString(), outputLines[outputLineIndex]);
 
 			String actualFirstPrefixStackTraceElement =
 				outputLines[outputLineIndex + 1].trim();
