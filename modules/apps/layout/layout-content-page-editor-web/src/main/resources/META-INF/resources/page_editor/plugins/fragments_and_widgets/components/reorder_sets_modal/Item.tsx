@@ -82,6 +82,7 @@ export function Item({index, item, onDropItem}: ItemProps) {
 							<ContentCol gutters>
 								<ClayButton
 									aria-labelledby={`${dragButtonDescriptionId} ${itemDescriptionId}`}
+									className="reorder-list-drag-handle"
 									data-item-id={item.id}
 									displayType="unstyled"
 									monospaced
