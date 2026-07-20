@@ -165,6 +165,142 @@ function Prompt({
 	);
 }
 
+interface IMenuStateProps {
+	active: boolean;
+	items: Array<IItem>;
+	menuRef: React.RefObject<HTMLDivElement>;
+	onSelect: (item: IItem) => void;
+	spritemap?: string;
+}
+
+// The `menu` state: the AI options list. Focus moves into it on open so the
+// options are reachable by keyboard.
+
+function AIMenuState({
+	active,
+	items,
+	menuRef,
+	onSelect,
+	spritemap,
+}: IMenuStateProps) {
+	return (
+		<FocusMenu
+			condition={active}
+			onRender={() => {
+				setTimeout(() => {
+					const list = getFocusableList(menuRef);
+
+					if (list.length) {
+						list[0]!.focus();
+					}
+				}, 10);
+			}}
+		>
+			<DropDown.ItemList>
+				{items.map((item, index) => (
+					<DropDown.Item
+						key={index}
+						onClick={() => onSelect(item)}
+						spritemap={spritemap}
+						symbolLeft={item.symbolLeft}
+						symbolRight={item.symbolRight}
+					>
+						{item.label}
+					</DropDown.Item>
+				))}
+			</DropDown.ItemList>
+		</FocusMenu>
+	);
+}
+
+interface IWorkingStateProps {
+	onStop: () => void;
+	spritemap?: string;
+	stopAriaLabel: string;
+	workingLabel: string;
+}
+
+// The `working` state: a busy indicator with a stop control.
+
+function AIWorkingState({
+	onStop,
+	spritemap,
+	stopAriaLabel,
+	workingLabel,
+}: IWorkingStateProps) {
+	return (
+		<div
+			aria-live="polite"
+			className="align-items-center d-flex dropdown-section justify-content-between"
+		>
+			<span className="align-items-center d-flex text-purple">
+				<ClayIcon
+					className="mr-2"
+					spritemap={spritemap}
+					symbol="stars"
+				/>
+
+				{workingLabel}
+			</span>
+
+			<ClayAIButton
+				aria-label={stopAriaLabel}
+				monospaced
+				onClick={onStop}
+				size="sm"
+				spritemap={spritemap}
+				symbol="square"
+				type="button"
+			/>
+		</div>
+	);
+}
+
+interface IResultStateProps {
+	acceptLabel: string;
+	onAccept?: () => void;
+	onReset?: () => void;
+	resetAriaLabel: string;
+	spritemap?: string;
+}
+
+// The `result` state: accept or reset the suggestion.
+
+function AIResultState({
+	acceptLabel,
+	onAccept,
+	onReset,
+	resetAriaLabel,
+	spritemap,
+}: IResultStateProps) {
+	return (
+		<div
+			aria-live="polite"
+			className="align-items-center c-gap-2 d-flex dropdown-section"
+		>
+			<ClayAIButton
+				label={acceptLabel}
+				onClick={onAccept}
+				size="sm"
+				spritemap={spritemap}
+				symbol="check"
+				type="button"
+			/>
+
+			<ClayAIButton
+				aria-label={resetAriaLabel}
+				link
+				monospaced
+				onClick={onReset}
+				size="sm"
+				spritemap={spritemap}
+				symbol="reset"
+				type="button"
+			/>
+		</div>
+	);
+}
+
 export type Props = {
 
 	/**
@@ -253,12 +389,6 @@ export type Props = {
 	resetAriaLabel?: string;
 
 	/**
-	 * The text the consumer captured (e.g. from a field selection) that the
-	 * AI acts on. Shown as context in the `prompt` state.
-	 */
-	selectedText?: string;
-
-	/**
 	 * Path to the location of the spritemap resource.
 	 */
 	spritemap?: string;
@@ -301,7 +431,6 @@ export function ClayDropDownWithAI({
 	openOnClick = true,
 	placeholder = 'What do you need?',
 	resetAriaLabel = 'Reset to original value',
-	selectedText,
 	spritemap,
 	stopAriaLabel = 'Stop',
 	submitAriaLabel = 'Submit prompt',
@@ -336,6 +465,55 @@ export function ClayDropDownWithAI({
 	// (stop / accept / reset), not by clicking the trigger or outside the box.
 
 	const dismissable = aiState === 'menu' || aiState === 'prompt';
+
+	const states: Record<AIState, React.ReactNode> = {
+		menu: (
+			<AIMenuState
+				active={internalActive}
+				items={items}
+				menuRef={menuElementRef}
+				onSelect={(item) => {
+					item.onClick?.();
+
+					onItemClick?.(item);
+
+					setAiState('prompt');
+				}}
+				spritemap={spritemap}
+			/>
+		),
+		prompt: (
+			<Prompt
+				closeAriaLabel={closeAriaLabel}
+				onClose={() => setAiState('menu')}
+				onSubmit={(value) => {
+					onSubmit?.(value);
+
+					setAiState('working');
+				}}
+				placeholder={placeholder}
+				spritemap={spritemap}
+				submitAriaLabel={submitAriaLabel}
+			/>
+		),
+		result: (
+			<AIResultState
+				acceptLabel={acceptLabel}
+				onAccept={onAccept}
+				onReset={onReset}
+				resetAriaLabel={resetAriaLabel}
+				spritemap={spritemap}
+			/>
+		),
+		working: (
+			<AIWorkingState
+				onStop={() => setAiState('menu')}
+				spritemap={spritemap}
+				stopAriaLabel={stopAriaLabel}
+				workingLabel={workingLabel}
+			/>
+		),
+	};
 
 	return (
 		<>
@@ -391,123 +569,7 @@ export function ClayDropDownWithAI({
 				ref={menuElementRef}
 				triggerRef={triggerElementRef}
 			>
-				{aiState === 'menu' && (
-					<FocusMenu
-						condition={internalActive}
-						onRender={() => {
-
-							// Move focus into the menu when it opens so the
-							// options are reachable by keyboard.
-
-							setTimeout(() => {
-								const list = getFocusableList(menuElementRef);
-
-								if (list.length) {
-									list[0]!.focus();
-								}
-							}, 10);
-						}}
-					>
-						<DropDown.ItemList>
-							{items.map((item, index) => (
-								<DropDown.Item
-									key={index}
-									onClick={() => {
-										item.onClick?.();
-
-										onItemClick?.(item);
-
-										setAiState('prompt');
-									}}
-									spritemap={spritemap}
-									symbolLeft={item.symbolLeft}
-									symbolRight={item.symbolRight}
-								>
-									{item.label}
-								</DropDown.Item>
-							))}
-						</DropDown.ItemList>
-					</FocusMenu>
-				)}
-
-				{aiState === 'prompt' && (
-					<>
-						{selectedText ? (
-							<div className="dropdown-section text-secondary text-truncate">
-								{selectedText}
-							</div>
-						) : null}
-
-						<Prompt
-							closeAriaLabel={closeAriaLabel}
-							onClose={() => setAiState('menu')}
-							onSubmit={(value) => {
-								onSubmit?.(value);
-
-								setAiState('working');
-							}}
-							placeholder={placeholder}
-							spritemap={spritemap}
-							submitAriaLabel={submitAriaLabel}
-						/>
-					</>
-				)}
-
-				{aiState === 'working' && (
-					<div
-						aria-live="polite"
-						className="align-items-center d-flex dropdown-section"
-					>
-						<span className="align-items-center d-flex text-purple">
-							<ClayIcon
-								className="mr-2"
-								spritemap={spritemap}
-								symbol="stars"
-							/>
-
-							{workingLabel}
-						</span>
-
-						<ClayAIButton
-							aria-label={stopAriaLabel}
-							className="ml-auto"
-							monospaced
-							onClick={() => setAiState('menu')}
-							size="sm"
-							spritemap={spritemap}
-							symbol="square"
-							type="button"
-						/>
-					</div>
-				)}
-
-				{aiState === 'result' && (
-					<div
-						aria-live="polite"
-						className="align-items-center d-flex dropdown-section"
-					>
-						<ClayAIButton
-							label={acceptLabel}
-							onClick={onAccept}
-							size="sm"
-							spritemap={spritemap}
-							symbol="check"
-							type="button"
-						/>
-
-						<ClayAIButton
-							aria-label={resetAriaLabel}
-							className="ml-2"
-							link
-							monospaced
-							onClick={onReset}
-							size="sm"
-							spritemap={spritemap}
-							symbol="reset"
-							type="button"
-						/>
-					</div>
-				)}
+				{states[aiState]}
 			</DropDown.Menu>
 		</>
 	);
