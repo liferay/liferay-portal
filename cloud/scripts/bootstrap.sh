@@ -238,9 +238,7 @@ function _get_provider {
 
 	_is_supported_provider "${provider}"
 
-	local exit_code=$?
-
-	if [ "${exit_code}" -ne 0 ]
+	if ! _is_supported_provider "${provider}"
 	then
 		echo "Unsupported provider ${provider} was specified in ${config_file}." >&2
 
@@ -266,19 +264,14 @@ function _get_version {
 }
 
 function _is_supported_provider {
-	local provider="${1}"
-
-	local supported_providers=("aws" "azure" "gcp")
-
-	for supported_provider in "${supported_providers[@]}"
-	do
-		if [ "${provider}" == "${supported_provider}" ]
-		then
+	case "${1}" in
+		aws|azure|gcp)
 			return 0
-		fi
-	done
-
-	return 1
+			;;
+		*)
+			return 1
+			;;
+	esac
 }
 
 function _sha256 {
