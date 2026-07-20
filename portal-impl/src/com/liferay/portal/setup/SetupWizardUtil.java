@@ -341,21 +341,14 @@ public class SetupWizardUtil {
 
 		boolean passwordReset = false;
 
-		try {
-			PasswordPolicy passwordPolicy =
-				PasswordPolicyLocalServiceUtil.getDefaultPasswordPolicy(
-					company.getCompanyId());
+		PasswordPolicy passwordPolicy =
+			PasswordPolicyLocalServiceUtil.fetchDefaultPasswordPolicy(
+				company.getCompanyId());
 
-			if ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
-				passwordPolicy.isChangeRequired()) {
+		if ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
+			passwordPolicy.isChangeRequired()) {
 
-				passwordReset = true;
-			}
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
+			passwordReset = true;
 		}
 
 		User user = SetupWizardSampleDataUtil.updateAdminUser(
