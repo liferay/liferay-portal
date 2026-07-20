@@ -7,8 +7,8 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,8 +63,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsMasterTestUtil.resetCaches();
 
-		JenkinsResultsParserUtil.setBuildProperties(
-			(Hashtable<Object, Object>)null);
+		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 	}
 
 	@Test

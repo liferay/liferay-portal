@@ -7,7 +7,6 @@ package com.liferay.jenkins.results.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,8 +28,7 @@ public class LoadBalancerUtilTest
 
 		JenkinsMasterTestUtil.resetCaches();
 
-		JenkinsResultsParserUtil.setBuildProperties(
-			(Hashtable<Object, Object>)null);
+		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 	}
 
 	@Test

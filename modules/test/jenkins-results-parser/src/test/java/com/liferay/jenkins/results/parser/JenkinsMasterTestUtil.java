@@ -6,7 +6,6 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -19,31 +18,27 @@ public class JenkinsMasterTestUtil {
 	public static Properties getJenkinsCohortProperties(
 		String cohortName, int masterCount) {
 
-		Hashtable<Object, Object> buildProperties = new Hashtable<>();
+		Properties properties = new Properties();
 
-		buildProperties.put(
+		properties.setProperty(
 			"base.invocation.url", "http://" + cohortName + ".liferay.com");
 
 		for (int i = 1; i <= masterCount; i++) {
 			String masterName = cohortName + "-" + i;
 
-			buildProperties.put(
+			properties.setProperty(
 				"jenkins.local.url[" + masterName + "]",
 				"http://" + masterName);
-			buildProperties.put(
+			properties.setProperty(
 				"jenkins.remote.url[" + masterName + "]",
 				"http://" + masterName + ".liferay.com");
-			buildProperties.put(
+			properties.setProperty(
 				"master.property(" + masterName + "/executors.size)", "8");
 		}
 
-		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+		JenkinsResultsParserUtil.setBuildProperties(properties);
 
 		resetCaches();
-
-		Properties properties = new Properties();
-
-		properties.putAll(buildProperties);
 
 		return properties;
 	}
@@ -51,14 +46,15 @@ public class JenkinsMasterTestUtil {
 	public static JenkinsMaster getJenkinsMaster(
 		String masterName, String masterURL) {
 
-		Hashtable<Object, Object> buildProperties = new Hashtable<>();
+		Properties properties = new Properties();
 
-		buildProperties.put("jenkins.local.url[" + masterName + "]", masterURL);
-		buildProperties.put(
+		properties.setProperty(
+			"jenkins.local.url[" + masterName + "]", masterURL);
+		properties.setProperty(
 			"jenkins.remote.url[" + masterName + "]",
 			"http://" + masterName + ".liferay.com");
 
-		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+		JenkinsResultsParserUtil.setBuildProperties(properties);
 
 		resetCaches();
 
