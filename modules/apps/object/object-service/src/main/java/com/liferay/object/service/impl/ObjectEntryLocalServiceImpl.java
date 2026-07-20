@@ -4451,13 +4451,15 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private DSLQuery _getFetchManyToOneObjectEntryDSLQuery(
-		DynamicObjectDefinitionTable dynamicObjectDefinitionTable, long groupId,
-		ObjectRelationship objectRelationship, long primaryKey,
-		Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn) {
+			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+			long groupId, ObjectRelationship objectRelationship,
+			long primaryKey,
+			Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn)
+		throws PortalException {
 
 		FromStep fromStep = DSLQueryFactoryUtil.selectDistinct(
 			ObjectEntryTable.INSTANCE);
-		ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
+		ObjectField objectField = _objectFieldPersistence.findByPrimaryKey(
 			objectRelationship.getObjectFieldId2());
 
 		return fromStep.from(
@@ -5212,7 +5214,7 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 			ObjectField relationshipObjectField =
-				_objectFieldPersistence.fetchByPrimaryKey(
+				_objectFieldPersistence.findByPrimaryKey(
 					objectRelationship.getObjectFieldId2());
 
 			if (!script.contains(
@@ -5311,9 +5313,8 @@ public class ObjectEntryLocalServiceImpl
 			_objectDefinitionPersistence.findByPrimaryKey(
 				objectRelationship.getObjectDefinitionId1());
 
-		ObjectField titleObjectField =
-			_objectFieldPersistence.fetchByPrimaryKey(
-				objectDefinition.getTitleObjectFieldId());
+		ObjectField titleObjectField = _objectFieldPersistence.findByPrimaryKey(
+			objectDefinition.getTitleObjectFieldId());
 
 		Table<?> table = _objectFieldLocalService.getTable(
 			objectDefinition.getObjectDefinitionId(),
