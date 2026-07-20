@@ -519,7 +519,7 @@ public class SegmentsEntryLocalServiceTest {
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomBoolean(),
-				CriteriaSerializer.serialize(new Criteria()),
+				CriteriaSerializer.serialize(new Criteria()), null,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
