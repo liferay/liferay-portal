@@ -36,6 +36,8 @@ export const BULK_ACTION_STATUS = 'StatusObjectBulkSelectionAction';
 export const BULK_ACTION_TAGS = 'EditObjectTagsBulkSelectionAction';
 export const BULK_ACTION_UPDATE_OBJECT_VALUES =
 	'UpdateObjectValuesBulkSelectionAction';
+export const BULK_ACTION_UPDATE_REVIEW_DATE =
+	'UpdateReviewDateObjectBulkSelectionAction';
 
 export const INTERVAL_TASK_POLLING_MS = 5000;
 
@@ -76,6 +78,8 @@ export const LABELS_BULK_ACTIONS: {[key in keyof IBulkActionTaskType]: string} =
 		[BULK_ACTION_TAGS]: Liferay.Language.get('assets-tagging'),
 		[BULK_ACTION_UPDATE_OBJECT_VALUES]:
 			Liferay.Language.get('text-replace'),
+		[BULK_ACTION_UPDATE_REVIEW_DATE]:
+			Liferay.Language.get('review-date-update'),
 	};
 
 export const STATUS_COMPLETED = 'completed';
