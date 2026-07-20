@@ -532,7 +532,12 @@ test(
 
 		// Check that the page is set as scope
 
-		await dropdownOption.click();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: dropdownOption,
+			timeout: 5000,
+			trigger: dropdownButton,
+		});
 
 		const scopeName = page.locator('.scope-name', {
 			hasText: `${layoutTitle} (Scope)`,
