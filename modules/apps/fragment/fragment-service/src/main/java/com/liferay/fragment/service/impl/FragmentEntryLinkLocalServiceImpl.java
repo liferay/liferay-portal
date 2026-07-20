@@ -326,6 +326,14 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
+	public FragmentEntryLink fetchFragmentEntryLink(
+		long groupId, String originalFragmentEntryLinkERC, long plid) {
+
+		return fragmentEntryLinkPersistence.fetchByG_OFELERC_P_First(
+			groupId, originalFragmentEntryLinkERC, plid, null);
+	}
+
+	@Override
 	public List<FragmentEntryLink> getAllFragmentEntryLinksByFragmentEntry(
 			FragmentEntry fragmentEntry, int start, int end,
 			OrderByComparator<FragmentEntryLink> orderByComparator)

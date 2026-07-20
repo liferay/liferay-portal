@@ -871,7 +871,7 @@ public class LayoutLocalServiceWrapper
 
 			if (fragmentEntryLink.isDeleted()) {
 				FragmentEntryLink targetLayoutFragmentEntryLink =
-					_fragmentEntryLinkLocalService.getFragmentEntryLink(
+					_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 						targetLayout.getGroupId(),
 						fragmentEntryLink.getExternalReferenceCode(),
 						targetLayout.getPlid());
