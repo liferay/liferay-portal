@@ -93,6 +93,10 @@ public class DefaultThemeScopedCSSVariablesProvider
 		for (FrontendToken frontendToken :
 				frontendTokenDefinition.getFrontendTokens()) {
 
+			if (frontendToken.<Object>getDefaultValue() == null) {
+				continue;
+			}
+
 			String defaultValue = String.valueOf(
 				frontendToken.<Object>getDefaultValue());
 
