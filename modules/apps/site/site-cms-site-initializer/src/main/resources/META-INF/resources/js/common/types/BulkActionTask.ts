@@ -155,6 +155,9 @@ export interface IBulkActionType {
 	UpdateObjectValuesBulkSelectionAction: {
 		values?: Record<string, unknown>;
 	};
+	UpdateReviewDateObjectBulkSelectionAction: {
+		reviewDate?: string;
+	};
 }
 
 export interface IBulkActionTaskType {
@@ -178,6 +181,7 @@ export interface IBulkActionTaskType {
 	RestoreObjectBulkSelectionAction: string;
 	StatusObjectBulkSelectionAction: string;
 	UpdateObjectValuesBulkSelectionAction: string;
+	UpdateReviewDateObjectBulkSelectionAction: string;
 }
 
 export type TBulkActionTaskDTO = {

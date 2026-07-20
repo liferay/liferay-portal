@@ -7,6 +7,10 @@ import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
+import {IBulkActionFDSData} from '../../common/types/BulkActionTask';
+import {openCMSModal} from '../../common/utils/openCMSModal';
+import UpdateReviewDateModalContent from '../modal/UpdateReviewDateModalContent';
+import {triggerAssetBulkAction} from './actions/triggerAssetBulkAction';
 import ReviewDateRenderer from './cell_renderers/ReviewDateRenderer';
 import {getFileMimeTypeObjectDefinitionStickerValue} from './utils/transformViewsItemProps';
 
@@ -43,10 +47,46 @@ export default function OverdueReviewsFDSPropsTransformer({
 }: {
 	additionalProps: AdditionalProps;
 	apiURL?: string;
+	id?: string;
 	itemsActions?: IItemsActions[];
 }) {
 	const {additionalAPIURLParameters, ...remainingAdditionalProps} =
 		additionalProps || {};
+
+	const bulkActionAPIURL =
+		additionalAPIURLParameters && otherProps.apiURL
+			? `${otherProps.apiURL}${
+					otherProps.apiURL.includes('?') ? '&' : '?'
+				}${additionalAPIURLParameters}`
+			: otherProps.apiURL;
+
+	const openUpdateReviewDateModal = (
+		selectedData: IBulkActionFDSData,
+		reviewDate?: string
+	) => {
+		openCMSModal({
+			contentComponent: ({closeModal}: {closeModal: () => void}) => (
+				<UpdateReviewDateModalContent
+					closeModal={closeModal}
+					onSave={async (newReviewDate: string) => {
+						triggerAssetBulkAction({
+							apiURL: bulkActionAPIURL,
+							dataSetId: otherProps.id,
+							keyValues: newReviewDate
+								? {reviewDate: newReviewDate}
+								: {},
+							selectedData,
+							type: 'UpdateReviewDateObjectBulkSelectionAction',
+						});
+
+						return true;
+					}}
+					reviewDate={reviewDate}
+				/>
+			),
+			size: 'md',
+		});
+	};
 
 	return {
 		...otherProps,
@@ -63,6 +103,35 @@ export default function OverdueReviewsFDSPropsTransformer({
 		},
 		hideManagementBarInEmptyState: true,
 		itemsActions,
+		onActionDropdownItemClick: ({
+			action,
+			event,
+			itemData,
+		}: {
+			action: {data?: {id?: string}};
+			event?: Event;
+			itemData: ISearchAssetObjectEntry & {dateReview?: string};
+		}) => {
+			if (action?.data?.id === 'update-review-date') {
+				event?.preventDefault();
+
+				openUpdateReviewDateModal(
+					{items: [itemData], selectAll: false},
+					itemData.dateReview
+				);
+			}
+		},
+		onBulkActionItemClick: ({
+			action,
+			selectedData,
+		}: {
+			action: {data?: {id?: string}};
+			selectedData: IBulkActionFDSData;
+		}) => {
+			if (action?.data?.id === 'update-review-date') {
+				openUpdateReviewDateModal(selectedData);
+			}
+		},
 		sorts: [
 			{
 				active: true,
