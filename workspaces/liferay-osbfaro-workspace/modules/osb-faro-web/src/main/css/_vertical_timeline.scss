@@ -71,7 +71,7 @@
 					.description {
 						color: $mainLighten28;
 						font-weight: $fontWeightSemiBold;
-						line-height: 16px;
+						line-height: 18px;
 					}
 
 					.timeline-panel-body-content-details {
@@ -208,10 +208,15 @@
 
 				&:hover {
 					cursor: pointer;
+
+					> .icon-root {
+						visibility: visible;
+					}
 				}
 
 				> .icon-root {
 					fill: $mainLighten28;
+					visibility: hidden;
 				}
 
 				.timeline-panel-body-content-text {
