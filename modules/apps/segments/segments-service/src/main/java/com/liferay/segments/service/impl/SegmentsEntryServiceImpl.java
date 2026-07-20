@@ -192,17 +192,18 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 
 	@Override
 	public SegmentsEntry updateSegmentsEntry(
-			long segmentsEntryId, String segmentsEntryKey,
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, String criteria, ServiceContext serviceContext)
+			String externalReferenceCode, long segmentsEntryId,
+			String segmentsEntryKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String criteria,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.UPDATE);
 
 		return segmentsEntryLocalService.updateSegmentsEntry(
-			segmentsEntryId, segmentsEntryKey, nameMap, descriptionMap, active,
-			criteria, serviceContext);
+			externalReferenceCode, segmentsEntryId, segmentsEntryKey, nameMap,
+			descriptionMap, active, criteria, serviceContext);
 	}
 
 	@Reference

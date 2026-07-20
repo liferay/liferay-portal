@@ -413,9 +413,10 @@ public class SegmentsEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SegmentsEntry updateSegmentsEntry(
-			long segmentsEntryId, String segmentsEntryKey,
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, String criteria, ServiceContext serviceContext)
+			String externalReferenceCode, long segmentsEntryId,
+			String segmentsEntryKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String criteria,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Segments entry
@@ -431,6 +432,7 @@ public class SegmentsEntryLocalServiceImpl
 		_validateName(segmentsEntry.getGroupId(), nameMap);
 		_validateSegmentsExperiment(segmentsEntry);
 
+		segmentsEntry.setExternalReferenceCode(externalReferenceCode);
 		segmentsEntry.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
 		segmentsEntry.setSegmentsEntryKey(segmentsEntryKey);
