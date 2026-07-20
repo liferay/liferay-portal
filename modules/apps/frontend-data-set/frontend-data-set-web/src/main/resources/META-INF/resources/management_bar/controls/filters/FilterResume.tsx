@@ -82,6 +82,7 @@ function FilterResume({
 				'tbar-label',
 				open && 'active'
 			)}
+			role="group"
 		>
 			<ClayLabel.ItemExpand>
 				<ClayDropDown
