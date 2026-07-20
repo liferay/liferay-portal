@@ -5,8 +5,8 @@
 
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {FragmentSetModalContent} from '@liferay/layout-js-components-web';
-import {openModal} from 'frontend-js-components-web';
-import {fetch, navigate} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-components-web';
+import {addParams, fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 import {AddStyleBookModalContent} from 'style-book-web';
 
@@ -117,7 +117,33 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 									fetch(addFragmentEntryURL, {
 										body: formData,
 										method: 'POST',
-									}).then(() => navigate(location.href));
+									})
+										.then((response) => response.json())
+										.then(({redirectURL}) => {
+											if (!redirectURL) {
+												navigate(location.href);
+
+												return;
+											}
+
+											navigate(
+												addParams(
+													{
+														[`${fragmentNamespace}redirect`]:
+															location.href,
+													},
+													redirectURL
+												)
+											);
+										})
+										.catch(() =>
+											openToast({
+												message: Liferay.Language.get(
+													'an-unexpected-error-occurred'
+												),
+												type: 'danger',
+											})
+										);
 								}}
 								portletNamespace={fragmentNamespace}
 							/>
