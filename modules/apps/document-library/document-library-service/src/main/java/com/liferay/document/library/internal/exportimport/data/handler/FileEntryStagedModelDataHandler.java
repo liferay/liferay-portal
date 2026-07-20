@@ -557,7 +557,7 @@ public class FileEntryStagedModelDataHandler
 						if (updateFileEntry) {
 							DLFileVersion alreadyExistingFileVersion =
 								_dlFileVersionLocalService.
-									getFileVersionByUuidAndGroupId(
+									fetchDLFileVersionByUuidAndGroupId(
 										fileVersionUuid,
 										existingFileEntry.getGroupId());
 

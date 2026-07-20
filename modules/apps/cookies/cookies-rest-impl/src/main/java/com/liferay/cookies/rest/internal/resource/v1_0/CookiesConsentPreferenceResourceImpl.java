@@ -49,9 +49,8 @@ public class CookiesConsentPreferenceResourceImpl
 
 		com.liferay.cookies.model.CookiesConsentPreference
 			serviceBuilderCookiesConsentPreference =
-				_cookiesConsentPreferenceLocalService.
-					getCookiesConsentPreference(
-						contextUser.getUserId(), _getDomain(), name);
+				_cookiesConsentPreferencePersistence.fetchByU_D_N(
+					contextUser.getUserId(), _getDomain(), name);
 
 		if (serviceBuilderCookiesConsentPreference == null) {
 			return null;

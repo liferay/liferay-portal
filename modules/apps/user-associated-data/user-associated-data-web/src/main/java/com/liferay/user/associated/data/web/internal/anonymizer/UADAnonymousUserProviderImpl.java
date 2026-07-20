@@ -80,7 +80,7 @@ public class UADAnonymousUserProviderImpl implements UADAnonymousUserProvider {
 			_counterLocalService.increment());
 
 		PasswordPolicy passwordPolicy =
-			_passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
+			_passwordPolicyLocalService.fetchDefaultPasswordPolicy(companyId);
 
 		String randomString = PwdToolkitUtil.generate(passwordPolicy);
 
