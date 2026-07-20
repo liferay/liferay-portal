@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {EventSource} from 'eventsource';
+
 import {
 	AgentContext,
 	createAgentInvocationEventSource,
@@ -44,23 +46,23 @@ export function invokeAgent({
 		}
 
 		if (signal) {
-			signal.addEventListener('abort', () => {
+			const handleAbort = () => {
 				settle(() =>
 					reject(new Error('The agent invocation was cancelled'))
 				);
-			});
+			};
+
+			signal.addEventListener('abort', handleAbort, {once: true});
 
 			if (signal.aborted) {
-				settle(() =>
-					reject(new Error('The agent invocation was cancelled'))
-				);
+				handleAbort();
 
 				return;
 			}
 		}
 
-		createAgentInvocationEventSource().then(
-			(createdEventSource) => {
+		createAgentInvocationEventSource()
+			.then((createdEventSource) => {
 				if (settled) {
 					createdEventSource.close();
 
@@ -69,11 +71,19 @@ export function invokeAgent({
 
 				eventSource = createdEventSource;
 
-				eventSource.addEventListener('error', () => {
-					settle(() =>
-						reject(new Error('Unable to connect to the agent'))
-					);
-				});
+				eventSource.addEventListener(
+					'Subscribe',
+					(event) => {
+						postAgentInvocation({
+							agentExternalReferenceCode,
+							context,
+							sseEventSinkKey: event.data,
+						}).catch((error) => {
+							settle(() => reject(error));
+						});
+					},
+					{once: true}
+				);
 
 				// The SSE event is named after the agent's external reference
 				// code.
@@ -93,23 +103,21 @@ export function invokeAgent({
 					{once: true}
 				);
 
-				eventSource.addEventListener(
-					'Subscribe',
-					(event) => {
-						postAgentInvocation({
-							agentExternalReferenceCode,
-							context,
-							sseEventSinkKey: event.data,
-						}).catch((error) => {
-							settle(() => reject(error));
-						});
-					},
-					{once: true}
-				);
-			},
-			(error) => {
+				// A transient reconnect also fires "error" with readyState
+				// CONNECTING; only a CLOSED connection has actually failed.
+
+				eventSource.addEventListener('error', () => {
+					if (eventSource?.readyState !== EventSource.CLOSED) {
+						return;
+					}
+
+					settle(() =>
+						reject(new Error('Unable to connect to the agent'))
+					);
+				});
+			})
+			.catch((error) => {
 				settle(() => reject(error));
-			}
-		);
+			});
 	});
 }
