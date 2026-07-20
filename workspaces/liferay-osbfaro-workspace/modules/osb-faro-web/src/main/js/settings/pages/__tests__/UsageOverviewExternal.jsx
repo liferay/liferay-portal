@@ -1,7 +1,7 @@
 import * as data from 'test/data';
-import mockStore from 'test/mock-store';
+import mockStore, {mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
-import UsageOverviewSaaS from '../UsageOverviewSaaS';
+import UsageOverviewExternal from '../UsageOverviewExternal';
 import {fromJS} from 'immutable';
 import {Project} from 'shared/util/records';
 import {Provider} from 'react-redux';
@@ -40,15 +40,15 @@ const defaultProps = {
 	)
 };
 
-const WrappedComponent = props => (
-	<Provider store={mockStore()}>
+const WrappedComponent = ({store = mockStore(), ...props}) => (
+	<Provider store={store}>
 		<StaticRouter>
-			<UsageOverviewSaaS {...props} />
+			<UsageOverviewExternal {...props} />
 		</StaticRouter>
 	</Provider>
 );
 
-describe('UsageOverviewSaaS', () => {
+describe('UsageOverviewExternal', () => {
 	it('should render', () => {
 		useCurrentUser.mockImplementation(() => ({isAdmin: () => true}));
 
@@ -90,5 +90,48 @@ describe('UsageOverviewSaaS', () => {
 
 		expect(getByText('Sites and Users')).toBeInTheDocument();
 		expect(getByText('Resource Usage')).toBeInTheDocument();
+	});
+});
+
+describe('UsageOverviewExternal when the subscription is LDP', () => {
+	it('should render the "View Your Workspace Metrics" title', () => {
+		const {getByText} = render(
+			<WrappedComponent {...defaultProps} store={mockStore(mockStoreDataLDP)} />
+		);
+
+		expect(getByText('View Your Workspace Metrics')).toBeInTheDocument();
+	});
+
+	it('should render the "Go to Liferay One" button for admin user', () => {
+		useCurrentUser.mockImplementation(() => ({isAdmin: () => true}));
+
+		const {getByText} = render(
+			<WrappedComponent {...defaultProps} store={mockStore(mockStoreDataLDP)} />
+		);
+
+		expect(getByText('Go to Liferay One')).toBeInTheDocument();
+	});
+
+	it('should not render the "SaaS plan usage" description', () => {
+		const {queryByText} = render(
+			<WrappedComponent {...defaultProps} store={mockStore(mockStoreDataLDP)} />
+		);
+
+		expect(
+			queryByText('SaaS plan usage is determined by MALUs and APVs.')
+		).toBeNull();
+	});
+
+	it('should redact the metric titles in the "Sites and Users" section', () => {
+		const {container, queryByRole} = render(
+			<WrappedComponent {...defaultProps} store={mockStore(mockStoreDataLDP)} />
+		);
+
+		expect(
+			queryByRole('heading', {level: 3, name: 'Number of Sites'})
+		).toBeNull();
+		expect(
+			container.querySelectorAll('.card-title-rectangle')
+		).toHaveLength(3);
 	});
 });
