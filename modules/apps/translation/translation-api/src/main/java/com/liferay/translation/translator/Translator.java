@@ -16,6 +16,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface Translator {
 
+	public boolean isAIAssisted();
+
 	public boolean isEnabled(long companyId) throws ConfigurationException;
 
 	public TranslatorPacket translate(TranslatorPacket translatorPacket)

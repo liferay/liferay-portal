@@ -18,6 +18,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public abstract class BaseTranslator implements Translator {
 
+	@Override
+	public boolean isAIAssisted() {
+		return false;
+	}
+
 	protected String getLanguageCode(String languageId) {
 		List<String> parts = StringUtil.split(languageId, CharPool.UNDERLINE);
 
