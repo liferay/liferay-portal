@@ -6,25 +6,18 @@
 package com.liferay.seo.studio.web.internal.scheduler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.UnsafeRunnable;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.seo.studio.web.internal.object.action.executor.test.BaseObjectActionExecutorTestCase;
+import com.liferay.seo.studio.web.internal.test.BaseTestCase;
 
 import java.io.Serializable;
 
@@ -42,7 +35,7 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-44511")
 @RunWith(Arquillian.class)
 public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
-	extends BaseObjectActionExecutorTestCase {
+	extends BaseTestCase {
 
 	@Test
 	public void testCheckSEOStudioDomains() throws Exception {
@@ -78,7 +71,7 @@ public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
 			"scheduled", MapUtil.getString(scanRunValues, "triggeredBy"));
 
 		List<ObjectEntry> seoStudioScanObjectEntries =
-			_getSEOStudioScanObjectEntries(seoStudioScanRunObjectEntry);
+			getSEOStudioScanObjectEntries(seoStudioScanRunObjectEntry);
 
 		Assert.assertEquals(
 			seoStudioScanObjectEntries.toString(), 2,
@@ -115,7 +108,7 @@ public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
 			seoStudioScanRunObjectEntries.toString(), 1,
 			seoStudioScanRunObjectEntries.size());
 
-		seoStudioScanObjectEntries = _getSEOStudioScanObjectEntries(
+		seoStudioScanObjectEntries = getSEOStudioScanObjectEntries(
 			seoStudioScanRunObjectEntry);
 
 		Assert.assertEquals(
@@ -157,65 +150,16 @@ public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
 	private ObjectEntry _addSEOStudioDomainObjectEntry(boolean autoScanEnabled)
 		throws Exception {
 
-		return addObjectEntry(
-			seoStudioDomainObjectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				"autoScanEnabled", autoScanEnabled
-			).put(
-				"hostname", RandomTestUtil.randomString()
-			).put(
-				"name", RandomTestUtil.randomString()
-			).put(
-				"r_accountToSEOStudioDomains_accountEntryId",
-				accountEntry.getAccountEntryId()
-			).put(
-				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
-				seoStudioInstanceObjectEntry.getObjectEntryId()
-			).put(
-				"scanConfig",
+		return addSEOStudioDomainObjectEntry(
+			autoScanEnabled, RandomTestUtil.randomString(),
+			JSONUtil.put(
+				"engines",
 				JSONUtil.put(
-					"engines",
-					JSONUtil.put(
-						"crawler", JSONUtil.put("enabled", true)
-					).put(
-						"pageSpeed", JSONUtil.put("enabled", true)
-					)
-				).toString()
-			).put(
-				"scanFrequency", "daily"
-			).put(
-				"scanTime", "09:00"
-			).build());
-	}
-
-	private ObjectEntry _fetchSEOStudioScanRunObjectEntry(
-			ObjectEntry seoStudioDomainObjectEntry)
-		throws Exception {
-
-		List<ObjectEntry> seoStudioScanRunObjectEntries =
-			_getSEOStudioScanRunObjectEntries(seoStudioDomainObjectEntry);
-
-		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
-			return null;
-		}
-
-		return seoStudioScanRunObjectEntries.get(0);
-	}
-
-	private List<ObjectEntry> _getSEOStudioScanObjectEntries(
-			ObjectEntry seoStudioScanRunObjectEntry)
-		throws Exception {
-
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				seoStudioScanRunObjectEntry.getObjectDefinitionId(),
-				"seoStudioScanRunToSEOStudioScans");
-
-		return objectEntryLocalService.getOneToManyObjectEntries(
-			seoStudioScanRunObjectEntry.getGroupId(),
-			objectRelationship.getObjectRelationshipId(), null, true,
-			seoStudioScanRunObjectEntry.getObjectEntryId(), true, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+					"crawler", JSONUtil.put("enabled", true)
+				).put(
+					"pageSpeed", JSONUtil.put("enabled", true)
+				)
+			).toString());
 	}
 
 	private void _checkSEOStudioDomains() throws Exception {
@@ -229,16 +173,8 @@ public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
 			ObjectEntry seoStudioDomainObjectEntry)
 		throws Exception {
 
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				seoStudioDomainObjectDefinition.getObjectDefinitionId(),
-				"seoStudioDomainToSEOStudioScanRuns");
-
-		return objectEntryLocalService.getOneToManyObjectEntries(
-			seoStudioDomainObjectEntry.getGroupId(),
-			objectRelationship.getObjectRelationshipId(), null, true,
-			seoStudioDomainObjectEntry.getObjectEntryId(), true, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return getRelatedObjectEntries(
+			seoStudioDomainObjectEntry, "seoStudioDomainToSEOStudioScanRuns");
 	}
 
 	private void _testCheckSEOStudioDomainsDoesNotCreateScanRun(
@@ -254,41 +190,30 @@ public class CheckSEOStudioDomainsSchedulerJobConfigurationTest
 		_checkSEOStudioDomains();
 
 		Assert.assertNull(
-			_fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry));
+			fetchSEOStudioScanRunObjectEntry(seoStudioDomainObjectEntry));
 	}
 
 	private void _updateSEOStudioDomainNextScanDate(
 			Date nextScanDate, ObjectEntry seoStudioDomainObjectEntry)
 		throws Exception {
 
-		objectEntryLocalService.partialUpdateObjectEntry(
-			TestPropsValues.getUserId(),
-			seoStudioDomainObjectEntry.getObjectEntryId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+		partialUpdateObjectEntry(
+			seoStudioDomainObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"nextScanDate", nextScanDate
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+			).build());
 	}
 
 	private void _updateSEOStudioScanState(
 			ObjectEntry seoStudioScanObjectEntry, String state)
 		throws Exception {
 
-		objectEntryLocalService.partialUpdateObjectEntry(
-			TestPropsValues.getUserId(),
-			seoStudioScanObjectEntry.getObjectEntryId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+		partialUpdateObjectEntry(
+			seoStudioScanObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"state", state
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+			).build());
 	}
-
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.seo.studio.web.internal.scheduler.CheckSEOStudioDomainsSchedulerJobConfiguration"

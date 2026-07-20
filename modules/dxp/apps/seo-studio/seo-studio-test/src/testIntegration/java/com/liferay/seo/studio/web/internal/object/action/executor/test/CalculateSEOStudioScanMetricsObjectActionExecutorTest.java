@@ -11,11 +11,8 @@ import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -26,6 +23,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.seo.studio.web.internal.test.BaseTestCase;
 
 import java.io.Serializable;
 
@@ -44,7 +42,7 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-44511")
 @RunWith(Arquillian.class)
 public class CalculateSEOStudioScanMetricsObjectActionExecutorTest
-	extends BaseObjectActionExecutorTestCase {
+	extends BaseTestCase {
 
 	@Before
 	@Override
@@ -336,7 +334,7 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorTest
 
 	private void _addSEOStudioScanRunObjectEntry() throws Exception {
 		seoStudioDomainObjectEntry = addSEOStudioDomainObjectEntry(
-			RandomTestUtil.randomString(), null);
+			false, RandomTestUtil.randomString(), null);
 
 		_seoStudioScanRunObjectEntry = addObjectEntry(
 			_seoStudioScanRunObjectDefinition,
@@ -382,16 +380,9 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorTest
 			ObjectEntry seoStudioScanRunObjectEntry)
 		throws Exception {
 
-		ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				_seoStudioScanRunObjectDefinition.getObjectDefinitionId(),
-				"seoStudioScanRunToSEOStudioScanMetrics");
-
-		return objectEntryLocalService.getOneToManyObjectEntries(
-			seoStudioScanRunObjectEntry.getGroupId(),
-			objectRelationship.getObjectRelationshipId(), null, true,
-			seoStudioScanRunObjectEntry.getObjectEntryId(), true, null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return getRelatedObjectEntries(
+			seoStudioScanRunObjectEntry,
+			"seoStudioScanRunToSEOStudioScanMetrics");
 	}
 
 	private String _getState(ObjectEntry objectEntry) throws Exception {
@@ -429,9 +420,6 @@ public class CalculateSEOStudioScanMetricsObjectActionExecutorTest
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	private ObjectDefinition _seoStudioScanObjectDefinition;
 	private ObjectDefinition _seoStudioScanRunObjectDefinition;

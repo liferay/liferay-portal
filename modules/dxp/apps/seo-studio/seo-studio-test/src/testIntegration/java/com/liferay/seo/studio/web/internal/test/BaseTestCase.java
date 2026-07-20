@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.seo.studio.web.internal.object.action.executor.test;
+package com.liferay.seo.studio.web.internal.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
@@ -12,9 +12,12 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -48,7 +52,7 @@ import org.junit.Rule;
 /**
  * @author Jonathan McCann
  */
-public abstract class BaseObjectActionExecutorTestCase {
+public abstract class BaseTestCase {
 
 	@ClassRule
 	@Rule
@@ -67,17 +71,17 @@ public abstract class BaseObjectActionExecutorTestCase {
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 
-		group = GroupTestUtil.addGroup();
+		_group = GroupTestUtil.addGroup();
 
 		ServiceContextThreadLocal.pushServiceContext(
 			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+				_group.getGroupId(), TestPropsValues.getUserId()));
 
 		SiteInitializer siteInitializer =
 			_siteInitializerRegistry.getSiteInitializer(
 				"com.liferay.seo.studio.site.initializer");
 
-		siteInitializer.initialize(group.getGroupId());
+		siteInitializer.initialize(_group.getGroupId());
 
 		seoStudioDomainObjectDefinition =
 			_objectDefinitionLocalService.
@@ -106,7 +110,7 @@ public abstract class BaseObjectActionExecutorTestCase {
 	public void setUp() throws Exception {
 		accountEntry = _addAccountEntry();
 
-		seoStudioInstanceObjectEntry = _addSEOStudioInstanceObjectEntry();
+		_seoStudioInstanceObjectEntry = _addSEOStudioInstanceObjectEntry();
 	}
 
 	protected ObjectEntry addObjectEntry(
@@ -119,7 +123,7 @@ public abstract class BaseObjectActionExecutorTestCase {
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values,
 			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+				_group.getGroupId(), TestPropsValues.getUserId()));
 
 		_objectEntries.add(objectEntry);
 
@@ -127,12 +131,14 @@ public abstract class BaseObjectActionExecutorTestCase {
 	}
 
 	protected ObjectEntry addSEOStudioDomainObjectEntry(
-			String hostname, String scanConfigJSON)
+			boolean autoScanEnabled, String hostname, String scanConfigJSON)
 		throws Exception {
 
 		return addObjectEntry(
 			seoStudioDomainObjectDefinition,
 			HashMapBuilder.<String, Serializable>put(
+				"autoScanEnabled", autoScanEnabled
+			).put(
 				"hostname", hostname
 			).put(
 				"name", RandomTestUtil.randomString()
@@ -141,13 +147,67 @@ public abstract class BaseObjectActionExecutorTestCase {
 				accountEntry.getAccountEntryId()
 			).put(
 				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
-				seoStudioInstanceObjectEntry.getObjectEntryId()
+				_seoStudioInstanceObjectEntry.getObjectEntryId()
 			).put(
 				"scanConfig", scanConfigJSON
+			).put(
+				"scanFrequency", "daily"
+			).put(
+				"scanTime", "09:00"
 			).build());
 	}
 
-	protected static Group group;
+	protected ObjectEntry fetchSEOStudioScanRunObjectEntry(
+			ObjectEntry seoStudioDomainObjectEntry)
+		throws Exception {
+
+		List<ObjectEntry> seoStudioScanRunObjectEntries =
+			getRelatedObjectEntries(
+				seoStudioDomainObjectEntry,
+				"seoStudioDomainToSEOStudioScanRuns");
+
+		if (ListUtil.isEmpty(seoStudioScanRunObjectEntries)) {
+			return null;
+		}
+
+		return seoStudioScanRunObjectEntries.get(0);
+	}
+
+	protected List<ObjectEntry> getRelatedObjectEntries(
+			ObjectEntry objectEntry, String objectRelationshipName)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectEntry.getObjectDefinitionId(), objectRelationshipName);
+
+		return objectEntryLocalService.getOneToManyObjectEntries(
+			objectEntry.getGroupId(),
+			objectRelationship.getObjectRelationshipId(), null, true,
+			objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	protected List<ObjectEntry> getSEOStudioScanObjectEntries(
+			ObjectEntry seoStudioScanRunObjectEntry)
+		throws Exception {
+
+		return getRelatedObjectEntries(
+			seoStudioScanRunObjectEntry, "seoStudioScanRunToSEOStudioScans");
+	}
+
+	protected void partialUpdateObjectEntry(
+			ObjectEntry objectEntry, Map<String, Serializable> values)
+		throws Exception {
+
+		objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			values,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+	}
+
 	protected static ObjectDefinition seoStudioDomainObjectDefinition;
 
 	protected AccountEntry accountEntry;
@@ -156,7 +216,6 @@ public abstract class BaseObjectActionExecutorTestCase {
 	protected ObjectEntryLocalService objectEntryLocalService;
 
 	protected ObjectEntry seoStudioDomainObjectEntry;
-	protected ObjectEntry seoStudioInstanceObjectEntry;
 
 	private static void _updateSEOStudioScanObjectActions(boolean active)
 		throws Exception {
@@ -200,6 +259,8 @@ public abstract class BaseObjectActionExecutorTestCase {
 			).build());
 	}
 
+	private static Group _group;
+
 	@Inject
 	private static ObjectActionLocalService _objectActionLocalService;
 
@@ -218,5 +279,10 @@ public abstract class BaseObjectActionExecutorTestCase {
 
 	@DeleteAfterTestRun
 	private List<ObjectEntry> _objectEntries = new ArrayList<>();
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
+	private ObjectEntry _seoStudioInstanceObjectEntry;
 
 }

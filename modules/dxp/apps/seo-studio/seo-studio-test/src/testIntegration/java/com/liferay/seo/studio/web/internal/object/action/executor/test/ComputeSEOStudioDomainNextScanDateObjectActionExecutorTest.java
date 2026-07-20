@@ -6,13 +6,11 @@
 package com.liferay.seo.studio.web.internal.object.action.executor.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
-import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.seo.studio.web.internal.test.BaseTestCase;
 
 import java.io.Serializable;
 
@@ -29,11 +27,12 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-44511")
 @RunWith(Arquillian.class)
 public class ComputeSEOStudioDomainNextScanDateObjectActionExecutorTest
-	extends BaseObjectActionExecutorTestCase {
+	extends BaseTestCase {
 
 	@Test
 	public void testExecute() throws Exception {
-		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry();
+		seoStudioDomainObjectEntry = addSEOStudioDomainObjectEntry(
+			false, RandomTestUtil.randomString(), null);
 
 		_updateSEOStudioDomainObjectEntry(true);
 
@@ -43,52 +42,25 @@ public class ComputeSEOStudioDomainNextScanDateObjectActionExecutorTest
 		Date nextScanDate = (Date)values.get("nextScanDate");
 
 		Assert.assertTrue(nextScanDate.after(new Date()));
-	}
 
-	@Test
-	public void testExecuteWithAutoScanDisabled() throws Exception {
-		seoStudioDomainObjectEntry = _addSEOStudioDomainObjectEntry();
+		ObjectActionThreadLocal.clearObjectEntryIdsMap();
 
 		_updateSEOStudioDomainObjectEntry(false);
 
-		Map<String, Serializable> values = objectEntryLocalService.getValues(
+		values = objectEntryLocalService.getValues(
 			seoStudioDomainObjectEntry.getObjectEntryId());
 
 		Assert.assertNull(values.get("nextScanDate"));
 	}
 
-	private ObjectEntry _addSEOStudioDomainObjectEntry() throws Exception {
-		return addObjectEntry(
-			seoStudioDomainObjectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				"hostname", RandomTestUtil.randomString()
-			).put(
-				"name", RandomTestUtil.randomString()
-			).put(
-				"r_accountToSEOStudioDomains_accountEntryId",
-				accountEntry.getAccountEntryId()
-			).put(
-				"r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId",
-				seoStudioInstanceObjectEntry.getObjectEntryId()
-			).build());
-	}
-
 	private void _updateSEOStudioDomainObjectEntry(boolean autoScanEnabled)
 		throws Exception {
 
-		objectEntryLocalService.partialUpdateObjectEntry(
-			TestPropsValues.getUserId(),
-			seoStudioDomainObjectEntry.getObjectEntryId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+		partialUpdateObjectEntry(
+			seoStudioDomainObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"autoScanEnabled", autoScanEnabled
-			).put(
-				"scanFrequency", "daily"
-			).put(
-				"scanTime", "09:00"
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
+			).build());
 	}
 
 }
