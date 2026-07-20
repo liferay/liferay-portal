@@ -53,18 +53,20 @@ public class SecurityConfigurationBootstrapTest {
 			SignatureSigningConfiguration signatureSigningConfiguration =
 				ConfigurationServiceBootstrapUtil.get(
 					SignatureSigningConfiguration.class);
+
+			_testActivate(
+				signatureSigningConfiguration.getBlacklistedAlgorithms());
+
 			SignatureValidationConfiguration signatureValidationConfiguration =
 				ConfigurationServiceBootstrapUtil.get(
 					SignatureValidationConfiguration.class);
 
-			_assertBlacklisted(
-				signatureSigningConfiguration.getBlacklistedAlgorithms());
-			_assertBlacklisted(
+			_testActivate(
 				signatureValidationConfiguration.getBlacklistedAlgorithms());
 		}
 	}
 
-	private void _assertBlacklisted(Collection<String> blacklistedAlgorithms) {
+	private void _testActivate(Collection<String> blacklistedAlgorithms) {
 		Assert.assertTrue(
 			blacklistedAlgorithms.contains(
 				SignatureConstants.ALGO_ID_DIGEST_SHA1));
