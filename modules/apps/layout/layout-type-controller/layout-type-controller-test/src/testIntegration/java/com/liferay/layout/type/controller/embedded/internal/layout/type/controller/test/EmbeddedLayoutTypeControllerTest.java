@@ -76,7 +76,8 @@ public class EmbeddedLayoutTypeControllerTest {
 			RandomTestUtil.randomString(), ")</script>");
 
 		String content = _includeLayoutContent(
-			"http://example.com?" + queryString);
+			StringBundler.concat(
+				"http://", RandomTestUtil.randomString(), "?", queryString));
 
 		Assert.assertTrue(
 			content,
