@@ -79,6 +79,25 @@ public class CombinedLicenseTest extends BaseLicenseTestCase {
 	}
 
 	@Test
+	public void testPortalLicensesEnterpriseAndFreeTier() throws Exception {
+		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
+			assertPortalLicenseNotRegistered();
+
+			deployLicenses(
+				new String[][] {
+					{ENTERPRISE_LICENSE_TYPE, String.valueOf(Time.HOUR)},
+					{FREE_TIER_LICENSE_TYPE, String.valueOf(Time.HOUR)}
+				});
+
+			assertLicensePropertiesExisted(getPortalProductId());
+
+			assertPortalLicenseRegistered();
+
+			Assert.assertFalse(LicenseManagerUtil.isFreeTier());
+		}
+	}
+
+	@Test
 	public void testSingleLicense() throws Exception {
 		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
 			assertLicensePropertiesNotExisted(getPortalProductId());
