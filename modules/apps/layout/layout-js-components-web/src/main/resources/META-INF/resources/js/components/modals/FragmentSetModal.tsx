@@ -247,7 +247,7 @@ function FragmentNameField({
 		<FormField
 			error={errors.fragmentName}
 			id={`${portletNamespace}fragmentName`}
-			name={Liferay.Language.get('name')}
+			name={Liferay.Language.get('fragment-name')}
 			required
 		>
 			<ClayInput
@@ -310,7 +310,7 @@ function FragmentSetSelector({
 		if (allowCustomName && !fragmentName) {
 			nextErrors.fragmentName = sub(
 				Liferay.Language.get('x-field-is-required'),
-				Liferay.Language.get('name')
+				Liferay.Language.get('fragment-name')
 			);
 		}
 
@@ -357,12 +357,12 @@ function FragmentSetSelector({
 
 			<FormField
 				error={errors.fragmentSets}
-				id={`${portletNamespace}fragment-sets`}
-				name={Liferay.Language.get('fragment-sets')}
+				id={`${portletNamespace}fragment-set`}
+				name={Liferay.Language.get('fragment-set')}
 				required
 			>
 				<ClaySelectWithOption
-					id={`${portletNamespace}fragment-sets`}
+					id={`${portletNamespace}fragment-set`}
 					onChange={(event) => {
 						setErrors({...errors, fragmentSets: null});
 						setSelectedFragmentCollection(event.target.value);
@@ -403,6 +403,10 @@ function FragmentSetForm({
 	);
 	const [description, setDescription] = useState('');
 
+	const nameLabel = allowCustomName
+		? Liferay.Language.get('fragment-set-name')
+		: Liferay.Language.get('name');
+
 	const handleSubmit = (event: FormEvent) => {
 		event.preventDefault();
 
@@ -411,14 +415,14 @@ function FragmentSetForm({
 		if (allowCustomName && !fragmentName) {
 			nextErrors.fragmentName = sub(
 				Liferay.Language.get('x-field-is-required'),
-				Liferay.Language.get('name')
+				Liferay.Language.get('fragment-name')
 			);
 		}
 
 		if (!name) {
 			nextErrors.name = sub(
 				Liferay.Language.get('x-field-is-required'),
-				Liferay.Language.get('name')
+				nameLabel
 			);
 		}
 
@@ -484,7 +488,7 @@ function FragmentSetForm({
 			<FormField
 				error={errors.name}
 				id={`${portletNamespace}name`}
-				name={Liferay.Language.get('name')}
+				name={nameLabel}
 				required
 			>
 				<ClayInput
