@@ -25,7 +25,6 @@ const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-58677': {enabled: true},
-		'LPD-69885': {enabled: true},
 	}),
 	globalMenuPagesTest,
 	loginTest(),
@@ -280,7 +279,7 @@ test(
 
 test(
 	'Calendar view can drag tasks to update their due dates',
-	{tag: ['@LPD-69885', '@LPD-93269']},
+	{tag: ['@LPD-93269']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const taskTitle = getRandomString();
 
@@ -408,7 +407,7 @@ test(
 
 test(
 	'Calendar view properly displays tasks',
-	{tag: ['@LPD-69885', '@LPD-96021']},
+	{tag: ['@LPD-96021']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const now = new Date();
 
@@ -636,7 +635,7 @@ test(
 
 test(
 	'Calendar view switches between day, week, and month views',
-	{tag: ['@LPD-69885', '@LPD-94174']},
+	{tag: ['@LPD-94174']},
 	async ({page, projectPage, projectsPage, tasksPage}) => {
 		const {calendarView} = tasksPage;
 
@@ -698,7 +697,7 @@ test(
 
 test(
 	"Calendar's task actions are displayed",
-	{tag: ['@LPD-69885', '@LPD-96185']},
+	{tag: ['@LPD-96185']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const scheduledTaskTitle = getRandomString();
 
@@ -893,7 +892,7 @@ test(
 
 test(
 	'Day view disables task dragging but still accepts drops',
-	{tag: ['@LPD-69885', '@LPD-94176']},
+	{tag: ['@LPD-94176']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const {calendarView} = tasksPage;
 
@@ -956,7 +955,7 @@ test(
 
 test(
 	'Day view navigates to the previous day, next day, and today',
-	{tag: ['@LPD-69885', '@LPD-94175']},
+	{tag: ['@LPD-94175']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const {calendarView} = tasksPage;
 
@@ -1006,7 +1005,7 @@ test(
 
 test(
 	'Day view shows a task on its due date with the expanded card',
-	{tag: ['@LPD-69885', '@LPD-94175']},
+	{tag: ['@LPD-94175']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const todayDate = toDateString(new Date());
 
@@ -1296,7 +1295,7 @@ test(
 
 test(
 	'Week view can drag tasks to update their due dates',
-	{tag: ['@LPD-69885', '@LPD-94176']},
+	{tag: ['@LPD-94176']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const todayDate = toDateString(new Date());
 
@@ -1361,7 +1360,7 @@ test(
 
 test(
 	'Week view navigates to the previous week, next week, and today',
-	{tag: ['@LPD-69885', '@LPD-94174']},
+	{tag: ['@LPD-94174']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const {calendarView} = tasksPage;
 
@@ -1411,7 +1410,7 @@ test(
 
 test(
 	'Week view schedules and unschedules a task',
-	{tag: ['@LPD-69885', '@LPD-94174']},
+	{tag: ['@LPD-94174']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const {calendarView} = tasksPage;
 
@@ -1525,7 +1524,7 @@ test(
 
 test(
 	'Week view shows a task on its due date with the expanded card',
-	{tag: ['@LPD-69885', '@LPD-94174']},
+	{tag: ['@LPD-94174']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
 		const todayDate = toDateString(new Date());
 
@@ -1561,7 +1560,7 @@ test(
 
 test(
 	'Week view shows seven day columns',
-	{tag: ['@LPD-69885', '@LPD-94174']},
+	{tag: ['@LPD-94174']},
 	async ({page, projectPage, projectsPage, tasksPage}) => {
 		await tasksPage.openProjectWeekView(
 			projectsPage,

@@ -319,10 +319,6 @@ export default function ProjectTasksFDSPropsTransformer({
 				});
 			}
 		},
-		views: [
-			...nonDefaultViews,
-			kanbanView,
-			...(Liferay.FeatureFlags['LPD-69885'] ? [calendarView] : []),
-		],
+		views: [...nonDefaultViews, kanbanView, calendarView],
 	};
 }
