@@ -27,8 +27,8 @@ const selectButton = document.getElementById(
 const aiAssistantContainer = wrapper.querySelector('.file-upload-ai-assistant');
 
 if (aiAssistantContainer && Liferay.FeatureFlags['LPD-62272']) {
-	import('@liferay/ai-hub-cell-js-components-web').then(
-		({renderAIAssistantChat}) => {
+	import('@liferay/ai-hub-cell-js-components-web/renderAIAssistantChat').then(
+		({default: renderAIAssistantChat}) => {
 			renderAIAssistantChat(aiAssistantContainer, {
 				hideTriggerLabel: true,
 				instructionDefinitionScope: 'cms',

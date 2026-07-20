@@ -31,15 +31,26 @@ public class AIHubCellJSComponentsWebDynamicJSImportMapsContributor
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 
-		writer.write("\"@liferay/ai-hub-cell-js-components-web\": \"");
-
 		AbsolutePortalURLBuilder absolutePortalURLBuilder =
 			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
 				httpServletRequest);
 
+		writer.write("\"@liferay/ai-hub-cell-js-components-web\": \"");
+
 		ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
 			absolutePortalURLBuilder.forESModule(
 				"ai-hub-cell-js-components-web", "index.js");
+
+		writer.write(esModuleAbsolutePortalURLBuilder.build());
+
+		writer.write("\", ");
+
+		writer.write(
+			"\"@liferay/ai-hub-cell-js-components-web" +
+				"/renderAIAssistantChat\": \"");
+
+		esModuleAbsolutePortalURLBuilder = absolutePortalURLBuilder.forESModule(
+			"ai-hub-cell-js-components-web", "renderAIAssistantChat.js");
 
 		writer.write(esModuleAbsolutePortalURLBuilder.build());
 
