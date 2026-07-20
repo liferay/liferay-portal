@@ -2,7 +2,9 @@ import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import Form from 'shared/components/form';
+import getCN from 'classnames';
 import Label from 'shared/components/Label';
+import Loading, {Align} from 'shared/components/Loading';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect, ConnectedProps} from 'react-redux';
@@ -11,10 +13,7 @@ import {
 	activityAssetsListColumns,
 	detailsListColumns,
 } from 'shared/util/table-columns';
-import {
-	getEventId,
-	getSupportedApplicationIds,
-} from '../../utils/activity-keys';
+import {getEventId} from '../../utils/activity-keys';
 import {Option, Picker} from '@clayui/core';
 import {OrderedMap} from 'immutable';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -117,29 +116,18 @@ export const getAssetTypeLabel = (
 	fallbackName: string = typeId
 ): string => PREDEFINED_ASSET_TYPE_LABELS[typeId] ?? fallbackName;
 
-// The asset types an action can target: the fixed DXP types for every DXP
-// applicationId it supports (Click -> blogs + webContent), plus — only when the
-// event supports ObjectEntry — the object-definition names, which are dynamic
-// and come from the asset-summary-types request. Exported to unit-test the
-// per-event picker contents.
+// Every asset type the picker offers, independent of the behavior: the fixed DXP
+// types plus the object-definition names (dynamic, from the asset-summary-types
+// request, fetched only on LDP plans). Exported to unit-test the picker contents.
 
 export const getCompatibleAssetTypes = (
-	assetSummaryTypes: AssetSummaryType[],
-	action: string | undefined
+	assetSummaryTypes: AssetSummaryType[]
 ): AssetSummaryType[] => {
-	const supportedApplicationIds = getSupportedApplicationIds(action);
+	const dxpTypes = Object.values(DXP_ASSET_TYPES);
 
-	const dxpTypes = supportedApplicationIds
-		.map((applicationId) => DXP_ASSET_TYPES[applicationId])
-		.filter(Boolean);
-
-	const objectDefinitionTypes = supportedApplicationIds.includes(
-		'ObjectEntry'
-	)
-		? assetSummaryTypes.filter(
-				(type) => resolveApplicationId(type.id) === 'ObjectEntry'
-			)
-		: [];
+	const objectDefinitionTypes = assetSummaryTypes.filter(
+		(type) => resolveApplicationId(type.id) === 'ObjectEntry'
+	);
 
 	return [...dxpTypes, ...objectDefinitionTypes];
 };
@@ -190,6 +178,36 @@ const PAGE_OR_ASSET_TYPE_OPTIONS = [
 	{label: Liferay.Language.get('asset-type'), value: 'assetType'},
 ];
 
+// A Picker trigger that mirrors the default Clay select trigger, but swaps the
+// caret (the form-control-select background) for a loading spinner while the
+// asset types load and disables itself, keeping the placeholder value visible.
+
+interface IAssetTypeTriggerProps
+	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	label?: string;
+	loading?: boolean;
+}
+
+const AssetTypeTrigger = React.forwardRef<
+	HTMLButtonElement,
+	IAssetTypeTriggerProps
+>(({label, loading, ...rest}, ref) => (
+	<button
+		{...rest}
+		className={getCN(
+			'form-control form-control-select-secondary operator-input',
+			{'form-control-select': !loading}
+		)}
+		disabled={loading}
+		ref={ref}
+		type="button"
+	>
+		{label}
+
+		{loading && <Loading align={Align.Right} />}
+	</button>
+));
+
 const connector = connect(null, {close, open});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -228,17 +246,15 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	);
 
 	// The type the picker starts on: the DXP slug for the applicationId hint (on
-	// drop/reload) or, failing that, the first type the event supports.
-	// ObjectEntry has no synchronous slug, so it falls back and the reload effect
-	// refines it once the object-definition types load.
+	// drop/reload). A new criterion starts with no type, showing the "Select a
+	// type" placeholder; the reload effect refines an ObjectEntry hint once the
+	// object-definition types load.
 
 	const [assetType, setAssetType] = useState<string>(
 		() =>
 			(applicationId && applicationId !== 'Page'
 				? DXP_ASSET_TYPES[applicationId]?.id
-				: undefined) ??
-			DXP_ASSET_TYPES[getSupportedApplicationIds(action)[0]]?.id ??
-			''
+				: undefined) ?? ''
 	);
 
 	// Preselect the reloaded type only once, so it never fights a later user
@@ -246,21 +262,14 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 	const didPreselectRef = useRef(false);
 
-	// Only ObjectEntry-supporting actions need the (dynamic) object-definition
-	// types from asset-summary-types; the rest offer just the fixed DXP types.
-
-	const objectEntrySupported =
-		getSupportedApplicationIds(action).includes('ObjectEntry');
-
 	// Object definitions only exist on LDP plans, so a non-LDP plan has no
-	// object-definition types to fetch. Skip asset-summary-types unless the
-	// action supports ObjectEntry AND the plan is LDP.
+	// object-definition types to fetch — it offers just the fixed DXP types.
 
 	const ldpEnabled = useLDPEnabled({groupId});
 
-	const shouldRequestAssetTypes = objectEntrySupported && ldpEnabled;
+	const shouldRequestAssetTypes = ldpEnabled;
 
-	const {data: assetTypesData} = useRequest<
+	const {data: assetTypesData, loading} = useRequest<
 		{
 			channelId: string;
 			groupId: string;
@@ -281,9 +290,16 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		},
 	});
 
+	// All-or-nothing loading: while the (LDP-only) asset-summary-types request is
+	// in flight, the type picker shows a loading indicator instead of a partial
+	// list. Guarded by shouldRequestAssetTypes because useRequest leaves `loading`
+	// true when the request is skipped (non-LDP), which must not block the picker.
+
+	const isLoadingAssetTypes = shouldRequestAssetTypes && loading;
+
 	const compatibleAssetTypes = useMemo(
-		() => getCompatibleAssetTypes(assetTypesData?.items ?? [], action),
-		[action, assetTypesData]
+		() => getCompatibleAssetTypes(assetTypesData?.items ?? []),
+		[assetTypesData]
 	);
 
 	// The type dropdown offers the types compatible with the event; a type is
@@ -296,6 +312,21 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 				value: id,
 			})),
 		[compatibleAssetTypes]
+	);
+
+	// The label shown on the collapsed picker: the selected type's label, or the
+	// "Select a type" placeholder when nothing is chosen yet.
+
+	const assetTypeLabel = useMemo(
+		() =>
+			assetType
+				? getAssetTypeLabel(
+						assetType,
+						compatibleAssetTypes.find(({id}) => id === assetType)
+							?.name
+					)
+				: Liferay.Language.get('select-a-type'),
+		[assetType, compatibleAssetTypes]
 	);
 
 	// On reload, preselect the type matching the saved applicationId. DXP types
@@ -347,6 +378,20 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		typeValue: string = assetType,
 		isPageValue: boolean = isPage
 	) => {
+
+		// No asset type selected yet (and not Page): report an empty applicationId
+		// so the behavior criterion stays invalid until the user picks a type.
+
+		if (!isPageValue && !typeValue) {
+			onSelectionsChange?.({
+				applicationId: '',
+				eventId: '',
+				selections: [],
+			});
+
+			return;
+		}
+
 		const applicationId = isPageValue
 			? 'Page'
 			: resolveApplicationId(typeValue);
@@ -454,12 +499,11 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	const handleSelectorTypeChange = (value: SelectorType) => {
 		const nextIsPage = value === 'page';
 
-		// Switching to Asset Type starts on the first compatible type (a type is
-		// required); switching to Page keeps the current type value (unused).
+		// Switching to Asset Type clears the selection so the user must pick a
+		// type (the criterion is invalid until then); switching to Page keeps the
+		// current type value (unused).
 
-		const nextAssetType = nextIsPage
-			? assetType
-			: compatibleAssetTypes[0]?.id ?? '';
+		const nextAssetType = nextIsPage ? assetType : '';
 
 		setSelectorType(value);
 		setAssetType(nextAssetType);
@@ -507,12 +551,15 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 				<Form.GroupItem shrink>
 					<Picker
 						aria-label={Liferay.Language.get('asset-type')}
+						as={AssetTypeTrigger}
 						className="operator-input"
 						items={assetTypeOptions}
+						label={assetTypeLabel}
+						loading={isLoadingAssetTypes}
 						onSelectionChange={(value) =>
 							handleAssetTypeChange(value as string)
 						}
-						selectedKey={assetType}
+						selectedKey={assetType || undefined}
 					>
 						{({label, value}) => (
 							<Option key={value}>{label}</Option>
@@ -582,6 +629,9 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 				<Form.GroupItem shrink>
 					<ClayButton
 						className="button-root"
+						disabled={
+							!isPage && (!assetType || isLoadingAssetTypes)
+						}
 						displayType="secondary"
 						onClick={handleOpenModal}
 					>

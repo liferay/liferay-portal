@@ -9,7 +9,7 @@ import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../utils/constants';
 
 const TYPE_ICON_MAP = {
-	[PropertyTypes.Behavior]: 'ac_event_analysis',
+	[PropertyTypes.Behavior]: 'click',
 	[PropertyTypes.Boolean]: 'check',
 	[PropertyTypes.AccountDate]: 'date',
 	[PropertyTypes.AccountNumber]: 'integer',
@@ -17,7 +17,7 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.Date]: 'date',
 	[PropertyTypes.DateTime]: 'date',
 	[PropertyTypes.Duration]: 'time',
-	[PropertyTypes.Event]: 'ac_event_analysis',
+	[PropertyTypes.Event]: 'click',
 	[PropertyTypes.Number]: 'integer',
 	[PropertyTypes.OrganizationBoolean]: 'check',
 	[PropertyTypes.OrganizationDate]: 'date',
@@ -59,7 +59,11 @@ export const beginDrag = ({
 
 	if (type === PropertyTypes.Behavior) {
 		touched = {asset: false, dateFilter: false, occurenceCount: false};
-		valid = {asset: true, dateFilter: true, occurenceCount: true};
+
+		// asset starts invalid: a behavior criterion requires the user to select
+		// an asset type (or Page) before the segment can be saved.
+
+		valid = {asset: false, dateFilter: true, occurenceCount: true};
 	}
 	else if (type === PropertyTypes.Event) {
 		touched = {occurenceCount: false};

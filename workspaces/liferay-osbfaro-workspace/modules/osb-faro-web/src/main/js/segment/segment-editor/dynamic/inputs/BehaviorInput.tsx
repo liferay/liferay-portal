@@ -187,6 +187,12 @@ export class BehaviorInput extends React.Component<
 
 		const previousEventId = this.getEventId();
 
+		// An empty applicationId means the user is in Asset Type mode without a
+		// type chosen yet: the criterion carries no asset filter and stays invalid
+		// until a type (or Page) is selected.
+
+		const hasAssetType = !!applicationId;
+
 		const activityKeys = selections.map(({activityKey}) => activityKey);
 
 		if (selections.length) {
@@ -196,28 +202,16 @@ export class BehaviorInput extends React.Component<
 			});
 		}
 
-		// Specific assets -> match them by activityKey (a flat item, or an "or"
-		// group for N). No specific asset -> match every asset of the selected
-		// type via applicationId + eventId ("triggered Download on Documents").
+		// No type chosen -> no asset filter. No specific asset -> match every
+		// asset of the selected type via applicationId + eventId ("triggered
+		// Download on Documents"). Specific assets -> match them by activityKey (a
+		// flat item, or an "or" group for N).
 
-		const assetItems = activityKeys.length
-			? [
-					activityKeys.length > 1
-						? {
-								conjunctionName: Conjunctions.Or,
-								items: activityKeys.map((activityKey) => ({
-									operatorName: RelationalOperators.EQ,
-									propertyName: ACTIVITY_KEY,
-									value: activityKey,
-								})),
-							}
-						: {
-								operatorName: RelationalOperators.EQ,
-								propertyName: ACTIVITY_KEY,
-								value: activityKeys[0],
-							},
-				]
-			: [
+		let assetItems: any[] = [];
+
+		if (hasAssetType) {
+			if (!activityKeys.length) {
+				assetItems = [
 					{
 						operatorName: RelationalOperators.EQ,
 						propertyName: 'applicationId',
@@ -229,6 +223,29 @@ export class BehaviorInput extends React.Component<
 						value: eventId,
 					},
 				];
+			}
+			else if (activityKeys.length === 1) {
+				assetItems = [
+					{
+						operatorName: RelationalOperators.EQ,
+						propertyName: ACTIVITY_KEY,
+						value: activityKeys[0],
+					},
+				];
+			}
+			else {
+				assetItems = [
+					{
+						conjunctionName: Conjunctions.Or,
+						items: activityKeys.map((activityKey) => ({
+							operatorName: RelationalOperators.EQ,
+							propertyName: ACTIVITY_KEY,
+							value: activityKey,
+						})),
+					},
+				];
+			}
+		}
 
 		const items = value.getIn(['criterionGroup', 'items']) as List<any>;
 
@@ -243,7 +260,7 @@ export class BehaviorInput extends React.Component<
 
 		onChange({
 			touched: {...touched, asset: true},
-			valid: {...valid, asset: true},
+			valid: {...valid, asset: hasAssetType},
 			value: value.setIn(
 				['criterionGroup', 'items'],
 				List([

@@ -11,7 +11,6 @@ import {
 	RelationalOperators,
 	TimeSpans,
 } from '../utils/constants';
-import {getEventId, getSupportedApplicationIds} from '../utils/activity-keys';
 import {createCustomValueMap} from '../utils/custom-inputs';
 import {FieldOwnerTypes} from 'shared/util/constants';
 import {jsDatetoYYYYMMDD} from '../utils/utils';
@@ -136,23 +135,16 @@ export const getDefaultValue = (property: Property): any => {
 				{key: 'operator', value: RelationalOperators.GE},
 				{key: 'value', value: 1},
 			]);
-		case PropertyTypes.Behavior: {
-			const applicationId = getSupportedApplicationIds(name)[0];
+		case PropertyTypes.Behavior:
+
+			// No asset type is seeded: the criterion starts without an asset
+			// filter so the picker shows the "Select a type" placeholder and the
+			// user must choose a type (or Page) before the segment can be saved.
 
 			return createCustomValueMap([
 				{
 					key: 'criterionGroup',
 					value: [
-						{
-							operatorName: RelationalOperators.EQ,
-							propertyName: 'applicationId',
-							value: applicationId,
-						},
-						{
-							operatorName: RelationalOperators.EQ,
-							propertyName: 'eventId',
-							value: getEventId(applicationId, name),
-						},
 						{
 							operatorName: FunctionalOperators.Contains,
 							propertyName: 'attribute/',
@@ -168,7 +160,6 @@ export const getDefaultValue = (property: Property): any => {
 				{key: 'operator', value: RelationalOperators.GE},
 				{key: 'value', value: 1},
 			]);
-		}
 		case PropertyTypes.Tag:
 		case PropertyTypes.Vocabulary:
 			return createCustomValueMap([

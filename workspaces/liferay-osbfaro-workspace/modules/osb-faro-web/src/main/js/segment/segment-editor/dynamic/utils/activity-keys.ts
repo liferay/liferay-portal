@@ -46,22 +46,6 @@ export const getEventId = (
 	(applicationId === 'Page' ? 'pageViewed' : '');
 
 /**
- * The applicationIds that support an action, derived from EVENT_ID_MAP — the
- * asset types whose analytics events include that action (e.g. click ->
- * [Blog, WebContent], download -> [Document, ObjectEntry]). Used to offer only
- * the compatible asset types per event. An unknown action yields every
- * applicationId so nothing is filtered out.
- */
-export const getSupportedApplicationIds = (
-	action: string | undefined
-): string[] =>
-	action
-		? Object.keys(EVENT_ID_MAP).filter(
-				(applicationId) => EVENT_ID_MAP[applicationId][action]
-			)
-		: Object.keys(EVENT_ID_MAP);
-
-/**
  * Inverse of EVENT_ID_MAP (plus pageViewed): maps a stored, application-specific
  * eventId back to its generic WEB_BEHAVIORS action. Every "viewed" variant
  * collapses to `view`, "downloaded" to `download`, and so on.
