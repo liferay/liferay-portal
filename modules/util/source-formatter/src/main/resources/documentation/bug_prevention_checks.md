@@ -154,6 +154,7 @@ JavaReferenceAnnotationsCheck | .java | Performs several checks on classes with 
 JavaReleaseInfoCheck | .java | Validates information in `ReleaseInfo.java`. |
 JavaSQLStatementCheck | .java | Perform several checks in SQL statements. |
 [JavaSeeAnnotationCheck](check/java_see_annotation_check.md#javaseeannotationcheck) | .java | Checks for nested annotations inside `@see`. |
+JavaServiceGetFetchCheck | .java | Finds `get*` methods in `*ServiceImpl` that simply return a nullable `fetch*` result, contradicting the non-null promise of the `get` name. |
 JavaServiceImplCheck | .java | Ensures that `afterPropertiesSet` and `destroy` methods in `*ServiceImpl` always call the method with the same name in the superclass. |
 [JavaServiceUtilCheck](check/java_service_util_check.md#javaserviceutilcheck) | .java | Checks that there are no calls to `*ServiceImpl` from a `*ServiceUtil` class. |
 JavaSnapshotClassNameCheck | .java | Checks the name of the class that is passed to `Snapshot` constructor. |
