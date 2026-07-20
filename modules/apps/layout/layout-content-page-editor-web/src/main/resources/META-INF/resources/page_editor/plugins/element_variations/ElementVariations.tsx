@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import {useId} from 'frontend-js-components-web';
 import React, {useReducer, useRef} from 'react';
 
@@ -31,6 +32,7 @@ import './ElementVariations.scss';
 interface Props {
 	addElementVariationURL: string;
 	audiences: Array<{label: string; value: string}>;
+	createAudienceURL: string;
 	defaultLanguageId: string;
 	deleteElementVariationURL: string;
 	elementVariations: Array<LoadedElementVariation>;
@@ -79,6 +81,7 @@ function getOrderedAudiences(
 function ElementVariations({
 	addElementVariationURL,
 	audiences = [],
+	createAudienceURL,
 	defaultLanguageId,
 	deleteElementVariationURL,
 	elementVariations: initialElementVariations = [],
@@ -254,7 +257,31 @@ function ElementVariations({
 								) : null}
 
 								<div className="border-top pt-3">
-									{experienceElementVariations.length ? (
+									{!audiences.length ? (
+										<ClayEmptyState
+											className="mb-0 px-3"
+											description={`${Liferay.Language.get(
+												'you-can-create-page-elements-variations-based-on-audiences'
+											)} ${Liferay.Language.get(
+												'you-need-at-least-one-audience-to-build-element-variations'
+											)}`}
+											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+											small
+											title={Liferay.Language.get(
+												'no-element-variations'
+											)}
+										>
+											<ClayLink
+												button
+												displayType="secondary"
+												href={createAudienceURL}
+											>
+												{Liferay.Language.get(
+													'create-new-audience'
+												)}
+											</ClayLink>
+										</ClayEmptyState>
+									) : experienceElementVariations.length ? (
 										<ElementVariationsList
 											audiences={audiences}
 											editableElementOptions={
@@ -315,7 +342,7 @@ function ElementVariations({
 											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
 											small
 											title={Liferay.Language.get(
-												'no-variations-yet'
+												'no-element-variations'
 											)}
 										>
 											<ClayButton
