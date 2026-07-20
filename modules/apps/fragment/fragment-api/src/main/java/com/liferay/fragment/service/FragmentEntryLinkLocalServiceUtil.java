@@ -290,6 +290,13 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().fetchFragmentEntryLink(fragmentEntryLinkId);
 	}
 
+	public static FragmentEntryLink fetchFragmentEntryLink(
+		long groupId, String originalFragmentEntryLinkERC, long plid) {
+
+		return getService().fetchFragmentEntryLink(
+			groupId, originalFragmentEntryLinkERC, plid);
+	}
+
 	public static FragmentEntryLink
 		fetchFragmentEntryLinkByExternalReferenceCode(
 			String externalReferenceCode, long groupId) {
@@ -721,4 +728,4 @@ public class FragmentEntryLinkLocalServiceUtil {
 			FragmentEntryLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1856823383
+// LIFERAY-SERVICE-BUILDER-HASH:-1331238008

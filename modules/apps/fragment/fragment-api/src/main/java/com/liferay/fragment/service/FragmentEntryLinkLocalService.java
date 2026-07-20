@@ -249,6 +249,10 @@ public interface FragmentEntryLinkLocalService
 	public FragmentEntryLink fetchFragmentEntryLink(long fragmentEntryLinkId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FragmentEntryLink fetchFragmentEntryLink(
+		long groupId, String originalFragmentEntryLinkERC, long plid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntryLink fetchFragmentEntryLinkByExternalReferenceCode(
 		String externalReferenceCode, long groupId);
 
@@ -534,4 +538,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-268484777
+// LIFERAY-SERVICE-BUILDER-HASH:1523302530
