@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.plugin.op.connect;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,16 +15,6 @@ import jenkins.model.Jenkins;
  * @author Michael Hashimoto
  */
 public class OPConnectUtil {
-
-	public static String getAccessToken() {
-		OPConnectDescriptor opConnectDescriptor = _getOPConnectDescriptor();
-
-		if (opConnectDescriptor == null) {
-			return null;
-		}
-
-		return opConnectDescriptor.getAccessToken();
-	}
 
 	public static List<String> getIgnoredValues() {
 		OPConnectDescriptor opConnectDescriptor = _getOPConnectDescriptor();
@@ -52,7 +43,12 @@ public class OPConnectUtil {
 			return Collections.emptyList();
 		}
 
-		return opConnectDescriptor.getSecretValues();
+		List<String> secretValues = new ArrayList<>(
+			opConnectDescriptor.getSecretValues());
+
+		secretValues.add(opConnectDescriptor.getAccessToken());
+
+		return secretValues;
 	}
 
 	public static void refreshSecretValues() {
