@@ -105,9 +105,12 @@ Liferay.Loader.define(
 	['module'],
 	function (module) {
 		module.exports = {
-			__esModule: true,
-			default: ${hashedImportPath},
 			...${hashedImportPath},
+			__esModule: true,
+			default:
+				${hashedImportPath}.default !== undefined
+					? ${hashedImportPath}.default
+					: ${hashedImportPath},
 		};
 	}
 );
