@@ -5,17 +5,17 @@
 
 import '@testing-library/jest-dom';
 import {Draggable} from '@fullcalendar/interaction';
+import {getItemActionURL} from '@liferay/frontend-data-set-web';
 import {fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import UnscheduledTasksPanel from '../../js/components/props_transformer/views/calendar_view/components/UnscheduledTasksPanel';
-import getActionURL from '../../js/utils/getActionURL';
 import getTaskItemsActions from '../../js/utils/getTaskItemsActions';
 import {ITaskObjectEntry} from '../../js/utils/types';
 
-jest.mock('../../js/utils/getActionURL', () => ({
-	__esModule: true,
-	default: jest.fn(() => '/view/1'),
+jest.mock('@liferay/frontend-data-set-web', () => ({
+	...((jest.requireActual('@liferay/frontend-data-set-web') ?? {}) as any),
+	getItemActionURL: jest.fn(() => '/view/1'),
 }));
 
 jest.mock('../../js/utils/getTaskItemsActions', () => ({
@@ -91,7 +91,7 @@ function renderUnscheduledTasksPanel(
 describe('UnscheduledTasksPanel', () => {
 	beforeEach(() => {
 		(getTaskItemsActions as jest.Mock).mockReturnValue([]);
-		(getActionURL as jest.Mock).mockReturnValue('/view/1');
+		(getItemActionURL as jest.Mock).mockReturnValue('/view/1');
 	});
 
 	it('filters the tasks by title as the user types', () => {
