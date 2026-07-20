@@ -62,14 +62,24 @@ public class SecurityConfigurationBootstrap {
 			blacklistedAlgorithms = (String[])blacklistedAlgorithmsObject;
 		}
 
+		_blacklist(basicDecryptionConfiguration, blacklistedAlgorithms);
+		_blacklist(basicEncryptionConfiguration, blacklistedAlgorithms);
+
 		String[] fipsDisallowedAlgorithms = new String[0];
 
 		if (PropsValues.FIPS_ENABLED) {
-			fipsDisallowedAlgorithms = _FIPS_DISALLOWED_ALGORITHMS;
+			fipsDisallowedAlgorithms = new String[] {
+				SignatureConstants.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5,
+				SignatureConstants.ALGO_ID_DIGEST_SHA1,
+				SignatureConstants.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
+				SignatureConstants.ALGO_ID_MAC_HMAC_SHA1,
+				SignatureConstants.ALGO_ID_SIGNATURE_DSA_SHA1,
+				SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA1,
+				SignatureConstants.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
+				SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1
+			};
 		}
 
-		_blacklist(basicDecryptionConfiguration, blacklistedAlgorithms);
-		_blacklist(basicEncryptionConfiguration, blacklistedAlgorithms);
 		_blacklist(
 			basicSignatureSigningConfiguration, blacklistedAlgorithms,
 			fipsDisallowedAlgorithms);
@@ -92,28 +102,17 @@ public class SecurityConfigurationBootstrap {
 	private void _blacklist(
 		BasicWhitelistBlacklistConfiguration
 			basicWhitelistBlacklistConfiguration,
-		String[]... stringsArrays) {
+		String[]... stringsArray) {
 
 		Collection<String> blacklistedAlgorithms = new HashSet<>(
 			basicWhitelistBlacklistConfiguration.getBlacklistedAlgorithms());
 
-		for (String[] strings : stringsArrays) {
+		for (String[] strings : stringsArray) {
 			Collections.addAll(blacklistedAlgorithms, strings);
 		}
 
 		basicWhitelistBlacklistConfiguration.setBlacklistedAlgorithms(
 			blacklistedAlgorithms);
 	}
-
-	private static final String[] _FIPS_DISALLOWED_ALGORITHMS = {
-		SignatureConstants.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5,
-		SignatureConstants.ALGO_ID_DIGEST_SHA1,
-		SignatureConstants.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
-		SignatureConstants.ALGO_ID_MAC_HMAC_SHA1,
-		SignatureConstants.ALGO_ID_SIGNATURE_DSA_SHA1,
-		SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA1,
-		SignatureConstants.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
-		SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1
-	};
 
 }
