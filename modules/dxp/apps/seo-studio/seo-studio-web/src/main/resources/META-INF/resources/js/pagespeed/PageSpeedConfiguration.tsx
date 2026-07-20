@@ -12,6 +12,7 @@ import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import RequiredMark from '../components/RequiredMark';
+import {validateAPIKey} from './validation';
 
 import './PageSpeedConfiguration.scss';
 
@@ -36,7 +37,7 @@ export default function PageSpeedConfiguration({
 	const [apiKey, setAPIKey] = useState('');
 	const [domainExists, setDomainExists] = useState(false);
 	const [instanceIds, setInstanceIds] = useState<number[]>([]);
-	const [integrationsByInstance, setIntegrationsByInstance] = useState<
+	const [integrationIdsMap, setIntegrationIdsMap] = useState<
 		Map<number, number>
 	>(new Map());
 	const [loading, setLoading] = useState(true);
@@ -65,7 +66,9 @@ export default function PageSpeedConfiguration({
 				return response.json();
 			}),
 			Liferay.Util.fetch(
-				`${integrationsURL}?filter=type%20eq%20%27${TYPE_PAGESPEED}%27&pageSize=100`,
+				`${integrationsURL}?filter=${encodeURIComponent(
+					`type eq '${TYPE_PAGESPEED}'`
+				)}&pageSize=100`,
 				{headers: {Accept: 'application/json'}}
 			).then((response) => {
 				if (!response.ok) {
@@ -93,16 +96,16 @@ export default function PageSpeedConfiguration({
 					setAPIKey(firstInstance.googlePageSpeedAPIKey);
 				}
 
-				const integrationsMap = new Map<number, number>();
+				const nextIntegrationIdsMap = new Map<number, number>();
 
 				for (const integration of integrationsData.items || []) {
-					integrationsMap.set(
+					nextIntegrationIdsMap.set(
 						integration[INSTANCE_FIELD],
 						integration.id
 					);
 				}
 
-				setIntegrationsByInstance(integrationsMap);
+				setIntegrationIdsMap(nextIntegrationIdsMap);
 			})
 			.catch(() => {
 				openToast({
@@ -114,27 +117,6 @@ export default function PageSpeedConfiguration({
 			})
 			.finally(() => setLoading(false));
 	}, [domainsURL, instancesURL, integrationsURL]);
-
-	const validateAPIKey = (key: string): Promise<boolean> =>
-		Liferay.Util.fetch(
-			`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=invalid_url&key=${encodeURIComponent(
-				key
-			)}`
-		)
-			.then((response) => response.json())
-			.then((data) => {
-				const errorDetails = data.error?.details || [];
-
-				const errorDetail = errorDetails.find(
-					(detail: {reason?: string}) => detail.reason
-				);
-
-				const reason = errorDetail?.reason || '';
-				const status = data.error?.status || '';
-
-				return !(reason || status === 'PERMISSION_DENIED');
-			})
-			.catch(() => false);
 
 	const saveAPIKey = (): Promise<boolean> => {
 		const requests = instanceIds.flatMap((instanceId) => {
@@ -150,7 +132,7 @@ export default function PageSpeedConfiguration({
 				}
 			).then((response) => response.ok);
 
-			const integrationId = integrationsByInstance.get(instanceId);
+			const integrationId = integrationIdsMap.get(instanceId);
 
 			if (integrationId) {
 				const integrationRequest = Liferay.Util.fetch(

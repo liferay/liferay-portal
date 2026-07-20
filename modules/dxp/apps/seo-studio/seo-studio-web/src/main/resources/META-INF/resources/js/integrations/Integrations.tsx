@@ -10,13 +10,11 @@ import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import {openToast} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
+import {validateAPIKey} from '../pagespeed/validation';
 import IntegrationNameCellRenderer from './cell_renderers/IntegrationNameCellRenderer';
 import IntegrationStatusCellRenderer from './cell_renderers/IntegrationStatusCellRenderer';
 
 import './Integrations.scss';
-
-const PAGESPEED_VALIDATION_URL =
-	'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=invalid_url&key=';
 
 interface IntegrationType {
 	configurationURL: string;
@@ -45,25 +43,6 @@ export default function Integrations({
 	views,
 }: Props) {
 	const [active, setActive] = useState(false);
-
-	const validateAPIKey = (key: string): Promise<boolean> =>
-		Liferay.Util.fetch(
-			`${PAGESPEED_VALIDATION_URL}${encodeURIComponent(key)}`
-		)
-			.then((response) => response.json())
-			.then((data) => {
-				const errorDetails = data.error?.details || [];
-
-				const errorDetail = errorDetails.find(
-					(detail: {reason?: string}) => detail.reason
-				);
-
-				const reason = errorDetail?.reason || '';
-				const status = data.error?.status || '';
-
-				return !(reason || status === 'PERMISSION_DENIED');
-			})
-			.catch(() => false);
 
 	const handleActionClick = ({
 		action: {
