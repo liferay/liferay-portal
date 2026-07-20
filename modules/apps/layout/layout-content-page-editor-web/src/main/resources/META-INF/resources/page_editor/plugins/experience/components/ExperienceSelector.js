@@ -499,7 +499,7 @@ const ExperienceSelector = ({experiences, segments, selectedExperience}) => {
 						displayType="secondary"
 						onClick={onCreateVariations}
 						size="sm"
-						symbol="nodes"
+						symbol="icon-rule-builder"
 						title={Liferay.Language.get('create-variations')}
 					/>
 				)}
