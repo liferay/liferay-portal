@@ -206,12 +206,6 @@ $cadmin-card: map-deep-merge(
 			margin-right: 0px,
 		),
 
-		hover: (
-			border-color: $cadmin-primary-l1,
-			box-shadow: clay-enable-shadows($cadmin-card-hover-box-shadow),
-			outline-color: $cadmin-primary-l1,
-		),
-
 		active: (
 			border-color: $cadmin-primary,
 			outline-color: $cadmin-primary,
@@ -538,6 +532,9 @@ $cadmin-card-interactive: map-deep-merge(
 
 		hover: (
 			background-color: $cadmin-gray-100,
+			border-color: $cadmin-primary-l1,
+			box-shadow: clay-enable-shadows($cadmin-card-hover-box-shadow),
+			outline-color: $cadmin-primary-l1,
 			text-decoration: none,
 		),
 
@@ -639,18 +636,6 @@ $cadmin-card-type-asset: () !default;
 $cadmin-card-type-asset: map-deep-merge(
 	(
 		transition: $cadmin-card-transition,
-
-		hover: (
-			transform: translateY(-0.25rem),
-			after: (
-				bottom: -0.25rem,
-				content: '',
-				height: 0.25rem,
-				left: 0,
-				position: absolute,
-				right: 0,
-			),
-		),
 
 		aspect-ratio: (
 			background-color: $cadmin-gray-100,
