@@ -264,8 +264,10 @@ public class AccountGroupLocalServiceImpl
 	}
 
 	@Override
-	public AccountGroup getDefaultAccountGroup(long companyId) {
-		return accountGroupPersistence.fetchByC_D_First(companyId, true, null);
+	public AccountGroup getDefaultAccountGroup(long companyId)
+		throws PortalException {
+
+		return accountGroupPersistence.findByC_D_First(companyId, true, null);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
