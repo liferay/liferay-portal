@@ -59,12 +59,14 @@ public class DatabaseSchemaExportResourceTest
 				databaseSchemaExportResource.postDatabaseSchemaExport(
 					new DatabaseSchemaExport() {
 						{
-							exportFilesPath = directory.getAbsolutePath();
+							exportFilesPath =
+								directory.getAbsolutePath() + File.separator +
+									".";
 						}
 					});
 
 			Assert.assertEquals(
-				directory.getAbsolutePath(),
+				directory.getCanonicalPath(),
 				databaseSchemaExport.getExportFilesPath());
 
 			List<String> fileNames = Arrays.asList(

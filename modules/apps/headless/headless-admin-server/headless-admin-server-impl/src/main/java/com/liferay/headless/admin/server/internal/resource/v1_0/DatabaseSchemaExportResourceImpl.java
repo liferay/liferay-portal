@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
@@ -42,11 +43,14 @@ public class DatabaseSchemaExportResourceImpl
 
 		_checkPermission();
 
-		String exportFilesPath = databaseSchemaExport.getExportFilesPath();
-
-		if (Validator.isBlank(exportFilesPath)) {
+		if (Validator.isBlank(databaseSchemaExport.getExportFilesPath())) {
 			throw new BadRequestException("Export files path is null");
 		}
+
+		File exportFilesDirectory = new File(
+			databaseSchemaExport.getExportFilesPath());
+
+		String exportFilesPath = exportFilesDirectory.getCanonicalPath();
 
 		if (_log.isInfoEnabled()) {
 			_log.info(

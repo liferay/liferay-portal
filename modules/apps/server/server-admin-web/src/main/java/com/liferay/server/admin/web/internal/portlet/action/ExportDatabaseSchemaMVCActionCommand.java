@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
@@ -73,6 +74,10 @@ public class ExportDatabaseSchemaMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "exportFilesPath");
 
 		try {
+			File exportFilesDirectory = new File(exportFilesPath);
+
+			exportFilesPath = exportFilesDirectory.getCanonicalPath();
+
 			_dbMigrationSchemaExporter.export(exportFilesPath);
 		}
 		catch (IOException ioException) {
@@ -86,7 +91,8 @@ public class ExportDatabaseSchemaMVCActionCommand extends BaseMVCActionCommand {
 
 		hideDefaultSuccessMessage(actionRequest);
 
-		SessionMessages.add(actionRequest, "databaseSchemaExported");
+		SessionMessages.add(
+			actionRequest, "databaseSchemaExported", exportFilesPath);
 
 		sendRedirect(actionRequest, actionResponse);
 	}
