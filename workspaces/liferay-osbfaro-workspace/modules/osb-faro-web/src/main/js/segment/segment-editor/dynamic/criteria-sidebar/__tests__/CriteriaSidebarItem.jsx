@@ -37,7 +37,7 @@ describe('CriteriaSidebarItem', () => {
 			expect(validateSegmentInputs(criterion)).toBe(true);
 		});
 
-		it('should not seed an invalid attribute flag for a Behavior criterion', () => {
+		it('should seed a Behavior criterion invalid until an asset type is chosen', () => {
 			const {criterion} = beginDrag({
 				defaultValue: {},
 				name: 'download',
@@ -45,8 +45,14 @@ describe('CriteriaSidebarItem', () => {
 				type: PropertyTypes.Behavior
 			});
 
-			expect(every(criterion.valid, Boolean)).toBe(true);
-			expect(validateSegmentInputs(criterion)).toBe(true);
+			// The asset flag starts invalid so Save stays disabled until the
+			// user picks a type; every other flag is seeded valid.
+
+			expect(criterion.valid.asset).toBe(false);
+			expect(criterion.valid.dateFilter).toBe(true);
+			expect(criterion.valid.occurenceCount).toBe(true);
+
+			expect(validateSegmentInputs(criterion)).toBe(false);
 		});
 	});
 });

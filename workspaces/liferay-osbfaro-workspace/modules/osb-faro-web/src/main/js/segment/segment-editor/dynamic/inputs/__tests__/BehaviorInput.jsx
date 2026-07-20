@@ -230,6 +230,31 @@ describe('BehaviorInput', () => {
 
 			expect(valid.asset).toBe(true);
 		});
+
+		it('should clear the asset filter and mark it invalid when no type is selected', () => {
+			const onChange = jest.fn();
+			const ref = renderWithRef(onChange);
+
+			ref.current.handlePageAssetSelect({
+				applicationId: '',
+				eventId: '',
+				selections: []
+			});
+
+			const {valid, value} = onChange.mock.calls[0][0];
+
+			const propertyNames = value
+				.getIn(['criterionGroup', 'items'])
+				.map(item => item.get('propertyName'))
+				.toArray();
+
+			// No asset type -> no applicationId/eventId/activityKey items, and the
+			// asset validity is false so the segment cannot be saved yet.
+
+			expect(propertyNames).not.toContain('applicationId');
+			expect(propertyNames).not.toContain(ACTIVITY_KEY);
+			expect(valid.asset).toBe(false);
+		});
 	});
 
 	describe('attribute filter', () => {

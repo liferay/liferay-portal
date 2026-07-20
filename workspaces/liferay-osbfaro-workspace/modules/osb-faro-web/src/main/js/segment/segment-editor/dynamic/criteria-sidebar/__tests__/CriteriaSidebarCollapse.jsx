@@ -312,35 +312,28 @@ describe('getDefaultValue', () => {
 		).toBe('true');
 	});
 
-	it('should return a single-type CustomValueMap (applicationId, eventId, day, operator and value) for PropertyTypes.Behavior', () => {
+	it('should seed no asset type for PropertyTypes.Behavior', () => {
 		const result = getDefaultValue(
 			new Property({name: 'download', type: PropertyTypes.Behavior})
 		);
 
-		// A behavior requires a type; it starts on the first the event supports
-		// (Download -> Document): applicationId eq 'Document' and eventId eq
-		// 'documentDownloaded'.
+		// A behavior no longer seeds an asset type: the criterion starts with the
+		// day and (empty) attribute filters but no applicationId/eventId, so the
+		// picker shows the "Select a Type" placeholder and the user must choose a
+		// type before saving.
 
-		const applicationIdIdx = getIndexFromPropertyName(
-			result,
-			'applicationId'
-		);
+		const items = result.getIn(['criterionGroup', 'items']);
 
-		expect(applicationIdIdx).toBeGreaterThanOrEqual(0);
-		expect(
-			result.getIn(['criterionGroup', 'items', applicationIdIdx, 'value'])
-		).toBe('Document');
-
-		const eventIdIdx = getIndexFromPropertyName(result, 'eventId');
-
-		expect(eventIdIdx).toBeGreaterThanOrEqual(0);
-		expect(
-			result.getIn(['criterionGroup', 'items', eventIdIdx, 'value'])
-		).toBe('documentDownloaded');
-
+		expect(items.size).toBe(2);
 		expect(getIndexFromPropertyName(result, 'day')).toBeGreaterThanOrEqual(
 			0
 		);
+
+		expect(getIndexFromPropertyName(result, 'applicationId')).toBeLessThan(
+			0
+		);
+		expect(getIndexFromPropertyName(result, 'eventId')).toBeLessThan(0);
+
 		expect(result.get('operator')).toBeTruthy();
 		expect(result.get('value')).toBe(1);
 

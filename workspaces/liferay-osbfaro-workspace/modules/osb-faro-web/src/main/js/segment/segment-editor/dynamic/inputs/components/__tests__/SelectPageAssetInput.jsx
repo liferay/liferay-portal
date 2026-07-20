@@ -71,7 +71,7 @@ describe('getAssetTypeLabel', () => {
 	});
 });
 
-describe('getCompatibleAssetTypes (asset types the picker loads per event)', () => {
+describe('getCompatibleAssetTypes (asset types the picker offers)', () => {
 	// The request (asset-summary-types) returns only ObjectEntry object-
 	// definition names here (no DXP types), to prove the DXP types the picker
 	// offers are fixed by the mapping, not read from the request.
@@ -81,43 +81,10 @@ describe('getCompatibleAssetTypes (asset types the picker loads per event)', () 
 		{id: 'C_MyNewStructure', name: 'C_MyNewStructure'}
 	];
 
-	const compatibleIds = action =>
-		getCompatibleAssetTypes(OBJECT_DEFINITION_TYPES, action).map(
-			({id}) => id
-		);
-
-	it('should offer the fixed Blog and WebContent types for click', () => {
-		expect(compatibleIds('click')).toEqual(['blogs', 'webContent']);
-	});
-
-	it('should offer the fixed Blog type for comment', () => {
-		expect(compatibleIds('comment')).toEqual(['blogs']);
-	});
-
-	it('should offer Document plus the ObjectEntry object definitions for download', () => {
-		expect(compatibleIds('download')).toEqual([
-			'document',
-			'CMSBasicDocument',
-			'C_MyNewStructure'
-		]);
-	});
-
-	it('should offer Blog, Document, WebContent and the object definitions for impression', () => {
-		expect(compatibleIds('impression')).toEqual([
-			'blogs',
-			'document',
-			'webContent',
-			'CMSBasicDocument',
-			'C_MyNewStructure'
-		]);
-	});
-
-	it('should offer the fixed Form type for submit', () => {
-		expect(compatibleIds('submit')).toEqual(['forms']);
-	});
-
-	it('should offer every DXP type plus the object definitions for view', () => {
-		expect(compatibleIds('view')).toEqual([
+	it('should offer every DXP type plus the object definitions, independent of the event', () => {
+		expect(
+			getCompatibleAssetTypes(OBJECT_DEFINITION_TYPES).map(({id}) => id)
+		).toEqual([
 			'blogs',
 			'document',
 			'forms',
@@ -127,18 +94,31 @@ describe('getCompatibleAssetTypes (asset types the picker loads per event)', () 
 		]);
 	});
 
-	it('should omit object definitions for events that do not support ObjectEntry', () => {
-		expect(compatibleIds('click')).not.toContain('CMSBasicDocument');
-		expect(compatibleIds('submit')).not.toContain('CMSBasicDocument');
+	it('should offer the fixed DXP types when no object definitions are available', () => {
+		expect(getCompatibleAssetTypes([]).map(({id}) => id)).toEqual([
+			'blogs',
+			'document',
+			'forms',
+			'webContent'
+		]);
 	});
 
-	it('should keep every type when the action is unknown', () => {
-		expect(compatibleIds(undefined)).toEqual([
+	it('should include only the asset-summary types that resolve to ObjectEntry', () => {
+		// DXP-typed asset-summary items are already covered by the fixed types,
+		// so they are not duplicated from the request; only object definitions
+		// (which resolve to ObjectEntry) are appended.
+
+		const withDxpNoise = [
+			{id: 'blog', name: 'blog'},
+			{id: 'document', name: 'document'},
+			{id: 'C_MyNewStructure', name: 'C_MyNewStructure'}
+		];
+
+		expect(getCompatibleAssetTypes(withDxpNoise).map(({id}) => id)).toEqual([
 			'blogs',
 			'document',
 			'forms',
 			'webContent',
-			'CMSBasicDocument',
 			'C_MyNewStructure'
 		]);
 	});
@@ -162,20 +142,23 @@ describe('SelectPageAssetInput', () => {
 		fireEvent.click(getByRole('combobox', {name}));
 
 	describe('default asset type', () => {
-		it('should preselect the first compatible type with an add-assets button', () => {
-			const {getAllByRole, getByText} = render(
+		it('should show the placeholder and disable add-assets until a type is chosen', async () => {
+			const {getAllByRole, getByRole, getByText} = render(
 				<DefaultComponent action='view' />
 			);
 
-			// The Page | Asset Type picker plus the asset-type picker, which
-			// defaults to the first compatible type (Blogs) — a type is required.
+			// Once the asset types load, no type is preselected: the picker shows
+			// the "Select a Type" placeholder and add-assets stays disabled.
+
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
 
 			expect(getAllByRole('combobox')).toHaveLength(2);
-			expect(getByText('Blogs')).toBeTruthy();
-
-			// A type is always selected, so a specific asset can be picked at once.
-
-			expect(getByText(/add assets/i)).toBeTruthy();
+			expect(getByText('Select a Type')).toBeTruthy();
+			expect(getByRole('button', {name: /add assets/i})).toBeDisabled();
 		});
 
 		it('should not emit anything on mount', () => {
@@ -235,7 +218,7 @@ describe('SelectPageAssetInput', () => {
 	});
 
 	describe('asset type selector', () => {
-		it('should reveal the add-assets button and emit the type after choosing a type', () => {
+		it('should emit the type and enable add-assets after choosing a type', async () => {
 			const onSelectionsChange = jest.fn();
 
 			const {getByRole, getByText} = render(
@@ -245,12 +228,18 @@ describe('SelectPageAssetInput', () => {
 				/>
 			);
 
-			// Default is the first type (Blogs); choose a different one.
+			// Wait for the picker to finish loading, then choose a type.
+
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
 
 			openPicker(getByRole, 'Asset Type');
 			fireEvent.click(getByText('Web Content'));
 
-			expect(getByText(/add assets/i)).toBeTruthy();
+			expect(getByRole('button', {name: /add assets/i})).toBeEnabled();
 			expect(onSelectionsChange).toHaveBeenCalledWith({
 				applicationId: 'WebContent',
 				eventId: 'webContentViewed',
@@ -258,10 +247,23 @@ describe('SelectPageAssetInput', () => {
 			});
 		});
 
-		it('should open the modal with the select-asset config', () => {
-			const {getByText} = render(<DefaultComponent action='view' />);
+		it('should open the modal with the select-asset config', async () => {
+			const {getByRole, getByText} = render(
+				<DefaultComponent action='view' />
+			);
 
-			fireEvent.click(getByText(/add assets/i));
+			// Choose a type so the add-assets button becomes available.
+
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
+
+			openPicker(getByRole, 'Asset Type');
+			fireEvent.click(getByText('Web Content'));
+
+			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
 			const config = open.mock.calls[0][1];
 
@@ -339,6 +341,7 @@ describe('SelectPageAssetInput', () => {
 			const {getAllByLabelText} = render(
 				<DefaultComponent
 					action='download'
+					applicationId='Document'
 					onSelectionsChange={onSelectionsChange}
 					selectedItems={[
 						{
@@ -407,29 +410,46 @@ describe('SelectPageAssetInput', () => {
 			expect(getAllByRole('combobox')).toHaveLength(1);
 		});
 
-		it('should offer a specific asset immediately (the first type is preselected)', () => {
-			const {getByText} = render(<DefaultComponent action='click' />);
+		it('should show the placeholder and disable add-assets until a type is chosen', async () => {
+			const {getByRole, getByText} = render(
+				<DefaultComponent action='click' />
+			);
 
-			// Click defaults to its first type (Blogs), so a specific asset can
-			// be picked right away.
+			// Asset-only actions still start with no type: the picker shows the
+			// placeholder and add-assets stays disabled until a type is chosen.
 
-			expect(getByText('Blogs')).toBeTruthy();
-			expect(getByText(/add assets/i)).toBeTruthy();
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
+
+			expect(getByText('Select a Type')).toBeTruthy();
+			expect(getByRole('button', {name: /add assets/i})).toBeDisabled();
 		});
 
-		it('should build a valid activityKey from the default click type', () => {
+		it('should build a valid activityKey from the chosen click type', async () => {
 			const onSelectionsChange = jest.fn();
 
-			const {getByText} = render(
+			const {getByRole, getByText} = render(
 				<DefaultComponent
 					action='click'
 					onSelectionsChange={onSelectionsChange}
 				/>
 			);
 
-			// Click defaults to Blog; pick a specific asset for it.
+			// Choose the Blog type, then pick a specific asset for it.
 
-			fireEvent.click(getByText(/add assets/i));
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
+
+			openPicker(getByRole, 'Asset Type');
+			fireEvent.click(getByText('Blogs'));
+
+			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
 			const {onSubmit} = open.mock.calls[0][1];
 
@@ -454,16 +474,22 @@ describe('SelectPageAssetInput', () => {
 	});
 
 	describe('applicationId inference (reload)', () => {
-		it('should default to the asset-type selector when no applicationId is provided', () => {
-			const {getAllByRole, getByText} = render(
+		it('should default to the asset-type selector when no applicationId is provided', async () => {
+			const {getAllByRole, getByRole, getByText} = render(
 				<DefaultComponent action='view' />
 			);
 
-			// Asset Type mode (the default): Page | Asset Type picker + the
-			// asset-type picker, starting at the first type (Blogs).
+			// Asset Type mode (the default): once loaded, the Page | Asset Type
+			// picker + the asset-type picker, showing the placeholder.
+
+			await waitFor(() =>
+				expect(
+					getByRole('combobox', {name: 'Asset Type'})
+				).toBeEnabled()
+			);
 
 			expect(getAllByRole('combobox')).toHaveLength(2);
-			expect(getByText('Blogs')).toBeTruthy();
+			expect(getByText('Select a Type')).toBeTruthy();
 		});
 
 		it('should use the page selector for a Page applicationId', () => {
@@ -487,11 +513,20 @@ describe('SelectPageAssetInput', () => {
 
 	describe('asset type filtering', () => {
 		it('should query activity/asset with the applicationId resolved from the selected type', async () => {
-			const {getByText} = render(<DefaultComponent action='download' />);
+			const {getByRole} = render(
+				<DefaultComponent action='download' applicationId='Document' />
+			);
 
-			// Download defaults to its first type, Document (Documents and Media).
+			// The reloaded Document type is preselected; wait for loading, then
+			// open the asset modal.
 
-			fireEvent.click(getByText(/add assets/i));
+			await waitFor(() =>
+				expect(
+					getByRole('button', {name: /add assets/i})
+				).toBeEnabled()
+			);
+
+			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
 			const {dataSourceFn} = open.mock.calls[0][1];
 
@@ -545,19 +580,27 @@ describe('SelectPageAssetInput', () => {
 			);
 		});
 
-		it('should build activityKeys (applicationId#eventId#assetId) on submit', () => {
+		it('should build activityKeys (applicationId#eventId#assetId) on submit', async () => {
 			const onSelectionsChange = jest.fn();
 
-			const {getByText} = render(
+			const {getByRole} = render(
 				<DefaultComponent
 					action='download'
+					applicationId='Document'
 					onSelectionsChange={onSelectionsChange}
 				/>
 			);
 
-			// Download defaults to Document (Documents and Media).
+			// The reloaded Document type is preselected; wait for loading, then
+			// open the asset modal.
 
-			fireEvent.click(getByText(/add assets/i));
+			await waitFor(() =>
+				expect(
+					getByRole('button', {name: /add assets/i})
+				).toBeEnabled()
+			);
+
+			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
 			const {onSubmit} = open.mock.calls[0][1];
 
@@ -600,16 +643,25 @@ describe('SelectPageAssetInput', () => {
 		it('should not request asset-summary-types when the plan is not LDP', () => {
 			useLDPEnabled.mockReturnValue(false);
 
-			// Download supports ObjectEntry, so the request would normally run;
-			// a non-LDP plan has no object-definition types, so it is skipped.
+			// A non-LDP plan has no object-definition types, so the request is
+			// skipped and only the fixed DXP types are offered.
 
 			renderAndFlush({action: 'download'});
 
 			expect(API.assets.searchTypes).not.toHaveBeenCalled();
 		});
 
-		it('should request asset-summary-types for an ObjectEntry-supporting action on an LDP plan', () => {
+		it('should request asset-summary-types on an LDP plan', () => {
 			renderAndFlush({action: 'download'});
+
+			expect(API.assets.searchTypes).toHaveBeenCalled();
+		});
+
+		it('should request asset-summary-types on an LDP plan even for an event with no ObjectEntry support', () => {
+			// The request no longer depends on the event: comment maps only to
+			// Blog, yet the object definitions are still fetched on LDP.
+
+			renderAndFlush({action: 'comment'});
 
 			expect(API.assets.searchTypes).toHaveBeenCalled();
 		});
@@ -624,6 +676,60 @@ describe('SelectPageAssetInput', () => {
 			expect(API.assets.searchTypes).toHaveBeenCalledWith(
 				expect.objectContaining({rangeKey: null})
 			);
+		});
+	});
+
+	describe('asset type loading', () => {
+		// Drive the request with jest fake timers (like the LDP-gating tests) so
+		// the flush is deterministic and unaffected by fake/real timer toggling
+		// elsewhere in the file.
+
+		beforeEach(() => {
+			jest.useFakeTimers();
+		});
+
+		afterEach(() => {
+			jest.useRealTimers();
+		});
+
+		it('should show a spinner inside the disabled picker while the LDP request is in flight', async () => {
+			const {container, getByRole} = render(
+				<DefaultComponent action='view' />
+			);
+
+			// While loading: the picker is present but disabled, showing the
+			// placeholder and a spinner inside (all-or-nothing, no partial list).
+
+			const trigger = getByRole('combobox', {name: 'Asset Type'});
+
+			expect(trigger).toBeDisabled();
+			expect(trigger).toHaveTextContent('Select a Type');
+			expect(container.querySelector('.loading-root')).toBeTruthy();
+
+			// Flush the request (debounce timer + resolved-promise microtask).
+
+			await act(async () => {
+				jest.runAllTimers();
+			});
+
+			// Once it resolves, the picker is enabled and the spinner clears.
+
+			expect(getByRole('combobox', {name: 'Asset Type'})).toBeEnabled();
+			expect(container.querySelector('.loading-root')).toBeNull();
+		});
+
+		it('should render the asset types immediately without loading on a non-LDP plan', () => {
+			useLDPEnabled.mockReturnValue(false);
+
+			const {container, getByRole} = render(
+				<DefaultComponent action='view' />
+			);
+
+			// No request is made, so there is no loading — the fixed DXP types
+			// are available at once.
+
+			expect(container.querySelector('.loading-root')).toBeNull();
+			expect(getByRole('combobox', {name: 'Asset Type'})).toBeTruthy();
 		});
 	});
 

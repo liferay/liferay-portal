@@ -55,12 +55,12 @@ exports[`BehaviorInput should render 1`] = `
           aria-expanded="false"
           aria-haspopup="listbox"
           aria-label="Asset Type"
-          class="form-control form-control-select form-control-select-secondary operator-input"
+          class="form-control form-control-select-secondary operator-input form-control-select"
           role="combobox"
           tabindex="0"
           type="button"
         >
-          Blogs
+          Select a Type
         </button>
       </div>
       <div
@@ -283,12 +283,12 @@ exports[`BehaviorInput should render w/ data 1`] = `
           aria-expanded="false"
           aria-haspopup="listbox"
           aria-label="Asset Type"
-          class="form-control form-control-select form-control-select-secondary operator-input"
+          class="form-control form-control-select-secondary operator-input form-control-select"
           role="combobox"
           tabindex="0"
           type="button"
         >
-          Blogs
+          Select a Type
         </button>
       </div>
       <div
