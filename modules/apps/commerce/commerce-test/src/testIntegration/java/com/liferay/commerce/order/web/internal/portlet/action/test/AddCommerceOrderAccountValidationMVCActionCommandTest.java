@@ -91,7 +91,6 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-		_user = UserTestUtil.addUser();
 
 		_companyConfigurationTemporarySwapper =
 			new CompanyConfigurationTemporarySwapper(
@@ -100,6 +99,8 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"enabled", "false"
 				).build());
+
+		_user = UserTestUtil.addUser();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
