@@ -31,6 +31,8 @@ ServerDisplayContext serverDisplayContext = (ServerDisplayContext)request.getAtt
 		</aui:script>
 	</c:if>
 
+	<liferay-ui:success key="databaseSchemaExported" message='<%= LanguageUtil.format(request, "the-database-schema-was-exported-successfully-to-x", GetterUtil.getString(SessionMessages.get(renderRequest, "databaseSchemaExported"))) %>' />
+
 	<c:choose>
 		<c:when test='<%= tabs1.equals("database-migration") %>'>
 			<liferay-util:include page="/database_migration.jsp" servletContext="<%= application %>" />

@@ -114,12 +114,6 @@ public class ServerDisplayContext {
 
 	public String getSessionMessagesKey() {
 		if (SessionMessages.contains(
-				_renderRequest, "databaseSchemaExported")) {
-
-			return "the-database-schema-was-exported-successfully";
-		}
-
-		if (SessionMessages.contains(
 				_renderRequest, "dlGenerateAudioPreviews")) {
 
 			return "audio-file-preview-and-thumbnail-regeneration-has-" +

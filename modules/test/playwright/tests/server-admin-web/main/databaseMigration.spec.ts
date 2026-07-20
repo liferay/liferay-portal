@@ -19,12 +19,12 @@ test(
 
 		await expect(databaseMigrationPage.tabLink).toBeVisible();
 
-		await databaseMigrationPage.exportSchema(
-			`/tmp/db-migration-schema-export-${getRandomInt()}`
-		);
+		const exportFilesPath = `/tmp/db-migration-schema-export-${getRandomInt()}`;
+
+		await databaseMigrationPage.exportSchema(exportFilesPath);
 
 		await expect(databaseMigrationPage.successToast).toContainText(
-			'The database schema was exported successfully'
+			`The database schema was exported successfully to ${exportFilesPath}`
 		);
 	}
 );
