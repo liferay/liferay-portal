@@ -250,7 +250,36 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 	public void testUpgradeObjectRelationshipsCascadeDeletionType()
 		throws Exception {
 
-		_testUpgradeObjectRelationshipsCascadeDeletionType();
+		ObjectDefinition objectDefinition1 = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition2 = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition3 = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition4 = _addCMSObjectDefinition();
+
+		ObjectRelationship objectRelationship1 = _addObjectRelationship(
+			objectDefinition2, objectDefinition1);
+		ObjectRelationship objectRelationship2 = _addObjectRelationship(
+			objectDefinition3, objectDefinition1);
+		ObjectRelationship objectRelationship3 = _addObjectRelationship(
+			objectDefinition4, objectDefinition2);
+		ObjectRelationship objectRelationship4 = _addObjectRelationship(
+			objectDefinition4, objectDefinition3);
+
+		_runUpgrade();
+
+		_assertObjectRelationshipEdge(
+			true, objectRelationship1.getObjectRelationshipId());
+		_assertObjectRelationshipEdge(
+			true, objectRelationship2.getObjectRelationshipId());
+		_assertObjectRelationshipEdge(
+			true, objectRelationship3.getObjectRelationshipId());
+		_assertObjectRelationshipEdge(
+			true, objectRelationship4.getObjectRelationshipId());
+
+		long objectDefinitionId1 = objectDefinition1.getObjectDefinitionId();
+
+		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition2);
+		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition3);
+		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition4);
 	}
 
 	@Test
@@ -512,41 +541,6 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 			_upgradeStepRegistrator, _CLASS_NAME);
 
 		upgradeProcess.upgrade();
-	}
-
-	private void _testUpgradeObjectRelationshipsCascadeDeletionType()
-		throws Exception {
-
-		ObjectDefinition objectDefinition1 = _addCMSObjectDefinition();
-		ObjectDefinition objectDefinition2 = _addCMSObjectDefinition();
-		ObjectDefinition objectDefinition3 = _addCMSObjectDefinition();
-		ObjectDefinition objectDefinition4 = _addCMSObjectDefinition();
-
-		ObjectRelationship objectRelationship1 = _addObjectRelationship(
-			objectDefinition2, objectDefinition1);
-		ObjectRelationship objectRelationship2 = _addObjectRelationship(
-			objectDefinition3, objectDefinition1);
-		ObjectRelationship objectRelationship3 = _addObjectRelationship(
-			objectDefinition4, objectDefinition2);
-		ObjectRelationship objectRelationship4 = _addObjectRelationship(
-			objectDefinition4, objectDefinition3);
-
-		_runUpgrade();
-
-		_assertObjectRelationshipEdge(
-			true, objectRelationship1.getObjectRelationshipId());
-		_assertObjectRelationshipEdge(
-			true, objectRelationship2.getObjectRelationshipId());
-		_assertObjectRelationshipEdge(
-			true, objectRelationship3.getObjectRelationshipId());
-		_assertObjectRelationshipEdge(
-			true, objectRelationship4.getObjectRelationshipId());
-
-		long objectDefinitionId1 = objectDefinition1.getObjectDefinitionId();
-
-		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition2);
-		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition3);
-		_assertRootObjectDefinitionIds(objectDefinitionId1, objectDefinition4);
 	}
 
 	private static final String _CLASS_NAME =
