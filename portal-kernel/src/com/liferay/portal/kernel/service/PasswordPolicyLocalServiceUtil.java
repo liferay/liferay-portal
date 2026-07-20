@@ -234,6 +234,10 @@ public class PasswordPolicyLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static PasswordPolicy fetchDefaultPasswordPolicy(long companyId) {
+		return getService().fetchDefaultPasswordPolicy(companyId);
+	}
+
 	public static PasswordPolicy fetchPasswordPolicy(long passwordPolicyId) {
 		return getService().fetchPasswordPolicy(passwordPolicyId);
 	}
@@ -436,4 +440,4 @@ public class PasswordPolicyLocalServiceUtil {
 	private static volatile PasswordPolicyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1635504886
+// LIFERAY-SERVICE-BUILDER-HASH:2122577674

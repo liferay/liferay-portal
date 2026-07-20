@@ -260,6 +260,14 @@ public class PasswordPolicyLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.PasswordPolicy
+		fetchDefaultPasswordPolicy(long companyId) {
+
+		return _passwordPolicyLocalService.fetchDefaultPasswordPolicy(
+			companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.model.PasswordPolicy fetchPasswordPolicy(
 		long passwordPolicyId) {
 
@@ -503,4 +511,4 @@ public class PasswordPolicyLocalServiceWrapper
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-920056944
+// LIFERAY-SERVICE-BUILDER-HASH:-51622873

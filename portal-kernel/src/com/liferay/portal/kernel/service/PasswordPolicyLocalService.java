@@ -222,6 +222,9 @@ public interface PasswordPolicyLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PasswordPolicy fetchDefaultPasswordPolicy(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PasswordPolicy fetchPasswordPolicy(long passwordPolicyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -361,4 +364,4 @@ public interface PasswordPolicyLocalService
 	public PasswordPolicy updatePasswordPolicy(PasswordPolicy passwordPolicy);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:554307998
+// LIFERAY-SERVICE-BUILDER-HASH:2042806418
