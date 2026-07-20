@@ -49,7 +49,7 @@ const ProfileCardCDP: React.FC<IProfileCardCDP> = ({tabId, ...props}) => {
 					showRangeKey: true,
 					tabId,
 				}}
-				label={Liferay.Language.get('individual-events')}
+				label={Liferay.Language.get('individual-events').toUpperCase()}
 				legacyDropdownRangeKey={false}
 				showInterval
 			>
