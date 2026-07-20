@@ -99,31 +99,31 @@ public class PortalInstanceExport implements Serializable {
 	private Supplier<String> _exportedPartitionNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The name of the source partition that was exported (e.g., lpartition_12345)."
+		description = "The ID of the source company that was exported (e.g., 12345)."
 	)
-	public String getSourcePartitionName() {
-		if (_sourcePartitionNameSupplier != null) {
-			sourcePartitionName = _sourcePartitionNameSupplier.get();
+	public Long getSourceCompanyId() {
+		if (_sourceCompanyIdSupplier != null) {
+			sourceCompanyId = _sourceCompanyIdSupplier.get();
 
-			_sourcePartitionNameSupplier = null;
+			_sourceCompanyIdSupplier = null;
 		}
 
-		return sourcePartitionName;
+		return sourceCompanyId;
 	}
 
-	public void setSourcePartitionName(String sourcePartitionName) {
-		this.sourcePartitionName = sourcePartitionName;
+	public void setSourceCompanyId(Long sourceCompanyId) {
+		this.sourceCompanyId = sourceCompanyId;
 
-		_sourcePartitionNameSupplier = null;
+		_sourceCompanyIdSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSourcePartitionName(
-		UnsafeSupplier<String, Exception> sourcePartitionNameUnsafeSupplier) {
+	public void setSourceCompanyId(
+		UnsafeSupplier<Long, Exception> sourceCompanyIdUnsafeSupplier) {
 
-		_sourcePartitionNameSupplier = () -> {
+		_sourceCompanyIdSupplier = () -> {
 			try {
-				return sourcePartitionNameUnsafeSupplier.get();
+				return sourceCompanyIdUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -135,13 +135,13 @@ public class PortalInstanceExport implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The name of the source partition that was exported (e.g., lpartition_12345)."
+		description = "The ID of the source company that was exported (e.g., 12345)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String sourcePartitionName;
+	protected Long sourceCompanyId;
 
 	@JsonIgnore
-	private Supplier<String> _sourcePartitionNameSupplier;
+	private Supplier<Long> _sourceCompanyIdSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -187,20 +187,16 @@ public class PortalInstanceExport implements Serializable {
 			sb.append("\"");
 		}
 
-		String sourcePartitionName = getSourcePartitionName();
+		Long sourceCompanyId = getSourceCompanyId();
 
-		if (sourcePartitionName != null) {
+		if (sourceCompanyId != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"sourcePartitionName\": ");
+			sb.append("\"sourceCompanyId\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(sourcePartitionName));
-
-			sb.append("\"");
+			sb.append(sourceCompanyId);
 		}
 
 		sb.append("}");
@@ -304,4 +300,4 @@ public class PortalInstanceExport implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1269064002
+// LIFERAY-REST-BUILDER-HASH:1945410648

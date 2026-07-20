@@ -46,26 +46,26 @@ public class PortalInstanceExport implements Cloneable, Serializable {
 
 	protected String exportedPartitionName;
 
-	public String getSourcePartitionName() {
-		return sourcePartitionName;
+	public Long getSourceCompanyId() {
+		return sourceCompanyId;
 	}
 
-	public void setSourcePartitionName(String sourcePartitionName) {
-		this.sourcePartitionName = sourcePartitionName;
+	public void setSourceCompanyId(Long sourceCompanyId) {
+		this.sourceCompanyId = sourceCompanyId;
 	}
 
-	public void setSourcePartitionName(
-		UnsafeSupplier<String, Exception> sourcePartitionNameUnsafeSupplier) {
+	public void setSourceCompanyId(
+		UnsafeSupplier<Long, Exception> sourceCompanyIdUnsafeSupplier) {
 
 		try {
-			sourcePartitionName = sourcePartitionNameUnsafeSupplier.get();
+			sourceCompanyId = sourceCompanyIdUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String sourcePartitionName;
+	protected Long sourceCompanyId;
 
 	@Override
 	public PortalInstanceExport clone() throws CloneNotSupportedException {
@@ -100,4 +100,4 @@ public class PortalInstanceExport implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-48228477
+// LIFERAY-REST-BUILDER-HASH:375632592

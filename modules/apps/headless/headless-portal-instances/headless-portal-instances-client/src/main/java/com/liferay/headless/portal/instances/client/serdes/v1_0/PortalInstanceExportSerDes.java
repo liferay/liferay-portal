@@ -60,18 +60,14 @@ public class PortalInstanceExportSerDes {
 			sb.append("\"");
 		}
 
-		if (portalInstanceExport.getSourcePartitionName() != null) {
+		if (portalInstanceExport.getSourceCompanyId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"sourcePartitionName\": ");
+			sb.append("\"sourceCompanyId\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(portalInstanceExport.getSourcePartitionName()));
-
-			sb.append("\"");
+			sb.append(portalInstanceExport.getSourceCompanyId());
 		}
 
 		sb.append("}");
@@ -105,13 +101,13 @@ public class PortalInstanceExportSerDes {
 					portalInstanceExport.getExportedPartitionName()));
 		}
 
-		if (portalInstanceExport.getSourcePartitionName() == null) {
-			map.put("sourcePartitionName", null);
+		if (portalInstanceExport.getSourceCompanyId() == null) {
+			map.put("sourceCompanyId", null);
 		}
 		else {
 			map.put(
-				"sourcePartitionName",
-				String.valueOf(portalInstanceExport.getSourcePartitionName()));
+				"sourceCompanyId",
+				String.valueOf(portalInstanceExport.getSourceCompanyId()));
 		}
 
 		return map;
@@ -135,9 +131,7 @@ public class PortalInstanceExportSerDes {
 			if (Objects.equals(jsonParserFieldName, "exportedPartitionName")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "sourcePartitionName")) {
-
+			else if (Objects.equals(jsonParserFieldName, "sourceCompanyId")) {
 				return false;
 			}
 
@@ -155,12 +149,10 @@ public class PortalInstanceExportSerDes {
 						(String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "sourcePartitionName")) {
-
+			else if (Objects.equals(jsonParserFieldName, "sourceCompanyId")) {
 				if (jsonParserFieldValue != null) {
-					portalInstanceExport.setSourcePartitionName(
-						(String)jsonParserFieldValue);
+					portalInstanceExport.setSourceCompanyId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -244,4 +236,4 @@ public class PortalInstanceExportSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:650498961
+// LIFERAY-REST-BUILDER-HASH:2131645718

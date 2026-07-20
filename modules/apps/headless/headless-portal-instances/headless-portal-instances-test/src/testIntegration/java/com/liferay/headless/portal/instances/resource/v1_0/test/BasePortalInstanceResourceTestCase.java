@@ -616,10 +616,8 @@ public abstract class BasePortalInstanceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"sourcePartitionName", additionalAssertFieldName)) {
-
-				if (portalInstanceExport.getSourcePartitionName() == null) {
+			if (Objects.equals("sourceCompanyId", additionalAssertFieldName)) {
+				if (portalInstanceExport.getSourceCompanyId() == null) {
 					valid = false;
 				}
 
@@ -845,12 +843,10 @@ public abstract class BasePortalInstanceResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"sourcePartitionName", additionalAssertFieldName)) {
-
+			if (Objects.equals("sourceCompanyId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						portalInstanceExport1.getSourcePartitionName(),
-						portalInstanceExport2.getSourcePartitionName())) {
+						portalInstanceExport1.getSourceCompanyId(),
+						portalInstanceExport2.getSourceCompanyId())) {
 
 					return false;
 				}
@@ -1215,7 +1211,7 @@ public abstract class BasePortalInstanceResourceTestCase {
 		return new PortalInstanceExport() {
 			{
 				exportedPartitionName = RandomTestUtil.randomString();
-				sourcePartitionName = RandomTestUtil.randomString();
+				sourceCompanyId = RandomTestUtil.randomLong();
 			}
 		};
 	}
@@ -1431,4 +1427,4 @@ public abstract class BasePortalInstanceResourceTestCase {
 			PortalInstanceResource _portalInstanceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:483813011
+// LIFERAY-REST-BUILDER-HASH:-2057292312
