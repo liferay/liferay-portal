@@ -753,7 +753,7 @@ public class OIDCUserInfoProcessor {
 				continue;
 			}
 
-			ExpandoValue expandoValue = _expandoValueLocalService.getValue(
+			ExpandoValue expandoValue = _expandoValueLocalService.fetchValue(
 				expandoColumn.getTableId(), expandoColumn.getColumnId(),
 				userGroup.getUserGroupId());
 

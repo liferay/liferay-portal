@@ -46,10 +46,10 @@ public class OAuthManager {
 	}
 
 	public Token getAccessToken(User user) throws PortalException {
-		ExpandoValue secretExpandoValue = _expandoValueLocalService.getValue(
+		ExpandoValue secretExpandoValue = _expandoValueLocalService.fetchValue(
 			user.getCompanyId(), User.class.getName(), "MP", "accessSecret",
 			user.getUserId());
-		ExpandoValue tokenExpandoValue = _expandoValueLocalService.getValue(
+		ExpandoValue tokenExpandoValue = _expandoValueLocalService.fetchValue(
 			user.getCompanyId(), User.class.getName(), "MP", "accessToken",
 			user.getUserId());
 
@@ -74,10 +74,10 @@ public class OAuthManager {
 	}
 
 	public Token getRequestToken(User user) throws PortalException {
-		ExpandoValue secretExpandoValue = _expandoValueLocalService.getValue(
+		ExpandoValue secretExpandoValue = _expandoValueLocalService.fetchValue(
 			user.getCompanyId(), User.class.getName(), "MP", "requestSecret",
 			user.getUserId());
-		ExpandoValue tokenExpandoValue = _expandoValueLocalService.getValue(
+		ExpandoValue tokenExpandoValue = _expandoValueLocalService.fetchValue(
 			user.getCompanyId(), User.class.getName(), "MP", "requestToken",
 			user.getUserId());
 

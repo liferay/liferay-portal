@@ -1097,7 +1097,7 @@ public class UserManagerImpl implements UserManager {
 			return StringPool.BLANK;
 		}
 
-		ExpandoValue expandoValue = _expandoValueLocalService.getValue(
+		ExpandoValue expandoValue = _expandoValueLocalService.fetchValue(
 			expandoTable.getTableId(), expandoColumn.getColumnId(), classPK);
 
 		if (expandoValue == null) {

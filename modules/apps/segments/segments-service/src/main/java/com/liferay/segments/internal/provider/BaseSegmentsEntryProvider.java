@@ -424,7 +424,7 @@ public abstract class BaseSegmentsEntryProvider
 				expandoColumnLocalService.getColumns(expandoTable.getTableId());
 
 			for (ExpandoColumn expandoColumn : expandoColumns) {
-				ExpandoValue expandoValue = expandoValueLocalService.getValue(
+				ExpandoValue expandoValue = expandoValueLocalService.fetchValue(
 					expandoTable.getTableId(), expandoColumn.getColumnId(),
 					user.getUserId());
 

@@ -284,7 +284,7 @@ public class ExpandoUserFieldExpressionHandler
 		ExpandoValue expandoValue = null;
 
 		if (!user.isNew()) {
-			expandoValue = _expandoValueLocalService.getValue(
+			expandoValue = _expandoValueLocalService.fetchValue(
 				user.getCompanyId(), User.class.getName(),
 				ExpandoTableConstants.DEFAULT_TABLE_NAME,
 				validUserFieldExpression, user.getUserId());

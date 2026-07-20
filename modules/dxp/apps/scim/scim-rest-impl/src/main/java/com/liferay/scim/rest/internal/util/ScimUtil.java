@@ -767,7 +767,7 @@ public class ScimUtil {
 			return null;
 		}
 
-		ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.getValue(
+		ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.fetchValue(
 			expandoTableId, expandoColumn.getColumnId(),
 			GetterUtil.getLong(userIdString));
 

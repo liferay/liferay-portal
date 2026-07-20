@@ -192,9 +192,10 @@ public class MembershipsUserFieldExpressionHandler
 					continue;
 				}
 
-				ExpandoValue expandoValue = _expandoValueLocalService.getValue(
-					expandoColumn.getTableId(), expandoColumn.getColumnId(),
-					userGroup.getUserGroupId());
+				ExpandoValue expandoValue =
+					_expandoValueLocalService.fetchValue(
+						expandoColumn.getTableId(), expandoColumn.getColumnId(),
+						userGroup.getUserGroupId());
 
 				if ((expandoValue != null) &&
 					samlIdpEntityId.equals(expandoValue.getString())) {

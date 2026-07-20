@@ -1006,6 +1006,44 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
+	public ExpandoValue fetchValue(long tableId, long columnId, long classPK) {
+		return expandoValuePersistence.fetchByT_C_C(tableId, columnId, classPK);
+	}
+
+	@Override
+	public ExpandoValue fetchValue(
+		long companyId, long classNameId, String tableName, String columnName,
+		long classPK) {
+
+		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
+			companyId, classNameId, tableName);
+
+		if (table == null) {
+			return null;
+		}
+
+		ExpandoColumn column = _expandoColumnPersistence.fetchByT_N(
+			table.getTableId(), columnName);
+
+		if (column == null) {
+			return null;
+		}
+
+		return expandoValuePersistence.fetchByT_C_C(
+			table.getTableId(), column.getColumnId(), classPK);
+	}
+
+	@Override
+	public ExpandoValue fetchValue(
+		long companyId, String className, String tableName, String columnName,
+		long classPK) {
+
+		return expandoValueLocalService.fetchValue(
+			companyId, _classNameLocalService.getClassNameId(className),
+			tableName, columnName, classPK);
+	}
+
+	@Override
 	public List<ExpandoValue> getColumnValues(
 		long columnId, int start, int end) {
 
@@ -1640,37 +1678,33 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
-	public ExpandoValue getValue(long tableId, long columnId, long classPK) {
-		return expandoValuePersistence.fetchByT_C_C(tableId, columnId, classPK);
+	public ExpandoValue getValue(long tableId, long columnId, long classPK)
+		throws PortalException {
+
+		return expandoValuePersistence.findByT_C_C(tableId, columnId, classPK);
 	}
 
 	@Override
 	public ExpandoValue getValue(
-		long companyId, long classNameId, String tableName, String columnName,
-		long classPK) {
+			long companyId, long classNameId, String tableName,
+			String columnName, long classPK)
+		throws PortalException {
 
-		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
+		ExpandoTable table = _expandoTablePersistence.findByC_C_N(
 			companyId, classNameId, tableName);
 
-		if (table == null) {
-			return null;
-		}
-
-		ExpandoColumn column = _expandoColumnPersistence.fetchByT_N(
+		ExpandoColumn column = _expandoColumnPersistence.findByT_N(
 			table.getTableId(), columnName);
 
-		if (column == null) {
-			return null;
-		}
-
-		return expandoValuePersistence.fetchByT_C_C(
+		return expandoValuePersistence.findByT_C_C(
 			table.getTableId(), column.getColumnId(), classPK);
 	}
 
 	@Override
 	public ExpandoValue getValue(
-		long companyId, String className, String tableName, String columnName,
-		long classPK) {
+			long companyId, String className, String tableName,
+			String columnName, long classPK)
+		throws PortalException {
 
 		return expandoValueLocalService.getValue(
 			companyId, _classNameLocalService.getClassNameId(className),
