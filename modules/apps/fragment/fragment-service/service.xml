@@ -376,6 +376,7 @@
 		<exception>DuplicateFragmentEntryKey</exception>
 		<exception>FragmentCollectionName</exception>
 		<exception>FragmentCompositionDescription</exception>
+		<exception>FragmentCompositionGroupId</exception>
 		<exception>FragmentCompositionName</exception>
 		<exception>FragmentEntryConfiguration</exception>
 		<exception>FragmentEntryContent</exception>
