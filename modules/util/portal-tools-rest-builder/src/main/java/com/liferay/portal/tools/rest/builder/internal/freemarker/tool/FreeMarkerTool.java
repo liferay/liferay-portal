@@ -1253,7 +1253,7 @@ public class FreeMarkerTool {
 		String methodName = javaMethodSignature.getMethodName();
 		String parentSchemaName = GetterUtil.getString(
 			javaMethodSignature.getParentSchemaName());
-		String pluralSchemaName = TextFormatter.formatPlural(schemaName);
+		String pluralSchemaName = OpenAPIUtil.formatPlural(schemaName);
 
 		if (!(methodName.equals(
 				StringBundler.concat(
@@ -1381,7 +1381,7 @@ public class FreeMarkerTool {
 		String formattedParameterSchemaName = TextFormatter.format(
 			parameterSchemaName, TextFormatter.K);
 		String formattedSchemaNamePlural = TextFormatter.format(
-			TextFormatter.formatPlural(schemaName), TextFormatter.K);
+			OpenAPIUtil.formatPlural(schemaName), TextFormatter.K);
 		String formattedSchemaNameSingular = TextFormatter.format(
 			schemaName, TextFormatter.K);
 

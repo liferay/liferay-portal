@@ -454,7 +454,7 @@ public class ResourceOpenAPIParser {
 			if (methodName.equals(
 					StringBundler.concat(
 						"get", parentSchemaName,
-						TextFormatter.formatPlural(schemaName), "Page"))) {
+						OpenAPIUtil.formatPlural(schemaName), "Page"))) {
 
 				return true;
 			}
@@ -553,7 +553,7 @@ public class ResourceOpenAPIParser {
 			methodName.equals(
 				StringBundler.concat(
 					"get", parentSchemaName,
-					TextFormatter.formatPlural(schemaName), "Page"))) {
+					OpenAPIUtil.formatPlural(schemaName), "Page"))) {
 
 			batchOperationType = BatchOperationType.EXPORT;
 		}
@@ -965,7 +965,7 @@ public class ResourceOpenAPIParser {
 					simpleClassName = elementClassName.substring(
 						elementClassName.lastIndexOf(".") + 1);
 
-					parameterName = TextFormatter.formatPlural(
+					parameterName = OpenAPIUtil.formatPlural(
 						TextFormatter.format(simpleClassName, TextFormatter.I));
 				}
 
@@ -1095,7 +1095,7 @@ public class ResourceOpenAPIParser {
 		operationIdSegments.add(OpenAPIParserUtil.getHTTPMethod(operation));
 
 		String[] pathSegments = path.split("/");
-		String pluralSchemaName = TextFormatter.formatPlural(schemaName);
+		String pluralSchemaName = OpenAPIUtil.formatPlural(schemaName);
 
 		for (int i = 0; i < pathSegments.length; i++) {
 			String pathSegment = pathSegments[i];
