@@ -56,12 +56,6 @@ export async function getAssignableUsersForWorkflowTasks(
 	});
 }
 
-export async function getProjectById(projectId: string) {
-	return await ApiHelper.get<{dateCreated: string; dueDate?: string}>(
-		`/o/cmp/projects/${projectId}`
-	);
-}
-
 export async function getStateObjectField() {
 	return await ApiHelper.get(
 		'/o/object-admin/v1.0/object-definitions/by-external-reference-code/L_CMP_TASK/object-fields?search=state'

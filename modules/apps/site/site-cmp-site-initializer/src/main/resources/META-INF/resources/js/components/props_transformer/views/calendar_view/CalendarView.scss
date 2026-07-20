@@ -65,7 +65,6 @@
 
 	.fc-daygrid-day-top {
 		flex-direction: row;
-		flex-wrap: wrap;
 		position: relative;
 	}
 
@@ -123,17 +122,6 @@
 		right: 0.25rem;
 		top: 50%;
 		transform: translateY(-50%);
-	}
-
-	&-date-marker {
-		align-items: center;
-		color: $secondary;
-		display: flex;
-		flex-basis: 100%;
-		font-size: $font-size-sm;
-		font-weight: $font-weight-semi-bold;
-		gap: 0.25rem;
-		margin-top: 0.5rem;
 	}
 
 	&-toolbar {
