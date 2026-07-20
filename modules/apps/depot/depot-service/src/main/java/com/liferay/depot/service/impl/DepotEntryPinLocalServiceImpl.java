@@ -97,7 +97,7 @@ public class DepotEntryPinLocalServiceImpl
 	public DepotEntryPin getDepotEntryPin(long userId, long depotEntryId)
 		throws PortalException {
 
-		return depotEntryPinPersistence.fetchByU_D(userId, depotEntryId);
+		return depotEntryPinPersistence.findByU_D(userId, depotEntryId);
 	}
 
 	@Override
