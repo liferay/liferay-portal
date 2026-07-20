@@ -7,7 +7,6 @@ import {AudiencesCriteria, Group} from '../../types';
 import {createRule} from './createRule';
 import {findParent} from './findParent';
 import {insertIntoGroup} from './insertIntoGroup';
-import {unwrapRedundantGroups} from './unwrapRedundantGroups';
 import {wrapNode} from './wrapNode';
 
 export function addGroup(
@@ -24,5 +23,5 @@ export function addGroup(
 		return insertIntoGroup(root, parent.id, rule, 1);
 	}
 
-	return unwrapRedundantGroups(wrapNode(root, targetId, rule, conjunction));
+	return wrapNode(root, targetId, rule, conjunction);
 }
