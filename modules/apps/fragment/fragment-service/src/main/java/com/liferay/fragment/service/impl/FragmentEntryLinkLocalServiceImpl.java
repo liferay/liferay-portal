@@ -383,9 +383,10 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Override
 	public FragmentEntryLink getFragmentEntryLink(
-		long groupId, String originalFragmentEntryLinkERC, long plid) {
+			long groupId, String originalFragmentEntryLinkERC, long plid)
+		throws PortalException {
 
-		return fragmentEntryLinkPersistence.fetchByG_OFELERC_P_First(
+		return fragmentEntryLinkPersistence.findByG_OFELERC_P_First(
 			groupId, originalFragmentEntryLinkERC, plid, null);
 	}
 
