@@ -113,7 +113,10 @@ export default function UpdateReviewDateModalContent({
 						</ClayButton>
 
 						<ClayButton
-							disabled={saving}
+							disabled={
+								saving ||
+								(!field.neverReview && Boolean(field.error))
+							}
 							displayType="primary"
 							type="submit"
 						>
