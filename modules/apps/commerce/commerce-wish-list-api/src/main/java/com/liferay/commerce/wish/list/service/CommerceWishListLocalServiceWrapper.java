@@ -294,6 +294,16 @@ public class CommerceWishListLocalServiceWrapper
 
 	@Override
 	public com.liferay.commerce.wish.list.model.CommerceWishList
+			fetchDefaultCommerceWishList(
+				long userId, long groupId, String guestUuid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceWishListLocalService.fetchDefaultCommerceWishList(
+			userId, groupId, guestUuid);
+	}
+
+	@Override
+	public com.liferay.commerce.wish.list.model.CommerceWishList
 		forceDeleteCommerceWishList(
 			com.liferay.commerce.wish.list.model.CommerceWishList
 				commerceWishList) {
@@ -542,4 +552,4 @@ public class CommerceWishListLocalServiceWrapper
 	private CommerceWishListLocalService _commerceWishListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:645334971
+// LIFERAY-SERVICE-BUILDER-HASH:-1580409396

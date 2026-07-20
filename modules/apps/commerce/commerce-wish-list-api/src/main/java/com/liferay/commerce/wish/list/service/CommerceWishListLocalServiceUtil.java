@@ -256,6 +256,14 @@ public class CommerceWishListLocalServiceUtil {
 			uuid, groupId);
 	}
 
+	public static CommerceWishList fetchDefaultCommerceWishList(
+			long userId, long groupId, String guestUuid)
+		throws PortalException {
+
+		return getService().fetchDefaultCommerceWishList(
+			userId, groupId, guestUuid);
+	}
+
 	public static CommerceWishList forceDeleteCommerceWishList(
 		CommerceWishList commerceWishList) {
 
@@ -453,4 +461,4 @@ public class CommerceWishListLocalServiceUtil {
 			CommerceWishListLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1197351635
+// LIFERAY-SERVICE-BUILDER-HASH:-1579568768

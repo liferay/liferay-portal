@@ -228,6 +228,12 @@ public interface CommerceWishListLocalService
 	public CommerceWishList fetchCommerceWishListByUuidAndGroupId(
 		String uuid, long groupId);
 
+	@ThreadLocalCachable
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceWishList fetchDefaultCommerceWishList(
+			long userId, long groupId, String guestUuid)
+		throws PortalException;
+
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceWishList forceDeleteCommerceWishList(
 		CommerceWishList commerceWishList);
@@ -323,7 +329,6 @@ public interface CommerceWishListLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceWishListsCount(long userId, long groupId);
 
-	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceWishList getDefaultCommerceWishList(
 			long userId, long groupId, String guestUuid)
@@ -370,4 +375,4 @@ public interface CommerceWishListLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1123211494
+// LIFERAY-SERVICE-BUILDER-HASH:-829143369
