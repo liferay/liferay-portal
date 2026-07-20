@@ -115,18 +115,18 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 
 			if (segmentsEntry == null) {
 				_segmentsEntryLocalService.addSegmentsEntry(
-					null, individualSegment.getId(), nameMap,
-					Collections.emptyMap(), true, null,
-					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+					individualSegment.getExternalReferenceCode(),
+					individualSegment.getId(), nameMap, Collections.emptyMap(),
+					true, null, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 					serviceContext);
 
 				return;
 			}
 
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				null, segmentsEntry.getSegmentsEntryId(),
-				individualSegment.getId(), nameMap, null, true, null,
-				serviceContext);
+				individualSegment.getExternalReferenceCode(),
+				segmentsEntry.getSegmentsEntryId(), individualSegment.getId(),
+				nameMap, null, true, null, serviceContext);
 		}
 		catch (PortalException portalException) {
 			_log.error(

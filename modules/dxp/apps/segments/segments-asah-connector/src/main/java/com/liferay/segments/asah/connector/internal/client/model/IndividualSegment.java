@@ -36,6 +36,10 @@ public class IndividualSegment {
 		return _embeddedResources;
 	}
 
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
 	public String getFilter() {
 		return _filter;
 	}
@@ -88,6 +92,10 @@ public class IndividualSegment {
 		_embeddedResources = embeddedResources;
 	}
 
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_externalReferenceCode = externalReferenceCode;
+	}
+
 	public void setFilter(String filter) {
 		_filter = filter;
 	}
@@ -129,7 +137,8 @@ public class IndividualSegment {
 		return StringBundler.concat(
 			"{author=", _author, ", dateCreated=", _dateCreated,
 			", dateModified=", _dateModified, ", embeddedResources=",
-			_embeddedResources, ", filter=", _filter, ", filterMetadata=",
+			_embeddedResources, ", externalReferenceCode=",
+			_externalReferenceCode, ", filter=", _filter, ", filterMetadata=",
 			_filterMetadata, ", id=", _id, ", individualCount=",
 			_individualCount, ", name=", _name, ", scope=", _scope,
 			", segmentType=", _segmentType, ", state=", _state, ", status=",
@@ -164,6 +173,7 @@ public class IndividualSegment {
 	private Date _dateCreated;
 	private Date _dateModified;
 	private Map<String, Object> _embeddedResources = new HashMap<>();
+	private String _externalReferenceCode;
 	private String _filter;
 	private String _filterMetadata;
 	private String _id;
