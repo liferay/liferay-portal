@@ -135,7 +135,8 @@ public class SamlIdpSpSessionLocalServiceImpl
 				_samlPeerBindingPersistence.fetchByPrimaryKey(
 					samlIdpSsoSession.getSamlPeerBindingId());
 
-			if (Objects.equals(
+			if ((samlPeerBinding != null) &&
+				Objects.equals(
 					samlSpEntityId, samlPeerBinding.getSamlPeerEntityId())) {
 
 				return samlIdpSsoSession;
