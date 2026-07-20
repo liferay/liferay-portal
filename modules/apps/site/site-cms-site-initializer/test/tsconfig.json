@@ -1,5 +1,5 @@
 {
-	"@generated": "19322937c50366a2242e182ed7eb0389c3146efb",
+	"@generated": "86c440f4cbc0b5dfbc17e8c2fdb33b8e6e7692a1",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,9 @@
 		"paths": {
 			"@liferay/ai-hub-cell-js-components-web": [
 				"../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantChat": [
+				"../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/renderAIAssistantChat.ts"
 			],
 			"@liferay/analytics-reports-js-components-web": [
 				"../../../analytics/analytics-reports-js-components-web/src/main/resources/META-INF/resources/js/index.ts"

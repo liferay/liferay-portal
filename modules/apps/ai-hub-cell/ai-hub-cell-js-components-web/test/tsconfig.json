@@ -1,5 +1,5 @@
 {
-	"@generated": "71ded35b5c69053ed6393386c89600df93f1e8b7",
+	"@generated": "6ca14dd151021d5978f3892334ee67140d27925f",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,9 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantChat": [
+				"./../src/main/resources/META-INF/resources/js/renderAIAssistantChat.ts"
+			],
 			"@liferay/frontend-js-react-web": [
 				"../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
