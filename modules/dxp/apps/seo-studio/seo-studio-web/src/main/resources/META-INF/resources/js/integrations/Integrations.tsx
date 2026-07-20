@@ -15,6 +15,9 @@ import IntegrationStatusCellRenderer from './cell_renderers/IntegrationStatusCel
 
 import './Integrations.scss';
 
+const PAGESPEED_VALIDATION_URL =
+	'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=invalid_url&key=';
+
 interface IntegrationType {
 	configurationURL: string;
 	disabled: boolean;
@@ -24,6 +27,7 @@ interface IntegrationType {
 
 interface Props {
 	fdsId: string;
+	instancesURL: string;
 	integrationTypes: IntegrationType[];
 	integrationsURL: string;
 	items: any[];
@@ -33,6 +37,7 @@ interface Props {
 
 export default function Integrations({
 	fdsId,
+	instancesURL,
 	integrationTypes,
 	integrationsURL,
 	items,
@@ -41,6 +46,25 @@ export default function Integrations({
 }: Props) {
 	const [active, setActive] = useState(false);
 
+	const validateAPIKey = (key: string): Promise<boolean> =>
+		Liferay.Util.fetch(
+			`${PAGESPEED_VALIDATION_URL}${encodeURIComponent(key)}`
+		)
+			.then((response) => response.json())
+			.then((data) => {
+				const errorDetails = data.error?.details || [];
+
+				const errorDetail = errorDetails.find(
+					(detail: {reason?: string}) => detail.reason
+				);
+
+				const reason = errorDetail?.reason || '';
+				const status = data.error?.status || '';
+
+				return !(reason || status === 'PERMISSION_DENIED');
+			})
+			.catch(() => false);
+
 	const handleActionClick = ({
 		action: {
 			data: {id: actionId},
@@ -48,7 +72,11 @@ export default function Integrations({
 		itemData,
 	}: {
 		action: {data: {id: string}};
-		itemData: {configurationURL: string; id: number};
+		itemData: {
+			configurationURL: string;
+			id: number;
+			seoStudioInstanceId: string;
+		};
 	}) => {
 		if (actionId === 'edit') {
 			window.location.assign(itemData.configurationURL);
@@ -73,6 +101,70 @@ export default function Integrations({
 					});
 
 					window.location.reload();
+				})
+				.catch(() => {
+					openToast({
+						message: Liferay.Language.get(
+							'an-unexpected-error-occurred'
+						),
+						type: 'danger',
+					});
+				});
+
+			return;
+		}
+
+		if (actionId === 'validate-connection') {
+			Liferay.Util.fetch(
+				`${instancesURL}/${itemData.seoStudioInstanceId}`,
+				{headers: {Accept: 'application/json'}}
+			)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error();
+					}
+
+					return response.json();
+				})
+				.then((instance) =>
+					validateAPIKey(instance.googlePageSpeedAPIKey)
+				)
+				.then((valid) => {
+					if (!valid) {
+						openToast({
+							message: Liferay.Language.get(
+								'unable-to-connect-to-google-pagespeed-verify-the-configuration-and-try-again'
+							),
+							type: 'danger',
+						});
+
+						return;
+					}
+
+					return Liferay.Util.fetch(
+						`${integrationsURL}/${itemData.id}`,
+						{
+							body: JSON.stringify({state: 'active'}),
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json',
+							},
+							method: 'PATCH',
+						}
+					).then((response) => {
+						if (!response.ok) {
+							throw new Error();
+						}
+
+						openToast({
+							message: Liferay.Language.get(
+								'your-request-completed-successfully'
+							),
+							type: 'success',
+						});
+
+						window.location.reload();
+					});
 				})
 				.catch(() => {
 					openToast({

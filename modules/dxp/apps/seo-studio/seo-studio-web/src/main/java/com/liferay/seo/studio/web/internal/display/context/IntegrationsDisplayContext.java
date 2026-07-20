@@ -58,7 +58,9 @@ public class IntegrationsDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"fdsId", SEOStudioFDSNames.INTEGRATIONS
 		).put(
-			"integrationsURL", _getIntegrationsURL()
+			"instancesURL", "/o/seo-studio/instances"
+		).put(
+			"integrationsURL", "/o/seo-studio/integrations"
 		).put(
 			"integrationTypes", _getIntegrationTypesJSONArray()
 		).put(
@@ -89,12 +91,14 @@ public class IntegrationsDisplayContext {
 				null, null, null),
 			new FDSActionDropdownItem(
 				null, null, "remove",
-				_language.get(_httpServletRequest, "remove"), null, null,
-				null));
-	}
-
-	private String _getIntegrationsURL() {
-		return _themeDisplay.getPathContext() + "/o/seo-studio/integrations";
+				_language.get(_httpServletRequest, "remove"), null, null, null),
+			new FDSActionDropdownItem(
+				null, null, "validate-connection",
+				_language.get(_httpServletRequest, "validate-connection"), null,
+				null, null,
+				HashMapBuilder.<String, Object>put(
+					"stateKey", "unavailable"
+				).build()));
 	}
 
 	private JSONArray _getIntegrationTypesJSONArray() throws Exception {
@@ -147,12 +151,20 @@ public class IntegrationsDisplayContext {
 				).put(
 					"name", listTypeEntry.getName(_themeDisplay.getLocale())
 				).put(
+					"seoStudioInstanceId",
+					_getPropertyValue(
+						objectEntry,
+						"r_seoStudioInstanceToSEOStudioIntegrations_" +
+							"seoStudioInstanceId")
+				).put(
 					"state",
 					JSONUtil.put(
 						"key", state
 					).put(
 						"name", _language.get(_httpServletRequest, state)
 					)
+				).put(
+					"stateKey", state
 				);
 			});
 	}
