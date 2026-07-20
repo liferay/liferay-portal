@@ -51,6 +51,30 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	}
 
 	@Test
+	@TestInfo("LPD-63087")
+	public void testGetActionDropdownItemsForMarketplaceFragmentEntry()
+		throws Exception {
+
+		setUpFragmentPermission(true);
+
+		Mockito.when(
+			_fragmentEntry.isMarketplace()
+		).thenReturn(
+			true
+		);
+
+		BasicFragmentEntryActionDropdownItemsProvider
+			basicFragmentEntryActionDropdownItemsProvider =
+				new BasicFragmentEntryActionDropdownItemsProvider(
+					_fragmentEntry, renderRequest, renderResponse);
+
+		assertDropdownItemsInCorrectOrder(
+			basicFragmentEntryActionDropdownItemsProvider.
+				getActionDropdownItems(),
+			"rename", "view-site-usages", "move", "delete");
+	}
+
+	@Test
 	@TestInfo({"LPS-122082", "LPS-122641"})
 	public void testGetActionDropdownItemsForReactFragmentEntry()
 		throws Exception {
@@ -136,30 +160,6 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 				"edit", "change-thumbnail", "rename", "mark-as-cacheable",
 				"export", "make-a-copy", "move", "delete");
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-63087")
-	public void testGetActionDropdownItemsForMarketplaceFragmentEntry()
-		throws Exception {
-
-		setUpFragmentPermission(true);
-
-		Mockito.when(
-			_fragmentEntry.isMarketplace()
-		).thenReturn(
-			true
-		);
-
-		BasicFragmentEntryActionDropdownItemsProvider
-			basicFragmentEntryActionDropdownItemsProvider =
-				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
-
-		assertDropdownItemsInCorrectOrder(
-			basicFragmentEntryActionDropdownItemsProvider.
-				getActionDropdownItems(),
-			"rename", "view-site-usages", "move", "delete");
 	}
 
 	@Test
