@@ -124,6 +124,57 @@ public class RoleServiceTest extends BasePermissionTestCase {
 
 	@Test
 	public void testSearch() throws Exception {
+		_testSearch();
+		_testSearchWithClassNameId();
+		_testSearchWithSubtype();
+	}
+
+	@Test
+	public void testSearchCount() throws Exception {
+		int initialCount = _roleService.searchCount(
+			group.getCompanyId(), StringPool.BLANK,
+			new Integer[] {RoleConstants.TYPE_REGULAR}, new LinkedHashMap<>());
+
+		removePortletModelViewPermission();
+
+		Assert.assertEquals(
+			initialCount - 1,
+			_roleService.searchCount(
+				group.getCompanyId(), StringPool.BLANK,
+				new Integer[] {RoleConstants.TYPE_REGULAR},
+				new LinkedHashMap<>()));
+	}
+
+	@Override
+	protected void doSetUp() throws Exception {
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+	}
+
+	@Override
+	protected String getPrimKey() {
+		return String.valueOf(_role.getRoleId());
+	}
+
+	@Override
+	protected String getResourceName() {
+		return Role.class.getName();
+	}
+
+	@Override
+	protected String getRoleName() {
+		return RoleConstants.USER;
+	}
+
+	private Role _addRoleWithSubtype(String subtype) throws Exception {
+		return _roleService.addRole(
+			RandomTestUtil.randomString(), null, 0,
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), RoleConstants.TYPE_REGULAR,
+			subtype, null);
+	}
+
+	private void _testSearch() throws Exception {
 		List<Role> roles = _roleService.search(
 			group.getCompanyId(), StringPool.BLANK,
 			new Integer[] {RoleConstants.TYPE_REGULAR}, new LinkedHashMap<>(),
@@ -143,24 +194,7 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			"Role found without permissions", roles.contains(_role));
 	}
 
-	@Test
-	public void testSearchCount() throws Exception {
-		int initialCount = _roleService.searchCount(
-			group.getCompanyId(), StringPool.BLANK,
-			new Integer[] {RoleConstants.TYPE_REGULAR}, new LinkedHashMap<>());
-
-		removePortletModelViewPermission();
-
-		Assert.assertEquals(
-			initialCount - 1,
-			_roleService.searchCount(
-				group.getCompanyId(), StringPool.BLANK,
-				new Integer[] {RoleConstants.TYPE_REGULAR},
-				new LinkedHashMap<>()));
-	}
-
-	@Test
-	public void testSearchWithClassNameId() throws Exception {
+	private void _testSearchWithClassNameId() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		_className = _classNameLocalService.addClassName(
@@ -223,24 +257,41 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			roles);
 	}
 
-	@Override
-	protected void doSetUp() throws Exception {
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-	}
+	private void _testSearchWithSubtype() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
 
-	@Override
-	protected String getPrimKey() {
-		return String.valueOf(_role.getRoleId());
-	}
+		String subtype = RandomTestUtil.randomString();
 
-	@Override
-	protected String getResourceName() {
-		return Role.class.getName();
-	}
+		List<Role> expectedRoles = new ArrayList<>();
 
-	@Override
-	protected String getRoleName() {
-		return RoleConstants.USER;
+		expectedRoles.add(_addRoleWithSubtype(subtype));
+		expectedRoles.add(_addRoleWithSubtype(subtype));
+
+		_roles.addAll(expectedRoles);
+
+		_roles.add(_addRoleWithSubtype(RandomTestUtil.randomString()));
+
+		LinkedHashMap<String, Object> params =
+			LinkedHashMapBuilder.<String, Object>put(
+				"subtype", subtype
+			).build();
+
+		Assert.assertEquals(
+			expectedRoles.size(),
+			_roleService.searchCount(
+				TestPropsValues.getCompanyId(), StringPool.BLANK,
+				new Integer[] {RoleConstants.TYPE_REGULAR}, params));
+
+		List<Role> roles = _roleService.search(
+			group.getCompanyId(), StringPool.BLANK,
+			new Integer[] {RoleConstants.TYPE_REGULAR}, params,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			RoleRoleIdComparator.getInstance(false));
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				expectedRoles, RoleRoleIdComparator.getInstance(false)),
+			roles);
 	}
 
 	private ClassName _className;
