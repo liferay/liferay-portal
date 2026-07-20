@@ -83,6 +83,10 @@ public class CommercePriceModifierRelServiceImpl
 				commercePriceModifierId,
 				_classNameLocalService.getClassNameId(className), classPK);
 
+		if (commercePriceModifierRel == null) {
+			return null;
+		}
+
 		CommercePriceModifier commercePriceModifier =
 			commercePriceModifierRel.getCommercePriceModifier();
 
