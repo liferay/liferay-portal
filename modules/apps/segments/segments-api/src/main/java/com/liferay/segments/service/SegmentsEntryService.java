@@ -52,15 +52,10 @@ public interface SegmentsEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.segments.service.impl.SegmentsEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the segments entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link SegmentsEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public SegmentsEntry addSegmentsEntry(
-			String segmentsEntryKey, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active, String criteria,
+			String externalReferenceCode, String segmentsEntryKey,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, String criteria, String source,
 			ServiceContext serviceContext)
-		throws PortalException;
-
-	public SegmentsEntry addSegmentsEntry(
-			String segmentsEntryKey, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active, String criteria,
-			String source, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void addSegmentsEntryClassPKs(
@@ -122,10 +117,11 @@ public interface SegmentsEntryService extends BaseService {
 		throws PortalException;
 
 	public SegmentsEntry updateSegmentsEntry(
-			long segmentsEntryId, String segmentsEntryKey,
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, String criteria, ServiceContext serviceContext)
+			String externalReferenceCode, long segmentsEntryId,
+			String segmentsEntryKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String criteria,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2113349780
+// LIFERAY-SERVICE-BUILDER-HASH:-268141050

@@ -30,21 +30,7 @@ public class SegmentsEntryServiceWrapper
 
 	@Override
 	public SegmentsEntry addSegmentsEntry(
-			String segmentsEntryKey,
-			java.util.Map<java.util.Locale, String> nameMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
-			boolean active, String criteria,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _segmentsEntryService.addSegmentsEntry(
-			segmentsEntryKey, nameMap, descriptionMap, active, criteria,
-			serviceContext);
-	}
-
-	@Override
-	public SegmentsEntry addSegmentsEntry(
-			String segmentsEntryKey,
+			String externalReferenceCode, String segmentsEntryKey,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			boolean active, String criteria, String source,
@@ -52,8 +38,8 @@ public class SegmentsEntryServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _segmentsEntryService.addSegmentsEntry(
-			segmentsEntryKey, nameMap, descriptionMap, active, criteria, source,
-			serviceContext);
+			externalReferenceCode, segmentsEntryKey, nameMap, descriptionMap,
+			active, criteria, source, serviceContext);
 	}
 
 	@Override
@@ -166,7 +152,8 @@ public class SegmentsEntryServiceWrapper
 
 	@Override
 	public SegmentsEntry updateSegmentsEntry(
-			long segmentsEntryId, String segmentsEntryKey,
+			String externalReferenceCode, long segmentsEntryId,
+			String segmentsEntryKey,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			boolean active, String criteria,
@@ -174,8 +161,8 @@ public class SegmentsEntryServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _segmentsEntryService.updateSegmentsEntry(
-			segmentsEntryId, segmentsEntryKey, nameMap, descriptionMap, active,
-			criteria, serviceContext);
+			externalReferenceCode, segmentsEntryId, segmentsEntryKey, nameMap,
+			descriptionMap, active, criteria, serviceContext);
 	}
 
 	@Override
@@ -191,4 +178,4 @@ public class SegmentsEntryServiceWrapper
 	private SegmentsEntryService _segmentsEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-208650748
+// LIFERAY-SERVICE-BUILDER-HASH:-2092707456
