@@ -26,6 +26,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionA
 import com.liferay.bulk.rest.client.dto.v1_0.RestoreObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.StatusObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -166,6 +167,13 @@ public class BulkActionSerDes {
 			if (typeString.equals("UpdateObjectValuesBulkSelectionAction")) {
 				return UpdateObjectValuesBulkSelectionActionSerDes.toJSON(
 					(UpdateObjectValuesBulkSelectionAction)bulkAction);
+			}
+
+			if (typeString.equals(
+					"UpdateReviewDateObjectBulkSelectionAction")) {
+
+				return UpdateReviewDateObjectBulkSelectionActionSerDes.toJSON(
+					(UpdateReviewDateObjectBulkSelectionAction)bulkAction);
 			}
 
 			throw new IllegalArgumentException("Unknown type " + typeString);
@@ -346,6 +354,13 @@ public class BulkActionSerDes {
 					return UpdateObjectValuesBulkSelectionAction.toDTO(json);
 				}
 
+				if (typeString.equals(
+						"UpdateReviewDateObjectBulkSelectionAction")) {
+
+					return UpdateReviewDateObjectBulkSelectionAction.toDTO(
+						json);
+				}
+
 				throw new IllegalArgumentException(
 					"Unknown type " + typeString);
 			}
@@ -469,4 +484,4 @@ public class BulkActionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1370304813
+// LIFERAY-REST-BUILDER-HASH:441451610

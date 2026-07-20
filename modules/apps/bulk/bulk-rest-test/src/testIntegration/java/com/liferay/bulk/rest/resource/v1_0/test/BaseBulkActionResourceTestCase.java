@@ -34,6 +34,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionA
 import com.liferay.bulk.rest.client.dto.v1_0.RestoreObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.StatusObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.http.HttpInvoker;
 import com.liferay.bulk.rest.client.pagination.Page;
 import com.liferay.bulk.rest.client.resource.v1_0.BulkActionResource;
@@ -740,6 +741,22 @@ public abstract class BaseBulkActionResourceTestCase {
 
 				if (((UpdateObjectValuesBulkSelectionAction)bulkAction).
 						getValues() == null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("reviewDate", additionalAssertFieldName)) {
+				if (!(bulkAction instanceof
+						UpdateReviewDateObjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (((UpdateReviewDateObjectBulkSelectionAction)bulkAction).
+						getReviewDate() == null) {
 
 					valid = false;
 				}
@@ -1558,6 +1575,27 @@ public abstract class BaseBulkActionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("reviewDate", additionalAssertFieldName)) {
+				if (!(bulkAction1 instanceof
+						UpdateReviewDateObjectBulkSelectionAction) ||
+					!(bulkAction2 instanceof
+						UpdateReviewDateObjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (!Objects.deepEquals(
+						((UpdateReviewDateObjectBulkSelectionAction)
+							bulkAction1).getReviewDate(),
+						((UpdateReviewDateObjectBulkSelectionAction)
+							bulkAction2).getReviewDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -2068,6 +2106,18 @@ public abstract class BaseBulkActionResourceTestCase {
 						"UpdateObjectValuesBulkSelectionAction"));
 
 				return bulkAction;
+			},
+			() -> {
+				UpdateReviewDateObjectBulkSelectionAction bulkAction =
+					new UpdateReviewDateObjectBulkSelectionAction();
+
+				bulkAction.setReviewDate(RandomTestUtil.nextDate());
+
+				bulkAction.setType(
+					BulkAction.Type.create(
+						"UpdateReviewDateObjectBulkSelectionAction"));
+
+				return bulkAction;
 			});
 
 		Supplier<BulkAction> supplier = suppliers.get(
@@ -2312,4 +2362,4 @@ public abstract class BaseBulkActionResourceTestCase {
 		_bulkActionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-889421120
+// LIFERAY-REST-BUILDER-HASH:-1932985187

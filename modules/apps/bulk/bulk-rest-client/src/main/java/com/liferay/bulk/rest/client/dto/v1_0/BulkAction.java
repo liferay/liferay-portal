@@ -161,7 +161,9 @@ public abstract class BulkAction implements Cloneable, Serializable {
 		EDIT_OBJECT_CATEGORIES_BULK_SELECTION_ACTION(
 			"EditObjectCategoriesBulkSelectionAction"),
 		UPDATE_OBJECT_VALUES_BULK_SELECTION_ACTION(
-			"UpdateObjectValuesBulkSelectionAction");
+			"UpdateObjectValuesBulkSelectionAction"),
+		UPDATE_REVIEW_DATE_OBJECT_BULK_SELECTION_ACTION(
+			"UpdateReviewDateObjectBulkSelectionAction");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -193,4 +195,4 @@ public abstract class BulkAction implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1056758656
+// LIFERAY-REST-BUILDER-HASH:412224344

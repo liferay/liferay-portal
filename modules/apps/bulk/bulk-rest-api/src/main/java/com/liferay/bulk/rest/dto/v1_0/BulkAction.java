@@ -119,6 +119,10 @@ import java.util.function.Supplier;
 		@JsonSubTypes.Type(
 			name = "UpdateObjectValuesBulkSelectionAction",
 			value = UpdateObjectValuesBulkSelectionAction.class
+		),
+		@JsonSubTypes.Type(
+			name = "UpdateReviewDateObjectBulkSelectionAction",
+			value = UpdateReviewDateObjectBulkSelectionAction.class
 		)
 	}
 )
@@ -397,7 +401,9 @@ public abstract class BulkAction implements Serializable {
 		EDIT_OBJECT_CATEGORIES_BULK_SELECTION_ACTION(
 			"EditObjectCategoriesBulkSelectionAction"),
 		UPDATE_OBJECT_VALUES_BULK_SELECTION_ACTION(
-			"UpdateObjectValuesBulkSelectionAction");
+			"UpdateObjectValuesBulkSelectionAction"),
+		UPDATE_REVIEW_DATE_OBJECT_BULK_SELECTION_ACTION(
+			"UpdateReviewDateObjectBulkSelectionAction");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -521,4 +527,4 @@ public abstract class BulkAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1038831538
+// LIFERAY-REST-BUILDER-HASH:-1356730061
