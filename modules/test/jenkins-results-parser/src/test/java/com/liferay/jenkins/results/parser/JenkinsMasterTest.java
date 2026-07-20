@@ -10,6 +10,9 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,13 +35,20 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		UrlReader urlReader = mockUrlReader();
 
 		setUrlReaderOutput(
-			"{\"mode\": \"NORMAL\"}", "http://test-9-1/api/json?tree=mode",
-			urlReader);
+			new JSONObject(
+			).put(
+				"items", new JSONArray()
+			).toString(),
+			"http://test-9-1/queue/api/json", urlReader);
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"mode", "NORMAL"
+			).toString(),
+			"http://test-9-1/api/json?tree=mode", urlReader);
 		setUrlReaderOutput(
 			read(new File(dependenciesDirs.get(0), "computer-api.json")),
 			"http://test-9-1/computer/api/json", urlReader);
-		setUrlReaderOutput(
-			"{\"items\": []}", "http://test-9-1/queue/api/json", urlReader);
 
 		_jenkinsMaster = JenkinsMasterTestUtil.stageMaster(
 			"test-9-1", "http://test-9-1");
