@@ -157,7 +157,7 @@ public interface RoleTypeContributor {
 	}
 
 	public default BaseModelSearchResult<Role> searchRoles(
-		long companyId, String keywords, int start, int end,
+		long companyId, String keywords, String subtype, int start, int end,
 		OrderByComparator<Role> orderByComparator) {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -165,6 +165,10 @@ public interface RoleTypeContributor {
 		if (Validator.isNotNull(getClassName())) {
 			params.put(
 				"classNameId", PortalUtil.getClassNameId(getClassName()));
+		}
+
+		if (Validator.isNotNull(subtype)) {
+			params.put("subtype", subtype);
 		}
 
 		int total = RoleServiceUtil.searchCount(

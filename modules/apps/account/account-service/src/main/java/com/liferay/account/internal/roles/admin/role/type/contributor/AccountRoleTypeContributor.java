@@ -95,7 +95,7 @@ public class AccountRoleTypeContributor implements RoleTypeContributor {
 
 	@Override
 	public BaseModelSearchResult<Role> searchRoles(
-		long companyId, String keywords, int start, int end,
+		long companyId, String keywords, String subtype, int start, int end,
 		OrderByComparator<Role> orderByComparator) {
 
 		try {
