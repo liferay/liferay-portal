@@ -45,9 +45,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface EntityModelResourceTestEntity2Resource {
 
-	public EntityModelResourceTestEntity2
-			getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
-				Long entityModelResourceTestEntity2Id)
+	public EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2(
+			Long entityModelResourceTestEntity2Id)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -138,4 +137,4 @@ public interface EntityModelResourceTestEntity2Resource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1525313680
+// LIFERAY-REST-BUILDER-HASH:-467528347

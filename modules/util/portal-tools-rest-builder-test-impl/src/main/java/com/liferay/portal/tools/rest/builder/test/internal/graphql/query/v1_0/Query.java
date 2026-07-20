@@ -682,15 +682,14 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {entityModelResourceTestEntities2EntityModelResourceTestEntity2(entityModelResourceTestEntity2Id: ___){id, name}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {entityModelResourceTestEntity2(entityModelResourceTestEntity2Id: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieve a EntityModelResourceTestEntity2 item. (EntityModelResource and VulcanBatchEngineTaskItemDelegate interfaces will not be implemented automatically)"
 	)
-	public EntityModelResourceTestEntity2
-			entityModelResourceTestEntities2EntityModelResourceTestEntity2(
-				@GraphQLName("entityModelResourceTestEntity2Id") Long
-					entityModelResourceTestEntity2Id)
+	public EntityModelResourceTestEntity2 entityModelResourceTestEntity2(
+			@GraphQLName("entityModelResourceTestEntity2Id") Long
+				entityModelResourceTestEntity2Id)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -698,7 +697,7 @@ public class Query {
 			this::_populateResourceContext,
 			entityModelResourceTestEntity2Resource ->
 				entityModelResourceTestEntity2Resource.
-					getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
+					getEntityModelResourceTestEntity2(
 						entityModelResourceTestEntity2Id));
 	}
 
@@ -2150,4 +2149,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2136133290
+// LIFERAY-REST-BUILDER-HASH:913081705

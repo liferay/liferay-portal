@@ -26,6 +26,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -50,6 +51,10 @@ public interface EntityModelResourceTestEntity1Resource {
 
 	public Page<EntityModelResourceTestEntity1>
 			getEntityModelResourceTestEntities1Page()
+		throws Exception;
+
+	public Response postEntityModelResourceTestEntities1PageExportBatch(
+			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -148,4 +153,4 @@ public interface EntityModelResourceTestEntity1Resource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-265995752
+// LIFERAY-REST-BUILDER-HASH:1500280967

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -21,6 +22,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -34,18 +41,30 @@ import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.EntityModelResourceTestEntity2;
 import com.liferay.portal.tools.rest.builder.test.client.http.HttpInvoker;
 import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.EntityModelResourceTestEntity2Resource;
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.EntityModelResourceTestEntity2SerDes;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.PathSegment;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Method;
+
+import java.net.URI;
 
 import java.text.Format;
 
@@ -56,6 +75,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -68,6 +88,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
 /**
  * @author Alejandro Tardín
  * @generated
@@ -77,8 +100,10 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 
 	@ClassRule
 	@Rule
-	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
-		new LiferayIntegrationTestRule();
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -192,15 +217,13 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 	}
 
 	@Test
-	public void testGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2()
-		throws Exception {
-
+	public void testGetEntityModelResourceTestEntity2() throws Exception {
 		EntityModelResourceTestEntity2 postEntityModelResourceTestEntity2 =
-			testGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
+			testGetEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
 
 		EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2 =
 			entityModelResourceTestEntity2Resource.
-				getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
+				getEntityModelResourceTestEntity2(
 					postEntityModelResourceTestEntity2.getId());
 
 		assertEquals(
@@ -209,8 +232,209 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 		assertValid(getEntityModelResourceTestEntity2);
 	}
 
+	@Test
+	public void testVulcanCRUDItemDelegateGetItem() throws Exception {
+		EntityModelResourceTestEntity2 postEntityModelResourceTestEntity2 =
+			testGetEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
+
+		EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2 =
+			entityModelResourceTestEntity2Resource.
+				getEntityModelResourceTestEntity2(
+					postEntityModelResourceTestEntity2.getId());
+
+		VulcanCRUDItemDelegate vulcanCRUDItemDelegate =
+			_vulcanCRUDItemDelegateBuilderRegistry.builder(
+				testCompany,
+				"com.liferay.portal.tools.rest.builder.test.dto.v1_0.EntityModelResourceTestEntity2"
+			).acceptLanguage(
+				new AcceptLanguage() {
+
+					@Override
+					public List<Locale> getLocales() {
+						return Arrays.asList(LocaleUtil.getDefault());
+					}
+
+					@Override
+					public String getPreferredLanguageId() {
+						return LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+					}
+
+					@Override
+					public Locale getPreferredLocale() {
+						return LocaleUtil.getDefault();
+					}
+
+				}
+			).groupLocalService(
+				_groupLocalService
+			).httpServletRequest(
+				testVulcanCRUDItemDelegate_getHttpServletRequest()
+			).httpServletResponse(
+				new MockHttpServletResponse()
+			).resourceActionLocalService(
+				_resourceActionLocalService
+			).resourcePermissionLocalService(
+				_resourcePermissionLocalService
+			).roleLocalService(
+				_roleLocalService
+			).scopeChecker(
+				_scopeChecker
+			).uriInfo(
+				testVulcanCRUDItemDelegate_getUriInfo()
+			).user(
+				testVulcanCRUDItemDelegate_getUser()
+			).build();
+
+		Object item = vulcanCRUDItemDelegate.getItem(
+			postEntityModelResourceTestEntity2.getId());
+
+		assertEquals(
+			getEntityModelResourceTestEntity2,
+			EntityModelResourceTestEntity2SerDes.toDTO(item.toString()));
+	}
+
+	protected HttpServletRequest
+		testVulcanCRUDItemDelegate_getHttpServletRequest() {
+
+		return new MockHttpServletRequest() {
+
+			@Override
+			public StringBuffer getRequestURL() {
+				return new StringBuffer(
+					StringBundler.concat(
+						"http://localhost:",
+						String.valueOf(PortalUtil.getPortalServerPort(false)),
+						"/o/v1.0/", RandomTestUtil.randomString(), "/",
+						RandomTestUtil.randomString()));
+			}
+
+		};
+	}
+
+	protected UriInfo testVulcanCRUDItemDelegate_getUriInfo() {
+		String applicationPath = RandomTestUtil.randomString() + "/";
+		String resourcePath = RandomTestUtil.randomString();
+
+		return new UriInfo() {
+
+			@Override
+			public String getPath() {
+				return resourcePath;
+			}
+
+			@Override
+			public String getPath(boolean decode) {
+				return getPath();
+			}
+
+			@Override
+			public List<PathSegment> getPathSegments() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public List<PathSegment> getPathSegments(boolean decode) {
+				return getPathSegments();
+			}
+
+			@Override
+			public URI getRequestUri() {
+				return URI.create(
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false), "/o/",
+						applicationPath, resourcePath));
+			}
+
+			@Override
+			public UriBuilder getRequestUriBuilder() {
+				return UriBuilder.fromUri(getRequestUri());
+			}
+
+			@Override
+			public URI getAbsolutePath() {
+				return getRequestUri();
+			}
+
+			@Override
+			public UriBuilder getAbsolutePathBuilder() {
+				return getRequestUriBuilder();
+			}
+
+			@Override
+			public URI getBaseUri() {
+				return URI.create(
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false), "/o/",
+						applicationPath));
+			}
+
+			@Override
+			public UriBuilder getBaseUriBuilder() {
+				return UriBuilder.fromUri(getBaseUri());
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getPathParameters() {
+				return new MultivaluedHashMap<>();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getPathParameters(
+				boolean decode) {
+
+				return getPathParameters();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getQueryParameters() {
+				return new MultivaluedHashMap<>();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getQueryParameters(
+				boolean decode) {
+
+				return getQueryParameters();
+			}
+
+			@Override
+			public List<String> getMatchedURIs() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public List<String> getMatchedURIs(boolean decode) {
+				return getMatchedURIs();
+			}
+
+			@Override
+			public List<Object> getMatchedResources() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public URI resolve(URI requestUri) {
+				return getBaseUri().resolve(requestUri);
+			}
+
+			@Override
+			public URI relativize(URI uri) {
+				return getBaseUri().relativize(uri);
+			}
+
+		};
+	}
+
+	protected com.liferay.portal.kernel.model.User
+		testVulcanCRUDItemDelegate_getUser() {
+
+		return _testCompanyAdminUser;
+	}
+
 	protected EntityModelResourceTestEntity2
-			testGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
+			testGetEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -218,11 +442,11 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2()
+	public void testGraphQLGetEntityModelResourceTestEntity2()
 		throws Exception {
 
 		EntityModelResourceTestEntity2 entityModelResourceTestEntity2 =
-			testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
+			testGraphQLGetEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
 
 		// No namespace
 
@@ -233,7 +457,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 					JSONUtil.getValueAsString(
 						invokeGraphQLQuery(
 							new GraphQLField(
-								"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+								"entityModelResourceTestEntity2",
 								new HashMap<String, Object>() {
 									{
 										put(
@@ -244,7 +468,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 								},
 								getGraphQLFields())),
 						"JSONObject/data",
-						"Object/entityModelResourceTestEntities2EntityModelResourceTestEntity2"))));
+						"Object/entityModelResourceTestEntity2"))));
 
 		// Using the namespace portalTools_v1_0
 
@@ -257,7 +481,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 							new GraphQLField(
 								"portalTools_v1_0",
 								new GraphQLField(
-									"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+									"entityModelResourceTestEntity2",
 									new HashMap<String, Object>() {
 										{
 											put(
@@ -268,11 +492,11 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 									},
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/portalTools_v1_0",
-						"Object/entityModelResourceTestEntities2EntityModelResourceTestEntity2"))));
+						"Object/entityModelResourceTestEntity2"))));
 	}
 
 	@Test
-	public void testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2NotFound()
+	public void testGraphQLGetEntityModelResourceTestEntity2NotFound()
 		throws Exception {
 
 		Long irrelevantEntityModelResourceTestEntity2Id =
@@ -285,7 +509,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 			JSONUtil.getValueAsString(
 				invokeGraphQLQuery(
 					new GraphQLField(
-						"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+						"entityModelResourceTestEntity2",
 						new HashMap<String, Object>() {
 							{
 								put(
@@ -306,7 +530,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 					new GraphQLField(
 						"portalTools_v1_0",
 						new GraphQLField(
-							"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+							"entityModelResourceTestEntity2",
 							new HashMap<String, Object>() {
 								{
 									put(
@@ -320,7 +544,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 	}
 
 	protected EntityModelResourceTestEntity2
-			testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
+			testGraphQLGetEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
 		throws Exception {
 
 		return testGraphQLEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
@@ -336,12 +560,12 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 
 	protected void assertContains(
 		EntityModelResourceTestEntity2 entityModelResourceTestEntity2,
-		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s) {
+		List<EntityModelResourceTestEntity2> entityModelResourceTestEntities2) {
 
 		boolean contains = false;
 
 		for (EntityModelResourceTestEntity2 item :
-				entityModelResourceTestEntity2s) {
+				entityModelResourceTestEntities2) {
 
 			if (equals(entityModelResourceTestEntity2, item)) {
 				contains = true;
@@ -351,7 +575,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			entityModelResourceTestEntity2s + " does not contain " +
+			entityModelResourceTestEntities2 + " does not contain " +
 				entityModelResourceTestEntity2,
 			contains);
 	}
@@ -377,18 +601,19 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 	}
 
 	protected void assertEquals(
-		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s1,
-		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s2) {
+		List<EntityModelResourceTestEntity2> entityModelResourceTestEntities21,
+		List<EntityModelResourceTestEntity2>
+			entityModelResourceTestEntities22) {
 
 		Assert.assertEquals(
-			entityModelResourceTestEntity2s1.size(),
-			entityModelResourceTestEntity2s2.size());
+			entityModelResourceTestEntities21.size(),
+			entityModelResourceTestEntities22.size());
 
-		for (int i = 0; i < entityModelResourceTestEntity2s1.size(); i++) {
+		for (int i = 0; i < entityModelResourceTestEntities21.size(); i++) {
 			EntityModelResourceTestEntity2 entityModelResourceTestEntity21 =
-				entityModelResourceTestEntity2s1.get(i);
+				entityModelResourceTestEntities21.get(i);
 			EntityModelResourceTestEntity2 entityModelResourceTestEntity22 =
-				entityModelResourceTestEntity2s2.get(i);
+				entityModelResourceTestEntities22.get(i);
 
 			assertEquals(
 				entityModelResourceTestEntity21,
@@ -397,21 +622,22 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s1,
-		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s2) {
+		List<EntityModelResourceTestEntity2> entityModelResourceTestEntities21,
+		List<EntityModelResourceTestEntity2>
+			entityModelResourceTestEntities22) {
 
 		Assert.assertEquals(
-			entityModelResourceTestEntity2s1.size(),
-			entityModelResourceTestEntity2s2.size());
+			entityModelResourceTestEntities21.size(),
+			entityModelResourceTestEntities22.size());
 
 		for (EntityModelResourceTestEntity2 entityModelResourceTestEntity21 :
-				entityModelResourceTestEntity2s1) {
+				entityModelResourceTestEntities21) {
 
 			boolean contains = false;
 
 			for (EntityModelResourceTestEntity2
 					entityModelResourceTestEntity22 :
-						entityModelResourceTestEntity2s2) {
+						entityModelResourceTestEntities22) {
 
 				if (equals(
 						entityModelResourceTestEntity21,
@@ -424,7 +650,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				entityModelResourceTestEntity2s2 + " does not contain " +
+				entityModelResourceTestEntities22 + " does not contain " +
 					entityModelResourceTestEntity21,
 				contains);
 		}
@@ -470,9 +696,9 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 		boolean valid = false;
 
 		java.util.Collection<EntityModelResourceTestEntity2>
-			entityModelResourceTestEntity2s = page.getItems();
+			entityModelResourceTestEntities2 = page.getItems();
 
-		int size = entityModelResourceTestEntity2s.size();
+		int size = entityModelResourceTestEntities2.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -1045,5 +1271,27 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 		EntityModelResourceTestEntity2Resource
 			_entityModelResourceTestEntity2Resource;
 
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private ScopeChecker _scopeChecker;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@Inject
+	private VulcanCRUDItemDelegateBuilderRegistry
+		_vulcanCRUDItemDelegateBuilderRegistry;
+
 }
-// LIFERAY-REST-BUILDER-HASH:-403321362
+// LIFERAY-REST-BUILDER-HASH:-721920204

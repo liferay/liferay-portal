@@ -78,6 +78,9 @@ public class ServletDataImpl implements ServletData {
 			_ercScopedTestEntityResourceComponentServiceObjects);
 		Mutation.setERCSiteTestEntityResourceComponentServiceObjects(
 			_ercSiteTestEntityResourceComponentServiceObjects);
+		Mutation.
+			setEntityModelResourceTestEntity1ResourceComponentServiceObjects(
+				_entityModelResourceTestEntity1ResourceComponentServiceObjects);
 		Mutation.setFilterResourceComponentServiceObjects(
 			_filterResourceComponentServiceObjects);
 		Mutation.setMultipartTestEntityResourceComponentServiceObjects(
@@ -387,6 +390,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ERCSiteTestEntityResourceImpl.class,
 							"putSiteERCSiteTestEntityPermissionsPage"));
+					put(
+						"mutation#createEntityModelResourceTestEntities1PageExportBatch",
+						new ObjectValuePair<>(
+							EntityModelResourceTestEntity1ResourceImpl.class,
+							"postEntityModelResourceTestEntities1PageExportBatch"));
 					put(
 						"mutation#createFiltersPageExportBatch",
 						new ObjectValuePair<>(
@@ -744,10 +752,10 @@ public class ServletDataImpl implements ServletData {
 							EntityModelResourceTestEntity1ResourceImpl.class,
 							"getEntityModelResourceTestEntities1Page"));
 					put(
-						"query#entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+						"query#entityModelResourceTestEntity2",
 						new ObjectValuePair<>(
 							EntityModelResourceTestEntity2ResourceImpl.class,
-							"getEntityModelResourceTestEntities2EntityModelResourceTestEntity2"));
+							"getEntityModelResourceTestEntity2"));
 					put(
 						"query#filters",
 						new ObjectValuePair<>(
@@ -896,6 +904,10 @@ public class ServletDataImpl implements ServletData {
 		_ercSiteTestEntityResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<EntityModelResourceTestEntity1Resource>
+		_entityModelResourceTestEntity1ResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<FilterResource>
 		_filterResourceComponentServiceObjects;
 
@@ -928,10 +940,6 @@ public class ServletDataImpl implements ServletData {
 		_testEntityResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<EntityModelResourceTestEntity1Resource>
-		_entityModelResourceTestEntity1ResourceComponentServiceObjects;
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<EntityModelResourceTestEntity2Resource>
 		_entityModelResourceTestEntity2ResourceComponentServiceObjects;
 
@@ -940,4 +948,4 @@ public class ServletDataImpl implements ServletData {
 		_testEntityAddressResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:129083861
+// LIFERAY-REST-BUILDER-HASH:-1186725564

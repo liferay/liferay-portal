@@ -27,6 +27,7 @@ import com.liferay.portal.tools.rest.builder.test.resource.v1_0.CompanyTestEntit
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCAssetLibraryTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCScopedTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCSiteTestEntityResource;
+import com.liferay.portal.tools.rest.builder.test.resource.v1_0.EntityModelResourceTestEntity1Resource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.FilterResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.MultipartTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.SchemaResource;
@@ -111,6 +112,15 @@ public class Mutation {
 
 		_ercSiteTestEntityResourceComponentServiceObjects =
 			ercSiteTestEntityResourceComponentServiceObjects;
+	}
+
+	public static void
+		setEntityModelResourceTestEntity1ResourceComponentServiceObjects(
+			ComponentServiceObjects<EntityModelResourceTestEntity1Resource>
+				entityModelResourceTestEntity1ResourceComponentServiceObjects) {
+
+		_entityModelResourceTestEntity1ResourceComponentServiceObjects =
+			entityModelResourceTestEntity1ResourceComponentServiceObjects;
 	}
 
 	public static void setFilterResourceComponentServiceObjects(
@@ -977,6 +987,22 @@ public class Mutation {
 
 				return paginationPage.getItems();
 			});
+	}
+
+	@GraphQLField
+	public Response createEntityModelResourceTestEntities1PageExportBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_entityModelResourceTestEntity1ResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			entityModelResourceTestEntity1Resource ->
+				entityModelResourceTestEntity1Resource.
+					postEntityModelResourceTestEntities1PageExportBatch(
+						callbackURL, contentType, fieldNames));
 	}
 
 	@GraphQLField
@@ -1907,6 +1933,34 @@ public class Mutation {
 			_vulcanBatchEngineImportTaskResource);
 	}
 
+	private void _populateResourceContext(
+			EntityModelResourceTestEntity1Resource
+				entityModelResourceTestEntity1Resource)
+		throws Exception {
+
+		entityModelResourceTestEntity1Resource.setContextAcceptLanguage(
+			_acceptLanguage);
+		entityModelResourceTestEntity1Resource.setContextCompany(_company);
+		entityModelResourceTestEntity1Resource.setContextHttpServletRequest(
+			_httpServletRequest);
+		entityModelResourceTestEntity1Resource.setContextHttpServletResponse(
+			_httpServletResponse);
+		entityModelResourceTestEntity1Resource.setContextUriInfo(_uriInfo);
+		entityModelResourceTestEntity1Resource.setContextUser(_user);
+		entityModelResourceTestEntity1Resource.setGroupLocalService(
+			_groupLocalService);
+		entityModelResourceTestEntity1Resource.setRoleLocalService(
+			_roleLocalService);
+
+		entityModelResourceTestEntity1Resource.
+			setVulcanBatchEngineExportTaskResource(
+				_vulcanBatchEngineExportTaskResource);
+
+		entityModelResourceTestEntity1Resource.
+			setVulcanBatchEngineImportTaskResource(
+				_vulcanBatchEngineImportTaskResource);
+	}
+
 	private void _populateResourceContext(FilterResource filterResource)
 		throws Exception {
 
@@ -2089,6 +2143,9 @@ public class Mutation {
 		_ercScopedTestEntityResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ERCSiteTestEntityResource>
 		_ercSiteTestEntityResourceComponentServiceObjects;
+	private static ComponentServiceObjects
+		<EntityModelResourceTestEntity1Resource>
+			_entityModelResourceTestEntity1ResourceComponentServiceObjects;
 	private static ComponentServiceObjects<FilterResource>
 		_filterResourceComponentServiceObjects;
 	private static ComponentServiceObjects<MultipartTestEntityResource>
@@ -2126,4 +2183,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2074290579
+// LIFERAY-REST-BUILDER-HASH:1933774722

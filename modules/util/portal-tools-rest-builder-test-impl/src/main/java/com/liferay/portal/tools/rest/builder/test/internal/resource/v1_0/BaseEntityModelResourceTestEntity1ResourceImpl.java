@@ -47,6 +47,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
@@ -95,11 +96,76 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 		return Page.of(Collections.emptyList());
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/entity-model-resource-test-entities1/export-batch'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "callbackURL"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "contentType"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fieldNames"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "EntityModelResourceTestEntity1"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/entity-model-resource-test-entities1/export-batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
+	@Override
+	public Response postEntityModelResourceTestEntities1PageExportBatch(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("callbackURL")
+			String callbackURL,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.DefaultValue("JSON")
+			@jakarta.ws.rs.QueryParam("contentType")
+			String contentType,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("fieldNames")
+			String fieldNames)
+		throws Exception {
+
+		vulcanBatchEngineExportTaskResource.setContextAcceptLanguage(
+			contextAcceptLanguage);
+		vulcanBatchEngineExportTaskResource.setContextCompany(contextCompany);
+		vulcanBatchEngineExportTaskResource.setContextHttpServletRequest(
+			contextHttpServletRequest);
+		vulcanBatchEngineExportTaskResource.setContextUriInfo(contextUriInfo);
+		vulcanBatchEngineExportTaskResource.setContextUser(contextUser);
+		vulcanBatchEngineExportTaskResource.setGroupLocalService(
+			groupLocalService);
+
+		Response.ResponseBuilder responseBuilder = Response.accepted();
+
+		return responseBuilder.entity(
+			vulcanBatchEngineExportTaskResource.postExportTask(
+				EntityModelResourceTestEntity1.class.getName(), callbackURL,
+				contentType, fieldNames)
+		).build();
+	}
+
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			Collection<EntityModelResourceTestEntity1>
-				entityModelResourceTestEntity1s,
+				entityModelResourceTestEntities1,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -110,7 +176,7 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 	@Override
 	public void delete(
 			Collection<EntityModelResourceTestEntity1>
-				entityModelResourceTestEntity1s,
+				entityModelResourceTestEntities1,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -150,8 +216,7 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return getEntityModelResourceTestEntities1Page();
 	}
 
 	@Override
@@ -188,7 +253,7 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 	@Override
 	public void update(
 			Collection<EntityModelResourceTestEntity1>
-				entityModelResourceTestEntity1s,
+				entityModelResourceTestEntities1,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -764,4 +829,4 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 			BaseEntityModelResourceTestEntity1ResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1060220654
+// LIFERAY-REST-BUILDER-HASH:2054175493

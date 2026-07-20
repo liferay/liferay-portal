@@ -31,7 +31,7 @@ export class EntityModelResourceTestEntity2API {
 				 * @param entityModelResourceTestEntity2Id
 		 * @param headers Optional custom request headers
 		 */
-		public async getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
+		public async getEntityModelResourceTestEntity2(
 						entityModelResourceTestEntity2Id: number,
 			headers?: {[name: string]: string},
 		): Promise<{
@@ -46,7 +46,7 @@ export class EntityModelResourceTestEntity2API {
 			const queryParameters: any = {};
 
 						if (entityModelResourceTestEntity2Id === null || entityModelResourceTestEntity2Id === undefined) {
-							throw new Error("Required parameter entityModelResourceTestEntity2Id was null or undefined when calling getEntityModelResourceTestEntities2EntityModelResourceTestEntity2.");
+							throw new Error("Required parameter entityModelResourceTestEntity2Id was null or undefined when calling getEntityModelResourceTestEntity2.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?

@@ -31,13 +31,12 @@ public interface EntityModelResourceTestEntity2Resource {
 		return new Builder();
 	}
 
-	public EntityModelResourceTestEntity2
-			getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
-				Long entityModelResourceTestEntity2Id)
+	public EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2(
+			Long entityModelResourceTestEntity2Id)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getEntityModelResourceTestEntities2EntityModelResourceTestEntity2HttpResponse(
+			getEntityModelResourceTestEntity2HttpResponse(
 				Long entityModelResourceTestEntity2Id)
 		throws Exception;
 
@@ -150,13 +149,12 @@ public interface EntityModelResourceTestEntity2Resource {
 	public static class EntityModelResourceTestEntity2ResourceImpl
 		implements EntityModelResourceTestEntity2Resource {
 
-		public EntityModelResourceTestEntity2
-				getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
-					Long entityModelResourceTestEntity2Id)
+		public EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2(
+				Long entityModelResourceTestEntity2Id)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getEntityModelResourceTestEntities2EntityModelResourceTestEntity2HttpResponse(
+				getEntityModelResourceTestEntity2HttpResponse(
 					entityModelResourceTestEntity2Id);
 
 			String content = httpResponse.getContent();
@@ -220,7 +218,7 @@ public interface EntityModelResourceTestEntity2Resource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getEntityModelResourceTestEntities2EntityModelResourceTestEntity2HttpResponse(
+				getEntityModelResourceTestEntity2HttpResponse(
 					Long entityModelResourceTestEntity2Id)
 			throws Exception {
 
@@ -274,4 +272,4 @@ public interface EntityModelResourceTestEntity2Resource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:846905044
+// LIFERAY-REST-BUILDER-HASH:-191760289

@@ -1371,7 +1371,7 @@ paths:
         get:
             description:
                 "Retrieve a EntityModelResourceTestEntity2 item. (EntityModelResource and VulcanBatchEngineTaskItemDelegate interfaces will not be implemented automatically)"
-            operationId: getEntityModelResourceTestEntities2EntityModelResourceTestEntity2
+            operationId: getEntityModelResourceTestEntity2
             parameters:
                 -   in: path
                     name: entityModelResourceTestEntity2Id

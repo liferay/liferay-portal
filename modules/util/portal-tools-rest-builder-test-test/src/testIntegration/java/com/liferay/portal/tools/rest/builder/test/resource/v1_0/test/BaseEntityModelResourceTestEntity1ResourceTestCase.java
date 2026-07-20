@@ -249,12 +249,12 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 
 	protected void assertContains(
 		EntityModelResourceTestEntity1 entityModelResourceTestEntity1,
-		List<EntityModelResourceTestEntity1> entityModelResourceTestEntity1s) {
+		List<EntityModelResourceTestEntity1> entityModelResourceTestEntities1) {
 
 		boolean contains = false;
 
 		for (EntityModelResourceTestEntity1 item :
-				entityModelResourceTestEntity1s) {
+				entityModelResourceTestEntities1) {
 
 			if (equals(entityModelResourceTestEntity1, item)) {
 				contains = true;
@@ -264,7 +264,7 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			entityModelResourceTestEntity1s + " does not contain " +
+			entityModelResourceTestEntities1 + " does not contain " +
 				entityModelResourceTestEntity1,
 			contains);
 	}
@@ -290,18 +290,19 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 	}
 
 	protected void assertEquals(
-		List<EntityModelResourceTestEntity1> entityModelResourceTestEntity1s1,
-		List<EntityModelResourceTestEntity1> entityModelResourceTestEntity1s2) {
+		List<EntityModelResourceTestEntity1> entityModelResourceTestEntities11,
+		List<EntityModelResourceTestEntity1>
+			entityModelResourceTestEntities12) {
 
 		Assert.assertEquals(
-			entityModelResourceTestEntity1s1.size(),
-			entityModelResourceTestEntity1s2.size());
+			entityModelResourceTestEntities11.size(),
+			entityModelResourceTestEntities12.size());
 
-		for (int i = 0; i < entityModelResourceTestEntity1s1.size(); i++) {
+		for (int i = 0; i < entityModelResourceTestEntities11.size(); i++) {
 			EntityModelResourceTestEntity1 entityModelResourceTestEntity11 =
-				entityModelResourceTestEntity1s1.get(i);
+				entityModelResourceTestEntities11.get(i);
 			EntityModelResourceTestEntity1 entityModelResourceTestEntity12 =
-				entityModelResourceTestEntity1s2.get(i);
+				entityModelResourceTestEntities12.get(i);
 
 			assertEquals(
 				entityModelResourceTestEntity11,
@@ -310,21 +311,22 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<EntityModelResourceTestEntity1> entityModelResourceTestEntity1s1,
-		List<EntityModelResourceTestEntity1> entityModelResourceTestEntity1s2) {
+		List<EntityModelResourceTestEntity1> entityModelResourceTestEntities11,
+		List<EntityModelResourceTestEntity1>
+			entityModelResourceTestEntities12) {
 
 		Assert.assertEquals(
-			entityModelResourceTestEntity1s1.size(),
-			entityModelResourceTestEntity1s2.size());
+			entityModelResourceTestEntities11.size(),
+			entityModelResourceTestEntities12.size());
 
 		for (EntityModelResourceTestEntity1 entityModelResourceTestEntity11 :
-				entityModelResourceTestEntity1s1) {
+				entityModelResourceTestEntities11) {
 
 			boolean contains = false;
 
 			for (EntityModelResourceTestEntity1
 					entityModelResourceTestEntity12 :
-						entityModelResourceTestEntity1s2) {
+						entityModelResourceTestEntities12) {
 
 				if (equals(
 						entityModelResourceTestEntity11,
@@ -337,7 +339,7 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				entityModelResourceTestEntity1s2 + " does not contain " +
+				entityModelResourceTestEntities12 + " does not contain " +
 					entityModelResourceTestEntity11,
 				contains);
 		}
@@ -383,9 +385,9 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 		boolean valid = false;
 
 		java.util.Collection<EntityModelResourceTestEntity1>
-			entityModelResourceTestEntity1s = page.getItems();
+			entityModelResourceTestEntities1 = page.getItems();
 
-		int size = entityModelResourceTestEntity1s.size();
+		int size = entityModelResourceTestEntities1.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -959,4 +961,4 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 			_entityModelResourceTestEntity1Resource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:103781422
+// LIFERAY-REST-BUILDER-HASH:-1424656881

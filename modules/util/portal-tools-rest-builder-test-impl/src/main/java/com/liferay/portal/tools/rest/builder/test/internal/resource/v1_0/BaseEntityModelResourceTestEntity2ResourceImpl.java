@@ -20,6 +20,7 @@ import com.liferay.portal.tools.rest.builder.test.dto.v1_0.EntityModelResourceTe
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.Filter;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.EntityModelResourceTestEntity2Resource;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
@@ -41,7 +42,8 @@ import java.util.Map;
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
-	implements EntityModelResourceTestEntity2Resource {
+	implements EntityModelResourceTestEntity2Resource,
+			   VulcanCRUDItemDelegate<EntityModelResourceTestEntity2> {
 
 	/**
 	 * Invoke this method with the command line:
@@ -72,15 +74,19 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public EntityModelResourceTestEntity2
-			getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam("entityModelResourceTestEntity2Id")
-				Long entityModelResourceTestEntity2Id)
+	public EntityModelResourceTestEntity2 getEntityModelResourceTestEntity2(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("entityModelResourceTestEntity2Id")
+			Long entityModelResourceTestEntity2Id)
 		throws Exception {
 
 		return new EntityModelResourceTestEntity2();
+	}
+
+	@Override
+	public EntityModelResourceTestEntity2 getItem(Long id) throws Exception {
+		return getEntityModelResourceTestEntity2(id);
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -529,4 +535,4 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 			BaseEntityModelResourceTestEntity2ResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:507882112
+// LIFERAY-REST-BUILDER-HASH:1401931497
