@@ -85,6 +85,7 @@
 		<suppress checks="JavaCleanUpMethodVariablesCheck" files="util-taglib/src/com/liferay/taglib/util/IncludeTag\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/db/partition/util/DBPartitionUtil\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/internal/increment/BufferedIncreasableEntry\.java" />
+		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/model/impl/CompanyImpl\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/security/permission/PermissionCacheUtil\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/service/impl/CompanyLocalServiceImpl\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-impl/src/com/liferay/portal/servlet/filters/portal/instances/PortalInstancesFilter\.java" />
