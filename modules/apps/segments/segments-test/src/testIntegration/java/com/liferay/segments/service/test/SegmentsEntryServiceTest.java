@@ -324,7 +324,7 @@ public class SegmentsEntryServiceTest {
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
 
 			_segmentsEntryService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 				segmentsEntry.getCriteria(), serviceContext);
@@ -348,7 +348,7 @@ public class SegmentsEntryServiceTest {
 				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
 
 			_segmentsEntryService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(), true,
@@ -365,7 +365,8 @@ public class SegmentsEntryServiceTest {
 				_group, TestPropsValues.getUserId()));
 
 		_segmentsEntryService.updateSegmentsEntry(
-			segmentsEntry.getSegmentsEntryId(), RandomTestUtil.randomString(),
+			null, segmentsEntry.getSegmentsEntryId(),
+			RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), true,
 			CriteriaSerializer.serialize(new Criteria()),

@@ -106,10 +106,13 @@ public class UpdateSegmentsEntryMVCActionCommand extends BaseMVCActionCommand {
 					serviceContext);
 			}
 			else {
+				segmentsEntry = _segmentsEntryService.getSegmentsEntry(
+					segmentsEntryId);
+
 				segmentsEntry = _segmentsEntryService.updateSegmentsEntry(
-					segmentsEntryId, segmentsEntryKey, nameMap, descriptionMap,
-					active, CriteriaSerializer.serialize(criteria),
-					serviceContext);
+					segmentsEntry.getExternalReferenceCode(), segmentsEntryId,
+					segmentsEntryKey, nameMap, descriptionMap, active,
+					CriteriaSerializer.serialize(criteria), serviceContext);
 			}
 
 			String redirect = ParamUtil.getString(actionRequest, "redirect");

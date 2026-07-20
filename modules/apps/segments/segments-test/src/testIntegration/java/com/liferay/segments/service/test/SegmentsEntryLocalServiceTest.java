@@ -664,8 +664,8 @@ public class SegmentsEntryLocalServiceTest {
 
 		SegmentsEntry updatedSegmentsEntry =
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(), segmentsEntryKey, nameMap,
-				descriptionMap, false, criteria,
+				null, segmentsEntry.getSegmentsEntryId(), segmentsEntryKey,
+				nameMap, descriptionMap, false, criteria,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
@@ -695,7 +695,7 @@ public class SegmentsEntryLocalServiceTest {
 		_addSegmentsExperiment(segmentsEntry);
 
 		_segmentsEntryLocalService.updateSegmentsEntry(
-			segmentsEntry.getSegmentsEntryId(),
+			null, segmentsEntry.getSegmentsEntryId(),
 			segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 			segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 			segmentsEntry.getCriteria(),
@@ -718,7 +718,7 @@ public class SegmentsEntryLocalServiceTest {
 		AssertUtils.assertFailure(
 			LockedSegmentsEntryException.class, null,
 			() -> _segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 				segmentsEntry.getCriteria(),
@@ -737,7 +737,7 @@ public class SegmentsEntryLocalServiceTest {
 
 		SegmentsEntry updatedSegmentsEntry =
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 				segmentsEntry.getCriteria(),
@@ -761,7 +761,7 @@ public class SegmentsEntryLocalServiceTest {
 		AssertUtils.assertFailure(
 			SegmentsEntryKeyException.class, null,
 			() -> _segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(), segmentsEntryKey,
+				null, segmentsEntry.getSegmentsEntryId(), segmentsEntryKey,
 				segmentsEntry.getNameMap(), segmentsEntry.getDescriptionMap(),
 				segmentsEntry.isActive(), segmentsEntry.getCriteria(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId())));
@@ -783,7 +783,7 @@ public class SegmentsEntryLocalServiceTest {
 
 		SegmentsEntry updatedSegmentsEntry =
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), false,
 				CriteriaSerializer.serialize(new Criteria()),
@@ -809,7 +809,7 @@ public class SegmentsEntryLocalServiceTest {
 
 		SegmentsEntry updatedSegmentsEntry =
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(),
+				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), false,
 				CriteriaSerializer.serialize(criteria),

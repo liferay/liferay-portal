@@ -124,8 +124,9 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 			}
 
 			_segmentsEntryLocalService.updateSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId(), individualSegment.getId(),
-				nameMap, null, true, null, serviceContext);
+				null, segmentsEntry.getSegmentsEntryId(),
+				individualSegment.getId(), nameMap, null, true, null,
+				serviceContext);
 		}
 		catch (PortalException portalException) {
 			_log.error(

@@ -66,6 +66,7 @@ public class AsahSegmentsEntryResourceImpl
 			}
 			else {
 				segmentsEntry = _segmentsEntryLocalService.updateSegmentsEntry(
+					segmentsEntry.getExternalReferenceCode(),
 					segmentsEntry.getSegmentsEntryId(),
 					asahSegmentsEntry.getId(), nameMap, null, true, null,
 					serviceContext);
