@@ -249,6 +249,14 @@ public class NotificationRecipientLocalServiceWrapper
 			notificationRecipientId);
 	}
 
+	@Override
+	public com.liferay.notification.model.NotificationRecipient
+		fetchNotificationRecipientByClassPK(long classPK) {
+
+		return _notificationRecipientLocalService.
+			fetchNotificationRecipientByClassPK(classPK);
+	}
+
 	/**
 	 * Returns the notification recipient with the matching UUID and company.
 	 *
@@ -308,7 +316,8 @@ public class NotificationRecipientLocalServiceWrapper
 
 	@Override
 	public com.liferay.notification.model.NotificationRecipient
-		getNotificationRecipientByClassPK(long classPK) {
+			getNotificationRecipientByClassPK(long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _notificationRecipientLocalService.
 			getNotificationRecipientByClassPK(classPK);
@@ -425,4 +434,4 @@ public class NotificationRecipientLocalServiceWrapper
 		_notificationRecipientLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2009132914
+// LIFERAY-SERVICE-BUILDER-HASH:2348665

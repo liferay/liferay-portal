@@ -219,6 +219,12 @@ public class NotificationRecipientLocalServiceUtil {
 		return getService().fetchNotificationRecipient(notificationRecipientId);
 	}
 
+	public static NotificationRecipient fetchNotificationRecipientByClassPK(
+		long classPK) {
+
+		return getService().fetchNotificationRecipientByClassPK(classPK);
+	}
+
 	/**
 	 * Returns the notification recipient with the matching UUID and company.
 	 *
@@ -270,7 +276,8 @@ public class NotificationRecipientLocalServiceUtil {
 	}
 
 	public static NotificationRecipient getNotificationRecipientByClassPK(
-		long classPK) {
+			long classPK)
+		throws PortalException {
 
 		return getService().getNotificationRecipientByClassPK(classPK);
 	}
@@ -362,4 +369,4 @@ public class NotificationRecipientLocalServiceUtil {
 			NotificationRecipientLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-136507293
+// LIFERAY-SERVICE-BUILDER-HASH:-1561036574

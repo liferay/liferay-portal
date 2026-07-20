@@ -202,6 +202,10 @@ public interface NotificationRecipientLocalService
 	public NotificationRecipient fetchNotificationRecipient(
 		long notificationRecipientId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public NotificationRecipient fetchNotificationRecipientByClassPK(
+		long classPK);
+
 	/**
 	 * Returns the notification recipient with the matching UUID and company.
 	 *
@@ -236,8 +240,8 @@ public interface NotificationRecipientLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public NotificationRecipient getNotificationRecipientByClassPK(
-		long classPK);
+	public NotificationRecipient getNotificationRecipientByClassPK(long classPK)
+		throws PortalException;
 
 	/**
 	 * Returns the notification recipient with the matching UUID and company.
@@ -305,4 +309,4 @@ public interface NotificationRecipientLocalService
 		NotificationRecipient notificationRecipient);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1278996706
+// LIFERAY-SERVICE-BUILDER-HASH:445054226
