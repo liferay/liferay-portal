@@ -14,7 +14,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,10 +42,10 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.cmp.site.initializer.internal.util.RoleUtil;
 
 import java.io.Serializable;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -103,21 +102,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
-	private String[] _getAssetLibraryContentReviewerActionIds(
-		ObjectDefinition objectDefinition) {
-
-		if (StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_TASK")) {
-
-			return new String[] {
-				ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
-				ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW
-			};
-		}
-
-		return new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW};
-	}
-
 	private JSONObject _getCMPDefaultPermissionJSONObject(
 		ObjectDefinition objectDefinition) {
 
@@ -127,12 +111,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			ResourceAction::getActionId, String.class);
 
 		return JSONUtil.put(
-			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, actionIds
+			DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			_getProjectContributorActionIds(objectDefinition)
 		).put(
-			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
-			_getAssetLibraryContentReviewerActionIds(objectDefinition)
+			DepotRolesConstants.PROJECT_MANAGER, actionIds
 		).put(
-			DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+			DepotRolesConstants.PROJECT_MEMBER,
 			new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW}
 		).put(
 			RoleConstants.CMS_ADMINISTRATOR, actionIds
@@ -150,6 +134,20 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			new Long[] {objectEntry.getGroupId()}, 0, 0,
 			objectEntry.getObjectDefinitionId(),
 			_filterFactory.create(filterString, objectDefinition), false, null);
+	}
+
+	private String[] _getProjectContributorActionIds(
+		ObjectDefinition objectDefinition) {
+
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_TASK")) {
+
+			return new String[] {
+				ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW
+			};
+		}
+
+		return new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW};
 	}
 
 	private void _setResourcePermissions(ObjectEntry objectEntry)
@@ -172,16 +170,14 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				_objectDefinitionLocalService.fetchObjectDefinition(
 					objectEntry.getObjectDefinitionId()));
 
-		List<Role> roles = _roleLocalService.getGroupRolesAndTeamRoles(
-			objectEntry.getCompanyId(), null,
-			Arrays.asList(
-				RoleConstants.ADMINISTRATOR,
-				DepotRolesConstants.ASSET_LIBRARY_OWNER),
-			null, null,
-			new int[] {RoleConstants.TYPE_REGULAR, RoleConstants.TYPE_DEPOT},
-			null, 0, 0, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		for (Role role :
+				TransformUtil.transformToList(
+					ArrayUtil.append(
+						DepotRolesConstants.PROJECT_ROLE_NAMES,
+						RoleConstants.CMS_ADMINISTRATOR),
+					roleName -> _roleLocalService.fetchRole(
+						objectEntry.getCompanyId(), roleName))) {
 
-		for (Role role : roles) {
 			String[] actionIds = (String[])defaultPermissionsJSONObject.get(
 				role.getName());
 
@@ -303,15 +299,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		_updateUserGroupRoles(
 			objectEntry.getGroupId(),
-			Arrays.asList(
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER),
+			Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
 			MapUtil.getLong(
 				objectEntry.getValues(), "r_userToCMPProjectManager_userId",
 				0));
 		_updateUserGroupRoles(
 			objectEntry.getGroupId(),
-			Collections.singletonList(DepotRolesConstants.ASSET_LIBRARY_MEMBER),
+			Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			MapUtil.getLong(
 				objectEntry.getValues(), "r_userToCMPProjectSponsor_userId",
 				0));
@@ -361,8 +355,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			TransformUtil.transformToLongArray(
 				roleNames,
 				roleName -> {
-					Role role = _roleLocalService.fetchRole(
-						companyId, roleName);
+					Role role = RoleUtil.getOrAddProjectRole(
+						companyId, roleName, userId);
 
 					return role.getRoleId();
 				}));

@@ -49,7 +49,8 @@ public class DepotRoleUtil {
 		}
 
 		if (Objects.equals(
-				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY) ||
+			Objects.equals(subtype, DepotRolesConstants.SUBTYPE_PROJECT)) {
 
 			return ListUtil.filter(
 				roles, role -> Objects.equals(role.getSubtype(), subtype));

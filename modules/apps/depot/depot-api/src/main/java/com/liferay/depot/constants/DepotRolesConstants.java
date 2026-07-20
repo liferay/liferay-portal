@@ -44,6 +44,16 @@ public class DepotRolesConstants {
 		DESIGN_LIBRARY_MEMBER, DESIGN_LIBRARY_OWNER
 	};
 
+	public static final String PROJECT_CONTRIBUTOR = "Project Contributor";
+
+	public static final String PROJECT_MANAGER = "Project Manager";
+
+	public static final String PROJECT_MEMBER = "Project Member";
+
+	public static final String[] PROJECT_ROLE_NAMES = {
+		PROJECT_CONTRIBUTOR, PROJECT_MANAGER, PROJECT_MEMBER
+	};
+
 	public static final String SUBTYPE_DESIGN_LIBRARY = "design-library";
 
 	public static final String SUBTYPE_PROJECT = "project";
