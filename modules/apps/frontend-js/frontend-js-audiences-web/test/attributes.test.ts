@@ -9,6 +9,7 @@ import {getBrowserName} from '../src/main/resources/META-INF/resources/main/dete
 import {getBrowserVersion} from '../src/main/resources/META-INF/resources/main/detection/attributes/browser_version';
 import {getCookies} from '../src/main/resources/META-INF/resources/main/detection/attributes/cookies';
 import {getCustom} from '../src/main/resources/META-INF/resources/main/detection/attributes/custom';
+import {getDeviceType} from '../src/main/resources/META-INF/resources/main/detection/attributes/device_type';
 import {getHostname} from '../src/main/resources/META-INF/resources/main/detection/attributes/hostname';
 import {getLanguage} from '../src/main/resources/META-INF/resources/main/detection/attributes/language';
 import {getLocalDate} from '../src/main/resources/META-INF/resources/main/detection/attributes/local_date';
@@ -163,6 +164,27 @@ describe('attributes', () => {
 				"Module 'https://example.com/custom-attribute.js' does not " +
 					"export any function named 'missing'"
 			);
+		});
+	});
+
+	describe('attribute device_type', () => {
+		it('works and returns a string', async () => {
+			const value = getDeviceType(
+				new UAParser(
+					'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ' +
+						'AppleWebKit/605.1.15 (KHTML, like Gecko) ' +
+						'Version/17.0 Mobile/15E148 Safari/604.1'
+				)
+			);
+
+			expect(typeof value).toBe('string');
+			expect(value).toBe('mobile');
+		});
+
+		it('falls back to desktop when the user agent has no device type', async () => {
+			const value = getDeviceType(new UAParser(navigator.userAgent));
+
+			expect(value).toBe('desktop');
 		});
 	});
 

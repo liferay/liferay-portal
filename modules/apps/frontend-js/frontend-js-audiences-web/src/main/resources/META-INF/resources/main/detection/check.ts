@@ -21,6 +21,7 @@ const ATTRIBUTES: Attribute[] = [
 	'browser_version',
 	'cookies',
 	'custom:*',
+	'device_type',
 	'hostname',
 	'language',
 	'local_date',

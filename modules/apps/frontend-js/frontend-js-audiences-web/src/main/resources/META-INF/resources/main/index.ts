@@ -48,6 +48,7 @@ export type Attribute =
 	| 'browser_version'
 	| 'cookies'
 	| `custom:${string}`
+	| 'device_type'
 	| 'hostname'
 	| 'language'
 	| 'local_date'
