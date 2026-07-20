@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ApiHelper from '../../common/services/ApiHelper';
+import StructureService from '../../common/services/StructureService';
 import {AssetLibrary} from '../../common/types/AssetLibrary';
-import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 
 export async function isContentStructureMoveInvalid(
 	embedded: ItemData['embedded'],
@@ -34,15 +33,15 @@ export async function isContentStructureMoveInvalid(
 	}
 
 	try {
-		const response = await ApiHelper.get(
-			`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${structureExternalReferenceCode}`
+		const response = await StructureService.getStructure(
+			structureExternalReferenceCode
 		);
 
 		if (response.error || !response.data) {
 			return true;
 		}
 
-		const objectDefinition = response.data as ObjectDefinition;
+		const objectDefinition = response.data;
 		const acceptedGroupSettings =
 			objectDefinition.objectDefinitionSettings?.find(
 				(setting) =>
