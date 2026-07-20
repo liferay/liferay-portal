@@ -50,10 +50,17 @@ public class NotificationRecipientLocalServiceImpl
 	}
 
 	@Override
-	public NotificationRecipient getNotificationRecipientByClassPK(
+	public NotificationRecipient fetchNotificationRecipientByClassPK(
 		long classPK) {
 
 		return notificationRecipientPersistence.fetchByClassPK(classPK);
+	}
+
+	@Override
+	public NotificationRecipient getNotificationRecipientByClassPK(long classPK)
+		throws PortalException {
+
+		return notificationRecipientPersistence.findByClassPK(classPK);
 	}
 
 	@Reference

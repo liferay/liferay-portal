@@ -16,7 +16,7 @@ public class NotificationTemplateImpl extends NotificationTemplateBaseImpl {
 	@Override
 	public NotificationRecipient getNotificationRecipient() {
 		return NotificationRecipientLocalServiceUtil.
-			getNotificationRecipientByClassPK(getNotificationTemplateId());
+			fetchNotificationRecipientByClassPK(getNotificationTemplateId());
 	}
 
 }

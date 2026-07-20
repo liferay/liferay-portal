@@ -86,7 +86,7 @@ public class NotificationUtil {
 
 		NotificationRecipient notificationRecipient =
 			NotificationRecipientLocalServiceUtil.
-				getNotificationRecipientByClassPK(classPK);
+				fetchNotificationRecipientByClassPK(classPK);
 
 		if (notificationRecipient != null) {
 			return notificationRecipient;

@@ -33,7 +33,7 @@ public class NotificationQueueEntryImpl extends NotificationQueueEntryBaseImpl {
 	@Override
 	public NotificationRecipient getNotificationRecipient() {
 		return NotificationRecipientLocalServiceUtil.
-			getNotificationRecipientByClassPK(getNotificationQueueEntryId());
+			fetchNotificationRecipientByClassPK(getNotificationQueueEntryId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
