@@ -228,8 +228,8 @@ public class SecretManagerImpl implements SecretManager {
 
 		throw new SecretException(
 			StringBundler.concat(
-				"No secret provider found for ID ", secretProviderId,
-				" and company ID ", companyId));
+				"No secret provider found for secret provider ID ",
+				secretProviderId, " and company ID ", companyId));
 	}
 
 	private String _getSecretProviderId(long companyId, String secretProviderId)
@@ -243,10 +243,10 @@ public class SecretManagerImpl implements SecretManager {
 			return secretProviderId;
 		}
 
-		KeyManagerProfile activeProfile =
+		KeyManagerProfile activeKeyManagerProfile =
 			_keyManagerProfileRegistry.getActiveKeyManagerProfile();
 
-		if (activeProfile == null) {
+		if (activeKeyManagerProfile == null) {
 			throw new SecretException(
 				StringBundler.concat(
 					"No active key manager profile found to resolve the ",
@@ -254,10 +254,12 @@ public class SecretManagerImpl implements SecretManager {
 		}
 
 		if (companyId == CompanyConstants.SYSTEM) {
-			secretProviderId = activeProfile.getSystemSecretProviderId();
+			secretProviderId =
+				activeKeyManagerProfile.getSystemSecretProviderId();
 		}
 		else {
-			secretProviderId = activeProfile.getCompanySecretProviderId();
+			secretProviderId =
+				activeKeyManagerProfile.getCompanySecretProviderId();
 		}
 
 		if (Validator.isNull(secretProviderId)) {
