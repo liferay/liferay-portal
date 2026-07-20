@@ -6,6 +6,7 @@
 package com.liferay.seo.studio.service;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.model.PageSpeedReport;
 
 import java.io.IOException;
@@ -21,6 +22,13 @@ import java.nio.charset.StandardCharsets;
 
 import java.time.Duration;
 
+import java.util.Objects;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.stereotype.Component;
@@ -38,7 +46,7 @@ public class PageSpeedReportService {
 		HttpResponse<String> httpResponse = _httpClient.send(
 			HttpRequest.newBuilder(
 			).uri(
-				URI.create(_buildURL(apiKey, strategy, url))
+				URI.create(_buildReportURL(apiKey, strategy, url))
 			).timeout(
 				Duration.ofSeconds(60)
 			).GET(
@@ -54,7 +62,61 @@ public class PageSpeedReportService {
 		return _parsePageSpeedReport(httpResponse.body());
 	}
 
-	private String _buildURL(String apiKey, String strategy, String url) {
+	public boolean isValidAPIKey(String apiKey) throws InterruptedException {
+		try {
+			HttpResponse<String> httpResponse = _httpClient.send(
+				HttpRequest.newBuilder(
+				).uri(
+					URI.create(_buildValidationURL(apiKey))
+				).timeout(
+					Duration.ofSeconds(30)
+				).GET(
+				).build(),
+				HttpResponse.BodyHandlers.ofString());
+
+			JSONObject responseJSONObject = new JSONObject(httpResponse.body());
+
+			JSONObject errorJSONObject = responseJSONObject.optJSONObject(
+				"error");
+
+			if (errorJSONObject == null) {
+				return true;
+			}
+
+			if (Objects.equals(
+					errorJSONObject.optString("status"), "PERMISSION_DENIED")) {
+
+				return false;
+			}
+
+			JSONArray detailsJSONArray = errorJSONObject.optJSONArray(
+				"details");
+
+			if (detailsJSONArray != null) {
+				for (Object object : detailsJSONArray) {
+					JSONObject detailJSONObject = (JSONObject)object;
+
+					if (Validator.isNotNull(
+							detailJSONObject.optString("reason"))) {
+
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+		catch (IOException | JSONException exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to validate the PageSpeed API key", exception);
+			}
+
+			return false;
+		}
+	}
+
+	private String _buildReportURL(String apiKey, String strategy, String url) {
 		StringBundler sb = new StringBundler(10);
 
 		sb.append("https://content-pagespeedonline.googleapis.com");
@@ -67,6 +129,16 @@ public class PageSpeedReportService {
 		sb.append(strategy);
 		sb.append("&url=");
 		sb.append(URLEncoder.encode(url, StandardCharsets.UTF_8));
+
+		return sb.toString();
+	}
+
+	private String _buildValidationURL(String apiKey) {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("https://content-pagespeedonline.googleapis.com");
+		sb.append("/pagespeedonline/v5/runPagespeed?url=invalid_url&key=");
+		sb.append(URLEncoder.encode(apiKey, StandardCharsets.UTF_8));
 
 		return sb.toString();
 	}
@@ -93,6 +165,9 @@ public class PageSpeedReportService {
 				categoriesJSONObject.getJSONObject("performance")),
 			_getPageSpeedScore(categoriesJSONObject.getJSONObject("seo")));
 	}
+
+	private static final Log _log = LogFactory.getLog(
+		PageSpeedReportService.class);
 
 	private final HttpClient _httpClient = HttpClient.newBuilder(
 	).connectTimeout(
