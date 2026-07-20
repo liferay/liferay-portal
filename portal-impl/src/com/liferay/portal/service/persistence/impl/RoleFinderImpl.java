@@ -905,6 +905,10 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 	}
 
 	protected String getWhere(String key) {
+		if (key.equals("subtype")) {
+			return "(Role_.subtype = ?) AND ";
+		}
+
 		String join = StringPool.BLANK;
 
 		if (key.equals("usersRoles")) {

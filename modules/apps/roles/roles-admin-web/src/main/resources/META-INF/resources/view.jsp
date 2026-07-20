@@ -43,6 +43,8 @@ PortletURL portletURL = viewRolesManagementToolbarDisplayContext.getPortletURL()
 	%>'
 	clearResultsURL="<%= viewRolesManagementToolbarDisplayContext.getClearResultsURL() %>"
 	creationMenu="<%= viewRolesManagementToolbarDisplayContext.getCreationMenu() %>"
+	filterDropdownItems="<%= viewRolesManagementToolbarDisplayContext.getFilterItemsDropdownItems() %>"
+	filterLabelItems="<%= viewRolesManagementToolbarDisplayContext.getFilterLabelItems() %>"
 	itemsTotal="<%= searchContainer.getTotal() %>"
 	orderDropdownItems="<%= viewRolesManagementToolbarDisplayContext.getOrderByDropdownItems() %>"
 	propsTransformer="{ViewRolesManagementToolbarPropsTransformer} from roles-admin-web"
