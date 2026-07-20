@@ -7,7 +7,7 @@ import ClayButton from '@clayui/button';
 import {Heading} from '@clayui/core';
 import {ClayCheckbox, ClayInput, ClayRadio} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import ClayDropDown, {
 	Align,
@@ -788,34 +788,17 @@ function AIInput() {
 	);
 }
 
-// Input trigger with right-click + selection: the consumer owns the field,
-// wires the right-click opener, captures the current text selection, and drives
-// the async working -> result step.
+// Input trigger with right-click: the consumer owns the field and wires the
+// right-click opener; left-click dismisses while in menu/prompt.
 
 function AIInputSelection() {
 	const {active, aiState, flowProps, setActive, setAiState} = useAIFlow();
-	const triggerRef = useRef<HTMLDivElement>(null);
-	const [selectedText, setSelectedText] = useState('');
-
-	const captureSelection = () => {
-		const input = triggerRef.current?.querySelector('input');
-
-		if (input) {
-			setSelectedText(
-				input.value.slice(
-					input.selectionStart ?? 0,
-					input.selectionEnd ?? 0
-				)
-			);
-		}
-	};
 
 	return (
 		<ClayDropDownWithAI
 			{...flowProps}
 			items={AI_ITEMS}
 			openOnClick={false}
-			selectedText={selectedText}
 			trigger={
 				<div
 					onClick={() => {
@@ -837,18 +820,142 @@ function AIInputSelection() {
 							return;
 						}
 
-						captureSelection();
-
 						setAiState('menu');
 						setActive(true);
 					}}
-					ref={triggerRef}
 				>
 					<ClayInput
 						aria-label="Right-click to open the AI menu"
 						defaultValue="I like milk"
-						onSelect={captureSelection}
 					/>
+				</div>
+			}
+		/>
+	);
+}
+
+// Real usage: an editable field that reflects the AI state — the selected text
+// is highlighted while the menu/result is open, a pulsing gradient block covers
+// it while working, and everything returns to normal once the suggestion is
+// accepted or rejected.
+
+const AI_FIELD_TEXT = 'I like milk';
+
+const AI_WORKING_KEYFRAMES = `
+@keyframes ai-working-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.4;
+	}
+}
+`;
+
+function AIRealUsage() {
+	const {active, aiState, flowProps, setActive, setAiState} = useAIFlow();
+	const fieldRef = useRef<HTMLDivElement>(null);
+	const highlightRef = useRef<HTMLSpanElement | null>(null);
+
+	const working = active && aiState === 'working';
+
+	useEffect(() => {
+		if (fieldRef.current && !fieldRef.current.textContent) {
+			fieldRef.current.textContent = AI_FIELD_TEXT;
+		}
+	}, []);
+
+	// Remove the highlight once the flow closes, restoring plain text.
+
+	useEffect(() => {
+		const span = highlightRef.current;
+
+		if (!active && span?.parentNode) {
+			span.replaceWith(document.createTextNode(span.textContent ?? ''));
+
+			fieldRef.current?.normalize();
+
+			highlightRef.current = null;
+		}
+	}, [active]);
+
+	const highlightSelection = () => {
+		const windowSelection = window.getSelection();
+
+		if (windowSelection?.rangeCount && !windowSelection.isCollapsed) {
+			const span = document.createElement('span');
+
+			span.style.background =
+				'var(--Color-Charts-Purple-purple-l5, #F2E5FF)';
+
+			try {
+				windowSelection.getRangeAt(0).surroundContents(span);
+
+				highlightRef.current = span;
+			}
+			catch (error) {
+
+				// The selection spans multiple nodes; skip the highlight.
+
+				highlightRef.current = null;
+			}
+		}
+	};
+
+	return (
+		<ClayDropDownWithAI
+			{...flowProps}
+			items={AI_ITEMS}
+			onAccept={() => setActive(false)}
+			onReset={() => setActive(false)}
+			openOnClick={false}
+			trigger={
+				<div className="position-relative">
+					<style>{AI_WORKING_KEYFRAMES}</style>
+
+					<div
+						aria-label="Right-click to run AI on this field"
+						className="form-control"
+						contentEditable
+						onContextMenu={(event) => {
+							event.preventDefault();
+
+							if (!active) {
+								highlightSelection();
+
+								setAiState('menu');
+								setActive(true);
+							}
+						}}
+						ref={fieldRef}
+						role="textbox"
+						suppressContentEditableWarning
+					/>
+
+					{working ? (
+						<div
+							className="position-absolute"
+							style={{
+								background: '#fff',
+								borderRadius: '0.25rem',
+								inset: 0,
+							}}
+						>
+							<div
+								className="position-absolute"
+								style={{
+									animation:
+										'ai-working-pulse 1.5s ease-in-out infinite',
+									background:
+										'linear-gradient(270deg, rgba(77, 95, 255, 0.1) 0%, rgba(149, 0, 255, 0.1) 100%)',
+									borderRadius: '0.25rem',
+									inset: 0,
+								}}
+							/>
+						</div>
+					) : null}
 				</div>
 			}
 		/>
@@ -871,11 +978,34 @@ export function AI() {
 			</div>
 
 			<div>
-				<Heading level={3}>
-					Input trigger with right-click and text selection
-				</Heading>
+				<Heading level={3}>Input trigger with right-click</Heading>
 
 				<AIInputSelection />
+			</div>
+
+			<div>
+				<Heading level={3}>Real Usage</Heading>
+
+				<p className="text-secondary">
+					The consumer owns the <code>trigger</code>, here a{' '}
+
+					<code>contentEditable </code>
+					field, and drives the controlled
+					<code> aiState </code>
+
+					and <code>active</code>
+					props so the field can mirror each state. Right-clicking (
+					<code>onContextMenu</code>) opens the menu with{' '}
+
+					<code>openOnClick</code> off, the selected text is
+					highlighted while the flow is open, a pulsing block covers
+					the field while <code>working</code>, and{' '}
+
+					<code>onAccept</code>/<code>onReset</code> close the flow
+					and restore the field.
+				</p>
+
+				<AIRealUsage />
 			</div>
 		</div>
 	);
