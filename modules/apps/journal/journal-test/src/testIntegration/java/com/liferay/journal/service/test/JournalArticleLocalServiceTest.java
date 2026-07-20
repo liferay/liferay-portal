@@ -66,6 +66,7 @@ import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -1334,6 +1335,44 @@ public class JournalArticleLocalServiceTest {
 				Assert.assertEquals(StringPool.BLANK, entry.getValue());
 			}
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-97993")
+	public void testDeleteLayoutArticleReferences() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		journalArticle = _journalArticleLocalService.updateArticle(
+			journalArticle.getUserId(), journalArticle.getGroupId(),
+			journalArticle.getFolderId(), journalArticle.getArticleId(),
+			journalArticle.getVersion(), journalArticle.getTitleMap(),
+			journalArticle.getDescriptionMap(), journalArticle.getContent(),
+			layout.getUuid(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		Assert.assertEquals(layout.getUuid(), assetEntry.getLayoutUuid());
+
+		_journalArticleLocalService.deleteLayoutArticleReferences(
+			_group.getGroupId(), layout.getUuid());
+
+		journalArticle = _journalArticleLocalService.getArticle(
+			journalArticle.getGroupId(), journalArticle.getArticleId());
+
+		Assert.assertEquals(StringPool.BLANK, journalArticle.getLayoutUuid());
+
+		assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		Assert.assertEquals(StringPool.BLANK, assetEntry.getLayoutUuid());
 	}
 
 	@Test(expected = DuplicateArticleIdException.class)
