@@ -1,6 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
-	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
+	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation group: "org.ow2.asm", name: "asm", version: "9.7"
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
