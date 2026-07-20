@@ -216,6 +216,7 @@ exports[`CrossPageSelect should render the selected list when the user presses t
           class="page-item disabled"
         >
           <button
+            aria-label="Previous"
             class="button-root btn btn-unstyled page-link btn btn-primary"
             disabled=""
             href=""
@@ -246,6 +247,7 @@ exports[`CrossPageSelect should render the selected list when the user presses t
           class="page-item disabled"
         >
           <button
+            aria-label="Next"
             class="button-root btn btn-unstyled page-link btn btn-primary"
             disabled=""
             href=""
@@ -569,6 +571,7 @@ exports[`CrossPageSelect should render the server data list by default 1`] = `
           class="page-item disabled"
         >
           <a
+            aria-label="Previous"
             class="button-root btn btn-unstyled page-link"
             disabled=""
             href="/?page=0"
@@ -617,6 +620,7 @@ exports[`CrossPageSelect should render the server data list by default 1`] = `
           class="page-item"
         >
           <a
+            aria-label="Next"
             class="button-root btn btn-unstyled page-link"
             href="/?page=2"
           >

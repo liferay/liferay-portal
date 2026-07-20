@@ -316,6 +316,7 @@ exports[`SearchableTableModalGraphql should render 1`] = `
                 class="page-item disabled"
               >
                 <button
+                  aria-label="Previous"
                   class="button-root btn btn-unstyled page-link btn btn-primary"
                   disabled=""
                   href=""
@@ -346,6 +347,7 @@ exports[`SearchableTableModalGraphql should render 1`] = `
                 class="page-item disabled"
               >
                 <button
+                  aria-label="Next"
                   class="button-root btn btn-unstyled page-link btn btn-primary"
                   disabled=""
                   href=""

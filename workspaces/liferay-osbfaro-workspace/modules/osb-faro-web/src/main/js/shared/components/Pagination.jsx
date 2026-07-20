@@ -90,6 +90,7 @@ class PaginationItem extends React.Component {
 
 	static propTypes = {
 		active: PropTypes.bool,
+		ariaLabel: PropTypes.string,
 		disabled: PropTypes.bool,
 		href: PropTypes.string,
 		onChange: PropTypes.func,
@@ -107,8 +108,16 @@ class PaginationItem extends React.Component {
 	}
 
 	render() {
-		const {active, children, className, disabled, href, onChange, page} =
-			this.props;
+		const {
+			active,
+			ariaLabel,
+			children,
+			className,
+			disabled,
+			href,
+			onChange,
+			page
+		} = this.props;
 
 		const classes = getCN('page-item', className, {active, disabled});
 		const Button = onChange ? ClayButton : ClayLink;
@@ -117,6 +126,7 @@ class PaginationItem extends React.Component {
 			<li className={classes}>
 				{page >= 0 ? (
 					<Button
+						aria-label={ariaLabel}
 						className='button-root btn btn-unstyled page-link'
 						disabled={disabled}
 						href={onChange ? '' : href}
@@ -202,6 +212,7 @@ class Pagination extends React.Component {
 		return (
 			<ul className={getCN('pagination pagination-root', className)}>
 				<PaginationItem
+					ariaLabel={Liferay.Language.get('previous')}
 					disabled={page === 1}
 					href={setUriQueryValue(href, 'page', page - 1)}
 					onChange={onChange}
@@ -223,6 +234,7 @@ class Pagination extends React.Component {
 				))}
 
 				<PaginationItem
+					ariaLabel={Liferay.Language.get('next')}
 					disabled={page === total}
 					href={setUriQueryValue(href, 'page', page + 1)}
 					onChange={onChange}

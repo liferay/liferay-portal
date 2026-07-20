@@ -318,6 +318,7 @@ exports[`Suppressed User List should render 1`] = `
               class="page-item disabled"
             >
               <a
+                aria-label="Previous"
                 class="button-root btn btn-unstyled page-link"
                 disabled=""
                 href="/?page=0"
@@ -346,6 +347,7 @@ exports[`Suppressed User List should render 1`] = `
               class="page-item disabled"
             >
               <a
+                aria-label="Next"
                 class="button-root btn btn-unstyled page-link"
                 disabled=""
                 href="/?page=2"
