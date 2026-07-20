@@ -1482,9 +1482,9 @@ public class JournalArticleLocalServiceImpl
 			groupId, layoutUuid);
 
 		for (JournalArticle article : articles) {
-			_deleteLayoutAssetEntryReference(
+			_deleteLayoutArticleReference(
 				article.getPrimaryKey(), layoutUuid);
-			_deleteLayoutAssetEntryReference(
+			_deleteLayoutArticleReference(
 				article.getResourcePrimKey(), layoutUuid);
 
 			article.setLayoutUuid(StringPool.BLANK);
@@ -7916,7 +7916,7 @@ public class JournalArticleLocalServiceImpl
 		}
 	}
 
-	private void _deleteLayoutAssetEntryReference(
+	private void _deleteLayoutArticleReference(
 		long classPK, String layoutUuid) {
 
 		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
