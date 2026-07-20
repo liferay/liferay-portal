@@ -542,6 +542,29 @@ public class ExpandoValueLocalServiceWrapper
 	}
 
 	@Override
+	public ExpandoValue fetchValue(long tableId, long columnId, long classPK) {
+		return _expandoValueLocalService.fetchValue(tableId, columnId, classPK);
+	}
+
+	@Override
+	public ExpandoValue fetchValue(
+		long companyId, long classNameId, String tableName, String columnName,
+		long classPK) {
+
+		return _expandoValueLocalService.fetchValue(
+			companyId, classNameId, tableName, columnName, classPK);
+	}
+
+	@Override
+	public ExpandoValue fetchValue(
+		long companyId, String className, String tableName, String columnName,
+		long classPK) {
+
+		return _expandoValueLocalService.fetchValue(
+			companyId, className, tableName, columnName, classPK);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -1020,14 +1043,17 @@ public class ExpandoValueLocalServiceWrapper
 	}
 
 	@Override
-	public ExpandoValue getValue(long tableId, long columnId, long classPK) {
+	public ExpandoValue getValue(long tableId, long columnId, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return _expandoValueLocalService.getValue(tableId, columnId, classPK);
 	}
 
 	@Override
 	public ExpandoValue getValue(
-		long companyId, long classNameId, String tableName, String columnName,
-		long classPK) {
+			long companyId, long classNameId, String tableName,
+			String columnName, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _expandoValueLocalService.getValue(
 			companyId, classNameId, tableName, columnName, classPK);
@@ -1035,8 +1061,9 @@ public class ExpandoValueLocalServiceWrapper
 
 	@Override
 	public ExpandoValue getValue(
-		long companyId, String className, String tableName, String columnName,
-		long classPK) {
+			long companyId, String className, String tableName,
+			String columnName, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _expandoValueLocalService.getValue(
 			companyId, className, tableName, columnName, classPK);
@@ -1097,4 +1124,4 @@ public class ExpandoValueLocalServiceWrapper
 	private ExpandoValueLocalService _expandoValueLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1003331169
+// LIFERAY-SERVICE-BUILDER-HASH:-1705224228

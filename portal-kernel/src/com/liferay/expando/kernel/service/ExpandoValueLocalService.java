@@ -361,6 +361,19 @@ public interface ExpandoValueLocalService
 	public ExpandoValue fetchExpandoValue(long valueId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExpandoValue fetchValue(long tableId, long columnId, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExpandoValue fetchValue(
+		long companyId, long classNameId, String tableName, String columnName,
+		long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExpandoValue fetchValue(
+		long companyId, String className, String tableName, String columnName,
+		long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -643,17 +656,20 @@ public interface ExpandoValueLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ExpandoValue getValue(long tableId, long columnId, long classPK);
+	public ExpandoValue getValue(long tableId, long columnId, long classPK)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoValue getValue(
-		long companyId, long classNameId, String tableName, String columnName,
-		long classPK);
+			long companyId, long classNameId, String tableName,
+			String columnName, long classPK)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoValue getValue(
-		long companyId, String className, String tableName, String columnName,
-		long classPK);
+			long companyId, String className, String tableName,
+			String columnName, long classPK)
+		throws PortalException;
 
 	/**
 	 * Updates the expando value in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -684,4 +700,4 @@ public interface ExpandoValueLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1802350331
+// LIFERAY-SERVICE-BUILDER-HASH:1195626595

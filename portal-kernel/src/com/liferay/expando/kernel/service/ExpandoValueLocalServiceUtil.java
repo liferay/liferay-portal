@@ -482,6 +482,28 @@ public class ExpandoValueLocalServiceUtil {
 		return getService().fetchExpandoValue(valueId);
 	}
 
+	public static ExpandoValue fetchValue(
+		long tableId, long columnId, long classPK) {
+
+		return getService().fetchValue(tableId, columnId, classPK);
+	}
+
+	public static ExpandoValue fetchValue(
+		long companyId, long classNameId, String tableName, String columnName,
+		long classPK) {
+
+		return getService().fetchValue(
+			companyId, classNameId, tableName, columnName, classPK);
+	}
+
+	public static ExpandoValue fetchValue(
+		long companyId, String className, String tableName, String columnName,
+		long classPK) {
+
+		return getService().fetchValue(
+			companyId, className, tableName, columnName, classPK);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -907,22 +929,25 @@ public class ExpandoValueLocalServiceUtil {
 	}
 
 	public static ExpandoValue getValue(
-		long tableId, long columnId, long classPK) {
+			long tableId, long columnId, long classPK)
+		throws PortalException {
 
 		return getService().getValue(tableId, columnId, classPK);
 	}
 
 	public static ExpandoValue getValue(
-		long companyId, long classNameId, String tableName, String columnName,
-		long classPK) {
+			long companyId, long classNameId, String tableName,
+			String columnName, long classPK)
+		throws PortalException {
 
 		return getService().getValue(
 			companyId, classNameId, tableName, columnName, classPK);
 	}
 
 	public static ExpandoValue getValue(
-		long companyId, String className, String tableName, String columnName,
-		long classPK) {
+			long companyId, String className, String tableName,
+			String columnName, long classPK)
+		throws PortalException {
 
 		return getService().getValue(
 			companyId, className, tableName, columnName, classPK);
@@ -953,4 +978,4 @@ public class ExpandoValueLocalServiceUtil {
 	private static volatile ExpandoValueLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:850244069
+// LIFERAY-SERVICE-BUILDER-HASH:-1643081554
