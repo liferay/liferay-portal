@@ -111,7 +111,7 @@ export default function KeyboardMovementManager({
 	]);
 
 	useEffect(() => {
-		const executeAction = () => {
+		const confirmPlacement = () => {
 			const moveTarget = targets[currentIndex];
 
 			if (!moveTarget) {
@@ -213,7 +213,7 @@ export default function KeyboardMovementManager({
 				event.code === ENTER_KEY_CODE ||
 				event.code === SPACE_KEY_CODE
 			) {
-				executeAction();
+				confirmPlacement();
 			}
 			else if (event.code === ESCAPE_KEY_CODE) {
 				setText('');
