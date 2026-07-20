@@ -108,11 +108,13 @@ else {
 					localizationInputsContainer: inputContainer,
 					namespace: fragmentElementId,
 					onAutoTranslate: ({languageId, value}) => {
-						editorPromise.then((editor) => {
-							changeLanguageDirection(editor, languageId);
+						if (languageId === currentLanguageId) {
+							editorPromise.then((editor) => {
+								changeLanguageDirection(editor, languageId);
 
-							editor.setData(value);
-						});
+								editor.setData(value);
+							});
+						}
 
 						const translationInput = getTranslationInput({
 							inputId: wrapper.id,

@@ -197,10 +197,12 @@ export function registerLocalizedInput({
 					namespace,
 				});
 
-				setInputValue({
-					input: inputElement,
-					value,
-				});
+				if (languageId === currentLanguageId) {
+					setInputValue({
+						input: inputElement,
+						value,
+					});
+				}
 
 				setInputValue({
 					input: translationInput,
