@@ -36,31 +36,39 @@ export default function AudiencePriority({
 					{Liferay.Language.get('audiences-priority')}
 				</span>
 
-				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('edit')}
-					borderless
-					className="ml-1"
-					displayType="secondary"
-					onClick={() => setOpenModal(true)}
-					size="sm"
-					symbol="pencil"
-				/>
+				{audiences.length ? (
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('edit')}
+						borderless
+						className="ml-1"
+						displayType="secondary"
+						onClick={() => setOpenModal(true)}
+						size="sm"
+						symbol="pencil"
+					/>
+				) : null}
 			</div>
 
-			<div className="align-items-center d-flex flex-wrap text-secondary">
-				{audiences.map((audience, index) => (
-					<React.Fragment key={audience.value}>
-						{index > 0 ? (
-							<ClayIcon
-								className="mt-0 mx-1 small"
-								symbol="angle-right"
-							/>
-						) : null}
+			{audiences.length ? (
+				<div className="align-items-center d-flex flex-wrap text-secondary">
+					{audiences.map((audience, index) => (
+						<React.Fragment key={audience.value}>
+							{index > 0 ? (
+								<ClayIcon
+									className="mt-0 mx-1 small"
+									symbol="angle-right"
+								/>
+							) : null}
 
-						<span className="text-3">{audience.label}</span>
-					</React.Fragment>
-				))}
-			</div>
+							<span className="text-3">{audience.label}</span>
+						</React.Fragment>
+					))}
+				</div>
+			) : (
+				<p className="mb-0 text-3 text-secondary">
+					{Liferay.Language.get('no-audiences-available')}
+				</p>
+			)}
 
 			{openModal ? (
 				<AudiencesPriorityModal
