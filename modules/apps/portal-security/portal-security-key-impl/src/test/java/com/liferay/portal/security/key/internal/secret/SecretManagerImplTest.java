@@ -85,12 +85,12 @@ public class SecretManagerImplTest {
 			_keyManagerProfile
 		);
 
-		String identifier = RandomTestUtil.randomString();
+		String secretIdentifier = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretProvider.getSecretIdentifiers(Mockito.anyLong())
 		).thenReturn(
-			Collections.singletonList(identifier)
+			Collections.singletonList(secretIdentifier)
 		);
 
 		Mockito.when(
@@ -113,7 +113,7 @@ public class SecretManagerImplTest {
 		KeyReference keyReference = keyReferences.get(0);
 
 		Assert.assertEquals(KeyReference.Type.SECRET, keyReference.getType());
-		Assert.assertEquals(identifier, keyReference.getIdentifier());
+		Assert.assertEquals(secretIdentifier, keyReference.getIdentifier());
 		Assert.assertEquals(secretProviderId, keyReference.getProviderId());
 	}
 
