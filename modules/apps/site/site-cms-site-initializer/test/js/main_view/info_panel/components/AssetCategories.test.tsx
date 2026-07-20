@@ -85,7 +85,7 @@ function renderComponent({
 	cmsGroupId?: number;
 	collapsable?: boolean;
 	placeholder?: string;
-	scopeId?: number;
+	scopeId?: number | null;
 	systemVocabularyIds?: number[];
 	taxonomyCategoryBriefs?: ReturnType<typeof buildCategoryBrief>[];
 	title?: string;
@@ -98,7 +98,7 @@ function renderComponent({
 			hasUpdatePermission={true}
 			objectEntry={
 				{
-					scopeId,
+					...(scopeId !== null ? {scopeId} : {}),
 					systemProperties: {
 						objectDefinitionBrief: {classNameId},
 					},
@@ -181,21 +181,7 @@ describe('AssetCategories', () => {
 	});
 
 	it('does not render the category selector before the asset scope is known', () => {
-		render(
-			<AssetCategories
-				cmsGroupId={456}
-				hasUpdatePermission={true}
-				objectEntry={
-					{
-						systemProperties: {
-							objectDefinitionBrief: {classNameId: 1},
-						},
-						taxonomyCategoryBriefs: [],
-					} as any
-				}
-				updateObjectEntry={jest.fn()}
-			/>
-		);
+		renderComponent({scopeId: null});
 
 		expect(screen.queryByTestId('item-selector')).not.toBeInTheDocument();
 	});
