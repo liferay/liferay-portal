@@ -119,9 +119,6 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testGetSecret() throws Exception {
-
-		// Delegates to the provider
-
 		long companyId = RandomTestUtil.randomLong();
 		String secretIdentifier = RandomTestUtil.randomString();
 		String secretProviderId = RandomTestUtil.randomString();
@@ -155,8 +152,6 @@ public class SecretManagerImplTest {
 			companyId, secretIdentifier
 		);
 
-		// Throws when the provider is in an error state
-
 		Mockito.when(
 			_secretProvider.getProviderStatus()
 		).thenReturn(
@@ -171,6 +166,14 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testGetSecretProviderIds() {
+		long companyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_secretProvider.isAllowedCompany(companyId)
+		).thenReturn(
+			true
+		);
+
 		String secretProviderId = RandomTestUtil.randomString();
 
 		Mockito.when(
@@ -185,21 +188,9 @@ public class SecretManagerImplTest {
 			Collections.singleton(secretProviderId)
 		);
 
-		// Includes a provider that allows the company
-
-		long companyId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			_secretProvider.isAllowedCompany(companyId)
-		).thenReturn(
-			true
-		);
-
 		Assert.assertEquals(
 			Collections.singletonList(secretProviderId),
 			_secretManagerImpl.getSecretProviderIds(companyId));
-
-		// Excludes a provider that does not allow the company
 
 		Mockito.when(
 			_secretProvider.isAllowedCompany(companyId)
@@ -214,9 +205,6 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testPutSecret() throws Exception {
-
-		// Routes to the resolved provider
-
 		Mockito.when(
 			_secretProvider.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
@@ -246,8 +234,6 @@ public class SecretManagerImplTest {
 		).putSecret(
 			Mockito.eq(companyId), Mockito.any(Secret.class)
 		);
-
-		// Resolves the provider wildcard through the active profile
 
 		_testPutSecretResolvesProviderWildcard(CompanyConstants.SYSTEM);
 		_testPutSecretResolvesProviderWildcard(RandomTestUtil.randomLong());
