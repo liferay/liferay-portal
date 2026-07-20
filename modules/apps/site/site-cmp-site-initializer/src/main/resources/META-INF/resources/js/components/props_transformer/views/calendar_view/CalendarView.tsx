@@ -551,27 +551,6 @@ export default function CalendarView({
 
 						openCreateTaskModal(arg.dateStr);
 					},
-					dayCellContent: (arg) => (
-						<>
-							{arg.dayNumberText || String(arg.date.getDate())}
-
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get('add-task')}
-								borderless
-								className={ADD_TASK_BUTTON_CLASS_NAME}
-								displayType="secondary"
-								onClick={() =>
-									openCreateTaskModal(
-										dateUtils.format(arg.date, 'yyyy-MM-dd')
-									)
-								}
-								rounded
-								size="xs"
-								symbol="plus"
-								title={Liferay.Language.get('add-task')}
-							/>
-						</>
-					),
 				})}
 			/>
 
