@@ -190,7 +190,7 @@ function ElementVariations({
 								</span>
 							</div>
 
-							<div className="flex-grow-1">
+							<div className="flex-grow-1 overflow-auto">
 								<div className="p-3">
 									<label htmlFor={experienceId}>
 										{Liferay.Language.get('experience')}
@@ -260,11 +260,9 @@ function ElementVariations({
 									{!audiences.length ? (
 										<ClayEmptyState
 											className="mb-0 px-3"
-											description={`${Liferay.Language.get(
-												'you-can-create-page-elements-variations-based-on-audiences'
-											)} ${Liferay.Language.get(
+											description={Liferay.Language.get(
 												'you-need-at-least-one-audience-to-build-element-variations'
-											)}`}
+											)}
 											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
 											small
 											title={Liferay.Language.get(
@@ -275,7 +273,14 @@ function ElementVariations({
 												button
 												displayType="secondary"
 												href={createAudienceURL}
+												small
+												target="_blank"
 											>
+												<ClayIcon
+													className="mr-2"
+													symbol="shortcut"
+												/>
+
 												{Liferay.Language.get(
 													'create-new-audience'
 												)}
@@ -350,6 +355,7 @@ function ElementVariations({
 												onClick={
 													createElementVariationDraft
 												}
+												size="sm"
 											>
 												{Liferay.Language.get('new')}
 											</ClayButton>
