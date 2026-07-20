@@ -9,6 +9,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,12 +18,16 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
+
+import jakarta.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -81,6 +86,19 @@ public class DepotEntryUserNotificationHandler
 
 		DepotEntry depotEntry = _depotEntryLocalService.fetchDepotEntry(
 			jsonObject.getLong("classPK"));
+
+		if (depotEntry.getType() == DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return PortletURLBuilder.create(
+				_portal.getControlPanelPortletURL(
+					serviceContext.getRequest(), serviceContext.getScopeGroup(),
+					DesignLibraryAdminPortletKeys.DESIGN_LIBRARY_ADMIN, 0, 0,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/design_library/design_library_resources"
+			).setParameter(
+				"designLibraryEntryId", depotEntry.getDepotEntryId()
+			).buildString();
+		}
 
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 
@@ -149,6 +167,9 @@ public class DepotEntryUserNotificationHandler
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private UserNotificationEventLocalService
