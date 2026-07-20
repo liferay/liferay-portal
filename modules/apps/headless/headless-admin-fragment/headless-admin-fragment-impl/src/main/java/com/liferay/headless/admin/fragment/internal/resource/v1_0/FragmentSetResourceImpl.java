@@ -122,6 +122,10 @@ public class FragmentSetResourceImpl
 			contextCompany.getCompanyId(), designLibraryExternalReferenceCode,
 			DepotConstants.TYPE_DESIGN_LIBRARY);
 
+		if (!_hasManageFragmentEntriesPermission(groupId)) {
+			return Page.of(Collections.emptyList());
+		}
+
 		return _search(
 			filter, groupId, pagination,
 			_getDesignLibraryActionsUnsafeFunction(
