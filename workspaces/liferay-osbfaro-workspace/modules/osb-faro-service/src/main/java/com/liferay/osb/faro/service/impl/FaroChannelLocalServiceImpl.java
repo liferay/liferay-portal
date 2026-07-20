@@ -10,9 +10,9 @@ import com.liferay.osb.faro.constants.FaroChannelConstants;
 import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
-import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.base.FaroChannelLocalServiceBaseImpl;
+import com.liferay.osb.faro.service.persistence.FaroProjectPersistence;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroEmailSender;
 import com.liferay.osb.faro.util.FaroPropsValues;
@@ -315,9 +315,8 @@ public class FaroChannelLocalServiceImpl
 			long userId)
 		throws Exception {
 
-		FaroProject faroProject =
-			_faroProjectLocalService.getFaroProjectByGroupId(
-				faroChannel.getWorkspaceGroupId());
+		FaroProject faroProject = _faroProjectPersistence.findByGroupId(
+			faroChannel.getWorkspaceGroupId());
 
 		User user = _userLocalService.getUser(userId);
 
@@ -349,7 +348,7 @@ public class FaroChannelLocalServiceImpl
 		FaroChannelLocalServiceImpl.class);
 
 	@Reference
-	private FaroProjectLocalService _faroProjectLocalService;
+	private FaroProjectPersistence _faroProjectPersistence;
 
 	@Reference
 	private FaroUserLocalService _faroUserLocalService;
