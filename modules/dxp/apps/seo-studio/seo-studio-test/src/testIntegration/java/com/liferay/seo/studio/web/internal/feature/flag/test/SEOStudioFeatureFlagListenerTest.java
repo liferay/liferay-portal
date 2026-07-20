@@ -121,8 +121,6 @@ public class SEOStudioFeatureFlagListenerTest {
 		Assert.assertEquals(oAuth2Application1.getClientId(), clientId);
 		Assert.assertEquals(oAuth2Application1.getClientSecret(), clientSecret);
 
-		// Reenabling must reuse the existing client, not provision a new one
-
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			companyId, true, "LPD-44511");
 
