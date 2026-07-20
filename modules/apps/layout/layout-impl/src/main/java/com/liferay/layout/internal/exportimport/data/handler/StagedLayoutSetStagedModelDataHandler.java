@@ -440,31 +440,10 @@ public class StagedLayoutSetStagedModelDataHandler
 		Image image = null;
 
 		if (layoutSetBranch != null) {
-			try {
-				image = _imageLocalService.getImage(
-					layoutSetBranch.getLogoId());
-			}
-			catch (PortalException portalException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to get logo for layout set branch " +
-							layoutSetBranch.getLayoutSetBranchId(),
-						portalException);
-				}
-			}
+			image = _imageLocalService.fetchImage(layoutSetBranch.getLogoId());
 		}
 		else {
-			try {
-				image = _imageLocalService.getImage(layoutSet.getLogoId());
-			}
-			catch (PortalException portalException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to get logo for layout set " +
-							layoutSet.getLayoutSetId(),
-						portalException);
-				}
-			}
+			image = _imageLocalService.fetchImage(layoutSet.getLogoId());
 		}
 
 		if ((image != null) && (image.getTextObj() != null)) {

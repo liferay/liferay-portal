@@ -1557,7 +1557,7 @@ public class LayoutLocalServiceWrapper
 			_copyLayoutClientExtensions(
 				_sourceLayout, _targetLayout, _user.getUserId());
 
-			Image image = _imageLocalService.getImage(
+			Image image = _imageLocalService.fetchImage(
 				_sourceLayout.getIconImageId());
 
 			byte[] imageBytes = null;

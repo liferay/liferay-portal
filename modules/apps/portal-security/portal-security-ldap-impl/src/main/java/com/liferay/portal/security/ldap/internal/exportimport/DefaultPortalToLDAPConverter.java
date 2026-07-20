@@ -633,7 +633,7 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 		Image image = null;
 
 		try {
-			image = _imageLocalService.getImage(user.getPortraitId());
+			image = _imageLocalService.fetchImage(user.getPortraitId());
 
 			if (image != null) {
 				bytes = image.getTextObj();

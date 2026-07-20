@@ -8,7 +8,6 @@ package com.liferay.portal.service.impl;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.exception.ImageTypeException;
@@ -44,7 +43,7 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 			return null;
 		}
 
-		Image image = getImage(imageId);
+		Image image = fetchImage(imageId);
 
 		if (image == null) {
 			return null;
@@ -64,34 +63,13 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
 	@Override
 	public Image getCompanyLogo(long imageId) {
-		Image image = getImage(imageId);
+		Image image = fetchImage(imageId);
 
 		if (image != null) {
 			return image;
 		}
 
 		return ImageToolUtil.getDefaultCompanyLogo();
-	}
-
-	@Override
-	public Image getImage(long imageId) {
-		try {
-			if (imageId <= 0) {
-				return null;
-			}
-
-			return imagePersistence.fetchByPrimaryKey(imageId);
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Unable to get image ", imageId, ": ",
-						exception.getMessage()));
-			}
-
-			return null;
-		}
 	}
 
 	@Override
@@ -120,7 +98,7 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
 	@Override
 	public Image getImageOrDefault(long imageId) {
-		Image image = getImage(imageId);
+		Image image = fetchImage(imageId);
 
 		if (image != null) {
 			return image;
@@ -298,7 +276,7 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 	}
 
 	private long _getImageCompanyId(long imageId) {
-		Image image = getImage(imageId);
+		Image image = fetchImage(imageId);
 
 		if (image == null) {
 			if (_log.isWarnEnabled()) {

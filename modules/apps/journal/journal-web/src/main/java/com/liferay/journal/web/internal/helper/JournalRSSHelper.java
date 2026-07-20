@@ -281,7 +281,7 @@ public class JournalRSSHelper {
 					imageId = GetterUtil.getLong(imageIdStrings[0]);
 				}
 
-				image = _imageLocalService.getImage(imageId);
+				image = _imageLocalService.fetchImage(imageId);
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
