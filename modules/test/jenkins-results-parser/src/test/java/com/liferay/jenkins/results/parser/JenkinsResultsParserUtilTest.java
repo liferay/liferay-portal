@@ -507,9 +507,9 @@ public class JenkinsResultsParserUtilTest
 
 	@Test
 	public void testIsCINode() {
+		_assertIsCINode("https://test-1-1.liferay.com/", "test-network", true);
 		_assertIsCINode("https://test-1-1.liferay.com/", null, true);
 		_assertIsCINode(null, "test-network", true);
-		_assertIsCINode("https://test-1-1.liferay.com/", "test-network", true);
 		_assertIsCINode(null, null, false);
 	}
 
