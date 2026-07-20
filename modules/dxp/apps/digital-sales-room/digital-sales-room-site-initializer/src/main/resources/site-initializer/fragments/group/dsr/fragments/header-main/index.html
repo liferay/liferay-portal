@@ -18,6 +18,14 @@
 			<div>
 				[#assign response = restClient.get("/digital-sales-room/rooms/${roomId}?nestedFields=r_accountToDSRRooms_accountEntryId") /]
 
+				[#if response?has_content && (response.roomStatus)?? && (response.roomStatus == 5)]
+					<div class="alert alert-info" id="dsr-archived-room-warning" role="alert">
+						[@clay["icon"] symbol="info-circle" /]
+
+						[@liferay.language key="this-digital-sales-room-is-archived-new-comments-cannot-be-added-and-it-can-no-longer-be-shared" /]
+					</div>
+				[/#if]
+
 				<div class="dsr-header-banner">
 					<img alt="" data-lfr-editable-id="banner" data-lfr-editable-type="image" src="[resources:banner.png]" />
 
