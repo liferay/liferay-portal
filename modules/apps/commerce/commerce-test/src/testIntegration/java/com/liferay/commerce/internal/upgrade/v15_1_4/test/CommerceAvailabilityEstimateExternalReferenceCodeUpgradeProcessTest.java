@@ -53,9 +53,6 @@ public class
 			commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId();
 		String uuid = commerceAvailabilityEstimate.getUuid();
 
-		// Simulate a legacy row without an external reference code and with a
-		// nonapproved status
-
 		try (Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
