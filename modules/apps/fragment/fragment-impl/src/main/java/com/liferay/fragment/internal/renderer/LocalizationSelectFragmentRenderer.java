@@ -165,8 +165,24 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 			FragmentEntryLink fragmentEntryLink =
 				fragmentRendererContext.getFragmentEntryLink();
 
+			Translator translator = _translatorRegistry.getCompanyTranslator(
+				themeDisplay.getCompanyId());
+
 			componentTag.setProps(
 				HashMapBuilder.<String, Object>put(
+					"aiAssisted",
+					() -> {
+						if ((translator == null) ||
+							!translator.isAIAssisted()) {
+
+							return false;
+						}
+
+						Group group = themeDisplay.getScopeGroup();
+
+						return group.isCMS();
+					}
+				).put(
 					"allowLocalizationManagement",
 					GetterUtil.getBoolean(
 						_fragmentEntryConfigurationParser.getFieldValue(
@@ -182,10 +198,6 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 				).put(
 					"autoTranslationEnabled",
 					() -> {
-						Translator translator =
-							_translatorRegistry.getCompanyTranslator(
-								themeDisplay.getCompanyId());
-
 						if (translator != null) {
 							return true;
 						}
