@@ -4,7 +4,7 @@
  */
 
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
-import {FragmentSetModal} from '@liferay/layout-js-components-web';
+import {FragmentSetModalContent} from '@liferay/layout-js-components-web';
 import {openModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
@@ -85,12 +85,13 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 				label,
 				onClick: () =>
 					openModal({
-						contentComponent: () => (
-							<FragmentSetModal
+						contentComponent: ({closeModal}) => (
+							<FragmentSetModalContent
 								addFragmentCollectionURL={
 									addFragmentCollectionURL
 								}
 								allowCustomName
+								closeModal={closeModal}
 								fragmentCollections={fragmentCollections}
 								onSubmitFragmentCollection={(
 									fragmentCollectionId: number,
@@ -141,9 +142,10 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 			label: Liferay.Language.get('new-fragment-set'),
 			onClick: () =>
 				openModal({
-					contentComponent: () => (
-						<FragmentSetModal
+					contentComponent: ({closeModal}) => (
+						<FragmentSetModalContent
 							addFragmentCollectionURL={addFragmentCollectionURL}
+							closeModal={closeModal}
 							fragmentCollections={[]}
 							onSubmitFragmentCollection={() =>
 								navigate(location.href)

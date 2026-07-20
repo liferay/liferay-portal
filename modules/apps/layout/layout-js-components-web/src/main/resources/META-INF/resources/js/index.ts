@@ -5,7 +5,10 @@
 
 export {default as InstallFragmentModal} from '././components/marketplace/InstallFragmentModal';
 export {default as CardStyleModal} from '././components/modals/CardStyleModal';
-export {default as FragmentSetModal} from '././components/modals/FragmentSetModal';
+export {
+	default as FragmentSetModal,
+	FragmentSetModalContent,
+} from '././components/modals/FragmentSetModal';
 export {
 	default as ColorPicker,
 	DEFAULT_TOKEN_LABEL,

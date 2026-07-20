@@ -22,16 +22,7 @@ type Errors = {
 	name?: string | null;
 };
 
-export default function FragmentSetModal({
-	addFragmentCollectionURL,
-	allowCustomName = false,
-	contributedEntryKeys = [],
-	copyFragmentEntriesURL,
-	fragmentCollections = [],
-	fragmentEntryIds = [],
-	onSubmitFragmentCollection,
-	portletNamespace,
-}: {
+type FragmentSetModalProps = {
 	addFragmentCollectionURL?: string;
 	allowCustomName?: boolean;
 	contributedEntryKeys?: string[];
@@ -43,9 +34,36 @@ export default function FragmentSetModal({
 		fragmentName?: string
 	) => Promise<void> | void;
 	portletNamespace: string;
-}) {
+};
+
+export default function FragmentSetModal(props: FragmentSetModalProps) {
 	const {observer, onOpenChange, open} = useModal({defaultOpen: true});
 
+	if (!open) {
+		return null;
+	}
+
+	return (
+		<ClayModal className="modal-dialog-centered" observer={observer}>
+			<FragmentSetModalContent
+				{...props}
+				closeModal={() => onOpenChange(false)}
+			/>
+		</ClayModal>
+	);
+}
+
+export function FragmentSetModalContent({
+	addFragmentCollectionURL,
+	allowCustomName = false,
+	closeModal,
+	contributedEntryKeys = [],
+	copyFragmentEntriesURL,
+	fragmentCollections = [],
+	fragmentEntryIds = [],
+	onSubmitFragmentCollection,
+	portletNamespace,
+}: FragmentSetModalProps & {closeModal: () => void}) {
 	const [errors, setErrors] = useState<Errors>({});
 	const [fragmentName, setFragmentName] = useState('');
 	const [showFragmentSetForm, setShowFragmentSetForm] = useState(
@@ -56,7 +74,7 @@ export default function FragmentSetModal({
 
 	const submitFragmentCollection = (fragmentCollectionId: number) => {
 		if (onSubmitFragmentCollection) {
-			onOpenChange(false);
+			closeModal();
 
 			onSubmitFragmentCollection(fragmentCollectionId, fragmentName);
 
@@ -98,7 +116,7 @@ export default function FragmentSetModal({
 			method: 'POST',
 		})
 			.then((response) => {
-				onOpenChange(false);
+				closeModal();
 
 				if (response.redirected) {
 					navigate(response.url);
@@ -130,12 +148,8 @@ export default function FragmentSetModal({
 		title = Liferay.Language.get('add-fragment-set');
 	}
 
-	if (!open) {
-		return null;
-	}
-
 	return (
-		<ClayModal className="modal-dialog-centered" observer={observer}>
+		<>
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
@@ -197,7 +211,7 @@ export default function FragmentSetModal({
 					<ClayButton.Group spaced>
 						<ClayButton
 							displayType="secondary"
-							onClick={() => onOpenChange(false)}
+							onClick={closeModal}
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
@@ -212,7 +226,7 @@ export default function FragmentSetModal({
 					</ClayButton.Group>
 				}
 			/>
-		</ClayModal>
+		</>
 	);
 }
 
