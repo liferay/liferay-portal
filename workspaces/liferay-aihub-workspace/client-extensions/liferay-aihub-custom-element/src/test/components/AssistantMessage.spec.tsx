@@ -7,7 +7,7 @@ import {render, screen} from '@testing-library/react';
 import React from 'react';
 import {describe, expect, it} from 'vitest';
 
-import AssistantMessage from './AssistantMessage';
+import AssistantMessage from '../../components/AssistantMessage';
 
 describe('AssistantMessage', () => {
 	it('renders a bare URL in the response as a clickable link', () => {

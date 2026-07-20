@@ -5,10 +5,10 @@
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {postAIIssueReport} from './api';
-import {submitPositiveFeedback} from './feedback';
+import {postAIIssueReport} from '../api';
+import {submitPositiveFeedback} from '../feedback';
 
-vi.mock('./api', () => ({postAIIssueReport: vi.fn()}));
+vi.mock('../api', () => ({postAIIssueReport: vi.fn()}));
 
 const mockedPost = vi.mocked(postAIIssueReport);
 

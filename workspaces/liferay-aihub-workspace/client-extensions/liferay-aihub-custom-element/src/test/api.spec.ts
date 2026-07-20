@@ -5,7 +5,7 @@
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {getChatbotConfiguration} from './api';
+import {getChatbotConfiguration} from '../api';
 
 const configuration = {title: 'My Chatbot'};
 

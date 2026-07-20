@@ -6,10 +6,10 @@
 import {act, renderHook} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {postAIIssueReport} from '../api';
-import useReportFeedback from './useReportFeedback';
+import {postAIIssueReport} from '../../api';
+import useReportFeedback from '../../hooks/useReportFeedback';
 
-vi.mock('../api', () => ({postAIIssueReport: vi.fn()}));
+vi.mock('../../api', () => ({postAIIssueReport: vi.fn()}));
 
 const mockedPost = vi.mocked(postAIIssueReport);
 

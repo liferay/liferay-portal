@@ -7,7 +7,7 @@ import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 import {describe, expect, it, vi} from 'vitest';
 
-import FeedbackActions from './FeedbackActions';
+import FeedbackActions from '../../components/FeedbackActions';
 
 describe('FeedbackActions', () => {
 	it('invokes the thumbs-up and thumbs-down callbacks on click', () => {

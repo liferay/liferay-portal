@@ -7,10 +7,10 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 
-import {postAIIssueReport} from '../api';
-import SendFeedbackModal from './SendFeedbackModal';
+import {postAIIssueReport} from '../../api';
+import SendFeedbackModal from '../../components/SendFeedbackModal';
 
-vi.mock('../api', () => ({postAIIssueReport: vi.fn()}));
+vi.mock('../../api', () => ({postAIIssueReport: vi.fn()}));
 
 // ClayModal defers rendering its children until a CSS transition completes,
 // which never fires under jsdom. The open/close animation and dialog a11y are
