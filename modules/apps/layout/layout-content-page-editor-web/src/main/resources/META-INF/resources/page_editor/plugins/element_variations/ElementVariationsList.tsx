@@ -101,7 +101,7 @@ export default function ElementVariationsList({
 														elementVariation.html
 													) ? (
 														<ClayLabel
-															className="label-inverse-content-1"
+															className="label-inverse-content-6"
 															displayType="unstyled"
 															inverse
 														>
