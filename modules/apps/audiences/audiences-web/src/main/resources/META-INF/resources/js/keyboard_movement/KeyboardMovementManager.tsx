@@ -14,6 +14,7 @@ import {
 	ENTER_KEY_CODE,
 	ESCAPE_KEY_CODE,
 	HOME_KEY_CODE,
+	SPACE_KEY_CODE,
 } from '../constants/keyboardCodes';
 import {Action} from '../reducer';
 import {Group} from '../types';
@@ -208,7 +209,10 @@ export default function KeyboardMovementManager({
 			else if (event.code === END_KEY_CODE) {
 				moveTo(targets.length - 1);
 			}
-			else if (event.code === ENTER_KEY_CODE) {
+			else if (
+				event.code === ENTER_KEY_CODE ||
+				event.code === SPACE_KEY_CODE
+			) {
 				executeAction();
 			}
 			else if (event.code === ESCAPE_KEY_CODE) {

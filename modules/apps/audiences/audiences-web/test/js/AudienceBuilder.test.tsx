@@ -196,6 +196,36 @@ describe('AudienceBuilder', () => {
 			]);
 		});
 
+		it('commits the movement with space', async () => {
+			const {container} = render(
+				<AudienceBuilder
+					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
+					rulesGroup={{
+						conjunction: 'AND',
+						rules: [
+							{attribute: 'age', operator: 'gt', value: '18'},
+							{
+								attribute: 'city',
+								operator: 'eq',
+								value: 'Madrid',
+							},
+						],
+					}}
+				/>
+			);
+
+			screen.getAllByTitle('move-x')[0].focus();
+
+			await userEvent.keyboard('{Enter}');
+
+			await userEvent.keyboard('{ArrowDown}[Space]');
+
+			expect(getSerializedRuleAttributes(container)).toEqual([
+				'city',
+				'age',
+			]);
+		});
+
 		it('reorders a condition above a removed-criteria error row', async () => {
 			const {container} = render(
 				<AudienceBuilder

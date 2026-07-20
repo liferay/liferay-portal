@@ -14,3 +14,5 @@ export const ENTER_KEY_CODE = 'Enter';
 export const ESCAPE_KEY_CODE = 'Escape';
 
 export const HOME_KEY_CODE = 'Home';
+
+export const SPACE_KEY_CODE = 'Space';
