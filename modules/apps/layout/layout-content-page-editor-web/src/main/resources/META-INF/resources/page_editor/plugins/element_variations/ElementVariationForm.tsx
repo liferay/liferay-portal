@@ -9,6 +9,7 @@ import ClayForm, {ClayCheckbox, ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
 import {useId} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import CodeEditorField from './CodeEditorField';
@@ -82,6 +83,11 @@ export default function ElementVariationForm({
 		elementVariation
 	);
 
+	const editing = elementVariations.some(
+		(existingElementVariation) =>
+			existingElementVariation.key === elementVariation.key
+	);
+
 	const [errors, setErrors] = useState<{
 		audience?: boolean;
 		name?: boolean;
@@ -113,7 +119,15 @@ export default function ElementVariationForm({
 				/>
 
 				<span className="font-weight-bold">
-					{Liferay.Language.get('element-variation')}
+					{editing
+						? sub(
+								Liferay.Language.get('edit-x'),
+								Liferay.Language.get('variation')
+							)
+						: sub(
+								Liferay.Language.get('new-x'),
+								Liferay.Language.get('variation')
+							)}
 				</span>
 
 				<div className="ml-auto">
