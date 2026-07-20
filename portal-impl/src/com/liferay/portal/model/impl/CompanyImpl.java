@@ -6,6 +6,7 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.AutoEscape;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.model.cache.CacheField;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyInfoLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
@@ -72,17 +74,22 @@ public class CompanyImpl extends CompanyBaseImpl {
 	@Override
 	public CompanyInfo getCompanyInfo() {
 		if (_companyInfo == null) {
-			CompanyInfo companyInfo = CompanyInfoLocalServiceUtil.fetchCompany(
-				getCompanyId());
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
+						getCompanyId())) {
 
-			if (companyInfo == null) {
-				companyInfo = CompanyInfoLocalServiceUtil.createCompanyInfo(
-					CounterLocalServiceUtil.increment());
+				CompanyInfo companyInfo =
+					CompanyInfoLocalServiceUtil.fetchCompany(getCompanyId());
 
-				companyInfo.setCompanyId(getCompanyId());
+				if (companyInfo == null) {
+					companyInfo = CompanyInfoLocalServiceUtil.createCompanyInfo(
+						CounterLocalServiceUtil.increment());
+
+					companyInfo.setCompanyId(getCompanyId());
+				}
+
+				_companyInfo = companyInfo;
 			}
-
-			_companyInfo = companyInfo;
 		}
 
 		return _companyInfo;
