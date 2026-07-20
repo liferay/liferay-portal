@@ -408,7 +408,10 @@ export default function ElementVariationForm({
 							</ClayButton>
 						</div>
 
-						<ClayForm.Group className="my-4" small>
+						<ClayForm.Group
+							className="align-items-center d-flex my-4"
+							small
+						>
 							<ClayCheckbox
 								checked={!elementVariation.active}
 								disabled={translating}
@@ -419,6 +422,12 @@ export default function ElementVariationForm({
 									onChange({active: !event.target.checked})
 								}
 							/>
+
+							{translating ? (
+								<span className="element-variations__not-localizable-label font-weight-lighter mb-1 ml-2 text-2">
+									({Liferay.Language.get('not-localizable')})
+								</span>
+							) : null}
 						</ClayForm.Group>
 					</>
 				) : null}

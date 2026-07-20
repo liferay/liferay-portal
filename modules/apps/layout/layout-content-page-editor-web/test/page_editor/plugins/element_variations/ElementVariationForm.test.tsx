@@ -168,7 +168,7 @@ describe('ElementVariationForm', () => {
 	it('marks the not-localizable fields as read-only when translating', () => {
 		renderForm({targetElement: '.title'}, TRANSLATING_PROPS);
 
-		expect(screen.getAllByText('(not-localizable)')).toHaveLength(4);
+		expect(screen.getAllByText('(not-localizable)')).toHaveLength(5);
 		expect(screen.getByDisplayValue('My Variation')).toHaveAttribute(
 			'readonly'
 		);
