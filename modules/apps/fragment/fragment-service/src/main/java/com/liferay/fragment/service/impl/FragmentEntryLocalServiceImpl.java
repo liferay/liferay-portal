@@ -985,10 +985,6 @@ public class FragmentEntryLocalServiceImpl
 
 		Group group = _groupLocalService.getGroup(fragmentEntry.getGroupId());
 
-		if (group.isDepot()) {
-			return;
-		}
-
 		ActionableDynamicQuery actionableDynamicQuery =
 			_fragmentEntryLinkLocalService.getActionableDynamicQuery();
 
