@@ -29,6 +29,7 @@ import com.liferay.headless.admin.site.dto.v1_0.util.URLUtil;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -404,6 +405,7 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 				searchContext.setCompanyId(contextCompany.getCompanyId());
 				searchContext.setFolderIds(folderIds);
 				searchContext.setGroupIds(new long[] {groupId});
+				searchContext.setUserId(UserConstants.USER_ID_DEFAULT);
 				searchContext.setVulcanCheckPermissions(false);
 			},
 			null,
