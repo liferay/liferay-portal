@@ -340,7 +340,8 @@ public class DLFileVersionLocalServiceUtil {
 	}
 
 	public static DLFileVersion getFileVersionByUuidAndGroupId(
-		String uuid, long groupId) {
+			String uuid, long groupId)
+		throws PortalException {
 
 		return getService().getFileVersionByUuidAndGroupId(uuid, groupId);
 	}
@@ -442,4 +443,4 @@ public class DLFileVersionLocalServiceUtil {
 	private static volatile DLFileVersionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1220833315
+// LIFERAY-SERVICE-BUILDER-HASH:1156495179

@@ -298,11 +298,13 @@ public interface ExpandoRowLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoRow getRow(
-		long companyId, long classNameId, String tableName, long classPK);
+			long companyId, long classNameId, String tableName, long classPK)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoRow getRow(
-		long companyId, String className, String tableName, long classPK);
+			long companyId, String className, String tableName, long classPK)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoRow> getRows(long tableId, int start, int end);
@@ -353,4 +355,4 @@ public interface ExpandoRowLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1460711818
+// LIFERAY-SERVICE-BUILDER-HASH:1790962166

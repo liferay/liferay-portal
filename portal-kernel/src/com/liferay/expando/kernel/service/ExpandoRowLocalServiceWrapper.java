@@ -397,7 +397,8 @@ public class ExpandoRowLocalServiceWrapper
 
 	@Override
 	public ExpandoRow getRow(
-		long companyId, long classNameId, String tableName, long classPK) {
+			long companyId, long classNameId, String tableName, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _expandoRowLocalService.getRow(
 			companyId, classNameId, tableName, classPK);
@@ -405,7 +406,8 @@ public class ExpandoRowLocalServiceWrapper
 
 	@Override
 	public ExpandoRow getRow(
-		long companyId, String className, String tableName, long classPK) {
+			long companyId, String className, String tableName, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _expandoRowLocalService.getRow(
 			companyId, className, tableName, classPK);
@@ -512,4 +514,4 @@ public class ExpandoRowLocalServiceWrapper
 	private ExpandoRowLocalService _expandoRowLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-246128185
+// LIFERAY-SERVICE-BUILDER-HASH:-1252422941

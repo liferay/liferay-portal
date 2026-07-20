@@ -377,7 +377,8 @@ public class DLFileVersionLocalServiceWrapper
 
 	@Override
 	public DLFileVersion getFileVersionByUuidAndGroupId(
-		String uuid, long groupId) {
+			String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _dlFileVersionLocalService.getFileVersionByUuidAndGroupId(
 			uuid, groupId);
@@ -524,4 +525,4 @@ public class DLFileVersionLocalServiceWrapper
 	private DLFileVersionLocalService _dlFileVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-336277103
+// LIFERAY-SERVICE-BUILDER-HASH:1398958783

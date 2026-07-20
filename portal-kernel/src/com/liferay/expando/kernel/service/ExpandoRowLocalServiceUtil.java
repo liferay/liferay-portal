@@ -351,13 +351,15 @@ public class ExpandoRowLocalServiceUtil {
 	}
 
 	public static ExpandoRow getRow(
-		long companyId, long classNameId, String tableName, long classPK) {
+			long companyId, long classNameId, String tableName, long classPK)
+		throws PortalException {
 
 		return getService().getRow(companyId, classNameId, tableName, classPK);
 	}
 
 	public static ExpandoRow getRow(
-		long companyId, String className, String tableName, long classPK) {
+			long companyId, String className, String tableName, long classPK)
+		throws PortalException {
 
 		return getService().getRow(companyId, className, tableName, classPK);
 	}
@@ -423,4 +425,4 @@ public class ExpandoRowLocalServiceUtil {
 	private static volatile ExpandoRowLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-440061931
+// LIFERAY-SERVICE-BUILDER-HASH:-156443079

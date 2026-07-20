@@ -263,7 +263,8 @@ public class SocialActivitySetLocalServiceWrapper
 
 	@Override
 	public SocialActivitySet getClassActivitySet(
-		long classNameId, long classPK, int type) {
+			long classNameId, long classPK, int type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _socialActivitySetLocalService.getClassActivitySet(
 			classNameId, classPK, type);
@@ -271,7 +272,8 @@ public class SocialActivitySetLocalServiceWrapper
 
 	@Override
 	public SocialActivitySet getClassActivitySet(
-		long userId, long classNameId, long classPK, int type) {
+			long userId, long classNameId, long classPK, int type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _socialActivitySetLocalService.getClassActivitySet(
 			userId, classNameId, classPK, type);
@@ -407,7 +409,8 @@ public class SocialActivitySetLocalServiceWrapper
 
 	@Override
 	public SocialActivitySet getUserActivitySet(
-		long groupId, long userId, int type) {
+			long groupId, long userId, int type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _socialActivitySetLocalService.getUserActivitySet(
 			groupId, userId, type);
@@ -415,7 +418,8 @@ public class SocialActivitySetLocalServiceWrapper
 
 	@Override
 	public SocialActivitySet getUserActivitySet(
-		long groupId, long userId, long classNameId, int type) {
+			long groupId, long userId, long classNameId, int type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _socialActivitySetLocalService.getUserActivitySet(
 			groupId, userId, classNameId, type);
@@ -528,4 +532,4 @@ public class SocialActivitySetLocalServiceWrapper
 	private SocialActivitySetLocalService _socialActivitySetLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-65778887
+// LIFERAY-SERVICE-BUILDER-HASH:595185053

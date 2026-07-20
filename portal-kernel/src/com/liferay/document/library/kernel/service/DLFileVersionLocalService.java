@@ -313,7 +313,8 @@ public interface DLFileVersionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DLFileVersion getFileVersionByUuidAndGroupId(
-		String uuid, long groupId);
+			String uuid, long groupId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFileVersion> getFileVersions(long fileEntryId, int status);
@@ -389,4 +390,4 @@ public interface DLFileVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1922430040
+// LIFERAY-SERVICE-BUILDER-HASH:-1635321172
