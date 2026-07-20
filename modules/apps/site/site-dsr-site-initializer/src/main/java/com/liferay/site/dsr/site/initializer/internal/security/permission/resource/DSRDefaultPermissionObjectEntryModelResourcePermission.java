@@ -127,21 +127,42 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 				permissionChecker.getCompanyId(),
 				objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
 				objectEntry.getUserId(), actionId) ||
-			permissionChecker.hasPermission(
-				objectEntry.getGroupId(), objectDefinition.getClassName(),
-				objectEntry.getObjectEntryId(), actionId)) {
+			permissionChecker.isCompanyAdmin()) {
 
 			return true;
 		}
 
-		if (actionId.equals(ActionKeys.ADD_DISCUSSION) ||
-			actionId.equals(ActionKeys.VIEW)) {
+		long siteId = MapUtil.getLong(objectEntry.getValues(), "siteId");
 
-			long siteId = MapUtil.getLong(objectEntry.getValues(), "siteId");
+		boolean hasGroupPermission = false;
 
-			if ((siteId > 0) && permissionChecker.isGroupMember(siteId)) {
+		if ((siteId > 0) &&
+			(permissionChecker.isGroupMember(siteId) ||
+			 permissionChecker.isGroupOwner(siteId))) {
+
+			hasGroupPermission = true;
+		}
+
+		if (Objects.equals(actionId, ActionKeys.ADD_DISCUSSION) ||
+			Objects.equals(actionId, ActionKeys.VIEW)) {
+
+			if (hasGroupPermission) {
 				return true;
 			}
+
+			return _modelResourcePermission.contains(
+				permissionChecker, objectEntry, actionId);
+		}
+
+		if (!hasGroupPermission) {
+			return false;
+		}
+
+		if (permissionChecker.hasPermission(
+				objectEntry.getGroupId(), objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId(), actionId)) {
+
+			return true;
 		}
 
 		return _modelResourcePermission.contains(
