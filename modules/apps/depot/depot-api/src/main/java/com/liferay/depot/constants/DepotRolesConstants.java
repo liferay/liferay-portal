@@ -5,6 +5,8 @@
 
 package com.liferay.depot.constants;
 
+import java.util.Objects;
+
 /**
  * @author Cristina González
  */
@@ -49,6 +51,38 @@ public class DepotRolesConstants {
 	public static final String SUBTYPE_PROJECT = "project";
 
 	public static final String SUBTYPE_SPACE = "space";
+
+	public static String getAdministratorRoleName(String subtype) {
+		if (Objects.equals(subtype, SUBTYPE_DESIGN_LIBRARY)) {
+			return DESIGN_LIBRARY_ADMINISTRATOR;
+		}
+
+		return ASSET_LIBRARY_ADMINISTRATOR;
+	}
+
+	public static String getContentReviewerRoleName(String subtype) {
+		if (Objects.equals(subtype, SUBTYPE_DESIGN_LIBRARY)) {
+			return DESIGN_LIBRARY_CONTENT_REVIEWER;
+		}
+
+		return ASSET_LIBRARY_CONTENT_REVIEWER;
+	}
+
+	public static String getMemberRoleName(String subtype) {
+		if (Objects.equals(subtype, SUBTYPE_DESIGN_LIBRARY)) {
+			return DESIGN_LIBRARY_MEMBER;
+		}
+
+		return ASSET_LIBRARY_MEMBER;
+	}
+
+	public static String getOwnerRoleName(String subtype) {
+		if (Objects.equals(subtype, SUBTYPE_DESIGN_LIBRARY)) {
+			return DESIGN_LIBRARY_OWNER;
+		}
+
+		return ASSET_LIBRARY_OWNER;
+	}
 
 	public static String getSubtype(int depotType) {
 		if (depotType == DepotConstants.TYPE_DESIGN_LIBRARY) {

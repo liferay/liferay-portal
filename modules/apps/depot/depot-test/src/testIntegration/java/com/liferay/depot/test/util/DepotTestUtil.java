@@ -77,6 +77,47 @@ public class DepotTestUtil {
 		_withUser(unsafeBiConsumer, RoleConstants.TYPE_DEPOT);
 	}
 
+	public static void withDesignLibraryAdministrator(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withDesignLibraryGroupUser(
+			depotEntry.getGroupId(),
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR, unsafeConsumer);
+	}
+
+	public static void withDesignLibraryContentReviewer(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withDesignLibraryGroupUser(
+			depotEntry.getGroupId(),
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+			unsafeConsumer);
+	}
+
+	public static void withDesignLibraryMember(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withDesignLibraryGroupUser(
+			depotEntry.getGroupId(), DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+			unsafeConsumer);
+	}
+
+	public static void withDesignLibraryOwner(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withDesignLibraryGroupUser(
+			depotEntry.getGroupId(), DepotRolesConstants.DESIGN_LIBRARY_OWNER,
+			unsafeConsumer);
+	}
+
 	public static void withGroupPermissions(
 			Group group, String roleName, String resourceName, String actionId,
 			UnsafeRunnable<Exception> unsafeRunnable)
@@ -147,6 +188,38 @@ public class DepotTestUtil {
 		}
 
 		return true;
+	}
+
+	private static void _withDesignLibraryGroupUser(
+			long groupId, String roleName,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		Role role = RoleLocalServiceUtil.getRole(
+			TestPropsValues.getCompanyId(), roleName);
+
+		User user = UserTestUtil.addUser();
+
+		UserLocalServiceUtil.addGroupUsers(
+			groupId, new long[] {user.getUserId()});
+
+		UserGroupRoleLocalServiceUtil.addUserGroupRoles(
+			user.getUserId(), groupId, new long[] {role.getRoleId()});
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			unsafeConsumer.accept(user);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+			UserLocalServiceUtil.deleteUser(user);
+		}
 	}
 
 	private static void _withGroupUser(
