@@ -67,6 +67,8 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 
 		Set<String> invokedJobNames = new TreeSet<>();
 
+		String testSuiteName = getTestSuiteName();
+
 		for (String propertyName : buildProperties.stringPropertyNames()) {
 			if (!propertyName.startsWith("jenkins.pull.request.jobs[")) {
 				continue;
@@ -76,10 +78,10 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 				JenkinsResultsParserUtil.getPropertyOptions(propertyName);
 
 			if ((propertyOptions.size() != 2) ||
-				!Objects.equals(propertyOptions.get(1), getTestSuiteName()) ||
+				!Objects.equals(propertyOptions.get(1), testSuiteName) ||
 				!_matchesRule(
 					buildProperties, modifiedFileNames, modifiedJarEntryNames,
-					propertyOptions.get(0))) {
+					propertyOptions.get(0), testSuiteName)) {
 
 				continue;
 			}
@@ -91,8 +93,7 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 			invokedJobNames.addAll(
 				_getInvokedJobNames(
 					JenkinsResultsParserUtil.combine(
-						"jenkins.pull.request.jobs[", getTestSuiteName(),
-						"]")));
+						"jenkins.pull.request.jobs[", testSuiteName, "]")));
 		}
 
 		return new ArrayList<>(invokedJobNames);
@@ -320,18 +321,19 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 
 	private boolean _matchesRule(
 		Properties buildProperties, List<String> modifiedFileNames,
-		List<String> modifiedJarEntryNames, String ruleName) {
+		List<String> modifiedJarEntryNames, String ruleName,
+		String testSuiteName) {
 
 		if (_matchesModifiedFileNames(
 				modifiedFileNames,
 				JenkinsResultsParserUtil.getProperty(
 					buildProperties, "modified.files.includes", false, ruleName,
-					getTestSuiteName())) ||
+					testSuiteName)) ||
 			_matchesModifiedFileNames(
 				modifiedJarEntryNames,
 				JenkinsResultsParserUtil.getProperty(
 					buildProperties, "modified.jar.entries.includes", false,
-					ruleName, getTestSuiteName()))) {
+					ruleName, testSuiteName))) {
 
 			return true;
 		}
