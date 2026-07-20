@@ -168,8 +168,6 @@ public class PortalInstanceResourceTest
 
 		Assume.assumeTrue(db.isSupportsDBPartition());
 
-		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
-
 		_testPostPortalInstanceExport();
 		_testPostPortalInstanceExportWithNonexistentPortalInstance();
 		_testPostPortalInstanceExportWithoutOmniadminPermission();
@@ -537,6 +535,28 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceExport() throws Exception {
 		long companyId = _portalInstance.getCompanyId();
 
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			try {
+				PortalInstanceExport portalInstanceExport =
+					portalInstanceResource.postPortalInstanceExport(
+						_portalInstance.getPortalInstanceId());
+
+				Assert.assertEquals(
+					DBPartitionUtil.
+						DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
+							companyId,
+					portalInstanceExport.getExportedPartitionName());
+				Assert.assertEquals(
+					Long.valueOf(companyId),
+					portalInstanceExport.getSourceCompanyId());
+			}
+			finally {
+				_dropExportedSchema(companyId);
+			}
+
+			return;
+		}
+
 		Configuration company1Configuration = _createScopedConfiguration(
 			HashMapDictionaryBuilder.<String, Object>put(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
@@ -577,7 +597,8 @@ public class PortalInstanceResourceTest
 					companyId,
 				portalInstanceExport.getExportedPartitionName());
 			Assert.assertEquals(
-				Long.valueOf(companyId), portalInstanceExport.getSourceCompanyId());
+				Long.valueOf(companyId),
+				portalInstanceExport.getSourceCompanyId());
 
 			List<String> configurationIds = _getExportedConfigurationIds(
 				companyId);
