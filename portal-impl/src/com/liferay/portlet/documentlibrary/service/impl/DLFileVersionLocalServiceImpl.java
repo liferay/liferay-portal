@@ -93,9 +93,10 @@ public class DLFileVersionLocalServiceImpl
 
 	@Override
 	public DLFileVersion getFileVersionByUuidAndGroupId(
-		String uuid, long groupId) {
+			String uuid, long groupId)
+		throws PortalException {
 
-		return dlFileVersionPersistence.fetchByUUID_G(uuid, groupId);
+		return dlFileVersionPersistence.findByUUID_G(uuid, groupId);
 	}
 
 	@Override
