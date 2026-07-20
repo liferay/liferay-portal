@@ -115,6 +115,10 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 		SegmentsEntry segmentsEntry = segmentsEntryPersistence.fetchByERC_G(
 			segmentsEntryERC, groupId);
 
+		if (segmentsEntry == null) {
+			return null;
+		}
+
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntry.getSegmentsEntryId(),
 			ActionKeys.VIEW);
