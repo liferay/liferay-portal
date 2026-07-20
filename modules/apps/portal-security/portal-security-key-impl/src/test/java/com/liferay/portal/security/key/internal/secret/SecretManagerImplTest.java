@@ -128,7 +128,7 @@ public class SecretManagerImplTest {
 		).thenReturn(
 			new Secret(
 				RandomTestUtil.randomBytes(),
-				_keyReference(secretProviderId, secretIdentifier))
+				_keyReference(secretIdentifier, secretProviderId))
 		);
 
 		Mockito.when(
@@ -144,7 +144,7 @@ public class SecretManagerImplTest {
 		);
 
 		_secretManagerImpl.getSecret(
-			companyId, _keyReference(secretProviderId, secretIdentifier));
+			companyId, _keyReference(secretIdentifier, secretProviderId));
 
 		Mockito.verify(
 			_secretProvider
@@ -223,7 +223,7 @@ public class SecretManagerImplTest {
 		String secretIdentifier = RandomTestUtil.randomString();
 
 		try (Secret secret = new Secret(
-				_keyReference(secretProviderId, secretIdentifier),
+				_keyReference(secretIdentifier, secretProviderId),
 				RandomTestUtil.randomString())) {
 
 			_secretManagerImpl.putSecret(companyId, secret);
@@ -240,11 +240,11 @@ public class SecretManagerImplTest {
 	}
 
 	private KeyReference _keyReference(String secretProviderId) {
-		return _keyReference(secretProviderId, RandomTestUtil.randomString());
+		return _keyReference(RandomTestUtil.randomString(), secretProviderId);
 	}
 
 	private KeyReference _keyReference(
-		String secretProviderId, String secretIdentifier) {
+		String secretIdentifier, String secretProviderId) {
 
 		return new KeyReference(
 			secretIdentifier, secretProviderId, KeyReference.Type.SECRET);
@@ -289,7 +289,7 @@ public class SecretManagerImplTest {
 		);
 
 		try (Secret secret = new Secret(
-				_keyReference(StringPool.STAR, RandomTestUtil.randomString()),
+				_keyReference(RandomTestUtil.randomString(), StringPool.STAR),
 				RandomTestUtil.randomString())) {
 
 			_secretManagerImpl.putSecret(companyId, secret);
