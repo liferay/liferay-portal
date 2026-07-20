@@ -54,7 +54,7 @@ public class CommerceAddressTypeUpgradeProcess extends UpgradeProcess {
 	}
 
 	private long _getListTypeId(long companyId, String name) {
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypeLocalService.fetchListType(
 			companyId, name, AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
 
 		if (listType == null) {

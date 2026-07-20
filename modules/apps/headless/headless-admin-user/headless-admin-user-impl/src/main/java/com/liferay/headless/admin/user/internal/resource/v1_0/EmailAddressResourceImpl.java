@@ -203,7 +203,7 @@ public class EmailAddressResourceImpl extends BaseEmailAddressResourceImpl {
 	}
 
 	private Long _getListTypeId(String className, String name) {
-		ListType listType = _listTypeService.getListType(
+		ListType listType = _listTypeService.fetchListType(
 			contextCompany.getCompanyId(), name,
 			className + ListTypeConstants.EMAIL_ADDRESS);
 

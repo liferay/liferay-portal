@@ -72,7 +72,7 @@ public class AddAccountEntryAddressListTypesPortalInstanceLifecycleListener
 	}
 
 	private boolean _hasListType(long companyId, String name, String type) {
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypeLocalService.fetchListType(
 			companyId, name, type);
 
 		if (listType != null) {

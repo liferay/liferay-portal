@@ -218,7 +218,7 @@ public class PhoneResourceImpl extends BasePhoneResourceImpl {
 	}
 
 	private Long _getListTypeId(String className, String name) {
-		ListType listType = _listTypeService.getListType(
+		ListType listType = _listTypeService.fetchListType(
 			contextCompany.getCompanyId(), name,
 			className + ListTypeConstants.PHONE);
 

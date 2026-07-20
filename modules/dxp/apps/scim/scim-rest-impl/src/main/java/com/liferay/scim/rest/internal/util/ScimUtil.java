@@ -801,7 +801,7 @@ public class ScimUtil {
 	private static long _getListTypeId(
 		long companyId, String name, String type) {
 
-		ListType listType = ListTypeLocalServiceUtil.getListType(
+		ListType listType = ListTypeLocalServiceUtil.fetchListType(
 			companyId, StringUtil.toLowerCase(name), type);
 
 		if (listType == null) {

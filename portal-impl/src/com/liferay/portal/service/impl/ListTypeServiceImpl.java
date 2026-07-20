@@ -17,13 +17,20 @@ import java.util.List;
 public class ListTypeServiceImpl extends ListTypeServiceBaseImpl {
 
 	@Override
+	public ListType fetchListType(long companyId, String name, String type) {
+		return listTypePersistence.fetchByC_N_T(companyId, name, type);
+	}
+
+	@Override
 	public ListType getListType(long listTypeId) throws PortalException {
 		return listTypePersistence.findByPrimaryKey(listTypeId);
 	}
 
 	@Override
-	public ListType getListType(long companyId, String name, String type) {
-		return listTypePersistence.fetchByC_N_T(companyId, name, type);
+	public ListType getListType(long companyId, String name, String type)
+		throws PortalException {
+
+		return listTypePersistence.findByC_N_T(companyId, name, type);
 	}
 
 	@Override

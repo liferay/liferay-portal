@@ -84,7 +84,7 @@ public class ListTypeStagedModelDataHandler
 			PortletDataContext portletDataContext, ListType listType)
 		throws Exception {
 
-		ListType existingListType = _listTypeLocalService.getListType(
+		ListType existingListType = _listTypeLocalService.fetchListType(
 			portletDataContext.getCompanyId(), listType.getName(),
 			listType.getType());
 

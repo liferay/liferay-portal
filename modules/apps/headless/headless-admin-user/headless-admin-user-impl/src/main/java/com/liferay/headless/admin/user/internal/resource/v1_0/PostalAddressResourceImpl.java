@@ -412,7 +412,7 @@ public class PostalAddressResourceImpl extends BasePostalAddressResourceImpl {
 			type = className.getClassName() + ListTypeConstants.ADDRESS;
 		}
 
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypeLocalService.fetchListType(
 			contextCompany.getCompanyId(), postalAddress.getAddressType(),
 			type);
 

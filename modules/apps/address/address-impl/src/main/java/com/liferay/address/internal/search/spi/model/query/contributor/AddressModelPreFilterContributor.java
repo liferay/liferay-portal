@@ -121,7 +121,7 @@ public class AddressModelPreFilterContributor
 			String listTypeType =
 				className.getClassName() + ListTypeConstants.ADDRESS;
 
-			ListType listType = _listTypeLocalService.getListType(
+			ListType listType = _listTypeLocalService.fetchListType(
 				searchContext.getCompanyId(), typeNames[i], listTypeType);
 
 			if (listType == null) {

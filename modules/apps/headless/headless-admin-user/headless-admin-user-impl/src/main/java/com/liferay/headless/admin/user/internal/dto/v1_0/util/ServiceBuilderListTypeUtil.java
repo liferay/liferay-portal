@@ -42,11 +42,11 @@ public class ServiceBuilderListTypeUtil {
 	public static long toServiceBuilderListTypeId(
 		long companyId, String defaultName, String name, String type) {
 
-		ListType listType = ListTypeLocalServiceUtil.getListType(
+		ListType listType = ListTypeLocalServiceUtil.fetchListType(
 			companyId, name, type);
 
 		if (listType == null) {
-			listType = ListTypeLocalServiceUtil.getListType(
+			listType = ListTypeLocalServiceUtil.fetchListType(
 				companyId, defaultName, type);
 		}
 

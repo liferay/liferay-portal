@@ -173,14 +173,18 @@ public class CommerceAddressUpgradeProcess extends UpgradeProcess {
 		};
 	}
 
-	private long _getAddressListTypeId(long companyId, String name) {
+	private long _getAddressListTypeId(long companyId, String name)
+		throws PortalException {
+
 		ListType listType = _listTypeLocalService.getListType(
 			companyId, name, AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
 
 		return listType.getListTypeId();
 	}
 
-	private long _getListTypeId(int commerceAddressType, long companyId) {
+	private long _getListTypeId(int commerceAddressType, long companyId)
+		throws PortalException {
+
 		String name = null;
 
 		if (CommerceAddressConstants.ADDRESS_TYPE_BILLING ==
@@ -203,7 +207,7 @@ public class CommerceAddressUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _setAddressListType(long companyId, String name) {
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypeLocalService.fetchListType(
 			companyId, name, AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
 
 		if (listType == null) {

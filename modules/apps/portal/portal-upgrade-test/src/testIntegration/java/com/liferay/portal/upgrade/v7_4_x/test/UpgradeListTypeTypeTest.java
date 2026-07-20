@@ -59,13 +59,13 @@ public class UpgradeListTypeTypeTest {
 			FinderCacheUtil.clearCache();
 
 			for (String listTypeName : _listTypeNames) {
-				ListType oldListType = _listTypeLocalService.getListType(
+				ListType oldListType = _listTypeLocalService.fetchListType(
 					CompanyThreadLocal.getCompanyId(), listTypeName,
 					_OLD_LIST_TYPE_TYPE);
 
 				Assert.assertNull(oldListType);
 
-				ListType newListType = _listTypeLocalService.getListType(
+				ListType newListType = _listTypeLocalService.fetchListType(
 					CompanyThreadLocal.getCompanyId(), listTypeName,
 					_NEW_LIST_TYPE_TYPE);
 
@@ -82,7 +82,7 @@ public class UpgradeListTypeTypeTest {
 	}
 
 	private ListType _deleteListType(String listTypeName, String listTypeType) {
-		ListType listType = _listTypeLocalService.getListType(
+		ListType listType = _listTypeLocalService.fetchListType(
 			CompanyThreadLocal.getCompanyId(), listTypeName, listTypeType);
 
 		if (listType != null) {

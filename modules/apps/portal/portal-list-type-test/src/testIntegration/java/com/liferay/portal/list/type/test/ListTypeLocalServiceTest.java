@@ -78,7 +78,7 @@ public class ListTypeLocalServiceTest {
 				JSONObject listTypeJSONObject =
 					listTypesJSONArray.getJSONObject(i);
 
-				ListType listType = _listTypeLocalService.getListType(
+				ListType listType = _listTypeLocalService.fetchListType(
 					_company.getCompanyId(),
 					listTypeJSONObject.getString("name"),
 					listTypeJSONObject.getString("type"));
@@ -102,7 +102,7 @@ public class ListTypeLocalServiceTest {
 				_company.getCompanyId(), _LIST_TYPE_NAME, _LIST_TYPE_TYPE);
 
 			Assert.assertNotNull(
-				_listTypeLocalService.getListType(
+				_listTypeLocalService.fetchListType(
 					_company.getCompanyId(), _LIST_TYPE_NAME, _LIST_TYPE_TYPE));
 
 			try (SafeCloseable safeCloseable2 =
@@ -110,7 +110,7 @@ public class ListTypeLocalServiceTest {
 						PortalUtil.getDefaultCompanyId())) {
 
 				Assert.assertNull(
-					_listTypeLocalService.getListType(
+					_listTypeLocalService.fetchListType(
 						PortalUtil.getDefaultCompanyId(), _LIST_TYPE_NAME,
 						_LIST_TYPE_TYPE));
 			}

@@ -206,7 +206,8 @@ public class CommerceAddressLocalServiceImpl
 
 	@Override
 	public List<CommerceAddress> getBillingAndShippingCommerceAddresses(
-		long companyId, String className, long classPK) {
+			long companyId, String className, long classPK)
+		throws PortalException {
 
 		return TransformUtil.transform(
 			_addressLocalService.getListTypeAddresses(
@@ -231,7 +232,8 @@ public class CommerceAddressLocalServiceImpl
 
 	@Override
 	public List<CommerceAddress> getBillingCommerceAddresses(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return TransformUtil.transform(
 			_addressLocalService.dslQuery(
@@ -284,7 +286,8 @@ public class CommerceAddressLocalServiceImpl
 
 	@Override
 	public int getBillingCommerceAddressesCount(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return _addressLocalService.dslQueryCount(
 			_getGroupByStep(
@@ -452,7 +455,8 @@ public class CommerceAddressLocalServiceImpl
 
 	@Override
 	public List<CommerceAddress> getShippingCommerceAddresses(
-		long channelId, String className, long classPK, int start, int end) {
+			long channelId, String className, long classPK, int start, int end)
+		throws PortalException {
 
 		return TransformUtil.transform(
 			_addressLocalService.dslQuery(

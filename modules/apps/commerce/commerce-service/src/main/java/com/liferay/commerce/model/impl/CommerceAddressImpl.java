@@ -93,7 +93,9 @@ public class CommerceAddressImpl extends CommerceAddressBaseImpl {
 			AccountEntry.class.getName(), address.getClassName());
 	}
 
-	public static long toAddressTypeId(int commerceAddressType) {
+	public static long toAddressTypeId(int commerceAddressType)
+		throws PortalException {
+
 		if (CommerceAddressConstants.ADDRESS_TYPE_BILLING ==
 				commerceAddressType) {
 
@@ -272,7 +274,7 @@ public class CommerceAddressImpl extends CommerceAddressBaseImpl {
 		return false;
 	}
 
-	private static long _getAddressTypeId(String name) {
+	private static long _getAddressTypeId(String name) throws PortalException {
 		ListType listType = ListTypeLocalServiceUtil.getListType(
 			CompanyThreadLocal.getCompanyId(), name,
 			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);

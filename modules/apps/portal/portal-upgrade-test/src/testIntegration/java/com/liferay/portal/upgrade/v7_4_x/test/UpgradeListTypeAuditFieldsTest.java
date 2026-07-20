@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -35,7 +34,7 @@ public class UpgradeListTypeAuditFieldsTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		ListType listType = _listTypeLocalService.getListType(
 			CompanyThreadLocal.getCompanyId(), _LIST_TYPE_NAME,
 			_LIST_TYPE_TYPE);
@@ -46,7 +45,7 @@ public class UpgradeListTypeAuditFieldsTest {
 	}
 
 	@Test
-	public void testUpgrade() throws UpgradeException {
+	public void testUpgrade() throws Exception {
 		UpgradeProcess upgradeProcess = new UpgradeListTypeAuditFields();
 
 		upgradeProcess.upgrade();
