@@ -299,11 +299,21 @@ public class ObjectEntryDTOConverter
 				serviceBuilderObjectEntry,
 				ObjectEntryModel::getExpirationDate));
 		objectEntry.setFriendlyUrlPath(
-			() -> HttpComponentsUtil.decodePath(
-				serviceBuilderObjectEntry.getURLTitle(
-					dtoConverterContext.getLocale())));
+			() -> {
+				if (objectEntryVersion != null) {
+					return contentObjectEntry.getFriendlyUrlPath();
+				}
+
+				return HttpComponentsUtil.decodePath(
+					serviceBuilderObjectEntry.getURLTitle(
+						dtoConverterContext.getLocale()));
+			});
 		objectEntry.setFriendlyUrlPath_i18n(
 			() -> {
+				if (objectEntryVersion != null) {
+					return contentObjectEntry.getFriendlyUrlPath_i18n();
+				}
+
 				Map<String, String> urlTitleMap =
 					serviceBuilderObjectEntry.getURLTitleMap();
 
