@@ -96,8 +96,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			availableSlavesCount - 5,
 			_jenkinsMaster.getAvailableSlavesCount(null));
 
-		setDeclaredFieldValue(
-			JenkinsMaster.class, _jenkinsMaster, "_updateTimestamp", -1L);
+		ReflectionTestUtil.setFieldValue(
+			_jenkinsMaster, "_updateTimestamp", -1L);
 
 		_jenkinsMaster.update();
 

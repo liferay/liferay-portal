@@ -680,8 +680,8 @@ public class JenkinsResultsParserUtilTest
 			masterNetworkName
 		);
 
-		setDeclaredFieldValue(
-			JenkinsResultsParserUtil.class, null, "_ciNode", null);
+		ReflectionTestUtil.setFieldValue(
+			JenkinsResultsParserUtil.class, "_ciNode", null);
 
 		Assert.assertEquals(
 			JenkinsResultsParserUtil.combine(

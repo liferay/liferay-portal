@@ -19,32 +19,28 @@ public class JenkinsMasterTestUtil {
 	public static Map<String, Map<Long, Integer>> getLabelBatchSizes(
 		JenkinsMaster jenkinsMaster) {
 
-		return (Map<String, Map<Long, Integer>>)Test.getDeclaredFieldValue(
-			JenkinsMaster.class, jenkinsMaster, "_labelBatchSizes");
+		return ReflectionTestUtil.getFieldValue(
+			jenkinsMaster, "_labelBatchSizes");
 	}
 
 	public static void resetCaches() {
-		Map<String, ?> jenkinsMastersMap =
-			(Map<String, ?>)Test.getDeclaredFieldValue(
-				LoadBalancerUtil.class, null, "_jenkinsMastersMap");
+		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_jenkinsMastersMap");
 
 		jenkinsMastersMap.clear();
 
-		Map<String, ?> roundRobinCounters =
-			(Map<String, ?>)Test.getDeclaredFieldValue(
-				LoadBalancerUtil.class, null, "_roundRobinCounters");
+		Map<String, ?> roundRobinCounters = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_roundRobinCounters");
 
 		roundRobinCounters.clear();
 
-		Map<String, ?> jenkinsMasters =
-			(Map<String, ?>)Test.getDeclaredFieldValue(
-				JenkinsMaster.class, null, "_jenkinsMasters");
+		Map<String, ?> jenkinsMasters = ReflectionTestUtil.getFieldValue(
+			JenkinsMaster.class, "_jenkinsMasters");
 
 		jenkinsMasters.clear();
 
-		List<String> jenkinsMastersBlacklist =
-			(List<String>)Test.getDeclaredFieldValue(
-				JenkinsMaster.class, null, "_jenkinsMastersBlacklist");
+		List<String> jenkinsMastersBlacklist = ReflectionTestUtil.getFieldValue(
+			JenkinsMaster.class, "_jenkinsMastersBlacklist");
 
 		jenkinsMastersBlacklist.clear();
 	}
@@ -95,13 +91,11 @@ public class JenkinsMasterTestUtil {
 
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(masterName);
 
-		Test.setDeclaredFieldValue(
-			JenkinsMaster.class, jenkinsMaster,
-			"_awsFleetCloudLastUpdateTimestamp",
+		ReflectionTestUtil.setFieldValue(
+			jenkinsMaster, "_awsFleetCloudLastUpdateTimestamp",
 			JenkinsResultsParserUtil.getCurrentTimeMillis());
-		Test.setDeclaredFieldValue(
-			JenkinsMaster.class, jenkinsMaster, "_awsFleetClouds",
-			new ArrayList<>());
+		ReflectionTestUtil.setFieldValue(
+			jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
 
 		return jenkinsMaster;
 	}

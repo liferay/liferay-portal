@@ -9,8 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import java.lang.reflect.Field;
-
 import java.net.URI;
 
 import java.nio.file.Files;
@@ -54,21 +52,6 @@ public class Test {
 	@Rule
 	public ErrorCollector errorCollector = new ErrorCollector();
 
-	protected static Object getDeclaredFieldValue(
-		Class<?> clazz, Object object, String fieldName) {
-
-		try {
-			Field field = clazz.getDeclaredField(fieldName);
-
-			field.setAccessible(true);
-
-			return field.get(object);
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			throw new RuntimeException(reflectiveOperationException);
-		}
-	}
-
 	protected static List<File> getDependenciesDirs(
 		List<String> simpleClassNames) {
 
@@ -80,21 +63,6 @@ public class Test {
 		}
 
 		return dirs;
-	}
-
-	protected static void setDeclaredFieldValue(
-		Class<?> clazz, Object object, String fieldName, Object value) {
-
-		try {
-			Field field = clazz.getDeclaredField(fieldName);
-
-			field.setAccessible(true);
-
-			field.set(object, value);
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			throw new RuntimeException(reflectiveOperationException);
-		}
 	}
 
 	protected String getMismatchMessage(
