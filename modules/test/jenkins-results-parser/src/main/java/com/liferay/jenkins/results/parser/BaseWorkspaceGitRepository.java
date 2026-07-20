@@ -643,6 +643,16 @@ public abstract class BaseWorkspaceGitRepository
 		return _propertyOptions;
 	}
 
+	protected boolean isFullDotGitDirArchiveRequired() {
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
+		File workingDirectory = gitWorkingDirectory.getWorkingDirectory();
+
+		String workingDirectoryName = workingDirectory.getName();
+
+		return workingDirectoryName.contains("ee-6.2.x");
+	}
+
 	protected boolean isSetUp() {
 		return _setUp;
 	}
@@ -672,6 +682,23 @@ public abstract class BaseWorkspaceGitRepository
 	protected void setUpAdditionalCaches() throws IOException {
 	}
 
+	protected void validateSHAInRemoteGitRef(
+		String branchName, RemoteGitRef remoteGitRef, String sha) {
+
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
+		LocalGitBranch localGitBranch = gitWorkingDirectory.fetch(remoteGitRef);
+
+		if ((localGitBranch == null) ||
+			!gitWorkingDirectory.refContainsSHA(localGitBranch, sha)) {
+
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"SHA ", sha, " was not found in branch \"", branchName,
+					"\" on ", remoteGitRef.getRemoteURL()));
+		}
+	}
+
 	private File _archiveDotGitDir() {
 		List<String> commands = new ArrayList<>();
 
@@ -694,7 +721,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		sb.setLength(0);
 
-		if (_isFullDotGitDirArchiveRequired()) {
+		if (isFullDotGitDirArchiveRequired()) {
 			sb.append("cd ");
 			sb.append(workingDirectory);
 		}
@@ -895,7 +922,7 @@ public abstract class BaseWorkspaceGitRepository
 			gitWorkingDirectory.fetch(_getSenderRemoteGitRef());
 		}
 
-		_validateSHAInRemoteGitRef(
+		validateSHAInRemoteGitRef(
 			getSenderBranchName(), _getSenderRemoteGitRef(), senderBranchSHA);
 
 		gitWorkingDirectory.createLocalGitBranch(
@@ -909,7 +936,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		String upstreamBranchName = getUpstreamBranchName();
 
-		_validateSHAInRemoteGitRef(
+		validateSHAInRemoteGitRef(
 			upstreamBranchName, _getUpstreamRemoteGitRef(), baseBranchSHA);
 
 		gitWorkingDirectory.createLocalGitBranch(
@@ -969,7 +996,7 @@ public abstract class BaseWorkspaceGitRepository
 			}
 		}
 
-		_validateSHAInRemoteGitRef(
+		validateSHAInRemoteGitRef(
 			getSenderBranchName(), _getSenderRemoteGitRef(), senderBranchSHA);
 
 		gitWorkingDirectory.createLocalGitBranch(
@@ -1299,16 +1326,6 @@ public abstract class BaseWorkspaceGitRepository
 		}
 	}
 
-	private boolean _isFullDotGitDirArchiveRequired() {
-		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
-
-		File workingDirectory = gitWorkingDirectory.getWorkingDirectory();
-
-		String workingDirectoryName = workingDirectory.getName();
-
-		return workingDirectoryName.contains("ee-6.2.x");
-	}
-
 	private boolean _isGitArchiveAvailable() {
 		return _isArchiveAvailable(_getGitArchiveS3BucketPath());
 	}
@@ -1428,23 +1445,6 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		_updateBuildDatabase();
-	}
-
-	private void _validateSHAInRemoteGitRef(
-		String branchName, RemoteGitRef remoteGitRef, String sha) {
-
-		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
-
-		LocalGitBranch localGitBranch = gitWorkingDirectory.fetch(remoteGitRef);
-
-		if ((localGitBranch == null) ||
-			!gitWorkingDirectory.refContainsSHA(localGitBranch, sha)) {
-
-			throw new RuntimeException(
-				JenkinsResultsParserUtil.combine(
-					"SHA ", sha, " was not found in branch \"", branchName,
-					"\" on ", remoteGitRef.getRemoteURL()));
-		}
 	}
 
 	private static final int _MAX_BASE_BRANCH_SHA_LENGTH = 7;
