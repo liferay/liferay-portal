@@ -229,6 +229,9 @@ public interface MBThreadFlagLocalService
 		String uuid, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public MBThreadFlag fetchThreadFlag(long userId, MBThread thread);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -362,4 +365,4 @@ public interface MBThreadFlagLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1569622709
+// LIFERAY-SERVICE-BUILDER-HASH:1722500708
