@@ -84,10 +84,10 @@ public class FaroProjectImplTest {
 
 		faroProject.setSubscription(
 			JSONUtil.put(
-				"name", "Liferay Data Platform Enterprise"
+				"name", "Liferay Analytics Cloud Business"
 			).toString());
 
-		Assert.assertTrue(faroProject.isDataPlatform());
+		Assert.assertFalse(faroProject.isDataPlatform());
 
 		faroProject.setSubscription(
 			JSONUtil.put(
@@ -98,10 +98,10 @@ public class FaroProjectImplTest {
 
 		faroProject.setSubscription(
 			JSONUtil.put(
-				"name", "Liferay Analytics Cloud Business"
+				"name", "Liferay Data Platform Enterprise"
 			).toString());
 
-		Assert.assertFalse(faroProject.isDataPlatform());
+		Assert.assertTrue(faroProject.isDataPlatform());
 	}
 
 }
