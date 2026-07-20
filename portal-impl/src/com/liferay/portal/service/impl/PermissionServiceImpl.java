@@ -88,7 +88,7 @@ public class PermissionServiceImpl extends PermissionServiceBaseImpl {
 		if (className.equals(Team.class.getName())) {
 			className = Group.class.getName();
 
-			Team team = _teamPersistence.fetchByPrimaryKey(classPK);
+			Team team = _teamPersistence.findByPrimaryKey(classPK);
 
 			classPK = team.getGroupId();
 
