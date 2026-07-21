@@ -484,6 +484,62 @@ public class ObjectEntryLocalServiceSearchObjectEntriesTest {
 	}
 
 	@Test
+	public void testSearchByFileExtension() throws Exception {
+		_addObjectDefinition(
+			new AttachmentObjectFieldBuilder(
+			).indexed(
+				true
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap("Upload")
+			).name(
+				"upload"
+			).objectFieldSettings(
+				Arrays.asList(
+					_createObjectFieldSetting(
+						ObjectFieldSettingConstants.
+							NAME_ACCEPTED_FILE_EXTENSIONS,
+						"jpg, txt"),
+					_createObjectFieldSetting(
+						ObjectFieldSettingConstants.NAME_FILE_SOURCE,
+						ObjectFieldSettingConstants.
+							VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA),
+					_createObjectFieldSetting(
+						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE, "100"))
+			).build());
+
+		FileEntry jpgFileEntry = TempFileEntryUtil.addTempFileEntry(
+			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
+			_objectDefinition.getPortletId(),
+			TempFileEntryUtil.getTempFileName(
+				RandomTestUtil.randomString() + ".jpg"),
+			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
+			ContentTypes.IMAGE_JPEG);
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"upload", jpgFileEntry.getFileEntryId()
+			).build());
+
+		FileEntry txtFileEntry = TempFileEntryUtil.addTempFileEntry(
+			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
+			_objectDefinition.getPortletId(),
+			TempFileEntryUtil.getTempFileName(
+				RandomTestUtil.randomString() + ".txt"),
+			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
+			ContentTypes.TEXT_PLAIN);
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"upload", txtFileEntry.getFileEntryId()
+			).build());
+
+		_assertKeywords("jpg", 1);
+		_assertKeywords("JPG", 1);
+		_assertKeywords("txt", 1);
+		_assertKeywords("TXT", 1);
+	}
+
+	@Test
 	public void testSearchByTitleValue() throws Exception {
 		_addObjectDefinition(
 			ObjectFieldUtil.createObjectField(
