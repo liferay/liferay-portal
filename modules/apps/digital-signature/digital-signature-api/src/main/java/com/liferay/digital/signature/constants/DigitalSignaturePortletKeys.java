@@ -18,4 +18,7 @@ public class DigitalSignaturePortletKeys {
 		"com_liferay_digital_signature_web_internal_portlet_" +
 			"DigitalSignaturePortlet";
 
+	public static final String SIGN_DIGITAL_SIGNATURE =
+		"com_liferay_digital_signature_web_internal_portlet_SignDSPortlet";
+
 }

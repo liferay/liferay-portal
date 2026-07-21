@@ -213,6 +213,15 @@
 	}
 }
 
+.digital-signature-sign-container {
+	height: 100vh;
+
+	iframe {
+		height: 100%;
+		width: 100%;
+	}
+}
+
 .preview-file-image {
 	bottom: 0;
 	left: 0;

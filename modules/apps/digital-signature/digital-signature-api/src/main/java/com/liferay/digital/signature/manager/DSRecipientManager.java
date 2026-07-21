@@ -5,6 +5,8 @@
 
 package com.liferay.digital.signature.manager;
 
+import com.liferay.digital.signature.model.DSRecipient;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -12,4 +14,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface DSRecipientManager {
+
+	public DSRecipient getDSRecipient(
+		long companyId, long groupId, String dsEnvelopeId, String emailAddress);
+
 }
