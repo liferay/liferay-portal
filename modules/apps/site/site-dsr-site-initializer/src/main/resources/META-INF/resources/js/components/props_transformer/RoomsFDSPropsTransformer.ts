@@ -20,7 +20,6 @@ import RoomInitializer from '../RoomInitializer';
 import RoomShare from '../RoomShare';
 import RoomNameRenderer from './cell_renderers/RoomNameRenderer';
 import RoomStatusFieldRenderer from './cell_renderers/RoomStatusFieldRenderer';
-import RoomStatusRenderer from './cell_renderers/RoomStatusRenderer';
 import RoomTrendRenderer from './cell_renderers/RoomTrendRenderer';
 
 export default function RoomsFDSPropsTransformer({
@@ -91,11 +90,6 @@ export default function RoomsFDSPropsTransformer({
 				{
 					component: RoomNameRenderer,
 					name: 'roomNameTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
-					component: RoomStatusRenderer,
-					name: 'roomStatusTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{
