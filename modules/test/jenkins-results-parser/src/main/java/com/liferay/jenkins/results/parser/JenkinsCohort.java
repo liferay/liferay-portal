@@ -62,10 +62,22 @@ public class JenkinsCohort {
 	public List<JenkinsMaster> getBlackListedJenkinsMasters() {
 		List<JenkinsMaster> blackListedJenkinsMasters = new ArrayList<>();
 
-		for (JenkinsMaster jenkinsMaster : getJenkinsMasters()) {
-			if (jenkinsMaster.isBlackListed()) {
-				blackListedJenkinsMasters.add(jenkinsMaster);
+		try {
+			List<JenkinsMaster> jenkinsMasters =
+				JenkinsResultsParserUtil.getJenkinsMasters(
+					JenkinsResultsParserUtil.getBuildProperties(),
+					JenkinsMaster.getSlaveRAMMinimumDefault(),
+					JenkinsMaster.getSlavesPerHostDefault(), getName(), null,
+					true);
+
+			for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
+				if (jenkinsMaster.isBlackListed()) {
+					blackListedJenkinsMasters.add(jenkinsMaster);
+				}
 			}
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
 		}
 
 		return blackListedJenkinsMasters;
