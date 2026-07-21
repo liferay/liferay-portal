@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -295,22 +296,34 @@ public class DesignLibraryResourcesDisplayContext {
 			Group group, long designLibraryEntryId)
 		throws PortalException {
 
-		return JSONUtil.putAll(
-			JSONUtil.put(
-				"href",
-				PortletURLBuilder.createActionURL(
-					_liferayPortletResponse
-				).setMVCRenderCommandName(
-					"/design_library/design_library_settings"
-				).setParameter(
-					DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-					designLibraryEntryId
-				).buildString()
-			).put(
-				"label", LanguageUtil.get(_httpServletRequest, "settings")
-			).put(
-				"symbolLeft", "cog"
-			),
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		boolean hasAssignMembersPermission = GroupPermissionUtil.contains(
+			_themeDisplay.getPermissionChecker(), group.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
+
+		boolean hasUpdatePermission = _hasPermission(group, ActionKeys.UPDATE);
+
+		if (hasUpdatePermission) {
+			jsonArray.put(
+				JSONUtil.put(
+					"href",
+					PortletURLBuilder.createActionURL(
+						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/design_library/design_library_settings"
+					).setParameter(
+						DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
+						designLibraryEntryId
+					).buildString()
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "settings")
+				).put(
+					"symbolLeft", "cog"
+				));
+		}
+
+		jsonArray.put(
 			JSONUtil.put(
 				"externalReferenceCode", group.getExternalReferenceCode()
 			).put(
@@ -322,61 +335,76 @@ public class DesignLibraryResourcesDisplayContext {
 				"symbolLeft", "globe"
 			).put(
 				"target", "connected-sites"
-			),
+			)
+		).put(
 			JSONUtil.put(
 				"externalReferenceCode", group.getExternalReferenceCode()
 			).put(
-				"hasAssignMembersPermission",
-				GroupPermissionUtil.contains(
-					_themeDisplay.getPermissionChecker(), group.getGroupId(),
-					ActionKeys.ASSIGN_MEMBERS)
+				"hasAssignMembersPermission", hasAssignMembersPermission
 			).put(
 				"href", "#manage-members"
 			).put(
-				"label", LanguageUtil.get(_httpServletRequest, "manage-members")
+				"label",
+				LanguageUtil.get(
+					_httpServletRequest,
+					hasAssignMembersPermission ? "manage-members" :
+						"view-members")
 			).put(
 				"ownerId", String.valueOf(group.getCreatorUserId())
 			).put(
 				"symbolLeft", "users"
 			).put(
 				"target", "manage-members"
-			),
-			JSONUtil.put(
-				"href",
-				_getExportImportPortletURL(
-					group, ExportImportPortletKeys.EXPORT)
+			)
+		);
+
+		if (hasUpdatePermission) {
+			jsonArray.put(
+				JSONUtil.put(
+					"href",
+					_getExportImportPortletURL(
+						group, ExportImportPortletKeys.EXPORT)
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "export")
+				).put(
+					"symbolLeft", "export"
+				)
 			).put(
-				"label", LanguageUtil.get(_httpServletRequest, "export")
-			).put(
-				"symbolLeft", "export"
-			),
-			JSONUtil.put(
-				"href",
-				_getExportImportPortletURL(
-					group, ExportImportPortletKeys.IMPORT)
-			).put(
-				"label", LanguageUtil.get(_httpServletRequest, "import")
-			).put(
-				"symbolLeft", "import"
-			),
-			JSONUtil.put(
-				"descriptiveName", group.getDescriptiveName()
-			).put(
-				"href",
-				"/o/headless-asset-library/v1.0/asset-libraries/" +
-					group.getExternalReferenceCode()
-			).put(
-				"label", LanguageUtil.get(_httpServletRequest, "delete")
-			).put(
-				"redirect",
-				PortletURLBuilder.createActionURL(
-					_liferayPortletResponse
-				).buildString()
-			).put(
-				"symbolLeft", "trash"
-			).put(
-				"target", "delete"
-			));
+				JSONUtil.put(
+					"href",
+					_getExportImportPortletURL(
+						group, ExportImportPortletKeys.IMPORT)
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "import")
+				).put(
+					"symbolLeft", "import"
+				)
+			);
+		}
+
+		if (_hasPermission(group, ActionKeys.DELETE)) {
+			jsonArray.put(
+				JSONUtil.put(
+					"descriptiveName", group.getDescriptiveName()
+				).put(
+					"href",
+					"/o/headless-asset-library/v1.0/asset-libraries/" +
+						group.getExternalReferenceCode()
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "delete")
+				).put(
+					"redirect",
+					PortletURLBuilder.createActionURL(
+						_liferayPortletResponse
+					).buildString()
+				).put(
+					"symbolLeft", "trash"
+				).put(
+					"target", "delete"
+				));
+		}
+
+		return jsonArray;
 	}
 
 	private String _getAddFragmentCollectionURL(Group depotGroup) {
@@ -511,6 +539,14 @@ public class DesignLibraryResourcesDisplayContext {
 		return portletResourcePermission.contains(
 			_themeDisplay.getPermissionChecker(), groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
+	}
+
+	private boolean _hasPermission(Group group, String actionId) {
+		PermissionChecker permissionChecker =
+			_themeDisplay.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			group, DepotEntry.class.getName(), group.getClassPK(), actionId);
 	}
 
 	private static final Snapshot<FragmentCollectionLocalService>

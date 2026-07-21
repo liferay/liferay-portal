@@ -13,13 +13,20 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -30,7 +37,11 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.After;
@@ -46,6 +57,7 @@ import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
+ * @author Gabriel Prates
  * @author Lourdes Fernández Besada
  */
 public class DesignLibraryResourcesDisplayContextTest {
@@ -58,6 +70,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 	@Before
 	public void setUp() {
 		_setUpDesignLibraryResourcesDisplayContext();
+		_setUpJSONFactoryUtil();
 	}
 
 	@After
@@ -83,6 +96,77 @@ public class DesignLibraryResourcesDisplayContextTest {
 					"entryClassNames=", FragmentCollection.class.getName(), ",",
 					StyleBookEntry.class.getName(), "&filter=groupIds/any(g:g ",
 					"eq ", depotEntry.getGroupId(), ")")));
+	}
+
+	@Test
+	public void testGetBreadcrumbPropsActionItemsWithAssignMembersPermission()
+		throws Exception {
+
+		List<String> labels = _getBreadcrumbPropsActionItemsLabels(
+			false, false, true);
+
+		Assert.assertFalse(labels.toString(), labels.contains("view-members"));
+		Assert.assertTrue(labels.toString(), labels.contains("manage-members"));
+	}
+
+	@Test
+	public void testGetBreadcrumbPropsActionItemsWithDeletePermission()
+		throws Exception {
+
+		List<String> labels = _getBreadcrumbPropsActionItemsLabels(
+			false, true, false);
+
+		Assert.assertFalse(labels.toString(), labels.contains("export"));
+		Assert.assertFalse(labels.toString(), labels.contains("import"));
+		Assert.assertFalse(labels.toString(), labels.contains("settings"));
+		Assert.assertTrue(labels.toString(), labels.contains("delete"));
+	}
+
+	@Test
+	public void testGetBreadcrumbPropsActionItemsWithNoPermissions()
+		throws Exception {
+
+		List<String> labels = _getBreadcrumbPropsActionItemsLabels(
+			false, false, false);
+
+		Assert.assertFalse(labels.toString(), labels.contains("delete"));
+		Assert.assertFalse(labels.toString(), labels.contains("export"));
+		Assert.assertFalse(labels.toString(), labels.contains("import"));
+		Assert.assertFalse(
+			labels.toString(), labels.contains("manage-members"));
+		Assert.assertFalse(labels.toString(), labels.contains("settings"));
+		Assert.assertTrue(
+			labels.toString(), labels.contains("connected-sites"));
+		Assert.assertTrue(labels.toString(), labels.contains("view-members"));
+	}
+
+	@Test
+	public void testGetBreadcrumbPropsActionItemsWithUpdateAndDeletePermission()
+		throws Exception {
+
+		List<String> labels = _getBreadcrumbPropsActionItemsLabels(
+			true, true, true);
+
+		Assert.assertTrue(
+			labels.toString(), labels.contains("connected-sites"));
+		Assert.assertTrue(labels.toString(), labels.contains("delete"));
+		Assert.assertTrue(labels.toString(), labels.contains("export"));
+		Assert.assertTrue(labels.toString(), labels.contains("import"));
+		Assert.assertTrue(labels.toString(), labels.contains("manage-members"));
+		Assert.assertTrue(labels.toString(), labels.contains("settings"));
+	}
+
+	@Test
+	public void testGetBreadcrumbPropsActionItemsWithUpdatePermission()
+		throws Exception {
+
+		List<String> labels = _getBreadcrumbPropsActionItemsLabels(
+			true, false, false);
+
+		Assert.assertFalse(labels.toString(), labels.contains("delete"));
+		Assert.assertTrue(labels.toString(), labels.contains("export"));
+		Assert.assertTrue(labels.toString(), labels.contains("import"));
+		Assert.assertTrue(labels.toString(), labels.contains("settings"));
 	}
 
 	@Test
@@ -193,6 +277,140 @@ public class DesignLibraryResourcesDisplayContextTest {
 		}
 	}
 
+	private List<String> _getBreadcrumbPropsActionItemsLabels(
+			boolean hasUpdatePermission, boolean hasDeletePermission,
+			boolean hasAssignMembersPermission)
+		throws Exception {
+
+		try (MockedStatic<GroupPermissionUtil> groupPermissionUtilMockedStatic =
+				Mockito.mockStatic(GroupPermissionUtil.class);
+			MockedStatic<PortletURLBuilder> portletURLBuilderMockedStatic =
+				Mockito.mockStatic(PortletURLBuilder.class)) {
+
+			groupPermissionUtilMockedStatic.when(
+				() -> GroupPermissionUtil.contains(
+					Mockito.any(PermissionChecker.class), Mockito.anyLong(),
+					Mockito.eq(ActionKeys.ASSIGN_MEMBERS))
+			).thenReturn(
+				hasAssignMembersPermission
+			);
+
+			PortletURLBuilder.PortletURLStep portletURLStep = Mockito.mock(
+				PortletURLBuilder.PortletURLStep.class, Mockito.RETURNS_SELF);
+
+			portletURLBuilderMockedStatic.when(
+				() -> PortletURLBuilder.createActionURL(
+					Mockito.any(LiferayPortletResponse.class))
+			).thenReturn(
+				portletURLStep
+			);
+
+			portletURLBuilderMockedStatic.when(
+				() -> PortletURLBuilder.create(Mockito.any())
+			).thenReturn(
+				portletURLStep
+			);
+
+			PermissionChecker permissionChecker = Mockito.mock(
+				PermissionChecker.class);
+
+			Mockito.when(
+				permissionChecker.hasPermission(
+					Mockito.any(Group.class),
+					Mockito.eq(DepotEntry.class.getName()), Mockito.anyLong(),
+					Mockito.eq(ActionKeys.UPDATE))
+			).thenReturn(
+				hasUpdatePermission
+			);
+
+			Mockito.when(
+				permissionChecker.hasPermission(
+					Mockito.any(Group.class),
+					Mockito.eq(DepotEntry.class.getName()), Mockito.anyLong(),
+					Mockito.eq(ActionKeys.DELETE))
+			).thenReturn(
+				hasDeletePermission
+			);
+
+			Group group = Mockito.mock(Group.class);
+
+			Mockito.when(
+				group.getClassPK()
+			).thenReturn(
+				_DEPOT_ENTRY_ID
+			);
+
+			Mockito.when(
+				group.getName(Mockito.any(Locale.class))
+			).thenReturn(
+				"design-library-name"
+			);
+
+			DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
+
+			Mockito.when(
+				depotEntry.getGroup()
+			).thenReturn(
+				group
+			);
+
+			_depotEntryLocalServiceUtilMockedStatic.when(
+				() -> DepotEntryLocalServiceUtil.getDepotEntry(
+					Mockito.anyLong())
+			).thenReturn(
+				depotEntry
+			);
+
+			_languageUtilMockedStatic.when(
+				() -> LanguageUtil.get(
+					Mockito.any(HttpServletRequest.class), Mockito.anyString())
+			).thenAnswer(
+				invocation -> invocation.getArgument(1)
+			);
+
+			ThemeDisplay themeDisplay = new ThemeDisplay();
+
+			themeDisplay.setPermissionChecker(permissionChecker);
+
+			HttpServletRequest httpServletRequest = Mockito.mock(
+				HttpServletRequest.class);
+
+			Mockito.when(
+				httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+			).thenReturn(
+				themeDisplay
+			);
+
+			Mockito.when(
+				httpServletRequest.getLocale()
+			).thenReturn(
+				LocaleUtil.US
+			);
+
+			DesignLibraryResourcesDisplayContext
+				designLibraryResourcesDisplayContext =
+					new DesignLibraryResourcesDisplayContext(
+						httpServletRequest,
+						Mockito.mock(LiferayPortletResponse.class));
+
+			List<String> labels = new ArrayList<>();
+
+			Map<String, Object> breadcrumbProps =
+				designLibraryResourcesDisplayContext.getBreadcrumbProps(
+					group.getClassPK());
+
+			JSONArray jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				labels.add(jsonObject.getString("label"));
+			}
+
+			return labels;
+		}
+	}
+
 	private DepotEntry _mockDepotEntry(long designLibraryEntryId)
 		throws Exception {
 
@@ -294,6 +512,12 @@ public class DesignLibraryResourcesDisplayContextTest {
 			WebKeys.THEME_DISPLAY, _themeDisplay);
 	}
 
+	private void _setUpJSONFactoryUtil() {
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
+
 	private void _setUpPortletURLMocks() {
 		Mockito.when(
 			_liferayPortletResponse.createRenderURL()
@@ -323,6 +547,8 @@ public class DesignLibraryResourcesDisplayContextTest {
 			RandomTestUtil.randomString()
 		);
 	}
+
+	private static final long _DEPOT_ENTRY_ID = 12345;
 
 	private final MockedStatic<DepotEntryLocalServiceUtil>
 		_depotEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
