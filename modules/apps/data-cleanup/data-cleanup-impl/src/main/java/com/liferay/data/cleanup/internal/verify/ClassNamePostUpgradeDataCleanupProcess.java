@@ -81,11 +81,6 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		}
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-		List<ClassName> classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		DBInspector dbInspector = new DBInspector(connection);
-		Map<String, Boolean> definedClasses = new HashMap<>();
-		Set<String> models = new HashSet<>(ModelHintsUtil.getModels());
 		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
@@ -116,9 +111,10 @@ public class ClassNamePostUpgradeDataCleanupProcess
 			}
 		}
 
+		StringBundler sb = new StringBundler();
 		List<String> tableNames = new ArrayList<>();
 
-		StringBundler sb = new StringBundler();
+		DBInspector dbInspector = new DBInspector(connection);
 
 		for (String tableName : dbInspector.getTableNames(null)) {
 			if (!dbInspector.hasColumn(tableName, "classNameId") ||
@@ -141,6 +137,11 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		}
 
 		String usedTableNamesSQL = sb.toString();
+
+		List<ClassName> classNames = _classNameLocalService.getClassNames(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		Map<String, Boolean> definedClasses = new HashMap<>();
+		Set<String> models = new HashSet<>(ModelHintsUtil.getModels());
 
 		for (ClassName className : classNames) {
 			String value = className.getValue();
