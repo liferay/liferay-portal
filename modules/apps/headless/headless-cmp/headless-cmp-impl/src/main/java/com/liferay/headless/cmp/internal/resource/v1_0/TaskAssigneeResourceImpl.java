@@ -47,10 +47,9 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 						new Integer[] {RoleConstants.TYPE_DEPOT}, null, 0, 20,
 						null),
 					role -> {
-						if (StringUtil.equals(
-								DepotRolesConstants.
-									ASSET_LIBRARY_CONNECTED_SITE_MEMBER,
-								role.getName())) {
+						if (!StringUtil.equals(
+								role.getSubtype(),
+								DepotRolesConstants.SUBTYPE_PROJECT)) {
 
 							return null;
 						}
