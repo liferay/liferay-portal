@@ -29,9 +29,10 @@ const steps: Step[] = [
 	},
 
 	{
-		content: (props: any) => (
+		content: ({addAlert, ...props}: any) => (
 			<AssignIndividualsDataToPropertiesStep
 				{...props}
+				addAlert={addAlert}
 				onSubmit={(dataSource) => {
 					const contactsConfiguration = dataSource.provider?.get(
 						'contactsConfiguration'
@@ -41,7 +42,7 @@ const steps: Step[] = [
 						contactsConfiguration?.get('enableAllLeads');
 
 					if (individualsEnabled) {
-						props.addAlert({
+						addAlert({
 							alertType: Alert.Types.Success,
 							message: Liferay.Language.get(
 								'the-data-source-setup-is-now-complete,-and-you-will-begin-to-see-data-as-activities-occur-on-your-sites'
@@ -49,7 +50,7 @@ const steps: Step[] = [
 						});
 					}
 					else {
-						props.addAlert({
+						addAlert({
 							alertType: Alert.Types.Success,
 							message: Liferay.Language.get(
 								'the-data-source-setup-has-finished'
@@ -57,14 +58,9 @@ const steps: Step[] = [
 						});
 					}
 				}}
-				updateDataSourceFn={
-					updateMarketoCampaign as (params: {
-						[key: string]: any;
-					}) => Promise<any>
-				}
+				updateDataSourceFn={updateMarketoCampaign}
 			/>
 		),
-
 		description: Liferay.Language.get(
 			'properties-let-you-consolidate-data-from-individuals,-accounts,-campaigns,-sites,-and-commerce-channels-in-one-place.-an-individuals-data-is-available-in-every-property-they-are-assigned-to'
 		),
