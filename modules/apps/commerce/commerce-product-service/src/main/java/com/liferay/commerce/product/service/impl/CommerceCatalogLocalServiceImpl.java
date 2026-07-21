@@ -99,6 +99,7 @@ public class CommerceCatalogLocalServiceImpl
 		commerceCatalog.setCommerceCurrencyCode(commerceCurrencyCode);
 		commerceCatalog.setCatalogDefaultLanguageId(catalogDefaultLanguageId);
 		commerceCatalog.setSystem(system);
+		commerceCatalog.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		// Group
 
