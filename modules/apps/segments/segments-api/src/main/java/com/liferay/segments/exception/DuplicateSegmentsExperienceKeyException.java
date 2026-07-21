@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class DuplicateSegmentsExperienceKeyException extends PortalException {
 
+	public DuplicateSegmentsExperienceKeyException() {
+	}
+
 	public DuplicateSegmentsExperienceKeyException(
 		String segmentsExperienceKey) {
 
@@ -20,10 +23,20 @@ public class DuplicateSegmentsExperienceKeyException extends PortalException {
 		_segmentsExperienceKey = segmentsExperienceKey;
 	}
 
+	public DuplicateSegmentsExperienceKeyException(
+		String msg, Throwable throwable) {
+
+		super(msg, throwable);
+	}
+
+	public DuplicateSegmentsExperienceKeyException(Throwable throwable) {
+		super(throwable);
+	}
+
 	public String getSegmentsExperienceKey() {
 		return _segmentsExperienceKey;
 	}
 
-	private final String _segmentsExperienceKey;
+	private String _segmentsExperienceKey;
 
 }
