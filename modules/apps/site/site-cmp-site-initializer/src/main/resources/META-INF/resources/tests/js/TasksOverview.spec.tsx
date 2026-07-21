@@ -31,7 +31,13 @@ describe('TasksOverview', () => {
 			});
 
 		await act(async () => {
-			render(<TasksOverview projectId="123" redirect="/redirect-url" />);
+			render(
+				<TasksOverview
+					hasAddTaskPermission
+					projectId="123"
+					redirect="/redirect-url"
+				/>
+			);
 		});
 
 		expect(fetch).toHaveBeenCalledWith('/o/cmp/projects/123');
@@ -64,7 +70,13 @@ describe('TasksOverview', () => {
 			});
 
 		await act(async () => {
-			render(<TasksOverview projectId="123" redirect="/redirect-url" />);
+			render(
+				<TasksOverview
+					hasAddTaskPermission
+					projectId="123"
+					redirect="/redirect-url"
+				/>
+			);
 		});
 
 		expect(fetch).toHaveBeenCalledWith('/o/cmp/projects/123');

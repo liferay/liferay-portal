@@ -70,6 +70,7 @@ const renderComponent = (isNew = false) =>
 			<EditorToolbar
 				backURL="/back"
 				groupId={0}
+				hasUpdatePermission
 				isNew={isNew}
 				title="My Project"
 			/>
