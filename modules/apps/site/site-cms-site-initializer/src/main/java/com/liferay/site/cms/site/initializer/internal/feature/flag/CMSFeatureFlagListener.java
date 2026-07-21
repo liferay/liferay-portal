@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.site.cms.site.initializer.internal.util.SiteInitializerUtil;
+import com.liferay.site.cms.site.initializer.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.Objects;

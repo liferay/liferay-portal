@@ -7,7 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.instance.lifecycle;
 
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.site.cms.site.initializer.internal.util.SiteInitializerUtil;
+import com.liferay.site.cms.site.initializer.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import org.osgi.framework.BundleContext;
