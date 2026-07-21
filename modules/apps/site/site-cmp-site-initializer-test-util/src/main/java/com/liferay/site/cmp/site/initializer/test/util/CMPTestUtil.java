@@ -44,6 +44,7 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Carolina Barbosa
@@ -71,10 +72,26 @@ public class CMPTestUtil {
 	public static ObjectEntry addCMPProjectObjectEntry()
 		throws PortalException {
 
-		return addCMPProjectObjectEntry(WorkflowConstants.ACTION_SAVE_DRAFT);
+		return addCMPProjectObjectEntry(
+			Collections.emptyMap(), WorkflowConstants.ACTION_SAVE_DRAFT);
 	}
 
 	public static ObjectEntry addCMPProjectObjectEntry(int workflowAction)
+		throws PortalException {
+
+		return addCMPProjectObjectEntry(Collections.emptyMap(), workflowAction);
+	}
+
+	public static ObjectEntry addCMPProjectObjectEntry(
+			Map<String, Serializable> values)
+		throws PortalException {
+
+		return addCMPProjectObjectEntry(
+			values, WorkflowConstants.ACTION_SAVE_DRAFT);
+	}
+
+	public static ObjectEntry addCMPProjectObjectEntry(
+			Map<String, Serializable> values, int workflowAction)
 		throws PortalException {
 
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
@@ -100,6 +117,8 @@ public class CMPTestUtil {
 			objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"title", RandomTestUtil.randomString()
+			).putAll(
+				values
 			).build(),
 			serviceContext);
 	}

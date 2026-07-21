@@ -202,6 +202,8 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.VIEW);
+
+		_testOnAfterCreateWithProjectManagerAndProjectSponsor();
 	}
 
 	@Test
@@ -427,6 +429,28 @@ public class ObjectEntryModelListenerTest {
 
 		Assert.assertTrue(
 			userGroupRoleNames.containsAll(expectedUserGroupRoleNames));
+	}
+
+	private void _testOnAfterCreateWithProjectManagerAndProjectSponsor()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry(
+				HashMapBuilder.<String, Serializable>put(
+					"r_userToCMPProjectManager_userId", user1.getUserId()
+				).put(
+					"r_userToCMPProjectSponsor_userId", user2.getUserId()
+				).build());
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), user1.getUserId());
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
+			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
 	}
 
 	private void _testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged()
