@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -108,6 +109,7 @@ public class CPSpecificationOptionLocalServiceImpl
 		cpSpecificationOption.setKey(key);
 		cpSpecificationOption.setPriority(priority);
 		cpSpecificationOption.setVisible(visible);
+		cpSpecificationOption.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpSpecificationOption.setExpandoBridgeAttributes(serviceContext);
 
 		cpSpecificationOption = cpSpecificationOptionPersistence.update(
