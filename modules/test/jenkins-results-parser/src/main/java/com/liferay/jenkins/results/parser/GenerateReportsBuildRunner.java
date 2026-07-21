@@ -1040,11 +1040,18 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 				break;
 			}
 
-			CloudBucketUtil.downloadS3File(
-				new File(
-					spotInterruptionDataDir,
-					dateStrings[i] + "/spot-interruption.json"),
-				s3FilePath);
+			try {
+				CloudBucketUtil.downloadS3File(
+					new File(
+						spotInterruptionDataDir,
+						dateStrings[i] + "/spot-interruption.json"),
+					s3FilePath);
+			}
+			catch (IOException ioException) {
+				crawlStartIndex = i;
+
+				break;
+			}
 		}
 
 		String regionName = _getBuildProperty("aws.cloudtrail.region");
