@@ -46,6 +46,8 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 
 	@Before
 	public void setUp() throws JSONException {
+		_httpServletRequest = Mockito.mock(HttpServletRequest.class);
+
 		_layout = Mockito.mock(Layout.class);
 
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
@@ -56,28 +58,27 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 			_layout
 		);
 
-		_httpServletRequest = Mockito.mock(HttpServletRequest.class);
-
 		Mockito.when(
 			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
 			themeDisplay
 		);
 
-		JSONFactory jsonFactory = new JSONFactoryImpl();
-
-		_frontendTokenDefinition = new FrontendTokenDefinitionImpl(
-			jsonFactory.createJSONObject(_FRONTEND_TOKEN_DEFINITION_JSON),
-			jsonFactory, null, "theme_id", RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
-
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
 			Mockito.mock(FrontendTokenDefinitionRegistry.class);
+
+		JSONFactory jsonFactory = new JSONFactoryImpl();
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			new FrontendTokenDefinitionImpl(
+				jsonFactory.createJSONObject(_FRONTEND_TOKEN_DEFINITION_JSON),
+				jsonFactory, null, "theme_id", RandomTestUtil.randomString(),
+				RandomTestUtil.randomString());
 
 		Mockito.when(
 			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(_layout)
 		).thenReturn(
-			_frontendTokenDefinition
+			frontendTokenDefinition
 		);
 
 		ReflectionTestUtil.setFieldValue(
@@ -185,7 +186,6 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 	private final DefaultThemeScopedCSSVariablesProvider
 		_defaultThemeScopedCSSVariablesProvider =
 			new DefaultThemeScopedCSSVariablesProvider();
-	private FrontendTokenDefinition _frontendTokenDefinition;
 	private HttpServletRequest _httpServletRequest;
 	private Layout _layout;
 
