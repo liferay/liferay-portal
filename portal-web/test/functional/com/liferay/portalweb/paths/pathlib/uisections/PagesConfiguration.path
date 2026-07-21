@@ -37,7 +37,7 @@
 </tr>
 <tr>
 	<td>CONTENT_CHOOSE_CONTENT_CONTENT_CHECKBOX</td>
-	<td>//label[contains(.,'${key_contentName}')]//following-sibling::span | //label[contains(.,'${key_contentName}')]//following-sibling::span/../input</td>
+	<td>//label[.//strong[normalize-space()='${key_contentName}']]//following-sibling::span | //label[.//strong[normalize-space()='${key_contentName}']]//following-sibling::span/../input</td>
 	<td></td>
 </tr>
 <tr>
