@@ -44,6 +44,9 @@ export interface PieChartProps {
 	 */
 	legendSwatchBorder?: boolean;
 
+	/** Draw the divider lines under the `table` legend header and rows. Default `true`. */
+	legendTableDividers?: boolean;
+
 	/** What the `legend="list"` rows show next to each label. Default `percent`. */
 	legendValue?: PieChartLegendValue;
 	size?: 'lg' | 'md' | 'sm' | 'xs' | number;
@@ -78,6 +81,7 @@ export default function PieChart({
 	innerRadius: innerRadiusRatio,
 	legend = 'list',
 	legendSwatchBorder = true,
+	legendTableDividers = true,
 	legendValue = 'percent',
 	size = 'md',
 	thickness = 'md',
@@ -204,6 +208,7 @@ export default function PieChart({
 					colors={colors}
 					data={data}
 					legend={legend}
+					legendTableDividers={legendTableDividers}
 					legendValue={legendValue}
 					onFocus={focusSlice}
 					onHover={setHoverIndex}

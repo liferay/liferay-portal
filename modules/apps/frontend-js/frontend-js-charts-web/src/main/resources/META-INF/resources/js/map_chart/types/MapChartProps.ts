@@ -17,6 +17,9 @@ export interface MapChartProps {
 	 */
 	legendSwatchBorder?: boolean;
 
+	/** Draw the divider lines under the `table` legend header and rows. Default `true`. */
+	legendTableDividers?: boolean;
+
 	scheme?: 'blue' | 'categorical';
 	steps?: number;
 	title: string;

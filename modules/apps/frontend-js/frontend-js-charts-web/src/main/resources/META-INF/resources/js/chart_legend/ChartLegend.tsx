@@ -26,6 +26,10 @@ interface Props {
 	onActivate: (id: number) => void;
 	onDeactivate: (id: number) => void;
 	onSelect: (id: number) => void;
+
+	/** Draw the divider lines under the `table` layout header and rows. Default `true`. */
+	tableDividers?: boolean;
+
 	titleId: string;
 }
 
@@ -37,6 +41,7 @@ export default function ChartLegend({
 	onActivate,
 	onDeactivate,
 	onSelect,
+	tableDividers,
 	titleId,
 }: Props) {
 	if (layout === 'list') {
@@ -54,6 +59,7 @@ export default function ChartLegend({
 		return (
 			<ChartLegendTable
 				columns={columns}
+				dividers={tableDividers}
 				items={items}
 				labelColumnLabel={labelColumnLabel}
 				onActivate={onActivate}

@@ -154,4 +154,14 @@
 			text-align: right;
 		}
 	}
+
+	// `dividers={false}`: no divider lines, neither under the header nor
+	// under the body rows.
+
+	&--no-dividers {
+		.charts-legend-table__cell,
+		.charts-legend-table__th {
+			border-bottom: 0;
+		}
+	}
 }

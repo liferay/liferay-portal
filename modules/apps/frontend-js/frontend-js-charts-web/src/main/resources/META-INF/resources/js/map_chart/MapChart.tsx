@@ -40,6 +40,7 @@ export default function MapChart({
 	fit = 'world',
 	legend = 'none',
 	legendSwatchBorder = true,
+	legendTableDividers = true,
 	scheme = 'blue',
 	steps = 5,
 	title,
@@ -132,6 +133,7 @@ export default function MapChart({
 			onHover={setHoverIndex}
 			onHoverEnd={clearHover}
 			scheme={scheme}
+			tableDividers={legendTableDividers}
 			titleId={titleId}
 			total={total}
 		/>
