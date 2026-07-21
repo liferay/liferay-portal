@@ -32,6 +32,7 @@ describe('TaskInfoSummary', () => {
 			<TaskInfoSummary
 				assignTo={mockAssignTo}
 				dueDate="2023-12-31"
+				hasUpdatePermission
 				initialState="notStarted"
 				states={mockStates}
 				tags={['tag1', 'tag2']}

@@ -23,6 +23,7 @@ describe('ProjectInfoSummary', () => {
 			<ProjectInfoSummary
 				dueDate="2023-12-31"
 				funnelStages={[]}
+				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={[]}
@@ -46,6 +47,7 @@ describe('ProjectInfoSummary', () => {
 			<ProjectInfoSummary
 				dueDate="2023-12-31"
 				funnelStages={['Awareness', 'Consideration']}
+				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={['Decision Maker', 'Champion']}
@@ -67,6 +69,7 @@ describe('ProjectInfoSummary', () => {
 			<ProjectInfoSummary
 				dueDate="2023-12-31"
 				funnelStages={[]}
+				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={[]}
