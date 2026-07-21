@@ -33,10 +33,10 @@ public class FragmentEntryVersionUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		_companyLocalService.forEachCompanyId(
-			this::_cleanUpFragmentEntryVersions);
+			this::_deleteExcessFragmentEntryVersions);
 	}
 
-	private void _cleanUpFragmentEntryVersions(long companyId)
+	private void _deleteExcessFragmentEntryVersions(long companyId)
 		throws Exception {
 
 		FragmentEntryVersionConfiguration fragmentEntryVersionConfiguration =
