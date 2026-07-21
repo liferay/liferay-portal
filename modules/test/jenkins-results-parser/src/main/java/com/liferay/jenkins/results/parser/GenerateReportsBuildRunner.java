@@ -1025,15 +1025,6 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 				s3FilePath);
 		}
 
-		LocalDate crawlStartLocalDate = LocalDate.parse(
-			dateStrings[crawlStartIndex], _dateTimeFormatter);
-
-		ZonedDateTime crawlStartZonedDateTime =
-			crawlStartLocalDate.atStartOfDay(ZoneOffset.UTC);
-
-		Date endDate = new Date();
-		Date startDate = Date.from(crawlStartZonedDateTime.toInstant());
-
 		String regionName = _getBuildProperty("aws.cloudtrail.region");
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(regionName)) {
@@ -1043,24 +1034,36 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		CloudTrailEventCrawler cloudTrailEventCrawler =
 			new CloudTrailEventCrawler(regionName);
 
-		List<JSONObject> bidEvictedEventJSONObjects =
-			cloudTrailEventCrawler.getEventJSONObjects(
-				endDate, "BidEvictedEvent", startDate);
-
-		List<JSONObject> runInstancesEventJSONObjects =
-			cloudTrailEventCrawler.getEventJSONObjects(
-				endDate, "RunInstances", startDate);
-
-		if (runInstancesEventJSONObjects.isEmpty()) {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"WARNING: CloudTrail returned no RunInstances events in ",
-					"region ", regionName,
-					", check the aws.cloudtrail.region property and the ",
-					"cloudtrail:LookupEvents permission"));
-		}
-
 		for (int i = crawlStartIndex; i < dateStrings.length; i++) {
+			LocalDate crawlLocalDate = LocalDate.parse(
+				dateStrings[i], _dateTimeFormatter);
+
+			ZonedDateTime startZonedDateTime = crawlLocalDate.atStartOfDay(
+				ZoneOffset.UTC);
+
+			ZonedDateTime endZonedDateTime = startZonedDateTime.plusDays(1);
+
+			Date endDate = Date.from(endZonedDateTime.toInstant());
+
+			Date startDate = Date.from(startZonedDateTime.toInstant());
+
+			List<JSONObject> bidEvictedEventJSONObjects =
+				cloudTrailEventCrawler.getEventJSONObjects(
+					endDate, "BidEvictedEvent", startDate);
+
+			List<JSONObject> runInstancesEventJSONObjects =
+				cloudTrailEventCrawler.getEventJSONObjects(
+					endDate, "RunInstances", startDate);
+
+			if (runInstancesEventJSONObjects.isEmpty()) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"WARNING: CloudTrail returned no RunInstances events ",
+						"for ", dateStrings[i], " in region ", regionName,
+						", check the aws.cloudtrail.region property and the ",
+						"cloudtrail:LookupEvents permission"));
+			}
+
 			File spotInterruptionDataFile = new File(
 				spotInterruptionDataDir,
 				dateStrings[i] + "/spot-interruption.json");
