@@ -9,10 +9,10 @@ import com.liferay.frontend.css.variables.ScopedCSSVariables;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.frontend.token.definition.internal.FrontendTokenDefinitionImpl;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -67,11 +67,43 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
 			Mockito.mock(FrontendTokenDefinitionRegistry.class);
 
+		_frontendTokenDefinitionJSON = JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.put(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.put(
+						JSONUtil.put(
+							"frontendTokens",
+							JSONUtil.put(
+								JSONUtil.put(
+									"defaultValue", "#FFF"
+								).put(
+									"mappings",
+									JSONUtil.put(
+										JSONUtil.put(
+											"type", "cssVariable"
+										).put(
+											"value", "white"
+										))
+								).put(
+									"name", "whiteColor"
+								).put(
+									"type", "String"
+								))
+						).put(
+							"name", "grays"
+						))
+				).put(
+					"name", "colorSystem"
+				))
+		).toString();
+
 		JSONFactory jsonFactory = new JSONFactoryImpl();
 
 		FrontendTokenDefinition frontendTokenDefinition =
 			new FrontendTokenDefinitionImpl(
-				jsonFactory.createJSONObject(_FRONTEND_TOKEN_DEFINITION_JSON),
+				jsonFactory.createJSONObject(_frontendTokenDefinitionJSON),
 				jsonFactory, null, "theme_id", RandomTestUtil.randomString(),
 				RandomTestUtil.randomString());
 
@@ -138,7 +170,7 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(_layout)
 		).thenReturn(
 			new FrontendTokenDefinitionImpl(
-				jsonFactory.createJSONObject(_FRONTEND_TOKEN_DEFINITION_JSON),
+				jsonFactory.createJSONObject(_frontendTokenDefinitionJSON),
 				jsonFactory, null, "theme_id", RandomTestUtil.randomString(),
 				RandomTestUtil.randomString())
 		);
@@ -175,17 +207,10 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 		return scopedCSSVariables.getCSSVariables();
 	}
 
-	private static final String _FRONTEND_TOKEN_DEFINITION_JSON =
-		StringBundler.concat(
-			"{\"frontendTokenCategories\": [{\"frontendTokenSets\": ",
-			"[{\"frontendTokens\": [{\"defaultValue\": \"#FFF\", ",
-			"\"mappings\": [{\"type\": \"cssVariable\", \"value\": ",
-			"\"white\"}], \"name\": \"whiteColor\", \"type\": \"String\"}], ",
-			"\"name\": \"grays\"}], \"name\": \"colorSystem\"}]}");
-
 	private final DefaultThemeScopedCSSVariablesProvider
 		_defaultThemeScopedCSSVariablesProvider =
 			new DefaultThemeScopedCSSVariablesProvider();
+	private String _frontendTokenDefinitionJSON;
 	private HttpServletRequest _httpServletRequest;
 	private Layout _layout;
 
