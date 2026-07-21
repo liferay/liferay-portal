@@ -34,7 +34,7 @@ public class TikaRawMetadataProcessorTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetRawMetadataWithXMatlab() throws Exception {
+	public void testGetRawMetadataWithTextPlain() throws Exception {
 		Map<String, String[]> rawMetadata =
 			_rawMetadataProcessor.getRawMetadata(
 				ContentTypes.APPLICATION_JAVASCRIPT,
@@ -43,7 +43,8 @@ public class TikaRawMetadataProcessorTest {
 
 		String[] values = rawMetadata.get("Content-Type");
 
-		Assert.assertTrue(values[0].startsWith("application/javascript;"));
+		Assert.assertTrue(
+			values[0], values[0].startsWith("application/javascript;"));
 	}
 
 	@Inject
