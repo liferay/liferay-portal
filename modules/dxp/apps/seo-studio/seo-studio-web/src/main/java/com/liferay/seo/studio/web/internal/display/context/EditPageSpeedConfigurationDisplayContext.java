@@ -21,9 +21,9 @@ import java.util.Map;
 /**
  * @author Kiana Suetani
  */
-public class PageSpeedConfigurationDisplayContext {
+public class EditPageSpeedConfigurationDisplayContext {
 
-	public PageSpeedConfigurationDisplayContext(
+	public EditPageSpeedConfigurationDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(

@@ -19,9 +19,9 @@ import java.util.Map;
 /**
  * @author Kiana Suetani
  */
-public class PageSpeedChartsDisplayContext {
+public class ViewPageSpeedChartsDisplayContext {
 
-	public PageSpeedChartsDisplayContext(
+	public ViewPageSpeedChartsDisplayContext(
 		ObjectEntry seoStudioPageSpeedResultObjectEntry) {
 
 		_seoStudioPageSpeedResultObjectEntry =

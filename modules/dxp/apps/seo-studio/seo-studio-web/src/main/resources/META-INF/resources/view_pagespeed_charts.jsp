@@ -7,15 +7,15 @@
 
 <%@ taglib uri="http://liferay.com/tld/react" prefix="react" %>
 
-<%@ page import="com.liferay.seo.studio.web.internal.display.context.PageSpeedChartsDisplayContext" %>
+<%@ page import="com.liferay.seo.studio.web.internal.display.context.ViewPageSpeedChartsDisplayContext" %>
 
 <%
-PageSpeedChartsDisplayContext pageSpeedChartsDisplayContext = (PageSpeedChartsDisplayContext)request.getAttribute(PageSpeedChartsDisplayContext.class.getName());
+ViewPageSpeedChartsDisplayContext viewPageSpeedChartsDisplayContext = (ViewPageSpeedChartsDisplayContext)request.getAttribute(ViewPageSpeedChartsDisplayContext.class.getName());
 %>
 
 <div class="seo-studio-pagespeed-charts">
 	<react:component
 		module="{PageSpeedCharts} from seo-studio-web"
-		props="<%= pageSpeedChartsDisplayContext.getViewProps() %>"
+		props="<%= viewPageSpeedChartsDisplayContext.getViewProps() %>"
 	/>
 </div>

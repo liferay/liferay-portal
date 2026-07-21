@@ -6,7 +6,7 @@
 package com.liferay.seo.studio.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.seo.studio.web.internal.display.context.PageSpeedConfigurationDisplayContext;
+import com.liferay.seo.studio.web.internal.display.context.EditPageSpeedConfigurationDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,8 +18,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Kiana Suetani
  */
 @Component(service = FragmentRenderer.class)
-public class PageSpeedConfigurationFragmentRenderer
-	extends BaseFragmentRenderer<PageSpeedConfigurationDisplayContext> {
+public class EditPageSpeedConfigurationFragmentRenderer
+	extends BaseFragmentRenderer<EditPageSpeedConfigurationDisplayContext> {
 
 	@Override
 	public String getCollectionKey() {
@@ -32,15 +32,15 @@ public class PageSpeedConfigurationFragmentRenderer
 	}
 
 	@Override
-	protected PageSpeedConfigurationDisplayContext getDisplayContext(
+	protected EditPageSpeedConfigurationDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new PageSpeedConfigurationDisplayContext(httpServletRequest);
+		return new EditPageSpeedConfigurationDisplayContext(httpServletRequest);
 	}
 
 	@Override
 	protected String getJSPPath() {
-		return "/pagespeed_configuration.jsp";
+		return "/edit_pagespeed_configuration.jsp";
 	}
 
 }

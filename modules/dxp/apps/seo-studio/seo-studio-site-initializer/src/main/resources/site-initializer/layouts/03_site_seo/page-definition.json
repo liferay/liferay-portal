@@ -4,7 +4,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.seo.studio.web.internal.fragment.renderer.PageSpeedChartsFragmentRenderer"
+						"key": "com.liferay.seo.studio.web.internal.fragment.renderer.ViewPageSpeedChartsFragmentRenderer"
 					},
 					"fragmentConfig": {
 					},
