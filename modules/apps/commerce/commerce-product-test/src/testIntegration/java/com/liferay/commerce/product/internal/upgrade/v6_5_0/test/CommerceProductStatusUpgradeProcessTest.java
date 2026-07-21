@@ -6,12 +6,15 @@
 package com.liferay.commerce.product.internal.upgrade.v6_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.constants.CPMeasurementUnitConstants;
+import com.liferay.commerce.product.model.CPMeasurementUnit;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CPOptionCategoryLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
@@ -84,6 +87,40 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
+	}
+
+	@Test
+	public void testUpgradeCPMeasurementUnitStatus() throws Exception {
+		CPMeasurementUnit cpMeasurementUnit =
+			_cpMeasurementUnitLocalService.addCPMeasurementUnit(
+				null, RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				false, RandomTestUtil.randomDouble(),
+				CPMeasurementUnitConstants.TYPE_UNIT,
+				ServiceContextTestUtil.getServiceContext());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPMeasurementUnit set status = ? where " +
+						"CPMeasurementUnitId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(
+				2, cpMeasurementUnit.getCPMeasurementUnitId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpMeasurementUnit = _cpMeasurementUnitLocalService.getCPMeasurementUnit(
+			cpMeasurementUnit.getCPMeasurementUnitId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpMeasurementUnit.getStatus());
 	}
 
 	@Test
@@ -247,6 +284,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CPMeasurementUnitLocalService _cpMeasurementUnitLocalService;
 
 	@Inject
 	private CPOptionCategoryLocalService _cpOptionCategoryLocalService;
