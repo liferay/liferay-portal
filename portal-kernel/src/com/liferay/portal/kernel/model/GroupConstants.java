@@ -34,6 +34,11 @@ public class GroupConstants {
 
 	public static final long DEFAULT_PARENT_GROUP_ID = 0;
 
+	public static final String DIGITAL_SIGNATURE = "DigitalSignature";
+
+	public static final String DIGITAL_SIGNATURE_FRIENDLY_URL =
+		"/digital-signature";
+
 	public static final String DSR = "DSR";
 
 	public static final String FORMS = "Forms";
@@ -53,7 +58,7 @@ public class GroupConstants {
 	public static final int MEMBERSHIP_RESTRICTION_TO_PARENT_SITE_MEMBERS = 1;
 
 	public static final String[] SYSTEM_GROUPS = {
-		CALENDAR, CMS, CONTROL_PANEL, FORMS, GUEST,
+		CALENDAR, CMS, CONTROL_PANEL, DIGITAL_SIGNATURE, FORMS, GUEST,
 		GroupConstants.USER_PERSONAL_SITE
 	};
 

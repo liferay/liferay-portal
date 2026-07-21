@@ -459,6 +459,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				  groupKey.equals(GroupConstants.CALENDAR) ||
 				  groupKey.equals(GroupConstants.CMS) ||
 				  groupKey.equals(GroupConstants.CONTROL_PANEL) ||
+				  groupKey.equals(GroupConstants.DIGITAL_SIGNATURE) ||
 				  groupKey.equals(GroupConstants.DSR) ||
 				  groupKey.equals(GroupConstants.FORMS))) {
 
@@ -846,6 +847,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				else if (groupKey.equals(GroupConstants.CONTROL_PANEL)) {
 					type = GroupConstants.TYPE_SITE_PRIVATE;
 					friendlyURL = GroupConstants.CONTROL_PANEL_FRIENDLY_URL;
+					site = false;
+				}
+				else if (groupKey.equals(GroupConstants.DIGITAL_SIGNATURE)) {
+					type = GroupConstants.TYPE_SITE_PRIVATE;
+					friendlyURL = GroupConstants.DIGITAL_SIGNATURE_FRIENDLY_URL;
 					site = false;
 				}
 				else if (groupKey.equals(GroupConstants.FORMS)) {
