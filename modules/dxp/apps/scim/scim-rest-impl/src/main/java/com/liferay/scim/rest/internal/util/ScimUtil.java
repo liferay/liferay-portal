@@ -812,7 +812,7 @@ public class ScimUtil {
 	}
 
 	private static String _getProfileURL(Contact contact) {
-		long listTypeId = ListTypeLocalServiceUtil.getListTypeId(
+		long listTypeId = _getListTypeId(
 			contact.getCompanyId(), "personal",
 			Contact.class.getName() + ".website");
 

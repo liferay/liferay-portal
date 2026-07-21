@@ -15,12 +15,15 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.sort.OrderByExpression;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.AddressTable;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -44,18 +47,10 @@ public class CommerceShippingAddressCommerceQualifierMetadata
 	@Override
 	public Predicate getFilterPredicate() {
 		return AddressTable.INSTANCE.listTypeId.in(
-			new Long[] {
-				_listTypeLocalService.getListTypeId(
-					CompanyThreadLocal.getCompanyId(),
-					AccountListTypeConstants.
-						ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING,
-					AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS),
-				_listTypeLocalService.getListTypeId(
-					CompanyThreadLocal.getCompanyId(),
-					AccountListTypeConstants.
-						ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING,
-					AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS)
-			});
+			_getListTypeIds(
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING,
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING));
 	}
 
 	@Override
@@ -105,6 +100,22 @@ public class CommerceShippingAddressCommerceQualifierMetadata
 		return new OrderByExpression[] {
 			AddressTable.INSTANCE.addressId.descending()
 		};
+	}
+
+	private Long[] _getListTypeIds(String... names) {
+		List<Long> listTypeIds = new ArrayList<>();
+
+		for (String name : names) {
+			ListType listType = _listTypeLocalService.fetchListType(
+				CompanyThreadLocal.getCompanyId(), name,
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+			if (listType != null) {
+				listTypeIds.add(listType.getListTypeId());
+			}
+		}
+
+		return listTypeIds.toArray(new Long[0]);
 	}
 
 	@Reference
