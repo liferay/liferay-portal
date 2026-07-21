@@ -543,6 +543,16 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 				}
 
 				@Override
+				public boolean getStaticEnd() {
+					return !_staticPortletStart;
+				}
+
+				@Override
+				public boolean getStaticStart() {
+					return _staticPortletStart;
+				}
+
+				@Override
 				public long getUserId() {
 					return PortletIdCodec.decodeUserId(finalPortletId);
 				}
@@ -555,6 +565,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 				@Override
 				public boolean isStatic() {
 					return _staticPortlet;
+				}
+
+				@Override
+				public boolean isStaticEnd() {
+					return !_staticPortletStart;
 				}
 
 				@Override
