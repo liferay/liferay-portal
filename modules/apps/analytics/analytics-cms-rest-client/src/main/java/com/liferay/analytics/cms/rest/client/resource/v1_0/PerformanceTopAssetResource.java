@@ -7,6 +7,7 @@ package com.liferay.analytics.cms.rest.client.resource.v1_0;
 
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceTopAsset;
 import com.liferay.analytics.cms.rest.client.http.HttpInvoker;
+import com.liferay.analytics.cms.rest.client.pagination.Page;
 import com.liferay.analytics.cms.rest.client.pagination.Pagination;
 import com.liferay.analytics.cms.rest.client.problem.Problem;
 import com.liferay.analytics.cms.rest.client.serdes.v1_0.PerformanceTopAssetSerDes;
@@ -33,24 +34,24 @@ public interface PerformanceTopAssetResource {
 		return new Builder();
 	}
 
-	public PerformanceTopAsset getPerformanceTopAsset(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
-			Pagination pagination, String sortString)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse getPerformanceTopAssetHttpResponse(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
-			Pagination pagination, String sortString)
-		throws Exception;
-
 	public void getPerformanceTopAssetExport(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
-			String sortString)
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			String filterString, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceTopAssetExportHttpResponse(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
-			String sortString)
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			String filterString, String sortString)
+		throws Exception;
+
+	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			String filterString, Pagination pagination, String sortString)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse getPerformanceTopAssetPageHttpResponse(
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			String filterString, Pagination pagination, String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -162,149 +163,14 @@ public interface PerformanceTopAssetResource {
 	public static class PerformanceTopAssetResourceImpl
 		implements PerformanceTopAssetResource {
 
-		public PerformanceTopAsset getPerformanceTopAsset(
-				String assetFilterString, Long[] depotEntryIds,
-				Integer rangeKey, Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getPerformanceTopAssetHttpResponse(
-					assetFilterString, depotEntryIds, rangeKey, pagination,
-					sortString);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return PerformanceTopAssetSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse getPerformanceTopAssetHttpResponse(
-				String assetFilterString, Long[] depotEntryIds,
-				Integer rangeKey, Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (assetFilterString != null) {
-				httpInvoker.parameter(
-					"assetFilterString", String.valueOf(assetFilterString));
-			}
-
-			if (depotEntryIds != null) {
-				for (int i = 0; i < depotEntryIds.length; i++) {
-					httpInvoker.parameter(
-						"depotEntryIds", String.valueOf(depotEntryIds[i]));
-				}
-			}
-
-			if (rangeKey != null) {
-				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
-			}
-
-			if (pagination != null) {
-				httpInvoker.parameter(
-					"page", String.valueOf(pagination.getPage()));
-				httpInvoker.parameter(
-					"pageSize", String.valueOf(pagination.getPageSize()));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/analytics-cms-rest/v1.0/performance-top-asset");
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
 		public void getPerformanceTopAssetExport(
-				String assetFilterString, Long[] depotEntryIds,
-				Integer rangeKey, String sortString)
+				Long[] depotEntryIds, Integer rangeKey, String search,
+				String filterString, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceTopAssetExportHttpResponse(
-					assetFilterString, depotEntryIds, rangeKey, sortString);
+					depotEntryIds, rangeKey, search, filterString, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -356,8 +222,8 @@ public interface PerformanceTopAssetResource {
 
 		public HttpInvoker.HttpResponse
 				getPerformanceTopAssetExportHttpResponse(
-					String assetFilterString, Long[] depotEntryIds,
-					Integer rangeKey, String sortString)
+					Long[] depotEntryIds, Integer rangeKey, String search,
+					String filterString, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -381,10 +247,136 @@ public interface PerformanceTopAssetResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (assetFilterString != null) {
-				httpInvoker.parameter(
-					"assetFilterString", String.valueOf(assetFilterString));
+			if (depotEntryIds != null) {
+				for (int i = 0; i < depotEntryIds.length; i++) {
+					httpInvoker.parameter(
+						"depotEntryIds", String.valueOf(depotEntryIds[i]));
+				}
 			}
+
+			if (rangeKey != null) {
+				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/analytics-cms-rest/v1.0/performance-top-asset/export");
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
+				Long[] depotEntryIds, Integer rangeKey, String search,
+				String filterString, Pagination pagination, String sortString)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				getPerformanceTopAssetPageHttpResponse(
+					depotEntryIds, rangeKey, search, filterString, pagination,
+					sortString);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return Page.of(content, PerformanceTopAssetSerDes::toDTO);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse getPerformanceTopAssetPageHttpResponse(
+				Long[] depotEntryIds, Integer rangeKey, String search,
+				String filterString, Pagination pagination, String sortString)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -397,6 +389,21 @@ public interface PerformanceTopAssetResource {
 				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
 			}
 
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
+			if (pagination != null) {
+				httpInvoker.parameter(
+					"page", String.valueOf(pagination.getPage()));
+				httpInvoker.parameter(
+					"pageSize", String.valueOf(pagination.getPageSize()));
+			}
+
 			if (sortString != null) {
 				httpInvoker.parameter("sort", sortString);
 			}
@@ -404,7 +411,7 @@ public interface PerformanceTopAssetResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/analytics-cms-rest/v1.0/performance-top-asset/export");
+						"/o/analytics-cms-rest/v1.0/performance-top-asset");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -426,4 +433,4 @@ public interface PerformanceTopAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-996216549
+// LIFERAY-REST-BUILDER-HASH:1605693953

@@ -25,112 +25,211 @@ public class PerformanceTopAsset implements Cloneable, Serializable {
 		return PerformanceTopAssetSerDes.toDTO(json);
 	}
 
-	public Long getLastPage() {
-		return lastPage;
+	public String getClassName() {
+		return className;
 	}
 
-	public void setLastPage(Long lastPage) {
-		this.lastPage = lastPage;
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
-	public void setLastPage(
-		UnsafeSupplier<Long, Exception> lastPageUnsafeSupplier) {
+	public void setClassName(
+		UnsafeSupplier<String, Exception> classNameUnsafeSupplier) {
 
 		try {
-			lastPage = lastPageUnsafeSupplier.get();
+			className = classNameUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Long lastPage;
+	protected String className;
 
-	public Long getPage() {
-		return page;
+	public Double getDownloads() {
+		return downloads;
 	}
 
-	public void setPage(Long page) {
-		this.page = page;
+	public void setDownloads(Double downloads) {
+		this.downloads = downloads;
 	}
 
-	public void setPage(UnsafeSupplier<Long, Exception> pageUnsafeSupplier) {
+	public void setDownloads(
+		UnsafeSupplier<Double, Exception> downloadsUnsafeSupplier) {
+
 		try {
-			page = pageUnsafeSupplier.get();
+			downloads = downloadsUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Long page;
+	protected Double downloads;
 
-	public Long getPageSize() {
-		return pageSize;
+	public Object getEmbedded() {
+		return embedded;
 	}
 
-	public void setPageSize(Long pageSize) {
-		this.pageSize = pageSize;
+	public void setEmbedded(Object embedded) {
+		this.embedded = embedded;
 	}
 
-	public void setPageSize(
-		UnsafeSupplier<Long, Exception> pageSizeUnsafeSupplier) {
+	public void setEmbedded(
+		UnsafeSupplier<Object, Exception> embeddedUnsafeSupplier) {
 
 		try {
-			pageSize = pageSizeUnsafeSupplier.get();
+			embedded = embeddedUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Long pageSize;
+	protected Object embedded;
 
-	public PerformanceTopAssetItem[] getPerformanceTopAssetItems() {
-		return performanceTopAssetItems;
+	public Double getEngagement() {
+		return engagement;
 	}
 
-	public void setPerformanceTopAssetItems(
-		PerformanceTopAssetItem[] performanceTopAssetItems) {
-
-		this.performanceTopAssetItems = performanceTopAssetItems;
+	public void setEngagement(Double engagement) {
+		this.engagement = engagement;
 	}
 
-	public void setPerformanceTopAssetItems(
-		UnsafeSupplier<PerformanceTopAssetItem[], Exception>
-			performanceTopAssetItemsUnsafeSupplier) {
+	public void setEngagement(
+		UnsafeSupplier<Double, Exception> engagementUnsafeSupplier) {
 
 		try {
-			performanceTopAssetItems =
-				performanceTopAssetItemsUnsafeSupplier.get();
+			engagement = engagementUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected PerformanceTopAssetItem[] performanceTopAssetItems;
+	protected Double engagement;
 
-	public Long getTotalCount() {
-		return totalCount;
+	public String getExternalReferenceCode() {
+		return externalReferenceCode;
 	}
 
-	public void setTotalCount(Long totalCount) {
-		this.totalCount = totalCount;
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
 	}
 
-	public void setTotalCount(
-		UnsafeSupplier<Long, Exception> totalCountUnsafeSupplier) {
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
 
 		try {
-			totalCount = totalCountUnsafeSupplier.get();
+			externalReferenceCode = externalReferenceCodeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Long totalCount;
+	protected String externalReferenceCode;
+
+	public Double getImpressions() {
+		return impressions;
+	}
+
+	public void setImpressions(Double impressions) {
+		this.impressions = impressions;
+	}
+
+	public void setImpressions(
+		UnsafeSupplier<Double, Exception> impressionsUnsafeSupplier) {
+
+		try {
+			impressions = impressionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Double impressions;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setTitle(
+		UnsafeSupplier<String, Exception> titleUnsafeSupplier) {
+
+		try {
+			title = titleUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String title;
+
+	public Trend getTrend() {
+		return trend;
+	}
+
+	public void setTrend(Trend trend) {
+		this.trend = trend;
+	}
+
+	public void setTrend(UnsafeSupplier<Trend, Exception> trendUnsafeSupplier) {
+		try {
+			trend = trendUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Trend trend;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+		try {
+			type = typeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String type;
+
+	public Double getViews() {
+		return views;
+	}
+
+	public void setViews(Double views) {
+		this.views = views;
+	}
+
+	public void setViews(
+		UnsafeSupplier<Double, Exception> viewsUnsafeSupplier) {
+
+		try {
+			views = viewsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Double views;
 
 	@Override
 	public PerformanceTopAsset clone() throws CloneNotSupportedException {
@@ -164,4 +263,4 @@ public class PerformanceTopAsset implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2054094997
+// LIFERAY-REST-BUILDER-HASH:-1614507002

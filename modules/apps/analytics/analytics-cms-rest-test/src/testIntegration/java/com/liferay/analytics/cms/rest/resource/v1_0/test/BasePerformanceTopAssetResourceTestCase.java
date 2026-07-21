@@ -16,8 +16,10 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceTopAsset;
 import com.liferay.analytics.cms.rest.client.http.HttpInvoker;
 import com.liferay.analytics.cms.rest.client.pagination.Page;
+import com.liferay.analytics.cms.rest.client.pagination.Pagination;
 import com.liferay.analytics.cms.rest.client.resource.v1_0.PerformanceTopAssetResource;
 import com.liferay.analytics.cms.rest.client.serdes.v1_0.PerformanceTopAssetSerDes;
+import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -31,12 +33,15 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -168,22 +173,437 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 		PerformanceTopAsset performanceTopAsset = randomPerformanceTopAsset();
 
+		performanceTopAsset.setClassName(regex);
+		performanceTopAsset.setExternalReferenceCode(regex);
+		performanceTopAsset.setTitle(regex);
+		performanceTopAsset.setType(regex);
+
 		String json = PerformanceTopAssetSerDes.toJSON(performanceTopAsset);
 
 		Assert.assertFalse(json.contains(regex));
 
 		performanceTopAsset = PerformanceTopAssetSerDes.toDTO(json);
-	}
 
-	@Test
-	public void testGetPerformanceTopAsset() throws Exception {
-		Assert.assertTrue(false);
+		Assert.assertEquals(regex, performanceTopAsset.getClassName());
+		Assert.assertEquals(
+			regex, performanceTopAsset.getExternalReferenceCode());
+		Assert.assertEquals(regex, performanceTopAsset.getTitle());
+		Assert.assertEquals(regex, performanceTopAsset.getType());
 	}
 
 	@Test
 	public void testGetPerformanceTopAssetExport() throws Exception {
 		Assert.assertTrue(false);
 	}
+
+	@Test
+	public void testGetPerformanceTopAssetPage() throws Exception {
+		Page<PerformanceTopAsset> page =
+			performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, null, null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		PerformanceTopAsset performanceTopAsset1 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		PerformanceTopAsset performanceTopAsset2 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		page = performanceTopAssetResource.getPerformanceTopAssetPage(
+			null, null, null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			performanceTopAsset1, (List<PerformanceTopAsset>)page.getItems());
+		assertContains(
+			performanceTopAsset2, (List<PerformanceTopAsset>)page.getItems());
+		assertValid(page, testGetPerformanceTopAssetPage_getExpectedActions());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetPerformanceTopAssetPage_getExpectedActions()
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		PerformanceTopAsset performanceTopAsset1 = randomPerformanceTopAsset();
+
+		performanceTopAsset1 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				performanceTopAsset1);
+
+		for (EntityField entityField : entityFields) {
+			Page<PerformanceTopAsset> page =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null,
+					getFilterString(
+						entityField, "between", performanceTopAsset1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(performanceTopAsset1),
+				(List<PerformanceTopAsset>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithFilter("eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithFilterStringContains()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithFilter("eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetPerformanceTopAssetPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		PerformanceTopAsset performanceTopAsset1 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PerformanceTopAsset performanceTopAsset2 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		for (EntityField entityField : entityFields) {
+			Page<PerformanceTopAsset> page =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null,
+					getFilterString(
+						entityField, operator, performanceTopAsset1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(performanceTopAsset1),
+				(List<PerformanceTopAsset>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithPagination()
+		throws Exception {
+
+		Page<PerformanceTopAsset> performanceTopAssetsPage =
+			performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, null, null, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			performanceTopAssetsPage.getTotalCount());
+
+		PerformanceTopAsset performanceTopAsset1 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		PerformanceTopAsset performanceTopAsset2 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		PerformanceTopAsset performanceTopAsset3 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				randomPerformanceTopAsset());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<PerformanceTopAsset> page1 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				performanceTopAsset1,
+				(List<PerformanceTopAsset>)page1.getItems());
+
+			Page<PerformanceTopAsset> page2 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				performanceTopAsset2,
+				(List<PerformanceTopAsset>)page2.getItems());
+
+			Page<PerformanceTopAsset> page3 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				performanceTopAsset3,
+				(List<PerformanceTopAsset>)page3.getItems());
+		}
+		else {
+			Page<PerformanceTopAsset> page1 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null, Pagination.of(1, totalCount + 2),
+					null);
+
+			List<PerformanceTopAsset> performanceTopAssets1 =
+				(List<PerformanceTopAsset>)page1.getItems();
+
+			Assert.assertEquals(
+				performanceTopAssets1.toString(), totalCount + 2,
+				performanceTopAssets1.size());
+
+			Page<PerformanceTopAsset> page2 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null, Pagination.of(2, totalCount + 2),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<PerformanceTopAsset> performanceTopAssets2 =
+				(List<PerformanceTopAsset>)page2.getItems();
+
+			Assert.assertEquals(
+				performanceTopAssets2.toString(), 1,
+				performanceTopAssets2.size());
+
+			Page<PerformanceTopAsset> page3 =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				performanceTopAsset1,
+				(List<PerformanceTopAsset>)page3.getItems());
+			assertContains(
+				performanceTopAsset2,
+				(List<PerformanceTopAsset>)page3.getItems());
+			assertContains(
+				performanceTopAsset3,
+				(List<PerformanceTopAsset>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithSortDateTime()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, performanceTopAsset1, performanceTopAsset2) -> {
+				BeanTestUtil.setProperty(
+					performanceTopAsset1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithSortDouble()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, performanceTopAsset1, performanceTopAsset2) -> {
+				BeanTestUtil.setProperty(
+					performanceTopAsset1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					performanceTopAsset2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithSortInteger()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, performanceTopAsset1, performanceTopAsset2) -> {
+				BeanTestUtil.setProperty(
+					performanceTopAsset1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					performanceTopAsset2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithSortString()
+		throws Exception {
+
+		testGetPerformanceTopAssetPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, performanceTopAsset1, performanceTopAsset2) -> {
+				Class<?> clazz = performanceTopAsset1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						performanceTopAsset1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						performanceTopAsset2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						performanceTopAsset1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						performanceTopAsset2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						performanceTopAsset1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						performanceTopAsset2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetPerformanceTopAssetPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, PerformanceTopAsset, PerformanceTopAsset,
+				 Exception> unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		PerformanceTopAsset performanceTopAsset1 = randomPerformanceTopAsset();
+		PerformanceTopAsset performanceTopAsset2 = randomPerformanceTopAsset();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, performanceTopAsset1, performanceTopAsset2);
+		}
+
+		performanceTopAsset1 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				performanceTopAsset1);
+
+		performanceTopAsset2 =
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				performanceTopAsset2);
+
+		Page<PerformanceTopAsset> page =
+			performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, null, null, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<PerformanceTopAsset> ascPage =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(
+				performanceTopAsset1,
+				(List<PerformanceTopAsset>)ascPage.getItems());
+			assertContains(
+				performanceTopAsset2,
+				(List<PerformanceTopAsset>)ascPage.getItems());
+
+			Page<PerformanceTopAsset> descPage =
+				performanceTopAssetResource.getPerformanceTopAssetPage(
+					null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				performanceTopAsset2,
+				(List<PerformanceTopAsset>)descPage.getItems());
+			assertContains(
+				performanceTopAsset1,
+				(List<PerformanceTopAsset>)descPage.getItems());
+		}
+	}
+
+	protected PerformanceTopAsset
+			testGetPerformanceTopAssetPage_addPerformanceTopAsset(
+				PerformanceTopAsset performanceTopAsset)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected void assertContains(
 		PerformanceTopAsset performanceTopAsset,
@@ -273,24 +693,32 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("lastPage", additionalAssertFieldName)) {
-				if (performanceTopAsset.getLastPage() == null) {
+			if (Objects.equals("className", additionalAssertFieldName)) {
+				if (performanceTopAsset.getClassName() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals("page", additionalAssertFieldName)) {
-				if (performanceTopAsset.getPage() == null) {
+			if (Objects.equals("downloads", additionalAssertFieldName)) {
+				if (performanceTopAsset.getDownloads() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals("pageSize", additionalAssertFieldName)) {
-				if (performanceTopAsset.getPageSize() == null) {
+			if (Objects.equals("embedded", additionalAssertFieldName)) {
+				if (performanceTopAsset.getEmbedded() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("engagement", additionalAssertFieldName)) {
+				if (performanceTopAsset.getEngagement() == null) {
 					valid = false;
 				}
 
@@ -298,17 +726,49 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 			}
 
 			if (Objects.equals(
-					"performanceTopAssetItems", additionalAssertFieldName)) {
+					"externalReferenceCode", additionalAssertFieldName)) {
 
-				if (performanceTopAsset.getPerformanceTopAssetItems() == null) {
+				if (performanceTopAsset.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals("totalCount", additionalAssertFieldName)) {
-				if (performanceTopAsset.getTotalCount() == null) {
+			if (Objects.equals("impressions", additionalAssertFieldName)) {
+				if (performanceTopAsset.getImpressions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("title", additionalAssertFieldName)) {
+				if (performanceTopAsset.getTitle() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("trend", additionalAssertFieldName)) {
+				if (performanceTopAsset.getTrend() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (performanceTopAsset.getType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("views", additionalAssertFieldName)) {
+				if (performanceTopAsset.getViews() == null) {
 					valid = false;
 				}
 
@@ -374,6 +834,8 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.analytics.cms.rest.dto.v1_0.PerformanceTopAsset.
@@ -436,10 +898,10 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("lastPage", additionalAssertFieldName)) {
+			if (Objects.equals("className", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						performanceTopAsset1.getLastPage(),
-						performanceTopAsset2.getLastPage())) {
+						performanceTopAsset1.getClassName(),
+						performanceTopAsset2.getClassName())) {
 
 					return false;
 				}
@@ -447,10 +909,10 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("page", additionalAssertFieldName)) {
+			if (Objects.equals("downloads", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						performanceTopAsset1.getPage(),
-						performanceTopAsset2.getPage())) {
+						performanceTopAsset1.getDownloads(),
+						performanceTopAsset2.getDownloads())) {
 
 					return false;
 				}
@@ -458,10 +920,21 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("pageSize", additionalAssertFieldName)) {
+			if (Objects.equals("embedded", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						performanceTopAsset1.getPageSize(),
-						performanceTopAsset2.getPageSize())) {
+						performanceTopAsset1.getEmbedded(),
+						performanceTopAsset2.getEmbedded())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("engagement", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						performanceTopAsset1.getEngagement(),
+						performanceTopAsset2.getEngagement())) {
 
 					return false;
 				}
@@ -470,11 +943,11 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 			}
 
 			if (Objects.equals(
-					"performanceTopAssetItems", additionalAssertFieldName)) {
+					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						performanceTopAsset1.getPerformanceTopAssetItems(),
-						performanceTopAsset2.getPerformanceTopAssetItems())) {
+						performanceTopAsset1.getExternalReferenceCode(),
+						performanceTopAsset2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -482,10 +955,54 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("totalCount", additionalAssertFieldName)) {
+			if (Objects.equals("impressions", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						performanceTopAsset1.getTotalCount(),
-						performanceTopAsset2.getTotalCount())) {
+						performanceTopAsset1.getImpressions(),
+						performanceTopAsset2.getImpressions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("title", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						performanceTopAsset1.getTitle(),
+						performanceTopAsset2.getTitle())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("trend", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						performanceTopAsset1.getTrend(),
+						performanceTopAsset2.getTrend())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						performanceTopAsset1.getType(),
+						performanceTopAsset2.getType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("views", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						performanceTopAsset1.getViews(),
+						performanceTopAsset2.getViews())) {
 
 					return false;
 				}
@@ -601,29 +1118,222 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
-		if (entityFieldName.equals("lastPage")) {
+		if (entityFieldName.equals("className")) {
+			Object object = performanceTopAsset.getClassName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("downloads")) {
+			sb.append(String.valueOf(performanceTopAsset.getDownloads()));
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("embedded")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("page")) {
+		if (entityFieldName.equals("engagement")) {
+			sb.append(String.valueOf(performanceTopAsset.getEngagement()));
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = performanceTopAsset.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("impressions")) {
+			sb.append(String.valueOf(performanceTopAsset.getImpressions()));
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("title")) {
+			Object object = performanceTopAsset.getTitle();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("trend")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("pageSize")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
+		if (entityFieldName.equals("type")) {
+			Object object = performanceTopAsset.getType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
-		if (entityFieldName.equals("performanceTopAssetItems")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
+		if (entityFieldName.equals("views")) {
+			sb.append(String.valueOf(performanceTopAsset.getViews()));
 
-		if (entityFieldName.equals("totalCount")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
+			return sb.toString();
 		}
 
 		throw new IllegalArgumentException(
@@ -673,10 +1383,16 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 	protected PerformanceTopAsset randomPerformanceTopAsset() throws Exception {
 		return new PerformanceTopAsset() {
 			{
-				lastPage = RandomTestUtil.randomLong();
-				page = RandomTestUtil.randomLong();
-				pageSize = RandomTestUtil.randomLong();
-				totalCount = RandomTestUtil.randomLong();
+				className = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				downloads = RandomTestUtil.randomDouble();
+				engagement = RandomTestUtil.randomDouble();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				impressions = RandomTestUtil.randomDouble();
+				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				views = RandomTestUtil.randomDouble();
 			}
 		};
 	}
@@ -907,4 +1623,4 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 			_performanceTopAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1344748680
+// LIFERAY-REST-BUILDER-HASH:-1318815575

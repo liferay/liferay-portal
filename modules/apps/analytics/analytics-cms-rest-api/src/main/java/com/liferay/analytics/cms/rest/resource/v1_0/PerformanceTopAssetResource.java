@@ -14,6 +14,7 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.annotation.Generated;
@@ -43,14 +44,16 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PerformanceTopAssetResource {
 
-	public PerformanceTopAsset getPerformanceTopAsset(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
-			Pagination pagination,
+	public Response getPerformanceTopAssetExport(
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
-	public Response getPerformanceTopAssetExport(
-			String assetFilterString, Long[] depotEntryIds, Integer rangeKey,
+	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
+			Long[] depotEntryIds, Integer rangeKey, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -142,4 +145,4 @@ public interface PerformanceTopAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:476736702
+// LIFERAY-REST-BUILDER-HASH:-493090022
