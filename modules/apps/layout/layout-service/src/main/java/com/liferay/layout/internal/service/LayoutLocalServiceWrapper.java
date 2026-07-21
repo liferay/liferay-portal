@@ -1227,7 +1227,7 @@ public class LayoutLocalServiceWrapper
 					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 			FragmentEntryLink targetLayoutFragmentEntryLink =
-				_fragmentEntryLinkLocalService.getFragmentEntryLink(
+				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 					targetLayout.getGroupId(),
 					originalFragmentEntryLink.getExternalReferenceCode(),
 					targetLayout.getPlid());

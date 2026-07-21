@@ -1240,7 +1240,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, boolean defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1256,7 +1256,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, boolean[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1272,7 +1272,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, Date defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1288,7 +1288,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, Date[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1304,7 +1304,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, double defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1320,7 +1320,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, double[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1336,7 +1336,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, float defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1352,7 +1352,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, float[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1368,7 +1368,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, int defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1384,7 +1384,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, int[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1400,7 +1400,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, JSONObject defaultDataJSONObject)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1416,7 +1416,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, long defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1432,7 +1432,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, long[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1448,7 +1448,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, Map<?, ?> defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1472,7 +1472,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, Number defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1488,7 +1488,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, Number[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1504,7 +1504,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, short defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1520,7 +1520,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, short[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1536,7 +1536,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, String defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
@@ -1552,7 +1552,7 @@ public class ExpandoValueLocalServiceImpl
 			String columnName, long classPK, String[] defaultData)
 		throws PortalException {
 
-		ExpandoValue value = expandoValueLocalService.getValue(
+		ExpandoValue value = expandoValueLocalService.fetchValue(
 			companyId, className, tableName, columnName, classPK);
 
 		if (value == null) {
