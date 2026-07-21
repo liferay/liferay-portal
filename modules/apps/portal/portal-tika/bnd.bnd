@@ -13,8 +13,6 @@ Import-Package:\
 	\
 	!org.junit,\
 	\
-	com.rometools.*,\
-	\
 	org.apache.commons.compress.*,\
 	org.apache.pdfbox.*,\
 	\
