@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceCache;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.template.BaseTemplateResourceCache;
 import com.liferay.portal.template.BaseTemplateResourceLoader;
@@ -169,19 +167,6 @@ public class VelocityManager extends BaseTemplateManager {
 		_templateContextHelper.removeAllHelperUtilities();
 	}
 
-	private String[] _filterRestrictedClasses(String[] restrictedClasses) {
-		if (JavaDetector.isJDK21()) {
-
-			// TODO Remove java.lang.Compiler from
-			// VelocityEngineConfiguration#restrictedClasses and this method
-			// once we fully upgrade to JDK 21
-
-			return ArrayUtil.remove(restrictedClasses, "java.lang.Compiler");
-		}
-
-		return restrictedClasses;
-	}
-
 	private String _getVelocimacroLibrary(Class<?> clazz) {
 		String contextName = ClassLoaderPool.getContextName(
 			clazz.getClassLoader());
@@ -223,8 +208,7 @@ public class VelocityManager extends BaseTemplateManager {
 			extendedProperties.setProperty(
 				RuntimeConstants.INTROSPECTOR_RESTRICT_CLASSES,
 				StringUtil.merge(
-					_filterRestrictedClasses(
-						_velocityEngineConfiguration.restrictedClasses())));
+					_velocityEngineConfiguration.restrictedClasses()));
 			extendedProperties.setProperty(
 				RuntimeConstants.INTROSPECTOR_RESTRICT_PACKAGES,
 				StringUtil.merge(

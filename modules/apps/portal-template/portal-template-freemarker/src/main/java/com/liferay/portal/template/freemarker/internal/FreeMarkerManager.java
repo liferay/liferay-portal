@@ -31,8 +31,6 @@ import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceCache;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -433,19 +431,6 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		}
 	}
 
-	private String[] _filterRestrictedClasses(String[] restrictedClasses) {
-		if (JavaDetector.isJDK21()) {
-
-			// TODO Remove java.lang.Compiler from
-			// FreeMarkerEngineConfiguration#restrictedClasses and this method
-			// once we fully upgrade to JDK 21
-
-			return ArrayUtil.remove(restrictedClasses, "java.lang.Compiler");
-		}
-
-		return restrictedClasses;
-	}
-
 	private String _getMacroLibrary() {
 		Set<String> macroLibraries = SetUtil.fromArray(
 			_freeMarkerEngineConfiguration.macroLibrary());
@@ -554,8 +539,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		_defaultBeansWrapper = new LiferayObjectWrapper();
 		_restrictedBeansWrapper = new RestrictedLiferayObjectWrapper(
 			_freeMarkerEngineConfiguration.allowedClasses(),
-			_filterRestrictedClasses(
-				_freeMarkerEngineConfiguration.restrictedClasses()),
+			_freeMarkerEngineConfiguration.restrictedClasses(),
 			_freeMarkerEngineConfiguration.restrictedMethods());
 
 		if (_isEnableDebuggerService()) {

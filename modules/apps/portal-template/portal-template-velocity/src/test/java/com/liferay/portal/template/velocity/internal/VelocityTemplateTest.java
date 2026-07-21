@@ -15,9 +15,7 @@ import com.liferay.portal.kernel.template.TemplateException;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceCache;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.template.ClassLoaderResourceParser;
@@ -111,9 +109,7 @@ public class VelocityTemplateTest {
 
 		extendedProperties.setProperty(
 			RuntimeConstants.INTROSPECTOR_RESTRICT_CLASSES,
-			StringUtil.merge(
-				_filterRestrictedClasses(
-					velocityEngineConfiguration.restrictedClasses())));
+			StringUtil.merge(velocityEngineConfiguration.restrictedClasses()));
 		extendedProperties.setProperty(
 			RuntimeConstants.INTROSPECTOR_RESTRICT_PACKAGES,
 			StringUtil.merge(velocityEngineConfiguration.restrictedPackages()));
@@ -367,19 +363,6 @@ public class VelocityTemplateTest {
 		String result = unsyncStringWriter.toString();
 
 		Assert.assertEquals(_TEST_VALUE, result);
-	}
-
-	private String[] _filterRestrictedClasses(String[] restrictedClasses) {
-		if (JavaDetector.isJDK21()) {
-
-			// TODO: remove java.lang.Compiler from
-			// VelocityEngineConfiguration.restrictedClasses() and this method
-			// once fully upgraded to JDK21
-
-			return ArrayUtil.remove(restrictedClasses, "java.lang.Compiler");
-		}
-
-		return restrictedClasses;
 	}
 
 	private static final String _TEMPLATE_FILE_NAME = "test.vm";
