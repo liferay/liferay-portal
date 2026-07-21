@@ -293,6 +293,10 @@ public class JournalArticleModelDocumentContributor
 
 		Value value = ddmFormFieldValue.getValue();
 
+		if (value == null) {
+			return StringPool.BLANK;
+		}
+
 		return value.getString(locale);
 	}
 
