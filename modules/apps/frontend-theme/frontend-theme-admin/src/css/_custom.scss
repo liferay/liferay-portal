@@ -24,6 +24,26 @@ html:root {
 	}
 }
 
+// Interim Dark Mode fix: the legacy empty-state illustrations are grayscale
+// assets drawn for light backgrounds. Invert and re-hue them so they blend into
+// dark backgrounds until native dark variants exist. This lives in the admin
+// theme so it never reaches site pages, which do not support Dark Mode. Scoped
+// to the explicit color scheme, not a prefers-color-scheme media query, so it
+// respects the color scheme toggle.
+
+[data-color-scheme='dark'] .taglib-empty-result-message,
+[data-color-scheme='dark-high-contrast'] .taglib-empty-result-message {
+	.taglib-empty-result-message-header,
+	.taglib-empty-result-message-header-has-plus-btn,
+	.taglib-empty-search-result-message-header,
+	.taglib-empty-state,
+	.taglib-search-state,
+	.taglib-success-state {
+		filter: invert(0.8) sepia(0.8) hue-rotate(198deg) saturate(1)
+			brightness(0.52);
+	}
+}
+
 #wrapper {
 	padding: 0;
 
