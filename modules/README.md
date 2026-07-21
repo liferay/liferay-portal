@@ -3,19 +3,6 @@
 This document explains how to use Liferay's build system and its recommended
 best practices.
 
-## Build System
-
-### Build with Java 8
-
-The default value for source/target compatibility is still Java 7. This is to
-limit the use of new features only when necessary. In order to use Java 8
-features, add these lines in your `build.gradle` file:
-
-```gradle
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-```
-
 ### Enable Java Compiler Warnings
 
 In order to enable Java [compiler warnings](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ)

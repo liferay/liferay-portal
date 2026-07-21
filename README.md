@@ -22,7 +22,7 @@ If you previously ran Liferay Portal CE, the recommended upgrade path is [Lifera
 
 Install these tools before building:
 
-* JDK 17 (or JDK 21)
+* JDK 21
 * [Apache Ant](https://ant.apache.org) 1.10.14 or higher
 * [Git](https://git-scm.com)
 * [Liferay Blade CLI](https://learn.liferay.com/w/dxp/development/tooling/blade-cli) (only needed if you plan to build client extensions or OSGi modules)
