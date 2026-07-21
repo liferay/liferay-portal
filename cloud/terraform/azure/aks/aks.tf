@@ -10,7 +10,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 	azure_policy_enabled=true
 	dns_prefix=var.deployment_name
 	image_cleaner_enabled=true
-	local_account_disabled=true
+	local_account_disabled=false
 	location=var.region
 	name=local.cluster_name
 	node_os_upgrade_channel="NodeImage"
@@ -20,9 +20,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 	sku_tier="Standard"
 	tags=local.tags
 	workload_identity_enabled=true
-	azure_active_directory_role_based_access_control {
-		azure_rbac_enabled=true
-	}
 	default_node_pool {
 		auto_scaling_enabled=true
 		max_count=var.max_node_count
