@@ -10,11 +10,12 @@
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
 <%
-ViewPromptsDisplayContext viewPromptsDisplayContext = new ViewPromptsDisplayContext(request);
+ViewPromptsDisplayContext viewPromptsDisplayContext = new ViewPromptsDisplayContext(request, liferayPortletResponse);
 %>
 
 <frontend-data-set:headless-display
 	apiURL="<%= viewPromptsDisplayContext.getAPIURL() %>"
+	creationMenu="<%= viewPromptsDisplayContext.getCreationMenu() %>"
 	fdsActionDropdownItems="<%= viewPromptsDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= viewPromptsDisplayContext.getFDSSortItemList() %>"
 	id="<%= viewPromptsDisplayContext.getFDSName() %>"

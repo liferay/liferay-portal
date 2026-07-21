@@ -33,7 +33,11 @@ public class PromptsTableFDSView extends BaseTableFDSView {
 
 		return fdsTableSchemaBuilder.add(
 			"name", "name",
-			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"actionLink"
+			).setSortable(
+				true
+			)
 		).add(
 			"description", "description",
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)

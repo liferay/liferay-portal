@@ -9,8 +9,12 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -21,16 +25,45 @@ import java.util.List;
  */
 public class ViewPromptsDisplayContext {
 
-	public ViewPromptsDisplayContext(HttpServletRequest httpServletRequest) {
+	public ViewPromptsDisplayContext(
+		HttpServletRequest httpServletRequest,
+		LiferayPortletResponse liferayPortletResponse) {
+
 		_httpServletRequest = httpServletRequest;
+		_liferayPortletResponse = liferayPortletResponse;
 	}
 
 	public String getAPIURL() {
 		return "/o/mcp/server-prompts";
 	}
 
+	public CreationMenu getCreationMenu() {
+		return CreationMenuBuilder.addPrimaryDropdownItem(
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/mcp_server/edit_prompt"
+					).buildString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "new-prompt"));
+			}
+		).build();
+	}
+
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		return List.of(
+			new FDSActionDropdownItem(
+				PortletURLBuilder.createRenderURL(
+					_liferayPortletResponse
+				).setMVCRenderCommandName(
+					"/mcp_server/edit_prompt"
+				).setParameter(
+					"promptId", "{id}"
+				).buildString(),
+				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
+				"get", null, null),
 			new FDSActionDropdownItem(
 				"#", "copy", "duplicate",
 				LanguageUtil.get(_httpServletRequest, "duplicate"), "get", null,
@@ -66,5 +99,6 @@ public class ViewPromptsDisplayContext {
 	}
 
 	private final HttpServletRequest _httpServletRequest;
+	private final LiferayPortletResponse _liferayPortletResponse;
 
 }
