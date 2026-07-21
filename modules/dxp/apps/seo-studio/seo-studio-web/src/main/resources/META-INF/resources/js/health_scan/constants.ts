@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
+
 import {EngineKey, HealthScanConfig, ScheduleConfig} from './types';
 
 interface EngineDescriptor {
@@ -82,6 +84,18 @@ export const RANKING_METHOD_OPTIONS: SelectOption[] = [
 	},
 ];
 
+export const MAX_CRAWL_DEPTH_OPTIONS: number[] = [1, 2, 4, 8, 16, 24];
+
+export const MAX_DURATION_OPTIONS: SelectOption[] = [1, 6, 12, 24, 48].map(
+	(hours) => ({
+		label:
+			hours === 1
+				? sub(Liferay.Language.get('x-hour'), String(hours))
+				: sub(Liferay.Language.get('x-hours'), String(hours)),
+		value: String(hours * 3600),
+	})
+);
+
 export const MAX_PAGES_OPTIONS: number[] = [100, 500, 1000];
 
 export function getDefaultConfig(defaultTimeZoneId: string): HealthScanConfig {
@@ -97,6 +111,9 @@ export function getDefaultConfig(defaultTimeZoneId: string): HealthScanConfig {
 			scope: 'allPublishedPages',
 		};
 	}
+
+	engines.crawler.maxCrawlDepth = 2;
+	engines.crawler.maxDuration = 86400;
 
 	return {
 		engines,

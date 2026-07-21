@@ -21,6 +21,8 @@ export interface EngineConfig {
 	enabled: boolean;
 	excludedPaths: string;
 	includedPaths: string;
+	maxCrawlDepth?: number;
+	maxDuration?: number;
 	maxPagesPerScan: number;
 	rankingMethod: RankingMethod;
 	scope: ScanScope;

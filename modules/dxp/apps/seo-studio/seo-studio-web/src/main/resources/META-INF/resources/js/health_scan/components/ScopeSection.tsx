@@ -29,6 +29,7 @@ export default function ScopeSection({engines, onChange}: Props) {
 					{ENGINE_DESCRIPTORS.map(({key, label}) => (
 						<EngineSection
 							config={engines[key]}
+							engineKey={key}
 							idPrefix={`seo-studio-${key}`}
 							key={key}
 							label={label}

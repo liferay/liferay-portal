@@ -182,6 +182,55 @@ describe('HealthScanConfiguration', () => {
 		});
 	});
 
+	describe('crawler configuration', () => {
+		it('shows the Max Crawl Depth and Max Duration selects for the crawler engine', () => {
+			renderConfiguration();
+
+			toggleCrawler();
+
+			expect(screen.getByLabelText('max-crawl-depth')).toHaveValue('2');
+			expect(screen.getByLabelText('max-duration')).toHaveValue('86400');
+		});
+
+		it('hides the Max Crawl Depth and Max Duration selects for other engines', () => {
+			renderConfiguration();
+
+			fireEvent.click(screen.getByLabelText('ai-generated-insights'));
+
+			expect(
+				screen.queryByLabelText('max-crawl-depth')
+			).not.toBeInTheDocument();
+			expect(
+				screen.queryByLabelText('max-duration')
+			).not.toBeInTheDocument();
+		});
+
+		it('persists the crawler depth and duration on Save', async () => {
+			const fetchMock = Liferay.Util.fetch as jest.Mock;
+
+			renderConfiguration({domainId: 42});
+
+			toggleCrawler();
+
+			fireEvent.change(screen.getByLabelText('max-crawl-depth'), {
+				target: {value: '8'},
+			});
+			fireEvent.change(screen.getByLabelText('max-duration'), {
+				target: {value: '3600'},
+			});
+			fireEvent.click(getSaveButton());
+
+			await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+
+			const scanConfig = JSON.parse(
+				JSON.parse(fetchMock.mock.calls[0][1].body).scanConfig
+			);
+
+			expect(scanConfig.engines.crawler.maxCrawlDepth).toBe(8);
+			expect(scanConfig.engines.crawler.maxDuration).toBe(3600);
+		});
+	});
+
 	describe('path validation', () => {
 		function selectIncludedPathsOnly() {
 			renderConfiguration();

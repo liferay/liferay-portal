@@ -10,15 +10,18 @@ import React from 'react';
 
 import RequiredMark from '../../components/RequiredMark';
 import {
+	MAX_CRAWL_DEPTH_OPTIONS,
+	MAX_DURATION_OPTIONS,
 	MAX_PAGES_OPTIONS,
 	RANKING_METHOD_OPTIONS,
 	SCOPE_OPTIONS,
 } from '../constants';
-import {EngineConfig, RankingMethod, ScanScope} from '../types';
+import {EngineConfig, EngineKey, RankingMethod, ScanScope} from '../types';
 import {getPathError} from '../validation';
 
 interface Props {
 	config: EngineConfig;
+	engineKey: EngineKey;
 	idPrefix: string;
 	label: string;
 	onChange: (config: EngineConfig) => void;
@@ -26,6 +29,7 @@ interface Props {
 
 export default function EngineSection({
 	config,
+	engineKey,
 	idPrefix,
 	label,
 	onChange,
@@ -172,6 +176,70 @@ export default function EngineSection({
 							</ClayForm.Group>
 						</div>
 					</div>
+
+					{engineKey === 'crawler' ? (
+						<div className="row">
+							<div className="col-12 col-md-6">
+								<ClayForm.Group>
+									<label
+										htmlFor={`${idPrefix}-max-crawl-depth`}
+									>
+										{Liferay.Language.get(
+											'max-crawl-depth'
+										)}
+									</label>
+
+									<ClaySelect
+										id={`${idPrefix}-max-crawl-depth`}
+										onChange={(event) =>
+											update({
+												maxCrawlDepth: Number(
+													event.target.value
+												),
+											})
+										}
+										value={String(config.maxCrawlDepth)}
+									>
+										{MAX_CRAWL_DEPTH_OPTIONS.map((max) => (
+											<ClaySelect.Option
+												key={max}
+												label={String(max)}
+												value={String(max)}
+											/>
+										))}
+									</ClaySelect>
+								</ClayForm.Group>
+							</div>
+
+							<div className="col-12 col-md-6">
+								<ClayForm.Group>
+									<label htmlFor={`${idPrefix}-max-duration`}>
+										{Liferay.Language.get('max-duration')}
+									</label>
+
+									<ClaySelect
+										id={`${idPrefix}-max-duration`}
+										onChange={(event) =>
+											update({
+												maxDuration: Number(
+													event.target.value
+												),
+											})
+										}
+										value={String(config.maxDuration)}
+									>
+										{MAX_DURATION_OPTIONS.map((option) => (
+											<ClaySelect.Option
+												key={option.value}
+												label={option.label}
+												value={option.value}
+											/>
+										))}
+									</ClaySelect>
+								</ClayForm.Group>
+							</div>
+						</div>
+					) : null}
 				</div>
 			) : null}
 		</ClayList.Item>
