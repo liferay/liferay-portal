@@ -91,6 +91,8 @@
 	-webkit-line-clamp: 2;
 	display: -webkit-box;
 	font-weight: 600;
+	height: 3em;
+	line-height: 1.5;
 	overflow: hidden;
 	overflow-wrap: break-word;
 }
