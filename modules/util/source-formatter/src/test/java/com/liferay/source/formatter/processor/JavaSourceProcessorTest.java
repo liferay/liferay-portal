@@ -247,6 +247,18 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testFetchContractCatch() throws Exception {
+		test(
+			"FetchContractCatch.testjava",
+			StringBundler.concat(
+				"Do not catch \"NoSuchUserNotificationEventException\" around ",
+				"the lookup \"userNotificationEventLocalService.getUser",
+				"NotificationEvent\" to signal a missing entity, call the ",
+				"null-tolerant fetch sibling and check for null instead"),
+			29);
+	}
+
+	@Test
 	public void testFormatAnnotations() throws Exception {
 		test("FormatAnnotations1.testjava");
 		test("FormatAnnotations2.testjava");
