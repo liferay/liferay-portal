@@ -130,6 +130,7 @@ public class CommerceChannelLocalServiceImpl
 		commerceChannel.setPriceDisplayType(
 			CommercePricingConstants.TAX_EXCLUDED_FROM_PRICE);
 		commerceChannel.setDiscountsTargetNetPrice(true);
+		commerceChannel.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		commerceChannel = commerceChannelPersistence.update(commerceChannel);
 
