@@ -556,7 +556,7 @@ public abstract class BaseDBProcess implements DBProcess {
 		Boolean autoCommit = _autoCommits.remove(connection);
 
 		if (autoCommit != null) {
-			if (_log.isWarnEnabled()) {
+			if (!autoCommit && _log.isWarnEnabled()) {
 				_log.warn(
 					"Closing a connection that still has an autoCommit " +
 						"override");
