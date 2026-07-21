@@ -1,6 +1,9 @@
 dependencies {
 	compileInclude group: "net.oauth.core", name: "oauth", version: "20100527"
+	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "jakarta.mail", name: "jakarta.mail-api", version: "2.1.3"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:digital-signature:digital-signature-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")

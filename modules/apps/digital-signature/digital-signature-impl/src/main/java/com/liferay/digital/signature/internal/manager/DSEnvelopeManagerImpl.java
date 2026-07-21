@@ -5,7 +5,10 @@
 
 package com.liferay.digital.signature.internal.manager;
 
+import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
+import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.digital.signature.internal.http.DSHttp;
+import com.liferay.digital.signature.mail.DSEnvelopeEmailNotificationSender;
 import com.liferay.digital.signature.manager.DSCustomFieldManager;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.model.DSCustomField;
@@ -18,9 +21,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -52,6 +57,8 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 		String dsEnvelopeSenderEmailAddress =
 			dsEnvelope.getSenderEmailAddress();
 
+		_setDSRecipients(companyId, groupId, dsEnvelope);
+
 		dsEnvelope = _toDSEnvelope(
 			_dsHttp.post(
 				companyId, groupId, "envelopes", dsEnvelope.toJSONObject()));
@@ -73,9 +80,13 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 				}
 			});
 
-		return getDSEnvelope(
+		dsEnvelope = getDSEnvelope(
 			companyId, groupId, dsEnvelope.getDSEnvelopeId(),
 			"custom_fields,recipients");
+
+		_sendDSRecipientEmails(companyId, groupId, dsEnvelope);
+
+		return dsEnvelope;
 	}
 
 	@Override
@@ -189,6 +200,7 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 			jsonObject.getJSONArray("signers"),
 			signerJSONObject -> new DSRecipient() {
 				{
+					dsClientUserId = signerJSONObject.getString("clientUserId");
 					dsRecipientId = signerJSONObject.getString("recipientId");
 					emailAddress = signerJSONObject.getString("email");
 					name = signerJSONObject.getString("name");
@@ -197,6 +209,32 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 				}
 			},
 			_log);
+	}
+
+	private void _sendDSRecipientEmails(
+		long companyId, long groupId, DSEnvelope dsEnvelope) {
+
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				companyId, groupId);
+
+		if (!digitalSignatureConfiguration.enabled() ||
+			!digitalSignatureConfiguration.enableEmbeddedView() ||
+			!Objects.equals(dsEnvelope.getStatus(), "sent")) {
+
+			return;
+		}
+
+		List<DSRecipient> dsRecipients = dsEnvelope.getDSRecipients();
+
+		for (DSRecipient dsRecipient : dsRecipients) {
+			if (Validator.isNotNull(dsRecipient.getDSClientUserId())) {
+				_dsEnvelopeEmailNotificationSender.sendNotification(
+					companyId, groupId, dsEnvelope.getDSEnvelopeId(),
+					dsRecipient, dsEnvelope.getEmailSubject(),
+					dsEnvelope.getEmailBlurb());
+			}
+		}
 	}
 
 	private void _setDSEnvelopeCustomField(
@@ -225,6 +263,32 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 		jsonArray.forEach(
 			element -> _setDSEnvelopeCustomField(
 				dsEnvelope, (JSONObject)element));
+	}
+
+	private void _setDSRecipients(
+		long companyId, long groupId, DSEnvelope dsEnvelope) {
+
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				companyId, groupId);
+
+		if (!digitalSignatureConfiguration.enabled() ||
+			!digitalSignatureConfiguration.enableEmbeddedView()) {
+
+			return;
+		}
+
+		List<DSRecipient> dsRecipients = dsEnvelope.getDSRecipients();
+
+		for (DSRecipient dsRecipient : dsRecipients) {
+			User user = _userLocalService.fetchUserByEmailAddress(
+				companyId, dsRecipient.getEmailAddress());
+
+			if (user != null) {
+				dsRecipient.setDSClientUserId(String.valueOf(user.getUserId()));
+				dsRecipient.setName(user.getFullName());
+			}
+		}
 	}
 
 	private DSEnvelope _toDSEnvelope(JSONObject jsonObject) {
@@ -285,6 +349,13 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 	private DSCustomFieldManager _dsCustomFieldManager;
 
 	@Reference
+	private DSEnvelopeEmailNotificationSender
+		_dsEnvelopeEmailNotificationSender;
+
+	@Reference
 	private DSHttp _dsHttp;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
