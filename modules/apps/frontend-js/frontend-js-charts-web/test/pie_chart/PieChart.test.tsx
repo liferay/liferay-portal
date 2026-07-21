@@ -344,7 +344,7 @@ describe('PieChart', () => {
 		);
 
 		expect(
-			container.querySelector('.chart-pie-center-label-value')
+			container.querySelector('.chart-pie-center-label-total')
 		).toHaveTextContent('1,500');
 	});
 

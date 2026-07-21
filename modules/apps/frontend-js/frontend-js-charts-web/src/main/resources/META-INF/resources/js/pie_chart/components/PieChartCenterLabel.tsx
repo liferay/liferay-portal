@@ -40,7 +40,7 @@ export default function PieChartCenterLabel({
 						{Liferay.Language.get('total')}
 					</span>
 
-					<span className="chart-pie-center-label-value">
+					<span className="chart-pie-center-label-total">
 						{total.toLocaleString()}
 					</span>
 				</>
