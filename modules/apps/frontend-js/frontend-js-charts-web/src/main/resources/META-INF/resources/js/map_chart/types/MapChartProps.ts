@@ -10,6 +10,13 @@ export interface MapChartProps {
 	data: MapDatum[];
 	fit?: 'data' | 'world';
 	legend?: 'list' | 'none' | 'scale' | 'table';
+
+	/**
+	 * Draw the 1px border around each legend color swatch (list and table).
+	 * Default `true`. Set `false` for borderless swatches.
+	 */
+	legendSwatchBorder?: boolean;
+
 	scheme?: 'blue' | 'categorical';
 	steps?: number;
 	title: string;

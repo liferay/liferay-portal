@@ -39,6 +39,7 @@ export default function MapChart({
 	data,
 	fit = 'world',
 	legend = 'none',
+	legendSwatchBorder = true,
 	scheme = 'blue',
 	steps = 5,
 	title,
@@ -140,7 +141,13 @@ export default function MapChart({
 		<figure
 			aria-describedby={summaryId}
 			aria-labelledby={titleId}
-			className={classNames('chart-map', className)}
+			className={classNames(
+				'chart-map',
+				{
+					'chart-map-no-swatch-border': !legendSwatchBorder,
+				},
+				className
+			)}
 		>
 			<figcaption className="chart-map-caption" id={titleId}>
 				{title}

@@ -163,6 +163,19 @@
 	}
 }
 
+// `legendSwatchBorder={false}`: drop the swatch outline (list + table).
+// `transparent` keeps the 12x12 box so nothing shifts. The active variants
+// out-specify the rules that would otherwise re-add a white edge on
+// hover/focus.
+
+.chart-map-no-swatch-border {
+	.charts-legend__swatch,
+	.charts-legend__item.is-active .charts-legend__swatch,
+	.charts-legend-table__row.is-active .charts-legend__swatch {
+		border-color: transparent;
+	}
+}
+
 body.c-prefers-reduced-motion {
 	.chart-map-marker,
 	.chart-map-land.is-data {
