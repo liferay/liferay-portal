@@ -1,7 +1,0 @@
-Bundle-Name: Liferay AI Hub REST Test
-Bundle-SymbolicName: com.liferay.ai.hub.rest.test
-Bundle-Version: 1.0.0
--includeresource:\
-	com.liferay.ai.hub.rest.client.jar=com.liferay.ai.hub.rest.client-*.jar;lib:=true,\
-	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar

@@ -1,7 +1,0 @@
-Bundle-Name: Liferay AI Hub Site Initializer
-Bundle-SymbolicName: com.liferay.ai.hub.site.initializer
-Bundle-Version: 1.0.6
-Liferay-Site-Initializer-Feature-Flag: LPD-62272
-Liferay-Site-Initializer-Name: AI Hub
-Provide-Capability: liferay.site.initializer
-Web-ContextPath: /site-initializer-ai-hub

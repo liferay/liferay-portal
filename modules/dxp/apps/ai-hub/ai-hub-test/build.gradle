@@ -1,9 +1,0 @@
-dependencies {
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
-	testIntegrationImplementation project(":apps:account:account-api")
-	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
-	testIntegrationImplementation project(":apps:object:object-api")
-	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
-	testIntegrationImplementation project(":apps:site:site-api")
-	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
-}

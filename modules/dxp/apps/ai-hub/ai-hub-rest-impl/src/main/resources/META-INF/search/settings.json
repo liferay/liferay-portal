@@ -1,4 +1,0 @@
-{
-	"index.auto_expand_replicas": "0-all",
-	"index.number_of_shards": 1
-}
