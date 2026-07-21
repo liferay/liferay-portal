@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -93,6 +94,7 @@ public class CPOptionCategoryLocalServiceImpl
 		cpOptionCategory.setDescriptionMap(descriptionMap);
 		cpOptionCategory.setPriority(priority);
 		cpOptionCategory.setKey(key);
+		cpOptionCategory.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		cpOptionCategory = cpOptionCategoryPersistence.update(cpOptionCategory);
 
