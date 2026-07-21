@@ -95,4 +95,19 @@ describe('ActivityStreamCard', () => {
 
 		expect(container.querySelector('.trend-summary')).toBeNull();
 	});
+
+	it('renders the no-results content when there are events but no sessions', () => {
+		const {container, getByText} = renderCard({
+			sessionsMappedResults: {
+				empty: false,
+				error: null,
+				items: [],
+				loading: false,
+				total: 6,
+			},
+		});
+
+		expect(getByText('No sessions here')).toBeInTheDocument();
+		expect(container.querySelector('.pagination-bar-root')).toBeNull();
+	});
 });
