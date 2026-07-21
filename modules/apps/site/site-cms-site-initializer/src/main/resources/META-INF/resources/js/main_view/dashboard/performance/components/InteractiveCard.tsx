@@ -83,11 +83,7 @@ export default function InteractiveCard({
 			<div className="mt-2 position-relative">
 				<div className="cms-dashboard__interactive-card__metric d-flex flex-column justify-content-center">
 					{loading ? (
-						<ClayLoadingIndicator
-							displayType="secondary"
-							shape="squares"
-							size="sm"
-						/>
+						<ClayLoadingIndicator size="sm" />
 					) : (
 						trend && (
 							<MetricValue
