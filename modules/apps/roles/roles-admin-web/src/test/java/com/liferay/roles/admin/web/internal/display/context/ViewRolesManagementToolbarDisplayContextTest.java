@@ -44,30 +44,22 @@ public class ViewRolesManagementToolbarDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_httpServletRequest = Mockito.mock(HttpServletRequest.class);
-
-		_roleTypeContributor = Mockito.mock(RoleTypeContributor.class);
-
-		Mockito.when(
-			_roleTypeContributor.getType()
-		).thenReturn(
-			RoleConstants.TYPE_DEPOT
-		);
-
-		_renderRequest = Mockito.mock(RenderRequest.class);
-
 		Mockito.when(
 			_renderRequest.getAttribute(RolesAdminWebKeys.CURRENT_ROLE_TYPE)
 		).thenReturn(
 			_roleTypeContributor
 		);
 
-		_renderResponse = Mockito.mock(RenderResponse.class);
-
 		Mockito.when(
 			_renderResponse.createRenderURL()
 		).thenReturn(
 			Mockito.mock(PortletURL.class)
+		);
+
+		Mockito.when(
+			_roleTypeContributor.getType()
+		).thenReturn(
+			RoleConstants.TYPE_DEPOT
 		);
 	}
 
@@ -228,9 +220,11 @@ public class ViewRolesManagementToolbarDisplayContextTest {
 		return (List<DropdownItem>)dropdownItem.get("items");
 	}
 
-	private HttpServletRequest _httpServletRequest;
-	private RenderRequest _renderRequest;
-	private RenderResponse _renderResponse;
-	private RoleTypeContributor _roleTypeContributor;
+	private HttpServletRequest _httpServletRequest = Mockito.mock(
+		HttpServletRequest.class);
+	private RenderRequest _renderRequest = Mockito.mock(RenderRequest.class);
+	private RenderResponse _renderResponse = Mockito.mock(RenderResponse.class);
+	private RoleTypeContributor _roleTypeContributor = Mockito.mock(
+		RoleTypeContributor.class);
 
 }
