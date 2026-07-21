@@ -10,6 +10,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
@@ -31,8 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +44,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * @author Luis Ortiz
@@ -81,6 +87,35 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		DBInspector dbInspector = new DBInspector(connection);
 		Map<String, Boolean> definedClasses = new HashMap<>();
 		Set<String> models = new HashSet<>(ModelHintsUtil.getModels());
+		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+			if (bundleWiring == null) {
+				continue;
+			}
+
+			for (BundleCapability bundleCapability :
+					bundleWiring.getCapabilities(
+						BundleRevision.PACKAGE_NAMESPACE)) {
+
+				Map<String, Object> attributes =
+					bundleCapability.getAttributes();
+
+				Object packageName = attributes.get(
+					BundleRevision.PACKAGE_NAMESPACE);
+
+				if (packageName == null) {
+					continue;
+				}
+
+				List<Bundle> bundles = packageNameBundlesMap.computeIfAbsent(
+					packageName.toString(), key -> new ArrayList<>());
+
+				bundles.add(bundle);
+			}
+		}
 
 		List<String> tableNames = new ArrayList<>();
 
@@ -162,7 +197,25 @@ public class ClassNamePostUpgradeDataCleanupProcess
 				if (defined == null) {
 					defined = false;
 
-					for (Bundle bundle : bundleContext.getBundles()) {
+					Set<Bundle> candidateBundles = new LinkedHashSet<>();
+
+					int packageIndex = currentValue.lastIndexOf(
+						CharPool.PERIOD);
+
+					if (packageIndex != -1) {
+						List<Bundle> exportingBundles =
+							packageNameBundlesMap.get(
+								currentValue.substring(0, packageIndex));
+
+						if (exportingBundles != null) {
+							candidateBundles.addAll(exportingBundles);
+						}
+					}
+
+					Collections.addAll(
+						candidateBundles, bundleContext.getBundles());
+
+					for (Bundle bundle : candidateBundles) {
 						try {
 							bundle.loadClass(currentValue);
 
