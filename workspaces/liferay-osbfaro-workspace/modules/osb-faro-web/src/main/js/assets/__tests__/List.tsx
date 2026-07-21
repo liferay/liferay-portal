@@ -371,6 +371,36 @@ describe('List', () => {
 		});
 	});
 
+	describe('range selector params', () => {
+		const getMimeTypeFilterApiURL = () =>
+			JSON.parse(screen.getByTestId('fds-filters').textContent).find(
+				(filter: {id: string}) => filter.id === 'mimeType'
+			).apiURL;
+
+		it('should omit the range key and send the range bounds for a custom range', () => {
+			renderList({
+				queryString:
+					'?rangeKey=CUSTOM&rangeStart=2024-01-01&rangeEnd=2024-03-01',
+			});
+
+			const apiURL = getMimeTypeFilterApiURL();
+
+			expect(apiURL).not.toContain('rangeKey=CUSTOM');
+            expect(apiURL).toContain('rangeEnd=2024-03-01');
+            expect(apiURL).toContain('rangeStart=2024-01-01');
+		});
+
+		it('should send the range key for a preset range', () => {
+			renderList({queryString: '?rangeKey=7'});
+
+			const apiURL = getMimeTypeFilterApiURL();
+
+			expect(apiURL).toContain('rangeKey=7');
+			expect(apiURL).not.toContain('rangeEnd=');
+			expect(apiURL).not.toContain('rangeStart=');
+		});
+	});
+
 	describe('account filter', () => {
 		const getFilters = () =>
 			JSON.parse(screen.getByTestId('fds-filters').textContent);
