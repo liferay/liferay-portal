@@ -100,8 +100,17 @@ exports[`VerticalTimeline should render with a header and initialExpanded 1`] = 
                   rel="noopener noreferrer"
                   target="_blank"
                 >
+                  <svg
+                    class="lexicon-icon lexicon-icon-shortcut"
+                    font-size="8"
+                    role="presentation"
+                  >
+                    <use
+                      href="#shortcut"
+                    />
+                  </svg>
                   <span
-                    class="text-truncate"
+                    class="text-truncate mb-1"
                     data-tooltip="false"
                     title=""
                   >
@@ -225,8 +234,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >
@@ -298,8 +316,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >
@@ -420,8 +447,17 @@ Firefox"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
+                  <svg
+                    class="lexicon-icon lexicon-icon-shortcut"
+                    font-size="8"
+                    role="presentation"
+                  >
+                    <use
+                      href="#shortcut"
+                    />
+                  </svg>
                   <span
-                    class="text-truncate"
+                    class="text-truncate mb-1"
                     data-tooltip="false"
                     title=""
                   >
@@ -543,8 +579,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >
@@ -616,8 +661,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >
@@ -706,8 +760,17 @@ Firefox"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
+                  <svg
+                    class="lexicon-icon lexicon-icon-shortcut"
+                    font-size="8"
+                    role="presentation"
+                  >
+                    <use
+                      href="#shortcut"
+                    />
+                  </svg>
                   <span
-                    class="text-truncate"
+                    class="text-truncate mb-1"
                     data-tooltip="false"
                     title=""
                   >
@@ -840,8 +903,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >
@@ -915,8 +987,17 @@ Firefox"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
+                          <svg
+                            class="lexicon-icon lexicon-icon-shortcut"
+                            font-size="8"
+                            role="presentation"
+                          >
+                            <use
+                              href="#shortcut"
+                            />
+                          </svg>
                           <span
-                            class="text-truncate"
+                            class="text-truncate mb-1"
                             data-tooltip="false"
                             title=""
                           >

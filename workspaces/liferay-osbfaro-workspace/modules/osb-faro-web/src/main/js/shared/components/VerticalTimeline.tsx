@@ -388,7 +388,9 @@ const TimelinePanelBodyContentText: FC<{
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					<TextTruncate title={subtitle} />
+					<ClayIcon fontSize={8} symbol="shortcut" />
+
+					<TextTruncate className="mb-1" title={subtitle} />
 				</ClayLink>
 			)}
 		</div>

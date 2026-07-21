@@ -121,11 +121,13 @@
 		}
 
 		.subtitle {
-			display: inline-block;
+			align-items: center;
+			display: inline-flex;
 			max-width: 100%;
 
 			.text-truncate {
 				display: block;
+				min-width: 0;
 			}
 		}
 
