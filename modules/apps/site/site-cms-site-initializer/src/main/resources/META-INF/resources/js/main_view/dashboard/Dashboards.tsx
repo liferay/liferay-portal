@@ -31,13 +31,13 @@ type TabId = keyof typeof TABS;
 
 const ORDERED_TAB_IDS: TabId[] = ['governance', 'inventory', 'performance'];
 
-function isTabEnabled(tabId: TabId) {
+function isTabEnabled(tabId: TabId, cmsAdmin: boolean) {
 	if (tabId === 'governance') {
 		return Boolean(Liferay.FeatureFlags['LPD-82226']);
 	}
 
 	if (tabId === 'performance') {
-		return Boolean(Liferay.FeatureFlags['LPD-58315']);
+		return Boolean(Liferay.FeatureFlags['LPD-58315']) && cmsAdmin;
 	}
 
 	return true;
@@ -47,6 +47,7 @@ function Wrapper({
 	additionalProps,
 	admin,
 	analyticsEnabled,
+	cmsAdmin,
 	constants,
 	freeTier,
 	learnResources,
@@ -54,6 +55,7 @@ function Wrapper({
 	additionalProps: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
+	cmsAdmin: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
@@ -71,6 +73,7 @@ function Wrapper({
 					additionalProps={additionalProps}
 					admin={admin}
 					analyticsEnabled={analyticsEnabled}
+					cmsAdmin={cmsAdmin}
 					constants={constants}
 					freeTier={freeTier}
 					learnResources={learnResources}
@@ -84,6 +87,7 @@ function Dashboards({
 	additionalProps,
 	admin,
 	analyticsEnabled,
+	cmsAdmin,
 	constants,
 	freeTier,
 	learnResources,
@@ -91,13 +95,16 @@ function Dashboards({
 	additionalProps: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
+	cmsAdmin: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
 }) {
-	const [tabId, setTabId] = useState<TabId>(
-		ORDERED_TAB_IDS.find(isTabEnabled) ?? 'inventory'
+	const enabledTabIds = ORDERED_TAB_IDS.filter((id) =>
+		isTabEnabled(id, cmsAdmin)
 	);
+
+	const [tabId, setTabId] = useState<TabId>(enabledTabIds[0] ?? 'inventory');
 
 	if (freeTier) {
 		return (
@@ -107,10 +114,7 @@ function Dashboards({
 		);
 	}
 
-	if (
-		!Liferay.FeatureFlags['LPD-58315'] &&
-		!Liferay.FeatureFlags['LPD-82226']
-	) {
+	if (enabledTabIds.length === 1) {
 		return (
 			<ClayLayout.Container className="px-4" fluid>
 				<InventoryDashboard constants={constants} />
@@ -120,7 +124,11 @@ function Dashboards({
 
 	return (
 		<>
-			<Tabs setTabId={setTabId} tabId={tabId} />
+			<Tabs
+				enabledTabIds={enabledTabIds}
+				setTabId={setTabId}
+				tabId={tabId}
+			/>
 
 			<ClayLayout.Container className="px-4" fluid>
 				{tabId === 'governance' ? <GovernanceDashboard /> : null}
@@ -143,9 +151,11 @@ function Dashboards({
 }
 
 function Tabs({
+	enabledTabIds,
 	setTabId,
 	tabId,
 }: {
+	enabledTabIds: TabId[];
 	setTabId: (id: TabId) => void;
 	tabId: TabId;
 }) {
@@ -155,7 +165,7 @@ function Tabs({
 			fluidSize={false}
 			triggerLabel={TABS[tabId]}
 		>
-			{ORDERED_TAB_IDS.filter(isTabEnabled).map((id) => (
+			{enabledTabIds.map((id) => (
 				<ClayNavigationBar.Item active={id === tabId} key={id}>
 					<ClayButton
 						className="nav-link"
