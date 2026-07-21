@@ -47,11 +47,6 @@ public class EmailUtil {
 			"/o/osb-faro-web/images/email/liferay_logo.png");
 	}
 
-	public static String getLogoIconURL() {
-		return FaroPropsValues.FARO_URL.concat(
-			"/o/osb-faro-web/images/email/ac_chart.png");
-	}
-
 	public static String getProductName(FaroProject faroProject) {
 		if (faroProject.isDataPlatform()) {
 			return "Liferay Data Platform";
@@ -79,11 +74,6 @@ public class EmailUtil {
 	public static String getShareIconURL() {
 		return FaroPropsValues.FARO_URL.concat(
 			"/o/osb-faro-web/images/email/icon_share.png");
-	}
-
-	public static String getTitleIconURL() {
-		return FaroPropsValues.FARO_URL.concat(
-			"/o/osb-faro-web/images/email/ac_title.png");
 	}
 
 	public static String getTrendIconURL(String trend) {
@@ -115,17 +105,6 @@ public class EmailUtil {
 			sb.append(StringPool.SLASH);
 			sb.append(group.getGroupId());
 		}
-
-		return sb.toString();
-	}
-
-	public static String getWorkspaceURL(String channelId, Group group) {
-		StringBuilder sb = new StringBuilder(4);
-
-		sb.append(getWorkspaceURL(group));
-		sb.append(StringPool.SLASH);
-		sb.append(channelId);
-		sb.append("/sites");
 
 		return sb.toString();
 	}
