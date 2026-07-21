@@ -151,7 +151,7 @@ public class OrderRuleAccountGroupResourceImpl
 		}
 		else {
 			accountGroup =
-				_accountGroupService.fetchAccountGroupByExternalReferenceCode(
+				_accountGroupService.getAccountGroupByExternalReferenceCode(
 					orderRuleAccountGroup.
 						getAccountGroupExternalReferenceCode(),
 					contextCompany.getCompanyId());
