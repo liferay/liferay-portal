@@ -1,0 +1,33 @@
+/* Fixed dropdown panel dimensions from the AI Assistant Chat Figma (LPD-92983) */
+
+@import 'atlas-custom-properties/_variables';
+
+.chat-container-dropdown-menu {
+	background-color: $white;
+	height: 552px;
+	max-height: none;
+	max-width: none;
+	overflow: hidden;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	position: absolute;
+	visibility: visible;
+	width: 448px;
+}
+
+.chat-container {
+	position: relative;
+
+	> .chat-panel {
+		bottom: 0;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	&.chat-container-dropdown {
+		height: 100%;
+		width: 100%;
+	}
+}

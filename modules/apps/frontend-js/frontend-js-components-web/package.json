@@ -19,6 +19,7 @@
 		"@clayui/multi-select": "^3.165.0",
 		"@clayui/panel": "^3.165.0",
 		"@clayui/popover": "^3.165.0",
+		"@clayui/shared": "^3.165.0",
 		"@clayui/sticker": "^3.165.0",
 		"@clayui/table": "^3.165.0",
 		"@clayui/tooltip": "^3.165.0",
