@@ -8,6 +8,8 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import GaugeChart from './GaugeChart';
 
+import './PageSpeedCharts.scss';
+
 const POLL_INTERVAL_MS = 4000;
 
 const SCANNER_RESULTS_API = '/o/seo-studio/pagespeed-results';
@@ -148,64 +150,68 @@ export default function PageSpeedCharts({initialResult}: Props) {
 
 	if (!result) {
 		return (
-			<div className="pagespeed-charts">
-				<div className="pagespeed-charts-header">
-					<h2 className="pagespeed-charts-title">
-						{Liferay.Language.get('google-pagespeed-metrics')}
-					</h2>
-				</div>
+			<div className="p-3 p-md-4">
+				<div className="sheet">
+					<div className="pagespeed-charts-header">
+						<h2 className="pagespeed-charts-title">
+							{Liferay.Language.get('google-pagespeed-metrics')}
+						</h2>
+					</div>
 
-				<div className="pagespeed-charts-empty">
-					<h3 className="pagespeed-charts-empty-title">
-						{Liferay.Language.get('no-data-available-yet')}
-					</h3>
+					<div className="pagespeed-charts-empty">
+						<h3 className="pagespeed-charts-empty-title">
+							{Liferay.Language.get('no-data-available-yet')}
+						</h3>
 
-					<p className="pagespeed-charts-empty-description">
-						{Liferay.Language.get(
-							'there-is-no-data-available-for-the-applied-filters-or-from-the-data-source'
-						)}
-					</p>
+						<p className="pagespeed-charts-empty-description">
+							{Liferay.Language.get(
+								'no-data-is-available-yet.-results-will-appear-here-once-the-seo-health-scan-completes'
+							)}
+						</p>
+					</div>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="pagespeed-charts">
-			<div className="pagespeed-charts-header">
-				<div>
-					<h2 className="pagespeed-charts-title">
-						{Liferay.Language.get('google-pagespeed-metrics')}
-					</h2>
+		<div className="p-3 p-md-4">
+			<div className="sheet">
+				<div className="pagespeed-charts-header">
+					<div>
+						<h2 className="pagespeed-charts-title">
+							{Liferay.Language.get('google-pagespeed-metrics')}
+						</h2>
 
-					{result.dateCreated && (
-						<span className="pagespeed-charts-timestamp">
-							{formatDate(result.dateCreated)}
-						</span>
-					)}
+						{result.dateCreated && (
+							<span className="pagespeed-charts-timestamp">
+								{formatDate(result.dateCreated)}
+							</span>
+						)}
+					</div>
 				</div>
-			</div>
 
-			<div className="pagespeed-charts-results">
-				<GaugeChart
-					label={Liferay.Language.get('performance')}
-					score={result.performanceScore || 0}
-				/>
+				<div className="pagespeed-charts-results">
+					<GaugeChart
+						label={Liferay.Language.get('performance')}
+						score={result.performanceScore || 0}
+					/>
 
-				<GaugeChart
-					label={Liferay.Language.get('accessibility')}
-					score={result.accessibilityScore || 0}
-				/>
+					<GaugeChart
+						label={Liferay.Language.get('accessibility')}
+						score={result.accessibilityScore || 0}
+					/>
 
-				<GaugeChart
-					label={Liferay.Language.get('best-practices')}
-					score={result.bestPracticesScore || 0}
-				/>
+					<GaugeChart
+						label={Liferay.Language.get('best-practices')}
+						score={result.bestPracticesScore || 0}
+					/>
 
-				<GaugeChart
-					label={Liferay.Language.get('seo')}
-					score={result.seoScore || 0}
-				/>
+					<GaugeChart
+						label={Liferay.Language.get('seo')}
+						score={result.seoScore || 0}
+					/>
+				</div>
 			</div>
 		</div>
 	);
