@@ -32,5 +32,6 @@
 		</field>
 		<field name="active" type="boolean" />
 		<field name="lastPublishDate" type="Date" />
+		<field name="status" type="int" />
 	</model>
 </model-hints>

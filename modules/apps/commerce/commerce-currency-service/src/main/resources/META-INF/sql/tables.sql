@@ -19,5 +19,6 @@ create table CommerceCurrency (
 	primary_ BOOLEAN,
 	priority DOUBLE,
 	active_ BOOLEAN,
-	lastPublishDate DATE null
+	lastPublishDate DATE null,
+	status INTEGER
 );

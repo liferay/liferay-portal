@@ -81,10 +81,12 @@ public class CommerceCurrencyTable extends BaseTable<CommerceCurrencyTable> {
 		createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
+	public final Column<CommerceCurrencyTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceCurrencyTable() {
 		super("CommerceCurrency", CommerceCurrencyTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1225551505
+// LIFERAY-SERVICE-BUILDER-HASH:976757882

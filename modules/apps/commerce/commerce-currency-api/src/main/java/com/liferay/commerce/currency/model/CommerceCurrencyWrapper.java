@@ -57,6 +57,7 @@ public class CommerceCurrencyWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("active", isActive());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -190,6 +191,12 @@ public class CommerceCurrencyWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -520,6 +527,16 @@ public class CommerceCurrencyWrapper
 	@Override
 	public String getRoundingMode() {
 		return model.getRoundingMode();
+	}
+
+	/**
+	 * Returns the status of this commerce currency.
+	 *
+	 * @return the status of this commerce currency
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -915,6 +932,16 @@ public class CommerceCurrencyWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce currency.
+	 *
+	 * @param status the status of this commerce currency
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the symbol of this commerce currency.
 	 *
 	 * @param symbol the symbol of this commerce currency
@@ -980,4 +1007,4 @@ public class CommerceCurrencyWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-258871794
+// LIFERAY-SERVICE-BUILDER-HASH:-38534840

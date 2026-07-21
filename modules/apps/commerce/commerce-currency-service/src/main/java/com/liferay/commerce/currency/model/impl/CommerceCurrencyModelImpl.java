@@ -83,7 +83,8 @@ public class CommerceCurrencyModelImpl
 		{"formatPattern", Types.VARCHAR}, {"maxFractionDigits", Types.INTEGER},
 		{"minFractionDigits", Types.INTEGER}, {"roundingMode", Types.VARCHAR},
 		{"primary_", Types.BOOLEAN}, {"priority", Types.DOUBLE},
-		{"active_", Types.BOOLEAN}, {"lastPublishDate", Types.TIMESTAMP}
+		{"active_", Types.BOOLEAN}, {"lastPublishDate", Types.TIMESTAMP},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -111,10 +112,11 @@ public class CommerceCurrencyModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceCurrency (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceCurrencyId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,code_ VARCHAR(75) null,name STRING null,symbol VARCHAR(75) null,rate BIGDECIMAL null,formatPattern STRING null,maxFractionDigits INTEGER,minFractionDigits INTEGER,roundingMode VARCHAR(75) null,primary_ BOOLEAN,priority DOUBLE,active_ BOOLEAN,lastPublishDate DATE null)";
+		"create table CommerceCurrency (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceCurrencyId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,code_ VARCHAR(75) null,name STRING null,symbol VARCHAR(75) null,rate BIGDECIMAL null,formatPattern STRING null,maxFractionDigits INTEGER,minFractionDigits INTEGER,roundingMode VARCHAR(75) null,primary_ BOOLEAN,priority DOUBLE,active_ BOOLEAN,lastPublishDate DATE null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceCurrency";
 
@@ -321,6 +323,7 @@ public class CommerceCurrencyModelImpl
 			attributeGetterFunctions.put("active", CommerceCurrency::getActive);
 			attributeGetterFunctions.put(
 				"lastPublishDate", CommerceCurrency::getLastPublishDate);
+			attributeGetterFunctions.put("status", CommerceCurrency::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -423,6 +426,10 @@ public class CommerceCurrencyModelImpl
 				"lastPublishDate",
 				(BiConsumer<CommerceCurrency, Date>)
 					CommerceCurrency::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceCurrency, Integer>)
+					CommerceCurrency::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -1055,6 +1062,21 @@ public class CommerceCurrencyModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1227,6 +1249,7 @@ public class CommerceCurrencyModelImpl
 		commerceCurrencyImpl.setPriority(getPriority());
 		commerceCurrencyImpl.setActive(isActive());
 		commerceCurrencyImpl.setLastPublishDate(getLastPublishDate());
+		commerceCurrencyImpl.setStatus(getStatus());
 
 		commerceCurrencyImpl.resetOriginalValues();
 
@@ -1279,6 +1302,8 @@ public class CommerceCurrencyModelImpl
 			this.<Boolean>getColumnOriginalValue("active_"));
 		commerceCurrencyImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		commerceCurrencyImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceCurrencyImpl;
 	}
@@ -1479,6 +1504,8 @@ public class CommerceCurrencyModelImpl
 			commerceCurrencyCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		commerceCurrencyCacheModel.status = getStatus();
+
 		return commerceCurrencyCacheModel;
 	}
 
@@ -1565,6 +1592,7 @@ public class CommerceCurrencyModelImpl
 	private double _priority;
 	private boolean _active;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1618,6 +1646,7 @@ public class CommerceCurrencyModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1686,6 +1715,8 @@ public class CommerceCurrencyModelImpl
 
 		columnBitmasks.put("lastPublishDate", 1048576L);
 
+		columnBitmasks.put("status", 2097152L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1693,4 +1724,4 @@ public class CommerceCurrencyModelImpl
 	private CommerceCurrency _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1172451972
+// LIFERAY-SERVICE-BUILDER-HASH:-552281070

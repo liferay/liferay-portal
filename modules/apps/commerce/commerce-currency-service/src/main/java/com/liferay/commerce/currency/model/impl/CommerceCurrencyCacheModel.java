@@ -71,7 +71,7 @@ public class CommerceCurrencyCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -115,6 +115,8 @@ public class CommerceCurrencyCacheModel
 		sb.append(active);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -217,6 +219,8 @@ public class CommerceCurrencyCacheModel
 			commerceCurrencyImpl.setLastPublishDate(new Date(lastPublishDate));
 		}
 
+		commerceCurrencyImpl.setStatus(status);
+
 		commerceCurrencyImpl.resetOriginalValues();
 
 		return commerceCurrencyImpl;
@@ -255,6 +259,8 @@ public class CommerceCurrencyCacheModel
 
 		active = objectInput.readBoolean();
 		lastPublishDate = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -338,6 +344,8 @@ public class CommerceCurrencyCacheModel
 
 		objectOutput.writeBoolean(active);
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -361,6 +369,7 @@ public class CommerceCurrencyCacheModel
 	public double priority;
 	public boolean active;
 	public long lastPublishDate;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2018564782
+// LIFERAY-SERVICE-BUILDER-HASH:614832523

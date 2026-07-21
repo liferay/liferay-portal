@@ -576,6 +576,20 @@ public interface CommerceCurrencyModel
 	 */
 	public void setLastPublishDate(Date lastPublishDate);
 
+	/**
+	 * Returns the status of this commerce currency.
+	 *
+	 * @return the status of this commerce currency
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce currency.
+	 *
+	 * @param status the status of this commerce currency
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -597,4 +611,4 @@ public interface CommerceCurrencyModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1440566323
+// LIFERAY-SERVICE-BUILDER-HASH:-1556759394
