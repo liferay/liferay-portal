@@ -85,7 +85,7 @@ public class DepotRoleUtilTest {
 					_mockDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY),
 					Arrays.asList(role1, role2, role3, role4, role5)));
 			Assert.assertEquals(
-				Arrays.asList(role2, role4, role5),
+				List.of(role2),
 				DepotRoleUtil.filter(
 					_mockDepotEntry(DepotConstants.TYPE_PROJECT),
 					Arrays.asList(role1, role2, role3, role4, role5)));
@@ -147,7 +147,7 @@ public class DepotRoleUtilTest {
 					Arrays.asList(role1, role2, role3, role4, role5),
 					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY));
 			Assert.assertEquals(
-				Arrays.asList(role2, role4, role5),
+				List.of(role2),
 				DepotRoleUtil.filter(
 					Arrays.asList(role1, role2, role3, role4, role5),
 					DepotRolesConstants.SUBTYPE_PROJECT));

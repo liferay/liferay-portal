@@ -7,22 +7,26 @@ package com.liferay.site.cmp.site.initializer.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -84,20 +88,22 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			projectObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
 			ActionKeys.DELETE, ActionKeys.DELETE_DISCUSSION,
-			ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
-			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW);
+			ActionKeys.PERMISSIONS, ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
+			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 
 		_assertResourceActions(
-			projectObjectEntry, DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
-			ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
-			ActionKeys.UPDATE, ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW);
-		_assertResourceActions(
-			projectObjectEntry,
-			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+			projectObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 		_assertResourceActions(
-			projectObjectEntry, DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+			projectObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
+			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
+			ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
+			ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
+			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
+		_assertResourceActions(
+			projectObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 
 		ObjectEntry taskObjectEntry = CMPTestUtil.addTaskObjectEntry(
@@ -106,19 +112,22 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			taskObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
 			ActionKeys.DELETE, ActionKeys.DELETE_DISCUSSION,
-			ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
-			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW);
+			ActionKeys.PERMISSIONS, ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
+			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
+
 		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+			taskObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW);
+		_assertResourceActions(
+			taskObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
 			ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
-			ActionKeys.UPDATE, ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW);
+			ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
+			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
-			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
-			ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW);
-		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+			taskObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 	}
 
@@ -142,14 +151,10 @@ public class ObjectEntryModelListenerTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		_assertUserGroupRoles(
-			2,
-			List.of(
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER),
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
 			projectObjectEntry.getGroupId(), user1.getUserId());
 		_assertUserGroupRoles(
-			1,
-			Collections.singletonList(DepotRolesConstants.ASSET_LIBRARY_MEMBER),
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			projectObjectEntry.getGroupId(), user2.getUserId());
 	}
 
@@ -167,8 +172,15 @@ public class ObjectEntryModelListenerTest {
 				String.valueOf(objectEntry.getObjectEntryId()),
 				role.getRoleId());
 
-		for (String actionId : actionIds) {
-			Assert.assertTrue(resourcePermission.hasActionId(actionId));
+		for (ResourceAction resourceAction :
+				_resourceActionLocalService.getResourceActions(
+					objectEntry.getModelClassName())) {
+
+			String actionId = resourceAction.getActionId();
+
+			Assert.assertEquals(
+				ArrayUtil.contains(actionIds, actionId),
+				resourcePermission.hasActionId(actionId));
 		}
 	}
 
@@ -194,6 +206,9 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ResourceActionLocalService _resourceActionLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
