@@ -22,7 +22,7 @@ function hasValueInAnyLanguage(
 
 interface Props {
 	audiences: Array<{label: string; value: string}>;
-	editableElementOptions: EditableElementOption[];
+	editableElementOptions: EditableElementOption[] | null;
 	elementVariations: ElementVariation[];
 	onDeleteElementVariation: (elementVariation: ElementVariation) => void;
 	onEditElementVariation: (key: string) => void;
@@ -52,7 +52,7 @@ export default function ElementVariationsList({
 		{} as Record<string, ElementVariation[]>
 	);
 
-	if (!editableElementOptions.length) {
+	if (!editableElementOptions) {
 		return <ClayLoadingIndicator className="mt-3" />;
 	}
 

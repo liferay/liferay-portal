@@ -23,7 +23,7 @@ export interface ElementVariation {
 export interface State {
 	defaultLanguageId: string;
 	draftElementVariation: ElementVariation | null;
-	editableElementOptions: EditableElementOption[];
+	editableElementOptions: EditableElementOption[] | null;
 	elementVariations: ElementVariation[];
 	experienceKey: string;
 	highlightedTargetElement: string | null;
@@ -98,7 +98,7 @@ export function createInitialState({
 	return {
 		defaultLanguageId,
 		draftElementVariation: null,
-		editableElementOptions: [],
+		editableElementOptions: null,
 		elementVariations: elementVariations.map((elementVariation) => ({
 			...elementVariation,
 			hide: elementVariation.hide === 'true',

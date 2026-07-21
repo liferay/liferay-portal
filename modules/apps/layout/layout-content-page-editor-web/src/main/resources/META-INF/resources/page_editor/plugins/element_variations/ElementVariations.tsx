@@ -151,7 +151,9 @@ function ElementVariations({
 							audiences={audiences}
 							defaultLanguageId={defaultLanguageId}
 							dispatch={dispatch}
-							editableElementOptions={editableElementOptions}
+							editableElementOptions={
+								editableElementOptions ?? []
+							}
 							elementVariation={draftElementVariation}
 							elementVariations={experienceElementVariations}
 							key={draftElementVariation.key}
