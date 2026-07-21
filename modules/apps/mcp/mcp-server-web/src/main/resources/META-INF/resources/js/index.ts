@@ -5,3 +5,4 @@
 
 export {default as EditDataMask} from './data_masks/EditDataMask';
 export {default as DataMasksFDSPropsTransformer} from './props_transformer/DataMasksFDSPropsTransformer';
+export {default as PromptsFDSPropsTransformer} from './props_transformer/PromptsFDSPropsTransformer';

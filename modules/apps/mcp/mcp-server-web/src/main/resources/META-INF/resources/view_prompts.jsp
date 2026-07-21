@@ -15,7 +15,9 @@ ViewPromptsDisplayContext viewPromptsDisplayContext = new ViewPromptsDisplayCont
 
 <frontend-data-set:headless-display
 	apiURL="<%= viewPromptsDisplayContext.getAPIURL() %>"
+	fdsActionDropdownItems="<%= viewPromptsDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= viewPromptsDisplayContext.getFDSSortItemList() %>"
 	id="<%= viewPromptsDisplayContext.getFDSName() %>"
+	propsTransformer="{PromptsFDSPropsTransformer} from mcp-server-web"
 	style="fluid"
 />

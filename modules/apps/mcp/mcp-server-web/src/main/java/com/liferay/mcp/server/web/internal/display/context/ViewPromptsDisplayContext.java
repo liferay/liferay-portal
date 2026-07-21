@@ -5,6 +5,7 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
@@ -12,6 +13,8 @@ import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * @author Jorge González
@@ -24,6 +27,18 @@ public class ViewPromptsDisplayContext {
 
 	public String getAPIURL() {
 		return "/o/mcp/server-prompts";
+	}
+
+	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
+		return List.of(
+			new FDSActionDropdownItem(
+				"#", "copy", "duplicate",
+				LanguageUtil.get(_httpServletRequest, "duplicate"), "get", null,
+				null),
+			new FDSActionDropdownItem(
+				"#", "trash", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), "get", null,
+				null));
 	}
 
 	public String getFDSName() {

@@ -43,3 +43,23 @@ export type ActionContext = {
 	itemData: DataMask;
 	loadData: () => void;
 };
+
+export type Prompt = {
+	dateModified?: string;
+	description: string;
+	externalReferenceCode?: string;
+	id?: number;
+	name: string;
+	prompt: string;
+};
+
+export type PromptPayload = {
+	description: string;
+	name: string;
+	prompt: string;
+};
+
+export type PromptActionContext = {
+	itemData: Prompt;
+	loadData: () => void;
+};
