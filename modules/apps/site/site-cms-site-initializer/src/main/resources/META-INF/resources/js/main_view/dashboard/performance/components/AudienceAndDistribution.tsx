@@ -128,6 +128,8 @@ function Card({
 							value,
 						}))}
 						legend="table"
+						legendSwatchBorder={false}
+						legendTableDividers={false}
 						title=""
 					/>
 				) : (
@@ -137,6 +139,8 @@ function Card({
 							value,
 						}))}
 						legend="table"
+						legendSwatchBorder={false}
+						legendTableDividers={false}
 						title=""
 						variant="choropleth"
 					/>
