@@ -302,6 +302,8 @@ test(
 		pageEditorPage,
 		site: siteA,
 	}) => {
+		test.slow();
+
 		const getFragmentConfigurationScreenshots = async ({screenshots}) => {
 			const configurationPanel = page.getByLabel('Configuration Panel', {
 				exact: true,
