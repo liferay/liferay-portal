@@ -7,9 +7,11 @@ package com.liferay.commerce.product.internal.upgrade.v6_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.model.CPOption;
+import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPOptionLocalService;
+import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
@@ -107,6 +109,34 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeCPOptionValueStatus() throws Exception {
+		CPOptionValue cpOptionValue = CPTestUtil.addCPOptionValue(
+			CPTestUtil.addCPOption(TestPropsValues.getGroupId(), false));
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPOptionValue set status = ? where " +
+						"CPOptionValueId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(2, cpOptionValue.getCPOptionValueId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpOptionValue = _cpOptionValueLocalService.getCPOptionValue(
+			cpOptionValue.getCPOptionValueId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpOptionValue.getStatus());
+	}
+
+	@Test
 	public void testUpgradeCPTaxCategoryStatus() throws Exception {
 		CPTaxCategory cpTaxCategory =
 			_cpTaxCategoryLocalService.addCPTaxCategory(
@@ -155,6 +185,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CPOptionLocalService _cpOptionLocalService;
+
+	@Inject
+	private CPOptionValueLocalService _cpOptionValueLocalService;
 
 	@Inject
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
