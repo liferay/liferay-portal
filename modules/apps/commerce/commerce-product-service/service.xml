@@ -1228,6 +1228,7 @@
 		<column name="priority" type="double" />
 		<column name="type" type="int" />
 		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
