@@ -169,10 +169,12 @@ public class EmailReportHelper {
 
 		_mailService.sendEmail(
 			new MailMessage(
-				new InternetAddress("ac@liferay.com", "Analytics Cloud"),
+				new InternetAddress(
+					EmailUtil.getSenderEmailAddress(faroProject),
+					EmailUtil.getSenderName(faroProject)),
 				new InternetAddress(user.getEmailAddress(), user.getFullName()),
-				"Analytics Cloud: Your " + StringUtils.capitalize(frequency) +
-					" Report",
+				EmailUtil.getSenderName(faroProject) + ": Your " +
+					StringUtils.capitalize(frequency) + " Report",
 				body, true));
 	}
 
