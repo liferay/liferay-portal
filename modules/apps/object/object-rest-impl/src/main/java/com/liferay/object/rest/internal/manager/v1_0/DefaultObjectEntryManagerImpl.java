@@ -2640,6 +2640,29 @@ public class DefaultObjectEntryManagerImpl
 			actions = HashMapBuilder.create(
 				actions
 			).<String, Map<String, String>>put(
+				"addToLaunch",
+				() -> {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectEntry.getCompanyId(),
+							"LPD-17564") ||
+						!FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectEntry.getCompanyId(),
+							"LPD-72278") ||
+						!objectEntryVersion.isApproved()) {
+
+						return null;
+					}
+
+					return _addAction(
+						ActionKeys.UPDATE,
+						new String[] {
+							"getByExternalReferenceCodeByVersion",
+							"getScopeScopeKeyByExternalReferenceCodeByVersion"
+						},
+						objectDefinition, serviceBuilderObjectEntry,
+						templateParameterMap, dtoConverterContext.getUriInfo());
+				}
+			).put(
 				"copy",
 				() -> {
 					if (!FeatureFlagManagerUtil.isEnabled(
@@ -3534,6 +3557,25 @@ public class DefaultObjectEntryManagerImpl
 			actions = HashMapBuilder.create(
 				actions
 			).<String, Map<String, String>>put(
+				"addToLaunch",
+				() -> {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectEntry.getCompanyId(),
+							"LPD-17564") ||
+						!FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectEntry.getCompanyId(),
+							"LPD-72278") ||
+						!serviceBuilderObjectEntry.isDraft()) {
+
+						return null;
+					}
+
+					return _addAction(
+						ActionKeys.UPDATE, "getObjectEntry",
+						serviceBuilderObjectEntry,
+						dtoConverterContext.getUriInfo());
+				}
+			).put(
 				"copy",
 				() -> {
 					if (!FeatureFlagManagerUtil.isEnabled(
