@@ -58,7 +58,7 @@ public interface LayoutPageTemplateStructureRelElementVariationService
 		throws PortalException;
 
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
-			String externalReferenceCode, long groupId, long plid)
+			String externalReferenceCode, long groupId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -75,9 +75,8 @@ public interface LayoutPageTemplateStructureRelElementVariationService
 
 	public LayoutPageTemplateStructureRelElementVariation
 			updateLayoutPageTemplateStructureRelElementVariation(
-				String externalReferenceCode, long groupId, long plid,
-				boolean active)
+				String externalReferenceCode, long groupId, boolean active)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1285643008
+// LIFERAY-SERVICE-BUILDER-HASH:1936087384

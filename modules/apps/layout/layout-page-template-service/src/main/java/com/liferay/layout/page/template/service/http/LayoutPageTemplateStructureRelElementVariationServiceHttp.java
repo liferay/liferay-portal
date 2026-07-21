@@ -96,7 +96,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 
 	public static void deleteLayoutPageTemplateStructureRelElementVariation(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
-			long groupId, long plid)
+			long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -106,7 +106,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 				_deleteLayoutPageTemplateStructureRelElementVariationParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, plid);
+				methodKey, externalReferenceCode, groupId);
 
 			try {
 				TunnelUtil.invoke(httpPrincipal, methodHandler);
@@ -181,7 +181,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 		LayoutPageTemplateStructureRelElementVariation
 				updateLayoutPageTemplateStructureRelElementVariation(
 					HttpPrincipal httpPrincipal, String externalReferenceCode,
-					long groupId, long plid, boolean active)
+					long groupId, boolean active)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -191,7 +191,7 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 				_updateLayoutPageTemplateStructureRelElementVariationParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, plid, active);
+				methodKey, externalReferenceCode, groupId, active);
 
 			Object returnObj = null;
 
@@ -235,13 +235,13 @@ public class LayoutPageTemplateStructureRelElementVariationServiceHttp {
 			};
 	private static final Class<?>[]
 		_deleteLayoutPageTemplateStructureRelElementVariationParameterTypes1 =
-			new Class[] {String.class, long.class, long.class};
+			new Class[] {String.class, long.class};
 	private static final Class<?>[]
 		_getLayoutPageTemplateStructureRelElementVariationsParameterTypes2 =
 			new Class[] {long.class};
 	private static final Class<?>[]
 		_updateLayoutPageTemplateStructureRelElementVariationParameterTypes3 =
-			new Class[] {String.class, long.class, long.class, boolean.class};
+			new Class[] {String.class, long.class, boolean.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1619289181
+// LIFERAY-SERVICE-BUILDER-HASH:1886985713

@@ -49,11 +49,11 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 	}
 
 	public static void deleteLayoutPageTemplateStructureRelElementVariation(
-			String externalReferenceCode, long groupId, long plid)
+			String externalReferenceCode, long groupId)
 		throws PortalException {
 
 		getService().deleteLayoutPageTemplateStructureRelElementVariation(
-			externalReferenceCode, groupId, plid);
+			externalReferenceCode, groupId);
 	}
 
 	public static List<LayoutPageTemplateStructureRelElementVariation>
@@ -75,13 +75,12 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 
 	public static LayoutPageTemplateStructureRelElementVariation
 			updateLayoutPageTemplateStructureRelElementVariation(
-				String externalReferenceCode, long groupId, long plid,
-				boolean active)
+				String externalReferenceCode, long groupId, boolean active)
 		throws PortalException {
 
 		return getService().
 			updateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, groupId, plid, active);
+				externalReferenceCode, groupId, active);
 	}
 
 	public static LayoutPageTemplateStructureRelElementVariationService
@@ -97,4 +96,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceUtil {
 				LayoutPageTemplateStructureRelElementVariationService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-776365267
+// LIFERAY-SERVICE-BUILDER-HASH:-1359140007

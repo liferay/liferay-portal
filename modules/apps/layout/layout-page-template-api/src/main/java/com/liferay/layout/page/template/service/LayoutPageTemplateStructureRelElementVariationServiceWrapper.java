@@ -52,12 +52,12 @@ public class LayoutPageTemplateStructureRelElementVariationServiceWrapper
 
 	@Override
 	public void deleteLayoutPageTemplateStructureRelElementVariation(
-			String externalReferenceCode, long groupId, long plid)
+			String externalReferenceCode, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_layoutPageTemplateStructureRelElementVariationService.
 			deleteLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, groupId, plid);
+				externalReferenceCode, groupId);
 	}
 
 	@Override
@@ -83,13 +83,12 @@ public class LayoutPageTemplateStructureRelElementVariationServiceWrapper
 	@Override
 	public LayoutPageTemplateStructureRelElementVariation
 			updateLayoutPageTemplateStructureRelElementVariation(
-				String externalReferenceCode, long groupId, long plid,
-				boolean active)
+				String externalReferenceCode, long groupId, boolean active)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutPageTemplateStructureRelElementVariationService.
 			updateLayoutPageTemplateStructureRelElementVariation(
-				externalReferenceCode, groupId, plid, active);
+				externalReferenceCode, groupId, active);
 	}
 
 	@Override
@@ -112,4 +111,4 @@ public class LayoutPageTemplateStructureRelElementVariationServiceWrapper
 		_layoutPageTemplateStructureRelElementVariationService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1861794388
+// LIFERAY-SERVICE-BUILDER-HASH:386054842
