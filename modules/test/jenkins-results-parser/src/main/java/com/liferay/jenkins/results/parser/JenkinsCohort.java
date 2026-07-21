@@ -65,10 +65,9 @@ public class JenkinsCohort {
 		try {
 			List<JenkinsMaster> jenkinsMasters =
 				JenkinsResultsParserUtil.getJenkinsMasters(
-					JenkinsResultsParserUtil.getBuildProperties(),
-					JenkinsMaster.getSlaveRAMMinimumDefault(),
-					JenkinsMaster.getSlavesPerHostDefault(), getName(), null,
-					true);
+					JenkinsResultsParserUtil.getBuildProperties(), getName(),
+					true, JenkinsMaster.getSlavesPerHostDefault(),
+					JenkinsMaster.getSlaveRAMMinimumDefault(), null);
 
 			for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
 				if (jenkinsMaster.isBlackListed()) {

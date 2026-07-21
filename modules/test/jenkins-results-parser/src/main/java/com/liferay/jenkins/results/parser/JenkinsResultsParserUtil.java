@@ -2470,14 +2470,14 @@ public class JenkinsResultsParserUtil {
 		String cohortName, String networkName) {
 
 		return getJenkinsMasters(
-			buildProperties, minimumRAM, maximumSlavesPerHost, cohortName,
-			networkName, false);
+			buildProperties, cohortName, false, maximumSlavesPerHost,
+			minimumRAM, networkName);
 	}
 
 	public static List<JenkinsMaster> getJenkinsMasters(
-		Properties buildProperties, int minimumRAM, int maximumSlavesPerHost,
-		String cohortName, String networkName,
-		boolean includeBlackListedJenkinsMasters) {
+		Properties buildProperties, String cohortName,
+		boolean includeBlackListedJenkinsMasters, int maximumSlavesPerHost,
+		int minimumRAM, String networkName) {
 
 		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
 
