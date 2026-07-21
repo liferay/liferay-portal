@@ -13,7 +13,7 @@ import jakarta.portlet.Portlet;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Dave Truong
+ * @author David Truong
  */
 @Component(
 	property = {

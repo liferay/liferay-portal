@@ -6,7 +6,7 @@
 package com.liferay.launch.web.internal.constants;
 
 /**
- * @author Dave Truong
+ * @author David Truong
  */
 public class LaunchPortletKeys {
 

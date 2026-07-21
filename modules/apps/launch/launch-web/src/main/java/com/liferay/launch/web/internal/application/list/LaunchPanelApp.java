@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Dave Truong
+ * @author David Truong
  */
 @Component(
 	property = {
