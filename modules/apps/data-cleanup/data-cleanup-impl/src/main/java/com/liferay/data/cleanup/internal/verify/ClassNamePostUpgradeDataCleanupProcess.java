@@ -84,6 +84,8 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 		List<String> tableNames = new ArrayList<>();
 
+		StringBundler sb = new StringBundler();
+
 		for (String tableName : dbInspector.getTableNames(null)) {
 			if (!dbInspector.hasColumn(tableName, "classNameId") ||
 				StringUtil.equalsIgnoreCase(tableName, "ClassName_")) {
@@ -91,8 +93,20 @@ public class ClassNamePostUpgradeDataCleanupProcess
 				continue;
 			}
 
+			if (!tableNames.isEmpty()) {
+				sb.append(" union all ");
+			}
+
 			tableNames.add(tableName);
+
+			sb.append("select distinct '");
+			sb.append(tableName);
+			sb.append("' from ");
+			sb.append(tableName);
+			sb.append(" where classNameId = ?");
 		}
+
+		String usedTableNamesSQL = sb.toString();
 
 		UnsafeConsumer<ClassName, Exception> unsafeConsumer = className -> {
 			String value = className.getValue();
@@ -184,20 +198,17 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 			Set<String> usedTableNames = new HashSet<>();
 
-			for (String tableName : tableNames) {
-				try (PreparedStatement preparedStatement =
-						connection.prepareStatement(
-							"select 1 from " + tableName +
-								" where classNameId = ?")) {
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(usedTableNamesSQL)) {
 
-					preparedStatement.setLong(1, className.getClassNameId());
+				for (int i = 1; i <= tableNames.size(); i++) {
+					preparedStatement.setLong(i, className.getClassNameId());
+				}
 
-					try (ResultSet resultSet =
-							preparedStatement.executeQuery()) {
-
-						if (resultSet.next()) {
-							usedTableNames.add(tableName);
-						}
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					while (resultSet.next()) {
+						usedTableNames.add(
+							StringUtil.trim(resultSet.getString(1)));
 					}
 				}
 			}
