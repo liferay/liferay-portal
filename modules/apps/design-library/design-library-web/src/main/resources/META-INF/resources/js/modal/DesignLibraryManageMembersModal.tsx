@@ -58,10 +58,12 @@ const CONFIG: MembersConfig = {
 export default function DesignLibraryManageMembersModal({
 	externalReferenceCode,
 	hasAssignMembersPermission,
+	headerTitle,
 	ownerId,
 }: {
 	externalReferenceCode: string;
 	hasAssignMembersPermission: boolean;
+	headerTitle: string;
 	ownerId: string;
 }) {
 	return (
@@ -72,7 +74,7 @@ export default function DesignLibraryManageMembersModal({
 			)}
 			externalReferenceCode={externalReferenceCode}
 			hasAssignMembersPermission={hasAssignMembersPermission}
-			headerTitle={Liferay.Language.get('manage-members')}
+			headerTitle={headerTitle}
 			ownerId={ownerId}
 			renderAddMembersInput={(api) => <AddMembersInput {...api} />}
 		/>

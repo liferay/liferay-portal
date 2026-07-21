@@ -55,10 +55,12 @@ export function openConnectedSitesModal({
 export function openManageMembersModal({
 	externalReferenceCode,
 	hasAssignMembersPermission,
+	headerTitle,
 	ownerId,
 }: {
 	externalReferenceCode: string;
 	hasAssignMembersPermission: boolean;
+	headerTitle: string;
 	ownerId: string;
 }) {
 	openModal({
@@ -66,6 +68,7 @@ export function openManageMembersModal({
 			DesignLibraryManageMembersModal({
 				externalReferenceCode,
 				hasAssignMembersPermission,
+				headerTitle,
 				ownerId,
 			}),
 		size: 'md',

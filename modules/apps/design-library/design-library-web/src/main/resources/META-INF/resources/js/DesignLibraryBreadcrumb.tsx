@@ -38,7 +38,7 @@ function ActionDropdownItem({
 	externalReferenceCode = '',
 	hasAssignMembersPermission = false,
 	href = '',
-	label,
+	label = '',
 	ownerId = '',
 	redirect,
 	target,
@@ -58,6 +58,7 @@ function ActionDropdownItem({
 				openManageMembersModal({
 					externalReferenceCode,
 					hasAssignMembersPermission,
+					headerTitle: label,
 					ownerId,
 				});
 			},
