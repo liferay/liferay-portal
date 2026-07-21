@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.web.internal.servlet;
 
 import com.liferay.mail.kernel.service.MailService;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroEmailLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -65,7 +66,7 @@ public class EmailServlet extends BaseAsahServlet {
 	}
 
 	private String _getBody(
-			FaroUser faroUser, JSONObject jsonObject,
+			FaroProject faroProject, FaroUser faroUser, JSONObject jsonObject,
 			ResourceBundle resourceBundle)
 		throws Exception {
 
@@ -74,16 +75,18 @@ public class EmailServlet extends BaseAsahServlet {
 				"com/liferay/osb/faro/dependencies" +
 					"/data-control-task-complete.html"),
 			new String[] {
-				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$DOWNLOAD_URL$]",
-				"[$EMAIL_HEADER_URL$]", "[$EMAIL_TITLE$]", "[$FOOTER_MENU_1$]",
-				"[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]", "[$FOOTER_MSG_1$]",
-				"[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]", "[$FOOTER_MSG_4$]",
-				"[$LIFERAY_LOGO_URL$]", "[$NOTIFICATION_MSG_1$]",
-				"[$NOTIFICATION_MSG_2$]", "[$TITLE_MSG$]", "[$YEAR$]"
+				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$DOCUMENTATION_URL$]",
+				"[$DOWNLOAD_URL$]", "[$EMAIL_HEADER_URL$]", "[$EMAIL_TITLE$]",
+				"[$FOOTER_MENU_1$]", "[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]",
+				"[$FOOTER_MSG_1$]", "[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]",
+				"[$FOOTER_MSG_4$]", "[$LIFERAY_LOGO_URL$]",
+				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]",
+				"[$TITLE_MSG$]", "[$YEAR$]"
 			},
 			new String[] {
 				_language.get(resourceBundle, "download"),
 				EmailUtil.getShareIconURL(),
+				EmailUtil.getDocumentationURL(faroProject),
 				_getDownloadURL(
 					jsonObject.getString("batchId"), faroUser.getGroupId()),
 				EmailUtil.getEmailHeaderURL(),
@@ -140,13 +143,16 @@ public class EmailServlet extends BaseAsahServlet {
 		ResourceBundle resourceBundle =
 			_faroEmailLocalService.getResourceBundle(user.getLocale());
 
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(
+				faroUser.getGroupId());
+
 		FaroEmailSender.create(
 			_mailService
 		).setBody(
-			_getBody(faroUser, jsonObject, resourceBundle)
+			_getBody(faroProject, faroUser, jsonObject, resourceBundle)
 		).setFaroProject(
-			_faroProjectLocalService.getFaroProjectByGroupId(
-				faroUser.getGroupId())
+			faroProject
 		).setSubject(
 			_language.get(resourceBundle, "your-request-is-complete")
 		).setToEmailAddress(

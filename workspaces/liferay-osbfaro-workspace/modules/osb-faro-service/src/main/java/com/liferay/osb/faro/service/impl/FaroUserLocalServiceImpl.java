@@ -285,11 +285,11 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 		return StringUtil.replace(
 			StringUtil.read(getClassLoader(), template),
 			new String[] {
-				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$EMAIL_HEADER_URL$]",
-				"[$EMAIL_TITLE$]", "[$FARO_URL$]", "[$FOOTER_MENU_1$]",
-				"[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]", "[$FOOTER_MSG_1$]",
-				"[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]", "[$FOOTER_MSG_4$]",
-				"[$HEADER_MSG_1$]", "[$LIFERAY_LOGO_URL$]",
+				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$DOCUMENTATION_URL$]",
+				"[$EMAIL_HEADER_URL$]", "[$EMAIL_TITLE$]", "[$FARO_URL$]",
+				"[$FOOTER_MENU_1$]", "[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]",
+				"[$FOOTER_MSG_1$]", "[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]",
+				"[$FOOTER_MSG_4$]", "[$HEADER_MSG_1$]", "[$LIFERAY_LOGO_URL$]",
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
@@ -298,8 +298,10 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 					EmailUtil.getLanguageKey(
 						faroProject, "go-to-analytics-cloud",
 						"go-to-liferay-data-platform")),
-				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
-				subject, FaroPropsValues.FARO_URL,
+				EmailUtil.getShareIconURL(),
+				EmailUtil.getDocumentationURL(faroProject),
+				EmailUtil.getEmailHeaderURL(), subject,
+				FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
 				_language.get(resourceBundle, "documentation"),
 				_language.get(resourceBundle, "announcements"),
@@ -345,11 +347,11 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				getClassLoader(),
 				"com/liferay/osb/faro/dependencies/join-request.html"),
 			new String[] {
-				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$EMAIL_HEADER_URL$]",
-				"[$EMAIL_TITLE$]", "[$FARO_URL$]", "[$FOOTER_MENU_1$]",
-				"[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]", "[$FOOTER_MSG_1$]",
-				"[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]", "[$FOOTER_MSG_4$]",
-				"[$HEADER_MSG_1$]", "[$LIFERAY_LOGO_URL$]",
+				"[$BUTTON_TEXT$]", "[$BUTTON_URL$]", "[$DOCUMENTATION_URL$]",
+				"[$EMAIL_HEADER_URL$]", "[$EMAIL_TITLE$]", "[$FARO_URL$]",
+				"[$FOOTER_MENU_1$]", "[$FOOTER_MENU_2$]", "[$FOOTER_MENU_3$]",
+				"[$FOOTER_MSG_1$]", "[$FOOTER_MSG_2$]", "[$FOOTER_MSG_3$]",
+				"[$FOOTER_MSG_4$]", "[$HEADER_MSG_1$]", "[$LIFERAY_LOGO_URL$]",
 				"[$NOTIFICATION_MSG_1$]", "[$NOTIFICATION_MSG_2$]", "[$YEAR$]"
 			},
 			new String[] {
@@ -358,8 +360,10 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 					EmailUtil.getLanguageKey(
 						faroProject, "go-to-analytics-cloud",
 						"go-to-liferay-data-platform")),
-				EmailUtil.getShareIconURL(), EmailUtil.getEmailHeaderURL(),
-				subject, FaroPropsValues.FARO_URL,
+				EmailUtil.getShareIconURL(),
+				EmailUtil.getDocumentationURL(faroProject),
+				EmailUtil.getEmailHeaderURL(), subject,
+				FaroPropsValues.FARO_URL,
 				_language.get(resourceBundle, "contact-support"),
 				_language.get(resourceBundle, "documentation"),
 				_language.get(resourceBundle, "announcements"),

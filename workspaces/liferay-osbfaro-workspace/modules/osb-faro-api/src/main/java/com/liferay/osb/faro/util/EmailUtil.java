@@ -21,6 +21,14 @@ public class EmailUtil {
 			"/o/osb-faro-web/images/email/icon_check.png");
 	}
 
+	public static String getDocumentationURL(FaroProject faroProject) {
+		if (faroProject.isDataPlatform()) {
+			return "https://learn.liferay.com/w/liferay-data-platform/index";
+		}
+
+		return "https://learn.liferay.com/en/w/analytics-cloud/index";
+	}
+
 	public static String getEmailHeaderURL() {
 		return FaroPropsValues.FARO_URL.concat(
 			"/o/osb-faro-web/images/email/email_header.png");
