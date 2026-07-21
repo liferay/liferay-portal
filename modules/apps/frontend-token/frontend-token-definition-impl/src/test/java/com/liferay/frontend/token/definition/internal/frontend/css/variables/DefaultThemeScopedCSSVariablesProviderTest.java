@@ -119,6 +119,37 @@ public class DefaultThemeScopedCSSVariablesProviderTest {
 	}
 
 	@Test
+	public void testGetScopedCSSVariablesCollectionRecomputesCSSVariablesPerFrontendTokenDefinition()
+		throws JSONException {
+
+		Object cssVariables = _getCSSVariables(
+			_defaultThemeScopedCSSVariablesProvider.
+				getScopedCSSVariablesCollection(_httpServletRequest));
+
+		JSONFactory jsonFactory = new JSONFactoryImpl();
+
+		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
+			ReflectionTestUtil.getFieldValue(
+				_defaultThemeScopedCSSVariablesProvider,
+				"_frontendTokenDefinitionRegistry");
+
+		Mockito.when(
+			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(_layout)
+		).thenReturn(
+			new FrontendTokenDefinitionImpl(
+				jsonFactory.createJSONObject(_FRONTEND_TOKEN_DEFINITION_JSON),
+				jsonFactory, null, "theme_id", RandomTestUtil.randomString(),
+				RandomTestUtil.randomString())
+		);
+
+		Assert.assertNotSame(
+			cssVariables,
+			_getCSSVariables(
+				_defaultThemeScopedCSSVariablesProvider.
+					getScopedCSSVariablesCollection(_httpServletRequest)));
+	}
+
+	@Test
 	public void testGetScopedCSSVariablesCollectionWhenFrontendTokenDefinitionIsNull() {
 		Mockito.when(
 			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
