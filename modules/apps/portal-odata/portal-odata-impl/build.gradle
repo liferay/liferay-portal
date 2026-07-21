@@ -15,7 +15,7 @@ dependencies {
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "org.assertj", name: "assertj-core", version: "3.10.0"
 }

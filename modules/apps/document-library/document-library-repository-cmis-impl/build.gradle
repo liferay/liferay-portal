@@ -2,7 +2,7 @@ dependencies {
 	compileInclude group: "com.liferay", name: "org.apache.chemistry.opencmis.client.bindings", version: "0.14.0.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "com.liferay", name: "org.apache.chemistry.opencmis.commons.api", version: "0.14.0.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "com.liferay", name: "org.apache.chemistry.opencmis.commons.impl", version: "0.14.0.JAKARTA-LIFERAY-PATCHED-1"
-	compileInclude group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
+	compileInclude group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "com.liferay", name: "org.apache.cxf.rt.bindings.soap", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "com.liferay", name: "org.apache.cxf.rt.bindings.xml", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "com.liferay", name: "org.apache.cxf.rt.databinding.jaxb", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"

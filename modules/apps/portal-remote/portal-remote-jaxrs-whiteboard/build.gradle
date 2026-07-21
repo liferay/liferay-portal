@@ -5,7 +5,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.aries.component.dsl", version: "1.2.2.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.aries.jax.rs.whiteboard", version: "2.0.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.bindings.soap", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.bindings.xml", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.databinding.jaxb", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
