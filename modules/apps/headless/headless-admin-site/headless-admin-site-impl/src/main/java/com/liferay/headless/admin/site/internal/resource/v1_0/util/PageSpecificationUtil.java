@@ -129,8 +129,9 @@ public class PageSpecificationUtil {
 					getDraftContentPageSpecificationExternalReferenceCode())) {
 
 			throw new IllegalArgumentException(
-				"The draft and published page specifications have mismatched " +
-					"external reference codes");
+				"The draft page specification's external reference code does " +
+					"not match the published page specification's draft " +
+						"external reference code");
 		}
 
 		return new PageSpecification[] {

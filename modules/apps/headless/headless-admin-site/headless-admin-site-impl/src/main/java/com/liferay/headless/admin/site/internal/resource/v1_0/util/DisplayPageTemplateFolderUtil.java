@@ -11,7 +11,6 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTy
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
@@ -88,8 +87,8 @@ public class DisplayPageTemplateFolderUtil {
 						getExternalReferenceCode())) {
 
 				throw new IllegalArgumentException(
-					"The parent display page template folder external " +
-						"reference codes do not match");
+					"The provided external reference code does not point to " +
+						"the parent display page template folder");
 			}
 
 			parentLayoutPageTemplateCollection =
@@ -104,14 +103,9 @@ public class DisplayPageTemplateFolderUtil {
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
 				parentLayoutPageTemplateCollection.getType())) {
 
-			String externalReferenceCode =
-				displayPageTemplateFolder.
-					getParentDisplayPageTemplateFolderExternalReferenceCode();
-
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"The external reference code \"", externalReferenceCode,
-					"\" does not point to a display page template folder"));
+				"The parent display page template folder type does not match " +
+					"the display page type");
 		}
 
 		return parentLayoutPageTemplateCollection.
