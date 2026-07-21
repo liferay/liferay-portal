@@ -12,8 +12,12 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -53,14 +57,17 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 	}
 
 	@Override
-	public Page<TaskAssignee> getTaskAssigneesPage(String search, String type) {
+	public Page<TaskAssignee> getTaskAssigneesPage(String search, String type)
+		throws Exception {
+
 		CMPLicenseUtil.checkAppEnabled();
 
 		return _getTaskAssigneesPage(null, search, type);
 	}
 
 	private Page<TaskAssignee> _getTaskAssigneesPage(
-		ObjectEntry objectEntry, String search, String type) {
+			ObjectEntry objectEntry, String search, String type)
+		throws Exception {
 
 		List<TaskAssignee> taskAssignees = new ArrayList<>();
 
@@ -115,7 +122,7 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 
 			taskAssignees.addAll(
 				transform(
-					users,
+					_getUsers(users, type),
 					user -> new TaskAssignee() {
 						{
 							setExternalReferenceCode(
@@ -142,6 +149,30 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 		}
 
 		return Page.of(taskAssignees);
+	}
+
+	private List<User> _getUsers(List<User> users, String type)
+		throws Exception {
+
+		if (!StringUtil.equalsIgnoreCase(type, "User")) {
+			return users;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		List<User> assignableUsers = new ArrayList<>(users.size());
+
+		for (User user : users) {
+			if (UserPermissionUtil.contains(
+					permissionChecker, user.getUserId(),
+					user.getOrganizationIds(), ActionKeys.UPDATE)) {
+
+				assignableUsers.add(user);
+			}
+		}
+
+		return assignableUsers;
 	}
 
 	@Reference
