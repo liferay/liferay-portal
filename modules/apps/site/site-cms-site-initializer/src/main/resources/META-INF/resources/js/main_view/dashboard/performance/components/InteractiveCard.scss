@@ -16,7 +16,7 @@
 		border-color: $primary;
 	}
 
-	&:focus-within:not(.active),
+	&:focus-visible:not(.active),
 	&:hover:not(.active) {
 		background-color: $light-l1;
 		border-color: $secondary-l0;
