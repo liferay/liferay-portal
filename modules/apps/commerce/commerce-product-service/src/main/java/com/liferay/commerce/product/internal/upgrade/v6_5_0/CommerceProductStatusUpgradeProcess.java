@@ -24,6 +24,9 @@ public class CommerceProductStatusUpgradeProcess extends UpgradeProcess {
 			"update CPOption set status = " +
 				WorkflowConstants.STATUS_APPROVED);
 		runSQL(
+			"update CPOptionValue set status = " +
+				WorkflowConstants.STATUS_APPROVED);
+		runSQL(
 			"update CPTaxCategory set status = " +
 				WorkflowConstants.STATUS_APPROVED);
 	}
@@ -34,6 +37,7 @@ public class CommerceProductStatusUpgradeProcess extends UpgradeProcess {
 			UpgradeProcessFactory.addColumns(
 				"CommerceCatalog", "status INTEGER"),
 			UpgradeProcessFactory.addColumns("CPOption", "status INTEGER"),
+			UpgradeProcessFactory.addColumns("CPOptionValue", "status INTEGER"),
 			UpgradeProcessFactory.addColumns("CPTaxCategory", "status INTEGER")
 		};
 	}
