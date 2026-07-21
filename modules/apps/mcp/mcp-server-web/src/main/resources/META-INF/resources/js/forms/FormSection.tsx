@@ -19,7 +19,7 @@ export function FormSection({
 }: FormSectionProps) {
 	return (
 		<ClayLayout.Sheet className={className}>
-			<div className="font-weight-bold mb-4 text-7">{title}</div>
+			<div className="font-weight-semi-bold mb-4 text-7">{title}</div>
 
 			{children}
 		</ClayLayout.Sheet>

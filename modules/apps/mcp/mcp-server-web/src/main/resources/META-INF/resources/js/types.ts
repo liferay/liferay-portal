@@ -63,3 +63,9 @@ export type PromptActionContext = {
 	itemData: Prompt;
 	loadData: () => void;
 };
+
+export type PromptFormValues = {
+	description: string;
+	name: string;
+	prompt: string;
+};
