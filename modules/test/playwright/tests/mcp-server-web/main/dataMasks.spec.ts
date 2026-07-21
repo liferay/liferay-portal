@@ -10,9 +10,11 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
+import {createFDSTableTests} from './utils/createFDSTableTests';
 
-const test = mergeTests(
+const baseTest = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-63311': {enabled: true},
@@ -74,6 +76,24 @@ async function associateMaskWithProfile(
 	);
 }
 
+const test = baseTest.extend<{
+	createFDSItem: () => Promise<string>;
+	fdsTablePage: FDSTablePage;
+}>({
+	createFDSItem: async ({apiHelpers}, use) => {
+		await use(async () => {
+			const name = maskName();
+
+			await createCustomMask(apiHelpers, name);
+
+			return name;
+		});
+	},
+	fdsTablePage: async ({dataMasksPage}, use) => {
+		await use(dataMasksPage);
+	},
+});
+
 test.afterEach(async ({apiHelpers}) => {
 	const response = await apiHelpers.get(
 		`${apiHelpers.baseUrl}${DATA_MASKS_API}?pageSize=200`
@@ -95,28 +115,14 @@ test.afterEach(async ({apiHelpers}) => {
 	}
 });
 
+createFDSTableTests(test, {
+	columns: ['Title', 'Type', 'Description', 'Last Modified'],
+	rowActions: ['Edit', 'Duplicate', 'Delete'],
+	sortOptions: ['Title', 'Last Modified'],
+	tag: '@LPD-90205',
+});
+
 test.describe('Data Masks - List View', () => {
-	test(
-		'shows the data masks list with Title, Type, Description, and Last Modified columns',
-		{tag: '@LPD-90205'},
-		async ({dataMasksPage, page}) => {
-			await dataMasksPage.goto();
-
-			for (const column of [
-				'Title',
-				'Type',
-				'Description',
-				'Last Modified',
-			]) {
-				await expect(
-					page.getByRole('columnheader', {name: column})
-				).toBeVisible();
-			}
-
-			await expect(dataMasksPage.row(SYSTEM_MASK)).toBeVisible();
-		}
-	);
-
 	test(
 		'opens a system mask read-only and a custom mask in edit when clicking its title',
 		{tag: '@LPD-90205'},
@@ -183,24 +189,6 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'searches the data masks list by name',
-		{tag: '@LPD-90205'},
-		async ({apiHelpers, dataMasksPage}) => {
-			const name = maskName();
-			await createCustomMask(apiHelpers, name);
-
-			await dataMasksPage.goto();
-
-			await dataMasksPage.search(name);
-
-			await expect(dataMasksPage.table.locator('tbody tr')).toHaveCount(
-				1
-			);
-			await expect(dataMasksPage.row(name)).toBeVisible();
-		}
-	);
-
-	test(
 		'filters the data masks list by type',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
@@ -209,27 +197,10 @@ test.describe('Data Masks - List View', () => {
 
 			await dataMasksPage.goto();
 
-			await dataMasksPage.filterByType('System');
+			await dataMasksPage.applySelectionFilter('Type', 'System');
 
 			await expect(dataMasksPage.row(SYSTEM_MASK)).toBeVisible();
 			await expect(dataMasksPage.row(name)).toBeHidden();
-		}
-	);
-
-	test(
-		'offers Title and Last Modified sort options',
-		{tag: '@LPD-90205'},
-		async ({dataMasksPage, page}) => {
-			await dataMasksPage.goto();
-
-			await dataMasksPage.orderButton.click();
-
-			await expect(
-				page.getByRole('menuitem', {exact: true, name: 'Title'})
-			).toBeVisible();
-			await expect(
-				page.getByRole('menuitem', {exact: true, name: 'Last Modified'})
-			).toBeVisible();
 		}
 	);
 
