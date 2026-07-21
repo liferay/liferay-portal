@@ -1482,8 +1482,7 @@ public class JournalArticleLocalServiceImpl
 			groupId, layoutUuid);
 
 		for (JournalArticle article : articles) {
-			_deleteLayoutArticleReference(
-				article.getPrimaryKey(), layoutUuid);
+			_deleteLayoutArticleReference(article.getPrimaryKey(), layoutUuid);
 			_deleteLayoutArticleReference(
 				article.getResourcePrimKey(), layoutUuid);
 
