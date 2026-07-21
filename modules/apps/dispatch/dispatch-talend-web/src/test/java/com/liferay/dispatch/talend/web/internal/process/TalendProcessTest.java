@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -123,20 +122,12 @@ public class TalendProcessTest {
 
 		List<String> processConfigArguments = processConfig.getArguments();
 
-		if (JavaDetector.isJDK21()) {
-			Assert.assertEquals(
-				processConfigArguments.toString(), 4,
-				processConfigArguments.size());
+		Assert.assertEquals(
+			processConfigArguments.toString(), 4,
+			processConfigArguments.size());
 
-			Assert.assertTrue(
-				processConfigArguments.contains(
-					"-Djava.security.manager=allow"));
-		}
-		else {
-			Assert.assertEquals(
-				processConfigArguments.toString(), 3,
-				processConfigArguments.size());
-		}
+		Assert.assertTrue(
+			processConfigArguments.contains("-Djava.security.manager=allow"));
 
 		Assert.assertTrue(processConfigArguments.contains("-Xint"));
 		Assert.assertTrue(processConfigArguments.contains("-Xms2G"));

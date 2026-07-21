@@ -56,36 +56,6 @@ public class JavaDetector {
 		return _javaDetector._ibm;
 	}
 
-	public static boolean isJDK7() {
-		String javaVersion = getJavaVersion();
-
-		return javaVersion.startsWith(_JAVA_VERSION_JDK_7);
-	}
-
-	public static boolean isJDK8() {
-		String javaVersion = getJavaVersion();
-
-		return javaVersion.startsWith(_JAVA_VERSION_JDK_8);
-	}
-
-	public static boolean isJDK11() {
-		String javaVersion = getJavaVersion();
-
-		return javaVersion.startsWith(_JAVA_VERSION_JDK_11);
-	}
-
-	public static boolean isJDK17() {
-		String javaVersion = getJavaVersion();
-
-		return javaVersion.startsWith(_JAVA_VERSION_JDK_17);
-	}
-
-	public static boolean isJDK21() {
-		String javaVersion = getJavaVersion();
-
-		return javaVersion.startsWith(_JAVA_VERSION_JDK_21);
-	}
-
 	public static boolean isOpenJDK() {
 		return _javaDetector._openJDK;
 	}
@@ -137,16 +107,6 @@ public class JavaDetector {
 			LogUtil.debug(_log, System.getProperties());
 		}
 	}
-
-	private static final String _JAVA_VERSION_JDK_7 = "1.7.";
-
-	private static final String _JAVA_VERSION_JDK_8 = "1.8.";
-
-	private static final String _JAVA_VERSION_JDK_11 = "11";
-
-	private static final String _JAVA_VERSION_JDK_17 = "17";
-
-	private static final String _JAVA_VERSION_JDK_21 = "21";
 
 	private static final Log _log = LogFactoryUtil.getLog(JavaDetector.class);
 

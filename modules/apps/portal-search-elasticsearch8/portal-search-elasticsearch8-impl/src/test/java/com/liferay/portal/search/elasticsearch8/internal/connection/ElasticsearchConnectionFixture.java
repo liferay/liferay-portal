@@ -15,7 +15,6 @@ import co.elastic.clients.json.JsonpMapper;
 import com.liferay.petra.process.local.LocalProcessExecutor;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration;
@@ -187,14 +186,6 @@ public class ElasticsearchConnectionFixture
 				Map<String, Object> elasticsearchConfigurationProperties,
 				String clusterName) {
 
-			String sidecarJVMOptions = "-Xmx256m";
-
-			if (!JavaDetector.isJDK8()) {
-				sidecarJVMOptions =
-					"-Xmx256m|--add-opens=java.base/java.lang=ALL-UNNAMED|--" +
-						"add-opens=java.base/java.lang.invoke=ALL-UNNAMED";
-			}
-
 			return HashMapBuilder.<String, Object>put(
 				"clusterName", clusterName
 			).put(
@@ -206,7 +197,9 @@ public class ElasticsearchConnectionFixture
 			).put(
 				"sidecarHttpPort", HttpPortRange.AUTO
 			).put(
-				"sidecarJVMOptions", sidecarJVMOptions
+				"sidecarJVMOptions",
+				"-Xmx256m|--add-opens=java.base/java.lang=ALL-UNNAMED|--add-" +
+					"opens=java.base/java.lang.invoke=ALL-UNNAMED"
 			).putAll(
 				elasticsearchConfigurationProperties
 			).build();
