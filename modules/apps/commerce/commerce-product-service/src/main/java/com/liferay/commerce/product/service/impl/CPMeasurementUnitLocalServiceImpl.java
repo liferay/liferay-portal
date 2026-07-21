@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +76,7 @@ public class CPMeasurementUnitLocalServiceImpl
 		cpMeasurementUnit.setPrimary(primary);
 		cpMeasurementUnit.setPriority(priority);
 		cpMeasurementUnit.setType(type);
+		cpMeasurementUnit.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		_resourceLocalService.addModelResources(
 			cpMeasurementUnit, serviceContext);
