@@ -1,5 +1,6 @@
 import Card from './Card';
 import classNames from 'classnames';
+import ClayLink from '@clayui/link';
 import Icon from '@clayui/icon';
 import Loading from './Loading';
 import React from 'react';
@@ -18,11 +19,13 @@ export type DataDrivenConfig = {
 
 const InfoItem = ({
 	className,
+	href,
 	icon,
 	label,
 	value,
 }: {
 	className?: string;
+	href?: string;
 	icon?: string;
 	label: string;
 	value: string;
@@ -40,18 +43,30 @@ const InfoItem = ({
 			<Text color="secondary" size={3}>
 				{label}
 			</Text>
-			<span
-				className="font-weight-semi-bold text-break text-dark"
-				style={{wordBreak: 'break-all'}}
-			>
-				{value}
-			</span>
+
+			{href ? (
+				<ClayLink
+					className="font-weight-semi-bold text-break text-dark"
+					href={href}
+					style={{wordBreak: 'break-all'}}
+				>
+					{value}
+				</ClayLink>
+			) : (
+				<span
+					className="font-weight-semi-bold text-break text-dark"
+					style={{wordBreak: 'break-all'}}
+				>
+					{value}
+				</span>
+			)}
 		</div>
 	</div>
 );
 
 interface IGeneralInfoSectionProps {
 	config: DataDrivenConfig;
+	getHref?: (key: string) => string | undefined;
 	getValue: (key: string) => string | undefined;
 	languageMap: Record<string, string>;
 	loading?: boolean;
@@ -59,6 +74,7 @@ interface IGeneralInfoSectionProps {
 
 export const GeneralInfoSection: React.FC<IGeneralInfoSectionProps> = ({
 	config,
+	getHref,
 	getValue,
 	languageMap,
 	loading,
@@ -84,6 +100,11 @@ export const GeneralInfoSection: React.FC<IGeneralInfoSectionProps> = ({
 										return (
 											<InfoItem
 												className={item.className}
+												href={
+													rawValue
+														? getHref?.(item.key)
+														: undefined
+												}
 												icon={item.icon}
 												key={item.key}
 												label={languageMap[item.key]}

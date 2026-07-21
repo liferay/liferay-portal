@@ -21,6 +21,7 @@ enum IndividualProfileCDPCards {
 }
 
 interface IIndividualProfileCDPProps {
+	channelId: string;
 	groupId: string;
 	individual: Individual;
 }
@@ -121,6 +122,7 @@ const ProfileCDPEmptyState: React.FC<IProfileCDPEmptyStateProps> = ({
 };
 
 const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
+	channelId,
 	groupId,
 	individual,
 }) => {
@@ -158,6 +160,8 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 
 			<AccountMembership
 				accountData={individual.getIn(['accounts', 0])}
+				channelId={channelId}
+				groupId={groupId}
 				loading={dataSourceLoading}
 				showEmptyState={showEmptyState}
 			>

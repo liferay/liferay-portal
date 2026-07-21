@@ -10,6 +10,7 @@ import {
 } from 'shared/components/GeneralInfoSection';
 import {formatUTCDate} from 'shared/util/date';
 import {Map} from 'immutable';
+import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 
 function formatCurrency(
@@ -66,7 +67,9 @@ const dateKeys = ['createdDate', 'lastActivityDate'];
 
 interface IAccountMembershipProps {
 	accountData?: Map<string, any>;
+	channelId?: string;
 	children?: React.ReactNode;
+	groupId?: string;
 	loading?: boolean;
 	showEmptyState?: boolean;
 }
@@ -88,7 +91,9 @@ const ACCOUNT_MEMBERSHIP_LABEL_MAP: Record<string, string> = {
 
 const AccountMembership: React.FC<IAccountMembershipProps> = ({
 	accountData,
+	channelId,
 	children: emptyState,
+	groupId,
 	loading = false,
 	showEmptyState = false,
 }) => {
@@ -110,9 +115,24 @@ const AccountMembership: React.FC<IAccountMembershipProps> = ({
 		return data;
 	};
 
+	const getHref = (key: string): string | undefined => {
+		const accountId = accountData?.get('id');
+
+		if (key === 'accountName' && accountId && channelId && groupId) {
+			return toRoute(Routes.CONTACTS_ACCOUNT, {
+				channelId,
+				groupId,
+				id: accountId,
+			});
+		}
+
+		return undefined;
+	};
+
 	const sectionContent = accountData ? (
 		<GeneralInfoSection
 			config={accountMembershipConfig}
+			getHref={getHref}
 			getValue={getValue}
 			languageMap={ACCOUNT_MEMBERSHIP_LABEL_MAP}
 			loading={loading}

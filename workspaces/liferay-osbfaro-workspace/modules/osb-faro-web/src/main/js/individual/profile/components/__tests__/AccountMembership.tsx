@@ -70,4 +70,27 @@ describe('Account Membership', () => {
 			)
 		).not.toThrow();
 	});
+
+	it('links the account name to the account page', () => {
+		const {getByRole} = render(
+			<AccountMembership
+				accountData={fromJS(mockData)}
+				channelId="420253908131944590"
+				groupId="liferay.com"
+			/>
+		);
+
+		expect(getByRole('link', {name: 'Acme Corporation'})).toHaveAttribute(
+			'href',
+			'/workspace/liferay.com/420253908131944590/contacts/accounts/001xx000003DGbYAAW'
+		);
+	});
+
+	it('does not link the account name without a channel and group', () => {
+		const {queryByRole} = render(
+			<AccountMembership accountData={fromJS(mockData)} />
+		);
+
+		expect(queryByRole('link', {name: 'Acme Corporation'})).toBeNull();
+	});
 });
