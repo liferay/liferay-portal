@@ -7,9 +7,11 @@ package com.liferay.commerce.product.internal.upgrade.v6_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.model.CPOption;
+import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPOptionCategoryLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
@@ -80,6 +82,35 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
+	}
+
+	@Test
+	public void testUpgradeCPOptionCategoryStatus() throws Exception {
+		CPOptionCategory cpOptionCategory = CPTestUtil.addCPOptionCategory(
+			TestPropsValues.getGroupId());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPOptionCategory set status = ? where " +
+						"CPOptionCategoryId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(
+				2, cpOptionCategory.getCPOptionCategoryId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpOptionCategory = _cpOptionCategoryLocalService.getCPOptionCategory(
+			cpOptionCategory.getCPOptionCategoryId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpOptionCategory.getStatus());
 	}
 
 	@Test
@@ -182,6 +213,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CPOptionCategoryLocalService _cpOptionCategoryLocalService;
 
 	@Inject
 	private CPOptionLocalService _cpOptionLocalService;
