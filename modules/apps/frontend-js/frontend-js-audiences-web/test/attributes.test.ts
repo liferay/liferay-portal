@@ -17,7 +17,7 @@ import {getLocalHour} from '../src/main/resources/META-INF/resources/main/detect
 import {getPathname} from '../src/main/resources/META-INF/resources/main/detection/attributes/pathname';
 import {getReferrer} from '../src/main/resources/META-INF/resources/main/detection/attributes/referrer';
 import {getRequestParameters} from '../src/main/resources/META-INF/resources/main/detection/attributes/request_parameters';
-import {getSegments} from '../src/main/resources/META-INF/resources/main/detection/attributes/segments';
+import {getSegment} from '../src/main/resources/META-INF/resources/main/detection/attributes/segment';
 import {getTimezone} from '../src/main/resources/META-INF/resources/main/detection/attributes/timezone';
 import {getUrl} from '../src/main/resources/META-INF/resources/main/detection/attributes/url';
 import {getUserAgent} from '../src/main/resources/META-INF/resources/main/detection/attributes/user_agent';
@@ -253,9 +253,9 @@ describe('attributes', () => {
 		});
 	});
 
-	describe('attribute segments', () => {
+	describe('attribute segment', () => {
 		it('works and returns a Set<string>', async () => {
-			const value = getSegments(
+			const value = getSegment(
 				new Set(['SEGMENT_BATCH', 'SEGMENT_REAL_TIME'])
 			);
 
