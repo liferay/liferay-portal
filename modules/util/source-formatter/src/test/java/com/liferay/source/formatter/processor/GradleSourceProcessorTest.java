@@ -13,6 +13,18 @@ import org.junit.Test;
 public class GradleSourceProcessorTest extends BaseSourceProcessorTestCase {
 
 	@Test
+	public void testBouncyCastleFIPS() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"BouncyCastleFIPS.testgradle"
+			).addExpectedMessage(
+				"Do not use non-FIPS BouncyCastle, see LPD-90318", 3
+			).addExpectedMessage(
+				"Do not use non-FIPS BouncyCastle, see LPD-90318", 4
+			));
+	}
+
+	@Test
 	public void testMissingLineBreaksAroundCurlyBraces() throws Exception {
 		test("MissingLineBreaksAroundCurlyBraces.testgradle");
 	}

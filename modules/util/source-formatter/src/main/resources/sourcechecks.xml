@@ -282,6 +282,10 @@
 		</check>
 	</source-processor>
 	<source-processor name="GradleSourceProcessor">
+		<check name="BouncyCastleFIPSCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds non-FIPS BouncyCastle artifacts in `build.gradle` files." />
+		</check>
 		<check name="GradleBlockOrderCheck">
 			<category name="Styling" />
 			<description name="Sorts logic in gradle build files." />
@@ -471,6 +475,10 @@
 		<check name="ArrayCheck">
 			<category name="Performance" />
 			<description name="Checks if performance can be improved by using different methods that can be used by collections." />
+		</check>
+		<check name="BouncyCastleFIPSCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds imports of non-FIPS BouncyCastle packages." />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />

@@ -1,0 +1,5 @@
+dependencies {
+	compileOnly group: "org.bouncycastle", name: "bcpkix-fips", version: "1.0.7"
+	compileOnly group: "org.bouncycastle", name: "bcprov-jdk18on", version: "1.70"
+	compileOnly group: "org.bouncycastle", name: "bcutil-jdk18on", version: "1.70"
+}

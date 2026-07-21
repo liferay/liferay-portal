@@ -1,0 +1,29 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+/**
+ * @author Christopher Kian
+ */
+public class BouncyCastleFIPS {
+
+	public BouncyCastleProvider getBouncyCastleProvider() {
+		return null;
+	}
+
+	public PKCS5S2ParametersGenerator getPKCS5S2ParametersGenerator() {
+		return null;
+	}
+
+	public X509v3CertificateBuilder getX509v3CertificateBuilder() {
+		return null;
+	}
+
+}
