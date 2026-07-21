@@ -352,4 +352,24 @@ describe('Picker basic rendering', () => {
 			'clay-keyboard-arrows-indicator-floating'
 		);
 	});
+
+	it('sets tabindex 0 on the trigger by default', () => {
+		const {getByRole} = render(
+			<Picker items={['Apple', 'Banana', 'Blueberry']}>
+				{(item) => <Option key={item}>{item}</Option>}
+			</Picker>
+		);
+
+		expect(getByRole('combobox').getAttribute('tabindex')).toBe('0');
+	});
+
+	it('honors the tabIndex prop on the trigger', () => {
+		const {getByRole} = render(
+			<Picker items={['Apple', 'Banana', 'Blueberry']} tabIndex={-1}>
+				{(item) => <Option key={item}>{item}</Option>}
+			</Picker>
+		);
+
+		expect(getByRole('combobox').getAttribute('tabindex')).toBe('-1');
+	});
 });
