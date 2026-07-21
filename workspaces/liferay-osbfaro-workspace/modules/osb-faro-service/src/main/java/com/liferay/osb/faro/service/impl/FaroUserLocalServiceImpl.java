@@ -482,8 +482,6 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				_getSubjectNewUser(faroProject, faroUser, resourceBundle), user)
 		).setFaroProject(
 			faroProject
-		).setFrom(
-			user
 		).setSubject(
 			_getSubjectNewUser(faroProject, faroUser, resourceBundle)
 		).setToEmailAddress(
@@ -528,8 +526,6 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 				_language.get(resourceBundle, "request-to-join-workspace"))
 		).setFaroProject(
 			faroProject
-		).setFrom(
-			senderUser
 		).setSubject(
 			_language.get(resourceBundle, "request-to-join-workspace")
 		).setToEmailAddress(

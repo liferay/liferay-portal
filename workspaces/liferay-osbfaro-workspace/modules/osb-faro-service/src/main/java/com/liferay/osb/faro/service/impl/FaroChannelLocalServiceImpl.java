@@ -333,8 +333,6 @@ public class FaroChannelLocalServiceImpl
 				_language.get(resourceBundle, "new-property-access"), user)
 		).setFaroProject(
 			faroProject
-		).setFrom(
-			user
 		).setSubject(
 			_language.get(resourceBundle, "new-property-access")
 		).setToEmailAddress(

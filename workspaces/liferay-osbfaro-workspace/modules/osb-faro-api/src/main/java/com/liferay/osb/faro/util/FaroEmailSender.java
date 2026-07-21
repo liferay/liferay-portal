@@ -8,8 +8,6 @@ package com.liferay.osb.faro.util;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.model.User;
 
 import jakarta.mail.internet.InternetAddress;
 
@@ -23,15 +21,9 @@ public class FaroEmailSender {
 	}
 
 	public void send() throws Exception {
-		String fromName = EmailUtil.getSenderName(_faroProject);
-
-		if (_fromUser != null) {
-			fromName = StringBundler.concat(
-				_fromUser.getFullName(), " (", fromName, ")");
-		}
-
 		InternetAddress from = new InternetAddress(
-			EmailUtil.getSenderEmailAddress(_faroProject), fromName);
+			EmailUtil.getSenderEmailAddress(_faroProject),
+			EmailUtil.getSenderName(_faroProject));
 
 		InternetAddress to = new InternetAddress(_toEmailAddress, _toName);
 
@@ -47,12 +39,6 @@ public class FaroEmailSender {
 
 	public FaroEmailSender setFaroProject(FaroProject faroProject) {
 		_faroProject = faroProject;
-
-		return this;
-	}
-
-	public FaroEmailSender setFrom(User user) {
-		_fromUser = user;
 
 		return this;
 	}
@@ -81,7 +67,6 @@ public class FaroEmailSender {
 
 	private String _body;
 	private FaroProject _faroProject;
-	private User _fromUser;
 	private final MailService _mailService;
 	private String _subject;
 	private String _toEmailAddress;
