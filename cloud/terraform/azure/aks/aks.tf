@@ -23,9 +23,12 @@ resource "azurerm_kubernetes_cluster" "main" {
 	workload_identity_enabled=true
 	default_node_pool {
 		auto_scaling_enabled=false
+		host_encryption_enabled=true
+		max_pods=50
 		name="system"
 		node_count=var.system_node_count
 		only_critical_addons_enabled=true
+		os_disk_type="Ephemeral"
 		temporary_name_for_rotation="systemtmp"
 		vm_size=var.machine_type
 		vnet_subnet_id=azurerm_subnet.main.id
@@ -42,6 +45,9 @@ resource "azurerm_kubernetes_cluster" "main" {
 	identity {
 		identity_ids=[azurerm_user_assigned_identity.cluster.id]
 		type="UserAssigned"
+	}
+	key_vault_secrets_provider {
+		secret_rotation_enabled=true
 	}
 	dynamic "monitor_metrics" {
 		content {}

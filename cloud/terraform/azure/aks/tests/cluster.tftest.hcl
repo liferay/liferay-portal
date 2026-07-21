@@ -7,6 +7,14 @@ run "should_apply_default_node_pool_settings" {
 		error_message="The default node pool must not enable cluster autoscaling"
 	}
 	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].host_encryption_enabled == true
+		error_message="The default node pool must encrypt temp disks and caches at the host"
+	}
+	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].max_pods == 50
+		error_message="The default node pool must allow at least 50 pods per node"
+	}
+	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].name == "system"
 		error_message="The default node pool must be named \"system\""
 	}
@@ -17,6 +25,10 @@ run "should_apply_default_node_pool_settings" {
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].only_critical_addons_enabled == true
 		error_message="The default node pool must only schedule critical addons"
+	}
+	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].os_disk_type == "Ephemeral"
+		error_message="The default node pool must use ephemeral OS disks"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D4s_v4"
@@ -117,6 +129,10 @@ run "should_harden_cluster_defaults" {
 	assert {
 		condition=azurerm_kubernetes_cluster.main.image_cleaner_interval_hours == 48
 		error_message="The image cleaner must run on a 48 hour interval"
+	}
+	assert {
+		condition=azurerm_kubernetes_cluster.main.key_vault_secrets_provider[0].secret_rotation_enabled == true
+		error_message="The Secrets Store CSI Driver must autorotate secrets"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.local_account_disabled == false
