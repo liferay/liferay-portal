@@ -6,7 +6,9 @@
 package com.liferay.commerce.product.internal.upgrade.v6_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
@@ -74,6 +76,37 @@ public class CommerceProductStatusUpgradeProcessTest {
 			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
 	}
 
+	@Test
+	public void testUpgradeCPTaxCategoryStatus() throws Exception {
+		CPTaxCategory cpTaxCategory =
+			_cpTaxCategoryLocalService.addCPTaxCategory(
+				null, RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				ServiceContextTestUtil.getServiceContext());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPTaxCategory set status = ? where " +
+						"CPTaxCategoryId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(2, cpTaxCategory.getCPTaxCategoryId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpTaxCategory = _cpTaxCategoryLocalService.getCPTaxCategory(
+			cpTaxCategory.getCPTaxCategoryId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpTaxCategory.getStatus());
+	}
+
 	private void _runUpgrade() throws Exception {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator, _CLASS_NAME);
@@ -89,6 +122,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.commerce.product.internal.upgrade.registry.CommerceProductServiceUpgradeStepRegistrator))"
