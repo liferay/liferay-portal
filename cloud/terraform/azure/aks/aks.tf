@@ -10,6 +10,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 	azure_policy_enabled=true
 	dns_prefix=var.deployment_name
 	image_cleaner_enabled=true
+	image_cleaner_interval_hours=48
 	local_account_disabled=false
 	location=var.region
 	name=local.cluster_name
