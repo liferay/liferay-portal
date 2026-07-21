@@ -1,6 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxws", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.frontend.simple", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.ws.policy", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"

@@ -5,7 +5,7 @@ dependencies {
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
