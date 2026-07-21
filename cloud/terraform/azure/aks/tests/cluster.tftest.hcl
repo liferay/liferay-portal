@@ -1,3 +1,6 @@
+mock_provider "azurerm" {
+	source="./tests/mocks"
+}
 run "should_apply_default_node_pool_settings" {
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].auto_scaling_enabled == false

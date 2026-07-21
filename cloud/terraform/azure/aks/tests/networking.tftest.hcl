@@ -1,3 +1,6 @@
+mock_provider "azurerm" {
+	source="./tests/mocks"
+}
 run "should_compute_subnet_cidr_from_vpc_cidr" {
 	assert {
 		condition=local.subnet_cidr == "10.0.0.0/20"

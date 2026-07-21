@@ -1,3 +1,6 @@
+mock_provider "azurerm" {
+	source="./tests/mocks"
+}
 run "should_configure_federated_identity_credential" {
 	assert {
 		condition=azurerm_federated_identity_credential.liferay.name == "liferay-test-liferay-default"
