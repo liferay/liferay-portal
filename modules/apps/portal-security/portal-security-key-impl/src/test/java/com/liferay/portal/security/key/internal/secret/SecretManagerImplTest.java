@@ -57,16 +57,11 @@ public class SecretManagerImplTest {
 	public void testDeleteSecret() {
 		String secretProviderId = RandomTestUtil.randomString();
 
-		Mockito.when(
-			_serviceTrackerMap.getService(secretProviderId)
-		).thenReturn(
-			null
-		);
-
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretManagerImpl.deleteSecret(
-				RandomTestUtil.randomLong(), _keyReference(secretProviderId)));
+				RandomTestUtil.randomLong(),
+				_createKeyReference(secretProviderId)));
 	}
 
 	@Test
@@ -119,6 +114,9 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testGetSecret() throws Exception {
+
+		// Delegates to the provider
+
 		long companyId = RandomTestUtil.randomLong();
 		String secretIdentifier = RandomTestUtil.randomString();
 		String secretProviderId = RandomTestUtil.randomString();
@@ -128,7 +126,7 @@ public class SecretManagerImplTest {
 		).thenReturn(
 			new Secret(
 				RandomTestUtil.randomBytes(),
-				_keyReference(secretIdentifier, secretProviderId))
+				_createKeyReference(secretIdentifier, secretProviderId))
 		);
 
 		Mockito.when(
@@ -144,13 +142,15 @@ public class SecretManagerImplTest {
 		);
 
 		_secretManagerImpl.getSecret(
-			companyId, _keyReference(secretIdentifier, secretProviderId));
+			companyId, _createKeyReference(secretIdentifier, secretProviderId));
 
 		Mockito.verify(
 			_secretProvider
 		).getSecret(
 			companyId, secretIdentifier
 		);
+
+		// Throws when the provider is in an error state
 
 		Mockito.when(
 			_secretProvider.getProviderStatus()
@@ -161,12 +161,15 @@ public class SecretManagerImplTest {
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretManagerImpl.getSecret(
-				RandomTestUtil.randomLong(), _keyReference(secretProviderId)));
+				RandomTestUtil.randomLong(),
+				_createKeyReference(secretProviderId)));
 	}
 
 	@Test
 	public void testGetSecretProviderIds() {
 		long companyId = RandomTestUtil.randomLong();
+
+		// Includes a provider that allows the company
 
 		Mockito.when(
 			_secretProvider.isAllowedCompany(companyId)
@@ -191,6 +194,8 @@ public class SecretManagerImplTest {
 		Assert.assertEquals(
 			Collections.singletonList(secretProviderId),
 			_secretManagerImpl.getSecretProviderIds(companyId));
+
+		// Excludes a provider that does not allow the company
 
 		Mockito.when(
 			_secretProvider.isAllowedCompany(companyId)
@@ -223,7 +228,7 @@ public class SecretManagerImplTest {
 		String secretIdentifier = RandomTestUtil.randomString();
 
 		try (Secret secret = new Secret(
-				_keyReference(secretIdentifier, secretProviderId),
+				_createKeyReference(secretIdentifier, secretProviderId),
 				RandomTestUtil.randomString())) {
 
 			_secretManagerImpl.putSecret(companyId, secret);
@@ -239,11 +244,12 @@ public class SecretManagerImplTest {
 		_testPutSecretResolvesProviderWildcard(RandomTestUtil.randomLong());
 	}
 
-	private KeyReference _keyReference(String secretProviderId) {
-		return _keyReference(RandomTestUtil.randomString(), secretProviderId);
+	private KeyReference _createKeyReference(String secretProviderId) {
+		return _createKeyReference(
+			RandomTestUtil.randomString(), secretProviderId);
 	}
 
-	private KeyReference _keyReference(
+	private KeyReference _createKeyReference(
 		String secretIdentifier, String secretProviderId) {
 
 		return new KeyReference(
@@ -289,7 +295,8 @@ public class SecretManagerImplTest {
 		);
 
 		try (Secret secret = new Secret(
-				_keyReference(RandomTestUtil.randomString(), StringPool.STAR),
+				_createKeyReference(
+					RandomTestUtil.randomString(), StringPool.STAR),
 				RandomTestUtil.randomString())) {
 
 			_secretManagerImpl.putSecret(companyId, secret);
