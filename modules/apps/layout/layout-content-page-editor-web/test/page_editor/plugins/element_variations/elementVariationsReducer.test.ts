@@ -71,7 +71,7 @@ describe('elementVariationsReducer', () => {
 			).toEqual({
 				defaultLanguageId: 'en_US',
 				draftElementVariation: null,
-				editableElementOptions: [],
+				editableElementOptions: null,
 				elementVariations: [],
 				experienceKey: '',
 				highlightedTargetElement: null,
