@@ -65,6 +65,70 @@ describe('getEventDashboardUrl', () => {
 		);
 	});
 
+	it('builds an asset dashboard link for a blog event using entryId', () => {
+		const event = buildEvent({
+			applicationId: 'Blog',
+			assetTitle: 'A Guide to Headless CMS',
+			name: 'blogViewed',
+			properties: [{name: 'entryId', value: '372644605'}],
+		});
+
+		expect(getEventDashboardUrl(event, CONTEXT)).toBe(
+			'/workspace/liferay.com/420253908131944590/assets/blogs/372644605/page/Any/A%20Guide%20to%20Headless%20CMS/blog?rangeKey=30'
+		);
+	});
+
+	it('builds an asset dashboard link for a document event using fileEntryId', () => {
+		const event = buildEvent({
+			applicationId: 'Document',
+			assetTitle: 'Liferay-vs-Adobe',
+			name: 'documentPreviewed',
+			properties: [{name: 'fileEntryId', value: '527759973'}],
+		});
+
+		expect(getEventDashboardUrl(event, CONTEXT)).toBe(
+			'/workspace/liferay.com/420253908131944590/assets/documents-and-media/527759973/page/Any/Liferay-vs-Adobe/document?rangeKey=30'
+		);
+	});
+
+	it('builds an object-entry dashboard link using the external reference code and object definition name', () => {
+		const event = buildEvent({
+			applicationId: 'ObjectEntry',
+			assetTitle: 'England vs Argentina',
+			name: 'objectEntryViewed',
+			properties: [
+				{name: 'externalReferenceCode', value: 'match-102'},
+				{name: 'objectDefinitionName', value: 'WorldCupMatch'},
+			],
+		});
+
+		expect(getEventDashboardUrl(event, CONTEXT)).toBe(
+			'/workspace/liferay.com/420253908131944590/assets/object-entry/match-102/page/Any/England%20vs%20Argentina/WorldCupMatch?rangeKey=30'
+		);
+	});
+
+	it('returns undefined for an asset event missing its id property', () => {
+		const event = buildEvent({
+			applicationId: 'Document',
+			assetTitle: 'Untracked download',
+			name: 'documentPreviewed',
+			properties: [],
+		});
+
+		expect(getEventDashboardUrl(event, CONTEXT)).toBeUndefined();
+	});
+
+	it('returns undefined for an object-entry event missing the object definition name', () => {
+		const event = buildEvent({
+			applicationId: 'ObjectEntry',
+			assetTitle: 'England vs Argentina',
+			name: 'objectEntryViewed',
+			properties: [{name: 'externalReferenceCode', value: 'match-102'}],
+		});
+
+		expect(getEventDashboardUrl(event, CONTEXT)).toBeUndefined();
+	});
+
 	it('returns undefined for a webhook event', () => {
 		expect(
 			getEventDashboardUrl(buildEvent(), {...CONTEXT, isWebhook: true})
@@ -73,8 +137,8 @@ describe('getEventDashboardUrl', () => {
 
 	it('returns undefined for an unmapped application id', () => {
 		const event = buildEvent({
-			applicationId: 'Blog',
-			properties: [{name: 'entryId', value: '1'}],
+			applicationId: 'CustomEvent',
+			properties: [{name: 'customId', value: '1'}],
 		});
 
 		expect(getEventDashboardUrl(event, CONTEXT)).toBeUndefined();

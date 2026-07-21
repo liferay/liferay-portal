@@ -12,6 +12,16 @@ const ASSET_APPLICATIONS: Record<
 	string,
 	{idProperty: string; route: string; type: string}
 > = {
+	[AssetTypes.Blog]: {
+		idProperty: 'entryId',
+		route: Routes.ASSETS_BLOGS_OVERVIEW,
+		type: 'blog',
+	},
+	[AssetTypes.Document]: {
+		idProperty: 'fileEntryId',
+		route: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
+		type: 'document',
+	},
 	[AssetTypes.Form]: {
 		idProperty: 'formId',
 		route: Routes.ASSETS_FORMS_OVERVIEW,
@@ -61,9 +71,13 @@ const buildQuery = (rangeSelectors?: RangeSelectors): string => {
  * - Asset events (identified by their `applicationId`) link to the asset
  *   dashboard, using the type-specific id property as the asset id; the
  *   touchpoint is always "Any".
+ * - Object-entry events link to the object-entry dashboard, using the entry's
+ *   external reference code as the asset id and the object definition name as
+ *   the dashboard type.
  * - pageViewed events link to the page (touchpoint) dashboard, using the
  *   canonical URL as the touchpoint.
- * - Anything else (e.g. unmapped application ids) returns undefined.
+ * - Anything else (e.g. unmapped application ids or events missing their id
+ *   property) returns undefined.
  */
 export const getEventDashboardUrl = (
 	event: UserSessionEvent,
@@ -90,6 +104,26 @@ export const getEventDashboardUrl = (
 			groupId,
 			touchpoint: 'Any',
 			type: assetApplication.type,
+			...(title && {title}),
+		})}${buildQuery(rangeSelectors)}`;
+	}
+
+	if (event.applicationId === AssetTypes.ObjectEntry) {
+		const assetId = getProperty(event, 'externalReferenceCode');
+		const type = getProperty(event, 'objectDefinitionName');
+
+		if (!assetId || !type) {
+			return undefined;
+		}
+
+		const title = event.assetTitle || event.pageTitle;
+
+		return `${toRoute(Routes.ASSETS_OBJECT_ENTRY_OVERVIEW, {
+			assetId,
+			channelId,
+			groupId,
+			touchpoint: 'Any',
+			type,
 			...(title && {title}),
 		})}${buildQuery(rangeSelectors)}`;
 	}
