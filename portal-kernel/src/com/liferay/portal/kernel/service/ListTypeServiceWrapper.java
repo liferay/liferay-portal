@@ -47,7 +47,8 @@ public class ListTypeServiceWrapper
 
 	@Override
 	public long getListTypeId(
-		long companyId, java.lang.String name, java.lang.String type) {
+			long companyId, java.lang.String name, java.lang.String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _listTypeService.getListTypeId(companyId, name, type);
 	}
@@ -97,4 +98,4 @@ public class ListTypeServiceWrapper
 	private ListTypeService _listTypeService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:558814426
+// LIFERAY-SERVICE-BUILDER-HASH:-729478996

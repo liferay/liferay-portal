@@ -45,7 +45,9 @@ public class ListTypeServiceUtil {
 		return getService().getListType(companyId, name, type);
 	}
 
-	public static long getListTypeId(long companyId, String name, String type) {
+	public static long getListTypeId(long companyId, String name, String type)
+		throws PortalException {
+
 		return getService().getListTypeId(companyId, name, type);
 	}
 
@@ -85,4 +87,4 @@ public class ListTypeServiceUtil {
 	private static volatile ListTypeService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1762656099
+// LIFERAY-SERVICE-BUILDER-HASH:1815735563

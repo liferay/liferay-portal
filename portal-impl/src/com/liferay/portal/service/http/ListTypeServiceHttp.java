@@ -155,7 +155,9 @@ public class ListTypeServiceHttp {
 	}
 
 	public static long getListTypeId(
-		HttpPrincipal httpPrincipal, long companyId, String name, String type) {
+			HttpPrincipal httpPrincipal, long companyId, String name,
+			String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -171,6 +173,13 @@ public class ListTypeServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -315,4 +324,4 @@ public class ListTypeServiceHttp {
 	};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1960186770
+// LIFERAY-SERVICE-BUILDER-HASH:901028312

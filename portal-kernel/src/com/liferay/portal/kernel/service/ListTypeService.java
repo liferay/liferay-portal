@@ -52,7 +52,8 @@ public interface ListTypeService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getListTypeId(long companyId, String name, String type);
+	public long getListTypeId(long companyId, String name, String type)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ListType> getListTypes(long companyId, String type);
@@ -70,4 +71,4 @@ public interface ListTypeService extends BaseService {
 	public void validate(long listTypeId, String type) throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2120261031
+// LIFERAY-SERVICE-BUILDER-HASH:-321237371

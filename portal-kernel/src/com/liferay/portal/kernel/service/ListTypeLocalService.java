@@ -250,7 +250,8 @@ public interface ListTypeLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getListTypeId(long companyId, String name, String type);
+	public long getListTypeId(long companyId, String name, String type)
+		throws PortalException;
 
 	/**
 	 * Returns a range of all the list types.
@@ -313,4 +314,4 @@ public interface ListTypeLocalService
 	public void validate(long listTypeId, String type) throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1510231488
+// LIFERAY-SERVICE-BUILDER-HASH:200992620
