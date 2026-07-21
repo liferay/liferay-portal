@@ -76,8 +76,10 @@ public class PortletLocalServiceTest {
 					"jakarta.portlet.name", portletName
 				).build()));
 
-		_testFetchPortletById(RandomTestUtil.randomString(), portletName);
-		_testFetchPortletById(null, portletName);
+		_testFetchPortletById(
+			RandomTestUtil.randomString(), portletName,
+			TestPropsValues.getUserId());
+		_testFetchPortletById(null, portletName, 0);
 	}
 
 	@Test
@@ -156,33 +158,48 @@ public class PortletLocalServiceTest {
 			customAttributesDisplays.size());
 	}
 
-	private void _testFetchPortletById(String instanceId, String portletName)
+	private void _testFetchPortletById(
+			String instanceId, String portletName, long userId)
 		throws Exception {
 
-		String portletId = PortletIdCodec.encode(portletName, instanceId);
+		String portletId = PortletIdCodec.encode(
+			portletName, userId, instanceId);
 
-		com.liferay.portal.kernel.model.Portlet portlet =
+		com.liferay.portal.kernel.model.Portlet portlet1 =
 			_portletLocalService.fetchPortletById(
 				TestPropsValues.getCompanyId(), portletId);
 
-		Assert.assertEquals(instanceId, portlet.getInstanceId());
-		Assert.assertEquals(portletId, portlet.getPortletId());
-		Assert.assertEquals(portletName, portlet.getPortletName());
-		Assert.assertTrue(portlet.isInstanceable());
-		Assert.assertFalse(portlet.isStatic());
-		Assert.assertFalse(portlet.isStaticStart());
+		Assert.assertEquals(instanceId, portlet1.getInstanceId());
+		Assert.assertEquals(portletId, portlet1.getPortletId());
+		Assert.assertEquals(portletName, portlet1.getPortletName());
+		Assert.assertTrue(portlet1.getStaticEnd());
+		Assert.assertFalse(portlet1.getStaticStart());
+		Assert.assertEquals(userId, portlet1.getUserId());
+		Assert.assertEquals(portletId.hashCode(), portlet1.hashCode());
+		Assert.assertTrue(portlet1.isInstanceable());
+		Assert.assertFalse(portlet1.isStatic());
+		Assert.assertTrue(portlet1.isStaticEnd());
+		Assert.assertFalse(portlet1.isStaticStart());
 
-		portlet.setStatic(true);
-		portlet.setStaticStart(true);
+		portlet1.setStatic(true);
+		portlet1.setStaticStart(true);
 
-		Assert.assertTrue(portlet.isStatic());
-		Assert.assertTrue(portlet.isStaticStart());
+		Assert.assertFalse(portlet1.getStaticEnd());
+		Assert.assertTrue(portlet1.getStaticStart());
+		Assert.assertTrue(portlet1.isStatic());
+		Assert.assertFalse(portlet1.isStaticEnd());
+		Assert.assertTrue(portlet1.isStaticStart());
 
-		portlet = _portletLocalService.fetchPortletById(
-			TestPropsValues.getCompanyId(), portletId);
+		com.liferay.portal.kernel.model.Portlet portlet2 =
+			_portletLocalService.fetchPortletById(
+				TestPropsValues.getCompanyId(), portletId);
 
-		Assert.assertFalse(portlet.isStatic());
-		Assert.assertFalse(portlet.isStaticStart());
+		Assert.assertEquals(0, portlet1.compareTo(portlet2));
+		Assert.assertEquals(portlet1, portlet2);
+		Assert.assertEquals(portlet1.hashCode(), portlet2.hashCode());
+
+		Assert.assertFalse(portlet2.isStatic());
+		Assert.assertFalse(portlet2.isStaticStart());
 	}
 
 	@Inject
