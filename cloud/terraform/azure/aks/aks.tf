@@ -22,10 +22,9 @@ resource "azurerm_kubernetes_cluster" "main" {
 	tags=local.tags
 	workload_identity_enabled=true
 	default_node_pool {
-		auto_scaling_enabled=true
-		max_count=var.max_node_count
-		min_count=var.min_node_count
+		auto_scaling_enabled=false
 		name="system"
+		node_count=var.system_node_count
 		only_critical_addons_enabled=true
 		temporary_name_for_rotation="systemtmp"
 		vm_size=var.machine_type
