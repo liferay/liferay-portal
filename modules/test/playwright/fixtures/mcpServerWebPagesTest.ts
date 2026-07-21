@@ -6,12 +6,17 @@
 import {test} from '@playwright/test';
 
 import {DataMasksPage} from '../pages/mcp-server-web/DataMasksPage';
+import {PromptsPage} from '../pages/mcp-server-web/PromptsPage';
 
 const mcpServerWebPagesTest = test.extend<{
 	dataMasksPage: DataMasksPage;
+	promptsPage: PromptsPage;
 }>({
 	dataMasksPage: async ({page}, use) => {
 		await use(new DataMasksPage(page));
+	},
+	promptsPage: async ({page}, use) => {
+		await use(new PromptsPage(page));
 	},
 });
 
