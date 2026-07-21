@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -106,6 +107,8 @@ public class CommercePricingClassLocalServiceImpl
 			date.getTime(), user.getTimeZone());
 
 		commercePricingClass.setLastPublishDate(calendar.getTime());
+
+		commercePricingClass.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		commercePricingClass.setExpandoBridgeAttributes(serviceContext);
 
