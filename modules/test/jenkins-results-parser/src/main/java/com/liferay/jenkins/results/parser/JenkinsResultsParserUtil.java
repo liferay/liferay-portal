@@ -2469,6 +2469,16 @@ public class JenkinsResultsParserUtil {
 		Properties buildProperties, int minimumRAM, int maximumSlavesPerHost,
 		String cohortName, String networkName) {
 
+		return getJenkinsMasters(
+			buildProperties, minimumRAM, maximumSlavesPerHost, cohortName,
+			networkName, false);
+	}
+
+	public static List<JenkinsMaster> getJenkinsMasters(
+		Properties buildProperties, int minimumRAM, int maximumSlavesPerHost,
+		String cohortName, String networkName,
+		boolean includeBlackListedJenkinsMasters) {
+
 		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
 
 		Pattern pattern = Pattern.compile(
@@ -2485,7 +2495,8 @@ public class JenkinsResultsParserUtil {
 			JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 				matcher.group("jenkinsMasterName"));
 
-			if (jenkinsMaster.isBlackListed() ||
+			if ((!includeBlackListedJenkinsMasters &&
+				 jenkinsMaster.isBlackListed()) ||
 				(jenkinsMaster.getSlaveRAM() < minimumRAM) ||
 				(jenkinsMaster.getSlavesPerHost() > maximumSlavesPerHost)) {
 
