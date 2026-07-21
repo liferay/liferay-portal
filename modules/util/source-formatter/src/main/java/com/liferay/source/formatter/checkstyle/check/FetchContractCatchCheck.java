@@ -201,7 +201,7 @@ public class FetchContractCatchCheck extends BaseCheck {
 			return null;
 		}
 
-		return methodCallClassName + methodCallMethodName;
+		return methodCallClassName + "." + methodCallMethodName;
 	}
 
 	private boolean _isSwallowToSentinel(DetailAST detailAST) {
