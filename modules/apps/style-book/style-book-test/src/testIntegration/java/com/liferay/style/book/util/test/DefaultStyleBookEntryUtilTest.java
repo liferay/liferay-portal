@@ -138,7 +138,7 @@ public class DefaultStyleBookEntryUtilTest {
 
 		_layout = _layoutLocalService.updateLookAndFeel(
 			_group.getGroupId(), _layout.isPrivateLayout(),
-			_layout.getLayoutId(), _THEME_ID_DIALECT, "01", StringPool.BLANK);
+			_layout.getLayoutId(), _THEME_ID_CMS, "01", StringPool.BLANK);
 
 		Assert.assertNull(
 			DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(_layout));
@@ -147,7 +147,7 @@ public class DefaultStyleBookEntryUtilTest {
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId(), true, null, RandomTestUtil.randomString(),
-				null, _THEME_ID_DIALECT, null);
+				null, _THEME_ID_CMS, null);
 
 		StyleBookEntry defaultStyleBookEntry =
 			DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(_layout);
@@ -372,7 +372,7 @@ public class DefaultStyleBookEntryUtilTest {
 
 	private static final String _THEME_ID_CLASSIC = "classic_WAR_classictheme";
 
-	private static final String _THEME_ID_DIALECT = "dialect_WAR_dialecttheme";
+	private static final String _THEME_ID_CMS = "cms_WAR_cmstheme";
 
 	@Inject
 	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -88,6 +89,9 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
 
 		_depotEntry = _addDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY);
 	}
