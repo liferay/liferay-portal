@@ -6,6 +6,7 @@
 package com.liferay.commerce.pricing.internal.upgrade.registry;
 
 import com.liferay.commerce.pricing.internal.upgrade.v2_1_0.CommercePricingConfigurationUpgradeProcess;
+import com.liferay.commerce.pricing.internal.upgrade.v2_4_0.CommercePricingClassUpgradeProcess;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -76,6 +77,9 @@ public class CommercePricingServiceUpgradeStepRegistrator
 			new CTModelUpgradeProcess(
 				"CPricingClassCPDefinitionRel", "CommercePriceModifier",
 				"CommercePriceModifierRel", "CommercePricingClass"));
+
+		registry.register(
+			"2.3.0", "2.4.0", new CommercePricingClassUpgradeProcess());
 	}
 
 	@Reference
