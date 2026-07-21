@@ -250,7 +250,8 @@ public class FragmentEntryLocalServiceTest {
 		_testUpdateFragmentEntryNameCssHtmlJsConfigurationAndStatus();
 		_testUpdateFragmentEntryNameCssHtmlJsConfigurationPreviewFileEntryIdAndStatus();
 		_testUpdateFragmentEntryPreviewFileEntryId();
-		_testUpdateFragmentEntryVersions();
+		_testUpdateFragmentEntryVersions(0);
+		_testUpdateFragmentEntryVersions(2);
 		_testUpdateFragmentEntryWithCacheable();
 		_testUpdateFragmentEntryWithHtmlWithAmpersand();
 		_testUpdateFragmentEntryWithPreviewFileEntryId();
@@ -1298,11 +1299,6 @@ public class FragmentEntryLocalServiceTest {
 
 		Assert.assertEquals(
 			previewFileEntryId + 1, fragmentEntry.getPreviewFileEntryId());
-	}
-
-	private void _testUpdateFragmentEntryVersions() throws Exception {
-		_testUpdateFragmentEntryVersions(2);
-		_testUpdateFragmentEntryVersions(0);
 	}
 
 	private void _testUpdateFragmentEntryVersions(int maximumVersionsPerEntry)
