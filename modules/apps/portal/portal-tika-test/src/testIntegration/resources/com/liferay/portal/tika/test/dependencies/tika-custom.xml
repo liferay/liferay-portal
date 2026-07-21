@@ -4,7 +4,7 @@
 			<mime>application/pdf</mime>
 			<mime>application/vnd.oasis.opendocument.text</mime>
 		</parser>
-		<parser class="org.apache.tika.parser.html.HtmlParser" />
+		<parser class="org.apache.tika.parser.html.JSoupParser" />
 		<parser class="org.apache.tika.parser.txt.TXTParser" />
 	</parsers>
 </properties>

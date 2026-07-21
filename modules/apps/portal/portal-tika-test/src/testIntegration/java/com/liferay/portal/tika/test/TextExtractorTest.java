@@ -25,7 +25,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.ServletContext;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,12 +32,9 @@ import java.io.InputStream;
 
 import java.nio.charset.Charset;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,41 +50,6 @@ public class TextExtractorTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		Class<?> clazz = _textExtractor.getClass();
-
-		ClassLoader classLoader = clazz.getClassLoader();
-
-		Class<?> tesseractOCRParserClass = classLoader.loadClass(
-			"org.apache.tika.parser.ocr.TesseractOCRParser");
-
-		Map<String, Boolean> tesseractPresent =
-			ReflectionTestUtil.getAndSetFieldValue(
-				tesseractOCRParserClass, "TESSERACT_PRESENT",
-				new HashMap<String, Boolean>() {
-
-					@Override
-					public boolean containsKey(Object key) {
-						return true;
-					}
-
-					@Override
-					public Boolean get(Object key) {
-						return Boolean.FALSE;
-					}
-
-				});
-
-		_resetTikaConfigCloseable = () -> ReflectionTestUtil.setFieldValue(
-			tesseractOCRParserClass, "TESSERACT_PRESENT", tesseractPresent);
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws IOException {
-		_resetTikaConfigCloseable.close();
-	}
 
 	@Test
 	public void testCustomTikaConfigXml() throws Exception {
@@ -363,9 +324,7 @@ public class TextExtractorTest {
 
 	private static final String _TIKA_CUSTOM_XML = "tika-custom.xml";
 
-	private static Closeable _resetTikaConfigCloseable;
-
 	@Inject
-	private static TextExtractor _textExtractor;
+	private TextExtractor _textExtractor;
 
 }
