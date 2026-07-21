@@ -14,6 +14,7 @@ dependencies {
 	compileInclude group: "net.java.dev.jna", name: "jna", version: "4.1.0"
 	compileInclude group: "org.apache.james", name: "apache-mime4j-core", version: "0.8.14"
 	compileInclude group: "org.apache.james", name: "apache-mime4j-dom", version: "0.8.14"
+	compileInclude group: "org.apache.pdfbox", name: "jempbox", version: "1.8.17"
 	compileInclude group: "org.apache.pdfbox", name: "xmpbox", version: "3.0.7"
 	compileInclude group: "org.apache.poi", name: "poi-scratchpad", version: "5.4.1"
 	compileInclude group: "org.apache.tika", name: "tika-core", version: "3.3.1"
