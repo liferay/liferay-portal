@@ -51,6 +51,7 @@ import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
 import com.liferay.osb.faro.web.internal.helper.ContactsCSVHelper;
+import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ChannelDataSourceDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DXPGroupDisplay;
@@ -463,10 +464,11 @@ public class DataSourceFaroController extends BaseFaroController {
 	@Path("/field-catalog")
 	@POST
 	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
-	public Map<String, List<DataSourceFieldCatalogEntry>> discoverFieldCatalog(
-			@PathParam("groupId") long groupId,
-			@FormParam("credentials") Credentials credentials,
-			@FormParam("url") String url)
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+			discoverDataSourceFieldCatalogEntries(
+				@PathParam("groupId") long groupId,
+				@FormParam("credentials") Credentials credentials,
+				@FormParam("url") String url)
 		throws Exception {
 
 		DataSource dataSource = new DataSource();
@@ -479,7 +481,7 @@ public class DataSourceFaroController extends BaseFaroController {
 		dataSource.setProvider(new SalesforceProvider());
 		dataSource.setUrl(url);
 
-		return contactsEngineClient.discoverDataSourceFieldCatalog(
+		return contactsEngineClient.discoverDataSourceFieldCatalogEntries(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
 			dataSource);
 	}
@@ -538,6 +540,44 @@ public class DataSourceFaroController extends BaseFaroController {
 			groupId,
 			contactsEngineClient.getDataSource(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId), id));
+	}
+
+	@GET
+	@Path("/{id}/field-catalog")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public Map<String, List<DataSourceFieldCatalogEntry>>
+			getDataSourceFieldCatalogEntries(
+				@PathParam("groupId") long groupId, @PathParam("id") String id,
+				@QueryParam("refresh") boolean refresh)
+		throws Exception {
+
+		return contactsEngineClient.getDataSourceFieldCatalogEntries(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
+			refresh);
+	}
+
+	@GET
+	@Path("/{id}/field-catalog/{entityType}")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroFDSResultsDisplay<DataSourceFieldCatalogEntry>
+			getDataSourceFieldCatalogEntriesFaroFDSResultsDisplay(
+				@PathParam("groupId") long groupId, @PathParam("id") String id,
+				@PathParam("entityType") String entityType,
+				@QueryParam("filter") String filterString,
+				@QueryParam("page") int page,
+				@QueryParam("pageSize") int pageSize,
+				@QueryParam("search") String search,
+				@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
+					sortString)
+		throws Exception {
+
+		Results<DataSourceFieldCatalogEntry> results =
+			contactsEngineClient.getDataSourceFieldCatalogEntries(
+				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				entityType, filterString, id, search, page, pageSize,
+				sortString);
+
+		return new FaroFDSResultsDisplay<>(results, page, pageSize);
 	}
 
 	@Path("/data_source_id")
@@ -916,19 +956,6 @@ public class DataSourceFaroController extends BaseFaroController {
 	@Override
 	public int[] getEntityTypes() {
 		return _ENTITY_TYPES.clone();
-	}
-
-	@GET
-	@Path("/{id}/field-catalog")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public Map<String, List<DataSourceFieldCatalogEntry>> getFieldCatalog(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@QueryParam("refresh") boolean refresh)
-		throws Exception {
-
-		return contactsEngineClient.getDataSourceFieldCatalog(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-			refresh);
 	}
 
 	@GET

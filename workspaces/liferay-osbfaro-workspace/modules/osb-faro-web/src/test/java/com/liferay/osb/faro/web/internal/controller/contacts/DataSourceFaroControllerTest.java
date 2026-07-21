@@ -19,6 +19,7 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.helper.ContactsCSVHelper;
+import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMappingDisplay;
 import com.liferay.osb.faro.web.internal.param.FaroParam;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -271,7 +272,7 @@ public class DataSourceFaroControllerTest {
 	}
 
 	@Test
-	public void testDiscoverFieldCatalog() throws Exception {
+	public void testDiscoverDataSourceFieldCatalogEntries() throws Exception {
 		Map<String, List<DataSourceFieldCatalogEntry>>
 			dataSourceFieldCatalogEntries =
 				HashMapBuilder.<String, List<DataSourceFieldCatalogEntry>>put(
@@ -282,7 +283,7 @@ public class DataSourceFaroControllerTest {
 				).build();
 
 		Mockito.when(
-			_contactsEngineClient.discoverDataSourceFieldCatalog(
+			_contactsEngineClient.discoverDataSourceFieldCatalogEntries(
 				Mockito.eq(_faroProject), Mockito.any(DataSource.class))
 		).thenReturn(
 			dataSourceFieldCatalogEntries
@@ -290,7 +291,7 @@ public class DataSourceFaroControllerTest {
 
 		Assert.assertSame(
 			dataSourceFieldCatalogEntries,
-			_dataSourceFaroController.discoverFieldCatalog(
+			_dataSourceFaroController.discoverDataSourceFieldCatalogEntries(
 				32719L, null, "https://test.my.salesforce.com/"));
 
 		ArgumentCaptor<DataSource> argumentCaptor = ArgumentCaptor.forClass(
@@ -298,7 +299,7 @@ public class DataSourceFaroControllerTest {
 
 		Mockito.verify(
 			_contactsEngineClient
-		).discoverDataSourceFieldCatalog(
+		).discoverDataSourceFieldCatalogEntries(
 			Mockito.eq(_faroProject), argumentCaptor.capture()
 		);
 
@@ -338,6 +339,79 @@ public class DataSourceFaroControllerTest {
 
 		Assert.assertNotNull(token);
 		Assert.assertFalse(token.isEmpty());
+	}
+
+	@Test
+	public void testGetDataSourceFieldCatalogEntries() throws Exception {
+		Map<String, List<DataSourceFieldCatalogEntry>>
+			dataSourceFieldCatalogEntries =
+				HashMapBuilder.<String, List<DataSourceFieldCatalogEntry>>put(
+					"ACCOUNT",
+					Arrays.asList(
+						new DataSourceFieldCatalogEntry(
+							"Industry", false, false, "picklist"),
+						new DataSourceFieldCatalogEntry(
+							"Name", true, true, "string"))
+				).build();
+
+		Mockito.when(
+			_contactsEngineClient.getDataSourceFieldCatalogEntries(
+				_faroProject, "32783", true)
+		).thenReturn(
+			dataSourceFieldCatalogEntries
+		);
+
+		Assert.assertSame(
+			dataSourceFieldCatalogEntries,
+			_dataSourceFaroController.getDataSourceFieldCatalogEntries(
+				32719L, "32783", true));
+
+		Mockito.verify(
+			_contactsEngineClient
+		).getDataSourceFieldCatalogEntries(
+			_faroProject, "32783", true
+		);
+	}
+
+	@Test
+	public void testGetDataSourceFieldCatalogEntriesFaroFDSResultsDisplay()
+		throws Exception {
+
+		Results<DataSourceFieldCatalogEntry> results = new Results<>(
+			Arrays.asList(
+				new DataSourceFieldCatalogEntry(
+					"Industry", false, false, "picklist"),
+				new DataSourceFieldCatalogEntry("Name", true, true, "string")),
+			93);
+
+		Mockito.when(
+			_contactsEngineClient.getDataSourceFieldCatalogEntries(
+				_faroProject, "ACCOUNT", "type eq 'string'", "32783", "Na", 1,
+				20, "name:asc")
+		).thenReturn(
+			results
+		);
+
+		FaroFDSResultsDisplay<DataSourceFieldCatalogEntry>
+			faroFDSResultsDisplay =
+				_dataSourceFaroController.
+					getDataSourceFieldCatalogEntriesFaroFDSResultsDisplay(
+						32719L, "32783", "ACCOUNT", "type eq 'string'", 1, 20,
+						"Na", "name:asc");
+
+		Assert.assertEquals(
+			results.getItems(), faroFDSResultsDisplay.getItems());
+		Assert.assertEquals(5, faroFDSResultsDisplay.getLastPage());
+		Assert.assertEquals(1, faroFDSResultsDisplay.getPage());
+		Assert.assertEquals(20, faroFDSResultsDisplay.getPageSize());
+		Assert.assertEquals(93, faroFDSResultsDisplay.getTotalCount());
+
+		Mockito.verify(
+			_contactsEngineClient
+		).getDataSourceFieldCatalogEntries(
+			_faroProject, "ACCOUNT", "type eq 'string'", "32783", "Na", 1, 20,
+			"name:asc"
+		);
 	}
 
 	@Test
@@ -386,37 +460,6 @@ public class DataSourceFaroControllerTest {
 		Assert.assertEquals(
 			dataSourceMappingDisplays.toString(), 13,
 			dataSourceMappingDisplays.size());
-	}
-
-	@Test
-	public void testGetFieldCatalog() throws Exception {
-		Map<String, List<DataSourceFieldCatalogEntry>>
-			dataSourceFieldCatalogEntries =
-				HashMapBuilder.<String, List<DataSourceFieldCatalogEntry>>put(
-					"ACCOUNT",
-					Arrays.asList(
-						new DataSourceFieldCatalogEntry(
-							"Industry", false, false, "picklist"),
-						new DataSourceFieldCatalogEntry(
-							"Name", true, true, "string"))
-				).build();
-
-		Mockito.when(
-			_contactsEngineClient.getDataSourceFieldCatalog(
-				_faroProject, "32783", true)
-		).thenReturn(
-			dataSourceFieldCatalogEntries
-		);
-
-		Assert.assertSame(
-			dataSourceFieldCatalogEntries,
-			_dataSourceFaroController.getFieldCatalog(32719L, "32783", true));
-
-		Mockito.verify(
-			_contactsEngineClient
-		).getDataSourceFieldCatalog(
-			_faroProject, "32783", true
-		);
 	}
 
 	@Test
