@@ -329,6 +329,7 @@ public interface CommerceWishListLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceWishListsCount(long userId, long groupId);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceWishList getDefaultCommerceWishList(
 			long userId, long groupId, String guestUuid)
@@ -375,4 +376,4 @@ public interface CommerceWishListLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-829143369
+// LIFERAY-SERVICE-BUILDER-HASH:-1647897195

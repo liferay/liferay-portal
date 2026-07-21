@@ -41,6 +41,38 @@ import com.liferay.portal.kernel.util.MethodKey;
  */
 public class ListTypeServiceHttp {
 
+	public static com.liferay.portal.kernel.model.ListType fetchListType(
+		HttpPrincipal httpPrincipal, long companyId, String name, String type) {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				ListTypeServiceUtil.class, "fetchListType",
+				_fetchListTypeParameterTypes0);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, name, type);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.kernel.model.ListType)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.portal.kernel.model.ListType getListType(
 			HttpPrincipal httpPrincipal, long listTypeId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -48,7 +80,7 @@ public class ListTypeServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeServiceUtil.class, "getListType",
-				_getListTypeParameterTypes0);
+				_getListTypeParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, listTypeId);
@@ -66,38 +98,6 @@ public class ListTypeServiceHttp {
 						exception;
 				}
 
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.portal.kernel.model.ListType)returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static com.liferay.portal.kernel.model.ListType fetchListType(
-		HttpPrincipal httpPrincipal, long companyId, String name, String type) {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				ListTypeServiceUtil.class, "fetchListType",
-				_fetchListTypeParameterTypes1);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, name, type);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -294,11 +294,11 @@ public class ListTypeServiceHttp {
 
 	private static Log _log = LogFactoryUtil.getLog(ListTypeServiceHttp.class);
 
-	private static final Class<?>[] _getListTypeParameterTypes0 = new Class[] {
+	private static final Class<?>[] _fetchListTypeParameterTypes0 =
+		new Class[] {long.class, String.class, String.class};
+	private static final Class<?>[] _getListTypeParameterTypes1 = new Class[] {
 		long.class
 	};
-	private static final Class<?>[] _fetchListTypeParameterTypes1 =
-		new Class[] {long.class, String.class, String.class};
 	private static final Class<?>[] _getListTypeParameterTypes2 = new Class[] {
 		long.class, String.class, String.class
 	};
@@ -315,4 +315,4 @@ public class ListTypeServiceHttp {
 	};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:614428720
+// LIFERAY-SERVICE-BUILDER-HASH:1960186770

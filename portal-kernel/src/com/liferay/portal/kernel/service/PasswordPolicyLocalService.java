@@ -313,6 +313,7 @@ public interface PasswordPolicyLocalService
 	public PasswordPolicy getPasswordPolicyByUser(User user)
 		throws PortalException;
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PasswordPolicy getPasswordPolicyByUserId(long userId)
 		throws PortalException;
@@ -372,4 +373,4 @@ public interface PasswordPolicyLocalService
 	public PasswordPolicy updatePasswordPolicy(PasswordPolicy passwordPolicy);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1147952912
+// LIFERAY-SERVICE-BUILDER-HASH:-2089236586
