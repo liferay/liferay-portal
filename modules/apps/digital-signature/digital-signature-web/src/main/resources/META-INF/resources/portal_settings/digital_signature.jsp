@@ -17,6 +17,12 @@ DigitalSignatureConfiguration digitalSignatureConfiguration = (DigitalSignatureC
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-md-12">
+		<aui:input checked="<%= digitalSignatureConfiguration.enableEmbeddedView() %>" inlineLabel="right" label='<%= LanguageUtil.get(resourceBundle, "enable-embedded-view") %>' labelCssClass="simple-toggle-switch" name="enableEmbeddedView" type="toggle-switch" value="<%= digitalSignatureConfiguration.enableEmbeddedView() %>" />
+	</div>
+</div>
+
 <div class="form-group row">
 	<div class="col-md-12">
 		<aui:select label="site-settings-strategy" name="siteSettingsStrategy" onchange='<%= liferayPortletResponse.getNamespace() + "onChangeDigitalSignatureSiteSettingsStrategy(event);" %>' required="<%= true %>" value="<%= digitalSignatureConfiguration.siteSettingsStrategy() %>">

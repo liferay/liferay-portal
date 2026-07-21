@@ -19,6 +19,9 @@ public class DigitalSignatureWebKeys {
 	public static final String DIGITAL_SIGNATURE_API_USERNAME =
 		"DIGITAL_SIGNATURE_API_USERNAME";
 
+	public static final String DIGITAL_SIGNATURE_ENABLE_EMBEDDED_VIEW =
+		"DIGITAL_SIGNATURE_ENABLE_EMBEDDED_VIEW";
+
 	public static final String DIGITAL_SIGNATURE_ENABLED =
 		"DIGITAL_SIGNATURE_ENABLED";
 

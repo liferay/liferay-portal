@@ -34,6 +34,8 @@ public interface DigitalSignatureConfiguration {
 
 	public boolean enabled();
 
+	public boolean enableEmbeddedView();
+
 	public String environment();
 
 	@Meta.AD(deflt = "60000", required = false)

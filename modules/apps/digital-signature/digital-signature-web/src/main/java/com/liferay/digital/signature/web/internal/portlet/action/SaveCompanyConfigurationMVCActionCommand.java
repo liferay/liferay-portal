@@ -70,6 +70,9 @@ public class SaveCompanyConfigurationMVCActionCommand
 			).put(
 				"enabled", ParamUtil.getBoolean(actionRequest, "enabled")
 			).put(
+				"enableEmbeddedView",
+				ParamUtil.getBoolean(actionRequest, "enableEmbeddedView")
+			).put(
 				"environment", ParamUtil.getString(actionRequest, "environment")
 			).put(
 				"integrationKey",
