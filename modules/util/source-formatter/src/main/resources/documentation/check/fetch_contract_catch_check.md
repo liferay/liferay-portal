@@ -1,4 +1,4 @@
-## JavaFetchContractCatchCheck
+## FetchContractCatchCheck
 
 Do not catch `PortalException` or a `NoSuch*Exception` only to return the `null`
 or `false` absence sentinel when the try block holds a single local service or
@@ -6,22 +6,28 @@ persistence lookup. Using a not-found exception as an absence signal is
 exception-based control flow, and every local service and persistence lookup
 has a null-tolerant `fetch` sibling.
 
-Call the `fetch` sibling and check the result for `null` instead. For example,
+Call the `fetch` sibling and check the result for `null` instead.
 replace
 
-```
+#### Example
+
+Incorrect:
+
+```java
 try {
-	return fooLocalService.getFoo(fooId);
+    return fooLocalService.getFoo(fooId);
 }
 catch (NoSuchFooException noSuchFooException) {
-	return null;
+    return null;
 }
-```
-
-with
 
 ```
+
+Correct:
+
+```java
 return fooLocalService.fetchFoo(fooId);
+
 ```
 
 The check only flags a try block whose sole invocation is the lookup itself,
