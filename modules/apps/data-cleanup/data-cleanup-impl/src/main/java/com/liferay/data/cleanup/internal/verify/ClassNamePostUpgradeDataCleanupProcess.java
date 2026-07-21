@@ -9,7 +9,6 @@ import com.liferay.data.cleanup.internal.verify.util.PostUpgradeDataCleanupProce
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -143,11 +142,11 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 		String usedTableNamesSQL = sb.toString();
 
-		UnsafeConsumer<ClassName, Exception> unsafeConsumer = className -> {
+		for (ClassName className : classNames) {
 			String value = className.getValue();
 
 			if (!value.startsWith("com.liferay.")) {
-				return;
+				continue;
 			}
 
 			if (StringUtil.startsWith(
@@ -173,11 +172,9 @@ public class ClassNamePostUpgradeDataCleanupProcess
 					});
 
 				if (objectDefinition.get() != null) {
-					return;
+					continue;
 				}
 			}
-
-			boolean missing = false;
 
 			int index = value.indexOf(StringPool.DASH);
 
@@ -187,66 +184,11 @@ public class ClassNamePostUpgradeDataCleanupProcess
 				value = value.substring(0, index);
 			}
 
-			for (String currentValue : value.split("[-_]")) {
-				if (models.contains(currentValue)) {
-					continue;
-				}
+			if (_isClassDefined(
+					bundleContext, definedClasses, models,
+					packageNameBundlesMap, value)) {
 
-				Boolean defined = definedClasses.get(currentValue);
-
-				if (defined == null) {
-					defined = false;
-
-					Set<Bundle> candidateBundles = new LinkedHashSet<>();
-
-					int packageIndex = currentValue.lastIndexOf(
-						CharPool.PERIOD);
-
-					if (packageIndex != -1) {
-						List<Bundle> exportingBundles =
-							packageNameBundlesMap.get(
-								currentValue.substring(0, packageIndex));
-
-						if (exportingBundles != null) {
-							candidateBundles.addAll(exportingBundles);
-						}
-					}
-
-					Collections.addAll(
-						candidateBundles, bundleContext.getBundles());
-
-					for (Bundle bundle : candidateBundles) {
-						try {
-							bundle.loadClass(currentValue);
-
-							defined = true;
-
-							break;
-						}
-						catch (ClassNotFoundException classNotFoundException) {
-							if (_log.isDebugEnabled()) {
-								_log.debug(classNotFoundException);
-							}
-						}
-						catch (Exception exception) {
-							_log.error(exception);
-
-							return;
-						}
-					}
-
-					definedClasses.put(currentValue, defined);
-				}
-
-				if (!defined) {
-					missing = true;
-
-					break;
-				}
-			}
-
-			if (!missing) {
-				return;
+				continue;
 			}
 
 			Set<String> usedTableNames = new HashSet<>();
@@ -284,11 +226,74 @@ public class ClassNamePostUpgradeDataCleanupProcess
 						"referenced in the next tables: ",
 						String.join(", ", new TreeSet<>(usedTableNames))));
 			}
-		};
-
-		for (ClassName className : classNames) {
-			unsafeConsumer.accept(className);
 		}
+	}
+
+	private boolean _isClassDefined(
+		BundleContext bundleContext, Map<String, Boolean> definedClasses,
+		Set<String> models, Map<String, List<Bundle>> packageNameBundlesMap,
+		String value) {
+
+		for (String currentValue : value.split("[-_]")) {
+			if (models.contains(currentValue)) {
+				continue;
+			}
+
+			Boolean defined = definedClasses.get(currentValue);
+
+			if (defined != null) {
+				if (defined) {
+					continue;
+				}
+
+				return false;
+			}
+
+			Set<Bundle> candidateBundles = new LinkedHashSet<>();
+
+			int index = currentValue.lastIndexOf(CharPool.PERIOD);
+
+			if (index != -1) {
+				List<Bundle> exportingBundles = packageNameBundlesMap.get(
+					currentValue.substring(0, index));
+
+				if (exportingBundles != null) {
+					candidateBundles.addAll(exportingBundles);
+				}
+			}
+
+			Collections.addAll(candidateBundles, bundleContext.getBundles());
+
+			defined = false;
+
+			for (Bundle bundle : candidateBundles) {
+				try {
+					bundle.loadClass(currentValue);
+
+					defined = true;
+
+					break;
+				}
+				catch (ClassNotFoundException classNotFoundException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(classNotFoundException);
+					}
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+
+					return true;
+				}
+			}
+
+			definedClasses.put(currentValue, defined);
+
+			if (!defined) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
