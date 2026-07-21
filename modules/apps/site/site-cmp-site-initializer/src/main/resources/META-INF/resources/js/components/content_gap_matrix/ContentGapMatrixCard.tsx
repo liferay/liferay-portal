@@ -86,21 +86,21 @@ export default function ContentGapMatrixCard({
 								'no-personas-or-funnel-stages-configured'
 							)}
 						>
-							<ClayButton
-								displayType="secondary"
-								onClick={() => {
-									if (editProjectURL) {
+							{editProjectURL && (
+								<ClayButton
+									displayType="secondary"
+									onClick={() => {
 										navigate(editProjectURL);
-									}
-								}}
-							>
-								{Liferay.Language.get('edit-project')}
+									}}
+								>
+									{Liferay.Language.get('edit-project')}
 
-								<ClayIcon
-									className="c-ml-2"
-									symbol="shortcut"
-								/>
-							</ClayButton>
+									<ClayIcon
+										className="c-ml-2"
+										symbol="shortcut"
+									/>
+								</ClayButton>
+							)}
 						</ClayEmptyState>
 					</div>
 				</div>

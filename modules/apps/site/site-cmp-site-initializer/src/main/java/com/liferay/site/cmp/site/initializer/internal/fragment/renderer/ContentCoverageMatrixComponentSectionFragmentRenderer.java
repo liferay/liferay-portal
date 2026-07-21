@@ -15,6 +15,9 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -84,11 +87,25 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			"com.liferay.site.cms.site.initializer-allRelatedAssetsSection"
 		).put(
 			"editProjectURL",
-			StringBundler.concat(
-				ActionUtil.getBaseEditProjectURL(
-					objectDefinition, themeDisplay),
-				objectEntry.getObjectEntryId(), "?redirect=",
-				themeDisplay.getURLCurrent())
+			() -> {
+				ModelResourcePermission<ObjectEntry> modelResourcePermission =
+					ModelResourcePermissionRegistryUtil.
+						getModelResourcePermission(
+							objectEntry.getModelClassName());
+
+				if (!modelResourcePermission.contains(
+						themeDisplay.getPermissionChecker(),
+						objectEntry.getObjectEntryId(), ActionKeys.UPDATE)) {
+
+					return null;
+				}
+
+				return StringBundler.concat(
+					ActionUtil.getBaseEditProjectURL(
+						objectDefinition, themeDisplay),
+					objectEntry.getObjectEntryId(), "?redirect=",
+					themeDisplay.getURLCurrent());
+			}
 		).put(
 			"hasFunnelStagesOrPersonas",
 			() -> {

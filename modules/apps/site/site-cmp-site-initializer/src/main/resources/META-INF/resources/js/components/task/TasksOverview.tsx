@@ -65,9 +65,11 @@ function StatisticButton({
 }
 
 export default function TasksOverview({
+	hasAddTaskPermission,
 	projectId,
 	redirect,
 }: {
+	hasAddTaskPermission: boolean;
 	projectId: string;
 	redirect: string;
 }) {
@@ -153,14 +155,16 @@ export default function TasksOverview({
 						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cmp_empty_state_tasks.svg`}
 						title={Liferay.Language.get('no-tasks')}
 					>
-						<ClayButton
-							displayType="secondary"
-							onClick={() => {
-								navigate(redirect);
-							}}
-						>
-							{Liferay.Language.get('new-task')}
-						</ClayButton>
+						{hasAddTaskPermission && (
+							<ClayButton
+								displayType="secondary"
+								onClick={() => {
+									navigate(redirect);
+								}}
+							>
+								{Liferay.Language.get('new-task')}
+							</ClayButton>
+						)}
 					</ClayEmptyState>
 				</div>
 			) : (

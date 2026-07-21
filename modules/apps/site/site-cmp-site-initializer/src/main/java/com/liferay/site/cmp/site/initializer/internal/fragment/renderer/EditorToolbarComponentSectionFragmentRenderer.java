@@ -14,6 +14,9 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -126,6 +129,18 @@ public class EditorToolbarComponentSectionFragmentRenderer
 			}
 		).put(
 			"groupId", objectEntry.getGroupId()
+		).put(
+			"hasUpdatePermission",
+			() -> {
+				ModelResourcePermission<ObjectEntry> modelResourcePermission =
+					ModelResourcePermissionRegistryUtil.
+						getModelResourcePermission(
+							objectEntry.getModelClassName());
+
+				return modelResourcePermission.contains(
+					themeDisplay.getPermissionChecker(),
+					objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+			}
 		).put(
 			"isNew", objectEntry.isDraft()
 		).put(
