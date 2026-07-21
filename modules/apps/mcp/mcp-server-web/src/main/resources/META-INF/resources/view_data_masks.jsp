@@ -18,12 +18,7 @@ ViewDataMasksDisplayContext viewDataMasksDisplayContext = new ViewDataMasksDispl
 	creationMenu="<%= viewDataMasksDisplayContext.getCreationMenu() %>"
 	fdsActionDropdownItems="<%= viewDataMasksDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= viewDataMasksDisplayContext.getFDSSortItemList() %>"
-	formName="fm"
 	id="<%= viewDataMasksDisplayContext.getFDSName() %>"
-	itemsPerPage="<%= 20 %>"
-	namespace="<%= liferayPortletResponse.getNamespace() %>"
-	pageNumber="<%= 1 %>"
-	portletURL="<%= liferayPortletResponse.createRenderURL() %>"
 	propsTransformer="{DataMasksFDSPropsTransformer} from mcp-server-web"
 	style="fluid"
 />

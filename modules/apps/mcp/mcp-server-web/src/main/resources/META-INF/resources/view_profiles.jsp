@@ -10,5 +10,5 @@
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
 <div class="p-4 text-secondary">
-	<%= LanguageUtil.format(request, "the-x-tab-is-not-implemented-yet", LanguageUtil.get(request, "profiles")) %>
+	The "Profiles" tab is not implemented yet.
 </div>
