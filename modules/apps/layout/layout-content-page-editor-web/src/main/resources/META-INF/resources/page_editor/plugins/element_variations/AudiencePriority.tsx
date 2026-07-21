@@ -5,6 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import {openToast} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
 import AudiencesPriorityModal from './AudiencesPriorityModal';
@@ -81,7 +82,16 @@ export default function AudiencePriority({
 							),
 							segmentsExperienceERC,
 							updateAudiencesPriorityURL,
-						}).then(() => setAudiences(orderedAudiences))
+						})
+							.then(() => setAudiences(orderedAudiences))
+							.catch(() =>
+								openToast({
+									message: Liferay.Language.get(
+										'an-unexpected-error-occurred'
+									),
+									type: 'danger',
+								})
+							)
 					}
 				/>
 			) : null}

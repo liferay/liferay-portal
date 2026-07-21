@@ -8,7 +8,7 @@ import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
-import {useId} from 'frontend-js-components-web';
+import {openToast, useId} from 'frontend-js-components-web';
 import React, {useReducer, useRef} from 'react';
 
 import {initializeConfig} from '../../app/config/index';
@@ -56,6 +56,13 @@ export default function (props: Props) {
 	initializeConfig({portletNamespace: props.portletNamespace} as Config);
 
 	return <ElementVariations {...props} />;
+}
+
+function showErrorToast() {
+	openToast({
+		message: Liferay.Language.get('an-unexpected-error-occurred'),
+		type: 'danger',
+	});
 }
 
 function getOrderedAudiences(
@@ -175,11 +182,13 @@ function ElementVariations({
 									addElementVariationURL,
 									elementVariation: draftElementVariation,
 									plid,
-								}).then(() =>
-									dispatch({
-										type: 'SAVE_ELEMENT_VARIATION_DRAFT',
-									})
-								)
+								})
+									.then(() =>
+										dispatch({
+											type: 'SAVE_ELEMENT_VARIATION_DRAFT',
+										})
+									)
+									.catch(showErrorToast)
 							}
 						/>
 					) : (
@@ -305,12 +314,14 @@ function ElementVariations({
 															elementVariation.externalReferenceCode,
 														plid,
 													}
-												).then(() =>
-													dispatch({
-														key: elementVariation.key,
-														type: 'DELETE_ELEMENT_VARIATION',
-													})
 												)
+													.then(() =>
+														dispatch({
+															key: elementVariation.key,
+															type: 'DELETE_ELEMENT_VARIATION',
+														})
+													)
+													.catch(showErrorToast)
 											}
 											onEditElementVariation={(key) =>
 												dispatch({
@@ -329,13 +340,15 @@ function ElementVariations({
 														plid,
 														updateElementVariationURL,
 													}
-												).then(() =>
-													dispatch({
-														active: !elementVariation.active,
-														key: elementVariation.key,
-														type: 'UPDATE_ELEMENT_VARIATION',
-													})
 												)
+													.then(() =>
+														dispatch({
+															active: !elementVariation.active,
+															key: elementVariation.key,
+															type: 'UPDATE_ELEMENT_VARIATION',
+														})
+													)
+													.catch(showErrorToast)
 											}
 										/>
 									) : (
