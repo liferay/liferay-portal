@@ -6,15 +6,19 @@
 package com.liferay.commerce.product.internal.upgrade.v6_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -77,6 +81,32 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeCPOptionStatus() throws Exception {
+		CPOption cpOption = CPTestUtil.addCPOption(
+			TestPropsValues.getGroupId(), false);
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPOption set status = ? where CPOptionId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(2, cpOption.getCPOptionId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpOption = _cpOptionLocalService.getCPOption(cpOption.getCPOptionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpOption.getStatus());
+	}
+
+	@Test
 	public void testUpgradeCPTaxCategoryStatus() throws Exception {
 		CPTaxCategory cpTaxCategory =
 			_cpTaxCategoryLocalService.addCPTaxCategory(
@@ -122,6 +152,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CPOptionLocalService _cpOptionLocalService;
 
 	@Inject
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
