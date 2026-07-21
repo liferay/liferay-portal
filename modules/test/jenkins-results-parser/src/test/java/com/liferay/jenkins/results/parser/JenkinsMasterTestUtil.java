@@ -77,16 +77,6 @@ public class JenkinsMasterTestUtil {
 	}
 
 	public static void resetCaches() {
-		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
-			LoadBalancerUtil.class, "_jenkinsMastersMap");
-
-		jenkinsMastersMap.clear();
-
-		Map<String, ?> roundRobinCounters = ReflectionTestUtil.getFieldValue(
-			LoadBalancerUtil.class, "_roundRobinCounters");
-
-		roundRobinCounters.clear();
-
 		Map<String, ?> jenkinsMasters = ReflectionTestUtil.getFieldValue(
 			JenkinsMaster.class, "_jenkinsMasters");
 
@@ -96,6 +86,16 @@ public class JenkinsMasterTestUtil {
 			JenkinsMaster.class, "_jenkinsMastersBlacklist");
 
 		jenkinsMastersBlacklist.clear();
+
+		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_jenkinsMastersMap");
+
+		jenkinsMastersMap.clear();
+
+		Map<String, ?> roundRobinCounters = ReflectionTestUtil.getFieldValue(
+			LoadBalancerUtil.class, "_roundRobinCounters");
+
+		roundRobinCounters.clear();
 	}
 
 }
