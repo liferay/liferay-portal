@@ -154,10 +154,8 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 		}
 	}
 
-	private Map<String, Long> _getEntryChecksumMap(File jarFile)
-		throws IOException {
-
-		Map<String, Long> entryChecksumMap = new HashMap<>();
+	private Map<String, Long> _getChecksumMap(File jarFile) throws IOException {
+		Map<String, Long> checksumMap = new HashMap<>();
 
 		try (ZipFile zipFile = new ZipFile(jarFile)) {
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
@@ -169,11 +167,11 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 					continue;
 				}
 
-				entryChecksumMap.put(zipEntry.getName(), zipEntry.getCrc());
+				checksumMap.put(zipEntry.getName(), zipEntry.getCrc());
 			}
 		}
 
-		return entryChecksumMap;
+		return checksumMap;
 	}
 
 	private List<String> _getInvokedJobNames(String propertyName) {
@@ -219,20 +217,19 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 	private List<String> _getModifiedEntryNames(File jarFile1, File jarFile2)
 		throws IOException {
 
-		Map<String, Long> entryChecksumMap1 = _getEntryChecksumMap(jarFile1);
-		Map<String, Long> entryChecksumMap2 = _getEntryChecksumMap(jarFile2);
+		Map<String, Long> checksumMap1 = _getChecksumMap(jarFile1);
+		Map<String, Long> checksumMap2 = _getChecksumMap(jarFile2);
 
-		Set<String> entryNames = new HashSet<>(entryChecksumMap1.keySet());
+		Set<String> entryNames = new HashSet<>(checksumMap1.keySet());
 
-		entryNames.addAll(entryChecksumMap2.keySet());
+		entryNames.addAll(checksumMap2.keySet());
 
 		Set<String> modifiedEntryNames = new TreeSet<>();
 
 		for (String entryName : entryNames) {
 			if (entryName.startsWith("META-INF/") ||
 				Objects.equals(
-					entryChecksumMap1.get(entryName),
-					entryChecksumMap2.get(entryName))) {
+					checksumMap1.get(entryName), checksumMap2.get(entryName))) {
 
 				continue;
 			}
