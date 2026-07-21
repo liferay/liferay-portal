@@ -351,7 +351,7 @@ public class AccountGroupLocalServiceImpl
 
 		_validateName(name);
 
-		AccountGroup accountGroup = accountGroupPersistence.fetchByPrimaryKey(
+		AccountGroup accountGroup = accountGroupPersistence.findByPrimaryKey(
 			accountGroupId);
 
 		accountGroup.setExternalReferenceCode(externalReferenceCode);
