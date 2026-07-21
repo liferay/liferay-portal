@@ -28,6 +28,7 @@ import com.liferay.portal.search.elasticsearch8.internal.configuration.Elasticse
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.elasticsearch8.internal.connection.IndexName;
 import com.liferay.portal.search.elasticsearch8.internal.document.SingleFieldFixture;
+import com.liferay.portal.search.elasticsearch8.internal.index.util.IndexFactoryCompanyIdRegistryUtil;
 import com.liferay.portal.search.elasticsearch8.internal.query.QueryFactories;
 import com.liferay.portal.search.elasticsearch8.internal.util.ResourceUtil;
 import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexConfigurationContributor;
@@ -84,6 +85,12 @@ public class IndexFactoryTest {
 
 	@Before
 	public void setUp() throws Exception {
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
+
+			IndexFactoryCompanyIdRegistryUtil.unregisterCompanyId(companyId);
+		}
+
 		_indexFactoryFixture = new IndexFactoryFixture(
 			_elasticsearchFixture, testName.getMethodName());
 
