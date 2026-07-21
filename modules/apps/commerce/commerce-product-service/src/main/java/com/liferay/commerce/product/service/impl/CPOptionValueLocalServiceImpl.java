@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -111,6 +112,7 @@ public class CPOptionValueLocalServiceImpl
 		cpOptionValue.setNameMap(nameMap);
 		cpOptionValue.setPriority(priority);
 		cpOptionValue.setKey(key);
+		cpOptionValue.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpOptionValue.setExpandoBridgeAttributes(serviceContext);
 
 		cpOptionValue = cpOptionValuePersistence.update(cpOptionValue);
