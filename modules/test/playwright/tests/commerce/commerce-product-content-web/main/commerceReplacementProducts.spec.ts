@@ -388,12 +388,12 @@ test(
 	'Replacement product row redirects to the discontinued product details page',
 	{tag: '@LPD-97008'},
 	async ({
-			   apiHelpers,
-			   commerceAdminChannelsPage,
-			   page,
-			   productDetailsPage,
-			   site,
-		   }) => {
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
