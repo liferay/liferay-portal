@@ -7,8 +7,15 @@
 
 <%@ include file="/init.jsp" %>
 
+<portlet:resourceURL id="/launch/get_launch_entry_content" var="getLaunchEntryContentResourceURL" />
+
 <div class="launch-app">
 	<react:component
 		module="{Launches} from launch-web"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"getLaunchEntryContentResourceURL", getLaunchEntryContentResourceURL.toString()
+			).build()
+		%>'
 	/>
 </div>

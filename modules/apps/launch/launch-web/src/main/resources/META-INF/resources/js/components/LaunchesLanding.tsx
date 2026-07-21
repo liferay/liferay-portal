@@ -109,7 +109,7 @@ export default function LaunchesLanding({onNew, onSelect}: Props) {
 								imgProps={{
 									alt: Liferay.Language.get('no-launches'),
 								}}
-								imgSrc="/o/admin-theme/images/states/empty_state.gif"
+								imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
 								title={Liferay.Language.get(
 									'no-ongoing-launches'
 								)}
@@ -139,7 +139,7 @@ export default function LaunchesLanding({onNew, onSelect}: Props) {
 									'no-published-launches'
 								),
 							}}
-							imgSrc="/o/admin-theme/images/states/empty_state.gif"
+							imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
 							title={Liferay.Language.get(
 								'no-published-launches'
 							)}

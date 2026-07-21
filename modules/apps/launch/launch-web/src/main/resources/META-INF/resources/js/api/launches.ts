@@ -7,6 +7,8 @@ import {fetch} from 'frontend-js-web';
 
 const BASE_URL = '/o/launch-sets';
 
+const LAUNCH_ENTRIES_BASE_URL = '/o/launch-entries';
+
 const DEFAULT_HEADERS = {
 	'Content-Type': 'application/json',
 };
@@ -17,6 +19,24 @@ export interface Launch {
 	id: number;
 	name: string;
 	status?: {code: number};
+}
+
+export interface LaunchEntry {
+	className: string;
+	classPK: number;
+	classVersion: string;
+	id: number;
+	r_launchSetToLaunchEntries_c_launchSetId: number;
+}
+
+export interface LaunchEntryContent {
+	author: string;
+	modified: string;
+	space: string;
+	status: number;
+	title: string;
+	type: string;
+	version: string;
 }
 
 export async function createLaunch({
@@ -69,4 +89,55 @@ export async function listLaunches({
 	const data = await response.json();
 
 	return data.items || [];
+}
+
+export async function listLaunchEntries(
+	launchSetId: number
+): Promise<LaunchEntry[]> {
+	const filter = encodeURIComponent(
+		`r_launchSetToLaunchEntries_c_launchSetId eq '${launchSetId}'`
+	);
+
+	const response = await fetch(
+		`${LAUNCH_ENTRIES_BASE_URL}?filter=${filter}`,
+		{
+			headers: DEFAULT_HEADERS,
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error(Liferay.Language.get('unable-to-list-launch-entries'));
+	}
+
+	const data = await response.json();
+
+	return data.items || [];
+}
+
+export async function getLaunchEntryContent({
+	className,
+	classPK,
+	classVersion,
+	portletNamespace,
+	resourceURL,
+}: {
+	className: string;
+	classPK: number;
+	classVersion: string;
+	portletNamespace: string;
+	resourceURL: string;
+}): Promise<LaunchEntryContent> {
+	const url = new URL(resourceURL, window.location.origin);
+
+	url.searchParams.set(`${portletNamespace}className`, className);
+	url.searchParams.set(`${portletNamespace}classPK`, String(classPK));
+	url.searchParams.set(`${portletNamespace}classVersion`, classVersion);
+
+	const response = await fetch(url.toString());
+
+	if (!response.ok) {
+		throw new Error(Liferay.Language.get('unable-to-load-a-launch-entry'));
+	}
+
+	return response.json();
 }
