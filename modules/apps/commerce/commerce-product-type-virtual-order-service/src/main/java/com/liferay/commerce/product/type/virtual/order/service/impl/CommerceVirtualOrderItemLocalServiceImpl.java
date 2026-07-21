@@ -142,7 +142,7 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 
 			cpDefinitionVirtualSetting =
 				_cpDefinitionVirtualSettingLocalService.
-					getCPDefinitionVirtualSetting(
+					fetchCPDefinitionVirtualSetting(
 						CPDefinition.class.getName(),
 						commerceOrderItem.getCPDefinitionId());
 		}

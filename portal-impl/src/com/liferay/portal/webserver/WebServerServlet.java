@@ -71,7 +71,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
-import com.liferay.portal.kernel.service.ImageServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
@@ -514,7 +513,7 @@ public class WebServerServlet extends HttpServlet {
 		long imageId = getImageId(httpServletRequest);
 
 		if (imageId > 0) {
-			image = ImageServiceUtil.getImage(imageId);
+			image = ImageLocalServiceUtil.fetchImage(imageId);
 
 			String path = GetterUtil.getString(
 				httpServletRequest.getPathInfo());
@@ -818,7 +817,7 @@ public class WebServerServlet extends HttpServlet {
 			UserLocalServiceUtil.updatePortrait(
 				user.getUserId(), image.getTextObj());
 
-			return ImageLocalServiceUtil.getImage(imageId);
+			return ImageLocalServiceUtil.fetchImage(imageId);
 		}
 
 		return image;
