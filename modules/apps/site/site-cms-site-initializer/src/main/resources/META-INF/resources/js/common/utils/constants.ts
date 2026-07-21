@@ -5,6 +5,7 @@
 
 export const OBJECT_DEFINITION_CLASS_NAME =
 	'com.liferay.object.model.ObjectDefinition';
+export const OBJECT_ENTRY_CLASS_NAME = 'com.liferay.object.model.ObjectEntry';
 export const OBJECT_ENTRY_FOLDER_CLASS_NAME =
 	'com.liferay.object.model.ObjectEntryFolder';
 

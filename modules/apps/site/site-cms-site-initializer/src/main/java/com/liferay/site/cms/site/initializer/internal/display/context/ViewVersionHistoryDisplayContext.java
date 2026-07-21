@@ -108,6 +108,10 @@ public class ViewVersionHistoryDisplayContext {
 				StringPool.BLANK, "view", "view-file",
 				_language.get(_httpServletRequest, "view"), null, null, null),
 			new FDSActionDropdownItem(
+				"{actions.addToLaunch.href}", "rocket", "addToLaunch",
+				_language.get(_httpServletRequest, "add-to-launch"), "get",
+				"addToLaunch", null),
+			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
 				_language.get(_httpServletRequest, "restore-version"), "put",
 				"restore", null),

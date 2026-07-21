@@ -305,7 +305,25 @@ public class SectionDisplayContextUtil {
 	public static List<FDSActionDropdownItem> getContentsFDSActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
-		return getFDSActionDropdownItems(httpServletRequest);
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems(httpServletRequest);
+
+		fdsActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.setHref(
+				"{actions.addToLaunch.href}"
+			).setIcon(
+				"rocket"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "add-to-launch")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"addToLaunch"
+			).build(
+				"addToLaunch"
+			));
+
+		return fdsActionDropdownItems;
 	}
 
 	public static String getContentViewURL(ThemeDisplay themeDisplay) {

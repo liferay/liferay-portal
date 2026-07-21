@@ -109,7 +109,18 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 			};
 			loadData: () => {};
 		}) {
-			if (action.data.id === 'copy') {
+			if (action.data.id === 'addToLaunch') {
+				event?.preventDefault();
+
+				Liferay.fire('addToLaunch', {
+					className: additionalProps.className,
+					classPK: additionalProps.classPK,
+					classVersion: String(
+						itemData.systemProperties.version.number
+					),
+				});
+			}
+			else if (action.data.id === 'copy') {
 				event?.preventDefault();
 
 				executeAsyncItemAction({

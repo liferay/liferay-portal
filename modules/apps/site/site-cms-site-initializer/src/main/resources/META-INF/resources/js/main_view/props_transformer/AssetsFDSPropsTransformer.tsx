@@ -23,6 +23,7 @@ import {
 } from '../../common/types/AssetType';
 import {
 	CMSSiteInitializerFDSNames,
+	OBJECT_ENTRY_CLASS_NAME,
 	OBJECT_ENTRY_FOLDER_CLASS_NAME,
 } from '../../common/utils/constants';
 import {getFormattedLabel} from '../../common/utils/getFormattedText';
@@ -460,7 +461,21 @@ export default function AssetsFDSPropsTransformer({
 			items: any;
 			loadData: () => {};
 		}) {
-			if (action?.data?.id === 'copy' || action?.data?.id === 'move') {
+			if (action?.data?.id === 'addToLaunch') {
+				event?.preventDefault();
+
+				Liferay.fire('addToLaunch', {
+					className: OBJECT_ENTRY_CLASS_NAME,
+					classPK: itemData.embedded.id,
+					classVersion: String(
+						itemData.embedded.systemProperties.version.number
+					),
+				});
+			}
+			else if (
+				action?.data?.id === 'copy' ||
+				action?.data?.id === 'move'
+			) {
 				openFolderItemSelectorAction(
 					action?.data?.id,
 					additionalProps.assetLibraries,
