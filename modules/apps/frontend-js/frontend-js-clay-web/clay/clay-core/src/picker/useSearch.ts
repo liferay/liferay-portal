@@ -40,7 +40,7 @@ export function useSearch({
 	useEffect(
 		function focusSearchInputWhenBecomingActive() {
 			if (active && !previousActive && isSearchable) {
-				searchRef.current?.focus();
+				searchRef.current?.focus({preventScroll: true});
 			}
 
 			if (!active && previousActive) {
