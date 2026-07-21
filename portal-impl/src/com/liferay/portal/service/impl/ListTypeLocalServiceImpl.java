@@ -66,8 +66,10 @@ public class ListTypeLocalServiceImpl extends ListTypeLocalServiceBaseImpl {
 	}
 
 	@Override
-	public long getListTypeId(long companyId, String name, String type) {
-		ListType listType = fetchListType(companyId, name, type);
+	public long getListTypeId(long companyId, String name, String type)
+		throws PortalException {
+
+		ListType listType = getListType(companyId, name, type);
 
 		return listType.getListTypeId();
 	}
