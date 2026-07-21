@@ -96,6 +96,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			_route("CMP_ADD_ASSET", objectEntry);
 			_setResourcePermissions(objectEntry);
 			_updateGroup(objectEntry);
+			_updateProjectManagerProjectSponsorUserGroupRoles(
+				null, objectEntry);
 
 			CMPProjectObjectEntryValuesUtil.updateCompletionRate(
 				objectEntry, _filterFactory);
@@ -505,9 +507,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		long projectManagerUserId = MapUtil.getLong(
 			objectEntry.getValues(), "r_userToCMPProjectManager_userId", 0);
 
-		if (projectManagerUserId != MapUtil.getLong(
+		if ((originalObjectEntry == null) ||
+			(projectManagerUserId != MapUtil.getLong(
 				originalObjectEntry.getValues(),
-				"r_userToCMPProjectManager_userId", 0)) {
+				"r_userToCMPProjectManager_userId", 0))) {
 
 			_updateUserGroupRoles(
 				objectEntry.getGroupId(),
@@ -518,9 +521,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		long projectSponsorUserId = MapUtil.getLong(
 			objectEntry.getValues(), "r_userToCMPProjectSponsor_userId", 0);
 
-		if (projectSponsorUserId != MapUtil.getLong(
+		if ((originalObjectEntry == null) ||
+			(projectSponsorUserId != MapUtil.getLong(
 				originalObjectEntry.getValues(),
-				"r_userToCMPProjectSponsor_userId", 0)) {
+				"r_userToCMPProjectSponsor_userId", 0))) {
 
 			_updateUserGroupRoles(
 				objectEntry.getGroupId(),
