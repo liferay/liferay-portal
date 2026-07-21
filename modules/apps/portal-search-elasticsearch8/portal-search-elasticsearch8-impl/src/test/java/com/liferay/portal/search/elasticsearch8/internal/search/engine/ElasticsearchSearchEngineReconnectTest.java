@@ -10,6 +10,7 @@ import com.liferay.portal.search.elasticsearch8.internal.ElasticsearchSearchEngi
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnection;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnectionFixture;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnectionManager;
+import com.liferay.portal.search.elasticsearch8.internal.index.util.IndexFactoryCompanyIdRegistryUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.AfterClass;
@@ -46,6 +47,12 @@ public class ElasticsearchSearchEngineReconnectTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		_elasticsearchSearchEngineFixture.tearDown();
+
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
+
+			IndexFactoryCompanyIdRegistryUtil.unregisterCompanyId(companyId);
+		}
 	}
 
 	@Test
