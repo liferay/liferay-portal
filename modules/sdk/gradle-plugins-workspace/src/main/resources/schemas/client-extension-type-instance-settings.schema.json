@@ -223,33 +223,6 @@
 		},
 		{
 			"properties": {
-				"location": {
-					"title": "Location",
-					"type": "string"
-				},
-				"modelName": {
-					"title": "Model Name",
-					"type": "string"
-				},
-				"pid": {
-					"const": "com.liferay.ai.hub.configuration.VertexAIConfiguration",
-					"title": "Vertex AI Configuration"
-				},
-				"projectId": {
-					"title": "Project ID",
-					"type": "string"
-				}
-			},
-			"required": [
-				"pid",
-				"location",
-				"modelName",
-				"projectId"
-			],
-			"title": "Vertex AI Configuration"
-		},
-		{
-			"properties": {
 				"commerceSyncEnabledAnalyticsChannelIds": {
 					"items": {
 						"type": "string"
@@ -5166,7 +5139,6 @@
 				"com.liferay.ai.creator.openai.configuration.AICreatorOpenAICompanyConfiguration",
 				"com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration",
 				"com.liferay.ai.hub.cell.translator.internal.configuration.AIHubCellTranslatorConfiguration",
-				"com.liferay.ai.hub.configuration.VertexAIConfiguration",
 				"com.liferay.analytics.settings.configuration.AnalyticsConfiguration",
 				"com.liferay.asset.auto.tagger.google.cloud.natural.language.internal.configuration.GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration",
 				"com.liferay.asset.auto.tagger.internal.configuration.AssetAutoTaggerCompanyConfiguration",
