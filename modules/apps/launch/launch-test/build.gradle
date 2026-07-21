@@ -1,0 +1,8 @@
+dependencies {
+	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
+	testIntegrationImplementation project(":apps:blogs:blogs-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
+	testIntegrationImplementation project(":apps:journal:journal-api")
+	testIntegrationImplementation project(":apps:journal:journal-test-util")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
