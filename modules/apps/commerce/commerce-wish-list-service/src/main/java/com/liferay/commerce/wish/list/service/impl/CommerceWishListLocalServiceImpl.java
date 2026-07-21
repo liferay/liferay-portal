@@ -183,7 +183,7 @@ public class CommerceWishListLocalServiceImpl
 			}
 		}
 
-		if (guestCommerceWishList != null) {
+		if ((guestCommerceWishList != null) && (commerceWishList != null)) {
 			_mergeCommerceWishList(
 				guestCommerceWishList.getCommerceWishListId(),
 				commerceWishList.getCommerceWishListId());
