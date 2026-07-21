@@ -524,7 +524,9 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 					fragmentEntryLinkId);
 
-			if (!fragmentEntryLink.isTypeInput()) {
+			if ((fragmentEntryLink == null) ||
+				!fragmentEntryLink.isTypeInput()) {
+
 				continue;
 			}
 
