@@ -25,6 +25,7 @@
 		<column name="commerceCurrencyCode" type="String" />
 		<column name="catalogDefaultLanguageId" type="String" />
 		<column db-name="system_" name="system" type="boolean" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
