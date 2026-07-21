@@ -41,8 +41,6 @@ import type {
 	Rule,
 } from '../index';
 
-declare const Analytics: any;
-
 type AttributeValue = Set<string> | boolean | number | string;
 
 interface OperatorImpl {
@@ -79,30 +77,6 @@ export class Detection {
 		}
 
 		return matches;
-	}
-
-	private async _getAcSegments() {
-		if (this._acSegments === undefined) {
-			if (typeof Analytics === 'undefined') {
-				throw new Error(
-					`Unable to get Analytics Cloud segments because 'Analytics' global object is missing`
-				);
-			}
-
-			const set: Set<string> = new Set();
-
-			for (const segment of await Analytics.segment.getBatchSegmentExternalReferenceCodes()) {
-				set.add(segment);
-			}
-
-			for (const segment of await Analytics.segment.getRealTimeSegmentExternalReferenceCodes()) {
-				set.add(segment);
-			}
-
-			this._acSegments = set;
-		}
-
-		return this._acSegments;
 	}
 
 	private async _getAttribute(attr: Attribute): Promise<AttributeValue> {
@@ -143,7 +117,7 @@ export class Detection {
 			return getRequestParameters();
 		}
 		else if (attr === 'segment') {
-			return getSegment(await this._getAcSegments());
+			return getSegment();
 		}
 		else if (attr === 'timezone') {
 			return getTimezone();
