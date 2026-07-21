@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-background-task:portal-background-task-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-engine-adapter-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-spi")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-security:portal-security-script-management-test-util")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
