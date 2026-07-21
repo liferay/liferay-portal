@@ -18,6 +18,7 @@ import User, {UserProps} from './User';
 interface ProjectInfoSummaryProps {
 	dueDate: string;
 	funnelStages: string[];
+	hasUpdatePermission: boolean;
 	initialState: string;
 	manager: UserProps;
 	personas: string[];
@@ -30,6 +31,7 @@ interface ProjectInfoSummaryProps {
 export default function ProjectInfoSummary({
 	dueDate,
 	funnelStages,
+	hasUpdatePermission,
 	initialState,
 	manager,
 	personas,
@@ -49,7 +51,9 @@ export default function ProjectInfoSummary({
 					label: 'State',
 					value: (
 						<StateSelector
-							disabled={stateSelectorDisabled}
+							disabled={
+								!hasUpdatePermission || stateSelectorDisabled
+							}
 							onChange={async (key: string) => {
 								setStateSelectorDisabled(true);
 

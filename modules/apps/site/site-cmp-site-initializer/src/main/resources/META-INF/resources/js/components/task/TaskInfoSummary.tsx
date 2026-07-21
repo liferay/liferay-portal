@@ -24,6 +24,7 @@ import '../AssigneeTrigger.scss';
 interface TaskInfoSummaryProps {
 	assignTo: AssigneeValue;
 	dueDate: string;
+	hasUpdatePermission: boolean;
 	initialState: string;
 	states: State[];
 	tags: string[];
@@ -34,6 +35,7 @@ interface TaskInfoSummaryProps {
 export default function TaskInfoSummary({
 	assignTo,
 	dueDate,
+	hasUpdatePermission,
 	initialState,
 	states,
 	tags,
@@ -51,7 +53,9 @@ export default function TaskInfoSummary({
 					label: 'State',
 					value: (
 						<StateSelector
-							disabled={stateSelectorDisabled}
+							disabled={
+								!hasUpdatePermission || stateSelectorDisabled
+							}
 							onChange={async (key: string) => {
 								setStateSelectorDisabled(true);
 
@@ -101,6 +105,7 @@ export default function TaskInfoSummary({
 									displayErrorToast(error);
 								}
 							}}
+							readOnly={!hasUpdatePermission}
 							showLabel={false}
 							value={assignTo}
 						/>

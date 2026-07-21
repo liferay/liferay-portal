@@ -10,6 +10,9 @@ import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -48,6 +51,18 @@ public abstract class BaseInfoSummarySectionDisplayContext {
 						ObjectFieldUtil.getDateTimePattern(dueDate), dueDate,
 						themeDisplay.getLocale()),
 					"yyyy-MM-dd", themeDisplay.getLocale());
+			}
+		).put(
+			"hasUpdatePermission",
+			() -> {
+				ModelResourcePermission<ObjectEntry> modelResourcePermission =
+					ModelResourcePermissionRegistryUtil.
+						getModelResourcePermission(
+							objectEntry.getModelClassName());
+
+				return modelResourcePermission.contains(
+					themeDisplay.getPermissionChecker(),
+					objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
 			}
 		).put(
 			"initialState", getFieldValue("state")

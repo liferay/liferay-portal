@@ -17,6 +17,7 @@ interface ICustomAssignee {
 	label?: string;
 	name?: string;
 	onChange?: (value: AssigneeValue | {}) => void;
+	readOnly?: boolean;
 	searchURL?: string;
 	showLabel?: boolean;
 	triggerClassName?: string;
@@ -28,6 +29,7 @@ export default function CustomAssignee({
 	label,
 	name,
 	onChange,
+	readOnly,
 	searchURL,
 	showLabel = true,
 	triggerClassName,
@@ -62,6 +64,7 @@ export default function CustomAssignee({
 					setValue(event.target.value);
 					onChange?.(event.target.value);
 				}}
+				readOnly={readOnly}
 				searchURL={
 					searchURL ??
 					Liferay.ThemeDisplay.getPortalURL() +
