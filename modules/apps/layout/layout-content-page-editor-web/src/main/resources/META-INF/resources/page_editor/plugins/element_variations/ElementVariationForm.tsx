@@ -394,30 +394,30 @@ export default function ElementVariationForm({
 										})
 									}
 								/>
+
+								<div className="mb-4">
+									<ClayButton
+										displayType="secondary"
+										onClick={onReloadPreview}
+										size="xs"
+									>
+										<ClayIcon
+											className="mr-2"
+											symbol="reload"
+										/>
+
+										{Liferay.Language.get('reload')}
+									</ClayButton>
+								</div>
 							</>
 						)}
 
-						<div className="mb-4">
-							<ClayButton
-								displayType="secondary"
-								onClick={onReloadPreview}
-								size="xs"
-							>
-								<ClayIcon className="mr-2" symbol="reload" />
-
-								{Liferay.Language.get('reload')}
-							</ClayButton>
-						</div>
-
-						<ClayForm.Group
-							className="align-items-center d-flex my-4"
-							small
-						>
+						<ClayForm.Group className="d-flex my-4" small>
 							<ClayCheckbox
 								checked={!elementVariation.active}
 								disabled={translating}
 								label={Liferay.Language.get(
-									'disable-element-variation'
+									'disable-variation'
 								)}
 								onChange={(event) =>
 									onChange({active: !event.target.checked})

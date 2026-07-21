@@ -98,6 +98,7 @@ describe('ElementVariationForm', () => {
 		expect(screen.getByLabelText('hide-page-element')).toBeInTheDocument();
 		expect(screen.getByLabelText('html')).toBeInTheDocument();
 		expect(screen.getByLabelText('javascript')).toBeInTheDocument();
+		expect(screen.getByText('reload')).toBeInTheDocument();
 	});
 
 	it('keeps the toggle but hides the html and js fields while the element is hidden', () => {
@@ -106,6 +107,7 @@ describe('ElementVariationForm', () => {
 		expect(screen.getByLabelText('hide-page-element')).toBeChecked();
 		expect(screen.queryByLabelText('html')).not.toBeInTheDocument();
 		expect(screen.queryByLabelText('javascript')).not.toBeInTheDocument();
+		expect(screen.queryByText('reload')).not.toBeInTheDocument();
 	});
 
 	it('clears the html and js values when the element is hidden', async () => {
@@ -140,9 +142,7 @@ describe('ElementVariationForm', () => {
 	it('disables the variation when the disable checkbox is checked', async () => {
 		const {onChange} = renderForm({targetElement: '.title'});
 
-		const disableCheckbox = screen.getByLabelText(
-			'disable-element-variation'
-		);
+		const disableCheckbox = screen.getByLabelText('disable-variation');
 
 		expect(disableCheckbox).not.toBeChecked();
 
@@ -154,9 +154,7 @@ describe('ElementVariationForm', () => {
 	it('enables the variation when the disable checkbox is unchecked', async () => {
 		const {onChange} = renderForm({active: false, targetElement: '.title'});
 
-		const disableCheckbox = screen.getByLabelText(
-			'disable-element-variation'
-		);
+		const disableCheckbox = screen.getByLabelText('disable-variation');
 
 		expect(disableCheckbox).toBeChecked();
 
