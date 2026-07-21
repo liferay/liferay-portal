@@ -179,6 +179,13 @@ type Props<T> = {
 	'shrink'?: boolean;
 
 	/**
+	 * Sets the tabindex of the trigger to control its position in the tab
+	 * order, for example when the picker takes part in roving tabindex
+	 * navigation.
+	 */
+	'tabIndex'?: number;
+
+	/**
 	 * Sets the width of the panel.
 	 */
 	'width'?: number;
@@ -220,6 +227,7 @@ export function Picker<T extends Record<string, any> | string | number>({
 	searchableThreshold,
 	selectedKey: externalSelectedKey,
 	shrink,
+	tabIndex = 0,
 	width,
 	...otherProps
 }: Props<T>) {
@@ -626,7 +634,7 @@ export function Picker<T extends Record<string, any> | string | number>({
 				}}
 				ref={triggerRef}
 				role="combobox"
-				tabIndex={0}
+				tabIndex={tabIndex}
 				type="button"
 			>
 				{triggerLabel ?? placeholder}
