@@ -19,32 +19,19 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 /**
  * @author Brittney Nguyen
  */
-public class CloudTrailEventCrawler {
+public class CloudTrailEventsUtil {
 
-	public CloudTrailEventCrawler(String regionName) {
-		ClientConfiguration clientConfiguration = new ClientConfiguration();
-
-		clientConfiguration.setMaxErrorRetry(9);
-		clientConfiguration.setRetryMode(RetryMode.ADAPTIVE);
-
-		AWSCloudTrailClientBuilder awsCloudTrailClientBuilder =
-			AWSCloudTrailClientBuilder.standard();
-
-		awsCloudTrailClientBuilder.withClientConfiguration(clientConfiguration);
-		awsCloudTrailClientBuilder.withRegion(regionName);
-
-		_awsCloudTrail = awsCloudTrailClientBuilder.build();
-	}
-
-	public List<JSONObject> getEventJSONObjects(
-		Date endDate, String eventName, Date startDate) {
+	public static List<JSONObject> getEventJSONObjects(
+		Date endDate, String eventName, String regionName, Date startDate) {
 
 		List<JSONObject> eventJSONObjects = new ArrayList<>();
 
@@ -60,10 +47,12 @@ public class CloudTrailEventCrawler {
 		lookupEventsRequest.withMaxResults(50);
 		lookupEventsRequest.withStartTime(startDate);
 
+		AWSCloudTrail awsCloudTrail = _getAWSCloudTrail(regionName);
+
 		int lookupCount = 0;
 
 		while (true) {
-			LookupEventsResult lookupEventsResult = _awsCloudTrail.lookupEvents(
+			LookupEventsResult lookupEventsResult = awsCloudTrail.lookupEvents(
 				lookupEventsRequest);
 
 			for (Event event : lookupEventsResult.getEvents()) {
@@ -94,6 +83,32 @@ public class CloudTrailEventCrawler {
 		return eventJSONObjects;
 	}
 
-	private final AWSCloudTrail _awsCloudTrail;
+	private static AWSCloudTrail _getAWSCloudTrail(String regionName) {
+		AWSCloudTrail awsCloudTrail = _awsCloudTrails.get(regionName);
+
+		if (awsCloudTrail != null) {
+			return awsCloudTrail;
+		}
+
+		ClientConfiguration clientConfiguration = new ClientConfiguration();
+
+		clientConfiguration.setMaxErrorRetry(9);
+		clientConfiguration.setRetryMode(RetryMode.ADAPTIVE);
+
+		AWSCloudTrailClientBuilder awsCloudTrailClientBuilder =
+			AWSCloudTrailClientBuilder.standard();
+
+		awsCloudTrailClientBuilder.withClientConfiguration(clientConfiguration);
+		awsCloudTrailClientBuilder.withRegion(regionName);
+
+		awsCloudTrail = awsCloudTrailClientBuilder.build();
+
+		_awsCloudTrails.put(regionName, awsCloudTrail);
+
+		return awsCloudTrail;
+	}
+
+	private static final Map<String, AWSCloudTrail> _awsCloudTrails =
+		new HashMap<>();
 
 }

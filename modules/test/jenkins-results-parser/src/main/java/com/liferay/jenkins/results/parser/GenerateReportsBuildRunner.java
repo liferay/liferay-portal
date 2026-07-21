@@ -5,7 +5,7 @@
 
 package com.liferay.jenkins.results.parser;
 
-import com.liferay.jenkins.results.parser.aws.CloudTrailEventCrawler;
+import com.liferay.jenkins.results.parser.aws.CloudTrailEventsUtil;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryProcessor;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryReport;
 import com.liferay.jenkins.results.parser.metrics.SpotInterruptionReport;
@@ -1005,9 +1005,9 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		String[] dateStrings = JenkinsResultsParserUtil.getDateStrings(
 			reportDurationDays, startLocalDate);
 
-		int crawlStartIndex = Math.max(0, dateStrings.length - 2);
+		int startIndex = Math.max(0, dateStrings.length - 2);
 
-		for (int i = 0; i < crawlStartIndex; i++) {
+		for (int i = 0; i < startIndex; i++) {
 			String s3FilePath = JenkinsResultsParserUtil.combine(
 				s3SpotInterruptionPath, "/", dateStrings[i],
 				"/spot-interruption.json");
@@ -1022,7 +1022,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			}
 
 			if (newestS3ObjectLastModified == Long.MIN_VALUE) {
-				crawlStartIndex = i;
+				startIndex = i;
 
 				break;
 			}
@@ -1035,7 +1035,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			if (dateStrings[i].equals(
 					lastModifiedZonedDateTime.format(_dateTimeFormatter))) {
 
-				crawlStartIndex = i;
+				startIndex = i;
 
 				break;
 			}
@@ -1048,7 +1048,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					s3FilePath);
 			}
 			catch (IOException ioException) {
-				crawlStartIndex = i;
+				startIndex = i;
 
 				break;
 			}
@@ -1060,14 +1060,11 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			regionName = "us-east-1";
 		}
 
-		CloudTrailEventCrawler cloudTrailEventCrawler =
-			new CloudTrailEventCrawler(regionName);
-
-		for (int i = crawlStartIndex; i < dateStrings.length; i++) {
-			LocalDate crawlLocalDate = LocalDate.parse(
+		for (int i = startIndex; i < dateStrings.length; i++) {
+			LocalDate localDate = LocalDate.parse(
 				dateStrings[i], _dateTimeFormatter);
 
-			ZonedDateTime startZonedDateTime = crawlLocalDate.atStartOfDay(
+			ZonedDateTime startZonedDateTime = localDate.atStartOfDay(
 				ZoneOffset.UTC);
 
 			ZonedDateTime endZonedDateTime = startZonedDateTime.plusDays(1);
@@ -1077,12 +1074,12 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			Date startDate = Date.from(startZonedDateTime.toInstant());
 
 			List<JSONObject> bidEvictedEventJSONObjects =
-				cloudTrailEventCrawler.getEventJSONObjects(
-					endDate, "BidEvictedEvent", startDate);
+				CloudTrailEventsUtil.getEventJSONObjects(
+					endDate, "BidEvictedEvent", regionName, startDate);
 
 			List<JSONObject> runInstancesEventJSONObjects =
-				cloudTrailEventCrawler.getEventJSONObjects(
-					endDate, "RunInstances", startDate);
+				CloudTrailEventsUtil.getEventJSONObjects(
+					endDate, "RunInstances", regionName, startDate);
 
 			if (runInstancesEventJSONObjects.isEmpty()) {
 				System.out.println(
