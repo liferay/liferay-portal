@@ -1012,7 +1012,29 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 				s3SpotInterruptionPath, "/", dateStrings[i],
 				"/spot-interruption.json");
 
-			if (!CloudBucketUtil.isS3ObjectPathAvailable(s3FilePath)) {
+			long newestS3ObjectLastModified = Long.MIN_VALUE;
+
+			try {
+				newestS3ObjectLastModified =
+					CloudBucketUtil.getNewestS3ObjectLastModified(s3FilePath);
+			}
+			catch (IOException | TimeoutException exception) {
+			}
+
+			if (newestS3ObjectLastModified == Long.MIN_VALUE) {
+				crawlStartIndex = i;
+
+				break;
+			}
+
+			Instant instant = Instant.ofEpochMilli(newestS3ObjectLastModified);
+
+			ZonedDateTime lastModifiedZonedDateTime = instant.atZone(
+				ZoneOffset.UTC);
+
+			if (dateStrings[i].equals(
+					lastModifiedZonedDateTime.format(_dateTimeFormatter))) {
+
 				crawlStartIndex = i;
 
 				break;
