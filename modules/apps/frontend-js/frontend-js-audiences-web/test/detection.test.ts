@@ -395,7 +395,7 @@ describe('detection', () => {
 
 			mockAudiencesDefinitionWithAttribute(
 				'segment',
-				'includes',
+				'eq',
 				'SEGMENT_REAL_TIME'
 			);
 
@@ -415,7 +415,7 @@ describe('detection', () => {
 
 			mockAudiencesDefinitionWithAttribute(
 				'segment',
-				'includes',
+				'eq',
 				'NON_EXISTENT_SEGMENT'
 			);
 
@@ -437,7 +437,7 @@ describe('detection', () => {
 
 			mockAudiencesDefinitionWithAttribute(
 				'segment',
-				'includes',
+				'eq',
 				'SEGMENT_REAL_TIME'
 			);
 
@@ -451,7 +451,7 @@ describe('detection', () => {
 
 			mockAudiencesDefinitionWithAttribute(
 				'segment',
-				'includes',
+				'eq',
 				'SEGMENT_REAL_TIME'
 			);
 

@@ -13,7 +13,7 @@ import {notEq} from '../src/main/resources/META-INF/resources/main/detection/ope
 import {notIncludes} from '../src/main/resources/META-INF/resources/main/detection/operators/not_includes';
 
 describe('operators', () => {
-	it('operator eq works with boolean, string and number, fails for Set', async () => {
+	it('operator eq works with boolean, string, number and Set', async () => {
 		expect(eq('a', 'a')).toBe(true);
 		expect(eq('a', 'b')).toBe(false);
 
@@ -23,7 +23,10 @@ describe('operators', () => {
 		expect(eq(true, true)).toBe(true);
 		expect(eq(true, false)).toBe(false);
 
-		expect(() => eq(new Set(['a']) as any, new Set(['a']))).toThrow();
+		expect(eq(new Set(['a', 'b']), 'a')).toBe(true);
+		expect(eq(new Set(['a', 'b']), 'c')).toBe(false);
+
+		expect(() => eq({} as any, 'a' as any)).toThrow();
 	});
 
 	it('operator gt works with string and number, fails for Set', async () => {
@@ -80,7 +83,7 @@ describe('operators', () => {
 		expect(() => lte(new Set(['a']) as any, new Set(['a']))).toThrow();
 	});
 
-	it('operator not_eq works with boolean, string and number, fails for Set', async () => {
+	it('operator not_eq works with boolean, string, number and Set', async () => {
 		expect(notEq('a', 'b')).toBe(true);
 		expect(notEq('a', 'a')).toBe(false);
 
@@ -90,7 +93,10 @@ describe('operators', () => {
 		expect(notEq(true, false)).toBe(true);
 		expect(notEq(true, true)).toBe(false);
 
-		expect(() => notEq(new Set(['a']) as any, new Set(['a']))).toThrow();
+		expect(notEq(new Set(['a', 'b']), 'c')).toBe(true);
+		expect(notEq(new Set(['a', 'b']), 'a')).toBe(false);
+
+		expect(() => notEq({} as any, 'a' as any)).toThrow();
 	});
 
 	it('operator not_includes works with string and Set, fails for number', async () => {
