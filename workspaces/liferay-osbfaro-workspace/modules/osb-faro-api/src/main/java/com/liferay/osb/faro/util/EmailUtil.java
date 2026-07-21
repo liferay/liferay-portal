@@ -52,6 +52,14 @@ public class EmailUtil {
 			"/o/osb-faro-web/images/email/ac_chart.png");
 	}
 
+	public static String getProductName(FaroProject faroProject) {
+		if (faroProject.isDataPlatform()) {
+			return "Liferay Data Platform";
+		}
+
+		return "Liferay Analytics Cloud";
+	}
+
 	public static String getSenderEmailAddress(FaroProject faroProject) {
 		if (faroProject.isDataPlatform()) {
 			return "ldp@liferay.com";

@@ -125,11 +125,11 @@ public class EmailReportHelper {
 				"[$LOGO_ICON_URL$]", "[$MONTH$]", "[$PREVIOUS_BOUNCE_RATE$]",
 				"[$PREVIOUS_SESSION_DURATION$]",
 				"[$PREVIOUS_SESSIONS_PER_VISITOR$]",
-				"[$PREVIOUS_UNIQUE_VISITORS$]", "[$PROPERTY_NAME$]",
-				"[$SESSION_DURATION$]", "[$SESSION_DURATION_TREND$]",
-				"[$SESSIONS_PER_VISITOR$]", "[$SESSIONS_PER_VISITOR_TREND$]",
-				"[$UNIQUE_VISITORS$]", "[$UNIQUE_VISITORS_TREND$]",
-				"[$WORKSPACE_NAME$]", "[$YEAR$]"
+				"[$PREVIOUS_UNIQUE_VISITORS$]", "[$PRODUCT_NAME$]",
+				"[$PROPERTY_NAME$]", "[$SESSION_DURATION$]",
+				"[$SESSION_DURATION_TREND$]", "[$SESSIONS_PER_VISITOR$]",
+				"[$SESSIONS_PER_VISITOR_TREND$]", "[$UNIQUE_VISITORS$]",
+				"[$UNIQUE_VISITORS_TREND$]", "[$WORKSPACE_NAME$]", "[$YEAR$]"
 			},
 			new String[] {
 				_formatPercentage(
@@ -149,7 +149,7 @@ public class EmailReportHelper {
 					"sessionsPerVisitorMetric", siteMetricsJSONObject),
 				_getPreviousMetricValue(
 					"visitorsMetric", siteMetricsJSONObject),
-				faroChannel.getName(),
+				EmailUtil.getProductName(faroProject), faroChannel.getName(),
 				_formatDuration(
 					_getMetricValue(
 						"sessionDurationMetric", siteMetricsJSONObject)),
