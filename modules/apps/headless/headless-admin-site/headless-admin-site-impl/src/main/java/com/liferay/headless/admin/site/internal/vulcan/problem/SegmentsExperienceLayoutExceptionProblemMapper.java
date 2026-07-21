@@ -23,6 +23,7 @@ public class SegmentsExperienceLayoutExceptionProblemMapper
 		SegmentsExperienceLayoutException segmentsExperienceLayoutException) {
 
 		return ProblemUtil.getProblem(
+			"Only site pages can define additional page experiences",
 			Problem.Status.BAD_REQUEST, segmentsExperienceLayoutException);
 	}
 
