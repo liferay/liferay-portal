@@ -7,6 +7,5 @@
 	<source-check>
 		<suppress checks="GradleDependencyArtifactsCheck" files="sharepoint-soap/sharepoint-soap-repository/build\.gradle" />
 		<suppress checks="GradleRestClientModuleDependenciesCheck" files="search-experiences/search-experiences-rest-client/build\.gradle" />
-		<suppress checks="JSONObjectDefinitionFileCheck" files="ai-hub/ai-hub-site-initializer/src/main/resources/site-initializer/object-definitions/guardrail-object-definition\.json" />
 	</source-check>
 </suppressions>
