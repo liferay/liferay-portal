@@ -27,9 +27,9 @@ const SectionHeader: React.FC<ISectionHeader> = ({
 					</Text>
 				</span>
 
-				<h3 className="m-0">
+				<h3 className="m-0 text-uppercase">
 					<Text color="secondary" size={3} weight="semi-bold">
-						{title.toUpperCase()}
+						{title}
 					</Text>
 				</h3>
 			</div>
