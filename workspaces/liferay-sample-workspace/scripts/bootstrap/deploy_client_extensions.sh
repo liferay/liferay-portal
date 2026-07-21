@@ -2,14 +2,12 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-source _common.sh
+source ../_common.sh
 
 function main {
-	cd ..
+	echo "Deploying client extensions."
 
-	./gradlew \
-		deploy \
-		-Ddeploy.docker.container.id="$(docker ps --filter name=liferay --quiet)"
+	../../gradlew --project-dir ../.. deploy -Ddeploy.docker.container.id="$(docker ps --filter name=liferay --quiet)"
 }
 
 main "${@}"
