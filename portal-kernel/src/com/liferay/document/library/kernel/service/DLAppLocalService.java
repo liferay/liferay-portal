@@ -348,6 +348,10 @@ public interface DLAppLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry fetchFileEntry(long groupId, long folderId, String title)
+		throws PortalException;
+
 	/**
 	 * Returns the document library file entry with the matching external
 	 * reference code and group.
@@ -360,6 +364,11 @@ public interface DLAppLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FileEntry fetchFileEntryByExternalReferenceCode(
 			long groupId, String externalReferenceCode)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry fetchFileEntryByFileName(
+			long groupId, long folderId, String fileName)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -822,4 +831,4 @@ public interface DLAppLocalService extends BaseLocalService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:929140234
+// LIFERAY-SERVICE-BUILDER-HASH:-1466682005

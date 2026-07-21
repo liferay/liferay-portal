@@ -700,6 +700,45 @@ public class DLAppServiceUtil {
 			groupId, folderId, folderName, fileName);
 	}
 
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntry(long fileEntryId)
+		throws PortalException {
+
+		return getService().fetchFileEntry(fileEntryId);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntry(long groupId, long folderId, String title)
+		throws PortalException {
+
+		return getService().fetchFileEntry(groupId, folderId, title);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntryByExternalReferenceCode(
+				String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return getService().fetchFileEntryByExternalReferenceCode(
+			externalReferenceCode, groupId);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntryByFileName(
+				long groupId, long folderId, String fileName)
+		throws PortalException {
+
+		return getService().fetchFileEntryByFileName(
+			groupId, folderId, fileName);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			fetchFileEntryByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException {
+
+		return getService().fetchFileEntryByUuidAndGroupId(uuid, groupId);
+	}
+
 	/**
 	 * Returns all the file entries in the folder.
 	 *
@@ -2521,4 +2560,4 @@ public class DLAppServiceUtil {
 	private static volatile DLAppService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-35035
+// LIFERAY-SERVICE-BUILDER-HASH:1346529934
