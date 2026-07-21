@@ -949,37 +949,33 @@ public class ExportProcessResourceTest
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		try {
-			_addObjectEntry(
-				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
+		_addObjectEntry(
+			objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
-			String name = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
 
-			ExportProcess exportProcess1 = _postExportProcess(
-				exportProcessResource::postExportProcess, objectDefinition,
-				exportProcessRequest -> exportProcessRequest.setName(name));
+		ExportProcess exportProcess1 = _postExportProcess(
+			exportProcessResource::postExportProcess, objectDefinition,
+			exportProcessRequest -> exportProcessRequest.setName(name));
 
-			_addObjectEntry(
-				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
+		_addObjectEntry(
+			objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
-			ExportProcess exportProcess2 = _postExportProcess(
-				exportProcessResource::postExportProcess, objectDefinition,
-				exportProcessRequest -> exportProcessRequest.setName(name));
+		ExportProcess exportProcess2 = _postExportProcess(
+			exportProcessResource::postExportProcess, objectDefinition,
+			exportProcessRequest -> exportProcessRequest.setName(name));
 
-			JSONArray jsonArray1 = _getExportedJSONArray(
-				exportProcess1, groupId, objectDefinition);
+		JSONArray jsonArray1 = _getExportedJSONArray(
+			exportProcess1, groupId, objectDefinition);
 
-			Assert.assertEquals(1, jsonArray1.length());
+		Assert.assertEquals(1, jsonArray1.length());
 
-			JSONArray jsonArray2 = _getExportedJSONArray(
-				exportProcess2, groupId, objectDefinition);
+		JSONArray jsonArray2 = _getExportedJSONArray(
+			exportProcess2, groupId, objectDefinition);
 
-			Assert.assertEquals(2, jsonArray2.length());
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		Assert.assertEquals(2, jsonArray2.length());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private static final String _LAYOUT_SET_LAYOUTS =

@@ -507,31 +507,26 @@ public class ExportPreviewResourceTest
 		ObjectDefinition objectDefinition = _publishObjectDefinitionWithEntries(
 			groupId, scope);
 
-		try {
-			List<ObjectEntry> objectEntries =
-				_objectEntryLocalService.getObjectEntries(
-					groupId, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				groupId, objectDefinition.getObjectDefinitionId(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-			Assert.assertEquals(
-				objectEntries.toString(), 2, objectEntries.size());
+		Assert.assertEquals(objectEntries.toString(), 2, objectEntries.size());
 
-			_objectEntryLocalService.deleteObjectEntry(objectEntries.get(0));
+		_objectEntryLocalService.deleteObjectEntry(objectEntries.get(0));
 
-			PreviewPortletDataHandler previewPortletDataHandler =
-				_getPreviewPortletDataHandler(
-					unsafeSupplier.get(),
-					"PORTLET_DATA_" + objectDefinition.getPortletId());
+		PreviewPortletDataHandler previewPortletDataHandler =
+			_getPreviewPortletDataHandler(
+				unsafeSupplier.get(),
+				"PORTLET_DATA_" + objectDefinition.getPortletId());
 
-			Assert.assertEquals(
-				Long.valueOf(1), previewPortletDataHandler.getAdditionCount());
-			Assert.assertEquals(
-				Long.valueOf(1), previewPortletDataHandler.getDeletionCount());
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		Assert.assertEquals(
+			Long.valueOf(1), previewPortletDataHandler.getAdditionCount());
+		Assert.assertEquals(
+			Long.valueOf(1), previewPortletDataHandler.getDeletionCount());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private void _testGetExportPreviewWithDifferentScope(
@@ -635,78 +630,69 @@ public class ExportPreviewResourceTest
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
 
-		try {
-			_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-				_addLayoutPageTemplateEntry(
-					basicLayoutPageTemplateCollectionId,
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			_addLayoutPageTemplateEntry(
+				basicLayoutPageTemplateCollectionId,
+				LayoutPageTemplateEntryTypeConstants.BASIC));
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			_addLayoutPageTemplateEntry(
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
+
+		PreviewPortletDataHandler previewPortletDataHandler =
+			_getPreviewPortletDataHandler(
+				exportPreviewResource.getSiteExportPreview(
+					testGroup.getExternalReferenceCode(), null, null),
+				"PORTLET_DATA_" +
+					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES);
+
+		Assert.assertEquals(
+			Long.valueOf(3), previewPortletDataHandler.getAdditionCount());
+		Assert.assertEquals(
+			Long.valueOf(2), previewPortletDataHandler.getDeletionCount());
+
+		PreviewPortletDataHandlerBoolean basicPreviewPortletDataHandlerBoolean =
+			_getPreviewPortletDataHandlerBoolean(
+				previewPortletDataHandler,
+				StringBundler.concat(
+					"_",
+					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
+					"_", LayoutPageTemplateEntry.class.getName(), "-",
 					LayoutPageTemplateEntryTypeConstants.BASIC));
-			_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-				_addLayoutPageTemplateEntry(
-					LayoutPageTemplateConstants.
-						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
 
-			PreviewPortletDataHandler previewPortletDataHandler =
-				_getPreviewPortletDataHandler(
-					exportPreviewResource.getSiteExportPreview(
-						testGroup.getExternalReferenceCode(), null, null),
-					"PORTLET_DATA_" +
+		Assert.assertEquals(
+			Long.valueOf(1),
+			basicPreviewPortletDataHandlerBoolean.getAdditionCount());
+		Assert.assertEquals(
+			Long.valueOf(1),
+			basicPreviewPortletDataHandlerBoolean.getDeletionCount());
+
+		PreviewPortletDataHandlerBoolean
+			masterLayoutPreviewPortletDataHandlerBoolean =
+				_getPreviewPortletDataHandlerBoolean(
+					previewPortletDataHandler,
+					StringBundler.concat(
+						"_",
 						LayoutPageTemplateAdminPortletKeys.
-							LAYOUT_PAGE_TEMPLATES);
+							LAYOUT_PAGE_TEMPLATES,
+						"_", LayoutPageTemplateEntry.class.getName(), "-",
+						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
 
-			Assert.assertEquals(
-				Long.valueOf(3), previewPortletDataHandler.getAdditionCount());
-			Assert.assertEquals(
-				Long.valueOf(2), previewPortletDataHandler.getDeletionCount());
+		Assert.assertEquals(
+			Long.valueOf(1),
+			masterLayoutPreviewPortletDataHandlerBoolean.getAdditionCount());
+		Assert.assertEquals(
+			Long.valueOf(1),
+			masterLayoutPreviewPortletDataHandlerBoolean.getDeletionCount());
 
-			PreviewPortletDataHandlerBoolean
-				basicPreviewPortletDataHandlerBoolean =
-					_getPreviewPortletDataHandlerBoolean(
-						previewPortletDataHandler,
-						StringBundler.concat(
-							"_",
-							LayoutPageTemplateAdminPortletKeys.
-								LAYOUT_PAGE_TEMPLATES,
-							"_", LayoutPageTemplateEntry.class.getName(), "-",
-							LayoutPageTemplateEntryTypeConstants.BASIC));
-
-			Assert.assertEquals(
-				Long.valueOf(1),
-				basicPreviewPortletDataHandlerBoolean.getAdditionCount());
-			Assert.assertEquals(
-				Long.valueOf(1),
-				basicPreviewPortletDataHandlerBoolean.getDeletionCount());
-
-			PreviewPortletDataHandlerBoolean
-				masterLayoutPreviewPortletDataHandlerBoolean =
-					_getPreviewPortletDataHandlerBoolean(
-						previewPortletDataHandler,
-						StringBundler.concat(
-							"_",
-							LayoutPageTemplateAdminPortletKeys.
-								LAYOUT_PAGE_TEMPLATES,
-							"_", LayoutPageTemplateEntry.class.getName(), "-",
-							LayoutPageTemplateEntryTypeConstants.
-								MASTER_LAYOUT));
-
-			Assert.assertEquals(
-				Long.valueOf(1),
-				masterLayoutPreviewPortletDataHandlerBoolean.
-					getAdditionCount());
-			Assert.assertEquals(
-				Long.valueOf(1),
-				masterLayoutPreviewPortletDataHandlerBoolean.
-					getDeletionCount());
-		}
-		finally {
-			_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-				basicLayoutPageTemplateEntry);
-			_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-				masterLayoutPageTemplateEntry);
-			_layoutPageTemplateCollectionLocalService.
-				deleteLayoutPageTemplateCollection(
-					basicLayoutPageTemplateCollection);
-		}
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			basicLayoutPageTemplateEntry);
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			masterLayoutPageTemplateEntry);
+		_layoutPageTemplateCollectionLocalService.
+			deleteLayoutPageTemplateCollection(
+				basicLayoutPageTemplateCollection);
 	}
 
 	private ObjectDefinition _companyObjectDefinition;
