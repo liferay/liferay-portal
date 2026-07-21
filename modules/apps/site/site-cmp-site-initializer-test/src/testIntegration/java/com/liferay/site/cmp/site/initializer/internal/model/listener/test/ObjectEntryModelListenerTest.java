@@ -313,6 +313,8 @@ public class ObjectEntryModelListenerTest {
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
+
+		_testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged();
 	}
 
 	@Test
@@ -425,6 +427,48 @@ public class ObjectEntryModelListenerTest {
 
 		Assert.assertTrue(
 			userGroupRoleNames.containsAll(expectedUserGroupRoleNames));
+	}
+
+	private void _testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged()
+		throws Exception {
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		User projectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		Map<String, Serializable> values = cmpProjectObjectEntry.getValues();
+
+		values.put(
+			"r_userToCMPProjectManager_userId", projectManagerUser.getUserId());
+
+		cmpProjectObjectEntry =
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(),
+				cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(), values,
+				ServiceContextTestUtil.getServiceContext());
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(user);
+
+		String description = RandomTestUtil.randomString();
+
+		cmpProjectObjectEntry =
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				user.getUserId(), cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"description", description
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			description,
+			MapUtil.getString(
+				cmpProjectObjectEntry.getValues(), "description"));
 	}
 
 	@DeleteAfterTestRun
