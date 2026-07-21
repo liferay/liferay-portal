@@ -216,7 +216,7 @@
 
 				<manifest file="classes/META-INF/MANIFEST.MF">
 					<attribute name="Bundle-ManifestVersion" value="2" />
-					<attribute name="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5" />
+					<attribute name="Bundle-RequiredExecutionEnvironment" value="JavaSE-21" />
 					<attribute name="Bundle-Vendor" value="${release.info.vendor}" />
 					<attribute name="Bundle-Version" value="${artifact.version}" />
 					<attribute name="Javac-Compiler" value="${javac.compiler}" />

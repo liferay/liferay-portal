@@ -808,7 +808,7 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		>
 			<link href="http://docs.liferay.com/portal/${lp.version.major}-latest/javadocs" />
 			<link href="https://docs.liferay.com/portlet-api/3.0/javadocs" />
-			<link href="https://docs.oracle.com/javase/17/docs/api" />
+			<link href="https://docs.oracle.com/javase/21/docs/api" />
 
 			<packageset dir="${module.dir}/src" />
 
@@ -841,7 +841,7 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 
 			<link href="http://docs.liferay.com/portal/${lp.version.major}-latest/javadocs" />
 			<link href="https://docs.liferay.com/portlet-api/3.0/javadocs" />
-			<link href="https://docs.oracle.com/javase/17/docs/api" />
+			<link href="https://docs.oracle.com/javase/21/docs/api" />
 
 			<packageset dir="${module.dir}/src" />
 

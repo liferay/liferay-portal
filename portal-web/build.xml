@@ -52,18 +52,7 @@
 	<target name="compile-common-jsp">
 		<delete dir="${jspc.classes.dir}" quiet="true" />
 
-		<if>
-			<and>
-				<equals arg1="${app.server.type}" arg2="tomcat" />
-				<equals arg1="${ant.java.version}" arg2="1.5" />
-			</and>
-			<then>
-				<var name="jspc.java.home" value="${jdk.windows.home}" />
-			</then>
-			<else>
-				<var name="jspc.java.home" value="${env.JAVA_HOME}" />
-			</else>
-		</if>
+		<var name="jspc.java.home" value="${env.JAVA_HOME}" />
 
 		<if>
 			<available file="${app.server.portal.dir}/WEB-INF/classes/com/liferay/portal/deploy/dependencies/touch.jsp" />

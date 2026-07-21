@@ -6,6 +6,8 @@
 	<mkdir dir="log" />
 
 	<target name="build-db">
+		<property name="db.build.java.maxpermsize.option" value="-XX:MaxMetaspaceSize=${db.build.java.maxpermsize}" />
+
 		<if>
 			<or>
 				<equals arg1="${build.profile}" arg2="cms-standalone" />
@@ -43,16 +45,6 @@
 			<then>
 				<propertycopy from="db.build.java.add.opens[${java.specification.version}]" name="db.build.java.add.opens" override="true" />
 			</then>
-		</if>
-
-		<if>
-			<equals arg1="${java.specification.version}" arg2="1.8" />
-			<then>
-				<property name="db.build.java.maxpermsize.option" value="-XX:MaxPermSize=${db.build.java.maxpermsize}" />
-			</then>
-			<else>
-				<property name="db.build.java.maxpermsize.option" value="-XX:MaxMetaspaceSize=${db.build.java.maxpermsize}" />
-			</else>
 		</if>
 
 		<java

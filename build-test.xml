@@ -2564,7 +2564,7 @@ war.path=${app.server.portal.dir}/</echo>
 				<then>
 					<local name="poshi.java.jdk.opts" />
 
-					<get-java-jdk-home version="17" />
+					<get-java-jdk-home version="21" />
 
 					<get-poshi-java-jdk-opts />
 
@@ -5560,7 +5560,7 @@ tell application "Safari" to quit
 				<then>
 					<local name="java.jdk.home" />
 
-					<get-java-jdk-home type="oracle" version="17" />
+					<get-java-jdk-home type="oracle" version="21" />
 
 					<ant antfile="build-dist.xml" inheritAll="false" target="unzip-${app.server.type}-custom">
 						<property name="weblogic.java.jdk.home" value="${java.jdk.home}" />
@@ -5751,7 +5751,7 @@ tell application "Safari" to quit
 
 						<local name="java.jdk.home" />
 
-						<get-java-jdk-home type="oracle" version="17" />
+						<get-java-jdk-home type="oracle" version="21" />
 
 						<ant antfile="build-dist.xml" inheritAll="false" target="unzip-weblogic-custom">
 							<property name="weblogic.java.jdk.home" value="${java.jdk.home}" />
