@@ -10,11 +10,11 @@ import {
 
 describe('custom-attributes', () => {
 	describe('custom attribute language', () => {
-		it('works and returns the Liferay language id', async () => {
+		it('works and returns the BCP47 language id', async () => {
 			const value = language();
 
 			expect(typeof value).toBe('string');
-			expect(value).toBe('en_US');
+			expect(value).toBe('en-US');
 		});
 	});
 

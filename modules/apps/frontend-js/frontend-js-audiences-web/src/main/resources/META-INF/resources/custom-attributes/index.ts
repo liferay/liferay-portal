@@ -6,7 +6,7 @@
 declare let Liferay: any;
 
 export function language(): string {
-	return Liferay.ThemeDisplay.getLanguageId();
+	return Liferay.ThemeDisplay.getBCP47LanguageId();
 }
 
 export function signed_in(): boolean {
