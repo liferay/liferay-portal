@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -101,6 +102,7 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 		cpOption.setRequired(required);
 		cpOption.setSkuContributor(skuContributor);
 		cpOption.setKey(key);
+		cpOption.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpOption.setExpandoBridgeAttributes(serviceContext);
 
 		cpOption = cpOptionPersistence.update(cpOption);
