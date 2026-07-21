@@ -9,7 +9,9 @@ liferay-seostudio-etc-pagespeed-oahs:
         -   c_seostudiodomain.read
         -   c_seostudioinstance.read
         -   c_seostudiopagespeedresult.write
+        -   c_seostudioscan.read
         -   c_seostudioscan.write
+        -   c_seostudioscanrun.read
     type: oAuthApplicationHeadlessServer
 liferay-seostudio-etc-pagespeed-oaua:
     .serviceAddress: localhost:58081

@@ -51,7 +51,7 @@ public class LiferayService extends BaseService {
 
 	public JSONArray getQueuedSEOStudioScansJSONArray() {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/c/seostudioscans"
+			"/o/seo-studio/scans"
 		).queryParam(
 			"filter",
 			StringBundler.concat(
@@ -128,7 +128,7 @@ public class LiferayService extends BaseService {
 		jsonObject.put("state", state);
 
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/c/seostudioscans/" + seoStudioScanId
+			"/o/seo-studio/scans/" + seoStudioScanId
 		).build();
 
 		return patch(
@@ -172,7 +172,7 @@ public class LiferayService extends BaseService {
 		);
 
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/c/seostudiopagespeedresults"
+			"/o/seo-studio/pagespeed-results"
 		).build();
 
 		return post(
