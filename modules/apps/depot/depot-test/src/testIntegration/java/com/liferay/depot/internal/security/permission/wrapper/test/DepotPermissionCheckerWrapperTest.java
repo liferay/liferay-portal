@@ -215,10 +215,7 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
-			@FeatureFlag("LPD-57283")
-		}
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
 	)
 	@Test
 	public void testHasPermissionsWithDepotGroupAndDesignLibraryAdministrator()
@@ -307,10 +304,7 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
-			@FeatureFlag("LPD-57283")
-		}
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
 	)
 	@Test
 	public void testIsContentReviewerWithDesignLibraryContentReviewer()
@@ -386,10 +380,7 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
-			@FeatureFlag("LPD-57283")
-		}
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
 	)
 	@Test
 	public void testIsGroupAdminWithDepotGroupAndDesignLibraryAdministrator()
@@ -520,10 +511,7 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
-			@FeatureFlag("LPD-57283")
-		}
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
 	)
 	@Test
 	public void testIsGroupMemberWithDepotGroupAndDesignLibraryMember()
@@ -656,10 +644,7 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
-			@FeatureFlag("LPD-57283")
-		}
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
 	)
 	@Test
 	public void testIsGroupOwnerWithDepotGroupAndDesignLibraryOwner()
