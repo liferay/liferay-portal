@@ -45,6 +45,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ar",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ar_[A-Z]{2}_sortable\\b|\\w+_ar_[A-Z]{2}_\\w+_sortable\\b",
@@ -61,6 +62,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "bg",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_bg_[A-Z]{2}_sortable\\b|\\w+_bg_[A-Z]{2}_\\w+_sortable\\b",
@@ -77,6 +79,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ca",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ca_[A-Z]{2}_sortable\\b|\\w+_ca_[A-Z]{2}_\\w+_sortable\\b",
@@ -93,6 +96,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "cs",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_cs_[A-Z]{2}_sortable\\b|\\w+_cs_[A-Z]{2}_\\w+_sortable\\b",
@@ -109,6 +113,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "da",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_da_[A-Z]{2}_sortable\\b|\\w+_da_[A-Z]{2}_\\w+_sortable\\b",
@@ -119,12 +124,14 @@
 				{
 					"template_string_sortable_de_AT": {
 						"mapping": {
+							"country": "AT",
 							"fields": {
 								"keyword_lowercase": {
 									"normalizer": "lowercase",
 									"type": "keyword"
 								}
 							},
+							"language": "de",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_de_AT_sortable\\b|\\w+_de_AT_\\w+_sortable\\b",
@@ -141,6 +148,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "de",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_de_[A-Z]{2}_sortable\\b|\\w+_de_[A-Z]{2}_\\w+_sortable\\b",
@@ -157,6 +165,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "el",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_el_[A-Z]{2}_sortable\\b|\\w+_el_[A-Z]{2}_\\w+_sortable\\b",
@@ -173,6 +182,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "en",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_en_[A-Z]{2}_sortable\\b|\\w+_en_[A-Z]{2}_\\w+_sortable\\b",
@@ -189,6 +199,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "es",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_es_[A-Z]{2}_sortable\\b|\\w+_es_[A-Z]{2}_\\w+_sortable\\b",
@@ -205,6 +216,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "et",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_et_[A-Z]{2}_sortable\\b|\\w+_et_[A-Z]{2}_\\w+_sortable\\b",
@@ -221,6 +233,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "eu",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_eu_[A-Z]{2}_sortable\\b|\\w+_eu_[A-Z]{2}_\\w+_sortable\\b",
@@ -237,6 +250,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "fa",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_fa_[A-Z]{2}_sortable\\b|\\w+_fa_[A-Z]{2}_\\w+_sortable\\b",
@@ -253,6 +267,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "fi",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_fi_[A-Z]{2}_sortable\\b|\\w+_fi_[A-Z]{2}_\\w+_sortable\\b",
@@ -263,12 +278,14 @@
 				{
 					"template_string_sortable_fr_CA": {
 						"mapping": {
+							"country": "CA",
 							"fields": {
 								"keyword_lowercase": {
 									"normalizer": "lowercase",
 									"type": "keyword"
 								}
 							},
+							"language": "fr",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_fr_CA_sortable\\b|\\w+_fr_CA_\\w+_sortable\\b",
@@ -285,6 +302,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "fr",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_fr_[A-Z]{2}_sortable\\b|\\w+_fr_[A-Z]{2}_\\w+_sortable\\b",
@@ -301,6 +319,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "gl",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_gl_[A-Z]{2}_sortable\\b|\\w+_gl_[A-Z]{2}_\\w+_sortable\\b",
@@ -317,6 +336,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "hi",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_hi_[A-Z]{2}_sortable\\b|\\w+_hi_[A-Z]{2}_\\w+_sortable\\b",
@@ -333,6 +353,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "hr",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_hr_[A-Z]{2}_sortable\\b|\\w+_hr_[A-Z]{2}_\\w+_sortable\\b",
@@ -349,6 +370,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "hu",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_hu_[A-Z]{2}_sortable\\b|\\w+_hu_[A-Z]{2}_\\w+_sortable\\b",
@@ -365,6 +387,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "hy",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_hy_[A-Z]{2}_sortable\\b|\\w+_hy_[A-Z]{2}_\\w+_sortable\\b",
@@ -381,6 +404,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "in",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_in_[A-Z]{2}_sortable\\b|\\w+_in_[A-Z]{2}_\\w+_sortable\\b",
@@ -397,6 +421,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "it",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_it_[A-Z]{2}_sortable\\b|\\w+_it_[A-Z]{2}_\\w+_sortable\\b",
@@ -413,6 +438,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ja",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ja_[A-Z]{2}_sortable\\b|\\w+_ja_[A-Z]{2}_\\w+_sortable\\b",
@@ -429,6 +455,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "kk",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_kk_[A-Z]{2}_sortable\\b|\\w+_kk_[A-Z]{2}_\\w+_sortable\\b",
@@ -445,6 +472,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ko",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ko_[A-Z]{2}_sortable\\b|\\w+_ko_[A-Z]{2}_\\w+_sortable\\b",
@@ -461,6 +489,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "lo",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_lo_[A-Z]{2}_sortable\\b|\\w+_lo_[A-Z]{2}_\\w+_sortable\\b",
@@ -477,6 +506,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "lt",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_lt_[A-Z]{2}_sortable\\b|\\w+_lt_[A-Z]{2}_\\w+_sortable\\b",
@@ -493,6 +523,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ms",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ms_[A-Z]{2}_sortable\\b|\\w+_ms_[A-Z]{2}_\\w+_sortable\\b",
@@ -509,6 +540,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "nb",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_nb_[A-Z]{2}_sortable\\b|\\w+_nb_[A-Z]{2}_\\w+_sortable\\b",
@@ -525,6 +557,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "nl",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_nl_[A-Z]{2}_sortable\\b|\\w+_nl_[A-Z]{2}_\\w+_sortable\\b",
@@ -541,6 +574,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "no",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_no_[A-Z]{2}_sortable\\b|\\w+_no_[A-Z]{2}_\\w+_sortable\\b",
@@ -557,6 +591,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "pl",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_pl_[A-Z]{2}_sortable\\b|\\w+_pl_[A-Z]{2}_\\w+_sortable\\b",
@@ -573,6 +608,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "pt",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_pt_[A-Z]{2}_sortable\\b|\\w+_pt_[A-Z]{2}_\\w+_sortable\\b",
@@ -589,6 +625,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ro",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ro_[A-Z]{2}_sortable\\b|\\w+_ro_[A-Z]{2}_\\w+_sortable\\b",
@@ -605,6 +642,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ru",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ru_[A-Z]{2}_sortable\\b|\\w+_ru_[A-Z]{2}_\\w+_sortable\\b",
@@ -621,6 +659,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "sk",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_sk_[A-Z]{2}_sortable\\b|\\w+_sk_[A-Z]{2}_\\w+_sortable\\b",
@@ -637,6 +676,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "sl",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_sl_[A-Z]{2}_sortable\\b|\\w+_sl_[A-Z]{2}_\\w+_sortable\\b",
@@ -653,6 +693,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "sr",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_sr_[A-Z]{2}_sortable\\b|\\w+_sr_[A-Z]{2}_\\w+_sortable\\b",
@@ -669,6 +710,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "sv",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_sv_[A-Z]{2}_sortable\\b|\\w+_sv_[A-Z]{2}_\\w+_sortable\\b",
@@ -685,6 +727,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "ta",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_ta_[A-Z]{2}_sortable\\b|\\w+_ta_[A-Z]{2}_\\w+_sortable\\b",
@@ -701,6 +744,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "th",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_th_[A-Z]{2}_sortable\\b|\\w+_th_[A-Z]{2}_\\w+_sortable\\b",
@@ -717,6 +761,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "tr",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_tr_[A-Z]{2}_sortable\\b|\\w+_tr_[A-Z]{2}_\\w+_sortable\\b",
@@ -733,6 +778,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "uk",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_uk_[A-Z]{2}_sortable\\b|\\w+_uk_[A-Z]{2}_\\w+_sortable\\b",
@@ -749,6 +795,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "vi",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_vi_[A-Z]{2}_sortable\\b|\\w+_vi_[A-Z]{2}_\\w+_sortable\\b",
@@ -765,6 +812,7 @@
 									"type": "keyword"
 								}
 							},
+							"language": "zh",
 							"type": "icu_collation_keyword"
 						},
 						"match": "\\w+_zh_[A-Z]{2}_sortable\\b|\\w+_zh_[A-Z]{2}_\\w+_sortable\\b",
@@ -1409,6 +1457,9 @@
 					"type": "keyword"
 				},
 				"assetVocabularyIds": {
+					"type": "keyword"
+				},
+				"classExternalReferenceCode": {
 					"type": "keyword"
 				},
 				"classTypeId": {
