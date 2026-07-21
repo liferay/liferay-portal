@@ -7,6 +7,7 @@ package com.liferay.headless.cmp.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cmp.client.dto.v1_0.TaskAssignee;
@@ -14,13 +15,15 @@ import com.liferay.headless.cmp.client.pagination.Page;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -44,11 +47,14 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 	@Override
 	@Test
 	public void testGetTaskAssigneesPage() throws Exception {
-		Role role = RoleTestUtil.addRole(
-			"Custom Asset Library Role", RoleConstants.TYPE_DEPOT);
+		Role role = _roleLocalService.addRole(
+			null, TestPropsValues.getUserId(), null, 0, "Custom Project Role",
+			null, null, RoleConstants.TYPE_DEPOT,
+			DepotRolesConstants.SUBTYPE_PROJECT, null);
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
@@ -118,5 +124,8 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }
