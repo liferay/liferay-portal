@@ -10,12 +10,12 @@ import {
 	SimpleActionLinkRenderer,
 	addOnClickToCreationMenuItems,
 	deleteItemAction,
-	manageMembersAction,
 } from '@liferay/site-cms-site-initializer';
 import {fetch, sub} from 'frontend-js-web';
 
 import StateLabel from '../StateLabel';
 import ACTIONS from './actions/creationMenuActions';
+import manageMembersAction from './actions/manageMembersAction';
 import AssigneeRenderer from './cell_renderers/AssigneeRenderer';
 
 type Action = {
