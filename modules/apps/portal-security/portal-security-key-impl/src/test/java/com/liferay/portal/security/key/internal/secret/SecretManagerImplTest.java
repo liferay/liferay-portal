@@ -54,14 +54,42 @@ public class SecretManagerImplTest {
 	}
 
 	@Test
-	public void testDeleteSecret() {
+	public void testDeleteSecret() throws Exception {
+
+		// Delegates to the provider
+
+		long companyId = RandomTestUtil.randomLong();
+		String secretIdentifier = RandomTestUtil.randomString();
 		String secretProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_serviceTrackerMap.getService(secretProviderId)
+		).thenReturn(
+			Collections.singletonList(_secretProvider)
+		);
+
+		_secretManagerImpl.deleteSecret(
+			companyId, _createKeyReference(secretIdentifier, secretProviderId));
+
+		Mockito.verify(
+			_secretProvider
+		).deleteSecret(
+			companyId, secretIdentifier
+		);
+
+		// Throws when the provider is not found
 
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretManagerImpl.deleteSecret(
 				RandomTestUtil.randomLong(),
-				_createKeyReference(secretProviderId)));
+				_createKeyReference(RandomTestUtil.randomString())));
 	}
 
 	@Test
