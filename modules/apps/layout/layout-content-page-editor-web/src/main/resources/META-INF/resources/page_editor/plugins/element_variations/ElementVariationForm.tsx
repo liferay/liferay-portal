@@ -215,6 +215,7 @@ export default function ElementVariationForm({
 							);
 
 							onChange({
+								audienceEntryERCs: [],
 								targetElement: targetElementItem?.value ?? '',
 							});
 
