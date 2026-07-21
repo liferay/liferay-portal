@@ -14,7 +14,7 @@ variable "deployment_name" {
 	type=string
 }
 variable "machine_type" {
-	default="Standard_D4s_v5"
+	default="Standard_D4s_v4"
 	type=string
 }
 variable "max_node_count" {
