@@ -100,6 +100,7 @@ FTLTagAttributesCheck | [Styling](styling_checks.md#styling-checks) | .ftl | Sor
 FTLTagCheck | [Styling](styling_checks.md#styling-checks) | .ftl | Finds cases where consecutive `#assign` can be combined. |
 FTLWhitespaceCheck | [Styling](styling_checks.md#styling-checks) | .ftl | Finds missing and unnecessary whitespace in `.ftl` files. |
 FactoryCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases where `*Factory` should be used when creating new instances of an object. |
+[FetchContractCatchCheck](check/fetch_contract_catch_check.md#fetchcontractcatchcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds code blocks that use `try-catch` to handle `NoSuch*Exception` or `PortalException` during entity lookups, which should be replaced by `fetch*` methods. |
 FilterStringWhitespaceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing and unnecessary whitespace in the value of the filter string in `ServiceTrackerFactory.open` or `WaiterUtil.waitForFilter`. |
 [FrameworkBundleCheck](check/framework_bundle_check.md#frameworkbundlecheck) | [Performance](performance_checks.md#performance-checks) | .java | Checks that `org.osgi.framework.Bundle.getHeaders()` is not used. |
 FullyQualifiedNameCheck | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | .java | Finds cases where a Fully Qualified Name is used instead of importing a class. |
