@@ -193,8 +193,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_testPostRoomUserAccount();
 		_testPostRoomUserAccountSiteMember();
+		_testPostRoomUserAccountWithArchivedRoom();
 		_testPostRoomUserAccountWithMembershipExpirationDate();
-		_testPostRoomUserAccountArchivedRoom();
 	}
 
 	@Override
@@ -416,7 +416,20 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				}));
 	}
 
-	private void _testPostRoomUserAccountArchivedRoom() throws Exception {
+	private void _testPostRoomUserAccountSiteMember() throws Exception {
+		try {
+			_userAccountSiteMemberResource.postRoomUserAccount(
+				testGetRoomUserAccountsPage_getRoomId(), randomUserAccount());
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			String message = problemException.getMessage();
+
+			Assert.assertTrue(message, message.contains("Forbidden"));
+		}
+	}
+
+	private void _testPostRoomUserAccountWithArchivedRoom() throws Exception {
 		_objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), _objectEntry.getObjectEntryId(), 0,
 			HashMapBuilder.putAll(
@@ -433,22 +446,21 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			Assert.fail();
 		}
 		catch (Problem.ProblemException problemException) {
-			String message = problemException.getMessage();
+			Problem problem = problemException.getProblem();
 
-			Assert.assertTrue(message, message.contains("is archived"));
+			Assert.assertEquals(
+				UnsupportedOperationException.class.getSimpleName(),
+				problem.getType());
 		}
-	}
-
-	private void _testPostRoomUserAccountSiteMember() throws Exception {
-		try {
-			_userAccountSiteMemberResource.postRoomUserAccount(
-				testGetRoomUserAccountsPage_getRoomId(), randomUserAccount());
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			String message = problemException.getMessage();
-
-			Assert.assertTrue(message, message.contains("Forbidden"));
+		finally {
+			_objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), _objectEntry.getObjectEntryId(), 0,
+				HashMapBuilder.putAll(
+					_objectEntry.getValues()
+				).put(
+					"roomStatus", WorkflowConstants.STATUS_APPROVED
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
 		}
 	}
 

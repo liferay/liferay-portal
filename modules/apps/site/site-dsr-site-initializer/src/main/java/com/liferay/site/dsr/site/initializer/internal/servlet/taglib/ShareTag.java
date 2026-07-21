@@ -78,7 +78,9 @@ public class ShareTag extends IncludeTag {
 			_canAssignAllRoles =
 				permissionChecker.isGroupAdmin(_groupId) ||
 				permissionChecker.isGroupOwner(_groupId);
-			_readOnly = DSRRoomUtil.isArchived(objectEntry);
+			_readOnly =
+				DSRRoomUtil.isArchived(objectEntry) ||
+				DSRRoomUtil.isReadOnly(objectEntry, permissionChecker);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {

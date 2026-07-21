@@ -201,8 +201,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
 
 		if (DSRRoomUtil.isArchived(objectEntry)) {
-			throw new UnsupportedOperationException(
-				"Room " + roomId + " is archived");
+			throw new UnsupportedOperationException();
 		}
 
 		Map<String, Serializable> values = objectEntry.getValues();
