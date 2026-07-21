@@ -86,7 +86,7 @@ export function Overview() {
 						description={Liferay.Language.get(
 							'get-a-high-level-view-of-performance-trends-to-spot-changes-and-guide-decisions'
 						)}
-						icon="analytics"
+						icon="polls"
 						title={Liferay.Language.get('performance-overview')}
 					/>
 				</ClayLayout.Col>
