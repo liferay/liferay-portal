@@ -307,10 +307,10 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		discoverDataSourceFieldCatalog(
+		discoverDataSourceFieldCatalogEntries(
 			FaroProject faroProject, DataSource dataSource) {
 
-		return contactsEngineClient.discoverDataSourceFieldCatalog(
+		return contactsEngineClient.discoverDataSourceFieldCatalogEntries(
 			faroProject, dataSource);
 	}
 
@@ -720,11 +720,23 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		getDataSourceFieldCatalog(
+		getDataSourceFieldCatalogEntries(
 			FaroProject faroProject, String id, boolean refresh) {
 
-		return contactsEngineClient.getDataSourceFieldCatalog(
+		return contactsEngineClient.getDataSourceFieldCatalogEntries(
 			faroProject, id, refresh);
+	}
+
+	@Override
+	public Results<DataSourceFieldCatalogEntry>
+			getDataSourceFieldCatalogEntries(
+				FaroProject faroProject, String entityType, String filterString,
+				String id, String search, int cur, int delta, String sortString)
+		throws FaroEngineClientException {
+
+		return contactsEngineClient.getDataSourceFieldCatalogEntries(
+			faroProject, entityType, filterString, id, search, cur, delta,
+			sortString);
 	}
 
 	@Override
