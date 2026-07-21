@@ -6,9 +6,11 @@
 package com.liferay.asset.publisher.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
@@ -39,8 +41,24 @@ public class AssetPublisherViewContentDisplayContextTest {
 
 	@Test
 	public void testIsAssetEntryVisible() {
+		Assert.assertFalse(_isAssetEntryVisible("1", false));
+		Assert.assertFalse(_isAssetEntryVisible("2", true));
+		Assert.assertTrue(_isAssetEntryVisible("1", true));
+	}
+
+	private boolean _isAssetEntryVisible(
+		String assetEntryId, boolean workflowAssetPreview) {
+
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
+
+		if (workflowAssetPreview) {
+			mockLiferayPortletRenderRequest.setAttribute(
+				WebKeys.WORKFLOW_ASSET_PREVIEW, Boolean.TRUE);
+		}
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"assetEntryId", assetEntryId);
 
 		AssetPublisherViewContentDisplayContext
 			assetPublisherViewContentDisplayContext =
@@ -48,6 +66,12 @@ public class AssetPublisherViewContentDisplayContextTest {
 					mockLiferayPortletRenderRequest, false);
 
 		AssetEntry assetEntry = Mockito.mock(AssetEntry.class);
+
+		Mockito.when(
+			assetEntry.getEntryId()
+		).thenReturn(
+			1L
+		);
 
 		Mockito.when(
 			assetEntry.isVisible()
@@ -58,8 +82,11 @@ public class AssetPublisherViewContentDisplayContextTest {
 		ReflectionTestUtil.setFieldValue(
 			assetPublisherViewContentDisplayContext, "_assetEntry", assetEntry);
 
-		Assert.assertFalse(
-			assetPublisherViewContentDisplayContext.isAssetEntryVisible());
+		ReflectionTestUtil.setFieldValue(
+			assetPublisherViewContentDisplayContext, "_assetRenderer",
+			Mockito.mock(AssetRenderer.class));
+
+		return assetPublisherViewContentDisplayContext.isAssetEntryVisible();
 	}
 
 }
