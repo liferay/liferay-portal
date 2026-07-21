@@ -32,6 +32,7 @@
 		<column name="priority" type="double" />
 		<column name="active" type="boolean" />
 		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
