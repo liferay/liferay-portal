@@ -4,7 +4,7 @@ import Card from 'shared/components/Card';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
-import FaroConstants from 'shared/util/constants';
+import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
 import React, {useMemo, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
@@ -200,12 +200,10 @@ const List = () => {
 
 	let rangeSelectorParams = `rangeKey=${rangeSelectors.rangeKey}`;
 
-	if (rangeSelectors.rangeEnd) {
-		rangeSelectorParams += `&rangeEnd=${rangeSelectors.rangeEnd}`;
-	}
-
-	if (rangeSelectors.rangeStart) {
-		rangeSelectorParams += `&rangeStart=${rangeSelectors.rangeStart}`;
+	if (rangeSelectors.rangeKey === RangeKeyTimeRanges.CustomRange) {
+		rangeSelectorParams =
+			`rangeEnd=${rangeSelectors.rangeEnd}` +
+			`&rangeStart=${rangeSelectors.rangeStart}`;
 	}
 
 	const filters = useMemo(
