@@ -20,6 +20,7 @@ export default function AssetCategorizationSections({
 	assetLibraryId,
 	cmsGroupId,
 	errorMessage,
+	getContent,
 	hasUpdatePermission,
 	inputSize,
 	objectEntry,
@@ -28,6 +29,9 @@ export default function AssetCategorizationSections({
 	assetLibraryId: number | string;
 	cmsGroupId: number | string;
 	errorMessage?: string;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	hasUpdatePermission: boolean;
 	inputSize?: CategorizationInputSize;
 	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
@@ -78,6 +82,7 @@ export default function AssetCategorizationSections({
 			<AssetCategories
 				cmsGroupId={cmsGroupId}
 				errorMessage={errorMessage}
+				getContent={getContent}
 				hasUpdatePermission={hasUpdatePermission}
 				inputSize={inputSize}
 				objectEntry={objectEntry}
@@ -88,6 +93,7 @@ export default function AssetCategorizationSections({
 			<AssetTags
 				assetLibraryId={assetLibraryId}
 				cmsGroupId={cmsGroupId}
+				getContent={getContent}
 				hasUpdatePermission={hasUpdatePermission}
 				inputSize={inputSize}
 				key={objectEntry.keywords?.join(',') || 'tags'}

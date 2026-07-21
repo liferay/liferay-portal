@@ -7,6 +7,7 @@ import React, {useCallback} from 'react';
 
 import {IAssetObjectEntry} from '../../../common/types/AssetType';
 import AssetCategorization from '../../../main_view/info_panel/components/AssetCategorization';
+import getEditedContent from '../../utils/getEditedContent';
 import {
 	CategorizationFields,
 	UpdateCategorizationProps,
@@ -69,6 +70,7 @@ export default function CategorizationPanel({
 						categorizationFields?.assetCategoryIds?.value || [],
 				}}
 				cmsGroupId={cmsGroupId}
+				getContent={getEditedContent}
 				getObjectEntryURL={contentAPIURL}
 				hasUpdatePermission={hasUpdatePermission}
 				inputSize="sm"

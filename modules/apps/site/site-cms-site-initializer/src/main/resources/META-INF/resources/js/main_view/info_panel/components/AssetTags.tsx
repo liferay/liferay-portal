@@ -29,6 +29,7 @@ const AssetTags = ({
 	assetLibraryId,
 	cmsGroupId,
 	collapsable = true,
+	getContent,
 	hasUpdatePermission,
 	inputSize,
 	objectEntry,
@@ -38,6 +39,9 @@ const AssetTags = ({
 	assetLibraryId?: number | string | null | undefined;
 	cmsGroupId: number | string;
 	collapsable?: boolean;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	hasUpdatePermission?: boolean;
 	inputSize?: CategorizationInputSize;
 	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
@@ -138,14 +142,20 @@ const AssetTags = ({
 		[objectEntry, updateObjectEntry]
 	);
 
-	const handleGenerateTags = useCallback(() => {
+	const handleGenerateTags = useCallback(async () => {
 		Liferay.fire(CATEGORIZE_EVENT, {
 			agent: GENERATE_TAGS_AGENT,
 			cmsGroupId,
-			content: (objectEntry as IAssetObjectEntry).contentRawText ?? '',
+			content:
+				(await getContent?.(
+					(objectEntry as IAssetObjectEntry).systemProperties
+						?.objectDefinitionBrief?.externalReferenceCode
+				)) ||
+				(objectEntry as IAssetObjectEntry).contentRawText ||
+				'',
 			scopeId,
 		});
-	}, [cmsGroupId, objectEntry, scopeId]);
+	}, [cmsGroupId, getContent, objectEntry, scopeId]);
 
 	return (
 		<ClayPanel

@@ -60,11 +60,17 @@ jest.mock('@liferay/frontend-js-item-selector-web', () => {
 function renderComponent({
 	cmsGroupId = 456,
 	collapsable,
+	contentRawText,
+	getContent,
 	keywords = ['tag1'],
 	scopeId = 123,
 }: {
 	cmsGroupId?: number;
 	collapsable?: boolean;
+	contentRawText?: string;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	keywords?: string[];
 	scopeId?: number;
 } = {}) {
@@ -73,9 +79,11 @@ function renderComponent({
 			assetLibraryId={123}
 			cmsGroupId={cmsGroupId}
 			collapsable={collapsable}
+			getContent={getContent}
 			hasUpdatePermission={true}
 			objectEntry={
 				{
+					contentRawText,
 					keywords,
 					scopeId,
 				} as any
@@ -219,7 +227,7 @@ describe('AssetTags', () => {
 		expect(apiURL).toContain("groupIds in ('-1')");
 	});
 
-	it('fires the categorize event when the sparkle is clicked', () => {
+	it('fires the categorize event when the sparkle is clicked', async () => {
 		const fire = jest.fn();
 
 		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
@@ -231,13 +239,57 @@ describe('AssetTags', () => {
 			screen.getByRole('button', {name: 'generate-tags-with-ai'})
 		);
 
-		expect(fire).toHaveBeenCalledWith(
-			'cms:aiAssistant:categorize',
-			expect.objectContaining({
-				agent: 'L_GENERATE_TAGS',
-				cmsGroupId: 456,
-				scopeId: 123,
-			})
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({
+					agent: 'L_GENERATE_TAGS',
+					cmsGroupId: 456,
+					scopeId: 123,
+				})
+			)
+		);
+	});
+
+	it('prefers the edited content from getContent over the persisted content', async () => {
+		const fire = jest.fn();
+		const getContent = jest.fn().mockResolvedValue('edited content');
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({contentRawText: 'persisted content', getContent});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		);
+
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({content: 'edited content'})
+			)
+		);
+	});
+
+	it('falls back to the persisted content when getContent returns nothing', async () => {
+		const fire = jest.fn();
+		const getContent = jest.fn().mockResolvedValue('');
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({contentRawText: 'persisted content', getContent});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		);
+
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({content: 'persisted content'})
+			)
 		);
 	});
 });

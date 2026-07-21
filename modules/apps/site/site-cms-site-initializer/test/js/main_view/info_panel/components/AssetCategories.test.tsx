@@ -4,7 +4,13 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen, within} from '@testing-library/react';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import React from 'react';
 
 import AssetCategories from '../../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/components/AssetCategories';
@@ -74,6 +80,9 @@ function renderComponent({
 	classNameId = 1,
 	cmsGroupId = 456,
 	collapsable,
+	contentRawText,
+	externalReferenceCode,
+	getContent,
 	placeholder,
 	scopeId = 123,
 	systemVocabularyIds,
@@ -84,6 +93,11 @@ function renderComponent({
 	classNameId?: number;
 	cmsGroupId?: number;
 	collapsable?: boolean;
+	contentRawText?: string;
+	externalReferenceCode?: string;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	placeholder?: string;
 	scopeId?: number | null;
 	systemVocabularyIds?: number[];
@@ -95,12 +109,17 @@ function renderComponent({
 		<AssetCategories
 			cmsGroupId={cmsGroupId}
 			collapsable={collapsable}
+			getContent={getContent}
 			hasUpdatePermission={true}
 			objectEntry={
 				{
 					...(scopeId !== null ? {scopeId} : {}),
+					contentRawText,
 					systemProperties: {
-						objectDefinitionBrief: {classNameId},
+						objectDefinitionBrief: {
+							classNameId,
+							externalReferenceCode,
+						},
 					},
 					taxonomyCategoryBriefs,
 				} as any
@@ -186,6 +205,27 @@ describe('AssetCategories', () => {
 		expect(screen.queryByTestId('item-selector')).not.toBeInTheDocument();
 	});
 
+	it('falls back to the persisted content when getContent returns nothing', async () => {
+		const fire = jest.fn();
+		const getContent = jest.fn().mockResolvedValue('');
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({contentRawText: 'persisted content', getContent});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		);
+
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({content: 'persisted content'})
+			)
+		);
+	});
+
 	it('filters system vocabulary categories out of the generic dropdown', () => {
 		renderComponent({scopeId: 123, systemVocabularyIds: [10]});
 
@@ -196,7 +236,7 @@ describe('AssetCategories', () => {
 		).toBe('10');
 	});
 
-	it('fires the categorize event when the sparkle is clicked', () => {
+	it('fires the categorize event when the sparkle is clicked', async () => {
 		const fire = jest.fn();
 
 		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
@@ -208,14 +248,16 @@ describe('AssetCategories', () => {
 			screen.getByRole('button', {name: 'add-categories-with-ai'})
 		);
 
-		expect(fire).toHaveBeenCalledWith(
-			'cms:aiAssistant:categorize',
-			expect.objectContaining({
-				agent: 'L_AUTO_CATEGORIZE',
-				classNameId: 1,
-				cmsGroupId: 456,
-				scopeId: 123,
-			})
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({
+					agent: 'L_AUTO_CATEGORIZE',
+					classNameId: 1,
+					cmsGroupId: 456,
+					scopeId: 123,
+				})
+			)
 		);
 	});
 
@@ -243,6 +285,33 @@ describe('AssetCategories', () => {
 
 		expect(screen.getByText('vocabulary-b')).toBeInTheDocument();
 		expect(screen.getByText('category-3')).toBeInTheDocument();
+	});
+
+	it('prefers the edited content from getContent over the persisted content', async () => {
+		const fire = jest.fn();
+		const getContent = jest.fn().mockResolvedValue('edited content');
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({
+			contentRawText: 'persisted content',
+			externalReferenceCode: 'C_ARTICLE',
+			getContent,
+		});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		);
+
+		await waitFor(() =>
+			expect(fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:categorize',
+				expect.objectContaining({content: 'edited content'})
+			)
+		);
+
+		expect(getContent).toHaveBeenCalledWith('C_ARTICLE');
 	});
 
 	it('renders categories grouped under their vocabulary names', () => {

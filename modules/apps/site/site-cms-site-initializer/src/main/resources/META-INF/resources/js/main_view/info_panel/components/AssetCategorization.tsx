@@ -38,6 +38,7 @@ export default function AssetCategorization({
 	categoriesErrorMessage,
 	categorization,
 	cmsGroupId,
+	getContent,
 	getObjectEntryURL,
 	hasUpdatePermission,
 	inputSize,
@@ -47,6 +48,9 @@ export default function AssetCategorization({
 	categoriesErrorMessage?: string;
 	categorization: Categorization;
 	cmsGroupId: number | string;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	getObjectEntryURL: string;
 	hasUpdatePermission: boolean;
 	inputSize?: CategorizationInputSize;
@@ -263,6 +267,7 @@ export default function AssetCategorization({
 			assetLibraryId={assetLibraryId}
 			cmsGroupId={cmsGroupId}
 			errorMessage={categoriesErrorMessage}
+			getContent={getContent}
 			hasUpdatePermission={hasUpdatePermission}
 			inputSize={inputSize}
 			objectEntry={objectEntry}

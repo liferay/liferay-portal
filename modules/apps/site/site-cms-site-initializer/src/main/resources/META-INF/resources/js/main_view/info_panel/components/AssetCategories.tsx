@@ -39,6 +39,7 @@ const AssetCategories = ({
 	cmsGroupId,
 	collapsable = true,
 	errorMessage,
+	getContent,
 	hasUpdatePermission,
 	inputSize,
 	objectEntry,
@@ -51,6 +52,9 @@ const AssetCategories = ({
 	cmsGroupId: number | string;
 	collapsable?: boolean;
 	errorMessage?: string;
+	getContent?: (
+		objectDefinitionExternalReferenceCode?: string
+	) => Promise<string>;
 	hasUpdatePermission?: boolean;
 	inputSize?: CategorizationInputSize;
 	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
@@ -222,23 +226,31 @@ const AssetCategories = ({
 		[groupedTaxonomies.taxonomyVocabularies, isVisibleVocabulary]
 	);
 
-	const handleGenerateCategories = useCallback(() => {
+	const handleGenerateCategories = useCallback(async () => {
 		const {
 			scopeId,
-			systemProperties: {objectDefinitionBrief: {classNameId = -1} = {}},
+			systemProperties: {
+				objectDefinitionBrief: {
+					classNameId = -1,
+					externalReferenceCode,
+				} = {},
+			},
 		} = objectEntry;
 
 		Liferay.fire(CATEGORIZE_EVENT, {
 			agent: AUTO_CATEGORIZE_AGENT,
 			classNameId,
 			cmsGroupId,
-			content: (objectEntry as IAssetObjectEntry).contentRawText ?? '',
+			content:
+				(await getContent?.(externalReferenceCode)) ||
+				(objectEntry as IAssetObjectEntry).contentRawText ||
+				'',
 			currentCategoryIds: (objectEntry.taxonomyCategoryBriefs ?? []).map(
 				(brief) => brief.taxonomyCategoryId
 			),
 			scopeId,
 		});
-	}, [cmsGroupId, objectEntry]);
+	}, [cmsGroupId, getContent, objectEntry]);
 
 	return (
 		<ClayPanel
