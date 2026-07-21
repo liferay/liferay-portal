@@ -220,11 +220,13 @@ public class ViewRolesManagementToolbarDisplayContextTest {
 		return (List<DropdownItem>)dropdownItem.get("items");
 	}
 
-	private HttpServletRequest _httpServletRequest = Mockito.mock(
+	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
-	private RenderRequest _renderRequest = Mockito.mock(RenderRequest.class);
-	private RenderResponse _renderResponse = Mockito.mock(RenderResponse.class);
-	private RoleTypeContributor _roleTypeContributor = Mockito.mock(
+	private final RenderRequest _renderRequest = Mockito.mock(
+		RenderRequest.class);
+	private final RenderResponse _renderResponse = Mockito.mock(
+		RenderResponse.class);
+	private final RoleTypeContributor _roleTypeContributor = Mockito.mock(
 		RoleTypeContributor.class);
 
 }
