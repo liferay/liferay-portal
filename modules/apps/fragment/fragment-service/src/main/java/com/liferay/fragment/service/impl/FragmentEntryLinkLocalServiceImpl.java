@@ -618,8 +618,8 @@ public class FragmentEntryLinkLocalServiceImpl
 			boolean updateClassedModel)
 		throws PortalException {
 
-		FragmentEntryLink fragmentEntryLink = fetchFragmentEntryLink(
-			fragmentEntryLinkId);
+		FragmentEntryLink fragmentEntryLink =
+			fragmentEntryLinkPersistence.findByPrimaryKey(fragmentEntryLinkId);
 
 		_checkUnlockedLayout(fragmentEntryLink.getPlid(), userId);
 
@@ -646,8 +646,8 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		_checkUnlockedLayout(plid, userId);
 
-		FragmentEntryLink fragmentEntryLink = fetchFragmentEntryLink(
-			fragmentEntryLinkId);
+		FragmentEntryLink fragmentEntryLink =
+			fragmentEntryLinkPersistence.findByPrimaryKey(fragmentEntryLinkId);
 
 		fragmentEntryLink.setUserId(user.getUserId());
 		fragmentEntryLink.setUserName(user.getFullName());
