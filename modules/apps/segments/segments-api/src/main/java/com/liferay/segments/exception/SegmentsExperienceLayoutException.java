@@ -12,10 +12,19 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class SegmentsExperienceLayoutException extends PortalException {
 
-	public SegmentsExperienceLayoutException(long plid) {
-		super(
-			"Additional segments experiences can only be added to content " +
-				"page layouts that are not page templates, plid: " + plid);
+	public SegmentsExperienceLayoutException() {
+	}
+
+	public SegmentsExperienceLayoutException(String msg) {
+		super(msg);
+	}
+
+	public SegmentsExperienceLayoutException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
+
+	public SegmentsExperienceLayoutException(Throwable throwable) {
+		super(throwable);
 	}
 
 }

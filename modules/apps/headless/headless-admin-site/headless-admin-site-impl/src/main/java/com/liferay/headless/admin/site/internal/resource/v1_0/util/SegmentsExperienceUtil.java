@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
+import com.liferay.segments.exception.SegmentsExperienceLayoutException;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalServiceUtil;
@@ -46,7 +47,7 @@ public class SegmentsExperienceUtil {
 		throws Exception {
 
 		if (!Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTENT)) {
-			throw new IllegalArgumentException(
+			throw new SegmentsExperienceLayoutException(
 				"Only site pages can define additional page experiences");
 		}
 
@@ -144,9 +145,11 @@ public class SegmentsExperienceUtil {
 			).build());
 	}
 
-	public static void validateSegmentsExperienceLayout(Layout layout) {
+	public static void validateSegmentsExperienceLayout(Layout layout)
+		throws Exception {
+
 		if (!Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTENT)) {
-			throw new IllegalArgumentException(
+			throw new SegmentsExperienceLayoutException(
 				"Only site pages can define additional page experiences");
 		}
 
@@ -161,7 +164,7 @@ public class SegmentsExperienceUtil {
 				fetchLayoutPageTemplateEntryByPlid(plid);
 
 		if (layoutPageTemplateEntry != null) {
-			throw new IllegalArgumentException(
+			throw new SegmentsExperienceLayoutException(
 				"Only site pages can define additional page experiences");
 		}
 	}
