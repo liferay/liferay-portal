@@ -119,6 +119,7 @@ test.describe('Personalized Variation', () => {
 			apiHelpers,
 			assetPublisherPage,
 			assetPublisherWidgetPage,
+			browser,
 			collectionsPage,
 			page,
 			site,
@@ -128,13 +129,17 @@ test.describe('Personalized Variation', () => {
 			const segmentName = getRandomString();
 			const webContentTitle = getRandomString();
 
-			let publicURL: string;
+			let layout: Layout;
 
 			await test.step('Create a web content article and a segment', async () => {
 				await apiHelpers.jsonWebServicesJournal.addWebContent({
 					ddmStructureId:
 						await getBasicWebContentStructureId(apiHelpers),
 					groupId: site.id,
+					serviceContext: {
+						addGroupPermissions: true,
+						addGuestPermissions: true,
+					},
 					titleMap: {en_US: webContentTitle},
 				});
 
@@ -173,14 +178,14 @@ test.describe('Personalized Variation', () => {
 			});
 
 			await test.step('Use the collection in an Asset Publisher', async () => {
-				const layout =
+				layout =
 					await assetPublisherWidgetPage.addAssetPublisherPortlet(
 						site
 					);
 
-				publicURL = `${new URL(page.url()).origin}/web${
-					site.friendlyUrlPath
-				}${layout.friendlyURL}`;
+				await page.goto(
+					`/web${site.friendlyUrlPath}${layout.friendlyURL}`
+				);
 
 				await widgetPagePage.clickOnAction(
 					'Asset Publisher',
@@ -195,11 +200,34 @@ test.describe('Personalized Variation', () => {
 			});
 
 			await test.step('The content is shown in the Asset Publisher', async () => {
-				await page.goto(publicURL);
+				await page.goto(
+					`/web${site.friendlyUrlPath}${layout.friendlyURL}`
+				);
 
 				await expect(
 					page.getByText(webContentTitle).filter({visible: true})
 				).toBeVisible();
+			});
+
+			await test.step('The content is shown in Asset Publisher when logged out', async () => {
+				const guestContext = await browser.newContext();
+
+				try {
+					const guestPage = await guestContext.newPage();
+
+					await guestPage.goto(
+						`/web${site.friendlyUrlPath}${layout.friendlyURL}`
+					);
+
+					await expect(
+						guestPage
+							.getByText(webContentTitle)
+							.filter({visible: true})
+					).toBeVisible();
+				}
+				finally {
+					await guestContext.close();
+				}
 			});
 		}
 	);

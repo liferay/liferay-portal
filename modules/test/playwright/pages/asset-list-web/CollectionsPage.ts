@@ -27,7 +27,6 @@ export class CollectionsPage {
 	/**
 	 * Creates a dynamic collection with the given name.
 	 */
-
 	async createWebContentDynamicCollection(name: string, siteUrl: string) {
 		await this.addNewDynamicCollection(name);
 
@@ -67,7 +66,6 @@ export class CollectionsPage {
 	/**
 	 * Add a dynamic collection with the given name.
 	 */
-
 	async addNewDynamicCollection(name: string) {
 		await this.addNewCollection(name, true);
 	}
@@ -82,7 +80,6 @@ export class CollectionsPage {
 	/**
 	 * Opens a collection from the Collections list for editing.
 	 */
-
 	async openCollection(name: string) {
 		await this.page.getByRole('link', {name}).click();
 
@@ -93,19 +90,19 @@ export class CollectionsPage {
 	 * On a collection's edit page, adds a personalized variation for the given
 	 * segment. The segment picker renders inside a modal iframe.
 	 */
-
 	async addPersonalizedVariation(segmentName: string) {
+		const newPersonalizedVariationDialog = this.page
+			.getByRole('dialog')
+			.filter({hasText: 'New Personalized Variation'});
+
 		await clickAndExpectToBeVisible({
-			target: this.page
-				.getByRole('dialog')
-				.filter({hasText: 'New Personalized Variation'}),
+			target: newPersonalizedVariationDialog,
 			trigger: this.page.getByRole('button', {
 				name: 'Add Personalized Variation',
 			}),
 		});
 
-		await this.page
-			.getByRole('dialog')
+		await newPersonalizedVariationDialog
 			.frameLocator('iframe')
 			.getByText(segmentName)
 			.click();
@@ -117,7 +114,6 @@ export class CollectionsPage {
 	 * On a collection's edit page, deprioritizes the given variation through its
 	 * actions menu in the personalized variations panel.
 	 */
-
 	async deprioritizeVariation(variationTitle: string) {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -175,7 +171,6 @@ export class CollectionsPage {
 	 * Restricts the collection to multiple item types by choosing "Select
 	 * Types" and moving the given types out of the "In Use" list, then saves.
 	 */
-
 	async restrictSourceItemTypes(excludedTypes: string[]) {
 		await this.page
 			.getByRole('combobox', {name: 'Item Type'})
@@ -204,7 +199,6 @@ export class CollectionsPage {
 	 * Configures the collection to a single item type (and optional subtype),
 	 * then saves.
 	 */
-
 	async configureSourceItemType({
 		itemSubtype,
 		itemType,
@@ -235,7 +229,6 @@ export class CollectionsPage {
 	 * On a manual collection's edit page, clicks "Select" to open the asset
 	 * entries item selector modal and returns the modal dialog locator.
 	 */
-
 	async openSelectItemsModal() {
 		await this.page.getByRole('button', {name: 'Select Items'}).click();
 
@@ -250,17 +243,15 @@ export class CollectionsPage {
 	 * On a manual collection's edit page, opens the asset entries item selector
 	 * modal, checks the given assets, and confirms the selection.
 	 */
-
 	async selectAssets(assetTitles: string[]) {
-		await this.openSelectItemsModal();
+		const selectItemsModal = await this.openSelectItemsModal();
 
 		for (const assetTitle of assetTitles) {
-			await this.page
+			await selectItemsModal
 				.getByRole('checkbox', {name: `Select ${assetTitle}`})
 				.check();
 		}
-
-		await this.page
+		await selectItemsModal
 			.locator('.modal-footer')
 			.getByRole('button', {exact: true, name: 'Select'})
 			.click();
@@ -269,7 +260,6 @@ export class CollectionsPage {
 	/**
 	 * Gets the collection classPK.
 	 */
-
 	async getCollectionClassPK(name: string, siteUrl: string) {
 		await this.goto(siteUrl);
 
