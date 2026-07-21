@@ -21,20 +21,6 @@ public class EmailUtil {
 			"/o/osb-faro-web/images/email/icon_check.png");
 	}
 
-	public static String getEmailBannerURL(String frequency) {
-		if (Objects.equals(frequency, "daily")) {
-			return FaroPropsValues.FARO_URL.concat(
-				"/o/osb-faro-web/images/email/ac_email_banner_daily.png");
-		}
-		else if (Objects.equals(frequency, "monthly")) {
-			return FaroPropsValues.FARO_URL.concat(
-				"/o/osb-faro-web/images/email/ac_email_banner_monthly.png");
-		}
-
-		return FaroPropsValues.FARO_URL.concat(
-			"/o/osb-faro-web/images/email/ac_email_banner_weekly.png");
-	}
-
 	public static String getEmailHeaderURL() {
 		return FaroPropsValues.FARO_URL.concat(
 			"/o/osb-faro-web/images/email/email_header.png");
