@@ -578,7 +578,7 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		discoverDataSourceFieldCatalog(
+		discoverDataSourceFieldCatalogEntries(
 			FaroProject faroProject, DataSource dataSource) {
 
 		dataSource.setWorkspaceURL(getWorkspaceURL(faroProject.getGroupId()));
@@ -1767,7 +1767,7 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		getDataSourceFieldCatalog(
+		getDataSourceFieldCatalogEntries(
 			FaroProject faroProject, String id, boolean refresh) {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
@@ -1780,6 +1780,46 @@ public class ContactsEngineClientImpl
 				<Map<String, List<DataSourceFieldCatalogEntry>>>() {
 			},
 			uriVariables);
+	}
+
+	@Override
+	public Results<DataSourceFieldCatalogEntry>
+			getDataSourceFieldCatalogEntries(
+				FaroProject faroProject, String entityType, String filterString,
+				String id, String search, int cur, int delta, String sortString)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(
+			faroProject, cur, delta, null);
+
+		uriVariables.put("entityType", entityType);
+
+		if (Validator.isNotNull(filterString)) {
+			uriVariables.put("filter", filterString);
+		}
+
+		uriVariables.put("id", id);
+
+		if (Validator.isNotNull(search)) {
+			uriVariables.put("search", search);
+		}
+
+		if (Validator.isNotNull(sortString)) {
+			uriVariables.put(
+				"sort",
+				Arrays.asList(
+					StringUtil.replace(
+						sortString, CharPool.COLON, CharPool.COMMA)));
+		}
+
+		PagedModel<?, DataSourceFieldCatalogEntry> pagedModel = get(
+			faroProject, Rels.DATA_SOURCE_FIELDS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<DataSourceFieldCatalogEntry>>() {
+			},
+			uriVariables);
+
+		return pagedModel.getResults();
 	}
 
 	@Override

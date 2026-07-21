@@ -174,7 +174,7 @@ public interface ContactsEngineClient {
 		throws FaroEngineClientException;
 
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		discoverDataSourceFieldCatalog(
+		discoverDataSourceFieldCatalogEntries(
 			FaroProject faroProject, DataSource dataSource);
 
 	public <T> T get(
@@ -364,8 +364,14 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String id, String name, int cur, int delta);
 
 	public Map<String, List<DataSourceFieldCatalogEntry>>
-		getDataSourceFieldCatalog(
+		getDataSourceFieldCatalogEntries(
 			FaroProject faroProject, String id, boolean refresh);
+
+	public Results<DataSourceFieldCatalogEntry>
+			getDataSourceFieldCatalogEntries(
+				FaroProject faroProject, String entityType, String filterString,
+				String id, String search, int cur, int delta, String sortString)
+		throws FaroEngineClientException;
 
 	public List<DataSourceField> getDataSourceFields(
 		FaroProject faroProject, String id, String context, int count);
