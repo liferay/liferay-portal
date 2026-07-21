@@ -48,9 +48,7 @@ public class BuildQueueRebalancerTest
 	}
 
 	@Test
-	public void testRebalanceDrainsBlackListedJenkinsMasters()
-		throws Exception {
-
+	public void testRebalanceBlackListedJenkinsMasters() throws Exception {
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("jenkins.load.balancer.blacklist", "");
@@ -131,18 +129,22 @@ public class BuildQueueRebalancerTest
 
 		testEquals(1, availableJenkinsMasters.size());
 
-		JenkinsMaster jenkinsMaster = availableJenkinsMasters.get(0);
+		JenkinsMaster availableJenkinsMaster = availableJenkinsMasters.get(0);
 
-		testEquals(_AVAILABLE_JENKINS_MASTER_NAME, jenkinsMaster.getName());
+		testEquals(
+			_AVAILABLE_JENKINS_MASTER_NAME, availableJenkinsMaster.getName());
 
 		List<JenkinsMaster> blackListedJenkinsMasters =
 			jenkinsCohort.getBlackListedJenkinsMasters();
 
 		testEquals(1, blackListedJenkinsMasters.size());
 
-		jenkinsMaster = blackListedJenkinsMasters.get(0);
+		JenkinsMaster blackListedJenkinsMaster = blackListedJenkinsMasters.get(
+			0);
 
-		testEquals(_BLACK_LISTED_JENKINS_MASTER_NAME, jenkinsMaster.getName());
+		testEquals(
+			_BLACK_LISTED_JENKINS_MASTER_NAME,
+			blackListedJenkinsMaster.getName());
 
 		BuildQueueRebalancer buildQueueRebalancer = new BuildQueueRebalancer(
 			jenkinsCohort);
