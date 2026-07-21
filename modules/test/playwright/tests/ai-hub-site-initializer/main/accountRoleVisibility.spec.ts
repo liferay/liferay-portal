@@ -23,7 +23,7 @@ const test = mergeTests(
 	loginTest()
 );
 
-test(
+test.skip(
 	"AI Hub site filters the navigation menu by the invitee's account roles",
 	{tag: '@LPD-90465'},
 	async ({

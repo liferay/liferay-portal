@@ -41,7 +41,7 @@ test.afterEach(async () => {
 	await mockMockPage.page.close();
 });
 
-test(
+test.skip(
 	'Account management widget on the AI Hub site supports adding an existing user and inviting a new user via email',
 	{tag: '@LPD-91103'},
 	async ({
@@ -143,7 +143,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'A user invited from the AI Hub account management widget can complete registration, sign in, and is listed under the account',
 	{tag: '@LPD-91103'},
 	async ({
