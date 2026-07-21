@@ -31,8 +31,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
@@ -77,6 +79,7 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		List<ClassName> classNames = _classNameLocalService.getClassNames(
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		DBInspector dbInspector = new DBInspector(connection);
+		Map<String, Boolean> definedClasses = new HashMap<>();
 		Set<String> models = new HashSet<>(ModelHintsUtil.getModels());
 
 		List<String> tableNames = new ArrayList<>();
@@ -140,27 +143,35 @@ public class ClassNamePostUpgradeDataCleanupProcess
 					continue;
 				}
 
-				Class<?> clazz = null;
+				Boolean defined = definedClasses.get(currentValue);
 
-				for (Bundle bundle : bundleContext.getBundles()) {
-					try {
-						clazz = bundle.loadClass(currentValue);
+				if (defined == null) {
+					defined = false;
 
-						break;
-					}
-					catch (ClassNotFoundException classNotFoundException) {
-						if (_log.isDebugEnabled()) {
-							_log.debug(classNotFoundException);
+					for (Bundle bundle : bundleContext.getBundles()) {
+						try {
+							bundle.loadClass(currentValue);
+
+							defined = true;
+
+							break;
+						}
+						catch (ClassNotFoundException classNotFoundException) {
+							if (_log.isDebugEnabled()) {
+								_log.debug(classNotFoundException);
+							}
+						}
+						catch (Exception exception) {
+							_log.error(exception);
+
+							return;
 						}
 					}
-					catch (Exception exception) {
-						_log.error(exception);
 
-						return;
-					}
+					definedClasses.put(currentValue, defined);
 				}
 
-				if (clazz == null) {
+				if (!defined) {
 					missing = true;
 
 					break;
