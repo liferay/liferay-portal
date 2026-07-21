@@ -13,4 +13,7 @@ public class MCPServerFDSNames {
 	public static final String DATA_MASKS =
 		MCPServerPortletKeys.MCP_SERVER + "-dataMasks";
 
+	public static final String PROMPTS =
+		MCPServerPortletKeys.MCP_SERVER + "-prompts";
+
 }
