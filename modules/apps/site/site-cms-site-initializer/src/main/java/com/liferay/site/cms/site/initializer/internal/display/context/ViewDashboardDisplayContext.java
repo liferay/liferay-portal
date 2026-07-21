@@ -67,10 +67,7 @@ public class ViewDashboardDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"additionalProps", _getAdditionalProps()
 		).put(
-			"admin",
-			() -> _roleLocalService.hasUserRole(
-				_themeDisplay.getUserId(), _themeDisplay.getCompanyId(),
-				RoleConstants.ADMINISTRATOR, true)
+			"admin", () -> _hasUserRole(RoleConstants.ADMINISTRATOR)
 		).put(
 			"analyticsEnabled",
 			() -> {
@@ -84,6 +81,8 @@ public class ViewDashboardDisplayContext {
 					return false;
 				}
 			}
+		).put(
+			"cmsAdmin", () -> _isCMSAdmin()
 		).put(
 			"constants", getConstants()
 		).put(
@@ -180,6 +179,22 @@ public class ViewDashboardDisplayContext {
 		}
 
 		return null;
+	}
+
+	private boolean _hasUserRole(String roleName) throws PortalException {
+		return _roleLocalService.hasUserRole(
+			_themeDisplay.getUserId(), _themeDisplay.getCompanyId(), roleName,
+			true);
+	}
+
+	private boolean _isCMSAdmin() throws PortalException {
+		if (_hasUserRole(RoleConstants.ADMINISTRATOR) ||
+			_hasUserRole(RoleConstants.CMS_ADMINISTRATOR)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
