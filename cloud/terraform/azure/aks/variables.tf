@@ -12,7 +12,7 @@ variable "deployment_name" {
 	type=string
 }
 variable "machine_type" {
-	default="Standard_D4s_v4"
+	default="Standard_D4ds_v4"
 	type=string
 }
 variable "observability_config" {

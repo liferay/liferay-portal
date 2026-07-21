@@ -31,8 +31,8 @@ run "should_apply_default_node_pool_settings" {
 		error_message="The default node pool must use ephemeral OS disks"
 	}
 	assert {
-		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D4s_v4"
-		error_message="The default node pool must default to the Standard_D4s_v4 VM size"
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D4ds_v4"
+		error_message="The default node pool must default to the Standard_D4ds_v4 VM size"
 	}
 	command=plan
 }
@@ -183,12 +183,12 @@ run "should_not_enable_monitor_metrics_by_default" {
 }
 run "should_override_machine_type" {
 	assert {
-		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D8s_v4"
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D8ds_v4"
 		error_message="A custom machine_type must drive the default node pool VM size"
 	}
 	command=plan
 	variables {
-		machine_type="Standard_D8s_v4"
+		machine_type="Standard_D8ds_v4"
 	}
 }
 run "should_override_system_node_count" {
