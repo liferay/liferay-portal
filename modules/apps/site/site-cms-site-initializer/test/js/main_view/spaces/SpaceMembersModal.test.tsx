@@ -8,7 +8,7 @@ import {render} from '@testing-library/react';
 import {ManageMembersModal} from 'frontend-js-components-web';
 import React from 'react';
 
-import AddSpaceMembersInput from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembersInput';
+import AddMembersInput from '../../../../src/main/resources/META-INF/resources/js/common/components/AddMembersInput';
 import SpaceMembersModal from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersModal';
 import {SPACE_MEMBERS_CONFIG} from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/spaceMembersConfig';
 
@@ -65,6 +65,6 @@ describe('SpaceMembersModal', () => {
 			selectValue: 'users',
 		};
 
-		expect(renderAddMembersInput(api).type).toBe(AddSpaceMembersInput);
+		expect(renderAddMembersInput(api).type).toBe(AddMembersInput);
 	});
 });

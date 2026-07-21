@@ -8,11 +8,11 @@ import {act, render, screen} from '@testing-library/react';
 import {ManageMembersList} from 'frontend-js-components-web';
 import React from 'react';
 
+import AddMembersInput from '../../../../src/main/resources/META-INF/resources/js/common/components/AddMembersInput';
 import {
 	AddSpaceMembers,
 	AddSpaceMembersProps,
 } from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembers';
-import AddSpaceMembersInput from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembersInput';
 import {SPACE_MEMBERS_CONFIG} from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/spaceMembersConfig';
 
 jest.mock('frontend-js-components-web', () => ({
@@ -87,9 +87,7 @@ describe('AddSpaceMembers', () => {
 			selectValue: 'users',
 		};
 
-		expect(listProps.renderAddMembersInput(api).type).toBe(
-			AddSpaceMembersInput
-		);
+		expect(listProps.renderAddMembersInput(api).type).toBe(AddMembersInput);
 	});
 
 	it('flips the continue button label once members are selected', () => {

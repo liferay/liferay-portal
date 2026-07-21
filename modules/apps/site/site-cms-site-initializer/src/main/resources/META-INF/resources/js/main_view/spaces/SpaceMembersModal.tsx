@@ -6,7 +6,7 @@
 import {ManageMembersModal} from 'frontend-js-components-web';
 import React from 'react';
 
-import AddSpaceMembersInput from './AddSpaceMembersInput';
+import AddMembersInput from '../../common/components/AddMembersInput';
 import {SPACE_MEMBERS_CONFIG} from './spaceMembersConfig';
 
 export default function SpaceMembersModal({
@@ -31,7 +31,7 @@ export default function SpaceMembersModal({
 			hasAssignMembersPermission={hasAssignMembersPermission}
 			headerTitle={Liferay.Language.get('all-members')}
 			ownerId={assetLibraryCreatorUserId}
-			renderAddMembersInput={(api) => <AddSpaceMembersInput {...api} />}
+			renderAddMembersInput={(api) => <AddMembersInput {...api} />}
 		/>
 	);
 }

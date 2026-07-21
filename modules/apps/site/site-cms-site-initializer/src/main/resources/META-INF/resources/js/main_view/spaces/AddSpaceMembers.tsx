@@ -12,8 +12,8 @@ import {
 import {navigate, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import AddMembersInput from '../../common/components/AddMembersInput';
 import {getImage} from '../../common/utils/getImage';
-import AddSpaceMembersInput from './AddSpaceMembersInput';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
 import {SPACE_MEMBERS_CONFIG} from './spaceMembersConfig';
 
@@ -69,7 +69,7 @@ export function AddSpaceMembers({
 						onHasSelectedMembersChange={setHasSelectedMembers}
 						ownerId={assetLibraryCreatorUserId}
 						renderAddMembersInput={(api) => (
-							<AddSpaceMembersInput {...api} />
+							<AddMembersInput {...api} />
 						)}
 					/>
 

@@ -29,7 +29,7 @@ interface AdminUserGroup {
 	usersCount: number;
 }
 
-export default function AddSpaceMembersInput({
+export default function AddMembersInput({
 	excludeMembers,
 	filter,
 	onAutocompleteItemSelected,

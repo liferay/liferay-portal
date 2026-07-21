@@ -9,11 +9,11 @@ import userEvent from '@testing-library/user-event';
 import {AddMembersInputApi, MemberType} from 'frontend-js-components-web';
 import React from 'react';
 
+import AddMembersInput from '../../../../src/main/resources/META-INF/resources/js/common/components/AddMembersInput';
 import {
 	UserAccount,
 	UserGroup,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/UserAccount';
-import AddSpaceMembersInput from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembersInput';
 import {createMockFetchMembersImplementation} from '../../__mocks__/createMockFetchMembersImplementation';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 
@@ -32,7 +32,7 @@ const renderComponent = async (
 		...props,
 	};
 
-	const renderResult = render(<AddSpaceMembersInput {...mergedProps} />);
+	const renderResult = render(<AddMembersInput {...mergedProps} />);
 
 	await waitFor(() => {
 		expect(
@@ -43,7 +43,7 @@ const renderComponent = async (
 	return renderResult;
 };
 
-describe('AddSpaceMembersInput', () => {
+describe('AddMembersInput', () => {
 	const {ResizeObserver: ResizeObserverOriginal} = window;
 
 	const allUsers = [
