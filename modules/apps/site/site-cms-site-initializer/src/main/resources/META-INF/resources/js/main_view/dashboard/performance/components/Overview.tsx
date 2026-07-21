@@ -52,7 +52,7 @@ export function Overview() {
 
 	const [loading, setLoading] = useState(true);
 	const [metrics, setMetrics] = useState<OverviewMetrics>();
-	const [selected, setSelected] = useState<MetricType>(METRICS[0].key);
+	const [selected, setSelected] = useState<MetricType | undefined>(undefined);
 
 	useEffect(() => {
 		async function getMetrics() {
@@ -108,7 +108,11 @@ export function Overview() {
 								color={color}
 								icon={icon}
 								loading={loading}
-								onClick={() => setSelected(key)}
+								onClick={() =>
+									setSelected(
+										selected === key ? undefined : key
+									)
+								}
 								title={title}
 								trend={metric?.trend}
 								value={metric && toThousands(metric.value)}
