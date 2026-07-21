@@ -61,7 +61,7 @@ public abstract class BaseDetector {
 				StringBundler.concat(
 					"Posted ", pageURLs.size(), " ",
 					definitionJSONObject.getString("name"),
-					" scan insights for insight type ",
+					" SEO Studio scan insights for SEO Studio insight type ID ",
 					seoStudioInsightTypeId));
 		}
 	}
@@ -94,8 +94,8 @@ public abstract class BaseDetector {
 			if (System.currentTimeMillis() > deadline) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						"Timed out waiting for pages to be readable for scan " +
-							seoStudioScanId);
+						"Timed out waiting for pages to be readable for SEO " +
+							"Studio scan ID " + seoStudioScanId);
 				}
 
 				break;

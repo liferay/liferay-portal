@@ -85,7 +85,8 @@ public class CrawlerJobStatusService {
 			}
 			catch (Exception exception) {
 				_log.error(
-					"Unable to update status of scan " + seoStudioScanId,
+					"Unable to update status of SEO Studio scan ID " +
+						seoStudioScanId,
 					exception);
 			}
 		}

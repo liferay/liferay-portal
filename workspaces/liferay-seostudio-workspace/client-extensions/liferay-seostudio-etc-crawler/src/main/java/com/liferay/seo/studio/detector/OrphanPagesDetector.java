@@ -75,7 +75,7 @@ public class OrphanPagesDetector extends BaseDetector {
 		if (ListUtil.isEmpty(orphanPageURLs)) {
 			if (_log.isInfoEnabled()) {
 				_log.info(
-					"No orphan pages were detected for scan " +
+					"No orphan pages were detected for SEO Studio scan ID " +
 						seoStudioScanId);
 			}
 
