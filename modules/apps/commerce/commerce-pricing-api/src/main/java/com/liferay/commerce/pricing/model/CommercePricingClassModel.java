@@ -451,6 +451,20 @@ public interface CommercePricingClassModel
 	 */
 	public void setLastPublishDate(Date lastPublishDate);
 
+	/**
+	 * Returns the status of this commerce pricing class.
+	 *
+	 * @return the status of this commerce pricing class
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce pricing class.
+	 *
+	 * @param status the status of this commerce pricing class
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -472,4 +486,4 @@ public interface CommercePricingClassModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1305074501
+// LIFERAY-SERVICE-BUILDER-HASH:1626809834

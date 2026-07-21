@@ -51,6 +51,7 @@ public class CommercePricingClassWrapper
 		attributes.put("title", getTitle());
 		attributes.put("description", getDescription());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -135,6 +136,12 @@ public class CommercePricingClassWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -317,6 +324,16 @@ public class CommercePricingClassWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the status of this commerce pricing class.
+	 *
+	 * @return the status of this commerce pricing class
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -613,6 +630,16 @@ public class CommercePricingClassWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce pricing class.
+	 *
+	 * @param status the status of this commerce pricing class
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the title of this commerce pricing class.
 	 *
 	 * @param title the title of this commerce pricing class
@@ -748,4 +775,4 @@ public class CommercePricingClassWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1436370260
+// LIFERAY-SERVICE-BUILDER-HASH:207241274

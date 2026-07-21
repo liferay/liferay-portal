@@ -70,5 +70,6 @@ create table CommercePricingClass (
 	title STRING null,
 	description STRING null,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (commercePricingClassId, ctCollectionId)
 );

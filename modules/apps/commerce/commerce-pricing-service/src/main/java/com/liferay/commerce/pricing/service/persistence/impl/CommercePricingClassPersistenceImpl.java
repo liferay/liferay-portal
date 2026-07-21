@@ -883,6 +883,7 @@ public class CommercePricingClassPersistenceImpl
 		ctMergeColumnNames.add("title");
 		ctMergeColumnNames.add("description");
 		ctMergeColumnNames.add("lastPublishDate");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1077,4 +1078,4 @@ public class CommercePricingClassPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-152385265
+// LIFERAY-SERVICE-BUILDER-HASH:-1472336910

@@ -64,10 +64,13 @@ public class CommercePricingClassTable
 		createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
+	public final Column<CommercePricingClassTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommercePricingClassTable() {
 		super("CommercePricingClass", CommercePricingClassTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:825287395
+// LIFERAY-SERVICE-BUILDER-HASH:-1001366003

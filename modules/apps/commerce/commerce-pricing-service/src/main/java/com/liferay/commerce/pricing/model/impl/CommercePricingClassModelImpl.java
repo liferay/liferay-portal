@@ -79,7 +79,7 @@ public class CommercePricingClassModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"title", Types.VARCHAR}, {"description", Types.VARCHAR},
-		{"lastPublishDate", Types.TIMESTAMP}
+		{"lastPublishDate", Types.TIMESTAMP}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -99,10 +99,11 @@ public class CommercePricingClassModelImpl
 		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommercePricingClass (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commercePricingClassId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,description STRING null,lastPublishDate DATE null,primary key (commercePricingClassId, ctCollectionId))";
+		"create table CommercePricingClass (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commercePricingClassId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,description STRING null,lastPublishDate DATE null,status INTEGER,primary key (commercePricingClassId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommercePricingClass";
@@ -288,6 +289,8 @@ public class CommercePricingClassModelImpl
 				"description", CommercePricingClass::getDescription);
 			attributeGetterFunctions.put(
 				"lastPublishDate", CommercePricingClass::getLastPublishDate);
+			attributeGetterFunctions.put(
+				"status", CommercePricingClass::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -359,6 +362,10 @@ public class CommercePricingClassModelImpl
 				"lastPublishDate",
 				(BiConsumer<CommercePricingClass, Date>)
 					CommercePricingClass::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommercePricingClass, Integer>)
+					CommercePricingClass::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -817,6 +824,21 @@ public class CommercePricingClassModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -984,6 +1006,7 @@ public class CommercePricingClassModelImpl
 		commercePricingClassImpl.setTitle(getTitle());
 		commercePricingClassImpl.setDescription(getDescription());
 		commercePricingClassImpl.setLastPublishDate(getLastPublishDate());
+		commercePricingClassImpl.setStatus(getStatus());
 
 		commercePricingClassImpl.resetOriginalValues();
 
@@ -1021,6 +1044,8 @@ public class CommercePricingClassModelImpl
 			this.<String>getColumnOriginalValue("description"));
 		commercePricingClassImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		commercePricingClassImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commercePricingClassImpl;
 	}
@@ -1185,6 +1210,8 @@ public class CommercePricingClassModelImpl
 			commercePricingClassCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		commercePricingClassCacheModel.status = getStatus();
+
 		return commercePricingClassCacheModel;
 	}
 
@@ -1263,6 +1290,7 @@ public class CommercePricingClassModelImpl
 	private String _description;
 	private String _descriptionCurrentLanguageId;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1309,6 +1337,7 @@ public class CommercePricingClassModelImpl
 		_columnOriginalValues.put("title", _title);
 		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1358,6 +1387,8 @@ public class CommercePricingClassModelImpl
 
 		columnBitmasks.put("lastPublishDate", 4096L);
 
+		columnBitmasks.put("status", 8192L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1365,4 +1396,4 @@ public class CommercePricingClassModelImpl
 	private CommercePricingClass _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1913029441
+// LIFERAY-SERVICE-BUILDER-HASH:-730806093

@@ -69,7 +69,7 @@ public class CommercePricingClassCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -97,6 +97,8 @@ public class CommercePricingClassCacheModel
 		sb.append(description);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -173,6 +175,8 @@ public class CommercePricingClassCacheModel
 				new Date(lastPublishDate));
 		}
 
+		commercePricingClassImpl.setStatus(status);
+
 		commercePricingClassImpl.resetOriginalValues();
 
 		return commercePricingClassImpl;
@@ -197,6 +201,8 @@ public class CommercePricingClassCacheModel
 		title = objectInput.readUTF();
 		description = objectInput.readUTF();
 		lastPublishDate = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -250,6 +256,8 @@ public class CommercePricingClassCacheModel
 		}
 
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -265,6 +273,7 @@ public class CommercePricingClassCacheModel
 	public String title;
 	public String description;
 	public long lastPublishDate;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1981114417
+// LIFERAY-SERVICE-BUILDER-HASH:519783621

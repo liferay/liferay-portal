@@ -55,6 +55,7 @@
 		<field localized="true" name="title" type="String" />
 		<field localized="true" name="description" type="String" />
 		<field name="lastPublishDate" type="Date" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel">
 		<field name="mvccVersion" type="long" />
