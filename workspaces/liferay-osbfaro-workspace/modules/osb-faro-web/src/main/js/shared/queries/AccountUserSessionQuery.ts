@@ -25,6 +25,7 @@ export interface AccountUserSession {
 	devicePixelRatio: number;
 	deviceType: string;
 	events: AccountUserSessionEvent[];
+	individualId: string | null;
 	languageId: string;
 	screenHeight: number;
 	screenWidth: number;
@@ -109,6 +110,7 @@ export default gql`
 						referrer
 						url
 					}
+					individualId
 					languageId
 					screenHeight
 					screenWidth

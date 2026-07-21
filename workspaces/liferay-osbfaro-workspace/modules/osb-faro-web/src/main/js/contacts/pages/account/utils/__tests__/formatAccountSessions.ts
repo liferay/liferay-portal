@@ -23,6 +23,7 @@ const buildSession = (
 				properties: [],
 			},
 		],
+		individualId: null,
 		languageId: 'en-US',
 		screenHeight: 1080,
 		screenWidth: 1920,
@@ -65,9 +66,9 @@ describe('formatAccountSessions', () => {
 		]);
 	});
 
-	it('marks a session without a userName as anonymous', () => {
+	it('marks a session without an individualId as anonymous', () => {
 		const [, userHeader] = formatAccountSessions([
-			buildSession({userName: null}),
+			buildSession({individualId: null, userName: null}),
 		]);
 
 		expect(userHeader.userHeader).toBe(true);
@@ -75,38 +76,61 @@ describe('formatAccountSessions', () => {
 		expect(userHeader.title).toBe(ANONYMOUS);
 	});
 
-	it('marks a session with a userName as a known individual', () => {
+	it('marks a session with an individualId as a known individual', () => {
 		const [, userHeader] = formatAccountSessions([
-			buildSession({userName: 'Grace Hopper'}),
+			buildSession({individualId: 'ind-1', userName: 'Grace Hopper'}),
 		]);
 
 		expect(userHeader.isAnonymous).toBe(false);
 		expect(userHeader.title).toBe('Grace Hopper');
 	});
 
-	it('links a known individual to their page keyed by userId', () => {
+	it('links a known individual to their page by individualId', () => {
 		const [, userHeader] = formatAccountSessions(
-			[buildSession({userId: 'abc123', userName: 'Grace Hopper'})],
+			[
+				buildSession({
+					individualId: 'ind-1',
+					userId: 'abc123',
+					userName: 'Grace Hopper',
+				}),
+			],
 			{channelId: '420253908131944590', groupId: 'liferay.com'}
 		);
 
 		expect(userHeader.title).toBe('Grace Hopper');
 		expect(userHeader.userHeaderUrl).toBe(
-			'/workspace/liferay.com/420253908131944590/contacts/individuals/known-individuals/abc123'
+			'/workspace/liferay.com/420253908131944590/contacts/individuals/known-individuals/ind-1'
 		);
 	});
 
-	it('shows the userId instead of "Anonymous" for a nameless individual', () => {
+	it('links an anonymous session by its userId when there is no individualId', () => {
 		const [, userHeader] = formatAccountSessions(
-			[buildSession({userId: 'anon999', userName: null})],
+			[buildSession({userId: 'abc123', userName: null})],
 			{channelId: '420253908131944590', groupId: 'liferay.com'}
 		);
 
 		expect(userHeader.isAnonymous).toBe(true);
-		expect(userHeader.title).toBe('anon999');
+		expect(userHeader.title).toBe('abc123');
 		expect(userHeader.userHeaderUrl).toBe(
-			'/workspace/liferay.com/420253908131944590/contacts/individuals/known-individuals/anon999'
+			'/workspace/liferay.com/420253908131944590/contacts/individuals/known-individuals/abc123'
 		);
+	});
+
+	it('does not link a session without an individualId or userId', () => {
+		const [, userHeader] = formatAccountSessions(
+			[
+				buildSession({
+					individualId: null,
+					userId: null,
+					userName: 'Grace Hopper',
+				}),
+			],
+			{channelId: '420253908131944590', groupId: 'liferay.com'}
+		);
+
+		expect(userHeader.isAnonymous).toBe(true);
+		expect(userHeader.title).toBe('Grace Hopper');
+		expect(userHeader.userHeaderUrl).toBeUndefined();
 	});
 
 	it('orders days most-recent first and sums the day event totals', () => {

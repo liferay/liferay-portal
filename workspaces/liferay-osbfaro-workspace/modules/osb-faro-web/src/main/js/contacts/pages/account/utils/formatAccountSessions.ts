@@ -42,9 +42,12 @@ const toSessionItem = (
 
 /**
  * Formats account user sessions for the shared VerticalTimeline component. The
- * sessions are grouped by day and then by individual (userName), so each day
- * renders a header per individual — known (with the user icon) or anonymous
- * (with the anonymize icon) — followed by that individual's sessions.
+ * sessions are grouped by day and then by individual, so each day renders a
+ * header per individual followed by that individual's sessions. A session that
+ * carries an `individualId` is resolved (the user icon); one without is
+ * anonymous (the anonymize icon). Either way the header links to the profile
+ * page — by `individualId` when present, otherwise by `userId` — as long as one
+ * of the two ids is available.
  *
  * Unlike the individual timeline's shared `formatSessions`, this reads the
  * correct session field names, so account session attributes populate.
@@ -96,18 +99,20 @@ export const formatAccountSessions = (
 		});
 
 		sessionsByUser.forEach((userSessions) => {
-			const {userId, userName} = userSessions[0];
+			const {individualId, userId, userName} = userSessions[0];
+
+			const linkId = individualId || userId;
 
 			items.push({
-				isAnonymous: userName == null,
+				isAnonymous: !individualId,
 				title: userName || userId || Liferay.Language.get('anonymous'),
 				userHeader: true,
 				userHeaderUrl:
-					userId && context.channelId && context.groupId
+					linkId && context.channelId && context.groupId
 						? toRoute(Routes.CONTACTS_INDIVIDUAL, {
 								channelId: context.channelId,
 								groupId: context.groupId,
-								id: userId,
+								id: linkId,
 							})
 						: undefined,
 			});
