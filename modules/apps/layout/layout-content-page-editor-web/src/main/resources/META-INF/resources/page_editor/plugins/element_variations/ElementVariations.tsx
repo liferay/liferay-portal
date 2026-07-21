@@ -314,7 +314,6 @@ function ElementVariations({
 														deleteElementVariationURL,
 														externalReferenceCode:
 															elementVariation.externalReferenceCode,
-														plid,
 													}
 												)
 													.then(() =>
@@ -339,7 +338,6 @@ function ElementVariations({
 														active: !elementVariation.active,
 														externalReferenceCode:
 															elementVariation.externalReferenceCode,
-														plid,
 														updateElementVariationURL,
 													}
 												)

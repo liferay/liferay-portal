@@ -45,8 +45,7 @@ public class
 		_layoutPageTemplateStructureRelElementVariationService.
 			deleteLayoutPageTemplateStructureRelElementVariation(
 				ParamUtil.getString(actionRequest, "externalReferenceCode"),
-				themeDisplay.getScopeGroupId(),
-				ParamUtil.getLong(actionRequest, "plid"));
+				themeDisplay.getScopeGroupId());
 
 		return _jsonFactory.createJSONObject();
 	}

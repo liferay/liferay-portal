@@ -46,7 +46,6 @@ public class
 			updateLayoutPageTemplateStructureRelElementVariation(
 				ParamUtil.getString(actionRequest, "externalReferenceCode"),
 				themeDisplay.getScopeGroupId(),
-				ParamUtil.getLong(actionRequest, "plid"),
 				ParamUtil.getBoolean(actionRequest, "active"));
 
 		return _jsonFactory.createJSONObject();
