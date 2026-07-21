@@ -274,6 +274,9 @@ export function createMarketoCampaign({
 	});
 }
 
+/**
+ * @param {{[key: string]: any}} params
+ */
 export function updateMarketoCampaign({
 	channelsConfiguration,
 	contactsConfiguration,
