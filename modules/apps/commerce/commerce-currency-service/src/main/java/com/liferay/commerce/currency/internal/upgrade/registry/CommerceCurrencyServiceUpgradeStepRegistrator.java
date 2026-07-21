@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.currency.internal.upgrade.registry;
 
+import com.liferay.commerce.currency.internal.upgrade.v1_5_0.CommerceCurrencyUpgradeProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
@@ -57,6 +58,9 @@ public class CommerceCurrencyServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"1.4.0", "1.5.0", new CommerceCurrencyUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce currency upgrade step registrator finished");
