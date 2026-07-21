@@ -284,7 +284,6 @@ test(
 			await expect(
 				usersAndOrganizationsPage.deactivateButton
 			).not.toBeVisible();
-
 			await expect(
 				usersAndOrganizationsPage.deleteButton
 			).not.toBeVisible();
@@ -313,6 +312,9 @@ test(
 			await expect(
 				usersAndOrganizationsPage.deactivateButton
 			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.deleteButton
+			).not.toBeVisible();
 		});
 	}
 );
