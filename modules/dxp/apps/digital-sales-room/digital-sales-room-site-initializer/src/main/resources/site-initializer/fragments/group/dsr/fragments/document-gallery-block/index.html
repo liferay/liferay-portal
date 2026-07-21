@@ -3,13 +3,31 @@
 
 	[#assign extension = (document.getString("extension"))!"" /]
 
+	[#assign imagePreview = ["bmp", "gif", "jpeg", "jpg", "png", "webp"]?seq_contains(extension?lower_case) /]
+
+	[#assign pdfPreview = extension?lower_case == "pdf" /]
+
+	[#if imagePreview]
+		[#assign previewURL = documentURL /]
+	[#elseif pdfPreview]
+		[#assign previewURL = documentURL + "?documentThumbnail=1" /]
+	[/#if]
+
 	<a class="dsr-document-card" href="${documentURL}" rel="noopener" target="_blank">
 		<span class="dsr-document-preview">
-			<span class="dsr-document-badge">${extension?upper_case}</span>
+			[#if imagePreview || pdfPreview]
+				<img alt="${document.getString("title")?html}" class="dsr-document-preview-image" src="${previewURL}" />
 
-			<span class="dsr-document-icon">
-				[@clay["icon"] symbol="document" /]
-			</span>
+				<span class="dsr-document-icon" hidden>
+					[@clay["icon"] symbol="document" /]
+				</span>
+			[#else]
+				<span class="dsr-document-icon">
+					[@clay["icon"] symbol="document" /]
+				</span>
+			[/#if]
+
+			<span class="dsr-document-badge">${extension?upper_case}</span>
 		</span>
 		<span class="dsr-document-footer">
 			<span class="dsr-document-title">${document.getString("title")?html}</span>

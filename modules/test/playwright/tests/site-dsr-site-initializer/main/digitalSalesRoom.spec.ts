@@ -311,27 +311,160 @@ test(
 
 		await page.goto(`/web/${roomName}/onboarding`);
 
-		await expect(
-			editDigitalSalesRoomPage.documentGalleryCard
-		).toBeVisible();
-		await expect(
-			editDigitalSalesRoomPage.documentGalleryCardBadge
-		).toHaveText('PNG');
-		await expect(
-			editDigitalSalesRoomPage.documentGalleryCardIcon
-		).toBeVisible();
-		await expect(
-			editDigitalSalesRoomPage.documentGalleryCardTitle
-		).toHaveText(documentTitle);
+		const documentGalleryCard =
+			editDigitalSalesRoomPage.getDocumentGalleryCard(0);
+
+		await expect(documentGalleryCard.card).toBeVisible();
+		await expect(documentGalleryCard.badge).toHaveText('PNG');
+		await expect(documentGalleryCard.title).toHaveText(documentTitle);
 
 		const response = await page.request.get(
-			(await editDigitalSalesRoomPage.documentGalleryCard.getAttribute(
-				'href'
-			)) ?? ''
+			(await documentGalleryCard.card.getAttribute('href')) ?? ''
 		);
 
 		expect(response.status()).toBe(200);
 		expect(response.headers()['content-type']).toContain('image');
+	}
+);
+
+test(
+	'A document gallery card renders a preview based on the document type',
+	{tag: '@LPD-97854'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomsPage,
+		editDigitalSalesRoomPage,
+		page,
+	}) => {
+		const imageTitle = `Image${getRandomInt()}`;
+		const otherTitle = `Other${getRandomInt()}`;
+		const pdfTitle = `Pdf${getRandomInt()}`;
+		const roomName = `A${getRandomInt()}`;
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			accountName: account.name,
+			roomName,
+		});
+
+		const pageEditorPage = new PageEditorPage(page);
+
+		await page.goto(`/web/${roomName}/onboarding?p_l_mode=edit`);
+
+		const groupId = await page.evaluate(() =>
+			Liferay.ThemeDisplay.getScopeGroupId()
+		);
+
+		await apiHelpers.headlessDelivery.postDocument(
+			groupId,
+			createReadStream(
+				path.join(__dirname, 'dependencies', 'document1.png')
+			),
+			{fileName: `${imageTitle}.png`, title: imageTitle}
+		);
+		await apiHelpers.headlessDelivery.postDocument(
+			groupId,
+			createReadStream(
+				path.join(__dirname, 'dependencies', 'document.pdf')
+			),
+			{fileName: `${pdfTitle}.pdf`, title: pdfTitle}
+		);
+		await apiHelpers.headlessDelivery.postDocument(
+			groupId,
+			createReadStream(
+				path.join(__dirname, 'dependencies', 'document.txt')
+			),
+			{fileName: `${otherTitle}.txt`, title: otherTitle}
+		);
+
+		await pageEditorPage.addFragment(
+			'Digital Sales Room',
+			'Document Gallery Block'
+		);
+
+		const fragmentId = await pageEditorPage.getFragmentId(
+			'Document Gallery Block'
+		);
+
+		await pageEditorPage.selectFragment(fragmentId);
+		await pageEditorPage.goToConfigurationTab('General');
+
+		const generalPanel = page.getByRole('tabpanel', {name: 'General'});
+
+		const selectDocument = async (index: number, title: string) => {
+			await generalPanel
+				.getByRole('button', {name: `Select Document ${index}`})
+				.click();
+
+			await page
+				.getByRole('menuitem', {name: `Select Document ${index}`})
+				.click({timeout: 2000})
+				.catch(() => {});
+
+			await page
+				.frameLocator('iframe[title="Select"]')
+				.getByText(title, {exact: true})
+				.click();
+
+			await expect(
+				generalPanel.getByRole('textbox', {name: `Document ${index}`})
+			).toHaveValue(title);
+		};
+
+		await selectDocument(1, imageTitle);
+		await selectDocument(2, pdfTitle);
+		await selectDocument(3, otherTitle);
+
+		await pageEditorPage.publishPage();
+
+		await page.goto(`/web/${roomName}/onboarding`);
+
+		await test.step('An image document card shows the image as its preview', async () => {
+			const imageCard =
+				editDigitalSalesRoomPage.getDocumentGalleryCard(0);
+
+			await expect(imageCard.badge).toHaveText('PNG');
+			await expect(imageCard.icon).toBeHidden();
+			await expect(imageCard.previewImage).toBeVisible();
+			await expect(imageCard.title).toHaveText(imageTitle);
+
+			const previewImageResponse = await page.request.get(
+				(await imageCard.previewImage.getAttribute('src')) ?? ''
+			);
+
+			expect(previewImageResponse.status()).toBe(200);
+			expect(previewImageResponse.headers()['content-type']).toContain(
+				'image'
+			);
+		});
+
+		await test.step('A PDF document card requests the document thumbnail as its preview', async () => {
+			const pdfCard = editDigitalSalesRoomPage.getDocumentGalleryCard(1);
+
+			await expect(pdfCard.badge).toHaveText('PDF');
+			await expect(pdfCard.title).toHaveText(pdfTitle);
+
+			expect(await pdfCard.previewImage.getAttribute('src')).toContain(
+				'documentThumbnail=1'
+			);
+		});
+
+		await test.step('A document card without a preview shows the fallback icon', async () => {
+			const otherCard =
+				editDigitalSalesRoomPage.getDocumentGalleryCard(2);
+
+			await expect(otherCard.badge).toHaveText('TXT');
+			await expect(otherCard.icon).toBeVisible();
+			await expect(otherCard.previewImage).toHaveCount(0);
+			await expect(otherCard.title).toHaveText(otherTitle);
+		});
 	}
 );
 

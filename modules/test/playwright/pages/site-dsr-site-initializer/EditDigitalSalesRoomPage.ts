@@ -22,9 +22,6 @@ export class EditDigitalSalesRoomPage {
 	readonly contributorRoleMenuItemButton: Locator;
 	readonly documentCard: (documentName: string) => Locator;
 	readonly documentGalleryCard: Locator;
-	readonly documentGalleryCardBadge: Locator;
-	readonly documentGalleryCardIcon: Locator;
-	readonly documentGalleryCardTitle: Locator;
 	readonly documentsMenuItem: Locator;
 	readonly editCommentTextarea: Locator;
 	readonly fileUploadButton: Locator;
@@ -78,15 +75,6 @@ export class EditDigitalSalesRoomPage {
 		this.documentCard = (documentName: string) =>
 			page.locator('.card-title', {hasText: documentName});
 		this.documentGalleryCard = page.locator('.dsr-document-card');
-		this.documentGalleryCardBadge = this.documentGalleryCard.locator(
-			'.dsr-document-badge'
-		);
-		this.documentGalleryCardIcon = this.documentGalleryCard.locator(
-			'.dsr-document-icon svg'
-		);
-		this.documentGalleryCardTitle = this.documentGalleryCard.locator(
-			'.dsr-document-title'
-		);
 		this.documentsMenuItem = page.getByRole('menuitem', {
 			name: 'Documents',
 		});
@@ -138,6 +126,18 @@ export class EditDigitalSalesRoomPage {
 		this.viewerRoleInputButton = page.locator(
 			'[data-testid="roleKeyItem_Viewer"]'
 		);
+	}
+
+	getDocumentGalleryCard(index: number) {
+		const card = this.documentGalleryCard.nth(index);
+
+		return {
+			badge: card.locator('.dsr-document-badge'),
+			card,
+			icon: card.locator('.dsr-document-icon svg'),
+			previewImage: card.locator('.dsr-document-preview-image'),
+			title: card.locator('.dsr-document-title'),
+		};
 	}
 
 	async uploadDocument(filePath: string) {
