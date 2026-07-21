@@ -1501,6 +1501,7 @@
 
 		<column localized="true" name="name" type="String" />
 		<column localized="true" name="description" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
