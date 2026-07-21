@@ -41,6 +41,16 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 				String[] audienceEntryERCs, ServiceContext serviceContext)
 		throws PortalException {
 
+		LayoutPageTemplateStructureRelElementVariation
+			layoutPageTemplateStructureRelElementVariation =
+				layoutPageTemplateStructureRelElementVariationLocalService.
+					fetchLayoutPageTemplateStructureRelElementVariationByExternalReferenceCode(
+						externalReferenceCode, groupId);
+
+		if (layoutPageTemplateStructureRelElementVariation != null) {
+			plid = layoutPageTemplateStructureRelElementVariation.getPlid();
+		}
+
 		_layoutModelResourcePermission.check(
 			getPermissionChecker(), plid, ActionKeys.UPDATE);
 
