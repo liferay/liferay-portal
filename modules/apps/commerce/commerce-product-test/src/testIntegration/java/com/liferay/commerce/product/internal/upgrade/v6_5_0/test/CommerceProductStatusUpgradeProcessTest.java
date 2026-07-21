@@ -14,6 +14,7 @@ import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CPOptionCategoryLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
@@ -21,7 +22,9 @@ import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -87,6 +90,35 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
+	}
+
+	@Test
+	public void testUpgradeCommerceChannelStatus() throws Exception {
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			TestPropsValues.getGroupId(), RandomTestUtil.randomString());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CommerceChannel set status = ? where " +
+						"commerceChannelId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(
+				2, commerceChannel.getCommerceChannelId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		commerceChannel = _commerceChannelLocalService.getCommerceChannel(
+			commerceChannel.getCommerceChannelId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, commerceChannel.getStatus());
 	}
 
 	@Test
@@ -284,6 +316,9 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Inject
 	private CPMeasurementUnitLocalService _cpMeasurementUnitLocalService;
