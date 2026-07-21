@@ -1278,6 +1278,7 @@
 		<column name="skuContributor" type="boolean" />
 		<column name="key" type="String" />
 		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
