@@ -175,6 +175,10 @@ public class LayoutStructureUtil {
 				FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
 					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
+			if (fragmentEntryLink == null) {
+				return true;
+			}
+
 			FragmentEntry fragmentEntry = getFragmentEntry(fragmentEntryLink);
 
 			if (fragmentEntry != null) {
