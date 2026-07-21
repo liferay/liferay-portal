@@ -7464,7 +7464,7 @@ public class DefaultObjectEntryManagerImplTest
 
 		// Company scope
 
-		_enableObjectEntryVersioning();
+		_objectDefinition1 = _enableObjectEntryVersioning();
 
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			_objectDefinition1,
@@ -7524,6 +7524,159 @@ public class DefaultObjectEntryManagerImplTest
 					dtoConverterContext,
 					objectEntry1.getExternalReferenceCode(), _objectDefinition1,
 					null, 1)));
+
+		// Friendly URL path with customization disabled
+
+		_objectDefinition1.setEnableFriendlyURLCustomization(false);
+
+		ObjectField textObjectField = objectFieldLocalService.fetchObjectField(
+			_objectDefinition1.getObjectDefinitionId(), "textObjectFieldName");
+
+		_objectDefinition1.setTitleObjectFieldId(
+			textObjectField.getObjectFieldId());
+
+		_objectDefinition1 =
+			objectDefinitionLocalService.updateObjectDefinition(
+				_objectDefinition1);
+
+		ObjectEntry objectEntry3 = _defaultObjectEntryManager.addObjectEntry(
+			_simpleDTOConverterContext, _objectDefinition1,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"textObjectFieldName", "Version One"
+					).build();
+
+					setExternalReferenceCode(RandomTestUtil.randomString());
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		Assert.assertEquals("version-one", objectEntry3.getFriendlyUrlPath());
+
+		objectEntry3 = _updateObjectEntryVersion(
+			_objectDefinition1, objectEntry3, "textObjectFieldName",
+			"Version Two", 2);
+
+		Assert.assertEquals("version-two", objectEntry3.getFriendlyUrlPath());
+
+		ObjectEntry version1ObjectEntry =
+			_defaultObjectEntryManager.getObjectEntryByVersion(
+				dtoConverterContext, objectEntry3.getExternalReferenceCode(),
+				_objectDefinition1, null, 1);
+
+		Assert.assertEquals(
+			"version-one", version1ObjectEntry.getFriendlyUrlPath());
+
+		Map<String, String> version1FriendlyUrlPathI18n =
+			version1ObjectEntry.getFriendlyUrlPath_i18n();
+
+		Assert.assertEquals(
+			"version-one",
+			version1FriendlyUrlPathI18n.get(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
+
+		ObjectEntry version2ObjectEntry =
+			_defaultObjectEntryManager.getObjectEntryByVersion(
+				dtoConverterContext, objectEntry3.getExternalReferenceCode(),
+				_objectDefinition1, null, 2);
+
+		Assert.assertEquals(
+			"version-two", version2ObjectEntry.getFriendlyUrlPath());
+
+		Map<String, String> version2FriendlyUrlPathI18n =
+			version2ObjectEntry.getFriendlyUrlPath_i18n();
+
+		Assert.assertEquals(
+			"version-two",
+			version2FriendlyUrlPathI18n.get(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
+
+		// Friendly URL path with customization enabled
+
+		_objectDefinition1.setEnableFriendlyURLCustomization(true);
+
+		_objectDefinition1 =
+			objectDefinitionLocalService.updateObjectDefinition(
+				_objectDefinition1);
+
+		objectEntry3 = _defaultObjectEntryManager.updateObjectEntry(
+			TestPropsValues.getCompanyId(),
+			_createDTOConverterContext(adminUser),
+			objectEntry3.getExternalReferenceCode(), _objectDefinition1,
+			new ObjectEntry() {
+				{
+					systemProperties = new SystemProperties() {
+						{
+							version = new Version() {
+								{
+									number = 3;
+								}
+							};
+						}
+					};
+
+					setFriendlyUrlPath("Version Three");
+				}
+			},
+			objectEntry3.getScopeKey());
+
+		Assert.assertEquals("version-three", objectEntry3.getFriendlyUrlPath());
+
+		objectEntry3 = _defaultObjectEntryManager.updateObjectEntry(
+			TestPropsValues.getCompanyId(),
+			_createDTOConverterContext(adminUser),
+			objectEntry3.getExternalReferenceCode(), _objectDefinition1,
+			new ObjectEntry() {
+				{
+					systemProperties = new SystemProperties() {
+						{
+							version = new Version() {
+								{
+									number = 4;
+								}
+							};
+						}
+					};
+
+					setFriendlyUrlPath("Version Four");
+				}
+			},
+			objectEntry3.getScopeKey());
+
+		Assert.assertEquals("version-four", objectEntry3.getFriendlyUrlPath());
+
+		ObjectEntry version3ObjectEntry =
+			_defaultObjectEntryManager.getObjectEntryByVersion(
+				dtoConverterContext, objectEntry3.getExternalReferenceCode(),
+				_objectDefinition1, null, 3);
+
+		Assert.assertEquals(
+			"version-three", version3ObjectEntry.getFriendlyUrlPath());
+
+		Map<String, String> version3FriendlyUrlPathI18n =
+			version3ObjectEntry.getFriendlyUrlPath_i18n();
+
+		Assert.assertEquals(
+			"version-three",
+			version3FriendlyUrlPathI18n.get(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
+
+		ObjectEntry version4ObjectEntry =
+			_defaultObjectEntryManager.getObjectEntryByVersion(
+				dtoConverterContext, objectEntry3.getExternalReferenceCode(),
+				_objectDefinition1, null, 4);
+
+		Assert.assertEquals(
+			"version-four", version4ObjectEntry.getFriendlyUrlPath());
+
+		Map<String, String> version4FriendlyUrlPathI18n =
+			version4ObjectEntry.getFriendlyUrlPath_i18n();
+
+		Assert.assertEquals(
+			"version-four",
+			version4FriendlyUrlPathI18n.get(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
 
 		// Site scope
 
