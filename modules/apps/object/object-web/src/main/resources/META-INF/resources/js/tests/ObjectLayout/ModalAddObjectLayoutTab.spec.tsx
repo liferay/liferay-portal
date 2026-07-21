@@ -66,10 +66,6 @@ describe('ModalAddObjectLayoutTab', () => {
 
 	afterEach(cleanup);
 
-	afterEach(() => {
-		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue('/');
-	});
-
 	it('calls onClose when the cancel button is clicked', () => {
 		(useResource as jest.Mock).mockReturnValue({resource: null});
 		render(<TestComponent />);
@@ -127,7 +123,7 @@ describe('ModalAddObjectLayoutTab', () => {
 	});
 
 	it('requests relationships with the context path prefixed', () => {
-		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue(
+		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValueOnce(
 			'/myportal'
 		);
 		(useResource as jest.Mock).mockReturnValue({resource: null});

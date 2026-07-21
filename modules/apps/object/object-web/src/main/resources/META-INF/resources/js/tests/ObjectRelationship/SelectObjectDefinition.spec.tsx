@@ -23,12 +23,8 @@ describe('SelectObjectDefinition', () => {
 		(useResource as jest.Mock).mockReturnValue({resource: null});
 	});
 
-	afterEach(() => {
-		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue('/');
-	});
-
 	it('requests object definitions with the context path prefixed', () => {
-		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue(
+		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValueOnce(
 			'/myportal'
 		);
 
@@ -44,7 +40,9 @@ describe('SelectObjectDefinition', () => {
 	});
 
 	it('requests object definitions without a prefix at the root context', () => {
-		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValue('');
+		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValueOnce(
+			''
+		);
 
 		render(
 			<SelectObjectDefinition reverseOrder={false} setValues={() => {}} />
