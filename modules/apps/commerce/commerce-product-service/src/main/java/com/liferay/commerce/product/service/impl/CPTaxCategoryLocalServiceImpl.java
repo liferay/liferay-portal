@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.searcher.SearchRequest;
@@ -90,6 +91,7 @@ public class CPTaxCategoryLocalServiceImpl
 		cpTaxCategory.setUserName(user.getFullName());
 		cpTaxCategory.setNameMap(nameMap);
 		cpTaxCategory.setDescriptionMap(descriptionMap);
+		cpTaxCategory.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		cpTaxCategory = cpTaxCategoryPersistence.update(cpTaxCategory);
 
