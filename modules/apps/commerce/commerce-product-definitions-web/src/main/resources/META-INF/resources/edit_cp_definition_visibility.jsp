@@ -69,6 +69,8 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
+			"accountGroupDataSetId", CommerceProductFDSNames.PRODUCT_ACCOUNT_GROUPS
+		).put(
 			"accountGroupItemSelectorURL", cpDefinitionsDisplayContext.getAccountGroupItemSelectorUrl()
 		).put(
 			"channelDataSetId", CommerceProductFDSNames.PRODUCT_CHANNELS

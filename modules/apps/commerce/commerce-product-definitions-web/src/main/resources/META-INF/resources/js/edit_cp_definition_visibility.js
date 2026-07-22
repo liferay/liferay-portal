@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {FDS_EVENT} from '@liferay/frontend-data-set-web';
 import {CommerceServiceProvider} from 'commerce-frontend-js';
 import {openSelectionModal, openToast} from 'frontend-js-components-web';
-import {sessionStorage} from 'frontend-js-web';
 
 function handleEvent({
+	dataSetId,
 	fieldName,
 	fieldValueName,
 	filterFieldName,
@@ -28,15 +29,18 @@ function handleEvent({
 	};
 
 	return AdminCatalogResource.updateProduct(productId, formattedData)
-		.then((response) => {
-			if (response.ok) {
-				sessionStorage.setItem(
-					'com.liferay.commerce.product.definitions.web.successMessage',
-					Liferay.Language.get('your-request-completed-successfully'),
-					sessionStorage.TYPES.NECESSARY
-				);
+		.then(() => {
+			openToast({
+				message: Liferay.Language.get(
+					'your-request-completed-successfully'
+				),
+				type: 'success',
+			});
 
-				window.location.reload();
+			if (dataSetId) {
+				Liferay.fire(FDS_EVENT.UPDATE_DISPLAY, {
+					id: dataSetId,
+				});
 			}
 		})
 		.catch(() => {
@@ -131,21 +135,4 @@ export default function ({
 			eventHandler.detach();
 		});
 	});
-
-	const sessionKey =
-		'com.liferay.commerce.product.definitions.web.successMessage';
-
-	const successMessage = sessionStorage.getItem(
-		sessionKey,
-		Liferay.Util.SessionStorage.TYPES.NECESSARY
-	);
-
-	if (successMessage) {
-		openToast({
-			message: successMessage,
-			type: 'success',
-		});
-
-		sessionStorage.removeItem(sessionKey);
-	}
 }
