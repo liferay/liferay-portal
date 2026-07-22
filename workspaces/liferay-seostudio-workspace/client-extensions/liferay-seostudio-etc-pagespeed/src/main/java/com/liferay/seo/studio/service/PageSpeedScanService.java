@@ -191,7 +191,7 @@ public class PageSpeedScanService {
 
 		if (seoStudioDomainJSONObject == null) {
 			_liferayService.patchSEOStudioScan(
-				"Unable to get a domain for SEO Studio scan ID " +
+				"Unable to get a domain for SEO Studio Scan ID " +
 					seoStudioScanId,
 				seoStudioScanId, PageSpeedConstants.STATE_FAILED);
 
@@ -205,7 +205,7 @@ public class PageSpeedScanService {
 		if (Validator.isNull(googlePageSpeedAPIKey)) {
 			_liferayService.patchSEOStudioScan(
 				"Unable to get a Google PageSpeed API key for SEO Studio " +
-					"instance ID " + domain.getSEOStudioInstanceId(),
+					"Instance ID " + domain.getSEOStudioInstanceId(),
 				seoStudioScanId, PageSpeedConstants.STATE_FAILED);
 
 			return;
@@ -215,7 +215,7 @@ public class PageSpeedScanService {
 			if (!_pageSpeedReportService.isValidAPIKey(googlePageSpeedAPIKey)) {
 				_liferayService.patchSEOStudioScan(
 					"Unable to validate Google PageSpeed API key for SEO " +
-						"Studio instance ID " + domain.getSEOStudioInstanceId(),
+						"Studio Instance ID " + domain.getSEOStudioInstanceId(),
 					seoStudioScanId, PageSpeedConstants.STATE_FAILED);
 
 				return;
