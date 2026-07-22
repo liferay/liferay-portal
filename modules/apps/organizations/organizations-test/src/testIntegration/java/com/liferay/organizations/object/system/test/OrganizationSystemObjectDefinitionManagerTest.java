@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -224,6 +225,8 @@ public class OrganizationSystemObjectDefinitionManagerTest
 	@TestInfo("LPD-62555")
 	public void testGetOrAddEmptyBaseModel() throws Exception {
 		super.testGetOrAddEmptyBaseModel();
+
+		_testGetOrAddEmptyBaseModelWithOrganizationMember();
 	}
 
 	@Test
@@ -347,6 +350,30 @@ public class OrganizationSystemObjectDefinitionManagerTest
 		}
 
 		return labelMap;
+	}
+
+	@TestInfo("LPD-97608")
+	private void _testGetOrAddEmptyBaseModelWithOrganizationMember()
+		throws Exception {
+
+		setUser(TestPropsValues.getUser());
+
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization1);
+
+		setUser(user);
+
+		Organization organization2 =
+			(Organization)systemObjectDefinitionManager.getOrAddEmptyBaseModel(
+				organization1.getExternalReferenceCode(), user);
+
+		Assert.assertEquals(
+			organization1.getOrganizationId(),
+			organization2.getOrganizationId());
 	}
 
 	@Inject
