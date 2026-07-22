@@ -63,6 +63,11 @@ jest.mock('../../js/utils/openCMPModal', () => ({
 	openCMPModal: (...args: any[]) => mockOpenCMPModal(...args),
 }));
 
+jest.mock('../../js/components/modal/UpdateDueDateModalContent', () => ({
+	__esModule: true,
+	default: () => null,
+}));
+
 jest.mock('../../js/utils/toastUtil', () => ({
 	displayAssignSuccessToast: (...args: any[]) =>
 		mockDisplayAssignSuccessToast(...args),
@@ -163,6 +168,7 @@ describe('Kanban Task', () => {
 		expect(queryByText('assign-to-...')).not.toBeInTheDocument();
 		expect(queryByText('delete')).not.toBeInTheDocument();
 		expect(queryByText('edit')).not.toBeInTheDocument();
+		expect(queryByText('update-due-date')).not.toBeInTheDocument();
 		expect(queryByText('watch-task')).not.toBeInTheDocument();
 	});
 
@@ -199,6 +205,14 @@ describe('Kanban Task', () => {
 		const {getByText} = renderTask();
 
 		fireEvent.click(getByText('delete'));
+
+		expect(mockOpenCMPModal).toHaveBeenCalledTimes(1);
+	});
+
+	it('opens update due date modal', () => {
+		const {getByText} = renderTask();
+
+		fireEvent.click(getByText('update-due-date'));
 
 		expect(mockOpenCMPModal).toHaveBeenCalledTimes(1);
 	});
@@ -248,6 +262,7 @@ describe('Kanban Task', () => {
 		expect(queryByText('assign-to-...')).toBeInTheDocument();
 		expect(queryByText('delete')).toBeInTheDocument();
 		expect(queryByText('edit')).toBeInTheDocument();
+		expect(queryByText('update-due-date')).toBeInTheDocument();
 		expect(queryByText('view')).toBeInTheDocument();
 		expect(queryByText('watch-task')).toBeInTheDocument();
 	});

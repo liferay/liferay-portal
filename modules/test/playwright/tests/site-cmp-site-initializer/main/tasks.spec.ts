@@ -696,6 +696,141 @@ test(
 );
 
 test(
+	'Calendar view updates a task due date from the kebab menu',
+	{tag: ['@LPD-69885', '@LPD-98671']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const taskTitle = getRandomString();
+
+		const {calendarView} = tasksPage;
+
+		const scheduledDate = new Date();
+
+		scheduledDate.setDate(15);
+
+		const rescheduledDate = new Date();
+
+		rescheduledDate.setDate(20);
+
+		const sourceCell = tasksPage.getCalendarDayCell(scheduledDate);
+		const targetCell = tasksPage.getCalendarDayCell(rescheduledDate);
+
+		await test.step('Create a task with a due date', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					dueDate: `${toDateString(scheduledDate)}T00:00:00Z`,
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					title: taskTitle,
+				},
+				cmpTask,
+				project.scopeKey
+			);
+		});
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await expect(calendarView.title).toBeVisible();
+		});
+
+		const locale = await page.evaluate(() =>
+			Liferay.ThemeDisplay.getBCP47LanguageId()
+		);
+
+		const toPickerString = (date: Date) =>
+			date.toLocaleDateString(locale, {
+				day: '2-digit',
+				month: '2-digit',
+				year: 'numeric',
+			});
+
+		await test.step('Open the Update Due Date modal from the task kebab', async () => {
+			await sourceCell.getByText(taskTitle, {exact: true}).hover();
+
+			await sourceCell.getByLabel('Actions').click();
+
+			await page.getByRole('menuitem', {name: 'Update Due Date'}).click();
+
+			await expect(tasksPage.updateDueDateDialog).toBeVisible();
+		});
+
+		await test.step('The modal is pre-filled with the current due date', async () => {
+			await expect(page.getByPlaceholder('MM/DD/YYYY')).toHaveValue(
+				toPickerString(scheduledDate)
+			);
+		});
+
+		await test.step('Updating the date moves the task to the new day', async () => {
+			await page
+				.getByPlaceholder('MM/DD/YYYY')
+				.fill(toPickerString(rescheduledDate));
+
+			await tasksPage.updateDueDateDialog
+				.getByRole('button', {exact: true, name: 'Update'})
+				.click();
+
+			await waitForAlert(
+				page,
+				`${taskTitle} due date was successfully updated.`
+			);
+
+			await expect(
+				targetCell.getByText(taskTitle, {exact: true})
+			).toBeVisible();
+
+			await expect(
+				sourceCell.getByText(taskTitle, {exact: true})
+			).toBeHidden();
+		});
+
+		await test.step('Reopen the Update Due Date modal from the rescheduled task', async () => {
+			await targetCell.getByText(taskTitle, {exact: true}).hover();
+
+			await targetCell.getByLabel('Actions').click();
+
+			await page.getByRole('menuitem', {name: 'Update Due Date'}).click();
+
+			await expect(tasksPage.updateDueDateDialog).toBeVisible();
+		});
+
+		await test.step('Clearing the date moves the task to the unscheduled panel', async () => {
+			await page.getByPlaceholder('MM/DD/YYYY').clear();
+
+			await tasksPage.updateDueDateDialog
+				.getByRole('button', {exact: true, name: 'Update'})
+				.click();
+
+			await waitForAlert(
+				page,
+				`${taskTitle} due date was successfully updated.`
+			);
+
+			await expect(
+				targetCell.getByText(taskTitle, {exact: true})
+			).toBeHidden();
+
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await expect(
+				calendarView.unscheduledTasksPanel.getByText(taskTitle, {
+					exact: true,
+				})
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	"Calendar's task actions are displayed",
 	{tag: ['@LPD-69885', '@LPD-96185']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
