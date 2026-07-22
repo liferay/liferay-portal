@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -37,7 +36,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -713,66 +711,35 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceCopyWithoutOmniadminPermission()
 		throws Exception {
 
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					PortalInstancePool.getDefaultCompanyId())) {
+		User user = UserTestUtil.addUser(testCompany, "test");
 
-			Company defaultCompany = _companyLocalService.getCompany(
-				PortalInstancePool.getDefaultCompanyId());
+		PortalInstanceResource userPortalInstanceResource =
+			PortalInstanceResource.builder(
+			).authentication(
+				user.getEmailAddress(), "test"
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
 
-			long defaultCompanyId = defaultCompany.getCompanyId();
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
-			User adminUser = UserTestUtil.getAdminUser(defaultCompanyId);
+		portalInstanceCopy.setName(RandomTestUtil.randomString());
+		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
+		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
 
-			Group guestGroup = _groupLocalService.getGroup(
-				defaultCompanyId, GroupConstants.GUEST);
+		try {
+			userPortalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
 
-			long guestGroupId = guestGroup.getGroupId();
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
 
-			User user = UserTestUtil.addUser(
-				defaultCompanyId, adminUser.getUserId(), "test",
-				RandomTestUtil.randomString() + "@liferay.com",
-				RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				new long[] {guestGroupId},
-				ServiceContextTestUtil.getServiceContext(guestGroupId));
-
-			try {
-				PortalInstanceResource userPortalInstanceResource =
-					PortalInstanceResource.builder(
-					).authentication(
-						user.getEmailAddress(), "test"
-					).endpoint(
-						defaultCompany.getVirtualHostname(),
-						PortalUtil.getPortalServerPort(false), "http"
-					).locale(
-						LocaleUtil.getDefault()
-					).build();
-
-				PortalInstanceCopy portalInstanceCopy =
-					new PortalInstanceCopy();
-
-				portalInstanceCopy.setName(RandomTestUtil.randomString());
-				portalInstanceCopy.setVirtualHost(
-					RandomTestUtil.randomString());
-				portalInstanceCopy.setWebId(RandomTestUtil.randomString());
-
-				try {
-					userPortalInstanceResource.postPortalInstanceCopy(
-						_portalInstance.getPortalInstanceId(),
-						portalInstanceCopy);
-
-					Assert.fail();
-				}
-				catch (Problem.ProblemException problemException) {
-					Problem problem = problemException.getProblem();
-
-					Assert.assertEquals("FORBIDDEN", problem.getStatus());
-				}
-			}
-			finally {
-				_userLocalService.deleteUser(user.getUserId());
-			}
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
