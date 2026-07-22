@@ -7,7 +7,9 @@ package com.liferay.osb.faro.engine.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,9 +17,8 @@ import java.util.Map;
  */
 public class ApiUsageMetric {
 
-	@JsonProperty("calls")
-	public long getCallsCount() {
-		return _callsCount;
+	public List<ApiUsage> getApiUsages() {
+		return _apiUsages;
 	}
 
 	@JsonProperty("_embedded")
@@ -29,8 +30,8 @@ public class ApiUsageMetric {
 		return _projectId;
 	}
 
-	public void setCallsCount(long callsCount) {
-		_callsCount = callsCount;
+	public void setApiUsages(List<ApiUsage> apiUsages) {
+		_apiUsages = apiUsages;
 	}
 
 	public void setEmbeddedResources(Map<String, Object> embeddedResources) {
@@ -41,7 +42,7 @@ public class ApiUsageMetric {
 		_projectId = projectId;
 	}
 
-	private long _callsCount;
+	private List<ApiUsage> _apiUsages = new ArrayList<>();
 	private Map<String, Object> _embeddedResources = new HashMap<>();
 	private String _projectId;
 

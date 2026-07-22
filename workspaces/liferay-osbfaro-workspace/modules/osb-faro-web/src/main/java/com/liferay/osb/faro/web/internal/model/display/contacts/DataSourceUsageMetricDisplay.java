@@ -13,13 +13,14 @@ import java.util.List;
 public class DataSourceUsageMetricDisplay {
 
 	public DataSourceUsageMetricDisplay(
-		long apiCallsCount, long batchSegmentsCount,
-		long connectedDataSourcesCount, String corpProjectName,
-		String corpProjectUuid, List<DataSourceUsage> dataSourceUsages,
-		String lastAccessDateString, String lastAnniversaryDateString,
-		boolean offline, long realTimeSegmentsCount, String weDeployKey) {
+		List<ApiUsageMetricDisplay> apiUsageMetricDisplays,
+		long batchSegmentsCount, long connectedDataSourcesCount,
+		String corpProjectName, String corpProjectUuid,
+		List<DataSourceUsage> dataSourceUsages, String lastAccessDateString,
+		String lastAnniversaryDateString, boolean offline,
+		long realTimeSegmentsCount, String weDeployKey) {
 
-		_apiCallsCount = apiCallsCount;
+		_apiUsageMetricDisplays = apiUsageMetricDisplays;
 		_batchSegmentsCount = batchSegmentsCount;
 		_connectedDataSourcesCount = connectedDataSourcesCount;
 		_corpProjectName = corpProjectName;
@@ -32,8 +33,8 @@ public class DataSourceUsageMetricDisplay {
 		_weDeployKey = weDeployKey;
 	}
 
-	public long getApiCallsCount() {
-		return _apiCallsCount;
+	public List<ApiUsageMetricDisplay> getApiUsageMetrics() {
+		return _apiUsageMetricDisplays;
 	}
 
 	public long getBatchSegmentsCount() {
@@ -76,7 +77,7 @@ public class DataSourceUsageMetricDisplay {
 		return _offline;
 	}
 
-	private final long _apiCallsCount;
+	private final List<ApiUsageMetricDisplay> _apiUsageMetricDisplays;
 	private final long _batchSegmentsCount;
 	private final long _connectedDataSourcesCount;
 	private final String _corpProjectName;
