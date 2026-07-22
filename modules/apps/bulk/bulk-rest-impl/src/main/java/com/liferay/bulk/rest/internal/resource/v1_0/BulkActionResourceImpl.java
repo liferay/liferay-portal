@@ -5,6 +5,7 @@
 
 package com.liferay.bulk.rest.internal.resource.v1_0;
 
+import com.liferay.bulk.rest.dto.v1_0.AddObjectToProjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.AssignStructureDefaultWorkflowBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.AssignToObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.BulkAction;
@@ -423,9 +424,14 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 	private BulkSelectionAction<Object> _getBulkSelectionAction(
 		BulkAction.Type type) {
 
-		if (BulkAction.Type.
-				ASSIGN_STRUCTURE_DEFAULT_WORKFLOW_BULK_SELECTION_ACTION.equals(
-					type)) {
+		if (BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION.equals(
+				type)) {
+
+			return _addObjectToProjectBulkSelectionAction;
+		}
+		else if (BulkAction.Type.
+					ASSIGN_STRUCTURE_DEFAULT_WORKFLOW_BULK_SELECTION_ACTION.
+						equals(type)) {
 
 			return _assignStructureDefaultWorkflowBulkSelectionAction;
 		}
@@ -544,9 +550,21 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			HashMapBuilder.<String, Serializable>put(
 				"bulkActionTaskId", bulkActionTask.getId());
 
-		if (BulkAction.Type.
-				ASSIGN_STRUCTURE_DEFAULT_WORKFLOW_BULK_SELECTION_ACTION.equals(
-					type)) {
+		if (BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION.equals(
+				type)) {
+
+			AddObjectToProjectBulkSelectionAction
+				addObjectToProjectBulkSelectionAction =
+					(AddObjectToProjectBulkSelectionAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"projectScopeKeys",
+				addObjectToProjectBulkSelectionAction.getProjectScopeKeys()
+			).build();
+		}
+		else if (BulkAction.Type.
+					ASSIGN_STRUCTURE_DEFAULT_WORKFLOW_BULK_SELECTION_ACTION.
+						equals(type)) {
 
 			AssignStructureDefaultWorkflowBulkSelectionAction
 				assignStructureDefaultWorkflowBulkAction =
@@ -1114,6 +1132,9 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			Snapshot.cast(BulkSelectionAction.class),
 			"(bulk.selection.action.key=assign.to.object)", true);
 	private static final EntityModel _entityModel = new BulkActionEntityModel();
+
+	@Reference(target = "(bulk.selection.action.key=add.object.to.project)")
+	private BulkSelectionAction<Object> _addObjectToProjectBulkSelectionAction;
 
 	@Reference(
 		target = "(bulk.selection.action.key=assign.structure.default.workflow.object.definition)"
