@@ -28,6 +28,7 @@ import com.liferay.osb.faro.engine.client.model.AssetSummaryType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryVocabulary;
 import com.liferay.osb.faro.engine.client.model.Author;
 import com.liferay.osb.faro.engine.client.model.BlockedKeyword;
+import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
@@ -611,6 +612,16 @@ public abstract class BaseMockContactsEngineClientImpl
 
 		return contactsEngineClient.getBlockedKeywords(
 			faroProject, query, cur, delta, orderByFields);
+	}
+
+	@Override
+	public Results<CatalogField> getCatalogFields(
+			FaroProject faroProject, String query, String tableName, int cur,
+			int delta, String sortString)
+		throws FaroEngineClientException {
+
+		return contactsEngineClient.getCatalogFields(
+			faroProject, query, tableName, cur, delta, sortString);
 	}
 
 	@Override
