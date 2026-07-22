@@ -14,6 +14,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../utils/performLogin';
+import {waitForSPAToBeLoaded} from '../../../utils/waitForSPAToBeLoaded';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 
@@ -140,13 +141,6 @@ test(
 		).not.toBeVisible();
 
 		await nonMatchingContext.close();
-
-		// Delete the audience, which is company scoped and does not go away
-		// with the site
-
-		await audiencesPage.goto();
-
-		await audiencesPage.deleteAudience(audienceName);
 	}
 );
 
@@ -245,13 +239,6 @@ test(
 		await page.goto(
 			`/en/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
 		);
-
-		// Delete the audience, which is company scoped and does not go away
-		// with the site
-
-		await audiencesPage.goto();
-
-		await audiencesPage.deleteAudience(audienceName);
 	}
 );
 
@@ -340,15 +327,6 @@ test(
 		await expect(page.getByText(firstVariationText)).toBeVisible();
 
 		await expect(page.getByText(secondVariationText)).not.toBeVisible();
-
-		// Delete the audiences, which are company scoped and do not go away with
-		// the site
-
-		await audiencesPage.goto();
-
-		await audiencesPage.deleteAudience(firstAudienceName);
-
-		await audiencesPage.deleteAudience(secondAudienceName);
 	}
 );
 
@@ -440,14 +418,459 @@ test(
 		await expect(page.getByText(secondVariationText)).toBeVisible();
 
 		await expect(page.getByText(firstVariationText)).not.toBeVisible();
+	}
+);
 
-		// Delete the audiences, which are company scoped and do not go away with
-		// the site
+test(
+	'Excludes an inactive variation from the page and applies it again once re-enabled',
+	{tag: '@LPD-95644'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience matching the browser language
+
+		const audienceName = 'Audience ' + getRandomString();
 
 		await audiencesPage.goto();
 
-		await audiencesPage.deleteAudience(firstAudienceName);
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
 
-		await audiencesPage.deleteAudience(secondAudienceName);
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a variation replacing the heading HTML
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const variationName = 'Toggle heading';
+		const variationText = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${variationText}</span>`,
+			name: variationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// Disable the variation from the actions menu
+
+		await elementVariationsPage.setVariationActive(variationName, false);
+
+		await expect(
+			elementVariationsPage.sidebar.getByText('Inactive', {exact: true})
+		).toBeVisible();
+
+		// Publish the page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The inactive variation is excluded from the runtime bundle
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText('Heading Example')).toBeVisible();
+
+		await expect(page.getByText(variationText)).not.toBeVisible();
+
+		// Re-enable the variation from the actions menu
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		await elementVariationsPage.setVariationActive(variationName, true);
+
+		await expect(
+			elementVariationsPage.sidebar.getByText('Inactive', {exact: true})
+		).not.toBeVisible();
+
+		// Publish the page again
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The re-enabled variation is applied in view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText(variationText)).toBeVisible();
+
+		await expect(page.getByText('Heading Example')).not.toBeVisible();
+	}
+);
+
+test(
+	'Applies a variation only after the page is published',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience matching the browser language
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a variation replacing the heading HTML on the draft
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const variationText = 'Variation ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${variationText}</span>`,
+			name: 'Draft heading',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// The unpublished variation is not applied in view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText('Heading Example')).toBeVisible();
+
+		await expect(page.getByText(variationText)).not.toBeVisible();
+
+		// Publish the page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The variation is applied once the page is published
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText(variationText)).toBeVisible();
+
+		await expect(page.getByText('Heading Example')).not.toBeVisible();
+	}
+);
+
+test(
+	'Edits an existing variation and applies the updated payload',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience matching the browser language
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a variation replacing the heading HTML
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const variationName = 'Editable heading';
+		const originalText = 'Original ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${originalText}</span>`,
+			name: variationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		// Edit the variation payload
+
+		const updatedText = 'Updated ' + getRandomString();
+
+		await elementVariationsPage.editElementVariation({
+			html: `<span>${updatedText}</span>`,
+			name: variationName,
+		});
+
+		// Publish the page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The updated payload is applied in view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText(updatedText)).toBeVisible();
+
+		await expect(page.getByText(originalText)).not.toBeVisible();
+	}
+);
+
+test(
+	'Deletes a variation from the actions menu',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience matching the browser language
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Heading fragment
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a variation on the heading element
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const variationName = 'Removable heading';
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${getRandomString()}</span>`,
+			name: variationName,
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await expect(
+			elementVariationsPage.getVariationListItem(variationName)
+		).toBeVisible();
+
+		// Delete the variation from the actions menu
+
+		await elementVariationsPage.deleteElementVariation(variationName);
+
+		// The variation is no longer listed
+
+		await expect(
+			elementVariationsPage.sidebar.getByText(variationName)
+		).not.toBeVisible();
+	}
+);
+
+test(
+	'Loads each page own variations when navigating between pages',
+	{tag: '@LPD-93951'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience matching the browser language
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create two pages, each with a Heading fragment
+
+		const firstLayout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const secondLayout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Replace the heading on the first page and publish
+
+		await pageEditorPage.goto(firstLayout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const firstVariationText = 'First ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${firstVariationText}</span>`,
+			name: 'First page heading',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await pageEditorPage.goto(firstLayout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// Replace the heading on the second page and publish
+
+		await pageEditorPage.goto(secondLayout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToElementVariations();
+
+		const secondVariationText = 'Second ' + getRandomString();
+
+		await elementVariationsPage.createElementVariation({
+			audienceName,
+			html: `<span>${secondVariationText}</span>`,
+			name: 'Second page heading',
+			pageElementLabel: 'Heading (element-text)',
+		});
+
+		await pageEditorPage.goto(secondLayout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		// The first page applies its own variation
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${firstLayout.friendlyUrlPath}`
+		);
+
+		await expect(page.getByText(firstVariationText)).toBeVisible();
+
+		await expect(page.getByText(secondVariationText)).not.toBeVisible();
+
+		// A client-side navigation to the second page reapplies detection and
+		// loads the second page variation
+
+		await page
+			.locator(`a[href*="${secondLayout.friendlyUrlPath}"]`)
+			.first()
+			.click();
+
+		await waitForSPAToBeLoaded(page);
+
+		await expect(page.getByText(secondVariationText)).toBeVisible();
+
+		await expect(page.getByText(firstVariationText)).not.toBeVisible();
+
+		// Navigating back loads the first page variation again
+
+		await page
+			.locator(`a[href*="${firstLayout.friendlyUrlPath}"]`)
+			.first()
+			.click();
+
+		await waitForSPAToBeLoaded(page);
+
+		await expect(page.getByText(firstVariationText)).toBeVisible();
+
+		await expect(page.getByText(secondVariationText)).not.toBeVisible();
 	}
 );
