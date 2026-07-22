@@ -124,17 +124,15 @@ function _source_database_brand {
 
 	brand="$(echo "${LIFERAY_PROVISION_DATABASE_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
 
-	case "${brand}" in
-		*psql* | *postgres*)
-			brand=psql
-			;;
-		*mysql*)
-			brand=mysql
-			;;
-		*)
-			_die "LIFERAY_PROVISION_DATABASE_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
-			;;
-	esac
+	if [[ ${brand} == *psql* || ${brand} == *postgres* ]]
+	then
+		brand=psql
+	elif [[ ${brand} == *mysql* ]]
+	then
+		brand=mysql
+	else
+		_die "LIFERAY_PROVISION_DATABASE_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
+	fi
 
 	source "_database_brand_${brand}.sh"
 
