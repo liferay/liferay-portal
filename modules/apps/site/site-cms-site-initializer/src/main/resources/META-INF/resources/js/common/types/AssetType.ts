@@ -115,6 +115,7 @@ export interface ISearchAssetObjectEntry {
 	actions: IAssetObjectEntry['actions'];
 	dateCreated: string;
 	dateModified: string;
+	dateReview?: string;
 	description?: string;
 	embedded: IAssetObjectEntry;
 	entryClassName: string;
