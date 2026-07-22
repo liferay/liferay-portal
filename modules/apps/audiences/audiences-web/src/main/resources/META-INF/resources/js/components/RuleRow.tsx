@@ -23,6 +23,7 @@ import {
 	useSetMovementSource,
 } from '../keyboard_movement/KeyboardMovementContext';
 import {AudiencesCriteria, Rule} from '../types';
+import {getConditionLabel} from '../util/getConditionLabel';
 import {DropZone, getDropPosition} from '../util/getDropPosition';
 
 interface IProps {
@@ -158,9 +159,11 @@ export default function RuleRow({
 
 	const operators = getOperators(inputType, type);
 
+	const conditionLabel = getConditionLabel(rule, audiencesCriteria);
+
 	return (
 		<div
-			aria-label={label}
+			aria-label={conditionLabel}
 			className={classNames(
 				'align-items-center audience-builder-rule d-flex justify-content-between p-3',
 				`audience-builder-rule--${iconColor}`,
@@ -182,7 +185,7 @@ export default function RuleRow({
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={setRowRef}
-			role="menuitem"
+			role="group"
 			tabIndex={navigationProps?.tabIndex ?? 0}
 		>
 			<div className="align-items-center c-gap-3 d-flex">
@@ -195,7 +198,7 @@ export default function RuleRow({
 						if (event.detail === 0) {
 							setMovementSource({
 								icon: audiencesCriteria.icon,
-								name: label,
+								name: conditionLabel,
 								ruleId: rule.id,
 							});
 						}
@@ -344,7 +347,7 @@ function ErrorRuleRow({
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={rowRef}
-			role="menuitem"
+			role="group"
 			tabIndex={navigationProps?.tabIndex ?? 0}
 		>
 			<div className="align-items-center c-gap-3 d-flex">

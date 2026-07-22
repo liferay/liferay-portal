@@ -30,6 +30,7 @@ import {
 import KeyboardMovementManager from '../keyboard_movement/KeyboardMovementManager';
 import {Action} from '../reducer';
 import {AudiencesCriteria, AudiencesCriteriaType, Group} from '../types';
+import {getConditionLabel} from '../util/getConditionLabel';
 import {DropZone, getDropPosition} from '../util/getDropPosition';
 import {canGroupNode} from '../util/tree/canGroupNode';
 import {flattenRules} from '../util/tree/flattenRules';
@@ -58,14 +59,23 @@ function collectNodeNames(
 ): Record<string, string> {
 	group.items.forEach((node) => {
 		if (isGroup(node)) {
-			namesById[node.id] = Liferay.Language.get('group');
+			const conjunction =
+				node.conjunction === 'OR'
+					? Liferay.Language.get('any')
+					: Liferay.Language.get('all');
+
+			namesById[node.id] = `${conjunction} ${Liferay.Language.get(
+				'of-these-criteria-are-met'
+			)}`;
 
 			collectNodeNames(node, audiencesCriteriasByKey, namesById);
 		}
 		else {
-			namesById[node.id] =
-				audiencesCriteriasByKey[node.attribute]?.label ??
-				node.attribute;
+			const audiencesCriteria = audiencesCriteriasByKey[node.attribute];
+
+			namesById[node.id] = audiencesCriteria
+				? getConditionLabel(node, audiencesCriteria)
+				: node.attribute;
 		}
 	});
 
@@ -178,6 +188,7 @@ export default function ConditionsPanel({
 				<>
 					<ConjunctionBar
 						conjunction={root.conjunction}
+						conjunctionLabelId={`audience-builder-conjunction-${root.id}`}
 						onConjunctionChange={(value) =>
 							dispatch({
 								conjunction: value,
@@ -188,9 +199,8 @@ export default function ConditionsPanel({
 
 					<div
 						aria-label={Liferay.Language.get('conditions')}
-						aria-orientation="vertical"
 						className="px-3 py-2"
-						role="menu"
+						role="group"
 					>
 						<GroupItems context={context} group={root} path={[]} />
 					</div>
@@ -404,9 +414,11 @@ function GroupRow({
 		dropRef(element);
 	};
 
+	const conjunctionLabelId = `audience-builder-conjunction-${group.id}`;
+
 	return (
 		<div
-			aria-label={Liferay.Language.get('group')}
+			aria-labelledby={`${conjunctionLabelId}-value ${conjunctionLabelId}`}
 			className={classNames(
 				'audience-builder-group border overflow-hidden rounded',
 				{
@@ -426,6 +438,7 @@ function GroupRow({
 		>
 			<ConjunctionBar
 				conjunction={group.conjunction}
+				conjunctionLabelId={conjunctionLabelId}
 				onConjunctionChange={(value) =>
 					dispatch({
 						conjunction: value,
@@ -444,18 +457,21 @@ function GroupRow({
 
 interface ConjunctionBarProps {
 	conjunction: string;
+	conjunctionLabelId: string;
 	onConjunctionChange: (conjunction: string) => void;
 }
 
 function ConjunctionBar({
 	conjunction,
+	conjunctionLabelId,
 	onConjunctionChange,
 }: ConjunctionBarProps) {
 	return (
 		<div className="align-items-center bg-lighter border-top c-gap-2 d-flex p-3 text-3 text-secondary">
 			<Picker
-				aria-label={Liferay.Language.get('conjunction')}
+				aria-labelledby={conjunctionLabelId}
 				className="form-control-sm w-auto"
+				id={`${conjunctionLabelId}-value`}
 				items={[
 					{label: Liferay.Language.get('all'), value: 'AND'},
 					{label: Liferay.Language.get('any'), value: 'OR'},
@@ -466,7 +482,9 @@ function ConjunctionBar({
 				{(item) => <Option key={item.value}>{item.label}</Option>}
 			</Picker>
 
-			{Liferay.Language.get('of-these-criteria-are-met')}
+			<span id={conjunctionLabelId}>
+				{Liferay.Language.get('of-these-criteria-are-met')}
+			</span>
 		</div>
 	);
 }
