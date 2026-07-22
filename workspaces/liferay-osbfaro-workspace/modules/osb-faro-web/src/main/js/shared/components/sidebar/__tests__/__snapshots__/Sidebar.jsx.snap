@@ -13,11 +13,11 @@ exports[`Sidebar should render 1`] = `
         href="/workspace/23/123/sites"
       >
         <svg
-          class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-md logo"
+          class="lexicon-icon lexicon-icon-ldp_logo icon-root icon-size-md logo"
           role="presentation"
         >
           <use
-            href="#ac_logo"
+            href="#ldp_logo"
           />
         </svg>
       </a>

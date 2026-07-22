@@ -193,11 +193,11 @@ exports[`ConnectDXP should render 1`] = `
         />
       </svg>
       <svg
-        class="lexicon-icon lexicon-icon-ac_logo_grayscale icon-root icon-size-xl"
+        class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-xl logo-disconnected"
         role="presentation"
       >
         <use
-          href="#ac_logo_grayscale"
+          href="#ac_logo"
         />
       </svg>
     </div>
@@ -207,7 +207,7 @@ exports[`ConnectDXP should render 1`] = `
       <span
         class="text-10 font-weight-bold"
       >
-        Connect Your DXP Analytics
+        Connect Your Liferay DXP
       </span>
     </div>
     <div

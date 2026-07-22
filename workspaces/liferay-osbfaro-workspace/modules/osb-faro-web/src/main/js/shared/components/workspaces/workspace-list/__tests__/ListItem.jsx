@@ -73,7 +73,7 @@ describe('WorkspaceListItem', () => {
 		expect(queryByText('Activate')).toBeTruthy();
 	});
 
-	it('should render contact sales and limit message when isLDPEnabled is true', () => {
+	it('should render contact sales and the Analytics Cloud limit message when hasLimitReached and ldpEnabled is false', () => {
 		const {getByText} = render(
 			<StaticRouter>
 				<WorkspaceListItem
@@ -85,10 +85,28 @@ describe('WorkspaceListItem', () => {
 
 		expect(
 			getByText(
-				'Access to Liferay Data Platform has been restricted because your workspace has reached the known individuals or page view limit. Please contact sales to proceed.'
+				'Access to Analytics Cloud has been restricted because your workspace has reached the known individuals or page view limit. Please contact sales to proceed.'
 			)
 		).toBeTruthy();
 
 		expect(getByText('Contact Sales')).toBeTruthy();
+	});
+
+	it('should render the Liferay Data Platform limit message when hasLimitReached and ldpEnabled is true', () => {
+		const {getByText} = render(
+			<StaticRouter>
+				<WorkspaceListItem
+					hasLimitReached
+					ldpEnabled
+					projectState={ProjectStates.Ready}
+				/>
+			</StaticRouter>
+		);
+
+		expect(
+			getByText(
+				'Access to Liferay Data Platform has been restricted because your workspace has reached the known individuals or page view limit. Please contact sales to proceed.'
+			)
+		).toBeTruthy();
 	});
 });
