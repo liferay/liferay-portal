@@ -119,7 +119,7 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 			if (remainingImages.length) {
 				Liferay.Util.openToast({
 					message: Liferay.Language.get(
-						'the-first-image-was-added-to-the-selected-field-and-the-remaining-images-were-saved-to-files'
+						'the-generated-images-were-added-to-the-upload-fields-the-remaining-images-were-saved-successfully'
 					),
 					type: 'info',
 				});
