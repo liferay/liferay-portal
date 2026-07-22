@@ -188,7 +188,7 @@ export default function RuleRow({
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={setRowRef}
-			role="group"
+			role="listitem"
 			tabIndex={navigationProps?.tabIndex ?? 0}
 		>
 			<div className="align-items-center c-gap-3 d-flex">
@@ -350,7 +350,7 @@ function ErrorRuleRow({
 			onFocus={navigationProps?.onFocus}
 			onKeyDown={navigationProps?.onKeyDown}
 			ref={rowRef}
-			role="group"
+			role="listitem"
 			tabIndex={navigationProps?.tabIndex ?? 0}
 		>
 			<div className="align-items-center c-gap-3 d-flex">

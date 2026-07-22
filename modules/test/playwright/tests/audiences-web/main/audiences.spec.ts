@@ -425,7 +425,7 @@ test(
 		await page.keyboard.press('Tab');
 
 		await expect(
-			page.getByRole('group', {name: 'Conditions'}).locator(':focus')
+			page.getByRole('list', {name: 'Conditions'}).locator(':focus')
 		).toHaveCount(0);
 
 		// The new group defaults to All

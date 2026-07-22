@@ -190,7 +190,7 @@ export default function ConditionsPanel({
 					<div
 						aria-label={Liferay.Language.get('conditions')}
 						className="px-3 py-2"
-						role="group"
+						role="list"
 					>
 						<GroupItems context={context} group={root} path={[]} />
 					</div>
@@ -424,7 +424,7 @@ function GroupRow({
 			)}
 			data-keyboard-movement-id={group.id}
 			ref={setGroupRef}
-			role="group"
+			role="listitem"
 		>
 			<ConjunctionBar
 				conjunction={group.conjunction}
@@ -438,7 +438,11 @@ function GroupRow({
 				}
 			/>
 
-			<div className="px-3 py-2">
+			<div
+				aria-labelledby={`${conjunctionLabelId}-value ${conjunctionLabelId}`}
+				className="px-3 py-2"
+				role="list"
+			>
 				<GroupItems context={context} group={group} path={path} />
 			</div>
 		</div>

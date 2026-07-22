@@ -115,7 +115,7 @@ describe('ConditionsPanel', () => {
 		expect(screen.getByText('is-greater-than')).toBeTruthy();
 
 		expect(
-			screen.getByRole('group', {name: /Age.*is-greater-than.*18/})
+			screen.getByRole('listitem', {name: /Age.*is-greater-than.*18/})
 		).toBeTruthy();
 	});
 
@@ -183,7 +183,7 @@ describe('ConditionsPanel', () => {
 		renderConditionsPanel({items: NESTED_GROUP});
 
 		expect(
-			screen.getByRole('group', {name: /of-these-criteria-are-met/})
+			screen.getByRole('listitem', {name: /of-these-criteria-are-met/})
 		).toBeTruthy();
 		expect(screen.getByText('Age')).toBeTruthy();
 		expect(screen.getByText('City')).toBeTruthy();
@@ -203,7 +203,7 @@ describe('ConditionsPanel', () => {
 	it('dispatches a delete action for a rule nested in a group by path', async () => {
 		const {dispatch} = renderConditionsPanel({items: NESTED_GROUP});
 
-		const group = screen.getByRole('group', {
+		const group = screen.getByRole('listitem', {
 			name: /of-these-criteria-are-met/,
 		});
 
@@ -253,8 +253,8 @@ describe('ConditionsPanel', () => {
 			],
 		});
 
-		const ageRow = screen.getByRole('group', {name: /^Age/});
-		const cityRow = screen.getByRole('group', {name: /^City/});
+		const ageRow = screen.getByRole('listitem', {name: /^Age/});
+		const cityRow = screen.getByRole('listitem', {name: /^City/});
 
 		ageRow.focus();
 
