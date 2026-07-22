@@ -1449,7 +1449,7 @@ test(
 
 test(
 	'A seller can duplicate a room copying only the selected documents',
-	{tag: '@LPD-92370'},
+	{tag: ['@LPD-92370', '@LPD-97489']},
 	async ({
 		apiHelpers,
 		digitalSalesRoomsPage,
@@ -1516,6 +1516,11 @@ test(
 
 			await expect(
 				digitalSalesRoomsPage.duplicateModalHeading
+			).toBeVisible();
+			await expect(
+				digitalSalesRoomsPage.duplicateModal.getByText(
+					'If you also want to duplicate documents, select which ones to include.'
+				)
 			).toBeVisible();
 			await expect(
 				digitalSalesRoomsPage.documentRow('document1')
