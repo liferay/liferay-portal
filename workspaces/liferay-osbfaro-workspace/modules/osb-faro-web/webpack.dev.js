@@ -29,7 +29,13 @@ module.exports = merge(common.config, {
 			},
 		},
 	},
-	devtool: 'eval-source-map',
+
+	// Non-eval source map: React Router v7's ESM build uses `import.meta.hot`,
+	// which throws "Cannot use 'import.meta' outside a module" when a module is
+	// wrapped in eval() (as `eval-*` devtools do). A non-eval devtool keeps the
+	// real ES module context (output.module is true) so `import.meta` is valid.
+
+	devtool: 'cheap-module-source-map',
 	mode: 'development',
 	module: {
 		rules: [
