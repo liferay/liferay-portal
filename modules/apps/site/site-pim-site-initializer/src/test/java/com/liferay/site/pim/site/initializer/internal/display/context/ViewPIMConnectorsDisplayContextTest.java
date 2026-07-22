@@ -130,6 +130,12 @@ public class ViewPIMConnectorsDisplayContextTest {
 			"Edit"
 		);
 
+		Mockito.when(
+			language.get(httpServletRequest, "export")
+		).thenReturn(
+			"Export"
+		);
+
 		languageUtil.setLanguage(language);
 
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
@@ -173,7 +179,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 			viewPIMConnectorsDisplayContext.getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 2,
+			fdsActionDropdownItems.toString(), 3,
 			fdsActionDropdownItems.size());
 
 		FDSActionDropdownItem editFDSActionDropdownItem =
@@ -193,8 +199,24 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
-		FDSActionDropdownItem deleteFDSActionDropdownItem =
+		FDSActionDropdownItem exportFDSActionDropdownItem =
 			fdsActionDropdownItems.get(1);
+
+		Assert.assertEquals(
+			"/o/pim/export-to-liferay-commerce",
+			exportFDSActionDropdownItem.get("href"));
+		Assert.assertEquals(
+			"download", exportFDSActionDropdownItem.get("icon"));
+		Assert.assertEquals("Export", exportFDSActionDropdownItem.get("label"));
+		Assert.assertEquals("blank", exportFDSActionDropdownItem.get("target"));
+
+		data = (Map<?, ?>)exportFDSActionDropdownItem.get("data");
+
+		Assert.assertEquals("export", data.get("id"));
+		Assert.assertEquals("get", data.get("method"));
+
+		FDSActionDropdownItem deleteFDSActionDropdownItem =
+			fdsActionDropdownItems.get(2);
 
 		Assert.assertEquals(
 			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));

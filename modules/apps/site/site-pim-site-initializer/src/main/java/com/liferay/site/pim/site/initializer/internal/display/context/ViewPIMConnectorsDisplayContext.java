@@ -84,6 +84,19 @@ public class ViewPIMConnectorsDisplayContext {
 			).build(
 				"edit"
 			),
+			FDSActionDropdownItemBuilder.setHref(
+				"/o/pim/export-to-liferay-commerce"
+			).setIcon(
+				"download"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "export")
+			).setMethod(
+				"get"
+			).setTarget(
+				"blank"
+			).build(
+				"export"
+			),
 			FDSActionDropdownItemBuilder.setConfirmationMessage(
 				LanguageUtil.get(
 					_httpServletRequest, "are-you-sure-you-want-to-delete-this")

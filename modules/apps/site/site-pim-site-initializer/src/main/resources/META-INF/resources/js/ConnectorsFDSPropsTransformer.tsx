@@ -17,5 +17,6 @@ export default function propsTransformer({...props}: {[key: string]: any}) {
 				},
 			],
 		},
+		hideManagementBarInEmptyState: true,
 	};
 }
