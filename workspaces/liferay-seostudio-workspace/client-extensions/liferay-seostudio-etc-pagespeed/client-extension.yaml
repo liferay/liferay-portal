@@ -6,12 +6,11 @@ liferay-seostudio-etc-pagespeed-oahs:
     name: Liferay SEO Studio Etc PageSpeed OAuth Application Headless Server
     scopes:
         -   Liferay.Headless.Portal.Instances.read
-        -   c_seostudiodomain.read
-        -   c_seostudioinstance.read
-        -   c_seostudiopagespeedresult.write
-        -   c_seostudioscan.read
-        -   c_seostudioscan.write
-        -   c_seostudioscanrun.read
+        -   seostudiodomain.everything
+        -   seostudioinstance.everything
+        -   seostudiopagespeedresult.everything
+        -   seostudioscan.everything
+        -   seostudioscanrun.everything
     type: oAuthApplicationHeadlessServer
 liferay-seostudio-etc-pagespeed-oaua:
     .serviceAddress: localhost:58081

@@ -186,11 +186,17 @@ public class PageSpeedScanService {
 			null, seoStudioScanId, PageSpeedConstants.STATE_RUNNING);
 
 		JSONObject seoStudioDomainJSONObject =
-			seoStudioScanJSONObject.getJSONObject(
-				"seoStudioScanRun"
-			).getJSONObject(
-				"seoStudioDomain"
-			);
+			_liferayService.fetchSEOStudioDomainJSONObject(
+				seoStudioScanJSONObject);
+
+		if (seoStudioDomainJSONObject == null) {
+			_liferayService.patchSEOStudioScan(
+				"Unable to get a domain for SEO Studio scan ID " +
+					seoStudioScanId,
+				seoStudioScanId, PageSpeedConstants.STATE_FAILED);
+
+			return;
+		}
 
 		Domain domain = new Domain(seoStudioDomainJSONObject);
 
@@ -224,8 +230,11 @@ public class PageSpeedScanService {
 				"Unable to validate PageSpeed API key", interruptedException);
 		}
 
+		String scopeConfigJSON = seoStudioScanJSONObject.optString(
+			"scopeConfig");
+
 		JSONObject scopeConfigJSONObject = new JSONObject(
-			seoStudioScanJSONObject.optString("scopeConfig"));
+			Validator.isNull(scopeConfigJSON) ? "{}" : scopeConfigJSON);
 
 		int maxPagesPerScan = scopeConfigJSONObject.optInt(
 			"maxPagesPerScan", 100);
