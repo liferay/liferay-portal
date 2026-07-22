@@ -65,6 +65,17 @@ export type PerformanceMetric = {
 	metrics: MetricItem[];
 };
 
+export type Histogram = {
+	metricName: string;
+	metrics: Array<MetricItem & {previousValueKey: string}>;
+	total: number;
+	totalValue: number;
+};
+
+export type HistogramMetric = {
+	histograms: Histogram[];
+};
+
 export type AssetConsumptionItem = {
 	count: number;
 	key: string;

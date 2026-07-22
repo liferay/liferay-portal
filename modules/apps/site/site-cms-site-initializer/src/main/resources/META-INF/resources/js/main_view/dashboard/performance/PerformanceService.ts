@@ -8,6 +8,7 @@ import {RangeSelectors} from '@liferay/analytics-reports-js-components-web';
 import ApiHelper from '../../../common/services/ApiHelper';
 import {
 	AssetConsumption,
+	HistogramMetric,
 	MetricType,
 	OverviewMetrics,
 	PerformanceMetric,
@@ -50,6 +51,24 @@ async function getOverviewMetrics({
 		`${BASE_URL}/performance-overview-metric${buildQuery({
 			depotEntryIds,
 			rangeKey,
+		})}`
+	);
+}
+
+async function getHistogramMetric({
+	depotEntryIds,
+	rangeKey,
+	selectedMetric,
+}: {
+	depotEntryIds?: string[];
+	rangeKey: RangeSelectors;
+	selectedMetric: MetricType;
+}) {
+	return ApiHelper.get<HistogramMetric>(
+		`${BASE_URL}/performance-histogram-metric${buildQuery({
+			depotEntryIds,
+			rangeKey,
+			selectedMetric,
 		})}`
 	);
 }
@@ -178,6 +197,7 @@ function getTopAssetsExportURL({
 
 export default {
 	getAssetConsumption,
+	getHistogramMetric,
 	getMetric,
 	getMetricExportURL,
 	getOverviewMetrics,
