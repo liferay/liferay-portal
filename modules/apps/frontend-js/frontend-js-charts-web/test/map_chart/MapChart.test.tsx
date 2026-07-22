@@ -772,6 +772,61 @@ describe('MapChart legend', () => {
 		expect(shareCell).toHaveTextContent('38.9%');
 	});
 
+	it('renders the list legend inside the body by default', () => {
+		const {container} = render(
+			<MapChart data={DATA} legend="list" title="Population" />
+		);
+
+		const body = container.querySelector('.chart-map-body');
+		const legend = container.querySelector('ul.charts-legend');
+
+		expect(legend).toBeInTheDocument();
+		expect(body?.contains(legend)).toBe(true);
+	});
+
+	it('renders the list legend below the body when positioned at the bottom', () => {
+		const {container} = render(
+			<MapChart
+				data={DATA}
+				legend="list"
+				legendPosition="bottom"
+				title="Population"
+			/>
+		);
+
+		const body = container.querySelector('.chart-map-body');
+		const legend = container.querySelector('ul.charts-legend');
+
+		expect(legend).toBeInTheDocument();
+		expect(legend).toHaveClass('charts-legend--stacked');
+		expect(body?.contains(legend)).toBe(false);
+	});
+
+	it('shows the value and share per row when positioned at the bottom', () => {
+		const {container} = render(
+			<MapChart
+				data={DATA}
+				legend="list"
+				legendPosition="bottom"
+				title="Population"
+			/>
+		);
+
+		const china = Array.from(
+			container.querySelectorAll('.charts-legend__item')
+		).find((item) =>
+			item
+				.querySelector('.charts-legend__label')
+				?.textContent?.includes('China')
+		);
+
+		const values = Array.from(
+			china?.querySelectorAll('.charts-legend__value') ?? []
+		).map((value) => value.textContent);
+
+		expect(values).toEqual(['14210', '38.9%']);
+	});
+
 	it('sorts the list legend by value descending regardless of input order', () => {
 		const unsortedData: MapDatum[] = [
 			{country: 'FR', label: 'France', value: 100},

@@ -106,11 +106,12 @@ function findLongestSegment(d: string): number {
 }
 
 describe('buildMapChartData', () => {
-	it('bakes every source country feature into the output', () => {
+	it('bakes every source country feature into the output but Antarctica', () => {
 		const topology = readCountriesTopology();
 
+		expect(WORLD_MAP_DATA.AQ).toBeUndefined();
 		expect(Object.keys(WORLD_MAP_DATA).length).toBe(
-			topology.objects.countries.geometries.length
+			topology.objects.countries.geometries.length - 1
 		);
 	});
 

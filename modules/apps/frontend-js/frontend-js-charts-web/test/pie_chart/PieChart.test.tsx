@@ -35,6 +35,21 @@ describe('PieChart', () => {
 		);
 	});
 
+	it('renders a neutral track and no slices when the total is 0', () => {
+		const {container} = render(
+			<PieChart
+				data={DATA.map((datum) => ({...datum, value: 0}))}
+				title="Sales"
+			/>
+		);
+
+		expect(container.querySelector('.chart-pie-track')).toBeInTheDocument();
+		expect(container.querySelectorAll('.chart-pie-slice')).toHaveLength(0);
+		expect(
+			container.querySelector('.chart-pie-center-label')
+		).toHaveTextContent('total0');
+	});
+
 	it('renders the center label for a ring', () => {
 		const {container} = render(<PieChart data={DATA} title="Sales" />);
 
@@ -119,6 +134,49 @@ describe('PieChart', () => {
 		expect(
 			row?.querySelector(':scope > ul.charts-legend')
 		).toBeInTheDocument();
+	});
+
+	it('renders the list legend below the row when positioned at the bottom', () => {
+		const {container} = render(
+			<PieChart
+				data={DATA}
+				legend="list"
+				legendPosition="bottom"
+				title="Sales"
+			/>
+		);
+
+		const row = container.querySelector('.chart-pie-row');
+		const legend = container.querySelector('ul.charts-legend');
+
+		expect(legend).toBeInTheDocument();
+		expect(legend).toHaveClass('charts-legend--stacked');
+		expect(row?.contains(legend)).toBe(false);
+	});
+
+	it('shows the value and share per row when positioned at the bottom', () => {
+		const {container} = render(
+			<PieChart
+				data={DATA}
+				legend="list"
+				legendPosition="bottom"
+				title="Sales"
+			/>
+		);
+
+		const beta = Array.from(
+			container.querySelectorAll('.charts-legend__item')
+		).find((item) =>
+			item
+				.querySelector('.charts-legend__label')
+				?.textContent?.includes('Beta')
+		);
+
+		const values = Array.from(
+			beta?.querySelectorAll('.charts-legend__value') ?? []
+		).map((value) => value.textContent);
+
+		expect(values).toEqual(['50', '50.0%']);
 	});
 
 	it('labels each slice with its value and percentage', () => {
