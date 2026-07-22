@@ -10,7 +10,7 @@ import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import ClayToolbar from '@clayui/toolbar';
 import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
-import React, {useReducer} from 'react';
+import React, {useMemo, useReducer} from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
@@ -19,8 +19,10 @@ import ConditionsPanel from './components/ConditionsPanel';
 import GeneralSettings from './components/GeneralSettings';
 import DragPreviewWrapper from './keyboard_movement/DragPreviewWrapper';
 import {KeyboardMovementContextProvider} from './keyboard_movement/KeyboardMovementContext';
-import {initState, reducer, serializeCriteria} from './reducer';
+import {initState, reducer} from './reducer';
 import {AudiencesCriteriaRulesGroup, AudiencesCriteriaType} from './types';
+import {getAudiencesCriteriasByKey} from './util/getAudiencesCriteriasByKey';
+import {serializeCriteria} from './util/tree/serializeCriteria';
 
 import './AudienceBuilder.scss';
 
@@ -53,6 +55,11 @@ export default function AudienceBuilder({
 		reducer,
 		{externalReferenceCode, name, rulesGroup},
 		initState
+	);
+
+	const audiencesCriteriasByKey = useMemo(
+		() => getAudiencesCriteriasByKey(audiencesCriteriaTypes),
+		[audiencesCriteriaTypes]
 	);
 
 	return (
@@ -135,7 +142,10 @@ export default function AudienceBuilder({
 								<input
 									name={`${namespace}json`}
 									type="hidden"
-									value={serializeCriteria(state)}
+									value={serializeCriteria(
+										state.root,
+										audiencesCriteriasByKey
+									)}
 								/>
 
 								<ConditionsPanel

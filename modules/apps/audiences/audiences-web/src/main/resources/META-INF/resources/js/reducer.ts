@@ -19,7 +19,6 @@ import {moveRule} from './util/tree/moveRule';
 import {moveRuleIntoNewGroup} from './util/tree/moveRuleIntoNewGroup';
 import {parseRootGroup} from './util/tree/parseRootGroup';
 import {reorderGroup} from './util/tree/reorderGroup';
-import {serializeGroup} from './util/tree/serializeGroup';
 import {setConjunction} from './util/tree/setConjunction';
 import {unwrapRedundantGroups} from './util/tree/unwrapRedundantGroups';
 import {updateRule} from './util/tree/updateRule';
@@ -166,8 +165,4 @@ export function reducer(state: State, action: Action): State {
 		default:
 			return state;
 	}
-}
-
-export function serializeCriteria(state: State): string {
-	return JSON.stringify(serializeGroup(state.root));
 }

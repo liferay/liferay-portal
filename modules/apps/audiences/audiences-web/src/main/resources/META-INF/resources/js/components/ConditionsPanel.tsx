@@ -30,6 +30,7 @@ import {
 import KeyboardMovementManager from '../keyboard_movement/KeyboardMovementManager';
 import {Action} from '../reducer';
 import {AudiencesCriteria, AudiencesCriteriaType, Group} from '../types';
+import {getAudiencesCriteriasByKey} from '../util/getAudiencesCriteriasByKey';
 import {getConditionLabel} from '../util/getConditionLabel';
 import {DropZone, getDropPosition} from '../util/getDropPosition';
 import {canGroupNode} from '../util/tree/canGroupNode';
@@ -87,19 +88,8 @@ export default function ConditionsPanel({
 	dispatch,
 	root,
 }: IProps) {
-	const audiencesCriteriasByKey: Record<string, AudiencesCriteria> = useMemo(
-		() =>
-			Object.fromEntries(
-				audiencesCriteriaTypes
-					.flatMap(
-						(audiencesCriteriaType) =>
-							audiencesCriteriaType.audiencesCriterias
-					)
-					.map((audiencesCriteria) => [
-						audiencesCriteria.key,
-						audiencesCriteria,
-					])
-			),
+	const audiencesCriteriasByKey = useMemo(
+		() => getAudiencesCriteriasByKey(audiencesCriteriaTypes),
 		[audiencesCriteriaTypes]
 	);
 

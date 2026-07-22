@@ -5,15 +5,18 @@
 
 import {getOperatorLabel} from '../constants/operators';
 import {AudiencesCriteria, Rule} from '../types';
+import {getValueOptions} from './getValueOptions';
 
 export function getConditionLabel(
 	rule: Rule,
 	audiencesCriteria: AudiencesCriteria
 ): string {
-	const {inputType, label, options} = audiencesCriteria;
+	const {inputType, label} = audiencesCriteria;
 
-	const value = options.length
-		? options.find((option) => option.value === rule.value)?.label
+	const valueOptions = getValueOptions(audiencesCriteria);
+
+	const value = valueOptions.length
+		? valueOptions.find((option) => option.value === rule.value)?.label
 		: rule.value;
 
 	return [label, getOperatorLabel(rule.operator, inputType), value]

@@ -23,7 +23,7 @@ export function parseGroup(serialized: SerializedGroup): Group {
 							attribute: node.attribute,
 							id: `rule-${uuidv4()}`,
 							operator: node.operator,
-							value: node.value,
+							value: String(node.value ?? ''),
 						}
 			),
 	};

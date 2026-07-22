@@ -25,6 +25,7 @@ import {
 import {AudiencesCriteria, Rule} from '../types';
 import {getConditionLabel} from '../util/getConditionLabel';
 import {DropZone, getDropPosition} from '../util/getDropPosition';
+import {getValueOptions} from '../util/getValueOptions';
 
 interface IProps {
 	audiencesCriteria?: AudiencesCriteria;
@@ -155,9 +156,11 @@ export default function RuleRow({
 		);
 	}
 
-	const {inputType, label, options, type} = audiencesCriteria;
+	const {inputType, label, type} = audiencesCriteria;
 
 	const operators = getOperators(inputType, type);
+
+	const valueOptions = getValueOptions(audiencesCriteria);
 
 	const conditionLabel = getConditionLabel(rule, audiencesCriteria);
 
@@ -235,7 +238,7 @@ export default function RuleRow({
 				<RuleValueField
 					inputType={inputType}
 					onChange={(value) => onChange({...rule, value})}
-					options={options}
+					options={valueOptions}
 					tabIndex={navigationProps?.tabIndex ?? 0}
 					type={type}
 					value={rule.value}

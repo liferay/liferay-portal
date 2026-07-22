@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {getOperators} from '../../constants/operators';
 import {AudiencesCriteria, Rule} from '../../types';
+import {getValueOptions} from '../getValueOptions';
 
 export function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 	return {
@@ -17,6 +18,6 @@ export function createRule(audiencesCriteria: AudiencesCriteria): Rule {
 				audiencesCriteria.inputType,
 				audiencesCriteria.type
 			)[0] || '',
-		value: audiencesCriteria.options[0]?.value || '',
+		value: getValueOptions(audiencesCriteria)[0]?.value || '',
 	};
 }
