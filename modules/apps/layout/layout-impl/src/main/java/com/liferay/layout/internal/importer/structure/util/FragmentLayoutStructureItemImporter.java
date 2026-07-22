@@ -315,7 +315,11 @@ public class FragmentLayoutStructureItemImporter
 			_fragmentRendererRegistry.getFragmentRenderer(fragmentKey);
 
 		if ((fragmentEntry == null) && (fragmentRenderer == null)) {
-			warningMessages.add(_getWarningMessage(groupId, fragmentKey));
+			warningMessages.add(
+				_getWarningMessage(
+					groupId, fragmentKey,
+					"fragment-with-key-x-was-ignored-because-it-does-not-" +
+						"exist"));
 
 			return null;
 		}
@@ -929,7 +933,8 @@ public class FragmentLayoutStructureItemImporter
 			fragmentEntryLink, fragmentEntryProcessorContext);
 	}
 
-	private String _getWarningMessage(long groupId, String fragmentKey)
+	private String _getWarningMessage(
+			long groupId, String fragmentKey, String pattern)
 		throws Exception {
 
 		Locale locale = null;
@@ -944,9 +949,7 @@ public class FragmentLayoutStructureItemImporter
 			locale = PortalUtil.getSiteDefaultLocale(groupId);
 		}
 
-		return LanguageUtil.format(
-			locale, "fragment-with-key-x-was-ignored-because-it-does-not-exist",
-			new String[] {fragmentKey});
+		return LanguageUtil.format(locale, pattern, new String[] {fragmentKey});
 	}
 
 	private void _processActionFieldValue(
