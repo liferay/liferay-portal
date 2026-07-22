@@ -1,42 +1,28 @@
-import React from 'react';
-import {hasChanges} from 'shared/util/react';
 import {PropTypes} from 'prop-types';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {useEffect} from 'react';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useParams} from 'react-router-dom';
 
-class DocumentTitle extends React.Component {
-	static propTypes = {
-		title: PropTypes.string
-	};
+const DocumentTitle = ({productName, title}) => {
+	const {groupId = ''} = useParams();
+	const LDPEnabled = useLDPEnabled({groupId});
 
-	constructor(props) {
-		super(props);
+	useEffect(() => {
+		const defaultTitle =
+			productName ||
+			(LDPEnabled
+				? Liferay.Language.get('liferay-data-platform')
+				: Liferay.Language.get('analytics-cloud'));
 
-		this._router = Router;
-	}
+		document.title = title ? `${title} - ${defaultTitle}` : defaultTitle;
+	}, [LDPEnabled, productName, title]);
 
-	componentDidMount() {
-		this.setTitle();
-	}
+	return null;
+};
 
-	componentDidUpdate(prevProps) {
-		if (hasChanges(prevProps, this.props, 'title')) {
-			this.setTitle();
-		}
-	}
-
-	setTitle() {
-		const {title} = this.props;
-
-		const defaultTitle = Liferay.Language.get('analytics-cloud');
-
-		const newTitle = title ? `${title} - ${defaultTitle}` : defaultTitle;
-
-		document.title = newTitle;
-	}
-
-	render() {
-		return null;
-	}
-}
+DocumentTitle.propTypes = {
+	productName: PropTypes.string,
+	title: PropTypes.string
+};
 
 export default DocumentTitle;

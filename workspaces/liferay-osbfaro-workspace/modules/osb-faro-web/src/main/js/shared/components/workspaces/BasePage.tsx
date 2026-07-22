@@ -22,6 +22,7 @@ interface IWorkspacesBasePageProps {
 	className?: string;
 	currentUser?: User;
 	details?: React.ReactNode;
+	ldpEnabled?: boolean;
 	title?: string;
 }
 
@@ -85,8 +86,15 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 	}
 
 	render() {
-		const {backLabel, backURL, children, className, details, title} =
-			this.props;
+		const {
+			backLabel,
+			backURL,
+			children,
+			className,
+			details,
+			ldpEnabled,
+			title,
+		} = this.props;
 
 		const currentUser = this.props.currentUser || new User();
 
@@ -136,13 +144,19 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 								<div className="logo-container">
 									<ClayIcon
 										className="icon-root logo-icon"
-										symbol="ac_logo"
+										symbol={
+											ldpEnabled ? 'ldp_logo' : 'ac_logo'
+										}
 									/>
 
 									<span className="logo-text">
-										{Liferay.Language.get(
-											'analytics-cloud'
-										)}
+										{ldpEnabled
+											? Liferay.Language.get(
+													'liferay-data-platform'
+												)
+											: Liferay.Language.get(
+													'analytics-cloud'
+												)}
 									</span>
 								</div>
 

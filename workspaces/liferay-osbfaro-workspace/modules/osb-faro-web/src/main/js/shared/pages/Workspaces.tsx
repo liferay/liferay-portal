@@ -8,8 +8,8 @@ import URLConstants from 'shared/util/url-constants';
 import WorkspaceList from 'shared/components/workspaces/workspace-list';
 import WorkspacesBasePage from 'shared/components/workspaces/BasePage';
 import {ENABLE_ADD_TRIAL_WORKSPACE} from 'shared/util/constants';
+import {isLDPPlan, PLANS} from 'shared/util/subscriptions';
 import {isString} from 'lodash';
-import {PLANS} from 'shared/util/subscriptions';
 import {Redirect} from 'react-router';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
@@ -118,6 +118,10 @@ const Workspaces: any = () => {
 	const {data: joinableProjects, loading: loadingJoinableProjects} =
 		useFetchJoinableProjects();
 
+	const ldpEnabled = projects.some(({faroSubscription}) =>
+		isLDPPlan(faroSubscription?.get('name'))
+	);
+
 	if (projects.length === 1 && !projects[0].groupId) {
 		return toRoute(Routes.WORKSPACE_ADD_WITH_CORP_PROJECT_UUID, {
 			corpProjectUuid: projects[0].corpProjectUuid,
@@ -158,7 +162,11 @@ const Workspaces: any = () => {
 
 	return (
 		<div className="workspaces-root" key="Workspaces">
-			<WorkspacesBasePage details={handleDetails()} title={handleTitle()}>
+			<WorkspacesBasePage
+				details={handleDetails()}
+				ldpEnabled={ldpEnabled}
+				title={handleTitle()}
+			>
 				{!loadingPreferences && preferences.incidentAlertEnabled && (
 					<ClayAlert
 						displayType="warning"

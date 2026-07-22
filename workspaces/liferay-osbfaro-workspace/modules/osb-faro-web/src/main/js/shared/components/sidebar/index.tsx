@@ -193,7 +193,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 				>
 					<ClayIcon
 						className="icon-root icon-size-md logo"
-						symbol="ac_logo"
+						symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
 					/>
 				</Link>
 

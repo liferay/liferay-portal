@@ -27,6 +27,7 @@ export default class WorkspaceListItem extends React.Component {
 		history: PropTypes.object,
 		href: PropTypes.string,
 		isJoinableProjects: PropTypes.bool,
+		ldpEnabled: PropTypes.bool,
 		name: PropTypes.string,
 		planInfo: PropTypes.string,
 		projectState: PropTypes.oneOf(Object.values(ProjectStates)),
@@ -205,7 +206,13 @@ export default class WorkspaceListItem extends React.Component {
 
 	renderMessage() {
 		const {
-			props: {accountName, hasLimitReached, isJoinableProjects, planInfo},
+			props: {
+				accountName,
+				hasLimitReached,
+				isJoinableProjects,
+				ldpEnabled,
+				planInfo
+			},
 			state: {projectState}
 		} = this;
 
@@ -233,9 +240,13 @@ export default class WorkspaceListItem extends React.Component {
 		if (hasLimitReached) {
 			return (
 				<div className='workspace-info text-secondary'>
-					{Liferay.Language.get(
-						'access-to-liferay-data-platform-has-been-restricted-because-your-workspace-has-reached-the-known-individuals-or-page-view-limit'
-					)}
+					{ldpEnabled
+						? Liferay.Language.get(
+								'access-to-liferay-data-platform-has-been-restricted-because-your-workspace-has-reached-the-known-individuals-or-page-view-limit'
+							)
+						: Liferay.Language.get(
+								'access-to-analytics-cloud-has-been-restricted-because-your-workspace-has-reached-the-known-individuals-or-page-view-limit'
+							)}
 				</div>
 			);
 		}

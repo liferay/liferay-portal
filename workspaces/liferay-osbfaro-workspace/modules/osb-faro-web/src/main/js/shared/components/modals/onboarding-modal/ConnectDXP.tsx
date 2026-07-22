@@ -31,6 +31,7 @@ import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {useInterval} from 'shared/hooks/useInterval';
 import {useLazyQuery} from '@apollo/client';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {withHistory} from 'shared/hoc';
 
 const TIMEOUT_INTERVAL = 5000;
@@ -99,6 +100,7 @@ const ConnectDXP: React.FC<IConnectDXPWrapperProps & IConnectDXPProps> = ({
 }) => {
 	const {channelDispatch} = useChannelContext();
 	const [token, setToken] = useState<string>('');
+	const LDPEnabled = useLDPEnabled({groupId});
 
 	const [getDataSources, {data}] = useLazyQuery<DataSourceData>(
 		DataSourceQuery,
@@ -214,8 +216,10 @@ const ConnectDXP: React.FC<IConnectDXPWrapperProps & IConnectDXPProps> = ({
 					/>
 
 					<ClayIcon
-						className="icon-root icon-size-xl"
-						symbol={dxpConnected ? 'ac_logo' : 'ac_logo_grayscale'}
+						className={getCN('icon-root icon-size-xl', {
+							'logo-disconnected': !dxpConnected,
+						})}
+						symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
 					/>
 				</div>
 
