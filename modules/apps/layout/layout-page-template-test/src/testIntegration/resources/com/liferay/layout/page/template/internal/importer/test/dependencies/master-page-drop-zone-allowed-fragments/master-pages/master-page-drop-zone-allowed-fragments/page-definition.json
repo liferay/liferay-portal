@@ -7,6 +7,12 @@
 					"fragmentSettings": {
 						"allowedFragments": [
 							{
+								"key": "test-drop-zone-company-group-fragment"
+							},
+							{
+								"key": "test-drop-zone-design-library-fragment"
+							},
+							{
 								"key": "test-master-page-fragment-collection-contributor-fragment-entry-1"
 							},
 							{
