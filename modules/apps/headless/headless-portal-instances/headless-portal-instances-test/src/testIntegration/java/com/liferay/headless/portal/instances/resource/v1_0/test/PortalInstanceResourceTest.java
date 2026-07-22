@@ -6,6 +6,7 @@
 package com.liferay.headless.portal.instances.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.headless.portal.instances.client.dto.v1_0.Admin;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceCopy;
@@ -173,6 +174,7 @@ public class PortalInstanceResourceTest
 
 		_testPostPortalInstanceCopyMissingRequiredFields();
 		_testPostPortalInstanceCopySuccess();
+		_testPostPortalInstanceCopySuccessWithDestinationCompanyId();
 		_testPostPortalInstanceCopyWithNonexistentPortalInstance();
 		_testPostPortalInstanceCopyWithNonpositiveDestinationCompanyId();
 		_testPostPortalInstanceCopyWithoutOmniadminPermission();
@@ -348,6 +350,39 @@ public class PortalInstanceResourceTest
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		}
+	}
+
+	private void _assertPostPortalInstanceCopySuccess(
+			PortalInstanceCopy portalInstanceCopy, Long expectedCompanyId)
+		throws Exception {
+
+		PortalInstance copiedPortalInstance =
+			portalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
+
+		try {
+			assertValid(copiedPortalInstance);
+
+			Assert.assertNotEquals(
+				_portalInstance.getCompanyId(),
+				copiedPortalInstance.getCompanyId());
+			Assert.assertEquals(
+				portalInstanceCopy.getWebId(),
+				copiedPortalInstance.getPortalInstanceId());
+			Assert.assertEquals(
+				portalInstanceCopy.getVirtualHost(),
+				copiedPortalInstance.getVirtualHost());
+
+			if (expectedCompanyId != null) {
+				Assert.assertEquals(
+					expectedCompanyId, copiedPortalInstance.getCompanyId());
+			}
+		}
+		finally {
+			if (copiedPortalInstance != null) {
+				_deletePortalInstance(copiedPortalInstance);
+			}
 		}
 	}
 
@@ -595,36 +630,36 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceCopySuccess() throws Exception {
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		String virtualHost =
-			randomId + "." +
-				StringUtil.toLowerCase(RandomTestUtil.randomString(3));
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
 		portalInstanceCopy.setName(randomId);
-		portalInstanceCopy.setVirtualHost(virtualHost);
+		portalInstanceCopy.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
 		portalInstanceCopy.setWebId(randomId);
 
-		PortalInstance copiedPortalInstance =
-			portalInstanceResource.postPortalInstanceCopy(
-				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
+		_assertPostPortalInstanceCopySuccess(portalInstanceCopy, null);
+	}
 
-		try {
-			assertValid(copiedPortalInstance);
+	private void _testPostPortalInstanceCopySuccessWithDestinationCompanyId()
+		throws Exception {
 
-			Assert.assertNotEquals(
-				_portalInstance.getCompanyId(),
-				copiedPortalInstance.getCompanyId());
-			Assert.assertEquals(
-				randomId, copiedPortalInstance.getPortalInstanceId());
-			Assert.assertEquals(
-				virtualHost, copiedPortalInstance.getVirtualHost());
-		}
-		finally {
-			if (copiedPortalInstance != null) {
-				_deletePortalInstance(copiedPortalInstance);
-			}
-		}
+		long destinationCompanyId = CounterLocalServiceUtil.increment(
+			Company.class.getName());
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		portalInstanceCopy.setDestinationCompanyId(destinationCompanyId);
+		portalInstanceCopy.setName(randomId);
+		portalInstanceCopy.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
+		portalInstanceCopy.setWebId(randomId);
+
+		_assertPostPortalInstanceCopySuccess(
+			portalInstanceCopy, destinationCompanyId);
 	}
 
 	private void _testPostPortalInstanceCopyWithNonexistentPortalInstance()
@@ -659,35 +694,16 @@ public class PortalInstanceResourceTest
 
 		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		String virtualHost =
-			randomId + "." +
-				StringUtil.toLowerCase(RandomTestUtil.randomString(3));
-
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
 		portalInstanceCopy.setDestinationCompanyId(0L);
 		portalInstanceCopy.setName(randomId);
-		portalInstanceCopy.setVirtualHost(virtualHost);
+		portalInstanceCopy.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
 		portalInstanceCopy.setWebId(randomId);
 
-		PortalInstance copiedPortalInstance =
-			portalInstanceResource.postPortalInstanceCopy(
-				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
-
-		try {
-			assertValid(copiedPortalInstance);
-
-			Assert.assertNotEquals(
-				_portalInstance.getCompanyId(),
-				copiedPortalInstance.getCompanyId());
-			Assert.assertEquals(
-				randomId, copiedPortalInstance.getPortalInstanceId());
-		}
-		finally {
-			if (copiedPortalInstance != null) {
-				_deletePortalInstance(copiedPortalInstance);
-			}
-		}
+		_assertPostPortalInstanceCopySuccess(portalInstanceCopy, null);
 	}
 
 	private void _testPostPortalInstanceCopyWithoutOmniadminPermission()
