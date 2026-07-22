@@ -30,4 +30,9 @@
 		height: 100%;
 		width: 100%;
 	}
+
+	&.chat-container-sidebar {
+		inset: 0;
+		position: absolute;
+	}
 }
