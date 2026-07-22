@@ -58,7 +58,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 	@Before
 	public void setUp() {
 		_setUpHttpServletRequest();
-		_setUpSnapshots();
+		_setUpDesignLibraryResourcesDisplayContext();
 
 		_designLibraryResourcesDisplayContext =
 			new DesignLibraryResourcesDisplayContext(
@@ -279,7 +279,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 		);
 	}
 
-	private void _setUpSnapshots() {
+	private void _setUpDesignLibraryResourcesDisplayContext() {
 		ReflectionTestUtil.setFieldValue(
 			DesignLibraryResourcesDisplayContext.class,
 			"_fragmentCollectionLocalServiceSnapshot",
