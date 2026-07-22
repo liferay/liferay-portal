@@ -55,6 +55,7 @@ import {SearchExperiencesApiHelper} from './SearchExperiencesApiHelper';
 import {JSONWebServicesAnnouncementsEntryApiHelper} from './json-web-services/JSONWebServicesAnnouncementsEntryApiHelper';
 import {JSONWebServicesAssetDisplayPageEntryApiHelper} from './json-web-services/JSONWebServicesAssetDisplayPageEntryApiHelper';
 import {JSONWebServicesAssetListEntryApiHelper} from './json-web-services/JSONWebServicesAssetListEntryApiHelper';
+import {JSONWebServicesAudiencesEntryApiHelper} from './json-web-services/JSONWebServicesAudiencesEntryApiHelper';
 import {JSONWebServicesCalendarApiHelper} from './json-web-services/JSONWebServicesCalendarApiHelper';
 import {JSONWebServicesCalendarResourceApiHelper} from './json-web-services/JSONWebServicesCalendarResourceApiHelper';
 import {JSONWebServicesClassNameApiHelper} from './json-web-services/JSONWebServicesClassNameApiHelper';
@@ -157,6 +158,7 @@ export class ApiHelpers {
 	readonly jsonWebServicesAnnouncementsEntryApiHelper: JSONWebServicesAnnouncementsEntryApiHelper;
 	readonly jsonWebServicesAssetDisplayPageEntry: JSONWebServicesAssetDisplayPageEntryApiHelper;
 	readonly jsonWebServicesAssetListEntry: JSONWebServicesAssetListEntryApiHelper;
+	readonly jsonWebServicesAudiencesEntry: JSONWebServicesAudiencesEntryApiHelper;
 	readonly jsonWebServicesCalendar: JSONWebServicesCalendarApiHelper;
 	readonly jsonWebServicesCalendarResource: JSONWebServicesCalendarResourceApiHelper;
 	readonly jsonWebServicesClassName: JSONWebServicesClassNameApiHelper;
@@ -255,6 +257,8 @@ export class ApiHelpers {
 			new JSONWebServicesAssetDisplayPageEntryApiHelper(this);
 		this.jsonWebServicesAssetListEntry =
 			new JSONWebServicesAssetListEntryApiHelper(this);
+		this.jsonWebServicesAudiencesEntry =
+			new JSONWebServicesAudiencesEntryApiHelper(this);
 		this.jsonWebServicesCalendar = new JSONWebServicesCalendarApiHelper(
 			this
 		);
@@ -507,6 +511,11 @@ export class DataApiHelpers extends ApiHelpers {
 			}
 			else if (item.type === 'assetLibrary') {
 				await this.headlessAssetLibrary.deleteAssetLibrary(item.id);
+			}
+			else if (item.type === 'audiencesEntry') {
+				await this.jsonWebServicesAudiencesEntry.deleteAudiencesEntry(
+					item.id
+				);
 			}
 			else if (item.type === 'catalog') {
 				await this.headlessCommerceAdminCatalog.deleteCatalog(item.id);
