@@ -34,6 +34,8 @@ export const BULK_ACTION_RESET_PERMISSIONS =
 export const BULK_ACTION_RESTORE = 'RestoreObjectBulkSelectionAction';
 export const BULK_ACTION_STATUS = 'StatusObjectBulkSelectionAction';
 export const BULK_ACTION_TAGS = 'EditObjectTagsBulkSelectionAction';
+export const BULK_ACTION_UPDATE_EXPIRATION_DATE =
+	'UpdateExpirationDateObjectBulkSelectionAction';
 export const BULK_ACTION_UPDATE_OBJECT_VALUES =
 	'UpdateObjectValuesBulkSelectionAction';
 export const BULK_ACTION_UPDATE_REVIEW_DATE =
@@ -76,6 +78,9 @@ export const LABELS_BULK_ACTIONS: {[key in keyof IBulkActionTaskType]: string} =
 		[BULK_ACTION_RESTORE]: Liferay.Language.get('assets-restoration'),
 		[BULK_ACTION_STATUS]: Liferay.Language.get('state-update'),
 		[BULK_ACTION_TAGS]: Liferay.Language.get('assets-tagging'),
+		[BULK_ACTION_UPDATE_EXPIRATION_DATE]: Liferay.Language.get(
+			'expiration-date-update'
+		),
 		[BULK_ACTION_UPDATE_OBJECT_VALUES]:
 			Liferay.Language.get('text-replace'),
 		[BULK_ACTION_UPDATE_REVIEW_DATE]:

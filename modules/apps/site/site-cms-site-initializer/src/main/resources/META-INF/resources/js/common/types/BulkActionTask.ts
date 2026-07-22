@@ -155,6 +155,9 @@ export interface IBulkActionType {
 	StatusObjectBulkSelectionAction: {
 		status?: string;
 	};
+	UpdateExpirationDateObjectBulkSelectionAction: {
+		expirationDate?: string;
+	};
 	UpdateObjectValuesBulkSelectionAction: {
 		values?: Record<string, unknown>;
 	};
@@ -184,6 +187,7 @@ export interface IBulkActionTaskType {
 	ResetPermissionObjectBulkSelectionAction: string;
 	RestoreObjectBulkSelectionAction: string;
 	StatusObjectBulkSelectionAction: string;
+	UpdateExpirationDateObjectBulkSelectionAction: string;
 	UpdateObjectValuesBulkSelectionAction: string;
 	UpdateReviewDateObjectBulkSelectionAction: string;
 }

@@ -30,6 +30,7 @@ import {
 	BULK_ACTION_RESTORE,
 	BULK_ACTION_STATUS,
 	BULK_ACTION_TAGS,
+	BULK_ACTION_UPDATE_EXPIRATION_DATE,
 	BULK_ACTION_UPDATE_OBJECT_VALUES,
 	BULK_ACTION_UPDATE_REVIEW_DATE,
 } from './constants';
@@ -429,6 +430,30 @@ const BULK_ACTION_MESSAGES: BulkActionMessage = {
 			),
 			singular: Liferay.Language.get(
 				'tags-were-successfully-updated-for-one-asset'
+			),
+		},
+	},
+	[BULK_ACTION_UPDATE_EXPIRATION_DATE]: {
+		info: {
+			all: Liferay.Language.get(
+				'expiration-date-update-action-started-for-all-assets'
+			),
+			plural: Liferay.Language.get(
+				'expiration-date-update-action-started-for-x-assets'
+			),
+			singular: Liferay.Language.get(
+				'expiration-date-update-action-started-for-one-asset'
+			),
+		},
+		success: {
+			all: Liferay.Language.get(
+				'expiration-date-was-successfully-updated-for-all-assets'
+			),
+			plural: Liferay.Language.get(
+				'expiration-date-was-successfully-updated-for-x-assets'
+			),
+			singular: Liferay.Language.get(
+				'expiration-date-was-successfully-updated-for-one-asset'
 			),
 		},
 	},
