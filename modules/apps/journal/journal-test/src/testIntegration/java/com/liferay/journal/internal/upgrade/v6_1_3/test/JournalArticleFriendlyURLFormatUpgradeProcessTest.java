@@ -79,6 +79,25 @@ public class JournalArticleFriendlyURLFormatUpgradeProcessTest
 	}
 
 	@Test
+	public void testUpgradeKeepsAlreadyNormalizedURLTitleWithDuplicateSibling()
+		throws Exception {
+
+		_addJournalArticle("test");
+
+		JournalArticle journalArticle = _journalArticle;
+
+		_addJournalArticle("Test");
+
+		_runUpgrade();
+
+		_assertURLTitle("test-1");
+
+		_journalArticle = journalArticle;
+
+		_assertURLTitle("test");
+	}
+
+	@Test
 	public void testUpgradeWithDuplicateFriendlyURL() throws Exception {
 		_addJournalArticle("test");
 		_addJournalArticle("test/");
