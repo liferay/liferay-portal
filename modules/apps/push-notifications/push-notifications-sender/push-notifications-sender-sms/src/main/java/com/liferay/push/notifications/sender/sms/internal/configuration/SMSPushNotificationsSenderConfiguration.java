@@ -23,7 +23,10 @@ public interface SMSPushNotificationsSenderConfiguration {
 	@Meta.AD(name = "account.sid.name", required = false)
 	public String accountSID();
 
-	@Meta.AD(name = "authentication.token.name", required = false)
+	@Meta.AD(
+		name = "authentication-token-name", required = false,
+		type = Meta.Type.Password
+	)
 	public String authToken();
 
 	@Meta.AD(name = "number", required = false)
