@@ -20,9 +20,15 @@ export interface IAssetTypeInfoPanelContext {
 		name: string;
 	};
 	breadcrumbProps: IBreadcrumbProps;
+	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectObjectDefinitionId?: number | null;
+	cmpProjectViewURL?: string;
+	cmpTaskObjectDefinitionId?: number | null;
+	cmpTaskViewURL?: string;
 	cmsGroupId: number | string;
 	commentsProps: any;
 	dataSetId?: string;
+	entryClassName?: string;
 	selectedAssets: ISearchAssetObjectEntry[];
 	type: string;
 }

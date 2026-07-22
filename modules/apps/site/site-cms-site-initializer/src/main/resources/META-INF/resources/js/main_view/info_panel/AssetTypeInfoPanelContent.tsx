@@ -92,9 +92,18 @@ const AssetTypeInfoPanelContent = ({
 							Number(groupId) === Number(asset.scopeId)
 					),
 					breadcrumbProps,
+					cmpProjectAssetRelationshipObjectDefinitionId:
+						otherProps.cmpProjectAssetRelationshipObjectDefinitionId,
+					cmpProjectObjectDefinitionId:
+						otherProps.cmpProjectObjectDefinitionId,
+					cmpProjectViewURL: otherProps.cmpProjectViewURL,
+					cmpTaskObjectDefinitionId:
+						otherProps.cmpTaskObjectDefinitionId,
+					cmpTaskViewURL: otherProps.cmpTaskViewURL,
 					cmsGroupId,
 					commentsProps,
 					dataSetId,
+					entryClassName: selectedAssets[0].entryClassName,
 					selectedAssets,
 					type,
 				} as IAssetTypeInfoPanelContext

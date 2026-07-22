@@ -26,6 +26,7 @@ import CategorizationTabContent from './CategorizationTabContent';
 import CommentsTabContent from './CommentsTabContent';
 import DetailsTabContent from './DetailsTabContent';
 import PerformanceTabContent from './PerformanceTabContent';
+import ProjectsTabContent from './ProjectsTabContent';
 import VersionsTabContent from './VersionsTabContent';
 
 export const TABS = {
@@ -48,6 +49,11 @@ export const TABS = {
 		component: PerformanceTabContent,
 		id: 'performance',
 		name: Liferay.Language.get('performance'),
+	},
+	PROJECTS: {
+		component: ProjectsTabContent,
+		id: 'projects',
+		name: Liferay.Language.get('projects'),
 	},
 	VERSIONS: {
 		component: VersionsTabContent,
