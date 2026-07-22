@@ -40,7 +40,7 @@ public class CommerceCurrencyUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUpgradeCommerceCurrencyStatus() throws Exception {
+	public void testUpgrade() throws Exception {
 		CommerceCurrency commerceCurrency =
 			CommerceCurrencyTestUtil.addCommerceCurrency(
 				TestPropsValues.getCompanyId());
