@@ -24,26 +24,27 @@ const test = mergeTests(
 );
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
+const DATE_DISPLAYED = '12/31/2099, 10:00 AM';
+const DATE_INPUT = '12/31/2099 10:00 AM';
 const PAST_DATE = '2020-01-01T00:00:00Z';
-const REVIEW_DATE_DISPLAYED = '12/31/2099, 10:00 AM';
-const REVIEW_DATE_INPUT = '12/31/2099 10:00 AM';
 const TIME_ZONE = 'America/Los_Angeles';
 
 test.use({timezoneId: TIME_ZONE});
 
-async function fillReviewDateModal(page: Page, reviewDate: string) {
-	const reviewDateInput = page.locator('.modal input.form-control').first();
+async function fillScheduleDateModal(page: Page, date: string) {
+	const dateInput = page.locator('.modal input.form-control').first();
 
-	await reviewDateInput.fill(reviewDate);
+	await dateInput.fill(date);
 
-	await reviewDateInput.blur();
+	await dateInput.blur();
 
 	await page.locator('.modal').getByRole('button', {name: 'Save'}).click();
 }
 
-async function pollReviewDate(
+async function pollDate(
 	apiHelpers: DataApiHelpers,
-	objectEntryId: number
+	objectEntryId: number,
+	fieldName: 'expirationDate' | 'reviewDate'
 ) {
 	await expect
 		.poll(
@@ -54,7 +55,7 @@ async function pollReviewDate(
 						String(objectEntryId)
 					);
 
-				return new Date(objectEntry.reviewDate).toLocaleString(
+				return new Date(objectEntry[fieldName]).toLocaleString(
 					'en-US',
 					{
 						day: '2-digit',
@@ -69,7 +70,7 @@ async function pollReviewDate(
 			},
 			{timeout: 3000}
 		)
-		.toBe(REVIEW_DATE_DISPLAYED);
+		.toBe(DATE_DISPLAYED);
 }
 
 async function updateReviewDate(page: Page, title: string, reviewDate: string) {
@@ -77,7 +78,33 @@ async function updateReviewDate(page: Page, title: string, reviewDate: string) {
 
 	await page.getByRole('menuitem', {name: 'Update Review Date'}).click();
 
-	await fillReviewDateModal(page, reviewDate);
+	await fillScheduleDateModal(page, reviewDate);
+}
+
+async function updateExpirationDate(
+	page: Page,
+	title: string,
+	expirationDate: string
+) {
+	await page.getByRole('button', {name: `${title} Actions`}).click();
+
+	await page.getByRole('menuitem', {name: 'Update Expiration Date'}).click();
+
+	await fillScheduleDateModal(page, expirationDate);
+}
+
+async function selectSpace(page: Page, spaceName: string) {
+	const searchInput = page.getByRole('textbox', {name: 'Search'});
+
+	await expect(async () => {
+		await page.getByRole('combobox', {name: 'Filter by Spaces'}).click();
+
+		await expect(searchInput).toBeVisible();
+	}).toPass();
+
+	await searchInput.fill(spaceName);
+
+	await page.getByRole('option', {name: spaceName}).click();
 }
 
 test.beforeEach(async ({apiHelpers, page}) => {
@@ -113,9 +140,9 @@ test(
 
 		await page.goto('/web/cms/overdue-reviews');
 
-		await updateReviewDate(page, title, REVIEW_DATE_INPUT);
+		await updateReviewDate(page, title, DATE_INPUT);
 
-		await pollReviewDate(apiHelpers, overdueContent.id);
+		await pollDate(apiHelpers, overdueContent.id, 'reviewDate');
 	}
 );
 
@@ -130,22 +157,6 @@ test(
 			`overdue ${getRandomString()}`,
 			`overdue ${getRandomString()}`,
 		];
-
-		const selectSpace = async (spaceName: string) => {
-			const searchInput = page.getByRole('textbox', {name: 'Search'});
-
-			await expect(async () => {
-				await page
-					.getByRole('combobox', {name: 'Filter by Spaces'})
-					.click();
-
-				await expect(searchInput).toBeVisible();
-			}).toPass();
-
-			await searchInput.fill(spaceName);
-
-			await page.getByRole('option', {name: spaceName}).click();
-		};
 
 		const overdueReviewsCard = page.getByRole('button', {
 			name: /overdue reviews/,
@@ -202,11 +213,11 @@ test(
 		await test.step('Check the overdue reviews count per space', async () => {
 			await page.goto('/web/cms/dashboard');
 
-			await selectSpace(firstSpaceName);
+			await selectSpace(page, firstSpaceName);
 
 			await expect(overdueReviewsCount).toHaveText('1');
 
-			await selectSpace(secondSpaceName);
+			await selectSpace(page, secondSpaceName);
 
 			await expect(overdueReviewsCount).toHaveText('3');
 		});
@@ -222,9 +233,9 @@ test(
 		});
 
 		await test.step('Update a review date from its row action', async () => {
-			await updateReviewDate(page, secondSpaceTitle, REVIEW_DATE_INPUT);
+			await updateReviewDate(page, secondSpaceTitle, DATE_INPUT);
 
-			await pollReviewDate(apiHelpers, overdueContents[1].id);
+			await pollDate(apiHelpers, overdueContents[1].id, 'reviewDate');
 
 			await page.reload();
 
@@ -247,10 +258,10 @@ test(
 				.getByRole('menuitem', {name: 'Update Review Date'})
 				.click();
 
-			await fillReviewDateModal(page, REVIEW_DATE_INPUT);
+			await fillScheduleDateModal(page, DATE_INPUT);
 
 			for (const overdueContent of overdueContents.slice(2)) {
-				await pollReviewDate(apiHelpers, overdueContent.id);
+				await pollDate(apiHelpers, overdueContent.id, 'reviewDate');
 			}
 
 			await page.reload();
@@ -258,6 +269,155 @@ test(
 			for (const title of remainingTitles) {
 				await expect(page.getByText(title, {exact: true})).toBeHidden();
 			}
+		});
+	}
+);
+
+test(
+	'Updates the expiration date of expired contents from the dashboard',
+	{tag: '@LPD-98348'},
+	async ({apiHelpers, page}) => {
+		const firstSpaceName = `space ${getRandomString()}`;
+		const secondSpaceName = `space ${getRandomString()}`;
+		const secondSpaceTitle = `expired ${getRandomString()}`;
+		const remainingTitles = [
+			`expired ${getRandomString()}`,
+			`expired ${getRandomString()}`,
+		];
+
+		let expiredContents: Awaited<
+			ReturnType<typeof apiHelpers.objectEntry.postObjectEntry>
+		>[];
+
+		await test.step('Create and expire contents in two spaces', async () => {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: firstSpaceName,
+				type: 'Space',
+			});
+
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: secondSpaceName,
+				type: 'Space',
+			});
+
+			const postExpiredContent = async (
+				spaceName: string,
+				title: string
+			) => {
+				const objectEntry =
+					await apiHelpers.objectEntry.postObjectEntry(
+						{
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							title,
+						},
+						APPLICATION_NAME,
+						spaceName
+					);
+
+				await apiHelpers.objectEntry.expireObjectEntryByExternalReferenceCode(
+					APPLICATION_NAME,
+					spaceName,
+					objectEntry.externalReferenceCode
+				);
+
+				return objectEntry;
+			};
+
+			expiredContents = [
+				await postExpiredContent(
+					firstSpaceName,
+					`expired ${getRandomString()}`
+				),
+				await postExpiredContent(secondSpaceName, secondSpaceTitle),
+				await postExpiredContent(secondSpaceName, remainingTitles[0]),
+				await postExpiredContent(secondSpaceName, remainingTitles[1]),
+			];
+
+			for (const expiredContent of expiredContents) {
+				apiHelpers.data.push({id: expiredContent.id, type: 'document'});
+
+				expect(expiredContent.id).toBeTruthy();
+			}
+		});
+
+		const expiredAssetsCard = page.getByRole('button', {
+			name: /expired assets/i,
+		});
+
+		const expiredAssetsCount = expiredAssetsCard
+			.locator('.cms-dashboard__interactive-card__metric > div')
+			.first();
+
+		await test.step('Check the expired assets count per space', async () => {
+			await page.goto('/web/cms/dashboard');
+
+			await selectSpace(page, firstSpaceName);
+
+			await expect(expiredAssetsCount).toHaveText('1');
+
+			await selectSpace(page, secondSpaceName);
+
+			await expect(expiredAssetsCount).toHaveText('3');
+		});
+
+		await test.step('Open the expired assets list from its card', async () => {
+			await expiredAssetsCard.click();
+
+			await expect(page).toHaveURL(/cms\/expired-assets/);
+
+			await expect(async () => {
+				await page.reload();
+
+				await expect(
+					page.getByText(secondSpaceTitle, {exact: true})
+				).toBeVisible({timeout: 3000});
+			}).toPass();
+		});
+
+		await test.step('Update an expiration date from its row action', async () => {
+			await updateExpirationDate(page, secondSpaceTitle, DATE_INPUT);
+
+			await pollDate(apiHelpers, expiredContents[1].id, 'expirationDate');
+
+			await expect(async () => {
+				await page.reload();
+
+				await expect(
+					page.getByText(secondSpaceTitle, {exact: true})
+				).toBeHidden({timeout: 3000});
+			}).toPass();
+		});
+
+		await test.step('Update the remaining expiration dates in bulk', async () => {
+			for (const title of remainingTitles) {
+				await page.getByLabel(`Select ${title}`, {exact: true}).check();
+			}
+
+			await page
+				.locator('[data-qa-id="selectionToolbar"]')
+				.getByRole('button', {name: 'Actions'})
+				.click();
+
+			await page
+				.getByRole('menuitem', {name: 'Update Expiration Date'})
+				.click();
+
+			await fillScheduleDateModal(page, DATE_INPUT);
+
+			for (const expiredContent of expiredContents.slice(2)) {
+				await pollDate(apiHelpers, expiredContent.id, 'expirationDate');
+			}
+
+			await expect(async () => {
+				await page.reload();
+
+				for (const title of remainingTitles) {
+					await expect(
+						page.getByText(title, {exact: true})
+					).toBeHidden({timeout: 3000});
+				}
+			}).toPass();
 		});
 	}
 );
