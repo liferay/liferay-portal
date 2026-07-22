@@ -31,31 +31,6 @@
 					"if": {
 						"properties": {
 							"attribute": {
-								"const": "user_authentication"
-							}
-						},
-						"required": [
-							"attribute"
-						]
-					},
-					"then": {
-						"properties": {
-							"operator": {
-								"enum": [
-									"eq",
-									"not_eq"
-								]
-							},
-							"value": {
-								"type": "boolean"
-							}
-						}
-					}
-				},
-				{
-					"if": {
-						"properties": {
-							"attribute": {
 								"const": "local_hour"
 							}
 						},
@@ -144,8 +119,7 @@
 							"attribute": {
 								"enum": [
 									"language",
-									"segment",
-									"user_language"
+									"segment"
 								]
 							}
 						},
@@ -171,25 +145,16 @@
 					"if": {
 						"properties": {
 							"attribute": {
-								"anyOf": [
-									{
-										"enum": [
-											"browser_name",
-											"browser_version",
-											"device_type",
-											"geolocation",
-											"hostname",
-											"pathname",
-											"referrer",
-											"timezone",
-											"url",
-											"user_agent"
-										]
-									},
-									{
-										"pattern": "^custom:.+",
-										"type": "string"
-									}
+								"enum": [
+									"browser_name",
+									"browser_version",
+									"device_type",
+									"hostname",
+									"pathname",
+									"referrer",
+									"timezone",
+									"url",
+									"user_agent"
 								]
 							}
 						},
@@ -212,6 +177,37 @@
 							}
 						}
 					}
+				},
+				{
+					"if": {
+						"properties": {
+							"attribute": {
+								"pattern": "^custom:.+"
+							}
+						},
+						"required": [
+							"attribute"
+						]
+					},
+					"then": {
+						"properties": {
+							"operator": {
+								"enum": [
+									"eq",
+									"includes",
+									"not_eq",
+									"not_includes"
+								]
+							},
+							"value": {
+								"type": [
+									"boolean",
+									"number",
+									"string"
+								]
+							}
+						}
+					}
 				}
 			],
 			"properties": {
@@ -223,7 +219,6 @@
 								"browser_version",
 								"cookies",
 								"device_type",
-								"geolocation",
 								"hostname",
 								"language",
 								"local_date",
@@ -234,9 +229,7 @@
 								"segments",
 								"timezone",
 								"url",
-								"user_agent",
-								"user_authentication",
-								"user_language"
+								"user_agent"
 							]
 						},
 						{

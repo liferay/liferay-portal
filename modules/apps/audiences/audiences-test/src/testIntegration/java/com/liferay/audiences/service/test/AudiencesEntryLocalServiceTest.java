@@ -78,6 +78,15 @@ public class AudiencesEntryLocalServiceTest {
 						"operator", "eq"
 					).put(
 						"value", RandomTestUtil.randomString()
+					),
+					JSONUtil.put(
+						"attribute",
+						"custom:/o/frontend-js-audiences-web/__liferay__" +
+							"/custom-attributes.js#signed_in"
+					).put(
+						"operator", "eq"
+					).put(
+						"value", true
 					))
 			).toString(),
 			name);
