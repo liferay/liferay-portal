@@ -55,7 +55,7 @@ public interface DLOneDriveCompanyConfiguration {
 	)
 	@Meta.AD(
 		description = "onedrive-client-secret-description",
-		name = "client-secret", required = false
+		name = "client-secret", required = false, type = Meta.Type.Password
 	)
 	public String clientSecret();
 

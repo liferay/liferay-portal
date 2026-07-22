@@ -53,7 +53,7 @@ public interface DLGoogleDriveCompanyConfiguration {
 	)
 	@Meta.AD(
 		description = "client-secret-description", name = "client-secret",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String clientSecret();
 
@@ -68,7 +68,7 @@ public interface DLGoogleDriveCompanyConfiguration {
 	)
 	@Meta.AD(
 		description = "picker-api-key-description", name = "picker-api-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String pickerAPIKey();
 
