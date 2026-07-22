@@ -75,6 +75,11 @@ const ATTENTION_CARDS: AttentionCard[] = [
 	},
 ];
 
+const SECTION_PATHS: Partial<Record<keyof AssetStatistics, string>> = {
+	expiredCount: 'expired-assets',
+	reviewDateOverdueCount: 'overdue-reviews',
+};
+
 export function AttentionRequired() {
 	const [loading, setLoading] = useState(true);
 	const {space} = useContext(GovernanceContext);
@@ -97,8 +102,8 @@ export function AttentionRequired() {
 		fetchStatistics();
 	}, [space]);
 
-	const openOverdueReviews = () => {
-		const url = `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/overdue-reviews`;
+	const openSection = (path: string) => {
+		const url = `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/${path}`;
 
 		navigate(space.siteId ? `${url}?groupId=${space.siteId}` : url);
 	};
@@ -116,30 +121,36 @@ export function AttentionRequired() {
 						icon,
 						statKey,
 						title,
-					}) => (
-						<ClayLayout.Col
-							className="mb-3"
-							key={title}
-							md={6}
-							xl={3}
-						>
-							<InteractiveCard
-								color={color}
-								description={description}
-								hoverContent={hoverContent}
-								icon={icon}
-								loading={loading}
-								onClick={
-									statKey === 'reviewDateOverdueCount'
-										? openOverdueReviews
-										: undefined
-								}
-								title={title}
-								trend={placeholderTrend}
-								value={(statKey && statistics?.[statKey]) || 0}
-							/>
-						</ClayLayout.Col>
-					)
+					}) => {
+						const sectionPath = statKey && SECTION_PATHS[statKey];
+
+						return (
+							<ClayLayout.Col
+								className="mb-3"
+								key={title}
+								md={6}
+								xl={3}
+							>
+								<InteractiveCard
+									color={color}
+									description={description}
+									hoverContent={hoverContent}
+									icon={icon}
+									loading={loading}
+									onClick={
+										sectionPath
+											? () => openSection(sectionPath)
+											: undefined
+									}
+									title={title}
+									trend={placeholderTrend}
+									value={
+										(statKey && statistics?.[statKey]) || 0
+									}
+								/>
+							</ClayLayout.Col>
+						);
+					}
 				)}
 			</ClayLayout.Row>
 		</>
