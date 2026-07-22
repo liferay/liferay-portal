@@ -8,8 +8,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 source _common.sh
 
-_source_database_brand
-
 function main {
 	_create_worktree
 

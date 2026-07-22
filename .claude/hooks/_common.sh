@@ -194,3 +194,5 @@ function _sed {
 		sed "${@}"
 	fi
 }
+
+_source_database_brand
