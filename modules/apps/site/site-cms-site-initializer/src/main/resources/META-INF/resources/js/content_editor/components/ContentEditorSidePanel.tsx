@@ -25,12 +25,18 @@ import {dateConfig, toMomentDate, toServerISOFormat} from './ScheduleField';
 import CategorizationPanel from './panels/CategorizationPanel';
 import CommentsPanel from './panels/CommentsPanel';
 import GeneralPanel from './panels/GeneralPanel';
+import ProjectsPanel from './panels/ProjectsPanel';
 import SchedulePanel from './panels/SchedulePanel';
 
 type Props = {
 	addCommentURL: string;
 	assetLibraryId: string;
 	assetType: number;
+	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectObjectDefinitionId?: number | null;
+	cmpProjectViewURL?: string;
+	cmpTaskObjectDefinitionId?: number | null;
+	cmpTaskViewURL?: string;
 	cmsGroupId: string;
 	comments: Comment[];
 	contentAPIURL: string;
@@ -38,6 +44,8 @@ type Props = {
 	editCommentURL: string;
 	editorConfig: LiferayEditorConfig;
 	entryClassName: string;
+	entryExternalReferenceCode?: string;
+	entryGroupExternalReferenceCode?: string;
 	expirationDate: string;
 	getCommentsURL: string;
 	hasUpdatePermission: boolean;
@@ -50,6 +58,7 @@ type Props = {
 };
 
 type SidePanelProps = Props & {
+	assetKeywords?: string[];
 	categorizationFields: CategorizationFields | null;
 	dateConfig: datetimeUtils.DateConfig;
 	onUpdateCategorization: (props: UpdateCategorizationProps) => void;
@@ -125,6 +134,12 @@ const items: Item[] = [
 		icon: 'comments',
 		id: 'comments',
 		title: Liferay.Language.get('comments'),
+	},
+	{
+		component: ProjectsPanel,
+		icon: 'archive',
+		id: 'projects',
+		title: Liferay.Language.get('projects'),
 	},
 ];
 
@@ -278,6 +293,7 @@ export default function ContentEditorSidePanel(props: Props) {
 		<>
 			<SidePanel
 				{...props}
+				assetKeywords={categorizationFields?.assetTagNames?.value}
 				categorizationFields={categorizationFields}
 				dateConfig={dateConfig}
 				onUpdateCategorization={onUpdateCategorization}
