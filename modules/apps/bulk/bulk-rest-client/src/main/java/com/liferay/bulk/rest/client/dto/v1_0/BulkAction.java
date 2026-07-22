@@ -129,6 +129,8 @@ public abstract class BulkAction implements Cloneable, Serializable {
 
 	public static enum Type {
 
+		ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION(
+			"AddObjectToProjectBulkSelectionAction"),
 		ASSIGN_STRUCTURE_DEFAULT_WORKFLOW_BULK_SELECTION_ACTION(
 			"AssignStructureDefaultWorkflowBulkSelectionAction"),
 		ASSIGN_TO_OBJECT_BULK_SELECTION_ACTION(
@@ -191,4 +193,4 @@ public abstract class BulkAction implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-336127652
+// LIFERAY-REST-BUILDER-HASH:-1056758656

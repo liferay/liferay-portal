@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.bulk.rest.client.dto.v1_0.AddObjectToProjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.AssignStructureDefaultWorkflowBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.AssignToObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.BulkAction;
@@ -303,6 +304,22 @@ public abstract class BaseBulkActionResourceTestCase {
 
 			if (Objects.equals("type", additionalAssertFieldName)) {
 				if (bulkAction.getType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("projectScopeKeys", additionalAssertFieldName)) {
+				if (!(bulkAction instanceof
+						AddObjectToProjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (((AddObjectToProjectBulkSelectionAction)bulkAction).
+						getProjectScopeKeys() == null) {
+
 					valid = false;
 				}
 
@@ -960,6 +977,27 @@ public abstract class BaseBulkActionResourceTestCase {
 			if (Objects.equals("type", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						bulkAction1.getType(), bulkAction2.getType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("projectScopeKeys", additionalAssertFieldName)) {
+				if (!(bulkAction1 instanceof
+						AddObjectToProjectBulkSelectionAction) ||
+					!(bulkAction2 instanceof
+						AddObjectToProjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (!Objects.deepEquals(
+						((AddObjectToProjectBulkSelectionAction)bulkAction1).
+							getProjectScopeKeys(),
+						((AddObjectToProjectBulkSelectionAction)bulkAction2).
+							getProjectScopeKeys())) {
 
 					return false;
 				}
@@ -1803,6 +1841,16 @@ public abstract class BaseBulkActionResourceTestCase {
 	protected BulkAction randomBulkAction() throws Exception {
 		List<Supplier<BulkAction>> suppliers = Arrays.asList(
 			() -> {
+				AddObjectToProjectBulkSelectionAction bulkAction =
+					new AddObjectToProjectBulkSelectionAction();
+
+				bulkAction.setType(
+					BulkAction.Type.create(
+						"AddObjectToProjectBulkSelectionAction"));
+
+				return bulkAction;
+			},
+			() -> {
 				AssignStructureDefaultWorkflowBulkSelectionAction bulkAction =
 					new AssignStructureDefaultWorkflowBulkSelectionAction();
 
@@ -2261,4 +2309,4 @@ public abstract class BaseBulkActionResourceTestCase {
 		_bulkActionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2125287309
+// LIFERAY-REST-BUILDER-HASH:410759925
