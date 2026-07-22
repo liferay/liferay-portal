@@ -36,6 +36,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -187,6 +188,43 @@ public class ObjectFieldInfoFieldConverterTest {
 			_getRelationshipURL(
 				finalStep, objectFieldInfoFieldConverter, objectRelationship,
 				_getServiceContext(cmsGroup.getGroupId(), objectEntry)));
+	}
+
+	@Test
+	public void testAddRelationshipInfoFieldAttributesWithOrganization()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchSystemObjectDefinition(
+				TestPropsValues.getCompanyId(), "Organization");
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition,
+				_objectDefinition);
+
+		ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter =
+			new ObjectFieldInfoFieldConverter(
+				null, null, null, _objectDefinitionLocalService,
+				_objectFieldLocalService, null, _objectRelationshipLocalService,
+				_objectScopeProviderRegistry, null, null, _portal,
+				_restContextPathResolverRegistry,
+				_systemObjectDefinitionManagerRegistry, null);
+
+		InfoField.FinalStep finalStep = InfoField.builder(
+		).infoFieldType(
+			RelationshipInfoFieldType.INSTANCE
+		).namespace(
+			RandomTestUtil.randomString()
+		).name(
+			RandomTestUtil.randomString()
+		);
+
+		String url = _getRelationshipURL(
+			finalStep, objectFieldInfoFieldConverter, objectRelationship,
+			_getServiceContext(TestPropsValues.getGroupId(), null));
+
+		Assert.assertTrue(url, url.endsWith("?fields=id,name&flatten=true"));
 	}
 
 	@Test
@@ -399,5 +437,9 @@ public class ObjectFieldInfoFieldConverterTest {
 
 	@Inject
 	private RESTContextPathResolverRegistry _restContextPathResolverRegistry;
+
+	@Inject
+	private SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
 
 }

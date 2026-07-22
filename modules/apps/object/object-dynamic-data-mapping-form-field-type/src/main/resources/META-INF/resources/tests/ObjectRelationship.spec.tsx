@@ -37,7 +37,7 @@ const DEFAULT_PROPS = {
 };
 
 describe('fetchData', () => {
-	it('drops the query string when fetching a selected value by id', async () => {
+	it('appends the query string after the id when fetching a selected value by id', async () => {
 		(fetch as jest.Mock)
 			.mockResolvedValueOnce({
 				json: () => Promise.resolve({items: []}),
@@ -56,7 +56,7 @@ describe('fetchData', () => {
 
 		await waitFor(() =>
 			expect(fetch).toHaveBeenCalledWith(
-				`${API_URL}/123`,
+				`${API_URL}/123?flatten=true`,
 				expect.anything()
 			)
 		);

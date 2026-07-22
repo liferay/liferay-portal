@@ -3984,6 +3984,316 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await expect(page.getByText(account2.name)).toBeVisible();
 	});
 
+	test(
+		'can view their own organization in a relationship field',
+		{tag: '@LPD-97608'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const organization1 =
+				await apiHelpers.headlessAdminUser.postOrganization();
+			const organization2 =
+				await apiHelpers.headlessAdminUser.postOrganization();
+
+			const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			apiHelpers.data.push({id: user1.id, type: 'userAccount'});
+			apiHelpers.data.push({id: user2.id, type: 'userAccount'});
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization1.id,
+				user1.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization2.id,
+				user2.emailAddress
+			);
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: ['Text'],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					panelCategoryKey: 'control_panel.object',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+			const {body: organizationObjectDefinition} =
+				await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+					'L_ORGANIZATION'
+				);
+
+			const objectRelationshipAPIClient =
+				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+			const {body: objectRelationship} =
+				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+					'L_ORGANIZATION',
+					{
+						label: {
+							en_US: 'objectRelationshipLabel' + getRandomInt(),
+						},
+						name: 'objectRelationshipName' + getRandomInt(),
+						objectDefinitionExternalReferenceCode1:
+							'L_ORGANIZATION',
+						objectDefinitionExternalReferenceCode2:
+							objectDefinition.externalReferenceCode,
+						objectDefinitionId1: organizationObjectDefinition.id,
+						objectDefinitionId2: objectDefinition.id,
+						objectDefinitionName2: objectDefinition.name,
+						type: 'oneToMany',
+					}
+				);
+
+			apiHelpers.data.push({
+				id: objectRelationship.id,
+				type: 'objectRelationship',
+			});
+
+			const companyId = await page.evaluate(() => {
+				return Liferay.ThemeDisplay.getCompanyId();
+			});
+
+			const role = await apiHelpers.headlessAdminUser.postRole({
+				name: 'ObjRole' + getRandomInt(),
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: `com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinition.className.split('#')[1]}`,
+						scope: 1,
+					},
+					{
+						actionIds: ['ADD_OBJECT_ENTRY'],
+						primaryKey: companyId,
+						resourceName: `com.liferay.object#${objectDefinition.id}`,
+						scope: 1,
+					},
+				],
+			});
+
+			apiHelpers.data.push({id: role.id, type: 'role'});
+
+			await apiHelpers.headlessAdminUser.assignUserToRole(
+				role.externalReferenceCode,
+				user1.id
+			);
+
+			userData[user1.alternateName] = {
+				name: user1.givenName,
+				password: 'test',
+				surname: user1.familyName,
+			};
+
+			await performUserSwitch(page, user1.alternateName);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await page.getByRole('textbox', {name: 'Search'}).click();
+
+			await expect(
+				page.getByRole('menuitem', {name: organization1.name})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: organization2.name})
+			).toBeHidden();
+
+			await page
+				.getByRole('menuitem', {name: organization1.name})
+				.click();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.frontendDatasetItems.first().click();
+
+			await viewObjectEntriesPage.editObjectEntryForm.waitFor({
+				state: 'visible',
+			});
+
+			await expect(
+				viewObjectEntriesPage.editObjectEntryForm.getByPlaceholder(
+					'Search'
+				)
+			).toHaveValue(organization1.name);
+		}
+	);
+
+	test(
+		'can view a suborganization they are a member of in a relationship field',
+		{tag: '@LPD-97608'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const parentOrganization =
+				await apiHelpers.headlessAdminUser.postOrganization();
+			const suborganization =
+				await apiHelpers.headlessAdminUser.postOrganization({
+					parentOrganization: {id: parentOrganization.id},
+				});
+
+			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			apiHelpers.data.push({id: user.id, type: 'userAccount'});
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				suborganization.id,
+				user.emailAddress
+			);
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: ['Text'],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					panelCategoryKey: 'control_panel.object',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+			const {body: organizationObjectDefinition} =
+				await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+					'L_ORGANIZATION'
+				);
+
+			const objectRelationshipAPIClient =
+				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+			const {body: objectRelationship} =
+				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+					'L_ORGANIZATION',
+					{
+						label: {
+							en_US: 'objectRelationshipLabel' + getRandomInt(),
+						},
+						name: 'objectRelationshipName' + getRandomInt(),
+						objectDefinitionExternalReferenceCode1:
+							'L_ORGANIZATION',
+						objectDefinitionExternalReferenceCode2:
+							objectDefinition.externalReferenceCode,
+						objectDefinitionId1: organizationObjectDefinition.id,
+						objectDefinitionId2: objectDefinition.id,
+						objectDefinitionName2: objectDefinition.name,
+						type: 'oneToMany',
+					}
+				);
+
+			apiHelpers.data.push({
+				id: objectRelationship.id,
+				type: 'objectRelationship',
+			});
+
+			const companyId = await page.evaluate(() => {
+				return Liferay.ThemeDisplay.getCompanyId();
+			});
+
+			const role = await apiHelpers.headlessAdminUser.postRole({
+				name: 'ObjRole' + getRandomInt(),
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: `com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinition.className.split('#')[1]}`,
+						scope: 1,
+					},
+					{
+						actionIds: ['ADD_OBJECT_ENTRY'],
+						primaryKey: companyId,
+						resourceName: `com.liferay.object#${objectDefinition.id}`,
+						scope: 1,
+					},
+				],
+			});
+
+			apiHelpers.data.push({id: role.id, type: 'role'});
+
+			await apiHelpers.headlessAdminUser.assignUserToRole(
+				role.externalReferenceCode,
+				user.id
+			);
+
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
+
+			await performUserSwitch(page, user.alternateName);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await page.getByRole('textbox', {name: 'Search'}).click();
+
+			await expect(
+				page.getByRole('menuitem', {name: suborganization.name})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: parentOrganization.name})
+			).toBeHidden();
+
+			await page
+				.getByRole('menuitem', {name: suborganization.name})
+				.click();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.frontendDatasetItems.first().click();
+
+			await viewObjectEntriesPage.editObjectEntryForm.waitFor({
+				state: 'visible',
+			});
+
+			await expect(
+				viewObjectEntriesPage.editObjectEntryForm.getByPlaceholder(
+					'Search'
+				)
+			).toHaveValue(suborganization.name);
+		}
+	);
+
 	test('can order auto-generated table by entry', async ({
 		apiHelpers,
 		page,
