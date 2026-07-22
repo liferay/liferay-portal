@@ -1,0 +1,25 @@
+{
+	"friendlyURL": "/edit-connector",
+	"hidden": true,
+	"name_i18n": {
+		"en_US": "Edit Connector"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "content"
+}

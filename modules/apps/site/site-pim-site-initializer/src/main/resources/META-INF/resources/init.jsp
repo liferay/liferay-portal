@@ -6,10 +6,13 @@
 --%>
 
 <%@ taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
+taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames" %><%@
-page import="com.liferay.site.pim.site.initializer.internal.display.context.ProductsSectionDisplayContext" %>
+page import="com.liferay.site.pim.site.initializer.internal.display.context.EditPIMConnectorDisplayContext" %><%@
+page import="com.liferay.site.pim.site.initializer.internal.display.context.ProductsSectionDisplayContext" %><%@
+page import="com.liferay.site.pim.site.initializer.internal.display.context.ViewPIMConnectorsDisplayContext" %>
 
 <liferay-theme:defineObjects />
