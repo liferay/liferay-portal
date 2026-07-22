@@ -148,6 +148,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1022,11 +1023,19 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 
 		List<FragmentEntryLink> fragmentEntryLinks = new ArrayList<>();
 
+		Set<String> warningMessages = new LinkedHashSet<>();
+
 		_processPageElement(
 			fragmentEntryLinks, layout, layoutStructure,
 			LayoutStructureConstants.LATEST_PAGE_DEFINITION_VERSION,
 			pageElement, parentItemId, position, preserveItemIds,
-			segmentsExperienceId, new HashSet<>());
+			segmentsExperienceId, warningMessages);
+
+		if (_log.isWarnEnabled()) {
+			for (String warningMessage : warningMessages) {
+				_log.warn(warningMessage);
+			}
+		}
 
 		consumer.accept(layoutStructure);
 
