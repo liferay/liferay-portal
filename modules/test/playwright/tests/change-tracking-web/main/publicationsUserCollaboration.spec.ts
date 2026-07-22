@@ -172,6 +172,44 @@ test('LPD-89418 Paste email address to automatically add user in Invite Users mo
 	}
 });
 
+test(
+	'LPD-98937 Open the invite users autocomplete only after typing',
+	{tag: '@LPD-98937'},
+	async ({apiHelpers, changeTrackingPage, ctCollection, page}) => {
+		try {
+			const user =
+				await changeTrackingPage.addUserWithPublicationsUserRole();
+
+			await changeTrackingPage.workOnPublication(ctCollection);
+
+			await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+			await page.getByLabel('View Collaborators').click();
+
+			const input = page.getByPlaceholder('Enter name or email address.');
+
+			await input.click();
+
+			await expect(page.locator('.dropdown-menu-select')).toBeHidden();
+
+			await input.fill(user.emailAddress);
+
+			await expect(
+				page.getByRole('option', {name: user.name})
+			).toBeVisible();
+
+			await apiHelpers.headlessAdminUser.deleteUserAccount(
+				Number(user.id)
+			);
+		}
+		finally {
+			await apiHelpers.headlessChangeTracking.deleteCTCollection(
+				ctCollection.body.id
+			);
+		}
+	}
+);
+
 test('LPD-65173 Assert that the Share Link tab is hidden for Publication Templates', async ({
 	changeTrackingTemplatesPage,
 	page,
