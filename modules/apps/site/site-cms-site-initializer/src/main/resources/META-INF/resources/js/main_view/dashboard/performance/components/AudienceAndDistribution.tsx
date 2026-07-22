@@ -97,6 +97,11 @@ function Card({
 
 	const metrics = metric?.metrics ?? [];
 
+	// With no data the charts still render, hollow: the pie draws its
+	// neutral track and the map plain land, both without a legend.
+
+	const legend = metrics.length ? 'list' : 'none';
+
 	return (
 		<BaseCard
 			Preferences={
@@ -115,11 +120,7 @@ function Card({
 			title={title}
 			uppercaseTitle={false}
 		>
-			<ChartState
-				empty={!loading && !error && !metrics.length}
-				error={error}
-				loading={loading}
-			>
+			<ChartState error={error} loading={loading}>
 				{groupBy === 'categories' ? (
 					<PieChart
 						className="w-100"
@@ -127,7 +128,7 @@ function Card({
 							label: valueKey,
 							value,
 						}))}
-						legend="list"
+						legend={legend}
 						legendPosition="bottom"
 						legendSwatchBorder={false}
 						title=""
@@ -138,7 +139,7 @@ function Card({
 							country: valueKey,
 							value,
 						}))}
-						legend="list"
+						legend={legend}
 						legendPosition="bottom"
 						legendSwatchBorder={false}
 						title=""
