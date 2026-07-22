@@ -638,7 +638,7 @@ public class DBPartitionUtil {
 					if (fromTableName.contains(String.valueOf(fromCompanyId))) {
 						try (SafeCloseable safeCloseable2 =
 								CompanyThreadLocal.
-									setCompanyIdWithSafeCloseable(
+									setRawCompanyIdWithSafeCloseable(
 										toCompanyId)) {
 
 							db.runSQL(
