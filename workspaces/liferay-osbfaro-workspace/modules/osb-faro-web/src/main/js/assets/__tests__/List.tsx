@@ -386,8 +386,8 @@ describe('List', () => {
 			const apiURL = getMimeTypeFilterApiURL();
 
 			expect(apiURL).not.toContain('rangeKey=CUSTOM');
-            expect(apiURL).toContain('rangeEnd=2024-03-01');
-            expect(apiURL).toContain('rangeStart=2024-01-01');
+			expect(apiURL).toContain('rangeEnd=2024-03-01');
+			expect(apiURL).toContain('rangeStart=2024-01-01');
 		});
 
 		it('should send the range key for a preset range', () => {
