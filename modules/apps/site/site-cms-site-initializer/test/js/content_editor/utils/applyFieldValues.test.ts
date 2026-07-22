@@ -120,14 +120,18 @@ describe('applyFieldValues', () => {
 		applyFieldValues(form, {title: 'Generated'}, 'pt_BR');
 
 		expect(
-			(form.querySelector(
-				'[name="ObjectField_title_en_US"]'
-			) as HTMLInputElement).value
+			(
+				form.querySelector(
+					'[name="ObjectField_title_en_US"]'
+				) as HTMLInputElement
+			).value
 		).toBe('');
 		expect(
-			(form.querySelector(
-				'[name="ObjectField_title_pt_BR"]'
-			) as HTMLInputElement).value
+			(
+				form.querySelector(
+					'[name="ObjectField_title_pt_BR"]'
+				) as HTMLInputElement
+			).value
 		).toBe('Generated');
 	});
 
@@ -140,9 +144,11 @@ describe('applyFieldValues', () => {
 		applyFieldValues(form, {title: 'Generated'}, 'fr_FR');
 
 		expect(
-			(form.querySelector(
-				'[name="ObjectField_title_en_US"]'
-			) as HTMLInputElement).value
+			(
+				form.querySelector(
+					'[name="ObjectField_title_en_US"]'
+				) as HTMLInputElement
+			).value
 		).toBe('Generated');
 	});
 
