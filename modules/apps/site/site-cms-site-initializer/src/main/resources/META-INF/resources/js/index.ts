@@ -76,6 +76,7 @@ export {default as AssetsFilesDropFDSPropsTransformer} from './main_view/props_t
 export {default as BulkActionTaskReportFDSPropsTransformer} from './main_view/props_transformer/BulkActionTaskReportFDSPropsTransformer';
 export {default as CategoryFDSPropsTransformer} from './main_view/props_transformer/CategoryFDSPropsTransformer';
 export {default as CategoryUsagesFDSPropsTransformer} from './main_view/props_transformer/CategoryUsagesFDSPropsTransformer';
+export {default as ExpiredAssetsFDSPropsTransformer} from './main_view/props_transformer/ExpiredAssetsFDSPropsTransformer';
 export {default as HomeRecentAssetsFDSPropsTransformer} from './main_view/props_transformer/HomeRecentAssetsFDSPropsTransformer';
 export {default as MembersFDSPropsTransformer} from './main_view/props_transformer/MembersFDSPropsTransformer';
 export {default as OverdueReviewsFDSPropsTransformer} from './main_view/props_transformer/OverdueReviewsFDSPropsTransformer';
