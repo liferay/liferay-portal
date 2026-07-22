@@ -42,6 +42,18 @@ describe('TaskInfoSummary', () => {
 		);
 
 		expect(container).toBeInTheDocument();
+
+		expect(
+			screen.getByRole('combobox', {name: 'assignee'})
+		).not.toBeDisabled();
+
+		const stateSelector = screen
+			.getAllByRole('combobox')
+			.find((element) =>
+				element.classList.contains('lfr-cmp__state-selector')
+			);
+
+		expect(stateSelector).not.toHaveClass('disabled');
 	});
 
 	it('disables the state selector and makes the assignee read only when the user lacks update permission', () => {
