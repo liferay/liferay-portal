@@ -34,10 +34,13 @@ const checkValidChannel =
 		...otherProps
 	}: IWrappedComponentProps & {[key: string]: any}) => {
 		useEffect(() => {
-			const isHome = matchPath(location.pathname, {
-				exact: true,
-				path: Routes.WORKSPACE_WITH_ID,
-			});
+			const isHome = matchPath(
+				{
+					end: true,
+					path: Routes.WORKSPACE_WITH_ID,
+				},
+				location.pathname
+			);
 
 			if (isHome) {
 				const channel = getDefaultChannel(defaultChannelId, channels);

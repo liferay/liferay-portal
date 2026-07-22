@@ -1,7 +1,7 @@
 import React from 'react';
 import {isString} from 'lodash';
+import {Navigate} from 'react-router-dom';
 import {PropTypes} from 'prop-types';
-import {Redirect} from 'react-router-dom';
 
 /**
  * routingFn
@@ -37,7 +37,7 @@ export default routingFn => WrappedComponent =>
 			const {route} = this.state;
 
 			if (isString(route)) {
-				return <Redirect push to={route} />;
+				return <Navigate to={route} />;
 			} else {
 				return (
 					<WrappedComponent

@@ -1,12 +1,14 @@
 import React from 'react';
-import {withRouter} from 'react-router';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 
 /**
- * Adds history prop from WithRouter.
- * @param {function} WrappedComponent
- * @returns {function} - The WrappedComponent with the history prop.
+ * Injects a v5-`history`-shaped adapter (see `useHistoryAdapter`) so the
+ * existing `withHistory` consumers keep calling `history.push(...)` unchanged.
+ * Tech debt: consumers should migrate to `useNavigate` directly, after which
+ * this HOC can be deleted.
  */
-export default WrappedComponent =>
-	withRouter(({history, ...otherProps}) => (
-		<WrappedComponent history={history} {...otherProps} />
-	));
+export default WrappedComponent => props => {
+	const history = useHistoryAdapter();
+
+	return <WrappedComponent history={history} {...props} />;
+};
