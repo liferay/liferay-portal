@@ -5,7 +5,6 @@
 
 package com.liferay.change.tracking.web.internal.portlet.action;
 
-import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.constants.CTPortletKeys;
 import com.liferay.change.tracking.constants.PublicationRoleConstants;
@@ -30,6 +29,7 @@ import com.liferay.portal.kernel.model.UserTable;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
@@ -86,7 +86,7 @@ public class GetCollaboratorsMVCResourceCommand extends BaseMVCResourceCommand {
 			((ctCollection != null) &&
 			 !CTCollectionPermission.contains(
 				 themeDisplay.getPermissionChecker(), ctCollection,
-				 CTActionKeys.INVITE_USERS))) {
+				 ActionKeys.VIEW))) {
 
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse, jsonArray);
