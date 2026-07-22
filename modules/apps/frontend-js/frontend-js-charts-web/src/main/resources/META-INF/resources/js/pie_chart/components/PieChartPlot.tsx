@@ -12,6 +12,7 @@ import {computePrecedingTotals} from '../utils/computePrecedingTotals';
 import {computeSliceAngles} from '../utils/computeSliceAngles';
 import PieChartCenterLabel from './PieChartCenterLabel';
 import PieChartSlice from './PieChartSlice';
+import PieChartTrack from './PieChartTrack';
 
 interface PieChartPlotProps {
 	activeDatum?: PieDatum;
@@ -97,6 +98,13 @@ export default function PieChartPlot({
 						</clipPath>
 					))}
 				</defs>
+
+				{total === 0 && (
+					<PieChartTrack
+						innerRadius={innerRadius}
+						pixelSize={pixelSize}
+					/>
+				)}
 
 				{slicePaths.length
 					? data.map((datum, index) => (
