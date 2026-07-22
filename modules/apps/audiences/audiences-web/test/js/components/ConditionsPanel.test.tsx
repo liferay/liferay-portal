@@ -5,6 +5,9 @@
 
 import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
 
+// eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+
 import '@testing-library/jest-dom';
 import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -75,7 +78,7 @@ function renderConditionsPanel({
 	dispatch = jest.fn(),
 	items = [] as CriteriaNode[],
 } = {}) {
-	render(
+	const {container} = render(
 		<DragAndDropProvider backend={HTML5Backend}>
 			<ScreenReaderAnnouncerContextProvider>
 				<ConditionsPanel
@@ -87,7 +90,7 @@ function renderConditionsPanel({
 		</DragAndDropProvider>
 	);
 
-	return {dispatch};
+	return {container, dispatch};
 }
 
 describe('ConditionsPanel', () => {
@@ -102,6 +105,10 @@ describe('ConditionsPanel', () => {
 
 		expect(screen.getByText('Age')).toBeTruthy();
 		expect(screen.getByText('is-greater-than')).toBeTruthy();
+
+		expect(
+			screen.getByRole('group', {name: /Age.*is-greater-than.*18/})
+		).toBeTruthy();
 	});
 
 	it('dispatches a duplicate action with the rule path', async () => {
@@ -118,7 +125,9 @@ describe('ConditionsPanel', () => {
 	it('dispatches the conjunction', async () => {
 		const {dispatch} = renderConditionsPanel({items: RULES});
 
-		await userEvent.click(screen.getByLabelText('conjunction'));
+		await userEvent.click(
+			screen.getByLabelText('of-these-criteria-are-met')
+		);
 		await userEvent.click(screen.getByRole('option', {name: 'any'}));
 
 		expect(dispatch).toHaveBeenCalledWith({
@@ -138,16 +147,30 @@ describe('ConditionsPanel', () => {
 	it('renders a nested group with its own conjunction control', () => {
 		renderConditionsPanel({items: NESTED_GROUP});
 
-		expect(screen.getByRole('group')).toBeTruthy();
+		expect(
+			screen.getByRole('group', {name: /of-these-criteria-are-met/})
+		).toBeTruthy();
 		expect(screen.getByText('Age')).toBeTruthy();
 		expect(screen.getByText('City')).toBeTruthy();
-		expect(screen.getAllByLabelText('conjunction')).toHaveLength(2);
+		expect(
+			screen.getAllByRole('combobox', {
+				name: 'of-these-criteria-are-met',
+			})
+		).toHaveLength(2);
+	});
+
+	it('has no accessibility violations for nested groups', async () => {
+		const {container} = renderConditionsPanel({items: NESTED_GROUP});
+
+		await checkAccessibility({bestPractices: true, context: container});
 	});
 
 	it('dispatches a delete action for a rule nested in a group by path', async () => {
 		const {dispatch} = renderConditionsPanel({items: NESTED_GROUP});
 
-		const group = screen.getByRole('group');
+		const group = screen.getByRole('group', {
+			name: /of-these-criteria-are-met/,
+		});
 
 		await userEvent.click(within(group).getAllByLabelText('delete')[0]);
 
@@ -195,12 +218,13 @@ describe('ConditionsPanel', () => {
 			],
 		});
 
-		const rows = screen.getAllByRole('menuitem');
+		const ageRow = screen.getByRole('group', {name: /^Age/});
+		const cityRow = screen.getByRole('group', {name: /^City/});
 
-		rows[0].focus();
+		ageRow.focus();
 
 		await userEvent.keyboard('{ArrowDown}');
 
-		expect(rows[1]).toHaveFocus();
+		expect(cityRow).toHaveFocus();
 	});
 });

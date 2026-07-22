@@ -383,16 +383,16 @@ describe('AudienceBuilder', () => {
 				/>
 			);
 
-			const conditionsMenu = screen.getByRole('menu', {
+			const conditionsGroup = screen.getByRole('group', {
 				name: 'conditions',
 			});
 
-			const rows = within(conditionsMenu).getAllByRole('menuitem');
+			const rows = within(conditionsGroup).getAllByRole('group');
 
 			expect(rows[0]).toHaveAttribute('tabindex', '0');
 			expect(rows[1]).toHaveAttribute('tabindex', '-1');
 
-			const moveButtons = within(conditionsMenu).getAllByTitle('move-x');
+			const moveButtons = within(conditionsGroup).getAllByTitle('move-x');
 
 			expect(moveButtons[0]).toHaveAttribute('tabindex', '0');
 			expect(moveButtons[1]).toHaveAttribute('tabindex', '-1');
@@ -421,13 +421,13 @@ describe('AudienceBuilder', () => {
 				/>
 			);
 
-			const conditionsMenu = screen.getByRole('menu', {
+			const conditionsGroup = screen.getByRole('group', {
 				name: 'conditions',
 			});
 
-			const [row] = within(conditionsMenu).getAllByRole('menuitem');
+			const [row] = within(conditionsGroup).getAllByRole('group');
 
-			const moveButton = within(conditionsMenu).getByTitle('move-x');
+			const moveButton = within(conditionsGroup).getByTitle('move-x');
 
 			await userEvent.click(row);
 			await userEvent.keyboard('{ArrowRight}');
@@ -437,7 +437,7 @@ describe('AudienceBuilder', () => {
 			await userEvent.keyboard('{ArrowRight}');
 
 			expect(
-				within(conditionsMenu).getByLabelText('operator')
+				within(conditionsGroup).getByLabelText('operator')
 			).toHaveFocus();
 
 			await userEvent.keyboard('{ArrowLeft}');

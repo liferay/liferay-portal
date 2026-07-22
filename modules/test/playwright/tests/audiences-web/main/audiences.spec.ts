@@ -172,7 +172,9 @@ test(
 			page.getByText('of these criteria are met.')
 		).toBeVisible();
 
-		const conjunction = page.getByLabel('Conjunction');
+		const conjunction = page.getByRole('combobox', {
+			name: 'of these criteria are met.',
+		});
 
 		await expect(conjunction).toContainText('All');
 
@@ -423,23 +425,29 @@ test(
 		await page.keyboard.press('Tab');
 
 		await expect(
-			page.getByRole('menu', {name: 'Conditions'}).locator(':focus')
+			page.getByRole('group', {name: 'Conditions'}).locator(':focus')
 		).toHaveCount(0);
 
 		// The new group defaults to All
 
-		await expect(groups.getByLabel('Conjunction')).toContainText('All');
+		await expect(
+			groups.getByRole('combobox', {name: 'of these criteria are met.'})
+		).toContainText('All');
 
 		// Switching the root to Any leaves the nested group on All
 
-		const rootConjunction = page.getByLabel('Conjunction').first();
+		const rootConjunction = page
+			.getByRole('combobox', {name: 'of these criteria are met.'})
+			.first();
 
 		await rootConjunction.click();
 
 		await page.getByRole('option', {exact: true, name: 'Any'}).click();
 
 		await expect(rootConjunction).toContainText('Any');
-		await expect(groups.getByLabel('Conjunction')).toContainText('All');
+		await expect(
+			groups.getByRole('combobox', {name: 'of these criteria are met.'})
+		).toContainText('All');
 
 		// Dropping onto a rule inside the group nests a third level
 
