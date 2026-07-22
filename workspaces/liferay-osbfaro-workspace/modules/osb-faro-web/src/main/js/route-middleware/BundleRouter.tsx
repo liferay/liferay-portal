@@ -1,8 +1,9 @@
 import React from 'react';
-import {matchPath, Route, RouteProps} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+import {useParams} from 'react-router-dom';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 
-interface BundleRouterProps extends RouteProps {
+interface IBundleRouterProps {
 	componentProps?: Record<string, unknown>;
 	data: React.ComponentType<any>;
 	destructured?: boolean;
@@ -12,44 +13,29 @@ const BundleRouter = ({
 	componentProps = {},
 	data: Component,
 	destructured = true,
-	...otherRouteProps
-}: BundleRouterProps) => {
+}: IBundleRouterProps) => {
+	const history = useHistoryAdapter();
+	const params = useParams();
 	const query = useQueryParams();
 
+	if (destructured) {
+		return (
+			<Component
+				history={history}
+				location={history.location}
+				{...query}
+				{...params}
+				{...componentProps}
+			/>
+		);
+	}
+
 	return (
-		<Route
-			{...otherRouteProps}
-			render={({history, match: {params, path}}) => {
-				if (destructured) {
-					return (
-						<Component
-							history={history}
-							{...query}
-							{...params}
-							{...componentProps}
-						/>
-					);
-				}
-
-				const matchedPath = matchPath<{touchpoint?: string}>(
-					window.location.pathname,
-					{path}
-				);
-
-				return (
-					<Component
-						history={history}
-						router={{
-							params: {
-								...params,
-								touchpoint: matchedPath?.params.touchpoint,
-							},
-							query,
-						}}
-						{...componentProps}
-					/>
-				);
-			}}
+		<Component
+			history={history}
+			location={history.location}
+			router={{params, query}}
+			{...componentProps}
 		/>
 	);
 };
