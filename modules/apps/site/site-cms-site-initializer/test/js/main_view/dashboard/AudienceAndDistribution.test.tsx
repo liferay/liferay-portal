@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import {PerformanceContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/PerformanceContext';
@@ -68,16 +68,24 @@ describe('AudienceAndDistribution', () => {
 		expect(screen.getByText('Business')).toBeInTheDocument();
 	});
 
-	it('renders the empty state when the metrics are empty', async () => {
+	it('renders hollow charts without a legend when the metrics are empty', async () => {
 		jest.spyOn(PerformanceService, 'getMetric').mockResolvedValue({
 			data: {metricType: 'viewsMetric', metrics: []},
 			error: null,
 		});
 
-		renderComponent();
+		const {container} = renderComponent();
 
-		expect((await screen.findAllByText('no-data-available')).length).toBe(
-			2
+		await waitFor(() =>
+			expect(
+				container.querySelector('.chart-pie-track')
+			).toBeInTheDocument()
 		);
+
+		expect(container.querySelector('.chart-map-svg')).toBeInTheDocument();
+		expect(
+			container.querySelector('.charts-legend')
+		).not.toBeInTheDocument();
+		expect(screen.queryByText('no-data-available')).not.toBeInTheDocument();
 	});
 });
