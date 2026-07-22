@@ -6,7 +6,7 @@ import React from 'react';
 import {act} from '@testing-library/react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen, within} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
@@ -32,23 +32,28 @@ const DefaultComponent = ({queryString = '', ...otherProps}) => (
 				`/workspace/23/123/contacts/segments${queryString}`
 			]}
 		>
-			<Route path={Routes.CONTACTS_LIST_SEGMENT}>
-				<UnassignedSegmentsContext.Provider
-					value={MOCK_UNASSIGNED_SEGMENTS_CONTEXT}
-				>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<List
-							channelId='123'
-							currentUser={data.getImmutableMock(
-								User,
-								data.mockUser
-							)}
-							groupId='23'
-							{...otherProps}
-						/>
-					</ChannelContext.Provider>
-				</UnassignedSegmentsContext.Provider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<UnassignedSegmentsContext.Provider
+							value={MOCK_UNASSIGNED_SEGMENTS_CONTEXT}
+						>
+							<ChannelContext.Provider value={mockChannelContext()}>
+								<List
+									channelId='123'
+									currentUser={data.getImmutableMock(
+										User,
+										data.mockUser
+									)}
+									groupId='23'
+									{...otherProps}
+								/>
+							</ChannelContext.Provider>
+						</UnassignedSegmentsContext.Provider>
+					}
+					path={`${Routes.CONTACTS_LIST_SEGMENT}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

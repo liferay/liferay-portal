@@ -20,6 +20,7 @@ exports[`View should render a CSV data-source page 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -296,6 +297,7 @@ exports[`View should render a CSV data-source page 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources
@@ -528,6 +530,7 @@ exports[`View should render a Liferay data-source page 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -804,6 +807,7 @@ exports[`View should render a Liferay data-source page 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources
@@ -1461,6 +1465,7 @@ exports[`View should render a Salesforce data-source page 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -1737,6 +1742,7 @@ exports[`View should render a Salesforce data-source page 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources

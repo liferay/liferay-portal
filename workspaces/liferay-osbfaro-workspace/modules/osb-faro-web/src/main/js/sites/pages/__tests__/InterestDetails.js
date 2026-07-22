@@ -5,7 +5,7 @@ import {ApolloProvider} from '@apollo/client';
 import {ChannelContext} from 'shared/context/channel';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
@@ -27,7 +27,7 @@ describe('Sites Dashboard InterestDetails', () => {
 	it('render', () => {
 		const {container} = render(
 			<ApolloProvider client={client}>
-				<StaticRouter>
+				<MemoryRouter>
 					<ChannelContext.Provider value={mockChannelContext()}>
 						<InterestDetails
 							channelName="Test Channel"
@@ -37,7 +37,7 @@ describe('Sites Dashboard InterestDetails', () => {
 							}}
 						/>
 					</ChannelContext.Provider>
-				</StaticRouter>
+				</MemoryRouter>
 			</ApolloProvider>
 		);
 

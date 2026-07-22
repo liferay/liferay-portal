@@ -200,6 +200,7 @@ exports[`EventList should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/definitions/events/0"
                     >
                       name-0

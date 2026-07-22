@@ -4,7 +4,7 @@ import React from 'react';
 import {CHART_COLORS, MAIN_NODE_COLOR, SECONDARY_NODE_COLOR} from '../utils';
 import {cleanup, fireEvent, getByTestId, render} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockPagePathReq} from 'test/graphql-data';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
@@ -133,24 +133,29 @@ const WrapperComponent = ({
 			'/workspace/4567/123/sites/pages/overview/https%3A%2F%2Fliferay.com%2Fhome/Liferay%20DXP%20-%20Home?rangeKey=30',
 		]}
 	>
-		<Route path="/workspace/:groupId/:channelId/sites/pages/overview/:touchpoint/:title">
-			<BasePage.Context.Provider
-				value={{accountId, filters: {}, router: {}, segmentId}}
-			>
-				<MockedProvider
-					cache={new InMemoryCache({freezeResults: false} as any)}
-					mocks={[
-						mockPagePathReq(data, {
-							accountId,
-							segmentId,
-							...reqOptions,
-						} as any),
-					]}
-				>
-					<PagePathCard rangeSelectors={rangeSelectors} />
-				</MockedProvider>
-			</BasePage.Context.Provider>
-		</Route>
+		<RouterRoutes>
+			<Route
+				element={
+					<BasePage.Context.Provider
+						value={{accountId, filters: {}, router: {}, segmentId}}
+					>
+						<MockedProvider
+							cache={new InMemoryCache({freezeResults: false} as any)}
+							mocks={[
+								mockPagePathReq(data, {
+									accountId,
+									segmentId,
+									...reqOptions,
+								} as any),
+							]}
+						>
+							<PagePathCard rangeSelectors={rangeSelectors} />
+						</MockedProvider>
+					</BasePage.Context.Provider>
+				}
+				path="/workspace/:groupId/:channelId/sites/pages/overview/:touchpoint/:title/*"
+			/>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 

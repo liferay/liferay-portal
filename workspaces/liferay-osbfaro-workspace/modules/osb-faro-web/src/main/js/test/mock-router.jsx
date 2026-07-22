@@ -1,5 +1,5 @@
 import React from 'react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router-dom';
 
 export default {
 	params: {},
@@ -8,8 +8,8 @@ export default {
 
 export function withStaticRouter(Component) {
 	return props => (
-		<StaticRouter>
+		<MemoryRouter>
 			<Component {...props} />
-		</StaticRouter>
+		</MemoryRouter>
 	);
 }

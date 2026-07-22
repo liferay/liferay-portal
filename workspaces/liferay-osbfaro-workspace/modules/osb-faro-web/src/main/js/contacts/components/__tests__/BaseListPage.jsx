@@ -6,7 +6,7 @@ import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import {createOrderIOMap} from 'shared/util/pagination';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {Provider} from 'react-redux';
@@ -53,15 +53,20 @@ const WrappedComponent = ({alerts, empty, query}) => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/123123/contacts/segments']}
 		>
-			<Route path={Routes.CONTACTS_LIST_SEGMENT}>
-				<ChannelContext.Provider value={mockChannelContext()}>
-					<BaseListPage
-						alerts={alerts}
-						{...defaultProps(empty)}
-						query={query}
-					/>
-				</ChannelContext.Provider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<ChannelContext.Provider value={mockChannelContext()}>
+							<BaseListPage
+								alerts={alerts}
+								{...defaultProps(empty)}
+								query={query}
+							/>
+						</ChannelContext.Provider>
+					}
+					path={`${Routes.CONTACTS_LIST_SEGMENT}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

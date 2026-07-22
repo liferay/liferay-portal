@@ -4,7 +4,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {CredentialTypes} from 'shared/util/constants';
 import {DataSource} from 'shared/util/records';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -22,9 +22,14 @@ const DefaultComponent = ({dataSource}) => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/24']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id'>
-				<View dataSource={dataSource} groupId='23' id='24' />
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<View dataSource={dataSource} groupId='23' id='24' />
+					}
+					path='/workspace/:groupId/settings/data-source/:id/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

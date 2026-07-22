@@ -4,7 +4,7 @@ import React from 'react';
 import RecommendationList from '../RecommendationList';
 import RecommendationListQuery from '../../queries/RecommendationListQuery';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockJobBag} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -43,23 +43,28 @@ const WrappedComponent = props => (
 				'/workspace/23/settings/recommendations?delta=10&field=name&sortOrder=DESC'
 			]}
 		>
-			<Route path={Routes.SETTINGS_RECOMMENDATIONS}>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+							mocks={[mockRecommendationListReq()]}
+						>
+							<RecommendationList
+								groupId='23'
+								{...defaultProps}
+								{...props}
+							/>
+						</MockedProvider>
 					}
-					mocks={[mockRecommendationListReq()]}
-				>
-					<RecommendationList
-						groupId='23'
-						{...defaultProps}
-						{...props}
-					/>
-				</MockedProvider>
-			</Route>
+					path={`${Routes.SETTINGS_RECOMMENDATIONS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

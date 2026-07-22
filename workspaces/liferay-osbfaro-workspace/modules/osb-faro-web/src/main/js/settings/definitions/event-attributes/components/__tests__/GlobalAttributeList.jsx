@@ -2,7 +2,7 @@ import * as data from 'test/data';
 import GlobalAttributeList from '../GlobalAttributeList';
 import React from 'react';
 import {AttributeTypes} from 'event-analysis/utils/types';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventAttributeDefinitionsReq} from 'test/graphql-data';
 import {render} from '@testing-library/react';
@@ -19,11 +19,16 @@ const Wrapper = ({children, mocks = []}) => (
 			`/workspace/${mockGroupId}/settings/definitions/event-attributes/global?delta=1`
 		]}
 	>
-		<Route path={Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_GLOBAL}>
-			<MockedProvider addTypename={false} mocks={mocks}>
-				{children}
-			</MockedProvider>
-		</Route>
+		<RouterRoutes>
+			<Route
+				element={
+					<MockedProvider addTypename={false} mocks={mocks}>
+						{children}
+					</MockedProvider>
+				}
+				path={`${Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_GLOBAL}/*`}
+			/>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 

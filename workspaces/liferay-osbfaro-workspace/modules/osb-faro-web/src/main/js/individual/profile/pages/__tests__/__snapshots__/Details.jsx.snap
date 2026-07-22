@@ -295,6 +295,7 @@ exports[`IndividualDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       -
@@ -331,6 +332,7 @@ exports[`IndividualDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       -
@@ -367,6 +369,7 @@ exports[`IndividualDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       -
@@ -403,6 +406,7 @@ exports[`IndividualDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       -
@@ -439,6 +443,7 @@ exports[`IndividualDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       -

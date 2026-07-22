@@ -25,6 +25,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/123/sites"
               >
                 Channel 1
@@ -35,6 +36,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/123/contacts/individuals"
               >
                 Individuals
@@ -177,7 +179,367 @@ exports[`IndividualProfileRoutes should render 1`] = `
     >
       <span
         class="children-wrapper"
-      />
+      >
+        <div
+          class="card card-root associated-segments-list-root page-display"
+        >
+          <div
+            class="card-header d-flex align-items-start justify-content-between"
+          >
+            <div>
+              <div
+                class="card-title"
+              >
+                Associated Segments
+              </div>
+              <span
+                class="secondary-info"
+              >
+                List all the segments that the customer is currently associated with in the last 30 days.
+              </span>
+              <div
+                class="secondary-info"
+              >
+                <b>
+                  1
+                </b>
+                 Segment
+              </div>
+            </div>
+            <div
+              class="text-right"
+            >
+              <span
+                class="text-secondary text-uppercase"
+              >
+                <small>
+                  <strong>
+                    Last 30 days
+                  </strong>
+                </small>
+              </span>
+            </div>
+          </div>
+          <div
+            class="base-results-root d-flex flex-column flex-grow-1 searchable-table-root searchable-table-borderless"
+          >
+            <div
+              class="toolbar-root"
+            >
+              <nav
+                class="navbar navbar-root management-bar management-bar-light navbar-expand"
+              >
+                <div
+                  class="container-fluid"
+                >
+                  <ul
+                    class="nav-root front-nav navbar-nav"
+                    role="tablist"
+                  >
+                    <li
+                      class="nav-item"
+                      role="presentation"
+                    >
+                      <div
+                        class="dropdown dropdown-root"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                          data-testid="order-button"
+                          type="button"
+                        >
+                          <span
+                            class="caret-root"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-order-list-down"
+                              role="presentation"
+                            >
+                              <use
+                                href="#order-list-down"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="mx-2"
+                          >
+                            Order
+                          </span>
+                          <span
+                            class="caret-root"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-caret-bottom"
+                              role="presentation"
+                            >
+                              <use
+                                href="#caret-bottom"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                  <div
+                    class="navbar-form navbar-form-autofit mx-2"
+                  >
+                    <div
+                      class="input-group search"
+                    >
+                      <div
+                        class="input-group-item"
+                      >
+                        <input
+                          class="input-root form-control input-group-inset input-group-inset-after"
+                          placeholder="Search"
+                          type="text"
+                          value=""
+                        />
+                        <div
+                          class="input-group-inset-item input-group-inset-item-after"
+                        >
+                          <button
+                            aria-label="Search"
+                            class="button-root btn btn-unstyled"
+                            type="button"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-search icon-root"
+                              role="presentation"
+                            >
+                              <use
+                                href="#search"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div
+              class="flex-grow-1 mx-4 table-root"
+            >
+              <div
+                class="table-responsive"
+              >
+                <table
+                  class="table table-autofit table-list table-nowrap table-head-bordered table-hover table-striped"
+                >
+                  <thead>
+                    <tr>
+                      <th
+                        class="table-head-title table-cell-expand"
+                      >
+                        <a
+                          class="button-root w-100 btn btn-unstyled"
+                          href="/?field=name&page=1&sortOrder=DESC"
+                        >
+                          <div
+                            class="align-items-center d-flex justify-content-between"
+                          >
+                            <div
+                              class="text-truncate"
+                            >
+                              Name
+                            </div>
+                            <button
+                              aria-label="Ascending"
+                              class="component-action ml-2 btn btn-sm btn-primary"
+                              type="button"
+                            >
+                              <svg
+                                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#order_arrow_ascending"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </a>
+                      </th>
+                      <th
+                        class="table-head-title"
+                      >
+                        Type
+                      </th>
+                      <th
+                        class="table-head-title"
+                      >
+                        Date Added
+                      </th>
+                      <th
+                        class="table-head-title"
+                      >
+                        <a
+                          class="button-root w-100 btn btn-unstyled"
+                          href="/?field=dateCreated&page=1&sortOrder=DESC"
+                        >
+                          <div
+                            class="align-items-center d-flex justify-content-between"
+                          >
+                            <div
+                              class="text-truncate"
+                            >
+                              Date Created
+                            </div>
+                            <button
+                              aria-label="Descending"
+                              class="component-action ml-2 btn btn-sm btn-primary"
+                              type="button"
+                            >
+                              <span
+                                class="opacity-25"
+                              >
+                                <svg
+                                  class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                                  role="presentation"
+                                >
+                                  <use
+                                    href="#order-arrow"
+                                  />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class=""
+                    >
+                      <td
+                        class="name-cell-root table-cell-expand"
+                      >
+                        <div
+                          class="content-container"
+                        >
+                          <div
+                            class="text-truncate"
+                          >
+                            <div
+                              class="table-title text-truncate"
+                            >
+                              <a
+                                class="text-truncate"
+                                data-discover="true"
+                                href="/workspace/23/123/contacts/segments/0"
+                              >
+                                Seattle0
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td />
+                      <td>
+                        -
+                      </td>
+                      <td>
+                        Jul 9, 2018
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <nav
+              class="navbar navbar-root pagination-bar-root"
+            >
+              <div
+                class="container-fluid"
+              >
+                <div
+                  class="dropdown dropdown-root pagination-items-per-page"
+                >
+                  <button
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="dropdown-toggle button-root btn btn-sm btn-secondary"
+                    type="button"
+                  >
+                    2 Items
+                    <svg
+                      class="lexicon-icon lexicon-icon-caret-bottom ml-2"
+                      role="presentation"
+                    >
+                      <use
+                        href="#caret-bottom"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div
+                  class="pagination-results"
+                >
+                  Showing 1 to 1 of 1 entry.
+                </div>
+                <ul
+                  class="pagination pagination-root"
+                >
+                  <li
+                    class="page-item disabled"
+                  >
+                    <a
+                      aria-label="Previous"
+                      class="button-root btn btn-unstyled page-link"
+                      disabled=""
+                      href="/?page=0"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-left-small icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#angle-left-small"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                  <li
+                    class="page-item active"
+                  >
+                    <a
+                      class="button-root btn btn-unstyled page-link"
+                      href="/?page=1"
+                    >
+                      1
+                    </a>
+                  </li>
+                  <li
+                    class="page-item disabled"
+                  >
+                    <a
+                      aria-label="Next"
+                      class="button-root btn btn-unstyled page-link"
+                      disabled=""
+                      href="/?page=2"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-angle-right-small icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#angle-right-small"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </span>
     </div>
   </div>
 </div>

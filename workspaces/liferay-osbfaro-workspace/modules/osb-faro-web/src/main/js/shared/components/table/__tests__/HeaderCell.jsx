@@ -1,7 +1,7 @@
 import HeaderCell from '../HeaderCell';
 import React from 'react';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -24,9 +24,9 @@ describe('HeaderCell', () => {
 
 	it('should render the header cell as a link if headerLink is true', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<HeaderCell headerLink />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('.button-root')).toHaveAttribute(

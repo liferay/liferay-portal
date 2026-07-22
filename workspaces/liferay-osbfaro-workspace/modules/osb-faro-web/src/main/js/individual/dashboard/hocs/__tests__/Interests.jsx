@@ -1,6 +1,6 @@
 import Interests from '../Interests';
 import React from 'react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockIndividualInterestsReq} from 'test/graphql-data';
 import {render} from '@testing-library/react';
@@ -27,9 +27,14 @@ describe('Interests', () => {
 						'/workspace/123/456/contacts/individuals/interests'
 					]}
 				>
-					<Route path={Routes.CONTACTS_INDIVIDUALS_INTERESTS}>
-						<Interests />
-					</Route>
+					<RouterRoutes>
+						<Route
+							element={
+								<Interests />
+							}
+							path={`${Routes.CONTACTS_INDIVIDUALS_INTERESTS}/*`}
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</MockedProvider>
 		);

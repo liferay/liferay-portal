@@ -3,11 +3,10 @@ import mockStore, {mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
-import {createMemoryHistory} from 'history';
 import {mockChannelContext} from 'test/mock-channel-context';
+import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {Router} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
@@ -298,7 +297,7 @@ jest.mock('shared/util/breadcrumbs', () => ({
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 	useParams: () => ({
 		channelId: '123',
 		groupId: '23',
@@ -309,13 +308,7 @@ jest.mock('react-router-dom', () => ({
 
 const mockHistoryPush = jest.fn();
 
-const buildHistory = (path = '/workspace/23/123/assets') => {
-	const history = createMemoryHistory({initialEntries: [path]});
-
-	history.push = mockHistoryPush;
-
-	return history;
-};
+const buildInitialEntries = (path = '/workspace/23/123/assets') => [path];
 
 // LDP is enabled by default so the account/segment filters, which are LDP-only,
 // stay present for the shared assertions and the snapshot.
@@ -324,33 +317,34 @@ const store = mockStore(mockStoreDataLDP);
 
 // Helper: wrap List in the minimum context providers it needs.
 
-const renderList = (
-	{
-		queryString = '',
-		store: storeOverride = store,
-	}: {queryString?: string; store?: typeof store} = {},
-	history = buildHistory(`/workspace/23/123/assets${queryString}`)
-) =>
+const renderList = ({
+	queryString = '',
+	store: storeOverride = store,
+}: {queryString?: string; store?: typeof store} = {}) =>
 	render(
 		<Provider store={storeOverride}>
 			<ChannelContext.Provider value={mockChannelContext() as any}>
-				<Router history={history}>
+				<MemoryRouter
+					initialEntries={buildInitialEntries(
+						`/workspace/23/123/assets${queryString}`
+					)}
+				>
 					<List />
-				</Router>
+				</MemoryRouter>
 			</ChannelContext.Provider>
 		</Provider>
 	);
 
-// Obtain the mocked useHistory so we can configure it per test.
+// Obtain the mocked useNavigate so we can configure it per test.
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const {useHistory} = require('react-router-dom');
+const {useNavigate} = require('react-router-dom');
 
 describe('List', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 
-		useHistory.mockReturnValue({push: mockHistoryPush});
+		useNavigate.mockReturnValue(mockHistoryPush);
 	});
 
 	afterEach(cleanup);
@@ -985,9 +979,9 @@ describe('List', () => {
 					<ChannelContext.Provider
 						value={contextWithNoChannel as any}
 					>
-						<Router history={buildHistory()}>
+						<MemoryRouter initialEntries={buildInitialEntries()}>
 							<List />
-						</Router>
+						</MemoryRouter>
 					</ChannelContext.Provider>
 				</Provider>
 			);

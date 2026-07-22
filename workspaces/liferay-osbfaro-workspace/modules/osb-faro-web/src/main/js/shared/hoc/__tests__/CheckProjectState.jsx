@@ -9,7 +9,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
@@ -18,18 +18,23 @@ jest.unmock('react-dom');
 const DefaultWrapper = ({children}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/']}>
-			<Route path='/'>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							{children}
+						</MockedProvider>
 					}
-				>
-					{children}
-				</MockedProvider>
-			</Route>
+					path='/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

@@ -4,7 +4,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventDefinitionsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -20,26 +20,31 @@ const DefaultComponent = ({event, ...otherProps}) => (
 				'/workspace/23/settings/definitions/events/default?delta=1'
 			]}
 		>
-			<Route path={Routes.SETTINGS_DEFINITIONS_EVENTS}>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+							mocks={[
+								mockEventDefinitionsReq([
+									data.mockEventDefinition(0, {
+										__typename: 'EventDefinition',
+										...event
+									})
+								])
+							]}
+						>
+							<EventList groupId='23' {...otherProps} />
+						</MockedProvider>
 					}
-					mocks={[
-						mockEventDefinitionsReq([
-							data.mockEventDefinition(0, {
-								__typename: 'EventDefinition',
-								...event
-							})
-						])
-					]}
-				>
-					<EventList groupId='23' {...otherProps} />
-				</MockedProvider>
-			</Route>
+					path={`${Routes.SETTINGS_DEFINITIONS_EVENTS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

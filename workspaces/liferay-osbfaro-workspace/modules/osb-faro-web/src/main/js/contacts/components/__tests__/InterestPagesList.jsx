@@ -1,7 +1,7 @@
 import InterestPagesList from '../InterestPagesList';
 import React from 'react';
 import {render, waitFor} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -14,9 +14,9 @@ jest.unmock('react-dom');
 describe('InterestPagesList', () => {
 	it('should render', async () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<InterestPagesList dataSourceParams={{active: true}} />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitFor(() => {});

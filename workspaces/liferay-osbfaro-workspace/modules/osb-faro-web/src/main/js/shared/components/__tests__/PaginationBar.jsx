@@ -1,12 +1,12 @@
 import PaginationBar from '../PaginationBar';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<PaginationBar
 			href=''
 			page={3}
@@ -14,7 +14,7 @@ const DefaultComponent = props => (
 			totalItems={100}
 			{...props}
 		/>
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('PaginationBar', () => {

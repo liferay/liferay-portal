@@ -24,6 +24,11 @@ jest.mock('uuid', () => ({
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useBlocker: () => ({state: 'unblocked'}),
+}));
+
 describe('SegmentEditor', () => {
 	afterEach(cleanup);
 

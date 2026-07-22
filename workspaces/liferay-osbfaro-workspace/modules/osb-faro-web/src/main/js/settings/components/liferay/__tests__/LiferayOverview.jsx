@@ -3,7 +3,7 @@ import LiferayOverview from '../LiferayOverview';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {DataSource} from 'shared/util/records';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -36,11 +36,16 @@ const WrappedComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/test']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id'>
-				<MockedProvider>
-					<LiferayOverview {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider>
+							<LiferayOverview {...defaultProps} {...props} />
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-source/:id/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

@@ -1,7 +1,7 @@
 import Breadcrumbs from '../Breadcrumbs';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 const ITEMS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven'];
 
@@ -16,9 +16,9 @@ const defaultProps = {
 };
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<Breadcrumbs {...defaultProps} {...props} />
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('Breadcrumbs', () => {

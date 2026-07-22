@@ -295,6 +295,7 @@ exports[`BaseDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       test data source
@@ -331,6 +332,7 @@ exports[`BaseDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       test data source
@@ -367,6 +369,7 @@ exports[`BaseDetails should render 1`] = `
                   >
                     <a
                       class="text-truncate"
+                      data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
                       test data source

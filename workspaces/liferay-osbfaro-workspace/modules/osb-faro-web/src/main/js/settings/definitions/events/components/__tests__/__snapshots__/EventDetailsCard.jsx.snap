@@ -138,6 +138,7 @@ exports[`EventDetailsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/definitions/event-attributes/0"
                       >
                         name-0
@@ -207,6 +208,7 @@ exports[`EventDetailsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/definitions/event-attributes/1"
                       >
                         name-1
@@ -276,6 +278,7 @@ exports[`EventDetailsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/definitions/event-attributes/2"
                       >
                         name-2
@@ -345,6 +348,7 @@ exports[`EventDetailsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/definitions/event-attributes/3"
                       >
                         name-3
@@ -414,6 +418,7 @@ exports[`EventDetailsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/definitions/event-attributes/4"
                       >
                         name-4

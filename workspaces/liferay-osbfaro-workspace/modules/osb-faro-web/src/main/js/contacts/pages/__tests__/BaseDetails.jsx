@@ -4,13 +4,13 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<Provider store={mockStore()}>
 			<BaseDetails
 				dataSourceFn={() => Promise.resolve(data.mockAccountDetails())}
@@ -19,7 +19,7 @@ const DefaultComponent = props => (
 				{...props}
 			/>
 		</Provider>
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('BaseDetails', () => {

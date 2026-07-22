@@ -3,10 +3,9 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen} from '@testing-library/react';
-import {createMemoryHistory} from 'history';
 import {mockChannelContext} from 'test/mock-channel-context';
+import {MemoryRouter, useNavigate} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import {Router, useHistory} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -44,25 +43,19 @@ jest.mock('shared/util/breadcrumbs', () => ({
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: jest.fn(),
+	useNavigate: jest.fn(),
 	useParams: () => ({
 		channelId: '123',
 		groupId: '23',
 	}),
 }));
 
-const mockedUseHistory = useHistory as jest.Mock;
+const mockedUseNavigate = useNavigate as jest.Mock;
 const mockedUseRequest = useRequest as jest.Mock;
 
 const mockHistoryPush = jest.fn();
 
-const buildHistory = (path = '/workspace/23/123/accounts') => {
-	const history = createMemoryHistory({initialEntries: [path]});
-
-	history.push = mockHistoryPush;
-
-	return history;
-};
+const buildInitialEntries = (path = '/workspace/23/123/accounts') => [path];
 
 const store = mockStore();
 
@@ -130,16 +123,17 @@ const useRequestImpl =
 		return {data: accountMetricsMock};
 	};
 
-const renderList = (
-	{queryString = ''}: {queryString?: string} = {},
-	history = buildHistory(`/workspace/23/123/accounts${queryString}`)
-) =>
+const renderList = ({queryString = ''}: {queryString?: string} = {}) =>
 	render(
 		<Provider store={store}>
 			<ChannelContext.Provider value={mockChannelContext() as any}>
-				<Router history={history}>
+				<MemoryRouter
+					initialEntries={buildInitialEntries(
+						`/workspace/23/123/accounts${queryString}`
+					)}
+				>
 					<List channelId="123" groupId="23" />
-				</Router>
+				</MemoryRouter>
 			</ChannelContext.Provider>
 		</Provider>
 	);
@@ -149,7 +143,7 @@ describe('List', () => {
 		jest.clearAllMocks();
 		lastFilters = undefined;
 
-		mockedUseHistory.mockReturnValue({push: mockHistoryPush});
+		mockedUseNavigate.mockReturnValue(mockHistoryPush);
 		mockedUseRequest.mockImplementation(useRequestImpl());
 	});
 

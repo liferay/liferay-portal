@@ -5,12 +5,13 @@ import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
+	useBlocker: () => ({state: 'unblocked'}),
 	useParams: () => ({
 		groupId: '23'
 	})
@@ -23,9 +24,9 @@ const defaultProps = {
 const DefaultComponent = props => (
 	<ApolloProvider client={client}>
 		<Provider store={mockStore()}>
-			<StaticRouter>
+			<MemoryRouter>
 				<CreateItemSimilarity {...defaultProps} {...props} />
-			</StaticRouter>
+			</MemoryRouter>
 		</Provider>
 	</ApolloProvider>
 );

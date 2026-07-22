@@ -1,7 +1,7 @@
 import configureStore from 'shared/store/store-dev';
 import Interests from '../Interests';
 import React from 'react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -17,14 +17,19 @@ const DefaultComponent = ({
 }) => (
 	<Provider store={configureStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/sites/interests']}>
-			<Route path={Routes.SITES_INTERESTS}>
-				<MockedProvider mocks={mocks}>
-					<Interests
-						router={{params: {groupId: '23'}, query: {}}}
-						{...props}
-					/>
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider mocks={mocks}>
+							<Interests
+								router={{params: {groupId: '23'}, query: {}}}
+								{...props}
+							/>
+						</MockedProvider>
+					}
+					path={`${Routes.SITES_INTERESTS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

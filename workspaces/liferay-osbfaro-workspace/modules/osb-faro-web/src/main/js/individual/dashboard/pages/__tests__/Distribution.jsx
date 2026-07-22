@@ -6,7 +6,7 @@ import {cleanup, render} from '@testing-library/react';
 import {IndividualsDistribution} from '../Distribution';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 import {User} from 'shared/util/records';
 
 jest.unmock('react-dom');
@@ -27,9 +27,9 @@ const defaultProps = {
 
 const WrappedComponent = () => (
 	<Provider store={mockStore()}>
-		<StaticRouter>
+		<MemoryRouter>
 			<IndividualsDistribution {...defaultProps} />
-		</StaticRouter>
+		</MemoryRouter>
 	</Provider>
 );
 

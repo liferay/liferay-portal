@@ -1,14 +1,14 @@
 import IndividualLinkCell from '../IndividualLink';
 import React from 'react';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<IndividualLinkCell groupId='123' {...props} />
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 const tableRow = document.createElement('tr');

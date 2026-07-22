@@ -1,7 +1,7 @@
 import CheckValidChannel from '../CheckValidChannel';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -28,13 +28,13 @@ describe('CheckValidChannel', () => {
 		const WrappedComponent = CheckValidChannel(wrappedComponentText);
 
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<WrappedComponent
 					channelId='123'
 					channels={[{id: '456'}]}
 					location={{pathname: 'test'}}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.textContent).toBe(

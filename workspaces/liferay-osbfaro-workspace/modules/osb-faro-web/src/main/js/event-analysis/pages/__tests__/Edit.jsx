@@ -9,7 +9,7 @@ import {DISPLAY_NAME} from 'shared/util/pagination';
 import {DndProvider} from 'react-dnd';
 import {EventTypes} from 'event-analysis/utils/types';
 import {HTML5Backend} from 'react-dnd-html5-backend';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	mockEventAnalysisReq,
@@ -80,11 +80,16 @@ const WrappedComponent = () => (
 				<MemoryRouter
 					initialEntries={['/workspace/123/456/event-analysis/1']}
 				>
-					<Route path={Routes.EVENT_ANALYSIS_EDIT}>
-						<DndProvider backend={HTML5Backend}>
-							<EventAnalysisEdit />
-						</DndProvider>
-					</Route>
+					<RouterRoutes>
+						<Route
+							element={
+								<DndProvider backend={HTML5Backend}>
+									<EventAnalysisEdit />
+								</DndProvider>
+							}
+							path={`${Routes.EVENT_ANALYSIS_EDIT}/*`}
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</MockedProvider>
 		</ApolloProvider>

@@ -9,7 +9,7 @@ import {cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {DISPLAY_NAME} from 'shared/util/pagination';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	mockEventDefinitionsReq,
@@ -26,6 +26,7 @@ jest.unmock('react-dom');
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
+	useBlocker: () => ({state: 'unblocked'}),
 	useParams: () => ({
 		channelId: '456',
 		groupId: '123'
@@ -63,13 +64,18 @@ const WrappedComponent = () => (
 						'/workspace/123/456/event-analysis/create'
 					]}
 				>
-					<Route path={Routes.EVENT_ANALYSIS_CREATE}>
-						<DataSourcesProvider groupId='123'>
-							<DndProvider backend={HTML5Backend}>
-								<EventAnalysisCreate />
-							</DndProvider>
-						</DataSourcesProvider>
-					</Route>
+					<RouterRoutes>
+						<Route
+							element={
+								<DataSourcesProvider groupId='123'>
+									<DndProvider backend={HTML5Backend}>
+										<EventAnalysisCreate />
+									</DndProvider>
+								</DataSourcesProvider>
+							}
+							path={`${Routes.EVENT_ANALYSIS_CREATE}/*`}
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</MockedProvider>
 		</ApolloProvider>

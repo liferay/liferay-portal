@@ -354,6 +354,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/0"
                       >
                         Recommendation Job Name 0
@@ -419,6 +420,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/1"
                       >
                         Recommendation Job Name 1
@@ -484,6 +486,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/2"
                       >
                         Recommendation Job Name 2
@@ -549,6 +552,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/3"
                       >
                         Recommendation Job Name 3
@@ -614,6 +618,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/4"
                       >
                         Recommendation Job Name 4
@@ -679,6 +684,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/5"
                       >
                         Recommendation Job Name 5
@@ -744,6 +750,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/6"
                       >
                         Recommendation Job Name 6
@@ -809,6 +816,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/7"
                       >
                         Recommendation Job Name 7
@@ -874,6 +882,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/8"
                       >
                         Recommendation Job Name 8
@@ -939,6 +948,7 @@ exports[`RecommendationList should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/settings/recommendations/9"
                       >
                         Recommendation Job Name 9

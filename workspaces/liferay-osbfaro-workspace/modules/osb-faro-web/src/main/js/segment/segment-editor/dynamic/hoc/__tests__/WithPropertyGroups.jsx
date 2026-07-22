@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import React from 'react';
 import withPropertyGroups from '../WithPropertyGroups';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -120,9 +120,9 @@ describe('WithPropertyGroups', () => {
 		const WrappedComponent = withPropertyGroups(TestComponent);
 
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<WrappedComponent channelId='123' groupId='123' type='BATCH' />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		jest.runAllTimers();

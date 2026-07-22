@@ -8,9 +8,8 @@ jest.unmock('react-dom');
 const useHistoryMock = jest.fn();
 const useWizardPageMock = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	useHistory: () => useHistoryMock(),
+jest.mock('shared/hooks/useHistoryAdapter', () => ({
+	useHistoryAdapter: () => useHistoryMock(),
 }));
 
 jest.mock('settings/components/base-page/WizardPageContext', () => ({

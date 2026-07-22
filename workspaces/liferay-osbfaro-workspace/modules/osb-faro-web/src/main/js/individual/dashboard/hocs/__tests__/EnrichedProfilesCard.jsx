@@ -11,7 +11,7 @@ import {
 	mockLiferayDataSource,
 	mockSalesforceDataSource
 } from 'test/data';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -26,9 +26,9 @@ jest.mock('react-router-dom', () => ({
 ReactDOM.createPortal = jest.fn();
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<EnrichedProfilesCard {...props} />
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('EnrichedProfilesCard', () => {

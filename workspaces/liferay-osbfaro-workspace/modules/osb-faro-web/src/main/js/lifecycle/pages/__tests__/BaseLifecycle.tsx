@@ -5,10 +5,9 @@ import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
-import {createMemoryHistory} from 'history';
+import {MemoryRouter, useLocation} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
-import {Router} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
@@ -136,17 +135,19 @@ const useRequestImpl =
 
 const store = mockStore();
 
-const renderPage = (
-	history = createMemoryHistory({
-		initialEntries: ['/workspace/23/123/lifecycles'],
-	})
-) =>
+const LocationProbe = () => (
+	<div data-testid="location">{useLocation().pathname}</div>
+);
+
+const renderPage = (initialEntries = ['/workspace/23/123/lifecycles']) =>
 	render(
 		<Provider store={store}>
 			<ChannelContext.Provider value={mockChannelContext() as any}>
-				<Router history={history}>
+				<MemoryRouter initialEntries={initialEntries}>
 					<BaseLifecycle />
-				</Router>
+
+					<LocationProbe />
+				</MemoryRouter>
 			</ChannelContext.Provider>
 		</Provider>
 	);
@@ -363,17 +364,13 @@ describe('BaseLifecycle', () => {
 
 	describe('the Lifecycle Configuration action', () => {
 		it('navigates to the edit route when clicked by an admin', () => {
-			const history = createMemoryHistory({
-				initialEntries: ['/workspace/23/123/lifecycles'],
-			});
-
-			renderPage(history);
+			renderPage();
 
 			fireEvent.click(
 				screen.getByRole('button', {name: 'Lifecycle Configuration'})
 			);
 
-			expect(history.location.pathname).toBe(
+			expect(screen.getByTestId('location')).toHaveTextContent(
 				toRoute(Routes.LIFECYCLE_EDIT, {
 					channelId: '123',
 					groupId: '23',

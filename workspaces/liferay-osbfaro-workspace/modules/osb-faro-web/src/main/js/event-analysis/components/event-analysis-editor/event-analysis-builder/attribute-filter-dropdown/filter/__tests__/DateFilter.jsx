@@ -2,7 +2,7 @@ import DateFilter from '../DateFilter';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -13,19 +13,24 @@ jest.unmock('react-dom');
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>
-			<Route path='/workspace/:groupId/event-analysis'>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+							mocks={[mockPreferenceReq()]}
+						>
+							<DateFilter onSubmit={jest.fn()} {...props} />
+						</MockedProvider>
 					}
-					mocks={[mockPreferenceReq()]}
-				>
-					<DateFilter onSubmit={jest.fn()} {...props} />
-				</MockedProvider>
-			</Route>
+					path='/workspace/:groupId/event-analysis/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

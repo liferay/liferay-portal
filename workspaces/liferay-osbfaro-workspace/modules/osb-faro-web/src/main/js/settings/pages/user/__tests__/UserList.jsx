@@ -3,7 +3,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import UserList from '../UserList';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -22,18 +22,23 @@ const defaultProps = {
 const DefaultComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/settings/users']}>
-			<Route path={Routes.SETTINGS_USERS}>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							<UserList {...defaultProps} {...props} />
+						</MockedProvider>
 					}
-				>
-					<UserList {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+					path={`${Routes.SETTINGS_USERS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

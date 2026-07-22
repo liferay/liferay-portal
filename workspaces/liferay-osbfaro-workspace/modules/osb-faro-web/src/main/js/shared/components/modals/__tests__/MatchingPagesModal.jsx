@@ -5,7 +5,7 @@ import {MockedProvider} from '@apollo/client/testing';
 import {mockRecommendationPageAssetsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 import {waitForLoading} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -13,7 +13,7 @@ jest.unmock('react-dom');
 describe('MatchingPagesModal', () => {
 	it('should render', async () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<MockedProvider mocks={[mockRecommendationPageAssetsReq([])]}>
 					<Provider store={mockStore()}>
 						<MatchingPagesModal
@@ -26,7 +26,7 @@ describe('MatchingPagesModal', () => {
 						/>
 					</Provider>
 				</MockedProvider>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoading(container);

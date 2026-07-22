@@ -45,7 +45,8 @@ exports[`BasePage.Header NavBar renders NavBar 1`] = `
                 class="nav-item"
               >
                 <a
-                  class="nav-link"
+                  aria-current="page"
+                  class="nav-link active"
                   href="/workspace/123/contacts/accounts/321?rangeKey=30"
                 >
                   <span>
@@ -107,7 +108,8 @@ exports[`BasePage.Header NavBar renders NavBar w/o routeQueries 1`] = `
                 class="nav-item"
               >
                 <a
-                  class="nav-link"
+                  aria-current="page"
+                  class="nav-link active"
                   href="/workspace/123/contacts/accounts/321"
                 >
                   <span>
@@ -169,7 +171,8 @@ exports[`BasePage.Header NavBar renders NavBar with deprecated label 1`] = `
                 class="nav-item"
               >
                 <a
-                  class="nav-link"
+                  aria-current="page"
+                  class="nav-link active"
                   href="/workspace/123/contacts/accounts/321?rangeKey=30"
                 >
                   <span>

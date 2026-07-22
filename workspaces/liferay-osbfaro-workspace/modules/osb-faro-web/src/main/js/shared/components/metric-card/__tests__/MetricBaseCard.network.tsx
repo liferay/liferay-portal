@@ -9,7 +9,7 @@ import {
 	SessionsPerVisitorMetric,
 } from '../metrics';
 import {getSiteMetricsChartData} from 'shared/components/metric-card/util';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render, waitFor} from '@testing-library/react';
@@ -181,23 +181,28 @@ const renderWithProviders = (
 						`/workspace/2000/456/sites?rangeKey=${RangeKeyTimeRanges.Last30Days}`,
 					]}
 				>
-					<Route path="/workspace/:groupId/:channelId/sites">
-						{visible && (
-							<MetricBaseCard
-								chartDataMapFn={getSiteMetricsChartData}
-								label="Visitors Behavior"
-								metrics={metrics}
-								queries={{
-									MetricQuery: SitesMetricQuery,
-									name: 'site',
-									TabsQuery: SitesTabsQuery,
-								}}
-								variables={() => ({
-									...sharedRequestVariables,
-								})}
-							/>
-						)}
-					</Route>
+					<RouterRoutes>
+						<Route
+							element={
+								visible && (
+									<MetricBaseCard
+										chartDataMapFn={getSiteMetricsChartData}
+										label="Visitors Behavior"
+										metrics={metrics}
+										queries={{
+											MetricQuery: SitesMetricQuery,
+											name: 'site',
+											TabsQuery: SitesTabsQuery,
+										}}
+										variables={() => ({
+											...sharedRequestVariables,
+										})}
+									/>
+								)
+							}
+							path="/workspace/:groupId/:channelId/sites/*"
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</BasePage.Context.Provider>
 		</MockedProvider>

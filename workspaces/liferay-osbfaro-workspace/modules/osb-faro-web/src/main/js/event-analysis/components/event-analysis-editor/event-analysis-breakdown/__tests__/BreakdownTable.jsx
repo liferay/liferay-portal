@@ -7,7 +7,7 @@ import {
 import {cleanup, render} from '@testing-library/react';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventAnalysisResultReq} from 'test/graphql-data';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 const initialAttributes = {
@@ -86,7 +86,7 @@ describe('BreakdownTable', () => {
 
 	it('render', async () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<AttributesContext.Provider value={initialAttributes}>
 					<MockedProvider
 						mocks={[
@@ -111,7 +111,7 @@ describe('BreakdownTable', () => {
 						/>
 					</MockedProvider>
 				</AttributesContext.Provider>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoadingToBeRemoved(container);
@@ -127,7 +127,7 @@ describe('BreakdownTable', () => {
 		const BreakdownWithProvider = withAttributesProvider(BreakdownTable);
 
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<MockedProvider
 					mocks={[
 						mockEventAnalysisResultReq(eventAnalysisResult, {
@@ -146,7 +146,7 @@ describe('BreakdownTable', () => {
 						type='TOTAL'
 					/>
 				</MockedProvider>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoadingToBeRemoved(container);
@@ -191,7 +191,7 @@ describe('BreakdownTable', () => {
 		};
 
 		const {container, getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<AttributesContext.Provider value={initialAttributes}>
 					<MockedProvider
 						mocks={[
@@ -216,7 +216,7 @@ describe('BreakdownTable', () => {
 						/>
 					</MockedProvider>
 				</AttributesContext.Provider>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoadingToBeRemoved(container);

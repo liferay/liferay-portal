@@ -3,7 +3,7 @@ import React from 'react';
 import RequestLog from '../RequestLog';
 import {cleanup, render} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -21,21 +21,26 @@ const WrappedComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-privacy/request-log']}
 		>
-			<Route path='/workspace/:groupId/settings/data-privacy/request-log'>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							<RequestLog
+								router={{params: {groupId: '23'}, query: {}}}
+								{...props}
+							/>
+						</MockedProvider>
 					}
-				>
-					<RequestLog
-						router={{params: {groupId: '23'}, query: {}}}
-						{...props}
-					/>
-				</MockedProvider>
-			</Route>
+					path='/workspace/:groupId/settings/data-privacy/request-log/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

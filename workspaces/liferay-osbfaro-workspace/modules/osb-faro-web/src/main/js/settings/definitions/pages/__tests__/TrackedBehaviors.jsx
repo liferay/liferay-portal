@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {cleanup, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {TrackedBehaviors} from '../TrackedBehaviors';
 
 jest.unmock('react-dom');
@@ -23,9 +23,9 @@ describe('TrackedBehaviorsList', () => {
 	it('should render', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<TrackedBehaviors groupId='23' />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 

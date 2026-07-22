@@ -1,7 +1,7 @@
 import ListComponent from '../ListComponent';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -10,9 +10,9 @@ describe('ListComponent', () => {
 
 	it('renders', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<ListComponent items={[]} total={0} />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container).toMatchSnapshot();

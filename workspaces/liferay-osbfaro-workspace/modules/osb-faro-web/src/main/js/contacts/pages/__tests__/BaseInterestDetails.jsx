@@ -5,7 +5,7 @@ import React from 'react';
 import {Account, Segment} from 'shared/util/records';
 import {ACCOUNTS, Routes, SEGMENTS} from 'shared/util/router';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -17,7 +17,7 @@ describe('BaseInterestDetails', () => {
 
 	it('should render', async () => {
 		const {container, getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<BaseInterestDetails
 					channelId='123'
 					entity={new Segment(data.mockSegment())}
@@ -30,7 +30,7 @@ describe('BaseInterestDetails', () => {
 					tabId='individuals'
 					type={SEGMENTS}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		jest.runAllTimers();
@@ -42,7 +42,7 @@ describe('BaseInterestDetails', () => {
 
 	it('should render an individuals list tab', () => {
 		const {getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<BaseInterestDetails
 					entity={new Account(data.mockAccount())}
 					groupId='23'
@@ -54,7 +54,7 @@ describe('BaseInterestDetails', () => {
 					tabId='individuals'
 					type={ACCOUNTS}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		jest.runAllTimers();
@@ -69,7 +69,7 @@ describe('BaseInterestDetails', () => {
 
 	it('should render an active pages list tab', () => {
 		const {getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<BaseInterestDetails
 					active='true'
 					entity={new Account(data.mockAccount())}
@@ -82,7 +82,7 @@ describe('BaseInterestDetails', () => {
 					tabId='pages'
 					type={ACCOUNTS}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		jest.runAllTimers();
@@ -97,7 +97,7 @@ describe('BaseInterestDetails', () => {
 
 	it('should render a pages list tab of inactive pages', () => {
 		const {getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<BaseInterestDetails
 					active='false'
 					entity={new Account(data.mockAccount())}
@@ -110,7 +110,7 @@ describe('BaseInterestDetails', () => {
 					tabId='pages'
 					type={ACCOUNTS}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		jest.runAllTimers();

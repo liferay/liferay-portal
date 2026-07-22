@@ -9,7 +9,7 @@ import {getISODate} from 'shared/util/date';
 import {mockGetDateNow} from 'test/mock-date';
 import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -26,11 +26,11 @@ const defaultProps = {
 };
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<Provider store={mockStore()}>
 			<AccessTokenList {...defaultProps} {...props} />
 		</Provider>
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('AccessTokenList', () => {

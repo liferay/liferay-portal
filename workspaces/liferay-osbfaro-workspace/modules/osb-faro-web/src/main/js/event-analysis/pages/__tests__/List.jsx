@@ -7,7 +7,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import {fireEvent, render} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {mockEventAnalysisListReq} from 'test/graphql-data';
@@ -63,9 +63,14 @@ const WrappedComponent = ({eventAnalyses}) => (
 				<MemoryRouter
 					initialEntries={['/workspace/123/456/event-analysis']}
 				>
-					<Route path={Routes.EVENT_ANALYSIS}>
-						<EventAnalysisList />
-					</Route>
+					<RouterRoutes>
+						<Route
+							element={
+								<EventAnalysisList />
+							}
+							path={`${Routes.EVENT_ANALYSIS}/*`}
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</MockedProvider>
 		</ApolloProvider>

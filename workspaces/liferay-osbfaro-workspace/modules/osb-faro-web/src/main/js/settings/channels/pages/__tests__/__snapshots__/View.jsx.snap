@@ -23,6 +23,7 @@ exports[`View Channel should render 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -299,6 +300,7 @@ exports[`View Channel should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/properties"
               >
                 Properties

@@ -25,6 +25,7 @@ exports[`Individuals Dashboard renders 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/123/456/sites"
               >
                 Channel 1
@@ -146,6 +147,10 @@ exports[`Individuals Dashboard renders 1`] = `
         </div>
       </div>
     </header>
+    <span
+      aria-hidden="true"
+      class="loading-root center loading-animation"
+    />
   </div>
 </div>
 `;

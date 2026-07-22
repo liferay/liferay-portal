@@ -2,7 +2,7 @@ import ClayButton from '@clayui/button';
 import Nav from '../Nav';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -19,9 +19,9 @@ const items = [
 ];
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<Nav children={items} {...props} />
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('Nav', () => {

@@ -2,7 +2,7 @@ import InterestDetails from '../InterestDetails';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockTimeRangeReq, mockTouchpointsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -58,26 +58,29 @@ describe('Individuals Dashboard Individuals Interest Details', () => {
 							'/workspace/23/321321/contacts/individuals/interests/test'
 						]}
 					>
-						<Route
-							path={Routes.CONTACTS_INDIVIDUALS_INTEREST_DETAILS}
-						>
-							<InterestDetails
-								router={{
-									params: {
-										channelId: '321321',
-										groupId: '23',
-										interestId: 'test'
-									},
-									query: {
-										delta: '2',
-										page: '1',
-										rangeEnd: null,
-										rangeKey: '30',
-										rangeStart: null
-									}
-								}}
+						<RouterRoutes>
+							<Route
+								element={
+									<InterestDetails
+										router={{
+											params: {
+												channelId: '321321',
+												groupId: '23',
+												interestId: 'test'
+											},
+											query: {
+												delta: '2',
+												page: '1',
+												rangeEnd: null,
+												rangeKey: '30',
+												rangeStart: null
+											}
+										}}
+									/>
+								}
+								path={`${Routes.CONTACTS_INDIVIDUALS_INTEREST_DETAILS}/*`}
 							/>
-						</Route>
+						</RouterRoutes>
 					</MemoryRouter>
 				</MockedProvider>
 			</Provider>

@@ -2,7 +2,7 @@ import * as data from 'test/data';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import View from '../View';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	mockRecommendationJobRunsReq,
@@ -26,25 +26,30 @@ const DefaultComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/123/settings/recommendations/321']}
 		>
-			<Route path={Routes.SETTINGS_RECOMMENDATION_MODEL_VIEW}>
-				<MockedProvider
-					mocks={[
-						mockRecommendationJobRunsReq([
-							data.mockRecommendationJobRun(0)
-						]),
-						mockRecommendationReq(
-							data.mockRecommendationJob('321', {
-								nextRunDate: new Date().getTime()
-							})
-						)
-					]}
-				>
-					<View
-						router={{params: {groupId: '123', jobId: '321'}}}
-						{...props}
-					/>
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							mocks={[
+								mockRecommendationJobRunsReq([
+									data.mockRecommendationJobRun(0)
+								]),
+								mockRecommendationReq(
+									data.mockRecommendationJob('321', {
+										nextRunDate: new Date().getTime()
+									})
+								)
+							]}
+						>
+							<View
+								router={{params: {groupId: '123', jobId: '321'}}}
+								{...props}
+							/>
+						</MockedProvider>
+					}
+					path={`${Routes.SETTINGS_RECOMMENDATION_MODEL_VIEW}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

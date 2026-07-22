@@ -3,7 +3,7 @@ import HeaderDefault from '../HeaderDefault';
 import React from 'react';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {INTERVAL_KEY_MAP} from 'shared/util/time';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -16,15 +16,20 @@ const DefaultComponent = ({
 	...props
 }) => (
 	<MemoryRouter>
-		<Route path='/'>
-			<MockedProvider addTypename={false} mocks={mocks}>
-				<HeaderDefault
-					label='Title'
-					onChangeInterval={onChangeInterval}
-					{...props}
-				/>
-			</MockedProvider>
-		</Route>
+		<RouterRoutes>
+			<Route
+				element={
+					<MockedProvider addTypename={false} mocks={mocks}>
+						<HeaderDefault
+							label='Title'
+							onChangeInterval={onChangeInterval}
+							{...props}
+						/>
+					</MockedProvider>
+				}
+				path='/*'
+			/>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 

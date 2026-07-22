@@ -7,7 +7,7 @@ import {
 	getMapResultToProps,
 	mapPropsToOptions
 } from 'segment/segment-editor/dynamic/mappers/dxp-entity-bag-mapper';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {noop, range} from 'lodash';
 import {Provider} from 'react-redux';
@@ -69,11 +69,16 @@ const DefaultComponent = ({
 }) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/settings/data-source']}>
-			<Route path={Routes.SETTINGS_DATA_SOURCE_LIST}>
-				<MockedProvider addTypename={false} mocks={mocks}>
-					<SearchableTableModalGraphql {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false} mocks={mocks}>
+							<SearchableTableModalGraphql {...defaultProps} {...props} />
+						</MockedProvider>
+					}
+					path={`${Routes.SETTINGS_DATA_SOURCE_LIST}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

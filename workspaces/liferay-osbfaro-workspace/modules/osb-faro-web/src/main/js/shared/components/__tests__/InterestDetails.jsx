@@ -2,8 +2,7 @@ import client from 'shared/apollo/client';
 import InterestDetails from '../InterestDetails';
 import React from 'react';
 import {ApolloProvider} from '@apollo/client';
-import {createMemoryHistory} from 'history';
-import {MemoryRouter, Route, Router} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	mockPreferenceReq,
@@ -57,33 +56,30 @@ const defaultProps = {
 	}
 };
 
-const DefaultComponent = () => {
-	const history = createMemoryHistory();
-
-	return (
-		<ApolloProvider client={client}>
-			<MockedProvider
-				mocks={[
-					mockTimeRangeReq(),
-					mockPreferenceReq(),
-					mockTouchpointsReq(mockItems, {size: 2})
+const DefaultComponent = () => (
+	<ApolloProvider client={client}>
+		<MockedProvider
+			mocks={[
+				mockTimeRangeReq(),
+				mockPreferenceReq(),
+				mockTouchpointsReq(mockItems, {size: 2})
+			]}
+		>
+			<MemoryRouter
+				initialEntries={[
+					'/workspace/23/321321/contacts/accounts/123123/interests/test'
 				]}
 			>
-				<Router history={history}>
-					<MemoryRouter
-						initialEntries={[
-							'/workspace/23/321321/contacts/accounts/123123/interests/test'
-						]}
-					>
-						<Route path={Routes.CONTACTS_ACCOUNT_INTEREST_DETAILS}>
-							<InterestDetails {...defaultProps} />
-						</Route>
-					</MemoryRouter>
-				</Router>
-			</MockedProvider>
-		</ApolloProvider>
-	);
-};
+				<RouterRoutes>
+					<Route
+						element={<InterestDetails {...defaultProps} />}
+						path={Routes.CONTACTS_ACCOUNT_INTEREST_DETAILS}
+					/>
+				</RouterRoutes>
+			</MemoryRouter>
+		</MockedProvider>
+	</ApolloProvider>
+);
 
 describe('InterestDetails', () => {
 	it('renders', async () => {

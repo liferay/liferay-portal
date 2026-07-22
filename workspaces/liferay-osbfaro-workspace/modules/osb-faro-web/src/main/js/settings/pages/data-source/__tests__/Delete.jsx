@@ -6,7 +6,7 @@ import {cleanup, render} from '@testing-library/react';
 import {DataSource} from 'shared/util/records';
 import {Delete as DataSourceDelete} from '../Delete';
 import {fromJS} from 'immutable';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
@@ -44,9 +44,14 @@ const Wrapper = ({children}) => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/26/delete']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id/delete'>
-				<MockedProvider addTypename={false}>{children}</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false}>{children}</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-source/:id/delete/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

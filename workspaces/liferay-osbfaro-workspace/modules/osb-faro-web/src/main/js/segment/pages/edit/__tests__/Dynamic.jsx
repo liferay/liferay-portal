@@ -4,7 +4,7 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {List} from 'immutable';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -23,7 +23,7 @@ jest.mock('segment/segment-editor/dynamic', () => ({
 
 const renderEdit = ({location = '/', segment} = {}) =>
 	render(
-		<StaticRouter location={location}>
+		<MemoryRouter initialEntries={[location]}>
 			<Provider store={mockStore()}>
 				<DynamicSegmentEdit
 					groupId='23'
@@ -32,7 +32,7 @@ const renderEdit = ({location = '/', segment} = {}) =>
 					segment={segment}
 				/>
 			</Provider>
-		</StaticRouter>
+		</MemoryRouter>
 	);
 
 describe('DynamicSegmentEdit', () => {

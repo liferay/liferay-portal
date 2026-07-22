@@ -1,7 +1,7 @@
 import ProgressTimeline from '../ProgressTimeline';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -10,7 +10,7 @@ describe('ProgressTimeline', () => {
 
 	it('should render', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<ProgressTimeline
 					activeIndex={1}
 					items={[
@@ -22,7 +22,7 @@ describe('ProgressTimeline', () => {
 						{title: 'Step 4'}
 					]}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container).toMatchSnapshot();

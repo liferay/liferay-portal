@@ -2,7 +2,7 @@ import FilterOptions from '../index';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -17,29 +17,34 @@ const DefaultComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/123/456/event-analysis/789']}
 		>
-			<Route path='/workspace/:groupId/:channelId/event-analysis/:id'>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							<WrappedFilterOptions
+								attribute={{
+									dataType: 'STRING',
+									displayName: 'Filed Ticket',
+									id: '4',
+									name: 'filedTicket'
+								}}
+								onActiveChange={jest.fn()}
+								onAttributeChange={jest.fn()}
+								onEditClick={jest.fn()}
+								{...props}
+							/>
+						</MockedProvider>
 					}
-				>
-					<WrappedFilterOptions
-						attribute={{
-							dataType: 'STRING',
-							displayName: 'Filed Ticket',
-							id: '4',
-							name: 'filedTicket'
-						}}
-						onActiveChange={jest.fn()}
-						onAttributeChange={jest.fn()}
-						onEditClick={jest.fn()}
-						{...props}
-					/>
-				</MockedProvider>
-			</Route>
+					path='/workspace/:groupId/:channelId/event-analysis/:id/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

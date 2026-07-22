@@ -10,7 +10,7 @@ import {MemoryRouter} from 'react-router';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventAttributeDefinitionWithRecentValuesReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
-import {Route} from 'react-router-dom';
+import {Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Routes} from 'shared/util/router';
 import {waitForLoading} from 'test/helpers';
 
@@ -22,33 +22,38 @@ const RenderWithRouter = ({children, recentValue}) => (
 			'/workspace/23/settings/definitions/event-attributes/0'
 		]}
 	>
-		<Route path={Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_VIEW}>
-			<ApolloProvider client={client}>
-				<Provider store={mockStore()}>
-					<MockedProvider
-						mocks={[
-							mockEventAttributeDefinitionWithRecentValuesReq(
-								data.mockEventAttributeDefinition(0, {
-									recentValues: [
-										{
-											__typename: 'EventAttributeValue',
-											lastSeenDate: getISODate(
-												data.getTimestamp()
-											),
-											value: 'RecentValue',
-											...recentValue
-										}
-									]
-								}),
-								{id: '0'}
-							)
-						]}
-					>
-						{children}
-					</MockedProvider>
-				</Provider>
-			</ApolloProvider>
-		</Route>
+		<RouterRoutes>
+			<Route
+				element={
+					<ApolloProvider client={client}>
+						<Provider store={mockStore()}>
+							<MockedProvider
+								mocks={[
+									mockEventAttributeDefinitionWithRecentValuesReq(
+										data.mockEventAttributeDefinition(0, {
+											recentValues: [
+												{
+													__typename: 'EventAttributeValue',
+													lastSeenDate: getISODate(
+														data.getTimestamp()
+													),
+													value: 'RecentValue',
+													...recentValue
+												}
+											]
+										}),
+										{id: '0'}
+									)
+								]}
+							>
+								{children}
+							</MockedProvider>
+						</Provider>
+					</ApolloProvider>
+				}
+				path={`${Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_VIEW}/*`}
+			/>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 

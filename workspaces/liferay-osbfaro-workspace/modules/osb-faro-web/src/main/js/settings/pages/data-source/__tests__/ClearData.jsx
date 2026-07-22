@@ -3,7 +3,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {ClearData} from '../ClearData';
 import {DataSource} from 'shared/util/records';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -27,11 +27,16 @@ const WrappedComponent = props => (
 				'/workspace/23/settings/data-source/26/clear-data'
 			]}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id/clear-data'>
-				<MockedProvider>
-					<ClearData {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider>
+							<ClearData {...defaultProps} {...props} />
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-source/:id/clear-data/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

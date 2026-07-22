@@ -14,7 +14,7 @@ import {
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {StaticRouter} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -47,7 +47,7 @@ const WrappedComponent = ({
 }) => (
 	<Provider store={mockStore()}>
 		<ApolloProvider client={client}>
-			<StaticRouter>
+			<MemoryRouter>
 				<MockedProvider
 					mocks={[
 						mockTimeRangeReq(),
@@ -68,7 +68,7 @@ const WrappedComponent = ({
 						emptyStateText={emptyStateText}
 					/>
 				</MockedProvider>
-			</StaticRouter>
+			</MemoryRouter>
 		</ApolloProvider>
 	</Provider>
 );

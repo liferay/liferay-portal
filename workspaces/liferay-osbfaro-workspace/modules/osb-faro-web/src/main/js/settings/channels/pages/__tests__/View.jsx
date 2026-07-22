@@ -13,7 +13,7 @@ import {
 	screen
 } from '@testing-library/react';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {User} from 'shared/util/records';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -38,9 +38,9 @@ const DefaultComponent = props => {
 		<Provider store={mockStore()}>
 			<ModalRenderer />
 
-			<StaticRouter>
+			<MemoryRouter>
 				<View {...defaultProps} {...props} />
-			</StaticRouter>
+			</MemoryRouter>
 		</Provider>
 	);
 };

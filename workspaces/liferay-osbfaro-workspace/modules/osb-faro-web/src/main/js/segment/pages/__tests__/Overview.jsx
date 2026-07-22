@@ -7,7 +7,7 @@ import {ApolloProvider} from '@apollo/client';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {Segment} from 'shared/util/records';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -48,9 +48,9 @@ describe('SegmentOverview', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<ApolloProvider client={client}>
-					<StaticRouter>
+					<MemoryRouter>
 						<Overview groupId='23' segment={segment} />
-					</StaticRouter>
+					</MemoryRouter>
 				</ApolloProvider>
 			</Provider>
 		);

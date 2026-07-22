@@ -3,10 +3,14 @@ import ProfileRoutes from '../ProfileRoutes';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen, waitFor, within} from '@testing-library/react';
-import {createMemoryHistory} from 'history';
+import {
+	MemoryRouter,
+	Route,
+	Routes as RouterRoutes,
+	useLocation,
+} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
-import {Router} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -60,17 +64,26 @@ const ROUTE_PARAMS = {channelId: '123', groupId: '23', id: 'acc-1'};
 
 const store = mockStore();
 
+const LocationProbe = () => (
+	<div data-testid="location">{useLocation().pathname}</div>
+);
+
 const renderProfileRoutes = (
-	history = createMemoryHistory({
-		initialEntries: ['/workspace/23/123/accounts/acc-1'],
-	})
+	initialEntries = [toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS)]
 ) =>
 	render(
 		<Provider store={store}>
 			<ChannelContext.Provider value={mockChannelContext() as any}>
-				<Router history={history}>
-					<ProfileRoutes />
-				</Router>
+				<MemoryRouter initialEntries={initialEntries}>
+					<RouterRoutes>
+						<Route
+							element={<ProfileRoutes />}
+							path={`${Routes.CONTACTS_ACCOUNT}/*`}
+						/>
+					</RouterRoutes>
+
+					<LocationProbe />
+				</MemoryRouter>
 			</ChannelContext.Provider>
 		</Provider>
 	);
@@ -182,13 +195,7 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes(
-			createMemoryHistory({
-				initialEntries: [
-					toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
-				],
-			})
-		);
+		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)]);
 
 		expect(
 			await screen.findByTestId('account-overview')
@@ -202,13 +209,7 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes(
-			createMemoryHistory({
-				initialEntries: [
-					toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
-				],
-			})
-		);
+		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)]);
 
 		expect(await screen.findByTestId('account-overview')).toHaveTextContent(
 			'Acme Corp'
@@ -222,13 +223,7 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes(
-			createMemoryHistory({
-				initialEntries: [
-					toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS),
-				],
-			})
-		);
+		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS)]);
 
 		expect(
 			await screen.findByTestId('account-activities')
@@ -242,14 +237,10 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		const history = createMemoryHistory({
-			initialEntries: [toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS)],
-		});
-
-		renderProfileRoutes(history);
+		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS)]);
 
 		await waitFor(() =>
-			expect(history.location.pathname).toBe(
+			expect(screen.getByTestId('location')).toHaveTextContent(
 				toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)
 			)
 		);

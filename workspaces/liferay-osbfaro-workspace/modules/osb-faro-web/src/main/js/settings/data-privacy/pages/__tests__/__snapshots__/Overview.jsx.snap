@@ -22,6 +22,7 @@ exports[`Data Privacy Overview should render 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg

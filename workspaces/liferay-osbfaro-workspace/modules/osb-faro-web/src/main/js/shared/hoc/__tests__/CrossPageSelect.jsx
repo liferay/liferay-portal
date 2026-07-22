@@ -10,7 +10,7 @@ import React from 'react';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {inputSearchText, selectAllAndToggle} from 'test/helpers';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {OrderedMap} from 'immutable';
 import {Provider} from 'react-redux';
 import {range} from 'lodash';
@@ -48,11 +48,16 @@ const DefaultComponent = props => (
 				'/workspace/23/settings/definitions/events/custom'
 			]}
 		>
-			<Route path={Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM}>
-				<SelectionProvider>
-					<CrossPageSelect {...defaultProps} {...props} />
-				</SelectionProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<SelectionProvider>
+							<CrossPageSelect {...defaultProps} {...props} />
+						</SelectionProvider>
+					}
+					path={`${Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

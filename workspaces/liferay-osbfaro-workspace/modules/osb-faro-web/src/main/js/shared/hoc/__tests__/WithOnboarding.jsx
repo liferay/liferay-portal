@@ -5,7 +5,7 @@ import React from 'react';
 import withOnboarding from '../WithOnboarding';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockDataSourcesReq} from 'test/graphql-data';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockMemberUser} from 'test/data';
@@ -33,16 +33,21 @@ const Wrapper = ({
 }) => (
 	<Provider store={store}>
 		<MemoryRouter initialEntries={['/']}>
-			<Route path='/'>
-				<OnboardingContext.Provider value={onboardingContext}>
-					<MockedProvider
-						cache={new InMemoryCache({addTypename: false})}
-						mocks={mocks}
-					>
-						{children}
-					</MockedProvider>
-				</OnboardingContext.Provider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<OnboardingContext.Provider value={onboardingContext}>
+							<MockedProvider
+								cache={new InMemoryCache({addTypename: false})}
+								mocks={mocks}
+							>
+								{children}
+							</MockedProvider>
+						</OnboardingContext.Provider>
+					}
+					path='/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

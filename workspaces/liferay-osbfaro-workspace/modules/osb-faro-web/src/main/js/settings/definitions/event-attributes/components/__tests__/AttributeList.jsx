@@ -3,7 +3,7 @@ import AttributeList from '../AttributeList';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {AttributeTypes} from 'event-analysis/utils/types';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventAttributeDefinitionsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -38,11 +38,16 @@ const DefaultComponent = ({
 				`/workspace/${groupId}/456/settings/definitions/event-attributes/custom`
 			]}
 		>
-			<Route path='/workspace/:groupId/:channelId/settings/definitions/event-attributes/custom'>
-				<MockedProvider addTypename={false} mocks={mocks}>
-					<AttributeList />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false} mocks={mocks}>
+							<AttributeList />
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/:channelId/settings/definitions/event-attributes/custom/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

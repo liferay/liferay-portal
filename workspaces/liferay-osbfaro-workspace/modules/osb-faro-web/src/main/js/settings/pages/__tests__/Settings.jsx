@@ -3,7 +3,7 @@ import * as data from 'test/data';
 import mockStore, {mockStoreData, mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
 import {fromJS} from 'immutable';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 import {Routes, toRoute} from 'shared/util/router';
@@ -28,9 +28,9 @@ const renderSettingsAt = store =>
 	render(
 		<Provider store={store}>
 			<MemoryRouter initialEntries={[usagePath]}>
-				<Route path={Routes.SETTINGS}>
-					<Settings />
-				</Route>
+				<RouterRoutes>
+					<Route element={<Settings />} path={`${Routes.SETTINGS}/*`} />
+				</RouterRoutes>
 			</MemoryRouter>
 		</Provider>
 	);

@@ -4,7 +4,7 @@ import React from 'react';
 import {DataTransformation, processFieldMappings} from '../DataTransformation';
 import {fromJS} from 'immutable';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockFieldMapping, mockMapping} from 'test/data';
 import {Provider} from 'react-redux';
@@ -24,18 +24,23 @@ const WrappedComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/123']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id'>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							<DataTransformation {...defaultProps} {...props} />
+						</MockedProvider>
 					}
-				>
-					<DataTransformation {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+					path='/workspace/:groupId/settings/data-source/:id/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

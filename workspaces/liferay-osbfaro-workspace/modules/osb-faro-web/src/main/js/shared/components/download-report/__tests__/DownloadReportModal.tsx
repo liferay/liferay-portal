@@ -10,7 +10,6 @@ import {
 	formattedContainers,
 	ReportContainer,
 } from '../DownloadPDFReport';
-import {createMemoryHistory} from 'history';
 import {CSVType, useDownloadCSV} from '../utils';
 import {DownloadReportButton} from '../DownloadReportButton';
 import {DownloadReportModal, ReportType} from '../DownloadReportModal';
@@ -19,7 +18,7 @@ import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
-import {Router} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 import {sub} from 'shared/util/lang';
 import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -130,13 +129,12 @@ const WrapperComponent: React.FC<IWrapperComponent> = ({
 }) => {
 	const [visible, setVisible] = useState(false);
 	const {observer} = useModal({onClose: () => setVisible(false)});
-	const history = createMemoryHistory();
 
 	return (
 		<>
 			{visible && (
 				<ApolloProvider client={client}>
-					<Router history={history}>
+					<MemoryRouter>
 						<MockedProvider
 							mocks={[mockTimeRangeReq(), mockPreferenceReq()]}
 						>
@@ -153,7 +151,7 @@ const WrapperComponent: React.FC<IWrapperComponent> = ({
 								</DownloadReportModal>
 							</Provider>
 						</MockedProvider>
-					</Router>
+					</MemoryRouter>
 				</ApolloProvider>
 			)}
 

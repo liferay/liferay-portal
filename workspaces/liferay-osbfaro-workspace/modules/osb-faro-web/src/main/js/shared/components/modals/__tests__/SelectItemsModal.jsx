@@ -2,7 +2,7 @@ import React from 'react';
 import SelectItemsModal, {ItemComponent} from '../SelectItemsModal';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import {createOrderIOMap} from 'shared/util/pagination';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {noop} from 'lodash';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -22,14 +22,19 @@ const SELECTED_ITEMS_MOCK = [
 
 const DefaultComponent = props => (
 	<MemoryRouter initialEntries={['/workspace/23/settings/data-source']}>
-		<Route path={Routes.SETTINGS_DATA_SOURCE_LIST}>
-			<SelectItemsModal
-				dataSourceFn={() => Promise.resolve()}
-				groupId='23'
-				initialOrderIOMap={createOrderIOMap('name')}
-				{...props}
+		<RouterRoutes>
+			<Route
+				element={
+					<SelectItemsModal
+						dataSourceFn={() => Promise.resolve()}
+						groupId='23'
+						initialOrderIOMap={createOrderIOMap('name')}
+						{...props}
+					/>
+				}
+				path={`${Routes.SETTINGS_DATA_SOURCE_LIST}/*`}
 			/>
-		</Route>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 

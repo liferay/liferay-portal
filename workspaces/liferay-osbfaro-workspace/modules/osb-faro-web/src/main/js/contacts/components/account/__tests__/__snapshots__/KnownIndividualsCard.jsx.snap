@@ -50,6 +50,7 @@ exports[`KnownIndividualsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/123/contacts/individuals/known-individuals/0"
                       >
                         Foo Bar
@@ -81,6 +82,7 @@ exports[`KnownIndividualsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/123/contacts/individuals/known-individuals/1"
                       >
                         Foo Bar
@@ -112,6 +114,7 @@ exports[`KnownIndividualsCard should render 1`] = `
                     >
                       <a
                         class="text-truncate"
+                        data-discover="true"
                         href="/workspace/23/123/contacts/individuals/known-individuals/2"
                       >
                         Foo Bar

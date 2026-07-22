@@ -8,7 +8,7 @@ import {ApolloProvider} from '@apollo/client';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render} from '@testing-library/react';
 import {Dashboard} from '../index';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {Provider} from 'react-redux';
@@ -41,17 +41,22 @@ const WrappedComponent = props => (
 	<ApolloProvider client={client}>
 		<Provider store={mockStore()}>
 			<MemoryRouter initialEntries={['/workspace/2000/123/sites']}>
-				<Route path={Routes.SITES}>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<BasePage.Context.Provider value={MOCK_CONTEXT}>
-							<Dashboard
-								currentUser={MEMBER_USER}
-								router={MOCK_CONTEXT.router}
-								{...props}
-							/>
-						</BasePage.Context.Provider>
-					</ChannelContext.Provider>
-				</Route>
+				<RouterRoutes>
+					<Route
+						element={
+							<ChannelContext.Provider value={mockChannelContext()}>
+								<BasePage.Context.Provider value={MOCK_CONTEXT}>
+									<Dashboard
+										currentUser={MEMBER_USER}
+										router={MOCK_CONTEXT.router}
+										{...props}
+									/>
+								</BasePage.Context.Provider>
+							</ChannelContext.Provider>
+						}
+						path={`${Routes.SITES}/*`}
+					/>
+				</RouterRoutes>
 			</MemoryRouter>
 		</Provider>
 	</ApolloProvider>
@@ -82,19 +87,24 @@ describe('Sites Dashboard Index', () => {
 					<MemoryRouter
 						initialEntries={['/workspace/2000/123/sites']}
 					>
-						<Route path={Routes.SITES}>
-							<ChannelContext.Provider
-								value={CHANNEL_CONTEXT_MOCK}
-							>
-								<BasePage.Context.Provider value={MOCK_CONTEXT}>
-									<Dashboard
-										currentUser={MEMBER_USER}
-										router={MOCK_CONTEXT.router}
-										{...props}
-									/>
-								</BasePage.Context.Provider>
-							</ChannelContext.Provider>
-						</Route>
+						<RouterRoutes>
+							<Route
+								element={
+									<ChannelContext.Provider
+										value={CHANNEL_CONTEXT_MOCK}
+									>
+										<BasePage.Context.Provider value={MOCK_CONTEXT}>
+											<Dashboard
+												currentUser={MEMBER_USER}
+												router={MOCK_CONTEXT.router}
+												{...props}
+											/>
+										</BasePage.Context.Provider>
+									</ChannelContext.Provider>
+								}
+								path={`${Routes.SITES}/*`}
+							/>
+						</RouterRoutes>
 					</MemoryRouter>
 				</Provider>
 			</ApolloProvider>

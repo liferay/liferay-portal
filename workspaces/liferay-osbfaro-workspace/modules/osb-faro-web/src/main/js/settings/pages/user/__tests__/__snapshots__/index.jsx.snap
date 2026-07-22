@@ -20,6 +20,7 @@ exports[`UserRoutes should render 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -388,6 +389,10 @@ exports[`UserRoutes should render 1`] = `
                   </div>
                 </div>
               </nav>
+              <span
+                aria-hidden="true"
+                class="loading-root center loading-animation"
+              />
             </div>
           </div>
         </div>

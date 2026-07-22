@@ -1,14 +1,14 @@
 import ErrorPage from '../ErrorPage';
 import React from 'react';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = props => (
-	<StaticRouter>
+	<MemoryRouter>
 		<ErrorPage {...props} />
-	</StaticRouter>
+	</MemoryRouter>
 );
 
 describe('ErrorPage', () => {

@@ -4,7 +4,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import {fireEvent, render} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	mockExperimentDraftReq,
@@ -33,11 +33,16 @@ const WrappedComponent = ({mocks}: {mocks: any[]}) => (
 			<MemoryRouter
 				initialEntries={['/workspace/1000/2000/tests/overview/123']}
 			>
-				<Route path={Routes.TESTS_OVERVIEW}>
-					<MockedProvider mocks={mocks}>
-						<ExperimentOverviewPage />
-					</MockedProvider>
-				</Route>
+				<RouterRoutes>
+					<Route
+						element={
+							<MockedProvider mocks={mocks}>
+								<ExperimentOverviewPage />
+							</MockedProvider>
+						}
+						path={`${Routes.TESTS_OVERVIEW}/*`}
+					/>
+				</RouterRoutes>
 			</MemoryRouter>
 		</Provider>
 	</ApolloProvider>

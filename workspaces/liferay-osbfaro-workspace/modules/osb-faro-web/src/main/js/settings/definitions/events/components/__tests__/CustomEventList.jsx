@@ -6,7 +6,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventDefinitionsReq} from 'test/graphql-data';
 import {NotificationSubtypes} from 'shared/util/records/Notification';
@@ -46,14 +46,19 @@ const WrappedComponent = ({
 }) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={initialEntries}>
-			<Route path={Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM}>
-				<MockedProvider
-					cache={new InMemoryCache({freezeResults: false})}
-					mocks={mocks}
-				>
-					{children}
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={new InMemoryCache({freezeResults: false})}
+							mocks={mocks}
+						>
+							{children}
+						</MockedProvider>
+					}
+					path={`${Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

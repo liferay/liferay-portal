@@ -6,7 +6,7 @@ import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -24,9 +24,9 @@ jest.mock('shared/hooks/useTimeZone', () => ({
 
 const DefaultComponent = props => (
 	<Provider store={mockStore()}>
-		<StaticRouter>
+		<MemoryRouter>
 			<IndividualAttributes groupId='23' {...props} />
-		</StaticRouter>
+		</MemoryRouter>
 	</Provider>
 );
 

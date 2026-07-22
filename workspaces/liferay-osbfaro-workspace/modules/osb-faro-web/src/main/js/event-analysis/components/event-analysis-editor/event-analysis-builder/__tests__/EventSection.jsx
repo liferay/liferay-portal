@@ -4,7 +4,7 @@ import React from 'react';
 import {AttributesContext} from '../../context/attributes';
 import {fireEvent, render} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
@@ -14,24 +14,29 @@ jest.unmock('react-dom');
 const DefaultComponent = ({attributesValue, ...props}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>
-			<Route path={Routes.EVENT_ANALYSIS}>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							{attributesValue ? (
+								<AttributesContext.Provider value={attributesValue}>
+									<EventSection {...props} />
+								</AttributesContext.Provider>
+							) : (
+								<EventSection {...props} />
+							)}
+						</MockedProvider>
 					}
-				>
-					{attributesValue ? (
-						<AttributesContext.Provider value={attributesValue}>
-							<EventSection {...props} />
-						</AttributesContext.Provider>
-					) : (
-						<EventSection {...props} />
-					)}
-				</MockedProvider>
-			</Route>
+					path={`${Routes.EVENT_ANALYSIS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

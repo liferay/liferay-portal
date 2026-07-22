@@ -113,7 +113,7 @@ exports[`WorkspacesErrorDisplay should render 1`] = `
             </li>
             <li>
               <a
-                href="/https://www.liferay.com/products/dxp"
+                href="https://www.liferay.com/products/dxp"
               >
                 Learn more about Liferay DXP.
               </a>

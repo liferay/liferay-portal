@@ -4,7 +4,7 @@ import ChannelList from '../ChannelList';
 import mockStore, {mockStoreData} from 'test/mock-store';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {RemoteData, User} from 'shared/util/records';
 import {Routes} from 'shared/util/router';
@@ -19,7 +19,9 @@ const defaultProps = {
 const Wrapper = ({children, store = mockStore()}) => (
 	<Provider store={store}>
 		<MemoryRouter initialEntries={['/workspace/23/settings/properties']}>
-			<Route path={Routes.SETTINGS_CHANNELS}>{children}</Route>
+			<RouterRoutes>
+				<Route element={children} path={`${Routes.SETTINGS_CHANNELS}/*`} />
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

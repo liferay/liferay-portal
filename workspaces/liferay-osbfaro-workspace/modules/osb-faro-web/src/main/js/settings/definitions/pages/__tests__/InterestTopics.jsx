@@ -4,7 +4,7 @@ import InterestTopics from '../InterestTopics';
 import mockStore, {mockStoreData, toRD} from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -22,9 +22,12 @@ const Wrapper = ({children, queryString = '', store = mockStore()}) => (
 				`/workspace/23/settings/definitions/interest-topics${queryString}`
 			]}
 		>
-			<Route path={Routes.SETTINGS_DEFINITIONS_INTEREST_TOPICS}>
-				{children}
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={children}
+					path={`${Routes.SETTINGS_DEFINITIONS_INTEREST_TOPICS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

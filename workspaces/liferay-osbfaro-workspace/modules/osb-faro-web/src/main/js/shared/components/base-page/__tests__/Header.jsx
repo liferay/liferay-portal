@@ -5,14 +5,14 @@ import {BrowserRouter} from 'react-router-dom';
 import {cleanup, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 jest.unmock('react-dom');
 
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
-		<StaticRouter>
+		<MemoryRouter>
 			<Header {...props}></Header>
-		</StaticRouter>
+		</MemoryRouter>
 	</Provider>
 );
 

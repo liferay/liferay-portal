@@ -5,7 +5,7 @@ import React from 'react';
 import Select from '../Select';
 import {Field, Form, Formik} from 'formik';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route, Switch} from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -16,8 +16,7 @@ describe('Select', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
-					<Switch>
-						<Route path='*'>
+					
 							<MockedProvider
 								cache={
 									new InMemoryCache({
@@ -38,8 +37,7 @@ describe('Select', () => {
 									</Form>
 								</Formik>
 							</MockedProvider>
-						</Route>
-					</Switch>
+						
 				</MemoryRouter>
 			</Provider>
 		);
@@ -53,8 +51,7 @@ describe('Select', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
-					<Switch>
-						<Route path='*'>
+					
 							<MockedProvider
 								cache={
 									new InMemoryCache({
@@ -75,8 +72,7 @@ describe('Select', () => {
 									</Form>
 								</Formik>
 							</MockedProvider>
-						</Route>
-					</Switch>
+						
 				</MemoryRouter>
 			</Provider>
 		);
@@ -90,8 +86,7 @@ describe('Select', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
-					<Switch>
-						<Route path='*'>
+					
 							<MockedProvider
 								cache={
 									new InMemoryCache({
@@ -116,8 +111,7 @@ describe('Select', () => {
 									</Form>
 								</Formik>
 							</MockedProvider>
-						</Route>
-					</Switch>
+						
 				</MemoryRouter>
 			</Provider>
 		);

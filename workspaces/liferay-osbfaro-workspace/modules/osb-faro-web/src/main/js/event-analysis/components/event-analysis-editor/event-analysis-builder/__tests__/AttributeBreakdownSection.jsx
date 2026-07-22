@@ -4,7 +4,7 @@ import {AttributeBreakdownSection} from '../AttributeBreakdownSection';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -15,25 +15,30 @@ jest.unmock('react-dom');
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>
-			<Route path={Routes.EVENT_ANALYSIS}>
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-							freezeResults: false
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+									freezeResults: false
+								})
+							}
+						>
+							<DndProvider backend={HTML5Backend}>
+								<AttributeBreakdownSection
+									attributes={[]}
+									breakdownOrder={[]}
+									breakdowns={[]}
+									{...props}
+								/>
+							</DndProvider>
+						</MockedProvider>
 					}
-				>
-					<DndProvider backend={HTML5Backend}>
-						<AttributeBreakdownSection
-							attributes={[]}
-							breakdownOrder={[]}
-							breakdowns={[]}
-							{...props}
-						/>
-					</DndProvider>
-				</MockedProvider>
-			</Route>
+					path={`${Routes.EVENT_ANALYSIS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

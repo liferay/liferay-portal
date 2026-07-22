@@ -3,7 +3,7 @@ import React from 'react';
 import Sidebar from '../index';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {User} from 'shared/util/records';
 
 const defaultProps = {
@@ -19,9 +19,9 @@ describe('Sidebar', () => {
 	it('should render', () => {
 		const {container} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
-				<StaticRouter>
+				<MemoryRouter>
 					<Sidebar {...defaultProps} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -31,9 +31,9 @@ describe('Sidebar', () => {
 	it('should render as collapsed', () => {
 		const {container} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
-				<StaticRouter>
+				<MemoryRouter>
 					<Sidebar {...defaultProps} collapsed />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -47,12 +47,12 @@ describe('Sidebar', () => {
 
 		const {container} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
-				<StaticRouter>
+				<MemoryRouter>
 					<Sidebar
 						{...defaultProps}
 						activePathname={activePathName}
 					/>
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -64,9 +64,9 @@ describe('Sidebar', () => {
 	it('should render lifecycle and accounts items when LDP is enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
-				<StaticRouter>
+				<MemoryRouter>
 					<Sidebar {...defaultProps} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -77,9 +77,9 @@ describe('Sidebar', () => {
 	it('should not render lifecycle and accounts items when LDP is not enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<Sidebar {...defaultProps} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 

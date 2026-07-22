@@ -3,7 +3,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -35,9 +35,9 @@ describe('BasePage', () => {
 	it('should render', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -47,9 +47,9 @@ describe('BasePage', () => {
 	it('should render with a description', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage pageDescription='testPageDescription' />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -59,9 +59,9 @@ describe('BasePage', () => {
 	it('should render with a breadcrumb', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage breadcrumbItems={mockBreadcrumbItems} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -71,9 +71,9 @@ describe('BasePage', () => {
 	it('should render with a page action', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage groupId='23' pageActions={mockPageActions} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -83,9 +83,9 @@ describe('BasePage', () => {
 	it('should render with a title', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage groupId='23' pageTitle='testPageTitle' />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -95,13 +95,13 @@ describe('BasePage', () => {
 	it('should render with an inline title with subtitle', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<BasePage
 						groupId='23'
 						pageTitle='testPageTitle'
 						subTitle='mysubtitle'
 					/>
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 

@@ -43,6 +43,7 @@ exports[`Name should render with secondary info 1`] = `
         >
           <a
             class="text-truncate"
+            data-discover="true"
             href="/foo/test"
           >
             foo

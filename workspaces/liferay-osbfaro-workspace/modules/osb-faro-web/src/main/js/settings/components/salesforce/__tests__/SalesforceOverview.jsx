@@ -4,7 +4,7 @@ import React from 'react';
 import SalesforceOverview from '../SalesforceOverview';
 import {cleanup, render} from '@testing-library/react';
 import {DataSource} from 'shared/util/records';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -29,11 +29,16 @@ const WrappedComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/test']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id'>
-				<MockedProvider addTypename={false}>
-					<SalesforceOverview {...defaultProps} {...props} />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false}>
+							<SalesforceOverview {...defaultProps} {...props} />
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-source/:id/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

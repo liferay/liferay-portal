@@ -9,7 +9,7 @@ import {
 	SessionsPerVisitorMetric,
 } from '../metrics';
 import {getSiteMetricsChartData} from 'shared/components/metric-card/util';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {
 	RangeKeyTimeRanges,
@@ -60,9 +60,12 @@ const WrapperComponent = ({
 					`/workspace/2000/456/sites?rangeKey=${rangeKey}`,
 				]}
 			>
-				<Route path="/workspace/:groupId/:channelId/sites">
-					{children}
-				</Route>
+				<RouterRoutes>
+					<Route
+						element={children}
+						path="/workspace/:groupId/:channelId/sites/*"
+					/>
+				</RouterRoutes>
 			</MemoryRouter>
 		</BasePage.Context.Provider>
 	</MockedProvider>

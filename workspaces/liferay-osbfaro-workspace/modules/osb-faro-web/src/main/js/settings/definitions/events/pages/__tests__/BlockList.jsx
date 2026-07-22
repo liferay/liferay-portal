@@ -5,7 +5,7 @@ import React from 'react';
 import {ApolloProvider} from '@apollo/client';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -22,9 +22,9 @@ describe('BlockList', () => {
 		const {container} = render(
 			<ApolloProvider client={client}>
 				<Provider store={mockStore()}>
-					<StaticRouter>
+					<MemoryRouter>
 						<BlockList groupId='23' />
-					</StaticRouter>
+					</MemoryRouter>
 				</Provider>
 			</ApolloProvider>
 		);

@@ -3,7 +3,7 @@ import BlockListCard from '../BlockListCard';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockBlockedCustomEventDefinitionsReq} from 'test/graphql-data';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
@@ -21,11 +21,16 @@ const Wrapper = ({children, mocks = []}) => (
 				`/workspace/${mockGroupId}/settings/definitions/events/block-list`
 			]}
 		>
-			<Route path={Routes.SETTINGS_DEFINITIONS_EVENTS_BLOCK_LIST}>
-				<MockedProvider addTypename={false} mocks={mocks}>
-					{children}
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false} mocks={mocks}>
+							{children}
+						</MockedProvider>
+					}
+					path={`${Routes.SETTINGS_DEFINITIONS_EVENTS_BLOCK_LIST}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

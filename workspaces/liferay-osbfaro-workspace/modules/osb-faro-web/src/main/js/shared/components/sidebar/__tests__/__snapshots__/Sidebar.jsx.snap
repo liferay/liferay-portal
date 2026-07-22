@@ -10,6 +10,7 @@ exports[`Sidebar should render 1`] = `
     >
       <a
         class="sidebar-header-logo"
+        data-discover="true"
         href="/workspace/23/123/sites"
       >
         <svg

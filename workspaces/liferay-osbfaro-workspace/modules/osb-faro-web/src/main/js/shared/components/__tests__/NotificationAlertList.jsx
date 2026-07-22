@@ -6,7 +6,7 @@ import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {range} from 'lodash';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -31,9 +31,9 @@ describe('NotificationAlertList', () => {
 	it('should render', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<NotificationAlertList {...defaultProps} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 
@@ -45,9 +45,9 @@ describe('NotificationAlertList', () => {
 	it('should hide notification when click on close button', () => {
 		const {container, queryByText} = render(
 			<Provider store={mockStore()}>
-				<StaticRouter>
+				<MemoryRouter>
 					<NotificationAlertList {...defaultProps} />
-				</StaticRouter>
+				</MemoryRouter>
 			</Provider>
 		);
 

@@ -42,12 +42,10 @@ describe('withSidebar', () => {
 
 		const {container} = render(
 			<Provider store={mockStore()}>
-				<BrowserRouter>
-					<WrappedComponent
-						groupId='23'
-						location={{pathname: 'foo'}}
-					/>
-				</BrowserRouter>
+				<WrappedComponent
+					groupId='23'
+					location={{pathname: 'foo'}}
+				/>
 			</Provider>
 		);
 

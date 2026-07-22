@@ -12,6 +12,7 @@ exports[`Nav should render 1`] = `
     >
       <a
         class="nav-link active"
+        data-discover="true"
         href="/"
         role="tab"
       >

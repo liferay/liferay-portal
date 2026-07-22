@@ -48,7 +48,7 @@ describe('MaintenanceAlert', () => {
 
 describe('mapState', () => {
 	it('should map store state to props', () => {
-		const router = {match: {params: {groupId: '23'}}};
+		const router = {groupId: '23'};
 
 		const result = mapState(store, router);
 

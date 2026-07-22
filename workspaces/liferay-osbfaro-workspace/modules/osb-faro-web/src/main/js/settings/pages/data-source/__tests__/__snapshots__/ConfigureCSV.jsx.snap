@@ -20,6 +20,7 @@ exports[`ConfigureCSV should render 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/2000"
             >
               <svg
@@ -274,6 +275,7 @@ exports[`ConfigureCSV should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources
@@ -284,6 +286,7 @@ exports[`ConfigureCSV should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source/123"
               />
             </li>

@@ -16,6 +16,7 @@ exports[`IndividualLinkCell should render 1`] = `
         >
           <a
             class="text-truncate"
+            data-discover="true"
             href="/workspace/123/contacts/individuals/known-individuals/456"
           >
             Test Test
@@ -43,6 +44,7 @@ exports[`IndividualLinkCell should render with individual data 1`] = `
         >
           <a
             class="text-truncate"
+            data-discover="true"
             href="/workspace/123/contacts/individuals/known-individuals/individual456"
           >
             individual Test

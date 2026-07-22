@@ -3,9 +3,9 @@ import * as data from 'test/data';
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {Formik} from 'formik';
+import {MemoryRouter} from 'react-router';
 import {modalTypes} from 'shared/actions/modals';
 import {SegmentCategories} from 'shared/util/constants';
-import {StaticRouter} from 'react-router';
 import {Toolbar} from '../Toolbar';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -20,7 +20,7 @@ describe('Toolbar', () => {
 
 	it('should render', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Formik>
 					<Toolbar
 						channelId='321'
@@ -29,7 +29,7 @@ describe('Toolbar', () => {
 						segmentType='BATCH'
 					/>
 				</Formik>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 		expect(container).toMatchSnapshot();
 	});
@@ -42,7 +42,7 @@ describe('Toolbar', () => {
 		const open = jest.fn();
 
 		const {container, getByTestId} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Formik>
 					<Toolbar
 						channelId='321'
@@ -53,7 +53,7 @@ describe('Toolbar', () => {
 						segmentType='BATCH'
 					/>
 				</Formik>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoadingToBeRemoved(container);
@@ -71,7 +71,7 @@ describe('Toolbar', () => {
 
 	it('should render w/ preview button disabled if criteria is valid and total members count is equal to 0', () => {
 		const {getByTestId} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Formik>
 					<Toolbar
 						channelId='321'
@@ -80,7 +80,7 @@ describe('Toolbar', () => {
 						segmentType='BATCH'
 					/>
 				</Formik>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(getByTestId('preview-criteria-button')).toBeDisabled();
@@ -88,7 +88,7 @@ describe('Toolbar', () => {
 
 	it('should render w/ preview button disabled if criteria is not valid', () => {
 		const {getByTestId} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Formik>
 					<Toolbar
 						channelId='321'
@@ -97,7 +97,7 @@ describe('Toolbar', () => {
 						segmentType='BATCH'
 					/>
 				</Formik>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(getByTestId('preview-criteria-button')).toBeDisabled();
@@ -107,7 +107,7 @@ describe('Toolbar', () => {
 		API.individuals.search.mockReturnValue(Promise.resolve({total: 1}));
 
 		const {container, getByTestId} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Formik>
 					<Toolbar
 						channelId='321'
@@ -116,7 +116,7 @@ describe('Toolbar', () => {
 						segmentType='BATCH'
 					/>
 				</Formik>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		await waitForLoadingToBeRemoved(container);

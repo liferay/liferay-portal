@@ -4,7 +4,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route, Switch} from 'react-router-dom';
+import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {noop} from 'lodash';
 import {Provider} from 'react-redux';
@@ -16,9 +16,9 @@ const mockGroupId = '23';
 const Wrapper = ({children}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23']}>
-			<Switch>
-				<Route path='/workspace/:groupId'>{children}</Route>
-			</Switch>
+			<Routes>
+				<Route element={children} path='/workspace/:groupId' />
+			</Routes>
 		</MemoryRouter>
 	</Provider>
 );

@@ -7,7 +7,7 @@ import {CSVType} from '../utils';
 import {DownloadStaticCSVReport} from '../DownloadStaticCSVReport';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
@@ -56,24 +56,29 @@ const DefaultComponent = ({
 }) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/123/456/individuals']}>
-			<Route path="/workspace/:groupId/:channelId/individuals">
-				<MockedProvider
-					cache={
-						new InMemoryCache({
-							addTypename: false,
-						})
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider
+							cache={
+								new InMemoryCache({
+									addTypename: false,
+								})
+							}
+						>
+							<DownloadStaticCSVReport
+								disabled={false}
+								getFDSQuery={getFDSQuery}
+								objectType={objectType}
+								rangeSelectors={rangeSelectors}
+								type={type}
+								typeLang="Individuals"
+							/>
+						</MockedProvider>
 					}
-				>
-					<DownloadStaticCSVReport
-						disabled={false}
-						getFDSQuery={getFDSQuery}
-						objectType={objectType}
-						rangeSelectors={rangeSelectors}
-						type={type}
-						typeLang="Individuals"
-					/>
-				</MockedProvider>
-			</Route>
+					path="/workspace/:groupId/:channelId/individuals/*"
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

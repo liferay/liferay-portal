@@ -32,12 +32,13 @@ jest.mock('shared/hooks/useRequest', () => ({
 
 const mockPush = jest.fn();
 
-const mockUnlisten = jest.fn();
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: () => ({listen: () => mockUnlisten, push: mockPush}),
 	useParams: () => ({channelId: '5', groupId: '23', id: 'acc-1'}),
+}));
+
+jest.mock('shared/hooks/useHistoryAdapter', () => ({
+	useHistoryAdapter: () => ({push: mockPush}),
 }));
 
 const mockedUseRequest = useRequest as jest.Mock;

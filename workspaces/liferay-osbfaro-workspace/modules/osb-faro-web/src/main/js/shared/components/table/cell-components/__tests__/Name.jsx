@@ -1,7 +1,7 @@
 import Name from '../Name';
 import React from 'react';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -31,9 +31,9 @@ describe('Name', () => {
 
 	it('should render the name as a link if a route is passed', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<FilledComponent />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('a')).toHaveAttribute(
@@ -44,9 +44,9 @@ describe('Name', () => {
 
 	it('should render a link even if it has no asset title', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<FilledComponent data={{assetId: '123', name: 'foo'}} />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('a')).toHaveAttribute(
@@ -57,9 +57,9 @@ describe('Name', () => {
 
 	it('should render with secondary info', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<FilledComponent renderSecondaryInfo={() => 'bar'} />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container).toMatchSnapshot();

@@ -20,6 +20,7 @@ exports[`Event View page should render 1`] = `
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -296,6 +297,7 @@ exports[`Event View page should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/definitions"
               >
                 Definitions
@@ -306,6 +308,7 @@ exports[`Event View page should render 1`] = `
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/definitions/events/default"
               >
                 Events
@@ -495,6 +498,7 @@ exports[`Event View page should render 1`] = `
                               >
                                 <a
                                   class="text-truncate"
+                                  data-discover="true"
                                   href="/workspace/23/settings/definitions/event-attributes/1"
                                 >
                                   name-1

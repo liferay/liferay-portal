@@ -3,7 +3,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {CalculationTypes} from 'event-analysis/utils/types';
 import {InMemoryCache} from '@apollo/client';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
@@ -15,20 +15,25 @@ describe('Event Analysis Editor', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
-					<Route path='/'>
-						<MockedProvider
-							cache={
-								new InMemoryCache({
-									addTypename: false,
-									freezeResults: false
-								})
+					<RouterRoutes>
+						<Route
+							element={
+								<MockedProvider
+									cache={
+										new InMemoryCache({
+											addTypename: false,
+											freezeResults: false
+										})
+									}
+								>
+									<EventAnalysisEditor
+										type={CalculationTypes.Total}
+									/>
+								</MockedProvider>
 							}
-						>
-							<EventAnalysisEditor
-								type={CalculationTypes.Total}
-							/>
-						</MockedProvider>
-					</Route>
+							path='/*'
+						/>
+					</RouterRoutes>
 				</MemoryRouter>
 			</Provider>
 		);

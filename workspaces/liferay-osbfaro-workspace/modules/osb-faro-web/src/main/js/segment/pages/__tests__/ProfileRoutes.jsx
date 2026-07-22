@@ -2,17 +2,23 @@ import * as API from 'shared/api';
 import DataSourcesProvider from 'shared/context/dataSources';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import {BrowserRouter} from 'react-router-dom';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen} from '@testing-library/react';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {Provider} from 'react-redux';
+import {Routes} from 'shared/util/router';
 import {SegmentProfileRoutes} from '../ProfileRoutes';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
+
+jest.mock('../Overview', () => () => <div>{'SegmentOverview'}</div>);
+jest.mock('../OverviewRealTime', () => () => (
+	<div>{'SegmentOverviewRealTime'}</div>
+));
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -23,27 +29,33 @@ jest.mock('react-router-dom', () => ({
 	})
 }));
 
+const ENTITY_URL = '/workspace/23/123/contacts/segments/test';
+
+const ENTITY_ROUTE = `${Routes.CONTACTS_SEGMENT}/*`;
+
+const renderProfileRoutes = () =>
+	render(
+		<Provider store={mockStore()}>
+			<MemoryRouter initialEntries={[ENTITY_URL]}>
+				<ChannelContext.Provider value={mockChannelContext()}>
+					<DataSourcesProvider groupId='23'>
+						<RouterRoutes>
+							<Route
+								element={<SegmentProfileRoutes />}
+								path={ENTITY_ROUTE}
+							/>
+						</RouterRoutes>
+					</DataSourcesProvider>
+				</ChannelContext.Provider>
+			</MemoryRouter>
+		</Provider>
+	);
+
 describe('SegmentProfileRoutes', () => {
 	afterEach(cleanup);
 
-	beforeAll(() => {
-		delete window.location;
-	});
-
 	it('should render', async () => {
-		window.location = {pathname: '/'};
-
-		const {container} = render(
-			<Provider store={mockStore()}>
-				<BrowserRouter>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<DataSourcesProvider groupId='23'>
-							<SegmentProfileRoutes />
-						</DataSourcesProvider>
-					</ChannelContext.Provider>
-				</BrowserRouter>
-			</Provider>
-		);
+		const {container} = renderProfileRoutes();
 
 		await waitForLoadingToBeRemoved(container);
 
@@ -106,23 +118,11 @@ describe('SegmentProfileRoutes', () => {
 	});
 
 	it('should render the external reference code with its label', async () => {
-		window.location = {pathname: '/'};
-
 		API.individualSegment.fetch.mockReturnValueOnce(
 			Promise.resolve(mockSegment(0, {externalReferenceCode: 'my-erc'}))
 		);
 
-		const {container} = render(
-			<Provider store={mockStore()}>
-				<BrowserRouter>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<DataSourcesProvider groupId='23'>
-							<SegmentProfileRoutes />
-						</DataSourcesProvider>
-					</ChannelContext.Provider>
-				</BrowserRouter>
-			</Provider>
-		);
+		const {container} = renderProfileRoutes();
 
 		await waitForLoadingToBeRemoved(container);
 

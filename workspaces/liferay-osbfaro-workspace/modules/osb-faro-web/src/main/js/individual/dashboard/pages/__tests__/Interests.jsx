@@ -3,7 +3,7 @@ import Interests from '../Interests';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {mockIndividualInterestsReq} from 'test/graphql-data';
@@ -32,9 +32,14 @@ const WrappedComponent = () => (
 					'/workspace/123/456/contacts/individuals/interests'
 				]}
 			>
-				<Route path={Routes.CONTACTS_INDIVIDUALS_INTERESTS}>
-					<Interests />
-				</Route>
+				<RouterRoutes>
+					<Route
+						element={
+							<Interests />
+						}
+						path={`${Routes.CONTACTS_INDIVIDUALS_INTERESTS}/*`}
+					/>
+				</RouterRoutes>
 			</MemoryRouter>
 		</Provider>
 	</MockedProvider>

@@ -1,7 +1,7 @@
 import mockStore from 'test/mock-store';
 import React from 'react';
 import UserRequest from '../UserRequest';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {noop} from 'lodash';
 import {Provider} from 'react-redux';
@@ -16,11 +16,16 @@ const DefaultComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/users/requests']}
 		>
-			<Route path={Routes.SETTINGS_USERS_REQUESTS}>
-				<MockedProvider freezeResults={false}>
-					<UserRequest {...props} onSetUserRequest={noop} />
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider freezeResults={false}>
+							<UserRequest {...props} onSetUserRequest={noop} />
+						</MockedProvider>
+					}
+					path={`${Routes.SETTINGS_USERS_REQUESTS}/*`}
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

@@ -2,7 +2,7 @@ import React from 'react';
 import Table, {getRowIdentifierValue} from '../index';
 import {mockIndividual} from 'test/data';
 import {render} from '@testing-library/react';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 import {times} from 'lodash';
 
 jest.unmock('react-dom');
@@ -23,13 +23,13 @@ const COLUMNS = [
 describe('Table', () => {
 	it('should render', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Table
 					columns={COLUMNS}
 					items={INDIVIDUALS}
 					rowIdentifier='id'
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container).toMatchSnapshot();
@@ -37,9 +37,9 @@ describe('Table', () => {
 
 	it('should render without items', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Table columns={COLUMNS} rowIdentifier='id' />
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('tbody')).toBeNull();
@@ -47,14 +47,14 @@ describe('Table', () => {
 
 	it('should render with borders', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Table
 					bordered
 					columns={COLUMNS}
 					items={INDIVIDUALS}
 					rowIdentifier='id'
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('.table-head-bordered')).toBeTruthy();
@@ -62,14 +62,14 @@ describe('Table', () => {
 
 	it('should render with nowrap rows', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Table
 					columns={COLUMNS}
 					items={INDIVIDUALS}
 					nowrap
 					rowIdentifier='id'
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('.table-nowrap')).toBeTruthy();
@@ -77,14 +77,14 @@ describe('Table', () => {
 
 	it('should render w/ loading', () => {
 		const {container} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<Table
 					columns={COLUMNS}
 					items={INDIVIDUALS}
 					loading
 					rowIdentifier='id'
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(container.querySelector('.loading-root')).toBeTruthy();

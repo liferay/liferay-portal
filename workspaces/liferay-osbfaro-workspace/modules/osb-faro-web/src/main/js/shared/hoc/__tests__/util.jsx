@@ -1,7 +1,7 @@
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {SafeResults, withEmpty, withError, withLoading} from '../util';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -31,9 +31,9 @@ describe('HOC Util', () => {
 
 		it('should return an error screen when error is true', () => {
 			const {container} = render(
-				<StaticRouter>
+				<MemoryRouter>
 					<SafeResults error>{() => 'foo'}</SafeResults>
-				</StaticRouter>
+				</MemoryRouter>
 			);
 
 			expect(container.querySelector('.error-page-root')).toBeTruthy();
@@ -65,9 +65,9 @@ describe('HOC Util', () => {
 			const WrappedComponent = withError()(jest.fn(() => 'test'));
 
 			const {container} = render(
-				<StaticRouter>
+				<MemoryRouter>
 					<WrappedComponent error />
-				</StaticRouter>
+				</MemoryRouter>
 			);
 
 			expect(container.querySelector('.error-page-root')).toBeTruthy();
@@ -101,9 +101,9 @@ describe('HOC Util', () => {
 			);
 
 			const {getByText} = render(
-				<StaticRouter>
+				<MemoryRouter>
 					<WrappedComponent error />
-				</StaticRouter>
+				</MemoryRouter>
 			);
 
 			expect(getByText(customMessage)).toBeTruthy();

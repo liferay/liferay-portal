@@ -4,7 +4,7 @@ import RequestList from '../RequestList';
 import RequestListQuery from '../../queries/RequestListQuery';
 import {cleanup, render} from '@testing-library/react';
 import {GDPRRequestStatuses, GDPRRequestTypes} from 'shared/util/constants';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {User} from 'shared/util/records';
@@ -108,11 +108,16 @@ const Wrapper = ({children, store = mockStore()}) => (
 				'/workspace/23/settings/data-privacy/request-log/?delta=10'
 			]}
 		>
-			<Route path='/workspace/:groupId/settings/data-privacy/request-log/'>
-				<MockedProvider addTypename={false} mocks={mocks}>
-					{children}
-				</MockedProvider>
-			</Route>
+			<RouterRoutes>
+				<Route
+					element={
+						<MockedProvider addTypename={false} mocks={mocks}>
+							{children}
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-privacy/request-log/*'
+				/>
+			</RouterRoutes>
 		</MemoryRouter>
 	</Provider>
 );

@@ -3,7 +3,7 @@ import EntityDetailsList from '../EntityDetailsList';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {fromJS} from 'immutable';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -20,9 +20,14 @@ const DefaultComponent = props => (
 			'/workspace/23/321321/contacts/accounts/123123/interests/test'
 		]}
 	>
-		<Route path={Routes.CONTACTS_ACCOUNT_INTEREST_DETAILS}>
-			<EntityDetailsList {...defaultProps} {...props} />
-		</Route>
+		<RouterRoutes>
+			<Route
+				element={
+					<EntityDetailsList {...defaultProps} {...props} />
+				}
+				path={`${Routes.CONTACTS_ACCOUNT_INTEREST_DETAILS}/*`}
+			/>
+		</RouterRoutes>
 	</MemoryRouter>
 );
 
