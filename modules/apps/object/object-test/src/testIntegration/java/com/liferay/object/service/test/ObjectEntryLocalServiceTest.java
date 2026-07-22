@@ -5632,99 +5632,95 @@ public class ObjectEntryLocalServiceTest {
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
 			TestPropsValues.getCompanyId());
 		Locale defaultLocale = LocaleUtil.getDefault();
-		ObjectDefinition objectDefinition = null;
 
-		try {
-			CompanyTestUtil.resetCompanyLocales(
-				TestPropsValues.getCompanyId(),
-				new HashSet<>(
-					Arrays.asList(
-						LocaleUtil.BRAZIL, LocaleUtil.GERMANY, LocaleUtil.US)),
-				LocaleUtil.US);
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(),
+			new HashSet<>(
+				Arrays.asList(
+					LocaleUtil.BRAZIL, LocaleUtil.GERMANY, LocaleUtil.US)),
+			LocaleUtil.US);
 
-			String objectFieldName = "a" + RandomTestUtil.randomString();
+		String objectFieldName = "a" + RandomTestUtil.randomString();
 
-			ObjectField objectField = ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING, objectFieldName,
-				objectFieldName);
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, objectFieldName,
+			objectFieldName);
 
-			objectField.setLocalized(true);
+		objectField.setLocalized(true);
 
-			objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Arrays.asList(objectField),
 				ObjectDefinitionConstants.SCOPE_SITE);
 
-			ObjectEntry objectEntry1 = _addObjectEntry(
-				TestPropsValues.getGroupId(), objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					objectFieldName + "_i18n",
-					(Serializable)HashMapBuilder.<String, Serializable>put(
-						LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
-						"a" + RandomTestUtil.randomString()
-					).build()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-			ObjectEntry objectEntry2 = _addObjectEntry(
-				TestPropsValues.getGroupId(), objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					objectFieldName + "_i18n",
-					(Serializable)HashMapBuilder.<String, Serializable>put(
-						LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
-						"b" + RandomTestUtil.randomString()
-					).put(
-						LocaleUtil.toLanguageId(LocaleUtil.US),
-						"c" + RandomTestUtil.randomString()
-					).build()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-			ObjectEntry objectEntry3 = _addObjectEntry(
-				TestPropsValues.getGroupId(), objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					objectFieldName + "_i18n",
-					(Serializable)HashMapBuilder.<String, Serializable>put(
-						LocaleUtil.toLanguageId(LocaleUtil.GERMANY),
-						RandomTestUtil.randomString()
-					).build()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-			ObjectEntry objectEntry4 = _addObjectEntry(
-				TestPropsValues.getGroupId(), objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					objectFieldName + "_i18n",
-					(Serializable)HashMapBuilder.<String, Serializable>put(
-						LocaleUtil.toLanguageId(LocaleUtil.US),
-						"d" + RandomTestUtil.randomString()
-					).build()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName + "_i18n",
+				(Serializable)HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+					"a" + RandomTestUtil.randomString()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName + "_i18n",
+				(Serializable)HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+					"b" + RandomTestUtil.randomString()
+				).put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					"c" + RandomTestUtil.randomString()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName + "_i18n",
+				(Serializable)HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.GERMANY),
+					RandomTestUtil.randomString()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry4 = _addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName + "_i18n",
+				(Serializable)HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					"d" + RandomTestUtil.randomString()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 
-			_testGetPrimaryKeysWithLocalizedObjectField(
-				LocaleUtil.US, objectDefinition, objectFieldName, false,
-				Arrays.asList(objectEntry2, objectEntry4),
-				new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
-			_testGetPrimaryKeysWithLocalizedObjectField(
-				LocaleUtil.US, objectDefinition, objectFieldName, true,
-				Arrays.asList(objectEntry4, objectEntry2),
-				new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
+		_testGetPrimaryKeysWithLocalizedObjectField(
+			LocaleUtil.US, objectDefinition, objectFieldName, false,
+			Arrays.asList(objectEntry2, objectEntry4),
+			new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
+		_testGetPrimaryKeysWithLocalizedObjectField(
+			LocaleUtil.US, objectDefinition, objectFieldName, true,
+			Arrays.asList(objectEntry4, objectEntry2),
+			new HashSet<>(Arrays.asList(objectEntry1, objectEntry3)));
 
-			// Value provided for the site default language
+		// Value provided for the site default language
 
-			_testGetPrimaryKeysWithLocalizedObjectField(
-				LocaleUtil.BRAZIL, objectDefinition, objectFieldName, false,
-				Arrays.asList(objectEntry1, objectEntry2, objectEntry4),
-				new HashSet<>(Arrays.asList(objectEntry3)));
+		_testGetPrimaryKeysWithLocalizedObjectField(
+			LocaleUtil.BRAZIL, objectDefinition, objectFieldName, false,
+			Arrays.asList(objectEntry1, objectEntry2, objectEntry4),
+			new HashSet<>(Arrays.asList(objectEntry3)));
+
+		if (objectDefinition != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
 		}
-		finally {
-			if (objectDefinition != null) {
-				_objectDefinitionLocalService.deleteObjectDefinition(
-					objectDefinition);
-			}
 
-			CompanyTestUtil.resetCompanyLocales(
-				TestPropsValues.getCompanyId(), availableLocales,
-				defaultLocale);
-		}
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(), availableLocales, defaultLocale);
 	}
 
 	@Test
