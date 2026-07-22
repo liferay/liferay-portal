@@ -46,7 +46,7 @@ public interface PortalK8sAgentConfiguration {
 	@Meta.AD(type = Meta.Type.String)
 	public String namespace();
 
-	@Meta.AD(type = Meta.Type.String)
+	@Meta.AD(type = Meta.Type.Password)
 	public String saToken();
 
 }

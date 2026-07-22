@@ -22,7 +22,8 @@ public interface MicrosoftTranslatorConfiguration {
 
 	@Meta.AD(
 		description = "subscription-key-description",
-		name = "subscription-key-name", required = false
+		name = "subscription-key-name", required = false,
+		type = Meta.Type.Password
 	)
 	public String subscriptionKey();
 

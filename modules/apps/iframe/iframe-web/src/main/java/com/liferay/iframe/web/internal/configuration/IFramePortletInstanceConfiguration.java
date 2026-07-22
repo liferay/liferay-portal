@@ -32,7 +32,7 @@ public interface IFramePortletInstanceConfiguration {
 	@Meta.AD(deflt = "basic", name = "authentication-type", required = false)
 	public String authType();
 
-	@Meta.AD(name = "password", required = false)
+	@Meta.AD(name = "password", required = false, type = Meta.Type.Password)
 	public String basicPassword();
 
 	@Meta.AD(name = "user-name", required = false)
@@ -50,7 +50,7 @@ public interface IFramePortletInstanceConfiguration {
 	@Meta.AD(deflt = "post", name = "form-method", required = false)
 	public String formMethod();
 
-	@Meta.AD(name = "password", required = false)
+	@Meta.AD(name = "password", required = false, type = Meta.Type.Password)
 	public String formPassword();
 
 	@Meta.AD(name = "user-name", required = false)

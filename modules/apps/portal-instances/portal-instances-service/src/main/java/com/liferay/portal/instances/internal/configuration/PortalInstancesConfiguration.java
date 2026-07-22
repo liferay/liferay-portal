@@ -37,7 +37,7 @@ public interface PortalInstancesConfiguration {
 	@Meta.AD(required = false, type = Meta.Type.String)
 	public String adminMiddleName();
 
-	@Meta.AD(required = false, type = Meta.Type.String)
+	@Meta.AD(required = false, type = Meta.Type.Password)
 	public String adminPassword();
 
 	@Meta.AD(required = false, type = Meta.Type.String)

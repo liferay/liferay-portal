@@ -59,7 +59,10 @@ public interface CaptchaConfiguration {
 	)
 	public String reCaptchaNoScriptURL();
 
-	@Meta.AD(name = "recaptcha-private-key", required = false)
+	@Meta.AD(
+		name = "recaptcha-private-key", required = false,
+		type = Meta.Type.Password
+	)
 	public String reCaptchaPrivateKey();
 
 	@Meta.AD(name = "recaptcha-public-key", required = false)

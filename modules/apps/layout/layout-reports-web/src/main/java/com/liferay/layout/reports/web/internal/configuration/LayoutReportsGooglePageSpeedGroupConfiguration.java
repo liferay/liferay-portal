@@ -29,7 +29,7 @@ public interface LayoutReportsGooglePageSpeedGroupConfiguration {
 	)
 	@Meta.AD(
 		description = "get-your-api-key-at-x", name = "api-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String apiKey();
 

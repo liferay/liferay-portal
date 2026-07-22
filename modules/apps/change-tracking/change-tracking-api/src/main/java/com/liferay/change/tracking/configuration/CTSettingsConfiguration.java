@@ -68,7 +68,10 @@ public interface CTSettingsConfiguration {
 	public String remoteClientId();
 
 	@ExtendedAttributeDefinition(featureFlagKey = "LPS-186360")
-	@Meta.AD(name = "remote-client-secret", required = false)
+	@Meta.AD(
+		name = "remote-client-secret", required = false,
+		type = Meta.Type.Password
+	)
 	public String remoteClientSecret();
 
 	@ExtendedAttributeDefinition(featureFlagKey = "LPS-186360")
