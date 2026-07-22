@@ -154,7 +154,9 @@ public class AudiencesCriteriaProviderTest {
 			audiencesCriterias.toString(), 2, audiencesCriterias.size());
 
 		AudiencesCriteria authenticationAudiencesCriteria =
-			_getAudiencesCriteria(audiencesCriterias, "user_authentication");
+			_getAudiencesCriteria(
+				audiencesCriterias,
+				"custom:" + _GENERAL_ATTRIBUTES_URL + "#signed_in");
 
 		Assert.assertEquals(
 			AudiencesCriteria.Type.BOOLEAN,
@@ -162,7 +164,8 @@ public class AudiencesCriteriaProviderTest {
 		Assert.assertNull(authenticationAudiencesCriteria.getOptions());
 
 		AudiencesCriteria languageAudiencesCriteria = _getAudiencesCriteria(
-			audiencesCriterias, "user_language");
+			audiencesCriterias,
+			"custom:" + _GENERAL_ATTRIBUTES_URL + "#language");
 
 		Assert.assertEquals(
 			AudiencesCriteria.Type.STRING, languageAudiencesCriteria.getType());
@@ -233,6 +236,9 @@ public class AudiencesCriteriaProviderTest {
 
 		return null;
 	}
+
+	private static final String _GENERAL_ATTRIBUTES_URL =
+		"/o/frontend-js-audiences-web/__liferay__/custom-attributes.js";
 
 	@Inject
 	private AudiencesCriteriaProvider _audiencesCriteriaProvider;

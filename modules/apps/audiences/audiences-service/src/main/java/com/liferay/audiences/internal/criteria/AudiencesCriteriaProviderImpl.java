@@ -337,7 +337,7 @@ public class AudiencesCriteriaProviderImpl
 				).setInputType(
 					AudiencesCriteria.InputType.BOOLEAN
 				).setKey(
-					AudiencesCriteriaKeys.USER_AUTHENTICATION
+					"custom:" + _GENERAL_ATTRIBUTES_URL + "#signed_in"
 				).setLabel(
 					_language.get(locale, "user-authentication")
 				).setType(
@@ -348,7 +348,7 @@ public class AudiencesCriteriaProviderImpl
 				).setInputType(
 					AudiencesCriteria.InputType.SELECT
 				).setKey(
-					AudiencesCriteriaKeys.USER_LANGUAGE
+					"custom:" + _GENERAL_ATTRIBUTES_URL + "#language"
 				).setLabel(
 					_language.get(locale, "user-language")
 				).setOptions(
@@ -389,6 +389,9 @@ public class AudiencesCriteriaProviderImpl
 
 		return options;
 	}
+
+	private static final String _GENERAL_ATTRIBUTES_URL =
+		"/o/frontend-js-audiences-web/__liferay__/custom-attributes.js";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AudiencesCriteriaProviderImpl.class);
