@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.OrgLabor;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.service.EmailAddressService;
 import com.liferay.portal.kernel.service.ImageLocalService;
@@ -105,8 +107,16 @@ public class OrganizationResourceDTOConverter
 				externalReferenceCode, CompanyThreadLocal.getCompanyId());
 
 		if (organization == null) {
-			organization = _organizationService.getOrganization(
-				GetterUtil.getLong(externalReferenceCode));
+			long organizationId = GetterUtil.getLong(externalReferenceCode);
+
+			if (_hasUserOrganization(organizationId)) {
+				organization = _organizationLocalService.getOrganization(
+					organizationId);
+			}
+			else {
+				organization = _organizationService.getOrganization(
+					organizationId);
+			}
 		}
 
 		return organization;
@@ -400,6 +410,18 @@ public class OrganizationResourceDTOConverter
 		};
 
 		return decimalFormat.format(hour);
+	}
+
+	private boolean _hasUserOrganization(long organizationId) {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker == null) {
+			return false;
+		}
+
+		return _organizationLocalService.hasUserOrganization(
+			permissionChecker.getUserId(), organizationId);
 	}
 
 	private Service _toService(OrgLabor orgLabor) throws Exception {
