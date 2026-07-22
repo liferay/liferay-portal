@@ -7,6 +7,7 @@ package com.liferay.fragment.web.internal.servlet.taglib.util;
 
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -113,7 +114,7 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	}
 
 	@Test
-	@TestInfo("LPD-98538")
+	@TestInfo({"LPD-98538", "LPD-98882"})
 	public void testGetActionDropdownItemsForSiteScopedFragmentEntry()
 		throws Exception {
 
@@ -132,7 +133,10 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 					_fragmentEntry, renderRequest, renderResponse);
 
 		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
-				Mockito.mockStatic(DesignLibraryUtil.class)) {
+				Mockito.mockStatic(DesignLibraryUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
 
 			designLibraryUtilMockedStatic.when(
 				() -> DesignLibraryUtil.isDesignLibraryScope(
@@ -159,6 +163,19 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 					getActionDropdownItems(),
 				"edit", "change-thumbnail", "rename", "mark-as-cacheable",
 				"export", "make-a-copy", "move", "delete");
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-57283"))
+			).thenReturn(
+				true
+			);
+
+			assertDropdownItemsInCorrectOrder(
+				basicFragmentEntryActionDropdownItemsProvider.
+					getActionDropdownItems(),
+				"edit", "change-thumbnail", "rename", "mark-as-cacheable",
+				"view-site-usages", "export", "make-a-copy", "move", "delete");
 		}
 	}
 
