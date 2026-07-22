@@ -18,11 +18,13 @@ export class JSONWebServicesSegmentsEntryApiHelper {
 
 	async addSegmentsEntry({
 		criteria,
+		externalReferenceCode,
 		groupId,
 		name,
 		source,
 	}: {
 		criteria: Segment;
+		externalReferenceCode?: string;
 		groupId: string;
 		name: string;
 		source?: string;
@@ -40,16 +42,17 @@ export class JSONWebServicesSegmentsEntryApiHelper {
 			'descriptionMap',
 			JSON.stringify({en_US: getRandomString()})
 		);
+		urlSearchParams.append(
+			'externalReferenceCode',
+			externalReferenceCode ?? ''
+		);
 		urlSearchParams.append('nameMap', JSON.stringify({en_US: name}));
 		urlSearchParams.append('segmentsEntryKey', '');
 		urlSearchParams.append(
 			'serviceContext',
 			JSON.stringify({scopeGroupId: groupId, userId: user.userId})
 		);
-
-		if (source) {
-			urlSearchParams.append('source', source);
-		}
+		urlSearchParams.append('source', source ?? 'DEFAULT');
 
 		return await this.apiHelpers.post(
 			`${liferayConfig.environment.baseUrl}${this.basePath}/add-segments-entry`,
