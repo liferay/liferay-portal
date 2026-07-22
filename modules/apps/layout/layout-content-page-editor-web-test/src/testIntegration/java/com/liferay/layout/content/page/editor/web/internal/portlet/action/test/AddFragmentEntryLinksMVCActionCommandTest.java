@@ -77,6 +77,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -249,6 +252,9 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 					Boolean.TRUE.toString())) {
 
 			_testAddFragmentEntryLinks(
+				Collections.singletonList(
+					"was ignored because its Design Library is not connected " +
+						"to this site."),
 				fragmentComposition.getFragmentCompositionKey(),
 				_group.getGroupId());
 
@@ -256,6 +262,7 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 				depotEntry.getDepotEntryId(), _group.getGroupId());
 
 			_testAddFragmentEntryLinks(
+				Collections.emptyList(),
 				fragmentComposition.getFragmentCompositionKey(),
 				_group.getGroupId(), depotEntry.getGroupId());
 		}
@@ -266,6 +273,8 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 					Boolean.FALSE.toString())) {
 
 			_testAddFragmentEntryLinks(
+				Collections.singletonList(
+					"was ignored because it does not exist."),
 				fragmentComposition.getFragmentCompositionKey(),
 				_group.getGroupId());
 		}
@@ -554,6 +563,23 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 			layoutDataJSONObject.toString());
 	}
 
+	private void _assertLogEntries(
+		List<String> expectedMessageSuffixes, List<LogEntry> logEntries) {
+
+		for (int i = 0; i < logEntries.size(); i++) {
+			LogEntry logEntry = logEntries.get(i);
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(
+				message, message.endsWith(expectedMessageSuffixes.get(i)));
+		}
+
+		Assert.assertEquals(
+			logEntries.toString(), expectedMessageSuffixes.size(),
+			logEntries.size());
+	}
+
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
 			String fragmentEntryKey, String parentItemId, User user)
 		throws Exception {
@@ -622,18 +648,29 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	private void _testAddFragmentEntryLinks(
-			String fragmentCompositionKey, long... groupIds)
+			List<String> expectedMessageSuffixes, String fragmentCompositionKey,
+			long... groupIds)
 		throws Exception {
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcActionCommand, "doTransactionalCommand",
-			new Class<?>[] {ActionRequest.class, ActionResponse.class},
-			_getMockLiferayPortletActionRequest(
-				fragmentCompositionKey, null, TestPropsValues.getUser()),
-			new MockLiferayPortletActionResponse());
+		JSONObject fragmentEntryLinksJSONObject = null;
 
-		JSONObject fragmentEntryLinksJSONObject = jsonObject.getJSONObject(
-			"fragmentEntryLinks");
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.layout.internal.importer.LayoutsImporterImpl",
+				LoggerTestUtil.WARN)) {
+
+			JSONObject jsonObject = ReflectionTestUtil.invoke(
+				_mvcActionCommand, "doTransactionalCommand",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getMockLiferayPortletActionRequest(
+					fragmentCompositionKey, null, TestPropsValues.getUser()),
+				new MockLiferayPortletActionResponse());
+
+			fragmentEntryLinksJSONObject = jsonObject.getJSONObject(
+				"fragmentEntryLinks");
+
+			_assertLogEntries(
+				expectedMessageSuffixes, logCapture.getLogEntries());
+		}
 
 		long[] actualGroupIds = TransformUtil.transformToLongArray(
 			fragmentEntryLinksJSONObject.keySet(),
