@@ -5,6 +5,10 @@
 
 package com.liferay.layout.internal.importer.structure.util;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
@@ -36,6 +40,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -91,6 +96,8 @@ public class FragmentLayoutStructureItemImporter
 
 	public FragmentLayoutStructureItemImporter(
 		CompanyLocalService companyLocalService,
+		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService,
+		DepotEntryLocalService depotEntryLocalService,
 		FragmentCollectionContributorRegistry
 			fragmentCollectionContributorRegistry,
 		FragmentCollectionService fragmentCollectionService,
@@ -106,6 +113,8 @@ public class FragmentLayoutStructureItemImporter
 		SegmentsExperienceLocalService segmentsExperienceLocalService) {
 
 		_companyLocalService = companyLocalService;
+		_depotEntryGroupRelLocalService = depotEntryGroupRelLocalService;
+		_depotEntryLocalService = depotEntryLocalService;
 		_fragmentCollectionContributorRegistry =
 			fragmentCollectionContributorRegistry;
 		_fragmentCollectionService = fragmentCollectionService;
@@ -282,12 +291,12 @@ public class FragmentLayoutStructureItemImporter
 
 		Group layoutGroup = layout.getGroup();
 
-		long groupId = layoutGroup.getGroupId();
-
 		String groupKey = GetterUtil.getString(
 			fragmentDefinitionMap.get("siteKey"), null);
 
 		boolean useGlobalAsFallback = true;
+
+		Group fragmentEntryGroup = null;
 
 		if (groupKey != null) {
 			useGlobalAsFallback = false;
@@ -295,15 +304,36 @@ public class FragmentLayoutStructureItemImporter
 			GroupLocalService groupLocalService =
 				layoutStructureItemImporterContext.getGroupLocalService();
 
-			Group fragmentEntryGroup = groupLocalService.fetchGroup(
+			fragmentEntryGroup = groupLocalService.fetchGroup(
 				layout.getCompanyId(), groupKey);
+		}
 
+		boolean enabledDesignLibrary = _isEnabledDesignLibrary(
+			fragmentEntryGroup);
+
+		if (enabledDesignLibrary &&
+			!_isConnectedDepot(
+				fragmentEntryGroup.getGroupId(), layoutGroup.getGroupId())) {
+
+			warningMessages.add(
+				_getWarningMessage(
+					fragmentEntryGroup.getGroupId(), fragmentKey,
+					"fragment-with-key-x-was-ignored-because-its-design-" +
+						"library-is-not-connected-to-this-site"));
+
+			return null;
+		}
+
+		long groupId = layoutGroup.getGroupId();
+
+		if (enabledDesignLibrary) {
+			groupId = fragmentEntryGroup.getGroupId();
+		}
+		else if (fragmentEntryGroup != null) {
 			Company company = _companyLocalService.fetchCompany(
 				layout.getCompanyId());
 
-			if ((fragmentEntryGroup != null) &&
-				(fragmentEntryGroup.getGroupId() == company.getGroupId())) {
-
+			if (fragmentEntryGroup.getGroupId() == company.getGroupId()) {
 				groupId = company.getGroupId();
 			}
 		}
@@ -952,6 +982,37 @@ public class FragmentLayoutStructureItemImporter
 		return LanguageUtil.format(locale, pattern, new String[] {fragmentKey});
 	}
 
+	private boolean _isConnectedDepot(long depotGroupId, long groupId) {
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			depotGroupId);
+
+		if (depotEntry == null) {
+			return false;
+		}
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.
+				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), groupId);
+
+		if (depotEntryGroupRel != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isEnabledDesignLibrary(Group fragmentEntryGroup) {
+		if ((fragmentEntryGroup != null) && fragmentEntryGroup.isDepot() &&
+			FeatureFlagManagerUtil.isEnabled(
+				fragmentEntryGroup.getCompanyId(), "LPD-57283")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _processActionFieldValue(
 		JSONObject fragmentFieldJSONObject,
 		LayoutStructureItemImporterContext layoutStructureItemImporterContext,
@@ -1494,6 +1555,9 @@ public class FragmentLayoutStructureItemImporter
 		"\\[resources:(.+?)\\]");
 
 	private final CompanyLocalService _companyLocalService;
+	private final DepotEntryGroupRelLocalService
+		_depotEntryGroupRelLocalService;
+	private final DepotEntryLocalService _depotEntryLocalService;
 	private final FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
 	private final FragmentCollectionService _fragmentCollectionService;

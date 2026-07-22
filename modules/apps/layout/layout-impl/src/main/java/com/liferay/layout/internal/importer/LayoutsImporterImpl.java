@@ -14,6 +14,8 @@ import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
@@ -370,7 +372,8 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 			new FragmentDropZoneLayoutStructureItemImporter());
 		_addLayoutStructureItemImporter(
 			new FragmentLayoutStructureItemImporter(
-				_companyLocalService, _fragmentCollectionContributorRegistry,
+				_companyLocalService, _depotEntryGroupRelLocalService,
+				_depotEntryLocalService, _fragmentCollectionContributorRegistry,
 				_fragmentCollectionService, _fragmentEntryLinkLocalService,
 				_fragmentEntryLocalService, _fragmentEntryProcessorRegistry,
 				_fragmentEntryValidator, _fragmentRendererRegistry,
@@ -2463,6 +2466,12 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;
