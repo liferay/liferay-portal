@@ -26,6 +26,34 @@ export class HeadlessAdminWorkflowApiHelper {
 		)) as WorkflowDefinition;
 	}
 
+	async getWorkflowTaskByAsset(
+		assetClassName: string,
+		assetPrimaryKey: string
+	) {
+		const workflowInstances = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/workflow-instances?assetClassName=${encodeURIComponent(
+				assetClassName
+			)}&assetPrimaryKey=${assetPrimaryKey}&completed=false`
+		);
+
+		const workflowInstanceId = workflowInstances?.items?.[0]?.id;
+
+		if (!workflowInstanceId) {
+			return null;
+		}
+
+		const workflowTasks = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/workflow-instances/${workflowInstanceId}/workflow-tasks`
+		);
+
+		return (
+			workflowTasks?.items?.find(
+				(workflowTask: WorkflowTaskDefinition) =>
+					!workflowTask.completed
+			) ?? null
+		);
+	}
+
 	async getWorkflowTasksBySubmittingUser(
 		creatorId: number,
 		pageSize?: number
@@ -42,6 +70,26 @@ export class HeadlessAdminWorkflowApiHelper {
 			{
 				data: {
 					assigneeId,
+				},
+			}
+		);
+	}
+
+	async postWorkflowDefinitionLink(
+		className: string,
+		groupId: number,
+		workflowDefinitionId: number,
+		workflowDefinitionName: string,
+		workflowDefinitionVersion: number
+	) {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/workflow-definitions/${workflowDefinitionId}/workflow-definition-links`,
+			{
+				data: {
+					className,
+					groupId,
+					workflowDefinitionName,
+					workflowDefinitionVersion,
 				},
 			}
 		);
