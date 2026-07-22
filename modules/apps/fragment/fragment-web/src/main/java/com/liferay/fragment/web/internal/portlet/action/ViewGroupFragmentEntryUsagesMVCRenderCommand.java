@@ -5,6 +5,8 @@
 
 package com.liferay.fragment.web.internal.portlet.action;
 
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.web.internal.display.context.GroupFragmentEntryLinkDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -13,6 +15,7 @@ import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jürgen Kappler
@@ -34,9 +37,16 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommand
 		renderRequest.setAttribute(
 			GroupFragmentEntryLinkDisplayContext.class.getName(),
 			new GroupFragmentEntryLinkDisplayContext(
+				_depotEntryGroupRelLocalService, _depotEntryLocalService,
 				renderRequest, renderResponse));
 
 		return "/view_group_fragment_entry_usages.jsp";
 	}
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 }
