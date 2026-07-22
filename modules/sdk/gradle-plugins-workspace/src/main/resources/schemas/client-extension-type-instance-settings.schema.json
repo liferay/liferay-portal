@@ -205,6 +205,24 @@
 		},
 		{
 			"properties": {
+				"enabled": {
+					"default": false,
+					"description": "Enable or disable the integration with AI Hub for automatic translations.",
+					"title": "Enabled",
+					"type": "boolean"
+				},
+				"pid": {
+					"const": "com.liferay.ai.hub.cell.translator.internal.configuration.AIHubCellTranslatorConfiguration",
+					"title": "Translator Using AI Hub"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Translator Using AI Hub"
+		},
+		{
+			"properties": {
 				"location": {
 					"title": "Location",
 					"type": "string"
@@ -2879,6 +2897,72 @@
 		},
 		{
 			"properties": {
+				"allowedGrantTypes": {
+					"default": "",
+					"description": "Open registration allows only the \"grant_types\" listed here (for example, \"authorization_code\", \"refresh_token\"), or \"*\" for any grant type. An empty list rejects all open registrations.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Allowed Grant Types",
+					"type": "array"
+				},
+				"allowedHosts": {
+					"default": "",
+					"description": "Open registration allows only requests from the client IP addresses listed here. Each entry is a literal IP address or \"*\" for any host (host names are not resolved). An empty list rejects all open registrations.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Allowed Hosts",
+					"type": "array"
+				},
+				"allowedRedirectURIPatterns": {
+					"default": "",
+					"description": "Open registration allows only \"redirect_uris\" matching at least one of these glob patterns (where \"*\" matches within a single path segment), or \"*\" for any redirect URI. An empty list rejects all open registrations.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Allowed Redirect URI Patterns",
+					"type": "array"
+				},
+				"allowedScopes": {
+					"default": "",
+					"description": "Open registration allows only the scopes listed here, or \"*\" for any scope. An explicit scope is always required in the request. An empty list rejects all open registrations.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Allowed Scopes",
+					"type": "array"
+				},
+				"maximumNumberOfRegistrationsPerHour": {
+					"default": 10,
+					"description": "Maximum number of open registrations per hour for each company and client IP. Set to 0 or a negative number to disable. Counters are kept in memory and are not shared across cluster nodes.",
+					"title": "Maximum Number of Registrations per Hour",
+					"type": "number"
+				},
+				"pid": {
+					"const": "com.liferay.oauth2.provider.rest.internal.configuration.OAuth2DynamicRegistrationConfiguration",
+					"title": "Dynamic Client Registration"
+				},
+				"requireInitialAccessToken": {
+					"default": true,
+					"description": "When enabled (default), registration requires a bearer token issued for the \"Dynamic Registrator\" OAuth 2 application. When disabled, open registration is accepted and owned by the default service account.",
+					"title": "Require Initial Access Token",
+					"type": "boolean"
+				},
+				"trustProxyHeaders": {
+					"default": false,
+					"description": "When enabled, take the client IP for the allowed hosts and rate limit checks from the \"X-Forwarded-For\" header rather than the direct TCP peer. Enable only behind a trusted proxy that overwrites this header, since it can be spoofed.",
+					"title": "Trust Proxy Headers",
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Dynamic Client Registration"
+		},
+		{
+			"properties": {
 				"issuer": {
 					"description": "OAuth 2 Incoming Assertion Issuer",
 					"title": "OAuth 2 Incoming Assertion Issuer",
@@ -3962,12 +4046,7 @@
 					"type": "number"
 				},
 				"referral": {
-					"default": "follow",
-					"enum": [
-						"follow",
-						"ignore",
-						"throws"
-					],
+					"description": "Set how the server handles LDAP referrals to entries on another server. Use \"ignore\" (the default) to skip them, \"follow\" to resolve them safely over \"ldap\" and \"ldaps\" only, or \"throw\" to raise an error.",
 					"title": "Referral",
 					"type": "string"
 				}
@@ -5086,6 +5165,7 @@
 				"com.liferay.adaptive.media.image.internal.configuration.AMImageCompanyConfiguration",
 				"com.liferay.ai.creator.openai.configuration.AICreatorOpenAICompanyConfiguration",
 				"com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration",
+				"com.liferay.ai.hub.cell.translator.internal.configuration.AIHubCellTranslatorConfiguration",
 				"com.liferay.ai.hub.configuration.VertexAIConfiguration",
 				"com.liferay.analytics.settings.configuration.AnalyticsConfiguration",
 				"com.liferay.asset.auto.tagger.google.cloud.natural.language.internal.configuration.GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration",
@@ -5156,6 +5236,7 @@
 				"com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIPAddressConfiguration",
 				"com.liferay.multi.factor.authentication.sample.internal.configuration.MFASampleConfiguration",
 				"com.liferay.multi.factor.authentication.timebased.otp.web.internal.configuration.MFATimeBasedOTPConfiguration",
+				"com.liferay.oauth2.provider.rest.internal.configuration.OAuth2DynamicRegistrationConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.configuration.OAuth2InAssertionConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.endpoint.authorize.configuration.AuthorizeScreenConfiguration",
 				"com.liferay.object.configuration.ObjectConfiguration",
