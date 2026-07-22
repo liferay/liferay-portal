@@ -7,6 +7,7 @@ import {
 	AudiencesCriteria,
 	CriteriaNode,
 	Group,
+	Rule,
 	SerializedGroup,
 } from '../../../src/main/resources/META-INF/resources/js/types';
 import {addGroup} from '../../../src/main/resources/META-INF/resources/js/util/tree/addGroup';
@@ -64,6 +65,24 @@ const COUNTRY: AudiencesCriteria = {
 	type: 'string',
 };
 
+const LOCAL_HOUR: AudiencesCriteria = {
+	icon: 'time',
+	inputType: 'select',
+	key: 'local_hour',
+	label: 'Local Hour',
+	options: [{label: '14:00', value: '14'}],
+	type: 'number',
+};
+
+const USER_AUTHENTICATION: AudiencesCriteria = {
+	icon: 'check',
+	inputType: 'boolean',
+	key: 'user_authentication',
+	label: 'User Authentication',
+	options: [],
+	type: 'boolean',
+};
+
 const NESTED_TREE: SerializedGroup = {
 	conjunction: 'OR',
 	rules: [
@@ -87,6 +106,64 @@ describe('tree', () => {
 			expect(serializeGroup(parseRootGroup(NESTED_TREE))).toEqual(
 				NESTED_TREE
 			);
+		});
+
+		it('serializes boolean and numeric values by criteria type', () => {
+			const audiencesCriteriasByKey = {
+				local_hour: LOCAL_HOUR,
+				user_authentication: USER_AUTHENTICATION,
+			};
+
+			const root = parseRootGroup({
+				conjunction: 'AND',
+				rules: [
+					{
+						attribute: 'user_authentication',
+						operator: 'eq',
+						value: 'true',
+					},
+					{attribute: 'local_hour', operator: 'gt', value: '14'},
+				],
+			});
+
+			expect(serializeGroup(root, audiencesCriteriasByKey).rules).toEqual(
+				[
+					{
+						attribute: 'user_authentication',
+						operator: 'eq',
+						value: true,
+					},
+					{attribute: 'local_hour', operator: 'gt', value: 14},
+				]
+			);
+		});
+
+		it('keeps a non-numeric number value as a string', () => {
+			const root = parseRootGroup({
+				conjunction: 'AND',
+				rules: [{attribute: 'local_hour', operator: 'gt', value: 'x'}],
+			});
+
+			expect(
+				serializeGroup(root, {local_hour: LOCAL_HOUR}).rules
+			).toEqual([{attribute: 'local_hour', operator: 'gt', value: 'x'}]);
+		});
+
+		it('parses stored boolean and numeric values into strings', () => {
+			const root = parseRootGroup({
+				conjunction: 'AND',
+				rules: [
+					{
+						attribute: 'user_authentication',
+						operator: 'eq',
+						value: false,
+					},
+					{attribute: 'local_hour', operator: 'gt', value: 14},
+				],
+			});
+
+			expect((root.items[0] as Rule).value).toBe('false');
+			expect((root.items[1] as Rule).value).toBe('14');
 		});
 
 		it('assigns ids and preserves nested groups on parse', () => {
@@ -134,6 +211,14 @@ describe('tree', () => {
 	});
 
 	describe('mutations', () => {
+		it('creates a boolean rule with a default true value', () => {
+			expect(createRule(USER_AUTHENTICATION)).toMatchObject({
+				attribute: 'user_authentication',
+				operator: 'eq',
+				value: 'true',
+			});
+		});
+
 		it('adds a rule to the root and to a nested group', () => {
 			let root = parseRootGroup(NESTED_TREE);
 

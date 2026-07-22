@@ -44,6 +44,14 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 				options: [],
 				type: 'string',
 			},
+			{
+				icon: 'check',
+				inputType: 'boolean',
+				key: 'user_authentication',
+				label: 'User Authentication',
+				options: [],
+				type: 'boolean',
+			},
 		],
 		key: 'user',
 		label: 'User',
@@ -133,6 +141,33 @@ describe('ConditionsPanel', () => {
 		expect(dispatch).toHaveBeenCalledWith({
 			conjunction: 'OR',
 			type: 'SET_CONJUNCTION',
+		});
+	});
+
+	it('dispatches a true or false value for a boolean rule', async () => {
+		const {dispatch} = renderConditionsPanel({
+			items: [
+				{
+					attribute: 'user_authentication',
+					id: 'rule-auth',
+					operator: 'eq',
+					value: 'true',
+				},
+			],
+		});
+
+		await userEvent.click(screen.getByLabelText('value'));
+		await userEvent.click(screen.getByRole('option', {name: 'false'}));
+
+		expect(dispatch).toHaveBeenCalledWith({
+			path: [0],
+			rule: {
+				attribute: 'user_authentication',
+				id: 'rule-auth',
+				operator: 'eq',
+				value: 'false',
+			},
+			type: 'UPDATE_RULE',
 		});
 	});
 

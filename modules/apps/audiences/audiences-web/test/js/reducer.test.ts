@@ -5,11 +5,9 @@
 
 import '@testing-library/jest-dom';
 
-import {
-	initState,
-	serializeCriteria,
-} from '../../src/main/resources/META-INF/resources/js/reducer';
+import {initState} from '../../src/main/resources/META-INF/resources/js/reducer';
 import {AudiencesCriteriaRulesGroup} from '../../src/main/resources/META-INF/resources/js/types';
+import {serializeCriteria} from '../../src/main/resources/META-INF/resources/js/util/tree/serializeCriteria';
 
 describe('reducer', () => {
 	it('normalizes groups when loading stored criteria', () => {
@@ -52,7 +50,9 @@ describe('reducer', () => {
 			],
 		};
 
-		const parsed = JSON.parse(serializeCriteria(initState({rulesGroup})));
+		const parsed = JSON.parse(
+			serializeCriteria(initState({rulesGroup}).root)
+		);
 
 		expect(parsed.rules).toHaveLength(3);
 		expect(parsed.rules[1].conjunction).toBe('OR');
