@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
@@ -53,7 +52,6 @@ public class BackgroundTaskStatusMessageListener implements MessageListener {
 		long companyId = message.getLong("companyId");
 
 		if ((companyId == CompanyConstants.SYSTEM) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-66359") ||
 			(message.getInteger("status") !=
 				BackgroundTaskConstants.STATUS_SUCCESSFUL) ||
 			!Objects.equals(

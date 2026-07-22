@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.dsr.site.initializer.internal.feature.flag;
+package com.liferay.site.dsr.site.initializer.internal.instance.lifecycle;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -23,26 +21,27 @@ import com.liferay.site.dsr.site.initializer.internal.constants.DSRConstants;
 import com.liferay.site.dsr.site.initializer.internal.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
-import java.util.Objects;
-
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Stefano Motta
  */
-@Component(
-	property = "feature.flag.key=LPD-66359", service = FeatureFlagListener.class
-)
-public class DSRFeatureFlagListener implements FeatureFlagListener {
+@Component(service = PortalInstanceLifecycleListener.class)
+public class DSRInitialRequestPortalInstanceLifecycleListener
+	extends InitialRequestPortalInstanceLifecycleListener {
+
+	@Activate
+	@Override
+	protected void activate(BundleContext bundleContext) {
+		super.activate(bundleContext);
+	}
 
 	@Override
-	public void onValue(
-		long companyId, String featureFlagKey, boolean enabled) {
-
-		if (!enabled || !Objects.equals(featureFlagKey, "LPD-66359") ||
-			!LicenseManagerUtil.isAppEnabled(App.DSR)) {
-
+	protected void doPortalInstanceRegistered(long companyId) throws Exception {
+		if (!LicenseManagerUtil.isAppEnabled(App.DSR)) {
 			return;
 		}
 
@@ -68,13 +67,7 @@ public class DSRFeatureFlagListener implements FeatureFlagListener {
 
 			SiteInitializerUtil.initialize(companyId, group, _siteInitializer);
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DSRFeatureFlagListener.class);
 
 	@Reference
 	private GroupLocalService _groupLocalService;

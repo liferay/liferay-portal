@@ -47,9 +47,7 @@ public class CMSFileDLPortletToolbarContributorContext
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-17564") ||
-			!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-66359")) {
+				themeDisplay.getCompanyId(), "LPD-17564")) {
 
 			return;
 		}

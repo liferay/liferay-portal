@@ -23,7 +23,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -95,12 +94,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	public void deleteRoomUserAccount(Long roomId, Long userAccountId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _getGroup(roomId);
 
 		LiveUsers.leaveGroup(
@@ -118,12 +111,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	public Page<UserAccount> getRoomUserAccountsPage(
 			Long roomId, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
 
@@ -145,12 +132,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	public UserAccount patchRoomUserAccount(
 			Long roomId, Long userAccountId, UserAccount userAccount)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Group group = _getGroup(roomId);
 
@@ -187,12 +168,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	@Override
 	public UserAccount postRoomUserAccount(Long roomId, UserAccount userAccount)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		if (Validator.isNull(userAccount.getEmailAddress())) {
 			throw new ValidationException("Email Address is null");

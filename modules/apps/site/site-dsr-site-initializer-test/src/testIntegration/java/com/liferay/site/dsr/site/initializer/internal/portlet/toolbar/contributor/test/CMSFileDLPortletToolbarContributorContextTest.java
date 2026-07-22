@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -63,11 +62,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Stefano Motta
  */
-@FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPD-66359")
-	}
-)
+@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class CMSFileDLPortletToolbarContributorContextTest {
 

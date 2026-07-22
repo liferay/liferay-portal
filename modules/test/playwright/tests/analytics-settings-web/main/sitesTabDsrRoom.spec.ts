@@ -24,7 +24,6 @@ export const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
 		'LPD-35443': {enabled: true},
-		'LPD-66359': {enabled: true},
 	}),
 	isolatedChannelTest,
 	loginAnalyticsCloudTest(),

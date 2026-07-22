@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -62,13 +61,6 @@ public class DSRTestUtil {
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						group.getCompanyId())) {
 
-				// These tests require the instance to be created with the
-				// feature flag LPD-66359 enabled. On CI, feature flags are
-				// enabled on demand for each test, but not during instance
-				// initialization. Until the feature flag LPD-66359 is removed,
-				// run the instance lifecycle initializer manually so that the
-				// role is created.
-
 				SiteInitializerRegistry siteInitializerRegistry =
 					_siteInitializerRegistrySnapshot.get();
 
@@ -87,9 +79,6 @@ public class DSRTestUtil {
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
-
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-66359");
 
 		return group;
 	}

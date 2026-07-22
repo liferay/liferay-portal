@@ -12,7 +12,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -55,12 +54,6 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 	public void deleteRoomInvitedMember(Long roomId, Long invitedMemberId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		ObjectEntry objectEntry = _getObjectEntry(roomId);
 
 		DSRRoomUtil.checkPermission(
@@ -79,12 +72,6 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 	public Page<InvitedMember> getRoomInvitedMembersPage(Long roomId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		ObjectEntry objectEntry = _getObjectEntry(roomId);
 
 		Group group = _groupService.getGroup(
@@ -102,12 +89,6 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 	public InvitedMember patchRoomInvitedMember(
 			Long roomId, Long invitedMemberId, InvitedMember invitedMember)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-66359")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		ObjectEntry objectEntry = _getObjectEntry(roomId);
 

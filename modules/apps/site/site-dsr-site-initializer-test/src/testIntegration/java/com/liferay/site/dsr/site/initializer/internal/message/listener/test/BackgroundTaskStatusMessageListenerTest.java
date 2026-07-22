@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
@@ -51,7 +50,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Tancredi Covioli
  */
-@FeatureFlag("LPD-66359")
 @RunWith(Arquillian.class)
 public class BackgroundTaskStatusMessageListenerTest {
 
