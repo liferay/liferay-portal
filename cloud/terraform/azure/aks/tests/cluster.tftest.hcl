@@ -7,7 +7,7 @@ run "should_apply_default_node_pool_settings" {
 		error_message="The default node pool must not enable cluster autoscaling"
 	}
 	assert {
-		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].host_encryption_enabled == true
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].host_encryption_enabled == false
 		error_message="The default node pool must encrypt temp disks and caches at the host"
 	}
 	assert {

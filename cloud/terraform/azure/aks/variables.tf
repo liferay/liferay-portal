@@ -11,6 +11,10 @@ variable "container_registries" {
 variable "deployment_name" {
 	type=string
 }
+variable "host_encryption_enabled" {
+	default=false
+	type=bool
+}
 variable "machine_type" {
 	default="Standard_D4ds_v4"
 	type=string

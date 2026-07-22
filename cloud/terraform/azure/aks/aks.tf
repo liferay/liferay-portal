@@ -23,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 	workload_identity_enabled=true
 	default_node_pool {
 		auto_scaling_enabled=false
-		host_encryption_enabled=true
+		host_encryption_enabled=var.host_encryption_enabled
 		max_pods=50
 		name="system"
 		node_count=var.system_node_count
