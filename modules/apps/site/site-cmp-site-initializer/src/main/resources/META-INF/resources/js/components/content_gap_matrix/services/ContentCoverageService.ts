@@ -14,46 +14,47 @@ export interface ContentCoverageService {
 interface ContentCoverageTermResponse {
 	description?: string;
 	externalReferenceCode: string;
-	id: string;
+	id: number;
 	name: string;
 }
 
 interface ContentCoverageEntryResponse {
-	funnelStageId: string | null;
-	personaId: string | null;
-	totalCount: number;
+	assetCount: number;
+	funnelStageId: number | null;
+	personaId: number | null;
 }
 
 interface ContentCoverageResponse {
+	assetCount?: number;
 	contentCoverageEntries?: ContentCoverageEntryResponse[];
 	funnelStages?: ContentCoverageTermResponse[];
 	personas?: ContentCoverageTermResponse[];
-	totalAssetCount?: number;
 }
 
 function toTaxonomyTerm(term: ContentCoverageTermResponse): TaxonomyTerm {
 	return {
 		description: term.description,
 		externalReferenceCode: term.externalReferenceCode,
-		id: term.id,
+		id: String(term.id),
 		name: term.name,
 	};
 }
 
 /**
  * Adapts the REST response to MatrixData. The endpoint returns the real personas
- * and funnel stages plus cells keyed by category id, using UNCATEGORIZED_ID
- * ("-1") for the uncategorized "other" bucket. This appends the localized
- * sentinel axes (which reuse that id) so those cells land in the "No Persona"
- * row / "No Funnel" column; a missing id defensively falls back to the same
- * sentinel.
+ * and funnel stages plus cells keyed by numeric category id, using
+ * UNCATEGORIZED_ID (-1) for the uncategorized "other" bucket and omitting
+ * zero-count cells (the grid defaults a missing cell to 0). This appends the
+ * localized sentinel axes (which reuse that id) so those cells land in the "No
+ * Persona" row / "No Funnel" column; a missing id defensively falls back to the
+ * same sentinel.
  */
 export function toMatrixData(response: ContentCoverageResponse): MatrixData {
 	return {
 		cells: (response.contentCoverageEntries ?? []).map((entry) => ({
-			funnelStageId: entry.funnelStageId ?? NO_FUNNEL_STAGE.id,
-			personaId: entry.personaId ?? NO_PERSONA.id,
-			totalCount: entry.totalCount,
+			funnelStageId: String(entry.funnelStageId ?? NO_FUNNEL_STAGE.id),
+			personaId: String(entry.personaId ?? NO_PERSONA.id),
+			totalCount: entry.assetCount,
 		})),
 		funnelStages: [
 			...(response.funnelStages ?? []).map(toTaxonomyTerm),
@@ -63,7 +64,7 @@ export function toMatrixData(response: ContentCoverageResponse): MatrixData {
 			...(response.personas ?? []).map(toTaxonomyTerm),
 			NO_PERSONA,
 		],
-		totalAssetCount: response.totalAssetCount ?? 0,
+		totalAssetCount: response.assetCount ?? 0,
 	};
 }
 
