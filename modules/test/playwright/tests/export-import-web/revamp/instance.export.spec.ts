@@ -50,16 +50,27 @@ test(
 	'Cannot select comments and ratings at instance level',
 	{tag: '@LPD-57655'},
 	async ({
+		apiHelpers,
 		exportImportDataSelectionPage,
 		exportImportPage,
 		globalMenuPage,
 		page,
 	}) => {
+		const listTypeDefinition =
+			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+
+		apiHelpers.data.push({
+			id: listTypeDefinition.id,
+			type: 'listTypeDefinition',
+		});
+
 		await globalMenuPage.goToApplications('Export');
 
 		await exportImportPage.clickNew();
 
 		await exportImportDataSelectionPage.expandSection('Content & Data');
+
+		await page.getByRole('checkbox', {name: 'Content & Data'}).check();
 
 		await expect(page.getByText('Comments and Ratings')).toBeHidden();
 	}
