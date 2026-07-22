@@ -22,7 +22,7 @@ public interface GCSStoreConfiguration {
 
 	@Meta.AD(
 		deflt = "", description = "aes256-key-help", name = "aes256-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String aes256Key();
 
@@ -82,7 +82,7 @@ public interface GCSStoreConfiguration {
 	)
 	@Meta.AD(
 		description = "service-account-key-help", name = "service-account-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String serviceAccountKey();
 

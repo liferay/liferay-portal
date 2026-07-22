@@ -148,7 +148,8 @@ public interface S3StoreConfiguration {
 	public String s3StorageClass();
 
 	@Meta.AD(
-		description = "secret-key-help", name = "secret-key", required = false
+		description = "secret-key-help", name = "secret-key", required = false,
+		type = Meta.Type.Password
 	)
 	public String secretKey();
 
