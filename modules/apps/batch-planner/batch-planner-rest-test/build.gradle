@@ -7,6 +7,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:batch-planner:batch-planner-api")
 	testIntegrationImplementation project(":apps:batch-planner:batch-planner-rest-api")
 	testIntegrationImplementation project(":apps:batch-planner:batch-planner-rest-client")
+	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-test-util")

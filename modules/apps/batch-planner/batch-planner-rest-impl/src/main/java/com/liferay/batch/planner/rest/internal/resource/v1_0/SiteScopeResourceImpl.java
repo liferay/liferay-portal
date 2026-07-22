@@ -9,6 +9,8 @@ import com.liferay.batch.planner.batch.engine.task.TaskItemUtil;
 import com.liferay.batch.planner.rest.dto.v1_0.SiteScope;
 import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.SiteScopeResource;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
@@ -80,6 +82,15 @@ public class SiteScopeResourceImpl extends BaseSiteScopeResourceImpl {
 	private List<SiteScope> _getSiteScopes(List<String> entityScopes)
 		throws Exception {
 
+		if (entityScopes.contains("depot")) {
+			return _toSiteScopes(
+				transform(
+					_depotEntryService.getDepotEntryGroupIds(
+						contextCompany.getCompanyId(), contextUser.getUserId(),
+						DepotConstants.TYPE_SPACE),
+					_groupService::getGroup));
+		}
+
 		if (!entityScopes.contains("site")) {
 			return Collections.emptyList();
 		}
@@ -111,6 +122,9 @@ public class SiteScopeResourceImpl extends BaseSiteScopeResourceImpl {
 		Company.class.getName(), Group.class.getName(),
 		Organization.class.getName()
 	};
+
+	@Reference
+	private DepotEntryService _depotEntryService;
 
 	@Reference
 	private GroupService _groupService;
