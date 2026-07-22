@@ -27,7 +27,12 @@ export default function getFieldValues(
 			return;
 		}
 
-		const filledControl = controls.find((control) => control.value.trim());
+		const filledControl = controls.find(
+			(control): control is HTMLInputElement | HTMLTextAreaElement =>
+				(control instanceof HTMLInputElement ||
+					control instanceof HTMLTextAreaElement) &&
+				Boolean(control.value.trim())
+		);
 
 		if (filledControl) {
 			values[name] = filledControl.value;

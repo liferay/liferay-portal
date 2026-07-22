@@ -4,10 +4,33 @@
  */
 
 import getFieldControls, {FieldControl} from './getFieldControls';
-import getRichTextEditor from './getRichTextEditor';
+import getRichTextEditor, {RichTextEditor} from './getRichTextEditor';
+
+function setRichTextEditorData(editor: RichTextEditor, value: string) {
+	const {data, model} = editor;
+
+	if (!data || !model) {
+		editor.setData(value);
+
+		return;
+	}
+
+	const modelFragment = data.toModel(data.processor.toView(value));
+
+	const root = model.document.getRoot();
+
+	model.change((writer) => {
+		writer.remove(writer.createRangeIn(root));
+
+		model.insertContent(modelFragment, root);
+	});
+}
 
 function setControlValue(control: FieldControl, value: string) {
-	if (control instanceof HTMLSelectElement) {
+	if (
+		!(control instanceof HTMLInputElement) &&
+		!(control instanceof HTMLTextAreaElement)
+	) {
 		return;
 	}
 
@@ -27,9 +50,25 @@ function setControlValue(control: FieldControl, value: string) {
 	control.dispatchEvent(new Event('change', {bubbles: true}));
 }
 
+function getLocaleControl(
+	controls: FieldControl[],
+	languageId?: string
+): FieldControl {
+	if (!languageId || controls.length < 2) {
+		return controls[0];
+	}
+
+	return (
+		controls.find((control) =>
+			control.getAttribute('name')?.endsWith(`_${languageId}`)
+		) ?? controls[0]
+	);
+}
+
 export default function applyFieldValues(
 	form: Element,
-	values: Record<string, string>
+	values: Record<string, string>,
+	languageId?: string
 ): void {
 	Object.entries(values).forEach(([name, value]) => {
 		const controls = getFieldControls(form, name);
@@ -41,11 +80,11 @@ export default function applyFieldValues(
 		const editor = getRichTextEditor(controls[0]);
 
 		if (editor) {
-			editor.setData(value);
+			setRichTextEditorData(editor, value);
 
 			return;
 		}
 
-		setControlValue(controls[0], value);
+		setControlValue(getLocaleControl(controls, languageId), value);
 	});
 }
