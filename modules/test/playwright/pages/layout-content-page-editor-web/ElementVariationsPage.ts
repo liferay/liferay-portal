@@ -6,6 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {hoverAndExpectToBeVisible} from '../../utils/hoverAndExpectToBeVisible';
 
 export class ElementVariationsPage {
 	readonly audienceInput: Locator;
@@ -71,18 +72,9 @@ export class ElementVariationsPage {
 
 		await this.nameInput.fill(name);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('option', {name: pageElementLabel}),
-			trigger: this.pageElementPicker,
-		});
+		await this.selectPageElement(pageElementLabel);
 
-		await this.audienceInput.fill(audienceName);
-
-		await this.page
-			.locator('.dropdown-menu')
-			.getByText(audienceName)
-			.click();
+		await this.selectAudience(audienceName);
 
 		if (hide) {
 			await this.hideToggle.click();
@@ -111,6 +103,72 @@ export class ElementVariationsPage {
 		await this.saveButton.click();
 
 		await this.sidebar.getByText(name).waitFor();
+	}
+
+	async deleteElementVariation(name: string) {
+		await this.openVariationActions(name);
+
+		await this.page
+			.locator('.dropdown-menu')
+			.getByText('Delete', {exact: true})
+			.click();
+
+		await this.getVariationListItem(name).waitFor({state: 'hidden'});
+	}
+
+	async editElementVariation({
+		hide,
+		html,
+		javaScript,
+		name,
+		newName,
+	}: {
+		hide?: boolean;
+		html?: string;
+		javaScript?: string;
+		name: string;
+		newName?: string;
+	}) {
+		await this.openVariationActions(name);
+
+		await this.page
+			.locator('.dropdown-menu')
+			.getByText('Edit', {exact: true})
+			.click();
+
+		if (newName) {
+			await this.nameInput.fill(newName);
+		}
+
+		if (hide) {
+			await this.hideToggle.click();
+		}
+
+		if (html) {
+			await this.htmlInput.fill(html);
+		}
+
+		if (javaScript) {
+			await this.javaScriptInput.fill(javaScript);
+		}
+
+		await this.saveButton.click();
+
+		await this.sidebar.getByText(newName ?? name).waitFor();
+	}
+
+	getVariationListItem(name: string): Locator {
+		return this.sidebar.getByRole('listitem').filter({hasText: name});
+	}
+
+	async openVariationActions(name: string) {
+		const item = this.getVariationListItem(name);
+
+		await hoverAndExpectToBeVisible({
+			autoClick: true,
+			target: item.getByRole('button', {name: 'Actions'}),
+			trigger: item,
+		});
 	}
 
 	async prioritizeAudience(audienceName: string) {
@@ -159,11 +217,47 @@ export class ElementVariationsPage {
 		await this.audiencesPriorityModal.waitFor({state: 'hidden'});
 	}
 
+	async setVariationActive(name: string, active: boolean) {
+		await this.openVariationActions(name);
+
+		const responsePromise = this.page.waitForResponse((response) =>
+			response
+				.url()
+				.includes(
+					'update_layout_page_template_structure_rel_element_variation'
+				)
+		);
+
+		await this.page
+			.locator('.dropdown-menu')
+			.getByText(active ? 'Enable' : 'Disable', {exact: true})
+			.click();
+
+		await responsePromise;
+	}
+
+	async selectAudience(audienceName: string) {
+		await this.audienceInput.fill(audienceName);
+
+		await this.page
+			.locator('.dropdown-menu')
+			.getByText(audienceName)
+			.click();
+	}
+
 	async selectLanguage(languageId: string) {
 		await this.languageSelector.click();
 
 		await this.page
 			.getByRole('option', {name: `${languageId} Language`})
 			.click();
+	}
+
+	async selectPageElement(pageElementLabel: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('option', {name: pageElementLabel}),
+			trigger: this.pageElementPicker,
+		});
 	}
 }
