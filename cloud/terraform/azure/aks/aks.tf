@@ -49,10 +49,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 	key_vault_secrets_provider {
 		secret_rotation_enabled=true
 	}
-	dynamic "monitor_metrics" {
-		content {}
-		for_each=var.observability_config.enabled ? [1] : []
-	}
 	network_profile {
 		dns_service_ip=local.dns_service_ip
 		network_data_plane="cilium"
