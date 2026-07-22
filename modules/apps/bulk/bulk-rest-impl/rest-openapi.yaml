@@ -53,6 +53,7 @@ components:
                     ResetPermissionObjectBulkSelectionAction: "#/components/schemas/ResetPermissionObjectBulkSelectionAction"
                     RestoreObjectBulkSelectionAction: "#/components/schemas/RestoreObjectBulkSelectionAction"
                     StatusObjectBulkSelectionAction: "#/components/schemas/StatusObjectBulkSelectionAction"
+                    UpdateExpirationDateObjectBulkSelectionAction: "#/components/schemas/UpdateExpirationDateObjectBulkSelectionAction"
                     UpdateObjectValuesBulkSelectionAction: "#/components/schemas/UpdateObjectValuesBulkSelectionAction"
                     UpdateReviewDateObjectBulkSelectionAction: "#/components/schemas/UpdateReviewDateObjectBulkSelectionAction"
                 propertyName: type
@@ -83,6 +84,7 @@ components:
                         -   RestoreObjectBulkSelectionAction
                         -   StatusObjectBulkSelectionAction
                         -   EditObjectCategoriesBulkSelectionAction
+                        -   UpdateExpirationDateObjectBulkSelectionAction
                         -   UpdateObjectValuesBulkSelectionAction
                         -   UpdateReviewDateObjectBulkSelectionAction
                     type: string
@@ -334,6 +336,13 @@ components:
                 taxonomyVocabularyId:
                     format: int64
                     type: integer
+        UpdateExpirationDateObjectBulkSelectionAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        expirationDate:
+                            format: date-time
+                            type: string
         UpdateObjectValuesBulkSelectionAction:
             allOf:
                 -   $ref: "#/components/schemas/BulkAction"

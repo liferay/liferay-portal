@@ -22,6 +22,7 @@ import com.liferay.bulk.rest.dto.v1_0.MoveObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.SelectionScope;
 import com.liferay.bulk.rest.dto.v1_0.StatusObjectBulkSelectionAction;
+import com.liferay.bulk.rest.dto.v1_0.UpdateExpirationDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.internal.odata.entity.v1_0.BulkActionEntityModel;
@@ -520,6 +521,12 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 			return _statusObjectBulkSelectionAction;
 		}
+		else if (BulkAction.Type.
+					UPDATE_EXPIRATION_DATE_OBJECT_BULK_SELECTION_ACTION.equals(
+						type)) {
+
+			return _updateExpirationDateObjectBulkSelectionAction;
+		}
 		else if (BulkAction.Type.UPDATE_OBJECT_VALUES_BULK_SELECTION_ACTION.
 					equals(type)) {
 
@@ -750,6 +757,19 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 			return hashMapWrapper.put(
 				"values", (Serializable)updateValuesBulkAction.getValues()
+			).build();
+		}
+		else if (BulkAction.Type.
+					UPDATE_EXPIRATION_DATE_OBJECT_BULK_SELECTION_ACTION.equals(
+						type)) {
+
+			UpdateExpirationDateObjectBulkSelectionAction
+				updateExpirationDateBulkAction =
+					(UpdateExpirationDateObjectBulkSelectionAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"expirationDate",
+				updateExpirationDateBulkAction.getExpirationDate()
 			).build();
 		}
 		else if (BulkAction.Type.
@@ -1276,6 +1296,12 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 	@Reference
 	private TrashHelper _trashHelper;
+
+	@Reference(
+		target = "(bulk.selection.action.key=update.expiration.date.object)"
+	)
+	private BulkSelectionAction<Object>
+		_updateExpirationDateObjectBulkSelectionAction;
 
 	@Reference(target = "(bulk.selection.action.key=update.object.values)")
 	private BulkSelectionAction<Object> _updateObjectValuesBulkSelectionAction;
