@@ -161,21 +161,22 @@ class ItemSelector extends Plugin {
 								folderMemory.remember(folderId);
 							}
 
-							let url: string;
+							let html: string | undefined;
+							let url: string | undefined;
 
 							try {
-								url = JSON.parse(value).url;
+								({html, url} = JSON.parse(value));
 							}
 							catch (error) {
-								url = value.url;
+								({html, url} = value);
 							}
 
-							if (!url) {
+							if (!html && !url) {
 								return;
 							}
 
 							const viewFragment = editor.data.processor.toView(
-								`<oembed url="${url}"></oembed>`
+								html || `<oembed url="${url}"></oembed>`
 							);
 
 							const modelFragment =
