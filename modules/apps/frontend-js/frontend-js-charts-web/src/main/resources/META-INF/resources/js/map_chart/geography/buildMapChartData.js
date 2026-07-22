@@ -22,10 +22,17 @@
  * download it again from
  * `https://unpkg.com/visionscarto-world-atlas@1.0.0/world/110m.json`.
  *
- * Projection: equirectangular (`x = lon`, `y = -lat`, both linearly scaled
- * to the viewBox). This is a small non-interactive chart, so the added
- * distortion versus Mercator near the poles is an acceptable trade for
- * avoiding a `log(tan(...))` transform.
+ * Projection: Miller cylindrical (`x = lon` linear, `y = 1.25 *
+ * ln(tan(PI / 4 + 0.4 * lat))`), with latitudes clamped to [-57, 84].
+ * Miller keeps mid-latitude countries (Europe, North America) close to
+ * their familiar proportions instead of the vertically-squashed look of a
+ * plain equirectangular fit. The clamp crops the empty polar bands that
+ * Miller would otherwise inflate; nothing but sea and the excluded
+ * Antarctica lives outside it.
+ *
+ * Antarctica is excluded from the output: it renders as a full-width flat
+ * band at the bottom of the map, no audience metric ever targets it, and
+ * dropping it lets the viewBox crop to the inhabited world.
  *
  * Centroid: the average of every point in the geometry's largest ring
  * (by point count), which stands in for the exterior ring. A plain point
@@ -50,7 +57,27 @@ const fs = require('fs');
 const path = require('path');
 
 const VIEW_BOX_WIDTH = 558;
-const VIEW_BOX_HEIGHT = 282;
+
+const MAX_LATITUDE = 84;
+const MIN_LATITUDE = -57;
+
+function millerY(latitude) {
+	const latitudeRadians = (latitude * Math.PI) / 180;
+
+	return 1.25 * Math.log(Math.tan(Math.PI / 4 + 0.4 * latitudeRadians));
+}
+
+const MILLER_Y_MAX = millerY(MAX_LATITUDE);
+const MILLER_Y_MIN = millerY(MIN_LATITUDE);
+
+// Same pixels-per-radian scale on both axes, so Miller's intended shapes
+// survive the fit into the viewBox.
+
+const VIEW_BOX_HEIGHT = Math.round(
+	(VIEW_BOX_WIDTH / (2 * Math.PI)) * (MILLER_Y_MAX - MILLER_Y_MIN)
+);
+
+const EXCLUDED_ALPHA2_CODES = new Set(['AQ']);
 
 const NUMERIC_TO_ALPHA2 = {
 	'004': 'AF',
@@ -422,8 +449,12 @@ function collectRings(geometry, decodedArcs) {
 }
 
 function projectPoint([lon, lat]) {
+	const clampedLat = Math.min(MAX_LATITUDE, Math.max(MIN_LATITUDE, lat));
+
 	const x = ((lon + 180) / 360) * VIEW_BOX_WIDTH;
-	const y = ((90 - lat) / 180) * VIEW_BOX_HEIGHT;
+	const y =
+		((MILLER_Y_MAX - millerY(clampedLat)) / (MILLER_Y_MAX - MILLER_Y_MIN)) *
+		VIEW_BOX_HEIGHT;
 
 	return [x, y];
 }
@@ -521,6 +552,10 @@ function buildMapChartData(topology, alpha2ToNameKey) {
 			console.warn(
 				`Skipping country with no resolvable key: ${geometry.id}`
 			);
+			continue;
+		}
+
+		if (EXCLUDED_ALPHA2_CODES.has(key)) {
 			continue;
 		}
 
