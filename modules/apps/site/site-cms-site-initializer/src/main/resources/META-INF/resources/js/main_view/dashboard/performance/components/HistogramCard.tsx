@@ -88,7 +88,6 @@ export function HistogramCard({
 						},
 					]}
 					title=""
-					width={1200}
 				/>
 			</ChartState>
 		</BaseCard>
