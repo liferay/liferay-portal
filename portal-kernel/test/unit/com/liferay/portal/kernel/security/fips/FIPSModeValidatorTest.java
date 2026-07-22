@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -14,6 +15,7 @@ import java.security.Provider;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,6 +25,41 @@ import org.junit.function.ThrowingRunnable;
  * @author Caio Farias
  */
 public class FIPSModeValidatorTest {
+
+	@Test
+	public void testGetPlaintextSecretProperties() {
+		String obfuscatedKey1 = RandomTestUtil.randomString();
+		String obfuscatedKey2 = RandomTestUtil.randomString();
+		String obfuscatedKey3 = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"ADMIN_OBFUSCATED_PROPERTIES",
+					new String[] {
+						obfuscatedKey1, obfuscatedKey2, obfuscatedKey3
+					})) {
+
+			Properties properties = new Properties();
+
+			properties.setProperty(
+				obfuscatedKey1, RandomTestUtil.randomString());
+			properties.setProperty(
+				obfuscatedKey2, "${" + RandomTestUtil.randomString() + "}");
+			properties.setProperty(obfuscatedKey3, StringPool.BLANK);
+			properties.setProperty(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+			List<String> plaintextSecretProperties = ReflectionTestUtil.invoke(
+				FIPSModeValidator.class, "_getPlaintextSecretProperties",
+				new Class<?>[] {Properties.class}, properties);
+
+			Assert.assertEquals(
+				plaintextSecretProperties.toString(), 1,
+				plaintextSecretProperties.size());
+			Assert.assertTrue(
+				plaintextSecretProperties.contains(obfuscatedKey1));
+		}
+	}
 
 	@Test
 	public void testValidateAlgorithm() {
