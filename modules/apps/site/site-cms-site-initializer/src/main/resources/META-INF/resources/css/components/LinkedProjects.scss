@@ -1,0 +1,61 @@
+@import 'atlas-variables';
+@import 'cadmin-variables';
+
+.cms-linked-projects {
+	&-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	&-card {
+		align-items: flex-start;
+		border: 1px solid $secondary-l2;
+		border-radius: 0.25rem;
+		display: flex;
+		justify-content: space-between;
+		padding: 0.75rem;
+	}
+
+	&-card-title {
+		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+	}
+
+	&-card-name {
+		color: $gray-900;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	&-card-due-date {
+		color: $secondary;
+		font-size: 0.875rem;
+	}
+
+	&-card-status {
+		margin-top: 0.25rem;
+	}
+
+	&-card-actions {
+		align-items: flex-start;
+		display: flex;
+	}
+
+	&-tasks {
+		font-size: 0.875rem;
+		margin-bottom: 0;
+		margin-top: 0.5rem;
+		padding-left: 1rem;
+
+		li {
+			color: $secondary;
+		}
+
+		a {
+			color: inherit;
+		}
+	}
+}
