@@ -23,7 +23,9 @@ public interface FacebookConnectConfiguration {
 	@Meta.AD(name = "application-id", required = false)
 	public String appId();
 
-	@Meta.AD(name = "application-secret", required = false)
+	@Meta.AD(
+		name = "application-secret", required = false, type = Meta.Type.Password
+	)
 	public String appSecret();
 
 	@Meta.AD(deflt = "false", name = "enabled", required = false)

@@ -36,7 +36,7 @@ public interface OAuth2AuthorizationServerConfiguration {
 		description = "oauth2-authorization-server-jwt-access-token-signing-json-web-key-description",
 		id = "oauth2.authorization.server.jwt.access.token.signing.json.web.key",
 		name = "oauth2-authorization-server-jwt-access-token-signing-json-web-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String jwtAccessTokenSigningJSONWebKey();
 

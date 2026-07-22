@@ -93,7 +93,7 @@ public interface OpenIdConnectProviderConfiguration {
 
 	@Meta.AD(
 		deflt = "", description = "open-id-connect-client-secret-help",
-		name = "open-id-connect-client-secret"
+		name = "open-id-connect-client-secret", type = Meta.Type.Password
 	)
 	public String openIdConnectClientSecret();
 

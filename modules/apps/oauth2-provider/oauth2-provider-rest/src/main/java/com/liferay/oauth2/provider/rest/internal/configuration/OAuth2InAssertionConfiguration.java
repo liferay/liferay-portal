@@ -34,7 +34,8 @@ public interface OAuth2InAssertionConfiguration {
 	@Meta.AD(
 		description = "oauth2-in-assertion-signature-json-web-key-set-help",
 		id = "oauth2.in.assertion.signature.json.web.key.set",
-		name = "oauth2-in-assertion-signature-json-web-key-set"
+		name = "oauth2-in-assertion-signature-json-web-key-set",
+		type = Meta.Type.Password
 	)
 	public String signatureJSONWebKeySet();
 
