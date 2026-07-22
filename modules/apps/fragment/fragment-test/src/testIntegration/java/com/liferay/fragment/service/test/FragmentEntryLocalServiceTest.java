@@ -1278,6 +1278,9 @@ public class FragmentEntryLocalServiceTest {
 			String name = RandomTestUtil.randomString();
 
 			_updateFragmentEntry(fragmentEntry, name);
+
+			_assertUpdateFragmentEntryVersions(fragmentEntry, null, 2);
+
 			_updateFragmentEntry(fragmentEntry, name);
 
 			_assertUpdateFragmentEntryVersions(fragmentEntry, name, 2);
