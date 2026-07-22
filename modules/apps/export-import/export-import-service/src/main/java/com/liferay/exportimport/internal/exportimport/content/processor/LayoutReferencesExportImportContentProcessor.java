@@ -1184,7 +1184,7 @@ public class LayoutReferencesExportImportContentProcessor
 		long groupId, boolean privateLayout, String friendlyURL) {
 
 		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			groupId, privateLayout, url);
+			groupId, privateLayout, friendlyURL);
 
 		if (layout != null) {
 			return layout;
